@@ -1,0 +1,753 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+  
+
+
+  <head>
+    <title>
+      help/howtos/common/newbie/other – Freetz
+    </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!--[if IE]><script type="text/javascript">
+      if (/^#__msie303:/.test(window.location.hash))
+        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
+    </script><![endif]-->
+        <link rel="search" href="http://freetz.org/search" />
+        <link rel="help" href="../../../../TracGuide.html" />
+        <link rel="alternate" href="other%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
+        <link rel="up" href="../newbie.html" title="Übergeordnete Wiki-Seite anzeigen" />
+        <link rel="start" href="http://freetz.org/wiki" />
+        <link rel="stylesheet" href="../../../../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../../../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../../../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../../../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../../../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../../../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../../../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../../../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../../../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
+        <link rel="shortcut icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+      <link type="application/opensearchdescription+xml" rel="search" href="http://freetz.org/search/opensearch" title="Freetz durchsuchen" />
+      <script type="text/javascript" charset="utf-8" src="../../../../../chrome/common/js/jquery.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../../chrome/common/js/babel.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../../chrome/common/js/messages/de.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../../chrome/common/js/trac.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../../chrome/common/js/search.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../../chrome/common/js/folding.js"></script>
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
+        $("#content").find(".wikianchor").each(function() {
+          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
+        });
+        $(".foldable").enableFolding(true, true);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://freetz.org/wiki"><img src="../../../../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
+      </div>
+      <form id="search" action="http://freetz.org/search" method="get">
+        <div>
+          <label for="proj-search">Suche:</label>
+          <input type="text" id="proj-search" name="q" size="18" value="" />
+          <input type="submit" value="Suche" />
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="http://freetz.org/login">Anmelden</a></li><li><a href="http://freetz.org/prefs">Einstellungen</a></li><li><a href="../../../../TracGuide.html">Hilfe/Anleitung</a></li><li><a href="http://freetz.org/about">Über Trac</a></li><li><a href="http://freetz.org/notification" title="Wiki Pages Change Notifications">My Notifications</a></li><li><a href="http://freetz.org/register">Registrieren</a></li><li class="last"><a href="../../../../Impressum.html">Impressum</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first active"><a href="http://freetz.org/wiki">Wiki</a></li><li><a href="http://freetz.org/timeline">Journal</a></li><li><a href="http://freetz.org/roadmap">Projektplan</a></li><li><a href="http://freetz.org/browser">Quellen durchsehen</a></li><li><a href="http://freetz.org/report">Tickets anzeigen</a></li><li><a href="http://freetz.org/search">Suche</a></li><li><a href="http://freetz.org/tags">Tags</a></li><li><a href="http://freetz.org/downloads">Downloads</a></li><li class="last"><a href="http://freetz.org/screenshots">Bildschirmfotos</a></li>
+    </ul>
+  </div>
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="other..html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="http://freetz.org/wiki/help/howtos/common/newbie/other.en" title="(not available)">English</a></li></ul></div><div id="main">
+      <div id="pagepath" class="noprint">
+  <a class="pathentry first" title="Zeige WikiStart an" href="http://freetz.org/wiki">Wiki:</a><a class="pathentry" href="../../../../help.html" title="Zeige help an">help</a><span class="pathentry sep">/</span><a class="pathentry" href="../../../howtos.html" title="Zeige help/howtos an">howtos</a><span class="pathentry sep">/</span><a class="pathentry" href="../../common.html" title="Zeige help/howtos/common an">common</a><span class="pathentry sep">/</span><a class="pathentry" href="../newbie.html" title="Zeige help/howtos/common/newbie an">newbie</a><span class="pathentry sep">/</span><a class="pathentry" href="other.html" title="Zeige help/howtos/common/newbie/other an">other</a>
+</div>
+      <div id="ctxtnav" class="nav">
+        <h2>Kontext-Navigation</h2>
+        <ul>
+          <li class="first"><a href="../newbie.html">Aufwärts</a></li><li><a href="../../../../WikiStart.html">Startseite</a></li><li><a href="../../../../TitleIndex.html">Inhaltsverzeichnis</a></li><li><a href="other%3Faction=history.html">Änderungshistorie</a></li><li class="last"><a href="http://freetz.org/notification/help/howtos/common/newbie/other." title="Watch Page">Watch Page</a></li>
+        </ul>
+        <hr />
+      </div>
+    <div id="content" class="wiki">
+      <div class="wikipage searchable">
+        
+          <div id="wikipage" class="trac-content"><h1 id="SonstigeInfosfürNewbies">Sonstige Infos für Newbie's</h1>
+<p>
+<h4>Inhaltsverzeichnis</h4>
+    <ol>
+      <li>
+        <a href="other..html#WiekönntemeinnächstesImageaussehen:">Wie könnte mein nächstes Image aussehen:</a>
+        <ol>
+          <li>
+            <a href="other..html#VirtualBoxstarten">VirtualBox starten</a>
+          </li>
+          <li>
+            <a href="other..html#Einstellendesmenuconfig">Einstellen des menuconfig</a>
+          </li>
+          <li>
+            <a href="other..html#ImageaufdenPCkopieren">Image auf den PC kopieren</a>
+          </li>
+          <li>
+            <a href="other..html#Freetz-Linuxbeenden">Freetz-Linux beenden</a>
+          </li>
+          <li>
+            <a href="other..html#DerFlashvorgang">Der Flashvorgang</a>
+            <ol>
+              <li>
+                <a href="other..html#KonfigurationderneuenPlugins">Konfiguration der neuen Plugins</a>
+              </li>
+            </ol>
+          </li>
+          <li>
+            <a href="other..html#Freetz-WebIFeinstellen">Freetz-WebIF einstellen</a>
+          </li>
+          <li>
+            <a href="other..html#USB-Stickerstellen">USB-Stick erstellen</a>
+          </li>
+          <li>
+            <a href="other..html#SWAP-Fileeinrichten">SWAP-File einrichten</a>
+          </li>
+          <li>
+            <a href="other..html#Samba">Samba</a>
+            <ol>
+              <li>
+                <a href="other..html#Einstellungen">Einstellungen</a>
+              </li>
+              <li>
+                <a href="other..html#Erweitert">Erweitert</a>
+              </li>
+              <li>
+                <a href="other..html#Freigaben">Freigaben</a>
+              </li>
+            </ol>
+          </li>
+          <li>
+            <a href="other..html#VSFTPD">VSFTPD</a>
+            <ol>
+              <li>
+                <a href="other..html#Einstellungen1">Einstellungen</a>
+              </li>
+              <li>
+                <a href="other..html#RechtevergabefürFTP-UserwieändereichdieBeispieldateienausdemZIPrichtig">Rechtevergabe für FTP-User (wie ändere ich die Beispieldateien aus dem ZIP richtig)</a>
+              </li>
+            </ol>
+          </li>
+          <li>
+            <a href="other..html#FTP-Usererzeugen">FTP-User erzeugen</a>
+            <ol>
+              <li>
+                <a href="other..html#Wieistderadduser-Befehl:">Wie ist der adduser-Befehl:;</a>
+              </li>
+            </ol>
+          </li>
+          <li>
+            <a href="other..html#AVM-Firewall">AVM-Firewall</a>
+            <ol>
+              <li>
+                <a href="other..html#Einstellungsseite">Einstellungsseite</a>
+              </li>
+            </ol>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <a href="other..html#SonstigeFragen">Sonstige Fragen</a>
+        <ol>
+          <li>
+            <a href="other..html#WiemußichmeinenPCeinstellendamiticheinImagebauenkann">Wie muß ich meinen PC einstellen damit ich ein Image bauen kann</a>
+            <ol>
+              <li>
+                <a href="other..html#Linux">Linux</a>
+              </li>
+              <li>
+                <a href="other..html#Windows">Windows</a>
+              </li>
+            </ol>
+          </li>
+          <li>
+            <a href="other..html#ImageaufdenPCkopieren1">Image auf den PC kopieren</a>
+          </li>
+          <li>
+            <a href="other..html#WiekannmaneinegefreetzteFritzboxupdaten">Wie kann man eine gefreetzte Fritzbox updaten</a>
+          </li>
+          <li>
+            <a href="other..html#EinigeProgrammehabenähnlicheFunktionenwelchesindperformanter">Einige Programme haben ähnliche Funktionen, welche sind performanter?</a>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <a href="other..html#Linux-BefehleZielgruppeNewbies">Linux-Befehle (Zielgruppe Newbies)</a>
+        <ol>
+          <li>
+            <a href="other..html#allgemeineLinux-Befehle">allgemeine Linux-Befehle</a>
+          </li>
+          <li>
+            <a href="other..html#DerviEditor">Der vi Editor</a>
+          </li>
+        </ol>
+      </li>
+    </ol>
+<br />
+</p>
+<h2 id="WiekönntemeinnächstesImageaussehen:">Wie könnte mein nächstes Image aussehen:</h2>
+<p>
+Freetz-Image inkl. AVM-Firewall CGI, SAMBA und VSFTP 
+</p>
+<h3 id="VirtualBoxstarten">VirtualBox starten</h3>
+<p>
+<a href="../newbie.html#StartenvonFreetz">Wie starte ich VirtualBox</a>. Dieser Pkt. kann aber übersprungen werden, wenn VirtualBox und Putty noch gestartet sind.<br />
+</p>
+<h3 id="Einstellendesmenuconfig">Einstellen des menuconfig</h3>
+<p>
+Zur Erstellung eines neuen Image müssen wir wieder das <strong>menuconfig</strong> aufrufen.<br />
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/154?format=raw" title="Mainpage "><img src="http://freetz.org/screenshots/154?width=409&amp;format=raw&amp;height=325" alt="Mainpage " /></a><span class="description" style="width: 411px;">Mainpage</span></span></span>
+In dieser Oberfläche wählt man dann den zu patchenden Router und die gewünschten Pakete aus. Für dieses HowTo haben wir Beispielhaft die 7270_v3 gewählt.<br />
+<br />
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/259?format=raw" title="Auswahl des Boxtyps"><img src="http://freetz.org/screenshots/259?width=409&amp;format=raw&amp;height=325" alt="Auswahl des Boxtyps" /></a><span class="description" style="width: 411px;">Auswahl des Boxtyps</span></span></span>
+<br />
+Dieses Image soll am Ende folgende Elemente enthalten und darum wählen wir nun folgende Punkt aus:<br />
+<br />
+<strong>a.) unter other patches:</strong><br /> 
+</p>
+<ul><li><strong>FREETZMOUNT : Patch AVMs hotplug script, &hellip;..</strong>
+</li><li><strong>Automount filesystem</strong> einfach gesetzt lassen. 
+</li><li><strong>ext2</strong> (linux Dateisystem)
+</li><li><strong>ext3</strong> (linux Dateisystem)
+</li><li><strong>fat</strong> /Windows Dateisystem)
+</li><li><strong>NTFS</strong> (Muß aktivier sein wenn man NTFS formatierte Platten an der Box nutzen möchte)<br />
+</li></ul><p>
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/92?format=raw" title="Fielsystem"><img src="http://freetz.org/screenshots/92?width=409&amp;format=raw&amp;height=325" alt="Fielsystem" /></a><span class="description" style="width: 411px;">Fielsystem</span></span></span>  
+<strong>b.) unter Packages &mdash;&gt; Web interface &mdash;&gt;</strong><br />
+</p>
+<ul><li><strong>AVM-Firewall 2.0.4_rc5</strong> (Web-Oberfläche um die von AVM dem User vorenthaltene integrierte Firewall zu administrieren) <br />
+</li><li><strong>spindown-cgi 0.2</strong> (Web-Oberfläche für sg3_utils (Sleep-Modus für angeschlossene Festplatten)  <br />
+</li><li><strong>Syslogd CGI</strong> (Log-Datei zum Auswerten vom System z.B. bei der Fehlersuche)<br />
+</li></ul><p>
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/94?format=raw" title=""><img src="http://freetz.org/screenshots/94?width=409&amp;format=raw&amp;height=325" alt="" /></a><span class="description" style="width: 411px;"></span></span></span>
+<strong>c.) unter unter Packages &mdash;&gt; Standard packages &mdash;&gt;</strong><br />
+</p>
+<ul><li><strong>Samba suite</strong> &mdash;&gt; <strong>version (samba 3.0.37)</strong> (dies ist der Server der den Zugriff auf die USB Medien an der FB von Windows erlaubt). <br />
+<ul><li> Ebenfalls müssen folgende Haken bei folgenden Unterpunkten gesetzt werden:<br />
+<ul><li><strong>smbd</strong> (file sharing server) 
+</li><li><strong>nmbd</strong> (NetBIOS name server) 
+</li><li><strong>smbclient</strong>
+</li><li><strong>nmblookup</strong>
+</li></ul></li></ul></li></ul><p>
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/260?format=raw" title="Samba suite"><img src="http://freetz.org/screenshots/260?width=409&amp;format=raw&amp;height=325" alt="Samba suite" /></a><span class="description" style="width: 411px;">Samba suite</span></span></span>
+</p>
+<ul><li><strong>vsftp 3.0.2</strong> (FTP-Server). Hier bitte keine weiteren Haken bei den Unterpunkten setzen. <br />
+</li></ul><p>
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/164?format=raw" title="vsftp"><img src="http://freetz.org/screenshots/164?width=409&amp;format=raw&amp;height=325" alt="vsftp" /></a><span class="description" style="width: 411px;">vsftp</span></span></span> 
+Weitere Pakete und Patches incl. der Beschreibungen findet ihr auf der Website : <a class="wiki" href="../../../../packages.html">wiki:packages</a> <br />  
+Nachdem alle Pakete und Patches ausgewählt sind, beendet man Freetz und gibt auf der Kommandozeile der Shell Konsole <strong>make</strong> ein. <br />
+Der Rest des Buildprozesses läuft wieder wie gewohnt ab.
+Die Abschlussmeldung sieht dann wie folgt aus:
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/157?format=raw" title=""><img src="http://freetz.org/screenshots/157?width=409&amp;format=raw&amp;height=325" alt="" /></a><span class="description" style="width: 411px;"></span></span></span>
+<br />
+<br />
+Nun müssen wir das Image auf den PC kopieren.<br />
+</p>
+<h3 id="ImageaufdenPCkopieren">Image auf den PC kopieren</h3>
+<p>
+Info's findet ihr <a class="wiki" href="other.html#ImageaufdenPCkopieren1">HIER</a><br />
+</p>
+<h3 id="Freetz-Linuxbeenden">Freetz-Linux beenden</h3>
+<p>
+Euer Ubuntu-Linux könnt ihr nun mit dem Befehl : <strong>sudo shutdown -h now</strong>  sauber herunter fahren. Diese Eingabe muß jedoch noch mit einem <strong>freetz</strong> erneut bestätigt werden. <br />
+</p>
+<h3 id="DerFlashvorgang">Der Flashvorgang</h3>
+<p>
+Info's zum Flashforgang sind <a class="wiki" href="../newbie.html#DerFlashvorgang">HIER</a> zu finden.<br />
+</p>
+<h4 id="KonfigurationderneuenPlugins">Konfiguration der neuen Plugins</h4>
+<p>
+Nachdem eure FB wieder problemlos angelaufen ist, könnt ihr wie gewohnt per Browser über <strong><a class="ext-link" href="http://fritz.box"><span class="icon">​</span>http://fritz.box</a></strong> einloggen. Zusätzlich gibt es aber jetzt die Freetz Oberfläche, die über den Link <strong><a class="ext-link" href="http://fritz.box:81"><span class="icon">​</span>http://fritz.box:81</a></strong> erreicht werden kann. Hier loggt man sich mit <strong>admin</strong> und <strong>freetz</strong> ein.
+Danach sieht man folgende Maske:
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/261?format=raw" title="Startbildschirm"><img src="http://freetz.org/screenshots/261?width=409&amp;format=raw&amp;height=325" alt="Startbildschirm" /></a><span class="description" style="width: 411px;">Startbildschirm</span></span></span>
+<br />
+</p>
+<h3 id="Freetz-WebIFeinstellen">Freetz-WebIF einstellen</h3>
+<p>
+1.) Wechseln nach &rArr; <strong>Freetz</strong> &rArr; <strong>Einstellungen</strong> und dort unter <strong>Freetzmount</strong> den Haken bei <strong>Partitionsname (falls vorhanden) als Mountpoint nutzen</strong>.<br />
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/262?format=raw" title="Freetzmount"><img src="http://freetz.org/screenshots/262?width=409&amp;format=raw&amp;height=325" alt="Freetzmount" /></a><span class="description" style="width: 411px;">Freetzmount</span></span></span>
+2.) Wechseln nach &rArr; <strong>Freetz</strong> &rArr; <strong>Weboberfläche</strong> und kontrollieren ob dort folgende Haken gesetzt sind:
+</p>
+<ul><li><strong>Untermenü </strong>
+</li><li><strong>Hauptseite </strong>
+</li><li><strong>mit Knöpfen</strong>
+</li><li><strong>Box-Info </strong>
+</li><li><strong>Freetz-Info</strong>
+</li></ul><p>
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/263?format=raw" title="Freetz-Weboberfläche"><img src="http://freetz.org/screenshots/263?width=409&amp;format=raw&amp;height=325" alt="Freetz-Weboberfläche" /></a><span class="description" style="width: 411px;">Freetz-Weboberfläche</span></span></span>
+<br />
+</p>
+<h3 id="USB-Stickerstellen">USB-Stick erstellen</h3>
+<p>
+Nun formatieren wir unseren USB-Stick oder USB-Festplatte am PC in <strong>NTFS</strong>, und geben ihm den Namen <strong>USB</strong> und legen folgende Ordner darauf an:
+</p>
+<ul><li><strong>admin</strong>
+<ul><li><strong>gast (Unterordner von admin)</strong>
+</li><li><strong>musik (Unterordner von admin)</strong>
+</li><li><strong>bilder (Unterordner von admin)</strong>
+</li><li><strong>filme (Unterordner von admin)</strong>
+</li><li><strong>dokumente (Unterordner von admin)</strong>
+</li></ul></li></ul><p>
+Diesen so erstellten Stick stecken wir nun in den USB-Port der Fritzbox und starten diese neu (reboot).<br />
+Nach dem Reboot solltet ihr nun folgendes Freetz-Menu sehen:<br />
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/264?format=raw" title="Neues Freetz-WebIF inkl gemounteten USB-Stick"><img src="http://freetz.org/screenshots/264?width=409&amp;format=raw&amp;height=325" alt="Neues Freetz-WebIF inkl gemounteten USB-Stick" /></a><span class="description" style="width: 411px;">Neues Freetz-WebIF inkl gemounteten USB-Stick</span></span></span>
+Ganz unten kann man nun sehen das der USB-Stick als <strong>USB</strong> (/var/media/ftp/<strong>USB</strong> ) gemountet wurde. Sollte dort <strong>uStor01</strong> stehen, müsst ihr die letzten Schritte nochmals kontrollieren.
+</p>
+<h3 id="SWAP-Fileeinrichten">SWAP-File einrichten</h3>
+<p>
+1.) Wechseln nach &rArr; <strong>Freetz</strong> &rArr; <strong>Einstellungen</strong><br />
+2.) unter <strong>Swap</strong> den Pkt. <strong>Aktiviert</strong> aktivieren.<br />
+3.) unter Pfad tragen wir nun folgendes ein: <strong>/var/media/ftp/USB/swapfile</strong> <br />
+4.) und unter Größe : <strong>20</strong> ein. <br />
+5.) nun drücken wir den Button <strong>Swap-Datei anlegen</strong> <br />
+6.) Im nächsten Fenster sollte man jetzt sehen wie die SWAP-Datei angelegt wird. 
+</p>
+<pre class="wiki"> Erstelle leere Datei ...
+ 20+0 records in
+ 20+0 records out
+ Bereite Datei für Swap-Benutzung vor ...
+ Setting up swapspace version 1, size = 20967424 bytes
+</pre><p>
+Dieses Fenster kann man danach einfach schließen.<br />
+Sollte alles richtig eingestellt sein, kann man SWAP über den Button Start nun starten. Die Anzeige <strong>stopped</strong> sollte nach <strong>running</strong> wechseln.
+<br />
+<br />
+</p>
+<h3 id="Samba">Samba</h3>
+<h4 id="Einstellungen">Einstellungen</h4>
+<h5 id="Starttyp">Starttyp</h5>
+<p>
+alles auf <strong>Automatisch</strong><br />
+</p>
+<h5 id="Konfiguration:">Konfiguration:</h5>
+<ul><li>Samba security = Share
+</li><li>Benutzername: ftpuser
+</li><li>Passwort: * * * * * * (einfach leer lassen, Die Pkt. werden trotzdem angezeigt)
+</li><li>IP-Adresse: 192.168.178.1(255.255.255.0
+</li><li>Netbios Name: NAS
+</li><li>Arbeitsgruppe: WORKGROUP
+</li><li>Beschreibung: %h (Samba %v)  &rArr; (ich würde diesen Inhalt löschen)
+</li><li>OS Level für Election: 20 
+</li><li>Haken bei Bevorzugter Master
+</li></ul><h5 id="Standardfreigaben">Standardfreigaben</h5>
+<p>
+Beide Haken setzen / gesetzt lassen <br />
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/79?format=raw" title="Samba- Einstellungen"><img src="http://freetz.org/screenshots/79?width=409&amp;format=raw&amp;height=325" alt="Samba- Einstellungen" /></a><span class="description" style="width: 411px;">Samba- Einstellungen</span></span></span> 
+ 
+</p>
+<h4 id="Erweitert">Erweitert</h4>
+<p>
+In das leere Feld kopiert man nun folgenden Text:<br />
+</p>
+<pre class="wiki">log level = 1
+socket options = TCP_NODELAY IPTOS_LOWDELAY
+read raw = yes
+write raw = yes
+oplocks = yes
+max xmit = 65535
+dead time = 15
+getwd cache = yes
+lpq cache = 30 
+unix charset = UTF-8
+</pre><h4 id="Freigaben">Freigaben</h4>
+<p>
+In das leere Feld kopiert man nun folgenden Text:<br />
+</p>
+<pre class="wiki">/var/media/ftp/USB USB-Stick 1 0 - USB-Stick
+/var/media/ftp/USB/data/gast Gast 1 0 - Gast
+/var/media/ftp/USB/data/musik Musik 1 0 - Musik
+/var/media/ftp/USB/data/filme Filme 1 0 - Filme
+/var/media/ftp/USB/data/bilder Bilder 1 0 - Bilder
+/var/media/ftp/USB/data/dokumente Dokumente 1 0 - Dokumente
+</pre><p>
+Wir haben nun 6 Windows-Freigaben für unserem USB-Stick erzeugt.
+</p>
+<ul><li><strong>USB-Stick</strong> (hier sieht man den gesamten Inhalt des Sticks)
+</li><li><strong>Gast</strong>   (Freigegebener Ordner)
+</li><li><strong>Musik</strong>   (Freigegebener Ordner)
+</li><li><strong>Filme</strong>   (Freigegebener Ordner)
+</li><li><strong>Bilder</strong>    (Freigegebener Ordner)
+</li><li><strong>Dokumente</strong>   (Freigegebener Ordner)
+</li></ul><p>
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/265?format=raw" title="Samba-Freigaben am PC"><img src="http://freetz.org/screenshots/265?width=409&amp;format=raw&amp;height=325" alt="Samba-Freigaben am PC" /></a><span class="description" style="width: 411px;">Samba-Freigaben am PC</span></span></span>
+Diese können nun per <strong>Netzlaufwerk verbinden</strong> mit dem PC verbinden. <br />
+<br /> 
+Hier eine kurze Beschreibung der Parameter anhand der ersten Freigabe: (Diese Einträge sind jedoch nur möglich, wenn die aktuelle <a class="wiki" href="../../../../FAQ.html#KonfigurationinderaktuellenSicherheitsstufenichtverf%C3%BCgbar">Sicherheitsstufe</a> auf 0 gesetzt ist bzw. wird.)<br />
+<br />
+<strong>Beispiel:</strong>
+</p>
+<pre class="wiki">/var/media/ftp/USB USB-Stick 1 0 - USB-Stick 
+</pre><blockquote>
+<p>
+<strong>/var/media/ftp/USB</strong> dies ist der interner Pfad zum USB-Stick <br /> 
+<strong>/USB-Stick</strong> das ist das Freigegebenes Verzeichnis <br /> 
+<strong>USB-Stick</strong> Name der Freigabe der in der Windows-Netzwerkumgebung als Freigabe angezeigt wird. <br /> 
+<strong>1</strong> Gast-Zugang erlaubt, kein Benutzername und Passwort nötig <br /> 
+<strong>0</strong> Schreib-Lesezugriff aktiviert <br />  
+<strong>-</strong> Grund für das - ????? (Muß rein, Begründung folgt !) <br />  
+<strong>USB-Stick</strong> Kommentar<br />
+</p>
+</blockquote>
+<p>
+Da wir als Netbiosname <strong>NAS</strong> vergeben hatte, lautet der Zugriff von Windows auf die Freigabe nun: 
+</p>
+<pre class="wiki">\\NAS\USB-Stick
+</pre><p>
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/266?format=raw" title="Freigabe am PC mounten"><img src="http://freetz.org/screenshots/266?width=409&amp;format=raw&amp;height=325" alt="Freigabe am PC mounten" /></a><span class="description" style="width: 411px;">Freigabe am PC mounten</span></span></span>
+<br />
+</p>
+<h3 id="VSFTPD">VSFTPD</h3>
+<h4 id="Einstellungen1">Einstellungen</h4>
+<h5 id="Starttyp1">Starttyp</h5>
+<p>
+Starttyp auf <strong>Automatisch</strong> stellen
+</p>
+<h5 id="FTPServer">FTP Server</h5>
+<p>
+Server binden an Port: 2121 (Dieser Port muß von 21 nach 2121 geändert werden da sich sonst VSFTPD nicht starten läßt. Möchte man den Port 21 benutzen, muß der AVM-FTP (ftpd) gestoppt werden (inetd muß dazu unter Dienste auf stopped gesetzt werden).<br />
+</p>
+<blockquote>
+<p>
+<strong>Achtung, das Stoppen von ftpd hat aber Auswirkung auf einige AVM-Dienste </strong><br />
+</p>
+</blockquote>
+<h5 id="Zugriff">Zugriff</h5>
+<p>
+Folgende Haken müssen wie folgt gesetzt sei:
+</p>
+<ul><li><strong>Anonymes FTP =</strong> Nein
+</li><li><strong>Lokale Benutzer =</strong> <strong>Ja</strong>
+</li><li><strong>chroot jail =</strong> <strong>Ja</strong>
+</li><li><strong>Erlaube root login =</strong> Nein
+</li><li><strong>Erlaube ftpuser login =</strong> Nein
+</li></ul><h5 id="ErweiterteEinstellungen">Erweiterte Einstellungen</h5>
+<ul><li>Anzahl Verbindungen:   
+<ul><li>insgesamt : <strong>25</strong>  
+</li><li>pro Client : <strong>25</strong>
+</li></ul></li><li>Passive Ports:   
+<ul><li>Minimum : <strong>0</strong>
+</li><li>Maximum : <strong>0</strong>
+</li></ul></li><li>Sonst sind keine Haken gesetzt
+</li></ul><p>
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/267?format=raw" title="Zugriff und Erweiterte Einstellungen"><img src="http://freetz.org/screenshots/267?width=409&amp;format=raw&amp;height=325" alt="Zugriff und Erweiterte Einstellungen" /></a><span class="description" style="width: 411px;">Zugriff und Erweiterte Einstellungen</span></span></span>
+</p>
+<h5 id="ZusätzlicheKonfigurationsoptionenfürExperten">Zusätzliche Konfigurationsoptionen (für Experten)</h5>
+<p>
+In das leere Feld kopiert man nun folgenden Text:<br />
+</p>
+<pre class="wiki">user_config_dir=/var/media/ftp/USB/vsftp_user_conf
+</pre><h5 id="Logging">Logging</h5>
+<ul><li>Logging aktivieren = angehakt
+</li><li>zusätzlich Protokoll-Log = leer
+</li></ul><ul><li>Syslog = deaktiviert
+</li><li>Datei = aktiviert mit folgendem Text:
+<pre class="wiki">/var/media/ftp/USB/logs/vsftpd.log
+</pre></li></ul><p>
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/268?format=raw" title="Zusätzliche Konfig. + Logging"><img src="http://freetz.org/screenshots/268?width=409&amp;format=raw&amp;height=325" alt="Zusätzliche Konfig. + Logging" /></a><span class="description" style="width: 411px;">Zusätzliche Konfig. + Logging</span></span></span>
+</p>
+<h5 id="ÄnderungenamUSB-Stick">Änderungen am USB-Stick</h5>
+<p>
+Folgende Ordner müssen noch direkt auf dem USB-Stick erzeugt werden:
+</p>
+<ul><li><strong>logs</strong>    
+</li><li><strong>vsftp_user_conf</strong>     
+</li></ul><p>
+In diese Ordner kopieren wir nun die Datein aus diesem <a href="http://freetz.org/attachment/wiki/help/howtos/common/newbie/other/vsftpd.zip">ZIP</a> wie folgt:
+</p>
+<ul><li><strong>logs</strong>
+<ul><li>syslog.log
+</li><li>vsftpd.log
+</li></ul></li><li><strong>vsftp_user_conf</strong>
+<ul><li>admin
+</li><li>gast
+</li><li>mary
+</li><li>paul
+</li></ul></li></ul><p>
+Das Kopieren der Dateien kann ja nun Dank gestartetem SAMBA direkt passieren ohne das der USB-Stick von der Box getrennt werden muß.<br />
+</p>
+<h4 id="RechtevergabefürFTP-UserwieändereichdieBeispieldateienausdemZIPrichtig">Rechtevergabe für FTP-User (wie ändere ich die Beispieldateien aus dem ZIP richtig)</h4>
+<p>
+Ob ein Neuer FTP-User Schreibrechte erhalten soll oder nur lesen können soll wird wie folgt geregelt: <br /> Jeder Benutzer erhält eine Datei mit seinem Dateinamen im Ordner <strong>/var/media/ftp/USB/vsftp_user_conf/</strong> 
+</p>
+<h5 id="InhaltderDatei:">Inhalt der Datei :</h5>
+<p>
+1.) Mary und Admin:  <strong>write_enable=yes</strong> (User hat Schreibrechte und Löschrechte)<br />
+<br />
+2.) Gast : <strong>write_enable=no</strong> (User hat <strong>keine</strong> Schreibrechte)<br />
+<br />
+3.) Paul : Über diese Benutzerdateien ist es auch möglich einzelne FTP-Befehle (<a class="ext-link" href="http://en.wikipedia.org/wiki/List_of_FTP_commands"><span class="icon">​</span>Liste</a>) für Benutzer zu verbieten. Hierzu fügt man folgende Zeile in die Datei ein und entfernt die Befehle die der User nicht ausführen darf:
+</p>
+<pre class="wiki">
+cmds_allowed=ABOR,ACCT,ALLO,APPE,AUTH,CDUP,CWD,DELE,EPRT,EPSV,FEAT,HELP,LIST,MDTM,MKD,MODE,NLST,NOOP,OPTS,PASS,PASV,PBSZ,PORT,PROT,PWD,QUIT,REIN,REST,RETR,RMD,RNFR,RNTO,SITE,SMNT,STAT,STOR,STOU,STRU,SYST,TYPE,USER
+
+</pre><p>
+So mit darf Paul Dateien auf den FTP kopieren und Verzeichnisse anlegen, jedoch diese nicht wieder löschen. Also muß folgendes in der Datei stehen:
+</p>
+<pre class="wiki">
+cmds_allowed=ABOR,ACCT,ALLO,APPE,AUTH,CDUP,CWD,EPRT,EPSV,FEAT,HELP,LIST,MDTM,MKD,MODE,NLST,NOOP,OPTS,PASS,PASV,PBSZ,PORT,PROT,PWD,QUIT,REIN,REST,RETR,RNFR,RNTO,SITE,SMNT,STAT,STOR,STOU,STRU,SYST,TYPE,USER
+
+</pre><blockquote>
+<p>
+<strong>DELE</strong> (Delete file), <strong>RMD</strong> (Remove a directory) wurden aus dem oben angegebenen String gelöscht. <br /> <br /> <br /> Sollte etwas immer noch nicht gehen, dann den Router einfach nochmal neu starten.(Reboot der FritzBox).<br />
+</p>
+</blockquote>
+<h3 id="FTP-Usererzeugen">FTP-User erzeugen</h3>
+<p>
+1.) <strong>Telnet-Dienst</strong> unter Freetz &rArr; Dienste starten.<br />
+2.) <a href="../newbie.html#PuTTYstarten">Putty starten</a> und sich per telnet mit der Box verbinden (nicht per ssh) <br />
+</p>
+<blockquote>
+<p>
+Putty wird wie folgt eingestellt: 
+</p>
+</blockquote>
+<p>
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/87?format=raw" title=""><img src="http://freetz.org/screenshots/87?width=409&amp;format=raw&amp;height=325" alt="" /></a><span class="description" style="width: 411px;"></span></span></span> 
+</p>
+<blockquote>
+<p>
+Nach drücken von <strong>Open</strong> und Eingabe folgender Daten <strong>[ login: root ]</strong> und <strong>[ Password: freetz ]</strong> solltet ihr folgendes Bild sehen:
+</p>
+</blockquote>
+<p>
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/88?format=raw" title=""><img src="http://freetz.org/screenshots/88?width=409&amp;format=raw&amp;height=325" alt="" /></a><span class="description" style="width: 411px;"></span></span></span> 
+<br />
+<br />
+3.) Nach dem Einloggen können wir nun beginnen FTP-User anzulegen.<br />
+</p>
+<h4 id="Wieistderadduser-Befehl:">Wie ist der adduser-Befehl:;</h4>
+<blockquote>
+<p>
+<tt>adduser -h '''Verzeichnis''' '''Benutzername'''</tt><br />
+</p>
+<blockquote>
+<p>
+<strong>Verzeichnis</strong>: Ordner auf dem Stick, der dem Benutzer zugeordnet werden soll, z.B. <strong>/var/media/ftp/USB/</strong> <br /> 
+<strong>Benutzername</strong>: Name des Benutzers <br />
+</p>
+</blockquote>
+</blockquote>
+<p>
+Beim Erstellen des Benutzers wird danach gleich das Passwort abgefragt. Dieses muss zweimal eingegeben werden, und es wird dabei nichts am Bildschirm angezeigt, auch keine Sterne. <br />
+</p>
+<h5 id="FTP-UserfürunserImageanlegen:">FTP-User für unser Image anlegen:</h5>
+<p>
+Erzeugen wollen wir nun folgende User:<br />
+</p>
+<ul><li><strong>admin</strong>
+</li><li><strong>paul</strong>
+</li><li><strong>mary</strong>
+</li><li><strong>gast</strong>
+</li></ul><p>
+Hierzu werden nun folgende Befehle in Putty eingegeben (Bitte auf Groß und Kleinschreibung achten): 
+</p>
+<h6 id="admin">admin</h6>
+<pre class="wiki">adduser -h /var/media/ftp/USB admin
+</pre><h6 id="paul">paul</h6>
+<pre class="wiki">adduser -h /var/media/ftp/USB/data paul
+</pre><h6 id="mary">mary</h6>
+<pre class="wiki">adduser -h /var/media/ftp/USB/data mary
+</pre><h6 id="gast">gast</h6>
+<pre class="wiki">adduser -h /var/media/ftp/USB/data/gast gast
+</pre><p>
+So sollte z.B. die Meldung für admin im Putty-Fenster aussehen:<br />
+</p>
+<pre class="wiki">/var/mod/root # adduser -h /var/media/ftp/USB admin
+adduser: /var/media/ftp/USB: Operation not permitted
+Changing password for admin
+New password:
+Bad password: too short
+Retype password:
+Password for admin changed by root
+</pre><p>
+Die Meldung <tt>Operation not permitted</tt> kommt, wenn es sich um ein Dateisystem mit FAT oder NTFS Dateisystem handelt.<br />
+</p>
+<p>
+Wenn man das Paßwort erneut wegen Falscheingabe ändern will, verwendet man dazu den Befehl <tt>passwd </tt><strong><tt>Benutzername</tt></strong>. Man wird dann wieder zweimal nach dem neuen Paßwort gefragt.<br />
+Einen Benutzer löschen kann man mit dem Befehl <tt>deluser </tt><strong><tt>Benutzername</tt></strong>.<br />
+In jedem Fall müssen die Änderungen mit dem Befehl <strong>modsave all</strong> wieder gespeichert werden.<br />
+Anzeigen kann man die Datei mit dem Befehl <strong>cat /var/tmp/passwd</strong>. <br />
+Nun melden wir uns noch mit folgendem Befehl von der Putty Konsole ab:<br />
+</p>
+<pre class="wiki">exit
+</pre><h3 id="AVM-Firewall">AVM-Firewall</h3>
+<h4 id="Einstellungsseite">Einstellungsseite</h4>
+<p>
+1.) Seite wechseln über den Pkt. Forwarding). 
+2.) FTP-Port freigegeben siehe Bilder).  
+<span class="thumbnail"><span class="aux" style="width: 819px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/85?format=raw" title=""><img src="http://freetz.org/screenshots/85?width=817&amp;format=raw&amp;height=202" alt="" /></a><span class="description" style="width: 819px;"></span></span></span>  
+Nach eingabe der Zahlen (siehe Oben) einfach auf <strong>Hinzufügen</strong> drücken und das Ergenbins sollte wie Folgt aussehen: 
+<span class="thumbnail"><span class="aux" style="width: 928px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/86?format=raw" title=""><img src="http://freetz.org/screenshots/86?width=926&amp;format=raw&amp;height=253" alt="" /></a><span class="description" style="width: 928px;"></span></span></span> 
+Um diese Einstellung nun endgültig zu speichern einfach den Haken (Blinkendes Kästchen) setzen und den Reeboot der Box abwarten. <br />
+</p>
+<h2 id="SonstigeFragen">Sonstige Fragen</h2>
+<h3 id="WiemußichmeinenPCeinstellendamiticheinImagebauenkann">Wie muß ich meinen PC einstellen damit ich ein Image bauen kann</h3>
+<h4 id="Linux">Linux</h4>
+<p>
+Bei Fragen zu Linux bitte <a class="wiki" href="../install.html">hier</a> nachsehen
+</p>
+<h4 id="Windows">Windows</h4>
+<p>
+Für die Installation braucht ihr einen virtuellen PC (z.B. VirtualBox) sowie ein Linux-System wie z.B.:Freetz-Linux: <br />
+1.) <a class="ext-link" href="https://www.virtualbox.org/wiki/Downloads/"><span class="icon">​</span>VirtualBox-Player</a> <br /> downloaden und über die Setup.exe installieren.<br />
+2.) <a class="ext-link" href="http://sourceforge.net/projects/freetz-linux/files/freetz-linux-1.3.2/"><span class="icon">​</span>Freetz-Linux</a> herrunterladen und danach nach <strong>C:\Freetz-Linux</strong> kopieren.<br />
+3.) VirtualBox starten<br />
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/269?format=raw" title="VirtualBox starten"><img src="http://freetz.org/screenshots/269?width=409&amp;format=raw&amp;height=325" alt="VirtualBox starten" /></a><span class="description" style="width: 411px;">VirtualBox starten</span></span></span> 
+4.) VirtualBox-Image (freetz-linux-1.3.1.ova) einbinden über Datei &rArr; 
+Appliance für Import &rArr; freetz-linux-1.3.1.ova (einfach durchklicken bis die Datei importiert wird.)<br />
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/270?format=raw" title="Image Importiert"><img src="http://freetz.org/screenshots/270?width=409&amp;format=raw&amp;height=325" alt="Image Importiert" /></a><span class="description" style="width: 411px;">Image Importiert</span></span></span>
+5.) VM starten über doppelklick auf <strong>freetz-linux</strong> <br />
+6.) Solltet ihr folgenden Fehler beim starten haben:<br />
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/271?format=raw" title="Fehler beim starten"><img src="http://freetz.org/screenshots/271?width=409&amp;format=raw&amp;height=325" alt="Fehler beim starten" /></a><span class="description" style="width: 411px;">Fehler beim starten</span></span></span>
+müßt ihr die VB noch auf Eure Netzwerkkarte einstellen:
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/272?format=raw" title="Netzwerkkarte ändern"><img src="http://freetz.org/screenshots/272?width=409&amp;format=raw&amp;height=325" alt="Netzwerkkarte ändern" /></a><span class="description" style="width: 411px;">Netzwerkkarte ändern</span></span></span>
+</p>
+<h3 id="ImageaufdenPCkopieren1">Image auf den PC kopieren</h3>
+<p>
+Es gibt mehere Arten das fertige Image auf den PC zu kopieren: <br />
+</p>
+<blockquote>
+<p>
+<strong>a.) per FTP und !!TotalCommander:</strong> <br />
+</p>
+</blockquote>
+<p>
+Den aktuellen TotalComander findet ihr auf der Homepage vom <a class="ext-link" href="http://www.ghisler.com/ddownload.htm"><span class="icon">​</span>TotalCommander</a> <br />
+<br /> 
+Als nächstes müssen wir die Ip-Adresse des Freetz-Linux ermitteln und das machen wir über den Befehl <strong>ifconfig</strong> in der Freetz-Linux-Umgebung: 
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/102?format=raw" title=""><img src="http://freetz.org/screenshots/102?width=409&amp;format=raw&amp;height=325" alt="" /></a><span class="description" style="width: 411px;"></span></span></span> 
+Als nächstes installieren wir den TotalCommander auf dem PC und starten diesen dann. Die Freewaremeldung muss mit dem drücken der entsprechenden Zahl (hier im Bsp. die 1.) bestätigt werden. Durch das drücken entstehen keine weiteren Kosten! 
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/103?format=raw" title=""><img src="http://freetz.org/screenshots/103?width=409&amp;format=raw&amp;height=325" alt="" /></a><span class="description" style="width: 411px;"></span></span></span> 
+Nun richten wir die FTP-Verbindung im TC (TotalCommander) ein: <br />
+<span class="thumbnail-left"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/104?format=raw" title=""><img src="http://freetz.org/screenshots/104?width=409&amp;format=raw&amp;height=325" alt="" /></a><span class="description" style="width: 411px;"></span></span></span> 
+<span class="thumbnail-left"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/105?format=raw" title=""><img src="http://freetz.org/screenshots/105?width=409&amp;format=raw&amp;height=325" alt="" /></a><span class="description" style="width: 411px;"></span></span></span> 
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/106?format=raw" title=""><img src="http://freetz.org/screenshots/106?width=409&amp;format=raw&amp;height=325" alt="" /></a><span class="description" style="width: 411px;"></span></span></span>
+<span class="thumbnail-left"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/107?format=raw" title=""><img src="http://freetz.org/screenshots/107?width=409&amp;format=raw&amp;height=325" alt="" /></a><span class="description" style="width: 411px;"></span></span></span> 
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/108?format=raw" title=""><img src="http://freetz.org/screenshots/108?width=409&amp;format=raw&amp;height=325" alt="" /></a><span class="description" style="width: 411px;"></span></span></span>
+</p>
+<blockquote>
+<p>
+<strong>b.) per SFTP und WinSCP:</strong> <br />
+</p>
+</blockquote>
+<p>
+Hier nun der Weg per SFTP:<br /> Besorgt Euch einen SFTP-Client, z.B. <a class="ext-link" href="http://www.winscp.net/"><span class="icon">​</span>WinSCP</a>. <br /> 
+Ihr benötigt die IP-Adresse Eures virtuellen Freetz-Linux, diese erfährt man durch
+</p>
+<pre class="wiki">ifconfig
+</pre><p>
+Nach Start von WinSCP kann man im Ameldefenster die erforderlichen Daten eingeben: <br />
+Rechnername: eben ermittelte IP-Adresse <br />
+Portnummer: 22 <br />
+Benutzername: freetz <br /> 
+Kennwort: freetz <br /> 
+Protokoll: SFTP<br />
+<br />
+Nach erfolgreicher Verbindung navigiert man in einer NC-artigen Ansicht zum entsprechenden /images Verzeichnis und kopiert sich die Firmware mit <strong>F5 Kopieren</strong>.
+<br />
+<br />
+Nach erfolgreicher Verbindung navigiert man in einer NC-artigen Ansicht zum entsprechenden /images Verzeichnis und kopiert sich die Firmware mit <strong>F5 Kopieren</strong>.
+<br />
+<br />
+</p>
+<blockquote>
+<p>
+<strong>c.) Using a mapped network drive:</strong> <br />
+</p>
+</blockquote>
+<p>
+Freetz-linux has samba configured by default, which allows you to map the freetz-linux drive as a network drive in Windows.
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/275?format=raw" title="Map freetz-linux as netwrok drive"><img src="http://freetz.org/screenshots/275?width=409&amp;format=raw&amp;height=325" alt="Map freetz-linux as netwrok drive" /></a><span class="description" style="width: 411px;">Map freetz-linux as netwrok drive</span></span></span>
+For username and password: freetz/freetz
+<br />
+</p>
+<h3 id="WiekannmaneinegefreetzteFritzboxupdaten">Wie kann man eine gefreetzte Fritzbox updaten</h3>
+<p>
+Eine genaue Beschreibung und alles was ihr wissen müßt zu diesem Thema steht in den <a class="wiki" href="../../../../FAQ.html">FAQ</a>'s
+</p>
+<h3 id="EinigeProgrammehabenähnlicheFunktionenwelchesindperformanter">Einige Programme haben ähnliche Funktionen, welche sind performanter?</h3>
+<blockquote>
+<p>
+FTP: bftpd ist nicht zu empfehlen wenn Wert auf hohen Datendurchsatz gelegt wird da man damit nur in etwa die Hälft der möglichen Leistung erreicht. Vsftpd wird von sehr vielen benutzt und wird daher empfohlen <br />
+WWW: Wer Webseiten auf seiner Box hostet sollte vom Apache Abstand nehmen wenn es in Richtung Produktivsystem geht. Lighttpd stellt eine gute Alternative dar. <br />
+Webfilter: Oft wird gefragt ob man Privoxy zum Seitenfiltern nutzen kann. Die Antwort ist ja, die bisherige Empfehlung war das aber eher zu vermeiden und stattdessen Iptables zu nutzen weil sonst das gesamte Internet langsamer läuft. <br />
+</p>
+</blockquote>
+<p>
+<br />
+<br />
+</p>
+<h2 id="Linux-BefehleZielgruppeNewbies">Linux-Befehle (Zielgruppe Newbies)</h2>
+<h3 id="allgemeineLinux-Befehle">allgemeine Linux-Befehle</h3>
+<p>
+Einen Grundsatz an Linux-Befehlen findet Ihr:<br /> <br />  a.)<a class="ext-link" href="http://www.linux-fuer-alle.de/doc_show.php?docid=33"><span class="icon">​</span>Link 1</a> <br /> b.)<a class="ext-link" href="http://www.larsrichter-online.de/lmember/linuxbefehle.php"><span class="icon">​</span>Link 2</a> <br />
+</p>
+<h3 id="DerviEditor">Der vi Editor</h3>
+<p>
+<br /> <strong>Vi</strong> ist ein Texteditor in der Freetz/Linux-Umgebung. Mit diesem können Dateien und Skripte bearbeitet werden. <br /> Dieses Möglichkeit sollte aber von Newbies <strong>nur nach Anweisung oder in Zusammenarbeit mit einem erfahrenen Freetz-Nutzer/Linux-Profi</strong> genutzt werden, da es sehr einfach ist die Box mit <strong>vi nicht mehr erreichbar zu machen</strong>. Für die Konfigurationsdateien im Flash der FritzBox muss das Skript nvi genutzt werden, da man diese Dateien nicht direkt mit vi bearbeiten kann. Mit <strong>nvi</strong> geht es noch schneller die Box lahm zu legen! <strong>nvi</strong> überschreibt auch, wenn man nichts geändert hat. <br /> <br /> 
+a.) <a class="ext-link" href="http://www.my-space.li/schule/editor_VI.pdf"><span class="icon">​</span>Kurzanleitung Editor "vi"</a><br />
+b.) <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?p=313356"><span class="icon">​</span>Hilfe aus dem IPPF</a> <br /> 
+c.) <a class="ext-link" href="http://www.jux-net.info/jux2/docs/sys100/comm_13.html"><span class="icon">​</span>weitere Homepage</a><br />
+</p>
+</div>
+          
+          <div class="trac-modifiedby">
+            <span><a href="other%3Faction=diff&amp;version=44.html" title="Version 44 von gismotro">zuletzt geändert</a> <a class="timeline" href="http://freetz.org/timeline?from=2014-07-06T16%3A32%3A39Z&amp;precision=second" title="Siehe Journal am 06.07.2014 16:32:39">vor 4 Jahren</a></span>
+            <span class="trac-print">Zuletzt geändert am 06.07.2014 16:32:39</span>
+          </div>
+        
+        
+      </div>
+      
+    <div id="attachments">
+        <h3 class="foldable">Anhänge <span class="trac-count">(2)</span></h3>
+        <div>
+          <ul>
+              <li>
+    <a href="http://freetz.org/attachment/wiki/help/howtos/common/newbie/other/user.sh" title="Anhang ansehen">user.sh</a><a href="http://freetz.org/raw-attachment/wiki/help/howtos/common/newbie/other/user.sh" class="trac-rawlink" title="Download">​</a>
+       (<span title="392 Byte">392 Byte</span>) -
+      hinzugefügt von <em>oliver</em> <a class="timeline" href="http://freetz.org/timeline?from=2010-08-21T16%3A49%3A16Z&amp;precision=second" title="Siehe Journal am 21.08.2010 16:49:16">vor 8 Jahren</a>.
+              </li>
+              <li>
+    <a href="http://freetz.org/attachment/wiki/help/howtos/common/newbie/other/vsftpd.zip" title="Anhang ansehen">vsftpd.zip</a><a href="http://freetz.org/raw-attachment/wiki/help/howtos/common/newbie/other/vsftpd.zip" class="trac-rawlink" title="Download">​</a>
+       (<span title="1026 Byte">1.0 KB</span>) -
+      hinzugefügt von <em>gismotro</em> <a class="timeline" href="http://freetz.org/timeline?from=2013-04-22T13%3A03%3A19Z&amp;precision=second" title="Siehe Journal am 22.04.2013 13:03:19">vor 5 Jahren</a>.
+                <q>User Dateien für VSFTPD</q>
+              </li>
+          </ul>
+          <p>
+            Alle Anhänge herunterladen als: <a rel="nofollow" href="http://freetz.org/zip-attachment/wiki/help/howtos/common/newbie/other/">.zip</a>
+          </p>
+        </div>
+    </div>
+
+    </div>
+    <script type="text/javascript">
+        jQuery.loadStyleSheet("/chrome/screenshots/css/screenshots.css", "text/css");
+    </script>
+    <div id="altlinks">
+      <h3>In anderen Formaten herunterladen:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="other%3Fformat=txt">Reiner Text</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" lang="en" xml:lang="en"><hr />
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="../../../../../chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
+      <p class="left">Betrieben mit <a href="http://freetz.org/about"><strong>Trac 1.0.1</strong></a><br />
+        von <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right"><div class="field" align="right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations"/><input type="hidden" name="business" value="spenden@freetz.org"/><input type="hidden" name="item_name" value="Freetz Entwickler-Team"/><input type="hidden" name="no_shipping" value="1"/><input type="hidden" name="return" value="http://freetz.org"/><input type="hidden" name="cn" value="Name oder IPPF-Pseudonym"/><input type="hidden" name="currency_code" value="EUR"/><input type="hidden" name="tax" value="0"/><input type="hidden" name="lc" value="DE"/><input type="hidden" name="bn" value="PP-DonationsBF"/><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Zahlen Sie mit PayPal - schnell, kostenlos und sicher!"/><img alt="" border="0" src="http://freetz.org/pixel.gif" width="1" height="1"/></form></div></p>
+    </div>
+  </body>
+</html>

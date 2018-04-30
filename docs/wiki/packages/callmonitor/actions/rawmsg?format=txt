@@ -1,0 +1,18 @@
+= Einfache TCP-Verbindungen (rawmsg) =
+
+{{{
+  Usage: rawmsg [OPTION]... <HOST> <template> [<param>]...
+         rawmsg [OPTION]... -t <template> <host> [<param>]...
+  Send a message over a plain TCP connection.
+  
+    -t, --template=FORMAT  use this printf-style template to build the message,
+                           all following parameters are filled in
+    -d, --default=CODE     default for first parameter (eval'ed later)
+    -p, --port=PORT        use a special target port (default 80)
+    -w, --timeout=SECONDS  set connect timeout (default 3)
+        --help             show this help
+}}}
+
+----
+
+<!> Die '''folgenden Funktionen basieren''' auf {{{rawmsg}}} und unterstützen daher dieselben Optionen. Passend für den entsprechenden Empfänger sind URL-Template ({{{-t}}}), die Standard-Nachricht ({{{-d}}}) und der Port ({{{-p}}}) schon vorbelegt.

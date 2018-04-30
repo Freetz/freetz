@@ -1,0 +1,19 @@
+[[TOC(heading=Inhaltsverzeichnis)]]
+
+= Execute autorun.sh/autoend.sh script on (un)mount =
+
+Diese Funktion kann recht praktisch sein - birgt jedoch auch ihre Tücken: Hat man "Automount" aktiviert, werden z.B. neu angesteckte USB-Sticks automatisch eingebunden (Fachjargon: "gemountet"), und stehen somit sofort zur Verfügung. Erlaubt man jetzt auch noch "Autorun", wird eine im Wurzelverzeichnis des Sticks (also /var/media/ftp/uStorXY/) befindliche {{{autorun.sh}}} anschließend auch ohne Rückfrage ausgeführt (sowie {{{autoend.sh}}} beim Auswerfen des Sticks über das AVM WebIF).
+ 
+ /!\ Falls ein Dateisystem mit Berechtigungen genutzt wird, müssen die Dateien ausführbar gemacht werden.
+
+Diese Vor- und Nachteile sollten vor der Entscheidung abgewogen werden:
+
+== Vorteile ==
+ * zusätzliche Module können durch einfaches Einstecken des Sticks geladen werden
+ * Aktionen können ausgelöst werden - z.B. bei Einstecken eines Sticks mit MP3 Dateien den MediaServer informieren, o.ä.
+
+== Nachteile ==
+ * /!\ ein "böser Bube" könnte auf diese Weise in die Box eindringen, ohne das Passwort zu kennen - sofern er "physischen Zugang" hat (also ein USB-Gerät an die Box anschließen, bzw. ein für diesen Zweck ständig verwendetes Medium modifizieren kann)
+
+= Hinweis =
+Dieser Patch ist in [wiki:patches/freetzmount Freetzmount] eingeflossen. Hier können die Einstellungen dazu im Webinterface vorgenommen werden.

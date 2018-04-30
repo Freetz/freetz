@@ -1,0 +1,19 @@
+= JamVM =
+
+'''[http://jamvm.sourceforge.net/ JamVM]''' ist eine neue [http://en.wikipedia.org/wiki/Java_Virtual_Machine Java Virtual Machine], die der JVM Spezifikation Version 2 (blue book) entspricht. Im [http://bugblogger.com/java-vms-compared-160/ Vergleich mit den meisten anderen VM's] (frei und kommerziell) ist ''JamVM'' extrem klein ("stripped executables" für PowerPC nur ~160K, und für Intel 140K). Dennoch unterstützt es, anders als andere "kleine" VMs (z.B. KVM) die vollständige Spezifikation, und enthält Support für "object finalisation", Soft/Weak/Phantom Referenzen, class-unloading, das [http://de.wikipedia.org/wiki/Java_Native_Interface Java Native Interface] (JNI) und die Reflection API.
+
+JamVM nutzt die [http://de.wikipedia.org/wiki/GNU_Classpath GNU Classpath] Java Class Library. Eine Reihe von Klassen sind Referenz-Klassen, die für eine spezielle VM angepasst werden müssen. Diese werden zusammen mit ''JamVM'' gebündelt.
+
+/!\ '''Anmerkung:''' ''JamVM'' wird nicht mit der Class Library von Suns oder IBMs JVMs funktionieren.
+
+Da die normale Klassenbiliothek (glibj.zip) über 9 MB groß ist wird standardmäßig nur eine reduzierte Version (mini.jar) installiert. Deshalb muss jamvm folgendermaßen aufgerufen werden um z.B. die Datei Hello.class im aktuellen Verzeichnis aufzurufen:
+{{{
+
+jamvm -Xbootclasspath/a:/usr/share/classpath/mini.jar Hello
+}}}
+
+== Weiterführende Links ==
+ * [http://jamvm.sourceforge.net/ JavaVM Homepage]
+ * [http://bugblogger.com/java-vms-compared-160/ Vergleich verschiedener JVMs]
+ * [http://en.wikipedia.org/wiki/List_of_Java_virtual_machines List of JVMs]
+ * [http://en.wikipedia.org/wiki/Free_Java_implementations freie Java Implementierungen]

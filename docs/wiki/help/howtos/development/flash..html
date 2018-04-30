@@ -1,0 +1,296 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+  
+
+
+  <head>
+    <title>
+      help/howtos/development/flash – Freetz
+    </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!--[if IE]><script type="text/javascript">
+      if (/^#__msie303:/.test(window.location.hash))
+        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
+    </script><![endif]-->
+        <link rel="search" href="http://freetz.org/search" />
+        <link rel="help" href="../../../TracGuide.html" />
+        <link rel="alternate" href="flash%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
+        <link rel="up" href="../development.html" title="Übergeordnete Wiki-Seite anzeigen" />
+        <link rel="start" href="http://freetz.org/wiki" />
+        <link rel="stylesheet" href="../../../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
+        <link rel="shortcut icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+      <link type="application/opensearchdescription+xml" rel="search" href="http://freetz.org/search/opensearch" title="Freetz durchsuchen" />
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/jquery.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/babel.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/messages/de.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/trac.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/search.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/folding.js"></script>
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
+        $("#content").find(".wikianchor").each(function() {
+          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
+        });
+        $(".foldable").enableFolding(true, true);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://freetz.org/wiki"><img src="../../../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
+      </div>
+      <form id="search" action="http://freetz.org/search" method="get">
+        <div>
+          <label for="proj-search">Suche:</label>
+          <input type="text" id="proj-search" name="q" size="18" value="" />
+          <input type="submit" value="Suche" />
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="http://freetz.org/login">Anmelden</a></li><li><a href="http://freetz.org/prefs">Einstellungen</a></li><li><a href="../../../TracGuide.html">Hilfe/Anleitung</a></li><li><a href="http://freetz.org/about">Über Trac</a></li><li><a href="http://freetz.org/notification" title="Wiki Pages Change Notifications">My Notifications</a></li><li><a href="http://freetz.org/register">Registrieren</a></li><li class="last"><a href="../../../Impressum.html">Impressum</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first active"><a href="http://freetz.org/wiki">Wiki</a></li><li><a href="http://freetz.org/timeline">Journal</a></li><li><a href="http://freetz.org/roadmap">Projektplan</a></li><li><a href="http://freetz.org/browser">Quellen durchsehen</a></li><li><a href="http://freetz.org/report">Tickets anzeigen</a></li><li><a href="http://freetz.org/search">Suche</a></li><li><a href="http://freetz.org/tags">Tags</a></li><li><a href="http://freetz.org/downloads">Downloads</a></li><li class="last"><a href="http://freetz.org/screenshots">Bildschirmfotos</a></li>
+    </ul>
+  </div>
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="flash..html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="http://freetz.org/wiki/help/howtos/development/flash.en" title="(not available)">English</a></li></ul></div><div id="main">
+      <div id="pagepath" class="noprint">
+  <a class="pathentry first" title="Zeige WikiStart an" href="http://freetz.org/wiki">Wiki:</a><a class="pathentry" href="../../../help.html" title="Zeige help an">help</a><span class="pathentry sep">/</span><a class="pathentry" href="../../howtos.html" title="Zeige help/howtos an">howtos</a><span class="pathentry sep">/</span><a class="pathentry" href="../development.html" title="Zeige help/howtos/development an">development</a><span class="pathentry sep">/</span><a class="pathentry" href="flash.html" title="Zeige help/howtos/development/flash an">flash</a>
+</div>
+      <div id="ctxtnav" class="nav">
+        <h2>Kontext-Navigation</h2>
+        <ul>
+          <li class="first"><a href="../development.html">Aufwärts</a></li><li><a href="../../../WikiStart.html">Startseite</a></li><li><a href="../../../TitleIndex.html">Inhaltsverzeichnis</a></li><li><a href="flash%3Faction=history.html">Änderungshistorie</a></li><li class="last"><a href="http://freetz.org/notification/help/howtos/development/flash." title="Watch Page">Watch Page</a></li>
+        </ul>
+        <hr />
+      </div>
+    <div id="content" class="wiki">
+      <div class="wikipage searchable">
+        
+          <div id="wikipage" class="trac-content"><p>
+</p><div class="wiki-toc"><h4>Howtos: Entwicklung</h4><ol><li><a href="repack_fw.html#EntpackenundPackenvonFirmware-Images">Entpacken und Packen von Firmware-Images</a><ol><li><a href="repack_fw.html#ToolsundSyntax">Tools und Syntax</a></li><li><a href="repack_fw.html#Vorgehensweise">Vorgehensweise</a></li><li><a href="repack_fw.html#Verwendungvonfwmodimnofreetz-Modus">Verwendung von fwmod im "no freetz"-Modus</a></li></ol></li><li><a href="integrate_patches.html#PatchesinFreetzeinspielen">Patches in Freetz einspielen</a></li><li><a href="developer_information/package_development_start/example_3.html#Example3:NZBGet">Example 3: NZBGet</a><ol><li><a href="developer_information/package_development_start/example_3.html#Buildmanually">Build manually</a></li><li><a href="developer_information/package_development_start/example_3.html#AddpackagetoFreetz">Add package to Freetz</a></li><li><a href="developer_information/package_development_start/example_3.html#Createnewimagewithaddedpackage">Create new image with added package</a></li><li><a href="developer_information/package_development_start/example_3.html#Testing">Testing</a></li><li><a href="developer_information/package_development_start/example_3.html#PreparingNewPackageforPublicIntegrationtoFreetzTrunk">Preparing New Package for Public Integration to Freetz Trunk</a></li></ol></li><li><a href="developer_information/package_development_start/example_2.html#Example2:par2cmdline">Example 2: par2cmdline</a><ol><li><a href="developer_information/package_development_start/example_2.html#Buildmanually">Build manually</a></li><li><a href="developer_information/package_development_start/example_2.html#AddpackagetoFreetz">Add package to Freetz</a></li><li><a href="developer_information/package_development_start/example_2.html#Createnewimagewithaddedpackage">Create new image with added package</a></li><li><a href="developer_information/package_development_start/example_2.html#Testing">Testing</a></li><li><a href="developer_information/package_development_start/example_2.html#PreparingNewPackageforPublicIntegrationtoFreetzTrunk">Preparing New Package for Public Integration to Freetz Trunk</a></li></ol></li><li><a href="developer_information/package_development_start/example_1.html#Example1:Httptunnel">Example 1: Httptunnel</a><ol><li><a href="developer_information/package_development_start/example_1.html#Buildmanually">Build manually</a></li><li><a href="developer_information/package_development_start/example_1.html#AddpackagetoFreetz">Add package to Freetz</a></li><li><a href="developer_information/package_development_start/example_1.html#CallProceduresmakemenuconfigandmake">Call Procedures "make menuconfig" and "make"</a></li><li><a href="developer_information/package_development_start/example_1.html#Testing">Testing</a></li><li><a href="developer_information/package_development_start/example_1.html#PreparingNewPackageforPublicIntegrationtoFreetzTrunk">Preparing New Package for Public Integration to Freetz Trunk</a></li></ol></li><li><ol><li><a href="sign_image.html#SignierenvonFirmware">Signieren von Firmware</a></li><li><a href="sign_image.html#KonkreteAnwendunginFreetz">Konkrete Anwendung in Freetz</a></li></ol></li><li><a href="firmware_update_details.html#AblaufeinesFirmware-Updates">Ablauf eines Firmware-Updates</a></li><li><a href="compile_own_progs.html#EigeneProgrammekompilieren">Eigene Programme kompilieren</a></li><li><a href="bandwidth_svg.html#DynamischeBandbreitenanzeigeperSVG">Dynamische Bandbreitenanzeige per SVG</a><ol><li><a href="bandwidth_svg.html#AnleitungzurTest-Installation">Anleitung zur Test-Installation</a></li></ol></li><li><a href="make_room.html#PlatzsparenimDateisystemderFritzBox">Platz sparen im Dateisystem der FritzBox</a><ol><li><a href="make_room.html#VorwortundMotivation">Vorwort und Motivation</a></li><li><a href="make_room.html#Bestandsaufnahme:WosteckendiePlatzfresser">Bestandsaufnahme: Wo stecken die Platzfresser?</a></li><li><a href="make_room.html#WeitereSpartricks">Weitere Spartricks</a></li><li><a href="make_room.html#Schlußwort">Schlußwort</a></li></ol></li><li><a href="save_mtd_1.html#Flash-PartitionenimlaufendenBetriebsichern">Flash-Partitionen im laufenden Betrieb sichern</a><ol><li><a href="save_mtd_1.html#Motivation">Motivation</a></li><li><a href="save_mtd_1.html#Voraussetzungen">Voraussetzungen</a></li><li><a href="save_mtd_1.html#Lösungsweg">Lösungsweg</a></li><li><a href="save_mtd_1.html#WegesichschnelleinenÜberblickzuverschaffen">Wege, sich schnell einen Überblick zu verschaffen</a></li><li><a href="save_mtd_1.html#Zusammenfassung">Zusammenfassung</a></li></ol></li><li><a href="release_management.html#ReleaseManagement">Release Management</a><ol><li><a href="release_management.html#SubversionRepository">Subversion Repository</a></li><li><a href="release_management.html#Checklists">Checklists</a></li><li><a href="release_management.html#GIT">GIT</a></li><li><a href="release_management.html#Downloads">Downloads</a></li><li><a href="release_management.html#References">References</a></li></ol></li><li><a href="developer_information/package_development_start.html#Firststeps-Howtostartyourfirstfreetzpackage">First steps - How to start your first freetz package</a><ol><li><a href="developer_information/package_development_start.html#Info">Info</a></li><li><a href="developer_information/package_development_start.html#BuildEnvironment">Build Environment</a></li><li><a href="developer_information/package_development_start.html#FileStructure">File Structure</a></li><li><a href="developer_information/package_development_start.html#ExamplesBinaryPackage">Examples Binary Package</a></li><li><a href="developer_information/package_development_start.html#ConfigurationHandling">Configuration Handling</a></li><li><a href="developer_information/package_development_start.html#ExamplesWeb-Interface">Examples Web-Interface</a></li><li><a href="developer_information/package_development_start.html#Troubleshooting">Trouble shooting</a></li></ol></li><li><a href="make_kernel.html#Kernelkonfigurierenundkompilieren">Kernel konfigurieren und kompilieren</a></li><li><a href="menuconfig.html#Menükonfigurationpflegen">Menükonfiguration pflegen</a><ol><li><a href="menuconfig.html#Einstieg">Einstieg</a></li><li><a href="menuconfig.html#Beispiel-KonfigurationfüreinneuesPaket">Beispiel-Konfiguration für ein neues Paket</a></li><li><a href="menuconfig.html#Menuconfig-Warnungenbeheben">Menuconfig-Warnungen beheben</a></li><li><a href="menuconfig.html#ErklärungundAnwendungdererweitertenMK-Targets">Erklärung und Anwendung der erweiterten MK-Targets</a></li><li><a href="menuconfig.html#Syntax-FehlerinMK-Dateienfinden">Syntax-Fehler in MK-Dateien finden</a></li><li><a href="menuconfig.html#Syntax-HervorhebungfürMK-Dateien">Syntax-Hervorhebung für MK-Dateien</a></li></ol></li><li><a href="adam2.html#ADAM2-Bootloader">ADAM2-Bootloader</a><ol><li><a href="adam2.html#Bootloader-Backupanlegen">Bootloader-Backup anlegen</a></li><li><a href="adam2.html#Bootloaderüberschreiben">Bootloader überschreiben</a></li><li><a href="adam2.html#Bootloader-Befehle">Bootloader-Befehle</a></li><li><a href="adam2.html#Bootloader-Quelltext">Bootloader-Quelltext</a></li><li><a href="adam2.html#AufbaudesBootloaders">Aufbau des Bootloaders</a></li><li><a href="adam2.html#BootloaderundFreetz">Bootloader und Freetz</a></li></ol></li><li><a href="urlader_flags.html#EinstellungenspeichernimUrlader-Environment">Einstellungen speichern im Urlader-Environment</a><ol><li><a href="urlader_flags.html#VorwortundMotivation">Vorwort und Motivation</a></li><li><a href="urlader_flags.html#Lösungsmöglichkeiten">Lösungsmöglichkeiten</a></li><li><a href="urlader_flags.html#BootloaderEnvironment">Bootloader Environment</a></li><li><a href="urlader_flags.html#Variablekernel_args">Variable "kernel_args"</a></li><li><a href="urlader_flags.html#Kernel_Args-API">Kernel_Args-API</a></li><li><a href="urlader_flags.html#MöglicheAnwendungsfälle">Mögliche Anwendungsfälle</a></li></ol></li><li><a href="make_busybox.html#Busyboxkonfigurierenundkompilieren">Busybox konfigurieren und kompilieren</a></li><li><a href="package_creation.html#WiebaueicheineigenesPaketfürFreetz">Wie baue ich ein eigenes Paket für Freetz?</a></li><li><a href="analyse_image_names.html#Firmware-Image-Namenanalysierenundinterpretieren">Firmware-Image-Namen analysieren und interpretieren</a><ol><li><a href="analyse_image_names.html#Einleitung">Einleitung</a></li><li><a href="analyse_image_names.html#Skript-Code">Skript-Code</a></li><li><a href="analyse_image_names.html#DatenimRohformat">Daten im Rohformat</a></li><li><a href="analyse_image_names.html#AusgabegrundlegenderInformationen">Ausgabe grundlegender Informationen</a></li><li><a href="analyse_image_names.html#AusgabeerweiterterInformationen">Ausgabe erweiterter Informationen</a></li></ol></li><li><ol><li><a href="developer_information/package_development_start/webinterface_example_1.html#Web-interfaceHTTPTunnel">Web-interface HTTPTunnel</a></li></ol></li><li><a href="developer_information.html#DeveloperInformation">Developer Information</a></li><li><a href="install_addon.html#AddonPaketinstallieren">Addon Paket installieren</a></li><li><a href="developer_information/package_development_dynamic.html#PaketverwaltungfürFreetz">Paketverwaltung für Freetz</a><ol><li><a href="developer_information/package_development_dynamic.html#ErweiterungdesDateisystems">Erweiterung des Dateisystems</a></li><li><a href="developer_information/package_development_dynamic.html#Paketverwaltung">Paketverwaltung</a></li><li><a href="developer_information/package_development_dynamic.html#Links">Links</a></li><li><a href="developer_information/package_development_dynamic.html#Kommentare">Kommentare</a></li></ol></li><li><a href="manipulation_detection.html#WiedieFritzBoxManipulationenerkennt">Wie die FritzBox Manipulationen erkennt</a><ol><li><a href="manipulation_detection.html#Ursachen">Ursachen</a></li><li><a href="manipulation_detection.html#Diagnose">Diagnose</a></li><li><a href="manipulation_detection.html#Lösungen">Lösungen</a></li><li><a href="manipulation_detection.html#SchlußwortundAusblick">Schlußwort und Ausblick</a></li></ol></li><li><a href="developer_information/shell_coding_conventions.html#ShellCodingConventions">Shell Coding Conventions</a><ol><li><a href="developer_information/shell_coding_conventions.html#ShellLanguage">Shell Language</a></li><li><a href="developer_information/shell_coding_conventions.html#BasicFormat">Basic Format</a></li><li><a href="developer_information/shell_coding_conventions.html#IfForandWhile">If, For, and While</a></li><li><a href="developer_information/shell_coding_conventions.html#TestBuilt-in">Test Built-in</a></li><li><a href="developer_information/shell_coding_conventions.html#Single-lineconditionalstatements">Single-line conditional statements</a></li><li><a href="developer_information/shell_coding_conventions.html#InfiniteLoops">Infinite Loops</a></li><li><a href="developer_information/shell_coding_conventions.html#ExitStatusandIfWhileStatements">Exit Status and If/While Statements</a></li><li><a href="developer_information/shell_coding_conventions.html#VariableReferences">Variable References</a></li><li><a href="developer_information/shell_coding_conventions.html#VariableNaming">Variable Naming</a></li><li><a href="developer_information/shell_coding_conventions.html#Quoting">Quoting</a></li><li><a href="developer_information/shell_coding_conventions.html#VariableAssignments">Variable Assignments</a></li><li><a href="developer_information/shell_coding_conventions.html#TestingforNon-EmptyStrings">Testing for (Non-)Empty Strings</a></li><li><a href="developer_information/shell_coding_conventions.html#Commenting">Commenting</a></li><li><a href="developer_information/shell_coding_conventions.html#Pathnames">Pathnames</a></li><li><a href="developer_information/shell_coding_conventions.html#InterpreterMagic">Interpreter Magic</a></li></ol></li><li><a href="developer_information/package_development.html#PackageDevelopment">Package Development</a><ol><li><a href="developer_information/package_development.html#PersistentPackageSettings">Persistent Package Settings</a></li></ol></li><li><a href="create_gui.html#ErstelleneinerGUIfürPaketeinFreetz">Erstellen einer GUI für Pakete in Freetz</a><ol><li><a href="create_gui.html#Motivation">Motivation</a></li><li><a href="create_gui.html#Grundlagen">Grundlagen</a></li><li><a href="create_gui.html#WiefunktioniertdasmitderGUI">Wie funktioniert das mit der GUI?</a></li></ol></li><li class="active"><a href="flash.html#FlashPartitionierung">Flash Partitionierung</a><ol><li class="active"><a href="flash.html#HiddenSquashFS">Hidden SquashFS</a></li><li class="active"><a href="flash.html#ContiguousSquashFS">Contiguous SquashFS</a></li><li class="active"><a href="flash.html#HiddenRoot">Hidden Root</a></li><li class="active"><a href="flash.html#NANDRoot">NAND Root</a></li><li class="active"><a href="flash.html#Dateisystem">Dateisystem</a></li><li class="active"><a href="flash.html#Kernel">Kernel</a></li><li class="active"><a href="flash.html#Weblinks">Weblinks</a></li></ol></li><li><a href="developer_information/post_commit_hook.html#TracHooks">Trac Hooks</a><ol><li><a href="developer_information/post_commit_hook.html#trac-post-commit-hook">trac-post-commit-hook</a></li><li><a href="developer_information/post_commit_hook.html#trac-post-revprop-change-hook">trac-post-revprop-change-hook</a></li></ol></li><li><a href="developer_information/package_development_advanced.html#PackageDeveloping-AdvancedTopics">Package Developing - Advanced Topics</a><ol><li><a href="developer_information/package_development_advanced.html#Addingconditionalpatches">Adding conditional patches</a></li><li><a href="developer_information/package_development_advanced.html#Addingmulti-binarypackages">Adding multi-binary packages</a></li></ol></li><li><a href="integrate_own_files.html#EigeneDateienindieFirmwareintegrieren">Eigene Dateien in die Firmware integrieren</a><ol><li><a href="integrate_own_files.html#FesteIntegrationüberdasFreetzImage">Feste Integration über das Freetz Image</a></li><li><a href="integrate_own_files.html#ErzeugenderDateienausderdebug.cfg">Erzeugen der Dateien aus der debug.cfg</a></li><li><a href="integrate_own_files.html#NachladenvomWebserver">Nachladen vom Webserver</a></li><li><a href="integrate_own_files.html#NachladenvomUSB-Stick">Nachladen vom USB-Stick</a></li><li><a href="integrate_own_files.html#WebDAVSharemounten">WebDAV Share mounten</a></li><li><a href="integrate_own_files.html#NFS-Sharemounten">NFS-Share mounten</a></li></ol></li><li><a href="freetz_make.html#FreetzBuild-Prozeß">Freetz Build-Prozeß</a><ol><li><a href="freetz_make.html#VorwortundMotivation">Vorwort und Motivation</a></li><li><a href="freetz_make.html#Grundsätzliches">Grundsätzliches</a></li></ol></li><li><a href="save_mtd_2.html#Flash-PartitionenvonaußenmitFTPsichern">Flash-Partitionen von außen mit FTP sichern</a><ol><li><a href="save_mtd_2.html#Motivation">Motivation</a></li><li><a href="save_mtd_2.html#Voraussetzungen">Voraussetzungen</a></li><li><a href="save_mtd_2.html#AllgemeineInformationenzurDatensicherung">Allgemeine Informationen zur Datensicherung</a></li><li><a href="save_mtd_2.html#SicherungmitLinux-Standard-FTPftp">Sicherung mit Linux-Standard-FTP (ftp)</a></li><li><a href="save_mtd_2.html#SicherungmitLinux-NcFTPncftpget">Sicherung mit Linux-NcFTP (ncftpget)</a></li><li><a href="save_mtd_2.html#SicherungmitCygwin-NcFTPncftpget">Sicherung mit Cygwin-NcFTP (ncftpget)</a></li><li><a href="save_mtd_2.html#UploadsviaFTP">Uploads via FTP</a></li></ol></li><li><a href="developer_information/webif/libmodcgi.html#libmodcgi.sh">libmodcgi.sh</a><ol><li><a href="developer_information/webif/libmodcgi.html#cgi">cgi</a></li><li><a href="developer_information/webif/libmodcgi.html#cgi_begin">cgi_begin</a></li><li><a href="developer_information/webif/libmodcgi.html#cgi_end">cgi_end</a></li><li><a href="developer_information/webif/libmodcgi.html#sec_begin">sec_begin</a></li><li><a href="developer_information/webif/libmodcgi.html#sec_end">sec_end</a></li><li><a href="developer_information/webif/libmodcgi.html#html">html</a></li><li><a href="developer_information/webif/libmodcgi.html#checkselect">check, select</a></li><li><a href="developer_information/webif/libmodcgi.html#href">href</a></li><li><a href="developer_information/webif/libmodcgi.html#back_button">back_button</a></li><li><a href="developer_information/webif/libmodcgi.html#sec_level">sec_level</a></li><li><a href="developer_information/webif/libmodcgi.html#stat_bar">stat_bar</a></li><li><a href="developer_information/webif/libmodcgi.html#cgi_param">cgi_param</a></li><li><a href="developer_information/webif/libmodcgi.html#cgi_errorprint_error">cgi_error, print_error</a></li><li><a href="developer_information/webif/libmodcgi.html#path_info">path_info</a></li><li><a href="developer_information/webif/libmodcgi.html#valid">valid</a></li></ol></li><li><a href="create_cross-compiler_toolchain.html#Cross-CompilerToolchainerstellen">Cross-Compiler / Toolchain erstellen</a></li><li><a href="create_cross-compiler_toolchain.html#EigeneDownload-Toolchainerstellen">Eigene Download-Toolchain erstellen</a></li><li><a href="create_cross-compiler_toolchain.html#TargetNative-Compiler-Toolchainerstellen">Target/Native-Compiler-Toolchain erstellen</a><ol><li><a href="create_cross-compiler_toolchain.html#Usingthedev-toolspackagetoinstallcompilerandtools">Using the dev-tools package to install compiler and tools</a></li></ol></li></ol></div><p>
+</p>
+<h1 id="FlashPartitionierung">Flash Partitionierung</h1>
+<p>
+Im Flash der Fritzbox befinden sich bei jedem Modell folgende funktionale Einheiten:
+</p>
+<ul><li>Bootloader: <a class="wiki" href="adam2.html">ADAM2</a> / EVA (+ Werkseinstellungen)
+</li><li>Kernel: Linux 2.4.17_mvl21-malta-mips_fp_le, 2.6.13.1-ar7/ohio oder höher <em>(gzip oder lzma komprimiert)</em>
+</li><li>Dateisystem: <a class="ext-link" href="http://de.wikipedia.org/wiki/Squashfs"><span class="icon">​</span>SquashFS</a> <em>(gzip oder lzma)</em> oder <a class="ext-link" href="http://de.wikipedia.org/wiki/YAFFS2"><span class="icon">​</span>YAFFS2</a>
+</li><li>Konfigurations-Dateien + Environment: TFFS
+</li></ul><p>
+Bei der Flash Einteilung der Fritzboxen entstanden über die Jahre einige "Geschmacksrichtungen". Das Grundkonzept entspringt TI und deren ADAM2 Bootloader, der die Partitionstabellen verwaltet. Unabhängig von der Reihenfolge im Speicher wurde festgelegt dass <tt>mtd0</tt> das root Dateisystem enthalten soll, <tt>mtd1</tt> das Kernel, <tt>mtd2</tt> ADAM2 selbst und <tt>mtd3</tt> die Konfiguration. Letztere muss häufig geschrieben werden und trotzdem fehlerfrei sein und nutzt dabei das Flash ab. Um dies sicherer zu gestalten entwickelte AVM das TFFS, das durch doppelte "Pufferung" zwei gleich grosse Partitionen <tt>mtd3</tt> und <tt>mtd4</tt> benötigt.
+</p>
+<p>
+ADAM2 bzw später AVM's funktionsgleicher Ersatz EVA wird ab Werk installiert und wurde nur in eher seltenen Sonderfällen aktualisiert. Ein Firmware Update aktualisiert dagegen immer Kernel und root Dateisystem, beim ursprünglichen Konzept mit den enthaltenen Dateien <tt>filesystem.image</tt> für <tt>mtd0</tt> und <tt>kernel.image</tt> für <tt>mtd1</tt>. 
+</p>
+<p>
+Uber die Jahre stellte sich heraus dass der Platzbedarf für Kernel und Dateisystem kaum dauerhaft vorhersagbar ist und dass die Partitionierung gar eine Hürde wurde da beide Komponenten verschieden stark wuchsen. Es entstanden einige trickreiche Abwandelungen die diese Barriere aushebelten. Ab Kernel 2.6 verzichtete man dann ganz auf die Trennung um die Problematik zu umgehen. Bei neuen Modellen mit im Vergleich fast unbegrenztem NAND-Flash führte man die Trennung wieder ein.
+</p>
+<p>
+<strong>Achtung:</strong> Alle in diesem Artikel genannten mtd Nummern beziehen sich auf die im Environment gespeicherten Partitionstabellen. Die Nummern der im Linux erreichbaren mtd Devices werden vom Kernel vergeben und weichen oft von den ADAM2/EVA Numerierung ab!
+</p>
+<p>
+Um aus dem Linux heraus auf das Environment zugreifen zu können gibt es die ADAM2 API, die je nach Kernel Version an verschiedenen Stellen in /proc erreichbar ist.
+</p>
+<p>
+Um die Environment mtd Tabelle unter Kernel 2.4 zu lesen kann
+</p>
+<pre class="wiki">cat /proc/sys/dev/adam2/environment | grep mtd
+</pre><p>
+abgerufen werden. Ab Kernel 2.6 muss es so aussehen:
+</p>
+<pre class="wiki">cat /proc/sys/urlader/environment | grep mtd
+</pre><p>
+Die Liste aller Linux mtd Devices erhält man mit:
+</p>
+<pre class="wiki">cat /proc/mtd
+</pre><p>
+Da die Linux Partitionen von den MTD Treibern im Kernel ermittelt werden weichen Nummerierung und Größen teilweise erheblich von der Partitionierung im Environment ab.
+</p>
+<p>
+Im Folgenden werden alle verwendeten Partitionsschemata einzeln beleuchtet.
+</p>
+<h2 id="HiddenSquashFS">Hidden SquashFS</h2>
+<p>
+<span class="thumbnail-right"><span class="aux" style="width: 162px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/55?format=raw" title="Flash Legende"><img src="http://freetz.org/screenshots/55?width=160&amp;format=raw&amp;height=101" alt="Flash Legende" /></a><span class="description" style="width: 162px;">Flash Legende</span></span></span>
+Folgende Firmware verwendet Hidden SquashFS im NOR-Flash mit Kernel 2.4:
+</p>
+<ul><li>2 MB Flash
+<ul><li>Fritzbox SL (03.48 bis 03.73)
+</li><li>Fritzbox 2030 (03.73 bis 03.80)
+</li></ul></li><li>4 MB Flash
+<ul><li>Eumex 300 IP (alte)
+</li><li>Fritzbox (03.29 bis 4.02, auch int)
+</li><li>Fritzbox SL WLAN (03.65 bis 04.15)
+</li><li>Fritzbox WLAN 3030 (03.65 bis 04.15)
+</li><li>Fritzbox WLAN 3050 (03.63 bis 04.07)
+</li><li>Fritzbox Fon (03.37 bis 04.27, auch int)
+</li><li>Fritzbox Fon 5050 (03.69 bis 04.26)
+</li><li>Fritzbox Fon ATA (03.64 bis 04.28-Beta, auch int)
+</li><li>Fritzbox Fon WLAN (03.42 bis 04.27, auch int)
+</li><li>Fritzbox Fon WLAN 7050 (03.58 bis 4.01)
+</li></ul></li></ul><p>
+Das Hidden SquashFS beginnt direkt hinter dem Kernel (256 Byte Padding) und enthält vor allem Treiber. Es wird während des Bootvorgangs im Startskript <tt>rc.S</tt> gemounted. Der Kernel und das Hidden SquashFS befinden sich in <tt>kernel.image</tt>, das root Dateisystem in <tt>filesystem.image</tt>. Diese Technik wurde verwendet um proprietäre Binär-Module von TI vom root Dateisystem zu separieren. Das Hidden SquashFS enthält Dateien wie <tt>avalanche_cpmac.o</tt>, <tt>avalanche_usb.o</tt>, <tt>tiatm.o</tt> ohne jegliche Unterverzeichnisse und wird nach <tt>/lib/modules/2.4.17_mvl21-malta-mips_fp_le/kernel/hidden</tt> gemountet.
+</p>
+<p>
+<span class="thumbnail-left"><span class="aux" style="width: 805px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/56?format=raw" title="Flash Hidden Squashfs"><img src="http://freetz.org/screenshots/56?width=803&amp;format=raw&amp;height=145" alt="Flash Hidden Squashfs" /></a><span class="description" style="width: 805px;">Flash Hidden Squashfs</span></span></span>
+</p>
+<h2 id="ContiguousSquashFS">Contiguous SquashFS</h2>
+<p>
+<span class="thumbnail-right"><span class="aux" style="width: 162px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/55?format=raw" title="Flash Legende"><img src="http://freetz.org/screenshots/55?width=160&amp;format=raw&amp;height=101" alt="Flash Legende" /></a><span class="description" style="width: 162px;">Flash Legende</span></span></span>
+Folgende Firmware verwendet Contiguous SquashFS im NOR-Flash mit Kernel 2.4:
+</p>
+<ul><li>2 MB Flash
+<ul><li>Fritzbox SL (03.92 bis 03.94)
+</li><li>Fritzbox 2030 (03.92 bis 03.93)
+</li></ul></li><li>4 MB Flash
+<ul><li>Fritzbox Fon WLAN 7050 (04.03-Beta bis 04.26, auch int)
+</li></ul></li></ul><p>
+Beim Contiguous SquashFS fängt das root Dateisystem direkt nach dem Kernel an (256 Byte Padding). Da das root Dateisystem nun über <tt>mtd0</tt> und <tt>mtd1</tt> verteilt liegt, muss es im Firmware Update auch dementsprechend auf die Dateien <tt>kernel.image</tt> (Kernel + Anfang des root Dateisystems) und <tt>filesystem.image</tt> (Rest des root Dateisystems) aufgeteilt werden. Diese Technik wurde verwendet um ohne Umpartitionierung Platz für das wachsende root Dateisystem aus der Kernel Partition zu borgen.
+</p>
+<p>
+<span class="thumbnail-left"><span class="aux" style="width: 811px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/57?format=raw" title="Flash Contiguous"><img src="http://freetz.org/screenshots/57?width=809&amp;format=raw&amp;height=150" alt="Flash Contiguous" /></a><span class="description" style="width: 811px;">Flash Contiguous</span></span></span>
+</p>
+<h2 id="HiddenRoot">Hidden Root</h2>
+<p>
+<span class="thumbnail-right"><span class="aux" style="width: 162px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/55?format=raw" title="Flash Legende"><img src="http://freetz.org/screenshots/55?width=160&amp;format=raw&amp;height=101" alt="Flash Legende" /></a><span class="description" style="width: 162px;">Flash Legende</span></span></span>
+Folgende Firmware verwendet Hidden Root im NOR- oder Serial-Flash mit Kernel 2.6:
+</p>
+<ul><li>alle Firmware ab Kernel 2.6.13.1 die kein NAND Root nutzt
+</li></ul><p>
+Bei Hidden Root befindet sich das root Dateisystem &mdash; ähnlich wie bei <a class="wiki" href="flash.html#ContiguousSquashFS">Contiguous SquashFS</a> &mdash; direkt hinter dem Kernel (256 Byte Padding). Diese Boxen kann man daran erkennen, dass die Start- und End-Adresse von <tt>mtd0</tt> in der mtd Tabelle gleich 0 und die Datei <tt>filesystem.image</tt> im Firmware Update leer ist. <tt>kernel.image</tt> enthält sowohl den Kernel als auch das root Dateisystem. Diese Technik wurde verwendet um ohne Behinderung durch Partitionsgrenzen den vorhandenen Platz dynamisch zwischen Kernel und root Dateisystem aufzuteilen.
+</p>
+<p>
+<span class="thumbnail-left"><span class="aux" style="width: 808px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/58?format=raw" title="Flash Hidden Root"><img src="http://freetz.org/screenshots/58?width=806&amp;format=raw&amp;height=136" alt="Flash Hidden Root" /></a><span class="description" style="width: 808px;">Flash Hidden Root</span></span></span>
+</p>
+<h2 id="NANDRoot">NAND Root</h2>
+<p>
+<span class="thumbnail-right"><span class="aux" style="width: 162px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/55?format=raw" title="Flash Legende"><img src="http://freetz.org/screenshots/55?width=160&amp;format=raw&amp;height=101" alt="Flash Legende" /></a><span class="description" style="width: 162px;">Flash Legende</span></span></span>
+Folgende Modelle verwenden NAND Root mit Kernel 2.6:
+</p>
+<ul><li>Fritzbox 3272
+</li><li>Fritzbox 3370
+</li><li>Fritzbox 3390
+</li><li>Fritzbox 6840 LTE
+</li><li>Fritzbox 7272
+</li><li>Fritzbox 7362 SL
+</li><li>Fritzbox 7490
+</li></ul><p>
+Alle bisher genannten Partitionsschemata basieren auf parallelem oder seriellem NOR-Flash mit vorhersagbarem Speicherplatz. <a class="ext-link" href="https://de.wikipedia.org/wiki/NAND-Flash"><span class="icon">​</span>NAND-Flash</a> kann dagegen bereits ab Werk Fehler aufweisen und daher nur mit Fehlererkennungsmechanismen zuverlässig genutzt werden. Dies erfordert spezielle Controller oder Dateisysteme die Listen defekter Blöcke verwalten. Der Speicherplatz ist also nicht mehr zwingend durchgehend nutzbar und kann nicht mehr ohne Intelligenz geschrieben werden ohne die Liste defekter Blöcke zu zerstören (was sehr dumm wäre).
+</p>
+<p>
+Bei Modellen die NAND nur als Datenspeicher für den NAS nutzen (z.B. die 7390) ist das kein Problem. Dieser Speicher wird nur intelligent aus Linux heraus angesprochen und enthält normalerweise keine Systemteile. Alle Partitionen die über den Bootloader recovered werden liegen im NOR-Flash. 
+</p>
+<p>
+Modelle bei denen auch das System im NAND-Flash liegt haben nur noch ein kleines serielles NOR-Flash für den Bootloader <tt>mtd2</tt> und zwei TFFS Partitionen <tt>mtd3</tt> und <tt>mtd4</tt>. Alle weiteren Partitionen befinden sich im NAND-Flash. Da es bei NAND keinen Platzmangel gibt wurden je 2 Partitionen für Kernel und Dateisystem vorhesehen. Dies hat den Vorteil aus dem kaufenden System heraus aktualisieren zu können (hot flashable). Dabei werden die beiden jeweils nicht in Betrieb befindlichen Partitionen geschrieben, als aktiv markiert, und das System neugestartet. Beim nächsten Update wechselt der Vorgang wieder die aktiven Partitionen. Das Kernel befindet sich auf <tt>mtd1</tt>, das Dateisystem wieder getrennt auf <tt>mtd0</tt>. Welche beiden Partitionen damit gemeint sind definiert die EVA Variable <tt>linux_fs_start</tt>.
+</p>
+<p>
+<span class="thumbnail-left"><span class="aux" style="width: 952px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/277?format=raw" title=""><img src="http://freetz.org/screenshots/277?width=950&amp;format=raw&amp;height=184" alt="" /></a><span class="description" style="width: 952px;"></span></span></span>
+</p>
+<p>
+Um unabhängig vom verwendeten Dateisystem die Vorteile des effizient komprimierbaren SquashFS weiter nutzen zu können entschied sich AVM für ein interessantes Konzept. Auf die Filesystem-Partition wird ein minimales Wrapper-System installiert, das nur aus 190 inodes und dem eigentlichen System <tt>filesystem_core.squashfs</tt> besteht. Letzteres wird als Loop-Device als / gemountet. Dies benötigt natürlich mehr RAM-Speicher, hat aber zusätzlich den Vorteil schneller zu sein und das NAND-Flash erheblich weniger zu beanspruchen.
+</p>
+<p>
+Die beiden (sehr spartanischen) TFFS Partitionen im NOR-Flash dienen nur der Werkseinrichtung, EVA und der Recovery. Im Betrieb wird eine neue Config-Partition im NAND-Flash verwendet, die YAFFS2 zur Speicherung der Konfiguration nutzt.
+</p>
+<p>
+Diese "NAND Root" Modelle erforderten auch einen komplett überdachten Mechanismus zur Aktualisierung und zur Recovery.
+</p>
+<p>
+WIP
+</p>
+<h2 id="Dateisystem">Dateisystem</h2>
+<p>
+Grundsätzlich enthält jedes FRITZ!OS basierte Firmware-Image mindestens ein <a class="ext-link" href="http://de.wikipedia.org/wiki/Squashfs"><span class="icon">​</span>SquashFS</a> Dateisystem. Dieses ist nahezu immer lzma oder gzip komprimiert, selten auch unkomprimiert. Modelle mit Hidden SquashFS enthalten 2 Dateisysteme nebeneinander in der Firmware, bei Modellen mit NAND Root sind es 2 ineinander verschachtelte Dateisysteme.
+</p>
+<p>
+Ein SquashFS Image enthält einen immer unkomprimierten Superblock, der mit der Signatur <tt>sqsh</tt> für Big Endian oder <tt>hsqs</tt> für Little Endian anfängt. Diese Unterscheidung ist sehr wichtig, da alle weiteren Daten den jeweiligen Endian nutzen. Der Superblock kann mit jeder Variante mit <tt>unsquashfs -s</tt> gelesen werden. Leider gibt es viele Varianten von SquashFS, keinen globalen Standard und kein Werkzeug das für alle Varianten funktioniert. Auf der FRITZBox 3 SquashFS Generationen verwendet, Version 1 bis 3. Diese Versionsnummer wird im Superblock als <tt>versionmajor</tt> gespeichert. <tt>versionminor</tt> dient als Ersatz für das vergessene Feld zur Angabe der Kompressionsart. 0 und 1 bedeutet gzip Kompression die jedes Standard <tt>unsquashfs</tt> unterstützt - 76 ist bei der FRITZBox der häufigste Wert, der lzma Kompression symbolisiert. Da dies kein Standard ist baut Freetz <tt>tools/unsquashfs3-lzma</tt>. Um es nicht mit einer reinen Versionsnummer zu verwechseln hat sich sie Schreibweise mit ':' zur Trennumg von major/minor eingebürgert - z.B. <tt>3:76</tt>.
+</p>
+<p>
+Bei der Analyse von 1800 verschiedenen unmodifizierten Firmware-, Labor- und Recovery-Images ergab sich folgende Verteilung:
+</p>
+<ul><li>1:0 - SquashFS 1, gzip komprimiert - ca. 0,1%
+</li><li>2:0 - SquashFS 2, gzip komprimiert - ca. 0,5%
+</li><li>2:1 - SquashFS 2, gzip komprimiert - ca. 8%
+</li><li>2:76 - SquashFS 2, lzma komprimiert - ca. 23%
+</li><li>3:0 - SquashFS 3, gzip komprimiert - ca. 12,2%
+</li><li>3:76 - SquashFS 3, lzma komprimiert - ca. 56,5%
+</li></ul><p>
+Die als 3:0 genannten Images sind die <tt>filesystem.image</tt> und die darin enthaltenen <tt>filesystem_core.squashfs</tt> der NAND-Root Modelle, die beide gzip komprimiert sind. Es gibt auch neuere SquashFS 4 Varianten die auch <tt>xz</tt> Kompression unterstützen. Auf der FRITZBox kamen diese jedoch bisher nicht zum Einsatz.
+</p>
+<p>
+Auch Recoveries enthalten das SquashFS in binärer Form, in der <tt>.data</tt> Sektion die leicht mit 7zip isolierbar ist. Darin kann man nach den beiden Signaturen suchen und Fehlfunde mit nicht plausiblen major/minor Werten ausmaskieren. Die Grösse des SquashFS steht normalerweise im Superblock als <tt>bytesused</tt>, der Wert kann jedoch auch 0 sein. Dies ist nicht wirklich ein Problem, da ein SquashFS nicht durch überflüssige Daten am Ende gestört wird.
+</p>
+<p>
+Es gibt einen (ca 5%) Anteil (leider auch 3 neuerer) Recoveries die eine Extraktion nicht ermöglichen. So wurden runlength encoded Firmwareteile entdeckt die auf überoptimierende Compiler hindeuten. In einigen älteren Recoveries mit Contiguous SquashFS befindet sich die SquashFS Signatur am Ende des <tt>.data</tt> Segments, das beschnittene SquashFS befindet sich also nicht automatisch auffindbar vor dem Kernel. In beiden Fällen ist das extrahierte Datenmaterial dann unbrauchbar.
+</p>
+<p>
+Recoveries mit Contiguous SquashFS (bisher sind 10 bekannt) lassen sich mit Kenntnis von Position und Länge des größeren SquashFS-Teils extrahieren, runlength encoded Recoveries nur mit <tt>bsdiff</tt> generierten Binärpatches des extrahierten Datenmaterials. Letztere sind recht klein (1,5-3,5KB), lassen sich aber nur erstellen wenn eine Firmware oder ein Partitionsdump der selben Version existiert. Dumps sehr alter Versionen sind nur schwer erstellbar, da sie zum Einspielen meist einen älteren Bootloader benötigen.
+</p>
+<h2 id="Kernel">Kernel</h2>
+<p>
+Das FRITZ!OS Kernel ist immer komprimiert. Hierbei kommen 3 Techniken zum Einsatz, die vom installierten Bootloader abhängen. 
+</p>
+<p>
+Alle Kernels die auf ADAM2 lauffähig sind fangen mit der Hexfolge <tt>42 FA ED FE</tt> an (0xFEEDFA42), die ADAM2 Signatur für MIPS-LE. Da ADAM2 noch keine eingebaute Unterstützung für komprimierte Kernels hatte enthalten diese einen <tt>zimage</tt> Dekompressor (<a class="ext-link" href="http://gpl.back2roots.org/source/fritzbox/ALL_4.06/GPL-release_kernel/linux/arch/mips/mips-boards/ti_avalanche/inflater/"><span class="icon">​</span>TI Avalanche Inflater</a>, 8,5-12,5 KB) vor dem eigentlichen gzip komprimierten Kernel. Man erkennt diesen auch am String <tt>zimage</tt> innerhalb der ersten 13 KB des Kernels. Der Anfang der Kerneldaten ist durch die gzip Signatur <tt>1F 8B 08</tt> auffindbar. ADAM2-Kernels sind auch auf EVA lauffähig.
+</p>
+<p>
+Alle Kernels die EVA benötigen fangen mit der Hexfolge <tt>81 12 ED FE</tt> an, unabhängig vom Endian. Eine zweite Signatur ab Offset 12 (0x0C) signalisiert die Art der Kompression der folgenden Kerneldaten. Die Hexfolge <tt>01 02 5A 07</tt> bedeutet <tt>lzma</tt>, die Folge <tt>10 20 5A 70</tt> bedeutet <tt>zlib</tt> Kompression, auch hier unabhängig vom Endian.
+</p>
+<p>
+Bei der Analyse von 1800 verschiedenen unmodifizierten Firmware-, Labor- und Recovery-Images ergab sich folgende Verteilung:
+</p>
+<ul><li>zimage - gzip komprimiertes Kernel 2.4 für ADAM2 oder EVA - ca. 10,2%
+</li><li>zlib - roher zlib Stream mit Kernel 2.6 für EVA - ca. 0,1%
+</li><li>lzma - lzma Stream mit Kernel 2.4 oder 2.6 für EVA - ca. 89,5%
+</li></ul><p>
+EVA wurde also bereits unter Kernel 2.4 eingeführt. Von allen untersuchten Kernel 2.4 Proben waren etwa 75% zimage komprimiert, der Rest benötigt bereits EVA wegen lzma. Alle Kernel 2.6 Firmware benötigt EVA.
+</p>
+<p>
+Mit den beiden Signaturen lassen sich ADAM2- und EVA-Kernels in Recoveries finden. Durch Prüfen der 3 Kompressions-Signaturen können Fehlfunde ausmaskiert werden. Wie beim SquashFS funktioniert dies bei runlength encoded Recoveries (bisher sind 11 bekannt) nur mit <tt>bsdiff</tt> generierten Binärpatches des extrahierten Datenmaterials. Interessant ist, dass die Patches für das Kernel 3x grösser sind als die Patches für das sehr viel umfangreichere SquashFS. Hier besteht offensichtlich noch Forschungsbedarf.
+</p>
+<h2 id="Weblinks">Weblinks</h2>
+<ul><li><a class="ext-link" href="http://gpl.back2roots.org/source/fritzbox/ALL_4.06/GPL-release_kernel/linux/drivers/mtd/maps/avalanche-flash.c"><span class="icon">​</span>Avalanche MTD Treiber, Kernel 2.4</a>
+</li></ul></div>
+          
+          <div class="trac-modifiedby">
+            <span><a href="flash%3Faction=diff&amp;version=37.html" title="Version 37 von hippie2000: Fortsetzung NAND Root">zuletzt geändert</a> <a class="timeline" href="http://freetz.org/timeline?from=2014-01-10T15%3A57%3A49Z&amp;precision=second" title="Siehe Journal am 10.01.2014 15:57:49">vor 4 Jahren</a></span>
+            <span class="trac-print">Zuletzt geändert am 10.01.2014 15:57:49</span>
+          </div>
+        
+        
+      </div>
+      
+
+    </div>
+    <script type="text/javascript">
+        jQuery.loadStyleSheet("/pygments/trac.css", "text/css");
+        jQuery.loadStyleSheet("/chrome/screenshots/css/screenshots.css", "text/css");
+    </script>
+    <div id="altlinks">
+      <h3>In anderen Formaten herunterladen:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="flash%3Fformat=txt">Reiner Text</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" lang="en" xml:lang="en"><hr />
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="../../../../chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
+      <p class="left">Betrieben mit <a href="http://freetz.org/about"><strong>Trac 1.0.1</strong></a><br />
+        von <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right"><div class="field" align="right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations"/><input type="hidden" name="business" value="spenden@freetz.org"/><input type="hidden" name="item_name" value="Freetz Entwickler-Team"/><input type="hidden" name="no_shipping" value="1"/><input type="hidden" name="return" value="http://freetz.org"/><input type="hidden" name="cn" value="Name oder IPPF-Pseudonym"/><input type="hidden" name="currency_code" value="EUR"/><input type="hidden" name="tax" value="0"/><input type="hidden" name="lc" value="DE"/><input type="hidden" name="bn" value="PP-DonationsBF"/><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Zahlen Sie mit PayPal - schnell, kostenlos und sicher!"/><img alt="" border="0" src="http://freetz.org/pixel.gif" width="1" height="1"/></form></div></p>
+    </div>
+  </body>
+</html>

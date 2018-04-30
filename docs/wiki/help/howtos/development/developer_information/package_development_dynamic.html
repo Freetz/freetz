@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+  
+
+
+  <head>
+    <title>
+      help/howtos/development/developer_information/package_development_dynamic – Freetz
+    </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!--[if IE]><script type="text/javascript">
+      if (/^#__msie303:/.test(window.location.hash))
+        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
+    </script><![endif]-->
+        <link rel="search" href="http://freetz.org/search" />
+        <link rel="help" href="../../../../TracGuide.html" />
+        <link rel="alternate" href="package_development_dynamic%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
+        <link rel="up" href="../developer_information.html" title="Übergeordnete Wiki-Seite anzeigen" />
+        <link rel="start" href="http://freetz.org/wiki" />
+        <link rel="stylesheet" href="../../../../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../../../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../../../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../../../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../../../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../../../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../../../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../../../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../../../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
+        <link rel="shortcut icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+      <link type="application/opensearchdescription+xml" rel="search" href="http://freetz.org/search/opensearch" title="Freetz durchsuchen" />
+      <script type="text/javascript" charset="utf-8" src="../../../../../chrome/common/js/jquery.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../../chrome/common/js/babel.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../../chrome/common/js/messages/de.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../../chrome/common/js/trac.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../../chrome/common/js/search.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../../chrome/common/js/folding.js"></script>
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
+        $("#content").find(".wikianchor").each(function() {
+          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
+        });
+        $(".foldable").enableFolding(true, true);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://freetz.org/wiki"><img src="../../../../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
+      </div>
+      <form id="search" action="http://freetz.org/search" method="get">
+        <div>
+          <label for="proj-search">Suche:</label>
+          <input type="text" id="proj-search" name="q" size="18" value="" />
+          <input type="submit" value="Suche" />
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="http://freetz.org/login">Anmelden</a></li><li><a href="http://freetz.org/prefs">Einstellungen</a></li><li><a href="../../../../TracGuide.html">Hilfe/Anleitung</a></li><li><a href="http://freetz.org/about">Über Trac</a></li><li><a href="http://freetz.org/notification" title="Wiki Pages Change Notifications">My Notifications</a></li><li><a href="http://freetz.org/register">Registrieren</a></li><li class="last"><a href="../../../../Impressum.html">Impressum</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first active"><a href="http://freetz.org/wiki">Wiki</a></li><li><a href="http://freetz.org/timeline">Journal</a></li><li><a href="http://freetz.org/roadmap">Projektplan</a></li><li><a href="http://freetz.org/browser">Quellen durchsehen</a></li><li><a href="http://freetz.org/report">Tickets anzeigen</a></li><li><a href="http://freetz.org/search">Suche</a></li><li><a href="http://freetz.org/tags">Tags</a></li><li><a href="http://freetz.org/downloads">Downloads</a></li><li class="last"><a href="http://freetz.org/screenshots">Bildschirmfotos</a></li>
+    </ul>
+  </div>
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="package_development_dynamic..html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="http://freetz.org/wiki/help/howtos/development/developer_information/package_development_dynamic.en" title="(not available)">English</a></li></ul></div><div id="main">
+      <div id="pagepath" class="noprint">
+  <a class="pathentry first" title="Zeige WikiStart an" href="http://freetz.org/wiki">Wiki:</a><a class="pathentry" href="../../../../help.html" title="Zeige help an">help</a><span class="pathentry sep">/</span><a class="pathentry" href="../../../howtos.html" title="Zeige help/howtos an">howtos</a><span class="pathentry sep">/</span><a class="pathentry" href="../../development.html" title="Zeige help/howtos/development an">development</a><span class="pathentry sep">/</span><a class="pathentry" href="../developer_information.html" title="Zeige help/howtos/development/developer_information an">developer_information</a><span class="pathentry sep">/</span><a class="pathentry" href="package_development_dynamic.html" title="Zeige help/howtos/development/developer_information/package_development_dynamic an">package_development_dynamic</a>
+</div>
+      <div id="ctxtnav" class="nav">
+        <h2>Kontext-Navigation</h2>
+        <ul>
+          <li class="first"><a href="../developer_information.html">Aufwärts</a></li><li><a href="../../../../WikiStart.html">Startseite</a></li><li><a href="../../../../TitleIndex.html">Inhaltsverzeichnis</a></li><li><a href="package_development_dynamic%3Faction=history.html">Änderungshistorie</a></li><li class="last"><a href="http://freetz.org/notification/help/howtos/development/developer_information/package_development_dynamic" title="Watch Page">Watch Page</a></li>
+        </ul>
+        <hr />
+      </div>
+    <div id="content" class="wiki">
+      <div class="wikipage searchable">
+        
+          <div id="wikipage" class="trac-content"><h1 id="PaketverwaltungfürFreetz">Paketverwaltung für Freetz</h1>
+<p>
+Der folgende Beitrag beschreibt die Grundlagen, die notwendig sind, um mit Freetz Pakete nach dem Flashvorgang installieren zu können. Grundlage dafür sind ein transluzentes Dateisystem (mini_fo) und ein Paketverwaltungssystem (ipkg, opkg). Diese Erweiterung bietet gegenüber dem mitkompilieren der Pakete beim Image-Build folgende Vorteile:
+</p>
+<ul><li>Für jedes FritzBox-Modell existiert pro AVM Image-Version ein Basis-Image, das nur geringfügige Änderungen gegenüber dem originalen AVM-Image enthält (Stabilität)
+</li><li>Weitere Pakete können zur Laufzeit hinzugefügt werden. Alle dazugehörigen Modifikationen am Dateisystem werden dabei extern gespeichert (z.B. auf einem USB-Stick)
+</li><li>Treten Probleme im Betrieb auf, kann durch das Entfernen des USB-Sticks und anschließendem Reboot das Basis-Image verwendet werden.
+</li><li>Die benötigten Erweiterungen bzw. Pakete müssen beim Erstellen des Images nicht kompiliert werden. Sie können nach dem Flashen des Images von einem Paket-Repository im Internet geladen werden
+</li><li>Im Idealfall wird bei einem Firmware-Update (z.B. bei einer neuen Version des AVM-Images) nur das Basis-Image aktualisiert. Die bereits installierten Erweiterungen können, falls die Abhängigkeiten zum Basisystem nicht zu groß sind, mit dem neuen Image weiterverwendet werden
+</li><li>das Verzeichnis /etc kann wie unter Linux üblich als Konfigurationsverzeichnis verwendet werden.
+</li></ul><h2 id="ErweiterungdesDateisystems">Erweiterung des Dateisystems</h2>
+<h3 id="TransluzenteDateisystems">Transluzente Dateisystems</h3>
+<p>
+Transluzente Dateisysteme (TFS) ermöglichen den schreibenden Zugriff auf Read-Only-Dateisysteme (ROFS). Dazu wird das TFS über das ROFS gelegt. Lesezugriffe auf bereits existierende Dateien werden an das ROFS weitergeleitet, Modifikationen werden abgefangen und in einen zusätzlichen Speicher geschrieben. Alle Lese- und Schreibzugriffe auf das Dateisystem sind für den Benutzer bzw. die Anwendungen transparent.
+</p>
+<h3 id="AnbindungexternerMedien">Anbindung externer Medien</h3>
+<p>
+Als Speicherort für die Änderungen am Dateisystem kann je nach FritzBox-Modell entweder ein über USB angeschlossenes Medium (USB-Stick, Festplatte) oder der interne Speicher der FritzBox verwendet werden. Um das Rechtesystem von Linux auf dem beschreibbaren Dateisystem abbilden zu können, muss ein Dateisystem wie ext2 oder ext3 verwendet werden (SquashFS scheidet aus, da es ein Read-Only-Dateisystem ist). Aufgrund der niedrigen Speicherpreise sollte es kein Problem mehr sein, den ganzen USB-Stick für das TFS zu verwenden. Man könnte alternativ auch eine Image-Datei auf einem mit FAT formatierten USB-Stick anlegen, die wiederum mit ext2/3 formatiert wird. Um diese Datei einzubinden, müsste jedoch zunächst der USB-Stick ins Dateisystem eingebunden werden um anschließend auf die Image-Datei zugreifen zu können. Dieser Vorgang würde die automatische Einbindung des TFS komplizierter machen und wird zunächst vernachlässigt.
+</p>
+<h3 id="IntegrationindenBootvorgang">Integration in den Bootvorgang</h3>
+<p>
+Das externe Dateisystem sollte baldmöglichst nach dem Start des Kernels eingehängt werden, damit auch Änderungen bzw. Erweiterungen an den Init-Skripten, die durch installierte Pakete erzeugt werden, beim Startvorgang berücksichtigt werden. (Inittab????). Das Integrationsskript prüft zunächst, ob ein USB-Stick mit einem der unterstützten Dateisysteme angeschlossen ist und bindet ihn ein, falls verfügbar. Ist kein USB-Stick vorhanden, wird das Basissystem ohne TFS gestartet. (Man sollte vielleicht noch überprüfen, ob bestimmte "Markierungen" im Dateisystem des USB-Sticks vorhanden sind, um sichzerzustellen, dass der richtige USB-Stick verwendet wird).
+</p>
+<h2 id="Paketverwaltung">Paketverwaltung</h2>
+<h3 id="UnterstützungmehrererArchitekturen">Unterstützung mehrerer Architekturen</h3>
+<h3 id="ErstellungvonPaketen">Erstellung von Paketen</h3>
+<h3 id="BereitstellungderPakete">Bereitstellung der Pakete</h3>
+<h3 id="InstallationvonPaketen">Installation von Paketen</h3>
+<h2 id="Links">Links</h2>
+<p>
+<a class="ext-link" href="http://wwerther.de/2011/04/avm-fritz-box-freetz-mod/"><span class="icon">​</span>Ein Beispiel zur Verwendung von mini_fo mit Freetz</a>
+</p>
+<p>
+<a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=166751"><span class="icon">​</span>Diskussionsthread über Opkg und mini_fo im IP Phone Forum</a>
+</p>
+<p>
+<a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=102000"><span class="icon">​</span>Ein weiterer Diskussionsthread über Opkg und mini_fo im IP Phone Forum</a>
+</p>
+<p>
+<a class="ext-link" href="http://www.denx.de/wiki/Know/MiniFOHome"><span class="icon">​</span>Homepage von mini_fo</a>
+</p>
+<p>
+<a class="ext-link" href="http://code.google.com/p/opkg/"><span class="icon">​</span>Homepage von Opkg</a>
+</p>
+<p>
+<a class="ext-link" href="http://www.debian.org/doc/devel-manuals#maint-guide"><span class="icon">​</span>Debian New Maintainers' Guide</a>
+</p>
+<h2 id="Kommentare">Kommentare</h2>
+<h4 id="CommentbyoliveronMi26Jan201111:44:01CET">Comment by oliver on Mi 26 Jan 2011 11:44:01 CET</h4>
+<p>
+Zu dem Punkt Integration in den Bootvorgang:
+Das frühe Mounten eines USB-Sticks ist nicht so einfach, da der Vorgang boxspezifisch ist. Das mounten von mini_fo dagegen funktioniert für alle Boxen gleich. Daher würde es die Sache sehr erleichtern, wenn wir erstmal mit mini_fo und jffs2 auskämen. Praktikabel ist das natürlich nur für die 16 MB Flash Boxen. 
+Ich nehme an, dass man mit unionfs den USB-Stick später auch noch irgendwie einbinden könnte? Es müsste dann bei der Installation der dynamischen Pakete irgendwo vermerkt werden, ob sie im ersten (jffs2) oder zweiten (usb) Schritt gestartet werden sollen.
+</p>
+<p>
+Das ganze hätte natürlich den Nachteil, dass man keine Änderungen oder Erweiterungen an den Init-Skripten machen kann. Da die Pakete erst nach Abschluss des Bootvorgangs verfügbar wären. Andererseits haben wir mit external ja schon ein Grundgerüst, wie das dynamisch (Stick rein/raus) funktioniert.
+</p>
+<h4 id="Commentbyhippie2000onDi01Mär201123:51:14CET">Comment by hippie2000 on Di 01 Mär 2011 23:51:14 CET</h4>
+<p>
+Siehe auch
+</p>
+<p>
+<a href="http://freetz.org/ticket/1173">http://freetz.org/ticket/1173</a>
+</p>
+<p>
+<a class="missing wiki">AddComment?</a>
+</p>
+</div>
+          
+          <div class="trac-modifiedby">
+            <span><a href="package_development_dynamic%3Faction=diff&amp;version=11.html" title="Version 11 von Spalanzani: Link aktualisiert">zuletzt geändert</a> <a class="timeline" href="http://freetz.org/timeline?from=2011-12-30T16%3A37%3A52Z&amp;precision=second" title="Siehe Journal am 30.12.2011 16:37:52">vor 6 Jahren</a></span>
+            <span class="trac-print">Zuletzt geändert am 30.12.2011 16:37:52</span>
+          </div>
+        
+        
+      </div>
+      
+
+    </div>
+    <div id="altlinks">
+      <h3>In anderen Formaten herunterladen:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="package_development_dynamic%3Fformat=txt">Reiner Text</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" lang="en" xml:lang="en"><hr />
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="../../../../../chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
+      <p class="left">Betrieben mit <a href="http://freetz.org/about"><strong>Trac 1.0.1</strong></a><br />
+        von <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right"><div class="field" align="right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations"/><input type="hidden" name="business" value="spenden@freetz.org"/><input type="hidden" name="item_name" value="Freetz Entwickler-Team"/><input type="hidden" name="no_shipping" value="1"/><input type="hidden" name="return" value="http://freetz.org"/><input type="hidden" name="cn" value="Name oder IPPF-Pseudonym"/><input type="hidden" name="currency_code" value="EUR"/><input type="hidden" name="tax" value="0"/><input type="hidden" name="lc" value="DE"/><input type="hidden" name="bn" value="PP-DonationsBF"/><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Zahlen Sie mit PayPal - schnell, kostenlos und sicher!"/><img alt="" border="0" src="http://freetz.org/pixel.gif" width="1" height="1"/></form></div></p>
+    </div>
+  </body>
+</html>

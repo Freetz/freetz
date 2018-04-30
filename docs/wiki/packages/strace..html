@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+  
+
+
+  <head>
+    <title>
+      packages/strace – Freetz
+    </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!--[if IE]><script type="text/javascript">
+      if (/^#__msie303:/.test(window.location.hash))
+        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
+    </script><![endif]-->
+        <link rel="search" href="http://freetz.org/search" />
+        <link rel="help" href="../TracGuide.html" />
+        <link rel="alternate" href="strace%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
+        <link rel="up" href="../packages.html" title="Übergeordnete Wiki-Seite anzeigen" />
+        <link rel="start" href="http://freetz.org/wiki" />
+        <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
+        <link rel="shortcut icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+      <link type="application/opensearchdescription+xml" rel="search" href="http://freetz.org/search/opensearch" title="Freetz durchsuchen" />
+      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/jquery.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/babel.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/messages/de.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/trac.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/search.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/folding.js"></script>
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
+        $("#content").find(".wikianchor").each(function() {
+          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
+        });
+        $(".foldable").enableFolding(true, true);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://freetz.org/wiki"><img src="../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
+      </div>
+      <form id="search" action="http://freetz.org/search" method="get">
+        <div>
+          <label for="proj-search">Suche:</label>
+          <input type="text" id="proj-search" name="q" size="18" value="" />
+          <input type="submit" value="Suche" />
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="http://freetz.org/login">Anmelden</a></li><li><a href="http://freetz.org/prefs">Einstellungen</a></li><li><a href="../TracGuide.html">Hilfe/Anleitung</a></li><li><a href="http://freetz.org/about">Über Trac</a></li><li><a href="http://freetz.org/notification" title="Wiki Pages Change Notifications">My Notifications</a></li><li><a href="http://freetz.org/register">Registrieren</a></li><li class="last"><a href="../Impressum.html">Impressum</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first active"><a href="http://freetz.org/wiki">Wiki</a></li><li><a href="http://freetz.org/timeline">Journal</a></li><li><a href="http://freetz.org/roadmap">Projektplan</a></li><li><a href="http://freetz.org/browser">Quellen durchsehen</a></li><li><a href="http://freetz.org/report">Tickets anzeigen</a></li><li><a href="http://freetz.org/search">Suche</a></li><li><a href="http://freetz.org/tags">Tags</a></li><li><a href="http://freetz.org/downloads">Downloads</a></li><li class="last"><a href="http://freetz.org/screenshots">Bildschirmfotos</a></li>
+    </ul>
+  </div>
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="strace..html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="http://freetz.org/wiki/packages/strace.en" title="(not available)">English</a></li></ul></div><div id="main">
+      <div id="pagepath" class="noprint">
+  <a class="pathentry first" title="Zeige WikiStart an" href="http://freetz.org/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="strace.html" title="Zeige packages/strace an">strace</a>
+</div>
+      <div id="ctxtnav" class="nav">
+        <h2>Kontext-Navigation</h2>
+        <ul>
+          <li class="first"><a href="../packages.html">Aufwärts</a></li><li><a href="../WikiStart.html">Startseite</a></li><li><a href="../TitleIndex.html">Inhaltsverzeichnis</a></li><li><a href="strace%3Faction=history.html">Änderungshistorie</a></li><li class="last"><a href="http://freetz.org/notification/packages/strace." title="Watch Page">Watch Page</a></li>
+        </ul>
+        <hr />
+      </div>
+    <div id="content" class="wiki">
+      <div class="wikipage searchable">
+        
+          <div id="wikipage" class="trac-content"><h1 id="strace">strace</h1>
+<p>
+<strong><a class="ext-link" href="http://sourceforge.net/projects/strace/"><span class="icon">​</span>strace</a></strong> verfolgt System-Calls und Signale eines Prozesses. Dabei schaltet es sich zwischen einen Benutzerprozeß und den Kernel und protokolliert alle Aktivitäten an dieser Schnittstelle. Wenn der verfolgte Prozess einen Systemaufruf macht, gibt <em>strace</em> den Namen, die Argumente des Aufrufs und den Rückgabewert dieses Systemaufrufs aus. Wenn der verfolgte Prozess ein Signal erhält, gibt <em>strace</em> den Namen des Signals aus. Falls ein Systemaufruf mit einem Fehler  zurückkehrt, wird, wenn vorhanden, die dem Fehlerstatus zugeordnete Fehlermeldung angezeigt.
+</p>
+<p>
+Kurzum: <em>strace</em> kommt meist dann zum Einsatz, wenn "etwas nicht funktioniert, und keiner weiß warum". Sprich: Ein Programm stürzt ab, ein Prozess hängt - und man möchte herausfinden, bei welcher Aktion dies passiert.
+</p>
+<p>
+Das "Geschwisterchen" <a class="wiki" href="ltrace.html">ltrace</a> kann dabei auch hilfreich zur Seite stehen: Anstelle der System-Calls protokolliert <em>ltrace</em> Bibliotheks-Aufrufe (aka "Library Calls").
+</p>
+<h2 id="Tip:Vermeidenvonunfinishedundresumedinstrace-Logs">Tip: Vermeiden von "unfinished" und "resumed" in strace-Logs</h2>
+<p>
+Wenn man strace mit "-f" aufruft, um Unterprozesse bzw. Threads mitzuverfolgen, sieht man oft unterbrochene Systemaufrufe im Log, weil strace im Fall einer Unterbrechung den Start- und Rückkehrzeitpunkt der Aufrufe separat notiert. Darunter leidet aber die Lesbarkeit, weil man weiter unten oft nicht mehr weiß, zum welchem "unfinished" welches "resume" gehört (hier im Beispiel ist es noch einfach):
+</p>
+<pre class="wiki">719   14:55:13.562840 clock_gettime(CLOCK_MONOTONIC,  &lt;unfinished ...&gt;
+1010  14:55:13.563457 getppid( &lt;unfinished ...&gt;
+719   14:55:13.563818 &lt;... clock_gettime resumed&gt; {337216, 716098754}) = 0
+1010  14:55:13.564329 &lt;... getppid resumed&gt; ) = 719
+719   14:55:13.564701 clock_gettime(CLOCK_MONOTONIC,  &lt;unfinished ...&gt;
+1010  14:55:13.565066 poll([{fd=21, events=POLLIN}], 1, 2000 &lt;unfinished ...&gt;
+719   14:55:13.565543 &lt;... clock_gettime resumed&gt; {337216, 717736704}) = 0
+</pre><p>
+Mittels "-ff" schreibt man eine separate Log-Datei pro PID, aber dann kann mit die Zeitlinie nicht mehr anschaulich verfolgen. Möchte man beides zusammen haben, hilft folgendes Skript (der <em>sed</em>-Befehl ist deshalb so kompliziert, weil bei Aufrufen des Skripts mit mehreren "-p" die in diesem Modus als erste Spalte auftauchenden PIDs in den Einzeldateien zuerst entfernt werden müssen, weil sonst keine Sortierung nach Zeitstempel möglich wäre):
+</p>
+<div class="code"><pre><span class="c">#!/bin/sh
+</span>
+<span class="c"># Logfile as first parameter is required
+</span><span class="nv">logfile</span><span class="o">=</span><span class="s2">"$1"</span>
+<span class="nb">shift</span>
+
+<span class="c"># Ctrl-C should only kill strace, not the rest of the script
+</span><span class="nb">trap</span> <span class="s1">''</span> INT
+
+<span class="c"># Create one logfile per pid, then consolidate them into one,
+# sorted by timestamp and containing the pid as 2nd column
+</span>strace -tt -ff -o <span class="s2">"$logfile"</span> <span class="s2">"$@"</span>
+<span class="o">{</span>
+  <span class="k">for </span>file in <span class="s2">"$logfile"</span>.*; <span class="k">do
+    </span><span class="nv">pid</span><span class="o">=</span><span class="k">$(</span><span class="nb">printf</span> <span class="s2">"%-5u"</span> <span class="s2">"${file##$logfile.}"</span><span class="k">)</span>
+    cat <span class="s2">"$file"</span> | sed -r <span class="s2">"s/^([0-9]+ +)?([^ ]+)(.*)/\2 $pid\3/"</span>
+  <span class="k">done</span>
+<span class="o">}</span> | sort &gt; <span class="s2">"$logfile"</span>
+
+<span class="c"># Clean up temporary logfiles
+</span>rm <span class="s2">"$logfile"</span>.*
+</pre></div><h2 id="WeiterführendeLinks">Weiterführende Links</h2>
+<ul><li><a class="ext-link" href="http://sourceforge.net/projects/strace/"><span class="icon">​</span>strace Projektseite</a> (Sourceforge)
+</li><li><a class="ext-link" href="http://www.pronix.de/pronix-585.html"><span class="icon">​</span>Artikel: Mit ''strace'' Systemaufrufe verfolgen</a>
+</li><li><a class="ext-link" href="http://linux.die.net/man/1/strace"><span class="icon">​</span>strace Man page</a>
+</li></ul><hr />
+</div>
+          
+          <div class="trac-modifiedby">
+            <span><a href="strace%3Faction=diff&amp;version=2.html" title="Version 2 von kriegaex: How to avoid &#34;unfinished&#34; and &#34;resumed&#34; in multi-process or multi-thread logs">zuletzt geändert</a> <a class="timeline" href="http://freetz.org/timeline?from=2012-03-08T14%3A07%3A32Z&amp;precision=second" title="Siehe Journal am 08.03.2012 14:07:32">vor 6 Jahren</a></span>
+            <span class="trac-print">Zuletzt geändert am 08.03.2012 14:07:32</span>
+          </div>
+        
+        
+      </div><ul class="tags"><li class="header">Tags</li><li><a href="http://freetz.org/tags/console" rel="tag">console</a> </li><li><a href="../packages.html" rel="tag">packages</a> </li><li><a href="http://freetz.org/tags/programming" rel="tag">programming</a> </li><li><a href="http://freetz.org/tags/tools" rel="tag">tools</a> </li></ul>
+      
+
+    </div>
+    <script type="text/javascript">
+        jQuery.loadStyleSheet("/pygments/trac.css", "text/css");
+    </script>
+    <div id="altlinks">
+      <h3>In anderen Formaten herunterladen:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="strace%3Fformat=txt">Reiner Text</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" lang="en" xml:lang="en"><hr />
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="../../chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
+      <p class="left">Betrieben mit <a href="http://freetz.org/about"><strong>Trac 1.0.1</strong></a><br />
+        von <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right"><div class="field" align="right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations"/><input type="hidden" name="business" value="spenden@freetz.org"/><input type="hidden" name="item_name" value="Freetz Entwickler-Team"/><input type="hidden" name="no_shipping" value="1"/><input type="hidden" name="return" value="http://freetz.org"/><input type="hidden" name="cn" value="Name oder IPPF-Pseudonym"/><input type="hidden" name="currency_code" value="EUR"/><input type="hidden" name="tax" value="0"/><input type="hidden" name="lc" value="DE"/><input type="hidden" name="bn" value="PP-DonationsBF"/><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Zahlen Sie mit PayPal - schnell, kostenlos und sicher!"/><img alt="" border="0" src="http://freetz.org/pixel.gif" width="1" height="1"/></form></div></p>
+    </div>
+  </body>
+</html>

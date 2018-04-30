@@ -1,0 +1,11 @@
+= Onlinechanged-CGI =
+
+AVM-Firmwares beinhalten einen Mechanismus, welcher dafür sorgt, daß
+  - beim Start der Box (Parameter $1 hat den Wert "start"),
+  - bei der Trennung der Internet-Verbindung (Parameter $1 hat den Wert "offline") und auch
+  - beim Neuaufbau der Internet-Verbindung (Parameter $1 hat den Wert "online")
+jeweils das Skript ''/bin/onlinechanged'' aufgerufen wird, welches wiederum weitere Skripten unterhalb der Verzeichnisse ''/etc/onlinechanged'' und ''/var/tmp/onlinechanged'', sofern vorhanden, aufruft. Diese Skripten (re-)initialisieren diverse Dienste, wie z.B. WebDAV (Online-Speicher).
+
+Auch diverse Freetz-Pakete benötigen die Möglichkeit, beim Wechsel des Verbindungsstatus gewisse Aktionen durchzuführen, z.B. DynDNS-Hostnamen mit neuer IP-Adresse zu registrieren, VPN-Verbindungen neu aufzubauen etc. Das Paket Onlinechanged-CGI ermöglicht es dem Benutzer darüber hinaus, eigene Aktionen anzustoßen, bspw. eine E-Mail mit der aktuellen IP an den Benutzer zu senden.
+
+'''Hinweis:''' AVM Onlinechanged funktioniert nur auf Geräten, die so konfiguriert sind, daß sie die Internet-Verbindung selbst herstellen (also i.d.R. via DSL oder via PPPoE), nicht auf Boxen hinter einem NAT (z.B. bei "Internetverbindung mitbenutzen"). Falls auf solchen Geräten auch Onlinechanged ausgeführt werden soll, geht das über den [wiki:patches/replace_onlinechanged Patch "replace onlinechanged"], der auch zur Anwendung kommt in Problemfällen bei Geräten, wo AVM Onlinechanged nicht zuverlässig funktioniert (siehe entsprechendes [http://www.ip-phone-forum.de/showthread.php?t=231873 IPPF-Thema]).

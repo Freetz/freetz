@@ -1,0 +1,344 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+  
+
+
+  <head>
+    <title>
+      help/howtos/development/make_room – Freetz
+    </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!--[if IE]><script type="text/javascript">
+      if (/^#__msie303:/.test(window.location.hash))
+        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
+    </script><![endif]-->
+        <link rel="search" href="http://freetz.org/search" />
+        <link rel="help" href="../../../TracGuide.html" />
+        <link rel="alternate" href="make_room%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
+        <link rel="up" href="../development.html" title="Übergeordnete Wiki-Seite anzeigen" />
+        <link rel="start" href="http://freetz.org/wiki" />
+        <link rel="stylesheet" href="../../../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
+        <link rel="shortcut icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+      <link type="application/opensearchdescription+xml" rel="search" href="http://freetz.org/search/opensearch" title="Freetz durchsuchen" />
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/jquery.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/babel.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/messages/de.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/trac.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/search.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/folding.js"></script>
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
+        $("#content").find(".wikianchor").each(function() {
+          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
+        });
+        $(".foldable").enableFolding(true, true);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://freetz.org/wiki"><img src="../../../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
+      </div>
+      <form id="search" action="http://freetz.org/search" method="get">
+        <div>
+          <label for="proj-search">Suche:</label>
+          <input type="text" id="proj-search" name="q" size="18" value="" />
+          <input type="submit" value="Suche" />
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="http://freetz.org/login">Anmelden</a></li><li><a href="http://freetz.org/prefs">Einstellungen</a></li><li><a href="../../../TracGuide.html">Hilfe/Anleitung</a></li><li><a href="http://freetz.org/about">Über Trac</a></li><li><a href="http://freetz.org/notification" title="Wiki Pages Change Notifications">My Notifications</a></li><li><a href="http://freetz.org/register">Registrieren</a></li><li class="last"><a href="../../../Impressum.html">Impressum</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first active"><a href="http://freetz.org/wiki">Wiki</a></li><li><a href="http://freetz.org/timeline">Journal</a></li><li><a href="http://freetz.org/roadmap">Projektplan</a></li><li><a href="http://freetz.org/browser">Quellen durchsehen</a></li><li><a href="http://freetz.org/report">Tickets anzeigen</a></li><li><a href="http://freetz.org/search">Suche</a></li><li><a href="http://freetz.org/tags">Tags</a></li><li><a href="http://freetz.org/downloads">Downloads</a></li><li class="last"><a href="http://freetz.org/screenshots">Bildschirmfotos</a></li>
+    </ul>
+  </div>
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="make_room..html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="http://freetz.org/wiki/help/howtos/development/make_room.en" title="(not available)">English</a></li></ul></div><div id="main">
+      <div id="pagepath" class="noprint">
+  <a class="pathentry first" title="Zeige WikiStart an" href="http://freetz.org/wiki">Wiki:</a><a class="pathentry" href="../../../help.html" title="Zeige help an">help</a><span class="pathentry sep">/</span><a class="pathentry" href="../../howtos.html" title="Zeige help/howtos an">howtos</a><span class="pathentry sep">/</span><a class="pathentry" href="../development.html" title="Zeige help/howtos/development an">development</a><span class="pathentry sep">/</span><a class="pathentry" href="make_room.html" title="Zeige help/howtos/development/make_room an">make_room</a>
+</div>
+      <div id="ctxtnav" class="nav">
+        <h2>Kontext-Navigation</h2>
+        <ul>
+          <li class="first"><a href="../development.html">Aufwärts</a></li><li><a href="../../../WikiStart.html">Startseite</a></li><li><a href="../../../TitleIndex.html">Inhaltsverzeichnis</a></li><li><a href="make_room%3Faction=history.html">Änderungshistorie</a></li><li class="last"><a href="http://freetz.org/notification/help/howtos/development/make_room" title="Watch Page">Watch Page</a></li>
+        </ul>
+        <hr />
+      </div>
+    <div id="content" class="wiki">
+      <div class="wikipage searchable">
+        
+          <div id="wikipage" class="trac-content"><p>
+</p><div class="wiki-toc"><h4>Howtos: Entwicklung</h4><ol><li><a href="repack_fw.html#EntpackenundPackenvonFirmware-Images">Entpacken und Packen von Firmware-Images</a><ol><li><a href="repack_fw.html#ToolsundSyntax">Tools und Syntax</a></li><li><a href="repack_fw.html#Vorgehensweise">Vorgehensweise</a></li><li><a href="repack_fw.html#Verwendungvonfwmodimnofreetz-Modus">Verwendung von fwmod im "no freetz"-Modus</a></li></ol></li><li><a href="integrate_patches.html#PatchesinFreetzeinspielen">Patches in Freetz einspielen</a></li><li><a href="developer_information/package_development_start/example_3.html#Example3:NZBGet">Example 3: NZBGet</a><ol><li><a href="developer_information/package_development_start/example_3.html#Buildmanually">Build manually</a></li><li><a href="developer_information/package_development_start/example_3.html#AddpackagetoFreetz">Add package to Freetz</a></li><li><a href="developer_information/package_development_start/example_3.html#Createnewimagewithaddedpackage">Create new image with added package</a></li><li><a href="developer_information/package_development_start/example_3.html#Testing">Testing</a></li><li><a href="developer_information/package_development_start/example_3.html#PreparingNewPackageforPublicIntegrationtoFreetzTrunk">Preparing New Package for Public Integration to Freetz Trunk</a></li></ol></li><li><a href="developer_information/package_development_start/example_2.html#Example2:par2cmdline">Example 2: par2cmdline</a><ol><li><a href="developer_information/package_development_start/example_2.html#Buildmanually">Build manually</a></li><li><a href="developer_information/package_development_start/example_2.html#AddpackagetoFreetz">Add package to Freetz</a></li><li><a href="developer_information/package_development_start/example_2.html#Createnewimagewithaddedpackage">Create new image with added package</a></li><li><a href="developer_information/package_development_start/example_2.html#Testing">Testing</a></li><li><a href="developer_information/package_development_start/example_2.html#PreparingNewPackageforPublicIntegrationtoFreetzTrunk">Preparing New Package for Public Integration to Freetz Trunk</a></li></ol></li><li><a href="developer_information/package_development_start/example_1.html#Example1:Httptunnel">Example 1: Httptunnel</a><ol><li><a href="developer_information/package_development_start/example_1.html#Buildmanually">Build manually</a></li><li><a href="developer_information/package_development_start/example_1.html#AddpackagetoFreetz">Add package to Freetz</a></li><li><a href="developer_information/package_development_start/example_1.html#CallProceduresmakemenuconfigandmake">Call Procedures "make menuconfig" and "make"</a></li><li><a href="developer_information/package_development_start/example_1.html#Testing">Testing</a></li><li><a href="developer_information/package_development_start/example_1.html#PreparingNewPackageforPublicIntegrationtoFreetzTrunk">Preparing New Package for Public Integration to Freetz Trunk</a></li></ol></li><li><ol><li><a href="sign_image.html#SignierenvonFirmware">Signieren von Firmware</a></li><li><a href="sign_image.html#KonkreteAnwendunginFreetz">Konkrete Anwendung in Freetz</a></li></ol></li><li><a href="firmware_update_details.html#AblaufeinesFirmware-Updates">Ablauf eines Firmware-Updates</a></li><li><a href="compile_own_progs.html#EigeneProgrammekompilieren">Eigene Programme kompilieren</a></li><li><a href="bandwidth_svg.html#DynamischeBandbreitenanzeigeperSVG">Dynamische Bandbreitenanzeige per SVG</a><ol><li><a href="bandwidth_svg.html#AnleitungzurTest-Installation">Anleitung zur Test-Installation</a></li></ol></li><li class="active"><a href="make_room.html#PlatzsparenimDateisystemderFritzBox">Platz sparen im Dateisystem der FritzBox</a><ol><li class="active"><a href="make_room.html#VorwortundMotivation">Vorwort und Motivation</a></li><li class="active"><a href="make_room.html#Bestandsaufnahme:WosteckendiePlatzfresser">Bestandsaufnahme: Wo stecken die Platzfresser?</a></li><li class="active"><a href="make_room.html#WeitereSpartricks">Weitere Spartricks</a></li><li class="active"><a href="make_room.html#Schlußwort">Schlußwort</a></li></ol></li><li><a href="save_mtd_1.html#Flash-PartitionenimlaufendenBetriebsichern">Flash-Partitionen im laufenden Betrieb sichern</a><ol><li><a href="save_mtd_1.html#Motivation">Motivation</a></li><li><a href="save_mtd_1.html#Voraussetzungen">Voraussetzungen</a></li><li><a href="save_mtd_1.html#Lösungsweg">Lösungsweg</a></li><li><a href="save_mtd_1.html#WegesichschnelleinenÜberblickzuverschaffen">Wege, sich schnell einen Überblick zu verschaffen</a></li><li><a href="save_mtd_1.html#Zusammenfassung">Zusammenfassung</a></li></ol></li><li><a href="release_management.html#ReleaseManagement">Release Management</a><ol><li><a href="release_management.html#SubversionRepository">Subversion Repository</a></li><li><a href="release_management.html#Checklists">Checklists</a></li><li><a href="release_management.html#GIT">GIT</a></li><li><a href="release_management.html#Downloads">Downloads</a></li><li><a href="release_management.html#References">References</a></li></ol></li><li><a href="developer_information/package_development_start.html#Firststeps-Howtostartyourfirstfreetzpackage">First steps - How to start your first freetz package</a><ol><li><a href="developer_information/package_development_start.html#Info">Info</a></li><li><a href="developer_information/package_development_start.html#BuildEnvironment">Build Environment</a></li><li><a href="developer_information/package_development_start.html#FileStructure">File Structure</a></li><li><a href="developer_information/package_development_start.html#ExamplesBinaryPackage">Examples Binary Package</a></li><li><a href="developer_information/package_development_start.html#ConfigurationHandling">Configuration Handling</a></li><li><a href="developer_information/package_development_start.html#ExamplesWeb-Interface">Examples Web-Interface</a></li><li><a href="developer_information/package_development_start.html#Troubleshooting">Trouble shooting</a></li></ol></li><li><a href="make_kernel.html#Kernelkonfigurierenundkompilieren">Kernel konfigurieren und kompilieren</a></li><li><a href="menuconfig.html#Menükonfigurationpflegen">Menükonfiguration pflegen</a><ol><li><a href="menuconfig.html#Einstieg">Einstieg</a></li><li><a href="menuconfig.html#Beispiel-KonfigurationfüreinneuesPaket">Beispiel-Konfiguration für ein neues Paket</a></li><li><a href="menuconfig.html#Menuconfig-Warnungenbeheben">Menuconfig-Warnungen beheben</a></li><li><a href="menuconfig.html#ErklärungundAnwendungdererweitertenMK-Targets">Erklärung und Anwendung der erweiterten MK-Targets</a></li><li><a href="menuconfig.html#Syntax-FehlerinMK-Dateienfinden">Syntax-Fehler in MK-Dateien finden</a></li><li><a href="menuconfig.html#Syntax-HervorhebungfürMK-Dateien">Syntax-Hervorhebung für MK-Dateien</a></li></ol></li><li><a href="adam2.html#ADAM2-Bootloader">ADAM2-Bootloader</a><ol><li><a href="adam2.html#Bootloader-Backupanlegen">Bootloader-Backup anlegen</a></li><li><a href="adam2.html#Bootloaderüberschreiben">Bootloader überschreiben</a></li><li><a href="adam2.html#Bootloader-Befehle">Bootloader-Befehle</a></li><li><a href="adam2.html#Bootloader-Quelltext">Bootloader-Quelltext</a></li><li><a href="adam2.html#AufbaudesBootloaders">Aufbau des Bootloaders</a></li><li><a href="adam2.html#BootloaderundFreetz">Bootloader und Freetz</a></li></ol></li><li><a href="urlader_flags.html#EinstellungenspeichernimUrlader-Environment">Einstellungen speichern im Urlader-Environment</a><ol><li><a href="urlader_flags.html#VorwortundMotivation">Vorwort und Motivation</a></li><li><a href="urlader_flags.html#Lösungsmöglichkeiten">Lösungsmöglichkeiten</a></li><li><a href="urlader_flags.html#BootloaderEnvironment">Bootloader Environment</a></li><li><a href="urlader_flags.html#Variablekernel_args">Variable "kernel_args"</a></li><li><a href="urlader_flags.html#Kernel_Args-API">Kernel_Args-API</a></li><li><a href="urlader_flags.html#MöglicheAnwendungsfälle">Mögliche Anwendungsfälle</a></li></ol></li><li><a href="make_busybox.html#Busyboxkonfigurierenundkompilieren">Busybox konfigurieren und kompilieren</a></li><li><a href="package_creation.html#WiebaueicheineigenesPaketfürFreetz">Wie baue ich ein eigenes Paket für Freetz?</a></li><li><a href="analyse_image_names.html#Firmware-Image-Namenanalysierenundinterpretieren">Firmware-Image-Namen analysieren und interpretieren</a><ol><li><a href="analyse_image_names.html#Einleitung">Einleitung</a></li><li><a href="analyse_image_names.html#Skript-Code">Skript-Code</a></li><li><a href="analyse_image_names.html#DatenimRohformat">Daten im Rohformat</a></li><li><a href="analyse_image_names.html#AusgabegrundlegenderInformationen">Ausgabe grundlegender Informationen</a></li><li><a href="analyse_image_names.html#AusgabeerweiterterInformationen">Ausgabe erweiterter Informationen</a></li></ol></li><li><ol><li><a href="developer_information/package_development_start/webinterface_example_1.html#Web-interfaceHTTPTunnel">Web-interface HTTPTunnel</a></li></ol></li><li><a href="developer_information.html#DeveloperInformation">Developer Information</a></li><li><a href="install_addon.html#AddonPaketinstallieren">Addon Paket installieren</a></li><li><a href="developer_information/package_development_dynamic.html#PaketverwaltungfürFreetz">Paketverwaltung für Freetz</a><ol><li><a href="developer_information/package_development_dynamic.html#ErweiterungdesDateisystems">Erweiterung des Dateisystems</a></li><li><a href="developer_information/package_development_dynamic.html#Paketverwaltung">Paketverwaltung</a></li><li><a href="developer_information/package_development_dynamic.html#Links">Links</a></li><li><a href="developer_information/package_development_dynamic.html#Kommentare">Kommentare</a></li></ol></li><li><a href="manipulation_detection.html#WiedieFritzBoxManipulationenerkennt">Wie die FritzBox Manipulationen erkennt</a><ol><li><a href="manipulation_detection.html#Ursachen">Ursachen</a></li><li><a href="manipulation_detection.html#Diagnose">Diagnose</a></li><li><a href="manipulation_detection.html#Lösungen">Lösungen</a></li><li><a href="manipulation_detection.html#SchlußwortundAusblick">Schlußwort und Ausblick</a></li></ol></li><li><a href="developer_information/shell_coding_conventions.html#ShellCodingConventions">Shell Coding Conventions</a><ol><li><a href="developer_information/shell_coding_conventions.html#ShellLanguage">Shell Language</a></li><li><a href="developer_information/shell_coding_conventions.html#BasicFormat">Basic Format</a></li><li><a href="developer_information/shell_coding_conventions.html#IfForandWhile">If, For, and While</a></li><li><a href="developer_information/shell_coding_conventions.html#TestBuilt-in">Test Built-in</a></li><li><a href="developer_information/shell_coding_conventions.html#Single-lineconditionalstatements">Single-line conditional statements</a></li><li><a href="developer_information/shell_coding_conventions.html#InfiniteLoops">Infinite Loops</a></li><li><a href="developer_information/shell_coding_conventions.html#ExitStatusandIfWhileStatements">Exit Status and If/While Statements</a></li><li><a href="developer_information/shell_coding_conventions.html#VariableReferences">Variable References</a></li><li><a href="developer_information/shell_coding_conventions.html#VariableNaming">Variable Naming</a></li><li><a href="developer_information/shell_coding_conventions.html#Quoting">Quoting</a></li><li><a href="developer_information/shell_coding_conventions.html#VariableAssignments">Variable Assignments</a></li><li><a href="developer_information/shell_coding_conventions.html#TestingforNon-EmptyStrings">Testing for (Non-)Empty Strings</a></li><li><a href="developer_information/shell_coding_conventions.html#Commenting">Commenting</a></li><li><a href="developer_information/shell_coding_conventions.html#Pathnames">Pathnames</a></li><li><a href="developer_information/shell_coding_conventions.html#InterpreterMagic">Interpreter Magic</a></li></ol></li><li><a href="developer_information/package_development.html#PackageDevelopment">Package Development</a><ol><li><a href="developer_information/package_development.html#PersistentPackageSettings">Persistent Package Settings</a></li></ol></li><li><a href="create_gui.html#ErstelleneinerGUIfürPaketeinFreetz">Erstellen einer GUI für Pakete in Freetz</a><ol><li><a href="create_gui.html#Motivation">Motivation</a></li><li><a href="create_gui.html#Grundlagen">Grundlagen</a></li><li><a href="create_gui.html#WiefunktioniertdasmitderGUI">Wie funktioniert das mit der GUI?</a></li></ol></li><li><a href="flash.html#FlashPartitionierung">Flash Partitionierung</a><ol><li><a href="flash.html#HiddenSquashFS">Hidden SquashFS</a></li><li><a href="flash.html#ContiguousSquashFS">Contiguous SquashFS</a></li><li><a href="flash.html#HiddenRoot">Hidden Root</a></li><li><a href="flash.html#NANDRoot">NAND Root</a></li><li><a href="flash.html#Dateisystem">Dateisystem</a></li><li><a href="flash.html#Kernel">Kernel</a></li><li><a href="flash.html#Weblinks">Weblinks</a></li></ol></li><li><a href="developer_information/post_commit_hook.html#TracHooks">Trac Hooks</a><ol><li><a href="developer_information/post_commit_hook.html#trac-post-commit-hook">trac-post-commit-hook</a></li><li><a href="developer_information/post_commit_hook.html#trac-post-revprop-change-hook">trac-post-revprop-change-hook</a></li></ol></li><li><a href="developer_information/package_development_advanced.html#PackageDeveloping-AdvancedTopics">Package Developing - Advanced Topics</a><ol><li><a href="developer_information/package_development_advanced.html#Addingconditionalpatches">Adding conditional patches</a></li><li><a href="developer_information/package_development_advanced.html#Addingmulti-binarypackages">Adding multi-binary packages</a></li></ol></li><li><a href="integrate_own_files.html#EigeneDateienindieFirmwareintegrieren">Eigene Dateien in die Firmware integrieren</a><ol><li><a href="integrate_own_files.html#FesteIntegrationüberdasFreetzImage">Feste Integration über das Freetz Image</a></li><li><a href="integrate_own_files.html#ErzeugenderDateienausderdebug.cfg">Erzeugen der Dateien aus der debug.cfg</a></li><li><a href="integrate_own_files.html#NachladenvomWebserver">Nachladen vom Webserver</a></li><li><a href="integrate_own_files.html#NachladenvomUSB-Stick">Nachladen vom USB-Stick</a></li><li><a href="integrate_own_files.html#WebDAVSharemounten">WebDAV Share mounten</a></li><li><a href="integrate_own_files.html#NFS-Sharemounten">NFS-Share mounten</a></li></ol></li><li><a href="freetz_make.html#FreetzBuild-Prozeß">Freetz Build-Prozeß</a><ol><li><a href="freetz_make.html#VorwortundMotivation">Vorwort und Motivation</a></li><li><a href="freetz_make.html#Grundsätzliches">Grundsätzliches</a></li></ol></li><li><a href="save_mtd_2.html#Flash-PartitionenvonaußenmitFTPsichern">Flash-Partitionen von außen mit FTP sichern</a><ol><li><a href="save_mtd_2.html#Motivation">Motivation</a></li><li><a href="save_mtd_2.html#Voraussetzungen">Voraussetzungen</a></li><li><a href="save_mtd_2.html#AllgemeineInformationenzurDatensicherung">Allgemeine Informationen zur Datensicherung</a></li><li><a href="save_mtd_2.html#SicherungmitLinux-Standard-FTPftp">Sicherung mit Linux-Standard-FTP (ftp)</a></li><li><a href="save_mtd_2.html#SicherungmitLinux-NcFTPncftpget">Sicherung mit Linux-NcFTP (ncftpget)</a></li><li><a href="save_mtd_2.html#SicherungmitCygwin-NcFTPncftpget">Sicherung mit Cygwin-NcFTP (ncftpget)</a></li><li><a href="save_mtd_2.html#UploadsviaFTP">Uploads via FTP</a></li></ol></li><li><a href="developer_information/webif/libmodcgi.html#libmodcgi.sh">libmodcgi.sh</a><ol><li><a href="developer_information/webif/libmodcgi.html#cgi">cgi</a></li><li><a href="developer_information/webif/libmodcgi.html#cgi_begin">cgi_begin</a></li><li><a href="developer_information/webif/libmodcgi.html#cgi_end">cgi_end</a></li><li><a href="developer_information/webif/libmodcgi.html#sec_begin">sec_begin</a></li><li><a href="developer_information/webif/libmodcgi.html#sec_end">sec_end</a></li><li><a href="developer_information/webif/libmodcgi.html#html">html</a></li><li><a href="developer_information/webif/libmodcgi.html#checkselect">check, select</a></li><li><a href="developer_information/webif/libmodcgi.html#href">href</a></li><li><a href="developer_information/webif/libmodcgi.html#back_button">back_button</a></li><li><a href="developer_information/webif/libmodcgi.html#sec_level">sec_level</a></li><li><a href="developer_information/webif/libmodcgi.html#stat_bar">stat_bar</a></li><li><a href="developer_information/webif/libmodcgi.html#cgi_param">cgi_param</a></li><li><a href="developer_information/webif/libmodcgi.html#cgi_errorprint_error">cgi_error, print_error</a></li><li><a href="developer_information/webif/libmodcgi.html#path_info">path_info</a></li><li><a href="developer_information/webif/libmodcgi.html#valid">valid</a></li></ol></li><li><a href="create_cross-compiler_toolchain.html#Cross-CompilerToolchainerstellen">Cross-Compiler / Toolchain erstellen</a></li><li><a href="create_cross-compiler_toolchain.html#EigeneDownload-Toolchainerstellen">Eigene Download-Toolchain erstellen</a></li><li><a href="create_cross-compiler_toolchain.html#TargetNative-Compiler-Toolchainerstellen">Target/Native-Compiler-Toolchain erstellen</a><ol><li><a href="create_cross-compiler_toolchain.html#Usingthedev-toolspackagetoinstallcompilerandtools">Using the dev-tools package to install compiler and tools</a></li></ol></li></ol></div><p>
+</p>
+<h1 id="PlatzsparenimDateisystemderFritzBox">Platz sparen im Dateisystem der FritzBox</h1>
+<h2 id="VorwortundMotivation">Vorwort und Motivation</h2>
+<p>
+Dass der Speicherplatz im Dateisystem der FritzBox - insbesondere bei den heute noch verbreiteten "kleinen" Routern wie der 5050 oder der 7050 - begrenzt ist, dürfte jedem Modder klar sein, der schon einmal entsprechende Fehlermeldungen von <tt>fwmod</tt> während des Zusammenbauens der Firmware (FW) gesehen hat und daraufhin anfangen mußte zu überlegen, welche Freetz-Pakete er weglässt. Diskutiert wird über dieses Problem bspw. im IPPF-Thread <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=132936"><span class="icon">​</span>7050 zu eng: DS-Mod-Teile manuell auf externe Platte auslagern</a>, aber auch woanders.
+</p>
+<p>
+Ohne ein hier ein fertiges "Abspeck-Werkzeug" präsentieren zu wollen, möchte ich an dieser Stelle einfach mal übersichtshalber zusammenfassen, welche Mittel und Wege mir derzeit einfallen würden, wenn ich Platz sparen müsste auf meiner Box. Es geht darum, Hilfe zur Selbsthilfe zu leisten und ein paar Gedanken mit auf den Weg zu geben, um es jedem zu ermöglichen, die ihm am erfolgversprechendsten erscheinenden Wege weiter zu verfolgen. Weder erhebt diese kleine Übersicht Anspruch auf Vollständigkeit noch auf absolute Korrektheit oder Praxiserprobtheit. Mit meiner 7170 habe ich momentan keine Platzprobleme, da ich auch nicht der Typ bin, der "alles" auf seiner Box laufen haben möchte - übrigens schon der erste und mit effektivste Weg zum Sparen: nicht übertriebene, aber angemessene Bescheidenheit und Konzentration aufs Notwendige.
+</p>
+<h2 id="Bestandsaufnahme:WosteckendiePlatzfresser">Bestandsaufnahme: Wo stecken die Platzfresser?</h2>
+<p>
+Bevor wir darüber nachdenken, an welchen Ecken wir sparen können, sollten wir uns zunächst einen Überblick darüber verschaffen, wo am meisten Platz verbraucht wird. Im zweiten Schritt unterscheiden wir dann zwischen notwendigen und überflüssigen Platzfressern, im Folgenden PFs genannt. Schließlich gehen wir nach dem <a class="ext-link" href="http://de.wikipedia.org/wiki/Pareto-Verteilung#Pareto-Prinzip"><span class="icon">​</span>Pareto-Prinzip</a> vor, um mit überschaubarem Aufwand einen möglichst hohen Effekt zu erzielen.
+</p>
+<h3 id="Schritt1:UntersuchungOriginal-Firmware">Schritt 1: Untersuchung Original-Firmware</h3>
+<p>
+Welche Dateien verbrauchen am meisten Platz in der Original-Firmware? Dazu schauen wir uns am einfachsten nach einem <tt>make</tt> das Verzeichnis an, in welchem die entpackten Firmware-Dateien abgelegt sind: <tt>build/original/filesystem</tt>. Mit folgendem Befehl durchsuchen wir das Verzeichnis nach Dateien (<tt>find -type f</tt>) und übergeben all diese Dateien dem <tt>ls</tt>-Befehl, um diesen dazu veranlassen, sie nach ihrer Größe absteigend zu sortieren. Als Beispiel diene hier die AVM-FW 29.04.29 für die Box vom Typ 7170. (Der Übersicht halber lasse ich unwichtige Spalten der Ergebnisliste weg.)
+</p>
+<pre class="wiki">$ cd build/original/filesystem
+$ find . -type f | xargs ls -lSR | more
+
+1291372 lib/libcrypto.so.0.9.8
+ 858208 lib/modules/2.6.13.1-ohio/kernel/drivers/isdn/isdn_fon4/zzz/isdn_fbox.ko
+ 730844 lib/modules/2.6.13.1-ohio/kernel/drivers/dsld/kdsldmod.ko
+ 551944 usr/bin/telefon
+ 473772 lib/modules/2.6.13.1-ohio/kernel/drivers/net/wireless/avm_wlan/wlan/tiap.ko
+ 425652 lib/libuClibc-0.9.28.so
+ 416632 bin/busybox
+ 314836 lib/libavmcsock.so.2.0.0
+ 303784 lib/modules/microvoip-dsl.bin
+ 283853 lib/modules/microvoip_isdn_top.bit1
+ 274704 usr/bin/ctlmgr
+ 274352 lib/libsiplib.so.2.0.0
+ 259052 lib/libssl.so.0.9.8
+ 252344 usr/share/ctlmgr/libtr069.so
+ 234684 usr/share/ctlmgr/libfon.so
+ 212468 lib/modules/microvoip_isdn_top.bit
+ 212432 sbin/dsld
+ 202684 lib/libmscodex.so.2.0.0
+ 167180 sbin/fsck.ext2
+ 163360 sbin/multid
+ 158332 lib/modules/2.6.13.1-ohio/kernel/drivers/usb/core/usbcore.ko
+ 154224 usr/bin/wpa_authenticator
+ 142624 lib/modules/2.6.13.1-ohio/kernel/drivers/atm/avm_atm/tiatm.ko
+ 142104 lib/libosipparser2.so.4.0.0
+ 134308 lib/modules/2.6.13.1-ohio/kernel/drivers/scsi/scsi_mod.ko
+ 132296 lib/libar7cfg.so.1.0.0
+ 117056 lib/libm-0.9.28.so
+ 116804 bin/voipd
+ 106192 lib/modules/fw_dcrhp_1150_ap.bin
+ 102712 usr/lib/libext2fs.so.2.4
+ 102472 sbin/fdisk
+</pre><p>
+Jetzt kann man anfangen zu überlegen, was wohl verzichtbar wäre. Eine Busybox oder den DSL-Daemon wegzulassen, ergibt keinen Sinn - eher schon, bei der Busybox auf unnötige Applets zu verzichten. Mancher mag sich überlegen, dass er die WLAN-Bestandteile nicht braucht, stattdessen vielleicht lieber mehr Platz für OpenVPN schaffen möchte. Das ist nur ein Beispiel und unabhängig davon, ob die Box ohne die WLAN-Binaries überhaupt sauber startet (Kommentar: Das WLAN-Modul, tiap.ko, lässt sich ohne Probleme entfernen). Wenn man die Dateien weglässt, sollte man z.B. dafür sorgen, daß die entsprechenden Dienste deaktiviert werden oder in den entsprechenden Startskripten ggf. Dinge zur Sicherheit auskommentiert werden. Bei anderen Programmen fällt die Entscheidung wieder leichter: <tt>fdisk</tt> braucht man beispielsweise im Normalfall nicht, solange man nicht mit <tt>mkfs.ext2</tt> ein Dateisystem anlegen möchte. Ein bisschen sparen kann man also, indem man es weglässt, vielleicht die entscheidenden KB, damit eine andere Erweiterung auf die Box passt. Für andere Kandidaten wie die <a class="wiki" href="../../../patches/remove_tr069.html">libtr069</a> gibt es bei den kleinen Boxen sogar schon Schalter in der <a class="wiki" href="../common/install/menuconfig.html">Menükonfiguration</a> von Freetz, um sie wegzulassen. Im Allgemeinen untersucht man die Startdateien unter <tt>/etc/init.d</tt>, um herauszufinden, ob und wann eine bestimmte Datei geladen wird. Bei benötigten Bibliotheken ist die Analyse etwas schwieriger, aber auch möglich.
+</p>
+<h3 id="Schritt2:UntersuchungMod-Firmware">Schritt 2: Untersuchung Mod-Firmware</h3>
+<p>
+Das Gleiche, was wir gerade für die Original-Firmware gemacht haben, tun wir nun für die nach unseren Wünschen konfigurierte Mod-Firmware. Selbst wenn diese evtl. nicht erfolgreich gebaut werden konnte, weil z.B. der Platz nicht genügte, sehen wir doch das erzeugte Dateisystem unter <tt>build/modified/filesystem</tt>. Es folgt ein Beispiel von meiner 7170 mit Mod-Version ds-0.2.9_26-14.2 und, grob gesprochen, folgenden aktivierten Optionen und Erweiterungen: 1&amp;1-Branding, keine Hilfetexte und Assistenten, Original-Kernel, Bftp, Callmonitor, Cifsmount, Dropbear (nur Server), MC, Mini_fo, Samba, Screen, Syslogd-CGI, WoL-CGI, Lua, Matrixtunnel. Das sieht dann so aus:
+</p>
+<pre class="wiki">$ cd build/modified/filesystem
+$ find . -type f | xargs ls -lSR | more
+
+1291372 lib/libcrypto.so.0.9.8
+ 913456 usr/sbin/smbd
+ 858208 lib/modules/2.6.13.1-ohio/kernel/drivers/isdn/isdn_fon4/zzz/isdn_fbox.ko
+ 779956 usr/bin/mc.bin
+ 730844 lib/modules/2.6.13.1-ohio/kernel/drivers/dsld/kdsldmod.ko
+ 599740 bin/busybox
+ 551944 usr/bin/telefon
+ 473772 lib/modules/2.6.13.1-ohio/kernel/drivers/net/wireless/avm_wlan/wlan/tiap.ko
+ 436344 usr/sbin/nmbd
+ 413184 lib/libuClibc-0.9.28.so
+ 372060 usr/bin/screen.bin
+ 323371 lib/modules/2.6.13.1-ohio/kernel/fs/cifs/cifs.ko
+ 314836 lib/libavmcsock.so.2.0.0
+ 303784 lib/modules/microvoip-dsl.bin
+ 283853 lib/modules/microvoip_isdn_top.bit1
+ 274704 usr/bin/ctlmgr
+ 274352 lib/libsiplib.so.2.0.0
+ 273900 usr/lib/libncurses.so.5.5
+ 259052 lib/libssl.so.0.9.8
+ 252344 usr/share/ctlmgr/libtr069.so
+ 234684 usr/share/ctlmgr/libfon.so
+ 212468 lib/modules/microvoip_isdn_top.bit
+ 212432 sbin/dsld
+ 204336 usr/bin/lua
+ 202684 lib/libmscodex.so.2.0.0
+ 200256 usr/lib/libreadline.so.5.2
+ 183224 usr/sbin/dropbearmulti
+ 167180 sbin/fsck.ext2
+ 163360 sbin/multid
+ 155037 lib/modules/2.6.13.1-ohio/kernel/drivers/usb/core/usbcore.ko
+ 154224 usr/bin/wpa_authenticator
+ 142624 lib/modules/2.6.13.1-ohio/kernel/drivers/atm/avm_atm/tiatm.ko
+ 142104 lib/libosipparser2.so.4.0.0
+ 132296 lib/libar7cfg.so.1.0.0
+ 132124 lib/modules/2.6.13.1-ohio/kernel/drivers/scsi/scsi_mod.ko
+ 131614 usr/share/samba/unicode_map.850
+ 117746 usr/lib/mc/mc.hlp
+ 116804 bin/voipd
+ 116148 lib/libm-0.9.28.so
+ 106192 lib/modules/fw_dcrhp_1150_ap.bin
+ 102712 usr/lib/libext2fs.so.2.4
+ 102472 sbin/fdisk
+</pre><p>
+Wir erkennen: Samba, MC und Screen scheinen recht groß zu sein, aber so richtig übersichtlich ist das Ganze nicht, denn die zuvor analysierten Dateien der Original-Firmware sind ja immer noch in der Liste. Wenn wir nur die exklusiv im Mod vorkommenden sehen wollen, müssen wir erst ein bißchen aussieben:
+</p>
+<div class="code"><pre><span class="nv">$ </span><span class="nb">cd </span>build
+<span class="nv">$ </span>find original/filesystem -type f | sed <span class="s1">'s/^original\/filesystem\///'</span> &gt; orig-files
+<span class="nv">$ </span>find modified/filesystem -type f | sed <span class="s1">'s/^modified\/filesystem\///'</span> &gt; modi-files
+<span class="nv">$ </span>diff -u orig-files modi-files | <span class="se">\
+</span>    grep <span class="s1">'^+'</span> | grep -v <span class="s1">'^+++'</span> | sed <span class="s1">'s/^+/modified\/filesystem\//'</span> &gt; new-files
+<span class="nv">$ </span>cat new-files | xargs ls -lSR | more
+
+ 913456 usr/sbin/smbd
+ 779956 usr/bin/mc.bin
+ 436344 usr/sbin/nmbd
+ 372060 usr/bin/screen.bin
+ 323371 lib/modules/2.6.13.1-ohio/kernel/fs/cifs/cifs.ko
+ 273900 usr/lib/libncurses.so.5.5
+ 204336 usr/bin/lua
+ 200256 usr/lib/libreadline.so.5.2
+ 183224 usr/sbin/dropbearmulti
+ 131614 usr/share/samba/unicode_map.850
+ 117746 usr/lib/mc/mc.hlp
+  85680 lib/modules/2.6.13.1-ohio/kernel/fs/mini_fo/mini_fo.ko
+  85072 usr/lib/libmatrixssl.so
+  68816 usr/sbin/bftpd
+  57005 lib/modules/2.6.13.1-ohio/kernel/net/ipv4/netfilter/ip_conntrack.ko
+  34309 usr/lib/mc/syntax/html.syntax
+  31232 lib/modules/2.6.13.1-ohio/kernel/net/ipv4/netfilter/ip_tables.ko
+  26432 usr/lib/libhistory.so.5.2
+  24544 usr/bin/haserl
+  23940 usr/sbin/matrixtunnel
+  21708 usr/sbin/mount.cifs
+  20392 lib/modules/2.6.13.1-ohio/kernel/drivers/block/loop.ko
+  11461 usr/lib/mc/syntax/perl.syntax
+  10684 lib/modules/2.6.13.1-ohio/kernel/net/ipv4/netfilter/ipt_LOG.ko
+</pre></div><p>
+Wir sehen Verschiedenes: <em>Samba</em> ist tatsächlich ein Platzfresser, wenn man <em>smbd</em> und <em>nmbd</em> zusammenzählt. <em>MC</em> mit <em>ncurses</em> ist auch nicht zu verachten - evtl. könnten wir wenigstens die Hilfedatei <em>mc.hlp</em> weglassen. Allerdings muß man bei textlastigen Dateien wie der MC-Hilfe aufpassen und die Erwartungen nicht zu hoch schrauben: <strong>Unsere Vergleiche hinken im Grunde alle, denn wir müßten uns die Dateien LZMA-komprimiert anschauen, um einen Eindruck davon zu erhalten, wieviel Platz sie in einem SquashFS auf der Box wirklich brauchen würden. Textdateien z.B. sind extrem stark komprimierbar. Sie also wegzulassen, bringt oft weniger als erhofft.</strong>
+</p>
+<p>
+Was noch auffällt, sind diverse <em>Netfilter</em>-Bibliotheken, die wohl mit in die Firmware kopiert wurden, als ich mal testweise <em>Iptables</em> kompiliert habe. Offensichtlich bleibt dabei so Manches übrig, das gar nicht hinein gehört in die FW, weil es längst abgewählt wurde. Das gilt übrigens auch für so manche Shared Library und diverse Kernelmodule. Also hier bitte aufpassen und kontrollieren, evtl. mal die entsprechenden Verzeichnisse leeren oder, falls man nicht weiß, wo man hinfassen soll, mal neu aufsetzen und mit korrekt eingestellter Konfiguration (Datei <tt>.config</tt>) von vorne anfangen.
+</p>
+<h3 id="Schritt3:Vorher-Nachher-VergleichexistierenderDateien">Schritt 3: Vorher-Nachher-Vergleich existierender Dateien</h3>
+<p>
+Wir haben uns bisher alte und neue Dateien angeschaut, aber nicht geprüft, ob sich gleichnamige, in beiden FW-Versionen vorhandene Dateien evtl. signifikant in der Größe geändert haben. Auch das kann uns evtl. Hinweise darauf geben, wo man noch sparen kann, wenngleich vermutlich in geringerem Umfang. Aber wer den Heller nicht ehrt, &hellip;
+</p>
+<p>
+Das folgende Shell-Skript mag etwas verwirrend sein, und optimal programmiert ist es sicher nicht, aber es dient seinem Zweck. (Ich kann übrigens nicht mit <em>Awk</em> umgehen, sonst wäre das Ganze vermutlich übersichtlicher geworden.) Was es tut, ist Folgendes:
+</p>
+<ul><li>zwei Dateilisten generieren (wie oben schon gesehen)
+</li><li>in beiden Listen auftauchende Dateinamen herausfiltern (d.h. übrig lassen)
+</li><li>ein weiteres Shell-Skript erzeugen und ausführbar machen
+</li><li>das Shell-Skript ausführen
+</li><li>Das Skript selbst gibt für alle gemeinsamen Dateien die Größendifferenz (neu minus alt) in Bytes und den Pfadnamen aus.
+</li><li>Die Ergebnisliste wird aufsteigend sortiert und gefiltert (Dateien ohne Unterschied in der Größe werden eliminiert).
+</li><li>Uns interessieren dann die Dateien mit den größten absoluten Unterschieden. Negative Werte bedeuten dabei Platzersparnis gegenüber der Original-Firmware, positive zusätzlich beanspruchten Speicherplatz.
+</li></ul><div class="code"><pre><span class="nv">$ </span><span class="nb">cd </span>build
+<span class="nv">$ </span>find original/filesystem -type f | sed <span class="s1">'s/^original\/filesystem\///'</span> &gt; orig-files
+<span class="nv">$ </span>find modified/filesystem -type f | sed <span class="s1">'s/^modified\/filesystem\///'</span> &gt; modi-files
+<span class="nv">$ </span>diff -u 99999 orig-files modi-files | grep <span class="s1">'^ '</span> | sed <span class="s1">'s/^ //'</span> &gt; before-after-files
+<span class="nv">$ </span><span class="nb">echo</span> <span class="s1">'#!/bin/bash'</span> &gt; before-after-script
+<span class="nv">$ </span>chmod +x before-after-script
+<span class="nv">$ </span>cat before-after-files | sed -r <span class="se">\
+</span>    <span class="s1">'s/(.*)/printf "%10d %s\\n" $(( $(stat -c "%s" modified\/filesystem\/\1) - $(stat -c "%s" original\/filesystem\/\1) )) \1/'</span> <span class="se">\
+</span>    &gt;&gt; before-after-script
+<span class="nv">$ </span>./before-after-script | grep -v <span class="s1">' 0 '</span> | sort -g &gt; before-after-diffs
+
+-12468 lib/libuClibc-0.9.28.so
+ -7508 lib/libgcc_s.so.1
+ -3295 lib/modules/2.6.13.1-ohio/kernel/drivers/usb/core/usbcore.ko
+ -2184 lib/modules/2.6.13.1-ohio/kernel/drivers/scsi/scsi_mod.ko
+ -1088 lib/modules/2.6.13.1-ohio/kernel/fs/fat/fat.ko
+   ... ...
+  9756 lib/libpthread-0.9.28.so
+ 10240 var.tar
+183108 bin/busybox
+</pre></div><p>
+Wir erkennen in diesem Fall nichts Aufregendes: Die <em>uClibc</em> wurde ca. 12 KB kleiner, die <em>Busybox</em> allerdings um ca. 180 KB größer. Das ist doch nicht zu vernachlässigen. Allerdings kann die <em>Busybox</em> damit auch mehr als das Original.
+</p>
+<p>
+War das jetzt umsonst? Nein! Denn wenn wir das Gleiche mal bei der 7050-FW machen, sehen wir, daß dort die <em>libgcc_s</em>, wenn sie denn in der Konfiguration ausgewählt und somit ersetzt wurde, von 215 auf knappe 60 KB schrumpft (siehe <a class="ext-link" href="http://www.ip-phone-forum.de/showpost.php?p=840715&amp;postcount=17"><span class="icon">​</span>dort</a>). Das liegt daran, daß in dieser FW-Version das Original - wohl versehentlich - nicht gestrippt oder gar mit zusätzlicher Debug-Information freigegeben wurde. Ergo: Wer eine FW modifiziert und Platz sparen möchte, sollte tunlichst auch auf scheinbare Kleinigkeiten achten.
+</p>
+<h2 id="WeitereSpartricks">Weitere Spartricks</h2>
+<h3 id="AuslagerungvonDateien">Auslagerung von Dateien</h3>
+<p>
+Eine Möglichkeit mit viel Potential ist das Auslagern von Dateien, entweder auf direkt zugreifbare USB-Datenträger (Speicherstift, Festplatte) oder auf Netzlaufwerke, die mittels NFS, Cifsmount oder Smbmount beim Hochfahren der Box eingebunden werden, so daß die erst nach dem Einbinden (Mounten) benötigten Dateien direkt vom externen Speicher bzw. übers Netz geladen werden können. Damit kann man eine Firmware in <tt>build/modified</tt> bauen, die eigentlich zu groß ist für ein Image und abbricht beim Bauen, welche man jedoch hinterher so verändert, daß große Dateien durch Symlinks auf die zu mountenden Speicher ersetzt werden. Die entnommenen Dateien werden entsprechend bereitgestellt, das ausgedünnte <tt>build/modified</tt> im zweiten Durchgang erfolgreich zu einem Image verbaut. Die Startskripten der FW wurden vorher ebenfalls entsprechend angepaßt.
+</p>
+<p>
+<em>Update 05.10.2007:</em> Bereits seit ds26-15.1 ist das Paket <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=134934"><span class="icon">​</span>Downloader-CGI</a> Bestandteil des DS-Mod. Es erleichtert das automatische Herunterladen von Dateien beim Start der Box.
+</p>
+<h3 id="KomprimierteBinariesundNutzdaten">Komprimierte Binaries und Nutzdaten</h3>
+<p>
+Eine häufig geäußerte Idee im IPPF ist, man könne doch beispielsweise einen EXE-Packer verwenden, um die Binaries zu verkleinern. Das ist <strong>ziemlich sinnlos</strong> und kostet nur unnötig Rechenzeit, denn das SquashFS (Dateisystem der Boxen) ist bereits so extrem gut komprimiert, daß eine weitere Kompression gar nicht zum Tragen kommen würde (siehe <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?p=832868&amp;highlight=lzma#post832868"><span class="icon">​</span>dort</a>). Warum das manchmal dazu führt, daß eine scheinbar große weggelassene Datenmenge kaum Ersparnisse bei der FW-Größe bringt, sofern es sich um gut komprimierbare Daten handelt, erkläre ich <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?p=844325&amp;highlight=lzma#post844325"><span class="icon">​</span>in diesem Beitrag</a>.
+</p>
+<h3 id="Älterebzw.alternativeSoftware-Versionen">Ältere bzw. alternative Software-Versionen</h3>
+<p>
+Oft wird im <a class="ext-link" href="http://www.ip-phone-forum.de/"><span class="icon">​</span>IPPF</a> gefragt, weshalb beispielsweise der <em>Midnight Commander (mc-4.5.0)</em> oder <em>Samba 2.0.10</em> so alte Stände haben. Das hängt teilweise einfach damit zusammen, daß die alten Versionen vom Leistungsumfang her ausreichen, dafür aber viel kleiner sind als die neueren Versionen mit mehr Features. Im Falle des <em>MC</em> kommt noch dazu, daß neuere Versionen gegen Bibliotheken gelinkt sind, welche über das, was die <em>uClibC</em> als <em>libc</em>-Ersatz bietet, ein wenig hinaus gehen und das Ersetzen entsprechender Aufrufe durch eigene Makros einen großen Aufwand bedeuten würde.
+</p>
+<p>
+Weitere Sparmöglichkeiten bestehen in der Suche nach Alternativen zu bekannten Softwarepaketen. Beispiele:
+</p>
+<ul><li><em>Matrixssl</em> ist kleiner als <em>OpenSSL</em>, genügt aber oft, z.B. um einen HTTPS-Tunnel zu bauen. Nur wenn auf SSL-Bibliotheken aufsetzende Software wie <em>OpenVPN</em> nicht mit <em>Matrixssl</em> funktionieren, man aber glaubt, diese zu brauchen, bleibt keine Wahl.
+</li><li><em>Deco</em> ist kleiner als <em>MC</em>, dafür aber auch wesentlich weniger leistungsfähig.
+</li><li>Die <em>Rudi-Shell</em> ist phantastisch klein, kann aber sehr viel. Sie führt beliebige Shell-Skripten aus, hat eine Befehlshistorie, kann Dateien von und zur Box transferieren (sogar komprimiert) und taugt sogar zum Remote-Flashen der Box. Mittels <em>Matrixtunnel</em> wird sie ein funktional (nicht komfortmäßig) vollwertiger Ersatz für <em>SSH</em> bei weit geringerem Platzbedarf und ohne die Notwendigkeit, einen SSH-Zugang zu haben, was hinter manchen Firewalls einfach nicht erlaubt ist, weil es nur einen Web-Proxy für HTTP und HTTPS gibt. Rudi + Matrixtunnel genügt dies. Einen <em>vi</em> kann Rudi zwar nicht remote bedienbar machen, aber dafür kann man ja einfach Dateien hin und her übertragen. Lokal bequem editieren, zurück auf die Box - fertig!
+</li><li><em>Cifsmount</em> stellt Verbindungen zu Windows- und Samba-Freigaben her, ist aber deutlich kleiner als <em>Smbmount</em>.
+</li><li><em>Mini_fo</em> kleiner als <em>UnionFS</em>, läuft aber sehr stabil (bisher keine mir bekannten Fehlermeldungen dazu im Forum). Dafür kann man einen <em>Mini_fo</em>-Mount nicht über NFS exportieren, aber wer braucht das schon? Außerdem gibt es Samba, damit geht es.
+</li><li><em>Perl</em> oder <em>PHP</em> würden die FritzBox ressourcentechnisch überlasten - <em>Lua</em> nicht. <em>Lua</em> ist eine sehr schlanke und dabei einfach zu lernende und leistungsfähige Skriptsprache, nicht nur für CGI. <em>Update 05.10.2007:</em> Inzwischen habe ich gelernt, daß Apache + PHP, die man jetzt auch per Freetz bauen kann, sehr wohl stabil und performant auf der FritzBox laufen, aber der Platzverbrauch ist enorm. Und ums Platzsparen geht es ja hier.
+</li><li>A propos CGI-Handling: <em>Haserl</em> ist klein und leistet alles, was ich auf der Box brauche. Da brauche ich nicht einmal <em>Lua</em>, und manchmal verzichte ich sogar auf Haserl, weil es ein Shellskript tut.
+</li></ul><h3 id="Firmware-PatchesausMenuconfig">Firmware-Patches aus Menuconfig</h3>
+<p>
+Schon seit langer Zeit gibt es Firmware-Patches, die nicht benötigte Original-Bestandteile aus dem FW-Image entfernen und Platz für Zusatz-Pakete schaffen. Dabei muß jeder selbst entscheiden, ob er Hilfetexte und Assistenten für die AVM-Weboberfläche, den Original-AVM-Webserver selbst (durch BusyBox-httpd ersetzbar), UPnP, DSL, VoIP, Kindersicherung usw. benötigt.
+</p>
+<p>
+Wer z.B. seine Box als reinen IP-Client betreibt, der über einen weiteren vorgeschalteten Router die Internet-Verbindung bekommt und auch keine PPoE-Anmeldung benötigt, kann viel Platz sparen mit einem entsprechenden Patch, welcher <em>dsld</em> plus Zubehör aus der Firmware entfernt. Normalanwender benutzen die Box als DSL-Router und können den Patch dann eben nicht anwenden.
+</p>
+<p>
+Beispiel Webserver: Auf den AVM-Webserver kann man nach heutigem Wissensstand problemlos verzichten und stattdessen den kleineren und ressourcenschonenderen <em>httpd</em> verwenden, der für Freetz ohnehin benutzt wird. Leider wurde der AVM-Server bei neueren Firmwares (Neue AVM-Weboberflächen seit etwa Mitte-Ende 2007) anders realisiert, sodass der <em>httpd</em>-Ersatz nicht mehr möglich ist.
+</p>
+<p>
+Beispiel UPnP: Wer nicht mit Client-Programmen (z.B. von AVM) den Status der Box per Universal Plug'n'Play (UPnP) abfragt - mir persönlich genügt die Web-Oberfläche vollkommen - oder Client-Programmen erlauben möchte, dynamisch die Firmware-Einstellungen zu verändern (d.h. Löcher hinein zu bohren), kann auch die entsprechenden Bestandteile (<tt>igdd</tt> u.a. Dateien) weglassen. Das spart zum einen Platz im Firmware-Image, zum anderen läuft ein Prozess weniger. Das Weglassen von UPnP macht jedoch das Versenden der Faxe mit FritzFax nicht möglich. Wer darauf verzichten kann, kann UPnP abwählen.
+</p>
+<h2 id="Schlußwort">Schlußwort</h2>
+<p>
+Das soll es fürs Erste gewesen sein. Wie eingangs gesagt: Es gibt sicher noch diverse weitere Sparmöglichkeiten. Anregungen werden gern in diese Seite von mir eingepflegt. In diesem Sinne:
+</p>
+<p>
+<strong>Geiz ist nicht geil, sondern dumm - aber <em>sinnvoll</em> sparen ist hilfreich.</strong>
+</p>
+<p>
+<a class="ext-link" href="http://www.ip-phone-forum.de/member.php?u=117253"><span class="icon">​</span>Alexander Kriegisch (kriegaex)</a>
+</p>
+</div>
+          
+          <div class="trac-modifiedby">
+            <span><a href="make_room%3Faction=diff&amp;version=1.html" title="Version 1 von Izzy">zuletzt geändert</a> <a class="timeline" href="http://freetz.org/timeline?from=2008-09-22T10%3A00%3A16Z&amp;precision=second" title="Siehe Journal am 22.09.2008 10:00:16">vor 9 Jahren</a></span>
+            <span class="trac-print">Zuletzt geändert am 22.09.2008 10:00:16</span>
+          </div>
+        
+        
+      </div>
+      
+
+    </div>
+    <script type="text/javascript">
+        jQuery.loadStyleSheet("/pygments/trac.css", "text/css");
+    </script>
+    <div id="altlinks">
+      <h3>In anderen Formaten herunterladen:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="make_room%3Fformat=txt">Reiner Text</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" lang="en" xml:lang="en"><hr />
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="../../../../chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
+      <p class="left">Betrieben mit <a href="http://freetz.org/about"><strong>Trac 1.0.1</strong></a><br />
+        von <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right"><div class="field" align="right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations"/><input type="hidden" name="business" value="spenden@freetz.org"/><input type="hidden" name="item_name" value="Freetz Entwickler-Team"/><input type="hidden" name="no_shipping" value="1"/><input type="hidden" name="return" value="http://freetz.org"/><input type="hidden" name="cn" value="Name oder IPPF-Pseudonym"/><input type="hidden" name="currency_code" value="EUR"/><input type="hidden" name="tax" value="0"/><input type="hidden" name="lc" value="DE"/><input type="hidden" name="bn" value="PP-DonationsBF"/><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Zahlen Sie mit PayPal - schnell, kostenlos und sicher!"/><img alt="" border="0" src="http://freetz.org/pixel.gif" width="1" height="1"/></form></div></p>
+    </div>
+  </body>
+</html>

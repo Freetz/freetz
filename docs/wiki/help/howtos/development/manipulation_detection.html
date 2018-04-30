@@ -1,0 +1,343 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+  
+
+
+  <head>
+    <title>
+      help/howtos/development/manipulation_detection – Freetz
+    </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!--[if IE]><script type="text/javascript">
+      if (/^#__msie303:/.test(window.location.hash))
+        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
+    </script><![endif]-->
+        <link rel="search" href="http://freetz.org/search" />
+        <link rel="help" href="../../../TracGuide.html" />
+        <link rel="alternate" href="manipulation_detection%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
+        <link rel="up" href="../development.html" title="Übergeordnete Wiki-Seite anzeigen" />
+        <link rel="start" href="http://freetz.org/wiki" />
+        <link rel="stylesheet" href="../../../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
+        <link rel="shortcut icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+      <link type="application/opensearchdescription+xml" rel="search" href="http://freetz.org/search/opensearch" title="Freetz durchsuchen" />
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/jquery.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/babel.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/messages/de.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/trac.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/search.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/folding.js"></script>
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
+        $("#content").find(".wikianchor").each(function() {
+          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
+        });
+        $(".foldable").enableFolding(true, true);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://freetz.org/wiki"><img src="../../../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
+      </div>
+      <form id="search" action="http://freetz.org/search" method="get">
+        <div>
+          <label for="proj-search">Suche:</label>
+          <input type="text" id="proj-search" name="q" size="18" value="" />
+          <input type="submit" value="Suche" />
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="http://freetz.org/login">Anmelden</a></li><li><a href="http://freetz.org/prefs">Einstellungen</a></li><li><a href="../../../TracGuide.html">Hilfe/Anleitung</a></li><li><a href="http://freetz.org/about">Über Trac</a></li><li><a href="http://freetz.org/notification" title="Wiki Pages Change Notifications">My Notifications</a></li><li><a href="http://freetz.org/register">Registrieren</a></li><li class="last"><a href="../../../Impressum.html">Impressum</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first active"><a href="http://freetz.org/wiki">Wiki</a></li><li><a href="http://freetz.org/timeline">Journal</a></li><li><a href="http://freetz.org/roadmap">Projektplan</a></li><li><a href="http://freetz.org/browser">Quellen durchsehen</a></li><li><a href="http://freetz.org/report">Tickets anzeigen</a></li><li><a href="http://freetz.org/search">Suche</a></li><li><a href="http://freetz.org/tags">Tags</a></li><li><a href="http://freetz.org/downloads">Downloads</a></li><li class="last"><a href="http://freetz.org/screenshots">Bildschirmfotos</a></li>
+    </ul>
+  </div>
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="manipulation_detection..html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="http://freetz.org/wiki/help/howtos/development/manipulation_detection.en" title="(not available)">English</a></li></ul></div><div id="main">
+      <div id="pagepath" class="noprint">
+  <a class="pathentry first" title="Zeige WikiStart an" href="http://freetz.org/wiki">Wiki:</a><a class="pathentry" href="../../../help.html" title="Zeige help an">help</a><span class="pathentry sep">/</span><a class="pathentry" href="../../howtos.html" title="Zeige help/howtos an">howtos</a><span class="pathentry sep">/</span><a class="pathentry" href="../development.html" title="Zeige help/howtos/development an">development</a><span class="pathentry sep">/</span><a class="pathentry" href="manipulation_detection.html" title="Zeige help/howtos/development/manipulation_detection an">manipulation_detection</a>
+</div>
+      <div id="ctxtnav" class="nav">
+        <h2>Kontext-Navigation</h2>
+        <ul>
+          <li class="first"><a href="../development.html">Aufwärts</a></li><li><a href="../../../WikiStart.html">Startseite</a></li><li><a href="../../../TitleIndex.html">Inhaltsverzeichnis</a></li><li><a href="manipulation_detection%3Faction=history.html">Änderungshistorie</a></li><li class="last"><a href="http://freetz.org/notification/help/howtos/development/manipulation_detection" title="Watch Page">Watch Page</a></li>
+        </ul>
+        <hr />
+      </div>
+    <div id="content" class="wiki">
+      <div class="wikipage searchable">
+        
+          <div id="wikipage" class="trac-content"><p>
+</p><div class="wiki-toc"><h4>Howtos: Entwicklung</h4><ol><li><a href="repack_fw.html#EntpackenundPackenvonFirmware-Images">Entpacken und Packen von Firmware-Images</a><ol><li><a href="repack_fw.html#ToolsundSyntax">Tools und Syntax</a></li><li><a href="repack_fw.html#Vorgehensweise">Vorgehensweise</a></li><li><a href="repack_fw.html#Verwendungvonfwmodimnofreetz-Modus">Verwendung von fwmod im "no freetz"-Modus</a></li></ol></li><li><a href="integrate_patches.html#PatchesinFreetzeinspielen">Patches in Freetz einspielen</a></li><li><a href="developer_information/package_development_start/example_3.html#Example3:NZBGet">Example 3: NZBGet</a><ol><li><a href="developer_information/package_development_start/example_3.html#Buildmanually">Build manually</a></li><li><a href="developer_information/package_development_start/example_3.html#AddpackagetoFreetz">Add package to Freetz</a></li><li><a href="developer_information/package_development_start/example_3.html#Createnewimagewithaddedpackage">Create new image with added package</a></li><li><a href="developer_information/package_development_start/example_3.html#Testing">Testing</a></li><li><a href="developer_information/package_development_start/example_3.html#PreparingNewPackageforPublicIntegrationtoFreetzTrunk">Preparing New Package for Public Integration to Freetz Trunk</a></li></ol></li><li><a href="developer_information/package_development_start/example_2.html#Example2:par2cmdline">Example 2: par2cmdline</a><ol><li><a href="developer_information/package_development_start/example_2.html#Buildmanually">Build manually</a></li><li><a href="developer_information/package_development_start/example_2.html#AddpackagetoFreetz">Add package to Freetz</a></li><li><a href="developer_information/package_development_start/example_2.html#Createnewimagewithaddedpackage">Create new image with added package</a></li><li><a href="developer_information/package_development_start/example_2.html#Testing">Testing</a></li><li><a href="developer_information/package_development_start/example_2.html#PreparingNewPackageforPublicIntegrationtoFreetzTrunk">Preparing New Package for Public Integration to Freetz Trunk</a></li></ol></li><li><a href="developer_information/package_development_start/example_1.html#Example1:Httptunnel">Example 1: Httptunnel</a><ol><li><a href="developer_information/package_development_start/example_1.html#Buildmanually">Build manually</a></li><li><a href="developer_information/package_development_start/example_1.html#AddpackagetoFreetz">Add package to Freetz</a></li><li><a href="developer_information/package_development_start/example_1.html#CallProceduresmakemenuconfigandmake">Call Procedures "make menuconfig" and "make"</a></li><li><a href="developer_information/package_development_start/example_1.html#Testing">Testing</a></li><li><a href="developer_information/package_development_start/example_1.html#PreparingNewPackageforPublicIntegrationtoFreetzTrunk">Preparing New Package for Public Integration to Freetz Trunk</a></li></ol></li><li><ol><li><a href="sign_image.html#SignierenvonFirmware">Signieren von Firmware</a></li><li><a href="sign_image.html#KonkreteAnwendunginFreetz">Konkrete Anwendung in Freetz</a></li></ol></li><li><a href="firmware_update_details.html#AblaufeinesFirmware-Updates">Ablauf eines Firmware-Updates</a></li><li><a href="compile_own_progs.html#EigeneProgrammekompilieren">Eigene Programme kompilieren</a></li><li><a href="bandwidth_svg.html#DynamischeBandbreitenanzeigeperSVG">Dynamische Bandbreitenanzeige per SVG</a><ol><li><a href="bandwidth_svg.html#AnleitungzurTest-Installation">Anleitung zur Test-Installation</a></li></ol></li><li><a href="make_room.html#PlatzsparenimDateisystemderFritzBox">Platz sparen im Dateisystem der FritzBox</a><ol><li><a href="make_room.html#VorwortundMotivation">Vorwort und Motivation</a></li><li><a href="make_room.html#Bestandsaufnahme:WosteckendiePlatzfresser">Bestandsaufnahme: Wo stecken die Platzfresser?</a></li><li><a href="make_room.html#WeitereSpartricks">Weitere Spartricks</a></li><li><a href="make_room.html#Schlußwort">Schlußwort</a></li></ol></li><li><a href="save_mtd_1.html#Flash-PartitionenimlaufendenBetriebsichern">Flash-Partitionen im laufenden Betrieb sichern</a><ol><li><a href="save_mtd_1.html#Motivation">Motivation</a></li><li><a href="save_mtd_1.html#Voraussetzungen">Voraussetzungen</a></li><li><a href="save_mtd_1.html#Lösungsweg">Lösungsweg</a></li><li><a href="save_mtd_1.html#WegesichschnelleinenÜberblickzuverschaffen">Wege, sich schnell einen Überblick zu verschaffen</a></li><li><a href="save_mtd_1.html#Zusammenfassung">Zusammenfassung</a></li></ol></li><li><a href="release_management.html#ReleaseManagement">Release Management</a><ol><li><a href="release_management.html#SubversionRepository">Subversion Repository</a></li><li><a href="release_management.html#Checklists">Checklists</a></li><li><a href="release_management.html#GIT">GIT</a></li><li><a href="release_management.html#Downloads">Downloads</a></li><li><a href="release_management.html#References">References</a></li></ol></li><li><a href="developer_information/package_development_start.html#Firststeps-Howtostartyourfirstfreetzpackage">First steps - How to start your first freetz package</a><ol><li><a href="developer_information/package_development_start.html#Info">Info</a></li><li><a href="developer_information/package_development_start.html#BuildEnvironment">Build Environment</a></li><li><a href="developer_information/package_development_start.html#FileStructure">File Structure</a></li><li><a href="developer_information/package_development_start.html#ExamplesBinaryPackage">Examples Binary Package</a></li><li><a href="developer_information/package_development_start.html#ConfigurationHandling">Configuration Handling</a></li><li><a href="developer_information/package_development_start.html#ExamplesWeb-Interface">Examples Web-Interface</a></li><li><a href="developer_information/package_development_start.html#Troubleshooting">Trouble shooting</a></li></ol></li><li><a href="make_kernel.html#Kernelkonfigurierenundkompilieren">Kernel konfigurieren und kompilieren</a></li><li><a href="menuconfig.html#Menükonfigurationpflegen">Menükonfiguration pflegen</a><ol><li><a href="menuconfig.html#Einstieg">Einstieg</a></li><li><a href="menuconfig.html#Beispiel-KonfigurationfüreinneuesPaket">Beispiel-Konfiguration für ein neues Paket</a></li><li><a href="menuconfig.html#Menuconfig-Warnungenbeheben">Menuconfig-Warnungen beheben</a></li><li><a href="menuconfig.html#ErklärungundAnwendungdererweitertenMK-Targets">Erklärung und Anwendung der erweiterten MK-Targets</a></li><li><a href="menuconfig.html#Syntax-FehlerinMK-Dateienfinden">Syntax-Fehler in MK-Dateien finden</a></li><li><a href="menuconfig.html#Syntax-HervorhebungfürMK-Dateien">Syntax-Hervorhebung für MK-Dateien</a></li></ol></li><li><a href="adam2.html#ADAM2-Bootloader">ADAM2-Bootloader</a><ol><li><a href="adam2.html#Bootloader-Backupanlegen">Bootloader-Backup anlegen</a></li><li><a href="adam2.html#Bootloaderüberschreiben">Bootloader überschreiben</a></li><li><a href="adam2.html#Bootloader-Befehle">Bootloader-Befehle</a></li><li><a href="adam2.html#Bootloader-Quelltext">Bootloader-Quelltext</a></li><li><a href="adam2.html#AufbaudesBootloaders">Aufbau des Bootloaders</a></li><li><a href="adam2.html#BootloaderundFreetz">Bootloader und Freetz</a></li></ol></li><li><a href="urlader_flags.html#EinstellungenspeichernimUrlader-Environment">Einstellungen speichern im Urlader-Environment</a><ol><li><a href="urlader_flags.html#VorwortundMotivation">Vorwort und Motivation</a></li><li><a href="urlader_flags.html#Lösungsmöglichkeiten">Lösungsmöglichkeiten</a></li><li><a href="urlader_flags.html#BootloaderEnvironment">Bootloader Environment</a></li><li><a href="urlader_flags.html#Variablekernel_args">Variable "kernel_args"</a></li><li><a href="urlader_flags.html#Kernel_Args-API">Kernel_Args-API</a></li><li><a href="urlader_flags.html#MöglicheAnwendungsfälle">Mögliche Anwendungsfälle</a></li></ol></li><li><a href="make_busybox.html#Busyboxkonfigurierenundkompilieren">Busybox konfigurieren und kompilieren</a></li><li><a href="package_creation.html#WiebaueicheineigenesPaketfürFreetz">Wie baue ich ein eigenes Paket für Freetz?</a></li><li><a href="analyse_image_names.html#Firmware-Image-Namenanalysierenundinterpretieren">Firmware-Image-Namen analysieren und interpretieren</a><ol><li><a href="analyse_image_names.html#Einleitung">Einleitung</a></li><li><a href="analyse_image_names.html#Skript-Code">Skript-Code</a></li><li><a href="analyse_image_names.html#DatenimRohformat">Daten im Rohformat</a></li><li><a href="analyse_image_names.html#AusgabegrundlegenderInformationen">Ausgabe grundlegender Informationen</a></li><li><a href="analyse_image_names.html#AusgabeerweiterterInformationen">Ausgabe erweiterter Informationen</a></li></ol></li><li><ol><li><a href="developer_information/package_development_start/webinterface_example_1.html#Web-interfaceHTTPTunnel">Web-interface HTTPTunnel</a></li></ol></li><li><a href="developer_information.html#DeveloperInformation">Developer Information</a></li><li><a href="install_addon.html#AddonPaketinstallieren">Addon Paket installieren</a></li><li><a href="developer_information/package_development_dynamic.html#PaketverwaltungfürFreetz">Paketverwaltung für Freetz</a><ol><li><a href="developer_information/package_development_dynamic.html#ErweiterungdesDateisystems">Erweiterung des Dateisystems</a></li><li><a href="developer_information/package_development_dynamic.html#Paketverwaltung">Paketverwaltung</a></li><li><a href="developer_information/package_development_dynamic.html#Links">Links</a></li><li><a href="developer_information/package_development_dynamic.html#Kommentare">Kommentare</a></li></ol></li><li class="active"><a href="manipulation_detection.html#WiedieFritzBoxManipulationenerkennt">Wie die FritzBox Manipulationen erkennt</a><ol><li class="active"><a href="manipulation_detection.html#Ursachen">Ursachen</a></li><li class="active"><a href="manipulation_detection.html#Diagnose">Diagnose</a></li><li class="active"><a href="manipulation_detection.html#Lösungen">Lösungen</a></li><li class="active"><a href="manipulation_detection.html#SchlußwortundAusblick">Schlußwort und Ausblick</a></li></ol></li><li><a href="developer_information/shell_coding_conventions.html#ShellCodingConventions">Shell Coding Conventions</a><ol><li><a href="developer_information/shell_coding_conventions.html#ShellLanguage">Shell Language</a></li><li><a href="developer_information/shell_coding_conventions.html#BasicFormat">Basic Format</a></li><li><a href="developer_information/shell_coding_conventions.html#IfForandWhile">If, For, and While</a></li><li><a href="developer_information/shell_coding_conventions.html#TestBuilt-in">Test Built-in</a></li><li><a href="developer_information/shell_coding_conventions.html#Single-lineconditionalstatements">Single-line conditional statements</a></li><li><a href="developer_information/shell_coding_conventions.html#InfiniteLoops">Infinite Loops</a></li><li><a href="developer_information/shell_coding_conventions.html#ExitStatusandIfWhileStatements">Exit Status and If/While Statements</a></li><li><a href="developer_information/shell_coding_conventions.html#VariableReferences">Variable References</a></li><li><a href="developer_information/shell_coding_conventions.html#VariableNaming">Variable Naming</a></li><li><a href="developer_information/shell_coding_conventions.html#Quoting">Quoting</a></li><li><a href="developer_information/shell_coding_conventions.html#VariableAssignments">Variable Assignments</a></li><li><a href="developer_information/shell_coding_conventions.html#TestingforNon-EmptyStrings">Testing for (Non-)Empty Strings</a></li><li><a href="developer_information/shell_coding_conventions.html#Commenting">Commenting</a></li><li><a href="developer_information/shell_coding_conventions.html#Pathnames">Pathnames</a></li><li><a href="developer_information/shell_coding_conventions.html#InterpreterMagic">Interpreter Magic</a></li></ol></li><li><a href="developer_information/package_development.html#PackageDevelopment">Package Development</a><ol><li><a href="developer_information/package_development.html#PersistentPackageSettings">Persistent Package Settings</a></li></ol></li><li><a href="create_gui.html#ErstelleneinerGUIfürPaketeinFreetz">Erstellen einer GUI für Pakete in Freetz</a><ol><li><a href="create_gui.html#Motivation">Motivation</a></li><li><a href="create_gui.html#Grundlagen">Grundlagen</a></li><li><a href="create_gui.html#WiefunktioniertdasmitderGUI">Wie funktioniert das mit der GUI?</a></li></ol></li><li><a href="flash.html#FlashPartitionierung">Flash Partitionierung</a><ol><li><a href="flash.html#HiddenSquashFS">Hidden SquashFS</a></li><li><a href="flash.html#ContiguousSquashFS">Contiguous SquashFS</a></li><li><a href="flash.html#HiddenRoot">Hidden Root</a></li><li><a href="flash.html#NANDRoot">NAND Root</a></li><li><a href="flash.html#Dateisystem">Dateisystem</a></li><li><a href="flash.html#Kernel">Kernel</a></li><li><a href="flash.html#Weblinks">Weblinks</a></li></ol></li><li><a href="developer_information/post_commit_hook.html#TracHooks">Trac Hooks</a><ol><li><a href="developer_information/post_commit_hook.html#trac-post-commit-hook">trac-post-commit-hook</a></li><li><a href="developer_information/post_commit_hook.html#trac-post-revprop-change-hook">trac-post-revprop-change-hook</a></li></ol></li><li><a href="developer_information/package_development_advanced.html#PackageDeveloping-AdvancedTopics">Package Developing - Advanced Topics</a><ol><li><a href="developer_information/package_development_advanced.html#Addingconditionalpatches">Adding conditional patches</a></li><li><a href="developer_information/package_development_advanced.html#Addingmulti-binarypackages">Adding multi-binary packages</a></li></ol></li><li><a href="integrate_own_files.html#EigeneDateienindieFirmwareintegrieren">Eigene Dateien in die Firmware integrieren</a><ol><li><a href="integrate_own_files.html#FesteIntegrationüberdasFreetzImage">Feste Integration über das Freetz Image</a></li><li><a href="integrate_own_files.html#ErzeugenderDateienausderdebug.cfg">Erzeugen der Dateien aus der debug.cfg</a></li><li><a href="integrate_own_files.html#NachladenvomWebserver">Nachladen vom Webserver</a></li><li><a href="integrate_own_files.html#NachladenvomUSB-Stick">Nachladen vom USB-Stick</a></li><li><a href="integrate_own_files.html#WebDAVSharemounten">WebDAV Share mounten</a></li><li><a href="integrate_own_files.html#NFS-Sharemounten">NFS-Share mounten</a></li></ol></li><li><a href="freetz_make.html#FreetzBuild-Prozeß">Freetz Build-Prozeß</a><ol><li><a href="freetz_make.html#VorwortundMotivation">Vorwort und Motivation</a></li><li><a href="freetz_make.html#Grundsätzliches">Grundsätzliches</a></li></ol></li><li><a href="save_mtd_2.html#Flash-PartitionenvonaußenmitFTPsichern">Flash-Partitionen von außen mit FTP sichern</a><ol><li><a href="save_mtd_2.html#Motivation">Motivation</a></li><li><a href="save_mtd_2.html#Voraussetzungen">Voraussetzungen</a></li><li><a href="save_mtd_2.html#AllgemeineInformationenzurDatensicherung">Allgemeine Informationen zur Datensicherung</a></li><li><a href="save_mtd_2.html#SicherungmitLinux-Standard-FTPftp">Sicherung mit Linux-Standard-FTP (ftp)</a></li><li><a href="save_mtd_2.html#SicherungmitLinux-NcFTPncftpget">Sicherung mit Linux-NcFTP (ncftpget)</a></li><li><a href="save_mtd_2.html#SicherungmitCygwin-NcFTPncftpget">Sicherung mit Cygwin-NcFTP (ncftpget)</a></li><li><a href="save_mtd_2.html#UploadsviaFTP">Uploads via FTP</a></li></ol></li><li><a href="developer_information/webif/libmodcgi.html#libmodcgi.sh">libmodcgi.sh</a><ol><li><a href="developer_information/webif/libmodcgi.html#cgi">cgi</a></li><li><a href="developer_information/webif/libmodcgi.html#cgi_begin">cgi_begin</a></li><li><a href="developer_information/webif/libmodcgi.html#cgi_end">cgi_end</a></li><li><a href="developer_information/webif/libmodcgi.html#sec_begin">sec_begin</a></li><li><a href="developer_information/webif/libmodcgi.html#sec_end">sec_end</a></li><li><a href="developer_information/webif/libmodcgi.html#html">html</a></li><li><a href="developer_information/webif/libmodcgi.html#checkselect">check, select</a></li><li><a href="developer_information/webif/libmodcgi.html#href">href</a></li><li><a href="developer_information/webif/libmodcgi.html#back_button">back_button</a></li><li><a href="developer_information/webif/libmodcgi.html#sec_level">sec_level</a></li><li><a href="developer_information/webif/libmodcgi.html#stat_bar">stat_bar</a></li><li><a href="developer_information/webif/libmodcgi.html#cgi_param">cgi_param</a></li><li><a href="developer_information/webif/libmodcgi.html#cgi_errorprint_error">cgi_error, print_error</a></li><li><a href="developer_information/webif/libmodcgi.html#path_info">path_info</a></li><li><a href="developer_information/webif/libmodcgi.html#valid">valid</a></li></ol></li><li><a href="create_cross-compiler_toolchain.html#Cross-CompilerToolchainerstellen">Cross-Compiler / Toolchain erstellen</a></li><li><a href="create_cross-compiler_toolchain.html#EigeneDownload-Toolchainerstellen">Eigene Download-Toolchain erstellen</a></li><li><a href="create_cross-compiler_toolchain.html#TargetNative-Compiler-Toolchainerstellen">Target/Native-Compiler-Toolchain erstellen</a><ol><li><a href="create_cross-compiler_toolchain.html#Usingthedev-toolspackagetoinstallcompilerandtools">Using the dev-tools package to install compiler and tools</a></li></ol></li></ol></div><p>
+</p>
+<h1 id="WiedieFritzBoxManipulationenerkennt">Wie die FritzBox Manipulationen erkennt</h1>
+<p>
+Wer kennt sie nicht, diese schöne Meldung auf der Startseite des Web-Interface?
+</p>
+<blockquote>
+<p>
+<strong><em>In Ihrer FRITZBox wurden vom Hersteller nicht unterstützte Änderungen durchgeführt.</em></strong>
+</p>
+</blockquote>
+<h2 id="Ursachen">Ursachen</h2>
+<p>
+Was haben wir Böses gemacht, um diese Meldung zu verdienen? Da kommen i.a. zwei Dinge in Frage:
+</p>
+<ul><li><strong>Telnet-Login:</strong> Sobald der Benutzer sich auch nur ein einziges Mal via Telnet angemeldet hat, merkt sich die Box diesen Umstand - wie nachtragend - bis zum nächsten Recover, also normalerweise für alle Zeiten. Wer macht schon deswegen einen Recover?
+</li><li><strong>Nicht autorisiertes Firmware-Update:</strong> Des Modding-Freaks Freude ist offenbar der FritzBox Leid. Auch das Einspielen eines Firmware-Updates, egal ob echter (Freetz-)Mod oder Pseudo-Update ohne Firmware-Änderung (LCR-Updater, Telnet-Aktivierung usw.), wird mit einem Eintrag ins Klassenbuch geahndet und führt zur eingangs erwähnten Meldung.
+</li></ul><h2 id="Diagnose">Diagnose</h2>
+<p>
+Für beide Arten der Manipulation schreibt die Box Flags persistent in den Flash-Speicher, allerdings nicht in eine der unter <tt>/var/flash</tt> sicht- und änderbaren Konfigurationsdateien.
+</p>
+<h3 id="eventsdump">eventsdump</h3>
+<p>
+Es gibt allerdings ein Werkzeug, um sich die gesetzten Flags anzeigen zu lassen, wenn man auf der Box via Telnet oder SSH angemeldet ist: <tt>/sbin/eventsdump</tt>.
+</p>
+<pre class="wiki">eventsdump -d | head -n 1
+</pre><p>
+<em>Eventsdump</em> gibt eigentlich eine Ereignisliste auf die Konsole aus, wie man sie auch über das Web-Interface zu sehen bekommmt. Der Parameter <em>-d</em> führt dazu, dass eventuell gesetzte Manipulations-Flags mit ausgegeben werden, und zwar direkt in der ersten Zeile. Die filtern wir mit <tt>head</tt> heraus. Mögliche Ausgaben sind
+</p>
+<ul><li><em>DEBUGCFG</em>,
+</li><li><em>TELNET</em>,
+</li><li><em>NOT_SIGNED</em>,
+</li><li><em>IMPORT</em>,
+</li><li><em>NOT_SIGNED,IMPORT,TELNET</em> (oder andere Zusammenstellung/Reihenfolge, ohne Leerzeichen)
+</li><li>oder etwas anderes, also die erste Zeile des regulären Ereignis-Logs.
+</li></ul><p>
+So sehen wir also, was wir alles Böses getan haben.
+</p>
+<h3 id="strace">strace</h3>
+<p>
+Wenn wir jetzt wissen wollen, woher <tt>eventsdump</tt> seine Informationen nimmt, müssen wir mit einem Werkzeug wie <a class="ext-link" href="http://sourceforge.net/projects/strace"><span class="icon">​</span>strace</a> nachverfolgen, welche Systemaufrufe <tt>eventsdump</tt> macht. Hier ist ein Ausschnitt aus einem <tt>strace</tt>-Log:
+</p>
+<pre class="wiki">01  mkdir("/var", 0777) = -1 EEXIST (File exists)
+02  mkdir("/var/flash", 0777) = -1 EEXIST (File exists)
+03  unlink("/var/flash/fw_attrib") = -1 ENOENT (No such file or directory)
+04  mknod("/var/flash/fw_attrib", S_IFCHR|0666, makedev(240, 87)) = 0
+05  open("/var/flash/fw_attrib", O_RDONLY) = 3
+06  ioctl(3, TIOCNXCL, 0x7fc22230) = -1 EOPNOTSUPP (Operation not supported)
+07  read(3, "NOT_SIGNED,TELNET", 4096) = 17
+08  write(1, "NOT_SIGNED,TELNET\n", 3) = 18
+09  close(3) = 0
+10  unlink("/var/flash/fw_attrib") = 0
+</pre><p>
+Den Ausschnitt habe ich leicht umformatiert. Links steht statt der Zeilennummern normalerweise jeweils die PID des beobachteten Prozesses. Rechts nach dem Gleichheitszeichen steht übrigens immer der Rückgabewert des Aufrufs.
+</p>
+<p>
+Was passiert hier im Einzelnen?
+</p>
+<ol><li>Verzeichnis <tt>/var</tt> wird angelegt, falls es noch nicht existiert.
+</li><li>Verzeichnis <tt>/var/flash</tt> wird angelegt, falls es noch nicht existiert.
+</li><li>Datei <tt>/var/flash/fw_attrib</tt> wird gelöscht, falls vorhanden.
+</li><li><tt>/var/flash/fw_attrib</tt> wird als Character Device mit den Major/Minor-Nummern 240/87 neu angelegt. Mehr dazu später.
+</li><li><tt>/var/flash/fw_attrib</tt> wird zum Lesen geöffnet. Der aufmerksame Leser fragt sich: zum Lesen?! Der Node wurde doch gerade erst angelegt.
+</li><li>Die Systemfunktion <em>ioctl</em> wird aufgerufen, vermutlich um das "magische Verhalten" von <tt>fw_attrib</tt> zu initialisieren. Worin dieses besteht, werden wir gleich sehen. Hintergründe zu <em>ioctl</em> finden sich z.B. in <a class="ext-link" href="http://www.oreilly.de/german/freebooks/linuxdrive2ger/book1.html"><span class="icon">​</span>Linux-Gerätetreiber, 2. Auflage (OpenBook von O'Reilly)</a> oder in der <a class="ext-link" href="http://en.wikipedia.org/wiki/Ioctl"><span class="icon">​</span>englischen Wikipedia</a>.
+</li><li>Es wird aus <tt>fw_attrib</tt> gelesen. 17 Zeichen werden gefunden, sie enthalten den Text <em>NOT_SIGNED,TELNET</em>. Bingo!
+</li><li>Genau dieser Text plus Zeilenvorschub wird auf die Standardausgabe des Prozesses geschrieben. (Das ist, was wir zu sehen bekommen, wenn wir <tt>eventsdump -d</tt> aufrufen.
+</li><li><tt>fw_attrib</tt> wird wieder geschlossen.
+</li><li><tt>fw_attrib</tt> wird gelöscht, genauer gesagt der Node entfernt. Die Daten im Flash-Speicher überleben das, denn sie sind immer noch da, wenn wir genau das gleiche Character Device mit der selben Major/Minor-Kombination erneut öffnen.
+</li></ol><h3 id="CharacterDeviceNodes">Character Device Nodes</h3>
+<p>
+Wie versprochen, mehr zu Ziffer 4. Das Erzeugen des Character Device Nodes kann man auch selbst nachvollziehen, indem man den Shell-Befehl <tt>mknod</tt> verwendet. Die Schritte 4 bis 8 sehen auf der Shell wie folgt aus:
+</p>
+<div class="code"><pre>mknod /var/flash/fw_attrib c 240 87
+cat /var/flash/fw_attrib
+</pre></div><p>
+Ausgabe (ohne Zeilenvorschub):
+</p>
+<pre class="wiki">NOT_SIGNED,TELNET
+</pre><p>
+Vorsichtshalber sollte man aber die auf diesem Character Device arbeitende Befehlssequenz mit vor- und nachherigem Löschen des Nodes umschließen, wie im Trace zu sehen. Also einfach <tt>rm -f /var/flash/fw_attrib</tt>.
+</p>
+<h4 id="MajorNumber">Major Number</h4>
+<p>
+Offenbar ist nicht bei jeder Box bzw. jedem Firmware-Stand die Major Number dieselbe. Statt 240 kann also auch 250 oder etwas anderes als Major festgelegt sein. Darum wollen wir die Major Number allgemein feststellen können. Wie man in <em>/etc/init.d/rc.S</em> sehr schön sehen kann, wird beim Systemstart die Major fürs <em>tffs</em> so bestimmt:
+</p>
+<div class="code"><pre><span class="nv">major</span><span class="o">=</span><span class="k">$(</span>grep tffs /proc/devices<span class="k">)</span>
+<span class="nv">tffs_major</span><span class="o">=</span><span class="k">${</span><span class="nv">major</span><span class="p">%%tffs</span><span class="k">}</span>
+</pre></div><p>
+Das können wir in unserem Code weiter verwenden, um ihn allgemeiner zu machen.
+</p>
+<p>
+<em>Anmerkung: Ob die Minor Number auch geräte- oder firmwareabhängig ist, ist momentan nicht bekannt. Im ersten Fall einer unterschiedlichen Major war die Minor gleich.</em>
+</p>
+<h4 id="Wannwirdfw_attribautomatischgelöscht">Wann wird fw_attrib automatisch gelöscht?</h4>
+<p>
+Interessantes Detail: Auch ohne manuelles Löschen der Datei wird diese vom System alle paar Sekunden automatisch gelöscht, sofern das Web-Interface im Browser geöffnet ist. Das liegt daran, daß sich die Seite regelmäßig automatisch neu lädt, und dabei wird wegen des Aufrufs von <tt>eventsdump -d</tt> abgeräumt - security by obscurity. AVM möchte wohl nicht, daß die Benutzer die Datei sehen und manipulieren. Deshalb müssen wir den Node jedesmal wieder neu erzeugen. Aber das stört ja nicht, wenn man es erst einmal weiß.
+</p>
+<p>
+Um das Löschen zu verhindern, kann man der Datei auch einfach einen anderen Namen geben, z.B. <tt>/var/tmp/fw_attrib</tt>. Wichtig sind die Major und Minor Number.
+</p>
+<h2 id="Lösungen">Lösungen</h2>
+<h3 id="InHandarbeit">In Handarbeit</h3>
+<p>
+Wenn wir aus <tt>fw_attrib</tt> lesen können, wieso dann nicht auch hinein schreiben? Andere Prozesse tun es ja auch, wenn sie "Klassenbucheinträge" vornehmen. Das geht so:
+</p>
+<div class="code"><pre><span class="nv">major</span><span class="o">=</span><span class="k">$(</span>grep tffs /proc/devices<span class="k">)</span>
+<span class="nv">tffs_major</span><span class="o">=</span><span class="k">${</span><span class="nv">major</span><span class="p">%%tffs</span><span class="k">}</span>
+rm -f /var/flash/fw_attrib
+mknod /var/flash/fw_attrib c <span class="nv">$tffs_major</span> 87
+<span class="nb">echo</span> -n <span class="s2">""</span> &gt; /var/flash/fw_attrib
+rm -f /var/flash/fw_attrib
+</pre></div><p>
+Beachten Sie, daß <tt>echo -n</tt> nichts, also auch keinen Zeilenvorschub in die Datei schreibt. Das kommt einem Löschen des Inhalts gleich. Ein Kontroll-Aufruf von <tt>eventsdump -d | head -n 1</tt> bestätigt das, und wenn man jetzt <a class="ext-link" href="http://fritz.box"><span class="icon">​</span>http://fritz.box</a> aufruft, ist auf der Übersichtsseite die Meldung verschwunden - das Führungszeugnis ist sozusagen wieder sauber. <img src="../../../../chrome/wikiextras-icons-16/smiley.png" style="vertical-align: text-bottom" alt=":-)" />
+</p>
+<p>
+Aber freuen wir uns nicht zu früh, denn nach dem nächsten unautorisierten FW-Update bzw. dem folgenden Telnet-Login ist die Meldung wieder da. Was kann man also noch tun?
+</p>
+<h3 id="SäuberungsaktionbeimSystemstart">Säuberungsaktion beim Systemstart</h3>
+<p>
+Obige Befehlssequenz kann man selbstverständlich auch <tt>/var/flash/debug.cfg</tt> ausführen lassen. Solange man sich nicht per Telnet anmeldet, ist die Meldung damit weg, auch wenn man zuvor gerade ein FW-Update eingespielt hat. Tip: Mit SSH zu arbeiten, stört die FritzBox nicht, denn damit rechnet sie nicht und kreidet es uns somit auch nicht als Manipulation an. Wer also ein Freetz mit <a class="wiki" href="../../../packages/dropbear.html">Dropbear</a> hat, ist fein heraus.
+</p>
+<h3 id="RegelmäßigesAufräumenmitcron">Regelmäßiges Aufräumen mit cron</h3>
+<p>
+Mit Freetz hat man auch die Möglichkeit, einen <em>cron</em>-Job nach dem Rechten sehen und aufräumen zu lassen. Selbst wenn man also <em>Telnet</em> benutzt, ist, je nach eingestellter Frequenz, nach ein paar Minuten wieder das Flag gelöscht.
+</p>
+<h3 id="TelnetruhigstellenperHex-Editor">Telnet ruhig stellen per Hex-Editor</h3>
+<p>
+Wenn wir uns ein wenig in den Eingeweiden der Firmware umschauen, stellen wir fest, daß nicht <tt>telnetd</tt> selbst das entsprechende Flag setzt. Nein, es ist <tt>/sbin/ar7login</tt>. <tt>telnetd</tt> selbst wird ja wie folgt aufgerufen, um eine Anmeldung zu ermöglichen:
+</p>
+<div class="code"><pre>telnetd -l /sbin/ar7login
+</pre></div><p>
+Wer mit einem Hex-Editor (unter Linux z.B. <em>hexedit</em> aus dem gleichnamigen Paket) <tt>ar7login</tt> öffnet, findet schnell die Zeichenkette "TELNET" in Großbuchstaben. Genau diese Zeichenkette schreibt das Programm nach <tt>fw_attrib</tt>. Ersetzt man den ersten Buchstaben durch ein Null-Byte, entspricht das dem Ersetzen des Wortes durch eine Zeichenkette der Länge null, Strings in C sind schließlich null-terminiert. (Ziemlich oft das Wort "null", Entschuldigung.) Abspeichern, Firmware neu bauen, flashen - fürderhin bleiben wir verschont von Klassenbucheinträgen für Telnet-Logins.
+</p>
+<h3 id="NachgelagertesAufräumenperProxy-SkriptFirmware-Variante">Nachgelagertes Aufräumen per Proxy-Skript (Firmware-Variante)</h3>
+<p>
+Vielleicht traut sich nicht jeder die Arbeit mit dem Hex-Editor zu. Es geht auch ohne. Anstatt <tt>ar7login</tt> binär zu manipulieren, wenden wir einen Proxy-Ansatz an: Wir benennen <tt>/sbin/ar7login</tt> um in z.B. <tt>/sbin/ar7login-binary</tt> und setzen an seine Stelle ein Shell-Skript <tt>/sbin/ar7login</tt>:
+</p>
+<div class="code"><pre><span class="c">#!/bin/sh
+</span>/sbin/ar7login-binary <span class="nv">$*</span>
+<span class="nv">major</span><span class="o">=</span><span class="k">$(</span>grep tffs /proc/devices<span class="k">)</span>
+<span class="nv">tffs_major</span><span class="o">=</span><span class="k">${</span><span class="nv">major</span><span class="p">%%tffs</span><span class="k">}</span>
+rm -f /var/flash/fw_attrib
+mknod /var/flash/fw_attrib c <span class="nv">$tffs_major</span> 87
+<span class="nb">echo</span> -n <span class="s2">""</span> &gt; /var/flash/fw_attrib
+</pre></div><p>
+Wir reichen also einfach alle Parameter durch an <tt>ar7login</tt> und löschen danach umgehend wieder dessen Spuren im Klassenbuch. <img src="../../../../chrome/wikiextras-icons-16/smiley-wink.png" style="vertical-align: text-bottom" alt=";-)" /> Anschließend gilt analog zu Variante 1: Firmware bauen, flashen, glücklich sein. <img src="../../../../chrome/wikiextras-icons-16/exclamation.png" style="vertical-align: text-bottom" alt="/!\" /> <strong><em>Achtung: Das Flag wird erst gelöscht, nachdem die Telnet-Sitzung wieder beendet wird.</em></strong>
+</p>
+<h3 id="NachgelagertesAufräumenperProxy-SkripttransienteVariante">Nachgelagertes Aufräumen per Proxy-Skript (transiente Variante)</h3>
+<p>
+Wem das Firmware-Bauen zu umständlich ist, kann die Proxy-Methode auch dynamisch zur Laufzeit einsetzen, indem folgende Sequenz in <tt>/var/flash/debug.cfg</tt> eingebaut wird:
+</p>
+<div class="code"><pre>cat <span class="s">&lt;&lt; EOF &gt; /var/tmp/ar7login-proxy
+#!/bin/sh
+/var/tmp/ar7login-binary \$*
+major=\$(grep tffs /proc/devices)
+tffs_major=\${major%%tffs}
+rm -f /var/flash/fw_attrib
+mknod /var/flash/fw_attrib c \$tffs_major 87
+echo -n "" &gt; /var/flash/fw_attrib
+EOF</span>
+
+chmod +x /var/tmp/ar7login-proxy
+cp /sbin/ar7login /var/tmp/ar7login-binary
+mount -o <span class="nb">bind</span> /var/tmp/ar7login-proxy /sbin/ar7login
+</pre></div><p>
+Wie man sieht, wird <tt>ar7login</tt> zunächst nach <tt>/var/tmp/ar7login-binary</tt> kopiert. Das dynamisch erzeugte Skript <tt>/var/tmp/ar7login-proxy</tt> wird ausführbar gemacht und überlagert durch <tt>mount - o bind</tt> die Datei <tt>/sbin/ar7login</tt>, nur um als Proxy wiederum auf das kopierte Binary zu verweisen und nach Ende der Sitzung dann wieder das Telnet-Flag zu löschen.
+</p>
+<h3 id="AufräumendirektnachdemLoginFirmware-Variante">Aufräumen direkt nach dem Login (Firmware-Variante)</h3>
+<p>
+Die beiden Proxy-Varianten haben den Nachteil, während der Dauer der Telnet-Sitzung auf deren Beendigung zu warten und erst anschließend das Flag zu löschen. Wenn wir stattdessen unseren Aufräum-Code ins globale Shell-Profil <tt>/etc/profile</tt> einbauen, wird er jeweils direkt nach dem Login ausgeführt. Es gibt also keine signifikante Latenzzeit, in der die Flags gesetzt sind, denn das Aufräumen erfolgt ja bereits zu Beginn der Telnet-Sitzung.
+</p>
+<div class="code"><pre><span class="c"># ... normaler Inhalt von /etc/profile ...
+</span>
+<span class="nv">major</span><span class="o">=</span><span class="k">$(</span>grep tffs /proc/devices<span class="k">)</span>
+<span class="nv">tffs_major</span><span class="o">=</span><span class="k">${</span><span class="nv">major</span><span class="p">%%tffs</span><span class="k">}</span>
+rm -f /var/flash/fw_attrib
+mknod /var/flash/fw_attrib c <span class="nv">$tffs_major</span> 87
+<span class="nb">echo</span> -n <span class="s2">""</span> &gt; /var/flash/fw_attrib
+</pre></div><h3 id="AufräumendirektnachdemLogintransienteVariante">Aufräumen direkt nach dem Login (transiente Variante)</h3>
+<p>
+Ebenso wie bei der Proxy-Methode gilt auch hier: Das Profil kann auch beim Booten aus <tt>/var/flash/debug.cfg</tt> heraus umgeschrieben werden, indem man es per <tt>mount</tt> der Original-Datei überlagert:
+</p>
+<div class="code"><pre>cp /etc/profile /var/tmp/profile
+
+cat <span class="s">&lt;&lt; EOF &gt;&gt; /var/tmp/profile
+major=\$(grep tffs /proc/devices)
+tffs_major=\${major%%tffs}
+rm -f /var/flash/fw_attrib
+mknod /var/flash/fw_attrib c \$tffs_major 87
+echo -n "" &gt; /var/flash/fw_attrib
+EOF</span>
+
+mount -o <span class="nb">bind</span> /var/tmp/profile /etc/profile
+</pre></div><p>
+Man beachte, daß dieses Mal <tt>cat</tt> keine Datei erzeugt, sondern seine Ausgabe an die zuvor kopierte Originaldatei anhängt. Da wir auch nicht irgendwelche komplizierten Proxy-Konstrukte haben, brauchen wir uns auch nicht zu verrenken mit der Namensgebung der Shell-Profile.
+</p>
+<h3 id="FreetzPatch">Freetz Patch</h3>
+<p>
+Mit einem <a class="wiki" href="../../../patches/signed.html">Patch</a> für <a class="wiki" href="../../../freetz.html">Freetz</a> lässt sich der ganze obige Stress vermeiden, und die vermaledeite Meldung ist weg. Da unterstreicht das "Free" in "Freetz" doch gleich, was es heißt <img src="../../../../chrome/wikiextras-icons-16/smiley.png" style="vertical-align: text-bottom" alt=":-)" />
+</p>
+<h3 id="einfacheresLöschen">einfacheres Löschen</h3>
+<p>
+Man kann tffs-Dateien auch über /proc/tffs löschen. In diesem Fall ist der Befehl:
+</p>
+<pre class="wiki">echo clear_id 87 &gt; /proc/tffs
+</pre><h2 id="SchlußwortundAusblick">Schlußwort und Ausblick</h2>
+<p>
+Wozu die vielen Varianten, wenn es mit dem Patch doch so einfach geht? Ich dachte mir, ich erkläre mal die unterschiedlichen Ansätze, wie man beim FritzBox-Modding grundsätzlich vorgehen kann - von minimal-invasiv aus der <tt>debug.cfg</tt> heraus über die Manipulation von Skripten in der Firmware bis hin zum Patchen einer Binärdatei. Ich hoffe, meine Anregungen helfen anderen Mitstreitern beim Entwickeln von Konzepten, um die gute AVM-Firmware mit neuen Ideen noch ein bißchen besser, bequemer oder einfach cooler zu machen - kurz: um zu erreichen, was auch AVM uns nicht übel nehmen dürfte: optimale Ausnutzung der Hard- und Software, die wir beim Hersteller oder einem seiner Vertriebspartner gekauft haben.
+</p>
+<p>
+Was bleibt bzgl. dieses Themas noch offen? Nun, da sind immer noch die digitalen Signaturen, mit denen die Firmware-Images versehen sind. Sie sind an sich nichts Schlechtes, im Gegenteil. AVM, T-Com und 1&amp;1 tun gut daran, ihre jeweiligen Firmware-Versionen eindeutig als solche zu kennzeichnen und weisen mit Recht bei fehlerhafter Verifikation der Signaturen darauf hin, daß Support-Ansprüche für modifizierte Firmwares nicht mehr bestehen. Was ist aber, falls eines Tages der Hersteller oder einer seiner OEM-Partner beschließen sollten, die Boxen so zu konfigurieren, daß nicht korrekt signierte Firmware-Versionen nicht mehr zum Flashen angenommen würden? Das wäre eine Beschneidung der Benutzerrechte, für die es keinen triftigen Grund gäbe. Deswegen habe ich mir kürzlich die Signatur-Mechanismen angeschaut und auch hier Mittel und Wege gefunden, sie zu entschärfen. Mehr dazu gibt es ein anderes Mal.
+</p>
+<p>
+Weiterhin happy modding wünscht Euch
+</p>
+<p>
+<a class="ext-link" href="http://www.ip-phone-forum.de/member.php?u=117253"><span class="icon">​</span>Alexander Kriegisch (kriegaex)</a>
+</p>
+<p>
+&mdash;-
+</p>
+<p>
+Anmerkung: Ich habe eben in meiner neuen FBF 7170 (FW 29.4.32-7153) das schreiben in <tt>/var/flash/fw_attrib</tt> versucht. Zunächst lies dies die Meldung im Web-Interface jedoch vollkommen unbeeindruckt. Erst als ich mit
+</p>
+<div class="code"><pre><span class="nb">echo</span> -n <span class="s2">"\0\0\0\0\0\0"</span> &gt;/var/flash/fw_attrib
+</pre></div><p>
+mein "TELNET" in dem fw_attrib überschrieben habe, verschwand die Meldung im Web-Interface!
+Kann es sein, daß es notwendig ist die betreffenden Daten zu überschreiben (mit binär 0 = Stringende)?
+</p>
+<p>
+Harald Becker (ralda)
+</p>
+</div>
+          
+          <div class="trac-modifiedby">
+            <span><a href="manipulation_detection%3Faction=diff&amp;version=2.html" title="Version 2 von oliver: Add debug.cfg">zuletzt geändert</a> <a class="timeline" href="http://freetz.org/timeline?from=2012-05-14T14%3A10%3A27Z&amp;precision=second" title="Siehe Journal am 14.05.2012 14:10:27">vor 6 Jahren</a></span>
+            <span class="trac-print">Zuletzt geändert am 14.05.2012 14:10:27</span>
+          </div>
+        
+        
+      </div>
+      
+
+    </div>
+    <script type="text/javascript">
+        jQuery.loadStyleSheet("/pygments/trac.css", "text/css");
+    </script>
+    <div id="altlinks">
+      <h3>In anderen Formaten herunterladen:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="manipulation_detection%3Fformat=txt">Reiner Text</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" lang="en" xml:lang="en"><hr />
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="../../../../chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
+      <p class="left">Betrieben mit <a href="http://freetz.org/about"><strong>Trac 1.0.1</strong></a><br />
+        von <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right"><div class="field" align="right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations"/><input type="hidden" name="business" value="spenden@freetz.org"/><input type="hidden" name="item_name" value="Freetz Entwickler-Team"/><input type="hidden" name="no_shipping" value="1"/><input type="hidden" name="return" value="http://freetz.org"/><input type="hidden" name="cn" value="Name oder IPPF-Pseudonym"/><input type="hidden" name="currency_code" value="EUR"/><input type="hidden" name="tax" value="0"/><input type="hidden" name="lc" value="DE"/><input type="hidden" name="bn" value="PP-DonationsBF"/><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Zahlen Sie mit PayPal - schnell, kostenlos und sicher!"/><img alt="" border="0" src="http://freetz.org/pixel.gif" width="1" height="1"/></form></div></p>
+    </div>
+  </body>
+</html>

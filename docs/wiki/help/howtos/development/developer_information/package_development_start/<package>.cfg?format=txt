@@ -1,0 +1,45 @@
+=== <package>.cfg ===
+
+This file contains all the configurable parameters with their default values.
+
+
+In the build environment located at:
+ ~/freetz-trunk/make/files/root/etc/default.<package>/<package>.cfg
+
+On the router located at:
+ /mod/etc/default.<package>/<package>.cfg
+
+Example of a generic <package>.cfg file:
+{{{
+export <PACKAGE>_<OPTION1>='<value1>'
+export <PACKAGE>_<OPTION2>='<value2>'
+export <PACKAGE>_<OPTION3>='<value3>'
+export <PACKAGE>_<OPTION4>='<value4>'
+.
+.
+.
+export <PACKAGE>_<OPTIONn-1>='<valuen-1>'
+export <PACKAGE>_<OPTIONn>='<valuen>'
+}}}
+
+This file uses the Shell syntax and the variables can be exported using: {{{. /mod/etc/default.<package>/<package>.cfg}}}
+
+You first need to understand the package configuration before you can create this file.[[br]]
+The package configuration can be a config file, or just a few parameters.[[br]]
+
+These variables correspond with the http page input-field Tag: 
+ name="<OPTION1>"
+This is further explained in the [wiki:help/howtos/development/developer_information/package_development_start/<package>.cgi <package>.cgi] page.[[br]]
+
+For each package there is a {{{<PACKAGE>_ENABLED}}} variable.[[br]]
+This variable should be set 'no' so the package is not started at initial system startup.[[br]]
+
+The variables are used if a config file is generated with the [wiki:help/howtos/development/developer_information/package_development_start/<package>_conf <package>_conf] script.
+
+At initial startup e.g. without any config on the router, these variables are used.[[br]]
+A good choice for the default value can help as a hint, or just to make it easier for most users.[[br]]
+
+These values are also used if the {{{Defaults}}} button is used to revert back to the initial parameters.[[br]]
+
+The usage of this file is also explained in [wiki:help/howtos/development/developer_information/package_development_start#ConfigurationHandling Configuration Handling].[[br]]
+The Configuration Handling explains how a config file is generated and how it is saved in non-volatile memory, so it survives a reboot.[[br]]

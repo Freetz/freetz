@@ -1,0 +1,37 @@
+[[TOC(packages/rudi-shell,packages/rudi-shell/install,packages/rudi-shell/functions,packages/rudi-shell/usage,packages/rudi-shell/limits,packages/rudi-shell/tips,heading=Inhaltsverzeichnis)]]
+
+= Rudi-Shell =
+
+"Rudi" steht für rudimentär, denn wir haben es mit einem rudimentären Shell-Ersatz via CGI-Interface zu tun. Ich hatte angefangen, ihn recht komplex zu gestalten und mich dann eines Besseren besonnen: Small is beautiful. Rudi kann inzwischen nicht weniger als ursprünglich geplant, aber die Oberfläche ist puristischer als noch während der ersten Entwicklungsphase. Nicht zuletzt sind auch die CGI-Quelldateien inzwischen viel kleiner und einfacher geworden. Puristischere Oberflächen erfordern andererseits etwas mehr Dokumentation, also beschreibe ich im Folgenden, teils bebildert, was man mit Rudi so anstellen kann - kurz: '''alles! '''
+
+== Feature-Übersicht ==
+
+Mit Rudi kann man direkt über eine Weboberfläche Folgendes tun:
+ * Beliebige (eingetippte oder per Copy & Paste ins Befehlsfenster eingefügte) '''Shell-Skripte''' auf der Fritz!Box ausführen. Root-Rechte sind selbstverständlich.
+ * In einer beliebig langen '''Historie''' der zuletzt eingegebenen Befehle und Ausgaben(!) blättern, alte Befehle (bzw. Skripten) editieren und/oder erneut ausführen
+ * Wählen, ob die '''Befehls-Ausgabe in Textform''' inline im Browser angezeigt '''oder als Datei-Download''' gespeichert werden soll. Dieses Konzept ist sehr mächtig, denn man kann z.B. die Ausgabe eines ''Tar''-Befehls so umleiten, daß man auf einfache Weise Backups beliebiger Dateien oder Verzeichnisse anfertigen kann.
+ * Lokale '''Dateien''' (auch Archive) '''hochladen''' an einen beliebigen Zielort auf der Box, um sie dort anschließend ggf. mit weiteren Befehlen zu bearbeiten: Archiv auspacken, Patch für {{{debug.cfg}}} einspielen, mittels [wiki:packages/mini_fo mini_fo] (falls installiert) nur lesbare Dateien zum Test mit einer Schattenkopie überschreiben usw.
+
+== Systemvoraussetzungen ==
+
+Ich habe die Rudi-Shell entwickelt für den Danisahne-Mod, genauer gesagt für Olivers (olistudent) Version mit Kernel 2.6. Getestet habe ich konkret auf meiner Fritz!Box Fon WLAN 7170 mit Firmware 29.04.29, ds-0.2.9_26-13, Kernel 2.6.13.1, Busybox 1.4.1, Haserl 0.9.16 CGI-Handler. Grundsätzlich sollte meiner Meinung nach aber Folgendes ausreichen (''ohne'' DS-Mod/Freetz):
+
+=== Server ===
+ * beliebige Box (genug Platz zum Speichern und Ausführen von Rudi vorausgesetzt)
+ * beliebiger Kernel (2.4.x oder 2.6.x)
+ * beliebige [http://www.busybox.net/ Busybox]-Version mit ''httpd'' und ''sed''
+ * beliebige [http://haserl.sourceforge.net/ Haserl]-Version (z.B. die aktuelle ''stable'' 0.8.0)
+
+=== Client ===
+ * Web-Browser mit eingeschaltetem [http://de.wikipedia.org/wiki/JavaScript Javascript]; getestetet mit IE7, Opera 9.10, Firefox 2.0.0.2. Es wird ein wenig Javascript benutzt, um im [http://de.wikipedia.org/wiki/Document_Object_Model DOM] zu navigieren, die Historie zu steuern und [http://de.wikipedia.org/wiki/Common_Gateway_Interface CGI]-Unterprozesse in einem unsichtbaren [http://de.wikipedia.org/wiki/Iframe IFrame] auszuführen und mit deren Ergebnisse die Hauptseite zu aktualisieren (Konsolenausgabe).
+
+=== Was NICHT gebraucht wird ===
+ * Auf dem Server sind grundsätzlich weder Telnet noch [wiki:packages/dropbear SSH] noch [wiki:packages/openvpn OpenVPN] notwendig, d.h. Rudi sollte auch (und gerade) für "schwachbrüstige" Boxen mit wenig Speicher interessant sein.
+ * Eine Dateisystem-Verbindung, gleich in welche Richtung, ist auch nicht notwendig. D.h., wir brauchen weder [wiki:packages/samba Samba] noch smbmount noch [wiki:packages/nfs NFS].
+ * Es ist keine Filetransfer-Verbindung via FTP notwendig, alles läuft mittels HTTP, auch Up- und Downloads.
+ * Zum Datenaustausch wird auch kein externes Speichermedium (USB-Stick, Festplatte) und somit kein USB-Anschluß an der Box benötigt.
+
+=== Platzbedarf der Rudi-Shell ===
+ * Der Patch besteht aus drei CGI-Skripten im horrenden ;-) Gesamtumfang von 3,5 KB sowie ggf. einer Textzeile für das Menü von Freetz.
+ * Hinzu kommt Haserl. Das Binary meiner Version 0.9.16 für Kernel 2.6 ist knapp 24 KB groß. Im Vergleich dazu ist bereits [wiki:packages/bftpd bftpd] 67 KB groß (und man kann weniger damit tun!) und [wiki:packages/dropbear Dropbear] mit 179 KB riesig. Ein [wiki:packages/samba Samba-Server] schlägt gar mit knapp 900 KB zu Buche.
+ * Rudi verwendet von sich aus keine temporären Dateien für die auszuführenden Skripten oder die Befehlsausgaben. Alles läuft direkt durch anonyme [http://de.wikipedia.org/wiki/Pipe_%28Informatik%29#Unix UNIX-Pipes], von der Eingabe über die Verarbeitung bis zur Ausgabe. Lediglich, wenn der Benutzer selbst Dateien durch Ausgabeumleitung oder Datei-Uploads erstellt, wird Platz im Dateisystem benötigt.

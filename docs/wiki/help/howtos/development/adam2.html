@@ -1,0 +1,301 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+  
+
+
+  <head>
+    <title>
+      help/howtos/development/adam2 – Freetz
+    </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!--[if IE]><script type="text/javascript">
+      if (/^#__msie303:/.test(window.location.hash))
+        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
+    </script><![endif]-->
+        <link rel="search" href="http://freetz.org/search" />
+        <link rel="help" href="../../../TracGuide.html" />
+        <link rel="alternate" href="adam2%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
+        <link rel="up" href="../development.html" title="Übergeordnete Wiki-Seite anzeigen" />
+        <link rel="start" href="http://freetz.org/wiki" />
+        <link rel="stylesheet" href="../../../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
+        <link rel="shortcut icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+      <link type="application/opensearchdescription+xml" rel="search" href="http://freetz.org/search/opensearch" title="Freetz durchsuchen" />
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/jquery.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/babel.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/messages/de.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/trac.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/search.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/folding.js"></script>
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
+        $("#content").find(".wikianchor").each(function() {
+          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
+        });
+        $(".foldable").enableFolding(true, true);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://freetz.org/wiki"><img src="../../../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
+      </div>
+      <form id="search" action="http://freetz.org/search" method="get">
+        <div>
+          <label for="proj-search">Suche:</label>
+          <input type="text" id="proj-search" name="q" size="18" value="" />
+          <input type="submit" value="Suche" />
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="http://freetz.org/login">Anmelden</a></li><li><a href="http://freetz.org/prefs">Einstellungen</a></li><li><a href="../../../TracGuide.html">Hilfe/Anleitung</a></li><li><a href="http://freetz.org/about">Über Trac</a></li><li><a href="http://freetz.org/notification" title="Wiki Pages Change Notifications">My Notifications</a></li><li><a href="http://freetz.org/register">Registrieren</a></li><li class="last"><a href="../../../Impressum.html">Impressum</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first active"><a href="http://freetz.org/wiki">Wiki</a></li><li><a href="http://freetz.org/timeline">Journal</a></li><li><a href="http://freetz.org/roadmap">Projektplan</a></li><li><a href="http://freetz.org/browser">Quellen durchsehen</a></li><li><a href="http://freetz.org/report">Tickets anzeigen</a></li><li><a href="http://freetz.org/search">Suche</a></li><li><a href="http://freetz.org/tags">Tags</a></li><li><a href="http://freetz.org/downloads">Downloads</a></li><li class="last"><a href="http://freetz.org/screenshots">Bildschirmfotos</a></li>
+    </ul>
+  </div>
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="adam2..html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="http://freetz.org/wiki/help/howtos/development/adam2.en" title="(not available)">English</a></li></ul></div><div id="main">
+      <div id="pagepath" class="noprint">
+  <a class="pathentry first" title="Zeige WikiStart an" href="http://freetz.org/wiki">Wiki:</a><a class="pathentry" href="../../../help.html" title="Zeige help an">help</a><span class="pathentry sep">/</span><a class="pathentry" href="../../howtos.html" title="Zeige help/howtos an">howtos</a><span class="pathentry sep">/</span><a class="pathentry" href="../development.html" title="Zeige help/howtos/development an">development</a><span class="pathentry sep">/</span><a class="pathentry" href="adam2.html" title="Zeige help/howtos/development/adam2 an">adam2</a>
+</div>
+      <div id="ctxtnav" class="nav">
+        <h2>Kontext-Navigation</h2>
+        <ul>
+          <li class="first"><a href="../development.html">Aufwärts</a></li><li><a href="../../../WikiStart.html">Startseite</a></li><li><a href="../../../TitleIndex.html">Inhaltsverzeichnis</a></li><li><a href="adam2%3Faction=history.html">Änderungshistorie</a></li><li class="last"><a href="http://freetz.org/notification/help/howtos/development/adam2" title="Watch Page">Watch Page</a></li>
+        </ul>
+        <hr />
+      </div>
+    <div id="content" class="wiki">
+      <div class="wikipage searchable">
+        
+          <div id="wikipage" class="trac-content"><p>
+</p><div class="wiki-toc"><h4>Howtos: Entwicklung</h4><ol><li><a href="repack_fw.html#EntpackenundPackenvonFirmware-Images">Entpacken und Packen von Firmware-Images</a><ol><li><a href="repack_fw.html#ToolsundSyntax">Tools und Syntax</a></li><li><a href="repack_fw.html#Vorgehensweise">Vorgehensweise</a></li><li><a href="repack_fw.html#Verwendungvonfwmodimnofreetz-Modus">Verwendung von fwmod im "no freetz"-Modus</a></li></ol></li><li><a href="integrate_patches.html#PatchesinFreetzeinspielen">Patches in Freetz einspielen</a></li><li><a href="developer_information/package_development_start/example_3.html#Example3:NZBGet">Example 3: NZBGet</a><ol><li><a href="developer_information/package_development_start/example_3.html#Buildmanually">Build manually</a></li><li><a href="developer_information/package_development_start/example_3.html#AddpackagetoFreetz">Add package to Freetz</a></li><li><a href="developer_information/package_development_start/example_3.html#Createnewimagewithaddedpackage">Create new image with added package</a></li><li><a href="developer_information/package_development_start/example_3.html#Testing">Testing</a></li><li><a href="developer_information/package_development_start/example_3.html#PreparingNewPackageforPublicIntegrationtoFreetzTrunk">Preparing New Package for Public Integration to Freetz Trunk</a></li></ol></li><li><a href="developer_information/package_development_start/example_2.html#Example2:par2cmdline">Example 2: par2cmdline</a><ol><li><a href="developer_information/package_development_start/example_2.html#Buildmanually">Build manually</a></li><li><a href="developer_information/package_development_start/example_2.html#AddpackagetoFreetz">Add package to Freetz</a></li><li><a href="developer_information/package_development_start/example_2.html#Createnewimagewithaddedpackage">Create new image with added package</a></li><li><a href="developer_information/package_development_start/example_2.html#Testing">Testing</a></li><li><a href="developer_information/package_development_start/example_2.html#PreparingNewPackageforPublicIntegrationtoFreetzTrunk">Preparing New Package for Public Integration to Freetz Trunk</a></li></ol></li><li><a href="developer_information/package_development_start/example_1.html#Example1:Httptunnel">Example 1: Httptunnel</a><ol><li><a href="developer_information/package_development_start/example_1.html#Buildmanually">Build manually</a></li><li><a href="developer_information/package_development_start/example_1.html#AddpackagetoFreetz">Add package to Freetz</a></li><li><a href="developer_information/package_development_start/example_1.html#CallProceduresmakemenuconfigandmake">Call Procedures "make menuconfig" and "make"</a></li><li><a href="developer_information/package_development_start/example_1.html#Testing">Testing</a></li><li><a href="developer_information/package_development_start/example_1.html#PreparingNewPackageforPublicIntegrationtoFreetzTrunk">Preparing New Package for Public Integration to Freetz Trunk</a></li></ol></li><li><ol><li><a href="sign_image.html#SignierenvonFirmware">Signieren von Firmware</a></li><li><a href="sign_image.html#KonkreteAnwendunginFreetz">Konkrete Anwendung in Freetz</a></li></ol></li><li><a href="firmware_update_details.html#AblaufeinesFirmware-Updates">Ablauf eines Firmware-Updates</a></li><li><a href="compile_own_progs.html#EigeneProgrammekompilieren">Eigene Programme kompilieren</a></li><li><a href="bandwidth_svg.html#DynamischeBandbreitenanzeigeperSVG">Dynamische Bandbreitenanzeige per SVG</a><ol><li><a href="bandwidth_svg.html#AnleitungzurTest-Installation">Anleitung zur Test-Installation</a></li></ol></li><li><a href="make_room.html#PlatzsparenimDateisystemderFritzBox">Platz sparen im Dateisystem der FritzBox</a><ol><li><a href="make_room.html#VorwortundMotivation">Vorwort und Motivation</a></li><li><a href="make_room.html#Bestandsaufnahme:WosteckendiePlatzfresser">Bestandsaufnahme: Wo stecken die Platzfresser?</a></li><li><a href="make_room.html#WeitereSpartricks">Weitere Spartricks</a></li><li><a href="make_room.html#Schlußwort">Schlußwort</a></li></ol></li><li><a href="save_mtd_1.html#Flash-PartitionenimlaufendenBetriebsichern">Flash-Partitionen im laufenden Betrieb sichern</a><ol><li><a href="save_mtd_1.html#Motivation">Motivation</a></li><li><a href="save_mtd_1.html#Voraussetzungen">Voraussetzungen</a></li><li><a href="save_mtd_1.html#Lösungsweg">Lösungsweg</a></li><li><a href="save_mtd_1.html#WegesichschnelleinenÜberblickzuverschaffen">Wege, sich schnell einen Überblick zu verschaffen</a></li><li><a href="save_mtd_1.html#Zusammenfassung">Zusammenfassung</a></li></ol></li><li><a href="release_management.html#ReleaseManagement">Release Management</a><ol><li><a href="release_management.html#SubversionRepository">Subversion Repository</a></li><li><a href="release_management.html#Checklists">Checklists</a></li><li><a href="release_management.html#GIT">GIT</a></li><li><a href="release_management.html#Downloads">Downloads</a></li><li><a href="release_management.html#References">References</a></li></ol></li><li><a href="developer_information/package_development_start.html#Firststeps-Howtostartyourfirstfreetzpackage">First steps - How to start your first freetz package</a><ol><li><a href="developer_information/package_development_start.html#Info">Info</a></li><li><a href="developer_information/package_development_start.html#BuildEnvironment">Build Environment</a></li><li><a href="developer_information/package_development_start.html#FileStructure">File Structure</a></li><li><a href="developer_information/package_development_start.html#ExamplesBinaryPackage">Examples Binary Package</a></li><li><a href="developer_information/package_development_start.html#ConfigurationHandling">Configuration Handling</a></li><li><a href="developer_information/package_development_start.html#ExamplesWeb-Interface">Examples Web-Interface</a></li><li><a href="developer_information/package_development_start.html#Troubleshooting">Trouble shooting</a></li></ol></li><li><a href="make_kernel.html#Kernelkonfigurierenundkompilieren">Kernel konfigurieren und kompilieren</a></li><li><a href="menuconfig.html#Menükonfigurationpflegen">Menükonfiguration pflegen</a><ol><li><a href="menuconfig.html#Einstieg">Einstieg</a></li><li><a href="menuconfig.html#Beispiel-KonfigurationfüreinneuesPaket">Beispiel-Konfiguration für ein neues Paket</a></li><li><a href="menuconfig.html#Menuconfig-Warnungenbeheben">Menuconfig-Warnungen beheben</a></li><li><a href="menuconfig.html#ErklärungundAnwendungdererweitertenMK-Targets">Erklärung und Anwendung der erweiterten MK-Targets</a></li><li><a href="menuconfig.html#Syntax-FehlerinMK-Dateienfinden">Syntax-Fehler in MK-Dateien finden</a></li><li><a href="menuconfig.html#Syntax-HervorhebungfürMK-Dateien">Syntax-Hervorhebung für MK-Dateien</a></li></ol></li><li class="active"><a href="adam2.html#ADAM2-Bootloader">ADAM2-Bootloader</a><ol><li class="active"><a href="adam2.html#Bootloader-Backupanlegen">Bootloader-Backup anlegen</a></li><li class="active"><a href="adam2.html#Bootloaderüberschreiben">Bootloader überschreiben</a></li><li class="active"><a href="adam2.html#Bootloader-Befehle">Bootloader-Befehle</a></li><li class="active"><a href="adam2.html#Bootloader-Quelltext">Bootloader-Quelltext</a></li><li class="active"><a href="adam2.html#AufbaudesBootloaders">Aufbau des Bootloaders</a></li><li class="active"><a href="adam2.html#BootloaderundFreetz">Bootloader und Freetz</a></li></ol></li><li><a href="urlader_flags.html#EinstellungenspeichernimUrlader-Environment">Einstellungen speichern im Urlader-Environment</a><ol><li><a href="urlader_flags.html#VorwortundMotivation">Vorwort und Motivation</a></li><li><a href="urlader_flags.html#Lösungsmöglichkeiten">Lösungsmöglichkeiten</a></li><li><a href="urlader_flags.html#BootloaderEnvironment">Bootloader Environment</a></li><li><a href="urlader_flags.html#Variablekernel_args">Variable "kernel_args"</a></li><li><a href="urlader_flags.html#Kernel_Args-API">Kernel_Args-API</a></li><li><a href="urlader_flags.html#MöglicheAnwendungsfälle">Mögliche Anwendungsfälle</a></li></ol></li><li><a href="make_busybox.html#Busyboxkonfigurierenundkompilieren">Busybox konfigurieren und kompilieren</a></li><li><a href="package_creation.html#WiebaueicheineigenesPaketfürFreetz">Wie baue ich ein eigenes Paket für Freetz?</a></li><li><a href="analyse_image_names.html#Firmware-Image-Namenanalysierenundinterpretieren">Firmware-Image-Namen analysieren und interpretieren</a><ol><li><a href="analyse_image_names.html#Einleitung">Einleitung</a></li><li><a href="analyse_image_names.html#Skript-Code">Skript-Code</a></li><li><a href="analyse_image_names.html#DatenimRohformat">Daten im Rohformat</a></li><li><a href="analyse_image_names.html#AusgabegrundlegenderInformationen">Ausgabe grundlegender Informationen</a></li><li><a href="analyse_image_names.html#AusgabeerweiterterInformationen">Ausgabe erweiterter Informationen</a></li></ol></li><li><ol><li><a href="developer_information/package_development_start/webinterface_example_1.html#Web-interfaceHTTPTunnel">Web-interface HTTPTunnel</a></li></ol></li><li><a href="developer_information.html#DeveloperInformation">Developer Information</a></li><li><a href="install_addon.html#AddonPaketinstallieren">Addon Paket installieren</a></li><li><a href="developer_information/package_development_dynamic.html#PaketverwaltungfürFreetz">Paketverwaltung für Freetz</a><ol><li><a href="developer_information/package_development_dynamic.html#ErweiterungdesDateisystems">Erweiterung des Dateisystems</a></li><li><a href="developer_information/package_development_dynamic.html#Paketverwaltung">Paketverwaltung</a></li><li><a href="developer_information/package_development_dynamic.html#Links">Links</a></li><li><a href="developer_information/package_development_dynamic.html#Kommentare">Kommentare</a></li></ol></li><li><a href="manipulation_detection.html#WiedieFritzBoxManipulationenerkennt">Wie die FritzBox Manipulationen erkennt</a><ol><li><a href="manipulation_detection.html#Ursachen">Ursachen</a></li><li><a href="manipulation_detection.html#Diagnose">Diagnose</a></li><li><a href="manipulation_detection.html#Lösungen">Lösungen</a></li><li><a href="manipulation_detection.html#SchlußwortundAusblick">Schlußwort und Ausblick</a></li></ol></li><li><a href="developer_information/shell_coding_conventions.html#ShellCodingConventions">Shell Coding Conventions</a><ol><li><a href="developer_information/shell_coding_conventions.html#ShellLanguage">Shell Language</a></li><li><a href="developer_information/shell_coding_conventions.html#BasicFormat">Basic Format</a></li><li><a href="developer_information/shell_coding_conventions.html#IfForandWhile">If, For, and While</a></li><li><a href="developer_information/shell_coding_conventions.html#TestBuilt-in">Test Built-in</a></li><li><a href="developer_information/shell_coding_conventions.html#Single-lineconditionalstatements">Single-line conditional statements</a></li><li><a href="developer_information/shell_coding_conventions.html#InfiniteLoops">Infinite Loops</a></li><li><a href="developer_information/shell_coding_conventions.html#ExitStatusandIfWhileStatements">Exit Status and If/While Statements</a></li><li><a href="developer_information/shell_coding_conventions.html#VariableReferences">Variable References</a></li><li><a href="developer_information/shell_coding_conventions.html#VariableNaming">Variable Naming</a></li><li><a href="developer_information/shell_coding_conventions.html#Quoting">Quoting</a></li><li><a href="developer_information/shell_coding_conventions.html#VariableAssignments">Variable Assignments</a></li><li><a href="developer_information/shell_coding_conventions.html#TestingforNon-EmptyStrings">Testing for (Non-)Empty Strings</a></li><li><a href="developer_information/shell_coding_conventions.html#Commenting">Commenting</a></li><li><a href="developer_information/shell_coding_conventions.html#Pathnames">Pathnames</a></li><li><a href="developer_information/shell_coding_conventions.html#InterpreterMagic">Interpreter Magic</a></li></ol></li><li><a href="developer_information/package_development.html#PackageDevelopment">Package Development</a><ol><li><a href="developer_information/package_development.html#PersistentPackageSettings">Persistent Package Settings</a></li></ol></li><li><a href="create_gui.html#ErstelleneinerGUIfürPaketeinFreetz">Erstellen einer GUI für Pakete in Freetz</a><ol><li><a href="create_gui.html#Motivation">Motivation</a></li><li><a href="create_gui.html#Grundlagen">Grundlagen</a></li><li><a href="create_gui.html#WiefunktioniertdasmitderGUI">Wie funktioniert das mit der GUI?</a></li></ol></li><li><a href="flash.html#FlashPartitionierung">Flash Partitionierung</a><ol><li><a href="flash.html#HiddenSquashFS">Hidden SquashFS</a></li><li><a href="flash.html#ContiguousSquashFS">Contiguous SquashFS</a></li><li><a href="flash.html#HiddenRoot">Hidden Root</a></li><li><a href="flash.html#NANDRoot">NAND Root</a></li><li><a href="flash.html#Dateisystem">Dateisystem</a></li><li><a href="flash.html#Kernel">Kernel</a></li><li><a href="flash.html#Weblinks">Weblinks</a></li></ol></li><li><a href="developer_information/post_commit_hook.html#TracHooks">Trac Hooks</a><ol><li><a href="developer_information/post_commit_hook.html#trac-post-commit-hook">trac-post-commit-hook</a></li><li><a href="developer_information/post_commit_hook.html#trac-post-revprop-change-hook">trac-post-revprop-change-hook</a></li></ol></li><li><a href="developer_information/package_development_advanced.html#PackageDeveloping-AdvancedTopics">Package Developing - Advanced Topics</a><ol><li><a href="developer_information/package_development_advanced.html#Addingconditionalpatches">Adding conditional patches</a></li><li><a href="developer_information/package_development_advanced.html#Addingmulti-binarypackages">Adding multi-binary packages</a></li></ol></li><li><a href="integrate_own_files.html#EigeneDateienindieFirmwareintegrieren">Eigene Dateien in die Firmware integrieren</a><ol><li><a href="integrate_own_files.html#FesteIntegrationüberdasFreetzImage">Feste Integration über das Freetz Image</a></li><li><a href="integrate_own_files.html#ErzeugenderDateienausderdebug.cfg">Erzeugen der Dateien aus der debug.cfg</a></li><li><a href="integrate_own_files.html#NachladenvomWebserver">Nachladen vom Webserver</a></li><li><a href="integrate_own_files.html#NachladenvomUSB-Stick">Nachladen vom USB-Stick</a></li><li><a href="integrate_own_files.html#WebDAVSharemounten">WebDAV Share mounten</a></li><li><a href="integrate_own_files.html#NFS-Sharemounten">NFS-Share mounten</a></li></ol></li><li><a href="freetz_make.html#FreetzBuild-Prozeß">Freetz Build-Prozeß</a><ol><li><a href="freetz_make.html#VorwortundMotivation">Vorwort und Motivation</a></li><li><a href="freetz_make.html#Grundsätzliches">Grundsätzliches</a></li></ol></li><li><a href="save_mtd_2.html#Flash-PartitionenvonaußenmitFTPsichern">Flash-Partitionen von außen mit FTP sichern</a><ol><li><a href="save_mtd_2.html#Motivation">Motivation</a></li><li><a href="save_mtd_2.html#Voraussetzungen">Voraussetzungen</a></li><li><a href="save_mtd_2.html#AllgemeineInformationenzurDatensicherung">Allgemeine Informationen zur Datensicherung</a></li><li><a href="save_mtd_2.html#SicherungmitLinux-Standard-FTPftp">Sicherung mit Linux-Standard-FTP (ftp)</a></li><li><a href="save_mtd_2.html#SicherungmitLinux-NcFTPncftpget">Sicherung mit Linux-NcFTP (ncftpget)</a></li><li><a href="save_mtd_2.html#SicherungmitCygwin-NcFTPncftpget">Sicherung mit Cygwin-NcFTP (ncftpget)</a></li><li><a href="save_mtd_2.html#UploadsviaFTP">Uploads via FTP</a></li></ol></li><li><a href="developer_information/webif/libmodcgi.html#libmodcgi.sh">libmodcgi.sh</a><ol><li><a href="developer_information/webif/libmodcgi.html#cgi">cgi</a></li><li><a href="developer_information/webif/libmodcgi.html#cgi_begin">cgi_begin</a></li><li><a href="developer_information/webif/libmodcgi.html#cgi_end">cgi_end</a></li><li><a href="developer_information/webif/libmodcgi.html#sec_begin">sec_begin</a></li><li><a href="developer_information/webif/libmodcgi.html#sec_end">sec_end</a></li><li><a href="developer_information/webif/libmodcgi.html#html">html</a></li><li><a href="developer_information/webif/libmodcgi.html#checkselect">check, select</a></li><li><a href="developer_information/webif/libmodcgi.html#href">href</a></li><li><a href="developer_information/webif/libmodcgi.html#back_button">back_button</a></li><li><a href="developer_information/webif/libmodcgi.html#sec_level">sec_level</a></li><li><a href="developer_information/webif/libmodcgi.html#stat_bar">stat_bar</a></li><li><a href="developer_information/webif/libmodcgi.html#cgi_param">cgi_param</a></li><li><a href="developer_information/webif/libmodcgi.html#cgi_errorprint_error">cgi_error, print_error</a></li><li><a href="developer_information/webif/libmodcgi.html#path_info">path_info</a></li><li><a href="developer_information/webif/libmodcgi.html#valid">valid</a></li></ol></li><li><a href="create_cross-compiler_toolchain.html#Cross-CompilerToolchainerstellen">Cross-Compiler / Toolchain erstellen</a></li><li><a href="create_cross-compiler_toolchain.html#EigeneDownload-Toolchainerstellen">Eigene Download-Toolchain erstellen</a></li><li><a href="create_cross-compiler_toolchain.html#TargetNative-Compiler-Toolchainerstellen">Target/Native-Compiler-Toolchain erstellen</a><ol><li><a href="create_cross-compiler_toolchain.html#Usingthedev-toolspackagetoinstallcompilerandtools">Using the dev-tools package to install compiler and tools</a></li></ol></li></ol></div><p>
+</p>
+<h1 id="ADAM2-Bootloader">ADAM2-Bootloader</h1>
+<p>
+ADAM2 ist ein Bootloader von Texas Intruments, der ähnliche Aufgaben übernimmt wie ein BIOS beim PC. ADAM2 wurde in abgewandelter Form von AVM in frühen FRITZBox-Modellen mit Kernel 2.4 eingesetzt, und wich noch vor Einführung des Kernels 2.6 der aus Nutzersicht nahezu funktionsgleichen Eigenentwicklung EVA. Wegen der vielen Parallelen können beide Varianten als "der Bootloader" betrachtet werden, und müssen nur in Einzelfällen unterschieden werden.
+</p>
+<p>
+Die Aufgaben des Bootloaders sind:
+</p>
+<ul><li>die Hardware zu initialisieren
+</li><li>das Flash zu erkennen
+</li><li>das RAM zu erkennen und zu prüfen
+</li><li>die Partitionierung und grundlegende Werkseinstellungen zu verwalten
+</li><li>eine Serielle Konsole bereitzustellen
+</li><li>einen kleinen FTP-Server bereitzustellen (für Recovery)
+</li><li>das Environment im TFFS zu verwalten
+</li><li>das installierte Kernel zu booten
+</li></ul><h2 id="Bootloader-Backupanlegen">Bootloader-Backup anlegen</h2>
+<p>
+Wer will kann sich ein Bootloader-Backup anlegen sollte sich aber dringend merken von *genau welcher* Box das war (MAC-Adresse). Mehr dazu um nächsten Abschnitt.
+</p>
+<p>
+Die Grösse des Bootloaders wird in der Environment-Variable <tt>mtd2</tt> gespeichert, die fest im Bootloader selbst eingestellt ist.
+</p>
+<p>
+Aus Linux heraus hat diese Partition oft eine von <tt>2</tt> abweichende Nummer die man mit folgendem Befehl ausfindig macht:
+</p>
+<pre class="wiki">cat /proc/mtd
+</pre><p>
+Eine der dort genannten Partitionen nennt sich <tt>bootloader</tt> oder <tt>urlader</tt>. Mit deren Nummer (hier z.B. <tt>3</tt>) liesst man dann die zugehörige <tt>mtdblock</tt> Device aus:
+</p>
+<pre class="wiki">cat /dev/mtdblock3 &gt; bootloader.bin
+</pre><p>
+Siehe auch <a class="wiki" href="save_mtd_1.html">Flash-Partitionen im laufenden Betrieb sichern</a>.
+</p>
+<p>
+ADAM2 ist immer 64KB gross, EVA bei älteren Modellen 64KB, bei neueren Modellen 128KB oder 256KB. Beim IAD 7570 ist die <tt>mtd2</tt> Partition zwar 256KB, die oberen 128KB sind jedoch leer (0xFF). Dies könnte auf eine geplante (aber technisch nicht durchführbare) zweite Instanz des Bootloaders deuten. Die Grösse des Bootloader sollte unbedingt beim Entwickeln von Aliens beachtet werden. Ein nicht angepasstes <tt>install</tt> Script für 64KB Bootloader zerstört einen 128KB Bootloader ohne Vorwarnung! Das gilt dann auch für das AVM Webinteface - die Box wird vorhersagbar zum Brick.
+</p>
+<p>
+Daher, wer Aliens entwickelt ohne das Environment des Zielgerätes geprüft und mit dem <tt>install</tt> Script verglichen zu haben gefährdet Geräte. Auch im Trunk sollten daher solche riskanten Experimente nur mit Aufwand freischaltbar sein (implementiert: neuer nicht per GUI aktivierbarer "Real Developer" Risiko-Modus).
+</p>
+<h2 id="Bootloaderüberschreiben">Bootloader überschreiben</h2>
+<p>
+Kurz: <strong>NEIN!
+</strong></p>
+<p>
+Der Bootloader enthält zahlreiche Informationen die eine Box einmalig machen, bei vielen WLAN-Modellen auch Kalibrierung ohne die das Gerät nicht mehr das selbe ist.
+</p>
+<p>
+Eine Übertragung ist daher grober Unfug. Auch wenn man diese Angaben korrekt anpassen würde gibt es ein noch fataleres Problem:
+</p>
+<p>
+Selbst gleiche Modelle wurden je nach Verfügbarkeit mit unterschiedlichen Flash- und RAM-Chips bestückt, besonders bei RAM auch mit Bausteinen mit erheblich abweichenden Eigenschaften (wie Anzahl der Banks und Timing etc.). Diese Unterschiede werden durch undokumentierte Konfiguration im Bootloader gesichert. Bootloader-Updates von AVM übertragen diese Information.
+</p>
+<p>
+<strong>Ein Bootloader ist auch zwischen gleichen Modellen nicht gefahrlos übertragbar!. 
+</strong></p>
+<p>
+Ohne RAM funktioniert auch ein intakter Bootloader nicht &rArr; Brick.
+</p>
+<p>
+Um die oben erstellte Sicherung *auf genau die selbe Box* zurückzuspielen *wäre* dies der Weg:
+</p>
+<pre class="wiki">cat bootloader.bin &gt; /dev/mtdblock3
+</pre><p>
+Selbst dann besteht Brickgefahr. Die MTD Treiber blockieren nicht das OS. Greift ein anderer Prozess währenddessen z.B. über die ADAM2 API auf das Environment zu hängt sich das System eventuell während des Schreib- oder Löschvorgangs auf &rArr; Brick.
+</p>
+<p>
+Grundsätzlich sollte man daher den Bootloader nur mit geeigneter AVM Firmware schreiben oder wenn man über Werkzeuge zum debricken (EJTAG) verfügt.
+</p>
+<h2 id="Bootloader-Befehle">Bootloader-Befehle</h2>
+<ul><li>Die über die Serielle Konsole nutzbaren Befehle findet man im <a class="ext-link" href="http://www.wehavemorefun.de/fritzbox/ADAM2_Shell"><span class="icon">​</span>ADAM2 Shell</a> Artikel
+</li><li>Die per FTP nutzbaren Befehle findet man im <a class="ext-link" href="http://www.wehavemorefun.de/fritzbox/TinyFTP"><span class="icon">​</span>TinyFTP</a> Artikel
+</li></ul><p>
+Bei einigen Modellen wurde aus Sicherheitsgründen die ADAM2 Shell entfernt. Dies betrifft keine im freien Handel befindliches Geräte, nur Providermodelle wie die FRITZBox Cable.
+</p>
+<p>
+Per FTP sind nur Modelle mit mindestens einem LAN-Port erreichbar (und recoverbar). Daher eignen sich Modelle ohne LAN (einige Repeater) nicht zum Experimentieren oder Freetzen. Grobe Faustregel: Wenn AVM eine Recovery bereitstellt ist ein Gerät perfekt zum Freetzen geeignet. Dies gilt nicht automatisch für von kleineren Providern bereitgestellte Geräte! Diese können sogenannte "Provider Additive" enthalten die einen Werksreset überstehen. Neuere Recoveries verweigern bei solchen Geräten ihre Funktion, ältere Recoveries zerstören das Additiv (ohne "vor Ort" Hilfe des Providers irreparabel). Dies dürfte der Grund sein warum AVM die <a class="ext-link" href="ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7570/x_misc/english/"><span class="icon">​</span>7570 Recovery</a> vom FTP-Server entfernte.
+</p>
+<p>
+Für AVM Speedports gab es nur werksinterne Recoveries für den Telekom-Service. Diese wurden leider nie veröffentlicht.
+</p>
+<p>
+<strong>Achtung: Im Netz kursieren auch defekte Speedport (sp2fr) Recoveries die jeden Speedport bricken!
+</strong></p>
+<p>
+Speedports lassen sich mit geringem Aufwand auch sauber mit Freetz recovern. Achtung: Howtos, Forenpostings und Windows Tools die MTD3/4 clean empfehlen sind entweder uralt oder ein stümperhafter Faulheitshack! Details zu den teilweise fatalen Folgen dieser fossilen Unsitte folgen.
+</p>
+<h2 id="Bootloader-Quelltext">Bootloader-Quelltext</h2>
+<p>
+ADAM2 wurde vielen Abnehmern von TI-Chips bereitgestellt und war eigentlich nie quelloffen. Jeder Hersteller von Geräten modifizierte ihn dann nach eigenen Bedürfnissen und hielt den Quelltext geschlossen, so auch AVM. Auch Linksys nutzte eine modifizierte ADAM2 Version, leakte den Quelltext aber versehentlich in einem wag54g Tarball. Damit änderte sich nicht der proprietäre Status von ADAM2, er wurde aber zumindest in der Linksys Variante "Visible Source" und kann <a class="ext-link" href="http://gpl.back2roots.org/source/WAG54GV2/src/Adam2/"><span class="icon">​</span>hier</a> gestöbert werden. Diese Variante ist aber nur sehr beschränkt für die FRITZBox aussagekräftig.
+</p>
+<p>
+Der Quelltext der AVM Variante von ADAM2 wurde nie veröffentlicht. Lediglich die <a class="ext-link" href="http://gpl.back2roots.org/source/fritzbox/ALL_4.06/GPL-release_kernel/linux/drivers/adam2/"><span class="icon">​</span>ADAM2 API</a> zum Erreichen des Environments war quelloffen.
+</p>
+<p>
+Der Nachfolger EVA basiert nicht auf ADAM2 und ist ein kompletter funktionskompatibler Rewrite. Im Gegensatz zu ADAM2 unterstützt EVA direkt komprimierte Kernels und wurde bisher auf mindestens 8 Architekturen portiert. ADAM2 kam nur auf AR7-Modellen mit Kernel 2.4 zum Einsatz. Alle von Freetz erzeugte Firmware benötigt Kernel 2.6 und EVA.
+</p>
+<h2 id="AufbaudesBootloaders">Aufbau des Bootloaders</h2>
+<p>
+Am Anfang eines jeden MIPS-Bootloaders befindet sich eine 8-Byte "Signatur". In Wirklichkeit handelt es sich um Assembler-Code zur Initialisierung des MIPS-Kerns die MIPS netterweise bittet nicht zu ändern. Diese Befehlssequenz löscht 2 Hälften eines Debug-Registers (Watchpoint Exception bei "Berührung" einer Adresse) die im Normalbetrieb nicht genutzt werden und eignen sich auch wegen der Länge hervorragend als zuverlässige Signatur. Siehe in diesem <a class="ext-link" href="http://gpl.back2roots.org/source/WAG54GV2/src/Adam2/src/avreset.S"><span class="icon">​</span>Quelltext</a> den Kommentar "First thing: clear watch regs".
+</p>
+<p>
+Für Litte Endian Modelle (AR7, UR8) assembliert dies zur Hexfolge <tt>00 90 80 40 00 98 80 40</tt> die immer am Anfang von <tt>mtd2</tt> (also vom gesamten Flash) zu finden ist. Bei Big Endian Modellen (AR9, AR10, VR9, Fusiv) entspricht es der 32-bit gespiegelten Hexfolge <tt>40 80 90 00 40 80 98 00</tt> und es befinden sich grundsätzlich weitere Daten davor. Dies ist eine bis zu 1024 Bytes grosse <a class="ext-link" href="https://dev.openwrt.org/browser/trunk/package/uboot-ifxmips/files/cpu/mips/danube/start.S"><span class="icon">​</span>Vektortabelle</a> oder Kalt- und Warmstartvektoren und Code zur Initialisierung der <a class="ext-link" href="http://code.metager.de/source/xref/denx/u-boot/arch/mips/cpu/mips32/start.S#44"><span class="icon">​</span>hier ab Zeile 44</a> genannten EBU-Einheit. Beim AR9, AR10 und VR9 sind dies 24 Bytes (Offset 0x18), beim Fusiv die vollen 1024 Bytes (Offset 0x400). Diese Bytes gehören natürlich zum Bootloader, die beiden "Signatur-Befehle" verschieben sich dadurch lediglich.
+</p>
+<p>
+Zum Ausmaskieren von ARM Bootloadern sind diese Signaturen nicht geeignet, da ARM Assembler andere Häufigkeitsverteilungen hat. Ein zuverlässiger Detektor muss also zuerst ARM Code erkennen. Zum Erkennen von Puma5 (ARM1176BE) Bootloadern gibt es auch eine zuverlässige Assemblersequenz aus der Lowlevel-Initialisierung. Siehe in <a class="ext-link" href="http://gpl.back2roots.org/source/puma5/netgear/CMD31T_GPL/ti/psp_uboot/src/u-boot-1.2.0/cpu/arm1176/puma5/puma5.h"><span class="icon">​</span>diesem</a> und <a class="ext-link" href="http://gpl.back2roots.org/source/puma5/netgear/CMD31T_GPL/ti/psp_uboot/src/u-boot-1.2.0/board/tnetc550/lowlevel_init.S"><span class="icon">​</span>diesem</a> Quelltext den Kommentar "Unlock CFG MMR region". Dies assembliert zu Code der die Hexfolge <tt>08 61 1A 38 83 E7 0B 13 08 61 1A 3C</tt> enthält. Diese Signatur ist leider nicht am Anfang des Bootloaders zu finden. Bei der 6360 mit EVA 2070 befindet sie sich an Offset 0xF1AC, also noch in den ersten 64KB von Puma5 EVA. Leider stehen keine Recoveries zum Testen der Signatur zur Verfügung. Mit Puma5 EVA oder <a class="ext-link" href="http://gpl.back2roots.org/source/puma5/netgear/CMD31T_GPL/ti/psp_uboot/src/u-boot-1.2.0/board/tnetc550/lowlevel_init.o"><span class="icon">​</span>U-Boot Code</a> funktioniert sie einwandfrei.
+</p>
+<p>
+Ungeachtet des Offsets erkennt man EVA am 32-bit Wert <tt>0x00000002</tt> oder <tt>0x00000003</tt> im jeweiligen Endian an Offset 0x580. Dies ist die Version (fast immer 2, bei brandaktuellen Modellen auch 3) der EVA <a class="ext-link" href="http://www.wehavemorefun.de/fritzbox/ADAM2#Urlader-Konfig"><span class="icon">​</span>Urlader-Konfig</a> in der Teile der Grundeinstellungen im Werk eingetragen werden. Da EVA-Images in Firmware keine Konfiguration enthalten ist der Wert dort <tt>0xFFFFFFFF</tt>. Auch ADAM2 enthielt Teile dieser Einstellungen, jedoch einkompiliert ohne festen Offset. 
+</p>
+<p>
+In beiden Bootloadern sind 8 Default-MAC-Adressen <tt>00:04:0E:FF:FF:01</tt> - <tt>00:04:0E:FF:FF:08</tt> einkompiliert, die Mindestanforderung für eine Kommunikation, sollte die Urlader-Konfig defekt oder noch nicht vorhanden sein. Seit Entwicklung des <a class="ext-link" href="http://www.wehavemorefun.de/fritzbox/5188"><span class="icon">​</span>VoIP Gateway 5188</a> findet man in EVA auch das Environment der zweiten CPU fest einkompiliert, da diese über kein eigenes Flash und daher auch kein TFFS und Environment verfügt und über NFSRoot bootet. Environment-Variablen können intern nicht nur per Name angesprochen werden sondern auch per numerischem Index. Dazu wurde eine Liste numerisch ansprechbarer Variablen einkompiliert die immer mit <tt>AutoMDIX</tt> anfängt. Bei älteren ADAM2 Urladern endet die Liste nach der letzten Variable (z.B. <tt>wlan_key</tt>), bei neueren ADAM2 und EVA mit <tt>zuende</tt>. Diese Tabelle ist quelloffen, da sie auch die Namenstabelle des TFFS ist, siehe "#if defined(URLADER)" und "_TFFS_Name_Table" in <a class="ext-link" href="http://gpl.back2roots.org/source/fritzbox/7270_5.05/GPL-release_kernel/linux/include/linux/tffs.h"><span class="icon">​</span>tffs.h</a>.
+</p>
+<p>
+In allen Recoveries finden sich Fragmente von mindestens einem Bootloader. In den Anfängen der FRITZBox wurde identische Firmware für mehrere Modelle umbenannt, die Bootloader jedes dieser Modelle waren jedoch noch nicht harmonisiert. Entsprechend findet man in Recoveries aus dieser Zeit multiple Bootloader-Signaturen, da der modellspezifische Teil mehrfach enthalten war, die modellübergreifende Teil jedoch nicht. 
+</p>
+<p>
+Grundsätzlich ist die Extraktion eines funktionierenden Bootloaders aus einer Recovery nicht möglich, da der Bootloader aus in der Recovery enthaltenen Codefragmenten und auf der Box befindlichen Werkseinstellungen intelligent zusammengebaut wird. Für die Modellforschung ist die Auffindbarkeit der Fragmente und deren Grundeinstellungen jedoch interessant. Von 436 analysierten Recoveries waren etwa 14% ADAM2-MIPSLE, 50% EVA-MIPSLE und die restlichen 36% EVA-MIPSBE. Bei allen Proben genügte die Auswertung der letzten 256 KB des mit 7zip isolierbaren <tt>.data</tt> Segments jeder Recovery.exe.
+</p>
+<p>
+Bei der Umstellung auf Kernel 2.6 mussten einige Modelle auf EVA umgestellt werden. Daher enthalten einige Firmware-Updates ein <tt>urlader.image</tt> und passende Programme zur Aktualisierung. In den Anfängen gab es auch einige ADAM2-Updates, in denen der Dateiname Modell- und Versionsinformation wie <tt>urlader.Fritz_Box_4MB.97.adam2.image</tt> enthielt. Im Gegensatz zu den Fragmenten in Recoveries sind diese immer "fixed-size" Bootloader mit Leerbereichen für zu übertragende Konfiguration.
+</p>
+<p>
+In ADAM2 ist die Version des Urladers als Integer in der Form <tt>urlader-version \x00 99 \x00</tt> einkompiliert, bevor es diese Variable gab in der Form <tt>$ProjectRevision: 1.24 $</tt>, auch mit mehrstelliger Version wie in <a class="ext-link" href="http://www.akk.org/~enrik/fbox/OLD/boot-06.01.116.txt"><span class="icon">​</span>diesem</a> Bootlog. Bei EVA findet man die Version mit bis zu 3 Bytes Abstand vor oder hinter der Zeichenfolge <tt>%d.%s</tt> und es muss 1000 hinzugezählt werden. Ein zusätzliches <tt>M</tt> signalisiert eine modifizierte Variante. In neueren Recoveries findet man zudem einen <tt>.eva</tt> Dateinamen, z.B. für die 7360v2 mit EVA 2717M den String <tt>1717M.eva</tt>. In 436 analysierten Recoveries wurden ADAM2 der Versionen 1.20, 1.24, 50 bis 99 und EVA der Versionen 1124 bis 2970 entdeckt (Stand 2014-01). Bei 5 EVA 1190 Recoveries 04.30/31 funktioniert die Versionserkennung nicht, die Nummer ist dort irgendwo ab Offset 0xF000 relativ zur Signatur zu finden. Diese müssen per MD5 erkannt werden.
+</p>
+<p>
+Der älteste in Firmware gefundene Bootloader, ADAM2 Version 1.24, wurde in der bisher ältesten bekannten Firmware fritz.box_sl.05.01.63.image vom 30. April 2004 (1 Monat nach Vorstellung der ersten FRITZBox auf der CeBIT) entdeckt. 4 englische Bootloader der Version 1.20 sind neuer. Durch getrennte Weiterentwicklung je Modell können ADAM2 Versionen nicht kalendarisch sortiert werden. Der älteste in Firmware gefundene EVA Bootloader Version 1124 befindet sich in einer frühen 7170 Recovery. EVA-Versionen lassen sich auch erst ab etwa 1600 modellübergreifend kalendarisch sortieren.
+</p>
+<p>
+Recoveries enthalten zwei weitere leicht zu findende Versionsangaben für den Programmteil. Über die enthaltenen Firmwarekomponenten sagen sie nichts aus. Je 2 Beispiele:
+</p>
+<ul><li>FW 3.37: <tt>AVM Berlin recover-tool-version:[RECOVER:53][IO_CSP:11] compiled at Feb 18 2005 on 14:24:36</tt>
+</li><li>FW 6.01: <tt>AVM Berlin recover-tool-version:[RECOVER:378M][IO_CSP:248] compiled at Aug 23 2013 on 13:52:14</tt>
+</li><li>FW 3.37: <tt>[AVM Berlin Wizard Base Project, $ProjectRevision: 1.7 $, $Date: 2005/02/11 10:47:18Z $, kompiliert am Feb 14 2005 um 10:10:13]</tt>
+</li><li>FW 6.01: <tt>[AVM Berlin Wizard Base Project, $ProjectRevision: 1.63 $, $Date: 2011/07/04 11:49:20Z $, kompiliert am Jul  8 2013 um 11:45:45]</tt>
+</li></ul><p>
+Wie man sieht werden die Komponenten GUI (Wizard), Recover- und I/O-Teil  getrennt entwickelt und kompiliert. Eine heutige Recovery besteht also aus mindestens 6 Projekten. Auf älteren FRITZBox CDs (z.B. 3020) befindet sich eine recover.exe ohne integrierte Firmware (etwa 100KB) der noch ein externes Image bereitgestellt werden musste. Das Programm nennt sich <tt>ar7recover</tt> und stammt vom Februar 2004, 1 Monat vor Vorstellung der ersten FRITZBox. Dies dürfte wohl die älteste veröffentlichte Recovery-Lösung von AVM sein.
+</p>
+<p>
+Jede Recovery erkennt eine Box an der Urlader-Variable <tt>HWRevision</tt>. Da der Urlader keinen Zugriff auf den vollständigen Namen eines Modells hat enthält jede Recovery eine Liste aller bis zum Erstellungsdatum bekannten HWRevisions und deren Modellnamen. Die Liste befindet sich im mit <tt>7zip</tt> isolierbaren <tt>.rdata</tt> Segment, bei älteren Recoveries bis etwa 04.43 ist sie im <tt>.data</tt> Segment oder nicht vorhanden (bisher nur bei einer 03.14). Zweck der Liste ist die menschenlesbare Anzeige des gefundenen Modells in der GUI, unabhängig davon ob die Recovery passt.
+</p>
+<p>
+Die Liste ist bis zu 3 KB gross und fängt immer mit dem String <tt>unknown</tt> an, gefolgt von nullterminierten Paaren HWR / Boxname, mit 32-bit Padding je String. Der letzte Eintrag ist immer die <tt>FRITZ!Box SL</tt> und ihre HWR <tt>F</tt>. Einige Listen ordnen <tt>unknown</tt> die HWR <tt>K</tt> zu, bei anderen folgt direkt der erste Modellname. Die Zuordnungpaare sind leider nicht konsistent. So enthält die Liste auch 2 aufeinanderfolgende Namen oder Nummern, aber auch Firmennamen wie AVM und Telekom. Sie muss also intelligent interpretiert werden.
+Obwohl die HWR-Liste auch in aktuellen Recoveries enhalten ist pflegt AVM sie seit HWR 190 nicht weiter. Recoveries höherer Werte haben zusätzlich den Zuordnungseintrag für das unterstützte Modell im <tt>.data</tt> Segment, die HWR gefolgt von mehreren Nullbytes gefolgt vom Namen. Da bei allen neueren Recoveries das <tt>.data</tt> Segment mit der nullterminierten HWR anfängt kann diese als Suchstring in den letzten 256 KB des Segments genutzt werden. Ob und wie bei diesen Recoveries Fremdmodelle mit HWR &gt; 190 erkannt werden muss noch geprüft werden. 
+</p>
+<p>
+Bei der Analyse von 419 Recoveries mit obigem Wissen wurde <a class="attachment" href="http://freetz.org/attachment/wiki/help/howtos/development/adam2/hwr.txt" title="Anhang 'hwr.txt' in help/howtos/development/adam2">diese Häufigkeitsverteilung</a><a class="trac-rawlink" href="http://freetz.org/raw-attachment/wiki/help/howtos/development/adam2/hwr.txt" title="Download">​</a> (tab delimited csv) ermittelt. Um Konsistenzfehler auszumaskieren enthält die Liste nur Zuordnungen die in mindesten 5 Recoveries gefunden wurden. Die Zähler für HWR &gt; 190 wurden zuvor mit 10 multipliziert.
+</p>
+<p>
+Die HWR am Anfang des <tt>.data</tt> Segments ist Teil einer Struktur, die in jeder Recovery mit Kernel 2.6 zu finden ist. Bei neueren Recoveries findet sie sich an Offset 0, bei älteren an Offset 64 (0x40). Sie Struktur enthält die unterstützte HWR an Offset 0, die Sprache an Offset 16 (0x10) und die mit Leerzeichen getrennte Liste der unterstützten Brandings an Offset 32 (0x20). Dies ist sehr nützlich da z.B. EWE Recoveries nicht am Dateinamen erkennbar sind. Ein vierter String dessen genauer Zweck noch unklar ist fängt normalerweise an Offset 0x30 an und verschiebt sich um jeweils 8 Bytes wenn der Brandings-String länger als 8 Bytes ist. Bei Congstar (und vermutlich auch Telekom) Recoveries enthält er <tt>tcom</tt>, bei allen anderen enthält er unabhängig von Sprache und Anbieter immer <tt>avm</tt>.
+</p>
+<p>
+In allen Kernel 2.4 Recoveries befindet sich am Ende des <tt>.data</tt> Segments eine Reihe von mit einem oder mehreren Nullbytes terminierten Strings. Dies ist eine 2- oder 3-stellige Zahl unbekannten Zwecks (leider nicht die HWR) oder der String <tt>IE</tt>, der optionale String <tt>en</tt> oder <tt>de</tt> und die Firmwareversion in punktierter Schreibweise (z.B. <tt>29.04.01</tt>) mit dem optionalen Zusatz <tt>-prerelease-&lt;checkpoint&gt;</tt>. Dahinter steht der optionale String <tt>avm</tt> oder <tt>freenet</tt>, gefolgt von der optionalen Liste der unterstützten Brandings. Lediglich die älteste bekannte Recovery mit integrierter Firmware (03.14) enthält diese Information nicht. Sie ist deutsch und kannte noch kein Branding. Die HWR muss bei Kernel 2.4 Recoveries aus dem Urlader ermittelt werden.
+</p>
+<p>
+Der Vergleich der ermittelten Brandings mit den /etc Defaults bestätigt die Zuverlässigkeit obiger Methoden, sowohl bei Release- als auch bei Labor-Recoveries. Es existieren allerdings 2 Labor-Recoveries die einen falschen Bootloader enthalten. Die Datei <tt>FRITZ.Box_2110.04.47-9457.recover-image.exe</tt> enthält einen HWR 130 Bootloader einer nie auf den Markt gekommenen 2121, die Datei <tt>fritz.box_fon_wlan_7050.04.50.B.telnet.recover-image.exe</tt> den HWR 94 Bootloader einer 7170. 
+</p>
+<h2 id="BootloaderundFreetz">Bootloader und Freetz</h2>
+<p>
+Da Freetz EVA benötigt sind einige Modelle schon vom Bootloader her nicht für Freetz geeignet. Grundsätzlich sollte jede Box vor dem Freetzen mit Originalfirmware aktualisiert werden. Dies aktualisiert ggf. auch den Bootloader. Für einige ältere Modelle ist evtl. ein <a class="ext-link" href="ftp://service.avm.de/Zwischenupdate/"><span class="icon">​</span>Zwischenupdate</a> notwendig.
+</p>
+<p>
+Für folgende Modelle existiert kein EVA Update:
+</p>
+<ul><li>FRITZBox (alle Versionen)
+</li><li>FRITZBox SL
+</li><li>FRITZBox 2030
+</li><li>FRITZBox Fon (Deutsch A/CH Annex A+B) - mit Tricks evtl. deutsch oder englisch aktualisierbar
+</li><li>FRITZBox Fon ata (alle Versionen)
+</li><li>FRITZBox Fon WLAN (Deutsch A/CH Annex A+B) - mit Tricks evtl. deutsch oder englisch aktualisierbar
+</li></ul><p>
+Für einige dieser Modelle könnte Freetz ein EVA Update einer anderen Box Alien patchen. Bei der FRITZBox SL und 2030 mit 2MB Flash und 8MB RAM wird es wohl nie Freetz geben.
+</p>
+</div>
+          
+          <div class="trac-modifiedby">
+            <span><a href="adam2%3Faction=diff&amp;version=65.html" title="Version 65 von hippie2000: XRef Brandings + 2 Labor-Recoveries mit Boatloader-Inkonsistenz">zuletzt geändert</a> <a class="timeline" href="http://freetz.org/timeline?from=2014-01-22T23%3A21%3A17Z&amp;precision=second" title="Siehe Journal am 22.01.2014 23:21:17">vor 4 Jahren</a></span>
+            <span class="trac-print">Zuletzt geändert am 22.01.2014 23:21:17</span>
+          </div>
+        
+        
+      </div>
+      
+    <div id="attachments">
+        <h3 class="foldable">Anhänge <span class="trac-count">(1)</span></h3>
+        <div>
+          <ul>
+              <li>
+    <a href="http://freetz.org/attachment/wiki/help/howtos/development/adam2/hwr.txt" title="Anhang ansehen">hwr.txt</a><a href="http://freetz.org/raw-attachment/wiki/help/howtos/development/adam2/hwr.txt" class="trac-rawlink" title="Download">​</a>
+       (<span title="4106 Byte">4.0 KB</span>) -
+      hinzugefügt von <em>hippie2000</em> <a class="timeline" href="http://freetz.org/timeline?from=2014-01-19T21%3A15%3A59Z&amp;precision=second" title="Siehe Journal am 19.01.2014 21:15:59">vor 4 Jahren</a>.
+                <q>Komplette HWR-Liste aller 419 bekannten Recoveries, CSV</q>
+              </li>
+          </ul>
+          <p>
+            Alle Anhänge herunterladen als: <a rel="nofollow" href="http://freetz.org/zip-attachment/wiki/help/howtos/development/adam2/">.zip</a>
+          </p>
+        </div>
+    </div>
+
+    </div>
+    <script type="text/javascript">
+        jQuery.loadStyleSheet("/pygments/trac.css", "text/css");
+    </script>
+    <div id="altlinks">
+      <h3>In anderen Formaten herunterladen:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="adam2%3Fformat=txt">Reiner Text</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" lang="en" xml:lang="en"><hr />
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="../../../../chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
+      <p class="left">Betrieben mit <a href="http://freetz.org/about"><strong>Trac 1.0.1</strong></a><br />
+        von <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right"><div class="field" align="right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations"/><input type="hidden" name="business" value="spenden@freetz.org"/><input type="hidden" name="item_name" value="Freetz Entwickler-Team"/><input type="hidden" name="no_shipping" value="1"/><input type="hidden" name="return" value="http://freetz.org"/><input type="hidden" name="cn" value="Name oder IPPF-Pseudonym"/><input type="hidden" name="currency_code" value="EUR"/><input type="hidden" name="tax" value="0"/><input type="hidden" name="lc" value="DE"/><input type="hidden" name="bn" value="PP-DonationsBF"/><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Zahlen Sie mit PayPal - schnell, kostenlos und sicher!"/><img alt="" border="0" src="http://freetz.org/pixel.gif" width="1" height="1"/></form></div></p>
+    </div>
+  </body>
+</html>

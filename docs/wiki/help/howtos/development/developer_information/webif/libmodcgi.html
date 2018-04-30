@@ -1,0 +1,273 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+  
+
+
+  <head>
+    <title>
+      help/howtos/development/developer_information/webif/libmodcgi – Freetz
+    </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!--[if IE]><script type="text/javascript">
+      if (/^#__msie303:/.test(window.location.hash))
+        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
+    </script><![endif]-->
+        <link rel="search" href="http://freetz.org/search" />
+        <link rel="help" href="../../../../../TracGuide.html" />
+        <link rel="alternate" href="libmodcgi%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
+        <link rel="up" href="http://freetz.org/wiki/help/howtos/development/developer_information/webif" title="Übergeordnete Wiki-Seite anzeigen" />
+        <link rel="start" href="http://freetz.org/wiki" />
+        <link rel="stylesheet" href="../../../../../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../../../../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../../../../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../../../../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../../../../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../../../../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../../../../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../../../../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../../../../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
+        <link rel="shortcut icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+      <link type="application/opensearchdescription+xml" rel="search" href="http://freetz.org/search/opensearch" title="Freetz durchsuchen" />
+      <script type="text/javascript" charset="utf-8" src="../../../../../../chrome/common/js/jquery.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../../../chrome/common/js/babel.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../../../chrome/common/js/messages/de.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../../../chrome/common/js/trac.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../../../chrome/common/js/search.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../../../chrome/common/js/folding.js"></script>
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
+        $("#content").find(".wikianchor").each(function() {
+          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
+        });
+        $(".foldable").enableFolding(true, true);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://freetz.org/wiki"><img src="../../../../../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
+      </div>
+      <form id="search" action="http://freetz.org/search" method="get">
+        <div>
+          <label for="proj-search">Suche:</label>
+          <input type="text" id="proj-search" name="q" size="18" value="" />
+          <input type="submit" value="Suche" />
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="http://freetz.org/login">Anmelden</a></li><li><a href="http://freetz.org/prefs">Einstellungen</a></li><li><a href="../../../../../TracGuide.html">Hilfe/Anleitung</a></li><li><a href="http://freetz.org/about">Über Trac</a></li><li><a href="http://freetz.org/notification" title="Wiki Pages Change Notifications">My Notifications</a></li><li><a href="http://freetz.org/register">Registrieren</a></li><li class="last"><a href="../../../../../Impressum.html">Impressum</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first active"><a href="http://freetz.org/wiki">Wiki</a></li><li><a href="http://freetz.org/timeline">Journal</a></li><li><a href="http://freetz.org/roadmap">Projektplan</a></li><li><a href="http://freetz.org/browser">Quellen durchsehen</a></li><li><a href="http://freetz.org/report">Tickets anzeigen</a></li><li><a href="http://freetz.org/search">Suche</a></li><li><a href="http://freetz.org/tags">Tags</a></li><li><a href="http://freetz.org/downloads">Downloads</a></li><li class="last"><a href="http://freetz.org/screenshots">Bildschirmfotos</a></li>
+    </ul>
+  </div>
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="libmodcgi..html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="http://freetz.org/wiki/help/howtos/development/developer_information/webif/libmodcgi.en" title="(not available)">English</a></li></ul></div><div id="main">
+      <div id="pagepath" class="noprint">
+  <a class="pathentry first" title="Zeige WikiStart an" href="http://freetz.org/wiki">Wiki:</a><a class="pathentry" href="../../../../../help.html" title="Zeige help an">help</a><span class="pathentry sep">/</span><a class="pathentry" href="../../../../howtos.html" title="Zeige help/howtos an">howtos</a><span class="pathentry sep">/</span><a class="pathentry" href="../../../development.html" title="Zeige help/howtos/development an">development</a><span class="pathentry sep">/</span><a class="pathentry" href="../../developer_information.html" title="Zeige help/howtos/development/developer_information an">developer_information</a><span class="pathentry sep">/</span><a class="pathentry" href="http://freetz.org/wiki/help/howtos/development/developer_information/webif" title="Zeige help/howtos/development/developer_information/webif an">webif</a><span class="pathentry sep">/</span><a class="pathentry" href="libmodcgi.html" title="Zeige help/howtos/development/developer_information/webif/libmodcgi an">libmodcgi</a>
+</div>
+      <div id="ctxtnav" class="nav">
+        <h2>Kontext-Navigation</h2>
+        <ul>
+          <li class="first"><a href="http://freetz.org/wiki/help/howtos/development/developer_information/webif">Aufwärts</a></li><li><a href="../../../../../WikiStart.html">Startseite</a></li><li><a href="../../../../../TitleIndex.html">Inhaltsverzeichnis</a></li><li><a href="libmodcgi%3Faction=history.html">Änderungshistorie</a></li><li class="last"><a href="http://freetz.org/notification/help/howtos/development/developer_information/webif/libmodcgi" title="Watch Page">Watch Page</a></li>
+        </ul>
+        <hr />
+      </div>
+    <div id="content" class="wiki">
+      <div class="wikipage searchable">
+        
+          <div id="wikipage" class="trac-content"><h1 id="libmodcgi.sh">libmodcgi.sh</h1>
+<p>
+Diese Bibliothek dient der Erzeugung von Webseiten innerhalb des Freetz-Webinterface. Einzubinden durch
+</p>
+<pre class="wiki">source /usr/lib/libmodcgi.sh
+</pre><h2 id="cgi">cgi</h2>
+<p>
+<strong>Diese Schnittstelle ist in Entwicklung und kann sich täglich ändern.</strong>
+</p>
+<p>
+Mithilfe der Funktion <tt>cgi</tt> können verschiedene Einstellungen für die aktuelle
+Seite vorgenommen werden. <tt>cgi</tt> darf nur vor <tt>cgi_begin</tt> aufgerufen werden.
+</p>
+<p>
+Die Optionen sind im Einzelnen:
+</p>
+<p>
+<tt>--style=URI</tt>
+</p>
+<blockquote>
+<p>
+Das CSS-Stylesheet an der Adresse <tt>URI</tt> wird zusätzlich eingebunden. Diese
+Option kann mehrfach verwendet werden.
+</p>
+</blockquote>
+<blockquote>
+<p>
+Relative URLs werden relativ zu <tt>/style/</tt> im Freetz-Webinterface ausgewertet.
+Sollte ein Stylesheet also im Dateisystem unter
+<tt>/usr/share/style/pkg/status.css</tt> abgelegt sein, so kann es über
+<tt>--style=pkg/status.css</tt> eingebunden werden.
+</p>
+</blockquote>
+<p>
+<tt>--id=ID</tt>
+</p>
+<blockquote>
+<p>
+Das body-Tag der Seite erhält diese ID; die ID dient außerdem der Auswahl des aktiven Menüpunkts in der Navigation.
+</p>
+</blockquote>
+<p>
+<tt>--help=PATH</tt>
+</p>
+<blockquote>
+<p>
+Ein Pfad (beginnend mit "/"), der die Hilfe-Seite zu der aktuellen Seite angibt. (Für das Haupt-Freetz-Interface wird dieser Pfad momentan an <a class="ext-link" href="http://trac.freetz.org/wiki"><span class="icon">​</span>http://trac.freetz.org/wiki</a> angehängt.)
+</p>
+</blockquote>
+<h2 id="cgi_begin">cgi_begin</h2>
+<p>
+Startet eine HTML-Seite im Freetz-Stil. (Vom HTTP-Header über den HTML-Header bis zu Navigationselementen und ähnlichem wird alles geschrieben, was an den Anfang einer Seite gehört.)
+</p>
+<p>
+Alle Seiten im Freetz-Webinterface sind momentan in ISO-8859-1 (Latin 1) kodiert.
+</p>
+<p>
+Aufruf:
+</p>
+<pre class="wiki">cgi_begin TITLE
+</pre><ul><li>TITEL ist der bereits HTML-kodierte Titel der Seite
+</li></ul><h2 id="cgi_end">cgi_end</h2>
+<p>
+Schließt eine HTML-Seite im Freetz-Stil ab.
+</p>
+<h2 id="sec_begin">sec_begin</h2>
+<p>
+Startet einen Abschnitt mit dem Titel TITLE. Wie ein "Abschnitt" im Detail in der HTML-Ausgabe umgesetzt wird, obliegt dem gewählten Skin; garantiert wird jedoch ein umgebendes <tt>&lt;div class="section"&gt;</tt>
+</p>
+<pre class="wiki">sec_begin TITLE [ID]
+</pre><p>
+Optional kann eine ID angegeben werden, um sich auf den Abschnitt beziehen zu können. Auf HTML-Ebene wird dies die ID des genannten div-Elements.
+</p>
+<h2 id="sec_end">sec_end</h2>
+<p>
+Beendet einen Abschnitt.
+</p>
+<h2 id="html">html</h2>
+<p>
+Diese Funktion HTML-kodiert ihre Eingaben. Kurze Eingaben können als Argument übergeben werden, bei längeren sollte <tt>html</tt> als Filter benutzt werden:
+</p>
+<div class="code"><pre><span class="nb">echo</span> <span class="s2">"&lt;input value='$(html "</span><span class="nv">$VALUE</span><span class="s2">")'&gt; ..."</span>
+log_output | html
+</pre></div><h2 id="checkselect">check, select</h2>
+<p>
+TODO
+</p>
+<h2 id="href">href</h2>
+<p>
+Erzeugt einen Link zu einer dynamisch registrierten Seite im Freetz-Webinterface: Die Argumente sind denen von <tt>modreg</tt> ähnlich:
+</p>
+<pre class="wiki">href file &lt;pkg&gt; &lt;id&gt;
+href extra &lt;pkg&gt; &lt;cgi-name&gt;
+href status &lt;pkg&gt; [&lt;cgi-name&gt;]
+href cgi &lt;pkg&gt; [&lt;key-value&gt;]...
+</pre><p>
+Typischer Einsatz in einem Paket foo:
+</p>
+<div class="code"><pre>cat <span class="s">&lt;&lt; EOF
+  &lt;a href="$(href file foo advanced)"&gt;Konfigurationsdatei bearbeiten&lt;/a&gt;
+EOF</span>
+</pre></div><p>
+(wenn die Datei vorher per <tt>modreg file foo advanced ...</tt> registriert wurde.)
+</p>
+<h2 id="back_button">back_button</h2>
+<p>
+TODO
+</p>
+<h2 id="sec_level">sec_level</h2>
+<p>
+TODO
+</p>
+<h2 id="stat_bar">stat_bar</h2>
+<p>
+TODO
+</p>
+<h2 id="cgi_param">cgi_param</h2>
+<p>
+TODO
+</p>
+<h2 id="cgi_errorprint_error">cgi_error, print_error</h2>
+<pre class="wiki">cgi_error MESSAGE
+print_error MESSAGE
+</pre><p>
+<tt>cgi_error</tt> erzeugt eine komplette Fehlerseite (inkl. cgi_begin/cgi_end) mit der angegeben Meldung. <tt>print_error</tt> erzeugt nur die Fehlermeldung und kann innerhalb einer bestehenden Seite genutzt werden.
+</p>
+<h2 id="path_info">path_info</h2>
+<p>
+Splits PATH_INFO into segments at "/"; returns the segments in the given
+variables. If there are not more variables than segments, the final variable
+will receive the remaining unsplit PATH_INFO.
+</p>
+<pre class="wiki">PATH_INFO=/foo/bar/baz
+path_info package id rest
+</pre><p>
+will set
+</p>
+<pre class="wiki">package=foo
+id=bar
+rest=/baz
+</pre><h2 id="valid">valid</h2>
+<p>
+Validiert bestimmte Arten von Eingabedaten. Momentan unterstützt:
+</p>
+<p>
+<tt>valid package PACKAGE</tt>
+</p>
+<blockquote>
+<p>
+Ist wahr, wenn PACKAGE ein gültiger Paket-Name ist.
+</p>
+</blockquote>
+<p>
+<tt>valid id NAME</tt>
+</p>
+<blockquote>
+<p>
+Ist wahr, wenn NAME eine gültiger Bezeichner ist (der Dateien, Extras, Status-Seiten innerhalb eines Pakets identifiziert)
+</p>
+</blockquote>
+<p>
+Die Prüfung ist momentan recht lax (hauptsächlich nur Schutz gegen Pfadoperationen wie "." und "/" im Namen). Die Ausgabe von <tt>valid</tt> sollte momentan nicht als Maßstab genommen werden, um gültige Namen zu konstruieren.
+</p>
+</div>
+          
+          <div class="trac-modifiedby">
+            <span><a href="libmodcgi%3Faction=diff&amp;version=6.html" title="Version 6 von buehmann: cgi --help=PATH">zuletzt geändert</a> <a class="timeline" href="http://freetz.org/timeline?from=2010-08-13T13%3A59%3A35Z&amp;precision=second" title="Siehe Journal am 13.08.2010 13:59:35">vor 8 Jahren</a></span>
+            <span class="trac-print">Zuletzt geändert am 13.08.2010 13:59:35</span>
+          </div>
+        
+        
+      </div>
+      
+
+    </div>
+    <script type="text/javascript">
+        jQuery.loadStyleSheet("/pygments/trac.css", "text/css");
+    </script>
+    <div id="altlinks">
+      <h3>In anderen Formaten herunterladen:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="libmodcgi%3Fformat=txt">Reiner Text</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" lang="en" xml:lang="en"><hr />
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="../../../../../../chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
+      <p class="left">Betrieben mit <a href="http://freetz.org/about"><strong>Trac 1.0.1</strong></a><br />
+        von <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right"><div class="field" align="right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations"/><input type="hidden" name="business" value="spenden@freetz.org"/><input type="hidden" name="item_name" value="Freetz Entwickler-Team"/><input type="hidden" name="no_shipping" value="1"/><input type="hidden" name="return" value="http://freetz.org"/><input type="hidden" name="cn" value="Name oder IPPF-Pseudonym"/><input type="hidden" name="currency_code" value="EUR"/><input type="hidden" name="tax" value="0"/><input type="hidden" name="lc" value="DE"/><input type="hidden" name="bn" value="PP-DonationsBF"/><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Zahlen Sie mit PayPal - schnell, kostenlos und sicher!"/><img alt="" border="0" src="http://freetz.org/pixel.gif" width="1" height="1"/></form></div></p>
+    </div>
+  </body>
+</html>

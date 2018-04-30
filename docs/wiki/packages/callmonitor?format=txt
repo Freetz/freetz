@@ -1,0 +1,36 @@
+[[TOC(packages/callmonitor,packages/callmonitor/config,packages/callmonitor/listeners,packages/callmonitor/events,packages/callmonitor/actions,packages/callmonitor/phonebook,packages/callmonitor/maintenance,packages/callmonitor/reverse_search,packages/callmonitor/testcall,heading=Inhaltsverzeichnis)]]
+
+= Callmonitor =
+Der Callmonitor ermöglicht es, bei eingehenden Anrufen auf einer Fritz!Box beliebige [wiki:packages/callmonitor/actions Aktionen] auszuführen, abhängig davon, wer wen anruft. Beliebt sind das Senden von Benachrichtigungen an verschiedenste Arten von "Boxen" (TV/Sat-Receiver, Spielekonsolen, PCs) oder das Aufwecken von Geräten (Wake on LAN).
+
+Dabei kann über eine Rückwärtssuche in Internet-Telefonbüchern oft auch der Name des Anrufers angezeigt werden.
+
+Das Besondere an diesem Callmonitor (leider gibt es viele Projekte mit ähnlichem Namen) ist, dass er komplett auf der Fritzbox läuft; es ist also nicht nötig, weitere Rechner eingeschaltet zu haben.
+
+== Installation ==
+[[Screenshot(6,width=200,height=145,align=right,description=[screenshot:6 $description])]] Der Callmonitor ist als Paket im Rahmen von [wiki:WikiStart Freetz] ([http://www.ip-phone-forum.de/showthread.php?t=85371 Forum]) realisiert, und kann bei dessen Installation einfach ausgewählt werden.
+
+Das Callmonitor-Paket kann nicht als [wiki:help/howtos/development/install_addon Addon-Paket installiert] werden.
+
+=== Installation neuer Versionen ===
+Bitte beachtet: Mit Freetz 1.1 können nur Callmonitor-Version bis 1.15 eingesetzt werden. Callmonitor 1.15.1 und höher benötigen Änderungen, die in Freetz 1.2 oder der Freetz-Entwicklerversion enthalten sind.
+
+Zum Einbinden der aktuellsten Version aus der Entwicklerversion in Freetz 1.2 kann man so vorgehen (im Wurzelverzeichnis von Freetz):
+{{{
+svn switch http://svn.freetz.org/trunk/make/callmonitor/callmonitor.mk make/callmonitor/callmonitor.mk
+}}}
+
+== Konfiguration ==
+Zur Konfiguration gibt es im Web-Interface von Freetz mehrere neue Seiten, darunter:
+
+ * [wiki:packages/callmonitor/config Pakete/Callmonitor]: Optionen zum Startverhalten, zur [wiki:packages/callmonitor/reverse_search Rückwärtssuche] etc.
+ * [wiki:packages/callmonitor/listeners Einstellungen/Regeln]: Die [wiki:packages/callmonitor/actions Aktionen], die bei bestimmten Mustern von Quell- und Zielrufnummer ausgeführt werden sollen.
+ * [wiki:packages/callmonitor/phonebook Einstellungen/Telefonbuch]: Das dauerhaft (im Flash) gespeicherte Telefonbuch. Dies kann zusätzlich zum AVM-Telefonbuch verwendet werden.
+
+Außerdem lässt sich über das Web-Interface die Regelmenge mit vorgetäuschten [wiki:packages/callmonitor/testcall Testanrufen] testen (es wird bei euch nicht klingeln; die Testanrufe sieht nur der Callmonitor). Das ist recht praktisch bei der Fehlersuche.
+Es existiert außerdem noch eine Seite zur [wiki:packages/callmonitor/maintenance Wartung] des Telefonbuchs.
+
+== Weiterführende Links ==
+ * [./faq FAQ]
+ * [http://sourceforge.net/projects/callmonitor/ Entwicklungsseite bei Sourceforge]
+ * [http://www.ip-phone-forum.de/showthread.php?t=191723 Forumsseite für Fragen und Diskussionen]

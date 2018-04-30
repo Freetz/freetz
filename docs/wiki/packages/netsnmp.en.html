@@ -1,0 +1,229 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+  
+
+
+  <head>
+    <title>
+      packages/netsnmp.en – Freetz
+    </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!--[if IE]><script type="text/javascript">
+      if (/^#__msie303:/.test(window.location.hash))
+        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
+    </script><![endif]-->
+        <link rel="search" href="http://freetz.org/search" />
+        <link rel="help" href="../TracGuide.html" />
+        <link rel="alternate" href="netsnmp.en%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
+        <link rel="up" href="../packages.html" title="Übergeordnete Wiki-Seite anzeigen" />
+        <link rel="start" href="http://freetz.org/wiki" />
+        <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
+        <link rel="shortcut icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+      <link type="application/opensearchdescription+xml" rel="search" href="http://freetz.org/search/opensearch" title="Freetz durchsuchen" />
+      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/jquery.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/babel.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/messages/de.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/trac.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/search.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/folding.js"></script>
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
+        $("#content").find(".wikianchor").each(function() {
+          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
+        });
+        $(".foldable").enableFolding(true, true);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://freetz.org/wiki"><img src="../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
+      </div>
+      <form id="search" action="http://freetz.org/search" method="get">
+        <div>
+          <label for="proj-search">Suche:</label>
+          <input type="text" id="proj-search" name="q" size="18" value="" />
+          <input type="submit" value="Suche" />
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="http://freetz.org/login">Anmelden</a></li><li><a href="http://freetz.org/prefs">Einstellungen</a></li><li><a href="../TracGuide.html">Hilfe/Anleitung</a></li><li><a href="http://freetz.org/about">Über Trac</a></li><li><a href="http://freetz.org/notification" title="Wiki Pages Change Notifications">My Notifications</a></li><li><a href="http://freetz.org/register">Registrieren</a></li><li class="last"><a href="../Impressum.html">Impressum</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first active"><a href="http://freetz.org/wiki">Wiki</a></li><li><a href="http://freetz.org/timeline">Journal</a></li><li><a href="http://freetz.org/roadmap">Projektplan</a></li><li><a href="http://freetz.org/browser">Quellen durchsehen</a></li><li><a href="http://freetz.org/report">Tickets anzeigen</a></li><li><a href="http://freetz.org/search">Suche</a></li><li><a href="http://freetz.org/tags">Tags</a></li><li><a href="http://freetz.org/downloads">Downloads</a></li><li class="last"><a href="http://freetz.org/screenshots">Bildschirmfotos</a></li>
+    </ul>
+  </div>
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=""><a class="" href="netsnmp..html" title="">German</a></li><li class=" active last"><a class="selected" href="netsnmp.en.html" title="selected and displaying language">English</a></li></ul></div><div id="main">
+      <div id="pagepath" class="noprint">
+  <a class="pathentry first" title="Zeige WikiStart an" href="http://freetz.org/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="netsnmp.en.html" title="Zeige packages/netsnmp.en an">netsnmp.en</a>
+</div>
+      <div id="ctxtnav" class="nav">
+        <h2>Kontext-Navigation</h2>
+        <ul>
+          <li class="first"><a href="../packages.html">Aufwärts</a></li><li><a href="../WikiStart.html">Startseite</a></li><li><a href="../TitleIndex.html">Inhaltsverzeichnis</a></li><li><a href="netsnmp.en%3Faction=history.html">Änderungshistorie</a></li><li class="last"><a href="http://freetz.org/notification/packages/netsnmp.en" title="Watch Page">Watch Page</a></li>
+        </ul>
+        <hr />
+      </div>
+    <div id="content" class="wiki">
+      <div class="wikipage searchable">
+        
+          <div id="wikipage" class="trac-content"><h2 id="Net-SNMP">Net-SNMP</h2>
+<p>
+Net-SNMP (<strong>S</strong>imple <strong>N</strong>etwork <strong>M</strong>anagement <strong>P</strong>rotocol) includes an open source SNMPd agent to monitor and administer SNMP capable network devices like routers and switches. <br />
+You can poll the snmpd agent on the router to obtain e.g. interface or CPU statistics information and display this in a nice graph with the help of a program like <a class="ext-link" href="http://oss.oetiker.ch/mrtg/"><span class="icon">​</span>MRTG</a> <br />
+More info about Net-SNMP can be found via: <a class="ext-link" href="http://www.net-snmp.org/"><span class="icon">​</span>http://www.net-snmp.org/</a> <br />
+</p>
+<h3 id="CreatingaFeetzImagewithNet-SNMP">Creating a Feetz Image with Net-SNMP</h3>
+<p>
+Follow the directions from the <a href="../WikiStart.en.html#">Wiki</a> <br />
+After the following step you can configure the packages you want to have included in your image.
+</p>
+<pre class="wiki">make menuconfig
+</pre><p>
+Make sure the following is selected (so I have 1 out of 3 selected):
+</p>
+<pre class="wiki">Package selection  ---&gt; Standard packages  ---&gt; [*] Net-SNMP 5.4.2.1 snmpd
+Package selection  ---&gt; Standard packages  ---&gt; [ ]   With openssl encryption (NEW)
+Package selection  ---&gt; Standard packages  ---&gt; [ ]   With zlib compression (NEW)
+</pre><h3 id="SetupinFreetzweb-interface">Setup in Freetz web-interface</h3>
+<h4 id="conf">conf</h4>
+<p>
+First you should create a snmpd.conf file. This file contains all configuration options for Net-SNMP, including a community string, which you can regard as a password for access control. [[br]
+A full description of all possible parameters can be found in the online manual page: <a class="ext-link" href="http://www.net-snmp.org/docs/man/snmpd.conf.html"><span class="icon">​</span>http://www.net-snmp.org/docs/man/snmpd.conf.html</a> <br />
+You can edit the snmpd.conf file via the Freetz web-interface via Net-SNMP &gt; snmpd.conf <br />
+</p>
+<p>
+If you would like to have a minimal config you can use the following:
+</p>
+<pre class="wiki">rocommunity public
+rwcommunity private
+</pre><p>
+This way access contol is only based on the communiy string. <br />
+</p>
+<p>
+I found an example config with more accss contol options in one of the attachments in this thread: <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=122073"><span class="icon">​</span>http://www.ip-phone-forum.de/showthread.php?t=122073</a> <br />
+This shows how to control access based on source IP address range with additional options to restrict access. <br />
+</p>
+<pre class="wiki">##      sec.name  source          community
+##      ========  ======          =========
+com2sec readonly  127.0.0.0/8     &lt;community string&gt;
+com2sec readonly  192.168.0.0/16  &lt;community string&gt;
+#com2sec paranoid  default         &lt;community string&gt;
+com2sec paranoid  172.16.0.0/16   &lt;community string&gt;
+
+##      Access.group.name  sec.model  sec.name
+##      =================  =========  ========
+group   MyROSystem         v1         paranoid
+group   MyROSystem         v2c        paranoid
+group   MyROSystem         usm        paranoid
+group   MyROGroup          v1         readonly
+group   MyROGroup          v2c        readonly
+group   MyROGroup          usm        readonly
+
+##      MIB.view.name     incl/excl  MIB.subtree    mask
+##      ==============    =========  ===========    ====
+view    all               included   .1             80
+view    system            included   .1.3.6.1.2.1.1
+
+##      MIB                
+##      group.name   context sec.model sec.level prefix read     write  notif
+##      ==========   ======= ========= ========= ====== ====     =====  =====
+access  MyROSystem   ""      any       noauth    exact  system   none   none
+access  MyROGroup    ""      any       noauth    exact  all      none   none
+</pre><p>
+If you only allow access from inside your trusted network you can use the default community string, which is for readonly <strong>public</strong> and for readwrite <strong>private</strong>. <br />
+More information on the View-Based Access Control Model (VACM) can be found on the <a class="ext-link" href="http://www.net-snmp.org/wiki/index.php/Vacm"><span class="icon">​</span>Net-SNMP Wiki</a>
+</p>
+<p>
+<span class="thumbnail"><span class="aux" style="width: 868px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/247?format=raw" title="Net-SNMP snmpd.conf"><img src="http://freetz.org/screenshots/247?width=866&amp;format=raw&amp;height=468" alt="Net-SNMP snmpd.conf" /></a><span class="description" style="width: 868px;">Net-SNMP snmpd.conf</span></span></span>
+</p>
+<h4 id="setup">setup</h4>
+<p>
+After saving a snmpd.conf file using the Net-SNMP &gt; snmpd.conf setup page you can enable Net-SNMP to start automatically at bootup.<br />
+</p>
+<p>
+<span class="thumbnail"><span class="aux" style="width: 868px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/246?format=raw" title="Net-SNMP Setup"><img src="http://freetz.org/screenshots/246?width=866&amp;format=raw&amp;height=385" alt="Net-SNMP Setup" /></a><span class="description" style="width: 868px;">Net-SNMP Setup</span></span></span>
+</p>
+<h4 id="verify">verify</h4>
+<p>
+With many Linux distributions you als have snmp tools included like snmpget, snmpset, snmpwalk, &hellip;<br />
+A quick guide how to use these tools can be found <a class="ext-link" href="http://www.net-snmp.org/wiki/index.php/Tutorials"><span class="icon">​</span>on the net-snmp.org site</a>. <br />
+</p>
+<p>
+Some commands:
+To get a list of interface descriptions (ifDesc):
+</p>
+<blockquote>
+<p>
+snmpwalk -v 2c -c &lt;community string&gt; 192.168.178.1 .1.3.6.1.2.1.2.2.1.2
+</p>
+</blockquote>
+<blockquote>
+<p>
+snmpwalk -v 2c -c &lt;community string&gt; -O a 192.168.178.1 .1.3.6.1.2.1.2.2.1.2
+</p>
+</blockquote>
+<p>
+To get a list of all available objects:
+</p>
+<blockquote>
+<p>
+snmpwalk -v 2c -c &lt;community string&gt; 192.168.178.1 .1
+</p>
+</blockquote>
+<h2 id="MRTG">MRTG</h2>
+<p>
+The Multi Router Traffic Grapher will allow you to generate nice graphs of the data available via SNMP.<br />
+This can be system information like uptime, interface information and statistics, and more.<br />
+The graphs can help a lot with trouble clearing issues, both with the FritsBox (e.g. CPU memory), and in the network.<br />
+For more info see the <a class="ext-link" href="http://oss.oetiker.ch/mrtg/"><span class="icon">​</span>MRTG site</a>.<br /> <br />
+</p>
+<p>
+Here an example on the graph you can generate: <br />
+<span class="thumbnail"><span class="aux" style="width: 503px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/248?format=raw" title="MRTG lan interface daily graph"><img src="http://freetz.org/screenshots/248?width=501&amp;format=raw&amp;height=136" alt="MRTG lan interface daily graph" /></a><span class="description" style="width: 503px;">MRTG lan interface daily graph</span></span></span>
+</p>
+<p>
+The following wiki page will provide more detailed information to installation and configuration:
+</p>
+<ul><li><a class="wiki" href="netsnmp/mrtg.en.html">More detailed information and installation instructions</a>
+</li></ul></div>
+          
+          <div class="trac-modifiedby">
+            <span><a href="netsnmp.en%3Faction=diff&amp;version=8.html" title="Version 8 von RomMon">zuletzt geändert</a> <a class="timeline" href="http://freetz.org/timeline?from=2014-01-22T21%3A35%3A31Z&amp;precision=second" title="Siehe Journal am 22.01.2014 21:35:31">vor 4 Jahren</a></span>
+            <span class="trac-print">Zuletzt geändert am 22.01.2014 21:35:31</span>
+          </div>
+        
+        
+      </div>
+      
+
+    </div>
+    <script type="text/javascript">
+        jQuery.loadStyleSheet("/chrome/screenshots/css/screenshots.css", "text/css");
+    </script>
+    <div id="altlinks">
+      <h3>In anderen Formaten herunterladen:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="netsnmp.en%3Fformat=txt">Reiner Text</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" lang="en" xml:lang="en"><hr />
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="../../chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
+      <p class="left">Betrieben mit <a href="http://freetz.org/about"><strong>Trac 1.0.1</strong></a><br />
+        von <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right"><div class="field" align="right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations"/><input type="hidden" name="business" value="spenden@freetz.org"/><input type="hidden" name="item_name" value="Freetz Entwickler-Team"/><input type="hidden" name="no_shipping" value="1"/><input type="hidden" name="return" value="http://freetz.org"/><input type="hidden" name="cn" value="Name oder IPPF-Pseudonym"/><input type="hidden" name="currency_code" value="EUR"/><input type="hidden" name="tax" value="0"/><input type="hidden" name="lc" value="DE"/><input type="hidden" name="bn" value="PP-DonationsBF"/><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Zahlen Sie mit PayPal - schnell, kostenlos und sicher!"/><img alt="" border="0" src="http://freetz.org/pixel.gif" width="1" height="1"/></form></div></p>
+    </div>
+  </body>
+</html>

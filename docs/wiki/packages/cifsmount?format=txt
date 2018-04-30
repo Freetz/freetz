@@ -1,0 +1,33 @@
+= cifsmount =
+[[Screenshot(146,align=right)]]
+In diesem Paket kommen die Helferlein für das Einbinden von CIFS Netzwerkfreigaben - inklusive eines Web-Interfaces für die einfache Konfiguration von bis zu drei "Mounts", optional mit automatischen start/stop Events.
+
+CIFS ('''C'''ommon '''I'''nternet '''F'''ile '''S'''ystem) ist eine erweiterte Version von [http://de.wikipedia.org/wiki/Server_Message_Block SMB] - dem Protokoll, welches bei MS Windows und auch [wiki:packages/samba Samba] zum Einsatz kommt, um sowohl Ordner und Dateien als auch Drucker im Netz bereitzustellen. Somit kann cifsmount einen Samba-Client ersetzen - mit einem weiteren großen Vorteil, wenn wir an unsere Fritz!Box denken: cifsmount benötigt wesentlich weniger Speicherplatz - und ist damit die "Erste Wahl" für diejenigen, die Windows- oder Samba-Shares auf der Fritz!Box mounten möchten.
+[[BR]]
+[[BR]]
+== Konfiguration cifsmount ==
+'''Starttyp:''' Automatisch (mit dem Starten der Box), oder Manuell (starten des Dienstes von Hand).[[BR]]
+'''Shares:''' Bis zu fünf Shares können über das Webinterface angelegt werden.[[BR]]
+'''Share:''' Hier wird die Freigabe, welche gemountet werde soll eingetragen.[[BR]]
+'''User:''' Benutzername der Freigabe.[[BR]]
+'''Pass:''' Passwort der Freigabe.[[BR]]
+'''Mountpoint:''' Der Ort, wohin die Freigabe auf der Box gemountet werden soll.[[BR]]
+'''Mountoptions:''' Zusätzliche Option die dem Mountbefehl angehängt wird, zB `noserverino` bei sehr großen Festplatten.[[BR]]
+== Fehlersuche ==
+Mit {{{echo 1 > /proc/fs/cifs/cifsFYI}}} kann man cifs etwas gesprächiger machen. Anschauen kann man sich die Meldungen mit {{{dmesg | tail}}}.
+Bei fehlendem Benutzername oder falschem Passwort sieht das Beispielsweise so aus:
+{{{
+root@fritz:/var/mod/root# mount -t cifs //192.168.1.1/Freetz /var/media/ftp
+ CIFS VFS: Send error in SessSetup = -13
+ CIFS VFS: Send error in SessSetup = -13
+mount: mounting //192.168.1.172/Freetz on /var/media/ftp failed: Permission denied
+root@fritz:/var/mod/root# dmesg | tail
+ CIFS VFS: No username specified
+Status code returned 0xc000006d NT_STATUS_LOGON_FAILURE
+ CIFS VFS: Send error in SessSetup = -13
+
+}}}
+[[BR]]
+== Weiterführende Links ==
+ * [http://de.wikipedia.org/wiki/Server_Message_Block Wikipedia Artikel] zum SMB Protokoll und CIFS
+ * [http://www.obdev.at/resources/sharity/manual/manCifsmount.html cifsmount Man page]

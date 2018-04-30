@@ -1,0 +1,32 @@
+== Dropbear ==
+Drobear is a small ssh server, client with keygenerator and scp support. [[br]]
+More information about dropbear can be found at http://matt.ucc.asn.au/dropbear/dropbear.html
+
+
+=== Creating a Feetz Image with Dropbrear ===
+
+Follow the directions from the [http://freetz.org/wiki/WikiStart.en# Wiki] [[br]]
+After the following step you can configure the packages you want to have included in your image.
+{{{
+make menuconfig
+}}}
+
+Make sure the following is selected:
+{{{
+Package selection  ---> Standard packages  ---> [*] Dropbear 0.53.1
+Package selection  ---> Standard packages  ---> [ ]   Without scp & ssh client (NEW)
+Package selection  ---> Standard packages  ---> [ ]   With zlib Compression (NEW)
+Package selection  ---> Standard packages  ---> [*]   Disable DNS reverse-lookup of the client (NEW)
+Package selection  ---> Standard packages  ---> [ ]   Build static binary (NEW)
+}}}
+
+
+=== Setup in Freetz web-interface ===
+
+Using the Dropbear setup page you can enable Dropbear to start automatically at bootup.[[br]]
+
+[[Screenshot(249)]]
+
+From the setup page you can also select to edit authorized_keys file which allows you to access the router with pre-shared keys i.s.o. just a password. [[br]]
+Selecting to edit the authorized_keys file will redirect you to SSH > authorized_keys [[br]]
+Look at the [http://freetz.org/wiki/packages/authorized-keys authorized_key] page for more info.

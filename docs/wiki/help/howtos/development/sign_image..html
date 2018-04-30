@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+  
+
+
+  <head>
+    <title>
+      help/howtos/development/sign_image – Freetz
+    </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!--[if IE]><script type="text/javascript">
+      if (/^#__msie303:/.test(window.location.hash))
+        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
+    </script><![endif]-->
+        <link rel="search" href="http://freetz.org/search" />
+        <link rel="help" href="../../../TracGuide.html" />
+        <link rel="alternate" href="sign_image%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
+        <link rel="up" href="../development.html" title="Übergeordnete Wiki-Seite anzeigen" />
+        <link rel="start" href="http://freetz.org/wiki" />
+        <link rel="stylesheet" href="../../../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
+        <link rel="shortcut icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+      <link type="application/opensearchdescription+xml" rel="search" href="http://freetz.org/search/opensearch" title="Freetz durchsuchen" />
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/jquery.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/babel.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/messages/de.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/trac.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/search.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/folding.js"></script>
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
+        $("#content").find(".wikianchor").each(function() {
+          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
+        });
+        $(".foldable").enableFolding(true, true);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://freetz.org/wiki"><img src="../../../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
+      </div>
+      <form id="search" action="http://freetz.org/search" method="get">
+        <div>
+          <label for="proj-search">Suche:</label>
+          <input type="text" id="proj-search" name="q" size="18" value="" />
+          <input type="submit" value="Suche" />
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="http://freetz.org/login">Anmelden</a></li><li><a href="http://freetz.org/prefs">Einstellungen</a></li><li><a href="../../../TracGuide.html">Hilfe/Anleitung</a></li><li><a href="http://freetz.org/about">Über Trac</a></li><li><a href="http://freetz.org/notification" title="Wiki Pages Change Notifications">My Notifications</a></li><li><a href="http://freetz.org/register">Registrieren</a></li><li class="last"><a href="../../../Impressum.html">Impressum</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first active"><a href="http://freetz.org/wiki">Wiki</a></li><li><a href="http://freetz.org/timeline">Journal</a></li><li><a href="http://freetz.org/roadmap">Projektplan</a></li><li><a href="http://freetz.org/browser">Quellen durchsehen</a></li><li><a href="http://freetz.org/report">Tickets anzeigen</a></li><li><a href="http://freetz.org/search">Suche</a></li><li><a href="http://freetz.org/tags">Tags</a></li><li><a href="http://freetz.org/downloads">Downloads</a></li><li class="last"><a href="http://freetz.org/screenshots">Bildschirmfotos</a></li>
+    </ul>
+  </div>
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="sign_image..html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="http://freetz.org/wiki/help/howtos/development/sign_image.en" title="(not available)">English</a></li></ul></div><div id="main">
+      <div id="pagepath" class="noprint">
+  <a class="pathentry first" title="Zeige WikiStart an" href="http://freetz.org/wiki">Wiki:</a><a class="pathentry" href="../../../help.html" title="Zeige help an">help</a><span class="pathentry sep">/</span><a class="pathentry" href="../../howtos.html" title="Zeige help/howtos an">howtos</a><span class="pathentry sep">/</span><a class="pathentry" href="../development.html" title="Zeige help/howtos/development an">development</a><span class="pathentry sep">/</span><a class="pathentry" href="sign_image.html" title="Zeige help/howtos/development/sign_image an">sign_image</a>
+</div>
+      <div id="ctxtnav" class="nav">
+        <h2>Kontext-Navigation</h2>
+        <ul>
+          <li class="first"><a href="../development.html">Aufwärts</a></li><li><a href="../../../WikiStart.html">Startseite</a></li><li><a href="../../../TitleIndex.html">Inhaltsverzeichnis</a></li><li><a href="sign_image%3Faction=history.html">Änderungshistorie</a></li><li class="last"><a href="http://freetz.org/notification/help/howtos/development/sign_image." title="Watch Page">Watch Page</a></li>
+        </ul>
+        <hr />
+      </div>
+    <div id="content" class="wiki">
+      <div class="wikipage searchable">
+        
+          <div id="wikipage" class="trac-content"><h2 id="SignierenvonFirmware">Signieren von Firmware</h2>
+<p>
+Beim Signieren von Firmware handelt es sich um einen Vorgang, bei dem die Firmware mit einer <a class="ext-link" href="https://de.wikipedia.org/wiki/Digitale_Signatur"><span class="icon">​</span>digitalen Signatur</a> versehen wird. Der Einsatzzweck dieser Signatur beschränkt sich aktuell auf die Überprüfung, ob die Firmware bzw. nachladbare Teile davon (=AVM-Plugins) aus einer vertrauenswürdigen Quelle stammen und damit geflasht bzw. nachgeladen und eingebunden werden dürfen. In Bezug auf die Firmware ist dieser Mechanismus erst seit Fritz!OS-6.5x von AVM scharf geschaltet. Seit dieser Version kann über das Standard-Web-Interface von AVM nur noch eine aus einer vertrauenswürdigen und zum Flash-Zeitpunkt der auf der Box laufenden Firmware bekannten Quelle geflasht werden.
+</p>
+<p>
+Um zu verstehen, was der letzte Satz konkret bedeutet, sei kurz auf die Grundprinzipien des digitalen Signierens eingegangen (für tiefgehende Informationen sei auf zahlreiche Artikeln im Internet verwiesen, z.B. auf <a class="ext-link" href="https://de.wikipedia.org/wiki/Digitale_Signatur"><span class="icon">​</span>diesen</a> Wikipedia-Artikel).
+</p>
+<p>
+Im Rahmen des digitalen Signierens sind im wesentlichen folgende Schritte/Sachverhalte von Bedeutung:
+</p>
+<ul><li>Die Erzeugung eines aus einem privaten und aus einem öffentlichen Schlüssel bestehenden Schlüsselpaars. Der private Schlüssel wird dabei mit einem Passwort versehen, sodass der Schlüssel nur von der Person verwendet werden kann, die im Besitz des Schlüssels ist und das Passwort dazu kennt.
+</li><li>Der private Schlüssel aus dem Schlüsselpaar wird vom Absender einer digitalen Nachricht verwendet und dient dem Zweck, diese digitale Nachricht mit einer digitalen Signatur zu versehen.
+</li><li>Die digitale Signatur ermöglicht es dem Empfänger der Nachricht mit Hilfe des öffentlichen Schlüssels (auch Verifikationsschlüssel genannt) die nicht-abstreitbare Urheberschaft und Integrität der Nachricht zu prüfen.
+</li></ul><p>
+Für unseren Anwendungsfall bedeutet es nun folgendes:
+</p>
+<ul><li>Die digitale Nachricht ist das Firmware-Image.
+</li><li>Der Absender der Nachricht ist die Quelle, aus der das Firmware-Image stammt. Die Quelle muss im Besitz des gesamten Schlüsselpaars sein (also beider Schlüssel) und das Passwort kennen, mit dem der private Schlüssel geschützt ist.
+</li><li>Der Empfänger der Nachricht ist die zum Zeitpunkt des Flash-Vorgangs auf der Box laufende Firmware-Version. Diese muss im Besitz des öffentlichen Schlüssels (des Verifikationsschlüssels) sein.
+</li></ul><p>
+Ein (digital signiertes) Firmware-Image wird also dann als "aus einer vertrauenswürdigen Quelle stammend" eingestuft, wenn der öffentliche Schlüssel dieser Quelle der auf der Box laufenden Firmware bekannt ist und der Signatur-Prüfungsvorgang bestanden wird.
+</p>
+<p>
+Der private, der geheime Schlüssel, mit dem AVM die Original-Images signiert, liegt uns aus verständlichen Gründen nicht vor (und wenn dies auch anders wäre, müssten wir auch noch das Passwort dazu kennen). Damit bleibt uns nichts anderes übrig, als es zu versuchen, ein selbstsigniertes Image zu erzeugen und die auf der Box laufende Firmware dazu zu zwingen dieses zu akzeptieren. Dabei sind folgende Hürden zu überwinden:
+</p>
+<ul><li>Der aus mathematischer/technischer Sicht schwierigste Teil besteht darin, es zu verstehen, worin genau nun ein Signiervorgang bzw. ein Signatur-Prüfungsvorgang in der AVM-Firmware besteht? Glücklicherweise hat der (im IPPF-Forum sehr gut bekannte) Entwickler <a class="ext-link" href="https://github.com/PeterPawn"><span class="icon">​</span>PeterPawn</a> diesbezüglich eine super Arbeit geleistet und im Rahmen seines <a class="ext-link" href="https://github.com/PeterPawn/YourFritz"><span class="icon">​</span>YourFritz-Projektes</a> alles <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=286213"><span class="icon">​</span>dokumentiert</a> und den entsprechenden <a class="ext-link" href="https://github.com/PeterPawn/YourFritz/tree/master/signimage"><span class="icon">​</span>Quellcode</a> zu Verfügung gestellt, der inzwischen auch in Freetz eingebaut ist.
+</li><li>Wie oben schon mehrfach erwähnt, damit ein signiertes Image den Prüfungsvorgang besteht, muss die auf der Box laufende Firmware den öffentlichen Schlüssel der Quelle kennen. Dies ist für unser selbstsigniertes Image natürlich nicht der Fall. D.h. wir müssen es irgendwie schaffen, unseren öffentlichen Schlüssel auf die Box einzuschleusen. Haben wir dies einmal geschafft, so kann jedes weitere selbstsignierte Image über das reguläre AVM-Web-Interface geflasht werden, vorausgesetzt man verwendet genau dasselbe Schlüsselpaar zum Signieren und vergisst es nicht, den öffentlichen Schlüssel in jedes neue Image mitaufzunehmen. 
+</li></ul><p>
+Diese zweite Aufgabe ist streng genommen nicht ganz trivial. Es ist geplant, einen eigenen Artikel zu diesem Thema zu verfassen. An dieser Stelle seien stichwortartig mögliche Lösungen angedeutet:
+</p>
+<ul><li>Ein Downgrade (mittels Recovery) auf eine ältere Firmware-Version, die noch unsignierte Images akzeptiert hat. Aus dieser älteren Firmware-Version heraus muss dann eine jüngere Firmware-Version geflasht werden, die unseren öffentlichen Schlüssel enthält.
+</li><li>Hat man zufälligerweise einen Telnet-Zugang auf die Box, so kann mittels der "drüber mounten"-Methode (<tt>mount -o bind ... ...</tt>) eines der AVM-Schlüssel temporär durch den eigenen ersetzt werden.
+</li><li>Bei NOR-Boxen kann ein den öffentlichen Schlüssel enthaltendes Image mittels <a class="ext-link" href="http://trac.freetz.org/browser/trunk/tools/push_firmware"><span class="icon">​</span>push_firmware</a> auf die Box gebracht werden.
+</li><li>Bei NAND-Boxen kann ein den öffentlichen Schlüssel enthaltendes Image mittels der <a class="ext-link" href="https://github.com/PeterPawn/YourFritz/blob/master/eva_tools/eva_to_memory"><span class="icon">​</span>eva-to-memory-Methode</a> auf die Box gebracht werden.
+</li></ul><h2 id="KonkreteAnwendunginFreetz">Konkrete Anwendung in Freetz</h2>
+<ul><li>Man aktiviere die Experten-Ansicht in Freetz ("Level of User Competence" = Expert).
+</li><li>Unter "Firmware packaging (fwmod) options" aktiviere man die Option "Sign image" und gebe das Passwort für den privaten Schlüssel direkt dadrunter ein (das Passwort wird aus der ins Image kopierten Version der .config entfernt).
+</li><li>Anschließend baue man ganz normal eine Freetz-Firmware.
+</li></ul><p>
+Durch das Aktivieren dieser Optionen wird folgendes bewirkt:
+</p>
+<ul><li>Handelt es um den allerersten Durchlauf, bei dem ein selbstsigniertes Image erzeugt werden soll, so werden die zum Signieren benötigten Dateien erzeugt und im Homeverzeichnis des Users unter den Namen mit folgendem Präfix abgelegt: <tt>.freetz.image_signing</tt>. Diese Dateien sind vom User zu sichern und von dem Zeitpunkt an beim Bauen/Signieren aller weiteren Images zu verwenden. Oder andersrum ausgedrückt - es macht keinen Sinn, sich diese Dateien immer wieder aufs Neue erzeugen zu lassen, da man dann jedes Mal aufs Neue das Problem lösen muss "wie bringt man den neu erzeugten öffentlichen Schlüssel auf die Box". Dies ist auch der Grund, warum die Dateien im Homeverzeichnis des Users abgelegt werden und nicht in dem Freetz-Build-Verzeichnis selbst (hat man mehrere Build-Verzeichnisse für verschiedene Boxen wird dadurch für jede Box dasselbe Schlüsselpaar verwendet). Es sei nochmal darauf hingewiesen, dass diese Dateien vom User zu sichern sind und z.B. bei einem Build-System-Wechsel manuell auf das neue System zu kopieren sind.
+</li><li>Liegen die Dateien dagegen vor, so werden sie einfach verwendet. Der öffentliche Schlüssel wird dabei in einem speziellen Format mit ins Image unter dem Namen <tt>/etc/avm_firmware_public_key9</tt> aufgenommen (bzgl. des Formats s. die detaillierte Beschreibung von PeterPawn).
+</li><li>Hat man es geschafft und der eigene öffentliche Schlüssel befindet sich auf der Box, so kann jedes weitere mit genau demselben Schlüsselpaar signierte Image über das AVM-Web-Interface geflasht werden.
+</li></ul></div>
+          
+          <div class="trac-modifiedby">
+            <span><a href="sign_image%3Faction=diff&amp;version=1.html" title="Version 1 von er13: add new article: &#34;sign image&#34;">zuletzt geändert</a> <a class="timeline" href="http://freetz.org/timeline?from=2017-02-21T20%3A25%3A01Z&amp;precision=second" title="Siehe Journal am 21.02.2017 20:25:01">vor 12 Monaten</a></span>
+            <span class="trac-print">Zuletzt geändert am 21.02.2017 20:25:01</span>
+          </div>
+        
+        
+      </div>
+      
+
+    </div>
+    <div id="altlinks">
+      <h3>In anderen Formaten herunterladen:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="sign_image%3Fformat=txt">Reiner Text</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" lang="en" xml:lang="en"><hr />
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="../../../../chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
+      <p class="left">Betrieben mit <a href="http://freetz.org/about"><strong>Trac 1.0.1</strong></a><br />
+        von <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right"><div class="field" align="right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations"/><input type="hidden" name="business" value="spenden@freetz.org"/><input type="hidden" name="item_name" value="Freetz Entwickler-Team"/><input type="hidden" name="no_shipping" value="1"/><input type="hidden" name="return" value="http://freetz.org"/><input type="hidden" name="cn" value="Name oder IPPF-Pseudonym"/><input type="hidden" name="currency_code" value="EUR"/><input type="hidden" name="tax" value="0"/><input type="hidden" name="lc" value="DE"/><input type="hidden" name="bn" value="PP-DonationsBF"/><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Zahlen Sie mit PayPal - schnell, kostenlos und sicher!"/><img alt="" border="0" src="http://freetz.org/pixel.gif" width="1" height="1"/></form></div></p>
+    </div>
+  </body>
+</html>

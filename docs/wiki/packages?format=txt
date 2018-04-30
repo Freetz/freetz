@@ -1,0 +1,234 @@
+[[TOC(packages,packages_tagged,libs,libs_tagged,heading=Inhaltsverzeichnis)]]
+
+= !Pakete, Addons und CGI-Erweiterungen =
+Diese WIKI-Seite dient als Überblick und sollte helfen sich für das eine oder für das andere Paket zu entscheiden. Neben diesem Überblick existiert noch [http://www.ip-phone-forum.de/showthread.php?t=180289 ein Thread in IPPF], wo jeder seine Lieblingskonfiguration posten kann. Diese "Lieblingskonfigurationen" geben einen guten Richtwert dazu, wie viele Pakete auf einmal die Box gerade noch ertragen kann, um noch stabil zu funktionieren. Die Größenangaben (Platzbedarf/-einsparung im komprimierten Dateisystem) sind nur ungefähre Richtwerte und können von Version zu Version variieren.
+
+== !Pakete ==
+!Pakete, die als "ex" ([wiki:help/howtos/common/external external]) markiert sind, lassen sich wahlweise "nach extern auslagern" (z.B. auf einen USB-Stick). "St" beschreibt den aktuellen Stand (Status) der Einbindung in Freetz ({*} stable, {o} testing, <!> unstable), und ist nicht unbedingt immer aktuell (den aktuelleren Status erkennt man daran, wo das Paket letztendlich in [wiki:help/howtos/common/install/menuconfig menuconfig] auftaucht. Das Paket ist ab "Version" in Freetz enthalten.
+
+|| '''Paketname''' || '''Beschreibung''' || '''ex''' || '''St''' || '''Größe''' ||'''Version'''||
+|| [wiki:packages/aiccu aiccu] || SixXS IPv6 tunnel || || {*} || ||1.2||
+|| [wiki:packages/apache Apache + PHP] || Apache Webserver mit PHP || || {o} || 550kb+ ||1.0||
+|| [wiki:packages/asterisk Asterisk] || PBX-Telefonanlage || (./) || <!> || || ||
+|| [wiki:packages/autofs autofs] || bindet Dateisysteme bei Bedarf ein || (./) || {o} || ||1.2||
+|| [wiki:packages/bash Bash] || die '''B'''ourne '''A'''gain '''Sh'''ell || (./) || {o} || 540kb+ ||1.0||
+|| [wiki:packages/bfusb bfusb] || Unterstützung für den AVM BlueFRITZ! USB Stick || || {o} || ||1.1||
+|| [wiki:packages/bind bind] || DNS-Server || (./) || {o} || 1,7mb+ ||||1.2||
+|| [wiki:packages/bip BIP] || IRC Proxy || (./) || {o} || ||1.0||
+|| [wiki:packages/bluez BlueZ] || Official Linux Bluetooth protocol stack || (./) || {o} || ~1mb[[br]](incl. libs) || 2.0 ||
+|| [wiki:packages/bluez-utils Bluez-Utils] || Bluetooth Utilities || (./) || {o} || ||1.0||
+|| [wiki:packages/bftpd bftpd] || kleiner FTP-Server || || {*} || ~ 62kb ||1.0||
+|| [wiki:packages/bird bird] || Internet Routing-Daemon || || {*} || ||1.0||
+|| [wiki:packages/br2684ctl br2684ctl] || Konfigurationstool für ATM Ethernet Bridging || || {o} || ||1.1||
+|| [wiki:packages/bridge-utils bridge-utils] || Kein Kartenspiel, sondern TCP bridging Utilities || || {*} || ||1.0||
+|| [wiki:packages/callmonitor Callmonitor] || ermöglicht Konfiguration von Aktionen bei eingehenden Anrufen || || {*} || ||1.0||
+|| [wiki:packages/checkmaild checkmaild] || POP3/ IMAP-Mailkonten regelmäßig auf neue Mails überprüfen lassen || (./) || {*} || 16kb ||1.0||
+|| [wiki:packages/cifsmount cifsmount] || Netzwerklaufwerke einbinden || || {*} || ||1.0||
+|| [wiki:packages/collectd Collectd] || Sammeln von Systeminformationen || (./) || <!> || ||1.0||
+|| [wiki:packages/classpath classpath] || Java Classpath || || {o} || ||1.0||
+|| [wiki:packages/cpmaccfg cpmaccfg] || internen Switch konfigurieren || || {*} || ||1.0||
+|| [wiki:packages/cryptsetup CryptSetup] || Disk Encryption || (./) || {o} || ||1.0||
+|| [wiki:packages/ctorrent CTorrent] || ein BitTorrent Client || (./) || {o} || ||1.0||
+|| [wiki:packages/curl CURL] || ein Tool ähnlich wget mit SSL-Unterstützung || (./) || {o} || ||1.0||
+|| [wiki:packages/davfs2 davfs2] || WebDAV Share mounten || (./) || {o} || ||1.1||
+|| [wiki:packages/debootstrap Debootstrap] || Debian Bootstrap || || {o} || ||1.0||
+|| [wiki:packages/deco deco] || Demos Commander - Dateimanager || (./) || {*} || ~ 60kb ||1.0||
+|| [wiki:packages/DemoPackageA DemoPackageA] || Ein Demo-Plugin "Hello World" || || {o} || || 2.0 ||
+|| [wiki:packages/digitemp DigiTemp] || Werte von 1-wire devices auslesen || (./) || {o} || ||1.2||
+|| [wiki:packages/dns2tcp Dns2TCP] || noch ein TCP Tunneler || (./) || {*} || ||1.0||
+|| [wiki:packages/dnsmasq dnsmasq] || DNS-, DHCP- und TFTP-Server || || {*} || ~100kb ||1.0||
+|| [wiki:packages/dosfstools dosfstools] || Utilities für das FAT Dateisystem || (./) || {o} || ||1.2||
+|| [wiki:packages/dropbear dropbear] || kleiner SSH2-Server und Client || || {*} || ~85kb ||1.0||
+|| [wiki:packages/dtach dtach] || detaches a program from the terminal (similar to screen, but a lot smaller) || (./) || {o} || ||1.1||
+|| [wiki:packages/dtmfbox DTMFBox] || Softswitch-Applikation für SIP und CAPI (VoIP/ISDN) || (./) || {*} || ||1.0||
+|| [wiki:packages/e2fsprogs e2fsprogs] || Utilities für das EXT2 Dateisystem || (./) || {o} || ~312kb ||1.0||
+|| [wiki:packages/emailrelay E-MailRelay] || E-Mail Proxy/Forwarder || || {o} || || ||
+|| [wiki:packages/empty Empty] || PTY Utility || || {o} || ||1.0||
+|| [wiki:packages/espeak eSpeak] || TTS-Sprachsynthesizer für Englisch und andere Sprachen || (./) || {*} || ||1.0||
+|| [wiki:packages/fortune fortune] || Anzeige von Glückskeksen und anderen humorvollen Aphorismen || || {o} || ~4kb ||1.2||
+|| [wiki:packages/fstyp fstyp] || Erkennung von Dateisystemen || || {o} || ||1.0||
+|| [wiki:packages/fuse FUSE] || Filesystem in Userspace || || {*} || ||1.0||
+|| [wiki:packages/git git] || verteilte Versionsverwaltung von Dateien || || {o} || ||1.2||
+|| [wiki:packages/gw6 gw6] || gogo6/freenet6 IPv6 tunnel || (./) || {o} || ||1.2||
+|| [wiki:packages/haserl Haserl] || Haserl is a small program that uses shell or Lua script to create cgi web scripts || || {o} || ~37kb ||1.0||
+|| [wiki:packages/hiawatha hiawatha] || Hiawatha is a webserver for Unix and has been build with security in mind || (./) || {o} || ~105kb || 2.0 ||
+|| [wiki:packages/hd-idle hd-idle] || Tool zum Abschalten inaktiver Festplatten || || {o} || ||1.1||
+|| [wiki:packages/hol hol] || Tool zum Abschalten von PCs über das Netzwerk || || {o} || ||1.2||
+|| [wiki:packages/hp-utils hp-utils] || Tools für HP-Drucker || || <!> || ~104kB ||1.2||
+|| [wiki:packages/hplip HPLIP] || HP Linux Imaging and Printing: Scannen und Tools für HP-Geräte || || <!> || ~330kB ||1.2||
+|| [wiki:packages/htpdate htpdate] || Zeitsynchronisierung über HTTP || || {o} || ||1.2||
+|| [wiki:packages/httptunnel httptunnel] || HTTP Tunnel Server || (./) || {o} || ||1.1||
+|| [wiki:packages/iftop iftop] || 'top' für's Netzwerk || (./) || {o} || 52kB ||1.2||
+|| [wiki:packages/igmpproxy igmpproxy] || Einfacher multicast routing daemon || || {o} || 35kB ||1.2||
+|| [wiki:packages/imapproxy ImapProxy] || ImapProxy is a caching IMAP proxy server || || {o} || || 2.0 ||
+|| [wiki:packages/inadyn-mt inadyn] || kleiner dynamic DNS Client || || {o} || ||1.0||
+|| [wiki:packages/inetd inetd] || 'Virtual' inetd package || || {*} || ||1.0||
+|| [wiki:packages/inotify-tools inotify Tools] || Protokollierung von bzw. Ereignissteuerung durch Dateisystem-Vorgänge(n) || (./) || {o} || ||1.0||
+|| [wiki:packages/iodine iodine] || TCP over DNS Tunnel || (./) || {o} || ~55kb ||1.0||
+|| [wiki:packages/iptables iptables] || Netfilter/IpTables (Linux Firewall) || (./) || <!> || ~ 30kb ||1.0||
+|| [wiki:packages/irssi Irssi] || IRC Client || (./) || {o} || ~780kb ||1.0||
+|| [wiki:packages/jamvm JamVM] || eine kleine, doch vollständige Java VM || || {o} || ~160kb ||1.0||
+|| [wiki:packages/knock knockd] || Ermöglicht Port Knocking || (./) || {*} || ~ 60kb ||1.0||
+|| [wiki:packages/ldd ldd] || List Dynamic Dependencies (wovon hängt was ab) || (./) || {*} || ||1.0||
+|| [wiki:packages/lighttpd lighttpd] || freier kompakter Webserver || (./) || {o} || ||1.2||
+|| [wiki:packages/lsof lsof] || kleines Programm, um alle offenen Dateien anzuzeigen || (./) || {*} || ||1.0||
+|| [wiki:packages/ltrace ltrace] || wie [wiki:packages/strace strace], nur halt für Libraries || (./) || {*} || ||1.0||
+|| [wiki:packages/lua Lua] || Lua Scripting Language || (./) || {o} || ~190kb ||1.0||
+|| [wiki:packages/lynx Lynx] || Text-Modus Web-Browser || (./) || {o} || ||1.0||
+|| [wiki:packages/madplay madplay] || MPeg Audio Decoder || (./) || {o} || ||1.0||
+|| [wiki:packages/matrixtunnel matrixtunnel] || Matrixtunnel - SSL-Tunnel für abhörsicheren Zugang zur Box oder Systemen dahinter || (./) || {o} || ~100kB ||1.0||
+|| [wiki:packages/mc mc] || Midnight Commander - ein Unix-Dateimanager || (./) || {*} || 400kb+ ||1.0||
+|| [wiki:packages/mcabber mcabber] || Jabber Console Client || || {o} || ||1.1||
+|| ~~[wiki:packages/mediaserver mediaserver]~~ || Mediaserver aus der AVM Labor Version ( USB ) || || || || 2.0 ||
+|| [wiki:packages/mediatomb MediaTomb] || MediaTomb UPnP MediaServer || || {o} || 1.2MB+[[br]]+~2.5MB Libs ||1.2?||
+|| [wiki:packages/microperl microperl] || Perl without operating-specific functions || (./) || {o} || ||1.1||
+|| [wiki:packages/minidlna minidlna] || DLNA/UPnP-AV Server || (./) || {o} || ||1.2||
+|| [wiki:packages/mini_fo minifo] || Overlay Filesystem - schreibgeschütztes Gerät beschreibbar machen || || {*} || ||1.0||
+|| [wiki:packages/m-i-t module-init-tools] || Utilities zum Verwalten von Kernelmodulen || || {o} || ||1.0||
+|| [wiki:packages/mod mod] || Base-Package. Es wird immer automatisch installiert || || {*} || ||1.2||
+|| [wiki:packages/mtr mtr] || Netzwerkdiagnose - Ping und Traceroute in einem || (./) || {*} || ||1.0||
+|| [wiki:packages/nagios Nagios] || Monitoring Programm || || {o} || ||1.1||
+|| [wiki:packages/nano nano] || Texteditor || (./) || {*} || ||1.1||
+|| [wiki:packages/ncftp ncftp] || NcFTP Client || (./) || {o} || 233kb+ ||1.2||
+|| [wiki:packages/ndas ndas] || Network Direct Attached Storage || (./) || {o} || ||1.2||
+|| [wiki:packages/netcat netcat] || Ermöglicht Ein- und Ausgaben über das Netzwerk (TCP und UDP) || (./) || {*} || ||1.0||
+|| [wiki:packages/nmap nmap] || Utility for network exploration or security auditing || (./) || {o} || 694kb ||1.2||
+|| [wiki:packages/netsnmp Net-SNMP] || Simple Network Management Protocol Server || (./) || {*} || ||1.0||
+|| [wiki:packages/netatalk netatalk] || AFP (Apple Filing Protocol) fileserver || || <!> || ~750kB || 1.2 ||
+|| [wiki:packages/nfs-utils nfs-utils] || NFS Utilities || || {*} || ||1.1||
+|| [wiki:packages/noip noip] || dynamic DNS Update Client for noip  || || {o} || ||1.0||
+|| [wiki:packages/nfs nfs] || Fritzbox als NFS-Client nutzen, um mehr Speicherplatz zu erhalten || || {*} || ||1.1||
+|| [wiki:packages/ntfs-3g NTFS-3G] || NTFS Support || (./) || {*} || ||1.0||
+|| [wiki:packages/obexftp ObexFTP] || ObexFTP Server || || {o} || ||1.0||
+|| [wiki:packages/openconnect OpenConnect] || Cisco AnyConnect VPN Client || || {o} || || 2.0 ||
+|| [wiki:packages/opendd OpenDD] || Dynamic DNS Client || (./) || {o} || ||1.2||
+|| [wiki:packages/openntpd openntpd] || Abgleich und Bereitstellung der Uhrzeit || || {*} || ||1.0||
+|| [wiki:packages/openssh OpenSSH] || SSH2-Server und Client, SFTP-Server || (./) || {o} || 440kb+ ||1.1||
+|| [wiki:packages/openvpn openvpn] || ermöglicht Aufbau eines virtuellen privaten Netzwerks (VPN) || (./) || {*} || ||1.0||
+|| [wiki:packages/owfs OWFS] || Unterstütztung für viele 1-wire devices || (./) || {o} || ||1.2||
+|| [wiki:packages/pciutils pciutils] || Utilities für PCI Geräte || || {*} || ||1.1||
+|| [wiki:packages/php PHP] || Server-side HTML embedded scripting language || || {*} || ~5mb[[br]](without libs) ||1.0||
+|| [wiki:packages/pingtunnel pingtunnel] || TCP mit ICMP Echo Anfragen und Antworten (ping) tunneln || || {*} || ~40kb ||1.0||
+|| [wiki:packages/polipo Polipo] || Small and fast caching web proxy || || {*} || ~220kB ||1.2||
+|| [wiki:packages/portmap portmap] || portmap Utility || || {*} || ||1.1||
+|| [wiki:packages/pptp pptp] || PPTP-Client || (./) || {o} || 95kb ||1.0||
+|| [wiki:packages/pptpd pptpd] || Poptop - Ein PPTP-Server || (./) || {o} || 79kb ||1.0||
+|| [wiki:packages/privoxy privoxy] || HTTP Proxy mit umfangreichen Filtermöglichkeiten || (./) || {*} || ||1.0||
+|| [wiki:packages/prosody Prosody IM] || Prosody is a flexible communications server for Jabber/XMPP  written in Lua || || {o} || || 2.0 ||
+|| [wiki:packages/quagga Quagga] || The Quagga Software Routing Suite || || {o} || ||1.0||
+|| [wiki:packages/radvd radvd] || IPv6 router advertisement daemon || (./) || {*} || 386kb ||1.2||
+|| [wiki:packages/rcapid rcapid] || CAPI-Server || || {*} || ||1.0||
+|| [wiki:packages/rrdtool rrdtool] || Data logging and graphing system || (./) || {o} || 424kb ||1.0||
+|| [wiki:packages/rsync rsync] || Effizientes Kopieren von Dateien über Netzwerk || (./) || {o} || 410kb ||1.2||
+|| [wiki:packages/ruby Ruby] || Ruby Scripting Language || || {o} || ~1.3MB ||1.0||
+|| [wiki:packages/s3fslite s3fslite] || FUSE file system for Amazon S3 || || {o} || || 2.0 ||
+|| [wiki:packages/sablevm-sdk SableVM] || alternative Java VM || || {o} || ||1.1||
+|| [wiki:packages/shellinabox Shell in a Box] || Terminal im Webbrowser || (./) || {o} ||  ||1.2||
+|| [wiki:packages/samba samba/nmbd] || Freigabe von Dateien über das SMB/CIFS-Protokoll (auch für Windows) sowie Namensauflösung der Box im Netzwerk || (./) || {*} || ||1.0||
+|| [wiki:packages/sane-backends SANE] || '''S'''canner '''A'''ccess '''N'''ow '''E'''asy (Scanner-Support, Scan-Server) || || <!> || ~90-700kB || 1.1 ||
+|| [wiki:packages/screen screen] || Fenstermanager zur Verwendung mit textbasierten Eingabefenstern (Textkonsole) || (./) || {*} || ||1.0||
+|| [wiki:packages/ser2net ser2net] || Serial to Network Proxy, COM-Ports über telnet und TCP nutzen || || {o} || || 2.0 ||
+|| [wiki:packages/sispmctl sispmctl] || GEMBIRD SiS-PM (sispm) USB-controlled power-outlet device (AKA IntelliPlug) Support || || {o} || ||1.0||
+|| [wiki:packages/smartmontools SMARTmontools] || Zeigt S.M.A.R.T. Werte von Festplatten an || (./) || {o} || ||1.2||
+|| [wiki:packages/smstools3 smstools3] || Senden/Empfangen von SMS mit UMTS-Stick || || {o} || || 2.0 ||
+|| [wiki:packages/socat socat] || eine Art erweitertes [wiki:packages/netcat netcat] (inkl. SSL Support) || || {o} || ||1.1||
+|| [wiki:packages/squid squid] || Web Proxy Server || (./) || {o} || || 1.1 ||
+|| [wiki:packages/strace strace] || Tool zum "Tracen" von Programmen || (./) || {*} || ||1.0||
+|| [wiki:packages/streamripper Streamripper] || Record mp3 streams || (./) || {o} || ||1.0||
+|| [wiki:packages/stunnel stunnel] || SSL-Tunnel für TCP-Verbindungen || (./) || {*} || ||1.0||
+|| [wiki:packages/subversion subversion (svn)] || Software zur Versionsverwaltung von Dateien und Verzeichnissen || (./) || {o} || ||1.2||
+|| [wiki:packages/sundtek Sundtek Treiber] || Treiber für Sundtek DVB Sticks || || {o} || ||1.0||
+|| [wiki:packages/tcpdump tcpdump] || Überwachung und Auswertung des Netzwerkverkehrs || (./) || {*} || full: ~680kb[[br]]mini: ~350kb ||1.0||
+|| [wiki:packages/tcp_wrappers tcp_wrappers] || Host-basiertes Networking ACL System || || {o} || ||1.1||
+|| [wiki:packages/tinc Tinc] || VPN Daemon || || <!> || ||1.1||
+|| [wiki:packages/tinyproxy tinyproxy] || HTTP and HTTPS Proxy || || {*} || ~ 70kB ||1.0||
+|| [wiki:packages/tor tor] || SOCKS Proxy mit Anonymisierungsfunktion || (./) || {*} || ||1.0||
+|| [wiki:packages/transmission transmission] || kleiner BitTorrent Client || (./) || {*} || ||1.0||
+|| [wiki:packages/tree tree] || rekursives Auflisten von Verzeichnissen in Baum-Struktur || (./) || {o} || ||1.1||
+|| [wiki:packages/unbound unbound] || Unbound is a validating, recursive, and caching DNS resolver || (./) || {o} || || 2.0 ||
+|| [wiki:packages/umurmur umurmur] || kleiner Mumble Server || (./) || {o} || ||1.2||
+|| [wiki:packages/unrar unrar] || rar-Archive auf der Box entpacken || (./) || {o} || 174kb ||1.2||
+|| [wiki:packages/usbip USB-IP] || USB Device Sharing über IP || || <!> || ||1.0||
+|| [wiki:packages/usbroot USB-root] || Auslagerung von / auf ein USB-Laufwerk || || {o} || ||1.0||
+|| [wiki:packages/usbutils usbutils] || USB Geräte und Informationen auflisten || || {*} || ||1.1||
+|| [wiki:packages/vim vim] || "vi improved": Text-Editor || (./) || {o} || ||1.0||
+|| [wiki:packages/vnstat vnstat] || Network traffic monitor || || {*} || ||1.2||
+|| [wiki:packages/vpnc vpnc] || Client für den Cisco VPN-Konzentrator || || {*} || ||1.0||
+|| [wiki:packages/vsftpd vsftp] || Schneller, frei konfigurierbarer und sicherer FTP Server || (./) || {*} || ||1.0||
+|| [wiki:packages/vtund vtun] || virtueller Tunnel (VPN) über TCP/IP Netzwerke || (./) || {o} || ||1.2||
+|| [wiki:packages/wget wget] || WGet Utility (Dateien aus dem Internet von Kommandozeile downloaden) || || {o} || ~150kb ||1.0||
+|| [wiki:packages/wol WOL] || Wake on LAN (Ersatz für ether-wake) || (./) || {o} || ||1.1||
+|| [wiki:packages/wput wput] || Das Gegenstück zu "wget": Dateien per HTTP hochladen || (./) || {o} || ||1.1||
+|| [wiki:packages/xmail xmail] || Mail server || || {*} || ||1.2||
+|| [wiki:packages/xpdf Xpdf] || PDF-Tools: Konvertierung nach PostScript/Text + Informationen (nicht der Viewer!) || || {o} || ||1.1||
+|| [wiki:packages/xrelayd xrelayd] || kleiner stunnel Ersatz (Nachfolger von matrixtunnel) || || {o} || ~200kb ||1.0||
+|| [wiki:packages/ziproxy ziproxy] || Forwarding, non-caching, HTTP proxy targeted for traffic optimization || || {o} || ~113kb[[BR]]libs: ~312kb || 2.0 ||
+
+== Addons ==
+Addons sind !Pakete, die (noch) nicht direkt in Freetz eingebunden sind (für diese existiert noch kein Eintrag in der [wiki:help/howtos/common/install/menuconfig menuconfig]), und daher zur Einbindung noch ein wenig [wiki:help/howtos/development/install_addon Handarbeit] erfordern.
+
+|| '''Paketname''' || '''Beschreibung''' ||
+|| [wiki:packages/nhipt nhipt][[BR]][[BR]] || Leistungsfähige Web-Oberfläche zur Konfiguration der Iptables Firewall[[BR]] Unterstützt alle iptables / ip6tables Module (IPv4 & IPv6) als dynamisches freetz Paket direkt von USB Stick (NEW) ||
+|| [wiki:packages/fritzload FritzLoad] || Fritz!Load kann automatisiert Dateien von bzw. zu Sharehostern herunter- und hochladen ||
+|| [wiki:packages/fhem FHEM] || Überwachung und Steuerung von Home Automation Systemen, u.a. FS20 (mächtige Variante) ||
+|| [wiki:packages/fhzctrl fhzctrl] || Überwachung und Steuerung von Home Automation Systemen, u.a. FS20 (einfache Variante) ||
+
+== CGI-Erweiterungen ==
+|| '''Paketname''' || '''Beschreibung''' || '''Größe''' ||'''Version''' ||
+|| [wiki:packages/authorized-keys authorized_keys] || Web-Oberfläche für root's authorized_keys von Dropbear & OpenSSH || || 1.2 ||
+|| [wiki:packages/avm-firewall AVM firewall CGI] || Web-Oberfläche um die von AVM dem User vorenthaltene integrierte Firewall zu administrieren || ~ 17kb ||1.0||
+|| [wiki:packages/dnsd dnsd] || Small static DNS server daemon (busybox) || ~483kb || 2.0 ||
+|| [wiki:packages/downloader downloader-cgi] || Web-Oberfläche zum Nachladen von Dateien ins RAM beim Hochfahren der Box || ~ 2kB || 1.0 ||
+|| [wiki:packages/iptables-cgi iptables-cgi] || Web-Oberfläche für Iptables || > 70kb || 1.0 ||
+|| [wiki:packages/nano-shell Nano-Shell] || Minimal-Shell für komplette Befehlseingabe via Web-URL || || 1.0 ||
+|| [wiki:packages/nfsd nfsd-cgi] || Web-Oberfläche zur Konfiguration des NFS-Servers || || 1.1 ||
+|| [wiki:packages/nhipt nhipt] || Leistungsfähige Web-Oberfläche zur Konfiguration der Iptables Firewall (IPv4 & IPv6) (NEW) || 63kb || 1.2 ||
+|| [wiki:packages/rrdstats RRDstats] || Web-Oberfläche zur Konfiguration des RRDtools (Round Robin Database Tool) || ||1.0||
+|| [wiki:packages/onlinechanged_cgi Onlinechanged-CGI] || Web-Oberfläche zur Definition eigener Onlinechanged-Skripten, die bei Verbindungswechsel ausgeführt werden || || 2.0 ||
+|| [wiki:packages/rudi-shell Rudi-Shell] || Rudi(mentär)-Shell für komplette Systemkontrolle via Web || || 1.0 ||
+|| [wiki:packages/phpxmail PHPXMail] || PhpXmail is a web based management software for the Xmail mail server written in php || ~90kb (ohne PHP) || 1.2 ||
+|| [wiki:packages/ppp ppp-cgi] || Web-Oberfläche zur Konfiguration des pppd || || 1.2 ||
+|| [wiki:packages/spindown spindown-cgi] || Web-Oberfläche für sg3_utils (Sleep-Modus für angeschlossene Festplatten) || 28kb || 1.0 ||
+|| [wiki:packages/syslogd syslogd-cgi] || Web-Oberfläche für den Syslogd || || 1.0 ||
+|| [wiki:packages/virtualip virtualip-cgi] || ermöglicht das Anlegen virtueller IPs auf der Box || || 1.0 ||
+|| [wiki:packages/wol wol-cgi] || Web-Oberfläche für Wake on LAN || || 1.0 ||
+
+== !Apps ==
+Externe Apps die für Freetz entwickelt worden sind, um Freetz funktionen über ein Mobile Device zu steuern (Android, IOS, etc):
+
+Freetz Manager (IOS / iPhone / iPad)
+[https://itunes.apple.com/us/app/freetz-manager/id658333400?l=de&ls=1&mt=8]
+* Services Start/Stop/Restater
+* Fritzbox Shutdown/Restart
+* Fritzbox/Freetz Status (Hardware, Netzwerk, Ram, Packete, Log, etc)
+* Preis: $1,99
+
+== Weiteres ==
+Seit 18.09.2009 gibt es [in der Entwicklerversion] drei optionale Erweiterungen zum WebIF, die einen informativen Charakter haben:
+
+1. .config kann nun in einer gefilterten Version optional auf die Box "mitgenommen" werden. Dadurch ist es möglich, die FREETZ-Konfiguration auch dann auszulesen, wenn die Image-Datei längst verloren ist.
+
+2. BOX-INFO: Hardware- und Firmwarespezifische Informationen über die Box (AVM-Teil). Auch Umgebungsvariablen der Box können angesehen werden.
+
+3. FREETZ-INFO: Versteckte Informationen über FREETZ. Hier kann z.B. .config oder [wiki:help/howtos/common/external externalisierte] Dateien angezeigt werden. Auch Erstellungsdatum vom FREETZ-Image und Benutzerdefinierte Informationen können durch FREETZ-INFO im WebIF dargestellt werden.
+
+BOX-INFO- und FREETZ-INFO-Seiten können sowohl im menuconfig (zum Platzsparen), als auch im FREETZ-WebIF deaktiviert werden. Beide Seiten sind zwar eigenständige CGIs, bilden aber in dem Sinne kein Paket und gehören zum mod selbst als optionale Teile. Standardmäßig sind alle drei INFO-Komponenten aktiviert und können im menuconfig bei aktiviertem "Expertenansicht" unter "Advanced Settings" abgewählt werden.
+
+Für die [wiki:patches Patches] gibt es eine eigene Sektion.
+
+If you get the message ''/var/flash/freetz too big'' or similar after trying out several packages then:
+
+ 1. Login using telnet (or SSH)
+ 1. Goto the directory ''/var/tmp/flash''
+ 1. Remove the files of packages you don't use anymore
+ 1. ''modsave''
+
+Another trick is to move configuration files of external packages also to external storage and to make symbolic links to them, for example:
+
+ 1. ''mv /var/tmp/flash/php.ini /var/media/ftp/uStor01/config/php.ini''
+ 1. ''ln -s /var/media/ftp/uStor01/config/php.ini /var/tmp/flash/php.ini''
+ 1. ''Modsave''
+
+Note that these configuration files don't get backed up using the Freetz menu!
+
+Yet another option is to integrate static data, like certificates, into the flash image, see [wiki:help/howtos/development/integrate_own_files#FesteIntegrationüberdasFreetzImage here] for details.

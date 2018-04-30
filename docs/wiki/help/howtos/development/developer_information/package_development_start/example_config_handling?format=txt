@@ -1,0 +1,39 @@
+Here some examples using the tools for configuration handling to explain the behavior of the available commands.[[br]]
+
+Example to disable the freetz http web-interface (web-server):
+{{{
+#!table style="border:none;text-align:left"
+   {{{#!tr
+      {{{#!td style="border: none"
+      1. vi /mod/etc/conf/mod.cfg
+      1. modconf save mod
+      1. modsave flash			
+      }}}
+      {{{#!td style="border: none"
+       Change MOD_HTTPD=’yes’ to MOD_HTTPD=’no’[[br]]
+       will update/ (create if not existing) /tmp/flash/mod.diff[[br]]
+       saves content of /tmp/flash/ to tffs, including the new mod.diff file
+      }}}
+   }}}
+}}}
+
+or use a shortcut for step 2 and 3:
+{{{
+#!table style="border:none;text-align:left"
+   {{{#!tr
+      {{{#!td style="border: none"
+      2. modsave
+      }}}
+      {{{#!td style="border: none"
+       This will update all /tmp/flash/<package>.diff files, and save resulting content of /tmp/flash/ to tffs
+      }}}
+   }}}
+}}}
+The above steps is to give examples of the available commands.[[br]][[br]]
+To more comfortably obtain the same results:
+1. modconf set mod MOD_HTTPD=no
+1. modconf save mod
+1. modsave flash
+
+or use a shortcut for step 2 and 3:
+2. modsave

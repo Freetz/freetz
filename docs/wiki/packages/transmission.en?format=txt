@@ -1,0 +1,66 @@
+== Blocklist ==
+If you want to use a peer-blocklist (you can enable this in the web interface if you are using the trunk version of Freetz), you have to know that you have to provide a blocklist yourself. The simplest is to make a 'update-blocklist.sh' with the content below and to invoke it daily or so using cron (don't forget to make the file executable).
+
+{{{
+#!/var/tmp/sh
+
+cd /path-to/bittorrent/config/blocklists/
+if wget -q http://www.bluetack.co.uk/config/level1.gz ; then
+        rm -f level1 && gunzip level1.gz
+        killall -HUP transmission-daemon
+        logger -s -t transmission "blocklist updated"
+else
+        logger -s -t transmission "blocklist not updated"
+fi
+}}}
+This can be done from the transmission web interface too now.
+
+== Number of peers ==
+It is probably a good idea to reduce the number of peers by editing the ''.../bittorrent/config/settings.json'' file:
+
+{{{
+    "peer-limit-global": 150,
+    "peer-limit-per-torrent": 50,
+}}}
+You have to stop transmission before changing this! Or you could use this command to reload the config file:
+
+{{{
+killall -HUP transmission-daemon
+}}}
+This can be done from the transmission web interface too now.
+
+== Memory usage ==
+Huge, relatively.
+
+You will probably need a swap file and you may want to increase [http://lwn.net/Articles/83588/ swappiness] to 80 or something (in Freetz WebIF since [6886]).
+
+|| || '''!VmSize''' || '''VmRSS''' ||
+|| No blocklist || ~8,5 mB || ~6 mB ||
+|| level1 blocklist || ~17 mB || ~8 mB ||
+|| One torrent + blocklist || ~19 mB || ~12 mB ||
+
+You can monitor these values easily with the patch from ticket #1308.
+
+== Limit memory usage ==
+To prevent memory shortage (could cause reboots and crashing processes):
+
+{{{
+    "cache-size-mb": 1,
+    "open-file-limit": 32,
+}}}
+The cache size is by default 2 MiB and the open file limit is by default 32.
+
+To minimize the number of connections you could decide to forward TCP traffic only and not UDP traffic.
+
+== Watchdog ==
+It may be necessary to disable the watchdog by adding this line to for example ''rc.custom'':
+
+{{{
+    echo "disable">/dev/watchdog
+}}}
+== Links ==
+ * [http://transmissionbt.com/ Transmission] (external)
+ * [https://trac.transmissionbt.com/wiki/EditConfigFiles Editing Configuration Files] (external)
+ * [http://trac.transmissionbt.com/wiki/Scripts/BlockListUpdater Block List Updater Script] (external)
+ * [http://en.wikipedia.org/wiki/Micro_Transport_Protocol Wikipedia about µTP]
+ * [http://code.google.com/p/transmisson-remote-gui/ Transmission Remote GUI]

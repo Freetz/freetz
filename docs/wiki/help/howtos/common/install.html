@@ -1,0 +1,415 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+  
+
+
+  <head>
+    <title>
+      help/howtos/common/install.en – Freetz
+    </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!--[if IE]><script type="text/javascript">
+      if (/^#__msie303:/.test(window.location.hash))
+        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
+    </script><![endif]-->
+        <link rel="search" href="http://freetz.org/search" />
+        <link rel="help" href="../../../TracGuide.html" />
+        <link rel="alternate" href="install.en%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
+        <link rel="up" href="../common.html" title="Übergeordnete Wiki-Seite anzeigen" />
+        <link rel="start" href="http://freetz.org/wiki" />
+        <link rel="stylesheet" href="../../../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
+        <link rel="shortcut icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+      <link type="application/opensearchdescription+xml" rel="search" href="http://freetz.org/search/opensearch" title="Freetz durchsuchen" />
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/jquery.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/babel.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/messages/de.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/trac.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/search.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/folding.js"></script>
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
+        $("#content").find(".wikianchor").each(function() {
+          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
+        });
+        $(".foldable").enableFolding(true, true);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://freetz.org/wiki"><img src="../../../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
+      </div>
+      <form id="search" action="http://freetz.org/search" method="get">
+        <div>
+          <label for="proj-search">Suche:</label>
+          <input type="text" id="proj-search" name="q" size="18" value="" />
+          <input type="submit" value="Suche" />
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="http://freetz.org/login">Anmelden</a></li><li><a href="http://freetz.org/prefs">Einstellungen</a></li><li><a href="../../../TracGuide.html">Hilfe/Anleitung</a></li><li><a href="http://freetz.org/about">Über Trac</a></li><li><a href="http://freetz.org/notification" title="Wiki Pages Change Notifications">My Notifications</a></li><li><a href="http://freetz.org/register">Registrieren</a></li><li class="last"><a href="../../../Impressum.html">Impressum</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first active"><a href="http://freetz.org/wiki">Wiki</a></li><li><a href="http://freetz.org/timeline">Journal</a></li><li><a href="http://freetz.org/roadmap">Projektplan</a></li><li><a href="http://freetz.org/browser">Quellen durchsehen</a></li><li><a href="http://freetz.org/report">Tickets anzeigen</a></li><li><a href="http://freetz.org/search">Suche</a></li><li><a href="http://freetz.org/tags">Tags</a></li><li><a href="http://freetz.org/downloads">Downloads</a></li><li class="last"><a href="http://freetz.org/screenshots">Bildschirmfotos</a></li>
+    </ul>
+  </div>
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=""><a class="" href="install..html" title="">German</a></li><li class=" active last"><a class="selected" href="install.en.html" title="selected and displaying language">English</a></li></ul></div><div id="main">
+      <div id="pagepath" class="noprint">
+  <a class="pathentry first" title="Zeige WikiStart an" href="http://freetz.org/wiki">Wiki:</a><a class="pathentry" href="../../../help.html" title="Zeige help an">help</a><span class="pathentry sep">/</span><a class="pathentry" href="../../howtos.html" title="Zeige help/howtos an">howtos</a><span class="pathentry sep">/</span><a class="pathentry" href="../common.html" title="Zeige help/howtos/common an">common</a><span class="pathentry sep">/</span><a class="pathentry" href="install.en.html" title="Zeige help/howtos/common/install.en an">install.en</a>
+</div>
+      <div id="ctxtnav" class="nav">
+        <h2>Kontext-Navigation</h2>
+        <ul>
+          <li class="first"><a href="../common.html">Aufwärts</a></li><li><a href="../../../WikiStart.html">Startseite</a></li><li><a href="../../../TitleIndex.html">Inhaltsverzeichnis</a></li><li><a href="install.en%3Faction=history.html">Änderungshistorie</a></li><li class="last"><a href="http://freetz.org/notification/help/howtos/common/install" title="Watch Page">Watch Page</a></li>
+        </ul>
+        <hr />
+      </div>
+    <div id="content" class="wiki">
+      <div class="wikipage searchable">
+        
+          <div id="wikipage" class="trac-content"><p>
+</p><div class="wiki-toc"><h4>Index</h4><ol><li class="active"><a href="install.en.html#Installation">Installation</a><ol><li class="active"><a href="install.en.html#VirtualLINUX:FriBoLiStinkyLinuxFreetz-Linux">Virtual LINUX: FriBoLi / StinkyLinux / Freetz-Linux</a><ol><li class="active"><a href="install.en.html#Preparation">Preparation</a></li><li class="active"><a href="install.en.html#Execution">Execution</a></li></ol></li><li class="active"><a href="install.en.html#Linux">Linux</a><ol><li class="active"><a href="install.en.html#NotwendigePakete">Notwendige Pakete</a><ol><li class="active"><a href="install.en.html#freetz-1.0">freetz-1.0</a></li></ol></li><li class="active"><a href="install.en.html#freetz-1.3">freetz-1.3</a><ol><li class="active"><a href="install.en.html#aktuelleEntwickerVersionundspeziellePakete">aktuelle Entwicker Version und spezielle Pakete</a></li><li class="active"><a href="install.en.html#alteEntwickerVersionen">alte Entwicker Versionen</a></li></ol></li><li class="active"><a href="install.en.html#InstallationderbenötigtenPakete">Installation der benötigten Pakete</a></li><li class="active"><a href="install.en.html#ErstellungInstallation">Erstellung &amp; Installation</a></li></ol></li><li class="active"><a href="install.en.html#coLinuxandLinuxspeedLinux">coLinux / andLinux / speedLinux</a></li><li class="active"><a href="install.en.html#Cygwin">Cygwin</a></li><li class="active"><a href="install.en.html#MacOSX">Mac OS X</a></li></ol></li><li class="active"><a href="install.en.html#Aktualisierung">Aktualisierung</a></li><li class="active"><a href="install.en.html#Troubleshooting">Troubleshooting</a><ol><li class="active"><a href="install.en.html#AVMFirmwarewirdnichtgefunden">AVM Firmware wird nicht gefunden</a></li><li class="active"><a href="install.en.html#Imagetoobig">Image too big</a></li><li class="active"><a href="install.en.html#SonstigeProblemeoderFehlermeldungen">Sonstige Probleme oder Fehlermeldungen</a></li></ol></li><li class="active"><a href="install.en.html#WeiterführendeLinks">Weiterführende Links</a></li><li><a href="install/menuconfig.html#Konfiguration">Konfiguration</a><ol><li><a href="install/menuconfig.html#General">General</a></li><li><a href="install/menuconfig.html#Brandings">Brandings</a></li><li><a href="install/menuconfig.html#Mod">Mod</a></li></ol></li></ol></div><p>
+</p>
+<h1 id="Installation">Installation</h1>
+<p>
+<a class="wiki" href="../../../freetz.html">Freetz</a> provides some scripts for modifying an original firmware. Because of license issues the distribution of original or modified firmware images is forbidden.
+</p>
+<p>
+<img src="../../../../chrome/wikiextras-icons-16/exclamation.png" style="vertical-align: text-bottom" alt="/!\" /> the installation of a modified firmware invalidates the manufacturer's warranty! In case of problems, do NOT contact AVM support. <img src="../../../../chrome/wikiextras-icons-16/exclamation.png" style="vertical-align: text-bottom" alt="/!\" />
+</p>
+<p>
+<strong>Speedports</strong>: (see <a class="ext-link" href="http://wiki.ip-phone-forum.de/skript:speedport2fritz#was_mach_ich_mit_dem_fertigen_kernel.image"><span class="icon">​</span>sp2fritz</a>). From scriptversion 2.2.2008 the use of speed2fritz is possible.
+</p>
+<p>
+<strong>Newbies</strong>: Please read '<a class="wiki" href="newbie.html">Freetz for Beginners</a>' first!
+</p>
+<h2 id="VirtualLINUX:FriBoLiStinkyLinuxFreetz-Linux">Virtual LINUX: FriBoLi / StinkyLinux / Freetz-Linux</h2>
+<p>
+<a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?p=1019861"><span class="icon">​</span>StinkyLinux</a> (formerly FriBoLi) is a virtual Linux operating system for building FritzBox firmware images on Windows. Unfortunately, support for StinkyLinux was discontinued some time ago. This means it cannot be used for freetz anymore without hassle with updates.
+</p>
+<p>
+Because of that, a new build environment <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=194433"><span class="icon">​</span>Freetz-Linux </a> was created by Silent-Tears (cinereous), who also maintains it. The use of this environment is strongly recommended if no native linux can be used.
+</p>
+<p>
+The following instructions were initially adopted from <a class="ext-link" href="http://www.ip-phone-forum.de/member.php?u=118161"><span class="icon">​</span>Saphir</a> , but have grown over time and were completed and/or edited by many different users. We try to keep these up-to-date and adapt it to the current versions of VM and freetz. However, the steps below can (with some minor limitations) be used for every freetz-VM.
+</p>
+<h3 id="Preparation">Preparation</h3>
+<p>
+See also:
+</p>
+<p>
+<a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=194433"><span class="icon">​</span>Installing Freetz-Linux</a>
+</p>
+<p>
+<a class="ext-link" href="http://wiki.ip-phone-forum.de/skript:stinkylinux"><span class="icon">​</span>Installing StinkyLinux</a> (!!!obsolete!!!)
+</p>
+<p>
+<a class="ext-link" href="http://wiki.ip-phone-forum.de/skript:freetz_und_speed-to-fritz"><span class="icon">​</span>Installing Freetz and Speed-to-Fritz</a> (SpeedPort users only)
+</p>
+<p>
+<a class="ext-link" href="http://stinkylinux.slightlystinky.servebbs.net/"><span class="icon">​</span>StinkyLinux Homepage</a> (Attention! instructions and images there are out of date!)
+</p>
+<h3 id="Execution">Execution</h3>
+<ol><li>Needed files:
+<ul><li><a class="ext-link" href="http://www.vmware.com/products/player/overview.html"><span class="icon">​</span>VMware Player</a>
+</li><li><a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=194433"><span class="icon">​</span>Freetz-Linux</a>: Image for VMWare Player or StinkyLinux: Image for VMWare Player (StinkyLinux-v1.06.7z), (<a class="wiki" href="../../../Download.html">Download</a>-Source: <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?p=1019861"><span class="icon">​</span>Mirrors</a>)
+</li><li>Freetz, (<a class="wiki" href="../../../Download.html">Download</a>-Source: <a class="wiki" href="../../../Download.html">Downloadseite</a>)
+</li><li>optional patches for freetz, (Quelle: <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=135258"><span class="icon">​</span>Freetz Forum</a>)
+</li></ul></li><li>Unpack <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=194433"><span class="icon">​</span>Freetz-Linux</a> under Windows using <a class="ext-link" href="http://downloads.sourceforge.net/sevenzip/7z442.exe"><span class="icon">​</span>7-Zip</a> or <a class="ext-link" href="http://www.rarlab.com/rar/wrar380d.exe"><span class="icon">​</span>WinRAR</a> .
+</li><li>Run VMWare Player. Leave all settings as they are; the Player will be able to connect to the Internet by itself. If not, you can set up internet access manually like so:
+<pre class="wiki">ifconfig eth0 192.168.178.xx netmask 255.255.255.0 broadcast 192.168.178.255
+</pre>(where <tt>eth0</tt> might have to be replaced with your configured network interface.  <strong>"ifconfig -a"</strong> will list all network interfaces available to your virtual machine.)
+</li><li>In VMWare Player, log on as user <strong>freetz</strong> with password <strong>freetz</strong>. 
+<br /><br />From here, there are several ways to work with Freetz-Linux  and to exchange files between  Freetz-Linux and the rest of the world.
+One might work on Freetz-Linux' console, for example.
+<ul><li><strong>SSH/SCP</strong>: One might also connect to the VM using an SSH/SCP connection. Windows clients include <a class="ext-link" href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html"><span class="icon">​</span>putty</a> and <a class="ext-link" href="http://winscp.net/eng/download.php#download2"><span class="icon">​</span>WinSCP</a>. Enter the VM's hostname (or IP-Address) under "Server name". For "name" and "password" please use the credentials indicated above.
+</li><li><strong>SAMBA</strong>: It is also possible to exchange data between Windows and Freetz-Linux via SAMBA. To do that, enter "<br />Freetz-Linux" or "<br />Freetz-Linuxs-IP-Address" in Explorer's address bar and you get a listing of files and folders present in your VM. Then, you can move and copy them around as usual.
+<br /><br />All those connection options have been pre-set in Freetz-Linux and should work out-of-the-box. If problems occur, please verify your network connection(s), and your firewall settings (if applicable).  Also, don't forget to verify VMWare Player's network connection settings. By default, VMWare Player uses <strong>Bridged Mode</strong>. To start with, run <tt>ping &lt;IP-Address-of-Freetz-Linux&gt;</tt> inside Command Prompt.<br />
+</li></ul></li><li>Depending on your preferred choice, you proceed with one of the following:
+<ul><li><strong>SSH/TELNET</strong>: (the preferred method) 
+<pre class="wiki">svn co http://svn.freetz.org/tags/freetz-1.1.x freetz-1.1.x
+</pre></li></ul></li></ol><p>
+You can replace <tt>freetz-1.1.x</tt> with any other valid tag, or use the development <tt>/trunk</tt> if you wish. 
+</p>
+<ol><li><em>Optional</em>: Apply patch(es) (see <a class="wiki" href="../development/integrate_patches.html">Howto</a>)
+</li><li>Change into the freetz directory you just checked out (or unpacked into):
+<pre class="wiki">cd freetz-*/
+</pre></li><li>Configure freetz. It is possible to do this using a <a class="ext-link" href="http://de.wikipedia.org/wiki/Ncurses"><span class="icon">​</span>ncurses</a> interface, the same one being used to configure the Linux kernel. For a detailed description, see <a class="wiki" href="install/menuconfig.html">menuconfig</a>.
+<pre class="wiki">make menuconfig
+</pre></li><li>Modify firmware. In this step, the original firmware and packages matching your configuration as well as the necessary build tools are being downloaded automatically and a new one is being built, according to your configuration, in three distinct steps. The first run through will take a little while, so you might want to have some coffee or tea in the meantime.
+<pre class="wiki">unset CFLAGS CXXCFLAGS
+make
+</pre></li></ol><ol><li>In <tt>~/freetz-*/images</tt>, you'll find your newly built firmware (e.g. <tt>7170_04.76freetz-devel-3790.de_20091021-180742.image</tt>).
+</li><li>Upload the image <tt>&lt;BOX_VERSION&gt;_&lt;ORIG_FIRMWARE_VERSION&gt;freetz-devel-VVVV.&lt;LANG&gt;_YYYYMMDD-HHMMSS.image</tt> as Firmware Update to your FritzBox. After successful Upload, you can access a secondary web interface on port 81 of your box, offering detailed instructions to finalize installation. Should your Box be unreachable even though INFO-LED stopped flashing several minutes ago - especially if, in <strong>regular intervals</strong>, all LEDs light up), you can recover your box' original firmware on most Box types.  For details, see <a class="wiki" href="../troubleshoot/recover_firmware.html">this Howto</a>.
+</li></ol><h2 id="Linux">Linux</h2>
+<h3 id="NotwendigePakete">Notwendige Pakete</h3>
+<p>
+Für das Erstellen der Firmware kann auch Knoppix verwendet werden, wozu keine Linux-Installation erforderlich ist. Wichtig ist, dass zum Kompilieren des Mods unter Linux keine FAT oder NTFS Partition verwendet wird. Die folgende Anleitung benötigt für
+</p>
+<h4 id="freetz-1.0">freetz-1.0</h4>
+<ul><li><strong>gcc</strong> - GNU C Compiler
+</li><li><strong>g++</strong> - GNU C++ Compiler
+</li><li><strong>binutils</strong> - GNU Assembler, Linker und Binary-Werkzeuge
+</li><li><strong>autoconf</strong> - dem Make vorgeschalteter Generator für Konfigurationsskripten nach GNU-Standard; hilft dabei, plattformunabhängig programmierte Software letztendlich für einen plattformspezifischen Build vorzubereiten
+</li><li><strong>automake</strong> ab Version 1.10 - Makefile-Generator nach GNU-Standard; wird nicht für alle DS-Mod-Pakete benötigt, aber z.B. für <a class="wiki" href="../../../packages/privoxy.html">privoxy</a>; Paketmanager installiert normalerweise <em>autoconf</em> als abhängiges Paket gleich mit
+</li><li><strong>automake-1.9</strong> - Version, die zusätzlich speziell von <tt>tar-1.15.1</tt> aus <em>tools</em> benötigt wird
+</li><li><strong>libtool</strong> - hilft beim Erstellen von statischen und dynamischen Bibliotheken; kann z.B. beim aufruf von <em>autoreconf</em> notwendig werden
+</li><li><strong>GNU make</strong> ab Version 3.81 - skriptgesteuertes Build-System
+</li><li><strong>bzip2</strong> - (Ent)packen von Software-Archiven
+</li><li><strong>libncurses5-dev</strong> - Entwickler-Bibliothek für ncurses (Erzeugung komfortabler textbasierter Benutzerschnittstellen, vgl. <tt>make menuconfig</tt>)
+</li><li><strong>zlib1g-dev</strong> - Entwickler-Bibliothek für gzip-Kompression
+</li><li><strong>flex</strong> - lex-kompatibler Generator für lexikalische Analyse
+</li><li><strong>bison</strong> - YACC-kompatibler Parser-Generator
+</li><li><strong>patch</strong> - Programm, um Patches anzuwenden
+</li><li><strong>texinfo</strong> - Online-/Druck-Doku aus gemeinsamer Quelle erzeugen
+</li><li><strong>tofrodos</strong> - Dateiumwandlung DOS &harr; UNIX (für was wird das benötigt?)
+</li><li><strong>gettext</strong> - Texte in Programmen internationalisieren
+</li><li><strong>pkg-config</strong> - Hilfstool welche zum Bauen von Binaries und Libraries nötig ist; notwendig für Packages <a class="missing wiki">ntfs?</a> und <a class="wiki" href="../../../packages/transmission.html">transmission</a>
+</li><li><strong>ecj-bootstrap</strong> - Eclipse Java Compiler (evtl. auch libecj-java und ecj in neueren Distributionen); nur notwendig für Package <em>classpath</em> ab 0.95 bzw. ds26-14.5
+</li><li><strong>perl</strong> - Perl-Interpreter; notwendig für <tt>make recover</tt>
+</li><li><strong>libstring-crc32-perl</strong> - Perl-Modul zur Berechnung von CRC32-Prüfsummen; notwendig für <tt>make recover</tt>
+</li><li><strong>intltool</strong> - <tt>make menuconfig</tt>
+</li></ul><h3 id="freetz-1.3">freetz-1.3</h3>
+<ul><li><strong>xz-utils</strong> - (Ent)packen von Software-Archiven im xz-Format
+</li></ul><h4 id="aktuelleEntwickerVersionundspeziellePakete">aktuelle Entwicker Version und spezielle Pakete</h4>
+<p>
+Diese benötigen zusätzlich zu bereits unter <em>freetz-1.0</em> genanntem noch folgende Pakete:
+</p>
+<ul><li><strong>svn</strong> - Subversion zum Auschecken der aktuellen Freetz-Versionen
+</li><li><strong>ruby1.8</strong> - objektorientierte Skriptsprache (Version 1.8.6); nur notwendig für Package <em>ruby</em> (ab freetz-devel) - seltsamerweise benötigt der Crosscompile für <em>ruby-1.8.6</em> eine installierte Version seiner selbst als Voraussetzung. Zu allem Überfluß könnte es sein, daß Sie im Paket zwar <tt>/usr/bin/ruby1.8</tt> o.ä. haben, aber nicht das vom Makefile benötigte Binary Namens <em>ruby</em>. Da hilft im o.g. Beispiel <tt>sudo ln -s ruby1.8 /usr/bin/ruby</tt> bzw. die Ausführung des <tt>ln</tt>-Befehls als Benutzer <em>root</em>.
+</li><li><strong>gawk</strong> - GNU awk; notwendig für das Skript <tt>tools/extract-images</tt> (ab freetz-devel), wenn man z.B. ein Recover-EXE zerlegen, also <em>urlader.image</em> und <em>kernel.image</em> extrahieren möchte. Die in anderen <em>awk</em>-Varianten nicht vorhandene Funktion <em>strtonum</em> wird an einer Stelle verwendet.
+</li><li><strong>python</strong> - Python-Interpreter; notwendig, um via <tt>tools/mklibs.py</tt> unbenutzte Symbole aus Bibliotheken zu entfernen, um Platz zu sparen (ab freetz-devel)
+</li><li><strong>libusb-dev</strong> - Entwicklungs-Bibliothek für USB-Anwendungen im Userspace; nur notwendig für SANE, wenn bspw. Multifunktionsdrucker/-scanner an die FritzBox angebunden werden sollen. Siehe auch <a class="ext-link" href="http://www.ip-phone-forum.de/showpost.php?p=1075181&amp;postcount=199"><span class="icon">​</span>Forums-Beitrag</a> dazu.
+</li><li><strong>realpath</strong> - wird nur von Entwicklern benötigt, die ab ds26-15 innerhalb von <em>fwmod</em> beim Build das Patch-Auto-Fixing verwenden (AUTO_FIX_PATCHES im Environment). Wer nicht weiß, wovon die Rede ist, braucht es auch nicht.
+</li><li><strong>fastjar</strong> - Implementation des Java jar utils; nur notwendig für Package <em>classpath</em>
+</li><li><strong>graphicsmagick</strong> - enthält <tt>composite</tt> mit dem Bilder kombiniert werden können; nur notwendig wenn man das AVM-Webinterface "taggen" möchte
+</li></ul><h4 id="alteEntwickerVersionen">alte Entwicker Versionen</h4>
+<p>
+Hier wird zusätzlich folgendes benötigt:
+</p>
+<ul><li><strong>automake-1.8</strong> - Version, die zusätzlich speziell von <em>libid3tag</em> benötigt wird. Nicht mehr erforderlich ab Freetz 1.0.
+</li><li><strong>jikes</strong> - Java Byte Code Compiler; nur notwendig für Package <em>classpath</em> bis 0.93 bzw. ds26-14.4
+</li></ul><h3 id="InstallationderbenötigtenPakete">Installation der benötigten Pakete</h3>
+<p>
+Eine einfache Möglichkeit die benötigten Pakete zu installieren besteht darin, diesen Code in der Konsole auszuführen:
+</p>
+<div class="code"><pre>sudo apt-get -y update
+sudo apt-get -y upgrade
+sudo apt-get -y dist-upgrade
+
+<span class="c"># Angepasst z.B. auf Ubuntu 9.04 (kein automake 1.8, "ecj" statt "ecj-bootstrap"):
+</span>sudo apt-get -y install imagemagick subversion gcc g++ binutils autoconf automake automake1.9 libtool make bzip2 libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config jikes ecj fastjar realpath perl libstring-crc32-perl ruby ruby1.8 gawk python libusb-dev unzip intltool libglib2.0-dev xz-utils git-core libacl1-dev libattr1-dev libcap-dev
+
+<span class="c"># Ubuntu 9.10, 10.xx, 11.xx und 12.04
+</span>sudo apt-get -y install imagemagick subversion gcc g++ bzip2 binutils automake patch autoconf libtool pkg-config make libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config ecj fastjar realpath perl libstring-crc32-perl ruby ruby1.8 gawk python libusb-dev unzip intltool libglib2.0-dev xz-utils git-core libacl1-dev libattr1-dev libcap-dev
+
+<span class="c">#Ubuntu 13.04 und 14.04
+</span>sudo apt-get -y install graphicsmagick subversion gcc g++ binutils autoconf automake automake1.9 libtool make bzip2 libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config ecj fastjar realpath perl libstring-crc32-perl ruby ruby1.8 gawk python libusb-dev unzip intltool libacl1-dev libcap-dev
+
+<span class="c"># Seit Debian Jessie bzw. Ubuntu 15.04 (vivid) wird zusätzlich das Paket libtool-bin benötigt:
+</span>sudo apt-get -y install libtool-bin
+
+<span class="c"># Auf 64-Bit Systemen sind zusätzlich folgende Pakete zu installieren:
+</span>sudo apt-get -y install libc6-dev-i386 lib32ncurses5-dev gcc-multilib lib32stdc++6
+</pre></div><h3 id="ErstellungInstallation">Erstellung &amp; Installation</h3>
+<ol><li>Shell öffnen, ins Verzeichnis von <tt>freetz-//xxx//.tar.bz2</tt> wechseln und diesen mit <tt>tar -xvjf ds-x.y.z.tar.bz2</tt> entpacken
+</li><li><em>Optional</em>: Patch einspielen (siehe <a class="wiki" href="../development/integrate_patches.html">Howto</a>)
+</li><li>Mit  <tt>cd freetz-xxx/</tt> in das Verzeichnis des entpackten Freetz wechseln
+</li><li>Konfiguration wählen. Dies ist über ein ncurses Interface möglich, welches z.B. aus der Konfiguration des Linux Kernels bekannt ist. Details und Beschreibungen zu den Optionen gibt es in der Beschreibung zum <a class="wiki" href="install/menuconfig.html">make menuconfig</a>.
+</li><li>Firmware modifizieren. In diesem Schritt werden die zu der gewählten Konfiguration passenden original Firmware und Pakete, sowie Sourcen für die benötigten Tools vollautomatisch heruntergeladen und die modifizierte Firmware in drei Schritten erzeugt. Dies erledigt ein simples <tt>make</tt>.
+</li><li><tt>*.image</tt> als Firmware Update auf die Box hochladen. Nach einem erfolgreichen Upload ist nun auf Port 81 ein weiteres Webinterface verfügbar, welches Instruktionen zum Abschluss der Installation enthält. Sollte die Box nach dem Hochladen der Firmware auch Minuten nachdem die Info LED aufgehört hat zu blinken nicht mehr erreichbar sein (typischerweise leuchten <strong>periodisch</strong> immer wieder alle LEDs auf), so kann die originale Firmware bei den meisten Box-Typen, wie in diesem <a class="wiki" href="../troubleshoot/recover_firmware.html">Howto</a> beschrieben, wiederhergestellt werden.
+</li></ol><h2 id="coLinuxandLinuxspeedLinux">coLinux / andLinux / speedLinux</h2>
+<p>
+Siehe auch: <a class="ext-link" href="http://wiki.ip-phone-forum.de/skript:andlinux"><span class="icon">​</span>andlinux unter Vista installieren</a>
+</p>
+<p>
+Alternativ kann auch <a class="ext-link" href="http://colinux.org"><span class="icon">​</span>coLinux</a> benutzt werden, ist etwas resourcenschonender als der vmware player.
+Mit speedLinux ist alles vorbereitet für freetz oder speed-to-fritz.
+Mit ./freetz werden alle notwendigen Vorbereitungen und Installationen durchgeführt.
+aktueller Stand 25.10.2009 
+</p>
+<p>
+Anmerkung von Alexander Kriegisch (kriegaex), 24.02.2008: Ja, das benutze ich auch seit gestern, und zwar speziell die mit Ubuntu Gutsy und XFCE (wahlweise auch KDE) vorkonfigurierte Variante <strong><a class="ext-link" href="http://www.andlinux.org"><span class="icon">​</span>andLinux</a></strong>, die man wahlweise als Dienst oder als Anwendung starten kann und mit einem einfachen Installer ausgeliefert wird. Scheint etwas langsamer zu sein als ein reines Linux, aber es ist schon cool, Linux-Fenster nativ neben Windows-Fenstern zu haben. <em><img src="../../../../chrome/wikiextras-icons-16/smiley.png" style="vertical-align: text-bottom" alt=":-)" /></em> Der mitgelieferte X-Server Xming (für Windows) macht's möglich. Ich verwende übrigens nicht mal ein X-Terminal, sondern logge mich sozusagen "headless" über SSH ein (Putty). Ab und zu lasse ich mal Synaptic oder als X-Editor SciTE laufen, den ich nachinstalliert habe. Ich baue gerade sämtliche Freetz-Pakete "from scratch" inkl. <a class="wiki" href="../../../Download.html">Download</a>, es geht genauso wie in VMware oder nativem Linux, also Linux-Paketliste siehe oben.
+</p>
+<p>
+Nachteile von coLinux/andLinux/speedLinux:
+</p>
+<ul><li>bei Multicore-Prozessoren wird nur ein Kern benutzt
+</li><li>keine 64bit Unterstützung
+</li><li>gravierende Systemanpassungen (spezieller Kernel, etc) bei Updates des Systems notwendig.  
+</li></ul><p>
+Vorteile von coLinux/andLinux/speedLinux:
+</p>
+<ul><li>kommt mit weniger RAM aus als VMWare (geringerer Ressourcenbedarf) 
+</li><li>native Windowsfenster
+</li></ul><h2 id="Cygwin">Cygwin</h2>
+<p>
+<img src="../../../../chrome/wikiextras-icons-16/exclamation.png" style="vertical-align: text-bottom" alt="/!\" /> <strong>Unter Cygwin funktioniert Freetz definitiv <em>nicht</em>, und auch für ds-0.2.9 (Kernel 2.4) wird Linux empfohlen, weil es mit Cygwin Probleme geben kann und es außerdem einen <em>riesigen</em> Geschwindigkeitsverlust beim Bauen (mehrfache Build-Dauer) bedeutet, Cygwin zu verwenden.</strong> <img src="../../../../chrome/wikiextras-icons-16/exclamation.png" style="vertical-align: text-bottom" alt="/!\" />
+</p>
+<p>
+Da Freetz sich unter Cygwin ohnehin nicht bauen lässt, folgt hier lediglich die Beschreibung für ds-mod:
+</p>
+<p>
+Ein Howto von dsl123 zum Kompilieren des ds-mod's unter Cygwin gibt es <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=98657"><span class="icon">​</span>hier</a>. Zum Entpacken der Datei <tt>ds-*.tar.bz2</tt> unter Windows <strong>ausschließlich</strong> das Cygwin-tar &mdash; wie in der Anleitung beschrieben &mdash; verwenden:
+</p>
+<ol><li>Cygwin Installer von <a class="ext-link" href="http://www.cygwin.com/"><span class="icon">​</span>http://www.cygwin.com/</a> herunterladen und ausführen
+</li><li>Cygwin mit den folgenden Paketen installieren:
+<ul><li>Archive &gt; unzip
+</li><li>Devel &gt; gcc, libncurses-devel, make, patchutils
+</li><li>Interpreters &gt; perl
+</li><li>Web &gt; wget
+</li></ul></li><li><tt>ds-*.tar.bz2</tt> in das Cygwin Home-Verzeichnis herunterladen (je nach Installation z.B. <tt>C:/Cygwin/home/&lt;Windows-Benutzername&gt;/</tt>)
+</li><li>Cygwin Shell öffnen und den ds-mod entpacken <tt>tar -xvjf ds-x.y.z.tar.bz2</tt>
+</li><li><em>Optional</em>: Patch einspielen (siehe <a class="wiki" href="../development/integrate_patches.html">Howto</a>)
+</li><li>In das Verzeichnis des entpackten ds-mod wechseln <tt>cd ds-*/</tt>
+</li><li>Konfiguration wählen. Dies ist über ein <a class="ext-link" href="http://de.wikipedia.org/wiki/Ncurses"><span class="icon">​</span>ncurses</a> Interface möglich, welches z.B. aus der Konfiguration des Linux Kernels bekannt ist. Details und Beschreibungen zu den Optionen gibt es in der Beschreibung zum <a class="wiki" href="install/menuconfig.html">menuconfig</a>. <tt>make menuconfig</tt>
+</li><li>Firmware modifizieren. In diesem Schritt werden die zu der gewählten Konfiguration passenden original Firmware und Pakete, sowie Sourcen für die benötigten Tools vollautomatisch heruntergeladen und die modifizierte Firmware in drei Schritten erzeugt. <tt>make</tt>
+</li><li><tt>firmware_*.image</tt> als Firmware Update auf die Box hochladen. Nach einem erfolgreichen Upload ist nun auf Port 81 ein weiteres Webinterface verfügbar, welches Instruktionen zum Abschluss der Installation enthält. Sollte die Box nach dem Hochladen der Firmware auch Minuten nachdem die Info LED aufgehört hat zu blinken nicht mehr erreichbar sein (typischerweise leuchten <strong>periodisch</strong> immer wieder alle LEDs auf), so kann die original Firmware mit Hilfe der <tt>recover.exe</tt> von AVM wiederhergestellt werden.
+</li></ol><h2 id="MacOSX">Mac OS X</h2>
+<p>
+Im Prinzip und mit ein paar Patches funktioniert ein aktuelles ds-mod auch unter Mac OS X. Zumindest ist mir gelungen, ds-0.2.9_26-14.2 unter Mac OS X zum Funktionieren zu überreden.
+</p>
+<p>
+Zunächst sind folgende Voraussetzungen zu erfüllen:
+</p>
+<ol><li>Datenpartition erstellen, bei der das HFS+ case sensitive konfiguriert ist.
+</li><li>Xcode installieren. Dadurch erhält man geeignete Versionen von u. a.
+<ul><li>gcc
+</li><li>g++
+</li><li>autoconf
+</li><li>automake
+</li><li>make
+</li><li><a class="ext-link" href="http://de.wikipedia.org/wiki/Ncurses"><span class="icon">​</span>ncurses</a>
+</li><li>zlib
+</li><li>flex
+</li><li>bison
+</li></ul></li></ol><p>
+Außerdem sind einige (GNU) Utilities nötig, die z.B. über Darwin Ports installiert werden können:
+</p>
+<ul><li>gettext
+</li><li>texinfo
+</li><li>dos2unix
+</li><li>gawk
+</li><li>coreutils
+</li><li>findutils
+</li><li>gsed
+</li></ul><p>
+Und vermutlich ein paar weitere, wenn man die entsprechenden Packages anwählt.
+</p>
+<p>
+Die zusätzlichen Utilities werden in der Regel unter Namen installiert, die mit g beginnen, um nicht mit den nativen Utilities von Mac OS X in Konflikt zu geraten. Manche Konfigurationsskripte setzen aber die Eigenschaften von GNU-Utilities voraus, auch wenn sie unter dem Standardnamen aufgerufen werden. Daher habe ich mir ein Verzeichnis erstellt, in dem Symlinks der Standardnamen auf die GNU Utilities zeigen. Zum Arbeiten mit ds-mod ist dieses Verzeichnis in den Suchpfad aufzunehmen:
+</p>
+<pre class="wiki">~/gnubin $ ls -l
+total 64
+-rwxr-xr-x   1 enrik  enrik  106 20 Mär 17:23 as
+lrwxr-xr-x   1 enrik  enrik   19 20 Mär 17:18 awk -&gt; /opt/local/bin/gawk
+lrwxr-xr-x   1 enrik  enrik   18 20 Mär 18:32 cp -&gt; /opt/local/bin/gcp
+lrwxr-xr-x   1 enrik  enrik   22 11 Apr 10:11 cpp -&gt; /usr/local/bin/cpp-3.3
+lrwxr-xr-x   1 enrik  enrik   20 11 Apr 10:11 find -&gt; /opt/local/bin/gfind
+lrwxr-xr-x   1 enrik  enrik   23 20 Mär 17:18 install -&gt; /opt/local/bin/ginstall
+-rwxr-xr-x   1 enrik  enrik  106 20 Mär 17:24 ld
+lrwxr-xr-x   1 enrik  enrik   21 20 Mär 17:18 sed -&gt; /opt/local/bin/gnused
+</pre><p>
+Die Pseudebefehle <tt>as</tt> und <tt>ld</tt> dienen hier nur dazu, der glibc für den Kernel-Compiler, die über crosstool erstellt wird, geeignete binutils vorzugaukeln. Die beiden Dateien sehen so aus:
+</p>
+<div class="code"><pre>~/gnubin <span class="nv">$ </span>cat as
+<span class="c">#! /bin/sh
+</span>
+<span class="c"># fake as version for crosstool
+</span>
+<span class="o">[</span> <span class="s2">"$1"</span> <span class="o">=</span> -v <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="nb">echo </span>GNU assembler 2.13 <span class="o">||</span> /usr/bin/as <span class="s2">"$@"</span>
+</pre></div><div class="code"><pre>~/gnubin <span class="nv">$ </span>cat ld
+<span class="c">#! /bin/sh
+</span>
+<span class="c"># fake ld version for crosstool
+</span>
+<span class="o">[</span> <span class="s2">"$1"</span> <span class="o">=</span> --version <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="nb">echo </span>GNU ld 2.13 <span class="o">||</span> /usr/bin/ld <span class="s2">"$@"</span>
+</pre></div><div class="code"><pre>~/gnubin <span class="nv">$ PATH</span><span class="o">=</span><span class="nv">$HOME</span>/gnubin:<span class="nv">$PATH</span>
+</pre></div><p>
+Außerdem wird ein Patch für ds-mod benötigt, den man hier herunterladen kann:
+</p>
+<ul><li><a class="ext-link" href="http://www.akk.org/~enrik/fbox/ds-mod/ds-0.2.9_26-14.2-macosx.patch.gz"><span class="icon">​</span>ds-0.2.9_26-14.2-macosx.patch.gz</a>
+</li></ul><p>
+Das ganze ist wenig getestet, insbesondere habe ich noch kein so erstelltes Image ausprobiert.
+</p>
+<h1 id="Aktualisierung">Aktualisierung</h1>
+<p>
+<em>Freetz</em> läuft nun also super auf der Box, und das schon seit längerer Zeit. Da kommt es unvermeidlich vor, dass AVM eine neue Firmware-Version herausbringt, und auch die <em>Freetz</em>-Entwicklung ist weitergegangen. Kurzum: Man möchte nun natürlich auch von den neuen Features und Bugfixes profitieren. Wie bringt man also <em>Freetz</em> auf der Box auf den neuesten Stand?
+</p>
+<p>
+Die Antwort ist recht einfach: "Siehe oben". Eine Aktualisierung geht genau so vonstatten, wie auch die Erst-Installation: Man baut sich ein neues <em>Freetz</em>-Image und nutzt dann das "Firmware-Update" der Box.
+</p>
+<p>
+Hat man für die Installation eine Repository-Version verwendet, bringt man selbige zuvor auf den aktuellen Stand, indem man in das Quellverzeichnis wechselt und&hellip;
+</p>
+<div class="code"><pre><span class="c"># In das Verzeichnis wechseln, in dem sich das "ausgecheckte" Freetz befindet:
+</span><span class="nb">cd </span>freetz
+<span class="c"># Quelldateien aktualisieren
+</span>svn up
+<span class="c"># ggf. die Paketauswahl überprüfen, verändern, neue Patches aktivieren, etc.
+</span>make menuconfig
+<span class="c"># Image bauen
+</span>make
+</pre></div><p>
+Und jetzt das fertige Image auf die Box.
+</p>
+<h1 id="Troubleshooting">Troubleshooting</h1>
+<h2 id="AVMFirmwarewirdnichtgefunden">AVM Firmware wird nicht gefunden</h2>
+<ol class="loweralpha" start="19"><li><a class="wiki" href="../../../FAQ.html#NosuchfileFRITZ.Box_xxxxxxxxx.aa.bb.cc.image">FAQ</a>  <br />
+</li></ol><p>
+<strong>Achtung:</strong> Die <a class="wiki" href="../../../FAQ.html">FAQ</a>'s sollten in Deutsch angezeigt werden. Sollte das nicht der Fall sein, dann Bitte diesen <a class="ext-link" href="http://www.ip-phone-forum.de/showpost.php?p=1415087&amp;postcount=11"><span class="icon">​</span>Tip</a> beachten.
+</p>
+<h2 id="Imagetoobig">Image too big</h2>
+<ol class="loweralpha" start="19"><li><a class="wiki" href="../../../FAQ.html#Filesystemimagetoobig">FAQ</a> <br />
+</li></ol><p>
+<strong>Achtung:</strong> Die <a class="wiki" href="../../../FAQ.html">FAQ</a>'s sollten in Deutsch angezeigt werden. Sollte das nicht der Fall sein, dann Bitte diesen <a class="ext-link" href="http://www.ip-phone-forum.de/showpost.php?p=1415087&amp;postcount=11"><span class="icon">​</span>Tip</a> beachten.
+</p>
+<h2 id="SonstigeProblemeoderFehlermeldungen">Sonstige Probleme oder Fehlermeldungen</h2>
+<ol class="loweralpha" start="19"><li><a class="wiki" href="../../../FAQ.html">FAQ</a> <br />
+</li></ol><p>
+<strong>Achtung:</strong> Die <a class="wiki" href="../../../FAQ.html">FAQ</a>'s sollten in Deutsch angezeigt werden. Sollte das nicht der Fall sein, dann Bitte diesen <a class="ext-link" href="http://www.ip-phone-forum.de/showpost.php?p=1415087&amp;postcount=11"><span class="icon">​</span>Tip</a> beachten.
+</p>
+<h1 id="WeiterführendeLinks">Weiterführende Links</h1>
+<ul><li><a class="ext-link" href="http://www.comprob.de/viewtopic.php?p=525"><span class="icon">​</span>Alternatives HowTo für die Installation</a>  <strong><em>Hinweis 20091025: Link existiert nicht (mehr ?)</em></strong>
+</li><li><a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=175564"><span class="icon">​</span>IPPF Thread</a> zum Thema
+</li></ul></div>
+          
+          <div class="trac-modifiedby">
+            <span><a href="install.en%3Faction=diff&amp;version=14.html" title="Version 14 von er13: sync &#34;required packages&#34;-section with the German version">zuletzt geändert</a> <a class="timeline" href="http://freetz.org/timeline?from=2015-11-24T18%3A20%3A21Z&amp;precision=second" title="Siehe Journal am 24.11.2015 18:20:21">vor 2 Jahren</a></span>
+            <span class="trac-print">Zuletzt geändert am 24.11.2015 18:20:21</span>
+          </div>
+        
+        
+      </div><ul class="tags"><li class="header">Tags</li><li><a href="http://freetz.org/tags/howto" rel="tag">howto</a> </li></ul>
+      
+
+    </div>
+    <script type="text/javascript">
+        jQuery.loadStyleSheet("/pygments/trac.css", "text/css");
+    </script>
+    <div id="altlinks">
+      <h3>In anderen Formaten herunterladen:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="install.en%3Fformat=txt">Reiner Text</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" lang="en" xml:lang="en"><hr />
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="../../../../chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
+      <p class="left">Betrieben mit <a href="http://freetz.org/about"><strong>Trac 1.0.1</strong></a><br />
+        von <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right"><div class="field" align="right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations"/><input type="hidden" name="business" value="spenden@freetz.org"/><input type="hidden" name="item_name" value="Freetz Entwickler-Team"/><input type="hidden" name="no_shipping" value="1"/><input type="hidden" name="return" value="http://freetz.org"/><input type="hidden" name="cn" value="Name oder IPPF-Pseudonym"/><input type="hidden" name="currency_code" value="EUR"/><input type="hidden" name="tax" value="0"/><input type="hidden" name="lc" value="DE"/><input type="hidden" name="bn" value="PP-DonationsBF"/><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Zahlen Sie mit PayPal - schnell, kostenlos und sicher!"/><img alt="" border="0" src="http://freetz.org/pixel.gif" width="1" height="1"/></form></div></p>
+    </div>
+  </body>
+</html>

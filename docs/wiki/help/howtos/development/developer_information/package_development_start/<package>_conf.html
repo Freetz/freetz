@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+  
+
+
+  <head>
+    <title>
+      help/howtos/development/developer_information/package_development_start/&lt;package&gt;_conf – Freetz
+    </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!--[if IE]><script type="text/javascript">
+      if (/^#__msie303:/.test(window.location.hash))
+        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
+    </script><![endif]-->
+        <link rel="search" href="http://freetz.org/search" />
+        <link rel="help" href="../../../../../TracGuide.html" />
+        <link rel="alternate" href="&lt;package&gt;_conf%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
+        <link rel="up" href="../package_development_start.html" title="Übergeordnete Wiki-Seite anzeigen" />
+        <link rel="start" href="http://freetz.org/wiki" />
+        <link rel="stylesheet" href="../../../../../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../../../../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../../../../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../../../../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../../../../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../../../../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../../../../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../../../../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../../../../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
+        <link rel="shortcut icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+      <link type="application/opensearchdescription+xml" rel="search" href="http://freetz.org/search/opensearch" title="Freetz durchsuchen" />
+      <script type="text/javascript" charset="utf-8" src="../../../../../../chrome/common/js/jquery.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../../../chrome/common/js/babel.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../../../chrome/common/js/messages/de.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../../../chrome/common/js/trac.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../../../chrome/common/js/search.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../../../chrome/common/js/folding.js"></script>
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
+        $("#content").find(".wikianchor").each(function() {
+          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
+        });
+        $(".foldable").enableFolding(true, true);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://freetz.org/wiki"><img src="../../../../../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
+      </div>
+      <form id="search" action="http://freetz.org/search" method="get">
+        <div>
+          <label for="proj-search">Suche:</label>
+          <input type="text" id="proj-search" name="q" size="18" value="" />
+          <input type="submit" value="Suche" />
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="http://freetz.org/login">Anmelden</a></li><li><a href="http://freetz.org/prefs">Einstellungen</a></li><li><a href="../../../../../TracGuide.html">Hilfe/Anleitung</a></li><li><a href="http://freetz.org/about">Über Trac</a></li><li><a href="http://freetz.org/notification" title="Wiki Pages Change Notifications">My Notifications</a></li><li><a href="http://freetz.org/register">Registrieren</a></li><li class="last"><a href="../../../../../Impressum.html">Impressum</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first active"><a href="http://freetz.org/wiki">Wiki</a></li><li><a href="http://freetz.org/timeline">Journal</a></li><li><a href="http://freetz.org/roadmap">Projektplan</a></li><li><a href="http://freetz.org/browser">Quellen durchsehen</a></li><li><a href="http://freetz.org/report">Tickets anzeigen</a></li><li><a href="http://freetz.org/search">Suche</a></li><li><a href="http://freetz.org/tags">Tags</a></li><li><a href="http://freetz.org/downloads">Downloads</a></li><li class="last"><a href="http://freetz.org/screenshots">Bildschirmfotos</a></li>
+    </ul>
+  </div>
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="&lt;package&gt;_conf..html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="http://freetz.org/wiki/help/howtos/development/developer_information/package_development_start/%3Cpackage%3E_conf.en" title="(not available)">English</a></li></ul></div><div id="main">
+      <div id="pagepath" class="noprint">
+  <a class="pathentry first" title="Zeige WikiStart an" href="http://freetz.org/wiki">Wiki:</a><a class="pathentry" href="../../../../../help.html" title="Zeige help an">help</a><span class="pathentry sep">/</span><a class="pathentry" href="../../../../howtos.html" title="Zeige help/howtos an">howtos</a><span class="pathentry sep">/</span><a class="pathentry" href="../../../development.html" title="Zeige help/howtos/development an">development</a><span class="pathentry sep">/</span><a class="pathentry" href="../../developer_information.html" title="Zeige help/howtos/development/developer_information an">developer_information</a><span class="pathentry sep">/</span><a class="pathentry" href="../package_development_start.html" title="Zeige help/howtos/development/developer_information/package_development_start an">package_development_start</a><span class="pathentry sep">/</span><a class="pathentry" href="&lt;package&gt;_conf.html" title="Zeige help/howtos/development/developer_information/package_development_start/&lt;package&gt;_conf an">&lt;package&gt;_conf</a>
+</div>
+      <div id="ctxtnav" class="nav">
+        <h2>Kontext-Navigation</h2>
+        <ul>
+          <li class="first"><a href="../package_development_start.html">Aufwärts</a></li><li><a href="../../../../../WikiStart.html">Startseite</a></li><li><a href="../../../../../TitleIndex.html">Inhaltsverzeichnis</a></li><li><a href="&lt;package&gt;_conf%3Faction=history.html">Änderungshistorie</a></li><li class="last"><a href="http://freetz.org/notification/help/howtos/development/developer_information/package_development_start/%3Cpackage%3E_conf" title="Watch Page">Watch Page</a></li>
+        </ul>
+        <hr />
+      </div>
+    <div id="content" class="wiki">
+      <div class="wikipage searchable">
+        
+          <div id="wikipage" class="trac-content"><h3 id="package_conf">&lt;package&gt;_conf</h3>
+<p>
+This is an optional script to generate a config file (e.g. &lt;package&gt;.conf) that the package expects as argument containing the configuration parameters.<br />
+</p>
+<p>
+In the build environment located at:
+</p>
+<blockquote>
+<p>
+~/freetz-trunk/make/files/root/etc/default.&lt;package&gt;/&lt;package&gt;_conf
+</p>
+</blockquote>
+<p>
+on router located at:
+</p>
+<blockquote>
+<p>
+/mod/etc/default.&lt;package&gt;/&lt;package&gt;_conf
+</p>
+</blockquote>
+<p>
+<br />
+</p>
+<p>
+The config data (e.g. &lt;package&gt;.conf) will be created as part of the rc.&lt;package&gt; script, before the daemon is started according the following guideline.
+</p>
+<table style="border:none; text-align:left" class="wiki"><tr><td style="border: none"><ol><li>If script /tmp/flash/&lt;package&gt;_conf exist it will be used to generate &lt;package&gt;.conf 
+</li><li>else the script /etc/default.&lt;package&gt;/&lt;package&gt;_conf is executed which will generate &lt;package&gt;.conf
+</li><li>If the optional /tmp/flash/&lt;package&gt;.conf.extra exist add it to the generated &lt;package&gt;.conf
+</li></ol></td><td style="border: none"><blockquote>
+<p>
+if exist goto 3<br />
+most often the case<br />
+&#160;
+</p>
+</blockquote>
+</td><td style="border: none"><p>
+(not seen yet)
+</p>
+<p>
+(not seen yet)
+</p>
+</td></tr></table><p>
+Lets look at an existing freetz package.<br />
+We can do this easily on the build environment.<br />
+For this lets select the package <a class="wiki" href="../../../../../packages/radvd.html">radvd</a>.<br />
+</p>
+<p>
+On the build environment:
+</p>
+<pre class="wiki">cd ~/freetz-trunk/make/radvd/files/root/etc/default.radvd/
+</pre><p>
+We need to export some variables that the script expects:
+</p>
+<pre class="wiki">export RADVD_ADDRESS='a:b:c::1/64'
+export RADVD_CLIENTS='fe80::aaaa:bbbb:cccc:dddd'
+export RADVD_ENABLED='yes'
+export RADVD_FORWARD='no'
+export RADVD_INTERFACE='lan'
+export RADVD_MTU='0'
+export RADVD_PREFIX='x:y:z::/64'
+export RADVD_SETIPV6='yes'
+</pre><p>
+Now we can execute the &lt;package&gt;_conf:
+</p>
+<pre class="wiki">./radvd_conf
+</pre><p>
+This should generate the following on standard out:
+</p>
+<pre class="wiki">interface lan
+{
+        AdvSendAdvert on;
+        AdvLinkMTU 0;
+        prefix x:y:z::/64
+        {
+
+        };
+        clients
+        {
+        fe80::aaaa:bbbb:cccc:dddd;
+        };
+};
+</pre><p>
+This is what Radvd expects as config file.
+</p>
+<p>
+Using <tt>find ./*/files/root/etc/default.*/ -name *_conf</tt> from <tt>~/freetz-trunk/make</tt> gives you a list of all scripts already included in freetz.<br />
+Use these as example for creating your own script.<br />
+</p>
+</div>
+          
+          <div class="trac-modifiedby">
+            <span><a href="&lt;package&gt;_conf%3Faction=diff&amp;version=3.html" title="Version 3 von RomMon">zuletzt geändert</a> <a class="timeline" href="http://freetz.org/timeline?from=2014-01-26T19%3A49%3A04Z&amp;precision=second" title="Siehe Journal am 26.01.2014 19:49:04">vor 4 Jahren</a></span>
+            <span class="trac-print">Zuletzt geändert am 26.01.2014 19:49:04</span>
+          </div>
+        
+        
+      </div>
+      
+
+    </div>
+    <div id="altlinks">
+      <h3>In anderen Formaten herunterladen:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="&lt;package&gt;_conf%3Fformat=txt">Reiner Text</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" lang="en" xml:lang="en"><hr />
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="../../../../../../chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
+      <p class="left">Betrieben mit <a href="http://freetz.org/about"><strong>Trac 1.0.1</strong></a><br />
+        von <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right"><div class="field" align="right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations"/><input type="hidden" name="business" value="spenden@freetz.org"/><input type="hidden" name="item_name" value="Freetz Entwickler-Team"/><input type="hidden" name="no_shipping" value="1"/><input type="hidden" name="return" value="http://freetz.org"/><input type="hidden" name="cn" value="Name oder IPPF-Pseudonym"/><input type="hidden" name="currency_code" value="EUR"/><input type="hidden" name="tax" value="0"/><input type="hidden" name="lc" value="DE"/><input type="hidden" name="bn" value="PP-DonationsBF"/><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Zahlen Sie mit PayPal - schnell, kostenlos und sicher!"/><img alt="" border="0" src="http://freetz.org/pixel.gif" width="1" height="1"/></form></div></p>
+    </div>
+  </body>
+</html>

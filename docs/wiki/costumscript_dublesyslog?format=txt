@@ -1,0 +1,123 @@
+Ausgeführt auf einer Fritzbox 7330 mit Firmware: 107.06.03 rev27364 Branding: avm Freetz: devel-12445 - FRITZ!OS 06.03-freetz-devel-12445
+Zum Zeitpunkt der Installation gabs noch kein stable für diese Box mit dieser Firmware... der derzeitige Status ist mir nicht bekannt...
+
+Intention zu Diesen CostumScript:
+
+ich wünschte die möglichkeit das syslogging (einstellbar unter http://fritz.box:81/cgi-bin/conf/syslogd ) über den Local logger sowohl ins Filesystem (auf einen durchs fritzos eingehaengten usb stick) als auch in den ram-ringbuffer zu schreiben. 
+
+
+== Schritte zur Lösung, kann übersprungen werden... ==
+
+
+Ich habe erst einmal mit
+
+
+{{{
+# syslogd -h
+syslogd: invalid option -- h
+BusyBox v1.22.1 (2014-09-13 22:25:43 CEST) multi-call binary.
+
+Usage: syslogd [OPTIONS]
+
+System logging utility
+(this version of syslogd ignores /etc/syslog.conf)
+
+	-n		Run in foreground
+	-O FILE		Log to FILE (default:/var/log/messages)
+	-l N		Log only messages more urgent than prio N (1-8)
+	-S		Smaller output
+	-s SIZE		Max size (KB) before rotation (default:200KB, 0=off)
+	-b N		N rotated logs to keep (default:1, max=99, 0=purge)
+	-R HOST[:PORT]	Log to HOST:PORT (default PORT:514)
+	-L		Log locally and via network (default is network only if -R)
+	-D		Drop duplicates
+	-C[size_kb]	Log to shared mem buffer (use logread to read it)
+
+}}}
+
+angeschaut was denn der BusyBox syslogd so bietet und dann mit 
+
+
+{{{
+# ps w | grep syslog
+ 4718 root      3256 S    {busybox} syslogd -L -C2048
+}}}
+
+geschaut wie er denn gerade so läuft. Durch editieren der Option "Additional command line options (for experts)" im webinterface (variable SYSLOGD_EXPERT_OPTIONS) habe ich es dann zu folgenden Status gebracht:
+
+
+{{{
+root@FB:/var/mod/root# ps w | grep syslog
+ 4718 root      3256 S    {busybox} syslogd -L -C2048 -O /var/media/ftp/uStor01/log/messages -b 20 -s 20048
+}}}
+
+leider scheint es allerdings so als ob die entweder oder option im webinterface korrekt abstrahiert wurde und der busyboxsyslogd die zweite option konsequent ignoriert. 
+
+nun kam eine nähere Untersuchung des Befehls logread (ebenfals mit parameter -h) dran welcher offenbarte das dieser aehnlich wie tail eine option -f bietet welche den logausgaben folgt. nun ging es daran einen kleinen script zu schreiben der dann beim booten jeweils gestartet wird. gut aber wie macht man das, unter meinen "normalen" linuxdistributionen schreibe ich was nach /etc/rc.local aber hier auf der freetzbox ist das anders... es gibt eine option im webinterface unter ...:81/cgi-bin/file/mod/rc_custom bei welcher ich aber beim compilieren der firmware die editierung deaktiviert hatte. Also musste es auch per ssh gehen... Da mir die leute im channel ##fritzbox im freenode irc netz nicht weiterhelfen konnten habe ich mich wieder einmal selbst auf die suche gemacht...:
+
+nach diversen cds, lss und lesss fand ich dann durch {{{cat /etc/init.d/rc.mod  |grep custom}}} heraus das die datei unter /tmp/flash/mod/rc.custom zu finden ist. in der freez faq, welche mir freundlicherweise über den irc channel angeboten wurde und jetzt bei dem dort anwesenden bot auch einen alias hat..., stieß ich über dies auf den Hinweis wie man diese Änderung im tempfs (ram) permanent in den flash scriebt.
+
+
+== Also hier die Anleitung zur Editierung der rc.costum ueber die shell:==
+
+
+{{{
+#fritzbox rc.custom ohne webinterface anlegen
+touch /tmp/flash/mod/rc.custom
+chmod +x /tmp/flash/mod/rc.custom
+vi /tmp/flash/mod/rc.custom #das gewünschte reinschreiben...
+# modsave flash # die daten vom ram in den flash übertragen...
+Checking Freetz configuration ... changed.
+Writing 3023 bytes to /var/flash/freetz ... done.
+
+}}}
+
+
+== weiter durch die herleitung (schritte zur loesung, whatever) ==
+
+nun hieß es erst einmal zu checken ob das fritzos meinen stick (dessen mountpoint man durch {{{mount}}} erfährt) schon einhängt bevor freetz den rc.custom ausführt, also getreu nach der Anleitung zur editierung der der rc.custum sie in folgenden Zustand versetzt:
+
+
+{{{
+cat /tmp/flash/mod/rc.custom
+echo testtest >> /var/media/ftp/uStor01/testlog
+date >> /var/media/ftp/uStor01/testlog
+}}}
+
+die fritzbox neugestartet und siehe da die file /var/media/ftp/uStor01/testlog hat den richtigen Inhalt. 
+
+Gut nun sind alle nötigen infos eingehohlt und tests durchgeführt und es geht zu meiner... 
+
+
+== ...Lösung: ==
+
+
+{{{
+////////////////
+/tmp/flash/my/logtostick: (die datei muss natürlich auch das recht zum ausführen erhalten und in den flash permanentisiert werden...)
+#dieser script loggt das was ueber logread aus dem ram zu lesen ist susaetzlich auf nen usb stick
+echo logtostick started at: >> /var/media/ftp/uStor01/logtostick
+date >> /var/media/ftp/uStor01/logtostick
+echo current readlog content  >> /var/media/ftp/uStor01/logtostick
+logread >> /var/media/ftp/uStor01/logtostick
+echo starting logread -f  >> /var/media/ftp/uStor01/logtostick
+logread -f >> /var/media/ftp/uStor01/logtostick
+
+
+
+///////////////
+root@FB:/var/mod/root# cat /tmp/flash/mod/rc.custom
+/tmp/flash/my/logtostick &
+root@FB:/var/mod/root# modsave flash
+Checking Freetz configuration ... changed.
+Writing 3623 bytes to /var/flash/freetz ... done.
+root@FB:/var/mod/root# 
+
+}}}
+
+
+
+ 
+
+
+happy hacking wünscht treaki --~~~~

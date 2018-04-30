@@ -1,0 +1,29 @@
+[http://www.fullphat.net/index.php Snarl] ist ähnlich wie Growl, welches einigen vielleicht bekannt ist, ist ein Benachrichtigungs-Programm ("notification"), welches im Hintergrund läuft und von verschiedenen Programmen etc. angesprochen werden kann. Vorteil ist, dass man so benutzerdefinierte, systemweit einheitliche Benachrichtigungen erhält.
+
+Snarl verwendet ein eigenes Protokoll, welches sich SNP ([http://www.fullphat.net/dev/snp/index.htm Snarl Network Protocol]) nennt.
+
+Mittels "rawmsg" wird an eine IP (Port 9887) im Netzwerk, an dem Snarl wiederum selbst lauschen muss, eine Nachricht gesendet. Snarl zeigt diese vom Callmonitor über SNP übermittelte Benachrichtigung dann an.
+
+Also z. B. so:
+
+{{{
+echo -n "type=SNP#?version=1.0#?action=notification#?title=Anruf#?text=${SOURCE}#?timeout=20"$'\r\n' | nc IP 9887
+
+}}}
+(buehmann hat in diesem [http://www.ip-phone-forum.de/showthread.php?t=216938 Thread]   gezeigt, wie es geht. Danke!)
+
+== Listener-Eintrag: ==
+Der Listener-Eintrag im Callmonitor kann dazu z.B. so aussehen:
+
+{{{
+in:request ^ ^ echo -n "type=SNP#?version=1.0#?action=notification#?title=eingehender Anruf#?text=von ${SOURCE} - ($SOURCE_NAME)${LF}für ${DEST_NAME} - (${DEST_DISP})${LF}#?timeout=20#?icon=C:\pic.png"$'\r\n' | nc 192.168.178.20 9887
+
+}}}
+== Screenshots: ==
+So könnte eine Benachrichtung von Snarl dann aussehen. Die Angaben betreffend Anrufer, Rufnummer, Ereignis etc., lassen sich ja mittels des Callmonitor entsprechend anpassen bzw. erweitern.
+
+ [[Screenshot(171,align=left)]]
+ [[Screenshot(167,align=left)]]
+ [[Screenshot(173)]]
+
+> Wichtig: "Curl" oder "getmsg" können __nicht__ benutzt werden, diese   sind nur  für das HTTP (Protokoll) geeignet und funktionieren nicht mit  dem SNP von Snarl.

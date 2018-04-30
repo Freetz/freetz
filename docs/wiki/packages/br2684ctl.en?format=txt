@@ -1,0 +1,178 @@
+== br2684ctl ==
+
+This package allows you to connect to your ISP via additional virtual circuits (ATM PVC's). [[br]]
+For some (older) setup's multiple virtual circuits are used to ofer Triple Play services where for each service (e.g High speed Internet, Broadband TV and Voice) a virtual circuit is used. [[br]]
+More modern networks often used one converged IP network with only one virtual circuits. [[br]]
+More info on the br2684ctl package can be found at: [[br]]
+https://home.regit.org/technical-articles/atm-bridging/ [[br]]
+http://http://home.sch.bme.hu/~cell/br2684/USAGE.br2684
+
+Source:[[br]]
+http://home.sch.bme.hu/~cell/br2684/dist/010402/brctl-010226.c [[br]]
+Patch:[[br]]
+http://home.sch.bme.hu/~cell/br2684/dist/010402/br2684-against2.4.2.diff [[br]] [[br]]
+
+
+
+=== Creating a Freetz Image with br2684ctl ===
+I used Freetz-1.2 for a Fritz!Box 7170.
+
+Follow the directions from the [http://freetz.org/wiki/WikiStart.en# Wiki] [[br]]
+After the following step you can configure the packages you want to have included in your image.
+{{{
+make menuconfig
+}}}
+
+
+{{{
+Package selection  --->	Testing  --->	[*] br2684ctl (binary only)
+}}}
+
+For Client DHCP you can additionally enable the following option. [[br]]
+You can also add a script (default.script) to the image at compile time (see below for details). [[br]] 
+{{{
+Advanced options  --->	BusyBox options  --->	[*] udhcpc
+}}}
+[[br]]
+
+
+=== Configuring br2684ctl ===
+
+There is no GUI interface for br2684ctl. There is only one executable with a number of mandatory and optional parameters.
+
+{{{
+ br2684ctl [-c n -e 0|1 -b -s buf_size [-q qos] -a [itf.]vpi.vci ]
+}}}
+
+ATM PVC number, VPI and VCI. [[br]]
+-a [itf.]vpi.vci [[br]]
+
+BR2684 interface number such as nas0, nas1,..., where the number is n (e.g. nas0 is -c 0). [[br]]
+This is a mandatory parameter. [[br]]
+-c n [[br]]
+
+Encapsulation method. 0=LLC, 1=VC mux. default is 0, LLC [[br]]
+This is a mandatory parameter. [[br]]
+-e 0|1 [[br]]
+
+Running background. Default (parameter ommited) is foreground. [[br]]
+-b [[br]]
+
+Send buffer size. Default is 8192. [[br]]
+-s buf_size [[br]]
+
+Optionally there are QoS parameters for traffic shaping, and cell rate limiting. [[br]]
+-q <shaping type>,<encapsulation type>:max_pcr=<rate>,min_pcr=<rate>,max_sdu=<frame-size> [[br]]
+shaping type: {ubr|cbr} [[br]]
+encapsulation type: all5 [[br]]
+maximum peak cell rate: rate in [M|k]bps [[br]]
+minimum peak cell rate: rate in [M|k]bps [[br]]
+maximum service delivery unit: maximum frame size that is segmented in the ATM cells. [[br]]
+
+Example: [[br]]
+Creating ATM PvC 0/32 in the background with interface name nas0 using LLC encapsulation. [[br]]
+
+{{{
+ br2684ctl -b -e 0 -c 0 -a 0.32 
+}}}
+{{{
+ br2684ctl -e 0 -c 0 -q ubr,aal5:max_pcr=5Mbps,min_pcr=320kbps,max_sdu=1524 -a 0.32
+}}}
+
+After the interface is created you can see it with the following command: [[br]]
+{{{
+ ifconfig -a
+}}}
+or [[br]]
+{{{
+ ifconfig nas0
+}}}
+Some details can be viewed at:
+{{{
+cd /proc/net/atm/
+ls -la
+cat <file>
+}}}
+[[br]]
+
+=== Obtain IP configuration via DHCP ===
+
+The udhcpc package, part of BusyBox, is a DHCP Client program, that obtains configuration parameters from a DHCP Server. [[br]]
+Udhcpc configures enviroment variables with the parameter values obtained from the DHCP Server. [[br]]
+A configure script (e.g. a shell script) can make use of these variables to configure an interface, DNS servers, NTP Servers, and a lot of other possible information. [[br]]
+
+Freetz doesn't have a (default) DHCP configure script. [[br]]
+Here an example script to just configure an IP address with broadcast address and subnetmask. [[br]]
+To include the script (default.script) at compile time follow the following steps:
+{{{
+cd ~/freetz-x.y/addon/
+echo default.script >> static.pkg
+mkdir -p default.script/root/etc/dhcp/
+vi default.script/root/etc/dhcp/default.script
+
+#!/bin/sh
+
+[ -z "$1" ] && "Error: should be run by udhcpc" && exit 1
+
+case "$1" in
+        deconfig)
+                ifconfig $interface 0.0.0.0
+                # echo interface = $interface
+        ;;
+        leasefail)
+        ;;
+        nak)
+        ;;
+        renew|bound)
+                ifconfig $interface $ip \
+                broadcast $broadcast \
+                netmask $subnet
+                # echo interface = $interface
+                # echo ip address = $ip
+                # echo subnet = $subnet
+                # echo netmask = ${subnet:-255.255.255.0}
+        ;;
+esac
+}}}
+
+Enable the interface:
+{{{
+ ifconfig nas0 up
+}}}
+
+Obtain ip configuration info via DHCP:
+{{{
+ udhcpc -i nas0 -s /etc/dhcp/default.script
+}}}
+
+
+=== Debuging the DHCP process ===
+
+To obtain additional debug information from the udhcpc package you need to enable this, and recompile a new image.
+
+{{{
+cd ~/freetz-x.y/source/target-mipsel_uClibc-0.9.29/ref-8mb/busybox-1.18.5
+vi .config
+}}}
+
+In the .config file search for CONFIG_UDHCP_DEBUG=0 and change it to:
+{{{
+CONFIG_UDHCP_DEBUG=3
+}}}
+
+Initiate recompile of the busybox packages during the next make:
+{{{
+cd ~/freetz-1.2/
+make busybox-clean
+}}}
+
+Compile a new image with:
+{{{
+make
+}}}
+
+After installing the new image on the Fritz!Box start the DHCP Client with:
+{{{
+udhcpc -i nas0 -s /etc/dhcp/default.script -vvv
+}}}
+ the number of v's determines the detail of debug packages.

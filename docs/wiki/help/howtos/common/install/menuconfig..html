@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+  
+
+
+  <head>
+    <title>
+      help/howtos/common/install/menuconfig – Freetz
+    </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!--[if IE]><script type="text/javascript">
+      if (/^#__msie303:/.test(window.location.hash))
+        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
+    </script><![endif]-->
+        <link rel="search" href="http://freetz.org/search" />
+        <link rel="help" href="../../../../TracGuide.html" />
+        <link rel="alternate" href="menuconfig%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
+        <link rel="up" href="../install.html" title="Übergeordnete Wiki-Seite anzeigen" />
+        <link rel="start" href="http://freetz.org/wiki" />
+        <link rel="stylesheet" href="../../../../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../../../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../../../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../../../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../../../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../../../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../../../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../../../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../../../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
+        <link rel="shortcut icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+      <link type="application/opensearchdescription+xml" rel="search" href="http://freetz.org/search/opensearch" title="Freetz durchsuchen" />
+      <script type="text/javascript" charset="utf-8" src="../../../../../chrome/common/js/jquery.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../../chrome/common/js/babel.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../../chrome/common/js/messages/de.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../../chrome/common/js/trac.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../../chrome/common/js/search.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../../chrome/common/js/folding.js"></script>
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
+        $("#content").find(".wikianchor").each(function() {
+          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
+        });
+        $(".foldable").enableFolding(true, true);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://freetz.org/wiki"><img src="../../../../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
+      </div>
+      <form id="search" action="http://freetz.org/search" method="get">
+        <div>
+          <label for="proj-search">Suche:</label>
+          <input type="text" id="proj-search" name="q" size="18" value="" />
+          <input type="submit" value="Suche" />
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="http://freetz.org/login">Anmelden</a></li><li><a href="http://freetz.org/prefs">Einstellungen</a></li><li><a href="../../../../TracGuide.html">Hilfe/Anleitung</a></li><li><a href="http://freetz.org/about">Über Trac</a></li><li><a href="http://freetz.org/notification" title="Wiki Pages Change Notifications">My Notifications</a></li><li><a href="http://freetz.org/register">Registrieren</a></li><li class="last"><a href="../../../../Impressum.html">Impressum</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first active"><a href="http://freetz.org/wiki">Wiki</a></li><li><a href="http://freetz.org/timeline">Journal</a></li><li><a href="http://freetz.org/roadmap">Projektplan</a></li><li><a href="http://freetz.org/browser">Quellen durchsehen</a></li><li><a href="http://freetz.org/report">Tickets anzeigen</a></li><li><a href="http://freetz.org/search">Suche</a></li><li><a href="http://freetz.org/tags">Tags</a></li><li><a href="http://freetz.org/downloads">Downloads</a></li><li class="last"><a href="http://freetz.org/screenshots">Bildschirmfotos</a></li>
+    </ul>
+  </div>
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="menuconfig..html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="http://freetz.org/wiki/help/howtos/common/install/menuconfig.en" title="(not available)">English</a></li></ul></div><div id="main">
+      <div id="pagepath" class="noprint">
+  <a class="pathentry first" title="Zeige WikiStart an" href="http://freetz.org/wiki">Wiki:</a><a class="pathentry" href="../../../../help.html" title="Zeige help an">help</a><span class="pathentry sep">/</span><a class="pathentry" href="../../../howtos.html" title="Zeige help/howtos an">howtos</a><span class="pathentry sep">/</span><a class="pathentry" href="../../common.html" title="Zeige help/howtos/common an">common</a><span class="pathentry sep">/</span><a class="pathentry" href="../install.html" title="Zeige help/howtos/common/install an">install</a><span class="pathentry sep">/</span><a class="pathentry" href="menuconfig.html" title="Zeige help/howtos/common/install/menuconfig an">menuconfig</a>
+</div>
+      <div id="ctxtnav" class="nav">
+        <h2>Kontext-Navigation</h2>
+        <ul>
+          <li class="first"><a href="../install.html">Aufwärts</a></li><li><a href="../../../../WikiStart.html">Startseite</a></li><li><a href="../../../../TitleIndex.html">Inhaltsverzeichnis</a></li><li><a href="menuconfig%3Faction=history.html">Änderungshistorie</a></li><li class="last"><a href="http://freetz.org/notification/help/howtos/common/install/menuconfig." title="Watch Page">Watch Page</a></li>
+        </ul>
+        <hr />
+      </div>
+    <div id="content" class="wiki">
+      <div class="wikipage searchable">
+        
+          <div id="wikipage" class="trac-content"><p>
+</p><div class="wiki-toc"><h4>Inhaltsverzeichnis</h4><ol><li><a href="../install.html#Installation">Installation</a><ol><li><a href="../install.html#VirtuellesLinux:Freetz-LinuxfürVMware-Player">Virtuelles Linux: Freetz-Linux für VMware-Player</a></li><li><a href="../install.html#Vorbereitung">Vorbereitung</a></li><li><a href="../install.html#DurchführungmitWindowsOS">Durchführung mit Windows OS</a></li><li><a href="../install.html#DurchführungmitLinuxOS">Durchführung mit Linux OS</a><ol><li><a href="../install.html#NotwendigePakete">Notwendige Pakete</a><ol><li><a href="../install.html#freetz-2.xstabileVersion">freetz-2.x (stabile Version)</a></li><li><a href="../install.html#aktuelleEntwicklerversionundspeziellePakete">aktuelle Entwicklerversion und spezielle Pakete</a></li><li><a href="../install.html#alteEntwicklerversionen">alte Entwicklerversionen</a></li></ol></li><li><a href="../install.html#InstallationderbenötigtenPaketeUbuntu">Installation der benötigten Pakete (Ubuntu)</a></li><li><a href="../install.html#InstallationderbenötigtenPaketeFedora">Installation der benötigten Pakete (Fedora)</a></li><li><a href="../install.html#ErstellungInstallation">Erstellung &amp; Installation</a></li></ol></li><li><a href="../install.html#coLinuxandLinuxspeedLinux">coLinux / andLinux / speedLinux</a></li><li><a href="../install.html#Cygwin">Cygwin</a></li><li><a href="../install.html#MacOSX">Mac OS X</a></li></ol></li><li><a href="../install.html#Aktualisierung">Aktualisierung</a></li><li><a href="../install.html#Fehlerbehebung">Fehlerbehebung</a></li><li><a href="../install.html#ManuelleseinspielendesImages">Manuelles einspielen des Images</a></li><li><a href="../install.html#WeiterführendeLinks">Weiterführende Links</a></li><li class="active"><a href="menuconfig.html#Konfiguration">Konfiguration</a><ol><li class="active"><a href="menuconfig.html#General">General</a></li><li class="active"><a href="menuconfig.html#Brandings">Brandings</a></li><li class="active"><a href="menuconfig.html#Mod">Mod</a></li></ol></li></ol></div><p>
+</p>
+<h1 id="Konfiguration">Konfiguration</h1>
+<p>
+Zum Konfigurieren von Freetz kommt das Programm <em>conf/mconf</em> zum Einsatz, welches dem ein oder anderen vielleicht von der Konfiguration des Linux Kernels bekannt ist. Die <a class="ext-link" href="http://de.wikipedia.org/wiki/Ncurses"><span class="icon">​</span>ncurses</a> Variante <em>mconf</em> kann mit dem Kommando <tt>make menuconfig</tt> aufgerufen werden.
+</p>
+<p>
+Eine Hilfe zu den einzelnen Punkten kann übrigens direkt in <em>menuconfig</em> durch Eingabe von "?" aufgerufen werden.
+</p>
+<p>
+<span class="thumbnail"><span class="aux" style="width: 202px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/53?format=raw" title="Freetz menuconfig"><img src="http://freetz.org/screenshots/53?width=200&amp;format=raw&amp;height=179" alt="Freetz menuconfig" /></a><span class="description" style="width: 202px;">Freetz menuconfig</span></span></span>
+</p>
+<h2 id="General">General</h2>
+<ul><li><strong>Hardware Type</strong>: Hier muss der Typ deiner Box gewählt werden. Standard ist "Fon WLAN 7170". Mit diesem Typ erstellte Images können nur auf die jeweilige Fritzbox hochgeladen werden. Abhängig vom Typ werden die <a class="wiki" href="../../../../Download.html">Download</a> URL der originalen Firmware auf dem <a class="ext-link" href="ftp://ftp.avm.de/"><span class="icon">​</span>AVM FTP Server</a> und Parameter zum Erstellen des modifizierten Images, wie größe des Flash etc., automatisch gesetzt. Der Typ "Custom" macht diese "Custom options" sichtbar, wobei man hier gut mit seiner Box vertraut sein sollte.
+</li><li><strong>Version</strong>: Für manche Fritzboxen (Typen) stellt AVM auch internationale Versionen der Firmware bereit, die aber auch nur auf internationalen Fritzboxen laufen. Internationale Fritzboxen gibt es für den Österreichischen / Schweizer Markt "a-ch" und das Englisch sprachige Ausland "en". Standard ist die für den Deutschen Markt bestimmte Version "de".
+</li><li><strong>Beta/Labor/VPN</strong>: Ist eine Beta Version für die gewählte Fritzbox (Typ) verfügbar, so kann diese mit dieser Option zum Testen ausgewählt werden. An die Betas sollten sich nur Profis wagen, da Freetz hiermit meist nicht reibungslos bzw. garnicht funktioniert.
+</li><li><strong>Compile image for "alien" hardware </strong>:  Zur Erstellung eines Images für andere Hardware, als oben ausgewählt. Wer damit nichts anfangen kann, wählt es einfach nicht aus <img src="../../../../../chrome/wikiextras-icons-16/smiley.png" style="vertical-align: text-bottom" alt=":-)" />
+</li><li><strong>Firmware language</strong>: AVM stellt die Original-Firmware meist in mehreren Sprachen zur Verfügung - einfach die gewünschte auswählen. <em>Hat keinen Einfluss auf die von Freetz modifizierten Dinge (dazu siehe <a class="wiki" href="menuconfig.html#Mod">unten</a>), sondern nur auf die Original-Firmware.</em>
+</li><li><strong>Replace kernel</strong>: Den AVM-Kernel durch einen "selbstgebauten" ersetzen. Wiederum eine Sache für Profis <img src="../../../../../chrome/wikiextras-icons-16/smiley.png" style="vertical-align: text-bottom" alt=":-)" />
+</li><li><strong>Show advanced options</strong>: Ob die "erweiterten Optionen" (siehe unter <a class="wiki" href="menuconfig.html#Mod">Mod</a>) angezeigt werden sollen.
+</li><li><strong>Branding</strong>: Siehe <a class="wiki" href="menuconfig.html#Brandings">unten</a>.
+</li><li><strong>Annex</strong>: Bei einigen internationalen Firmwares von AVM gibt es verschiedene Firmware Versionen für Annex A und Annex B.
+</li></ul><h2 id="Brandings">Brandings</h2>
+<p>
+Brandings sind von bestimmten Providern vorgenommene Änderungen an der Firmware. Das aktuelle Branding der Box ist unabhängig von der Firmware. Die modifizierte Firmware muss mindestens das aktuelle Branding der Box enthalten. Tipp für Anfänger: Zunächst keine Brandings entfernen. Der Platzersparnis trägt es nur geringfühgig bei; Images ohne das aktuelle Branding werden aber von der Box nicht akzeptiert.
+</p>
+<ul><li><strong>1und1</strong>: Gibt an, ob das 1und1 Branding in der modifizierten Firmware erhalten bleiben soll.
+</li><li><strong>avm</strong>: Gibt an, ob das avm Branding in der modifizierten Firmware erhalten bleiben soll.
+</li><li><strong>avme</strong>: Gibt an, ob das avme Branding in der modifizierten Firmware erhalten bleiben soll. Dieses Branding existiert nur bei internationalen nicht-Deutschen Firmware Versionen.
+</li><li><strong>aol</strong>: Gibt an, ob das aol Branding in der modifizierten Firmware erhalten bleiben soll.
+</li><li><strong>arcor</strong>: Gibt an, ob das arcor Branding in der modifizierten Firmware erhalten bleiben soll.
+</li><li><strong>freenet</strong>: Gibt an, ob das freenet Branding in der modifizierten Firmware erhalten bleiben soll.
+</li></ul><p>
+<img src="../../../../../chrome/wikiextras-icons-16/exclamation.png" style="vertical-align: text-bottom" alt="/!\" /> In <a class="changeset" href="http://freetz.org/changeset/2700" title=" * Brandings:
+  * move menu to patches
+  * rename to &#34;remove brandings&#34; ...">r2700</a> wurde die Logik der Brandingauswahl umgekehrt. Ausgewählte Brandings werden ab jetzt entfernt. <img src="../../../../../chrome/wikiextras-icons-16/exclamation.png" style="vertical-align: text-bottom" alt="/!\" />
+</p>
+<h2 id="Mod">Mod</h2>
+<ul><li><strong>Language</strong>: Die Auswahl der Sprache bezieht sich nur auf die Konfigurations-Webseiten von Freetz, nicht auf die der originalen Firmware. Es sind noch nicht alle Pakete in Englischer Sprache verfügbar. Standard ist Deutsch.
+</li><li><strong>Patches</strong>: Siehe <a class="wiki" href="../../../../patches.html">patches</a> für eine aktuelle Übersicht.
+</li><li><strong>Package selection</strong>: Auswahl der für Freetz verfügbaren Pakete / CGI Erweiterungen. Siehe <a class="wiki" href="../../../../packages.html">Pakete</a> für Details.
+</li><li><strong>Advanced options</strong>
+<ul><li><strong>Override firmware source</strong>: Falls die in der Konfiguration von Freetz hinterlegte Firmware Version des gewählten Typs nicht mehr auf dem FTP Server existiert, kann die <a class="wiki" href="../../../../Download.html">Download</a> URL mit dieser Option angepasst werden:
+<ul><li><strong>Firmware site</strong>: z.B.: <tt>ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7050/firmware</tt>
+</li><li><strong>Firmware source</strong>: z.B.: <tt>fritz.box_fon_wlan_7050.14.04.01.image</tt>
+</li></ul></li><li><strong>Default Security level</strong>: Wertebereich von 0 bis 2. Legt den standardmäßigen Security Level fest, welcher aktiviert wird, sofern kein anderer Wert auf der Box gespeichert ist. Standard ist 2 (alle Restriktionen aktiviert)
+</li><li><strong>Verbosity level</strong>: Wertebereich von 0 bis 2. Je höher die Zahl, desto mehr Meldungen werden beim Erstellen der Firmware ausgegeben. Standard ist 0.
+</li><li><strong>Favicon</strong>: Auswahl von kleinen Icons, die im Browser neben der URL der Fritzbox dargestellt werden. "none" installiert keine Favicons.
+</li><li><strong>Add Freetz version to subversion string</strong>: Fügt der im Web-Interface angezeigten (AVM-) Firmware-Version die Freetz-Version hinzu
+</li><li><strong>Squashfs blocksize</strong>: Die Blockgröße beeinflußt die Kompression des Images und die Zugriffszeit auf Dateien. Je größer die Blockgröße, desto besser die Kompression, jedoch wird die Zugriffszeit auf Dateien des Squashfs Images möglicherweise schlechter.
+</li><li><strong>BusyBox options</strong>: Listenauswahl aller Tools welche in die BusyBox integriert werden sollen.
+</li><li><strong>Kernel modules</strong>: Zusätzliche Kernelmodule. Jegliche Auswahl ist optional.
+</li><li><strong>Shared libraries</strong>: Zusätzliche Laufzeitbibliotheken. Jegliche Auswahl ist optional.
+</li><li><strong>Compiler options</strong>: Wer hier etwas ändert muss wissen was er tut.
+</li></ul></li></ul></div>
+          
+          <div class="trac-modifiedby">
+            <span><a href="menuconfig%3Faction=diff&amp;version=8.html" title="Version 8 von oliver: s/Maßnahmen/Restriktionen/">zuletzt geändert</a> <a class="timeline" href="http://freetz.org/timeline?from=2014-05-23T15%3A33%3A37Z&amp;precision=second" title="Siehe Journal am 23.05.2014 15:33:37">vor 4 Jahren</a></span>
+            <span class="trac-print">Zuletzt geändert am 23.05.2014 15:33:37</span>
+          </div>
+        
+        
+      </div>
+      
+
+    </div>
+    <script type="text/javascript">
+        jQuery.loadStyleSheet("/chrome/screenshots/css/screenshots.css", "text/css");
+    </script>
+    <div id="altlinks">
+      <h3>In anderen Formaten herunterladen:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="menuconfig%3Fformat=txt">Reiner Text</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" lang="en" xml:lang="en"><hr />
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="../../../../../chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
+      <p class="left">Betrieben mit <a href="http://freetz.org/about"><strong>Trac 1.0.1</strong></a><br />
+        von <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right"><div class="field" align="right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations"/><input type="hidden" name="business" value="spenden@freetz.org"/><input type="hidden" name="item_name" value="Freetz Entwickler-Team"/><input type="hidden" name="no_shipping" value="1"/><input type="hidden" name="return" value="http://freetz.org"/><input type="hidden" name="cn" value="Name oder IPPF-Pseudonym"/><input type="hidden" name="currency_code" value="EUR"/><input type="hidden" name="tax" value="0"/><input type="hidden" name="lc" value="DE"/><input type="hidden" name="bn" value="PP-DonationsBF"/><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Zahlen Sie mit PayPal - schnell, kostenlos und sicher!"/><img alt="" border="0" src="http://freetz.org/pixel.gif" width="1" height="1"/></form></div></p>
+    </div>
+  </body>
+</html>

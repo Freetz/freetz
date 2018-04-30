@@ -1,0 +1,368 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+  
+
+
+  <head>
+    <title>
+      help/howtos/development/save_mtd_1 – Freetz
+    </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!--[if IE]><script type="text/javascript">
+      if (/^#__msie303:/.test(window.location.hash))
+        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
+    </script><![endif]-->
+        <link rel="search" href="http://freetz.org/search" />
+        <link rel="help" href="../../../TracGuide.html" />
+        <link rel="alternate" href="save_mtd_1%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
+        <link rel="up" href="../development.html" title="Übergeordnete Wiki-Seite anzeigen" />
+        <link rel="start" href="http://freetz.org/wiki" />
+        <link rel="stylesheet" href="../../../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
+        <link rel="shortcut icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+      <link type="application/opensearchdescription+xml" rel="search" href="http://freetz.org/search/opensearch" title="Freetz durchsuchen" />
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/jquery.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/babel.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/messages/de.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/trac.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/search.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/folding.js"></script>
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
+        $("#content").find(".wikianchor").each(function() {
+          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
+        });
+        $(".foldable").enableFolding(true, true);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://freetz.org/wiki"><img src="../../../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
+      </div>
+      <form id="search" action="http://freetz.org/search" method="get">
+        <div>
+          <label for="proj-search">Suche:</label>
+          <input type="text" id="proj-search" name="q" size="18" value="" />
+          <input type="submit" value="Suche" />
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="http://freetz.org/login">Anmelden</a></li><li><a href="http://freetz.org/prefs">Einstellungen</a></li><li><a href="../../../TracGuide.html">Hilfe/Anleitung</a></li><li><a href="http://freetz.org/about">Über Trac</a></li><li><a href="http://freetz.org/notification" title="Wiki Pages Change Notifications">My Notifications</a></li><li><a href="http://freetz.org/register">Registrieren</a></li><li class="last"><a href="../../../Impressum.html">Impressum</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first active"><a href="http://freetz.org/wiki">Wiki</a></li><li><a href="http://freetz.org/timeline">Journal</a></li><li><a href="http://freetz.org/roadmap">Projektplan</a></li><li><a href="http://freetz.org/browser">Quellen durchsehen</a></li><li><a href="http://freetz.org/report">Tickets anzeigen</a></li><li><a href="http://freetz.org/search">Suche</a></li><li><a href="http://freetz.org/tags">Tags</a></li><li><a href="http://freetz.org/downloads">Downloads</a></li><li class="last"><a href="http://freetz.org/screenshots">Bildschirmfotos</a></li>
+    </ul>
+  </div>
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="save_mtd_1..html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="http://freetz.org/wiki/help/howtos/development/save_mtd_1.en" title="(not available)">English</a></li></ul></div><div id="main">
+      <div id="pagepath" class="noprint">
+  <a class="pathentry first" title="Zeige WikiStart an" href="http://freetz.org/wiki">Wiki:</a><a class="pathentry" href="../../../help.html" title="Zeige help an">help</a><span class="pathentry sep">/</span><a class="pathentry" href="../../howtos.html" title="Zeige help/howtos an">howtos</a><span class="pathentry sep">/</span><a class="pathentry" href="../development.html" title="Zeige help/howtos/development an">development</a><span class="pathentry sep">/</span><a class="pathentry" href="save_mtd_1.html" title="Zeige help/howtos/development/save_mtd_1 an">save_mtd_1</a>
+</div>
+      <div id="ctxtnav" class="nav">
+        <h2>Kontext-Navigation</h2>
+        <ul>
+          <li class="first"><a href="../development.html">Aufwärts</a></li><li><a href="../../../WikiStart.html">Startseite</a></li><li><a href="../../../TitleIndex.html">Inhaltsverzeichnis</a></li><li><a href="save_mtd_1%3Faction=history.html">Änderungshistorie</a></li><li class="last"><a href="http://freetz.org/notification/help/howtos/development/save_mtd_1." title="Watch Page">Watch Page</a></li>
+        </ul>
+        <hr />
+      </div>
+    <div id="content" class="wiki">
+      <div class="wikipage searchable">
+        
+          <div id="wikipage" class="trac-content"><p>
+</p><div class="wiki-toc"><h4>Howtos: Entwicklung</h4><ol><li><a href="repack_fw.html#EntpackenundPackenvonFirmware-Images">Entpacken und Packen von Firmware-Images</a><ol><li><a href="repack_fw.html#ToolsundSyntax">Tools und Syntax</a></li><li><a href="repack_fw.html#Vorgehensweise">Vorgehensweise</a></li><li><a href="repack_fw.html#Verwendungvonfwmodimnofreetz-Modus">Verwendung von fwmod im "no freetz"-Modus</a></li></ol></li><li><a href="integrate_patches.html#PatchesinFreetzeinspielen">Patches in Freetz einspielen</a></li><li><a href="developer_information/package_development_start/example_3.html#Example3:NZBGet">Example 3: NZBGet</a><ol><li><a href="developer_information/package_development_start/example_3.html#Buildmanually">Build manually</a></li><li><a href="developer_information/package_development_start/example_3.html#AddpackagetoFreetz">Add package to Freetz</a></li><li><a href="developer_information/package_development_start/example_3.html#Createnewimagewithaddedpackage">Create new image with added package</a></li><li><a href="developer_information/package_development_start/example_3.html#Testing">Testing</a></li><li><a href="developer_information/package_development_start/example_3.html#PreparingNewPackageforPublicIntegrationtoFreetzTrunk">Preparing New Package for Public Integration to Freetz Trunk</a></li></ol></li><li><a href="developer_information/package_development_start/example_2.html#Example2:par2cmdline">Example 2: par2cmdline</a><ol><li><a href="developer_information/package_development_start/example_2.html#Buildmanually">Build manually</a></li><li><a href="developer_information/package_development_start/example_2.html#AddpackagetoFreetz">Add package to Freetz</a></li><li><a href="developer_information/package_development_start/example_2.html#Createnewimagewithaddedpackage">Create new image with added package</a></li><li><a href="developer_information/package_development_start/example_2.html#Testing">Testing</a></li><li><a href="developer_information/package_development_start/example_2.html#PreparingNewPackageforPublicIntegrationtoFreetzTrunk">Preparing New Package for Public Integration to Freetz Trunk</a></li></ol></li><li><a href="developer_information/package_development_start/example_1.html#Example1:Httptunnel">Example 1: Httptunnel</a><ol><li><a href="developer_information/package_development_start/example_1.html#Buildmanually">Build manually</a></li><li><a href="developer_information/package_development_start/example_1.html#AddpackagetoFreetz">Add package to Freetz</a></li><li><a href="developer_information/package_development_start/example_1.html#CallProceduresmakemenuconfigandmake">Call Procedures "make menuconfig" and "make"</a></li><li><a href="developer_information/package_development_start/example_1.html#Testing">Testing</a></li><li><a href="developer_information/package_development_start/example_1.html#PreparingNewPackageforPublicIntegrationtoFreetzTrunk">Preparing New Package for Public Integration to Freetz Trunk</a></li></ol></li><li><ol><li><a href="sign_image.html#SignierenvonFirmware">Signieren von Firmware</a></li><li><a href="sign_image.html#KonkreteAnwendunginFreetz">Konkrete Anwendung in Freetz</a></li></ol></li><li><a href="firmware_update_details.html#AblaufeinesFirmware-Updates">Ablauf eines Firmware-Updates</a></li><li><a href="compile_own_progs.html#EigeneProgrammekompilieren">Eigene Programme kompilieren</a></li><li><a href="bandwidth_svg.html#DynamischeBandbreitenanzeigeperSVG">Dynamische Bandbreitenanzeige per SVG</a><ol><li><a href="bandwidth_svg.html#AnleitungzurTest-Installation">Anleitung zur Test-Installation</a></li></ol></li><li><a href="make_room.html#PlatzsparenimDateisystemderFritzBox">Platz sparen im Dateisystem der FritzBox</a><ol><li><a href="make_room.html#VorwortundMotivation">Vorwort und Motivation</a></li><li><a href="make_room.html#Bestandsaufnahme:WosteckendiePlatzfresser">Bestandsaufnahme: Wo stecken die Platzfresser?</a></li><li><a href="make_room.html#WeitereSpartricks">Weitere Spartricks</a></li><li><a href="make_room.html#Schlußwort">Schlußwort</a></li></ol></li><li class="active"><a href="save_mtd_1.html#Flash-PartitionenimlaufendenBetriebsichern">Flash-Partitionen im laufenden Betrieb sichern</a><ol><li class="active"><a href="save_mtd_1.html#Motivation">Motivation</a></li><li class="active"><a href="save_mtd_1.html#Voraussetzungen">Voraussetzungen</a></li><li class="active"><a href="save_mtd_1.html#Lösungsweg">Lösungsweg</a></li><li class="active"><a href="save_mtd_1.html#WegesichschnelleinenÜberblickzuverschaffen">Wege, sich schnell einen Überblick zu verschaffen</a></li><li class="active"><a href="save_mtd_1.html#Zusammenfassung">Zusammenfassung</a></li></ol></li><li><a href="release_management.html#ReleaseManagement">Release Management</a><ol><li><a href="release_management.html#SubversionRepository">Subversion Repository</a></li><li><a href="release_management.html#Checklists">Checklists</a></li><li><a href="release_management.html#GIT">GIT</a></li><li><a href="release_management.html#Downloads">Downloads</a></li><li><a href="release_management.html#References">References</a></li></ol></li><li><a href="developer_information/package_development_start.html#Firststeps-Howtostartyourfirstfreetzpackage">First steps - How to start your first freetz package</a><ol><li><a href="developer_information/package_development_start.html#Info">Info</a></li><li><a href="developer_information/package_development_start.html#BuildEnvironment">Build Environment</a></li><li><a href="developer_information/package_development_start.html#FileStructure">File Structure</a></li><li><a href="developer_information/package_development_start.html#ExamplesBinaryPackage">Examples Binary Package</a></li><li><a href="developer_information/package_development_start.html#ConfigurationHandling">Configuration Handling</a></li><li><a href="developer_information/package_development_start.html#ExamplesWeb-Interface">Examples Web-Interface</a></li><li><a href="developer_information/package_development_start.html#Troubleshooting">Trouble shooting</a></li></ol></li><li><a href="make_kernel.html#Kernelkonfigurierenundkompilieren">Kernel konfigurieren und kompilieren</a></li><li><a href="menuconfig.html#Menükonfigurationpflegen">Menükonfiguration pflegen</a><ol><li><a href="menuconfig.html#Einstieg">Einstieg</a></li><li><a href="menuconfig.html#Beispiel-KonfigurationfüreinneuesPaket">Beispiel-Konfiguration für ein neues Paket</a></li><li><a href="menuconfig.html#Menuconfig-Warnungenbeheben">Menuconfig-Warnungen beheben</a></li><li><a href="menuconfig.html#ErklärungundAnwendungdererweitertenMK-Targets">Erklärung und Anwendung der erweiterten MK-Targets</a></li><li><a href="menuconfig.html#Syntax-FehlerinMK-Dateienfinden">Syntax-Fehler in MK-Dateien finden</a></li><li><a href="menuconfig.html#Syntax-HervorhebungfürMK-Dateien">Syntax-Hervorhebung für MK-Dateien</a></li></ol></li><li><a href="adam2.html#ADAM2-Bootloader">ADAM2-Bootloader</a><ol><li><a href="adam2.html#Bootloader-Backupanlegen">Bootloader-Backup anlegen</a></li><li><a href="adam2.html#Bootloaderüberschreiben">Bootloader überschreiben</a></li><li><a href="adam2.html#Bootloader-Befehle">Bootloader-Befehle</a></li><li><a href="adam2.html#Bootloader-Quelltext">Bootloader-Quelltext</a></li><li><a href="adam2.html#AufbaudesBootloaders">Aufbau des Bootloaders</a></li><li><a href="adam2.html#BootloaderundFreetz">Bootloader und Freetz</a></li></ol></li><li><a href="urlader_flags.html#EinstellungenspeichernimUrlader-Environment">Einstellungen speichern im Urlader-Environment</a><ol><li><a href="urlader_flags.html#VorwortundMotivation">Vorwort und Motivation</a></li><li><a href="urlader_flags.html#Lösungsmöglichkeiten">Lösungsmöglichkeiten</a></li><li><a href="urlader_flags.html#BootloaderEnvironment">Bootloader Environment</a></li><li><a href="urlader_flags.html#Variablekernel_args">Variable "kernel_args"</a></li><li><a href="urlader_flags.html#Kernel_Args-API">Kernel_Args-API</a></li><li><a href="urlader_flags.html#MöglicheAnwendungsfälle">Mögliche Anwendungsfälle</a></li></ol></li><li><a href="make_busybox.html#Busyboxkonfigurierenundkompilieren">Busybox konfigurieren und kompilieren</a></li><li><a href="package_creation.html#WiebaueicheineigenesPaketfürFreetz">Wie baue ich ein eigenes Paket für Freetz?</a></li><li><a href="analyse_image_names.html#Firmware-Image-Namenanalysierenundinterpretieren">Firmware-Image-Namen analysieren und interpretieren</a><ol><li><a href="analyse_image_names.html#Einleitung">Einleitung</a></li><li><a href="analyse_image_names.html#Skript-Code">Skript-Code</a></li><li><a href="analyse_image_names.html#DatenimRohformat">Daten im Rohformat</a></li><li><a href="analyse_image_names.html#AusgabegrundlegenderInformationen">Ausgabe grundlegender Informationen</a></li><li><a href="analyse_image_names.html#AusgabeerweiterterInformationen">Ausgabe erweiterter Informationen</a></li></ol></li><li><ol><li><a href="developer_information/package_development_start/webinterface_example_1.html#Web-interfaceHTTPTunnel">Web-interface HTTPTunnel</a></li></ol></li><li><a href="developer_information.html#DeveloperInformation">Developer Information</a></li><li><a href="install_addon.html#AddonPaketinstallieren">Addon Paket installieren</a></li><li><a href="developer_information/package_development_dynamic.html#PaketverwaltungfürFreetz">Paketverwaltung für Freetz</a><ol><li><a href="developer_information/package_development_dynamic.html#ErweiterungdesDateisystems">Erweiterung des Dateisystems</a></li><li><a href="developer_information/package_development_dynamic.html#Paketverwaltung">Paketverwaltung</a></li><li><a href="developer_information/package_development_dynamic.html#Links">Links</a></li><li><a href="developer_information/package_development_dynamic.html#Kommentare">Kommentare</a></li></ol></li><li><a href="manipulation_detection.html#WiedieFritzBoxManipulationenerkennt">Wie die FritzBox Manipulationen erkennt</a><ol><li><a href="manipulation_detection.html#Ursachen">Ursachen</a></li><li><a href="manipulation_detection.html#Diagnose">Diagnose</a></li><li><a href="manipulation_detection.html#Lösungen">Lösungen</a></li><li><a href="manipulation_detection.html#SchlußwortundAusblick">Schlußwort und Ausblick</a></li></ol></li><li><a href="developer_information/shell_coding_conventions.html#ShellCodingConventions">Shell Coding Conventions</a><ol><li><a href="developer_information/shell_coding_conventions.html#ShellLanguage">Shell Language</a></li><li><a href="developer_information/shell_coding_conventions.html#BasicFormat">Basic Format</a></li><li><a href="developer_information/shell_coding_conventions.html#IfForandWhile">If, For, and While</a></li><li><a href="developer_information/shell_coding_conventions.html#TestBuilt-in">Test Built-in</a></li><li><a href="developer_information/shell_coding_conventions.html#Single-lineconditionalstatements">Single-line conditional statements</a></li><li><a href="developer_information/shell_coding_conventions.html#InfiniteLoops">Infinite Loops</a></li><li><a href="developer_information/shell_coding_conventions.html#ExitStatusandIfWhileStatements">Exit Status and If/While Statements</a></li><li><a href="developer_information/shell_coding_conventions.html#VariableReferences">Variable References</a></li><li><a href="developer_information/shell_coding_conventions.html#VariableNaming">Variable Naming</a></li><li><a href="developer_information/shell_coding_conventions.html#Quoting">Quoting</a></li><li><a href="developer_information/shell_coding_conventions.html#VariableAssignments">Variable Assignments</a></li><li><a href="developer_information/shell_coding_conventions.html#TestingforNon-EmptyStrings">Testing for (Non-)Empty Strings</a></li><li><a href="developer_information/shell_coding_conventions.html#Commenting">Commenting</a></li><li><a href="developer_information/shell_coding_conventions.html#Pathnames">Pathnames</a></li><li><a href="developer_information/shell_coding_conventions.html#InterpreterMagic">Interpreter Magic</a></li></ol></li><li><a href="developer_information/package_development.html#PackageDevelopment">Package Development</a><ol><li><a href="developer_information/package_development.html#PersistentPackageSettings">Persistent Package Settings</a></li></ol></li><li><a href="create_gui.html#ErstelleneinerGUIfürPaketeinFreetz">Erstellen einer GUI für Pakete in Freetz</a><ol><li><a href="create_gui.html#Motivation">Motivation</a></li><li><a href="create_gui.html#Grundlagen">Grundlagen</a></li><li><a href="create_gui.html#WiefunktioniertdasmitderGUI">Wie funktioniert das mit der GUI?</a></li></ol></li><li><a href="flash.html#FlashPartitionierung">Flash Partitionierung</a><ol><li><a href="flash.html#HiddenSquashFS">Hidden SquashFS</a></li><li><a href="flash.html#ContiguousSquashFS">Contiguous SquashFS</a></li><li><a href="flash.html#HiddenRoot">Hidden Root</a></li><li><a href="flash.html#NANDRoot">NAND Root</a></li><li><a href="flash.html#Dateisystem">Dateisystem</a></li><li><a href="flash.html#Kernel">Kernel</a></li><li><a href="flash.html#Weblinks">Weblinks</a></li></ol></li><li><a href="developer_information/post_commit_hook.html#TracHooks">Trac Hooks</a><ol><li><a href="developer_information/post_commit_hook.html#trac-post-commit-hook">trac-post-commit-hook</a></li><li><a href="developer_information/post_commit_hook.html#trac-post-revprop-change-hook">trac-post-revprop-change-hook</a></li></ol></li><li><a href="developer_information/package_development_advanced.html#PackageDeveloping-AdvancedTopics">Package Developing - Advanced Topics</a><ol><li><a href="developer_information/package_development_advanced.html#Addingconditionalpatches">Adding conditional patches</a></li><li><a href="developer_information/package_development_advanced.html#Addingmulti-binarypackages">Adding multi-binary packages</a></li></ol></li><li><a href="integrate_own_files.html#EigeneDateienindieFirmwareintegrieren">Eigene Dateien in die Firmware integrieren</a><ol><li><a href="integrate_own_files.html#FesteIntegrationüberdasFreetzImage">Feste Integration über das Freetz Image</a></li><li><a href="integrate_own_files.html#ErzeugenderDateienausderdebug.cfg">Erzeugen der Dateien aus der debug.cfg</a></li><li><a href="integrate_own_files.html#NachladenvomWebserver">Nachladen vom Webserver</a></li><li><a href="integrate_own_files.html#NachladenvomUSB-Stick">Nachladen vom USB-Stick</a></li><li><a href="integrate_own_files.html#WebDAVSharemounten">WebDAV Share mounten</a></li><li><a href="integrate_own_files.html#NFS-Sharemounten">NFS-Share mounten</a></li></ol></li><li><a href="freetz_make.html#FreetzBuild-Prozeß">Freetz Build-Prozeß</a><ol><li><a href="freetz_make.html#VorwortundMotivation">Vorwort und Motivation</a></li><li><a href="freetz_make.html#Grundsätzliches">Grundsätzliches</a></li></ol></li><li><a href="save_mtd_2.html#Flash-PartitionenvonaußenmitFTPsichern">Flash-Partitionen von außen mit FTP sichern</a><ol><li><a href="save_mtd_2.html#Motivation">Motivation</a></li><li><a href="save_mtd_2.html#Voraussetzungen">Voraussetzungen</a></li><li><a href="save_mtd_2.html#AllgemeineInformationenzurDatensicherung">Allgemeine Informationen zur Datensicherung</a></li><li><a href="save_mtd_2.html#SicherungmitLinux-Standard-FTPftp">Sicherung mit Linux-Standard-FTP (ftp)</a></li><li><a href="save_mtd_2.html#SicherungmitLinux-NcFTPncftpget">Sicherung mit Linux-NcFTP (ncftpget)</a></li><li><a href="save_mtd_2.html#SicherungmitCygwin-NcFTPncftpget">Sicherung mit Cygwin-NcFTP (ncftpget)</a></li><li><a href="save_mtd_2.html#UploadsviaFTP">Uploads via FTP</a></li></ol></li><li><a href="developer_information/webif/libmodcgi.html#libmodcgi.sh">libmodcgi.sh</a><ol><li><a href="developer_information/webif/libmodcgi.html#cgi">cgi</a></li><li><a href="developer_information/webif/libmodcgi.html#cgi_begin">cgi_begin</a></li><li><a href="developer_information/webif/libmodcgi.html#cgi_end">cgi_end</a></li><li><a href="developer_information/webif/libmodcgi.html#sec_begin">sec_begin</a></li><li><a href="developer_information/webif/libmodcgi.html#sec_end">sec_end</a></li><li><a href="developer_information/webif/libmodcgi.html#html">html</a></li><li><a href="developer_information/webif/libmodcgi.html#checkselect">check, select</a></li><li><a href="developer_information/webif/libmodcgi.html#href">href</a></li><li><a href="developer_information/webif/libmodcgi.html#back_button">back_button</a></li><li><a href="developer_information/webif/libmodcgi.html#sec_level">sec_level</a></li><li><a href="developer_information/webif/libmodcgi.html#stat_bar">stat_bar</a></li><li><a href="developer_information/webif/libmodcgi.html#cgi_param">cgi_param</a></li><li><a href="developer_information/webif/libmodcgi.html#cgi_errorprint_error">cgi_error, print_error</a></li><li><a href="developer_information/webif/libmodcgi.html#path_info">path_info</a></li><li><a href="developer_information/webif/libmodcgi.html#valid">valid</a></li></ol></li><li><a href="create_cross-compiler_toolchain.html#Cross-CompilerToolchainerstellen">Cross-Compiler / Toolchain erstellen</a></li><li><a href="create_cross-compiler_toolchain.html#EigeneDownload-Toolchainerstellen">Eigene Download-Toolchain erstellen</a></li><li><a href="create_cross-compiler_toolchain.html#TargetNative-Compiler-Toolchainerstellen">Target/Native-Compiler-Toolchain erstellen</a><ol><li><a href="create_cross-compiler_toolchain.html#Usingthedev-toolspackagetoinstallcompilerandtools">Using the dev-tools package to install compiler and tools</a></li></ol></li></ol></div><p>
+</p>
+<h1 id="Flash-PartitionenimlaufendenBetriebsichern">Flash-Partitionen im laufenden Betrieb sichern</h1>
+<p>
+Dieser Artikel baut auf dem Artikel <a class="wiki" href="flash.html">Flash-Partitionierung</a> auf. Ihn vorher zu lesen, schadet also nicht.
+</p>
+<p>
+Die überarbeitete Version des Artikels füllt einige Lücken bzgl. der Frage nach der Numerierung von Devices. Dafür gebührt unser Dank <a class="ext-link" href="http://www.ip-phone-forum.de/member.php?u=58639"><span class="icon">​</span>Oliver (olistudent)</a>.
+</p>
+<p>
+Wie man Partitionen direkt über den Urlader/Bootloader sichert, findet sich weiter unten.
+</p>
+<h2 id="Motivation">Motivation</h2>
+<p>
+Ich habe noch nie mit dem <a class="wiki" href="adam2.html">ADAM2</a>-Bootloader via FTP gearbeitet und werde das auch vermutlich erst dann tun, wenn es notwendig ist oder höchstens mal, um vorher zu üben. Um aber für den Notfall gerüstet zu sein, wollte ich in der Lage sein, nicht nur Backups von Kernel und Dateisystem zu ziehen, sondern auch eine Sicherungskopie vom Bootloader selbst machen können - alles idealerweise, ohne ADAM2 selbst zu benutzen, also einfach im laufenden Betrieb über Shell-Skripten. Dieser Artikel beschreibt, wie das geht.
+</p>
+<h2 id="Voraussetzungen">Voraussetzungen</h2>
+<p>
+Ich habe eine FritzBox Fon WLAN 7170, darf mich also zu den gut ausgestatteten AVM-Kunden zählen, weil die 7170 momentan das Modell mit dem größten Flash-Speicher und den umfangreichsten Anschlussmöglichkeiten ist. Ich schreibe das nicht, um Werbung zu machen, sondern um klar zu machen, dass das Folgende nicht 1:1 für alle anderen Boxen gelten muss und dies vermutlich auch nicht tut. Insbesondere Zahlenwerte sind auf die Verhältnisse der anderen Boxen anzupassen.
+</p>
+<p>
+Die Box hat folgende Merkmale:
+</p>
+<div class="code"><pre><span class="o">{</span>
+  <span class="nb">echo </span>Kernel: <span class="k">$(</span>uname -a<span class="k">)</span>
+  <span class="nb">echo </span>Firmware: <span class="nv">$CONFIG_VERSION_MAJOR</span>.<span class="nv">$CONFIG_VERSION</span> <span class="nv">$CONFIG_SUBVERSION</span>
+  <span class="nb">echo </span>Flash-Partitionierung:
+  cat /proc/sys/urlader/environment | grep mtd
+<span class="o">}</span>
+
+<span class="c"># Kernel: Linux fritz.box 2.6.13.1-ohio #1 Sat Jan 27 12:00:36 CET 2007 mips unknown
+# Firmware: 29.04.29 ds-0.2.9     --&gt;  _26-13
+# Flash-Partitionierung:
+# mtd0    0x90000000,0x90000000   --&gt;  Hidden Root, 0 KB
+# mtd1    0x90010000,0x90780000   --&gt;  Kernel + Filesystem, 7.616 KB
+# mtd2    0x90000000,0x90010000   --&gt;  ADAM2 Bootloader, 64 KB
+# mtd3    0x90780000,0x907C0000   --&gt;  TFFS für Konfig-Daten, 256 KB
+# mtd4    0x907C0000,0x90800000   --&gt;  Kopie TFFS (Double Buffering), 256 KB
+</span></pre></div><p>
+Die Anmerkungen hinter den Pfeilen wurden manuell eingefügt.
+</p>
+<h2 id="Lösungsweg">Lösungsweg</h2>
+<p>
+Wenn wir uns das Pseudo-Dateisystem <tt>/dev/</tt> anschauen, erkennen wir schnell, dass es folgende Geräte (Devices) gibt, die offenbar mit unserer Aufgabe im Zusammenhang stehen:
+</p>
+<ul><li><tt>/dev/mtd0/</tt> bis <tt>/dev/mtd10</tt>
+</li><li><tt>/dev/mtdblock0</tt> bis <tt>/dev/mtdblock10</tt>
+</li></ul><p>
+Worin besteht nun der Unterschied zwischen diesen Geräten? Es scheint, als seien sie alle doppelt vorhanden unter verschiedenen Namen. In gewissem Sinne stimmt das auch, und weshalb das so ist, sehen wir hier:
+</p>
+<div class="code"><pre>ls -l /dev/mtd*
+
+<span class="c"># crw-r-----    1 root     root      90,   0 Jan  1  2000 /dev/mtd0
+# crw-r-----    1 root     root      90,   1 Jan  1  2000 /dev/mtd1
+# ...
+# brw-r-----    1 root     root      31,   0 Jan  1  2000 /dev/mtdblock0
+# brw-r-----    1 root     root      31,   1 Jan  1  2000 /dev/mtdblock1
+# ...
+</span></pre></div><p>
+Die jeweils ersten Buchstaben des File Mode bringen es an den Tag: Die <tt>mtd*</tt> sind zeichenorientierte Geräte (Character Devices, Kürzel "c"), <tt>mtdblock*</tt> sind blockorientierte Geräte (Block Devices, Kürzel "b"). Man könnte also sagen, es gibt zwei unterschiedliche Sichten auf den Flash-Speicher: Zum einen kann man ihn als kontinuierlichen Zeichenstrom sehen, zum anderen als Gerät mit blockweisem Direktzugriff (wie eine Festplatte). Genaueres gibt es in der <a class="ext-link" href="http://de.wikipedia.org/wiki/Ger%C3%A4tedatei"><span class="icon">​</span>Wikipedia</a>.
+</p>
+<p>
+Für den Zweck unserer Sicherheitskopie ist es im Grunde herzlich egal, wie diese zustande kommt (Zeichen für Zeichen oder blockweise), solange sich am Ende nur eine komplette Datei pro Flash-Partition auf unserer Festplatte befindet. Ich habe beide Varianten ausprobiert und bin bei beiden auf noch ungeklärte Phänomene gestoßen, aber mit den Block Devices funktionieren die Datensicherungen besser, wie wir sehen werden.
+</p>
+<p>
+Für die weiteren Erklärungen gehe ich davon aus, daß ein Mount Point <tt>/var/fritz</tt> existiert, der einen größeren Datenspeicher darstellt. Bei mir ist das eine über <em>smbmount</em> angebundene Windows-Freigabe, es könnten aber auch USB-Sticks oder -Festplatten in Frage kommen. Genügend freien RAM-Speicher auf der Box vorausgesetzt, kann man die Kopien auch irgendwo unterhalb von <tt>/var</tt> zwischenspeichern und via FTP oder SCP abtransportieren.
+</p>
+<h3 id="KopienvonBlockDevicesmtdblock">Kopien von Block Devices (mtdblock*)</h3>
+<p>
+Ich hatte erwartet, mit folgendem Befehl den ADAM2-Bootloader, welcher sich nach Konfiguration laut Urlader (s.o.) ja in Partition <tt>mtd2</tt> befinden soll, sichern zu können:
+</p>
+<div class="code"><pre>cat /dev/mtdblock2 &gt; /var/fritz/adam2
+</pre></div><p>
+Doch weit gefehlt, was finde ich auf meiner Festplatte? Eine Datei der Größe 7.798.784 Bytes, das sind genau 7.616 KB und somit exakt die Größe der eigentlich unter <tt>mtd1</tt> beheimateten Kombination aus Kernel und direkt daran anschließendem Dateisystem. Das Ganze scheint mit der Zählweise zusammenzuhängen, denn es ergibt sich folgendes Bild:
+</p>
+<table class="wiki">
+<tr><td> Blockgerät  </td><td> Partition  </td><td> Größe      </td><td> Beschreibung
+</td></tr><tr><td> mtdblock0   </td><td> &mdash;-        </td><td style="text-align: center">       &mdash;-  </td><td> <em>Endlosschleife beim Auslesen</em>
+</td></tr><tr><td> mtdblock1   </td><td> mtd0       </td><td style="text-align: center">  6.966 KB  </td><td> SquashFS-Filesystem ohne Kernel (hinterer Teil von mtd1)
+</td></tr><tr><td> mtdblock2   </td><td> mtd1       </td><td style="text-align: center">  7.616 KB  </td><td> Kernel + SquashFS-Filesystem
+</td></tr><tr><td> mtdblock3   </td><td> mtd2       </td><td style="text-align: center">     64 KB  </td><td> ADAM2 Bootloader ("Urlader")
+</td></tr><tr><td> mtdblock4   </td><td> mtd3       </td><td style="text-align: center">    256 KB  </td><td> TFFS für Konfig-Daten
+</td></tr><tr><td> mtdblock5   </td><td> mtd4       </td><td style="text-align: center">    256 KB  </td><td> Kopie TFFS (Double Buffering)
+</td></tr><tr><td> mtdblock6   </td><td> (mtd5)     </td><td style="text-align: center">  1.664 KB  </td><td> (Vorbereitet für) JFFS2
+</td></tr><tr><td> mtdblock7   </td><td> (mtd6)     </td><td style="text-align: center">  5.952 KB  </td><td> (Vorbereitet für) Kernel ohne JFFS2
+</td></tr></table>
+<p>
+Die weiteren drei <tt>mtdblock</tt>-Geräte ergeben Ausgaben der Länge null.
+</p>
+<p>
+Zusammenfassend kann man sagen: Will man eine Kopie der <strong>Partition <tt>mtd[n]</tt></strong> haben, muß man offenbar das <strong>Blockgerät <tt>mtdblock[n+1]</tt></strong> benutzen.
+</p>
+<p>
+Anmerkung von <a class="ext-link" href="http://www.ip-phone-forum.de/member.php?u=95502"><span class="icon">​</span>maceis</a> (29.12.2011):
+</p>
+<blockquote>
+<p>
+<em>Diese Verschiebung kann ich bei meiner neuen 7270_v3 nicht feststellen. <tt>cat /dev/mtdblock1</tt> ergibt bei mir eine Datei, die aufs kB genau so groß ist, wie der Kernel. <tt>cat /dev/mtdblock2</tt> ist 128 kB groß. Das deckt sich mit den Ausgaben von <tt>cat /proc/mtd</tt> und <tt>cat /proc/partitions</tt>. Der Platz für den Urlader ist also offensichtlich größer geworden. (Warum?)</em>
+</p>
+</blockquote>
+<p>
+Antwort von <a class="ext-link" href="http://www.ip-phone-forum.de/member.php?u=117253"><span class="icon">​</span>Alexander Kriegisch (kriegaex)</a> (06.01.2012):
+</p>
+<blockquote>
+<p>
+<em>Ich sehe die Verschiebung aktuell auch nicht mehr auf meinen beiden Boxen. Das hängt wohl mit Firmware- bzw. Urladerversionen zusammen, kann also nicht pauschal für alle Geräte gesagt werden. Der Artikel ist ja auch schon ziemlich alt, und damals war es eben so. Zur Größe des Urladers: Tja, auch hier ändern sich offenbar die Zeiten. Während z.B. die 7170 und die 7270_v1 sowie alle älteren Modelle 64 kB Urladergröße hatten, sind es bei der <a class="ext-link" href="http://www.wehavemorefun.de/fritzbox/index.php/7270#Environment"><span class="icon">​</span>7270_v2/3 128 kB</a>. Bei ganz neuen Boxen schließe ich auch 256 kB nicht aus, da müßte ich mal nachforschen, ich habe nur die älteren Geräte.</em>
+</p>
+</blockquote>
+<h3 id="KopienvonCharacterDevicesmtd">Kopien von Character Devices (mtd*)</h3>
+<p>
+Jetzt wird es richtig verwirrend, denn bei den Zeichengeräten taucht jede Partition zweimal hintereinander auf, allerdings nicht bis ganz zu Ende, da es ja bei der laufenden Nummer 10 aufhört:
+</p>
+<table class="wiki">
+<tr><td> Zeichengerät </td><td> Partition </td><td> Größe     </td><td> Beschreibung 
+</td></tr><tr><td> mtd0/1       </td><td> &mdash;-       </td><td>       &mdash;- </td><td> <em>Endlosschleife beim Auslesen</em> 
+</td></tr><tr><td> mtd2/3       </td><td> mtd0      </td><td>  6.966 KB </td><td> SquashFS-Filesystem ohne Kernel (hinterer Teil von mtd1) 
+</td></tr><tr><td> mtd4/5       </td><td> mtd1      </td><td>  7.616 KB </td><td> Kernel + SquashFS-Filesystem 
+</td></tr><tr><td> mtd6/7       </td><td> mtd2      </td><td>     64 KB </td><td> ADAM2 Bootloader ("Urlader") 
+</td></tr><tr><td> mtd8/9       </td><td> mtd3      </td><td>    256 KB </td><td> TFFS für Konfig-Daten 
+</td></tr><tr><td> mtd10(/11)   </td><td> mtd4      </td><td>    256 KB </td><td> Kopie TFFS (Double Buffering) 
+</td></tr><tr><td> (mtd12/13)   </td><td> (mtd5)    </td><td>  1.664 KB </td><td> (Vorbereitet für) JFFS2 
+</td></tr><tr><td> (mtd14/15)   </td><td> (mtd6)    </td><td>  5.952 KB </td><td> (Vorbereitet für) Kernel ohne JFFS2 
+</td></tr></table>
+<p>
+Die eingeklammerten Zeichengeräte in der ersten Spalte würde es geben, wenn <tt>/sbin/makedevs</tt> sie beim Hochfahren anlegen würde. In <tt>/etc/device.table</tt> müßte dazu Folgendes geändert werden, um die Devices bis <tt>mtd15</tt> zu erhalten:
+</p>
+<pre class="wiki"># Aktuelle Einstellung bei AVM und in Freetz
+/dev/mtd        c       640     0       0       90      0       0       1       11
+
+# Geänderte Einstellung (siehe letzte Spalte)
+/dev/mtd        c       640     0       0       90      0       0       1       16
+</pre><blockquote>
+<p>
+<em>Zitat <a class="ext-link" href="http://www.ip-phone-forum.de/member.php?u=58639"><span class="icon">​</span>Oliver (olistudent)</a>: "In der original Firmware hört das auch bei 10 auf. Da hab ich das halt so übernommen."</em>
+</p>
+</blockquote>
+<p>
+Verständlich, würde ich sagen. Es kann ja jeder für sich ändern, falls er glaubt, die Geräte zu brauchen.
+</p>
+<p>
+Der Grund für die Doppelung ist übrigens, daß die Geräte mit den geraden Nummern Lese-Schreib-Zugriff bieten, die mit den ungeraden Nur-Lese-Zugriff.
+</p>
+<p>
+Hier lautet die Formel: Will man eine Kopie der <strong>Partition <tt>mtd(n)</tt></strong> haben, benutzt man das <strong>Zeichengerät <tt>mtd(2n+2)</tt></strong> - oder wahlweise <tt>mtd(2n+3)</tt>.
+</p>
+<h3 id="EingefährlicherTipohneGewähr">Ein (gefährlicher?) Tip, ohne Gewähr</h3>
+<p>
+Im <a class="ext-link" href="http://forum.openwrt.org/viewtopic.php?pid=18281#p18281"><span class="icon">​</span>OpenWRT-Forum</a> ist nachzulesen, daß man auf diese Weise den Bootloader im laufenden Betrieb überschreiben könne <em>(Konjunktiv beachten, ich kenne keinen hier im Forum, der es getestet hat):</em>
+</p>
+<div class="code"><pre><span class="c"># Annahme 1: neuer Bootloader liegt schon unter /var/adam2_new
+# Annahme 2: /dev/mtdblock3 entspricht Bootloader-Partition mtd2
+</span>
+<span class="c"># So nicht: cp /var/adam2_new /dev/mtdblock3/
+</span>cat /var/adam2_new &gt; /dev/mtdblock3
+
+reboot
+</pre></div><p>
+<strong>Update (<tt>cat</tt> statt <tt>cp</tt>, s.o.):</strong> Wie unter <a class="wiki" href="adam2.html">ADAM2 überschreiben</a> nachzulesen, klappt das, wie mehrfach bestätigt wurde und wie AVM auch vormacht in FW-Updates.
+</p>
+<p>
+Wer will es versuchen? Falls es schief geht und man den Bootloader löscht statt überschreibt oder das neue Image Mist ist, darf man das Paket an AVM schon fertig machen :-/, sofern man nicht glücklicher Besitzer eines <a class="ext-link" href="http://feadispace.fe.funpic.de/FBF7050/"><span class="icon">​</span>JTAG-Kabels</a> (siehe auch <a class="ext-link" href="http://wiki.openwrt.org/OpenWrtDocs/Customizing/Hardware/JTAG_Cable"><span class="icon">​</span>OpenWrt.org</a>) mit passender Software ist. Falls man versehentlich "nur" eine andere Partition überschreibt, sollte ein Recover reichen.
+</p>
+<h2 id="WegesichschnelleinenÜberblickzuverschaffen">Wege, sich schnell einen Überblick zu verschaffen</h2>
+<p>
+Was ich schon lange beschreiben wollte, da ich es zum Zeitpunkt der Urfassung dieses Artikels noch nicht wusste, aber später durch voneinander unabhängige Hinweise von <a class="ext-link" href="http://www.ip-phone-forum.de/member.php?u=95274"><span class="icon">​</span>Sedat (dileks)</a> und <a class="ext-link" href="http://www.ip-phone-forum.de/member.php?u=58906"><span class="icon">​</span>Enrik (enrik)</a> gelernt habe, ist, daß es sehr viel einfacher gewesen wäre, obige Tabellen bzgl. Partitionen und Block Devices zu erstellen, hätte ich folgende Befehle gekannt, die jeder auf seinem Boxtyp ausführen sollte, um sich einen Überblick zu verschaffen, denn die Partitionen sind nicht überall gleich groß und haben nicht überall die gleiche Nummerierung. Beispielsweise ist der Urlader unter Kernel 2.4 unter <tt>/dev/mtdblock/2</tt> zu finden und befindet sich unter Kernel 2.6 unter <tt>/dev/mtdblock3</tt> (andere Nummer, eine Verzeichnisebene höher). Das ist wichtig zu wissen, wenn man z.B. ein Downgrade auf eine ältere Firmwareversion vorhat, die auch auf einen älteren Kernel und Bootloader aufsetzt. Es bringt ja nichts, Letzteren in die falsche Partition zu schreiben.
+</p>
+<h3 id="procpartitions">/proc/partitions</h3>
+<div class="code"><pre><span class="nv">$ </span>cat /proc/partitions
+
+major minor  <span class="c">#blocks  name
+</span>
+  31     0       8192 mtdblock0
+  31     1       6966 mtdblock1
+  31     2       7616 mtdblock2
+  31     3         64 mtdblock3
+  31     4        256 mtdblock4
+  31     5        256 mtdblock5
+  31     6       1600 mtdblock6
+  31     7       6016 mtdblock7
+   8     0      64000 sda
+   8     1      63984 sda1
+</pre></div><p>
+Hier sieht man sehr schön die Größen der einzelnen Partitionen samt Device Major/Minor (wer's braucht) und passenden Block-Device-Namen.
+</p>
+<p>
+Auf einer 7270 sieht das etwas anders aus:
+</p>
+<pre class="wiki">$ cat /proc/partitions
+
+major minor  #blocks  name
+
+  31     0       6732 mtdblock0
+  31     1        883 mtdblock1
+  31     2         64 mtdblock2
+  31     3        256 mtdblock3
+  31     4        256 mtdblock4
+  31     5       8192 mtdblock5
+</pre><p>
+Hier scheint mtdblock2 wirklich der Bootloader zu sein.
+</p>
+<h3 id="procmtd">/proc/mtd</h3>
+<pre class="wiki">$ cat /proc/mtd
+
+dev:    size   erasesize  name
+mtd0: 00800000 00010000 "phys_mapped_flash"
+mtd1: 006cdb00 00010000 "filesystem"
+mtd2: 00770000 00010000 "kernel"
+mtd3: 00010000 00010000 "bootloader"
+mtd4: 00040000 00010000 "tffs (1)"
+mtd5: 00040000 00010000 "tffs (2)"
+mtd6: 00190000 00010000 "jffs2"
+mtd7: 005e0000 00010000 "Kernel without jffs2"
+</pre><p>
+In dieser alternativen Darstellung mit in Hexadezimal-Schreibweise angegebener Partitionsgröße sieht man noch als Kommentar eine Beschreibung, die Auskunft darüber gibt, wofür die einzelnen Partitionen tatsächlich vorgesehen sind. Sehr einfach, sehr praktisch.
+</p>
+<p>
+Und auch hier wieder die 7270:
+</p>
+<pre class="wiki">$ cat /proc/mtd
+
+dev:    size   erasesize  name
+mtd0: 00693200 00010000 "rootfs"
+mtd1: 000dce00 00010000 "kernel"
+mtd2: 00010000 00010000 "urlader"
+mtd3: 00040000 00010000 "tffs (1)"
+mtd4: 00040000 00010000 "tffs (2)"
+mtd5: 00800000 00010000 "reserved"
+</pre><h4 id="BackupvonUrladerKernelundDateisystem">Backup von Urlader, Kernel und Dateisystem</h4>
+<p>
+Wie man bei einer Kernel-2.6-Firmware konkret und effizient <tt>urlader.image</tt> und <tt>kernel.image</tt> übers Netzwerk wegsichert, beschreibe ich im <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?p=954170#post954170"><span class="icon">​</span>Forum</a>.
+</p>
+<h3 id="Anmerkungenzur7270v3mit2.6erKernelmitVersion74.04.88getestet">Anmerkungen zur 7270v3 mit 2.6er Kernel (mit Version 74.04.88 getestet)</h3>
+<p>
+Das in den letzten Absätzen angegebene Layout für die 7270 mit obiger Firmware kann ich noch um folgende Informationen zur letzten „Partition“ ergänzen.
+Die in „/proc/mtd“ als "reserved" angegebene „mtd5“ enthält den gesamten Bereich von „mtd0“ bis „mtd4” hintereinander. Darauf gebracht hat mich die Größe von 16 MiB (0x800000). Hat man in Freetz das Programm „dd“ mit den Funktionen „if“ und „of“ (beides ist auszuwählen im Menuconfig; getestet mit Freetz 1.2) integriert, läßt sich auf einfache Weise eine vollständige Sicherheitskopie ziehen und zurückspielen:
+</p>
+<pre class="wiki">$ dd if=/dev/mtdblock5 of=/var/media/ftp/uStor00/mtd5.bak
+</pre><p>
+Wiederherstellen geht dann umgekehrt:
+</p>
+<pre class="wiki">$ dd of=/dev/mtdblock5 if=/var/media/ftp/uStor00/mtd5.bak
+</pre><p>
+Das Programm „cat“ ist zum Sichern ebenso geeignet, hier muß dann die Ausgabe in die Zieldatei umgeleitet werden. Der erste eingesteckte USB-Speicher ist für gewöhnlich als „/var/media/ftp/uStor00“ eingehängt, das kann natürlich im Einzelfall anders heißen. Mit „bzip2“ kann man es bei Bedarf noch geringfügig komprimieren. Für die Kopien habe ich ein Skript auf dem USB-Speicher liegen, daß regelmäßig eine solche Kopie per Cron anfertigt.
+</p>
+<p>
+Getestet habe ich das auch: als der Router in einer Reboot-Schleife hing, habe ich durch das Zurückspielen einer solchen Kopie erfolgreich einen früheren Zustand wiederhergestellt.
+</p>
+<p>
+Beachte, daß AVM das Layout in künftigen Versionen ohne weiteres wieder ändern kann, tippe also niemals ohne eigene Prüfung einfach die Befehlszeilen oben ab. <a class="ext-link" href="http://www.ip-phone-forum.de/member.php?u=121255"><span class="icon">​</span>Christoph Franzen</a>
+</p>
+<h2 id="Zusammenfassung">Zusammenfassung</h2>
+<p>
+Wer Kopien seiner Flash-Partitionen haben möchte, macht das im laufenden Betrieb am besten, indem er das passende Block Device auswählt (Vorsicht bei der verschobenen Numerierung!) und mittels <tt>cat</tt> die Daten auf ein externes Medium wegsichert. <em>ADAM2</em> benötigt man hierfür jedenfalls nicht zwingend, es geht auch so. Am besten kontrolliert man anhand der sich ergebenden Dateigrößen, ob man die richtigen Partitionen erwischt hat. Der Bootloader hat immer 64 KB, das TFFS 256 KB, der Rest hängt von der Box und der Firmware-Version ab.
+</p>
+<p>
+<a class="ext-link" href="http://www.ip-phone-forum.de/member.php?u=117253"><span class="icon">​</span>Alexander Kriegisch (kriegaex)</a>
+</p>
+</div>
+          
+          <div class="trac-modifiedby">
+            <span><a href="save_mtd_1%3Faction=diff&amp;version=8.html" title="Version 8 von kriegaex: Answer question concerning mtd{block} offsets and bootloader sizes. Clean up table header layout.">zuletzt geändert</a> <a class="timeline" href="http://freetz.org/timeline?from=2012-01-06T13%3A57%3A13Z&amp;precision=second" title="Siehe Journal am 06.01.2012 13:57:13">vor 6 Jahren</a></span>
+            <span class="trac-print">Zuletzt geändert am 06.01.2012 13:57:13</span>
+          </div>
+        
+        
+      </div>
+      
+
+    </div>
+    <script type="text/javascript">
+        jQuery.loadStyleSheet("/pygments/trac.css", "text/css");
+    </script>
+    <div id="altlinks">
+      <h3>In anderen Formaten herunterladen:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="save_mtd_1%3Fformat=txt">Reiner Text</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" lang="en" xml:lang="en"><hr />
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="../../../../chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
+      <p class="left">Betrieben mit <a href="http://freetz.org/about"><strong>Trac 1.0.1</strong></a><br />
+        von <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right"><div class="field" align="right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations"/><input type="hidden" name="business" value="spenden@freetz.org"/><input type="hidden" name="item_name" value="Freetz Entwickler-Team"/><input type="hidden" name="no_shipping" value="1"/><input type="hidden" name="return" value="http://freetz.org"/><input type="hidden" name="cn" value="Name oder IPPF-Pseudonym"/><input type="hidden" name="currency_code" value="EUR"/><input type="hidden" name="tax" value="0"/><input type="hidden" name="lc" value="DE"/><input type="hidden" name="bn" value="PP-DonationsBF"/><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Zahlen Sie mit PayPal - schnell, kostenlos und sicher!"/><img alt="" border="0" src="http://freetz.org/pixel.gif" width="1" height="1"/></form></div></p>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,1734 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+  
+
+
+  <head>
+    <title>
+      packages/netsnmp/mrtg.en – Freetz
+    </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!--[if IE]><script type="text/javascript">
+      if (/^#__msie303:/.test(window.location.hash))
+        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
+    </script><![endif]-->
+        <link rel="search" href="http://freetz.org/search" />
+        <link rel="help" href="../../TracGuide.html" />
+        <link rel="alternate" href="mrtg.en%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
+        <link rel="up" href="../netsnmp.html" title="Übergeordnete Wiki-Seite anzeigen" />
+        <link rel="start" href="http://freetz.org/wiki" />
+        <link rel="stylesheet" href="../../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
+        <link rel="shortcut icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+      <link type="application/opensearchdescription+xml" rel="search" href="http://freetz.org/search/opensearch" title="Freetz durchsuchen" />
+      <script type="text/javascript" charset="utf-8" src="../../../chrome/common/js/jquery.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../chrome/common/js/babel.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../chrome/common/js/messages/de.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../chrome/common/js/trac.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../chrome/common/js/search.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../chrome/common/js/folding.js"></script>
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
+        $("#content").find(".wikianchor").each(function() {
+          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
+        });
+        $(".foldable").enableFolding(true, true);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://freetz.org/wiki"><img src="../../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
+      </div>
+      <form id="search" action="http://freetz.org/search" method="get">
+        <div>
+          <label for="proj-search">Suche:</label>
+          <input type="text" id="proj-search" name="q" size="18" value="" />
+          <input type="submit" value="Suche" />
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="http://freetz.org/login">Anmelden</a></li><li><a href="http://freetz.org/prefs">Einstellungen</a></li><li><a href="../../TracGuide.html">Hilfe/Anleitung</a></li><li><a href="http://freetz.org/about">Über Trac</a></li><li><a href="http://freetz.org/notification" title="Wiki Pages Change Notifications">My Notifications</a></li><li><a href="http://freetz.org/register">Registrieren</a></li><li class="last"><a href="../../Impressum.html">Impressum</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first active"><a href="http://freetz.org/wiki">Wiki</a></li><li><a href="http://freetz.org/timeline">Journal</a></li><li><a href="http://freetz.org/roadmap">Projektplan</a></li><li><a href="http://freetz.org/browser">Quellen durchsehen</a></li><li><a href="http://freetz.org/report">Tickets anzeigen</a></li><li><a href="http://freetz.org/search">Suche</a></li><li><a href="http://freetz.org/tags">Tags</a></li><li><a href="http://freetz.org/downloads">Downloads</a></li><li class="last"><a href="http://freetz.org/screenshots">Bildschirmfotos</a></li>
+    </ul>
+  </div>
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=""><a class=" notexist" href="http://freetz.org/wiki/packages/netsnmp/mrtg." title="(not available)">German</a></li><li class=" active last"><a class="selected" href="mrtg.en.html" title="selected and displaying language">English</a></li></ul></div><div id="main">
+      <div id="pagepath" class="noprint">
+  <a class="pathentry first" title="Zeige WikiStart an" href="http://freetz.org/wiki">Wiki:</a><a class="pathentry" href="../../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="../netsnmp.html" title="Zeige packages/netsnmp an">netsnmp</a><span class="pathentry sep">/</span><a class="pathentry" href="mrtg.en.html" title="Zeige packages/netsnmp/mrtg.en an">mrtg.en</a>
+</div>
+      <div id="ctxtnav" class="nav">
+        <h2>Kontext-Navigation</h2>
+        <ul>
+          <li class="first"><a href="../netsnmp.html">Aufwärts</a></li><li><a href="../../WikiStart.html">Startseite</a></li><li><a href="../../TitleIndex.html">Inhaltsverzeichnis</a></li><li><a href="mrtg.en%3Faction=history.html">Änderungshistorie</a></li><li class="last"><a href="http://freetz.org/notification/packages/netsnmp/mrtg.en" title="Watch Page">Watch Page</a></li>
+        </ul>
+        <hr />
+      </div>
+    <div id="content" class="wiki">
+      <div class="wikipage searchable">
+        
+          <div id="wikipage" class="trac-content"><h2 id="MRTG">MRTG</h2>
+<p>
+The Multi Router Traffic Grapher will allow you to generate nice graphs of the data available via SNMP.<br />
+This can be system information like uptime, interface information and statistics, and more.<br />
+For more info see the <a class="ext-link" href="http://oss.oetiker.ch/mrtg/"><span class="icon">​</span>MRTG site</a>.<br /> <br />
+</p>
+<p>
+Here an example on the graph you can generate: <br />
+<span class="thumbnail"><span class="aux" style="width: 503px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/248?format=raw" title="MRTG lan interface daily graph"><img src="http://freetz.org/screenshots/248?width=501&amp;format=raw&amp;height=136" alt="MRTG lan interface daily graph" /></a><span class="description" style="width: 503px;">MRTG lan interface daily graph</span></span></span>
+</p>
+<h3 id="InstallingMRTG">Installing MRTG</h3>
+<p>
+I installed MRTG on a Win7 pc. For this I followed the <a class="ext-link" href="http://oss.oetiker.ch/mrtg/doc/mrtg-nt-guide.en.html"><span class="icon">​</span>Windows Installation Guide</a>.
+</p>
+<p>
+I also installed MGTG as a service. <br /> <br />
+</p>
+<h3 id="MRTGConfigfile">MRTG Config file</h3>
+<p>
+You can generate a initial config file with the cfgmaker tool.<br />
+This will query the snmp agent, and from the obtained info a config file is created:
+</p>
+<blockquote>
+<p>
+perl cfgmaker public@192.168.178.1 &mdash;global "WorkDir: c:\www\mrtg" &mdash;output mrtg.cfg
+</p>
+</blockquote>
+<p>
+But be aware that I have noticed that interface index numbering changes often at reboot, or when router parameters are changed. <br />
+For the wifi interfaces 'wifi0' and 'ath0' of the 7270v3 I have even seen multiple interface indexes were created where only the last created with actual counters. A restart of the snmpd will correct this. <br />
+</p>
+<p>
+In the generated config file most, if not all, are commented out due to e.g. if there is no speed information found. Start with remove the comments character for one interface, and get this to work. <br />
+After you have cleared all possible config errors (e.g. watch leading spaces which seems not accepted at some locations), you can add more interfaces. <br />
+You can also change the ADSL related interfaces to have two speeds (asymmetric) so the percentage of used link speed for up and down is more realistic.
+</p>
+<p>
+Here my current config for the 7270v3:
+I added config for monitoring CPU load (1, 5, and 15 minutes average), CPU Usage, and Memory usages. This to help with trouble shooting performance issues. <br />
+A good explanation of how to interpret the CPU load values can be found <a class="ext-link" href="http://blog.scoutapp.com/articles/2009/07/31/understanding-load-averages"><span class="icon">​</span>here</a>. <br />
+</p>
+<pre class="wiki"># Created by 
+# cfgmaker public@192.168.178.1 --global "WorkDir: c:\www\mrtg" --output mrtg.cfg
+
+
+### Global Config Options
+
+#  for UNIX
+# WorkDir: /home/http/mrtg
+
+#  or for NT
+# WorkDir: c:\mrtgdata
+WorkDir: c:\Users\&lt;user&gt;\www\mrtg
+RunAsDaemon: yes
+
+### Global Defaults
+
+#  to get bits instead of bytes and graphs growing to the right
+# Options[_]: growright, bits
+
+EnableIPv6: no
+
+######################################################################
+# System: fritz.fonwlan.box
+# Description: Linux fritz.fonwlan.box 2.6.19.2 #1 Fri Apr 8 14:13:30 CEST 2011 mips
+# Contact: root@localhost
+# Location: Unknown
+######################################################################
+
+
+## Interface 1 &gt;&gt; Descr: 'cpmac0' | Name: 'No Name' | Ip: 'No Ip' | Eth: 'No Ethernet Id' ###
+## The following interface is commented out because:
+## * has no ifSpeed property
+
+Target[192.168.178.1_cpmac0]: \cpmac0:public@192.168.178.1:
+SetEnv[192.168.178.1_cpmac0]: MRTG_INT_IP="No Ip" MRTG_INT_DESCR="cpmac0"
+MaxBytes[192.168.178.1_cpmac0]: 12500000
+Title[192.168.178.1_cpmac0]: Traffic Analysis for 1 -- cpmac0 100Mbit/s Ethernet switch
+PageTop[192.168.178.1_cpmac0]: &lt;h1&gt;Traffic Analysis for 1 -- cpmac0 100Mbit/s Ethernet switch&lt;/h1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box in Unknown&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;cpmac0  &lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifType:&lt;/td&gt;
+					&lt;td&gt;ethernetCsmacd (6)&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifName:&lt;/td&gt;
+					&lt;td&gt;No Name&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Max Speed:&lt;/td&gt;
+					&lt;td&gt;12.5 MBytes/s&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Ip:&lt;/td&gt;
+					&lt;td&gt;No Ip (No DNS name)&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+
+
+## Interface 2 &gt;&gt; Descr: 'lo' | Name: 'No Name' | Ip: '127.0.0.1' | Eth: 'No Ethernet Id' ###
+## The following interface is commented out because:
+## * it is a Software Loopback interface
+
+Target[192.168.178.1_lo]: \lo:public@192.168.178.1:
+SetEnv[192.168.178.1_lo]: MRTG_INT_IP="127.0.0.1" MRTG_INT_DESCR="lo"
+MaxBytes[192.168.178.1_lo]: 1250000
+Title[192.168.178.1_lo]: Traffic Analysis for 2 -- lo Local Loopback Interface
+PageTop[192.168.178.1_lo]: &lt;h1&gt;Traffic Analysis for 2 -- lo Local Loopback Interface&lt;/h1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box in Unknown&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;lo  &lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifType:&lt;/td&gt;
+					&lt;td&gt;softwareLoopback (24)&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifName:&lt;/td&gt;
+					&lt;td&gt;No Name&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Max Speed:&lt;/td&gt;
+					&lt;td&gt;1250.0 kBytes/s&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Ip:&lt;/td&gt;
+					&lt;td&gt;127.0.0.1 (localhost)&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+
+
+### Interface 3 &gt;&gt; Descr: 'sit0' | Name: 'No Name' | Ip: 'No Ip' | Eth: 'No Ethernet Id' ###
+### The following interface is commented out because:
+### * it is administratively DOWN
+### * it is operationally DOWN
+### * has no ifSpeed property
+# 
+# Target[192.168.178.1_sit0]: \sit0:public@192.168.178.1:
+# SetEnv[192.168.178.1_sit0]: MRTG_INT_IP="No Ip" MRTG_INT_DESCR="sit0"
+# MaxBytes[192.168.178.1_sit0]: 0
+# Title[192.168.178.1_sit0]: Traffic Analysis for 3 -- sit0
+# PageTop[192.168.178.1_sit0]: &lt;h1&gt;Traffic Analysis for 3 -- sit0&lt;/h1&gt;
+# 		&lt;div id="sysdetails"&gt;
+# 			&lt;table&gt;
+# 				&lt;tr&gt;
+# 					&lt;td&gt;System:&lt;/td&gt;
+# 					&lt;td&gt;fritz.fonwlan.box in Unknown&lt;/td&gt;
+# 				&lt;/tr&gt;
+# 				&lt;tr&gt;
+# 					&lt;td&gt;Maintainer:&lt;/td&gt;
+# 					&lt;td&gt;root@localhost&lt;/td&gt;
+# 				&lt;/tr&gt;
+# 				&lt;tr&gt;
+# 					&lt;td&gt;Description:&lt;/td&gt;
+# 					&lt;td&gt;sit0  &lt;/td&gt;
+# 				&lt;/tr&gt;
+# 				&lt;tr&gt;
+# 					&lt;td&gt;ifType:&lt;/td&gt;
+# 					&lt;td&gt;Encapsulation Interface (131)&lt;/td&gt;
+# 				&lt;/tr&gt;
+# 				&lt;tr&gt;
+# 					&lt;td&gt;ifName:&lt;/td&gt;
+# 					&lt;td&gt;No Name&lt;/td&gt;
+# 				&lt;/tr&gt;
+# 				&lt;tr&gt;
+# 					&lt;td&gt;Max Speed:&lt;/td&gt;
+# 					&lt;td&gt;0.0 Bytes/s&lt;/td&gt;
+# 				&lt;/tr&gt;
+# 				&lt;tr&gt;
+# 					&lt;td&gt;Ip:&lt;/td&gt;
+# 					&lt;td&gt;No Ip (No DNS name)&lt;/td&gt;
+# 				&lt;/tr&gt;
+# 			&lt;/table&gt;
+# 		&lt;/div&gt;
+
+
+## Interface 4 &gt;&gt; Descr: 'eth0' | Name: 'No Name' | Ip: 'No Ip' | Eth: 'No Ethernet Id' ###
+## The following interface is commented out because:
+## * has no ifSpeed property
+ 
+Target[192.168.178.1_eth0]: \eth0:public@192.168.178.1:
+SetEnv[192.168.178.1_eth0]: MRTG_INT_IP="No Ip" MRTG_INT_DESCR="eth0"
+MaxBytes[192.168.178.1_eth0]: 12500000
+Title[192.168.178.1_eth0]: Traffic Analysis for 4 -- eth0
+PageTop[192.168.178.1_eth0]: &lt;h1&gt;Traffic Analysis for 4 -- eth0&lt;/h1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box in Unknown&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;eth0  &lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifType:&lt;/td&gt;
+					&lt;td&gt;ethernetCsmacd (6)&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifName:&lt;/td&gt;
+					&lt;td&gt;No Name&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Max Speed:&lt;/td&gt;
+					&lt;td&gt;12.5 MBytes/s&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Ip:&lt;/td&gt;
+					&lt;td&gt;No Ip (No DNS name)&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+
+
+## Interface 6 &gt;&gt; Descr: 'lan' | Name: 'No Name' | Ip: '169.254.1.1' | Eth: 'No Ethernet Id' ###
+## The following interface is commented out because:
+## * has no ifSpeed property
+
+Target[192.168.178.1_lan]: \lan:public@192.168.178.1:
+SetEnv[192.168.178.1_lan]: MRTG_INT_IP="169.254.1.1" MRTG_INT_DESCR="lan"
+MaxBytes[192.168.178.1_lan]: 12500000
+Title[192.168.178.1_lan]: Traffic Analysis for 6 -- lan (eth + wifi)
+PageTop[192.168.178.1_lan]: &lt;h1&gt;Traffic Analysis for 6 -- lan (eth + wifi)&lt;/h1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box in Unknown&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;lan  &lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifType:&lt;/td&gt;
+					&lt;td&gt;ethernetCsmacd (6)&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifName:&lt;/td&gt;
+					&lt;td&gt;No Name&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Max Speed:&lt;/td&gt;
+					&lt;td&gt;12.5 MBytes/s&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Ip:&lt;/td&gt;
+					&lt;td&gt;169.254.1.1 (No DNS name)&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+
+
+## Interface 7 &gt;&gt; Descr: 'guest' | Name: 'No Name' | Ip: '192.168.179.1' | Eth: 'No Ethernet Id' ###
+## The following interface is commented out because:
+## * has no ifSpeed property
+ 
+Target[192.168.178.1_guest]: \guest:public@192.168.178.1:
+SetEnv[192.168.178.1_guest]: MRTG_INT_IP="192.168.179.1" MRTG_INT_DESCR="guest"
+MaxBytes[192.168.178.1_guest]: 6750000
+Title[192.168.178.1_guest]: Traffic Analysis for 7 -- guest (Guest WiFi)
+PageTop[192.168.178.1_guest]: &lt;h1&gt;Traffic Analysis for 7 -- guest (Guest WiFi)&lt;/h1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box in Unknown&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;guest  &lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifType:&lt;/td&gt;
+					&lt;td&gt;ethernetCsmacd (6)&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifName:&lt;/td&gt;
+					&lt;td&gt;No Name&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Max Speed:&lt;/td&gt;
+					&lt;td&gt;6.75 MBytes/s&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Ip:&lt;/td&gt;
+					&lt;td&gt;192.168.179.1 (No DNS name)&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+
+		
+## Interface 22 &gt;&gt; Descr: 'wifi0' | Name: 'No Name' | Ip: 'No Ip' | Eth: 'No Ethernet Id' ###
+## The following interface is commented out because:
+## * has no ifSpeed property
+
+Target[192.168.178.1_wifi0]: \wifi0:public@192.168.178.1:
+SetEnv[192.168.178.1_wifi0]: MRTG_INT_IP="No Ip" MRTG_INT_DESCR="wifi0"
+MaxBytes[192.168.178.1_wifi0]: 6750000
+Title[192.168.178.1_wifi0]: Traffic Analysis for 22 -- wifi0
+PageTop[192.168.178.1_wifi0]: &lt;h1&gt;Traffic Analysis for 22 -- wifi0&lt;/h1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box in Unknown&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;wifi0  &lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifType:&lt;/td&gt;
+					&lt;td&gt;ethernetCsmacd (6)&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifName:&lt;/td&gt;
+					&lt;td&gt;No Name&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Max Speed:&lt;/td&gt;
+					&lt;td&gt;6.75 MBytes/s&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Ip:&lt;/td&gt;
+					&lt;td&gt;No Ip (No DNS name)&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+
+
+## Interface 25 &gt;&gt; Descr: 'ath0' | Name: 'No Name' | Ip: 'No Ip' | Eth: 'No Ethernet Id' ###
+## The following interface is commented out because:
+## * has no ifSpeed property
+
+Target[192.168.178.1_ath0]: \ath0:public@192.168.178.1:
+SetEnv[192.168.178.1_ath0]: MRTG_INT_IP="No Ip" MRTG_INT_DESCR="ath0"
+MaxBytes[192.168.178.1_ath0]: 6750000
+Title[192.168.178.1_ath0]: Traffic Analysis for 25 -- ath0
+PageTop[192.168.178.1_ath0]: &lt;h1&gt;Traffic Analysis for 25 -- ath0&lt;/h1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box in Unknown&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;ath0  &lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifType:&lt;/td&gt;
+					&lt;td&gt;ethernetCsmacd (6)&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifName:&lt;/td&gt;
+					&lt;td&gt;No Name&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Max Speed:&lt;/td&gt;
+					&lt;td&gt;6.75 MBytes/s&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Ip:&lt;/td&gt;
+					&lt;td&gt;No Ip (No DNS name)&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+
+		
+## Interface 30 &gt;&gt; Descr: 'guest1' | Name: 'No Name' | Ip: 'No Ip' | Eth: 'No Ethernet Id' ###
+## The following interface is commented out because:
+## * has no ifSpeed property
+ 
+Target[192.168.178.1_guest1]: \guest1:public@192.168.178.1:
+SetEnv[192.168.178.1_guest1]: MRTG_INT_IP="No Ip" MRTG_INT_DESCR="guest1"
+MaxBytes[192.168.178.1_guest1]: 6750000
+Title[192.168.178.1_guest1]: Traffic Analysis for 30 -- guest1 (Guest WiFi)
+PageTop[192.168.178.1_guest1]: &lt;h1&gt;Traffic Analysis for 30 -- guest1 (Guest WiFi)&lt;/h1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box in Unknown&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;guest1  &lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifType:&lt;/td&gt;
+					&lt;td&gt;ethernetCsmacd (6)&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifName:&lt;/td&gt;
+					&lt;td&gt;No Name&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Max Speed:&lt;/td&gt;
+					&lt;td&gt;6.75 MBytes/s&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Ip:&lt;/td&gt;
+					&lt;td&gt;No Ip (No DNS name)&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+		
+## Interface 37 &gt;&gt; Descr: 'dsl' | Name: 'No Name' | Ip: 'No Ip' | Eth: 'No Ethernet Id' ###
+## The following interface is commented out because:
+### * has no ifSpeed property
+
+Target[192.168.178.1_dsl]: \dsl:public@192.168.178.1:
+SetEnv[192.168.178.1_dsl]: MRTG_INT_IP="No Ip" MRTG_INT_DESCR="dsl"
+MaxBytes1[192.168.178.1_dsl]: 1500000
+MaxBytes2[192.168.178.1_dsl]: 128000
+Title[192.168.178.1_dsl]: Traffic Analysis for 37 -- dsl
+PageTop[192.168.178.1_dsl]: &lt;h1&gt;Traffic Analysis for 37 -- dsl&lt;/h1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box in Unknown&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;dsl  &lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifType:&lt;/td&gt;
+					&lt;td&gt;ppp (23)&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifName:&lt;/td&gt;
+					&lt;td&gt;No Name&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Max Speed:&lt;/td&gt;
+					&lt;td&gt;1.50 MBytes/s Downstream, 128 kBytes/s Upstream&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Ip:&lt;/td&gt;
+					&lt;td&gt;No Ip (No DNS name)&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+
+
+## Interface 38 &gt;&gt; Descr: 'adsl' | Name: 'No Name' | Ip: 'No Ip' | Eth: 'No Ethernet Id' ###
+## The following interface is commented out because:
+## * has no ifSpeed property
+
+Target[192.168.178.1_adsl]: \adsl:public@192.168.178.1:
+SetEnv[192.168.178.1_adsl]: MRTG_INT_IP="No Ip" MRTG_INT_DESCR="adsl"
+MaxBytes1[192.168.178.1_adsl]: 1500000
+MaxBytes2[192.168.178.1_adsl]: 128000
+Title[192.168.178.1_adsl]: Traffic Analysis for 38 -- atm
+PageTop[192.168.178.1_adsl]: &lt;h1&gt;Traffic Analysis for 38 -- atm&lt;/h1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box in Unknown&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;adsl  &lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifType:&lt;/td&gt;
+					&lt;td&gt;atm (37)&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifName:&lt;/td&gt;
+					&lt;td&gt;No Name&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Max Speed:&lt;/td&gt;
+					&lt;td&gt;1.50 MBytes/s Downstream, 128 kBytes/s Upstream&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Ip:&lt;/td&gt;
+					&lt;td&gt;No Ip (No DNS name)&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+
+
+## Interface 43 &gt;&gt; Descr: 'sixxs' | Name: 'No Name' | Ip: 'No Ip' | Eth: 'No Ethernet Id' ###
+## The following interface is commented out because:
+## * has no ifSpeed property
+
+Target[192.168.178.1_sixxs]: \sixxs:public@192.168.178.1:
+SetEnv[192.168.178.1_sixxs]: MRTG_INT_IP="No Ip" MRTG_INT_DESCR="sixxs"
+MaxBytes1[192.168.178.1_sixxs]: 1500000
+MaxBytes2[192.168.178.1_sixxs]: 128000
+Title[192.168.178.1_sixxs]: Traffic Analysis for 43 -- sixxs
+PageTop[192.168.178.1_sixxs]: &lt;h1&gt;Traffic Analysis for 43 -- sixxs&lt;/h1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box in Unknown&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;sixxs  &lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifType:&lt;/td&gt;
+					&lt;td&gt;Other (1)&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifName:&lt;/td&gt;
+					&lt;td&gt;No Name&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Max Speed:&lt;/td&gt;
+					&lt;td&gt;1.50 MBytes/s Downstream, 128 kBytes/s Upstream&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Ip:&lt;/td&gt;
+					&lt;td&gt;No Ip (No DNS name)&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+
+
+		
+# Router CPU one minute load averages 
+Target[cpu.1]:.1.3.6.1.4.1.2021.10.1.5.1&amp;.1.3.6.1.4.1.2021.10.1.5.1:public@192.168.178.1:
+RouterUptime[cpu.1]: sysUpTime.0:public@192.168.178.1:
+MaxBytes[cpu.1]: 1000
+Title[cpu.1]: CPU LOAD
+PageTop[cpu.1]: &lt;H1&gt;CPU one minute load averages&lt;/H1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box 7270&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;One minute load averages&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+ShortLegend[cpu.1]: avg cpu/min
+Factor[cpu.1]: 0.01
+YLegend[cpu.1]: CPU Utilization
+Legend1[cpu.1]: CPU Utilization (Load)
+Legend2[cpu.1]: CPU Utilization (Load)
+Legend3[cpu.1]:
+Legend4[cpu.1]:
+LegendI[cpu.1]:
+LegendO[cpu.1]: &amp;nbsp;Usage
+Options[cpu.1]: gauge, unknaszero
+
+# Router CPU five minute load averages
+Target[cpu.2]:.1.3.6.1.4.1.2021.10.1.5.2&amp;.1.3.6.1.4.1.2021.10.1.5.2:public@192.168.178.1:
+RouterUptime[cpu.2]: .1.3.6.1.2.1.1.3.0:public@192.168.178.1:
+MaxBytes[cpu.2]: 1000
+Title[cpu.2]: CPU LOAD
+PageTop[cpu.2]: &lt;H1&gt;CPU five minute load averages&lt;/H1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box 7270&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;Five minute load averages&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+ShortLegend[cpu.2]: avg cpu/5 min
+Factor[cpu.2]: 0.01
+YLegend[cpu.2]: CPU Utilization
+Legend1[cpu.2]: CPU Utilization (Load)
+Legend2[cpu.2]: CPU Utilization (Load)
+Legend3[cpu.2]:
+Legend4[cpu.2]:
+LegendI[cpu.2]:
+LegendO[cpu.2]: &amp;nbsp;Usage
+Options[cpu.2]: gauge, unknaszero	
+ 
+# Router CPU fifteen minute load averages
+Target[cpu.3]:.1.3.6.1.4.1.2021.10.1.5.3&amp;.1.3.6.1.4.1.2021.10.1.5.3:public@192.168.178.1:
+RouterUptime[cpu.3]: sysUpTime.0:public@192.168.178.1:
+MaxBytes[cpu.3]: 1000
+Title[cpu.3]: CPU LOAD
+PageTop[cpu.3]: &lt;H1&gt;CPU fifteen minute load averages&lt;/H1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box 7270&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;Fifteen minute load averages&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+ShortLegend[cpu.3]: avg cpu/15 min
+Factor[cpu.3]: 0.01
+YLegend[cpu.3]: CPU Utilization
+Legend1[cpu.3]: CPU Utilization (Load)
+Legend2[cpu.3]: CPU Utilization (Load)
+Legend3[cpu.3]:
+Legend4[cpu.3]:
+LegendI[cpu.3]:
+LegendO[cpu.3]: &amp;nbsp;Usage
+Options[cpu.3]: gauge, unknaszero
+	
+
+# Router CPU Utilization ssCpuIdle.0
+Target[cpu.idle]: 100 - .1.3.6.1.4.1.2021.11.11.0&amp;.1.3.6.1.4.1.2021.11.11.0:public@192.168.178.1:
+RouterUptime[cpu.idle]: sysUpTime.0:public@192.168.178.1:
+MaxBytes[cpu.idle]: 1000
+Title[cpu.idle]: CPU Utilization
+PageTop[cpu.idle]: &lt;H1&gt;CPU Utilization&lt;/H1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box 7270&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;CPU Utilization&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+ShortLegend[cpu.idle]: %
+YLegend[cpu.idle]: CPU Utilization
+Legend1[cpu.idle]: CPU Utilization %(Load)
+Legend2[cpu.idle]: CPU Utilization %(Load)
+Legend3[cpu.idle]:
+Legend4[cpu.idle]:
+LegendI[cpu.idle]:
+LegendO[cpu.idle]: &amp;nbsp;Usage
+Options[cpu.idle]: gauge, unknaszero	
+	
+	
+# Router Used Memory = Memory - Free Memory
+# The total memory can be obtained from /proc/meminfo 
+# For the 7390 the MemTotal = 109168 kB
+# For the 7270v3 the MemTotal = 59716 kB 
+Target[mem.used]: 59716 - .1.3.6.1.4.1.2021.4.11.0&amp;.1.3.6.1.4.1.2021.4.11.0:public@192.168.178.1:
+RouterUptime[mem.used]: sysUpTime.0:public@192.168.178.1:
+MaxBytes[mem.used]: 59716
+Title[mem.used]: Used Memory
+PageTop[mem.used]: &lt;H1&gt;Used Memory&lt;/H1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box 7270&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;Used Memory&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+ShortLegend[mem.used]: kBytes
+YLegend[mem.used]: Used Memory
+Legend1[mem.used]: Used Memory (Total is 59716)
+Legend2[mem.used]: Used Memory (Total is 59716)
+Legend3[mem.used]:
+Legend4[mem.used]:
+LegendI[mem.used]:
+LegendO[mem.used]: &amp;nbsp;Usage
+Options[mem.used]: gauge, unknaszero		
+	
+
+WorkDir: c:\Users\&lt;user&gt;\www\mrtg 
+</pre><p>
+For the 7390 I have the following config (not so much different).
+</p>
+<pre class="wiki"># Created by 
+# cfgmaker public@192.168.178.1 --global "WorkDir: c:\www\mrtg" --output mrtg_7390.cfg
+
+
+### Global Config Options
+
+#  for UNIX
+# WorkDir: /home/http/mrtg
+
+#  or for NT
+# WorkDir: c:\mrtgdata
+WorkDir: c:\Users\&lt;user&gt;\www\mrtg
+RunAsDaemon: yes
+
+### Global Defaults
+
+#  to get bits instead of bytes and graphs growing to the right
+# Options[_]: growright, bits
+
+EnableIPv6: no
+
+######################################################################
+# System: fritz.fonwlan.box
+# Description: Linux fritz.fonwlan.box 2.6.28.10 #1 Thu Mar 21 15:33:40 CET 2013 mips
+# Contact: root@localhost
+# Location: Unknown
+######################################################################
+
+## Changes to use RRDTool as explained in: http://oss.oetiker.ch/mrtg/doc/mrtg-rrd.en.html
+# LogFormat: rrdtool
+# PathAdd: c:\rrdtool\rrdtool-1.4.7\win32\Debug
+# LibAdd: c:\rrdtool\rrdtool-1.4.7\bindings\perl-shared
+## Interface 1 &gt;&gt; Descr: 'lo' | Name: 'No Name' | Ip: '127.0.0.1' | Eth: 'No Ethernet Id' ###
+## The following interface is commented out because:
+## * it is a Software Loopback interface
+
+Target[192.168.178.1_lo]: \lo:public@192.168.178.1:
+SetEnv[192.168.178.1_lo]: MRTG_INT_IP="127.0.0.1" MRTG_INT_DESCR="lo"
+MaxBytes[192.168.178.1_lo]: 1250000
+Title[192.168.178.1_lo]: Traffic Analysis for 1 -- lo Local Loopback Interface
+PageTop[192.168.178.1_lo]: &lt;h1&gt;Traffic Analysis for 1 -- lo Local Loopback Interface&lt;/h1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box in Unknown&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;lo  &lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifType:&lt;/td&gt;
+					&lt;td&gt;softwareLoopback (24)&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifName:&lt;/td&gt;
+					&lt;td&gt;No Name&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Max Speed:&lt;/td&gt;
+					&lt;td&gt;1250.0 kBytes/s&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Ip:&lt;/td&gt;
+					&lt;td&gt;127.0.0.1 (localhost)&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+
+
+### Interface 2 &gt;&gt; Descr: 'sit0' | Name: 'No Name' | Ip: 'No Ip' | Eth: 'No Ethernet Id' ###
+### The following interface is commented out because:
+### * it is administratively DOWN
+### * it is operationally DOWN
+### * has no ifSpeed property
+# 
+# Target[192.168.178.1_sit0]: \sit0:public@192.168.178.1:
+# SetEnv[192.168.178.1_sit0]: MRTG_INT_IP="No Ip" MRTG_INT_DESCR="sit0"
+# MaxBytes[192.168.178.1_sit0]: 0
+# Title[192.168.178.1_sit0]: Traffic Analysis for 2 -- sit0
+# PageTop[192.168.178.1_sit0]: &lt;h1&gt;Traffic Analysis for 2 -- sit0&lt;/h1&gt;
+# 		&lt;div id="sysdetails"&gt;
+# 			&lt;table&gt;
+# 				&lt;tr&gt;
+# 					&lt;td&gt;System:&lt;/td&gt;
+# 					&lt;td&gt;fritz.fonwlan.box in Unknown&lt;/td&gt;
+# 				&lt;/tr&gt;
+# 				&lt;tr&gt;
+# 					&lt;td&gt;Maintainer:&lt;/td&gt;
+# 					&lt;td&gt;root@localhost&lt;/td&gt;
+# 				&lt;/tr&gt;
+# 				&lt;tr&gt;
+# 					&lt;td&gt;Description:&lt;/td&gt;
+# 					&lt;td&gt;sit0  &lt;/td&gt;
+# 				&lt;/tr&gt;
+# 				&lt;tr&gt;
+# 					&lt;td&gt;ifType:&lt;/td&gt;
+# 					&lt;td&gt;Encapsulation Interface (131)&lt;/td&gt;
+# 				&lt;/tr&gt;
+# 				&lt;tr&gt;
+# 					&lt;td&gt;ifName:&lt;/td&gt;
+# 					&lt;td&gt;No Name&lt;/td&gt;
+# 				&lt;/tr&gt;
+# 				&lt;tr&gt;
+# 					&lt;td&gt;Max Speed:&lt;/td&gt;
+# 					&lt;td&gt;0.0 Bytes/s&lt;/td&gt;
+# 				&lt;/tr&gt;
+# 				&lt;tr&gt;
+# 					&lt;td&gt;Ip:&lt;/td&gt;
+# 					&lt;td&gt;No Ip (No DNS name)&lt;/td&gt;
+# 				&lt;/tr&gt;
+# 			&lt;/table&gt;
+# 		&lt;/div&gt;
+
+
+## Interface 3 &gt;&gt; Descr: 'cpmac0' | Name: 'No Name' | Ip: 'No Ip' | Eth: 'No Ethernet Id' ###
+## The following interface is commented out because:
+## * has no ifSpeed property
+ 
+Target[192.168.178.1_cpmac0]: \cpmac0:public@192.168.178.1:
+SetEnv[192.168.178.1_cpmac0]: MRTG_INT_IP="No Ip" MRTG_INT_DESCR="cpmac0"
+MaxBytes[192.168.178.1_cpmac0]: 128000000
+Title[192.168.178.1_cpmac0]: Traffic Analysis for 3 -- cpmac0 1Gbit/s Ethernet switch
+PageTop[192.168.178.1_cpmac0]: &lt;h1&gt;Traffic Analysis for 3 -- cpmac0 1Gbit/s Ethernet switch&lt;/h1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box in Unknown&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;cpmac0  &lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifType:&lt;/td&gt;
+					&lt;td&gt;ethernetCsmacd (6)&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifName:&lt;/td&gt;
+					&lt;td&gt;No Name&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Max Speed:&lt;/td&gt;
+					&lt;td&gt;128 MBytes/s&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Ip:&lt;/td&gt;
+					&lt;td&gt;No Ip (No DNS name)&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+
+
+## Interface 4 &gt;&gt; Descr: 'eth0' | Name: 'No Name' | Ip: 'No Ip' | Eth: 'No Ethernet Id' ###
+## The following interface is commented out because:
+## * has no ifSpeed property
+
+Target[192.168.178.1_eth0]: \eth0:public@192.168.178.1:
+SetEnv[192.168.178.1_eth0]: MRTG_INT_IP="No Ip" MRTG_INT_DESCR="eth0"
+MaxBytes[192.168.178.1_eth0]: 12500000
+Title[192.168.178.1_eth0]: Traffic Analysis for 4 -- eth0
+PageTop[192.168.178.1_eth0]: &lt;h1&gt;Traffic Analysis for 4 -- eth0&lt;/h1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box in Unknown&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;eth0  &lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifType:&lt;/td&gt;
+					&lt;td&gt;ethernetCsmacd (6)&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifName:&lt;/td&gt;
+					&lt;td&gt;No Name&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Max Speed:&lt;/td&gt;
+					&lt;td&gt;12.5 MBytes/s&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Ip:&lt;/td&gt;
+					&lt;td&gt;No Ip (No DNS name)&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+
+
+## Interface 5 &gt;&gt; Descr: 'lan' | Name: 'No Name' | Ip: '169.254.1.1' | Eth: 'No Ethernet Id' ###
+## The following interface is commented out because:
+## * has no ifSpeed property
+Target[192.168.178.1_lan]: \lan:public@192.168.178.1:
+SetEnv[192.168.178.1_lan]: MRTG_INT_IP="169.254.1.1" MRTG_INT_DESCR="lan"
+MaxBytes[192.168.178.1_lan]: 12500000
+Title[192.168.178.1_lan]: Traffic Analysis for 5 -- lan (eth + wifi)
+PageTop[192.168.178.1_lan]: &lt;h1&gt;Traffic Analysis for 5 -- lan (eth + wifi)&lt;/h1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box in Unknown&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;lan  &lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifType:&lt;/td&gt;
+					&lt;td&gt;ethernetCsmacd (6)&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifName:&lt;/td&gt;
+					&lt;td&gt;No Name&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Max Speed:&lt;/td&gt;
+					&lt;td&gt;12.5 MBytes/s&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Ip:&lt;/td&gt;
+					&lt;td&gt;169.254.1.1 (No DNS name)&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+
+
+## Interface 6 &gt;&gt; Descr: 'guest' | Name: 'No Name' | Ip: '192.168.179.1' | Eth: 'No Ethernet Id' ###
+## The following interface is commented out because:
+## * has no ifSpeed property
+
+Target[192.168.178.1_guest]: \guest:public@192.168.178.1:
+SetEnv[192.168.178.1_guest]: MRTG_INT_IP="192.168.179.1" MRTG_INT_DESCR="guest"
+MaxBytes[192.168.178.1_guest]: 37500000
+Title[192.168.178.1_guest]: Traffic Analysis for 6 -- guest (Guest WiFi)
+PageTop[192.168.178.1_guest]: &lt;h1&gt;Traffic Analysis for 6 -- guest (Guest WiFi)&lt;/h1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box in Unknown&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;guest  &lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifType:&lt;/td&gt;
+					&lt;td&gt;ethernetCsmacd (6)&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifName:&lt;/td&gt;
+					&lt;td&gt;No Name&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Max Speed:&lt;/td&gt;
+					&lt;td&gt;37.5 MBytes/s&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Ip:&lt;/td&gt;
+					&lt;td&gt;192.168.179.1 (No DNS name)&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+
+
+## Interface 19 &gt;&gt; Descr: 'wifi0' | Name: 'No Name' | Ip: 'No Ip' | Eth: 'No Ethernet Id' ###
+## The following interface is commented out because:
+## * has no ifSpeed property
+
+Target[192.168.178.1_wifi0]: \wifi0:public@192.168.178.1:
+SetEnv[192.168.178.1_wifi0]: MRTG_INT_IP="No Ip" MRTG_INT_DESCR="wifi0"
+MaxBytes[192.168.178.1_wifi0]: 37500000
+Title[192.168.178.1_wifi0]: Traffic Analysis for 19 -- wifi0
+PageTop[192.168.178.1_wifi0]: &lt;h1&gt;Traffic Analysis for 19 -- wifi0&lt;/h1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box in Unknown&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;wifi0  &lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifType:&lt;/td&gt;
+					&lt;td&gt;Other (1)&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifName:&lt;/td&gt;
+					&lt;td&gt;No Name&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Max Speed:&lt;/td&gt;
+					&lt;td&gt;37.5 MBytes/s&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Ip:&lt;/td&gt;
+					&lt;td&gt;No Ip (No DNS name)&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+
+
+## Interface 20 &gt;&gt; Descr: 'wifi1' | Name: 'No Name' | Ip: 'No Ip' | Eth: 'No Ethernet Id' ###
+## The following interface is commented out because:
+## * has no ifSpeed property
+
+Target[192.168.178.1_wifi1]: \wifi1:public@192.168.178.1:
+SetEnv[192.168.178.1_wifi1]: MRTG_INT_IP="No Ip" MRTG_INT_DESCR="wifi1"
+MaxBytes[192.168.178.1_wifi1]: 37500000
+Title[192.168.178.1_wifi1]: Traffic Analysis for 20 -- wifi1
+PageTop[192.168.178.1_wifi1]: &lt;h1&gt;Traffic Analysis for 20 -- wifi1&lt;/h1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box in Unknown&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;wifi1  &lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifType:&lt;/td&gt;
+					&lt;td&gt;Other (1)&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifName:&lt;/td&gt;
+					&lt;td&gt;No Name&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Max Speed:&lt;/td&gt;
+					&lt;td&gt;37.5 MBytes/s&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Ip:&lt;/td&gt;
+					&lt;td&gt;No Ip (No DNS name)&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+
+
+## Interface 25 &gt;&gt; Descr: 'ath0' | Name: 'No Name' | Ip: 'No Ip' | Eth: 'No Ethernet Id' ###
+## The following interface is commented out because:
+## * has no ifSpeed property
+
+Target[192.168.178.1_ath0]: \ath0:public@192.168.178.1:
+SetEnv[192.168.178.1_ath0]: MRTG_INT_IP="No Ip" MRTG_INT_DESCR="ath0"
+MaxBytes[192.168.178.1_ath0]: 37500000
+Title[192.168.178.1_ath0]: Traffic Analysis for 25 -- ath0
+PageTop[192.168.178.1_ath0]: &lt;h1&gt;Traffic Analysis for 25 -- ath0&lt;/h1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box in Unknown&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;ath0  &lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifType:&lt;/td&gt;
+					&lt;td&gt;ethernetCsmacd (6)&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifName:&lt;/td&gt;
+					&lt;td&gt;No Name&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Max Speed:&lt;/td&gt;
+					&lt;td&gt;37.5 MBytes/s&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Ip:&lt;/td&gt;
+					&lt;td&gt;No Ip (No DNS name)&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+
+
+## Interface 26 &gt;&gt; Descr: 'ath1' | Name: 'No Name' | Ip: 'No Ip' | Eth: 'No Ethernet Id' ###
+## The following interface is commented out because:
+## * has no ifSpeed property
+
+Target[192.168.178.1_ath1]: \ath1:public@192.168.178.1:
+SetEnv[192.168.178.1_ath1]: MRTG_INT_IP="No Ip" MRTG_INT_DESCR="ath1"
+MaxBytes[192.168.178.1_ath1]: 37500000
+Title[192.168.178.1_ath1]: Traffic Analysis for 26 -- ath1
+PageTop[192.168.178.1_ath1]: &lt;h1&gt;Traffic Analysis for 26 -- ath1&lt;/h1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box in Unknown&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;ath1  &lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifType:&lt;/td&gt;
+					&lt;td&gt;ethernetCsmacd (6)&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifName:&lt;/td&gt;
+					&lt;td&gt;No Name&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Max Speed:&lt;/td&gt;
+					&lt;td&gt;37.5 MBytes/s&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Ip:&lt;/td&gt;
+					&lt;td&gt;No Ip (No DNS name)&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+
+
+## Interface 37 &gt;&gt; Descr: 'dsl' | Name: 'No Name' | Ip: 'No Ip' | Eth: 'No Ethernet Id' ###
+## The following interface is commented out because:
+## * has no ifSpeed property
+
+Target[192.168.178.1_dsl]: \dsl:public@192.168.178.1:
+SetEnv[192.168.178.1_dsl]: MRTG_INT_IP="No Ip" MRTG_INT_DESCR="dsl"
+MaxBytes1[192.168.178.1_dsl]: 1500000
+MaxBytes2[192.168.178.1_dsl]: 128000
+Title[192.168.178.1_dsl]: Traffic Analysis for 37 -- dsl
+PageTop[192.168.178.1_dsl]: &lt;h1&gt;Traffic Analysis for 37 -- dsl&lt;/h1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box in Unknown&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;dsl  &lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifType:&lt;/td&gt;
+					&lt;td&gt;ppp (23)&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifName:&lt;/td&gt;
+					&lt;td&gt;No Name&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Max Speed:&lt;/td&gt;
+					&lt;td&gt;1.50 MBytes/s Downstream, 128 kBytes/s Upstream&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Ip:&lt;/td&gt;
+					&lt;td&gt;No Ip (No DNS name)&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+
+
+## Interface 38 &gt;&gt; Descr: 'adsl' | Name: 'No Name' | Ip: 'No Ip' | Eth: 'No Ethernet Id' ###
+## The following interface is commented out because:
+## * has no ifSpeed property
+
+Target[192.168.178.1_adsl]: \adsl:public@192.168.178.1:
+SetEnv[192.168.178.1_adsl]: MRTG_INT_IP="No Ip" MRTG_INT_DESCR="adsl"
+MaxBytes1[192.168.178.1_adsl]: 1500000
+MaxBytes2[192.168.178.1_adsl]: 128000
+Title[192.168.178.1_adsl]: Traffic Analysis for 38 -- atm
+PageTop[192.168.178.1_adsl]: &lt;h1&gt;Traffic Analysis for 38 -- atm&lt;/h1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box in Unknown&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;adsl  &lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifType:&lt;/td&gt;
+					&lt;td&gt;atm (37)&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifName:&lt;/td&gt;
+					&lt;td&gt;No Name&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Max Speed:&lt;/td&gt;
+					&lt;td&gt;1.50 MBytes/s Downstream, 128 kBytes/s Upstream&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Ip:&lt;/td&gt;
+					&lt;td&gt;No Ip (No DNS name)&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+
+
+## Interface 43 &gt;&gt; Descr: 'sixxs' | Name: 'No Name' | Ip: 'No Ip' | Eth: 'No Ethernet Id' ###
+## The following interface is commented out because:
+## * has no ifSpeed property
+
+Target[192.168.178.1_sixxs]: \sixxs:public@192.168.178.1:
+SetEnv[192.168.178.1_sixxs]: MRTG_INT_IP="No Ip" MRTG_INT_DESCR="sixxs"
+MaxBytes1[192.168.178.1_sixxs]: 1500000
+MaxBytes2[192.168.178.1_sixxs]: 128000
+Title[192.168.178.1_sixxs]: Traffic Analysis for 43 -- sixxs
+PageTop[192.168.178.1_sixxs]: &lt;h1&gt;Traffic Analysis for 43 -- sixxs&lt;/h1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box in Unknown&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;sixxs  &lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifType:&lt;/td&gt;
+					&lt;td&gt;Other (1)&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;ifName:&lt;/td&gt;
+					&lt;td&gt;No Name&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Max Speed:&lt;/td&gt;
+					&lt;td&gt;1.50 MBytes/s Downstream, 128 kBytes/s Upstream&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Ip:&lt;/td&gt;
+					&lt;td&gt;No Ip (No DNS name)&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+
+
+# Router CPU one minute load averages 
+Target[cpu.1]:.1.3.6.1.4.1.2021.10.1.5.1&amp;.1.3.6.1.4.1.2021.10.1.5.1:public@192.168.178.1:
+RouterUptime[cpu.1]: sysUpTime.0:public@192.168.178.1:
+MaxBytes[cpu.1]: 1000
+Title[cpu.1]: CPU LOAD
+PageTop[cpu.1]: &lt;H1&gt;CPU one minute load averages&lt;/H1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box 7390&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;One minute load averages&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+ShortLegend[cpu.1]: avg cpu/min
+Factor[cpu.1]: 0.01
+YLegend[cpu.1]: CPU Utilization
+Legend1[cpu.1]: CPU Utilization (Load)
+Legend2[cpu.1]: CPU Utilization (Load)
+Legend3[cpu.1]:
+Legend4[cpu.1]:
+LegendI[cpu.1]:
+LegendO[cpu.1]: &amp;nbsp;Usage
+Options[cpu.1]: gauge, unknaszero
+
+# Router CPU five minute load averages
+Target[cpu.2]:.1.3.6.1.4.1.2021.10.1.5.2&amp;.1.3.6.1.4.1.2021.10.1.5.2:public@192.168.178.1:
+RouterUptime[cpu.2]: .1.3.6.1.2.1.1.3.0:public@192.168.178.1:
+MaxBytes[cpu.2]: 1000
+Title[cpu.2]: CPU LOAD
+PageTop[cpu.2]: &lt;H1&gt;CPU five minute load averages&lt;/H1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box 7390&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;Five minute load averages&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+ShortLegend[cpu.2]: avg cpu/5 min
+Factor[cpu.2]: 0.01
+YLegend[cpu.2]: CPU Utilization
+Legend1[cpu.2]: CPU Utilization (Load)
+Legend2[cpu.2]: CPU Utilization (Load)
+Legend3[cpu.2]:
+Legend4[cpu.2]:
+LegendI[cpu.2]:
+LegendO[cpu.2]: &amp;nbsp;Usage
+Options[cpu.2]: gauge, unknaszero	
+
+# Router CPU fifteen minute load averages
+Target[cpu.3]:.1.3.6.1.4.1.2021.10.1.5.3&amp;.1.3.6.1.4.1.2021.10.1.5.3:public@192.168.178.1:
+RouterUptime[cpu.3]: sysUpTime.0:public@192.168.178.1:
+MaxBytes[cpu.3]: 1000
+Title[cpu.3]: CPU LOAD
+PageTop[cpu.3]: &lt;H1&gt;CPU fifteen minute load averages&lt;/H1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box 7390&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;Fifteen minute load averages&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+ShortLegend[cpu.3]: avg cpu/15 min
+Factor[cpu.3]: 0.01
+YLegend[cpu.3]: CPU Utilization
+Legend1[cpu.3]: CPU Utilization (Load)
+Legend2[cpu.3]: CPU Utilization (Load)
+Legend3[cpu.3]:
+Legend4[cpu.3]:
+LegendI[cpu.3]:
+LegendO[cpu.3]: &amp;nbsp;Usage
+Options[cpu.3]: gauge, unknaszero
+
+# Router CPU Utilization ssCpuIdle.0
+Target[cpu.idle]: 100 - .1.3.6.1.4.1.2021.11.11.0&amp;.1.3.6.1.4.1.2021.11.11.0:public@192.168.178.1:
+RouterUptime[cpu.idle]: sysUpTime.0:public@192.168.178.1:
+MaxBytes[cpu.idle]: 1000
+Title[cpu.idle]: CPU Utilization
+PageTop[cpu.idle]: &lt;H1&gt;CPU Utilization&lt;/H1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box 7390&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;CPU Utilization&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+ShortLegend[cpu.idle]: %
+YLegend[cpu.idle]: CPU Utilization
+Legend1[cpu.idle]: CPU Utilization %(Load)
+Legend2[cpu.idle]: CPU Utilization %(Load)
+Legend3[cpu.idle]:
+Legend4[cpu.idle]:
+LegendI[cpu.idle]:
+LegendO[cpu.idle]: &amp;nbsp;Usage
+Options[cpu.idle]: gauge, unknaszero
+
+# Router Used Memory = Memory - Free Memory
+# The total memory can be obtained from /proc/meminfo 
+# For the 7390 the MemTotal = 109168 kB
+# Without Swap:
+# Target[mem.used]: 109168 - .1.3.6.1.4.1.2021.4.11.0&amp;.1.3.6.1.4.1.2021.4.11.0:public@192.168.178.1:
+# With Swap enabled:
+Target[mem.used]: .1.3.6.1.4.1.2021.4.5.0&amp;.1.3.6.1.4.1.2021.4.5.0:public@192.168.178.1 - .1.3.6.1.4.1.2021.4.6.0&amp;.1.3.6.1.4.1.2021.4.6.0:public@192.168.178.1
+RouterUptime[mem.used]: sysUpTime.0:public@192.168.178.1:
+MaxBytes[mem.used]: 109168
+Title[mem.used]: Used Memory
+PageTop[mem.used]: &lt;H1&gt;Used Memory&lt;/H1&gt;
+		&lt;div id="sysdetails"&gt;
+			&lt;table&gt;
+				&lt;tr&gt;
+					&lt;td&gt;System:&lt;/td&gt;
+					&lt;td&gt;fritz.fonwlan.box 7390&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Maintainer:&lt;/td&gt;
+					&lt;td&gt;root@localhost&lt;/td&gt;
+				&lt;/tr&gt;
+				&lt;tr&gt;
+					&lt;td&gt;Description:&lt;/td&gt;
+					&lt;td&gt;Used Memory&lt;/td&gt;
+				&lt;/tr&gt;
+			&lt;/table&gt;
+		&lt;/div&gt;
+ShortLegend[mem.used]: kBytes
+YLegend[mem.used]: Used Memory
+Legend1[mem.used]: Used Memory (Total is 109168)
+Legend2[mem.used]: Used Memory (Total is 109168)
+Legend3[mem.used]:
+Legend4[mem.used]:
+LegendI[mem.used]:
+LegendO[mem.used]: &amp;nbsp;Usage
+Options[mem.used]: gauge, unknaszero		
+	
+WorkDir: c:\Users\&lt;user&gt;\www\mrtg
+</pre><h3 id="Onepageoverview">One page overview</h3>
+<p>
+MRTG offers a tool to generate a web-page with for a specific period, e.g. all one-day graphs of all configured targets on one page. <br />
+In a dos-box in the mrtg\bin directory execute the following (replace &lt;name&gt; with your prefered name for the page). 
+For a page with one-day graphs: 
+</p>
+<blockquote>
+<p>
+perl indexmaker &mdash;output &lt;name&gt;.htm mrtg.cfg
+</p>
+</blockquote>
+<p>
+For a page with graphs of a week, month or year:
+</p>
+<blockquote>
+<p>
+perl indexmaker &mdash;show=week &mdash;output &lt;name&gt;.htm mrtg.cfg
+perl indexmaker &mdash;show=month &mdash;output &lt;name&gt;.htm mrtg.cfg
+perl indexmaker &mdash;show=year &mdash;output &lt;name&gt;.htm mrtg.cfg
+</p>
+</blockquote>
+<p>
+Then move the created .htm file to the directory with all the generated MRTG pages.
+</p>
+<h3 id="MGTGasaservice">MGTG as a service</h3>
+<p>
+With a new installation on Win7 I installed I decided to install on the following locations i.s.o. the root of the c: directory:
+</p>
+<p>
+Web-pages:
+</p>
+<blockquote>
+<p>
+C:\Users\&lt;user&gt;\www\mrtg\
+</p>
+</blockquote>
+<p>
+MRTG:
+</p>
+<blockquote>
+<p>
+C:\Program Files (x86)\mrtg-2.17.4\
+</p>
+</blockquote>
+<p>
+Net-SNMP:
+</p>
+<blockquote>
+<p>
+C:\Program Files (x86)\Net-SNMP\
+</p>
+</blockquote>
+<p>
+You need to obtain the following two programs to create the service:
+</p>
+<blockquote>
+<p>
+instsrv.exe
+srvany.exe
+</p>
+</blockquote>
+<p>
+Copy them to C:\Program Files (x86)\mrtg-2.17.4\bin\ directory.
+</p>
+<p>
+I generated a service named mrtg_7390.
+</p>
+<pre class="wiki">cd C:\Program Files (x86)\mrtg-2.17.4\bin\
+instsrv "MRTG_7390" "C:\Program Files (x86)\mrtg-2.17.4\bin\srvany.exe"
+</pre><p>
+Create a registry file at the following location:
+</p>
+<blockquote>
+<p>
+C:\Program Files (x86)\mrtg-2.17.4\bin\mrtg_7390.reg
+</p>
+<pre class="wiki">[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\MRTG_7390\Parameters]
+ "Application"="c:\\Program Files\\perl64\\bin\\wperl.exe"
+ "AppParameters"="\"c:\\Program Files (x86)\\mrtg-2.17.4\\bin\\mrtg\" \"c:\\Program Files (x86)\\mrtg-2.17.4\\bin\\mrtg_7390.cfg\""
+ "AppDirectory"="c:\\Program Files (x86)\\mrtg-2.17.4\\bin\\"
+</pre></blockquote>
+<p>
+Add the entries in the in the registry using the following command:
+</p>
+<blockquote>
+<p>
+regedit /s mrtg_7390.reg
+</p>
+</blockquote>
+<p>
+<span class="thumbnail"><span class="aux" style="width: 727px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/279?format=raw" title="MRTG as a Service Registry entry"><img src="http://freetz.org/screenshots/279?width=725&amp;format=raw&amp;height=210" alt="MRTG as a Service Registry entry" /></a><span class="description" style="width: 727px;">MRTG as a Service Registry entry</span></span></span>
+</p>
+<p>
+<span class="thumbnail"><span class="aux" style="width: 729px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/280?format=raw" title="MRTG as a Service Registry entry parameters"><img src="http://freetz.org/screenshots/280?width=727&amp;format=raw&amp;height=210" alt="MRTG as a Service Registry entry parameters" /></a><span class="description" style="width: 729px;">MRTG as a Service Registry entry parameters</span></span></span>
+</p>
+<h3 id="Webpageexamples">Web page examples</h3>
+</div>
+          
+          <div class="trac-modifiedby">
+            <span><a href="mrtg.en%3Faction=diff&amp;version=1.html" title="Version 1 von RomMon">zuletzt geändert</a> <a class="timeline" href="http://freetz.org/timeline?from=2014-01-22T21%3A21%3A55Z&amp;precision=second" title="Siehe Journal am 22.01.2014 21:21:55">vor 4 Jahren</a></span>
+            <span class="trac-print">Zuletzt geändert am 22.01.2014 21:21:55</span>
+          </div>
+        
+        
+      </div>
+      
+
+    </div>
+    <script type="text/javascript">
+        jQuery.loadStyleSheet("/chrome/screenshots/css/screenshots.css", "text/css");
+    </script>
+    <div id="altlinks">
+      <h3>In anderen Formaten herunterladen:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="mrtg.en%3Fformat=txt">Reiner Text</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" lang="en" xml:lang="en"><hr />
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="../../../chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
+      <p class="left">Betrieben mit <a href="http://freetz.org/about"><strong>Trac 1.0.1</strong></a><br />
+        von <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right"><div class="field" align="right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations"/><input type="hidden" name="business" value="spenden@freetz.org"/><input type="hidden" name="item_name" value="Freetz Entwickler-Team"/><input type="hidden" name="no_shipping" value="1"/><input type="hidden" name="return" value="http://freetz.org"/><input type="hidden" name="cn" value="Name oder IPPF-Pseudonym"/><input type="hidden" name="currency_code" value="EUR"/><input type="hidden" name="tax" value="0"/><input type="hidden" name="lc" value="DE"/><input type="hidden" name="bn" value="PP-DonationsBF"/><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Zahlen Sie mit PayPal - schnell, kostenlos und sicher!"/><img alt="" border="0" src="http://freetz.org/pixel.gif" width="1" height="1"/></form></div></p>
+    </div>
+  </body>
+</html>

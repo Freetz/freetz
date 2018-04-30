@@ -1,0 +1,55 @@
+[[TOC(packages/rudi-shell,packages/rudi-shell/install,packages/rudi-shell/functions,packages/rudi-shell/usage,packages/rudi-shell/limits,packages/rudi-shell/tips,heading=Inhaltsverzeichnis)]]
+
+= Illustrierte Anwendungsfälle =
+
+== Shell-Skript ausführen ==
+
+Befehl eingeben, ausführen, Ergebnis anschauen - fertig.
+
+[[Screenshot(40)]]
+
+== Historie verwenden ==
+
+Historien-Liste öffnen, per Maus oder Tastatur durchblättern. Beim Blättern aktualisieren sich schon Befehlsfenster und Ergebniskonsole. Durch Drücken des Knopfes "Hist. löschen" wird die Historie bereinigt und ist wieder jungfräulich.
+
+[[Screenshot(41)]]
+
+== !Download Tar-Archiv ==
+
+Man kann mittels eines Befehls wie {{{tar c *}}} ein Archiv erzeugen, im Beispiel von allen Dateien und Unterverzeichnissen im aktuellen Verzeichnis - übrigens bei Shellskript-Start immer {{{/usr/mww/cgi-bin}}}, weil von dort aus die CGI-Skripten ausgeführt werden. Wenn man zusätzlich den !Download-Schalter vor dem Ausführen aktiviert und evtl. zur Bequemlichkeit noch den Dateiendung-Schalter ''.tar'', erhält man das Archiv direkt als !Download, den man speichern kann, wohin man will. Was hier technisch passiert, ist, daß die Standardausgabe der Shell - wir haben ja keine Zieldatei für ''Tar'' angegeben, also gilt die Standardausgabe - umgeleitet wird, und zwar in den Rückgabekanal des CGI-Skripts hin zum Browser des Benutzers.
+
+'''Trouble-Shooting:''' Manchmal kommt es vor, daß ''Tar'' (oder auch andere Shell-Befehle) zusätzlich zur eigentlichen Ausgabe noch Meldungen (Fehler, Informationen, Warnungen) in einen anderen Ausgabekanal, die sog. Fehlerausgabe, schreiben. Da ohne weitere Vorkehrungen bei der Rudi-Shell - wie bei anderen interaktiven Shells auch - Standard- und Fehlerausgabe gebündelt werden, landen evtl. Informationen im !Download, die wir dort gar nicht haben wollen. Im Falle unseres ''Tar''-Archivs wird dadurch die Datei "verunreinigt" und ist nicht mehr entpackbar. Um das zu diagnostizieren, lassen wir uns das Tar-Archiv einfach kurzerhand auf die Konsole ausgeben (!Download-Schalter deaktivieren). Das sieht dann so aus:
+
+[[Screenshot(42,description=mit Fehlermeldungen verunreinigtes Tar-Archiv)]]
+
+Es gibt im Prinzip zwei Möglichkeiten, solche Verunreinigungen zu umgehen: Erstens kann man die Shell explizit anweisen, die Fehlerausgabe umzuleiten in eine Datei, auf eine andere Konsole oder ins Nirgendwo ({{{/dev/null}}}, das beliebte Faß ohne Boden), wie im folgenden Beispiel:
+
+[[Screenshot(43)]]
+
+Die zweite (etwas unsicherere, da nicht immer vorhersehbare) Möglichkeit besteht schlicht in der Vermeidung von Fehlerausgaben, indem man vorher die Syntax von Befehlen, notwendige Berechtigungen etc. prüft. In unserem Fall kann man die Meldung vermeiden, indem man vorher in das passende Basisverzeichnis wechselt, aus dem heraus ''Tar'' operieren soll:
+
+[[Screenshot(44)]]
+
+== !Download langer Konsolenausgabe ==
+
+Lange Konsolenausgaben eines Skripts werden von Rudi auf knapp 64 KB gekürzt, weil je nach Browser das Umkopieren mehrerer hundert KB langer Ausgaben aus dem unsichtbaren IFrame, worin die Original-Ausgabe zunächst landet, den Browser extrem ausbremst. Außerdem ist solch ein langer Text im Browser nur schlecht zu analysieren, das sollte man lieber offline in einem leistungsfähigen Editor mit guten Suchfunktionen machen. Ein Beispiel für eine lange Ausgabe ist z.B. {{{ls -leAR /}}}, also die detaillierte Anzeige sämtlicher Dateien mit vollem Datum usw, rekursiv beginnend im Wurzelverzeichnis.
+
+Es gibt browserbedingte Unterschiede, die beeinflussen, wieviel von diesen 64 KB tatsächlich beim Umkopieren im Hauptfenster ankommen. Der ''Internet Explorer'' schneidet gar nichts ab (er würde auch 1 MB umkopieren und daraufhin, warum auch immer, für eine Weile blockieren). Opera kappt den Text bei 32 KB, Firefox bereits bei 8 KB. Nun sind 8 KB nicht sehr viel, aber in den meisten Fällen ausreichend für normale Befehle. Im Hinblick auf die Historie, welche ja u.U. sehr viele Befehle mit zugehörigen Ausgaben speichern muß, ist die Begrenzung auch gesund.
+
+Wer nun also eine lange Konsolenausgabe in voller Länge genießen will, aktiviert einfach den !Download-Schalter und lädt sich das Ganze als Textdatei herunter:
+
+[[Screenshot(45)]]
+
+== Datei-Upload ==
+
+Das Ausführen von Befehlen und das Herunterladen von Dateien und Konsolen-Ausgaben sind bereits mächtige Werkzeuge, aber richtig Spaß macht die Arbeit mit der Rudi-Shell erst durch die Möglichkeit, beliebige Dateien hochzuladen. Das geht ganz einfach:
+
+[[Screenshot(46)]]
+
+''Für die Techniker: Es handelt sich um einen normalen Form-based Upload gemäß [http://www.ietf.org/rfc/rfc1867.txt RFC 1867].''
+
+Nun kann beim Upload auch mal etwas schief gehen. Dann benötigt man eine entsprechende, einigermaßen informative Rückmeldung des Systems. Auch hierfür ist gesorgt - das sieht dann so aus:
+
+[[Screenshot(47)]]
+
+

@@ -1,0 +1,89 @@
+= Freetz Patches =
+ * Die Größenabgaben (Platzeinsparung im komprimierten Dateisystem) sind nur ungefähre Richtwerte und können von Version zu Version variieren.
+ * Es werden nur Patches angezeigt die für die ausgewählt !FritzBox nutzbar sind
+ * Die Auswirkungen eines Patches sind nicht unbedingt im AVM-Webinterface sichtbar
+
+||||||||||||||||||||||||= = Web menu patches = =||
+|||||||||||||||||||||||| Freetz '''Funktionserweiterung-Patches''' dienen dazu, das Verhalten der Fritz!Box zu verbessern, indem einige Funktionen der Original-Firmware verbessert oder erweitert werden. Neben diesem Überblick über die '''Patches''' existiert noch [http://www.ip-phone-forum.de/showthread.php?t=180289 ein Thread in IPPF], wo jeder seine Lieblingskonfiguration posten kann. Diese "Lieblingskonfigurationen" geben einen guten Richtwert dazu, welche Patches in welcher Konfiguration sinnvoll und zu empfehlen sind. Denn auch hier gilt auf keinen Fall die Regel "je mehr desto besser". ||
+|| '''Name''' || '''Beschreibung''' || '''Größe''' ||
+|| [wiki:patches/VCC Patch VCC] || Es kann der 2. VCC bearbeitet werden || - ||
+|| [wiki:patches/ATA Patch ATA] || Es kann die ATA Konfiguration bearbeitet werden || - ||
+|| [wiki:patches/enum Patch enum] || Fügt dem WebIF Konfigurationsseiten für ENum hinzu || - ||
+|| [wiki:patches/dsl_expert DSL settings] || Es können mehr DSL Optionen bearbeitet werden || - ||
+|| [wiki:patches/regext external SIP] || Es können externe SIP verbindungen konfiguriert werden || - ||
+|| [wiki:patches/alarmclock Patch 3rd alarm-clock] || Fügt einen 3. Wecker zum AVM WebIF hinzu || - ||
+|| [wiki:patches/signed Patch webmenu signed message] || Entfernt den Hinweis auf "nicht unterstützte Modifikationen" aus dem AVM WebIF || - ||
+||||||||||||||||||||||||= = USB patches = =||
+|||||||||||||||||||||||| Patches die die Funktionalität von USB Geräten beeinflussen ||
+|| '''Name''' || '''Beschreibung''' || '''Größe''' ||
+|| ~~[wiki:patches/usb_names Patch USB storage names]~~ || Vergibt einheitliche Namen für USB-Speichermedien und verbessert deutlich die Unterstützung der USB-Speichermedien || - ||
+|| ~~[wiki:patches/exec_autorun Execute autorun]~~ || Ermöglicht autorun.sh nach Mounten eines USB Speichermediums auszuführen || - ||
+|| [wiki:patches/freetzmount FREETZMOUNT] || Vergibt einheitliche Namen für USB-Speichermedien, verbessert deutlich die Unterstützung der USB-Speichermedien, ermöglicht mounten nach LABEL. FREETZMOUNT ist der Nachfolger vom USB-Storage-Patch und beinhaltet auch autorun/autoend patch. Nach dem Umstieg zu FREETZMOUNT wird es empfohlen das Paket fstyp manuell abzuwählen. || - ||
+|| [wiki:patches/maxdevcount Raise the count of connectable usb devices] || Erhöht die Anzahl maximal anschließbarer USB-Devices auf 9 || - ||
+|| [wiki:patches/multpile_printers Multiple Printers] || Ermöglicht die Nutzung mehrere Drucker an der Fritz!Box || - ||
+|| [wiki:patches/modify_umtsd Modify UMTSD] || Der umtsd wird nur für bekannte Modems gestartet und blockiert so /dev/ttyUSB? nicht. || - ||
+|| [wiki:patches/custom_udev_rules Custom UDEV rules] || Es können eigene Regeln die UDEV auswertet hinterlegt werden. || - ||
+||||||||||||||||||||||||= = Removal patches = =||
+|||||||||||||||||||||||| Freetz '''Remove-Patches''' (auch Removes genannt) dienen dazu, Platz für andere [wiki:packages Pakete] zu schaffen, indem nicht benötigte Bestandteile der Original-Firmware entfernt werden. Neben diesem Überblick über die '''Remove-Patches''' existiert noch [http://www.ip-phone-forum.de/showthread.php?t=180289 ein Thread in IPPF], wo jeder seine Lieblingskonfiguration posten kann. Diese "Lieblingskonfigurationen" geben einen guten Richtwert dazu, welche Removes in welcher Konfiguration sinnvoll und zu empfehlen sind. Denn auch hier gilt auf keinen Fall die Regel "je mehr desto besser". Wenn ein Freetz-Package eine Funktionalität ersetzt kann automatisch ein Remove-Patch ausgewählt werden ||
+|| '''Name''' || '''Beschreibung''' || '''Größe''' ||
+|| [wiki:patches/remove_annex_firmware Remove Annex X firmware file] || Die entsprechende Annex Firmware wird entfernt. Es wird immer nur eine benötigt, im ATA-Modus (z.B. Kabelanschlus) keine. || je 335-745kB ||
+|| [wiki:patches/remove_piglet Remove v1/v2 piglet file(s)] ||Es wird nur eine Version abhängig von der Hardversion benötigt. || ? ||
+|| [wiki:patches/remove_assistant Remove assistant] || Entfernt den Einrichtungs-Assistenten. Achtung! Dadurch ist die automatische Einrichtung z.B. mit 1und1-Startcode nicht mehr möglich. || ca. 50kB ||
+|| [wiki:patches/remove_aura_usb Remove aura usb] || Entfernt die Unterstützung für den AVM-USB-Fernanschluss (hierfür hat FREETZ das Paket [wiki:packages/usbip USB-IP] zu bieten) || ca. 16kB ||
+|| [wiki:patches/remove_usb_module Remove avalanche_usb.ko] || ??? || ca. 60kB ||
+|| [wiki:patches/remove_nas Remove AVM NAS Webinterface] ||Das AVM-NAS Webinterface wird entfernt und kann nicht mehr genutzt werden. Entfernt auch den AVM-Media-Server (s. u.) || ca. 390kB ||
+|| [wiki:patches/remove_vpn Remove AVM vpn] || Entfernt AVM-VPN-Server (FREETZ bietet OpenVPN als Alternative) || ca. 123kB ||
+|| [wiki:patches/remove_x Remove AVM web server] ||Der Webserver für das AVM-Webinterface wird entfernt und durch httpd (immer in Freetz enthalten) ersetzt. (Zusammen mit UPnP kann auch die libwebsrv.so library entfernt werden.) || 5(+38)kB ||
+|| [wiki:patches/remove_branding Remove branding] ||Es können verschieden Brandings entfernt werden. Das auf der Box aktive Branding darf nicht entfernt werden!||? ||
+|| [wiki:patches/remove_capi Remove CapiOverTCP] || Entfernt CapiOverTCP-Schnittstelle der Fritz!Box. Achtung! CapiOverTCP wird von mehreren nützlichen PC-Programmen für den Zugriff auf die Box benutzt! Fritz!Fax nutzt z.B. diese Schnittstelle, um Faxe von PC aus über die Fritz!Box zu verschicken || ca. 10kB ||
+|| [wiki:patches/remove_chronyd Remove chronyd] ||Der chronyd zur Zeitsynchronisation wird entfernt. Dessen Aufgabe übernimmt dann multid. || 165-215kB ||
+|| [wiki:patches/remove_cdrom_iso Remove cdrom.iso] ||Die cdrom.iso wird entfernt. || 130-265kB ||
+|| [wiki:patches/remove_dect Remove DECT files] ||Es können keine DECT Geräte mehr verbunden werden. || 20-360kB ||
+|| [wiki:patches/remove_dsld Remove dsld] || Entfernt den DSL-daemon - die Box kann dann nur noch als IP-Client verwendet werden. Achtung! Ohne dsld kann die Box keine DSL-Verbindung aufbauen und auch "Internet über LAN" geht nicht mehr, weil der dsld auch Firewall und NAT übernimmt. || 115-245kB ||
+|| [wiki:patches/remove_showdsldstat Remove showdsldstat] || Entfernt showdsldstat, ein Werkzeug mit dem der Status der Internetverbindung (CPMAC-Modus, Verbindungszeit, DNS-Server und Router), IPv6, VoIP und TR069 angezeigt werden kann. || 10-30kB ||
+|| [wiki:patches/remove_dtrace Remove dtrace] || Entfernt trace Debugging-Utility für den D-Kanal von ISDN || 85-225kB ||
+|| [wiki:patches/remove_ftpd Remove ftpd] || Entfernt den AVM-FTP-Server (kann durch die Freetz-Pakete vsftpd oder bftpd ersetzt werden) || ca. 30kB ||
+|| [wiki:patches/remove_help Remove help] || Entfernt die Online-Hilfe zum AVM-WebIF || ca. 20kB ||
+|| [wiki:patches/remove_jffs2 Remove jffs2.ko] || Entfernt das Kernelmodul für [http://en.wikipedia.org/wiki/JFFS2 JFFS2]. Benötigt zur Nutzung des optionalen, internen Speichers ''/data'', wo z.B. Anrufbeantworterdaten und AVM-Plugins (7270_v1) gespeichert werden, sofern die Firmware genügend Platz im Flash-Speicher frei gelassen hat und kein USB-Speicher angeschlossen ist. || 144-192kB ||
+|| [wiki:patches/remove_lsof Remove lsof] ||Entfernt lsof. || ca. 150kB ||
+|| [wiki:patches/remove_mediasrv Remove mediasrv] || Entfernt den AVM-Media-Server || ca. 40kB ||
+|| [wiki:patches/remove_minid Remove minid] || Entfernt die Unterstützung für Fritz!Mini || ca. 215kB ||
+|| [wiki:patches/remove_myfritz Remove MyFritz] || Entfernt das MyFritz Web Interface (AVM's DynDNS) || ca. 1.1MB ||
+|| [wiki:patches/remove_ntfs Remove NTFS support] ||AVM's NTFS Unterstützung wird entfernt. || 118-180kB ||
+|| [wiki:patches/remove_printserv Remove printserv] ||Die Fritzbox kann kein Druckserver mehr sein. || 15-20 kB ||
+|| [wiki:patches/remove_runclock Remove run_clock] ||Der Betriebsstundenzähler wird entfernt. || 10-15kB ||
+|| [wiki:patches/remove_samba Remove Samba] ||Entfernt den AVM-Samba-Server || 300-600kB ||
+|| [wiki:patches/remove_strace Remove strace] ||Entfernt strace. || ca. 440kB ||
+|| [wiki:patches/remove_support Remove the support-files] ||Entfernt die support-files, welche man über die URL http://fritz.box/html/support.html generieren und abspeichern kann. || ca. 8kB ||
+|| [wiki:patches/remove_tr069 Remove tr069 stuff] || Entfernt tr069 (Remote-Konfiguration durch den Provider). Ohne tr069 ist keine Einrichtung mit 1und1-Startcode möglich. || ca. 70kB ||
+|| [wiki:patches/remove_umtsd Remove UMTS support] ||Danach kann die FritzBox keine UMTS Verbindung mehr aufbauen. || ca. 12kB ||
+|| [wiki:patches/remove_upnp Remove UPnP daemon] ||Entfernt den UPnP-daemon. Achtung! Ohne UPnP-daemon ist keine Einrichtung von Fritz!Fax möglich. || ca. 10kB ||
+|| [wiki:patches/remove_usermand Remove usermand] || Entfernt die ausschließlich für die Kindersicherung benötigten Dateien (usermand, userman.ko). [[BR]]Für die FBox '''WLAN 3170''' bitte diesen Patch nicht auswählen''', ansonsten gibt es Dauerreboot.''' || ca. 40kB ||
+|| [wiki:patches/remove_avm_e2fsprogs Remove AVM e2fsprogs binaries] ||Entfernt blkid, fsck, mkfs. || ca. 220kB ||
+|| [wiki:patches/remove_voipd Remove VoIP files] ||Entfernt Daten für VoIP-Betrieb. || ca. 250kB ||
+|| [wiki:patches/remove_voip_isdn Remove VoIP & ISDN files] ||Entfernt vollständig neben dem VoIP-daemon noch die Telefoniefunktionalität der Box. Achtung! Damit funktioniert die Box dann '''nicht''' mehr als Telefonanlage. || ? ||
+|| [wiki:patches/remove_webdav Remove webdav] ||Entfernt die Dateien die für Webdav benötigt werden. || 10-510kB ||
+|| [wiki:patches/reomove_wlan Remove WLAN files] ||Entfernt Daten für WLAN-Betrieb. || ca. 700kB ||
+||||||||||||||||||||||||= = Replacement patches = =||
+|| '''Name''' || '''Beschreibung''' || '''Größe''' ||
+|| [wiki:patches/replace_ssl_libs Replace AVM SSL Libs] ||Die SSL Libs von AVM werden ersetzt. || ca. 400kB ||
+|| [wiki:patches/replace_dtrace Replace dtrace] ||Statt dtrace wird ein eigenes [wiki:packages/mod#dtrace Script] (per Telefoncode) ausgeführt. || 85-225kB ||
+|| [wiki:patches/replace_onlinechanged Replace onlinechanged] ||Onlinechanged wird durch eigenen IP-Watchdog angestoßen (geht auch auf IP-Clients). || - ||
+||||||||||||||||||||||||= = Additional patches = =||
+|| '''Name''' || '''Beschreibung''' || '''Größe''' ||
+|| [wiki:patches/add_annex_firmware Add Annex firmware file] ||Fügt eine Annex firmware ins Image ein. || ? ||
+|| [wiki:patches/enforce_urloader_settings Enforce urloader settings] ||Ändert das Environment des Urloaders. || - ||
+||||||||||||||||||||||||= = Misc patches = =||
+|| '''Name''' || '''Beschreibung''' || '''Größe''' ||
+|| [wiki:patches/type_speedport_w920v_led_module Change LED semantics to W920V] ||Passt die LEDs der Beschriftung vom Speedport an. || - ||
+|| [wiki:patches/disable_serial_console Disable serial console] ||Deaktiviert die Konsole am internen seriellen Port. || - ||
+||||||||||||||||||||||||= = AVM daemons = =||
+|| '''Name''' || '''Beschreibung''' || '''Größe''' ||
+|| [wiki:patches/avmdaemon_disable_igd Disable igd/upnp] ||Es werden immer die Parameter gesetzt um dsld's IGD & multid's UPNP-device zu deaktivieren. [wiki:patches/remove_upnp Remove UPnP daemon] nutzt diese Option. || - ||
+|| [wiki:patches/avmdaemon_disable_ntp Disable ntp client] ||Die Sytemzeit wird nicht von multid gesetzt. Ausgewählt wenn chrony vorhanden ist oder ein eigener Zeitserver wie zB OpenNTPd. || - ||
+|| [wiki:patches/avmdaemon_disable_igmp Disable IGMP] ||Der IGMP-Proxy von multid wird deaktiviert. || - ||
+|| [wiki:patches/avmdaemon_disable_tr069 Disable tr069] ||Das tr069discover von multid wird abgeschaltet. Wird vom Patch [wiki:patches/remove_tr069 Remove tr069 stuff] automatisch ausgewählt. || - ||
+|| [wiki:patches/avmdaemon_disable_dns Disable DNS] ||Der DNS-Port wird (mit Hilfe von libmultid) nicht von multid belegt. So kann ein anderer DNS-Server genutzt werden, das Dynamic-DNS Update sowie die Zeitsysnchronisation funktionieren weiterhin. || - ||
+||||||||||||||||||||||||= = Invisible? patches = =||
+|| '''Name''' || '''Beschreibung''' || '''Größe''' ||
+|| [wiki:patches/onlinechanged Onlinechanged] || Ermöglicht das Ausführen von Skripten bei einer Änderung des Online-Statuses der Box || - ||

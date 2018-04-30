@@ -1,0 +1,354 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+  
+
+
+  <head>
+    <title>
+      help/howtos/common/newbie.en – Freetz
+    </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!--[if IE]><script type="text/javascript">
+      if (/^#__msie303:/.test(window.location.hash))
+        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
+    </script><![endif]-->
+        <link rel="search" href="http://freetz.org/search" />
+        <link rel="help" href="../../../TracGuide.html" />
+        <link rel="alternate" href="newbie.en%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
+        <link rel="up" href="../common.html" title="Übergeordnete Wiki-Seite anzeigen" />
+        <link rel="start" href="http://freetz.org/wiki" />
+        <link rel="stylesheet" href="../../../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
+        <link rel="shortcut icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+      <link type="application/opensearchdescription+xml" rel="search" href="http://freetz.org/search/opensearch" title="Freetz durchsuchen" />
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/jquery.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/babel.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/messages/de.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/trac.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/search.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/folding.js"></script>
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
+        $("#content").find(".wikianchor").each(function() {
+          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
+        });
+        $(".foldable").enableFolding(true, true);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://freetz.org/wiki"><img src="../../../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
+      </div>
+      <form id="search" action="http://freetz.org/search" method="get">
+        <div>
+          <label for="proj-search">Suche:</label>
+          <input type="text" id="proj-search" name="q" size="18" value="" />
+          <input type="submit" value="Suche" />
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="http://freetz.org/login">Anmelden</a></li><li><a href="http://freetz.org/prefs">Einstellungen</a></li><li><a href="../../../TracGuide.html">Hilfe/Anleitung</a></li><li><a href="http://freetz.org/about">Über Trac</a></li><li><a href="http://freetz.org/notification" title="Wiki Pages Change Notifications">My Notifications</a></li><li><a href="http://freetz.org/register">Registrieren</a></li><li class="last"><a href="../../../Impressum.html">Impressum</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first active"><a href="http://freetz.org/wiki">Wiki</a></li><li><a href="http://freetz.org/timeline">Journal</a></li><li><a href="http://freetz.org/roadmap">Projektplan</a></li><li><a href="http://freetz.org/browser">Quellen durchsehen</a></li><li><a href="http://freetz.org/report">Tickets anzeigen</a></li><li><a href="http://freetz.org/search">Suche</a></li><li><a href="http://freetz.org/tags">Tags</a></li><li><a href="http://freetz.org/downloads">Downloads</a></li><li class="last"><a href="http://freetz.org/screenshots">Bildschirmfotos</a></li>
+    </ul>
+  </div>
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=""><a class="" href="newbie..html" title="">German</a></li><li class=" active last"><a class="selected" href="newbie.en.html" title="selected and displaying language">English</a></li></ul></div><div id="main">
+      <div id="pagepath" class="noprint">
+  <a class="pathentry first" title="Zeige WikiStart an" href="http://freetz.org/wiki">Wiki:</a><a class="pathentry" href="../../../help.html" title="Zeige help an">help</a><span class="pathentry sep">/</span><a class="pathentry" href="../../howtos.html" title="Zeige help/howtos an">howtos</a><span class="pathentry sep">/</span><a class="pathentry" href="../common.html" title="Zeige help/howtos/common an">common</a><span class="pathentry sep">/</span><a class="pathentry" href="newbie.en.html" title="Zeige help/howtos/common/newbie.en an">newbie.en</a>
+</div>
+      <div id="ctxtnav" class="nav">
+        <h2>Kontext-Navigation</h2>
+        <ul>
+          <li class="first"><a href="../common.html">Aufwärts</a></li><li><a href="../../../WikiStart.html">Startseite</a></li><li><a href="../../../TitleIndex.html">Inhaltsverzeichnis</a></li><li><a href="newbie.en%3Faction=history.html">Änderungshistorie</a></li><li class="last"><a href="http://freetz.org/notification/help/howtos/common/newbie" title="Watch Page">Watch Page</a></li>
+        </ul>
+        <hr />
+      </div>
+    <div id="content" class="wiki">
+      <div class="wikipage searchable">
+        
+          <div id="wikipage" class="trac-content"><h1 id="Freetzforbeginners">Freetz for beginners</h1>
+<p>
+</p><div class="wiki-toc"><h4>Table of contents</h4>
+    <ol>
+      <li>
+        <a href="newbie.html#Somequestions">Some questions</a>
+        <ol>
+          <li>
+            <a href="newbie.html#WhatisFreetz">What is Freetz?</a>
+          </li>
+          <li>
+            <a href="newbie.html#WhatdoIneedtocreateaFreetzimage">What do I need to create a Freetz image?</a>
+          </li>
+          <li>
+            <a href="newbie.html#WhatshouldItakeintoconsideration">What should I take into consideration?</a>
+          </li>
+          <li>
+            <a href="newbie.html#WhatsmyfirstFreetz-imagesupposedtodo">What's my first Freetz-image supposed to do?</a>
+          </li>
+          <li>
+            <a href="newbie.html#WhyshouldIstartwithaminimalimage">Why should I start with a minimal image?</a>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <a href="newbie.html#DoIneedtoadjustmycomputerinanywaytocreateanimage">Do I need to adjust my computer in any way to create an image?</a>
+      </li>
+      <li>
+        <a href="newbie.html#HowdoIcreatemyfirstminimalimage">How do I create my first minimal image</a>
+        <ol>
+          <li>
+            <a href="newbie.html#StartingFreetz">Starting Freetz</a>
+          </li>
+          <li>
+            <a href="newbie.html#StartingPuTTY">Starting PuTTY</a>
+          </li>
+          <li>
+            <a href="newbie.html#Settingsinmenuconfig">Settings in menuconfig</a>
+          </li>
+          <li>
+            <a href="newbie.html#Copyingtheimagetoyourcomputer">Copying the image to your computer</a>
+          </li>
+          <li>
+            <a href="newbie.html#ShutdownFreetz-Linux">Shutdown Freetz-Linux</a>
+          </li>
+        </ol>
+      </li>
+      <li>
+        <a href="newbie.html#Theflashingprocess">The flashing process</a>
+      </li>
+      <li>
+        <a href="newbie.html#Links">Links</a>
+      </li>
+    </ol>
+</div><p><br />
+</p>
+<h2 id="Somequestions">Some questions</h2>
+<h3 id="WhatisFreetz">What is Freetz?</h3>
+<p>
+A short description and a brief historical overview of Freetz can be found <a class="wiki" href="../../../FAQ.html#WasistFreetz">here</a>.
+<br />
+<br />
+</p>
+<h3 id="WhatdoIneedtocreateaFreetzimage">What do I need to create a Freetz image?</h3>
+<p>
+1.) The newest recovery-image (.exe) for your box. It's very important that you have an up to date <a class="ext-link" href="ftp://ftp.avm.de/fritz.box"><span class="icon">​</span>recovery image</a> at hand. (<a class="ext-link" href="ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7170/x_misc/"><span class="icon">​</span>7170</a>, <a class="ext-link" href="ftp://ftp.avm.de/fritz.box/fritzbox.fon_wlan_7270/x_misc/"><span class="icon">​</span>7270</a>).<br />
+After a failed update you may not have any more internet access to download a recovery image.<br /> 
+2a.) A native Linux operating system, e.g. <a class="ext-link" href="http://www.ubuntu.com/"><span class="icon">​</span>Ubuntu</a> or <br />
+2b.) for Windows users we recommend to install <a class="ext-link" href="https://www.virtualbox.org/wiki/Downloads/"><span class="icon">​</span>VirtualBox</a> and to run <a class="ext-link" href="http://www.ip-phone-forum.de/showpost.php?p=1400234&amp;postcount=1"><span class="icon">​</span>Freetz-Linux</a> as virtual machine.<br />
+3.) A SSH client <a class="ext-link" href="http://the.earth.li/~sgtatham/putty/latest/x86/putty.exe"><span class="icon">​</span>PuTTY</a> (Can be used to connect to Freetz-Linux via ssh or telnet).
+<br />
+<br />
+</p>
+<h3 id="WhatshouldItakeintoconsideration">What should I take into consideration?</h3>
+<p>
+Remember that your box is primarily a router with a telephone switchboard. If you modify the firmware it might happen that the main functions of the box are affected by that. Usually this shouldn't happen, but it might cause your box to stall and unexpectedly reboot. When selecting packages you should follow this rule: If you can't tell someone more than two sentences about a package, it's not supposed to be on your box. Be careful with the patches. You won't need them all of them and not in every possible combination.<br /> 
+The use of "replace kernel", other comprehensive implementations or own modules is not recommended for beginners. Not everything that seems to be cool is really cool.<br /> 
+Recently there have been many issues with packages that use OpenSSL libraries. The reason is the incompatibility between the AVM and the Freetz version of this library. So please avoid using the SSL option in any package (vsftp, dropbear, curl) for your first build or if they require this option (OpenVPN, stunnel) avoid them in any case. When you have more experience you can use OpenSSL by embedding them into the binaries (compile them static) or use even more advanced solutions. But please, don't do this in the very beginning! You will surely fail.
+<br />
+<br />
+</p>
+<h3 id="WhatsmyfirstFreetz-imagesupposedtodo">What's my first Freetz-image supposed to do?</h3>
+<p>
+You can ask yourself the following question: <strong><em>"What do I want to achieve by using Freetz"</em></strong> 
+or 
+<strong><em>"What function does my box lack and can I add it through Freetz?"</em></strong> <br /> 
+Freetz itself is no modification but a development environment which is used to to modify the box's firmware modularly. The list of packages reflects the current users' needs. Everyone can build his 
+own custom firmware from the existing packages, add his own or omit unneeded ones. This way you can decide to a certain degree which functions your FritzBox will have.
+<br /> <br /> First of all you should find out which packages are useful for you: <a class="wiki" href="../../../packages.html">List of available packages</a> and <a class="wiki" href="../../../packages.html#CGI-Erweiterungen">add-ons</a>
+<br />
+<br />
+</p>
+<h3 id="WhyshouldIstartwithaminimalimage">Why should I start with a minimal image?</h3>
+<p>
+To find out how Freetz works and what the menu looks like after flashing the firmware for the first time, we recommend beginners a to create a minimal configuration and flash that image. Support 
+requests regarding Freetz and it's packages will only be answered after you have been able to upload a minimal image to your box.
+<br />
+<br />
+</p>
+<h2 id="DoIneedtoadjustmycomputerinanywaytocreateanimage">Do I need to adjust my computer in any way to create an image?</h2>
+<p>
+You can find instructions for you computer's settings <a class="wiki" href="newbie/other.html#Wiemu%C3%9FichmeinenPCeinstellendamiticheinImagebauenkann">HERE</a>
+</p>
+<h2 id="HowdoIcreatemyfirstminimalimage">How do I create my first minimal image</h2>
+<p>
+Let's get this done even though you probably want to add more packages later.
+<br />
+But first we need to check a few things.
+</p>
+<ul><li>Which model do I have (7141, 7270, etc.)?
+</li><li>How much RAM does my model have (16, 32 oder 64 MB)?
+</li><li><a class="wiki" href="../../fritz_faq.html#WievielFlashhatmeineFritzBox7270">How big is the flash memory inside my box? (4, 8 or 16 MB)</a>?
+</li><li>Do I have a working LAN-cable? If the flashing process fails the only way to recover your box is via LAN-cable (not WLAN).
+</li><li>Do I have a backup of my current settings? (Settings &rarr; System &rarr; Backup settings)
+</li><li>Do I have the right recover image?. <a class="ext-link" href="ftp://ftp.avm.de/fritz.box/"><span class="icon">​</span>AVM FTP server</a> &rarr; Box &rarr; x_misc &rarr; english &rarr; &hellip;recoverimage&hellip;..exe (you need Windows execute)
+</li><li>Do I need how to run the recovery file? If not, this link might help <a class="ext-link" href="http://www.avm.de/de/Service/FAQs/FAQ_Sammlung/12798.php3"><span class="icon">​</span>Link to AVM</a> or this <a class="ext-link" href="http://www.router-faq.de/fb/recover/firmware-recover.pdf"><span class="icon">​</span>Offline PDF</a> from Router-FAQ.
+</li><li>My Linux is configurated correctly and all <a class="wiki" href="install.html#NotwendigePakete">needed packages for Freetz </a> are installed?
+</li><li>Is my current firmware supported by Freetz? <a class="wiki" href="../../../FAQ.html#WelcheBoxenundwelcheFirmwareswerdendurchFreetzunterst%C3%BCtzt:">'Supported devices and firmwares'</a><br />
+</li></ul><p>
+Now we will create the minimal image:<br />
+</p>
+<ul><li>These instructions are written for those that want to modify their Fritzbox for the first time by using Freetz.<br />
+</li><li>We can not guarantee for the correctness of our instructions, nor do we take responsibility for any damages caused to your device! <br />
+</li><li>By using Freetz, the functional range of your AVM FritzBox can be expanded.<br />
+</li><li>Freetz is based on Linux and can be used on a Linux machine or run in a so-called virtual machine. As most current users don't own a Linux machine we will concentrate on the virtual machine.<br />
+</li><li>Freetz creates a new firmware image which can be upload to the box via the offical AVM interface. 
+</li></ul><p>
+You decide which packages will be included, the number is only limited by your routers available memory.
+</p>
+<h3 id="StartingFreetz">Starting Freetz</h3>
+<p>
+Now we start VirtualBox and select the correspondingnd VM-image. Freetz-Linux will then start and you can login using: <strong>freetz</strong> and <strong>freetz</strong> as username and password followed by the enter key each time.  
+<br />  
+<span class="thumbnail-left"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/226?format=raw" title=""><img src="http://freetz.org/screenshots/226?width=409&amp;format=raw&amp;height=325" alt="" /></a><span class="description" style="width: 411px;"></span></span></span>
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/227?format=raw" title=""><img src="http://freetz.org/screenshots/227?width=409&amp;format=raw&amp;height=325" alt="" /></a><span class="description" style="width: 411px;"></span></span></span>
+The next step is to find out which ip is assigned to our Freetz-Linux since we need it to get access via putty in the next step. To check, type in: <strong>ifconfig</strong>. This should bring up the following 
+text.
+</p>
+<pre class="wiki">eth0      Link encap:Ethernet  HWaddr 00:11:22:33:44:55
+          inet addr:192.168.178.30  Bcast:192.168.178.255  Mask:255.255.255.0
+          UP BROADCAST NOTRAILERS RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:0 (0 Mb)  TX bytes:0 (0 Mb)
+</pre><p>
+As you can see, the virtual machine's ip address is <strong>192.168.178.30</strong>. The ip address can differ from system to system, that depends on the ip range of your system. If no ip address is shown at all 
+you have to check your computers or virtual machine's settings and try again.
+<br />  
+</p>
+<p>
+<strong>IMPORTANT:</strong> you can switch between the VM and Windows by using <strong>Right CTRL</strong><br />
+We will use this right away to start <a class="ext-link" href="http://the.earth.li/~sgtatham/putty/latest/x86/putty.exe"><span class="icon">​</span>PuTTy</a>
+<br />
+</p>
+<h3 id="StartingPuTTY">Starting PuTTY</h3>
+<p>
+Starting PuTTY.EXE on a Windows computer. You should see the following picture where you enter the VM's (Freetz-Linux's) ip address and confirm by clicking on <strong>Open</strong>. <br />
+<span class="thumbnail-left"><span class="aux" style="width: 102px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/148?format=raw" title=""><img src="http://freetz.org/screenshots/148?width=100&amp;format=raw&amp;height=100" alt="" /></a><span class="description" style="width: 102px;"></span></span></span>
+<span class="thumbnail-left"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/149?format=raw" title=""><img src="http://freetz.org/screenshots/149?width=409&amp;format=raw&amp;height=409" alt="" /></a><span class="description" style="width: 411px;"></span></span></span>
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/150?format=raw" title=""><img src="http://freetz.org/screenshots/150?width=409&amp;format=raw&amp;height=409" alt="" /></a><span class="description" style="width: 411px;"></span></span></span>
+The access data for PuTTy are login: <strong>freetz</strong> password: <strong>freetz</strong><br />
+Please be aware that the password is not shown while typing. After connecting to the Freetz-VM you should update it by entering the following commands:<br />
+</p>
+<blockquote>
+<p>
+<strong>sudo apt-get update</strong>  (update the package lists)<br />
+<strong>sudo apt-get upgrade -d</strong> (download updates)<br />
+<strong>sudo apt-get upgrade -y</strong> (install updates)<br />
+</p>
+</blockquote>
+<p>
+Confirm each command by entering the administrator password <strong>freetz</strong>. (If there should be a special inquiry for a certain update, activate the system advisors packages and activate by hitting ok).<br /> 
+<br /> 
+Next, enter the following command: <br />
+</p>
+<blockquote>
+<p>
+<strong>svn checkout  <a class="ext-link" href="http://svn.freetz.org/branches/freetz-stable-2.0"><span class="icon">​</span>http://svn.freetz.org/branches/freetz-stable-2.0</a></strong> <br />  
+</p>
+</blockquote>
+<p>
+This will download the newest stable Freetz source code (in this case: version 2.0) from the subversion repository. Here you can find out if a newer version has been released: 
+<a class="ext-link" href="http://svn.freetz.org/tags/"><span class="icon">​</span>http://svn.freetz.org/tags/</a>. After the download has finished you will see this message: <strong>Checked out revision xxxx</strong>, e.g. xxxx=6526. 
+Please look into FIRMWARES file for supported firmwares. The release version can be out of date. <br />
+Change directory by entering <strong>cd freetz-stable</strong> into your Freetz directory and enter <strong>make menuconfig</strong>. 
+</p>
+<h3 id="Settingsinmenuconfig">Settings in menuconfig</h3>
+<p>
+After entering the previous command you should the the following screen:<br /> 
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/154?format=raw" title="Mainpage "><img src="http://freetz.org/screenshots/154?width=409&amp;format=raw&amp;height=325" alt="Mainpage " /></a><span class="description" style="width: 411px;">Mainpage</span></span></span>
+This is the acutal Freetz interface where you select your router. For this tutorial we selected the 7270-V3. After selecting the router type, exit menuconfig by selecting exit and hitting enter and 
+confirm the question with <strong>Yes</strong>. Then enter <strong>make</strong> and hit enter. Now you should see this:
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/156?format=raw" title=""><img src="http://freetz.org/screenshots/156?width=409&amp;format=raw&amp;height=325" alt="" /></a><span class="description" style="width: 411px;"></span></span></span>
+The creation process will start. For the first time it might take a very long time depending on your computer and internet connection since all inital packages have to be downloaded. Once this is done 
+the creation process will be a lot faster if you make only small modifications. There have been many warnings during the process but in the end there will be a message that an image has been created. 
+The corresponding image will be created in the subfolder <strong>images</strong> of your Freetz directory. This will be the final message:
+<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/157?format=raw" title=""><img src="http://freetz.org/screenshots/157?width=409&amp;format=raw&amp;height=325" alt="" /></a><span class="description" style="width: 411px;"></span></span></span>
+Now we have to copy the image to your computer.
+</p>
+<h3 id="Copyingtheimagetoyourcomputer">Copying the image to your computer</h3>
+<p>
+More informations can be found <a class="wiki" href="newbie/other.html#ImageaufdenPCkopieren1">HERE</a>
+</p>
+<h3 id="ShutdownFreetz-Linux">Shutdown Freetz-Linux</h3>
+<p>
+You can now shot down your Ubuntu-Linux by typing: <strong>sudo shutdown -h now</strong>.This command needs to be verified by typing in the administartor password<strong>freetz</strong>. 
+</p>
+<h2 id="Theflashingprocess">The flashing process</h2>
+<p>
+<span class="thumbnail-right"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/78?format=raw" title=""><img src="http://freetz.org/screenshots/78?width=409&amp;format=raw&amp;height=325" alt="" /></a><span class="description" style="width: 411px;"></span></span></span>
+Once the image is on your computer you may start. But you need to make sure to be prepared for the most unusual things to happen, e.g. that the box does not function correctly after flashing.  
+Therefore we urge you to take precautions: <br />
+</p>
+<blockquote>
+<p>
+1.) <a class="wiki" href="../../../Download.html">Download</a> the recover image for your box: You can find the <strong>Recover.exe</strong> on AVM's <a class="ext-link" href="ftp://ftp.avm.de/fritz.box"><span class="icon">​</span>FTP site</a><br />
+2.) Upgrade your router to the newest firmware.<br />
+3.) Have your access data at hand<br />
+4.) Backup your FritzBox settings<br />
+5.) Make sure you've set a password in the AVM-GUI. Even a simple <strong>0000</strong> is sufficient, otherwise you won't be able to upload the firmware <br />  
+</p>
+</blockquote>
+<p>
+Now you are ready to go. Go to your FritzBox webinterface to update your firmware, select the Freetz image and start the process. A notice will show up informing you that the firmware you are about to 
+upload to your router is not an officially approved firmware which you have to confirm. Then your router will restart in about 1-2 minutes. The AVM webinterface should show up again and you can log 
+into your box again. Now you will have an additional Freetz interface which can be accessed through <strong><a class="ext-link" href="http://fritz.box:81"><span class="icon">​</span>http://fritz.box:81</a></strong>. For the first time you can log into it using <strong>admin</strong> and <strong>freetz</strong> 
+but you should change that password. 
+<br />
+Congratulations! Your first Freetz-Image is now on your box.
+<br />
+<br />
+</p>
+<h2 id="Links">Links</h2>
+<p>
+<a class="wiki" href="newbie/errors.html">An error occured, what now?</a>
+</p>
+<p>
+<a class="wiki" href="newbie/other.html#Wiek%C3%B6nntemeinn%C3%A4chstesImageaussehen:">What could my next image look like?</a>
+</p>
+<p>
+<a class="wiki" href="newbie/other.html">Other information</a>
+<br />
+</p>
+</div>
+          
+          <div class="trac-modifiedby">
+            <span><a href="newbie.en%3Faction=diff&amp;version=9.html" title="Version 9 von Whoopie">zuletzt geändert</a> <a class="timeline" href="http://freetz.org/timeline?from=2014-06-29T14%3A25%3A32Z&amp;precision=second" title="Siehe Journal am 29.06.2014 14:25:32">vor 4 Jahren</a></span>
+            <span class="trac-print">Zuletzt geändert am 29.06.2014 14:25:32</span>
+          </div>
+        
+        
+      </div>
+      
+
+    </div>
+    <script type="text/javascript">
+        jQuery.loadStyleSheet("/chrome/screenshots/css/screenshots.css", "text/css");
+    </script>
+    <div id="altlinks">
+      <h3>In anderen Formaten herunterladen:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="newbie.en%3Fformat=txt">Reiner Text</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" lang="en" xml:lang="en"><hr />
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="../../../../chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
+      <p class="left">Betrieben mit <a href="http://freetz.org/about"><strong>Trac 1.0.1</strong></a><br />
+        von <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right"><div class="field" align="right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations"/><input type="hidden" name="business" value="spenden@freetz.org"/><input type="hidden" name="item_name" value="Freetz Entwickler-Team"/><input type="hidden" name="no_shipping" value="1"/><input type="hidden" name="return" value="http://freetz.org"/><input type="hidden" name="cn" value="Name oder IPPF-Pseudonym"/><input type="hidden" name="currency_code" value="EUR"/><input type="hidden" name="tax" value="0"/><input type="hidden" name="lc" value="DE"/><input type="hidden" name="bn" value="PP-DonationsBF"/><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Zahlen Sie mit PayPal - schnell, kostenlos und sicher!"/><img alt="" border="0" src="http://freetz.org/pixel.gif" width="1" height="1"/></form></div></p>
+    </div>
+  </body>
+</html>

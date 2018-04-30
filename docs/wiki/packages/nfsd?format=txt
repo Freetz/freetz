@@ -1,0 +1,64 @@
+''TODO: Hinweise aus Forums Thread reinkopieren?''
+
+= NFSD_CGI =
+'''NFSD-CGI''' bietet die Möglichkeit die FritzBox als NFS-Server zu betreiben. Hiermit kann zum Beispiel von einer dbox2 direkt auf einen angeschlossenen USB-Datenträger gestream werden. Richtig gut funktioniert das aber nur mit einer 7270. Die Administration des Servers erfolgt über das Webinterface. Hier kann die Startart (`automatisch` oder `manuell`) ausgewählt werden und es können die 3 Konfigurationsdateien `exports`, `hosts.allow` und `hosts.deny` bearbeitet werden.NFSD-CGI bedient sich der Pakete nfs-utils, portmap und tcp_wrappers. Dieses werden automatisch bei der Anwahl von NFSD-CGI mit ausgewählt und verbrauchen etwas Speicher.
+
+== Hinweise ==
+NFSD-CGI wählt automatisch die nfs-utils (ca. 120kb), sowie portmap (ca. 20kb)(''insgesamt'' ca. 200kb). Braucht man zu einem späteren Zeitpunkt NFS nicht mehr, genügt es nicht, im `menuconfig` NFSD-CGI abzuwählen - auch die Pakete nfs-utils und portmap müssen wieder abgewählt werden und ein anschließendes `make config-clean-deps` beseitigt die restlichen überbleibsel. Für Kernel 2.6.13.1 werden außerdem die Module nfsd, lockd und sunrpc benötigt. Bei 2.6.19.2 sind diese bereits fest im Kernel eingebaut.
+
+[[span(id=exports)]][[span(id=hosts_allow)]][[span(id=hosts_deny)]]
+
+== Example configuration ==
+get uid and gid:
+
+{{{
+id -u bittorrent
+id -g bittorrent
+}}}
+
+export:
+
+{{{
+/var/media/ftp/uData *(rw,all_squash,anonuid=100,anongid=1,insecure,sync,subtree_check)
+}}}
+hosts.allow:
+
+{{{
+mountd,nfsd,portmap: 192.168.178.0/255.255.255.0
+}}}
+hosts.deny:
+
+{{{
+ALL: ALL
+}}}
+Ubuntu client:
+
+{{{
+sudo mount -t nfs -o vers=3,rw,rsize=65536,wsize=65536 fritz.box:/var/media/ftp/uData /media/uData
+}}}
+Line in /etc/fstab:
+
+{{{
+fritz.box:/var/media/ftp/uData	/media/uData	nfs	vers=3,rw,rsize=65536,wsize=65536
+}}}
+Maximum block size:
+
+{{{
+cat /proc/fs/nfsd/max_block_size
+}}}
+To change the block size, first stop ''nfsd'' and execute these commands:
+
+{{{
+mount -t nfsd nfsd /proc/fs/nfsd
+echo 65536 > /proc/fs/nfsd/max_block_size
+}}}
+
+== Fehlerquellen ==
+ * Falls die NFS-Freigabe nicht beschreibbar ist, dann kann das an den verwendeten Optionen in der export liegen:
+{{{
+no_root_squash,anonuid=0,anongid=0
+}}}
+Diese Optionen bewirken, dass der root-User des Clients auch als root auf dem Server schreiben darf. Und dass der Benutzer nobody die uid/gid 0 benutzt.
+== Links ==
+ * [http://linux.die.net/man/8/nfsd Man page nsfd]
+ * [http://linux.die.net/man/5/exports Man page exports]

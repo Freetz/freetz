@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+  
+
+
+  <head>
+    <title>
+      libs/ftdi – Freetz
+    </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!--[if IE]><script type="text/javascript">
+      if (/^#__msie303:/.test(window.location.hash))
+        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
+    </script><![endif]-->
+        <link rel="search" href="http://freetz.org/search" />
+        <link rel="help" href="../TracGuide.html" />
+        <link rel="alternate" href="ftdi%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
+        <link rel="up" href="../libs.html" title="Übergeordnete Wiki-Seite anzeigen" />
+        <link rel="start" href="http://freetz.org/wiki" />
+        <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
+        <link rel="shortcut icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+      <link type="application/opensearchdescription+xml" rel="search" href="http://freetz.org/search/opensearch" title="Freetz durchsuchen" />
+      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/jquery.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/babel.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/messages/de.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/trac.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/search.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/folding.js"></script>
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
+        $("#content").find(".wikianchor").each(function() {
+          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
+        });
+        $(".foldable").enableFolding(true, true);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://freetz.org/wiki"><img src="../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
+      </div>
+      <form id="search" action="http://freetz.org/search" method="get">
+        <div>
+          <label for="proj-search">Suche:</label>
+          <input type="text" id="proj-search" name="q" size="18" value="" />
+          <input type="submit" value="Suche" />
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="http://freetz.org/login">Anmelden</a></li><li><a href="http://freetz.org/prefs">Einstellungen</a></li><li><a href="../TracGuide.html">Hilfe/Anleitung</a></li><li><a href="http://freetz.org/about">Über Trac</a></li><li><a href="http://freetz.org/notification" title="Wiki Pages Change Notifications">My Notifications</a></li><li><a href="http://freetz.org/register">Registrieren</a></li><li class="last"><a href="../Impressum.html">Impressum</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first active"><a href="http://freetz.org/wiki">Wiki</a></li><li><a href="http://freetz.org/timeline">Journal</a></li><li><a href="http://freetz.org/roadmap">Projektplan</a></li><li><a href="http://freetz.org/browser">Quellen durchsehen</a></li><li><a href="http://freetz.org/report">Tickets anzeigen</a></li><li><a href="http://freetz.org/search">Suche</a></li><li><a href="http://freetz.org/tags">Tags</a></li><li><a href="http://freetz.org/downloads">Downloads</a></li><li class="last"><a href="http://freetz.org/screenshots">Bildschirmfotos</a></li>
+    </ul>
+  </div>
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="ftdi..html" title="displaying language (default)">German</a></li><li class=" last"><a class="" href="ftdi.en.html" title="">English</a></li></ul></div><div id="main">
+      <div id="pagepath" class="noprint">
+  <a class="pathentry first" title="Zeige WikiStart an" href="http://freetz.org/wiki">Wiki:</a><a class="pathentry" href="../libs.html" title="Zeige libs an">libs</a><span class="pathentry sep">/</span><a class="pathentry" href="ftdi.html" title="Zeige libs/ftdi an">ftdi</a>
+</div>
+      <div id="ctxtnav" class="nav">
+        <h2>Kontext-Navigation</h2>
+        <ul>
+          <li class="first"><a href="../libs.html">Aufwärts</a></li><li><a href="../WikiStart.html">Startseite</a></li><li><a href="../TitleIndex.html">Inhaltsverzeichnis</a></li><li><a href="ftdi%3Faction=history.html">Änderungshistorie</a></li><li class="last"><a href="http://freetz.org/notification/libs/ftdi." title="Watch Page">Watch Page</a></li>
+        </ul>
+        <hr />
+      </div>
+    <div id="content" class="wiki">
+      <div class="wikipage searchable">
+        
+          <div id="wikipage" class="trac-content"><h1 id="ftdi">ftdi</h1>
+<p>
+Das Paket <strong><a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?p=1193103#post1193103"><span class="icon">​</span>ftdi</a></strong> stellt entsprechende Treiber für <a class="ext-link" href="http://de.wikipedia.org/wiki/Rs232"><span class="icon">​</span>RS-232</a>-<a class="ext-link" href="http://de.wikipedia.org/wiki/USB"><span class="icon">​</span>USB</a>-Adapter auf der Box zur Verfügung, so dass man mit einem solchen Adapter mit <a class="ext-link" href="http://www.ftdichip.com"><span class="icon">​</span>FTDI</a>-Chipsatz ein serielles Gerät (Relais-Karten, Temperaturfühler, Wetterstationen, ggf. ganze Heizanlagen uvm.) an die Box anschließen und darüber mit diesen Geräten kommunizieren kann.
+</p>
+<h2 id="Benutzung">Benutzung</h2>
+<h3 id="Beispiel-Parameter">Beispiel-Parameter</h3>
+<pre class="wiki">T: Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#= 3 Spd=12 MxCh= 0
+D: Ver= 1.10 Cls=00(&gt;ifc ) Sub=00 Prot=00 MxPS= 8 #Cfgs= 1
+P: Vendor=0403 ProdID=6001 Rev= 4.00
+S: Manufacturer=ftdi
+S: Product=usb serial converter
+S: SerialNumber=ftBNKG1I
+C:* #Ifs= 1 Cfg#= 1 Atr=a0 MxPwr= 44mA
+I: If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=ftdi_sio
+E: Ad=81(I) Atr=02(Bulk) MxPS= 64 Ivl=0ms
+E: Ad=02(O) Atr=02(Bulk) MxPS= 64 Ivl=0ms
+</pre><h3 id="AnpassenderBaudrate">Anpassen der Baudrate</h3>
+<p>
+Eine ggf. erforderliche Anpassung der Baudrate wird in <a class="ext-link" href="http://www.mikrocontroller.net/topic/92022"><span class="icon">​</span>diesem Forum</a> diskutiert.
+</p>
+<h3 id="VerbindungzumTesten">Verbindung zum Testen</h3>
+<ul><li>Verkabelung herstellen:<br />Fritzbox &hArr; USB-RS-232-Adapter &hArr; <a class="ext-link" href="http://de.wikipedia.org/wiki/Nullmodem"><span class="icon">​</span>Null-Modem</a>-Kabel &hArr; Kontrollgerät (PC/Laptop/Macbook o.ä.)
+</li></ul><ul><li>Auf dem Kontrollgerät ein <a class="ext-link" href="http://de.wikipedia.org/wiki/HyperTerminal"><span class="icon">​</span>Hyperterminal</a> öffnen
+</li><li>Auf der Fritzbox:
+<pre class="wiki">echo "Hallo" &gt; /var/ttyUSB0
+</pre></li></ul><blockquote>
+<blockquote>
+<p>
+Statt <em>ttyUSB0</em> ist ggf. etwas anderes zu wählen, je nach dem, ob man den Adapter direkt an der Fritzbox angeschlossen hat, oder über einen USB-Hub mit mehreren USB-Ports.
+</p>
+</blockquote>
+</blockquote>
+<ul><li>Ergebnis im Hyperterminal auf dem Kontrollgerät:
+<pre class="wiki">Hallo
+</pre></li></ul><p>
+Und das sollte auch anders herum funktionieren, also von der Fritzbox aus.
+</p>
+<h2 id="USB-Fernanschluss">USB-Fernanschluss</h2>
+<p>
+Da es von AVM (leider nur für Windows) den sog. <a class="ext-link" href="http://www.avm.de/de/Service/FAQs/FAQ_Sammlung/14300.php3?portal=FRITZ!Box_Fon_WLAN_7170&amp;weitere=weitere"><span class="icon">​</span>USB-Fernanschluss</a> gibt, lässt sich das Ganze auch bequem vom Wohnzimmer aus steuern, auch wenn die Fritzbox woanders steht (LAN/WLAN-Anschluss reicht aus).<br />Voraussetzung ist, dass das Tool USB-Fernanschluss den Chipsatz unterstützt, wie es z.B. für den <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?p=1021916#post1021916"><span class="icon">​</span>PL2303</a> der Fall ist.<br />Sollte das Tool "Keine FRITZBox gefunden!" melden, wird von AVM <a class="ext-link" href="http://www.avm.de/de/Service/FAQs/FAQ_Sammlung/14564.php3?sessionid=g0q1vnu8m6d0rsjbped1svk8e7&amp;kodo_KostenstellenProdukt=FRITZ!Box_Fon_WLAN_7170&amp;kodo_OS=Windows%20XP&amp;kodo_Anwendungsbereich=USB-Host&amp;entryPoint=FAQs&amp;URL=FAQs/FAQ_Sammlung/14564.php3"><span class="icon">​</span>hier</a> eine mögliche Lösung beschrieben.
+</p>
+<h2 id="ListemitunterstützenAdaptern">Liste mit unterstützen Adaptern</h2>
+<p>
+Hier folgt eine Liste mit unterstützen Adaptern. Auch dazu gibt es einen <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=165042"><span class="icon">​</span>Diskussions-Thread im IP-Phone-Forum</a>.
+</p>
+<ul><li>&hellip;
+</li><li>&hellip;
+</li><li>&hellip;
+</li></ul><h2 id="Anregungen">Anregungen</h2>
+<p>
+Hier folgt eine Liste mit Anregungen und Links zu Projekten, welche Geräte man ggf. an eine Fritzbox anschließen und darüber steuern kann:
+</p>
+<ul><li><a class="ext-link" href="http://www.tecalor.de/Kunden-Portal/THZ-403303-SOL.html"><span class="icon">​</span>Tecalor THZ 303 SOL</a> (Luftwärmepumpe/Heizung mit integrierter Wärmerückgewinnung) - siehe auch in <a class="ext-link" href="http://www.haustechnikdialog.de/Forum/Default.aspx?t=85548&amp;headline=Software+zum+Auslesen+der+Tecalor+THZ+303+SOL+%c3%bcber+RS232+o.a.+Schnittstelle"><span class="icon">​</span>diesem</a> Forum<br />(Falls Links zu kommerziellen Seiten hier unerwünscht sind, kann man den Link gerne wieder rausnehmen.)
+</li><li><a class="ext-link" href="http://www.obdev.at/products/avrusb/powerswitch.html"><span class="icon">​</span>Powerswitch</a> von Objective Development mit Atmel AVR Microcontroller (AVR-USB)
+</li><li><a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=175015"><span class="icon">​</span>USB-Relaisschalter</a>
+</li><li>&hellip;
+</li></ul><h2 id="WeiterführendeLinks">Weiterführende Links</h2>
+<ul><li><a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=159126"><span class="icon">​</span>FTDI Treiber im Freetz-Mod?</a> (Haupt-Diskussionsthread)
+</li><li><a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=165042"><span class="icon">​</span>RS232-USB-Adapter an Fritzbox</a>
+</li><li><a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=137606"><span class="icon">​</span>Hilfe!! PL2303 Adapter</a>
+</li><li><a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=164738"><span class="icon">​</span>USB-Seriell-Adapter an 7170?</a>
+</li><li><a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=101712"><span class="icon">​</span>USB - Seriell Treiber in DS-Mod</a>
+</li><li><a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=105490"><span class="icon">​</span>Frage Steckdosenleiste mit FB steuern?</a>
+</li><li><a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=151020"><span class="icon">​</span>ARK3116 USB zu Seriell Adapter an FB7150</a>
+</li><li><a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=146800"><span class="icon">​</span>Wie Konsole an serieller Schnittstelle? FB 3170</a>
+</li><li><a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=164738"><span class="icon">​</span>ftdi_sio crasht unter Last (bug: CVE-2006-2936)</a>
+</li><li><a class="ext-link" href="http://energie-effizientes-haus.de/Daten/Niedrigstenergietechnik/THZ%20303%20SOL%20-%20Gebrauchs-%20und%20Montageanweisung.pdf"><span class="icon">​</span>Montageanweisung Tecalor THZ 303 SOL Luftwärmepumpe</a><br />(Schaltbilder mit RS232-Schnittstelle auf Seiten 17+18)
+</li><li><a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=143186"><span class="icon">​</span>Seriellen / V24 Port der FB als virtuellen Port auf Windows PC nutzen</a>
+</li><li><a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?p=1137643#post1137643"><span class="icon">​</span>Mikrocontroller an AVM. Frage zu: Mögliche fritzboxinterne Kommunikation</a>
+</li></ul></div>
+          
+          <div class="trac-modifiedby">
+            <span><a href="ftdi%3Faction=diff&amp;version=5.html" title="Version 5 von Izzy: Name changed from packages/ftdi to libs/ftdi">zuletzt geändert</a> <a class="timeline" href="http://freetz.org/timeline?from=2008-11-10T17%3A09%3A46Z&amp;precision=second" title="Siehe Journal am 10.11.2008 17:09:46">vor 9 Jahren</a></span>
+            <span class="trac-print">Zuletzt geändert am 10.11.2008 17:09:46</span>
+          </div>
+        
+        
+      </div>
+      
+
+    </div>
+    <div id="altlinks">
+      <h3>In anderen Formaten herunterladen:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="ftdi%3Fformat=txt">Reiner Text</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" lang="en" xml:lang="en"><hr />
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="../../chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
+      <p class="left">Betrieben mit <a href="http://freetz.org/about"><strong>Trac 1.0.1</strong></a><br />
+        von <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right"><div class="field" align="right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations"/><input type="hidden" name="business" value="spenden@freetz.org"/><input type="hidden" name="item_name" value="Freetz Entwickler-Team"/><input type="hidden" name="no_shipping" value="1"/><input type="hidden" name="return" value="http://freetz.org"/><input type="hidden" name="cn" value="Name oder IPPF-Pseudonym"/><input type="hidden" name="currency_code" value="EUR"/><input type="hidden" name="tax" value="0"/><input type="hidden" name="lc" value="DE"/><input type="hidden" name="bn" value="PP-DonationsBF"/><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Zahlen Sie mit PayPal - schnell, kostenlos und sicher!"/><img alt="" border="0" src="http://freetz.org/pixel.gif" width="1" height="1"/></form></div></p>
+    </div>
+  </body>
+</html>

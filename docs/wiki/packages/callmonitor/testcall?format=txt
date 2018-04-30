@@ -1,0 +1,8 @@
+[[TOC(packages/callmonitor,packages/callmonitor/config,packages/callmonitor/listeners,packages/callmonitor/events,packages/callmonitor/actions,packages/callmonitor/phonebook,packages/callmonitor/maintenance,packages/callmonitor/reverse_search,packages/callmonitor/testcall,heading=Inhaltsverzeichnis)]]
+
+= Testanruf =
+Nachdem die [wiki:packages/callmonitor/listeners Listeners] definiert sind, empfiehlt es sich, sie auf korrekte Funktion zu testen. Da man nicht immer jede Konfiguration mit echten Anrufen testen kann, gibt es eine Seite im Web-Interface, die Anrufe simuliert. Dabei klingeln keine Telefone, es wird lediglich dem CallMonitor ein Anruf vorgetäuscht, den er wie einen echten Anruf behandelt.
+
+[[Screenshot(22,description=[screenshot:22 $description])]] [[br]]
+
+Die Maske sollte weitgehend selbsterklärend sein. Unter "Ereignis" kann man einstellen, welches [wiki:packages/callmonitor/listeners#Format Ereignis] simuliert werden soll. Die Quellrufnummer ist diejenige, von der dieses Ereignis ausgeht und die Zielrufnummer diejenige, die das Ziel des Ereignisses ist. Man gibt jeweils ein Ereignis mit Rufnummern ein, die zu einem in den Listeners definierten Muster passen. Nach einem Klick auf "Testanruf" sollte der Callmonitor nun die zu diesem Listener-Eintrag gehörende Aktion ausführen. Im Webinterface werden die Debug-Informationen des Callmonitors angezeigt, die bei einer eventuellen Fehlersuche helfen.

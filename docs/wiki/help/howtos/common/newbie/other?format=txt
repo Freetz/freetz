@@ -1,0 +1,409 @@
+= Sonstige Infos für Newbie's =
+[[PageOutline(2-4, Inhaltsverzeichnis, inline)]][[BR]]
+
+== Wie könnte mein nächstes Image aussehen: == 
+Freetz-Image inkl. AVM-Firewall CGI, SAMBA und VSFTP 
+=== VirtualBox starten ===
+[http://freetz.org/wiki/help/howtos/common/newbie#StartenvonFreetz Wie starte ich VirtualBox]. Dieser Pkt. kann aber übersprungen werden, wenn VirtualBox und Putty noch gestartet sind.[[BR]]
+=== Einstellen des menuconfig ===
+Zur Erstellung eines neuen Image müssen wir wieder das '''menuconfig''' aufrufen.[[BR]]
+[[Screenshot(154,width=409,height=325)]]
+In dieser Oberfläche wählt man dann den zu patchenden Router und die gewünschten Pakete aus. Für dieses HowTo haben wir Beispielhaft die 7270_v3 gewählt.[[BR]]
+[[BR]]
+[[Screenshot(259,width=409,height=325)]]
+[[BR]]
+Dieses Image soll am Ende folgende Elemente enthalten und darum wählen wir nun folgende Punkt aus:[[BR]]
+[[BR]]
+'''a.) unter other patches:'''[[BR]] 
+  * '''FREETZMOUNT : Patch AVMs hotplug script, .....'''
+  * '''Automount filesystem''' einfach gesetzt lassen. 
+  * '''ext2''' (linux Dateisystem)
+  * '''ext3''' (linux Dateisystem)
+  * '''fat''' /Windows Dateisystem)
+  * '''NTFS''' (Muß aktivier sein wenn man NTFS formatierte Platten an der Box nutzen möchte)[[BR]]
+[[Screenshot(92,width=409,height=325)]]  
+'''b.) unter Packages --> Web interface -->'''[[BR]]
+  * '''AVM-Firewall 2.0.4_rc5''' (Web-Oberfläche um die von AVM dem User vorenthaltene integrierte Firewall zu administrieren) [[BR]]
+  * '''spindown-cgi 0.2''' (Web-Oberfläche für sg3_utils (Sleep-Modus für angeschlossene Festplatten)  [[BR]]
+  * '''Syslogd CGI''' (Log-Datei zum Auswerten vom System z.B. bei der Fehlersuche)[[BR]]
+[[Screenshot(94,width=409,height=325)]]
+'''c.) unter unter Packages --> Standard packages -->'''[[BR]]
+  * '''Samba suite''' --> '''version (samba 3.0.37)''' (dies ist der Server der den Zugriff auf die USB Medien an der FB von Windows erlaubt). [[BR]]
+     *  Ebenfalls müssen folgende Haken bei folgenden Unterpunkten gesetzt werden:[[BR]]
+          * '''smbd''' (file sharing server) 
+          * '''nmbd''' (NetBIOS name server) 
+          * '''smbclient'''
+          * '''nmblookup'''
+[[Screenshot(260,width=409,height=325)]]
+  * '''vsftp 3.0.2''' (FTP-Server). Hier bitte keine weiteren Haken bei den Unterpunkten setzen. [[BR]]
+[[Screenshot(164,width=409,height=325)]] 
+Weitere Pakete und Patches incl. der Beschreibungen findet ihr auf der Website : wiki:packages [[BR]]  
+Nachdem alle Pakete und Patches ausgewählt sind, beendet man Freetz und gibt auf der Kommandozeile der Shell Konsole '''make''' ein. [[BR]]
+Der Rest des Buildprozesses läuft wieder wie gewohnt ab.
+Die Abschlussmeldung sieht dann wie folgt aus:
+[[Screenshot(157,width=409,height=325)]]
+[[BR]]
+[[BR]]
+Nun müssen wir das Image auf den PC kopieren.[[BR]]
+
+=== Image auf den PC kopieren ===
+Info's findet ihr [wiki:help/howtos/common/newbie/other#ImageaufdenPCkopieren1 HIER][[BR]]
+
+=== Freetz-Linux beenden ===
+Euer Ubuntu-Linux könnt ihr nun mit dem Befehl : '''sudo shutdown -h now'''  sauber herunter fahren. Diese Eingabe muß jedoch noch mit einem '''freetz''' erneut bestätigt werden. [[BR]]
+
+=== Der Flashvorgang ===
+Info's zum Flashforgang sind [wiki:help/howtos/common/newbie#DerFlashvorgang HIER] zu finden.[[BR]]
+
+==== Konfiguration der neuen Plugins ====
+Nachdem eure FB wieder problemlos angelaufen ist, könnt ihr wie gewohnt per Browser über '''http://fritz.box''' einloggen. Zusätzlich gibt es aber jetzt die Freetz Oberfläche, die über den Link '''http://fritz.box:81''' erreicht werden kann. Hier loggt man sich mit '''admin''' und '''freetz''' ein.
+Danach sieht man folgende Maske:
+[[Screenshot(261,width=409,height=325)]]
+[[BR]]
+
+=== Freetz-WebIF einstellen ===
+1.) Wechseln nach => '''Freetz''' => '''Einstellungen''' und dort unter '''Freetzmount''' den Haken bei '''Partitionsname (falls vorhanden) als Mountpoint nutzen'''.[[BR]]
+[[Screenshot(262,width=409,height=325)]]
+2.) Wechseln nach => '''Freetz''' => '''Weboberfläche''' und kontrollieren ob dort folgende Haken gesetzt sind:
+   * '''Untermenü '''
+   * '''Hauptseite '''
+   * '''mit Knöpfen'''
+   * '''Box-Info '''
+   * '''Freetz-Info'''
+[[Screenshot(263,width=409,height=325)]]
+[[BR]]
+
+=== USB-Stick erstellen ===
+Nun formatieren wir unseren USB-Stick oder USB-Festplatte am PC in '''NTFS''', und geben ihm den Namen '''USB''' und legen folgende Ordner darauf an:
+  * '''admin'''
+      * '''gast (Unterordner von admin)'''
+      * '''musik (Unterordner von admin)'''
+      * '''bilder (Unterordner von admin)'''
+      * '''filme (Unterordner von admin)'''
+      * '''dokumente (Unterordner von admin)'''
+Diesen so erstellten Stick stecken wir nun in den USB-Port der Fritzbox und starten diese neu (reboot).[[BR]]
+Nach dem Reboot solltet ihr nun folgendes Freetz-Menu sehen:[[BR]]
+[[Screenshot(264,width=409,height=325)]]
+Ganz unten kann man nun sehen das der USB-Stick als '''USB''' (/var/media/ftp/'''USB''' ) gemountet wurde. Sollte dort '''uStor01''' stehen, müsst ihr die letzten Schritte nochmals kontrollieren.
+=== SWAP-File einrichten ===
+1.) Wechseln nach => '''Freetz''' => '''Einstellungen'''[[BR]]
+2.) unter '''Swap''' den Pkt. '''Aktiviert''' aktivieren.[[BR]]
+3.) unter Pfad tragen wir nun folgendes ein: '''/var/media/ftp/USB/swapfile''' [[BR]]
+4.) und unter Größe : '''20''' ein. [[BR]]
+5.) nun drücken wir den Button '''Swap-Datei anlegen''' [[BR]]
+6.) Im nächsten Fenster sollte man jetzt sehen wie die SWAP-Datei angelegt wird. 
+{{{
+ Erstelle leere Datei ...
+ 20+0 records in
+ 20+0 records out
+ Bereite Datei für Swap-Benutzung vor ...
+ Setting up swapspace version 1, size = 20967424 bytes
+}}}
+Dieses Fenster kann man danach einfach schließen.[[BR]]
+Sollte alles richtig eingestellt sein, kann man SWAP über den Button Start nun starten. Die Anzeige '''stopped''' sollte nach '''running''' wechseln.
+[[BR]]
+[[BR]]
+
+=== Samba ===
+==== Einstellungen ====
+===== Starttyp ===== 
+alles auf '''Automatisch'''[[BR]]
+
+===== Konfiguration: =====
+ * Samba security = Share
+ * Benutzername: ftpuser
+ * Passwort: * * * * * * (einfach leer lassen, Die Pkt. werden trotzdem angezeigt)
+ * IP-Adresse: 192.168.178.1(255.255.255.0
+ * Netbios Name: NAS
+ * Arbeitsgruppe: WORKGROUP
+ * Beschreibung: %h (Samba %v)  => (ich würde diesen Inhalt löschen)
+ * OS Level für Election: 20 
+ * Haken bei Bevorzugter Master
+
+===== Standardfreigaben ===== 
+Beide Haken setzen / gesetzt lassen [[BR]]
+[[Screenshot(79,width=409,height=325)]] 
+ 
+==== Erweitert ====
+In das leere Feld kopiert man nun folgenden Text:[[BR]]
+{{{
+log level = 1
+socket options = TCP_NODELAY IPTOS_LOWDELAY
+read raw = yes
+write raw = yes
+oplocks = yes
+max xmit = 65535
+dead time = 15
+getwd cache = yes
+lpq cache = 30 
+unix charset = UTF-8
+}}}
+==== Freigaben ====
+In das leere Feld kopiert man nun folgenden Text:[[BR]]
+{{{
+/var/media/ftp/USB USB-Stick 1 0 - USB-Stick
+/var/media/ftp/USB/data/gast Gast 1 0 - Gast
+/var/media/ftp/USB/data/musik Musik 1 0 - Musik
+/var/media/ftp/USB/data/filme Filme 1 0 - Filme
+/var/media/ftp/USB/data/bilder Bilder 1 0 - Bilder
+/var/media/ftp/USB/data/dokumente Dokumente 1 0 - Dokumente
+}}}
+Wir haben nun 6 Windows-Freigaben für unserem USB-Stick erzeugt.
+  * '''USB-Stick''' (hier sieht man den gesamten Inhalt des Sticks)
+  * '''Gast'''   (Freigegebener Ordner)
+  * '''Musik'''   (Freigegebener Ordner)
+  * '''Filme'''   (Freigegebener Ordner)
+  * '''Bilder'''    (Freigegebener Ordner)
+  * '''Dokumente'''   (Freigegebener Ordner)
+[[Screenshot(265,width=409,height=325)]]
+Diese können nun per '''Netzlaufwerk verbinden''' mit dem PC verbinden. [[BR]]
+[[BR]] 
+Hier eine kurze Beschreibung der Parameter anhand der ersten Freigabe: (Diese Einträge sind jedoch nur möglich, wenn die aktuelle [wiki:FAQ#KonfigurationinderaktuellenSicherheitsstufenichtverf%C3%BCgbar Sicherheitsstufe] auf 0 gesetzt ist bzw. wird.)[[BR]]
+[[BR]]
+'''Beispiel:'''
+{{{ 
+/var/media/ftp/USB USB-Stick 1 0 - USB-Stick 
+}}}
+   '''/var/media/ftp/USB''' dies ist der interner Pfad zum USB-Stick [[BR]] 
+   '''/USB-Stick''' das ist das Freigegebenes Verzeichnis [[BR]] 
+   '''USB-Stick''' Name der Freigabe der in der Windows-Netzwerkumgebung als Freigabe angezeigt wird. [[BR]] 
+   '''1''' Gast-Zugang erlaubt, kein Benutzername und Passwort nötig [[BR]] 
+   '''0''' Schreib-Lesezugriff aktiviert [[BR]]  
+   '''-''' Grund für das - ????? (Muß rein, Begründung folgt !) [[BR]]  
+   '''USB-Stick''' Kommentar[[BR]]
+
+Da wir als Netbiosname '''NAS''' vergeben hatte, lautet der Zugriff von Windows auf die Freigabe nun: 
+{{{
+\\NAS\USB-Stick
+}}}
+[[Screenshot(266,width=409,height=325)]]
+[[BR]]
+
+=== VSFTPD ===
+==== Einstellungen ====
+===== Starttyp =====
+Starttyp auf '''Automatisch''' stellen
+===== FTP Server =====
+Server binden an Port: 2121 (Dieser Port muß von 21 nach 2121 geändert werden da sich sonst VSFTPD nicht starten läßt. Möchte man den Port 21 benutzen, muß der AVM-FTP (ftpd) gestoppt werden (inetd muß dazu unter Dienste auf stopped gesetzt werden).[[BR]]
+ '''Achtung, das Stoppen von ftpd hat aber Auswirkung auf einige AVM-Dienste '''[[BR]]
+
+===== Zugriff =====
+Folgende Haken müssen wie folgt gesetzt sei:
+  * '''Anonymes FTP =''' Nein
+  * '''Lokale Benutzer =''' '''Ja'''
+  * '''chroot jail =''' '''Ja'''
+  * '''Erlaube root login =''' Nein
+  * '''Erlaube ftpuser login =''' Nein
+
+===== Erweiterte Einstellungen =====
+  * Anzahl Verbindungen:   
+     * insgesamt : '''25'''  
+     * pro Client : '''25'''
+  * Passive Ports:   
+     * Minimum : '''0'''
+     * Maximum : '''0'''
+  * Sonst sind keine Haken gesetzt
+[[Screenshot(267,width=409,height=325)]]
+
+===== Zusätzliche Konfigurationsoptionen (für Experten) =====
+In das leere Feld kopiert man nun folgenden Text:[[BR]]
+{{{
+user_config_dir=/var/media/ftp/USB/vsftp_user_conf
+}}}
+
+===== Logging =====
+  * Logging aktivieren = angehakt
+  * zusätzlich Protokoll-Log = leer
+
+  * Syslog = deaktiviert
+  * Datei = aktiviert mit folgendem Text:
+{{{
+/var/media/ftp/USB/logs/vsftpd.log
+}}} 
+[[Screenshot(268,width=409,height=325)]]
+
+===== Änderungen am USB-Stick =====
+Folgende Ordner müssen noch direkt auf dem USB-Stick erzeugt werden:
+  * '''logs'''    
+  * '''vsftp_user_conf'''     
+In diese Ordner kopieren wir nun die Datein aus diesem [http://freetz.org/attachment/wiki/help/howtos/common/newbie/other/vsftpd.zip ZIP] wie folgt:
+* '''logs'''
+      * syslog.log
+      * vsftpd.log
+  * '''vsftp_user_conf'''
+      * admin
+      * gast
+      * mary
+      * paul
+Das Kopieren der Dateien kann ja nun Dank gestartetem SAMBA direkt passieren ohne das der USB-Stick von der Box getrennt werden muß.[[BR]]
+
+==== Rechtevergabe für FTP-User (wie ändere ich die Beispieldateien aus dem ZIP richtig)====
+Ob ein Neuer FTP-User Schreibrechte erhalten soll oder nur lesen können soll wird wie folgt geregelt: [[BR]] Jeder Benutzer erhält eine Datei mit seinem Dateinamen im Ordner '''/var/media/ftp/USB/vsftp_user_conf/''' 
+
+===== Inhalt der Datei : =====
+1.) Mary und Admin:  '''write_enable=yes''' (User hat Schreibrechte und Löschrechte)[[BR]]
+[[BR]]
+2.) Gast : '''write_enable=no''' (User hat '''keine''' Schreibrechte)[[BR]]
+[[BR]]
+3.) Paul : Über diese Benutzerdateien ist es auch möglich einzelne FTP-Befehle ([http://en.wikipedia.org/wiki/List_of_FTP_commands Liste]) für Benutzer zu verbieten. Hierzu fügt man folgende Zeile in die Datei ein und entfernt die Befehle die der User nicht ausführen darf:
+{{{
+
+cmds_allowed=ABOR,ACCT,ALLO,APPE,AUTH,CDUP,CWD,DELE,EPRT,EPSV,FEAT,HELP,LIST,MDTM,MKD,MODE,NLST,NOOP,OPTS,PASS,PASV,PBSZ,PORT,PROT,PWD,QUIT,REIN,REST,RETR,RMD,RNFR,RNTO,SITE,SMNT,STAT,STOR,STOU,STRU,SYST,TYPE,USER
+
+}}}
+So mit darf Paul Dateien auf den FTP kopieren und Verzeichnisse anlegen, jedoch diese nicht wieder löschen. Also muß folgendes in der Datei stehen:
+{{{
+
+cmds_allowed=ABOR,ACCT,ALLO,APPE,AUTH,CDUP,CWD,EPRT,EPSV,FEAT,HELP,LIST,MDTM,MKD,MODE,NLST,NOOP,OPTS,PASS,PASV,PBSZ,PORT,PROT,PWD,QUIT,REIN,REST,RETR,RNFR,RNTO,SITE,SMNT,STAT,STOR,STOU,STRU,SYST,TYPE,USER
+
+}}}
+ '''DELE''' (Delete file), '''RMD''' (Remove a directory) wurden aus dem oben angegebenen String gelöscht. [[BR]] [[BR]] [[BR]] Sollte etwas immer noch nicht gehen, dann den Router einfach nochmal neu starten.(Reboot der FritzBox).[[BR]]
+
+=== FTP-User erzeugen ===
+1.) '''Telnet-Dienst''' unter Freetz => Dienste starten.[[BR]]
+2.) [http://freetz.org/wiki/help/howtos/common/newbie#PuTTYstarten Putty starten] und sich per telnet mit der Box verbinden (nicht per ssh) [[BR]]
+   Putty wird wie folgt eingestellt: 
+[[Screenshot(87,width=409,height=325)]] 
+   Nach drücken von '''Open''' und Eingabe folgender Daten '''[ login: root ]''' und '''[ Password: freetz ]''' solltet ihr folgendes Bild sehen:
+[[Screenshot(88,width=409,height=325)]] 
+[[BR]]
+[[BR]]
+3.) Nach dem Einloggen können wir nun beginnen FTP-User anzulegen.[[BR]]
+
+==== Wie ist der adduser-Befehl:; ====
+ `adduser -h '''Verzeichnis''' '''Benutzername'''`[[BR]]
+   '''Verzeichnis''': Ordner auf dem Stick, der dem Benutzer zugeordnet werden soll, z.B. '''/var/media/ftp/USB/''' [[BR]] 
+   '''Benutzername''': Name des Benutzers [[BR]]
+Beim Erstellen des Benutzers wird danach gleich das Passwort abgefragt. Dieses muss zweimal eingegeben werden, und es wird dabei nichts am Bildschirm angezeigt, auch keine Sterne. [[BR]]
+===== FTP-User für unser Image anlegen: =====
+Erzeugen wollen wir nun folgende User:[[BR]]
+  * '''admin'''
+  * '''paul'''
+  * '''mary'''
+  * '''gast'''
+Hierzu werden nun folgende Befehle in Putty eingegeben (Bitte auf Groß und Kleinschreibung achten): 
+====== admin ======
+{{{
+adduser -h /var/media/ftp/USB admin
+}}}
+====== paul ======
+{{{
+adduser -h /var/media/ftp/USB/data paul
+}}}
+====== mary ======
+{{{
+adduser -h /var/media/ftp/USB/data mary
+}}}
+====== gast ======
+{{{
+adduser -h /var/media/ftp/USB/data/gast gast
+}}}
+So sollte z.B. die Meldung für admin im Putty-Fenster aussehen:[[BR]]
+{{{
+/var/mod/root # adduser -h /var/media/ftp/USB admin
+adduser: /var/media/ftp/USB: Operation not permitted
+Changing password for admin
+New password:
+Bad password: too short
+Retype password:
+Password for admin changed by root
+}}}
+Die Meldung `Operation not permitted` kommt, wenn es sich um ein Dateisystem mit FAT oder NTFS Dateisystem handelt.[[BR]]
+
+Wenn man das Paßwort erneut wegen Falscheingabe ändern will, verwendet man dazu den Befehl `passwd `'''`Benutzername`'''. Man wird dann wieder zweimal nach dem neuen Paßwort gefragt.[[BR]]
+Einen Benutzer löschen kann man mit dem Befehl `deluser `'''`Benutzername`'''.[[BR]]
+In jedem Fall müssen die Änderungen mit dem Befehl '''modsave all''' wieder gespeichert werden.[[BR]]
+Anzeigen kann man die Datei mit dem Befehl '''cat /var/tmp/passwd'''. [[BR]]
+Nun melden wir uns noch mit folgendem Befehl von der Putty Konsole ab:[[BR]]
+{{{
+exit
+}}}
+
+=== AVM-Firewall ===
+==== Einstellungsseite ====
+1.) Seite wechseln über den Pkt. Forwarding). 
+2.) FTP-Port freigegeben siehe Bilder).  
+[[Screenshot(85)]]  
+Nach eingabe der Zahlen (siehe Oben) einfach auf **Hinzufügen** drücken und das Ergenbins sollte wie Folgt aussehen: 
+[[Screenshot(86)]] 
+Um diese Einstellung nun endgültig zu speichern einfach den Haken (Blinkendes Kästchen) setzen und den Reeboot der Box abwarten. [[BR]]
+
+== Sonstige Fragen ==
+
+=== Wie muß ich meinen PC einstellen damit ich ein Image bauen kann ===
+==== Linux ====
+Bei Fragen zu Linux bitte [wiki:help/howtos/common/install hier] nachsehen
+==== Windows ====
+Für die Installation braucht ihr einen virtuellen PC (z.B. VirtualBox) sowie ein Linux-System wie z.B.:Freetz-Linux: [[BR]]
+1.) [https://www.virtualbox.org/wiki/Downloads/ VirtualBox-Player] [[BR]] downloaden und über die Setup.exe installieren.[[BR]]
+2.) [http://sourceforge.net/projects/freetz-linux/files/freetz-linux-1.3.2/ Freetz-Linux] herrunterladen und danach nach '''C:\Freetz-Linux''' kopieren.[[BR]]
+3.) VirtualBox starten[[BR]]
+[[Screenshot(269,width=409,height=325)]] 
+4.) VirtualBox-Image (freetz-linux-1.3.1.ova) einbinden über Datei => 
+Appliance für Import => freetz-linux-1.3.1.ova (einfach durchklicken bis die Datei importiert wird.)[[BR]]
+[[Screenshot(270,width=409,height=325)]]
+5.) VM starten über doppelklick auf '''freetz-linux''' [[BR]]
+6.) Solltet ihr folgenden Fehler beim starten haben:[[BR]]
+[[Screenshot(271,width=409,height=325)]]
+müßt ihr die VB noch auf Eure Netzwerkkarte einstellen:
+[[Screenshot(272,width=409,height=325)]]
+
+=== Image auf den PC kopieren ===
+Es gibt mehere Arten das fertige Image auf den PC zu kopieren: [[BR]]
+   '''a.) per FTP und !!TotalCommander:''' [[BR]]
+Den aktuellen TotalComander findet ihr auf der Homepage vom [http://www.ghisler.com/ddownload.htm TotalCommander] [[BR]]
+[[BR]] 
+Als nächstes müssen wir die Ip-Adresse des Freetz-Linux ermitteln und das machen wir über den Befehl '''ifconfig''' in der Freetz-Linux-Umgebung: 
+[[Screenshot(102,width=409,height=325)]] 
+Als nächstes installieren wir den TotalCommander auf dem PC und starten diesen dann. Die Freewaremeldung muss mit dem drücken der entsprechenden Zahl (hier im Bsp. die 1.) bestätigt werden. Durch das drücken entstehen keine weiteren Kosten! 
+[[Screenshot(103,width=409,height=325)]] 
+Nun richten wir die FTP-Verbindung im TC (TotalCommander) ein: [[BR]]
+[[Screenshot(104,width=409,height=325,align=left)]] 
+[[Screenshot(105,width=409,height=325,align=left)]] 
+[[Screenshot(106,width=409,height=325)]]
+[[Screenshot(107,width=409,height=325,align=left)]] 
+[[Screenshot(108,width=409,height=325)]]
+   '''b.) per SFTP und WinSCP:''' [[BR]]
+Hier nun der Weg per SFTP:[[BR]] Besorgt Euch einen SFTP-Client, z.B. [http://www.winscp.net/ WinSCP]. [[BR]] 
+Ihr benötigt die IP-Adresse Eures virtuellen Freetz-Linux, diese erfährt man durch
+{{{
+ifconfig
+}}}
+Nach Start von WinSCP kann man im Ameldefenster die erforderlichen Daten eingeben: [[BR]]
+Rechnername: eben ermittelte IP-Adresse [[BR]]
+Portnummer: 22 [[BR]]
+Benutzername: freetz [[BR]] 
+Kennwort: freetz [[BR]] 
+Protokoll: SFTP[[BR]]
+[[BR]]
+Nach erfolgreicher Verbindung navigiert man in einer NC-artigen Ansicht zum entsprechenden /images Verzeichnis und kopiert sich die Firmware mit '''F5 Kopieren'''.
+[[BR]]
+[[BR]]
+Nach erfolgreicher Verbindung navigiert man in einer NC-artigen Ansicht zum entsprechenden /images Verzeichnis und kopiert sich die Firmware mit '''F5 Kopieren'''.
+[[BR]]
+[[BR]]
+   '''c.) Using a mapped network drive:''' [[BR]]
+Freetz-linux has samba configured by default, which allows you to map the freetz-linux drive as a network drive in Windows.
+[[Screenshot(275,width=409,height=325,left)]]
+For username and password: freetz/freetz
+[[BR]]
+
+
+=== Wie kann man eine gefreetzte Fritzbox updaten ===
+Eine genaue Beschreibung und alles was ihr wissen müßt zu diesem Thema steht in den FAQ's
+
+=== Einige Programme haben ähnliche Funktionen, welche sind performanter? ===
+  FTP: bftpd ist nicht zu empfehlen wenn Wert auf hohen Datendurchsatz gelegt wird da man damit nur in etwa die Hälft der möglichen Leistung erreicht. Vsftpd wird von sehr vielen benutzt und wird daher empfohlen [[BR]]
+  WWW: Wer Webseiten auf seiner Box hostet sollte vom Apache Abstand nehmen wenn es in Richtung Produktivsystem geht. Lighttpd stellt eine gute Alternative dar. [[BR]]
+  Webfilter: Oft wird gefragt ob man Privoxy zum Seitenfiltern nutzen kann. Die Antwort ist ja, die bisherige Empfehlung war das aber eher zu vermeiden und stattdessen Iptables zu nutzen weil sonst das gesamte Internet langsamer läuft. [[BR]]
+[[BR]]
+[[BR]]
+== Linux-Befehle (Zielgruppe Newbies) ==
+=== allgemeine Linux-Befehle ===
+Einen Grundsatz an Linux-Befehlen findet Ihr:[[BR]] [[BR]]  a.)[http://www.linux-fuer-alle.de/doc_show.php?docid=33 Link 1] [[BR]] b.)[http://www.larsrichter-online.de/lmember/linuxbefehle.php Link 2] [[BR]]
+
+=== Der vi Editor ===
+[[BR]] '''Vi''' ist ein Texteditor in der Freetz/Linux-Umgebung. Mit diesem können Dateien und Skripte bearbeitet werden. [[BR]] Dieses Möglichkeit sollte aber von Newbies '''nur nach Anweisung oder in Zusammenarbeit mit einem erfahrenen Freetz-Nutzer/Linux-Profi''' genutzt werden, da es sehr einfach ist die Box mit '''vi nicht mehr erreichbar zu machen'''. Für die Konfigurationsdateien im Flash der FritzBox muss das Skript nvi genutzt werden, da man diese Dateien nicht direkt mit vi bearbeiten kann. Mit '''nvi''' geht es noch schneller die Box lahm zu legen! '''nvi''' überschreibt auch, wenn man nichts geändert hat. [[BR]] [[BR]] 
+a.) [http://www.my-space.li/schule/editor_VI.pdf Kurzanleitung Editor "vi"][[BR]]
+b.) [http://www.ip-phone-forum.de/showthread.php?p=313356 Hilfe aus dem IPPF] [[BR]] 
+c.) [http://www.jux-net.info/jux2/docs/sys100/comm_13.html weitere Homepage][[BR]]

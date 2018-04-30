@@ -1,0 +1,145 @@
+[[TOC(help/wikiedit,help/wikiedit/*,heading=Inhaltsverzeichnis)]]
+
+= Tabellen =
+
+Auch hier haben wir dem "schnöden Standard" ein wenig nachgeholfen - und so gibt es verschiedene Möglichkeiten der Tabellen-Formatierung. Den einzelnen Details möchte ich eine kurze Übersicht voranstellen:
+
+== Überblick der verschiedenen Formate ==
+
+=== Standard ===
+Den Standard haben wir ein klein wenig "aufgebohrt", sodass er im Allgemeinen ausreichen sollte. Hier stehen innerhalb der einzelnen Zellen alle Trac-Wiki Formatierungen zur Verfügung - dafür gestaltet es sich etwas schwieriger, Zeilenumbrüche einzubringen oder Zellen zu verbinden. Normalerweise ist dieses Format jedoch die erste Wahl.
+
+=== RST ===
+[http://de.wikipedia.org/wiki/ReStructuredText Re-Structured Text] bietet bei relativ einfacher Syntax zahlreiche zusätzliche Formatierungsmöglichkeiten (siehe auch [wiki:WikiRestructuredText#BiggerReSTExample hier]. Dafür sind innerhalb eines solchen Blocks keinerlei Wiki-Markups möglich - womit RST für viele Dinge nicht in Frage kommt.
+
+=== MediaWiki ===
+Da wir auch das [http://trac-hacks.org/wiki/MediaWikiPluginMacro MediaWiki Plugin] eingebunden haben, bieten sich damit zahlreiche zusätzliche Möglichkeiten. Aber auch hier gilt: Trac-Wiki Syntax ist innerhalb eines Media-Wiki Blocks nicht möglich.
+
+== Anwendung: Wie erstelle ich eine Tabelle? ==
+
+=== Standard ===
+Mit dem Trac-Wiki Standard (in gepatchter Form ;)) ist dies am einfachsten möglich:
+{{{
+|||   ||| 1 ||| 2 ||| 3 ||
+||| A ||  X ||    ||  X ||
+||| B ||    ||  X ||    ||
+||| C ||  X ||  X ||    ||
+}}}
+wird zu
+|||   ||| 1 ||| 2 ||| 3 ||
+||| A ||  X ||    ||  X ||
+||| B ||    ||  X ||    ||
+||| C ||  X ||  X ||    ||
+
+=== RST ===
+Hier sieht das ein wenig anders aus:
+
+{{{
+{{{
+#!rst
+=====  =====  ======
+   Inputs     Output
+------------  ------
+  A      B    A or B
+=====  =====  ======
+False  False  False
+True   False  True
+False  True   True
+True   True   True
+=====  =====  ======
+}}}
+}}}
+
+Wird zu
+{{{
+#!rst
+=====  =====  ======
+   Inputs     Output
+------------  ------
+  A      B    A or B
+=====  =====  ======
+False  False  False
+True   False  True
+False  True   True
+True   True   True
+=====  =====  ======
+}}}
+
+=== MediaWiki ===
+Hier haben wir auch wieder zahlreiche Möglichkeiten - von denen hier nur zwei aufgezeigt werden sollen:
+
+==== Einfaches Beispiel ====
+Gibt man folgendes ein:
+
+{{{
+{{{
+#!mediawiki
+{|class="table"
+|-
+! Überschrift 1. Spalte
+! Überschrift 2. Spalte
+|-
+| Inhalt 1.Zeile 1.Spalte
+| Inhalt 1.Zeile 2.Spalte
+|}
+}}}
+}}}
+
+kommt dabei das heraus:
+
+{{{
+#!mediawiki
+{|class="table"
+|-
+! Überschrift 1. Spalte
+! Überschrift 2. Spalte
+|-
+| Inhalt 1.Zeile 1.Spalte
+| Inhalt 1.Zeile 2.Spalte
+|}
+}}}
+
+==== komplexeres Beispiel ====
+Zu guter Letzt ein leicht komplexeres Beispiel, bei dem einige Formatierungen (Hintergrund-Farbe etc.) explizit mit vorgegeben, und auch ein paar Zellen verbunden werden. Eingegeben wurde also:
+
+{{{
+{{{
+#!mediawiki
+{|border="1" cellpadding="2px" style="border-collapse:collapse;border:1px solid #8cacbb;border-width:1px;"
+|-
+!background-color="#ff0"|'''Überschrift'''
+!background-color="#ff0"|'''Zweite Überschrift'''
+|-
+| Inhalt Zelle 1-1
+| Inhalt Zelle 1-2
+|-
+| colspan="2" align="center"|Verbundene Zellen zentriert
+|-
+| Inhalt Zelle 3-1
+| rowspan="2"|Verbundene Zelle
+|-
+| Inhalt Zelle 4-1
+|}
+}}}
+}}}
+
+Und dabei kam folgendes heraus:
+
+{{{
+#!mediawiki
+{|border="1" cellpadding="2px" style="border-collapse:collapse;border:1px solid #8cacbb;border-width:1px;"
+|-
+!background-color="#ff0"|'''Überschrift'''
+!background-color="#ff0"|'''Zweite Überschrift'''
+|-
+| Inhalt Zelle 1-1
+| Inhalt Zelle 1-2
+|-
+| colspan="2" align="center"|Verbundene Zellen zentriert
+|-
+| Inhalt Zelle 3-1
+| rowspan="2"|Verbundene Zelle
+|-
+| Inhalt Zelle 4-1
+|}
+}}}

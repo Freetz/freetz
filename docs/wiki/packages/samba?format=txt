@@ -1,0 +1,102 @@
+[[TOC(heading=Inhaltsverzeichnis)]]
+
+= Samba =
+[[Screenshot(204,width=381,height=490,align=right,description=[screenshot:204 $description])]]   Dieses Paket macht angeschlossen USB-Speicher oder das Dateisystem der Fritz!Box für Windows als Dateifreigabe verfügbar (die Beschreibung basiert auf freetz-1.2 mit Samba 3.0.37). Unter Linux kann dieser Speicher mittels ''smbmount'', ''cifsmount'', etc. verfügbar gemacht werden. Natürlich ergibt ein Samba-Server auf der Fritz!Box nur dann Sinn, wenn man einen USB-Datenträger angeschlossen hat oder wenn man einen [wiki:packages/davfs2 WebDav] im LAN bereitstellen möchte - ein Samba-Client kann jedoch durchaus auch genutzt werden, um der Fritz!Box externen Speicher zur Verfügung zu stellen - etwa von einem [http://de.wikipedia.org/wiki/Network_Attached_Storage NAS] Device.
+
+Die Dateifreigabe ist zwar auch Bestandteil neuerer AVM Firmware, aber das Freetz-Paket erweitert die Möglichkeiten:
+
+|| || AVM^1^ || freetz^2^ || Samba^3^ ||
+|| Automatische Freigabe von USB-Speicher || (./) || (./) || (./) ||
+|| * mit / ohne Passwort || (./) || (./) || (./) ||
+|| * nur lesen / lesen und schreiben || (./) || (./) || (./) ||
+|| * für FAT, FAT32 || (./) || (./) || (./) ||
+|| * für EXT2, EXT3, NTFS || -^4^ || (./) || (./) ||
+|| Arbeitsgruppe und Servername konfigurierbar || - || - || (./) ||
+|| Dateigröße über 2GB || - || - || (./) ||
+|| In der Netzwerkumgebung sichtbar || - || - || (./) ||
+|| Manuell konfigurierte Freigaben || - || - || (./) ||
+|| Master Browser || - || - || (./) ||
+|| Detailierte Konfiguration des Servers || - || - || (./) ||
+
+^1^ wenn Dateifreigabe für das Modell vorgesehen ist[[BR]] ^2^ Freetz mit AVM-Samba[[BR]] ^3^ Freetz mit "eigenem" Samba[[BR]] ^4^ NTFS/EXT2 bei Modellen ab Generation x2xx (EXT2 nicht bei 7270v1), EXT3/4 bei Modellen ab Firmware 5.x
+
+== Package ins Image einbinden ==
+Im menuconfig unter `Package selection -> Standard packages` befindet sich
+
+ * ''Samba 3.0.37 smbd (Filesharing)'' [[BR]] Damit wird Dateifreigabe möglich.
+ * ''Samba 3.0.37 nmbd (Nameservices)'' [[BR]] Dies macht die Fritz!Box in der Netzwerkumgebung sichtbar. `nmbd` kann nur gewählt werden, wenn `smbd` ausgewählt ist.
+
+== Verwandte Themen ==
+Unter `Patches` befindet sich
+
+ * ''Patch USB storage names'' ... mit zusätzlichen Unterpunkten. [[BR]] Diese beeinflussen ebenfalls Details der Dateifreigabe.
+ * ''Remove smbd'' /!\ Diese Option sollte deselektiert sein und wird bei der Auswahl des Samba-Packages aus menuconfig entfernt.
+
+== Konfigurieren des Pakets ==
+=== AVM Konfiguration ===
+Die Optionen der original AVM Firmware sind unverändert verfügbar (unter ''Erweiterte Einstellungen -> USB-Geräte -> USB-Speicher'') . Dies sind:
+
+ * aktivieren / deaktivieren des Dateiservers (Samba)
+ * Zugriffsberechtigung für die automatischen Freigaben: nur lesen / lesen und schreiben
+ * Kennwort
+
+=== Freetz Konfiguration ===
+Im Freetz Webinterface werden die zusätzlichen Möglichkeiten des Pakets konfiguriert.
+
+==== Pakete -> Samba ====
+ * '''Arbeitsgruppe''' [[BR]] unter dieser Arbeitsgruppe wird der Server in der Netzwerkumgebung von Windows sichtbar
+ * '''Name des Servers''' [[BR]] der Name des Server in seiner Arbeitsgruppe
+ * '''Beschreibung des Servers''' [[BR]] und seine zusätzliche Beschreibung
+ * Optionen für den '''Master Browser''' [[BR]] Wenn mehrere Windows Systeme im gleichen Netzwerksegment vorhanden sind, übernimmt eines die Aufgabe, eine Liste mit verfügbaren Systemen zu verwalten. Die folgenden Parameter bestimmen, ob die Fritz!Box diese Aufgabe übernimmt und ''Master Browser'' wird. Details unter http://us3.samba.org/samba/docs/using_samba/ch07.html#samba2-CHP-7-TABLE-2
+   * OS Level für Election [[BR]] Mit dem Standardwert von 20 wird die Fritz!Box fast immer ''Master Browser''.
+   * Bevorzugter Master [[BR]] Wenn dies gewählt ist, versucht die Fritz!Box nach dem Booten einen eventuell schon vorhanden Master Browser abzulösen.
+ * Auswahl der '''Netzwerkschnittstelle''' [[BR]] Hier wird das Netzwerksegment angegeben, für das die Box die Dateifreigabe bereit stellt. Es kann leer gelassen werden. Dann gilt die Dateifreigabe für alle Netzwerksegment, in der sich die Box befindet. [[BR]] /!\ '''Achtung:''' Wenn die Box direkt mit dem Internet verbunden ist, sollte man sicher sein der der interne Firewall in Ordnung ist. Sonst könnte das eine Angriffsmöglichkeit aus dem gesamten Internet eröffnen.
+ * Startmodus[[BR]]Hier kann entweder '''automatisch''' oder '''manuell''' ausgewählt werden. (''TODO: Wird smbd auch von den Hotplug-Skripten gestartet''?)
+
+[[span(id=shares)]]
+
+==== Einstellungen -> Samba Freigaben ====
+Zusätzlich zum USB-Speicher, der beim Anschließen automatisch eine Freigabe erzeugt, können hier statische Freigaben definiert werden. Z. B. das Dateisystem der Fritz!Box oder ausgewählte Verzeichnisse des USB-Speichers als selbständige Freigabe. [[BR]] Konfiguriert werden kann:
+
+ * '''Path''': Der Fritz!Box-interne Pfad des Verzeichnisses, das freigegeben wird.
+ * '''Name''': Unter diesem Namen ist die Freigabe für Windows sichtbar
+ * '''guest ok''': ''1'': Legt fest, dass auf diese Freigabe auch ohne Kennwort zugegriffen werden kann. Das Kennwort wird in der Konfiguration der Fritz!Box festgelegt.
+ * '''read only''': ''1'': Auf diese Freigabe kann nur lesend zugegriffen werden. ''0'': Lese- und Schreibzugriff
+ * '''comment 1''': ''-'': Beschreibung folgt
+ * '''comment 2''': Beschreibung / Kommentar, den Windows mit dieser Freigabe anzeigt.
+
+'''Beispiel:'''
+
+{{{
+/var/media/ftp/uStor01/Videos hdd1 1 0 - Videos 
+/var/media/ftp/uStor01/Bilder hdd1 1 0 - Bilder 
+/var/media/ftp/uStor01/Musik hdd1 1 0 - Musik 
+}}}
+Bei Nutzung eines USB-Speichers ist zu beachten, dass die Zugriffsrechte entsprechend gesetzt sein müssen. Wurde der Speicher an einem Fremdrechner z. B. mit ext2 oder ext3 formatiert, sind oft keine Schreibrechte und auch nicht `ftpuser` als Eigentümer gesetzt. In der FRITZ!Box kann das mit folgenden Kommandos korrigiert werden:
+
+{{{
+chmod -R 777 uStor01
+}}}
+{{{
+chown ftpuser -R uStor01
+}}}
+[[span(id=sharesx)]]
+
+==== Einstellungen -> Samba Erweitert ====
+Hier können sich die Experten austoben und beliebige globale Optionen für Samba definieren: Der eingegebene Text wird verbatim ans Ende der `[global]` - Sektion in der Samba-Konfiguration eingefügt. [[BR]] Details unter http://samba.org/samba/docs/using_samba/ch06.html
+
+Weitere Tuningmöglichkeiten gibt es hier: http://lug.krems.cc/docu/samba/appb_02.html
+
+Für Performanceverbesserungen kann folgendes unter 'Erweitert' eingetragen werden:[[BR]]
+
+{{{
+socket options = TCP_NODELAY IPTOS_LOWDELAY
+read raw = yes
+write raw = yes
+oplocks = yes
+max xmit = 65535
+dead time = 15
+getwd cache = yes
+}}}
+
+Nichtexperten können diese Einstellung einfach leer lassen.[[BR]] Falls bei Windows 7 64-bit ein BSOD auftritt "oplocks = no" setzen, siehe [http://www.ip-phone-forum.de/showpost.php?p=1538911&postcount=1 IPPF].

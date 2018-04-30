@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+  
+
+
+  <head>
+    <title>
+      help/howtos/common/busybox_httpd – Freetz
+    </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!--[if IE]><script type="text/javascript">
+      if (/^#__msie303:/.test(window.location.hash))
+        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
+    </script><![endif]-->
+        <link rel="search" href="http://freetz.org/search" />
+        <link rel="help" href="../../../TracGuide.html" />
+        <link rel="alternate" href="busybox_httpd%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
+        <link rel="up" href="../common.html" title="Übergeordnete Wiki-Seite anzeigen" />
+        <link rel="start" href="http://freetz.org/wiki" />
+        <link rel="stylesheet" href="../../../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
+        <link rel="shortcut icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+      <link type="application/opensearchdescription+xml" rel="search" href="http://freetz.org/search/opensearch" title="Freetz durchsuchen" />
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/jquery.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/babel.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/messages/de.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/trac.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/search.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/folding.js"></script>
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
+        $("#content").find(".wikianchor").each(function() {
+          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
+        });
+        $(".foldable").enableFolding(true, true);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://freetz.org/wiki"><img src="../../../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
+      </div>
+      <form id="search" action="http://freetz.org/search" method="get">
+        <div>
+          <label for="proj-search">Suche:</label>
+          <input type="text" id="proj-search" name="q" size="18" value="" />
+          <input type="submit" value="Suche" />
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="http://freetz.org/login">Anmelden</a></li><li><a href="http://freetz.org/prefs">Einstellungen</a></li><li><a href="../../../TracGuide.html">Hilfe/Anleitung</a></li><li><a href="http://freetz.org/about">Über Trac</a></li><li><a href="http://freetz.org/notification" title="Wiki Pages Change Notifications">My Notifications</a></li><li><a href="http://freetz.org/register">Registrieren</a></li><li class="last"><a href="../../../Impressum.html">Impressum</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first active"><a href="http://freetz.org/wiki">Wiki</a></li><li><a href="http://freetz.org/timeline">Journal</a></li><li><a href="http://freetz.org/roadmap">Projektplan</a></li><li><a href="http://freetz.org/browser">Quellen durchsehen</a></li><li><a href="http://freetz.org/report">Tickets anzeigen</a></li><li><a href="http://freetz.org/search">Suche</a></li><li><a href="http://freetz.org/tags">Tags</a></li><li><a href="http://freetz.org/downloads">Downloads</a></li><li class="last"><a href="http://freetz.org/screenshots">Bildschirmfotos</a></li>
+    </ul>
+  </div>
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="busybox_httpd..html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="http://freetz.org/wiki/help/howtos/common/busybox_httpd.en" title="(not available)">English</a></li></ul></div><div id="main">
+      <div id="pagepath" class="noprint">
+  <a class="pathentry first" title="Zeige WikiStart an" href="http://freetz.org/wiki">Wiki:</a><a class="pathentry" href="../../../help.html" title="Zeige help an">help</a><span class="pathentry sep">/</span><a class="pathentry" href="../../howtos.html" title="Zeige help/howtos an">howtos</a><span class="pathentry sep">/</span><a class="pathentry" href="../common.html" title="Zeige help/howtos/common an">common</a><span class="pathentry sep">/</span><a class="pathentry" href="busybox_httpd.html" title="Zeige help/howtos/common/busybox_httpd an">busybox_httpd</a>
+</div>
+      <div id="ctxtnav" class="nav">
+        <h2>Kontext-Navigation</h2>
+        <ul>
+          <li class="first"><a href="../common.html">Aufwärts</a></li><li><a href="../../../WikiStart.html">Startseite</a></li><li><a href="../../../TitleIndex.html">Inhaltsverzeichnis</a></li><li><a href="busybox_httpd%3Faction=history.html">Änderungshistorie</a></li><li class="last"><a href="http://freetz.org/notification/help/howtos/common/busybox_httpd." title="Watch Page">Watch Page</a></li>
+        </ul>
+        <hr />
+      </div>
+    <div id="content" class="wiki">
+      <div class="wikipage searchable">
+        
+          <div id="wikipage" class="trac-content"><p>
+</p><div class="wiki-toc"><h4>Howtos: Allgemeines</h4><ol><li><a href="shutdown.html#RechnerimNetzherunterfahren">Rechner im Netz herunterfahren</a><ol><li><a href="shutdown.html#Voraussetzungen">Voraussetzungen</a></li><li><a href="shutdown.html#KonfigurationderFritzbox">Konfiguration der Fritzbox</a></li><li><a href="shutdown.html#KonfigurationdesherunterzufahrendenLinux-Rechners">Konfiguration des herunterzufahrenden Linux-Rechners</a></li><li><a href="shutdown.html#KonfigurationdesherunterzufahrendenWindows-RechnersgetestetunterWindowsXP">Konfiguration des herunterzufahrenden Windows-Rechners (getestet unter &hellip;</a></li><li><a href="shutdown.html#Bemerkungen">Bemerkungen</a></li></ol></li><li><a href="newbie/other.html#SonstigeInfosfürNewbies">Sonstige Infos für Newbie's</a><ol><li><a href="newbie/other.html#WiekönntemeinnächstesImageaussehen:">Wie könnte mein nächstes Image aussehen:</a></li><li><a href="newbie/other.html#SonstigeFragen">Sonstige Fragen</a></li><li><a href="newbie/other.html#Linux-BefehleZielgruppeNewbies">Linux-Befehle (Zielgruppe Newbies)</a></li></ol></li><li><a href="newbie/errors.html#WasmacheichwennsichmeineBoxnichtFreetzenlässt">Was mache ich, wenn sich meine Box nicht Freetzen lässt</a><ol><li><a href="newbie/errors.html#FAQslesenundTicketsdurchsuchen">FAQ's lesen und Tickets durchsuchen</a></li><li><a href="newbie/errors.html#SuchfunktiondesIPPFbenutzen">Suchfunktion des IPPF benutzen</a></li><li><a href="newbie/errors.html#EinenneuenThreadimIPPFeröffnen">Einen neuen Thread im IPPF eröffnen</a></li></ol></li><li><a href="first_trunk.html#Wiebaueichmeinenerstentrunk">Wie baue ich meinen ersten trunk ?</a><ol><li><a href="first_trunk.html#BeschreibungfüreinTrunk-Imageinkl.SambaundVSFTP">Beschreibung für ein Trunk-Image inkl. Samba und VSFTP</a></li><li><a href="first_trunk.html#Trunk-Imagebauen">Trunk-Image bauen</a></li><li><a href="first_trunk.html#ImagefüreinenSpeedportbauen">Image für einen Speedport bauen</a></li></ol></li><li><a href="wol.html#WakeonLanWoLmitderFritzbox">Wake on Lan (WoL) mit der Fritzbox</a><ol><li><a href="wol.html#MöglichkeitenderNutzungvonWoL">Möglichkeiten der Nutzung von WoL</a></li><li><a href="wol.html#Callmonitor">Callmonitor</a></li><li><a href="wol.html#Shellscripte">Shellscripte</a></li></ol></li><li><a href="create_swap.html#Swap-Fileanlegen">Swap-File anlegen</a><ol><li><a href="create_swap.html#WasisteinSwap-Fileundwofürbraucheiches">Was ist ein Swap-File, und wofür brauche ich es?</a></li><li><a href="create_swap.html#Wielegeichesan">Wie lege ich es an?</a></li></ol></li><li><a href="install.html#Installation">Installation</a><ol><li><a href="install.html#VirtuellesLinux:Freetz-LinuxfürVMware-Player">Virtuelles Linux: Freetz-Linux für VMware-Player</a></li><li><a href="install.html#Vorbereitung">Vorbereitung</a></li><li><a href="install.html#DurchführungmitWindowsOS">Durchführung mit Windows OS</a></li><li><a href="install.html#DurchführungmitLinuxOS">Durchführung mit Linux OS</a></li><li><a href="install.html#coLinuxandLinuxspeedLinux">coLinux / andLinux / speedLinux</a></li><li><a href="install.html#Cygwin">Cygwin</a></li><li><a href="install.html#MacOSX">Mac OS X</a></li></ol></li><li><a href="install.html#Aktualisierung">Aktualisierung</a></li><li><a href="install.html#Fehlerbehebung">Fehlerbehebung</a></li><li><a href="install.html#ManuelleseinspielendesImages">Manuelles einspielen des Images</a></li><li><a href="install.html#WeiterführendeLinks">Weiterführende Links</a></li><li><a href="newbie.html#ErsteSchrittemitFreetz">Erste Schritte mit Freetz</a><ol><li><a href="newbie.html#FragenimVorfeld">Fragen im Vorfeld</a></li><li><a href="newbie.html#WiemußichmeinenPCeinstellendamiticheinImagebauenkann">Wie muß ich meinen PC einstellen damit ich ein Image bauen kann?</a></li><li><a href="newbie.html#WiebaueichmeinersteseigenesImageMinimal-Image">Wie baue ich mein erstes eigenes Image (Minimal-Image)</a></li><li><a href="newbie.html#DerFlashvorgang">Der Flashvorgang</a></li><li><a href="newbie.html#WeiterführendeLinks">Weiterführende Links</a></li></ol></li><li><a href="external.html#External">External</a></li><li><a href="external.html#Konfiguration">Konfiguration</a></li><li><a href="external.html#Auswahl">Auswahl</a></li><li><a href="external.html#Installation">Installation</a></li><li><a href="external.html#AutomatischesstartenstoppenvonDiensten">Automatisches starten/stoppen von Diensten</a></li><li><a href="external.html#Firmware-build-ProzessundUpdate">Firmware-build-Prozess und Update</a></li><li><a href="user.html#Benutzerdauerhaftinderpasswdspeichern">Benutzer dauerhaft in der passwd speichern</a><ol><li><a href="user.html#BeschreibungFreetz-1.2.x">Beschreibung (Freetz-1.2.x)</a></li><li><a href="user.html#BeschreibungFreetz-1.1.x">Beschreibung (Freetz-1.1.x)</a></li></ol></li><li class="active"><a href="busybox_httpd.html#KleinerWebservermitBusyBox">Kleiner Webserver mit BusyBox</a><ol><li class="active"><a href="busybox_httpd.html#WeiterführendeLinks">Weiterführende Links</a></li></ol></li><li><a href="install/menuconfig.html#Konfiguration">Konfiguration</a><ol><li><a href="install/menuconfig.html#General">General</a></li><li><a href="install/menuconfig.html#Brandings">Brandings</a></li><li><a href="install/menuconfig.html#Mod">Mod</a></li></ol></li><li><a href="freetz_linux.html#FreetzLinux">Freetz Linux</a><ol><li><a href="freetz_linux.html#FreetzLinuxunterVirtualBox">Freetz Linux unter VirtualBox</a></li><li><a href="freetz_linux.html#FreetzLinuxunterVMWare">Freetz Linux unter VMWare</a></li><li><a href="freetz_linux.html#FreetzLinuxunterVirtualPC">Freetz Linux unter Virtual PC</a></li></ol></li></ol></div><p>
+</p>
+<h1 id="KleinerWebservermitBusyBox">Kleiner Webserver mit BusyBox</h1>
+<p>
+BusyBox enthält einen kleinen Webserver, den man z.B. so starten kann:
+</p>
+<pre class="wiki">httpd -P /var/run/port90.pid -p 90 -c /mod/etc/webcfg.conf -h /var/media/ftp/irgendwo/htdocs/ -r "Port 90"
+</pre><p>
+Diese Zeile startet den Webserver auf Port 90, d.h. um ihn zu erreichen, benutzt man <a class="ext-link" href="http://fritz.box:90"><span class="icon">​</span>http://fritz.box:90</a>.
+Wenn man in /var/media/ftp/irgendwo/htdocs/ eine Datei namens index.html abgelegt hat, wird diese angezeigt.
+</p>
+<p>
+Der Inhalt von Verzeichnissen wird nicht automatisch angezeigt. Dafür kann man ein CGI-Skript mit dem Namen index.cgi im Unterverzeichnis cgi-bin anlegen, im Beispiel also /var/media/ftp/irgendwo/htdocs/cgi-bin/index.cgi.
+</p>
+<pre class="wiki">#!/bin/sh
+
+# standardkonformen HTTP-Header erzeugen
+echo -en "Content-Type: text/html\r\n\r\n"
+cat &lt;&lt; EOF
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Index of ${QUERY_STRING}&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h2&gt;Index of ${QUERY_STRING}&lt;/h2&gt;
+    &lt;table cellspacing="2" border="0"&gt;
+      &lt;tr align="left"&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;&amp;nbsp;&amp;nbsp;Last modified&lt;/th&gt;&lt;th&gt;&amp;nbsp;&amp;nbsp;Size&lt;/th&gt;&lt;/tr&gt;
+      &lt;tr&gt;&lt;td colspan="3"&gt;&lt;hr&gt;&lt;/td&gt;&lt;/tr&gt;
+      &lt;tr&gt;&lt;td&gt;$([ "$QUERY_STRING" == "/" ] || echo '&lt;a href=".."&gt;..&lt;/a&gt;')&lt;/td&gt;&lt;/tr&gt;
+      $(
+        # alle Fehler ins Nirvana umleiten
+        exec 2&gt;/dev/null
+        # Datumsformat 1 zum Finden in der Verzeichnisliste
+        date_format1="[A-Z][a-z]{2} [A-Z][a-z]{2} [ 123][0-9] [0-9]{2}:[0-9]{2}:[0-9]{2} [0-9]{4}"
+        # langer Ersetzungsausdruck (daher separat), der eine Tabellenzeile
+        # generiert
+        replace="&lt;tr&gt;&lt;td&gt;&lt;tt&gt;&lt;a href=\"\3\"&gt;\3&lt;\/a&gt;&lt;\/tt&gt;&lt;\/td&gt;&lt;td&gt;&lt;tt&gt;\&amp;nbsp;\&amp;nbsp;\2&lt;\/tt&gt;&lt;\/td&gt;&lt;td align=right&gt;&lt;tt&gt;\&amp;nbsp;\&amp;nbsp;\1&lt;\/tt&gt;&lt;\/td&gt;&lt;\/tr&gt;"
+        # Datumsformat 2 zum Separieren eines führenden Leerzeichens bei der
+        # Tageszahl (muß durch festes HTML-Leerzeichen &amp;nbsp; ersetzt werden)
+        date_format2="([A-Z][a-z]{2} [A-Z][a-z]{2} ) ([0-9] [0-9]{2}:[0-9]{2}:[0-9]{2} [0-9]{4})"
+        busybox ls -lLep ../${QUERY_STRING} |
+          # im Wurzelverzeichnis "cgi-bin" herausfiltern
+          ([ "$QUERY_STRING" == "/" ] &amp;&amp; grep -v 'cgi-bin' || cat) |
+          # Zeilen numerieren, damit Reihenfolge innerhalb der beiden Gruppen
+          # (Verzeichnisse und der Rest) später erhalten bleibt beim Sortieren
+          awk '{printf("%5d %s\n", NR,$0)}' |
+          # "X" vor Verzeichnisse setzen, "Y" vor den Rest ("X" &lt; "Y")
+          sed -r 's/^([0-9 ]+ d)/X \1/' |
+          sed -r 's/^([0-9 ]+)/Y \1/' |
+          # Sortieren bewirkt Gruppierung der Einträge
+          sort |
+          # Sortierhilfen + nicht benötigte Spalten löschen
+          sed -r 's/^([^ ]+ +){6}(.*)/\2/' |
+          # Dateigrößen für Verzeichnisse durch "---" ersetzen
+          sed -r 's/^[0-9]+(.*)\/$/---\1/' |
+          # eine Tabellenzeile je Verzeichniseintrag erzeugen
+          sed -r "s/^([-0-9, ]+) ($date_format1) +(.*)$/$replace/" |
+          # Sonderfall führendes Leerzeichen bei Tageszahl im Datum
+          sed -r "s/$date_format2/\1\&amp;nbsp;\2/"
+      )
+    &lt;/table&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+EOF
+</pre><p>
+Der BusyBox-httpd kann auch PHP-Skripte ausführen, wenn man das <a class="wiki" href="../../../packages/php.html">PHP-Package</a> installiert hat. Dazu muss man in /mod/etc/webcfg.conf eine neue Zeile einfügen:
+</p>
+<pre class="wiki">*.php:/usr/bin/php-cgi
+</pre><p>
+Damit index.php-Dateien verarbeitet werden, kann man beim index.cgi-Skript nach der ersten Zeile folgende Zeilen einfügen:
+</p>
+<pre class="wiki">if test -s "../${QUERY_STRING}/index.php" ; then
+  echo -e "Status: 302 Found\r"
+  echo -e "Location: index.php\r"
+  exit 0
+fi
+</pre><h2 id="WeiterführendeLinks">Weiterführende Links</h2>
+<ul><li><a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?p=1211135"><span class="icon">​</span>IPPF Artikel</a>
+</li></ul></div>
+          
+          <div class="trac-modifiedby">
+            <span><a href="busybox_httpd%3Faction=diff&amp;version=2.html" title="Version 2 von elmicha">zuletzt geändert</a> <a class="timeline" href="http://freetz.org/timeline?from=2010-10-03T15%3A12%3A55Z&amp;precision=second" title="Siehe Journal am 03.10.2010 15:12:55">vor 7 Jahren</a></span>
+            <span class="trac-print">Zuletzt geändert am 03.10.2010 15:12:55</span>
+          </div>
+        
+        
+      </div>
+      
+
+    </div>
+    <div id="altlinks">
+      <h3>In anderen Formaten herunterladen:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="busybox_httpd%3Fformat=txt">Reiner Text</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" lang="en" xml:lang="en"><hr />
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="../../../../chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
+      <p class="left">Betrieben mit <a href="http://freetz.org/about"><strong>Trac 1.0.1</strong></a><br />
+        von <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right"><div class="field" align="right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations"/><input type="hidden" name="business" value="spenden@freetz.org"/><input type="hidden" name="item_name" value="Freetz Entwickler-Team"/><input type="hidden" name="no_shipping" value="1"/><input type="hidden" name="return" value="http://freetz.org"/><input type="hidden" name="cn" value="Name oder IPPF-Pseudonym"/><input type="hidden" name="currency_code" value="EUR"/><input type="hidden" name="tax" value="0"/><input type="hidden" name="lc" value="DE"/><input type="hidden" name="bn" value="PP-DonationsBF"/><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Zahlen Sie mit PayPal - schnell, kostenlos und sicher!"/><img alt="" border="0" src="http://freetz.org/pixel.gif" width="1" height="1"/></form></div></p>
+    </div>
+  </body>
+</html>

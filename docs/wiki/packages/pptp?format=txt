@@ -1,0 +1,22 @@
+= PPTP Client =
+`"PPTP Client is a Linux, FreeBSD, NetBSD and OpenBSD client for the proprietary Microsoft Point-to-Point Tunneling Protocol, PPTP. Allows connection to a PPTP based Virtual Private Network (VPN)."`
+
+Viele Firmen setzen den PPTP-Server von Microsoft ein. Mit dem Client kann man ein Verbindung zu diesem VPN über das '''Point-to-Point Tunneling Protocol''' ('''PPTP''') aufbauen
+
+/!\ Das PPTP-Package benötigt "replace kernel".
+
+== PPTP Konfiguration ==
+[[BR]]'''Hostname''': `VPN-Server `(Beispiel vpn.tolledomain.de)
+[[BR]]'''Benutzername''': `VPN-Benutzername `(Bei Windows bitte Domäne so schreiben -> DOMÄNE/user oder DOMÄNE!\\user, nicht DOMÄNE\user)
+[[BR]]'''Servername''': `PPTP`
+
+== IP Routing ==
+[[BR]]Aktivieren und in das Textfeld das Firmennetz samt Subnetzmaske reinschreiben (z.B. 10.0.0.0 255.255.255.0)
+
+Die Änderungen übernehmen und nochmal auf die Seite. Jetzt auf `PPPD: chap-secrets bearbeiten` klicken und dort folgendes eintragen: `VPN-Username PPTP VPN-Password *`[[BR]]''Wichtig'': VPN-Username und VPN-Password sind durch eure Sachen zu ersetzen!
+
+Danach unter Dienste das PPTP-Package starten und per SSH von der Fritzbox einen Rechner im Firmennetz anpingen.
+
+Routing/NAT infos folgen
+
+Screenshot?

@@ -1,0 +1,345 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+  
+
+
+  <head>
+    <title>
+      help/howtos/security/switch_config – Freetz
+    </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!--[if IE]><script type="text/javascript">
+      if (/^#__msie303:/.test(window.location.hash))
+        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
+    </script><![endif]-->
+        <link rel="search" href="http://freetz.org/search" />
+        <link rel="help" href="../../../TracGuide.html" />
+        <link rel="alternate" href="switch_config%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
+        <link rel="up" href="../security.html" title="Übergeordnete Wiki-Seite anzeigen" />
+        <link rel="start" href="http://freetz.org/wiki" />
+        <link rel="stylesheet" href="../../../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
+        <link rel="shortcut icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+      <link type="application/opensearchdescription+xml" rel="search" href="http://freetz.org/search/opensearch" title="Freetz durchsuchen" />
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/jquery.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/babel.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/messages/de.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/trac.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/search.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/folding.js"></script>
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
+        $("#content").find(".wikianchor").each(function() {
+          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
+        });
+        $(".foldable").enableFolding(true, true);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://freetz.org/wiki"><img src="../../../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
+      </div>
+      <form id="search" action="http://freetz.org/search" method="get">
+        <div>
+          <label for="proj-search">Suche:</label>
+          <input type="text" id="proj-search" name="q" size="18" value="" />
+          <input type="submit" value="Suche" />
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="http://freetz.org/login">Anmelden</a></li><li><a href="http://freetz.org/prefs">Einstellungen</a></li><li><a href="../../../TracGuide.html">Hilfe/Anleitung</a></li><li><a href="http://freetz.org/about">Über Trac</a></li><li><a href="http://freetz.org/notification" title="Wiki Pages Change Notifications">My Notifications</a></li><li><a href="http://freetz.org/register">Registrieren</a></li><li class="last"><a href="../../../Impressum.html">Impressum</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first active"><a href="http://freetz.org/wiki">Wiki</a></li><li><a href="http://freetz.org/timeline">Journal</a></li><li><a href="http://freetz.org/roadmap">Projektplan</a></li><li><a href="http://freetz.org/browser">Quellen durchsehen</a></li><li><a href="http://freetz.org/report">Tickets anzeigen</a></li><li><a href="http://freetz.org/search">Suche</a></li><li><a href="http://freetz.org/tags">Tags</a></li><li><a href="http://freetz.org/downloads">Downloads</a></li><li class="last"><a href="http://freetz.org/screenshots">Bildschirmfotos</a></li>
+    </ul>
+  </div>
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="switch_config..html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="http://freetz.org/wiki/help/howtos/security/switch_config.en" title="(not available)">English</a></li></ul></div><div id="main">
+      <div id="pagepath" class="noprint">
+  <a class="pathentry first" title="Zeige WikiStart an" href="http://freetz.org/wiki">Wiki:</a><a class="pathentry" href="../../../help.html" title="Zeige help an">help</a><span class="pathentry sep">/</span><a class="pathentry" href="../../howtos.html" title="Zeige help/howtos an">howtos</a><span class="pathentry sep">/</span><a class="pathentry" href="../security.html" title="Zeige help/howtos/security an">security</a><span class="pathentry sep">/</span><a class="pathentry" href="switch_config.html" title="Zeige help/howtos/security/switch_config an">switch_config</a>
+</div>
+      <div id="ctxtnav" class="nav">
+        <h2>Kontext-Navigation</h2>
+        <ul>
+          <li class="first"><a href="../security.html">Aufwärts</a></li><li><a href="../../../WikiStart.html">Startseite</a></li><li><a href="../../../TitleIndex.html">Inhaltsverzeichnis</a></li><li><a href="switch_config%3Faction=history.html">Änderungshistorie</a></li><li class="last"><a href="http://freetz.org/notification/help/howtos/security/switch_config" title="Watch Page">Watch Page</a></li>
+        </ul>
+        <hr />
+      </div>
+    <div id="content" class="wiki">
+      <div class="wikipage searchable">
+        
+          <div id="wikipage" class="trac-content"><p>
+</p><div class="wiki-toc"><h4>Inhaltsverzeichnis</h4><ol><li class="active"><a href="switch_config.html#KonfigurationdeseingebautenSwitches">Konfiguration des eingebauten Switches</a><ol><li class="active"><a href="switch_config.html#Vorwort">Vorwort</a></li><li class="active"><a href="switch_config.html#VordefinierteSwitch-Konfigurationen">Vordefinierte Switch-Konfigurationen</a></li><li class="active"><a href="switch_config.html#Anpassungeninderar7.cfg">Anpassungen in der ar7.cfg</a></li><li class="active"><a href="switch_config.html#Beispiel">Beispiel</a></li><li class="active"><a href="switch_config.html#Sicherheits-Warnung">Sicherheits-Warnung</a></li><li class="active"><a href="switch_config.html#Kompatibilität">Kompatibilität</a></li></ol></li><li><a href="user_management.html#Benutzerverwaltung">Benutzerverwaltung</a><ol><li><a href="user_management.html#Benutzeranlegen">Benutzer anlegen</a></li><li><a href="user_management.html#Benutzerlöschen">Benutzer löschen</a></li><li><a href="user_management.html#ManuelleAnpassungen">Manuelle Anpassungen</a></li><li><a href="user_management.html#Besonderheiten">Besonderheiten</a></li></ol></li><li><a href="split_wlan_lan.html#WLANvonLANtrennenmitiptables">WLAN von LAN trennen mit iptables</a><ol><li><a href="split_wlan_lan.html#FRITZBoxEinstellung">FRITZBox Einstellung</a></li><li><a href="split_wlan_lan.html#iptables">iptables</a></li></ol></li><li><a href="router_and_firewall.html#FreetzalsinternerRoutermitFirewall">Freetz als interner Router mit Firewall</a><ol><li><a href="router_and_firewall.html#Zielgruppe">Zielgruppe</a></li><li><a href="router_and_firewall.html#Beispielszenario">Beispielszenario</a></li><li><a href="router_and_firewall.html#DieFritzboxmodden">Die Fritzbox modden</a></li><li><a href="router_and_firewall.html#DieFritzboxaufgetrennteNetzeumstellen">Die Fritzbox auf getrennte Netze umstellen</a></li><li><a href="router_and_firewall.html#ErstellenderRouten">Erstellen der Routen</a></li><li><a href="router_and_firewall.html#DieRückrouten">Die Rückrouten</a></li><li><a href="router_and_firewall.html#Firewall">Firewall</a></li><li><a href="router_and_firewall.html#FIXMEkopierterPost">FIXME kopierter Post</a></li></ol></li></ol></div><p>
+</p>
+<h1 id="KonfigurationdeseingebautenSwitches">Konfiguration des eingebauten Switches</h1>
+<p>
+(für unterstützte Modelle siehe <a class="wiki" href="switch_config.html#Kompatibilität">unten</a>)
+</p>
+<p>
+For 7390 read this <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=287518&amp;p=2185822&amp;viewfull=1#post2185822"><span class="icon">​</span>post</a>.<br />
+For 7490 it should be possible by altering ar7.cfg. See the following threads: <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=273927"><span class="icon">​</span>1</a>, <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=272055"><span class="icon">​</span>2</a> and <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=275391"><span class="icon">​</span>3</a>, and possible others.
+</p>
+<h2 id="Vorwort">Vorwort</h2>
+<p>
+Einige Modelle aus der FritzBox-Familie besitzen nicht nur einen LAN-Port, sondern gleich vier, z.B. die 7170. Da ich selber nur die 7170 "persönlich" kenne, möge man die nachfolgenden Worte in erster Linie als Anleitung/Beschreibung für dieses Modell verstehen, andere Boxen bitte ergänzen.
+</p>
+<p>
+Im Normalbetrieb der 7170 arbeiten die vier Ports wie ein normaler <a class="ext-link" href="http://de.wikipedia.org/wiki/Switch_(Computertechnik)"><span class="icon">​</span>Switch</a>, d.h. alle angeschlossenen Geräte befinden sich im gleichen Subnetz und können direkt miteinander kommunizieren. Mit Hilfe der Originalfirmware von AVM ist es aber auch möglich, den LAN 1-Port als WAN-Port zu nutzen (im Webinterface <em>"Internetzugang via LAN 1"</em> auswählen), z.B. wenn man die Box an einem Kabelmodem o.ä. betreiben will. Dazu wird der Port von den verbleibenden drei Ports getrennt und wird als separates WAN-Netzwerkgerät von der Firmware entsprechend konfiguriert.
+</p>
+<p>
+Das ist möglich, da in der FritzBox ein konfigurierbarer 5-Port-Switch eingebaut ist: vier der Ports sind als LAN 1 bis 4 nach außen geführt, am fünften hängt die eigentliche FritzBox, sprich die CPU. Leider bietet AVM im Webinterface keine Möglichkeit, die Ports weitergehend individuell zu konfigurieren. Da dies in bestimmten Fällen aber sehr hilfreich wäre, entstand das kleine Tool <a class="ext-link" href="http://www.heimpold.de/dsmod/"><span class="icon">​</span>cpmaccfg</a>. Es kann via Telnet/SSH-Zugang auf der FritzBox ausgeführt - oder aber mit <a class="wiki" href="../../../freetz.html">Freetz</a> direkt in das Firmware-Image eingebunden werden.
+</p>
+<p>
+AVM hat die Schnittstelle für die Switchkonfiguration in den Linux-Netzwerkkartentreiber (<em>avm_cpmac</em>) eingebunden, offenbar gibt es da eine "alte" und eine "neue" Version dieser Schnittstelle. Während die alte noch sehr weitgehenden Zugriff auf den Switch erlaubt und es ermöglicht, das volle Potential des Switches auszuschöpfen, ist die neue etwas "abstrakter" gehalten, was dazu führt, dass man nur noch zwischen verschiedenen vordefinierten Konfigurationen auswählen kann. Wer vollen Zugriff braucht, kann aber die alte Schnittstelle durch Hinzufügen von 2 Zeilen Kernelquellcode wieder aktivieren. In Freetz passiert dies beim Einbinden von <tt>cpmaccfg</tt> automatisch, wenn in <a class="wiki" href="../common/install/menuconfig.html">menuconfig</a> <tt>replace kernel</tt> ausgewählt wird.
+</p>
+<p>
+Das Tool cpmaccfg funktioniert auch beim Speedport W900V.
+</p>
+<h2 id="VordefinierteSwitch-Konfigurationen">Vordefinierte Switch-Konfigurationen</h2>
+<p>
+AVM selbst hat im Kernelmodul schon verschiedene vordefinierte Konfigurationen hinterlegt, eine ist davon ist die bereits erwähnte Variante "Internetzugang via LAN 1", intern als ATA-Modus bezeichnet. Hier ein Überblick über alle vordefinierten Modi:
+</p>
+<ul><li><strong>normal</strong>: alle vier Ports arbeiten wie ein normaler Switch, der Kernel verwendet eth0 als Netzwerkinterface (jenachdem, ob "Alle Computer befinden sich im selben Subnetz" angekreuzt ist, wird <em>eth0</em> noch mit den WLAN-Interfaces zu einem "lan"-Interface zusammengebridged)
+</li><li><strong>ata</strong>: LAN 1 kommt im Kernel als "wan" an, die drei anderen Ports als "eth0" (eventuelle Einbindung von <em>eth0</em> in Bridge wie im Normalmodus)
+</li><li><strong>split</strong>: jedem Port wird ein einzelnes Interface zugeordnet, also "eth0", "eth1"&hellip;
+</li><li><strong>split_ata</strong>: wie split, jedoch bekommt LAN 1 die Bezeichnung "wan"
+</li><li><strong>all_ports</strong>: im Grunde wie normal, genauer Sinn &amp; Zweck noch unbekannt (eventuell für Boxen mit mehr als 4 Ports gedacht?)
+</li><li><strong>special</strong>: siehe unten
+</li></ul><p>
+Richtig Sinn ergibt das Wechseln des Modus natürlich nur, wenn man das Häkchen bei <em>"Alle Computer befinden sich im selben Subnetz"</em> <span class="underline">nicht</span> setzt, weil sonst alle verfügbaren Devices in eine Bridge gesteckt werden.<br />
+<strong>UPDATE:</strong> Es funktioniert ebenfalls sauber im "ethmode=ethmode_bridge" da dann die Devices aus der "Bridge"-Sektion genommen werden (und eben <strong>nicht</strong> aus der "eth"-Sektion).<br />
+Im "Eth-Bridge"-Modus werden diese "einzelnen" "realen" ethX dann jeweils in die angegebene Bridge intergiert. Ist ganz praktisch wenn man das USB Device ("usbrndis") mal zu einem der 4 Ports zuordnen möchte. <br />Der Trick dabei ist das konfigurierte ethx-IF in der "eth"-Sektion auch in der Bridge-Sektion aufgeführt sind.<br />
+<br />
+Beispiel:<br />
+Man möchte LAN1 und LAN4 als eth2 und LAN2 und LAN3 als eth0 konfigurieren.<br />
+Dann hat man in der "eth-Sektion" eth0 und eth2 und in der Bridge-Sektion z.B. die Bridge lan (mit if eth0) und Bridge xnet (mit if eth2)<br />
+Hat man beides in der ar7.cfg sauber stehen kann man problemlos zwichen "ethmode=ethmode_bridge" und "ethmode=ethmode_router" ("AVM-deutsch: "alle Computer befinden sich im selben Netzwerk")
+umschalten (Haken setzen oder auch nicht). 
+Und eben jetzt kann man im "ethmode=ethmode_bridge" z.B. der Bridge "xnet" die Interfaces eth2 und usbrndis zuordnen.
+Wie genau die ar7.cfg konfiguriert wird steht weiter unten in diesem Artikel.
+</p>
+<p>
+Den aktuellen Modus kann man mit Hilfe von <tt>cpmaccfg gsm</tt> abfragen, setzen ist mit <tt>cpmaccfg ssm &lt;zielmodus&gt;</tt> möglich.
+</p>
+<h3 id="Modusspecial">Modus "special"</h3>
+<p>
+Mit einem gepatchtem Kernel ist auch möglich, eigene individuelle Port-Konfigurationen zu erstellen. Dazu dient der Modus "special", der quasi als Platzhalter für eine Konfiguration im Kernel vorhanden ist. Dieser Platzhalter muss zunächst mittels <tt>cpmaccfg ssms ...</tt> gefüllt werden, anschließend kann mit <tt>cpmaccfg ssm special</tt> auf diese Konfiguration umgeschaltet werden.
+</p>
+<h3 id="PatchdesStandard-Modus">Patch des Standard-Modus</h3>
+<p>
+Die Nutzung des Special-Modus hat den Nachteil, dass die Modus erst während des Startvorganges der Box aktiviert werden muss. Bei einer Änderung des standardmäßig in der Box verwendeten Modus, wie z.B. <tt>NORMAL</tt> oder <tt>ATA</tt>, wird der Switch automatisch beim Starten der Box passend aufgeteilt.
+</p>
+<p>
+Für diese Änderung ist es notwendig, den gewünschten Modus in der Datei <tt>linux-2.6.19.2/drivers/net/avm_cpmac/cpphy_adm6996.c</tt> zu patchen. Das folgende Beispiel beschreibt die Aufteilung des Switch in die beiden Interface eth0 mit LAN1 und LAN2 sowie eth1 mit LAN3 und LAN4. Der folgende Patch wurde für eine 7270 mit Firmware 76 erstellt.
+</p>
+<pre class="wiki">  --- linux-2.6.19.2/drivers/net/avm_cpmac/cpphy_adm6996.c_orig   2009-06-08 13:59:52.000000000 +0200
+  +++ linux-2.6.19.2/drivers/net/avm_cpmac/cpphy_adm6996.c        2009-08-20 10:57:14.000000000 +0200
+  @@ -137,9 +137,10 @@
+                                           { {"", 0x0}
+                                           }
+                                      },
+  -        /* CPMAC_MODE_NORMAL    */ { 1, 0xff,
+  -                                        { {"eth0", 0x2f}
+  -                                        }
+  +        /* CPMAC_MODE_NORMAL    */ { 2, 0xff,
+  +                                        { {"eth0", 0x23},
+  +                                                 {"eth1", 0x2c}
+  +                                       }
+                                      },
+           /* CPMAC_MODE_ATA       */ { 2, 0,
+                                           { {"wan",  0x21},
+</pre><p>
+Den Patch in das Verzeichnis <tt>/make/linux/patches/2.6.19.2</tt> oder ggf. Unterordner wie z.B. <tt>7270_04.76</tt> kopieren.
+</p>
+<pre class="wiki">  make menuconfig
+</pre><p>
+Box konfigurieren und die Option "Replace Kernel" auswählen
+</p>
+<p>
+Bestehenden Kernel löschen:
+</p>
+<pre class="wiki">  make kernel-dirclean
+</pre><p>
+Kernel-Sourcen bereitstellen und Patchen
+</p>
+<pre class="wiki">  make kernel-source
+</pre><p>
+Hier kann noch kontrolliert werden, ob der Patch korrekt durchgeführt wird. z.B.:
+</p>
+<pre class="wiki">  applying patch file make/linux/patches/2.6.19.2/7270_04.76/990-cpmac.patch
+  patching file linux-2.6.19.2/drivers/net/avm_cpmac/cpphy_adm6996.c
+</pre><p>
+Dann noch das Image erstellen:
+</p>
+<pre class="wiki">  make
+</pre><h2 id="Anpassungeninderar7.cfg">Anpassungen in der ar7.cfg</h2>
+<p>
+Die Anpassungen der ar7.cfg stellen sicher, dass die Änderungen auch bei verschiedenen Konfiguationsänderungen, wie z.B. Aus- und Einschalten des Wlan bestehen und und automatisch konfiguriert werden und bleiben.
+</p>
+<p>
+Kopie der ar7.cfg erstellen und diese bearbeiten:
+</p>
+<pre class="wiki">  cd /var/tmp
+  cat /var/flash/ar7.cfg &gt; ar7.cfg
+  vi ar7.cfg
+</pre><p>
+Box muss sich im Modus "Router" befinden, dies wird mit der Option <tt>ethmode</tt> in der ar7.cfg eingestellt.
+</p>
+<pre class="wiki">  ethmode = ethmode_router;
+</pre><p>
+Dann muss noch der Bereich <tt>ethinterfaces</tt> verändert werden.
+</p>
+<p>
+Bei der Konfiguration ist folgendes zu beachten. Nur den dort vorhandenen wird eine IP-Adresse zugewiesen. Alle anderen Interfaces existieren zwar und können über ifconfig abgefragt oder ggf. manuell konfiguriert werden.
+</p>
+<p>
+Bei den Devices kann über die Option "interfaces" Bridges automatisch gebildet werden. Das folgende Beispiel beschreibt die Konfiguration zweier Devices intern und extern.
+</p>
+<p>
+Das Device <tt>extern</tt> wird aus dem Interface "eth1" mit der Adresse 192.168.1.1 gebildet, das Device <tt>intern</tt> aus eth0 und den verschiedenen WLan-Interfaces mit der Adresse 192.168.0.1.<br />
+<strong>UPDATE</strong>: Wie ihr seht funktioniert das "bridgen" bereits auch sauber in der eth-Sektion! (und AVM hat es ja auch selber mit dem wlan-IF so gemacht)
+</p>
+<pre class="wiki">        ethinterfaces {
+                name = "extern";
+                dhcp = no;
+                ipaddr = 192.168.1.1;
+                netmask = 255.255.255.0;
+                dstipaddr = 0.0.0.0;
+                interfaces = "eth1";
+                dhcpenabled = no;
+                dhcpstart = 0.0.0.0;
+                dhcpend = 0.0.0.0;
+        } {
+                name = "eth0:0";
+                dhcp = no;
+                ipaddr = 169.254.1.1;
+                netmask = 255.255.0.0;
+                dstipaddr = 0.0.0.0;
+                dhcpenabled = yes;
+                dhcpstart = 0.0.0.0;
+                dhcpend = 0.0.0.0;
+        } {
+                name = "intern";
+                dhcp = no;
+                ipaddr = 192.168.0.1;
+                netmask = 255.255.255.0;
+                dstipaddr = 0.0.0.0;
+                interfaces = "eth0", "ath0", "wdsup1", "wdsdw1", "wdsdw2",
+                             "wdsdw3", "wdsdw4";
+                dhcpenabled = no;
+                dhcpstart = 192.168.0.20;
+                dhcpend = 192.168.0.200;
+        }
+</pre><p>
+Dann die bestehende <tt>ar7.cfg</tt> durch die veränderte Datei überschreiben:
+</p>
+<pre class="wiki">    cat /var/tmp/ar7.cfg &gt; /var/flash/ar7.cfg
+</pre><p>
+Dann die Änderungen mit einen Reboot oder <tt>ar7cfgchanged</tt> aktivieren.
+</p>
+<p>
+Ergänzung: <br /> Auch der special Modus kann über die ar7.cfg konfiguriert werden.<br /> Als Beispiel ein Ausschnitt aus einer Alice Konfiguration)
+</p>
+<pre class="wiki">	cpmacspecial {
+		enabled = yes;
+		normalcfg = "eth0,1,2,3", "eth3,4";
+		atacfg = "wan,1", "eth0,2,3", "eth3,4";
+	}
+</pre><p>
+und ein Anderes mit "split" Interfaces<br />
+</p>
+<pre class="wiki">cpmacspecial {
+    enabled = yes;
+    normalcfg = "eth0,1", "eth1,2", "eth2,3", "eth3,4";
+    atacfg = "wan,1", "eth1,2", "eth2,3", "eth3,4";
+}
+</pre><p>
+Der Syntax:<br /> <br /> modus = portmapping[, &hellip;]<br /> <br /> modus =: normalcfg|atacfg<br /> portmapping =: "netdevname,portnum[,&hellip;]"<br /> netdevname =: wan|eth<a class="source" href="http://freetz.org/log/?revs=0-3">[0-3]</a>      (aber vielleicht auch eigener Namen)<br /> portnum =: <a class="source" href="http://freetz.org/log/?revs=1-4">[1-4]</a>                (so vielen wie es auf das Gerät gibt)<br /> <br />
+</p>
+<h2 id="Beispiel">Beispiel</h2>
+<p>
+Die vier Ports sollen in zwei Gruppen aufgeteilt werden: LAN 1 und LAN 2 sollen für das interne Netz zur Verfügung stehen (als eth0), LAN 3 und LAN 4 werden zwei <a class="ext-link" href="http://www.freifunk.net/"><span class="icon">​</span>Freifunk</a>-Router angeschlossen, die zusammen in einem separaten Subnetz stecken (als <em>eth1</em>), vom internen LAN also getrennt sein sollen.
+</p>
+<p>
+Ruft man <tt>cpmaccfg</tt> ohne weitere Parameter auf, erscheint eine knappe Übersicht über Kommandos und Parameter. Damit ermittelt man, welche <em>PORTMASK</em> für die jeweiligen Interfaces zu verwenden ist. Diese Portmaske ergibt sich aus der Logischen-Oder-Verknüpfung der jeweiligen Portkonstanten. Das sind folgende Werte: LAN 1 = 0x01, LAN 2 = 0x02, LAN 3 = 0x04, LAN 4 = 0x08 und der CPU-Port ist 0x20.
+</p>
+<p>
+Für das obige Beispiel muss also folgender Befehl aufgerufen werden:
+</p>
+<pre class="wiki">cpmaccfg ssms eth0 0x23 eth1 0x2c
+</pre><p>
+Man beachte, dass in beiden Portmasken der CPU-Port eingeschlossen wurde. Macht man dies nicht, entsteht zwar das Interface, es "sieht" aber keinen Traffic (noch nicht probiert, zu überprüfen).
+</p>
+<p>
+Anschließen kann mit <tt>cpmaccfg ssm special</tt> diese Konfiguration aktiviert werden.
+</p>
+<h2 id="Sicherheits-Warnung">Sicherheits-Warnung</h2>
+<p>
+Beim Booten startet die Box immer im Modus <strong>normal</strong>, d.h.: wie und wo man auch immer die Umschaltung in den gewünschten Modus realisiert (z.B. per <tt>debug.cfg</tt> oder in einem Freetz Startup-Skript), es existiert immer eine gewisse Zeitspanne, in der sich alle vier Ports im gleichen "Layer 2-Subnetz" befinden. Erst nachdem die Umschaltung erfolgt ist, befinden sich die Ports in getrennten "Layer 2-Netzen". Erst dann muss eine Kommunikation über Layer 3 (IP-Ebene) erfolgen, wo eventuelle iptables-Regeln greifen (oder halt die interne AVM-Firewall).
+</p>
+<p>
+Schon bevor der Kernel bootet, wird der Switch vom Bootloader als normaler Switch konfiguriert. Die Konfiguration im Kernel umzustellen verkürzt die Zeitspanne etwas, beseitigt aber nicht das grundsätzliche Problem.
+</p>
+<p>
+Da für den Bootloader keine Quelltexte frei verfügbar sind, wäre ein Anpassung schwierig.
+</p>
+<h2 id="Kompatibilität">Kompatibilität</h2>
+<ul><li><strong>FB 7170, Speedports W900V, W701V</strong> Diese Boxen haben einen eingebauten Switch (ADM6996), <tt>cpmaccfg</tt> funktioniert.
+</li><li><strong>7270/3270</strong> Tantos-Switches: cpmaccfg funktioniert (<a class="ext-link" href="http://www.ip-phone-forum.de/showpost.php?p=1599909&amp;postcount=23"><span class="icon">​</span>Beweis</a>)
+</li><li><strong>Alice IAD 5130, Alice IAD WLAN 3331, FB 5140/3170/2170</strong> funktionieren ebenfalls problemlos (jeweilige akt. Firmware) (cpmaccfg ebenso).
+</li><li><strong>5124</strong> sollte ebenfalls sauber funktionieren
+</li><li><strong>7050</strong> Kein Switch-Baustein vorhanden, es handelt sich um richtige Netzwerkinterfaces.
+</li><li><strong>7320</strong> wie 7050/5050 Boxen. Es sind reale Netz-IF (eth0 &amp; eth1) welche auch getrennt koniguriert werden können (und das sogar permanent in der ar7.cfg im Bridgemode).
+</li></ul><h3 id="a"></h3>
+<h3 id="Änderungen7270v2vs.7270v3">Änderungen 7270v2 vs. 7270v3</h3>
+<p>
+Bei der 7270v3/3270v3 hat sich der CPU Port von Bit5 auf Bit0 verschoben und die Interface Ports sind um eins nach links gerückt. Für das obige Beispiel muss also folgender Befehl auf der 7270v3 aufgerufen werden:
+</p>
+<pre class="wiki">cpmaccfg ssms eth0 0x07 eth1 0x19
+
+# eth0: Maske 0000 0111
+# eth1: Maske 0001 1001
+
+# 7270v3: 0001 1111               7270v2: 0010 1111
+#                 x---- CPU Port -----------x
+#                x----- Port 1   -----------------x
+#               x------ Port 2   ----------------x
+#              x------- Port 3   ---------------x
+#            x--------- Port 4   --------------x
+</pre></div>
+          
+          <div class="trac-modifiedby">
+            <span><a href="switch_config%3Faction=diff&amp;version=30.html" title="Version 30 von RomMon: added info about 7390 and 7490">zuletzt geändert</a> <a class="timeline" href="http://freetz.org/timeline?from=2017-03-16T20%3A00%3A56Z&amp;precision=second" title="Siehe Journal am 16.03.2017 20:00:56">vor 12 Monaten</a></span>
+            <span class="trac-print">Zuletzt geändert am 16.03.2017 20:00:56</span>
+          </div>
+        
+        
+      </div>
+      
+
+    </div>
+    <div id="altlinks">
+      <h3>In anderen Formaten herunterladen:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="switch_config%3Fformat=txt">Reiner Text</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" lang="en" xml:lang="en"><hr />
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="../../../../chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
+      <p class="left">Betrieben mit <a href="http://freetz.org/about"><strong>Trac 1.0.1</strong></a><br />
+        von <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right"><div class="field" align="right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations"/><input type="hidden" name="business" value="spenden@freetz.org"/><input type="hidden" name="item_name" value="Freetz Entwickler-Team"/><input type="hidden" name="no_shipping" value="1"/><input type="hidden" name="return" value="http://freetz.org"/><input type="hidden" name="cn" value="Name oder IPPF-Pseudonym"/><input type="hidden" name="currency_code" value="EUR"/><input type="hidden" name="tax" value="0"/><input type="hidden" name="lc" value="DE"/><input type="hidden" name="bn" value="PP-DonationsBF"/><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Zahlen Sie mit PayPal - schnell, kostenlos und sicher!"/><img alt="" border="0" src="http://freetz.org/pixel.gif" width="1" height="1"/></form></div></p>
+    </div>
+  </body>
+</html>

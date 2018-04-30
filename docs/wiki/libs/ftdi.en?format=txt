@@ -1,0 +1,79 @@
+= libftdi =
+
+"''libFTDI is an open source library to talk to FTDI chips: FT232BM, FT245BM, FT2232C, FT2232D and FT245R, including the popular bitbang mode. The library is linked with your program in userspace, no kernel driver required.''"
+
+Location in the Freetz menu ''Advanced options > Shared libraries > libftdi''.
+
+== Example application ==
+
+An interesting application is to control I/O ports using the CBUS Bit Bang Mode available on the FT232R chip (and maybe other chips) from your box.
+
+I have used this [http://de.farnell.com/jsp/search/productdetail.jsp?sku=1146041&CMP=i-bf9f-00001000 FTDI - EVAL232R - EVALUATIONSKIT], but any converter that has a FT232R chip and exposes the CBUS lines can be used.
+
+First of all you have to program the CBUS port lines for I/O using '''FT_Prog''' (see link below), else it will not work.
+
+Example program to let a LED blink on port CBUS0:
+
+{{{
+#include <stdio.h>
+#include <ftdi.h>
+
+int main(int argc, char** argv)
+{
+	int f;
+	struct ftdi_context ftdic;
+
+	printf("ftdi_usb_open\n");
+	ftdi_init(&ftdic);
+	f = ftdi_usb_open(&ftdic, 0x0403, 0x6001);
+	if(f < 0) {
+		fprintf(stderr, "ftdi_usb_open failed, error %d (%s)\n", f, ftdi_get_error_string(&ftdic));
+		return -1;
+	}
+
+	fprintf(stdout, "Blinking ...\n");
+	int b = 0;
+	while (1) {
+		fprintf(stdout, "%x ", b);
+		fflush(stdout);
+		f = ftdi_set_bitmode(&ftdic, 0x10 | b, BITMODE_CBUS);
+		if (f < 0) {
+			fprintf(stderr, "ftdi_set_bitmode failed, error %d (%s)\n", f, ftdi_get_error_string(&ftdic));
+			return -1;
+		}
+		usleep(500000L);
+		b = b ^ 0x01;
+	}
+}
+}}}
+
+It is possible to test in Ubuntu first:
+
+{{{
+sudo apt-get install libftdi-dev
+gcc blink.c -lftdi -Wall -oblink
+sudo ./blink
+}}}
+
+Compile for Freetz:
+
+{{{
+~/freetz/toolchain/target/bin/mipsel-linux-gcc blink.c -lftdi -Wall -oblink
+}}}
+
+Run on your box:
+
+{{{
+LD_LIBRARY_PATH=/mod/lib:/usr/lib/freetz
+export LD_LIBRARY_PATH
+./blink
+}}}
+
+Note that the CBUS Bit Bang Mode is not suitable for high speed applications, since a command has to travel through the USB bus and has to be interpreted by the chip before anything happens. However, for switching things on and off or to monitor input lines, for example connected switches, it is an easy solution.
+
+== Links ==
+ * [http://www.intra2net.com/en/developer/libftdi/ libFTDI - FTDI USB driver with bitbang mode]
+ * [http://www.intra2net.com/en/developer/libftdi/documentation/ftdi_8h.html ftdi.h File Reference]
+ * [http://www.ftdichip.com/Support/Documents/ProgramGuides/D2XX_Programmer%27s_Guide(FT_000071).pdf D2XX Programmer Guide] (PDF)
+ * [http://www.ftdichip.com/Support/Utilities.htm#FT_Prog FT_PROG - EEPROM Programming Utility] (Windows only)
+ * [http://chinwah-engineering.com/USBProjects.html USB PROJECTS]

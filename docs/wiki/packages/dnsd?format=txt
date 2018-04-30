@@ -1,0 +1,8 @@
+= dnsd =
+Schlanker DNS-Server für statische Namensauflösung (BusyBox Applet)
+
+== Links ==
+ * [http://www.busybox.net/downloads/BusyBox.html#dnsd Man page]
+
+== Beispielkonfiguration ==
+Port 53 mit [wiki:packages/avm-firewall AVM firewall CGI] nach 10053 mappen wo [wiki:packages/iodine iodine] läuft. Dieses leitet Anfragen unbekannter Domains auf Port 5353 weiter wo ''dnsd'' läuft. ''dnsd'' beantwortet für ein paar Subdomains diese Anfragen.

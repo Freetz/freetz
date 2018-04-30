@@ -1,0 +1,86 @@
+= lighttpd Webserver =
+Mit diesem Paket ist es möglich, den lighttpd Webserver zu erstellen.
+
+== Einrichtung ==
+Um den Webserver nutzen zu können, muss ein Verzeichnis erstellt werden, in dem der lighttpd agieren kann. Dieses muss unbedingt erstellt und mit den nötigen Rechten versehen werden.
+
+----
+'''Unbedingt beachten:''' In dieser Anleitung wird angenommen, dass [wiki:packages/usbroot USB-root] genutzt wird. Sollte USB-root nicht verwendet werden, muss auf die folgenden Verzeichnisstrukturen noch größeres Augenmerk gelegt werden. In solch einem Fall '''könnte''' `/var/media/ftp/uStor01/rootfs/www` eine Analogie für `/www` sein.
+
+----
+Zunächst muss eine Konsolensitzung mit dem Router bestehen, es spielt keine Rolle, ob dafür Telnet oder [wiki:packages/dropbear SSH] genutzt wird.
+
+{{{
+#!sh
+# erstelle Webserver-Verzeichnis und setze 'rwxr-xr-x'-Rechte
+mkdir /www
+chmod -R 755 /www
+}}}
+Nun kann man im Freetz-Konfigurationsfrontend die Einstellungen für den lighttpd anpassen und übernehmen. Daraufhin wird die benötigte Verzeichnisstruktur innerhalb des Webserver-Verzeichnisses angelegt. Die Dokumente müssen im Verzeichnis `/www/websites` liegen. Je nach Einstellung ist der Server nun bspw. über `http://fritz.box:8008` verfügbar.
+
+== Perl ==
+Will man Perl-Skripte mit dem Webserver benutzen und den `chroot`-Modus benutzen, muss man sich darum kümmern, dass das Paket [wiki:packages/microperl microperl] sowie dessen Bibliotheken in die Verzeichnisstruktur des lighttpd kopiert wird.
+
+{{{
+#!sh
+# kopiere 'microperl' als 'perl' in das '/usr/bin'-Verzeichnis des Webservers
+cp -p /usr/bin/microperl /www/usr/bin/perl
+
+# erstelle ein Verzeichnis '/lib' für die Bibliotheken
+mkdir /www/lib
+
+# kopiere die von 'microperl' benötigten Bibliotheken in das '/lib'-Verzeichnis des Webservers
+# Abhängigkeiten können mit 'ldd /usr/bin/microperl' ausgegeben werden
+cp -p /lib/ld-uClibc.so.0 /www/lib
+cp -p /lib/libc.so.0 /www/lib
+cp -p /lib/libgcc_s.so.1 /www/lib
+cp -p /lib/libm.so.0 /www/lib
+}}}
+Wenn neben `*.cgi`-Dateien auch `*.pl`-Dateien ausgeführt werden sollen, muss außerdem noch eine Zeile in die 'Additional'-Konfiguration von lighttpd (zu finden im Freetz-Konfigurationsmenü unter `Settings` -> `'lighttpd: Additional`):
+
+{{{
+# aktiviere CGI Unterstützung für *.pl-Dateien
+cgi.assign += ( ".pl" => "/usr/bin/perl" )
+}}}
+Außerdem muss darauf geachtet werden, dass jegliche Perl-Skripte Ausführrechte haben, dies ist mit einem einfachen `chmod 755 DATEI.pl` zu erledigen.
+
+== Lua ==
+
+make menuconfig: 
+
+ * ''lighttpd >  build with LUA support''
+ * ''lighttpd > lighttpd Modules > include mod_magnet''
+
+Example:
+
+ * put this in ''lighttpd > Additional'':
+
+{{{
+server.modules += ( "mod_magnet" )
+magnet.attract-physical-path-to = ( server.document-root + "/ip.lua" )
+}}}
+
+ * put this in ''ip.lua'' in your document root:
+
+{{{
+lighty.header["Content-Type"] = "text/html"
+lighty.content = { "Your IP-address is: ", lighty.env["request.remote-ip"] }
+return 200
+}}}
+
+ * browse to ''!http://fritz.box:<configured port>/ip.lua''
+
+Links:
+
+ * [http://www.lua.org/ The Programming Language LUA]
+ * [http://redmine.lighttpd.net/wiki/lighttpd/Docs:ModMagnet Lighttpd - Docs:ModMagnet - lighty labs]
+ * [http://redmine.lighttpd.net/wiki/1/AbsoLUAtion AbsoLUAtion - The powerful combo of Lighttpd + Lua]
+
+Advantage over PHP: small, fast, low memory usage, feature rich programming language.
+
+== Weiterführende Links ==
+ * [http://de.wikipedia.org/wiki/Lighttpd Wikipedia Artikel] zu Lighttpd
+ * [http://www.lighttpd.net Lighttpd Homepage]
+ * [http://www.ip-phone-forum.de/showthread.php?t=185448 Forumsdiskussion] im IPPF zu diesem Paket
+ * [http://www.howtoforge.com/setting-up-webdav-with-lighttpd-debian-etch HowTo] setting up webdav with lighttpd in Debian Etch
+ * [http://www.howtoforge.de/howto/wie-man-webdav-mit-lighttpd-auf-debian-etch-konfiguriert HowTo] (s.o., auf Deutsch)

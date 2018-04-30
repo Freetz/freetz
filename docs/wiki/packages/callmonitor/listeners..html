@@ -1,0 +1,293 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+  
+
+
+  <head>
+    <title>
+      packages/callmonitor/listeners – Freetz
+    </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!--[if IE]><script type="text/javascript">
+      if (/^#__msie303:/.test(window.location.hash))
+        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
+    </script><![endif]-->
+        <link rel="search" href="http://freetz.org/search" />
+        <link rel="help" href="../../TracGuide.html" />
+        <link rel="alternate" href="listeners%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
+        <link rel="up" href="../callmonitor.html" title="Übergeordnete Wiki-Seite anzeigen" />
+        <link rel="start" href="http://freetz.org/wiki" />
+        <link rel="stylesheet" href="../../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
+        <link rel="shortcut icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+      <link type="application/opensearchdescription+xml" rel="search" href="http://freetz.org/search/opensearch" title="Freetz durchsuchen" />
+      <script type="text/javascript" charset="utf-8" src="../../../chrome/common/js/jquery.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../chrome/common/js/babel.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../chrome/common/js/messages/de.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../chrome/common/js/trac.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../chrome/common/js/search.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../chrome/common/js/folding.js"></script>
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
+        $("#content").find(".wikianchor").each(function() {
+          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
+        });
+        $(".foldable").enableFolding(true, true);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://freetz.org/wiki"><img src="../../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
+      </div>
+      <form id="search" action="http://freetz.org/search" method="get">
+        <div>
+          <label for="proj-search">Suche:</label>
+          <input type="text" id="proj-search" name="q" size="18" value="" />
+          <input type="submit" value="Suche" />
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="http://freetz.org/login">Anmelden</a></li><li><a href="http://freetz.org/prefs">Einstellungen</a></li><li><a href="../../TracGuide.html">Hilfe/Anleitung</a></li><li><a href="http://freetz.org/about">Über Trac</a></li><li><a href="http://freetz.org/notification" title="Wiki Pages Change Notifications">My Notifications</a></li><li><a href="http://freetz.org/register">Registrieren</a></li><li class="last"><a href="../../Impressum.html">Impressum</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first active"><a href="http://freetz.org/wiki">Wiki</a></li><li><a href="http://freetz.org/timeline">Journal</a></li><li><a href="http://freetz.org/roadmap">Projektplan</a></li><li><a href="http://freetz.org/browser">Quellen durchsehen</a></li><li><a href="http://freetz.org/report">Tickets anzeigen</a></li><li><a href="http://freetz.org/search">Suche</a></li><li><a href="http://freetz.org/tags">Tags</a></li><li><a href="http://freetz.org/downloads">Downloads</a></li><li class="last"><a href="http://freetz.org/screenshots">Bildschirmfotos</a></li>
+    </ul>
+  </div>
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="listeners..html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="http://freetz.org/wiki/packages/callmonitor/listeners.en" title="(not available)">English</a></li></ul></div><div id="main">
+      <div id="pagepath" class="noprint">
+  <a class="pathentry first" title="Zeige WikiStart an" href="http://freetz.org/wiki">Wiki:</a><a class="pathentry" href="../../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="../callmonitor.html" title="Zeige packages/callmonitor an">callmonitor</a><span class="pathentry sep">/</span><a class="pathentry" href="listeners.html" title="Zeige packages/callmonitor/listeners an">listeners</a>
+</div>
+      <div id="ctxtnav" class="nav">
+        <h2>Kontext-Navigation</h2>
+        <ul>
+          <li class="first"><a href="../callmonitor.html">Aufwärts</a></li><li><a href="../../WikiStart.html">Startseite</a></li><li><a href="../../TitleIndex.html">Inhaltsverzeichnis</a></li><li><a href="listeners%3Faction=history.html">Änderungshistorie</a></li><li class="last"><a href="http://freetz.org/notification/packages/callmonitor/listeners." title="Watch Page">Watch Page</a></li>
+        </ul>
+        <hr />
+      </div>
+    <div id="content" class="wiki">
+      <div class="wikipage searchable">
+        
+          <div id="wikipage" class="trac-content"><p>
+</p><div class="wiki-toc"><h4>Inhaltsverzeichnis</h4><ol><li><a href="../callmonitor.html#Callmonitor">Callmonitor</a><ol><li><a href="../callmonitor.html#Installation">Installation</a><ol><li><a href="../callmonitor.html#InstallationneuerVersionen">Installation neuer Versionen</a></li></ol></li><li><a href="../callmonitor.html#Konfiguration">Konfiguration</a></li><li><a href="../callmonitor.html#WeiterführendeLinks">Weiterführende Links</a></li></ol></li><li><a href="config.html#Konfiguration">Konfiguration</a><ol><li><a href="config.html#Basiskonfiguration">Basiskonfiguration</a></li><li><a href="config.html#Listenersdefinieren">Listeners definieren</a></li><li><a href="config.html#Testanruf">Testanruf</a></li><li><a href="config.html#Fehlersuche">Fehlersuche</a></li></ol></li><li class="active"><a href="listeners.html#RegelnListeners">Regeln (Listeners)</a><ol><li class="active"><a href="listeners.html#Format">Format</a></li><li class="active"><a href="listeners.html#Ereignis-InformationenfürAktionen">Ereignis-Informationen für Aktionen</a></li><li class="active"><a href="listeners.html#FormatierungderAusgaben">Formatierung der Ausgaben</a></li><li class="active"><a href="listeners.html#MusterfürEreignisse">Muster für Ereignisse</a></li><li class="active"><a href="listeners.html#Beispiele:">Beispiele:</a></li></ol></li><li><a href="events.html#Ereignisse">Ereignisse</a></li><li><a href="actions.html#Aktionen">Aktionen</a><ol><li><a href="actions.html#Benachrichtigen">Benachrichtigen</a></li><li><a href="actions.html#WählenWeckenKonfigurieren">Wählen, Wecken, Konfigurieren</a></li><li><a href="actions.html#EigeneAktionen">Eigene Aktionen</a></li><li><a href="actions.html#ListeverfügbarerAktionen">Liste verfügbarer Aktionen</a></li><li><a href="actions.html#Third-PartySoftware">Third-Party Software</a></li></ol></li><li><a href="phonebook.html#TelefonbuchCallers">Telefonbuch (Callers)</a></li><li><a href="maintenance.html#Wartung">Wartung</a></li><li><a href="reverse_search.html#Rückwärtssuche">Rückwärtssuche</a></li><li><a href="testcall.html#Testanruf">Testanruf</a></li></ol></div><p>
+</p>
+<h1 id="RegelnListeners">Regeln (Listeners)</h1>
+<p>
+Die Listeners-Datei enthält eine Liste von Regeln, die festlegen, welche <a class="wiki" href="actions.html">Aktionen</a> unter welchen Bedingungen ausgeführt werden sollen.
+</p>
+<p>
+Leerzeilen werden ignoriert, ebenso Zeilen, die mit <em>#</em> beginnen (das sind Kommentare).
+</p>
+<p>
+Jede Regel steht in einer Zeile und besteht aus vier Angaben, die durch Leerraum getrennt in dieser Reihenfolge aufeinander folgen:
+</p>
+<ol><li>Ereignis
+</li><li>Quellrufnummer: Muster für SOURCE
+</li><li>Zielrufnummer: Muster für DEST
+</li><li>Aktion: Beliebiger Shell-Code
+</li></ol><p>
+Die beiden Muster für <em>SOURCE</em> und <em>DEST</em> sind <a class="ext-link" href="http://www.selflinux.org/selflinux/html/regex.html"><span class="icon">​</span>"extended regular expressions" (ERE)</a>, wie sie von <em>egrep</em> verstanden werden. Das Ereignis (ein-/ausgehender Anruf; Klingeln, Annahme, etc.) wird mit der unten angeführten Syntax angegeben.
+</p>
+<p>
+Man kann negative Muster bei den Listeners verwenden, indem man ein Ausrufezeichen voranstellt: <tt>!123</tt> passt auf alle Nummern, die nicht irgendwo 123 enthalten.
+</p>
+<p>
+Beispiele:
+</p>
+<table class="wiki">
+<tr><td style="text-align: left">| Muster </td><td style="text-align: left">| passt auf
+</td></tr><tr><td> <tt>^</tt> </td><td> alle Nummern
+</td></tr><tr><td> <tt>^034</tt> </td><td> Nummern, die mit 034 beginnen
+</td></tr><tr><td> <tt>4563$</tt> </td><td> Nummern, die auf 4563 enden
+</td></tr><tr><td> <tt>!^(045|0164)</tt> </td><td> Nummern, die <strong>nicht</strong> mit 045 oder 0164 beginnen
+</td></tr><tr><td> <tt>^0123456$</tt> </td><td> nur genau die Nummer 0123456
+</td></tr><tr><td> <tt>^04553...$</tt> </td><td> die Nummern, bei denen nach 04553 genau drei weitere Zeichen folgen
+</td></tr></table>
+<p>
+Alle Regeln werden parallel abgearbeitet; eine bestimmte Reihenfolge ist nicht garantiert.
+</p>
+<p>
+Damit die Listeners über das Webinterface von Freetz bearbeitet werden können, muss dessen Sicherheitsstufe auf 0 gesetzt werden. Das ist nötig, da über die Listeners beliebiger Code ausgeführt werden kann.
+</p>
+<p>
+<span class="thumbnail"><span class="aux" style="width: 602px;"><a style="border-width: 1px;" href="http://freetz.org/screenshots/20?format=raw" title="Callmonitor: Listener Konfiguration"><img src="http://freetz.org/screenshots/20?width=600&amp;format=raw&amp;height=342" alt="Callmonitor: Listener Konfiguration" /></a><span class="description" style="width: 602px;"><a href="http://freetz.org/screenshots/20" title="Callmonitor: Listener Konfiguration">Callmonitor: Listener Konfiguration</a></span></span></span>
+</p>
+<h2 id="Format">Format</h2>
+<p>
+Seit Version 1.0 des Callmonitors gilt folgendes Format für die Listeners, mit dem auf bis zu acht verschiedene Ereignisse unterschiedlich reagiert werden kann:
+</p>
+<ul><li><strong>*:request</strong>: Anruf kommt an (es klingelt)
+</li><li><strong>*:cancel</strong>: Anruf wurde abgebrochen, bevor eine Verbindung zustande kam (so kann man direkt auf "verpasste Anrufe" reagieren)
+</li><li><strong>*:connect</strong>: Verbindung beginnt
+</li><li><strong>*:disconnect</strong>: Verbindung wurde beendet
+</li></ul><p>
+Dazu kommt die Unterscheidung zwischen
+</p>
+<ul><li><strong>in:*</strong>: eingehenden und
+</li><li><strong>out:*</strong>: ausgehenden Anrufen.
+</li></ul><p>
+Das ergibt folgende Menge von Ereignissen:
+</p>
+<table class="wiki">
+<tr><td style="text-align: left">| </td><td style="text-align: left">| *:request </td><td style="text-align: left">| *:cancel </td><td style="text-align: left">| *:connect </td><td style="text-align: left">| *:disconnect
+</td></tr><tr><td style="text-align: left">| in:* </td><td> in:request </td><td> in:cancel </td><td> in:connect </td><td> in:disconnect
+</td></tr><tr><td style="text-align: left">|  out:* </td><td> out:request </td><td> out:cancel </td><td> out:connect </td><td> out:disconnect
+</td></tr></table>
+<p>
+Dazu passend haben die Listeners eine zusätzliche erste Spalte bekommen, in der (mit Hilfe von Abkürzungen und Wildcards) das gewünschte Ereignis angegeben werden kann, auf das die betreffende Regel reagieren soll:
+</p>
+<pre class="wiki">in:request  ^       ^1234$  xboxmessage xbox
+in:cancel   ^       ^       mailmessage -t test@example.com
+out:cancel  ^1234$  ^0123   dboxpopup dbox-a "${DEST} geht nicht ran"
+*:dis       ^       ^       echo "Anruf beendet: ${DURATION} Sekunden" &gt;&gt; log
+</pre><p>
+Es kann mehrere Regeln geben, die auf dasselbe Ereignis passen.
+</p>
+<p>
+Die Präfixe "NT:&#34;, &#34;E:&#34; und &#34;*:" in der <em>SOURCE</em>-Spalte gibt es nicht mehr. Eure bisherige Listeners-Datei (vor Version 1.0) könnt ihr nicht einfach weiterverwenden. Der CallMonitor versucht aber, beim ersten Start eine grobe Konvertierung vorzunehmen, um euch den Umstieg zu erleichtern. Auf jeden Fall solltet ihr aber die Listeners nach der Umstellung einmal kontrollieren.
+</p>
+<p>
+Die Spalten 2 und 3 in den Listeners sind weiterhin Muster (reguläre Ausdrücke) für Quell- und Zielrufnummer (<em>SOURCE</em> und <em>DEST</em>).<br />
+Dabei ist jedoch zu beachten, dass in Spalte 2 bzw. 3 die MSNs, also die Internet-Rufnummern, anzugeben sind und nicht wie früher bspw. <em>SIP0</em> oder <em>SIP1</em>.
+</p>
+<h2 id="Ereignis-InformationenfürAktionen">Ereignis-Informationen für Aktionen</h2>
+<p>
+Den Aktionen stehen Informationen über den auslösenden Anruf in Umgebungsvariablen bereit. Sie werden in Shell-Scripten mit einem $ referenziert, also z.B. <tt>echo $SOURCE_NAME</tt>.
+</p>
+<table class="wiki">
+<tr><td style="text-align: left">| Variable </td><td style="text-align: left">| Inhalt </td><td style="text-align: left">| seit Version
+</td></tr><tr><td> EVENT </td><td> das auslösende Ereignis </td><td> 1.0
+</td></tr><tr><td> ID    </td><td> die ID des Anrufs (direkt von der Callmonitor-Schnittstelle) </td><td> 1.0
+</td></tr><tr><td> UUID </td><td> Global eindeutige ID für diesen Anruf (nicht für dieses Ereignis!) </td><td> 1.20
+</td></tr><tr><td> TIMESTAMP </td><td> der Zeitpunkt des Ereignisses (im Format "DD.MM.YY HH:MM") </td><td> 1.0
+</td></tr><tr><td> SOURCE </td><td> Quellrufnummer </td><td> &mdash;
+</td></tr><tr><td> SOURCE_DISP </td><td> "anzeigefreundlichere" Variante von SOURCE (Landesvorwahl weg, Call-by-Call-Vorwahlen weg, etc.) </td><td> 1.8
+</td></tr><tr><td> SOURCE_NAME </td><td> Name der Quelle, falls dieser bestimmt werden konnte  </td><td> &mdash;
+</td></tr><tr><td> SOURCE_ADDRESS </td><td> Die Adresse (Straße, Stadt, Land) ist seit 1.12 separat verfügbar und nicht mehr in SOURCE_NAME enthalten </td><td> 1.12
+</td></tr><tr><td> SOURCE_ENTRY </td><td> Der ganze Telefonbucheintrag (entspricht dem SOURCE_NAME vor 1.12)  </td><td> 1.12
+</td></tr><tr><td> DEST </td><td> Zielrufnummer </td><td> &mdash;
+</td></tr><tr><td> DEST_DISP </td><td> "anzeigefreundlichere" Variante von DEST (Landesvorwahl weg, Call-by-Call-Vorwahlen weg, etc.) </td><td> 1.8
+</td></tr><tr><td> DEST_NAME </td><td> Name des Ziels, falls dieses bestimmt werden konnte </td><td> &mdash;
+</td></tr><tr><td> DEST_ADDRESS </td><td> Die Adresse (Straße, Stadt, Land) ist seit 1.12 separat verfügbar und nicht mehr in DEST_NAME enthalten </td><td> 1.12
+</td></tr><tr><td> DEST_ENTRY </td><td> Der ganze Telefonbucheintrag (entspricht dem DEST_NAME vor 1.12)  </td><td> 1.12
+</td></tr><tr><td> EXT   </td><td> die Nebenstelle, sofern bekannt (direkt von der Callmonitor-Schnittstelle) </td><td> 1.0
+</td></tr><tr><td> DURATION </td><td> bei *:disconnect die Dauer des Gesprächs in Sekunden </td><td> 1.0
+</td></tr><tr><td> PROVIDER </td><td> Dienstleister, über den der Anruf abgewickelt wird ("POTS" für Festnetz oder "SIP0", "SIP1", &hellip; für die verschiedenen SIP-Provider) </td><td> 1.5
+</td></tr></table>
+<p>
+EXT kann auf einer FritzBox 7050 folgende numerische Werte haben (bei einem eingehenden Anruf liegt diese Information erst ab in:connect vor; vorher ist die Zuordnung ja nicht klar):
+</p>
+<table class="wiki">
+<tr><td style="text-align: left">|Wert   </td><td style="text-align: left">|Bedeutung
+</td></tr><tr><td style="text-align: left">0       </td><td style="text-align: left">FON 1
+</td></tr><tr><td style="text-align: left">1       </td><td style="text-align: left">FON 2
+</td></tr><tr><td style="text-align: left">2       </td><td style="text-align: left">FON 3
+</td></tr><tr><td style="text-align: left">3       </td><td style="text-align: left">Durchwahl
+</td></tr><tr><td style="text-align: left">4       </td><td style="text-align: left">Fon S0
+</td></tr><tr><td style="text-align: left">5       </td><td style="text-align: left">Fon/Fax PC
+</td></tr><tr><td style="text-align: left">6       </td><td style="text-align: left">Anrufbeantworter
+</td></tr><tr><td style="text-align: left">36      </td><td style="text-align: left">Data S0
+</td></tr><tr><td style="text-align: left">37      </td><td style="text-align: left">Data PC
+</td></tr></table>
+<h2 id="FormatierungderAusgaben">Formatierung der Ausgaben</h2>
+<p>
+Zur Formatierung der Ausgaben stehen folgende Funktionen bereit:
+</p>
+<p>
+seit Version 1.8:
+</p>
+<ul><li>f_duration: zur Darstellung von Zeitdauern als "hh:mm:ss" 
+<pre class="wiki">f_duration &lt;ZEIT_IN_SEKUNDEN&gt;
+    
+  ZEIT_IN_SEKUNDEN:      Zeit in Sekunden, z.B. $DURATION
+</pre></li></ul><p>
+Beispiel:
+</p>
+<div class="code"><pre><span class="nb">echo</span> <span class="s2">"Der Anruf dauerte $(f_duration $DURATION)"</span>
+</pre></div><p>
+führt zu einer Ausgabe 
+</p>
+<pre class="wiki">Der Anruf dauerte 1:05:03
+</pre><p>
+falls DURATION den Wert 3903 hat.
+</p>
+<p>
+Als nützlich kann sich auch die Konstante $LF erweisen, die einen Zeilenumbruch enthält (line feed):
+</p>
+<div class="code"><pre>dboxmessage foo.bar <span class="s2">"Zeile 1${LF}Zeile 2"</span>
+</pre></div><h2 id="MusterfürEreignisse">Muster für Ereignisse</h2>
+<p>
+Es gibt mehrere Möglichkeiten, in den Listeners die Ereignisse anzugeben, bei der eine Regel auslösen soll:
+</p>
+<ul><li>Vollständige Ereignisnamen:
+<pre class="wiki">in:request
+out:disconnect
+</pre></li><li>Abkürzungen des vorderen und/oder hinteren Teils:
+<pre class="wiki">in:req
+out:disc
+i:r
+o:d
+</pre></li><li>Wildcards für den vorderen Teil (Richtung), den hinteren oder beide:
+<pre class="wiki">*:req
+ou:*
+*
+</pre></li><li>Listen dieser Bestandteile (mit Komma getrennt (Vorsicht, kein Whitespace); die Regel passt, wenn einer der Teile passt):
+<pre class="wiki">in:req,out:*
+</pre></li></ul><h2 id="Beispiele:">Beispiele:</h2>
+<p>
+Verpasster Anruf (in:cancel) mailmessage an mehrere Email Adressen versenden:
+</p>
+<pre class="wiki">in:cancel ^ ^ mailmessage -t user1@example.com,user2@example.com
+</pre><p>
+Von einer bestimmten Rufnummer (0401234567) eine festgelegte Rufnummer (0401234568) anrufen und den PC über WOL (Wake on Lan) einschalten:
+</p>
+<pre class="wiki">in:request ^0401234567 ^0401234568 ether-wake -i eth0 00:13:DE:01:A4:DE
+</pre><p>
+Benachrichtigungen über Dreambox mit Enigma2 auf Fernseher anzeigen:
+</p>
+<pre class="wiki">in:request ^ ^ dream2message --user=root --pass=dreambox 192.168.178.104
+</pre><p>
+Benachrichtigung per Email bei Faxempfang:
+</p>
+<pre class="wiki">in:disconnect ^ 0401234567$ mailmessage -s "Faxeingang von $SOURCE"
+</pre></div>
+          
+          <div class="trac-modifiedby">
+            <span><a href="listeners%3Faction=diff&amp;version=13.html" title="Version 13 von webhilfe: Einige Beispiele">zuletzt geändert</a> <a class="timeline" href="http://freetz.org/timeline?from=2013-12-14T23%3A14%3A59Z&amp;precision=second" title="Siehe Journal am 14.12.2013 23:14:59">vor 4 Jahren</a></span>
+            <span class="trac-print">Zuletzt geändert am 14.12.2013 23:14:59</span>
+          </div>
+        
+        
+      </div><ul class="tags"><li class="header">Tags</li><li><a href="http://freetz.org/tags/callmonitor" rel="tag">callmonitor</a> </li></ul>
+      
+
+    </div>
+    <script type="text/javascript">
+        jQuery.loadStyleSheet("/chrome/screenshots/css/screenshots.css", "text/css");
+        jQuery.loadStyleSheet("/pygments/trac.css", "text/css");
+    </script>
+    <div id="altlinks">
+      <h3>In anderen Formaten herunterladen:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="listeners%3Fformat=txt">Reiner Text</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" lang="en" xml:lang="en"><hr />
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="../../../chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
+      <p class="left">Betrieben mit <a href="http://freetz.org/about"><strong>Trac 1.0.1</strong></a><br />
+        von <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right"><div class="field" align="right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations"/><input type="hidden" name="business" value="spenden@freetz.org"/><input type="hidden" name="item_name" value="Freetz Entwickler-Team"/><input type="hidden" name="no_shipping" value="1"/><input type="hidden" name="return" value="http://freetz.org"/><input type="hidden" name="cn" value="Name oder IPPF-Pseudonym"/><input type="hidden" name="currency_code" value="EUR"/><input type="hidden" name="tax" value="0"/><input type="hidden" name="lc" value="DE"/><input type="hidden" name="bn" value="PP-DonationsBF"/><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Zahlen Sie mit PayPal - schnell, kostenlos und sicher!"/><img alt="" border="0" src="http://freetz.org/pixel.gif" width="1" height="1"/></form></div></p>
+    </div>
+  </body>
+</html>

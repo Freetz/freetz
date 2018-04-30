@@ -1,0 +1,100 @@
+[[TOC(heading=Inhaltsverzeichnis)]]
+= DTMFBox =
+Der Name lässt es bereits vermuten: Eine "Box", die was mit "DTMF" macht (''D''ual ''T''one ''M''ultiple ''F''requency, siehe [http://de.wikipedia.org/wiki/Mehrfrequenzwahlverfahren Wikipedia]), welches sich durch Drücken auf die Telefontasten auslösen lässt. Somit lässt sich ein Sprachmenü auf der Fritz!Box realisieren, welches Skripte und Programme aufruft per "Knopfdruck". Mittels [wiki:packages/espeak eSpeak] kann man Texte auf dem Telefon ausgeben/abspielen.
+
+DTMFBox unterstützt SIP und CAPI. Ein Registrar ist ebenfalls integriert, um Telefoniegeräte per SIP anzubinden ([http://de.wikipedia.org/wiki/Softswitch Softswitch]).
+
+DTMFBox unterliegt der GPL - jeder ist also herzlich eingeladen, es zu nutzen '''und dazu beizusteuern''' (indem z.B. selbst erstellte Skripte/Aktionen auch für andere Nutzer verfügbar gemacht werden).
+
+'''Derzeit funktioniert dieses Packet in den neueren Versionen nicht mehr, die letzte Trunk version in der dieses Packet einwandfrei läuft ist 5236'''
+
+== Features ==
+Mit ''DTMFBox'' wird uns ein mächtiges Werkzeug an die Hand gegeben. Hat man sie ins Image eingebunden, ist noch eine einmalige "Installation" nötig (dadurch hat man die Möglichkeit, das Ganze wahlweise im RAM oder auf dem an die Box angeschlossenen USB-Stick unterzubringen). Alles, was jetzt noch zu tun bleibt, ist die Einrichtung und Aktivierung von Accounts (damit DTMFBox weiß, auf welche Rufnummern es reagieren soll) - und schon stehen zahlreiche Funktionen zur Verfügung, z.B.:
+
+ * Anrufbeantworter (der braucht noch seine Ansage als {{{*.wav}}} Datei - oder man verwendet [wiki:packages/espeak eSpeak])
+  * Auflisten der Nachrichten im Freetz WebIF
+  * Versand eingehender Nachrichten per Mail und/oder Streaming per FTP
+  * "Scheduling" (also z.B. "AB nur von 18:00 bis 09:00 Uhr (außerhalb der Bürozeiten)"
+ * Info-Menü z.B. zum
+  * Erfragen der Uhrzeit
+  * Erfragen der aktuellen IP Adresse (wenn z.B. DDNS mal hängt)
+  * Mail Check ("Es gibt x neue Nachrichten")
+  * Webradio
+  * Wetterdienst
+ * CallThrough/CallBack nach PIN-Eingabe
+ * SIP-Registrar (ISDN/Analog Telefone per SIP anbinden)
+ * Webphone (Java-App) zum telefonieren ohne Telefon - dafür mit Headset am PC
+
+All diese Dienste sind bereits weitgehend vorkonfiguriert - man muss sie meist nur noch Aktivieren (per Default sind die meisten Sachen deaktiviert, sofern sie automatische Aktionen auslösen würden - wie z.B. der Anrufbeantworter).
+
+Ansonsten sind der Fantasie kaum Grenzen gesetzt, wozu sich DTMFBox noch verleiten ließe. Als Beispiel für zusätzliche Features sei die "CallCenter Bremse" genannt, mit Hilfe derer man sich vor anonymen "WolleRoseKaufe" Anrufern ein wenig schützen kann (wie das geht, findet sich in [http://www.ip-phone-forum.de/showthread.php?p=1169484 diesem Forumsbeitrag]), oder das Starten von Programmen nach PIN-Eingabe.
+
+== Einrichtung ==
+Wie bereits oben angedeutet, sind zunächst ein paar vorbereitende Schritte notwendig:
+ * Einbinden ins Image [[br]] für Sprachfunktionen kann hier zusätzlich das [wiki:packages/espeak eSpeak Paket] ausgewählt, und bei DTMFBox der eSpeak Support aktiviert werden. Ohne dies geht es auch über Webstream, der allerdings eine Internet-Verbindung voraussetzt))
+ * Image installieren (oh, wirklich?)
+ * Im Freetz-Menü einen der DTMFBox Menüpunkte auswählen, und DTMFBox wahlweise im RAM oder auf USB installieren
+ * Accounts einrichten
+ * DTMFBox manuell starten
+ * ggf. DTMFBox für automatischen Start konfigurieren, damit es nach einem Neustart der Box auch ohne Eingreifen des Besitzers/Betreibers wieder aktiv wird
+
+== Konfiguration ==
+Was und wie das geht, verrät Euch die gute und umfangreiche Online-Hilfe. Sicher ließe sich diese auch nochmal komplett im Wiki unterbringen - das hieße dann aber, sie an zwei Stellen pflegen zu müssen; dabei bleibt erfahrungsgemäß eine Kopie "weniger aktuell". Die Hilfe im Paket selbst wird vom Autoren mitgepflegt - für Details sei also auf jene verwiesen. Hier wollen wir nur einen kurzen Einblick geben, wie einfach die Konfiguration zu bewerkstelligen ist. Ich beziehe mich damit auf Version 0.5.0 des Paketes - für spätere Versionen mag das hier beschriebene u.U. zumindest teilweise "überholt" sein.
+
+
+
+
+
+
+Die Konfiguration erfolgt primär, wer hätte das gedacht, bequem über das Freetz WebIF. "Primär" heißt hier nicht, dass man noch woanders tätig werden ''muss'' - sondern dass der "versierte Anwender" auch über das Dateisystem an Konfigurationsdatei und/oder Skripten arbeiten ''kann''.
+
+=== Accounts ===
+Das hier ist ein ''Muss'' - ohne bleibt DTMFBox funktionslos, und wenn man es noch so oft startet...
+
+Wie das meiste, sind auch die "Accounts" bereits ein wenig vorkonfiguriert - es ist also wirklich nicht viel zu tun. Im Menüpunkt "Basis" klappt man die Drop-Down Box auf, und wählt z.B. "acc1" ("Account #1") aus. Nun werden auf der Seite die Details angezeigt. Was nun getan werden muss, ist eigentlich nur dem Account einen Namen zu geben (damit man ihn später "erkennt"), die zugehörige Rufnummer (ohne Vorwahl - also die "MSN") eintragen (Achtung - nur wenn die Anlage am ISDN-Bus hängt, für analoge Anschlüsse kommt die "MSN" in den Namen, und bei Nummer trägt man "unknown" ein), und den Account aktiviert - das war's im Wesentlichen.
+
+Nach dem Einrichten der Accounts (und ggf. weiterer Konfiguration - auf jeden Fall vor dem Verlassen der "Basis" Seite) das Speichern nicht vergessen, sonst war alles umsonst...
+
+Hier habe ich nur das Einrichten von ISDN bzw. Analoganschlüssen beschrieben. DTMFBox kann aber auch mit VoIP (über CAPI sowie über SIP) umgehen, und man kann sogar ISDN/Analoges über SIP abwickeln. Passende Informationen finden sich in der Online-Hilfe, und würden diesen Artikel sprengen - daher entfallen sie hier.
+
+Ruft man nun bei sich selbst an, und gibt den Menücode ein (Beispiel: **600), können die bereits vorkonfigurierten Aktionen (siehe [#Features oben]) benutzt werden.
+
+=== Internes Menü ===
+Das interne Menü kann über die Kurzwahl des Accounts erreicht werden. Standardmäßig gilt dies zunächst nur für ISDN. Die DTMFBox empfängt die Meldungen auf Controller 3 und kann somit das Gespräch bei Eingabe der Kurzwahl an das interne Menü weiterleiten.
+
+Bei Analog geht dies nicht, da keine Meldungen auf dem internen S0 eintreffen! Man kann das Menü aber dennoch, mithilfe des Registrar-Modus, erreichen:
+
+ * Registrar-Modus aktivieren (Basiseinstellungen -> voip)
+ * Registrierungsdaten im Account hinterlegen und aktivieren (Basiseinstellungen -> accX)
+ * Im AVM-Webinterface einen Internet-Telefonieaccount anlegen. Z.B.:
+  * Internettelefonie-Anbieter: (anderer Anbieter)
+  * Internetrufnummer: 81
+  * Registrar: 192.168.178.1:5061 (IP der FB und SIP-Port der DTMFBox angeben)
+  * Benutzername: (Benutzername)
+  * Passwort: (Passwort)
+  * Rufnummernformat anpassen: (nichts auswählen)
+
+Jetzt die DTMFBox neu starten und den SIP-Account anwählen + Kurzwahl.
+
+Bei dem ersten Internettelefonie-Account und der Kurzwahl 801 wäre das: *121!#801
+
+=== Menü/Skripte bearbeiten ===
+Natürlich lassen sich die vorkonfigurierten Menüs auch anpassen und/oder erweitern. So können neue Aktionen und/oder Skripte hinzugefügt, bestehende angepasst, oder auch "ungewollte" gelöscht werden. Alles völlig unkompliziert über das WebIF. Trotz der umfangreichen Möglichkeiten, die DTMFBox bietet, ist dies alles weit weniger kompliziert, als man befürchten mag.
+
+Wie man bestehende Aktionen erweitert oder weitere Funktionalitäten hinzufügt, geht über diesen Artikel hinaus - für ein Beispiel sei nochmals auf den [http://www.ip-phone-forum.de/showthread.php?p=1169484 Forums-Artikel zum CallCenter-Bremser] hingewiesen, der das recht gut erläutert - und natürlich auf die Online-Hilfe.
+
+=== eSpeak anpassen ===
+Wem die Sprachausgabe in der Standard-Konfiguration nicht so recht zusagt, der kann sie freilich auch noch anpassen. Die entsprechenden Informationen finden sich hinter dem Link '''''dtmfbox-skript''''', wenn man etwas weiter nach unten scrollt. Folgende Optionen stehen da zur Disposition:
+
+||| Option ||| Erklärung
+|| Modus || Hier lässt sich einstellen, welcher Modus verwendet werden soll - was natürlich abhängig von den installierten Optionen ist. Von der Qualität sind '''Webstream''' und '''installiert''' gleich - wobei '''installiert''' logischerweise nur ausgewählt werden sollte, wenn eSpeak auch direkt auf der Box installiert ist. Bei '''Beep''' wird lediglich ein Piepton ausgegeben.
+|| Language || Was das wohl ist? Tipp: ISO-Kürzel für Deutsch ist "de"
+|| Typ || Sprecher-Auswahl. Hier stehen verschiedene männliche (m1..mx) und weibliche (w1..wx) Stimmen zur Verfügung.
+|| Lautstärke || keine Ahnung ;-)
+|| Geschwindigkeit || Von "nnaaaa jjaaaa" bis "kommstenochmit" (z.B. 170)
+|| Pitch || Tonhöhe - hier lassen sich aus männlichen Stimmen Soprane und aus weiblichen bärtige Ladies machen (z.B. 50)
+|| Pfade || Bei der standalone Version finden sich espeak, madplay usw. unter /var/dtmfbox/extras, sodass dieser Pfad hier voreingestellt ist. Bei der in Freetz integrierten Version liegen die Dinge wo anders (*): '''espeak:''' {{{/usr/bin}}}, '''madplay:''' {{{/usr/bin}}}, '''checkmaild:''' {{{/mod/etc}}}
+|| || *Achtung, das espeak Binary heisst "speak" - falls jemand danach sucht und sich wundert, dass man es unter {{{/usr/bin}}} nicht als "espeak" findet.
+
+== Weiterführende Links ==
+* http://web.archive.org/web/20110830124914/http://dtmfbox.v3v.de/

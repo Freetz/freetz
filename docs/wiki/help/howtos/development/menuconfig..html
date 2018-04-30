@@ -1,0 +1,316 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+  
+
+
+  <head>
+    <title>
+      help/howtos/development/menuconfig – Freetz
+    </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!--[if IE]><script type="text/javascript">
+      if (/^#__msie303:/.test(window.location.hash))
+        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
+    </script><![endif]-->
+        <link rel="search" href="http://freetz.org/search" />
+        <link rel="help" href="../../../TracGuide.html" />
+        <link rel="alternate" href="menuconfig%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
+        <link rel="up" href="../development.html" title="Übergeordnete Wiki-Seite anzeigen" />
+        <link rel="start" href="http://freetz.org/wiki" />
+        <link rel="stylesheet" href="../../../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
+        <link rel="shortcut icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="http://freetz.org/favicon.ico" type="image/x-icon" />
+      <link type="application/opensearchdescription+xml" rel="search" href="http://freetz.org/search/opensearch" title="Freetz durchsuchen" />
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/jquery.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/babel.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/messages/de.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/trac.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/search.js"></script>
+      <script type="text/javascript" charset="utf-8" src="../../../../chrome/common/js/folding.js"></script>
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
+        $("#content").find(".wikianchor").each(function() {
+          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
+        });
+        $(".foldable").enableFolding(true, true);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="http://freetz.org/wiki"><img src="../../../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
+      </div>
+      <form id="search" action="http://freetz.org/search" method="get">
+        <div>
+          <label for="proj-search">Suche:</label>
+          <input type="text" id="proj-search" name="q" size="18" value="" />
+          <input type="submit" value="Suche" />
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="http://freetz.org/login">Anmelden</a></li><li><a href="http://freetz.org/prefs">Einstellungen</a></li><li><a href="../../../TracGuide.html">Hilfe/Anleitung</a></li><li><a href="http://freetz.org/about">Über Trac</a></li><li><a href="http://freetz.org/notification" title="Wiki Pages Change Notifications">My Notifications</a></li><li><a href="http://freetz.org/register">Registrieren</a></li><li class="last"><a href="../../../Impressum.html">Impressum</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first active"><a href="http://freetz.org/wiki">Wiki</a></li><li><a href="http://freetz.org/timeline">Journal</a></li><li><a href="http://freetz.org/roadmap">Projektplan</a></li><li><a href="http://freetz.org/browser">Quellen durchsehen</a></li><li><a href="http://freetz.org/report">Tickets anzeigen</a></li><li><a href="http://freetz.org/search">Suche</a></li><li><a href="http://freetz.org/tags">Tags</a></li><li><a href="http://freetz.org/downloads">Downloads</a></li><li class="last"><a href="http://freetz.org/screenshots">Bildschirmfotos</a></li>
+    </ul>
+  </div>
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="menuconfig..html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="http://freetz.org/wiki/help/howtos/development/menuconfig.en" title="(not available)">English</a></li></ul></div><div id="main">
+      <div id="pagepath" class="noprint">
+  <a class="pathentry first" title="Zeige WikiStart an" href="http://freetz.org/wiki">Wiki:</a><a class="pathentry" href="../../../help.html" title="Zeige help an">help</a><span class="pathentry sep">/</span><a class="pathentry" href="../../howtos.html" title="Zeige help/howtos an">howtos</a><span class="pathentry sep">/</span><a class="pathentry" href="../development.html" title="Zeige help/howtos/development an">development</a><span class="pathentry sep">/</span><a class="pathentry" href="menuconfig.html" title="Zeige help/howtos/development/menuconfig an">menuconfig</a>
+</div>
+      <div id="ctxtnav" class="nav">
+        <h2>Kontext-Navigation</h2>
+        <ul>
+          <li class="first"><a href="../development.html">Aufwärts</a></li><li><a href="../../../WikiStart.html">Startseite</a></li><li><a href="../../../TitleIndex.html">Inhaltsverzeichnis</a></li><li><a href="menuconfig%3Faction=history.html">Änderungshistorie</a></li><li class="last"><a href="http://freetz.org/notification/help/howtos/development/menuconfig." title="Watch Page">Watch Page</a></li>
+        </ul>
+        <hr />
+      </div>
+    <div id="content" class="wiki">
+      <div class="wikipage searchable">
+        
+          <div id="wikipage" class="trac-content"><p>
+</p><div class="wiki-toc"><h4>Inhaltsverzeichnis</h4><ol><li><a href="menuconfig.html#Einstieg">Einstieg</a></li><li><a href="menuconfig.html#Beispiel-KonfigurationfüreinneuesPaket">Beispiel-Konfiguration für ein neues Paket</a></li><li><a href="menuconfig.html#Menuconfig-Warnungenbeheben">Menuconfig-Warnungen beheben</a></li><li><a href="menuconfig.html#ErklärungundAnwendungdererweitertenMK-Targets">Erklärung und Anwendung der erweiterten MK-Targets</a></li><li><a href="menuconfig.html#Syntax-FehlerinMK-Dateienfinden">Syntax-Fehler in MK-Dateien finden</a></li><li><a href="menuconfig.html#Syntax-HervorhebungfürMK-Dateien">Syntax-Hervorhebung für MK-Dateien</a></li></ol></div><p>
+</p>
+<h1 id="Menükonfigurationpflegen">Menükonfiguration pflegen</h1>
+<p>
+Einer der ersten Schritte jedes <strong><em>Freetz</em></strong>-Benutzers ist die Auswahl der gewünschten Firmware (FW)-Konfiguration mit <tt>make menuconfig</tt>. Die Menükonfiguration (MK) ist mithin die primäre Benutzerschnittstelle neben der Linux-Shell für alle Nicht-Entwickler. Fehler und Unstimmigkeiten, welche dort auftauchen, können bestenfalls zu Verwirrung und Fragen im <a class="ext-link" href="http://www.ip-phone-forum.de/forumdisplay.php?f=525"><span class="icon">​</span>IPPF Freetz-Forum</a> führen, aber auch zu seltsamen Warnungen auf der Konsole nach dem Speichern der Konfiguration, zu fehlenden oder überflüssigen FW-Bestandteilen oder schlimmstenfalls zu Freetz-Boxen, die nicht mehr booten oder in Reboot-Schleifen festhängen. In jedem Fall entsteht Support-Aufwand. Am billigsten sind, gemäß dem agilen Mantra "fail early", jedoch Fehler, die frühestmöglich bemerkt werden oder am besten gar nicht erst entstehen. Die Pflege der Menükonfiguration ist ein wichtiger Qualitäts-Baustein unseres Projektes.
+</p>
+<h2 id="Einstieg">Einstieg</h2>
+<p>
+Pflichtlektüre jedes Entwicklers, bevor er zum ersten Mal die MK anpaßt, sollte die <a class="source" href="http://freetz.org/browser/trunk/tools/config/kconfig-language.txt">Beschreibung der Kconfig-Sprache</a><a class="trac-rawlink" href="http://freetz.org/export/HEAD/trunk/tools/config/kconfig-language.txt" title="Download">​</a> sein. Dort werden Syntax-Features und deren Gebrauch grundlegend erklärt. Die Beschreibung entstammt der Dokumentation des <a class="ext-link" href="http://kernel.org"><span class="icon">​</span>Linux-Kernels</a>, welchem wir (und auch andere quelloffene Projekte) diese Art der MK und die dazu notwendigen Werkzeuge entlehnt haben.
+</p>
+<p>
+Die wichtigste Dateien und <em>Make</em>-Targets, mit welchen wir es im Folgenden zu tun haben werden, sind
+</p>
+<ul><li><a class="missing source">Config.in</a>
+<ul><li>enthält das Hauptgerüst der MK
+</li><li>ist in der <em>Kconfig</em>-Sprache geschrieben
+</li><li>inkludiert hierarchisch (Baumstruktur) mittels <tt>source</tt>-Direktive weitere MK-Definitionen, welche ebenfalls Namen wie <em>Config.in, externals.in</em> o.ä. tragen
+</li><li>wird zukünftig (Trunk-Merge steht kurz bevor) als Ganzes, also mit allen Includes, gepuffert in <em>Config.in.cache</em>, um Ladezeiten beim Aufruf von <tt>make menuconfig</tt> zu verringern.
+</li></ul></li><li><em>.config</em>
+<ul><li>enthält die vom Benutzer erstellte FW-Konfiguration als maßgebliche Vorausstzung für folgende Builds
+</li><li>ist als Kopie in der FW unter <em>/etc/.config</em> enthalten, sofern das nicht in der MK vor dem Build deselektiert wird
+</li><li>ist eines der primären Debugging-Werkzeuge, wenn Benutzer Fehler mit einer bestimmten Konfiguration melden
+</li><li>kann, sollte aber nicht manuell editiert werden
+</li></ul></li><li><em>tools/config/mconf</em>
+<ul><li>ist das Binary, welches von <tt>make menuconfig</tt> aufgerufen wird, um die MK anzuzeigen und zu speichern
+</li><li>wird mittels <tt>make tools</tt> bzw. <tt>make kconfig</tt> automatisch gebaut, sobald es benötigt wird
+</li><li>hat auch ein <em>Make</em>-Target <tt>menuconfig-single</tt>, welches die KM als Baumstruktur ohne Unterseiten darstellt (manchmal nett, wenn man die Gesamtstruktur sehen bzw. bearbeiten möchte)
+</li></ul></li><li><em>tools/config/conf</em>
+<ul><li>ist die Kommandozeilenversion von <em>mconf</em>
+</li><li>hat mehr Features
+</li><li>wird ebenfalls mittels <tt>make tools</tt> bzw. <tt>make kconfig</tt> automatisch gebaut, sobald es benötigt wird
+</li><li>wird von den <em>Make</em>-Targets <tt>config</tt>, <tt>oldconfig</tt>, <tt>oldnoconfig</tt>, <tt>defconfig</tt>, <tt>allnoconfig</tt>, <tt>allyesconfig</tt>, <tt> randconfig</tt>, <tt>listnewconfig</tt>, <tt>config-clean-deps</tt> und <tt>config-clean-deps-keep-busybox</tt> benutzt
+</li><li>zeigt folgende Hilfe an, wenn ohne Parameter aufgerufen (klappt Stand 15.10.2011 im Trunk, nicht in älteren Stable-Versionen, also frühestens ab <em>Freetz 1.2</em>):
+<pre class="wiki">Usage: tools/config/conf [option] &lt;kconfig-file&gt;
+[option] is _one_ of the following:
+  --listnewconfig         List new options
+  --oldaskconfig          Start a new configuration using a line-oriented program
+  --oldconfig             Update a configuration using a provided .config as base
+  --silentoldconfig       Same as oldconfig, but quietly, additionally update deps
+  --oldnoconfig           Same as silentoldconfig but set new symbols to no
+  --defconfig &lt;file&gt;      New config with default defined in &lt;file&gt;
+  --savedefconfig &lt;file&gt;  Save the minimal current configuration to &lt;file&gt;
+  --allnoconfig           New config where all options are answered with no
+  --allyesconfig          New config where all options are answered with yes
+  --allmodconfig          New config where all options are answered with mod
+  --alldefconfig          New config with all symbols set to default
+  --randconfig            New config with random answer to all options
+</pre></li></ul></li></ul><h2 id="Beispiel-KonfigurationfüreinneuesPaket">Beispiel-Konfiguration für ein neues Paket</h2>
+<p>
+TODO
+</p>
+<h2 id="Menuconfig-Warnungenbeheben">Menuconfig-Warnungen beheben</h2>
+<p>
+TODO
+</p>
+<p>
+Siehe vorerst <a class="closed ticket" href="http://freetz.org/ticket/1532" title="enhancement: Warnings im Zusammenhang mit neuem Kconfig (menuconfig) (closed: fixed)">#1532</a>, insbes. Kommentare Nr.
+</p>
+<ul><li><strong><a class="closed" href="http://freetz.org/ticket/1532#comment:10" title="Kommentar 10 für Ticket #1532">10</a>: Erklärung einer Warnung mit Vorschlägen zur Problembehebung</strong>
+<blockquote class="citation">
+<p>
+Diese <em>unmet dependencies</em> behebt am besten jeder so, wie der gerade drauf stößt. Es sind ja nur Warnings, aber die sind auch wichtig, damit wir Unsauberkeiten aus den <em>Config.in</em> heraus bekommen. Das ist also gut für die Projekthygiene. Ich gebe mal ein Beispiel:
+</p>
+<pre class="wiki">warning: (FREETZ_PACKAGE_AUTOFS_NFS &amp;&amp; FREETZ_PACKAGE_NFSROOT)
+    selects FREETZ_MODULE_nfs which has unmet direct dependencies
+    (FREETZ_KERNEL_VERSION_2_6_13_1 || FREETZ_KERNEL_VERSION_2_6_28 ||
+     FREETZ_KERNEL_VERSION_2_6_32)
+</pre><p>
+Aha, hier hat also jemand (ich) NFS-Root ausgewählt. Klar, daß dazu auch das NFS-Kernelmodul ausgewählt werden muß. Jetzt hat dieser Jemand aber bspw. eine 7270_v1 mit Kernel 2.6.19.2. Das Problem liegt auf der Hand: Entweder sollte beim NFS-Modul dieser Kernel mit in die Dependencies-Liste, oder für diesen Kernel sollten alle NFS-relevanten Sachen deaktiviert werden. Alles andere ist ein Widerspruch, und der wird moniert von <em>Kconfig</em>. Was in diesem Fall sachlich zutreffend ist, weiß ich momentan nicht, dafür war ich zu lange zu weit weg von der Entwicklung.
+</p>
+</blockquote>
+</li></ul><ul><li><strong><a class="closed" href="http://freetz.org/ticket/1532#comment:24" title="Kommentar 24 für Ticket #1532">24</a>: Liste aktueller Warnungen mit Erläuterungen zu Ursachen und möglichen Lösungen</strong>
+</li><li><strong><a class="closed" href="http://freetz.org/ticket/1532#comment:31" title="Kommentar 31 für Ticket #1532">31</a>: konkretes Beispiel einer von Alexander Kriegisch eingecheckten Problembehebung</strong>
+<blockquote class="citation">
+<p>
+Ich versuche es einfach statt in Prosa mal schematisch: <img src="../../../../chrome/wikiextras-icons-16/smiley.png" style="vertical-align: text-bottom" alt=":-)" />
+</p>
+<div class="code"><pre>FREETZ_PACKAGE_DAVFS2
+    <span class="k">select</span> FREETZ_REMOVE_WEBDAV <span class="k">if</span> FREETZ_HAS_AVM_WEBDAV
+
+FREETZ_REMOVE_WEBDAV
+    <span class="k">depends on</span> FREETZ_HAS_AVM_WEBDAV
+
+FREETZ_HAS_AVM_WEBDAV
+    <span class="k">depends on</span> FREETZ_TYPE_FON_WLAN_7240 <span class="o">||</span> ...
+</pre></div><p>
+Das sieht mir sauber genug aus, obwohl das "if FREETZ_HAS_AVM_WEBDAV" - da gebe ich Dir recht - in Deinem Sinne doppelt ist. Aber es sagt dafür genauer, was Du wirklich tun willst (man kann die Konfigurationsanweisung diesmal wirklich wie Prosa lesen): Wähle den Remove-Patch aus, falls es überhaupt etwas zu entfernen gibt. Ich denke, das macht es hinreichend klar und dokumentiert nochmals, was gewollt ist. Zudem vermeidet es die Warnung nach dem Speichern der Konfiguration. Ohne das <em>If</em> würde die Warnung erscheinen.
+</p>
+</blockquote>
+</li></ul><p>
+    
+</p>
+<ul><li><strong><a class="closed" href="http://freetz.org/ticket/1532#comment:54" title="Kommentar 54 für Ticket #1532">54</a>: verallgemeintertes "Kochrezept" zur Problembehebung bei Remove-Patches</strong>
+<blockquote class="citation">
+<p>
+Ich weise nochmals auf meinen Kommentar #31 hin, aus dem man im Grunde sehr schön ablesen kann, wie einfach, elegant und lesbar man viele Situationen beheben kann:
+</p>
+<div class="code"><pre>FREETZ_PACKAGE_FOO
+    <span class="k">select</span> FREETZ_REMOVE_MY_FEATURE <span class="k">if</span> FREETZ_HAS_AVM_MY_FEATURE
+
+FREETZ_REMOVE_MY_FEATURE
+    <span class="k">depends on</span> FREETZ_HAS_AVM_MY_FEATURE
+
+FREETZ_HAS_AVM_MY_FEATURE
+    <span class="k">depends on</span> FREETZ_TYPE_A <span class="o">||</span> FREETZ_TYPE_B <span class="o">||</span> ...
+</pre></div><p>
+<strong>Kochrezept für Remove-Patches (RP):</strong>
+</p>
+<ul><li>Automatische RP-Auswahl absichern durch <tt>if FREETZ_HAS_AVM_MY_FEATURE</tt>
+</li><li>RP-Sichtbarkeit abhängig machen durch <tt>depends on FREETZ_HAS_AVM_MY_FEATURE</tt>
+</li><li>Durch RP entfernbares Feature abhängig machen von Hardware oder Firmware usw. durch <tt>depends on FREETZ_TYPE_A</tt>
+</li></ul></blockquote>
+</li></ul><ul><li><strong><a class="closed" href="http://freetz.org/ticket/1532#comment:55" title="Kommentar 55 für Ticket #1532">55</a>: weitere Erläuterungen zur Umsetzung des Kochrezepts</strong>
+<blockquote class="citation">
+<p>
+Replying to oliver:
+</p>
+<blockquote class="citation">
+<p>
+Wo ist der Sinn darin eine dependency herauszunehmen, die (bis auf wenige Fälle) richtig ist?
+</p>
+</blockquote>
+<p>
+Jetzt habe ich mir den ersten <a href="http://freetz.org/attachment/ticket/1532/0001-patches-Drop-false-depends-on-FREETZ_HAS_USB_HOST.patch">Patch</a> doch schnell mal angeschaut. Es ist weder korrekt, sie so drin zu lassen, wenn sie auch nur in wenigen Fällen falsch ist, noch, sie ersatzlos zu streichen, wenn unsinnige Optionen dafür in neuen, falschen Fällen angezeigt werden. Was hingegen Sinn (und etwas Mühe) machen würde, wäre, mein Kochrezept anzuwenden und neue Variablen FREETZ_HAS_AVM_AURA_USB, FREETZ_HAS_AVM_PRINTSERV und FREETZ_HAS_AVM_RUNCLOCK anzulegen. Die könnte FREETZ_HAS_USB_HOST ja von mir aus in den Fällen, wo es keine gegenteiligen Erkenntnisse gibt, automatisch auswählen. Sobald aber auch nur eine einzige Ausnahme bekannt ist, ist eine Box-Liste beim jeweiligen FREETZ_HAS_AVM_* zu hinterlegen. Die Remove-Patches sollten immer von FREETZ_HAS_AVM_* abhängen, nie von einem billigen Ersatz der nur <em>fast</em> immer funktioniert.
+</p>
+<p>
+Das ist keine Kritik i.S.v. "das hättest Du aber vorher wissen sollen", denn die Erkenntnisse sind ja relativ neu und m.E. ein Segen des neuen <em>Kconfig</em>. Ich will durch meine Hinweise den anderen Entwicklern Hilfe zur Selbsthilfe geben.
+</p>
+<p>
+Ergänzung: Es ist auch sowas vorstellbar:
+</p>
+<div class="code"><pre>FREETZ_HAS_AVM_MY_FEATURE
+    <span class="k">depends on</span> FREETZ_HAS_USB_HOST <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="p">(</span>FREETZ_TYPE_A <span class="o">||</span> FREETZ_TYPE_B)
+</pre></div><p>
+So hält man die Boxen-Liste klein, indem man einfach klar sagt, was Sache ist. Es ist wieder fast wie Prosa lesbar: "Zeig das AVM-Feature X an, wenn die Box einen USB-Host hat, außer in den Ausnahmefällen A und B."
+</p>
+</blockquote>
+</li></ul><p>
+        
+</p>
+<h2 id="ErklärungundAnwendungdererweitertenMK-Targets">Erklärung und Anwendung der erweiterten MK-Targets</h2>
+<p>
+TODO
+</p>
+<h2 id="Syntax-FehlerinMK-Dateienfinden">Syntax-Fehler in MK-Dateien finden</h2>
+<p>
+Wir sehen einen Fehler wie diesen:
+</p>
+<pre class="wiki">$ make menuconfig
+
+Config.in.cache:4951: syntax error
+Config.in.cache:4950: unknown option "xconfig"
+Config.in.cache:4951:warning: prompt redefined
+make: *** [menuconfig] Error 1
+</pre><p>
+Gemäß Beschreibung in <a class="changeset" href="http://freetz.org/changeset/8466" title="Add new make target `menuconfig-nocache` as a debug helper if you easily ...">r8466</a> gibt es zwei Wege, bei einem von <tt>make menuconfig</tt> angezeigten Syntax-Fehler schnell die fehlerhafte Stelle zu finden:
+</p>
+<ol><li>In <tt>Config.cache.in</tt> direkt zu der Fehlerzeile 4950 springen, die auf der Konsole angezeigt wurde. Von dort aus rückwärts(!) suchen nach <tt>INCLUDE_BEGIN</tt> - voilà, dort steht der Dateiname, wo die fehlerhafte MK zu finden ist.
+</li><li><tt>make menuconfig-nocache</tt> aufrufen und die problematische Datei (<em>make/davfs2/Config.in</em>) direkt von der Konsole ablesen:
+<pre class="wiki">$ make menuconfig-nocache
+
+make/davfs2/Config.in:2: syntax error
+make/Config.in:84: missing end statement for this entry
+Config.in:851: missing end statement for this entry
+make/davfs2/Config.in:1: invalid statement
+make/davfs2/Config.in:2: unexpected option "bool"
+make/davfs2/Config.in:3: unexpected option "select"
+make/davfs2/Config.in:4: unexpected option "select"
+make/davfs2/Config.in:5: unexpected option "select"
+make/davfs2/Config.in:6: unexpected option "select"
+make/davfs2/Config.in:7: unexpected option "select"
+make/davfs2/Config.in:8: unexpected option "select"
+make/davfs2/Config.in:9: unexpected option "default"
+make/davfs2/Config.in:10: invalid statement
+make/davfs2/Config.in:11: unknown statement "davfs"
+make/davfs2/Config.in:12: unknown statement "WebDAV"
+make/davfs2/Config.in:13: unknown statement "HTTP"
+make/davfs2/Config.in:14: unknown statement "resources"
+make/Config.in:199: unexpected end statement
+Config.in:862: unexpected end statement
+make: *** [menuconfig-nocache] Error 1
+</pre></li></ol><h2 id="Syntax-HervorhebungfürMK-Dateien">Syntax-Hervorhebung für MK-Dateien</h2>
+<p>
+Gemäß <a class="source" href="http://freetz.org/browser/trunk/tools/developer/kconfig.pygments.patch">Patch 1</a><a class="trac-rawlink" href="http://freetz.org/export/HEAD/trunk/tools/developer/kconfig.pygments.patch" title="Download">​</a> habe ich (Alexander Kriegisch, kriegaex) zunächst einen sog. <a class="ext-link" href="http://de.wikipedia.org/wiki/Lexikalischer_Scanner"><span class="icon">​</span>Lexer</a> für <a class="ext-link" href="http://pygments.org"><span class="icon">​</span>Pygments</a> gebaut (siehe auch <a class="ext-link" href="http://pygments.org/docs/lexerdevelopment/"><span class="icon">​</span>Pygments-Doku</a>), welcher es ermöglicht, MK-Dateien mit Syntax-Hervorhebung zu versehen. <em>Pygments</em> wird von <a class="ext-link" href="http://trac.edgewall.org"><span class="icon">​</span>Trac</a>, also dem System, auf welchem unser Wiki und der Repository Browser basieren, automatisch benutzt, sofern es installiert ist.
+</p>
+<p>
+<em>Trac</em> erkennt den MIME-Typ einer Datei aber nur aufgrund der Endung (also z.B. <em>.py, .sh, .pl, .c, .h</em>) oder aufgrund Infos wie <a class="ext-link" href="http://de.wikipedia.org/wiki/Shebang"><span class="icon">​</span>Shebang</a> oder <em>Vi-/Emacs</em>-Header, und das ist ein Problem bei MK-Dateien, da es keine standardisierte Dateiendung im Allgemeinen und auch nicht bei uns im Projekt gibt. Unsere einzige Chance ist es, den Wildwuchs an Dateinamen (z.B. <em>Config.in, external.in, standard-modules.in, external.in.libs</em>) so im Zaum zu halten, daß man mit <a class="ext-link" href="http://de.wikipedia.org/wiki/Regul%C3%A4rer_Ausdruck"><span class="icon">​</span>Regex Matching</a> die entsprechenden Dateien identifizieren kann. Das ist Stand heute möglich, allerdings beherrscht <em>Trac</em> von Haus aus kein Regex Matching, weswegen <a class="source" href="http://freetz.org/browser/trunk/tools/developer/mime_map_patterns.trac.patch">Patch 2</a><a class="trac-rawlink" href="http://freetz.org/export/HEAD/trunk/tools/developer/mime_map_patterns.trac.patch" title="Download">​</a> notwendig wird. <em>(Anm.: Bevor es Patch 2 gab, war es notwendig, in SVN die Eigenschaft <tt>svn:mime-type</tt> für jede MK-Datei manuell zu setzen, was inzwischen zum Glück obsolet ist, aber auch nicht schaden würde.)</em>
+</p>
+<p>
+Auf unserem Webserver sind beide Patches nebst der notwendigen Konfiguration in <tt>trac.ini</tt> aktiv, so daß MK-Dateien aus dem SVN-Repository automatisch mit Syntax-Hervorhebung versehen werden.
+</p>
+<p>
+Noch ein kleiner Tip: Wie man Syntax Highlighting im <em>Trac</em>-Wiki direkt in Code-Blocks einsetzt, sieht man hier direkt im Artikel für MK- und Shell-Code: Entweder man erwähnt am Anfang des Code-Blocks mit führendem Shebang den MIME-Typ (<tt>text/x-kconfig</tt>, übrigens selbst erfunden und kein allgemeiner Standard) oder das in <tt>trac.ini</tt> konfigurierte Schlüsselwort <tt>kconfig</tt>, also in etwa so:
+</p>
+<pre class="wiki">{{{
+#!text/x-kconfig
+... MK-Code ...
+}}}
+</pre><p>
+Oder so:
+</p>
+<pre class="wiki">{{{
+#!kconfig
+... MK-Code ...
+}}}
+</pre></div>
+          
+          <div class="trac-modifiedby">
+            <span><a href="menuconfig%3Faction=diff&amp;version=14.html" title="Version 14 von badmaxx: schreibfehler behoben">zuletzt geändert</a> <a class="timeline" href="http://freetz.org/timeline?from=2012-08-30T19%3A07%3A01Z&amp;precision=second" title="Siehe Journal am 30.08.2012 19:07:01">vor 6 Jahren</a></span>
+            <span class="trac-print">Zuletzt geändert am 30.08.2012 19:07:01</span>
+          </div>
+        
+        
+      </div><ul class="tags"><li class="header">Tags</li><li><a href="http://freetz.org/tags/development" rel="tag">development</a> </li></ul>
+      
+
+    </div>
+    <script type="text/javascript">
+        jQuery.loadStyleSheet("/pygments/trac.css", "text/css");
+    </script>
+    <div id="altlinks">
+      <h3>In anderen Formaten herunterladen:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="menuconfig%3Fformat=txt">Reiner Text</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" lang="en" xml:lang="en"><hr />
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="../../../../chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
+      <p class="left">Betrieben mit <a href="http://freetz.org/about"><strong>Trac 1.0.1</strong></a><br />
+        von <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right"><div class="field" align="right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations"/><input type="hidden" name="business" value="spenden@freetz.org"/><input type="hidden" name="item_name" value="Freetz Entwickler-Team"/><input type="hidden" name="no_shipping" value="1"/><input type="hidden" name="return" value="http://freetz.org"/><input type="hidden" name="cn" value="Name oder IPPF-Pseudonym"/><input type="hidden" name="currency_code" value="EUR"/><input type="hidden" name="tax" value="0"/><input type="hidden" name="lc" value="DE"/><input type="hidden" name="bn" value="PP-DonationsBF"/><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Zahlen Sie mit PayPal - schnell, kostenlos und sicher!"/><img alt="" border="0" src="http://freetz.org/pixel.gif" width="1" height="1"/></form></div></p>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,59 @@
+= ziproxy =
+"''Ziproxy is a forwarding (non-caching) compressing HTTP proxy server. Basically, it squeezes images by converting them to lower quality JPEGs  or JPEG 2000 and compresses (gzip) HTML and other text-like data. It also provides other features such as: HTML/JS/CSS optimization,  preemptive hostname resolution, transparent proxying, IP ToS marking  (QoS), Ad-Blocker, detailed logging and more.''"
+
+Useful when bandwidth is limited, for example on slow GPRS connections or on slow or heavily shared internet connections in developing countries (typical in internet cafes).
+
+It is possible to use ziproxy as normal proxy by disabling the options ''GZip compression'' and ''Compress images''.
+
+Ziproxy supports inet.
+
+== CPU usage ==
+Relatively heavy.
+
+It may be necessary to disable the watchdog by adding this line to for example ''rc.custom'':
+
+{{{
+echo "disable">/dev/watchdog
+}}}
+== Memory usage ==
+After a fresh start:
+
+''!VmSize'': ~1800 kB[[BR]] ''VmRSS'': ~375 kB
+
+== URL no processing list ==
+You want probably at least:
+
+{{{
+http://mt*.google.com/*
+http://khm*.google.com/*
+http://maps.gstatic.com/*
+}}}
+== URL deny list ==
+[[Screenshot(218,align=right)]]
+
+Something like:
+
+{{{
+http://*.doubleclick.net/*
+http://*.googleadservices.com/*
+http://*.google-analytics.com/*
+http://*.googlesyndication.com/*
+http://adserver.*/*
+http://ads.*/*
+http://ad.*/*
+http://*.facebook.com/plugins*
+http://*.facebook.com/widgets*
+http://*.fbcdn.net/ads*/*
+}}}
+and maybe:
+
+{{{
+http://*/*.swf
+}}}
+== Links ==
+ * [http://ziproxy.sourceforge.net/ Homepage]
+ * [http://ziproxy.cvs.sourceforge.net/viewvc/ziproxy/ziproxy-default/README?view=markup Readme]
+ * [http://freetz.org/ticket/1356 Ticket with patch]
+ * [http://blog.mudy.info/2010/06/using-ziproxy/ Using ziproxy] (includes statistics)
+ * [https://www.kb.cert.org/vuls/id/MAPG-7N9GN8 Security note]
+ * [http://www.linux.com/archive/feature/148438 Linux.com]

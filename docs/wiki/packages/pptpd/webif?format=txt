@@ -1,0 +1,36 @@
+[[TOC(packages/pptpd,packages/pptpd/*,heading=Inhaltsverzeichnis)]]
+
+= Das Web-Frontend zum Paket =
+
+Das Interface an sich ist leicht überschaubar ;-).
+
+Unter '''Einstellungen''' sind die Links zu den einzelnen Konfigurationsdateien zu finden.
+
+Ein Übersicht über die Einstellmöglichkeiten gibt die Dokumantation von Poptop auf deren [http://poptop.sourceforge.net/dox/ Homepage].
+
+ * '''"pptpd Einstellungen bearbeiten"''' editiert die Datei [http://poptop.sourceforge.net/dox/pptpd.conf.txt pptpd.conf]
+  * Pfadangaben zum Binary sowie zur Konfigurations-Datei
+  * mögliche Debug-Infos einschalten
+  * Server-IP festlegen (Standard: localip 192.168.178.1)
+  * IP-Bereich angemeldeter Rechner festlegen (Standard: remoteip 192.168.178.210-229 )
+  * Sonstiges
+ * '''"PPPD Einstellungen bearbeiten"''' editiert die Datei [http://poptop.sourceforge.net/dox/options.pptpd.txt options.pptpd]
+  * Name des PPTP-Server (Standard: fritzbox)
+  * Angabe, welche Protokolle zugelassen sind
+  * DNS-Server für Clients festlegen (Standard: ms-dns 192.168.178.1)
+  * Sonstiges
+ * '''"Password bearbeiten"''' editiert die Datei [http://poptop.sourceforge.net/dox/chap-secrets.txt chap-secrets]
+  * verwaltet berechtigte Benutzer sowie deren Passwörter
+[[Screenshot(38)]]
+
+== Portweiterleitung ==
+Um sich schließlich von außen auf den PPTP-Server verbinden zu können, muss natürlich eine Portweiterleitung auf die IP der FRITZ!Box eingerichtet werden.
+
+{{{
+Protokoll: TCP  Port: 1723
+Protokoll: GRE  (keine Portangabe nötig)
+}}}
+
+Siehe dazu auch folgende Paketen:
+ * [wiki:packages/virtualip Virtual IP]
+ * [wiki:packages/avm-firewall AVM Firewall CGI]
