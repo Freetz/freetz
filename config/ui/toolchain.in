@@ -47,6 +47,9 @@ choice
 
 	config FREETZ_KERNEL_BINUTILS_2_25
 		bool "binutils-2.25.1"
+		# starting with version 2.25 binutils support o32 FPXX
+		# gcc versions up to 4.9.3 however do not pass the required -m(hard|soft)-float flags to the assembler
+		# this is the reason for the gcc-4.9 dependency below
 		depends on FREETZ_AVM_GCC_4_9_MIN
 		depends on (FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE)
 
