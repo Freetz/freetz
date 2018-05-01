@@ -14,9 +14,9 @@ config FREETZ_REPLACE_KERNEL_AVAILABLE
 		\
 		! (FREETZ_SYSTEM_TYPE_GRX5) && \
 		\
-		! (FREETZ_SYSTEM_TYPE_QCA956x && (FREETZ_TYPE_FIRMWARE_06_8X)) && \
+		! (FREETZ_SYSTEM_TYPE_QCA955x) && \
 		\
-		! FREETZ_TYPE_6820 && \
+		! (FREETZ_SYSTEM_TYPE_QCA956x && (FREETZ_TYPE_FIRMWARE_06_8X)) && \
 		\
 		! FREETZ_TYPE_7369 && \
 		\
@@ -55,6 +55,7 @@ config FREETZ_REPLACE_KERNEL_EXPERIMENTAL
 # "kernel version used by Freetz" == "kernel version used by AVM"
 config FREETZ_REPLACE_MODULE_AVAILABLE
 	bool
+	depends on !FREETZ_SYSTEM_TYPE_QCA955x # no sources at all for this system type
 	depends on \
 		FREETZ_REPLACE_KERNEL_AVAILABLE || \
 		!FREETZ_AVM_VERSION_07_0X
