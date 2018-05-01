@@ -15,10 +15,10 @@ menu "block"
 config FREETZ_MODULE_block2mtd
 	bool "block2mtd.ko"
 	depends on \
-		FREETZ_KERNEL_LAYOUT_AR7_SANGAM  || \
-		FREETZ_KERNEL_LAYOUT_AR7_OHIO || \
-		FREETZ_KERNEL_LAYOUT_IKS  || \
-		FREETZ_KERNEL_LAYOUT_UR8
+		FREETZ_SYSTEM_TYPE_AR7_SANGAM  || \
+		FREETZ_SYSTEM_TYPE_AR7_OHIO || \
+		FREETZ_SYSTEM_TYPE_IKS  || \
+		FREETZ_SYSTEM_TYPE_UR8
 	default n
 
 if FREETZ_KERNEL_VERSION_2_6_19 && FREETZ_REPLACE_KERNEL
@@ -245,7 +245,7 @@ config FREETZ_MODULE_musb_hdrc
 	bool "musb_hdrc.ko"
 	depends on \
 		FREETZ_REPLACE_KERNEL && \
-		FREETZ_KERNEL_LAYOUT_UR8 && \
+		FREETZ_SYSTEM_TYPE_UR8 && \
 		FREETZ_AVM_SOURCE_7270_04_86
 	default n
 
@@ -271,7 +271,7 @@ config FREETZ_MODULE_usbcore
 	bool "usbcore.ko"
 	depends on FREETZ_REPLACE_KERNEL
 	select FREETZ_MODULE_musb_hdrc if \
-		FREETZ_KERNEL_LAYOUT_UR8 && \
+		FREETZ_SYSTEM_TYPE_UR8 && \
 		FREETZ_AVM_SOURCE_7270_04_86
 	default n
 

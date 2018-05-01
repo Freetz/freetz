@@ -189,21 +189,21 @@ config FREETZ_KERNEL_VERSION_3_10_MAX
 
 config FREETZ_KERNEL_LAYOUT
 	string
-	default "ar7"           if FREETZ_KERNEL_LAYOUT_AR7_SANGAM
-	default "ohio"          if FREETZ_KERNEL_LAYOUT_AR7_OHIO
-	default "ar9"           if FREETZ_KERNEL_LAYOUT_AR9
-	default "ar934x"        if FREETZ_KERNEL_LAYOUT_AR934x
-	default "ar10"          if FREETZ_KERNEL_LAYOUT_AR10
-	default "grx5"          if FREETZ_KERNEL_LAYOUT_GRX5
-	default "iks"           if FREETZ_KERNEL_LAYOUT_IKS
-	default "qca956x"       if FREETZ_KERNEL_LAYOUT_QCA956x
-	default "ur8"           if FREETZ_KERNEL_LAYOUT_UR8
-	default "vr9"           if FREETZ_KERNEL_LAYOUT_VR9
+	default "ar7"           if FREETZ_SYSTEM_TYPE_AR7_SANGAM
+	default "ohio"          if FREETZ_SYSTEM_TYPE_AR7_OHIO
+	default "ar9"           if FREETZ_SYSTEM_TYPE_AR9
+	default "ar934x"        if FREETZ_SYSTEM_TYPE_AR934x
+	default "ar10"          if FREETZ_SYSTEM_TYPE_AR10
+	default "grx5"          if FREETZ_SYSTEM_TYPE_GRX5
+	default "iks"           if FREETZ_SYSTEM_TYPE_IKS
+	default "qca956x"       if FREETZ_SYSTEM_TYPE_QCA956x
+	default "ur8"           if FREETZ_SYSTEM_TYPE_UR8
+	default "vr9"           if FREETZ_SYSTEM_TYPE_VR9
 
 config FREETZ_MODULES_KVER
 	string
-	default "2.6.13.1-ar7"  if FREETZ_KERNEL_VERSION_2_6_13 && FREETZ_KERNEL_LAYOUT_AR7_SANGAM
-	default "2.6.13.1-ohio" if FREETZ_KERNEL_VERSION_2_6_13 && FREETZ_KERNEL_LAYOUT_AR7_OHIO
+	default "2.6.13.1-ar7"  if FREETZ_KERNEL_VERSION_2_6_13 && FREETZ_SYSTEM_TYPE_AR7_SANGAM
+	default "2.6.13.1-ohio" if FREETZ_KERNEL_VERSION_2_6_13 && FREETZ_SYSTEM_TYPE_AR7_OHIO
 	default "2.6.19.2"      if FREETZ_KERNEL_VERSION_2_6_19
 	default "2.6.28.10"     if FREETZ_KERNEL_VERSION_2_6_28
 	default "2.6.32.41"     if FREETZ_KERNEL_VERSION_2_6_32_41
@@ -221,7 +221,7 @@ config FREETZ_KERNEL_PATCHES
 config FREETZ_AVM_KERNEL_CONFIG_AREA_SIZE
 	depends on FREETZ_KERNEL_VERSION_3_10_MIN
 	int
-	default 160             if FREETZ_KERNEL_LAYOUT_GRX5 &&  FREETZ_TYPE_7580 && FREETZ_AVM_VERSION_06_9X_MIN
-	default 96              if FREETZ_KERNEL_LAYOUT_GRX5 &&  FREETZ_TYPE_7580 && FREETZ_AVM_VERSION_06_8X_MAX
-	default 96              if FREETZ_KERNEL_LAYOUT_GRX5 && !FREETZ_TYPE_7580
+	default 160             if FREETZ_SYSTEM_TYPE_GRX5 &&  FREETZ_TYPE_7580 && FREETZ_AVM_VERSION_06_9X_MIN
+	default 96              if FREETZ_SYSTEM_TYPE_GRX5 &&  FREETZ_TYPE_7580 && FREETZ_AVM_VERSION_06_8X_MAX
+	default 96              if FREETZ_SYSTEM_TYPE_GRX5 && !FREETZ_TYPE_7580
 	default 64
