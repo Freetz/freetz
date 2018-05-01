@@ -2,15 +2,70 @@ config FREETZ_GCC_ABI
 	string
 	default "32"       if FREETZ_TARGET_ARCH_MIPS
 
+#
+# The following code is a trade-off between being absolutely correct on the one hand
+# and our wish to reduce the number of download toolchains to support on the other hand.
+#
+# Being correct means the GCC_TUNE value must be the same as the CPU_MODEL value. Being
+# a bit incorrect (we use a downward compatible value) allows us to use the same
+# download toolchain for different CPU_MODEL's. As of now our download toolchains
+# are only uClibc and kernel-version dependent but not GCC_TUNE value. Being absolutely
+# correct would require to make them also GCC_TUNE value dependent.
+#
+# TODO: Analyse performance loss (if any) resulting from using compatible values.
+#       According to some sources on the net [1] there is no gain from using
+#       values above 24kc.
+#
+#       [1] http://lists.infradead.org/pipermail/lede-dev/2016-August/002351.html
+#
+
 config FREETZ_GCC_ARCH
 	string
-	default "mips32"   if FREETZ_TARGET_ARCH_MIPS && FREETZ_TARGET_ARCH_LE
-	default "mips32r2" if FREETZ_TARGET_ARCH_MIPS && FREETZ_TARGET_ARCH_BE
+	#
+	default "mips32"   if \
+		FREETZ_CPU_MODEL_MIPS_4KEc
+	#
+	default "mips32r2" if \
+		FREETZ_CPU_MODEL_MIPS_24KEc || \
+		FREETZ_CPU_MODEL_MIPS_34Kc  || \
+		FREETZ_CPU_MODEL_MIPS_74Kc  || \
+		FREETZ_CPU_MODEL_MIPS_interAptiv
+	#
+	default "NOT_IMPLEMENTED"
 
 config FREETZ_GCC_TUNE
 	string
-	default "4kc"      if FREETZ_TARGET_ARCH_MIPS && FREETZ_TARGET_ARCH_LE
-	default "24kc"     if FREETZ_TARGET_ARCH_MIPS && FREETZ_TARGET_ARCH_BE
+	default "4kc"      if \
+		FREETZ_CPU_MODEL_MIPS_4KEc
+	#
+	# we use the same download toolchain for all uClibc-XXX / kernel-2.6.28..2.6.32 based boxes
+	#
+	# all mips BE boxes with kernel <= 2.6.32.X, i.e
+	# - IKS     - all Fritz!OS versions
+	# - AR9     - all Fritz!OS versions
+	# - AR934x  - all Fritz!OS versions
+	# - AR10    - all Fritz!OS versions
+	# - VR9     - Fritz!OS versions < 6.5X
+	# - QCA956x - all Fritz!OS versions
+	default "24kc"     if \
+		FREETZ_CPU_MODEL_MIPS_24KEc || \
+		(FREETZ_CPU_MODEL_MIPS_34Kc && FREETZ_KERNEL_VERSION_2_6_32_MAX) || \
+		FREETZ_CPU_MODEL_MIPS_74Kc
+	#
+	# we use the same download toolchain for all VR9/GRX5 / uClibc-XXX / kernel-3.10 based boxes
+	#
+	# all mips BE boxes with kernel >= 3.10.X, i.e.
+	# - VR9     - Fritz!OS versions >= 6.5X
+	# - GRX5    - Fritz!OS versions >= 6.5X
+	#
+	# @interAptiv: not sure if 34kc is the correct value, it's at least the value used by AVM.
+	#              AVM patches GRX5 kernel sources and sets 34kc instead of mips32r2 for CPU_MIPS32_R2 symbol.
+	#
+	default "34kc"     if \
+		(FREETZ_CPU_MODEL_MIPS_34Kc && FREETZ_KERNEL_VERSION_3_10_MIN) || \
+		FREETZ_CPU_MODEL_MIPS_interAptiv
+	#
+	default "NOT_IMPLEMENTED"
 
 config FREETZ_GCC_FLOAT_ABI
 	string
