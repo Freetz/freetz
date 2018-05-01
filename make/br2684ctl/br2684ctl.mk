@@ -14,11 +14,11 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
-ifneq ($(findstring ar9,$(FREETZ_KERNEL_LAYOUT)),)
+ifeq ($(strip $(FREETZ_SYSTEM_TYPE_AR9)),y)
 BR2684CTL_OPTS := -DCONFIG_AR9
-else ifneq ($(findstring ur8,$(FREETZ_KERNEL_LAYOUT)),)
+else ifeq ($(strip $(FREETZ_SYSTEM_TYPE_UR8)),y)
 BR2684CTL_OPTS := -DCONFIG_MIPS_UR8
-else ifneq ($(findstring iks,$(FREETZ_KERNEL_LAYOUT)),)
+else ifeq ($(strip $(FREETZ_SYSTEM_TYPE_IKS)),y)
 BR2684CTL_OPTS := -DCONFIG_MACH_IKAN_MIPS -DCONFIG_MACH_FUSIV
 endif
 
