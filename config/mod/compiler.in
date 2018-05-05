@@ -22,6 +22,13 @@ config FREETZ_GCC_ABI
 config FREETZ_GCC_ARCH
 	string
 	#
+	# 4KEc CPUs are mips32r2, so the correct value is actually mips32r2
+	# s. https://github.com/gcc-mirror/gcc/blob/gcc-8_1_0-release/gcc/config/mips/mips-cpus.def#L107
+	#
+	# For some reasons AVM uses mips32 for AR7-{SANGAM,OHIO} boxes and mips32r2 for UR8 boxes.
+	#
+	# TODO: check if we can use mips32r2 even though AVM uses mips32
+	#
 	default "mips32"   if \
 		FREETZ_CPU_MODEL_MIPS_4KEc
 	#
@@ -35,6 +42,9 @@ config FREETZ_GCC_ARCH
 
 config FREETZ_GCC_TUNE
 	string
+	#
+	# TODO: the correct value is "4kec", which would result in mips32r2 binaries instead of mips32
+	#
 	default "4kc"      if \
 		FREETZ_CPU_MODEL_MIPS_4KEc
 	#
