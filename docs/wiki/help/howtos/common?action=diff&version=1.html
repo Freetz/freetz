@@ -37,10 +37,11 @@
       <div id="header">
         <a id="logo" href="/wiki"><img src="../../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
       </div>
-      <form id="search" action="/search" method="get">
+      <form id="search" action="https://www.google.com/search" method="get" onsubmit="; this.elements.namedItem('q').value = this.elements.namedItem('oq').value + ' site:freetz.github.io'">
         <div>
           <label for="proj-search">Suche:</label>
-          <input type="text" id="proj-search" name="q" size="18" value="" />
+          <input type="text" id="proj-search" name="oq" size="18" value="" />
+          <input type="hidden" name="q" value="" />
           <input type="submit" value="Suche" />
         </div>
       </form>
