@@ -1,23 +1,11 @@
 config FREETZ_PACKAGE_OPENVPN
-	bool "OpenVPN"
+	bool "OpenVPN 2.4.6"
 	select FREETZ_BUSYBOX_BRCTL if ! FREETZ_PACKAGE_BRIDGE_UTILS
 	select FREETZ_MODULE_tun    if ! FREETZ_AVM_HAS_TUN_BUILTIN
 	select FREETZ_PACKAGE_OPENVPN_CGI if ! FREETZ_PACKAGE_OPENVPN_USE_V2_CGI || ! FREETZ_SHOW_ADVANCED
 	default n
 	help
 		VPN Server
-
-choice
-	depends on FREETZ_PACKAGE_OPENVPN
-	prompt "Version"
-	default FREETZ_PACKAGE_OPENVPN_VERSION_2_4
-
-	config FREETZ_PACKAGE_OPENVPN_VERSION_2_3
-	bool "2.3.18 - DEPRECATED"
-
-	config FREETZ_PACKAGE_OPENVPN_VERSION_2_4
-	bool "2.4.6"
-endchoice
 
 choice
 	depends on FREETZ_PACKAGE_OPENVPN
@@ -30,16 +18,8 @@ choice
 		select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_OPENVPN_STATIC
 		select FREETZ_LIB_libssl    if ! FREETZ_PACKAGE_OPENVPN_STATIC
 
-	config FREETZ_PACKAGE_OPENVPN_POLARSSL
-		bool "PolarSSL"
-		depends on FREETZ_PACKAGE_OPENVPN_VERSION_2_3
-		select FREETZ_LIB_libpolarssl13 if ! FREETZ_PACKAGE_OPENVPN_STATIC
-		help
-			Leads to smaller binaries, but lacks support for some openssl features.
-
 	config FREETZ_PACKAGE_OPENVPN_MBEDTLS
 		bool "mbed TLS"
-		depends on FREETZ_PACKAGE_OPENVPN_VERSION_2_4
 		select FREETZ_LIB_libmbedcrypto if ! FREETZ_PACKAGE_OPENVPN_STATIC
 		select FREETZ_LIB_libmbedtls    if ! FREETZ_PACKAGE_OPENVPN_STATIC
 		select FREETZ_LIB_libmbedx509   if ! FREETZ_PACKAGE_OPENVPN_STATIC
@@ -49,19 +29,17 @@ choice
 endchoice
 
 config FREETZ_PACKAGE_OPENVPN_FORCE_BLOWFISH
-	bool "Include cipher blowfish in PolarSSL/mbedTLS"
-	depends on FREETZ_PACKAGE_OPENVPN && (FREETZ_PACKAGE_OPENVPN_POLARSSL || FREETZ_PACKAGE_OPENVPN_MBEDTLS)
-	select FREETZ_LIB_libpolarssl13_WITH_BLOWFISH if FREETZ_PACKAGE_OPENVPN_POLARSSL
+	bool "Include cipher blowfish in mbedTLS"
+	depends on FREETZ_PACKAGE_OPENVPN && FREETZ_PACKAGE_OPENVPN_MBEDTLS
 	select FREETZ_LIB_libmbedcrypto_WITH_BLOWFISH if FREETZ_PACKAGE_OPENVPN_MBEDTLS
 	default n
 	help
-		Compile PolarSSL/mbedTLS with support for OpenVPN default cipher "blowfish" (BF-CBC).
+		Compile mbedTLS with support for OpenVPN default cipher "blowfish" (BF-CBC).
 		Library/Binary size will increase approx. 7k (uncompressed).
 
 config FREETZ_PACKAGE_OPENVPN_WITH_BLOWFISH
 	bool
 	depends on FREETZ_PACKAGE_OPENVPN_OPENSSL \
-		|| (FREETZ_PACKAGE_OPENVPN_POLARSSL && FREETZ_LIB_libpolarssl13_WITH_BLOWFISH) \
 		|| (FREETZ_PACKAGE_OPENVPN_MBEDTLS  && FREETZ_LIB_libmbedcrypto_WITH_BLOWFISH)
 	default y
 
@@ -82,7 +60,7 @@ config FREETZ_PACKAGE_OPENVPN_WITH_LZO
 
 config FREETZ_PACKAGE_OPENVPN_WITH_LZ4
 	bool "With LZ4 compression"
-	depends on FREETZ_PACKAGE_OPENVPN && FREETZ_PACKAGE_OPENVPN_VERSION_2_4
+	depends on FREETZ_PACKAGE_OPENVPN
 	select FREETZ_LIB_liblz4 if ! FREETZ_PACKAGE_OPENVPN_STATIC
 	default n
 	help
