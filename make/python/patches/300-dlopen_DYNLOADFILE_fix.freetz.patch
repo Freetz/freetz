@@ -1,6 +1,6 @@
 --- configure
 +++ configure
-@@ -8863,6 +8863,7 @@
+@@ -8891,6 +8891,7 @@
  if test "x$ac_cv_lib_dl_dlopen" = xyes; then :
    cat >>confdefs.h <<_ACEOF
  #define HAVE_LIBDL 1
@@ -8,7 +8,7 @@
  _ACEOF
  
    LIBS="-ldl $LIBS"
-@@ -10490,6 +10491,7 @@
+@@ -10518,6 +10519,7 @@
  
  DLINCLDIR=.
  
@@ -16,7 +16,7 @@
  # the dlopen() function means we might want to use dynload_shlib.o. some
  # platforms, such as AIX, have dlopen(), but don't want to use it.
  for ac_func in dlopen
-@@ -10502,6 +10504,7 @@
+@@ -10530,6 +10532,7 @@
  
  fi
  done
@@ -24,7 +24,7 @@
  
  
  # DYNLOADFILE specifies which dynload_*.o file we will use for dynamic
-@@ -10513,7 +10516,7 @@
+@@ -10541,7 +10544,7 @@
  then
  	case $ac_sys_system/$ac_sys_release in
  	AIX*) # Use dynload_shlib.c and dlopen() if we have it; otherwise dynload_aix.c
@@ -33,7 +33,7 @@
  	then DYNLOADFILE="dynload_shlib.o"
  	else DYNLOADFILE="dynload_aix.o"
  	fi
-@@ -10526,7 +10529,7 @@
+@@ -10554,7 +10557,7 @@
  	*)
  	# use dynload_shlib.c and dlopen() if we have it; otherwise stub
  	# out any dynamic loading
