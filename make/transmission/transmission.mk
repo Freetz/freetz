@@ -1,10 +1,10 @@
-$(call PKG_INIT_BIN, 2.93)
+$(call PKG_INIT_BIN, 2.94)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=8815920e0a4499bcdadbbe89a4115092dab42ce5199f71ff9a926cfd12b9b90b
+$(PKG)_SOURCE_SHA256:=35442cc849f91f8df982c3d0d479d650c6ca19310a994eccdaa79a4af3916b7d
 $(PKG)_SITE:=https://github.com/transmission/transmission-releases/raw/master
-$(PKG)_PATCH_POST_CMDS += $(call POLARSSL_HARDCODE_VERSION,13,configure)
 
-$(PKG)_PATCH_POST_CMDS += $(call POLARSSL_HARDCODE_VERSION,13,libtransmission/crypto-utils-polarssl.c cmake/FindPolarSSL.cmake)
+$(PKG)_PATCH_POST_CMDS += $(call POLARSSL_HARDCODE_VERSION,13,configure libtransmission/crypto-utils-polarssl.c cmake/FindPolarSSL.cmake)
+$(PKG)_PATCH_POST_CMDS += $(SED) -i -r -e 's,<polarssl/x>,<polarssl13/x>,g' libtransmission/crypto-utils-polarssl.c;
 
 $(PKG)_BINARIES_ALL_SHORT     := cli  daemon  remote  create  edit   show
 $(PKG)_BINARIES_BUILD_SUBDIRS := cli/ daemon/ daemon/ utils/  utils/ utils/
