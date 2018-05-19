@@ -2,7 +2,6 @@ config FREETZ_LIB_libcurl
 	bool "libcurl (libcurl.so)"
 	default n
 	select FREETZ_LIB_libcrypto     if FREETZ_LIB_libcurl_WITH_SSL && FREETZ_LIB_libcurl_WITH_OPENSSL
-	select FREETZ_LIB_libpolarssl13 if FREETZ_LIB_libcurl_WITH_SSL && FREETZ_LIB_libcurl_WITH_POLARSSL
 	select FREETZ_LIB_libmbedcrypto if FREETZ_LIB_libcurl_WITH_SSL && FREETZ_LIB_libcurl_WITH_MBEDTLS
 	select FREETZ_LIB_libmbedtls    if FREETZ_LIB_libcurl_WITH_SSL && FREETZ_LIB_libcurl_WITH_MBEDTLS
 	select FREETZ_LIB_libmbedx509   if FREETZ_LIB_libcurl_WITH_SSL && FREETZ_LIB_libcurl_WITH_MBEDTLS
@@ -25,10 +24,6 @@ choice
 	config FREETZ_LIB_libcurl_WITH_OPENSSL
 		bool "OpenSSL"
 		select FREETZ_OPENSSL_VERSION_PROMPT
-
-	config FREETZ_LIB_libcurl_WITH_POLARSSL
-		bool "PolarSSL"
-		depends on !FREETZ_PACKAGE_TRANSMISSION
 
 	config FREETZ_LIB_libcurl_WITH_MBEDTLS
 		bool "mbed TLS"

@@ -14,9 +14,6 @@ ifeq ($(strip $(FREETZ_LIB_libcurl_WITH_OPENSSL)),y)
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 $(PKG)_DEPENDS_ON += openssl
 endif
-ifeq ($(strip $(FREETZ_LIB_libcurl_WITH_POLARSSL)),y)
-$(PKG)_DEPENDS_ON += polarssl13
-endif
 ifeq ($(strip $(FREETZ_LIB_libcurl_WITH_MBEDTLS)),y)
 $(PKG)_DEPENDS_ON += mbedtls
 endif
@@ -27,11 +24,8 @@ ifeq ($(strip $(FREETZ_LIB_libcurl_WITH_ZLIB)),y)
 $(PKG)_DEPENDS_ON += zlib
 endif
 
-$(PKG)_PATCH_POST_CMDS += $(call POLARSSL_HARDCODE_VERSION,13,configure lib/urldata.h lib/vtls/polarssl.h lib/vtls/polarssl.c)
-
 $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libcurl_WITH_SSL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libcurl_WITH_OPENSSL
-$(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libcurl_WITH_POLARSSL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libcurl_WITH_MBEDTLS
 $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libcurl_WITH_SFTP
 $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libcurl_WITH_ZLIB
@@ -83,8 +77,8 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-tls-srp
 $(PKG)_CONFIGURE_OPTIONS += --with-random="/dev/urandom"
 $(PKG)_CONFIGURE_OPTIONS += --without-cyassl
 $(PKG)_CONFIGURE_OPTIONS += --without-gnutls
+$(PKG)_CONFIGURE_OPTIONS += --without-polarssl
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libcurl_WITH_OPENSSL),--with-ssl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",--without-ssl)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libcurl_WITH_POLARSSL),--with-polarssl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",--without-polarssl)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libcurl_WITH_MBEDTLS),--with-mbedtls="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",--without-mbedtls)
 $(PKG)_CONFIGURE_OPTIONS += --without-ca-bundle
 $(PKG)_CONFIGURE_OPTIONS += --without-gssapi
