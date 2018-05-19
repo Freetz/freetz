@@ -28,11 +28,10 @@ choice
 
 	config FREETZ_LIB_libcurl_WITH_POLARSSL
 		bool "PolarSSL"
+		depends on !FREETZ_PACKAGE_TRANSMISSION
 
 	config FREETZ_LIB_libcurl_WITH_MBEDTLS
 		bool "mbed TLS"
-		# TODO: remove this dependency as soon as transmission supports mbed TLS (current git version already does)
-		depends on !FREETZ_PACKAGE_TRANSMISSION
 endchoice
 
 config FREETZ_LIB_libcurl_WITH_SFTP
