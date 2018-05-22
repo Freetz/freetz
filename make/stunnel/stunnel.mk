@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 5.44)
+$(call PKG_INIT_BIN, 5.45)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=990a325dbb47d77d88772dd02fbbd27d91b1fea3ece76c9ff4461eca93f12299
+$(PKG)_SOURCE_SHA256:=548244839b8a4bf4dffea46c97893b203d1b9eed118c3dd6a9ac4d8d02592ee3
 $(PKG)_SITE:=https://www.stunnel.org/downloads/archive/5.x
 
 $(PKG)_STARTLEVEL=81
@@ -38,6 +38,7 @@ $(PKG)_CONFIGURE_ENV += ac_cv_file__dev_urandom=yes
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,func_FIPS_mode_set)
 
+$(PKG)_CONFIGURE_OPTIONS += --disable-silent-rules
 $(PKG)_CONFIGURE_OPTIONS += --disable-libwrap
 $(PKG)_CONFIGURE_OPTIONS += --disable-systemd
 $(PKG)_CONFIGURE_OPTIONS += --with-threads=pthread
