@@ -1,0 +1,31 @@
+--- Makefile.in
++++ Makefile.in
+@@ -53,7 +53,7 @@
+ am__installdirs = "$(DESTDIR)$(bindir)"
+ PROGRAMS = $(bin_PROGRAMS)
+ am__dirstamp = $(am__leading_dot)dirstamp
+-am_sfk_OBJECTS = sfk.$(OBJEXT) sfkext.$(OBJEXT) sfkpack.$(OBJEXT)
++am_sfk_OBJECTS = sfk.$(OBJEXT) sfkext.$(OBJEXT)
+ sfk_OBJECTS = $(am_sfk_OBJECTS)
+ sfk_LDADD = $(LDADD)
+ SCRIPTS = $(dist_noinst_SCRIPTS)
+@@ -171,7 +171,7 @@
+ AUTOMAKE_OPTIONS = subdir-objects
+ ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
+ sfk_SOURCES = sfkbase.hpp sfkext.hpp \
+-              sfk.cpp sfkext.cpp sfkpack.cpp
++              sfk.cpp sfkext.cpp
+ 
+ dist_noinst_SCRIPTS = autogen.sh
+ all: config.h
+--- sfkbase.hpp
++++ sfkbase.hpp
+@@ -296,7 +296,7 @@
+ #define SFKDEEPZIP   // sfk175
+ 
+ #ifndef SFKNOPACK
+- #define SFKPACK      // sfk191
++// #define SFKPACK      // sfk191
+ #endif
+ 
+ #ifdef _WIN32
