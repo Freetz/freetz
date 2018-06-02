@@ -1,0 +1,49 @@
+From 66f1c44887ba4f47d617f8ae21cf8e04e1892bd7 Mon Sep 17 00:00:00 2001
+From: Gregory Fong <gregory.0xf0@gmail.com>
+Date: Tue, 4 Nov 2014 11:21:21 -0800
+Subject: [PATCH] bridge: include in6.h in if_bridge.h for struct in6_addr
+
+if_bridge.h uses struct in6_addr ip6, but wasn't including the in6.h
+header.  Thomas Backlund originally sent a patch to do this, but this
+revealed a redefinition issue: https://lkml.org/lkml/2013/1/13/116
+
+The redefinition issue should have been fixed by the following Linux
+commits:
+ee262ad827f89e2dc7851ec2986953b5b125c6bc inet: defines IPPROTO_* needed for module alias generation
+cfd280c91253cc28e4919e349fa7a813b63e71e8 net: sync some IP headers with glibc
+
+and the following glibc commit:
+6c82a2f8d7c8e21e39237225c819f182ae438db3 Coordinate IPv6 definitions for Linux and glibc
+
+so actually include the header now.
+
+Reported-by: Colin Guthrie <colin@mageia.org>
+Reported-by: Christiaan Welvaart <cjw@daneel.dyndns.org>
+Reported-by: Thomas Backlund <tmb@mageia.org>
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Cong Wang <xiyou.wangcong@gmail.com>
+Cc: David Miller <davem@davemloft.net>
+Signed-off-by: Gregory Fong <gregory.0xf0@gmail.com>
+Acked-by: Cong Wang <xiyou.wangcong@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+
+--
+
+Freetz comment: kernel-3.10.73 is not affected by the redefinition issue described above,
+i.e. applying this patch without applying/backporting the other patches mentioned above is enough.
+
+---
+ include/uapi/linux/if_bridge.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+index 39f621a9..da17e456 100644
+--- linux-3.10/include/uapi/linux/if_bridge.h
++++ linux-3.10/include/uapi/linux/if_bridge.h
+@@ -14,6 +14,7 @@
+ #define _UAPI_LINUX_IF_BRIDGE_H
+ 
+ #include <linux/types.h>
++#include <linux/in6.h>
+ 
+ #define SYSFS_BRIDGE_ATTR	"bridge"
+ #define SYSFS_BRIDGE_FDB	"brforward"

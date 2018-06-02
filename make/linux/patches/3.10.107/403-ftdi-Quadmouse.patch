@@ -1,0 +1,43 @@
+--- linux-3.10/drivers/usb/serial/ftdi_sio.c
++++ linux-3.10/drivers/usb/serial/ftdi_sio.c
+@@ -1009,6 +1009,11 @@
+ 	{ USB_DEVICE(FTDI_VID, FTDI_EKEY_CONV_USB_PID) },
+ 	/* Infineon Devices */
+ 	{ USB_DEVICE_INTERFACE_NUMBER(INFINEON_VID, INFINEON_TRIBOARD_PID, 1) },
++	/* QuadMouse cardreader devices  */
++	{ USB_DEVICE(QUAD_VID, QUADMOUSE_PID1) },
++	{ USB_DEVICE(QUAD_VID, QUADMOUSE_PID2) },
++	{ USB_DEVICE(QUAD_VID, QUADMOUSE_PID3) },
++	{ USB_DEVICE(QUAD_VID, QUADMOUSE_PID4) },
+ 	{ },					/* Optional parameter entry */
+ 	{ }					/* Terminating entry */
+ };
+--- linux-3.10/drivers/usb/serial/ftdi_sio.h
++++ linux-3.10/drivers/usb/serial/ftdi_sio.h
+@@ -220,6 +220,11 @@
+  */
+ 
+ 
++/* Interface indicies for FT2232, FT2232H and FT4232H devices*/
++#define INTERFACE_A		1
++#define INTERFACE_B		2
++#define INTERFACE_C		3
++#define INTERFACE_D		4
+ 
+ /* FTDI_SIO_MODEM_CTRL */
+ #define FTDI_SIO_SET_MODEM_CTRL_REQUEST_TYPE 0x40
+--- linux-3.10/drivers/usb/serial/ftdi_sio_ids.h
++++ linux-3.10/drivers/usb/serial/ftdi_sio_ids.h
+@@ -534,6 +534,12 @@
+ #define FTDI_8U232AM_PID3	0x6003	/* FTDI USB2Serial */
+ #define FTDI_8U232AM_PID4	0x6004	/* FTDI USB2Serial */
+ 
++#define QUAD_VID                      0x0403
++#define QUADMOUSE_PID1   0x0001  /* Quadmouse USB */
++#define QUADMOUSE_PID2   0x0002  /* Quadmouse USB */
++#define QUADMOUSE_PID3   0x0003  /* Quadmouse USB */
++#define QUADMOUSE_PID4   0x0004  /* Quadmouse USB */
++
+ /*
+  * Video Networks Limited / Homechoice in the UK use an ftdi-based device
+  * for their 1Mb broadband internet service.  The following PID is exhibited

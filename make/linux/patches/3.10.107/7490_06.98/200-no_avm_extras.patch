@@ -1,0 +1,22 @@
+--- linux-3.10/drivers/rtc/Makefile
++++ linux-3.10/drivers/rtc/Makefile
+@@ -133,7 +133,7 @@
+ ifeq ($(CONFIG_RTC_DRV_AVM_REF_CLOCK),m)
+ CFLAGS_rtc-avm.o += -DRTC_AVM_DEVICE_COUNT=1 # -DRTC_AVM_DEBUG=1
+ 
+-extra-y			 += install-S09-rtc
++#extra-y			 += install-S09-rtc
+ 
+ $(obj)/S09-rtc: FORCE
+ 	$(Q)echo "  GEN     $@" >&2
+--- linux-3.10/drivers/net/avm_cpmac/lib/notify_avmnet/Makefile
++++ linux-3.10/drivers/net/avm_cpmac/lib/notify_avmnet/Makefile
+@@ -3,7 +3,7 @@
+ $(info avmnet/lib/notify: Guessing INSTALL_MOD_PATH: $(INSTALL_MOD_PATH))
+ endif
+ 
+-extra-y			+= notify_avmnet INSTALL_EXTRA_TARGETS
++#extra-y			+= notify_avmnet INSTALL_EXTRA_TARGETS
+ clean-files		+= libtest libnotify_avmnet.so.0.1 libnotify_avmnet.so.0 libnotify_avmnet.so notify_avmnet.o
+ 
+ quiet_cmd_target_cc_o_c = EXTRACC $@
