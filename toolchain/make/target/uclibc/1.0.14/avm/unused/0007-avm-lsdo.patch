@@ -1,0 +1,67 @@
+--- ldso/ldso/dl-elf.c
++++ ldso/ldso/dl-elf.c
+@@ -1007,6 +1007,7 @@
+ }
+ 
+ /* Minimal printf which handles only %s, %d, and %x */
++#define _DL_PRINTF_BUFLEN 256
+ void _dl_dprintf(int fd, const char *fmt, ...)
+ {
+ #if __WORDSIZE > 32
+@@ -1016,23 +1017,16 @@
+ #endif
+ 	va_list args;
+ 	char *start, *ptr, *string;
+-	char *buf;
++	char buf[_DL_PRINTF_BUFLEN];
+ 
+ 	if (!fmt)
+ 		return;
+ 
+-	buf = _dl_mmap((void *) 0, _dl_pagesize, PROT_READ | PROT_WRITE,
+-			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+-	if (_dl_mmap_check_error(buf)) {
+-		_dl_write(fd, "mmap of a spare page failed!\n", 29);
+-		_dl_exit(20);
+-	}
+-
+ 	start = ptr = buf;
+ 
+-	if (_dl_strlen(fmt) >= (_dl_pagesize - 1)) {
++	if (_dl_strlen(fmt) >= (_DL_PRINTF_BUFLEN - 1)) {
+ 		_dl_write(fd, "overflow\n", 11);
+-		_dl_exit(20);
++		return;
+ 	}
+ 
+ 	_dl_strcpy(buf, fmt);
+@@ -1094,7 +1088,6 @@
+ 			start = NULL;
+ 		}
+ 	}
+-	_dl_munmap(buf, _dl_pagesize);
+ 	return;
+ }
+ 
+@@ -1105,7 +1098,9 @@
+ 
+ 	len = _dl_strlen(string);
+ 	retval = _dl_malloc(len + 1);
+-	_dl_strcpy(retval, string);
++	if (retval != NULL) {
++		_dl_strcpy(retval, string);
++	}
+ 	return retval;
+ }
+ 
+--- ldso/ldso/ldso.c
++++ ldso/ldso/ldso.c
+@@ -242,7 +242,7 @@
+ 				PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_UNINITIALIZED, -1, 0);
+ 		if (_dl_mmap_check_error(_dl_mmap_zero)) {
+ 			_dl_dprintf(2, "%s: mmap of a spare page failed!\n", _dl_progname);
+-			_dl_exit(20);
++			return NULL;
+ 		}
+ 	}
+ 	retval = _dl_malloc_addr;

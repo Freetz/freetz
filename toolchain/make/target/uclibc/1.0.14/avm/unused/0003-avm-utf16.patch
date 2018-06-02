@@ -1,0 +1,38 @@
+--- libc/misc/wchar/wchar.c
++++ libc/misc/wchar/wchar.c
+@@ -1376,14 +1376,19 @@
+ 				if (((px->fromcodeset & IC_UTF_16) == IC_UTF_16)
+ 					 && (((__uwchar_t)(wc - 0xd800U)) < (0xdc00U - 0xd800U))
+ 					) {			/* surrogate */
+-					wc =- 0xd800U;
++					wc -= 0xd800U;
+ 					if (*inbytesleft < 4) goto INVALID;
+ 					wc2 = (((unsigned int)((unsigned char)((*inbuf)[2]))) << 8)
+ 						+ ((unsigned char)((*inbuf)[3]));
+-					if (!(px->fromcodeset & 1)) wc = bswap_16(wc2);
+-					if (((__uwchar_t)(wc2 -= 0xdc00U)) < (0xe0000U - 0xdc00U)) {
+-						goto ILLEGAL;
+-					}
++					if (!(px->fromcodeset & 1)) wc2 = bswap_16(wc2);
++					/* DDO: Bedingung entfernt. Die unteren 10 Bit sind *immer* kleiner
++					 * 0x400 (0xe0000-0xdc00). Unklar, was hier getestet werden sollte.
++					 * Beispiel: UTF-16 Smiley 0xd83d 0xde09 */
++					wc2 -= 0xdc00U;
++					/*--- if (((__uwchar_t)(wc2 -= 0xdc00U)) < (0xe0000U - 0xdc00U)) { ---*/
++						/*--- __set_errno(EILSEQ); ---*/
++						/*--- goto ILLEGAL; ---*/
++					/*--- } ---*/
+ 					inci = 4;	/* Change inci here in case skipping illegals. */
+ 					wc = 0x10000UL + (wc << 10) + wc2;
+ 				}
+@@ -1412,7 +1417,9 @@
+ 										 ? 0x7fffffffUL : 0x10ffffUL)
+ #ifdef KUHN
+ 					|| (((__uwchar_t)(wc - 0xfffeU)) < 2)
+-					|| (((__uwchar_t)(wc - 0xd800U)) < (0xe000U - 0xd800U))
++					/* DDO: Bedingung entfernt. Die unteren 10 Bit sind *immer* kleiner
++					 * 0x400 (0xe0000-0xdc00). Unklar, was hier getestet werden sollte. */
++					/*--- || (((__uwchar_t)(wc - 0xd800U)) < (0xe000U - 0xd800U)) ---*/
+ #endif
+ 					) {
+ 					goto ILLEGAL;

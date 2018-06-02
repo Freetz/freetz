@@ -64,7 +64,7 @@ uclibc-unpacked: $(UCLIBC_DIR)/.unpacked
 $(UCLIBC_DIR)/.unpacked: $(DL_DIR)/$(UCLIBC_SOURCE) $(DL_DIR)/$(UCLIBC_LOCALE_DATA_FILENAME) | $(TARGET_TOOLCHAIN_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	$(RM) -r $(UCLIBC_DIR)
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(UCLIBC_SOURCE),$(TARGET_TOOLCHAIN_DIR))
-	$(call APPLY_PATCHES,$(UCLIBC_MAKE_DIR)/$(UCLIBC_VERSION),$(UCLIBC_DIR))
+	$(call APPLY_PATCHES,$(UCLIBC_MAKE_DIR)/$(UCLIBC_VERSION)/avm $(UCLIBC_MAKE_DIR)/$(UCLIBC_VERSION),$(UCLIBC_DIR))
 ifeq ($(FREETZ_TARGET_UCLIBC_0_9_33),y)
 # "remove"-part of 980-nptl_remove_duplicate_vfork_in_libpthread
 # instead of removing files using patch, we remove them using rm
