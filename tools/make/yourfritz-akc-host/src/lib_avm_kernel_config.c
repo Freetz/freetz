@@ -21,6 +21,7 @@
  ***********************************************************************/
 
 #include <stdlib.h>
+#include <stdio.h>
 
 #include <libfdt.h>
 
@@ -37,7 +38,7 @@ static void swapEndianness(bool needed, uint32_t *ptr)
 			(*ptr & 0xFF000000) >> 24;
 }
 
-bool isConsistentConfigArea(void *configArea, size_t configSize, bool *swapNeeded)
+bool isConsistentConfigArea(void *configArea, size_t configSize, bool *swapNeeded, uint32_t *moduleStructSize)
 {
 	uint32_t *					arrayStart = NULL;
 	uint32_t *					arrayEnd = NULL;
@@ -50,6 +51,7 @@ bool isConsistentConfigArea(void *configArea, size_t configSize, bool *swapNeede
 	struct _avm_kernel_config *	entry;
 
 	bool						assumeSwapped = false;
+	uint32_t					_moduleStructSize = 0;
 
 	//	- a 32-bit value with more than one byte containing a non-zero value
 	//	  should be a pointer in the config area
@@ -140,18 +142,48 @@ bool isConsistentConfigArea(void *configArea, size_t configSize, bool *swapNeede
 		// check if it points to an address within kernel config area
 		if (!(kernelSegmentStart <= ptrValue && ptrValue < (kernelSegmentStart+configSize)))
 			return false;
+
+		{
+			uint32_t tag = entry->tag;
+			swapEndianness(assumeSwapped, &tag);
+			if (tag == avm_kernel_config_tags_modulememory)
+			{
+				uint32_t *module_0_ptr = targetPtr2HostPtr(ptrValue, kernelSegmentStart, configArea);
+
+				uint32_t module_0 = *(module_0_ptr + 0);
+				swapEndianness(assumeSwapped, &module_0);
+
+				uint32_t module_2 = *(module_0_ptr + 2);
+				swapEndianness(assumeSwapped, &module_2);
+
+				uint32_t module_4 = *(module_0_ptr + 4);
+				swapEndianness(assumeSwapped, &module_4);
+
+				fprintf(stderr, "0=0x%08x 2=0x%08x 4=0x%08x\n", module_0, module_2, module_4);
+				// we assume "modulememory array" contains at least 2 entries
+				if ((module_0 & 0xFFFFF000) == (module_2 & 0xFFFFF000)) {
+					_moduleStructSize = 2;
+				} else if ((module_0 & 0xFFFFF000) == (module_4 & 0xFFFFF000)) {
+					_moduleStructSize = 4;
+				}
+			}
+		}
 	}
 
 	// we may be sure here that the endianness was detected successfully
 	if (swapNeeded)
 		*swapNeeded = assumeSwapped;
 
+	if (moduleStructSize)
+		*moduleStructSize = _moduleStructSize;
+
 	return true;
 }
 
-struct _avm_kernel_config* * relocateConfigArea(void *configArea, size_t configSize)
+struct _avm_kernel_config* * relocateConfigArea(void *configArea, size_t configSize, uint32_t *moduleStructSize)
 {
 	bool swapNeeded;
+	uint32_t _moduleStructSize;
 	uint32_t kernelSegmentStart;
 	struct _avm_kernel_config * entry;
 
@@ -160,7 +192,7 @@ struct _avm_kernel_config* * relocateConfigArea(void *configArea, size_t configS
 	//  - we take the first 32 bit value from the dump and align this pointer to 4K to get
 	//    the start address of the area in the linked kernel
 
-	if (!isConsistentConfigArea(configArea, configSize, &swapNeeded))
+	if (!isConsistentConfigArea(configArea, configSize, &swapNeeded, &_moduleStructSize))
 		return NULL;
 
 	swapEndianness(swapNeeded, (uint32_t *) configArea);
@@ -179,21 +211,42 @@ struct _avm_kernel_config* * relocateConfigArea(void *configArea, size_t configS
 		if ((int) entry->tag == avm_kernel_config_tags_modulememory)
 		{
 			// only _kernel_modulmemory_config entries need relocation of members
-			struct _kernel_modulmemory_config * module = (struct _kernel_modulmemory_config *) entry->config;
 
-			while (module->name != NULL)
-			{
-				swapEndianness(swapNeeded, (uint32_t *) &module->name);
-				module->name = (char *) targetPtr2HostPtr((uint32_t)module->name, kernelSegmentStart, configArea);
-				swapEndianness(swapNeeded, &module->size);
+			if (_moduleStructSize == 2) {
+				struct _kernel_modulmemory_config2 * module = (struct _kernel_modulmemory_config2 *) entry->config;
 
-				module++;
+				while (module->name != NULL)
+				{
+					swapEndianness(swapNeeded, (uint32_t *) &module->name);
+					module->name = (char *) targetPtr2HostPtr((uint32_t)module->name, kernelSegmentStart, configArea);
+					swapEndianness(swapNeeded, &module->size);
+
+					module++;
+				}
+			} else if (_moduleStructSize == 4) {
+				struct _kernel_modulmemory_config4 * module = (struct _kernel_modulmemory_config4 *) entry->config;
+
+				while (module->name != NULL)
+				{
+					swapEndianness(swapNeeded, (uint32_t *) &module->name);
+					module->name = (char *) targetPtr2HostPtr((uint32_t)module->name, kernelSegmentStart, configArea);
+					swapEndianness(swapNeeded, &module->size);
+					swapEndianness(swapNeeded, &module->unknown1);
+					swapEndianness(swapNeeded, &module->unknown2);
+
+					module++;
+				}
+			} else {
+				fprintf(stderr, "Error: unknown _kernel_modulmemory_config size\n");
 			}
 		}
 
 		entry++;
 		swapEndianness(swapNeeded, &entry->tag);
 	}
+
+	if (moduleStructSize)
+		*moduleStructSize = _moduleStructSize;
 
 	return (struct _avm_kernel_config **)configArea;
 }
@@ -205,6 +258,11 @@ uint32_t determineConfigAreaKernelSegment(uint32_t targetAddressSpacePtr)
 
 void* targetPtr2HostPtr(uint32_t targetAddressSpacePtr, uint32_t targetAddressSpaceBasePtr, void* hostAddressSpaceBasePtr)
 {
+	if (!(targetAddressSpaceBasePtr <= targetAddressSpacePtr)) {
+		fprintf(stderr, "Warning: targetAddressSpaceBasePtr(0x%08x) <= targetAddressSpacePtr(0x%08x) violated, doing no conversion\n", targetAddressSpaceBasePtr, targetAddressSpacePtr);
+		return (void*)targetAddressSpacePtr;
+	}
+
 	return (void*) ((char *)hostAddressSpaceBasePtr + (targetAddressSpacePtr - targetAddressSpaceBasePtr));
 }
 

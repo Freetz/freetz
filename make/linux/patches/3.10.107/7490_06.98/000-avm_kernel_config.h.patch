@@ -1,0 +1,14 @@
+
+We use kernel sources from an older labor version. The format of kernel_modulmemory_config has changed since that.
+
+--- linux-3.10/include/uapi/linux/avm_kernel_config.h
++++ linux-3.10/include/uapi/linux/avm_kernel_config.h
+@@ -29,6 +29,8 @@
+ struct _kernel_modulmemory_config {
+ 	char *name;
+ 	unsigned int size;
++	unsigned int unknown1;
++	unsigned int unknown2;
+ };
+ 
+ struct _avm_kernel_config {

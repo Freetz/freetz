@@ -79,23 +79,34 @@ void processVersionInfoEntry(struct _avm_kernel_config* entry)
 	fprintf(stdout, "\n\tAVM_VERSION_INFO\t\"%s\", \"%s\", \"%s\"\n", version->buildnumber, version->svnversion, version->firmwarestring);
 }
 
-void processModuleMemoryEntry(struct _avm_kernel_config* entry)
+void processModuleMemoryEntry(struct _avm_kernel_config* entry, uint32_t moduleStructSize)
 {
 	if (entry == NULL)
 		return;
 	if (entry->tag != avm_kernel_config_tags_modulememory)
 		return;
 
-	struct _kernel_modulmemory_config * module = (struct _kernel_modulmemory_config *) entry->config;
 	int mod_no = 0;
 
 	fprintf(stdout, "\n.L_avm_module_memory:\n");
-	while (module->name != NULL)
-	{
-		fprintf(stdout, "\tAVM_MODULE_MEMORY\t%u, \"%s\", %u\n", ++mod_no, module->name, module->size);
-		module++;
+
+	if (moduleStructSize == 2) {
+		struct _kernel_modulmemory_config2 * module = (struct _kernel_modulmemory_config2 *) entry->config;
+		while (module->name != NULL)
+		{
+			fprintf(stdout, "\tAVM_MODULE_MEMORY\t%u, \"%s\", %u\n", ++mod_no, module->name, module->size);
+			module++;
+		}
+		fprintf(stdout, "\tAVM_MODULE_MEMORY\t0\n");
+	} else if (moduleStructSize == 4) {
+		struct _kernel_modulmemory_config4 * module = (struct _kernel_modulmemory_config4 *) entry->config;
+		while (module->name != NULL)
+		{
+			fprintf(stdout, "\tAVM_MODULE_MEMORY4\t%u, \"%s\", %u, %u, %u\n", ++mod_no, module->name, module->size, module->unknown1, module->unknown2);
+			module++;
+		}
+		fprintf(stdout, "\tAVM_MODULE_MEMORY4\t0\n");
 	}
-	fprintf(stdout, "\tAVM_MODULE_MEMORY\t0\n");
 }
 
 #define AVM_KERNEL_CONFIG_TAGS_MAX ((enum _avm_kernel_config_tags)(~(uint32_t)0))
@@ -125,7 +136,7 @@ void derive_avm_kernel_config_tags(
 	}
 }
 
-int processConfigArea(struct _avm_kernel_config * *configArea)
+int processConfigArea(struct _avm_kernel_config * *configArea, uint32_t moduleStructSize)
 {
 	struct _avm_kernel_config *moduleMemoryEntry = findEntryByTag(configArea, avm_kernel_config_tags_modulememory);
 	struct _avm_kernel_config *versionInfoEntry  = findEntryByTag(configArea, avm_kernel_config_tags_version_info);
@@ -175,7 +186,7 @@ int processConfigArea(struct _avm_kernel_config * *configArea)
 		}
 	}
 	processVersionInfoEntry(versionInfoEntry);
-	processModuleMemoryEntry(moduleMemoryEntry);
+	processModuleMemoryEntry(moduleMemoryEntry, moduleStructSize);
 
 	fprintf(stdout, "\n\tAVM_KERNEL_CONFIG_END\n\n");
 
@@ -195,11 +206,12 @@ int main(int argc, char * argv[])
 
 	if (openMemoryMappedFile(&input, argv[1], "input", O_RDONLY | O_SYNC, PROT_WRITE, MAP_PRIVATE))
 	{
-		struct _avm_kernel_config ** configArea = relocateConfigArea(input.fileBuffer, input.fileStat.st_size);
+		uint32_t moduleStructSize;
+		struct _avm_kernel_config ** configArea = relocateConfigArea(input.fileBuffer, input.fileStat.st_size, &moduleStructSize);
 
 		if (configArea != NULL)
 		{
-			returnCode = processConfigArea(configArea);
+			returnCode = processConfigArea(configArea, moduleStructSize);
 		}
 		else
 		{

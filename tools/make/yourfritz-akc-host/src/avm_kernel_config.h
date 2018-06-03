@@ -281,9 +281,16 @@ enum _avm_kernel_config_tags {
 	 avm_kernel_config_tags_device_tree_subrev_0 + 1)
 #endif
 
-struct _kernel_modulmemory_config {
+struct _kernel_modulmemory_config2 {
 	char *name;
 	unsigned int size;
+};
+
+struct _kernel_modulmemory_config4 {
+	char *name;
+	unsigned int size;
+	unsigned int unknown1;
+	unsigned int unknown2;
 };
 
 struct _avm_kernel_config {

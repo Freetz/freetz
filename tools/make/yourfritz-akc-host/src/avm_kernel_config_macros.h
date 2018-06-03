@@ -55,6 +55,25 @@
 		.endif
 	.endm
 
+	.macro	AVM_MODULE_MEMORY4 index, module, size, unknown1, unknown2
+		.ifeq	\index
+			.int		0
+			.int		0
+			.int		0
+			.int		0
+		.else
+			.pushsection	"configareastrings", "a", %progbits
+.L_avm_module_memory_\index:
+			.asciz		"\module"
+			.align		2
+			.popsection
+			.int		.L_avm_module_memory_\index
+			.int		\size
+			.int		\unknown1
+			.int		\unknown2
+		.endif
+	.endm
+
 	.macro	AVM_DEVICE_TREE_BLOB subrevision
 	.endm
 

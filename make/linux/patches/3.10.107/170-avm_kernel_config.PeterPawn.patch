@@ -26,7 +26,7 @@
  	_gp = . + 0x8000;
 --- /dev/null
 +++ linux-3.10/arch/mips/kernel/avm_kernel_config_macros.h
-@@ -0,0 +1,66 @@
+@@ -0,0 +1,85 @@
 +/* vi: set tabstop=4 syntax=asm : */
 +#ifndef _AVM_KERNEL_CONFIG_MACROS_H
 +#define _AVM_KERNEL_CONFIG_MACROS_H
@@ -81,6 +81,25 @@
 +			.popsection
 +			.int		.L_avm_module_memory_\index
 +			.int		\size
++		.endif
++	.endm
++
++	.macro	AVM_MODULE_MEMORY4 index, module, size, unknown1, unknown2
++		.ifeq	\index
++			.int		0
++			.int		0
++			.int		0
++			.int		0
++		.else
++			.pushsection	"configareastrings", "a", %progbits
++.L_avm_module_memory_\index:
++			.asciz		"\module"
++			.align		2
++			.popsection
++			.int		.L_avm_module_memory_\index
++			.int		\size
++			.int		\unknown1
++			.int		\unknown2
 +		.endif
 +	.endm
 +
