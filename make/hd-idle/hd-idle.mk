@@ -22,7 +22,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	$(SUBMAKE) -C $(HD_IDLE_DIR) clean
+	-$(SUBMAKE) -C $(HD_IDLE_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(HD_IDLE_TARGET_BINARY)

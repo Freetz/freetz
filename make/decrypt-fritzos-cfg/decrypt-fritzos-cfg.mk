@@ -54,7 +54,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_SYMLINKS_TARGET_DIR)
 
 $(pkg)-clean:
-	$(SUBMAKE) -C $(DECRYPT_FRITZOS_CFG_DIR)/src clean
+	-$(SUBMAKE) -C $(DECRYPT_FRITZOS_CFG_DIR)/src clean
 
 $(pkg)-uninstall:
 	$(RM) $(DECRYPT_FRITZOS_CFG_TARGET_BINARY) $(DECRYPT_FRITZOS_CFG_SYMLINKS_ALL:%=$(DECRYPT_FRITZOS_CFG_DEST_DIR)/usr/bin/%)

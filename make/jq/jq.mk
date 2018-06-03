@@ -53,7 +53,7 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	$(SUBMAKE) -C $(JQ_DIR) clean
+	-$(SUBMAKE) -C $(JQ_DIR) clean
 
 $(pkg)-uninstall:
 	$(RM) $(JQ_TARGET_BINARY)
