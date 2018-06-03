@@ -159,7 +159,6 @@ bool isConsistentConfigArea(void *configArea, size_t configSize, bool *swapNeede
 				uint32_t module_4 = *(module_0_ptr + 4);
 				swapEndianness(assumeSwapped, &module_4);
 
-				fprintf(stderr, "0=0x%08x 2=0x%08x 4=0x%08x\n", module_0, module_2, module_4);
 				// we assume "modulememory array" contains at least 2 entries
 				if ((module_0 & 0xFFFFF000) == (module_2 & 0xFFFFF000)) {
 					_moduleStructSize = 2;
