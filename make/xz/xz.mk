@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 5.2.3)
+$(call PKG_INIT_BIN, 5.2.4)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=60fb79cab777e3f71ca43d298adacbd5
+$(PKG)_SOURCE_MD5:=003e4d0b1b1899fc6e3000b24feddf7c
 $(PKG)_SITE:=http://tukaani.org/xz
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/xz/.libs/xz
