@@ -89,6 +89,8 @@ preprocess_conf() {
 		}
 		/^LIB_/ {
 			s/LIB_//
+			s/_/ /
+			$lowercase
 			s/^/40 lib /; p; d
 		}
 		/^PACKAGE_.*_CGI$/ {
