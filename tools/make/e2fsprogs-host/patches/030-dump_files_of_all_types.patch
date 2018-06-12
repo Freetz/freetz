@@ -5,7 +5,7 @@
 
 --- debugfs/dump.c
 +++ debugfs/dump.c
-@@ -278,7 +278,8 @@
+@@ -281,7 +281,8 @@
  			goto errout;
  		}
  	}
@@ -15,7 +15,7 @@
  		errcode_t retval;
  
  		/* Create the directory with 0700 permissions, because we
-@@ -299,8 +300,36 @@
+@@ -302,8 +303,36 @@
  			com_err("rdump", retval, "while dumping %s", fullname);
  
  		fix_perms("rdump", inode, -1, fullname);
