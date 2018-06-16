@@ -1,10 +1,10 @@
 --- module/setup.py
 +++ module/setup.py
-@@ -150,15 +150,6 @@
+@@ -145,15 +145,6 @@
              return False
  
          print ""
--        print _("Do you want to change the config path? Current is %s") % abspath("")
+-        print _("Do you want to change the config path? Current is %s") % os.path.abspath("")
 -        print _(
 -            "If you use pyLoad on a server or the home partition lives on an internal flash it may be a good idea to change it.")
 -        path = self.ask(_("Change config path?"), self.no, bool=True)
@@ -16,24 +16,24 @@
          print _("Do you want to configure login data and basic settings?")
          print _("This is recommend for first run.")
          con = self.ask(_("Make basic setup?"), self.yes, bool=True)
-@@ -393,29 +384,6 @@
+@@ -397,29 +388,6 @@
              if not noaction:
                  db.shutdown()
  
 -    def conf_path(self, trans=False):
 -        if trans:
--            gettext.setpaths([join(os.sep, "usr", "share", "pyload", "locale"), None])
--            translation = gettext.translation("setup", join(self.path, "locale"),
+-            gettext.setpaths([os.path.join(os.sep, "usr", "share", "pyload", "locale"), None])
+-            translation = gettext.translation("setup", os.path.join(self.path, "locale"),
 -                languages=[self.config["general"]["language"], "en"], fallback=True)
 -            translation.install(True)
 -
 -        print _("Setting new configpath, current configuration will not be transfered!")
--        path = self.ask(_("Configpath"), abspath(""))
+-        path = self.ask(_("Configpath"), os.path.abspath(""))
 -        try:
--            path = join(pypath, path)
--            if not exists(path):
--                makedirs(path)
--            f = open(join(pypath, "module", "config", "configdir"), "wb")
+-            path = os.path.join(pypath, path)
+-            if not os.path.exists(path):
+-                os.makedirs(path)
+-            f = open(os.path.join(pypath, "module", "config", "configdir"), "wb")
 -            f.write(path)
 -            f.close()
 -            print _("Configpath changed, setup will now close, please restart to go on.")
@@ -48,7 +48,7 @@
          if value:
 --- pyLoadCore.py
 +++ pyLoadCore.py
-@@ -81,7 +81,7 @@
+@@ -91,7 +91,7 @@
              try:
                  options, args = getopt(argv[1:], 'vchdusqp:',
                      ["version", "clear", "clean", "help", "debug", "user",
@@ -57,7 +57,7 @@
                       "quit", "status", "no-remote","pidfile="])
  
                  for option, argument in options:
-@@ -113,13 +113,6 @@
+@@ -123,13 +123,6 @@
                          s = Setup(pypath, self.config)
                          s.start()
                          exit()
@@ -71,7 +71,7 @@
                      elif option in ("-q", "--quit"):
                          self.quitInstance()
                          exit()
-@@ -160,7 +153,6 @@
+@@ -170,7 +163,6 @@
          print "  -s, --setup", " " * 12, "Run Setup Assistent"
          print "  --configdir=<dir>", " " * 6, "Run with <dir> as config directory"
          print "  -p, --pidfile=<file>", " " * 3, "Set pidfile to <file>"
