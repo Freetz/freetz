@@ -124,9 +124,13 @@ do_checkout_git()
 	&& pushd "$2" >/dev/null \
 	&& git checkout "$3" \
 	&& LAST_COMMIT_TIMESTAMP=$(git log -1 --pretty=format:%cD) \
-	&& if [ -f ".gitmodules" ]; then git submodule init && git submodule update; fi \
+	&& if [ -f ".gitmodules" -a -z "$NO_SUBMODULES" ]; then git submodule init && git submodule update; fi \
 	&& rm -rf .git \
 	&& popd >/dev/null
+}
+do_checkout_git_no_submodules()
+{
+	NO_SUBMODULES=1 do_checkout_git "$@"
 }
 # Note: remote repository must support "git archive" command
 # $1 is expected to have the following format:
@@ -202,7 +206,7 @@ fi
 num_sites=0
 if [ -n "$URLs" ]; then
 	# check if URLs contains magic sequence corresponding to one of the supported VCSs
-	supportedVCSs="cvs|svn|git|git_archive|bzr|hg|darcs"
+	supportedVCSs="cvs|svn|git|git_no_submodules|git_archive|bzr|hg|darcs"
 	VCS="$(echo "${URLs}" | sed -nr -e "s,^(${supportedVCSs})(@|://).*,\1,p")"
 	if [ -n "${VCS}" ]; then
 		URLs="$(echo "${URLs}" | sed -r -e "s,^(${supportedVCSs})@(.*),\2,")"
