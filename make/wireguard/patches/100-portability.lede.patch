@@ -7,11 +7,20 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
 ---
 --- src/tools/Makefile
 +++ src/tools/Makefile
-@@ -43,7 +43,7 @@
+@@ -35,8 +35,6 @@
+ endif
+ endif
+ 
+-PLATFORM ?= $(shell uname -s | tr '[:upper:]' '[:lower:]')
+-
+ CFLAGS ?= -O3
+ CFLAGS += -std=gnu11 -D_GNU_SOURCE
+ CFLAGS += -Wall -Wextra
+@@ -45,7 +43,7 @@
  ifeq ($(DEBUG_TOOLS),y)
  CFLAGS += -g
  endif
--ifeq ($(shell uname -s),Linux)
+-ifeq ($(PLATFORM),linux)
 +ifeq ($(strip $(shell echo __linux__ | $(CC) -E - | grep -v '^\#')),1)
  LIBMNL_CFLAGS := $(shell $(PKG_CONFIG) --cflags libmnl 2>/dev/null)
  LIBMNL_LDLIBS := $(shell $(PKG_CONFIG) --libs libmnl 2>/dev/null || echo -lmnl)
