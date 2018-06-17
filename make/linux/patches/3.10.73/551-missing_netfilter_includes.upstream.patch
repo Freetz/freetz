@@ -1,0 +1,309 @@
+From 1ffad83dffd675cd742286ae82dca7d746cb0da8 Mon Sep 17 00:00:00 2001
+From: Mikko Rapeli <mikko.rapeli@iki.fi>
+Date: Thu, 15 Oct 2015 07:56:30 +0200
+Subject: [PATCH] netfilter: fix include files for compilation
+
+Add missing header dependencies and other small changes so that each file
+compiles alone in userspace.
+
+Signed-off-by: Mikko Rapeli <mikko.rapeli@iki.fi>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+
+--- linux-3.10/include/uapi/linux/netfilter/ipset/ip_set_bitmap.h
++++ linux-3.10/include/uapi/linux/netfilter/ipset/ip_set_bitmap.h
+@@ -1,6 +1,8 @@
+ #ifndef _UAPI__IP_SET_BITMAP_H
+ #define _UAPI__IP_SET_BITMAP_H
+ 
++#include <linux/netfilter/ipset/ip_set.h>
++
+ /* Bitmap type specific error codes */
+ enum {
+ 	/* The element is out of the range of the set */
+--- linux-3.10/include/uapi/linux/netfilter/ipset/ip_set_hash.h
++++ linux-3.10/include/uapi/linux/netfilter/ipset/ip_set_hash.h
+@@ -1,6 +1,8 @@
+ #ifndef _UAPI__IP_SET_HASH_H
+ #define _UAPI__IP_SET_HASH_H
+ 
++#include <linux/netfilter/ipset/ip_set.h>
++
+ /* Hash type specific error codes */
+ enum {
+ 	/* Hash is full */
+--- linux-3.10/include/uapi/linux/netfilter/ipset/ip_set_list.h
++++ linux-3.10/include/uapi/linux/netfilter/ipset/ip_set_list.h
+@@ -1,6 +1,8 @@
+ #ifndef _UAPI__IP_SET_LIST_H
+ #define _UAPI__IP_SET_LIST_H
+ 
++#include <linux/netfilter/ipset/ip_set.h>
++
+ /* List type specific error codes */
+ enum {
+ 	/* Set name to be added/deleted/tested does not exist. */
+--- linux-3.10/include/uapi/linux/netfilter/nf_conntrack_tuple_common.h
++++ linux-3.10/include/uapi/linux/netfilter/nf_conntrack_tuple_common.h
+@@ -1,6 +1,9 @@
+ #ifndef _NF_CONNTRACK_TUPLE_COMMON_H
+ #define _NF_CONNTRACK_TUPLE_COMMON_H
+ 
++#include <linux/types.h>
++#include <linux/netfilter.h>
++
+ enum ip_conntrack_dir {
+ 	IP_CT_DIR_ORIGINAL,
+ 	IP_CT_DIR_REPLY,
+--- linux-3.10/include/linux/netfilter/xt_HMARK.h
++++ linux-3.10/include/linux/netfilter/xt_HMARK.h
+@@ -2,6 +2,7 @@
+ #define XT_HMARK_H_
+ 
+ #include <linux/types.h>
++#include <linux/netfilter.h>
+ 
+ enum {
+ 	XT_HMARK_SADDR_MASK,
+--- linux-3.10/include/uapi/linux/netfilter/xt_RATEEST.h
++++ linux-3.10/include/uapi/linux/netfilter/xt_RATEEST.h
+@@ -2,6 +2,7 @@
+ #define _XT_RATEEST_TARGET_H
+ 
+ #include <linux/types.h>
++#include <linux/if.h>
+ 
+ struct xt_rateest_target_info {
+ 	char			name[IFNAMSIZ];
+--- linux-3.10/include/uapi/linux/netfilter/xt_TEE.h
++++ linux-3.10/include/uapi/linux/netfilter/xt_TEE.h
+@@ -1,6 +1,8 @@
+ #ifndef _XT_TEE_TARGET_H
+ #define _XT_TEE_TARGET_H
+ 
++#include <linux/netfilter.h>
++
+ struct xt_tee_tginfo {
+ 	union nf_inet_addr gw;
+ 	char oif[16];
+--- linux-3.10/include/uapi/linux/netfilter/xt_TPROXY.h
++++ linux-3.10/include/uapi/linux/netfilter/xt_TPROXY.h
+@@ -2,6 +2,7 @@
+ #define _XT_TPROXY_H
+ 
+ #include <linux/types.h>
++#include <linux/netfilter.h>
+ 
+ /* TPROXY target is capable of marking the packet to perform
+  * redirection. We can get rid of that whenever we get support for
+--- linux-3.10/include/uapi/linux/netfilter/xt_hashlimit.h
++++ linux-3.10/include/uapi/linux/netfilter/xt_hashlimit.h
+@@ -2,6 +2,7 @@
+ #define _UAPI_XT_HASHLIMIT_H
+ 
+ #include <linux/types.h>
++#include <linux/if.h>
+ 
+ /* timings are in milliseconds. */
+ #define XT_HASHLIMIT_SCALE 10000
+--- linux-3.10/include/uapi/linux/netfilter/xt_ipvs.h
++++ linux-3.10/include/uapi/linux/netfilter/xt_ipvs.h
+@@ -2,6 +2,7 @@
+ #define _XT_IPVS_H
+ 
+ #include <linux/types.h>
++#include <linux/netfilter.h>
+ 
+ enum {
+ 	XT_IPVS_IPVS_PROPERTY =	1 << 0, /* all other options imply this one */
+--- linux-3.10/include/uapi/linux/netfilter/xt_mac.h
++++ linux-3.10/include/uapi/linux/netfilter/xt_mac.h
+@@ -1,6 +1,8 @@
+ #ifndef _XT_MAC_H
+ #define _XT_MAC_H
+ 
++#include <linux/if_ether.h>
++
+ struct xt_mac_info {
+     unsigned char srcaddr[ETH_ALEN];
+     int invert;
+--- linux-3.10/include/uapi/linux/netfilter/xt_osf.h
++++ linux-3.10/include/uapi/linux/netfilter/xt_osf.h
+@@ -21,6 +21,8 @@
+ #define _XT_OSF_H
+ 
+ #include <linux/types.h>
++#include <linux/ip.h>
++#include <linux/tcp.h>
+ 
+ #define MAXGENRELEN		32
+ 
+--- linux-3.10/include/uapi/linux/netfilter/xt_physdev.h
++++ linux-3.10/include/uapi/linux/netfilter/xt_physdev.h
+@@ -2,7 +2,7 @@
+ #define _UAPI_XT_PHYSDEV_H
+ 
+ #include <linux/types.h>
+-
++#include <linux/if.h>
+ 
+ #define XT_PHYSDEV_OP_IN		0x01
+ #define XT_PHYSDEV_OP_OUT		0x02
+--- linux-3.10/include/uapi/linux/netfilter/xt_policy.h
++++ linux-3.10/include/uapi/linux/netfilter/xt_policy.h
+@@ -2,6 +2,8 @@
+ #define _XT_POLICY_H
+ 
+ #include <linux/types.h>
++#include <linux/in.h>
++#include <linux/in6.h>
+ 
+ #define XT_POLICY_MAX_ELEM	4
+ 
+--- linux-3.10/include/uapi/linux/netfilter/xt_rateest.h
++++ linux-3.10/include/uapi/linux/netfilter/xt_rateest.h
+@@ -2,6 +2,7 @@
+ #define _XT_RATEEST_MATCH_H
+ 
+ #include <linux/types.h>
++#include <linux/if.h>
+ 
+ enum xt_rateest_match_flags {
+ 	XT_RATEEST_MATCH_INVERT	= 1<<0,
+--- linux-3.10/include/uapi/linux/netfilter/xt_recent.h
++++ linux-3.10/include/uapi/linux/netfilter/xt_recent.h
+@@ -2,6 +2,7 @@
+ #define _LINUX_NETFILTER_XT_RECENT_H 1
+ 
+ #include <linux/types.h>
++#include <linux/netfilter.h>
+ 
+ enum {
+ 	XT_RECENT_CHECK    = 1 << 0,
+--- linux-3.10/include/uapi/linux/netfilter/xt_sctp.h
++++ linux-3.10/include/uapi/linux/netfilter/xt_sctp.h
+@@ -66,26 +66,26 @@
+ 
+ #define SCTP_CHUNKMAP_IS_CLEAR(chunkmap) \
+ 	__sctp_chunkmap_is_clear((chunkmap), ARRAY_SIZE(chunkmap))
+-static inline bool
++static inline _Bool
+ __sctp_chunkmap_is_clear(const __u32 *chunkmap, unsigned int n)
+ {
+ 	unsigned int i;
+ 	for (i = 0; i < n; ++i)
+ 		if (chunkmap[i])
+-			return false;
+-	return true;
++			return 0;
++	return 1;
+ }
+ 
+ #define SCTP_CHUNKMAP_IS_ALL_SET(chunkmap) \
+ 	__sctp_chunkmap_is_all_set((chunkmap), ARRAY_SIZE(chunkmap))
+-static inline bool
++static inline _Bool
+ __sctp_chunkmap_is_all_set(const __u32 *chunkmap, unsigned int n)
+ {
+ 	unsigned int i;
+ 	for (i = 0; i < n; ++i)
+ 		if (chunkmap[i] != ~0U)
+-			return false;
+-	return true;
++			return 0;
++	return 1;
+ }
+ 
+ #endif /* _XT_SCTP_H_ */
+--- linux-3.10/include/uapi/linux/netfilter_arp/arp_tables.h
++++ linux-3.10/include/uapi/linux/netfilter_arp/arp_tables.h
+@@ -11,6 +11,7 @@
+ 
+ #include <linux/types.h>
+ #include <linux/compiler.h>
++#include <linux/if.h>
+ #include <linux/netfilter_arp.h>
+ 
+ #include <linux/netfilter/x_tables.h>
+--- linux-3.10/include/uapi/linux/netfilter_bridge.h
++++ linux-3.10/include/uapi/linux/netfilter_bridge.h
+@@ -4,6 +4,7 @@
+ /* bridge-specific defines for netfilter. 
+  */
+ 
++#include <linux/in.h>
+ #include <linux/netfilter.h>
+ #include <linux/if_ether.h>
+ #include <linux/if_vlan.h>
+--- linux-3.10/include/uapi/linux/netfilter_bridge/ebt_arp.h
++++ linux-3.10/include/uapi/linux/netfilter_bridge/ebt_arp.h
+@@ -2,6 +2,7 @@
+ #define __LINUX_BRIDGE_EBT_ARP_H
+ 
+ #include <linux/types.h>
++#include <linux/if_ether.h>
+ 
+ #define EBT_ARP_OPCODE 0x01
+ #define EBT_ARP_HTYPE 0x02
+--- linux-3.10/include/uapi/linux/netfilter_bridge/ebt_arpreply.h
++++ linux-3.10/include/uapi/linux/netfilter_bridge/ebt_arpreply.h
+@@ -1,6 +1,8 @@
+ #ifndef __LINUX_BRIDGE_EBT_ARPREPLY_H
+ #define __LINUX_BRIDGE_EBT_ARPREPLY_H
+ 
++#include <linux/if_ether.h>
++
+ struct ebt_arpreply_info {
+ 	unsigned char mac[ETH_ALEN];
+ 	int target;
+--- linux-3.10/include/uapi/linux/netfilter_bridge/ebt_ip6.h
++++ linux-3.10/include/uapi/linux/netfilter_bridge/ebt_ip6.h
+@@ -13,6 +13,7 @@
+ #define __LINUX_BRIDGE_EBT_IP6_H
+ 
+ #include <linux/types.h>
++#include <linux/in6.h>
+ 
+ #define EBT_IP6_SOURCE 0x01
+ #define EBT_IP6_DEST 0x02
+--- linux-3.10/include/uapi/linux/netfilter_bridge/ebt_nat.h
++++ linux-3.10/include/uapi/linux/netfilter_bridge/ebt_nat.h
+@@ -1,6 +1,8 @@
+ #ifndef __LINUX_BRIDGE_EBT_NAT_H
+ #define __LINUX_BRIDGE_EBT_NAT_H
+ 
++#include <linux/if_ether.h>
++
+ #define NAT_ARP_BIT  (0x00000010)
+ struct ebt_nat_info {
+ 	unsigned char mac[ETH_ALEN];
+--- linux-3.10/include/uapi/linux/netfilter_ipv4/ip_tables.h
++++ linux-3.10/include/uapi/linux/netfilter_ipv4/ip_tables.h
+@@ -17,6 +17,7 @@
+ 
+ #include <linux/types.h>
+ #include <linux/compiler.h>
++#include <linux/if.h>
+ #include <linux/netfilter_ipv4.h>
+ 
+ #include <linux/netfilter/x_tables.h>
+--- linux-3.10/include/uapi/linux/netfilter_ipv6/ip6_tables.h
++++ linux-3.10/include/uapi/linux/netfilter_ipv6/ip6_tables.h
+@@ -17,6 +17,7 @@
+ 
+ #include <linux/types.h>
+ #include <linux/compiler.h>
++#include <linux/if.h>
+ #include <linux/netfilter_ipv6.h>
+ 
+ #include <linux/netfilter/x_tables.h>
+--- linux-3.10/include/uapi/linux/netfilter_ipv6/ip6t_rt.h
++++ linux-3.10/include/uapi/linux/netfilter_ipv6/ip6t_rt.h
+@@ -2,7 +2,7 @@
+ #define _IP6T_RT_H
+ 
+ #include <linux/types.h>
+-/*#include <linux/in6.h>*/
++#include <linux/in6.h>
+ 
+ #define IP6T_RT_HOPS 16
+ 
