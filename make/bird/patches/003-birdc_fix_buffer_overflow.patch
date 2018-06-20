@@ -1,22 +1,22 @@
 --- client/client.c
 +++ client/client.c
-@@ -250,7 +250,7 @@
+@@ -256,7 +256,7 @@
  
    bzero(&sa, sizeof(sa));
    sa.sun_family = AF_UNIX;
 -  strcpy(sa.sun_path, server_path);
 +  strncpy(sa.sun_path, server_path, sizeof(sa.sun_path));
    if (connect(server_fd, (struct sockaddr *) &sa, SUN_LEN(&sa)) < 0)
-     die("Unable to connect to server control socket (%s): %m", server_path);
+     DIE("Unable to connect to server control socket (%s)", server_path);
    if (fcntl(server_fd, F_SETFL, O_NONBLOCK) < 0)
 --- sysdep/unix/io.c
 +++ sysdep/unix/io.c
-@@ -1274,7 +1274,7 @@
+@@ -1515,7 +1515,7 @@
  
    /* Path length checked in test_old_bird() */
    sa.sun_family = AF_UNIX;
 -  strcpy(sa.sun_path, name);
 +  strncpy(sa.sun_path, name, sizeof(sa.sun_path));
+ 
    if (bind(fd, (struct sockaddr *) &sa, SUN_LEN(&sa)) < 0)
-     ERR("bind");
-   if (listen(fd, 8))
+     return -1;
