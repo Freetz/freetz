@@ -1,6 +1,6 @@
 --- configure
 +++ configure
-@@ -4632,6 +4632,7 @@
+@@ -4636,6 +4636,7 @@
  
  config_appended_defs="$config_appended_defs${newline}INLINE=${INLINE}"
  
@@ -8,7 +8,7 @@
  # which switch to pass runtime path to dynamic libraries to the linker
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking if linker supports -R" >&5
  $as_echo_n "checking if linker supports -R... " >&6; }
-@@ -4743,6 +4744,7 @@
+@@ -4747,6 +4748,7 @@
  fi
  
  config_appended_defs="$config_appended_defs${newline}CC_LD_DYNPATH=${CC_LD_DYNPATH}"
@@ -18,7 +18,7 @@
    for ac_prog in gar ar
 --- Makefile
 +++ Makefile
-@@ -1155,16 +1155,6 @@
+@@ -1214,16 +1214,6 @@
  	PTHREAD_LIBS =
  endif
  
@@ -35,7 +35,7 @@
  ifdef NO_LIBGEN_H
  	COMPAT_CFLAGS += -DNO_LIBGEN_H
  	COMPAT_OBJS += compat/basename.o
-@@ -1192,7 +1182,7 @@
+@@ -1251,7 +1241,7 @@
  
  ifdef LIBPCREDIR
  	BASIC_CFLAGS += -I$(LIBPCREDIR)/include
@@ -44,7 +44,7 @@
  endif
  
  ifdef HAVE_ALLOCA_H
-@@ -1211,7 +1201,7 @@
+@@ -1270,7 +1260,7 @@
  	ifdef CURLDIR
  		# Try "-Wl,-rpath=$(CURLDIR)/$(lib)" in such a case.
  		BASIC_CFLAGS += -I$(CURLDIR)/include
@@ -53,7 +53,7 @@
  	else
  		CURL_LIBCURL = -lcurl
  	endif
-@@ -1248,7 +1238,7 @@
+@@ -1307,7 +1297,7 @@
  	ifndef NO_EXPAT
  		ifdef EXPATDIR
  			BASIC_CFLAGS += -I$(EXPATDIR)/include
@@ -62,7 +62,7 @@
  		else
  			EXPAT_LIBEXPAT = -lexpat
  		endif
-@@ -1261,7 +1251,7 @@
+@@ -1320,7 +1310,7 @@
  
  ifdef ZLIB_PATH
  	BASIC_CFLAGS += -I$(ZLIB_PATH)/include
@@ -71,7 +71,7 @@
  endif
  EXTLIBS += -lz
  
-@@ -1269,7 +1259,7 @@
+@@ -1328,7 +1318,7 @@
  	OPENSSL_LIBSSL = -lssl
  	ifdef OPENSSLDIR
  		BASIC_CFLAGS += -I$(OPENSSLDIR)/include
@@ -80,12 +80,12 @@
  	else
  		OPENSSL_LINK =
  	endif
-@@ -1295,7 +1285,7 @@
- ifdef NEEDS_LIBICONV
- 	ifdef ICONVDIR
- 		BASIC_CFLAGS += -I$(ICONVDIR)/include
--		ICONV_LINK = -L$(ICONVDIR)/$(lib) $(CC_LD_DYNPATH)$(ICONVDIR)/$(lib)
-+		ICONV_LINK = -L$(ICONVDIR)/$(lib)
- 	else
- 		ICONV_LINK =
- 	endif
+@@ -1355,7 +1345,7 @@
+ 	ifdef NEEDS_LIBICONV
+ 		ifdef ICONVDIR
+ 			BASIC_CFLAGS += -I$(ICONVDIR)/include
+-			ICONV_LINK = -L$(ICONVDIR)/$(lib) $(CC_LD_DYNPATH)$(ICONVDIR)/$(lib)
++			ICONV_LINK = -L$(ICONVDIR)/$(lib)
+ 		else
+ 			ICONV_LINK =
+ 		endif
