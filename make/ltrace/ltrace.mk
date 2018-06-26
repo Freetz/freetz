@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, c22d359433)
 $(PKG)_SOURCE:=ltrace-$($(PKG)_VERSION).tar.xz
-$(PKG)_SITE:=git://git.debian.org/git/collab-maint/ltrace.git
+$(PKG)_SITE:=git@https://github.com/dkogan/ltrace.git
 
 $(PKG)_CATEGORY:=Debug helpers
 
