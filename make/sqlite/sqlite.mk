@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 3230100)
+$(call PKG_INIT_BIN, 3240000)
 $(PKG)_LIB_VERSION:=0.8.6
 $(PKG)_SOURCE:=$(pkg)-autoconf-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA1:=0edbfd75ececb95e8e6448d6ff33df82774c9646
+$(PKG)_SOURCE_SHA1:=da68915e3563b5244cbcdb6c7e20fb35559bcfc6
 $(PKG)_SITE:=http://www.sqlite.org/2018
 
 ifeq ($(strip $(FREETZ_PACKAGE_SQLITE_WITH_READLINE)),y)
