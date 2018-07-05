@@ -1,6 +1,19 @@
---- src/child.c	2010-01-10 23:52:04.000000000 +0100
-+++ src/child.c	2010-11-30 15:15:20.000000000 +0100
-@@ -76,7 +76,7 @@
+--- src/main.c
++++ src/main.c
+@@ -336,8 +336,8 @@
+         conf->errorpages = NULL;
+         conf->stathost = safestrdup (TINYPROXY_STATHOST);
+         conf->idletimeout = MAX_IDLE_TIME;
+-        conf->logf_name = safestrdup (LOCALSTATEDIR "/log/tinyproxy/tinyproxy.log");
+-        conf->pidpath = safestrdup (LOCALSTATEDIR "/run/tinyproxy/tinyproxy.pid");
++        conf->logf_name = safestrdup ("/var/log/tinyproxy.log");
++        conf->pidpath = safestrdup ("/var/run/tinyproxy//tinyproxy.pid");
+ }
+ 
+ /**
+--- src/child.c
++++ src/child.c
+@@ -75,7 +75,7 @@
  
  static void _child_lock_init (void)
  {
@@ -9,8 +22,8 @@
  
          /* Only allow u+rw bits. This may be required for some versions
           * of glibc so that mkstemp() doesn't make us vulnerable.
---- src/heap.c	2010-01-10 23:52:04.000000000 +0100
-+++ src/heap.c	2010-11-30 15:15:20.000000000 +0100
+--- src/heap.c
++++ src/heap.c
 @@ -109,9 +109,9 @@
  {
          int fd;
