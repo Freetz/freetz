@@ -474,7 +474,7 @@ collect_pkg_files()
 
 		(
 			cd "${PACKAGES_DIR}/${pkg_dir}/root/"
-			find . -type f -print0 | tar -cv --null -T - $(find "../" -maxdepth 1 -type f -name ".exclude*" -printf '--exclude-from=%p ') -f /dev/null
+			find . -type f -print0 | "$TAR_GNU" -cv $(find "../" -maxdepth 1 -type f -name ".exclude*" -printf '--exclude-from=%p ') --null -T - -f /dev/null
 		)
 	done | sed -r -e 's,^[.],,' -e 's,^([^/]),/\1,'
 }
