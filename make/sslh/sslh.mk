@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN,v1.18)
+$(call PKG_INIT_BIN,v1.19c)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=0e3568d5d234516c634d4df156473298
+$(PKG)_SOURCE_MD5:=a9bfd58cd3a51b8e1fa5277404c7041a
 $(PKG)_SITE:=http://rutschle.net/tech/sslh
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/sslh-fork
