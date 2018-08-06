@@ -894,16 +894,6 @@ endmenu
 menu "Other AVM firmware properties"
 	visible if FREETZ_TYPE_CUSTOM
 
-config FREETZ_AVM_HAS_AR7CFG_V12_MIN
-	bool "ar7.cfg version >= 12"	if FREETZ_TYPE_CUSTOM
-	default y		if \
-		FREETZ_AVM_VERSION_06_0X_MIN
-	default n
-	help
-		Select this if your ar7.cfg is at least version 12.
-		In your ar7.cfg is a line like 'ar7cfg_version = x;'
-		Used by AVM-firewall/-forwarding
-
 config FREETZ_AVM_HAS_ALLCFGCONV_WITH_DECRYPTION_SUPPORT
 	bool "allcfgconv supports decryption"	if FREETZ_TYPE_CUSTOM
 	default n		if \
