@@ -212,6 +212,7 @@ config FREETZ_AVM_HAS_FIRMWARE_07_0X
 	bool "07.0x-firmware available" if FREETZ_TYPE_CUSTOM
 	default y		if \
 		( FREETZ_TYPE_LANG_DE && ( \
+			FREETZ_TYPE_7560 || \
 			FREETZ_TYPE_7580 || \
 			FREETZ_TYPE_7590 \
 		))
@@ -226,8 +227,7 @@ config FREETZ_AVM_HAS_FIRMWARE_LABOR_BETA
 		FREETZ_TYPE_LANG_DE && ( \
 			FREETZ_TYPE_7362 || \
 			FREETZ_TYPE_7430 || \
-			FREETZ_TYPE_7490 || \
-			FREETZ_TYPE_7560 \
+			FREETZ_TYPE_7490 \
 		)
 	default n
 	help
