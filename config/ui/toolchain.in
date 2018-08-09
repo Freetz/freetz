@@ -10,6 +10,7 @@ choice
 	config FREETZ_DOWNLOAD_TOOLCHAIN
 		bool "Download and use precompiled toolchains"
 		depends on FREETZ_AVM_VERSION_06_9X_MAX
+		depends on !FREETZ_SYSTEM_TYPE_QCA956x
 
 	config FREETZ_BUILD_TOOLCHAIN
 		bool "Build own toolchains (requires 4GB diskspace)"

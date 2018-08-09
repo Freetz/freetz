@@ -84,3 +84,10 @@ config FREETZ_AVM_UCLIBC_NPTL_ENABLED
 	help
 		To check if NPTL is enabled:
 		nm -D libpthread-0.9.33.2.so | grep nptl
+
+config FREETZ_AVM_UCLIBC_XLOCALE_ENABLED
+	bool
+	default y if \
+		FREETZ_SYSTEM_TYPE_QCA956x || \
+		FREETZ_KERNEL_VERSION_3_10_MIN
+	default n
