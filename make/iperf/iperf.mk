@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 3.5)
+$(call PKG_INIT_BIN, 3.6)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://downloads.es.net/pub/iperf
-$(PKG)_SOURCE_SHA256:=539bd9ecdca1b8c1157ff85b70ed09b3c75242e69886fc16b54883b399f72cd5
+$(PKG)_SOURCE_SHA256:=de5d51e46dc460cc590fb4d44f95e7cad54b74fea1eba7d6ebd6f8887d75946e
 
 $(PKG)_PATCH_POST_CMDS += $(call PKG_ADD_EXTRA_FLAGS,LDFLAGS|LIBS)
 
