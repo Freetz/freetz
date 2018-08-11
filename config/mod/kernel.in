@@ -50,7 +50,8 @@ config FREETZ_REPLACE_KERNEL_EXPERIMENTAL
 		FREETZ_AVM_SOURCE_7490_06_93 || \
 		FREETZ_AVM_SOURCE_7580_06_53 || \
 		FREETZ_AVM_SOURCE_7580_06_81 || \
-		FREETZ_AVM_SOURCE_7590_06_92
+		FREETZ_AVM_SOURCE_7590_06_92 || \
+		FREETZ_AVM_SOURCE_7590_07_00
 	default y
 
 # at the moment enabled for all configurations fulfilling the condition
@@ -58,10 +59,9 @@ config FREETZ_REPLACE_KERNEL_EXPERIMENTAL
 config FREETZ_REPLACE_MODULE_AVAILABLE
 	bool
 	depends on !FREETZ_SYSTEM_TYPE_QCA955x # no sources at all for this system type
-	depends on \
-		FREETZ_REPLACE_KERNEL_AVAILABLE || \
-		FREETZ_AVM_SOURCE_7490_06_98    || \
-		!FREETZ_AVM_VERSION_07_0X
+#	depends on \
+#		FREETZ_REPLACE_KERNEL_AVAILABLE || \
+#		!FREETZ_AVM_VERSION_07_0X
 	default y
 	help
 		Select this if only source code from a previous firmware version is available for your box.
