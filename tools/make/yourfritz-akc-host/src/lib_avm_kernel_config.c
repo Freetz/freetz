@@ -230,8 +230,8 @@ struct _avm_kernel_config* * relocateConfigArea(void *configArea, size_t configS
 					swapEndianness(swapNeeded, (uint32_t *) &module->name);
 					module->name = (char *) targetPtr2HostPtr((uint32_t)module->name, kernelSegmentStart, configArea);
 					swapEndianness(swapNeeded, &module->size);
-					swapEndianness(swapNeeded, &module->unknown1);
-					swapEndianness(swapNeeded, &module->unknown2);
+					swapEndianness(swapNeeded, &module->symbol_size);
+					swapEndianness(swapNeeded, &module->symbol_text_size);
 
 					module++;
 				}

@@ -102,7 +102,7 @@ void processModuleMemoryEntry(struct _avm_kernel_config* entry, uint32_t moduleS
 		struct _kernel_modulmemory_config4 * module = (struct _kernel_modulmemory_config4 *) entry->config;
 		while (module->name != NULL)
 		{
-			fprintf(stdout, "\tAVM_MODULE_MEMORY4\t%u, \"%s\", %u, %u, %u\n", ++mod_no, module->name, module->size, module->unknown1, module->unknown2);
+			fprintf(stdout, "\tAVM_MODULE_MEMORY4\t%u, \"%s\", %u, %u, %u\n", ++mod_no, module->name, module->size, module->symbol_size, module->symbol_text_size);
 			module++;
 		}
 		fprintf(stdout, "\tAVM_MODULE_MEMORY4\t0\n");

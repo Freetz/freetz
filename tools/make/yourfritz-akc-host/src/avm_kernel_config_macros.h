@@ -55,7 +55,7 @@
 		.endif
 	.endm
 
-	.macro	AVM_MODULE_MEMORY4 index, module, size, unknown1, unknown2
+	.macro	AVM_MODULE_MEMORY4 index, module, size, symbol_size, symbol_text_size
 		.ifeq	\index
 			.int		0
 			.int		0
@@ -69,8 +69,8 @@
 			.popsection
 			.int		.L_avm_module_memory_\index
 			.int		\size
-			.int		\unknown1
-			.int		\unknown2
+			.int		\symbol_size
+			.int		\symbol_text_size
 		.endif
 	.endm
 
