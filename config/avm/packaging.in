@@ -40,10 +40,9 @@ config FREETZ_AVM_SQUASHFS_COMPRESSION
 config FREETZ_AVM_HAS_NMI_VECTOR
 	bool "Has NMI vector within SquashFS"	if FREETZ_TYPE_CUSTOM
 	default y		if \
-		FREETZ_SYSTEM_TYPE_AR934x  || \
-		FREETZ_SYSTEM_TYPE_QCA956x || \
-		FREETZ_TYPE_7340 || \
-		FREETZ_TYPE_7390
+		FREETZ_SYSTEM_TYPE_AR934x    || \
+		FREETZ_SYSTEM_TYPE_IKS_VX180 || \
+		FREETZ_SYSTEM_TYPE_QCA956x
 	default n
 	help
 		Select this if the original firmware image contains NMI vector
@@ -63,11 +62,11 @@ config FREETZ_AVM_IMAGES_SUBDIR
 config FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
 	bool "Has separate filesystem image"	if FREETZ_TYPE_CUSTOM
 	default y		if \
-		FREETZ_TYPE_7369           || \
-		FREETZ_SYSTEM_TYPE_AR10    || \
-		FREETZ_SYSTEM_TYPE_GRX5    || \
-		FREETZ_SYSTEM_TYPE_PUMA6   || \
-		FREETZ_SYSTEM_TYPE_QCA955x || \
+		FREETZ_SYSTEM_TYPE_AR10      || \
+		FREETZ_SYSTEM_TYPE_GRX5      || \
+		FREETZ_SYSTEM_TYPE_IKS_VX185 || \
+		FREETZ_SYSTEM_TYPE_PUMA6     || \
+		FREETZ_SYSTEM_TYPE_QCA955x   || \
 		FREETZ_SYSTEM_TYPE_VR9
 	default n
 	help
