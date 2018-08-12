@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 6d8b8a0f47)
+$(call PKG_INIT_BIN, 84e9555131)
 $(PKG)_SOURCE:=$(subst -,_,$(pkg))-$($(PKG)_VERSION).tar.xz
 $(PKG)_SITE:=git@https://github.com/PeterPawn/decoder.git
 
