@@ -38,6 +38,9 @@ config FREETZ_GCC_ARCH
 		FREETZ_CPU_MODEL_MIPS_74Kc  || \
 		FREETZ_CPU_MODEL_MIPS_interAptiv
 	#
+	default "atom" if \
+		FREETZ_CPU_MODEL_X86_ATOM
+	#
 	default "NOT_IMPLEMENTED"
 
 config FREETZ_GCC_TUNE
@@ -75,6 +78,9 @@ config FREETZ_GCC_TUNE
 	default "34kc"     if \
 		(FREETZ_CPU_MODEL_MIPS_34Kc && FREETZ_KERNEL_VERSION_3_10_MIN) || \
 		FREETZ_CPU_MODEL_MIPS_interAptiv
+	#
+	default "atom" if \
+		FREETZ_CPU_MODEL_X86_ATOM
 	#
 	default "NOT_IMPLEMENTED"
 
