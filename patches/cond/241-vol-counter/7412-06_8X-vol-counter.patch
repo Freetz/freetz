@@ -1,0 +1,117 @@
+Created by diff'ing the files from 7412.06.83 and 7490.06.83
+
+--- usr/www/avm/internet/inetstat_budget.lua
++++ usr/www/avm/internet/inetstat_budget.lua
+@@ -280,17 +280,44 @@
+ </h4>
+ <div>
+ <p>
+-{?141:619?}
++{?141:156?}
+ </p>
+ <input type="checkbox" name="budget_enabled" id="uiBudgetEnabled"
+ onclick="OnToggleBudget(this.checked)" <?lua write_budget_enabled()?>><label for="uiBudgetEnabled">
+ {?141:990?}
+ </label>
+ <div id="uiBudgetBlock" class="formular reverse">
++<input type="radio" name="budget_type" id="uiVolBudget" value="vol"
++onclick="OnToggleBudgetType('vol')" <?lua write_budget_checked('vol')?>><label for="uiVolBudget">
++{?141:178?}
++</label>
++<div id="uiVolBlock" class="formular">
++<input type="text" size="7" maxlength="6" id="uiVolValue" name="budget_vol" value="<?lua write_budget_value('vol')?>"><label for="uiVolValue">
++{?141:657?}
++</label>
++<p>{?141:931?}</p>
++<input type="checkbox" id="uiViewRoundUpOn" name="budget_roundup" onclick="OnToggleRoundUp(this.checked)" <?lua write_roundup()?>><label for="uiViewRoundUpOn">
++{?141:246?}
++</label>
++<select id="uiViewRoundUpBytes" name="budget_roundup_bytes">
++<option value="1000" <?lua write_roundup_sel("1000")?>>
++{?141:145?}
++</option>
++<option value="1000000" <?lua write_roundup_sel("1000000")?>>
++{?141:359?}
++</option>
++</select>
++</div>
++<input type="radio" name="budget_type" id="uiTimeBudget" value="time"
++onclick="OnToggleBudgetType('time')" <?lua write_budget_checked('time')?>><label for="uiTimeBudget">
++{?141:676?}
++</label>
++<div id="uiTimeBlock" class="formular">
+ <input type="text" size="6" maxlength="3" name="budget_time" id="uiTimeValue"
+ value="<?lua write_budget_value('time')?>">
+-<label for="uiTimeValue">{?141:904?}</label>
+-<p>{?141:179?}</p>
++<label for="uiTimeValue">{?141:869?}</label>
++<p>{?141:407?}</p>
++</div>
+ <div class="noBreakGroup">
+ <label for="uiViewStartOfMonth" style="width:auto">
+ {?141:313?}
+--- usr/www/avm/internet/inetstat_counter.lua
++++ usr/www/avm/internet/inetstat_counter.lua
+@@ -20,9 +20,18 @@
+ function get_data_table_header()
+ local str = [[
+ <tr class="first_row">
+-<th class="first_col">&nbsp;</th>
+-<th>{?815:715?}</th>
+-<th>{?815:765?}</th>
++<th class="first_col"></th>
++<th>{?815:780?}</th>
++<th style="text-align:center;" colspan="3">{?815:401?}</th>
++<th>{?815:377?}</th>
++</tr>
++<tr class="first_row">
++<th class="first_col"></th>
++<th>{?815:351?}</th>
++<th>{?815:151?}</th>
++<th>{?815:605?}</th>
++<th>{?815:915?}</th>
++<th></th>
+ </tr>
+ ]]
+ return str
+@@ -50,6 +59,13 @@
+ local outgoingcalls = box.query("inetstat:status/"..request.."/OutgoingCalls")
+ local time = box.query("inetstat:status/"..request.."/PhyConnTimeOutgoing")
+ str = [[<td datalabel="{?815:922?}" class="time">]] .. general.convert_to_str(time) .. [[</td>]]
++local inh, inl, outh, outl = query_send_receive(request)
++str = str .. core.sprintf([[
++<td datalabel="{?815:466?}" class="vol">%1</td><td datalabel="{?815:493?}" class="vol">%2</td><td datalabel="{?815:744?}" class="vol">%3</td>]],
++box.tohtml(get_vol_str(inh, inl, outh, outl)),
++box.tohtml(get_vol_str(outh, outl)),
++box.tohtml(get_vol_str(inh, inl))
++)
+ str = str .. [[<td datalabel="{?815:560?}" class="conn">]] .. outgoingcalls .. [[</td>]]
+ return str
+ end
+@@ -403,7 +419,7 @@
+ <form method="POST" action="<?lua box.html(box.glob.script) ?>" name="main_form">
+ <div class="formular small_indent">
+ <p>
+-{?815:459?}
++{?815:993?}
+ </p>
+ <div id="uiNoTime" <?lua hideif(g_timeknown) ?>>
+ <p>
+@@ -417,7 +433,7 @@
+ </div>
+ <div>
+ <p>
+-{?815:95?}
++{?815:122?}
+ </p>
+ <div class="btn_form">
+ <button type="button" onclick="onResetCounter();" name="reset">
+@@ -452,7 +468,7 @@
+ </div>
+ <div <?lua hideif(g_budget_enabled) ?>>
+ <p>
+-{?815:65?}
++{?815:491?}
+ </p>
+ <div class="btn_form">
+ <button type="submit" name="editbudget">
