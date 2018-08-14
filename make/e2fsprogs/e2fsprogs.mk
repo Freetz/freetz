@@ -112,7 +112,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_LIBS_BUILD_DIR) $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
-	$(SUBMAKE1) -C $(E2FSPROGS_DIR) \
+	$(SUBMAKE) -C $(E2FSPROGS_DIR) \
 		EXTRA_CFLAGS="-ffunction-sections -fdata-sections" \
 		EXTRA_LDFLAGS="-Wl,--gc-sections" \
 		LINK_MODE=$(E2FSPROGS_LINK_MODE) \
