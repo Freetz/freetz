@@ -11,3 +11,7 @@ for step in precheck install postcheck; do
 		"${step}"
 	[ $? -eq 0 ] || error 1 "adding modfs boot-manager failed in step \"${step}\""
 done
+
+# replace modfs version of boot-manager with a more recent one from YourFritz project
+cp -a "${TOOLS_DIR}/yf/bootmanager/gui_bootmanager" "${FILESYSTEM_MOD_DIR}/usr/bin/"
+chmod 755 "${FILESYSTEM_MOD_DIR}/usr/bin/gui_bootmanager"
