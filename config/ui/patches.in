@@ -1482,6 +1482,16 @@ config FREETZ_ENFORCE_URLADER_SETTING_PRODUCTID
 		Typical settings are eg.: Fritz_Box_DECT_7270, Fritz_Box_DECT_W920V
 		If this is empty the urlader setting won't be touched.
 
+comment "modfs patches --------------------------"
+
+config FREETZ_PATCH_MODFS_BOOT_MANAGER
+	bool "Add boot manager"
+	depends on FREETZ_AVM_VERSION_06_5X_MIN
+	depends on FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
+	default n
+	help
+		Extends the "reboot" page of FRITZ!OS to select system version and branding.
+
 comment "Misc patches ---------------------------"
 
 config FREETZ_PATCH_W920V_LED_MODULE
