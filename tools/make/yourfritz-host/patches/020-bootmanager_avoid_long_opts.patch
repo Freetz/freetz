@@ -1,0 +1,22 @@
+Avoid dependency on FREETZ_BUSYBOX_LONG_OPTS, use -d instead of --date=
+
+--- bootmanager/gui_bootmanager
++++ bootmanager/gui_bootmanager
+@@ -478,7 +478,7 @@
+ 	command -v date 2>/dev/null 1>&2 || printf "%s" "$1"
+ 	date --help 2>&1 | grep -q BusyBox || printf "%s" "$1"
+ 	eval $(printf "%s\n" "$1" | sed -n -e "s|\([0-9]*\)\.\([0-9]*\)\.\([0-9]*\) \([0-9]*\):\([0-9]*\):\([0-9]*\)|DAY=\1 MONTH=\2 YEAR=\3 HOUR=\4 MINUTES=\5 SECONDS=\6|p")
+-	date +%s --date=$YEAR$MONTH$DAY$HOUR$MINUTES.$SECONDS
++	date +%s -d $YEAR$MONTH$DAY$HOUR$MINUTES.$SECONDS
+ )
+ #######################################################################################################
+ #                                                                                                     #
+@@ -556,7 +556,7 @@
+ #######################################################################################################
+ get_localized_date()
+ {
+-	[ "$Language" = "de" ] && date +"%d.%m.%Y, %H:%M:%S Uhr" --date=@$1 || date +"%d.%m.%Y %H:%M:%S" --date=@$1
++	[ "$Language" = "de" ] && date +"%d.%m.%Y, %H:%M:%S Uhr" -d @$1 || date +"%d.%m.%Y %H:%M:%S" -d @$1
+ }
+ #######################################################################################################
+ #                                                                                                     #
