@@ -24,6 +24,7 @@ $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,c_inl
 $(PKG)_CONFIGURE_OPTIONS += BUILD_CC="$(HOSTCC)"
 $(PKG)_CONFIGURE_OPTIONS += --disable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_OPTIONS += --enable-atomic=no
 $(PKG)_CONFIGURE_OPTIONS += --enable-epoll=no
 $(PKG)_CONFIGURE_OPTIONS += --with-randomdev="/dev/random"
 $(PKG)_CONFIGURE_OPTIONS += --with-libtool
