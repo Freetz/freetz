@@ -20,10 +20,17 @@ all_no_freetz() {
 	# source freetz-helper-functions and freetz .config
 	# only necessary if freetz patch-scripts are used for modifications
 #	. "$(dirname $0)"/tools/freetz_functions
+#	. "$(dirname $0)"/tools/freetz_patch
 #	. "$(dirname $0)"/.config
 
 	# restore debug.cfg support (using Freetz script)
-#	FILESYSTEM_MOD_DIR=./filesystem . ../../patches/scripts/114-debug_cfg_support.sh
+#	. ../../patches/scripts/114-debug_cfg_support.sh
+
+	# restore volume counter support, 7412 only (using Freetz script)
+#	. ../../patches/scripts/241-restore_vol_counter.sh
+
+	# add modfs boot-manager (using Freetz script)
+#	. ../../patches/scripts/800-modfs_boot_manager.sh
 }
 
 clean() {
