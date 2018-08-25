@@ -1769,41 +1769,43 @@ if [ "$DO_PACK" -gt 0 ]; then
 	fi
 
 	# Pack firmware image
-	TAR_FOR_IMAGE_TARBALL="$TAR"       # use busybox tar for compatibility
-#	TAR_FOR_IMAGE_TARBALL="$TAR_GNU"   # GNU tar requires --format=gnu option
-	[ "$TAR_FOR_IMAGE_TARBALL" = "$TAR_GNU" ] && TAR_FOR_IMAGE_TARBALL_FORMAT_OPT="--format=gnu"
+	TAR_FOR_IMAGE_TARBALL="$TAR" # use busybox tar for compatibility (DEBUG COMMENT: change to TAR_GNU for GNU tar)
+	if [ "$TAR_FOR_IMAGE_TARBALL" == "$TAR_GNU" ]; then
+		TAR_FOR_IMAGE_TARBALL_FORMAT_OPT="--format=gnu" # GNU tar requires --format=gnu option
+		img_name_infix=".gnu-tar"
+	fi
 
 	echo0 "packing ${img_name}"
-	"${TAR_FOR_IMAGE_TARBALL}" ${TAR_FOR_IMAGE_TARBALL_FORMAT_OPT} -C "$FIRMWARE_MOD_DIR" -cf "${img_name}.unsigned" ./var
-	if [ $? -ne 0 ] || ! is_valid_tarball "${img_name}.unsigned"; then
-		mv "${img_name}.unsigned" "${img_name}.unsigned.corrupted" 2>/dev/null
+	"${TAR_FOR_IMAGE_TARBALL}" ${TAR_FOR_IMAGE_TARBALL_FORMAT_OPT} -C "$FIRMWARE_MOD_DIR" -cf "${img_name}${img_name_infix}.unsigned" ./var
+	if [ $? -ne 0 ] || ! is_valid_tarball "${img_name}${img_name_infix}.unsigned"; then
+		mv "${img_name}${img_name_infix}.unsigned" "${img_name}${img_name_infix}.unsigned.corrupted" 2>/dev/null
 		error 1 "packing of firmware image failed"
 	fi
-	echo1 "unsigned image file size: $(byte_to_mb $(wc -c < "${img_name}.unsigned")) ($(wc -c < "${img_name}.unsigned") bytes)"
+	echo1 "unsigned image file size: $(byte_to_mb $(wc -c < "${img_name}${img_name_infix}.unsigned")) ($(wc -c < "${img_name}${img_name_infix}.unsigned") bytes)"
 
 	if [ "$DO_SIGN" -gt 0 ]; then
 		echo0 "signing ${img_name}"
 		if [ -z "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" ]; then
 			# be verbose if no private key password provided
 			YF_SIGNIMAGE_TAR="${TAR_FOR_IMAGE_TARBALL}" \
-			"${TOOLS_DIR}/yf/signimage/sign_image" "${img_name}.unsigned" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}"                               > "${img_name}.signed"
+			"${TOOLS_DIR}/yf/signimage/sign_image" "${img_name}${img_name_infix}.unsigned" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}"                                                > "${img_name}${img_name_infix}.signed"
 		else
 			YF_SIGNIMAGE_TAR="${TAR_FOR_IMAGE_TARBALL}" \
-			"${TOOLS_DIR}/yf/signimage/sign_image" "${img_name}.unsigned" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" 2>"${MOD_DIR}/sign_image.log" > "${img_name}.signed"
+			"${TOOLS_DIR}/yf/signimage/sign_image" "${img_name}${img_name_infix}.unsigned" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" 2>"${MOD_DIR}/sign_image${img_name_infix}.log" > "${img_name}${img_name_infix}.signed"
 		fi
-		if [ $? -ne 0 ] || ! is_valid_tarball "${img_name}.signed"; then
-			mv "${img_name}.signed" "${img_name}.signed.corrupted" 2>/dev/null
+		if [ $? -ne 0 ] || ! is_valid_tarball "${img_name}${img_name_infix}.signed"; then
+			mv "${img_name}${img_name_infix}.signed" "${img_name}${img_name_infix}.signed.corrupted" 2>/dev/null
 			error 1 "signing of firmware image failed, see console output or ${MOD_DIR}/sign_image.log for details"
 		fi
-		echo1 "signed image file size: $(byte_to_mb $(wc -c < "${img_name}.signed")) ($(wc -c < "${img_name}.signed") bytes)"
+		echo1 "signed image file size: $(byte_to_mb $(wc -c < "${img_name}${img_name_infix}.signed")) ($(wc -c < "${img_name}${img_name_infix}.signed") bytes)"
 	fi
 
 	[ "$DO_SIGN" -gt 0 ] && final_img_suffix=signed || final_img_suffix=unsigned
 	echo0 "using ${final_img_suffix} image as the final one"
-	cp -a "${img_name}.${final_img_suffix}" "${img_name}"
+	cp -a "${img_name}${img_name_infix}.${final_img_suffix}" "${img_name}${img_name_infix}"
 
 	# delete temporary unsigned/signed files unless we're debugging
-	[ "$DEBUG" != "1" ] && rm -f "${img_name}.unsigned" "${img_name}.signed"
+	[ "$DEBUG" != "1" ] && rm -f "${img_name}${img_name_infix}.unsigned" "${img_name}${img_name_infix}.signed"
 fi
 
 # ----------------------------------------------
