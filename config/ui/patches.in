@@ -1456,14 +1456,6 @@ config FREETZ_ENFORCE_URLADER_SETTINGS
 		 * useful for people that do clear mtd3/mtd4 often.
 		This settings are enforced at the beginnig of the boot process.
 
-config FREETZ_ENFORCE_URLADER_SETTING_MY_IPADDRESS
-	depends on FREETZ_ENFORCE_URLADER_SETTINGS
-	string "Enforce my_ipaddress variable"
-	default "192.168.178.1"
-	help
-		This is the AVM default, enforce to also to reseller boxes, eg. from T-Com
-		If this is empty the urlader setting won't be touched.
-
 config FREETZ_ENFORCE_URLADER_SETTING_FIRMWARE_VERSION
 	depends on FREETZ_ENFORCE_URLADER_SETTINGS
 	string "Enforce firmware_version variable"
@@ -1480,6 +1472,14 @@ config FREETZ_ENFORCE_URLADER_SETTING_PRODUCTID
 	help
 		Choose wisely. Your image beeing built must support this.
 		Typical settings are eg.: Fritz_Box_DECT_7270, Fritz_Box_DECT_W920V
+		If this is empty the urlader setting won't be touched.
+
+config FREETZ_ENFORCE_URLADER_SETTING_MY_IPADDRESS
+	depends on FREETZ_ENFORCE_URLADER_SETTINGS
+	string "Enforce my_ipaddress variable"
+	default ""
+	help
+		This is the AVM default, enforce to also to reseller boxes, eg. from T-Com
 		If this is empty the urlader setting won't be touched.
 
 comment "modfs patches --------------------------"
