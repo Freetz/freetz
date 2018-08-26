@@ -1482,6 +1482,25 @@ config FREETZ_ENFORCE_URLADER_SETTING_MY_IPADDRESS
 		This is the AVM default, enforce to also to reseller boxes, eg. from T-Com
 		If this is empty the urlader setting won't be touched.
 
+config FREETZ_ENFORCE_FIRMWARE_VERSION_VIA_RCCONF
+	depends on FREETZ_AVM_VERSION_06_5X_MIN
+	string "Enforce firmware_version via rc.conf"
+	default ""
+	help
+		This option enforces branding by hardcoding it in /etc/init.d/rc.conf
+
+		This method is useful on some recently produced boxes (since 2017), which
+		do not allow to change the value of the urlader variable 'firmware_version'
+		in a non-volatile way.
+
+		Affected boxes (known so far): all boxes with the following bootloaderVersion
+		 - 1.3179
+		 - 1.3229
+		use "cat /proc/sys/urlader/environment | grep bootloaderVersion" or EVA
+		to check the value
+
+		Choose the value wisely. Your image must support it.
+
 comment "modfs patches --------------------------"
 
 config FREETZ_PATCH_MODFS_BOOT_MANAGER
