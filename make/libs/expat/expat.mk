@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 2.2.5)
-$(PKG)_LIB_VERSION:=1.6.7
+$(call PKG_INIT_LIB, 2.2.6)
+$(PKG)_LIB_VERSION:=1.6.8
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=789e297f547980fc9ecc036f9a070d49
+$(PKG)_SOURCE_MD5:=ca047ae951b40020ac831c28859161b2
 $(PKG)_SITE:=@SF/expat
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/lib/.libs/libexpat.so.$($(PKG)_LIB_VERSION)
