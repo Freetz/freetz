@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 7.61.0)
+$(call PKG_INIT_BIN, 7.61.1)
 $(PKG)_LIB_VERSION:=4.5.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=ef6e55192d04713673b4409ccbcb4cb6cd723137d6e10ca45b0c593a454e1720
+$(PKG)_SOURCE_SHA256:=3d5913d6a39bd22e68e34dff697fd6e4c3c81563f580c76fca2009315cd81891
 $(PKG)_SITE:=http://curl.haxx.se/download
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src$(if $(FREETZ_PACKAGE_CURL_STATIC),,/.libs)/curl
