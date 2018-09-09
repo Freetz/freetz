@@ -1,0 +1,27 @@
+From 2005d3ff3661220f11e8ff1911b24051b3669566 Mon Sep 17 00:00:00 2001
+From: Denys Vlasenko <vda.linux@googlemail.com>
+Date: Sat, 4 Aug 2018 21:06:02 +0200
+Subject: tar: fix a thinko in prev commit - we need to copy to _unused_ fd
+
+function                                             old     new   delta
+vfork_compressor                                     257     246     -11
+
+Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
+---
+ archival/tar.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git archival/tar.c archival/tar.c
+index 120c77f..1c71f7f 100644
+--- archival/tar.c
++++ archival/tar.c
+@@ -652,8 +652,7 @@ static void NOINLINE vfork_compressor(int tar_fd, const char *gzip)
+ 			 * Swapping move_fd's order wouldn't work:
+ 			 * gzipDataPipe.rd is 1 and _it_ would be destroyed.
+ 			 */
+-			xmove_fd(tfd, 3);
+-			tfd = 3;
++			tfd = dup(tfd);
+ 		}
+ 		xmove_fd(gzipDataPipe.rd, 0);
+ 		xmove_fd(tfd, 1);
