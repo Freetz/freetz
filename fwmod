@@ -1770,9 +1770,6 @@ if [ "$DO_PACK" -gt 0 ]; then
 
 	# Pack firmware image
 
-	# TODO: as of now busybox tar couldn't be used here as it seems to behave buggy while creating small tarballs (needed in sign-firmare-step):
-	# it doesn't flush the buffers properly resulting in missing blocks or even a signature containing only zeros
-
 	# use GNU tar with --format=gnu for compatibility
 	TAR_FOR_IMAGE_TARBALL="$TAR_GNU"
 	TAR_FOR_IMAGE_TARBALL_FORMAT_OPT="--format=gnu"
