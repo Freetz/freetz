@@ -1,0 +1,16 @@
+Avoid using dd with input coming from (buffered) pipes as they may return short reads.
+
+The 'GNU dd'-way to solve the problem is to use the iflag=fullblock option (s. https://www.gnu.org/software/coreutils/manual/html_node/dd-invocation.html).
+
+busybox dd unfortunately doesn't support this option, that's the reason we use the simple 'head -c' instead.
+--- signimage/sign_image
++++ signimage/sign_image
+@@ -421,7 +421,7 @@
+ 	format="--format=gnu"
+ 	owner="--owner=0 --group=0"
+ }
+-"$YF_SIGNIMAGE_TAR" $format $owner -C "$tmp" -O -c ./var/signature | "$YF_SIGNIMAGE_DD" bs=512 count=4 status=none 2>/dev/null
++"$YF_SIGNIMAGE_TAR" $format $owner -C "$tmp" -O -c ./var/signature | head -c $((4*512)) 2>/dev/null
+ show_ok
+ ####################################################################################
+ #                                                                                  #
