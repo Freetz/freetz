@@ -14,7 +14,8 @@ config FREETZ_AVM_HAS_FIRMWARE_04_XX
 		! FREETZ_AVM_HAS_FIRMWARE_06_2X && \
 		! FREETZ_AVM_HAS_FIRMWARE_06_5X && \
 		! FREETZ_AVM_HAS_FIRMWARE_06_8X && \
-		! FREETZ_AVM_HAS_FIRMWARE_06_9X
+		! FREETZ_AVM_HAS_FIRMWARE_06_9X && \
+		! FREETZ_AVM_HAS_FIRMWARE_07_0X
 	default n
 	help
 		Select this if a 04.xx-firmware is available for your box.
@@ -122,7 +123,6 @@ config FREETZ_AVM_HAS_FIRMWARE_06_5X
 			FREETZ_TYPE_3370 || \
 			FREETZ_TYPE_3390 || \
 			FREETZ_TYPE_3490 || \
-			FREETZ_TYPE_4020 || \
 			FREETZ_TYPE_6840 || \
 			FREETZ_TYPE_7272 || \
 			FREETZ_TYPE_7312 || \
@@ -143,8 +143,6 @@ config FREETZ_AVM_HAS_FIRMWARE_06_5X
 			FREETZ_TYPE_3370 || \
 			FREETZ_TYPE_3390 || \
 			FREETZ_TYPE_3490 || \
-			FREETZ_TYPE_4020 || \
-			FREETZ_TYPE_6820 || \
 			FREETZ_TYPE_6840 || \
 			FREETZ_TYPE_7272 || \
 			FREETZ_TYPE_7360_V2 || \
@@ -164,6 +162,7 @@ config FREETZ_AVM_HAS_FIRMWARE_06_8X
 			FREETZ_TYPE_3490 || \
 			FREETZ_TYPE_4020 || \
 			FREETZ_TYPE_6840 || \
+			FREETZ_TYPE_6890 || \
 			FREETZ_TYPE_7272 || \
 			FREETZ_TYPE_7360_V2 || \
 			FREETZ_TYPE_7362 || \
@@ -182,12 +181,14 @@ config FREETZ_AVM_HAS_FIRMWARE_06_8X
 			FREETZ_TYPE_4020 || \
 			FREETZ_TYPE_6820 || \
 			FREETZ_TYPE_6840 || \
+			FREETZ_TYPE_6890 || \
 			FREETZ_TYPE_7272 || \
 			FREETZ_TYPE_7360_V2 || \
 			FREETZ_TYPE_7390 || \
 			FREETZ_TYPE_7430 || \
 			FREETZ_TYPE_7490 || \
-			FREETZ_TYPE_7560 \
+			FREETZ_TYPE_7560 || \
+			FREETZ_TYPE_7590 \
 		))
 	default n
 	help
@@ -206,12 +207,32 @@ config FREETZ_AVM_HAS_FIRMWARE_06_9X
 	help
 		Select this if a Fritz!OS-06.9x based firmware is available for your box.
 
+config FREETZ_AVM_HAS_FIRMWARE_07_0X
+	bool "07.0x-firmware available" if FREETZ_TYPE_CUSTOM
+	default y		if \
+		( FREETZ_TYPE_LANG_DE && ( \
+			FREETZ_TYPE_7362 || \
+			FREETZ_TYPE_7490 || \
+			FREETZ_TYPE_7560 || \
+			FREETZ_TYPE_7580 || \
+			FREETZ_TYPE_7590 \
+		)) \
+		|| \
+		( FREETZ_TYPE_LANG_EN && ( \
+			FREETZ_TYPE_7560 || \
+			FREETZ_TYPE_7590 \
+		))
+	default n
+	help
+		Select this if a Fritz!OS-07.0x based firmware is available for your box.
+
+
 config FREETZ_AVM_HAS_FIRMWARE_LABOR_BETA
 	bool "Labor firmware from Beta branch available" if FREETZ_TYPE_CUSTOM
-	depends on FREETZ_REAL_DEVELOPER_ONLY
 	default y		if \
 		FREETZ_TYPE_LANG_DE && ( \
-			FREETZ_TYPE_7490 \
+			FREETZ_TYPE_6890 || \
+			FREETZ_TYPE_7430 \
 		)
 	default n
 	help
@@ -267,6 +288,7 @@ config FREETZ_AVM_HAS_LANG_EN
 		FREETZ_TYPE_6810 || \
 		FREETZ_TYPE_6820 || \
 		FREETZ_TYPE_6840 || \
+		FREETZ_TYPE_6890 || \
 		FREETZ_TYPE_7113 || \
 		FREETZ_TYPE_7140 || \
 		FREETZ_TYPE_7170 || \
@@ -282,7 +304,8 @@ config FREETZ_AVM_HAS_LANG_EN
 		FREETZ_TYPE_7430 || \
 		FREETZ_TYPE_7490 || \
 		FREETZ_TYPE_7560 || \
-		FREETZ_TYPE_7570
+		FREETZ_TYPE_7570 || \
+		FREETZ_TYPE_7590
 	default n
 	help
 		Select this if an English language firmware or firmware containing

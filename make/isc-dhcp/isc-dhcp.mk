@@ -1,4 +1,3 @@
-
 $(call PKG_INIT_BIN, 4.3.6-P1)
 $(PKG)_SOURCE:=dhcp-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_SHA256:=2fd177bef02856f05fe17713ced9bfcc7d94f14c933c15f2f2fbedc9cc57a3c3
@@ -9,7 +8,6 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/isc-dhcpd
 
 $(PKG)_DEPENDS_ON += bind
 
-$(PKG)_CONFIGURE_PRE_CMDS += $(AUTORECONF)
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_ADD_EXTRA_FLAGS,(C|LD)FLAGS)
 
@@ -19,11 +17,10 @@ $(PKG)_MAKE_OPTIONS += EXTRA_CFLAGS="-ffunction-sections -fdata-sections"
 $(PKG)_MAKE_OPTIONS += EXTRA_LDFLAGS="-Wl,--gc-sections"
 
 $(PKG)_CONFIGURE_ENV += ac_cv_file__dev_random=yes
-$(PKG)_CONFIGURE_OPTIONS += \
-	--with-randomdev="/dev/random" \
-	--with-libbind="$(BIND_EXPORT_LIB_DIR)/usr" \
-	--enable-paranoia \
-	--enable-early-chroot
+$(PKG)_CONFIGURE_OPTIONS += --with-randomdev="/dev/random"
+$(PKG)_CONFIGURE_OPTIONS += --with-libbind="$(BIND_EXPORT_LIB_DIR)/usr"
+$(PKG)_CONFIGURE_OPTIONS += --enable-paranoia
+$(PKG)_CONFIGURE_OPTIONS += --enable-early-chroot
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

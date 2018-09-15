@@ -1,0 +1,20 @@
+--- libc/sysdeps/linux/common/ssp.c
++++ libc/sysdeps/linux/common/ssp.c
+@@ -90,7 +90,7 @@
+ 	if (sigaction(SSP_SIGTYPE, &sa, NULL) == 0)
+ 		(void)kill(pid, SSP_SIGTYPE);
+ #endif
+-	(void)kill(pid, SIGKILL);
++	(void)kill(pid, SIGABRT);
+ 	/* The loop is added only to keep gcc happy. */
+ 	while(1)
+ 		_exit(127);
+@@ -123,7 +123,7 @@
+ 	do_msg(msg_fail, __uclibc_progname, msg_terminated);
+ 
+ 	pid = getpid();
+-	(void)kill(pid, SIGKILL);
++	(void)kill(pid, SIGABRT);
+ 	/* The loop is added only to keep gcc happy. */
+ 	while(1)
+ 		_exit(127);

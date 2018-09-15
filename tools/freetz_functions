@@ -474,7 +474,7 @@ collect_pkg_files()
 
 		(
 			cd "${PACKAGES_DIR}/${pkg_dir}/root/"
-			find . -type f -print0 | tar -cv --null -T - $(find "../" -maxdepth 1 -type f -name ".exclude*" -printf '--exclude-from=%p ') -f /dev/null
+			find . -type f -print0 | "$TAR_GNU" -cv $(find "../" -maxdepth 1 -type f -name ".exclude*" -printf '--exclude-from=%p ') --null -T - -f /dev/null
 		)
 	done | sed -r -e 's,^[.],,' -e 's,^([^/]),/\1,'
 }
@@ -495,7 +495,13 @@ invoke_fwmod_custom()
 			error 1 "syntax error in fwmod_custom script"
 		fi
 
-		( cd "$MOD_DIR" && ../../fwmod_custom "$@" ) || exit 1
+		(
+		  cd "$MOD_DIR" && \
+		  TOOLS_DIR=../../tools \
+		  FILESYSTEM_MOD_DIR=./filesystem \
+		  PATCHES_COND_DIR=../../patches/cond \
+		  ../../fwmod_custom "$@"
+		) || exit 1
 
 		if [ $? -ne 0 ]; then
 			error 1 "fwmod_custom script returned error"
@@ -664,4 +670,16 @@ function is_valid_tarball() {
 
 	# integrity check by decompressing to stdout
 #	[ -s "$1" ] && "$TAR" -xf "$1" -O >/dev/null 2>&1
+}
+
+#
+# get supported brandings by listing directories under /etc/default.${CONFIG_PRODUKT}
+#
+# shamelessly stolen from modfs project
+#
+function supported_brandings() {
+	local etc_default_PRODUKT_path brandings
+	etc_default_PRODUKT_path=$(find "${FILESYSTEM_MOD_DIR}/etc" -type d -name "default.*" | sed -e "\|${FILESYSTEM_MOD_DIR}/etc/default.[0-9]*$|d")
+	brandings=$(find "${etc_default_PRODUKT_path}" -maxdepth 1 -type d | sed -n -e "s|${etc_default_PRODUKT_path}[/]*||p" | sed -e "/^$/d" | sort -u)
+	echo $brandings
 }

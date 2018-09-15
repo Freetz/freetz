@@ -1,8 +1,8 @@
-$(call PKG_INIT_BIN,$(if $(FREETZ_OPENSSL_VERSION_0),0.9.8zh,1.0.2n))
+$(call PKG_INIT_BIN,$(if $(FREETZ_OPENSSL_VERSION_0),0.9.8zh,1.0.2p))
 $(PKG)_LIB_VERSION:=$(call qstrip,$(FREETZ_OPENSSL_SHLIB_VERSION))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_SHA256_0.9.8zh := f1d9f3ed1b85a82ecf80d0e2d389e1fda3fca9a4dba0bf07adbf231e1a5e2fd6
-$(PKG)_SOURCE_SHA256_1.0.2n  := 370babb75f278c39e0c50e8c4e7493bc0f18db6867478341a832a982fd15a8fe
+$(PKG)_SOURCE_SHA256_1.0.2p  := 50a98e07b1a89eb8f6a99477f262df71c6fa7bef77df4dc83025a2845c827d00
 $(PKG)_SOURCE_SHA256         := $($(PKG)_SOURCE_SHA256_$($(PKG)_VERSION))
 $(PKG)_SITE:=http://www.openssl.org/source
 $(PKG)_CONDITIONAL_PATCHES+=$($(PKG)_VERSION)
@@ -44,7 +44,7 @@ $(PKG)_OPTIONS    += $(if $(FREETZ_OPENSSL_VERSION_1),no-ec_nistp_64_gcc_128 no-
 $(PKG)_OPTIONS    += $(if $(FREETZ_PACKAGE_OPENSSL_TRACE),enable-ssl-trace)
 
 $(PKG)_CONFIGURE_DEFOPTS := n
-$(PKG)_CONFIGURE_OPTIONS += linux-freetz-$(if $(FREETZ_TARGET_ARCH_BE),be,le)$(if $(FREETZ_OPENSSL_VERSION_0),,-asm)
+$(PKG)_CONFIGURE_OPTIONS += linux-freetz-$(FREETZ_TARGET_ARCH_ENDIANNESS_DEPENDENT)$(if $(FREETZ_OPENSSL_VERSION_0),,-asm)
 $(PKG)_CONFIGURE_OPTIONS += --prefix=/usr
 $(PKG)_CONFIGURE_OPTIONS += --openssldir=$(FREETZ_OPENSSL_CONFIG_DIR)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_OPENSSL_SMALL_FOOTPRINT),-DOPENSSL_SMALL_FOOTPRINT)
@@ -73,9 +73,8 @@ $($(PKG)_BINARY_BUILD_DIR) $($(PKG)_LIBS_BUILD_DIR): $($(PKG)_DIR)/.configured
 #	Remove installed libs also from freetz' packages dir to ensure
 #	that it doesn't contain files from previous builds (0.9.8 to/from 1.0.x switch).
 	$(MAKE) openssl-clean-staging openssl-uninstall
-	for target in depend all; do \
-		$(SUBMAKE1) $(OPENSSL_MAKE_FLAGS) $$target; \
-	done
+	$(SUBMAKE1) $(OPENSSL_MAKE_FLAGS) depend
+	$(SUBMAKE) $(OPENSSL_MAKE_FLAGS) all
 
 $($(PKG)_LIBS_STAGING_DIR): $($(PKG)_LIBS_BUILD_DIR)
 	$(SUBMAKE) $(OPENSSL_MAKE_FLAGS) install

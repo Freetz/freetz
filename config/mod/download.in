@@ -111,6 +111,7 @@ menu "Override options"
 		# not a final version -> use some version specific suffix
 		#
 		#default "XXXX_XX.XX_SUFFIX"               if FREETZ_AVM_SOURCE_XXXX_XX_XX
+		default "7490_06.98.55294"                 if FREETZ_AVM_SOURCE_7490_06_98
 		#
 		default FREETZ_AVM_SOURCE_ID
 
@@ -144,10 +145,12 @@ menu "Override options"
 		default "e4ed72a1182e7160de95579334685b0b"  if FREETZ_AVM_SOURCE_7490_06_51 || FREETZ_AVM_SOURCE_3390_06_51
 		default "9f3b5210c4709fd0c0ed669783f60cfa"  if FREETZ_AVM_SOURCE_7490_06_60
 		default "d2bc6b4ea5f067e232fc5b9c04ff0ff4"  if FREETZ_AVM_SOURCE_7490_06_83
-		default "4032003c1a20472e0a8b0824e5decf4c"  if FREETZ_AVM_SOURCE_7490_06_92
+		default "fa236f0b43aa2a7b903173bc0e726848"  if FREETZ_AVM_SOURCE_7490_06_93
+		default "ee728571848bda02c91085a958755f0f"  if FREETZ_AVM_SOURCE_7490_06_98
 		default "35ed17f95d709de7a2509f56976b47e5"  if FREETZ_AVM_SOURCE_7580_06_53
 		default "350317ac647aae7ad39645353581aff2"  if FREETZ_AVM_SOURCE_7580_06_81
 		default "2eb692782a5dd61fad672b87891d36bf"  if FREETZ_AVM_SOURCE_7590_06_92
+		default "a921791331c4baf5a24fb0b54e89d9ac"  if FREETZ_AVM_SOURCE_7590_07_00
 		default "eb82c0948e81288253f63f63915489a2"  if FREETZ_AVM_SOURCE_r7203
 
 	config FREETZ_DL_SITE
@@ -203,7 +206,6 @@ menu "Override options"
 		default "@AVM/{fritzbox-3490/{other,belgium}/fritz.os,fritzbox.3490/firmware/{english,belgium}}"                   if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_3490 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_5X
 		default "@AVM/{fritzbox-3490/{other,belgium}/fritz.os,fritzbox.3490/firmware/{english,belgium}}"                   if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_3490 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_8X
 		#
-		default "@AVM/{fritzbox-4020/{other,deutschland}/fritz.os,fritzbox.4020/firmware/deutsch}"                         if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_4020 && FREETZ_TYPE_FIRMWARE_06_5X
 		default "@AVM/{fritzbox-4020/{other,deutschland}/fritz.os,fritzbox.4020/firmware/deutsch}"                         if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_4020 && FREETZ_TYPE_FIRMWARE_06_8X
 		#
 		default "@AVM/fritzbox.fon_5010/firmware/deutsch_a-ch"                                                             if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_5010
@@ -218,7 +220,6 @@ menu "Override options"
 		default "@AVM/{fritzbox-6810-lte/deutschland/fritz.os,fritzbox_6810_lte/firmware/deutsch}"                         if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_6810 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_2X
 		default "@AVM/{fritzbox-6810-lte/other/fritz.os,fritzbox_6810_lte/firmware/english}"                               if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_6810 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_2X
 		#
-		default "@AVM/{fritzbox-6820-lte/{other,deutschland}/fritz.os,fritzbox_6820_lte/firmware/english}"                 if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_6820 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_5X
 		default "@AVM/{fritzbox-6820-lte/{other,deutschland}/fritz.os,fritzbox_6820_lte/firmware/english}"                 if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_6820 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_8X
 		#
 		default "@AVM/{fritzbox-6840-lte/deutschland/fritz.os,fritzbox_6840_lte/firmware/deutsch},@1&1/6840"               if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_6840 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_2X
@@ -229,6 +230,9 @@ menu "Override options"
 		default "@AVM/{fritzbox-6840-lte/other/fritz.os,fritzbox_6840_lte/firmware/english}"                               if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_6840 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_8X
 		#
 		default "@AVM/{fritzbox-6842-lte/deutschland/fritz.os,fritzbox_6842_lte/firmware/deutsch}"                         if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_6842 && FREETZ_TYPE_FIRMWARE_06_2X
+		#
+		default "@AVM/fritzbox-6890-lte/{other,deutschland}/fritz.os"                                                      if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_6890 && FREETZ_TYPE_FIRMWARE_06_8X
+		default "@AVM/fileadmin/user_upload/DE/Labor/Download,@AVM/beta,@AVM/beta/frisch-aus-der-entwicklung"              if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_6890
 		#
 		default "@AVM/fritzbox.fon_wlan_7050/firmware"                                                                     if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7050
 		#
@@ -306,6 +310,8 @@ menu "Override options"
 		default "@AVM/{fritzbox-7362-sl/deutschland/fritz.os,fritzbox.7362_sl/firmware/deutsch},@1&1/7362SL"               if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7362 && FREETZ_TYPE_FIRMWARE_06_2X
 		default "@AVM/{fritzbox-7362-sl/deutschland/fritz.os,fritzbox.7362_sl/firmware/deutsch},@1&1/7362SL"               if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7362 && FREETZ_TYPE_FIRMWARE_06_5X
 		default "@AVM/{fritzbox-7362-sl/deutschland/fritz.os,fritzbox.7362_sl/firmware/deutsch},@1&1/7362SL"               if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7362 && FREETZ_TYPE_FIRMWARE_06_8X
+		default "@AVM/{fritzbox-7362-sl/deutschland/fritz.os,fritzbox.7362_sl/firmware/deutsch},@1&1/7362SL"               if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7362 && FREETZ_TYPE_FIRMWARE_07_0X
+#		default "@AVM/fileadmin/user_upload/DE/Labor/Download,@AVM/beta,@AVM/beta/frisch-aus-der-entwicklung"              if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_7362
 		#
 		default "@AVM/{fritzbox-7369/other/fritz.os,fritzbox.7369/firmware/english}"                                       if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7369 && FREETZ_TYPE_FIRMWARE_06_2X
 		#
@@ -331,32 +337,40 @@ menu "Override options"
 		default "@AVM/{fritzbox-7430/other/fritz.os,fritzbox.7430/firmware/english}"                                       if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7430 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_2X
 		default "@AVM/{fritzbox-7430/other/fritz.os,fritzbox.7430/firmware/english}"                                       if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7430 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_5X
 		default "@AVM/{fritzbox-7430/other/fritz.os,fritzbox.7430/firmware/english}"                                       if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7430 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_8X
+		default "@AVM/fileadmin/user_upload/DE/Labor/Download,@AVM/beta,@AVM/beta/frisch-aus-der-entwicklung"              if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_7430
 		#
 		default "@AVM/{fritzbox-7490/deutschland/fritz.os,fritzbox.7490/firmware/deutsch},@1&1/7490"                       if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_2X
 		default "@AVM/{fritzbox-7490/deutschland/fritz.os,fritzbox.7490/firmware/deutsch},@1&1/7490"                       if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_5X
 		default "@AVM/{fritzbox-7490/deutschland/fritz.os,fritzbox.7490/firmware/deutsch},@1&1/7490"                       if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_8X
 		default "@AVM/{fritzbox-7490/deutschland/fritz.os,fritzbox.7490/firmware/deutsch},@1&1/7490"                       if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_9X
+		default "@AVM/{fritzbox-7490/deutschland/fritz.os,fritzbox.7490/firmware/deutsch},@1&1/7490"                       if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_07_0X
 		default "@AVM/{fritzbox-7490/{other,belgium}/fritz.os,fritzbox.7490/firmware/{english,belgium}}"                   if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_2X
 		default "@AVM/{fritzbox-7490/{other,belgium}/fritz.os,fritzbox.7490/firmware/{english,belgium}}"                   if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_5X
 		default "@AVM/{fritzbox-7490/{other,belgium}/fritz.os,fritzbox.7490/firmware/{english,belgium}}"                   if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_8X
-		default "@AVM/fileadmin/user_upload/DE/Labor/Download,@AVM/beta,@AVM/beta/fritzbox_7490/deutsch"                   if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_7490
+#		default "@AVM/fileadmin/user_upload/DE/Labor/Download,@AVM/beta,@AVM/beta/frisch-aus-der-entwicklung"              if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_7490
 		#
 		default "@AVM/{fritzbox-7560/deutschland/fritz.os,fritzbox.7560/firmware/deutsch},@1&1/7560"                       if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7560 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_5X
 		default "@AVM/{fritzbox-7560/deutschland/fritz.os,fritzbox.7560/firmware/deutsch},@1&1/7560"                       if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7560 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_8X
 		default "@AVM/{fritzbox-7560/deutschland/fritz.os,fritzbox.7560/firmware/deutsch},@1&1/7560"                       if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7560 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_9X
+		default "@AVM/{fritzbox-7560/deutschland/fritz.os,fritzbox.7560/firmware/deutsch},@1&1/7560"                       if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7560 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_07_0X
 		default "@AVM/{fritzbox-7560/other/fritz.os,fritzbox.7560/firmware/english}"                                       if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7560 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_8X
-#		default "@AVM/fileadmin/user_upload/DE/Labor/Download,@AVM/beta,@AVM/beta/fritzbox_7560/deutsch"                   if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_7560
+		default "@AVM/{fritzbox-7560/other/fritz.os,fritzbox.7560/firmware/english}"                                       if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7560 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_07_0X
+#		default "@AVM/fileadmin/user_upload/DE/Labor/Download,@AVM/beta,@AVM/beta/frisch-aus-der-entwicklung"              if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_7560
 		#
 		default "@AVM/fritzbox.fon_wlan_7570/firmware/english"                                                             if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7570 && ! FREETZ_TYPE_7570_7270
 		#
 		default "@AVM/{fritzbox-7580/deutschland/fritz.os,fritzbox.7580/firmware/deutsch},@1&1/7580"                       if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7580 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_5X
 		default "@AVM/{fritzbox-7580/deutschland/fritz.os,fritzbox.7580/firmware/deutsch},@1&1/7580"                       if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7580 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_8X
 		default "@AVM/{fritzbox-7580/deutschland/fritz.os,fritzbox.7580/firmware/deutsch},@1&1/7580"                       if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7580 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_9X
-#		default "@AVM/fileadmin/user_upload/DE/Labor/Download,@AVM/beta,@AVM/beta/fritzbox_7580/deutsch"                   if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_7580
+		default "@AVM/{fritzbox-7580/deutschland/fritz.os,fritzbox.7580/firmware/deutsch},@1&1/7580"                       if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7580 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_07_0X
+#		default "@AVM/fileadmin/user_upload/DE/Labor/Download,@AVM/beta,@AVM/beta/frisch-aus-der-entwicklung"              if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_7580
 		#
 		default "@AVM/{fritzbox-7590/deutschland/fritz.os,fritzbox.7590/firmware/deutsch},@1&1/7590"                       if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7590 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_8X
 		default "@AVM/{fritzbox-7590/deutschland/fritz.os,fritzbox.7590/firmware/deutsch},@1&1/7590"                       if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7590 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_9X
-#		default "@AVM/fileadmin/user_upload/DE/Labor/Download,@AVM/beta,@AVM/beta/fritzbox_7590/deutsch"                   if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_7590
+		default "@AVM/{fritzbox-7590/deutschland/fritz.os,fritzbox.7590/firmware/deutsch},@1&1/7590"                       if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7590 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_07_0X
+		default "@AVM/fritzbox-7590/{other,italy}/fritz.os"                                                                if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7590 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_8X
+		default "@AVM/fritzbox-7590/{other,italy}/fritz.os"                                                                if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7590 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_07_0X
+#		default "@AVM/fileadmin/user_upload/DE/Labor/Download,@AVM/beta,@AVM/beta/frisch-aus-der-entwicklung"              if FREETZ_TYPE_FIRMWARE_LABOR && FREETZ_TYPE_7590
 		#
 		default "@TELEKOM/Speedport/Speedport_W501V"                                                                       if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_W501V
 		#
@@ -415,7 +429,6 @@ menu "Override options"
 		default "FRITZ.Box_3490.en-de-es-it-fr-pl.140.06.52.image"              if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_3490 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_5X
 		default "FRITZ.Box_3490.en-de-es-it-fr-pl.140.06.83.image"              if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_3490 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_8X
 		#
-		default "FRITZ.Box_4020.de-en-es-it-fr-pl.147.06.50.image"              if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_4020 && FREETZ_TYPE_FIRMWARE_06_5X
 		default "FRITZ.Box_4020.de-en-es-it-fr-pl.147.06.83.image"              if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_4020 && FREETZ_TYPE_FIRMWARE_06_8X
 		#
 		default "fritz.box_fon_5010.annexa.48.04.43.image"                      if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_5010
@@ -430,7 +443,6 @@ menu "Override options"
 		default "FRITZ.Box_6810_LTE.108.06.34.image"                            if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_6810 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_2X
 		default "FRITZ.Box_6810_LTE.en-de-es-it-fr.108.06.34.image"             if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_6810 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_2X
 		#
-		default "FRITZ.Box_6820_LTE.142.06.51.image"                            if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_6820 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_5X
 		default "FRITZ.Box_6820_LTE.en-de-es-it-fr-pl.142.06.83.image"          if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_6820 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_8X
 		#
 		default "FRITZ.Box_6840_LTE.105.06.30.image"                            if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_6840 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_2X
@@ -441,6 +453,9 @@ menu "Override options"
 		default "FRITZ.Box_6840_LTE.en-de-es-it-fr-pl.105.06.84.image"          if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_6840 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_8X
 		#
 		default "FRITZ.Box_6842_LTE.123.06.34.image"                            if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_6842 && FREETZ_TYPE_FIRMWARE_06_2X
+		#
+		default "FRITZ.Box_6890_LTE.en-de-es-it-fr-pl-nl.162.06.87.image"       if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_6890 && FREETZ_TYPE_FIRMWARE_06_8X
+		default "FRITZ.Box_6890_LTE_LabBETA.162.06.98-60750.image"              if FREETZ_TYPE_FIRMWARE_LABOR_BETA && FREETZ_TYPE_6890
 		#
 		default "fritz.box_fon_wlan_7050.14.04.33.image"                        if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7050
 		#
@@ -518,6 +533,7 @@ menu "Override options"
 		default "FRITZ.Box_7362_SL.131.06.30.image"                             if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7362 && FREETZ_TYPE_FIRMWARE_06_2X
 		default "FRITZ.Box_7362_SL.131.06.50.image"                             if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7362 && FREETZ_TYPE_FIRMWARE_06_5X
 		default "FRITZ.Box_7362_SL.131.06.83.image"                             if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7362 && FREETZ_TYPE_FIRMWARE_06_8X
+		default "FRITZ.Box_7362_SL.131.07.00.image"                             if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7362 && FREETZ_TYPE_FIRMWARE_07_0X
 		#
 		default "FRITZ.Box_7369.en-de-es-it-fr-pl.119.06.32.image"              if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7369 && FREETZ_TYPE_FIRMWARE_06_2X
 		#
@@ -542,29 +558,36 @@ menu "Override options"
 		default "FRITZ.Box_7430.en-de-es-it-fr-pl.146.06.30.image"              if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7430 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_2X
 		default "FRITZ.Box_7430.en-de-es-it-fr-pl.146.06.52.image"              if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7430 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_5X
 		default "FRITZ.Box_7430.en-de-es-it-fr-pl.146.06.83.image"              if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7430 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_8X
+		default "FRITZ.Box_7430_Labor.146.06.98-60986.image"                    if FREETZ_TYPE_FIRMWARE_LABOR_BETA && FREETZ_TYPE_7430
 		#
 		default "FRITZ.Box_7490.113.06.30.image"                                if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_2X
 		default "FRITZ.Box_7490.113.06.60.image"                                if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_5X
 		default "FRITZ.Box_7490.113.06.83.image"                                if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_8X
 		default "FRITZ.Box_7490.113.06.93.image"                                if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_9X
+		default "FRITZ.Box_7490.113.07.01.image"                                if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_07_0X
 		default "FRITZ.Box_7490.en-de-es-it-fr-pl.113.06.31.image"              if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_2X
-		default "FRITZ.Box_7490.en-de-es-it-fr-pl.113.06.52.image"              if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_5X
-		default "FRITZ.Box_7490.en-de-es-it-fr-pl.113.06.83.image"              if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_8X
-		default "FRITZ.Box_7490_Labor.113.06.98-52558.image"                    if FREETZ_TYPE_FIRMWARE_LABOR_BETA && FREETZ_TYPE_7490
+		default "FRITZ.Box_7490.en-de-es-it-fr-pl.113.06.53.image"              if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_5X
+		default "FRITZ.Box_7490.en-de-es-it-fr-pl.113.06.84.image"              if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_8X
 		#
 		default "FRITZ.Box_7560.149.06.53.image"                                if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7560 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_5X
 		default "FRITZ.Box_7560.149.06.83.image"                                if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7560 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_8X
 		default "FRITZ.Box_7560.149.06.92.image"                                if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7560 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_9X
+		default "FRITZ.Box_7560.149.07.00.image"                                if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7560 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_07_0X
 		default "FRITZ.Box_7560.en-de-es-it-fr-pl.149.06.83.image"              if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7560 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_8X
+		default "FRITZ.Box_7560.en-de-es-it-fr-pl.149.07.00.image"              if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7560 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_07_0X
 		#
 		default "FRITZ.Box_Fon_WLAN_7570_vDSL.en-de-fr.75.04.92.image"          if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7570 && ! FREETZ_TYPE_7570_7270
 		#
 		default "FRITZ.Box_7580.153.06.54.image"                                if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7580 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_5X
 		default "FRITZ.Box_7580.153.06.83.image"                                if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7580 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_8X
 		default "FRITZ.Box_7580.153.06.92.image"                                if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7580 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_9X
+		default "FRITZ.Box_7580.153.07.00.image"                                if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7580 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_07_0X
 		#
 		default "FRITZ.Box_7590.154.06.86.image"                                if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7590 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_8X
 		default "FRITZ.Box_7590.154.06.92.image"                                if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7590 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_9X
+		default "FRITZ.Box_7590.154.07.00.image"                                if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7590 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_07_0X
+		default "FRITZ.Box_7590.en-de-es-it-fr-pl-nl.154.06.84.image"           if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7590 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_8X
+		default "FRITZ.Box_7590.en-de-es-it-fr-pl-nl.154.07.00.image"           if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_7590 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_07_0X
 		#
 		default "fw_Speedport_W501V_v_28.04.38.image"                           if FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_TYPE_W501V
 		#
@@ -624,7 +647,6 @@ menu "Override options"
 		default "8ccd651b3b3eea73cb20ab90c33a57aa"  if FREETZ_TYPE_3490 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_5X
 		default "9195a0acd6833d412f27cef80a449de0"  if FREETZ_TYPE_3490 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_8X
 		#
-		default "4064dcc6cb4b7acefa5b54ff674d4378"  if FREETZ_TYPE_4020 && FREETZ_TYPE_FIRMWARE_06_5X
 		default "a107c164581c60a87659bcfeba3a238b"  if FREETZ_TYPE_4020 && FREETZ_TYPE_FIRMWARE_06_8X
 		#
 		default "cdea5c36f629ce85e1a1613342cfc9f3"  if FREETZ_TYPE_5010
@@ -639,7 +661,6 @@ menu "Override options"
 		default "47bde7aa914902a7c44e6e0c5cfa20f6"  if FREETZ_TYPE_6810 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_2X
 		default "04056393db95553da35667c44c3459c9"  if FREETZ_TYPE_6810 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_2X
 		#
-		default "e935bccb4b08a8cf9eab6d781a5c7a14"  if FREETZ_TYPE_6820 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_5X
 		default "adcd71ac96571fd6c3da13d51b6cce04"  if FREETZ_TYPE_6820 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_8X
 		#
 		default "b31e5b26e301eecfe304734f2957e0bc"  if FREETZ_TYPE_6840 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_2X
@@ -650,6 +671,8 @@ menu "Override options"
 		default "df2d688b9bd4d45687dca9ba339dcfa1"  if FREETZ_TYPE_6840 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_8X
 		#
 		default "0c5d7db6a77046aa14afa2a13d36dab6"  if FREETZ_TYPE_6842 && FREETZ_TYPE_FIRMWARE_06_2X
+		#
+		default "c6bd9e8b3f301efa6a46c391340eace5"  if FREETZ_TYPE_6890 && FREETZ_TYPE_FIRMWARE_06_8X
 		#
 		default "7fabbf13889cf66b6f2dd47fe472a265"  if FREETZ_TYPE_7050
 		#
@@ -727,6 +750,7 @@ menu "Override options"
 		default "47ac06be22ff7bb2a51a748a702fbac6"  if FREETZ_TYPE_7362 && FREETZ_TYPE_FIRMWARE_06_2X
 		default "2c6b9d008ce12d982e9345e27be2b466"  if FREETZ_TYPE_7362 && FREETZ_TYPE_FIRMWARE_06_5X
 		default "8881c89ff3b6a9576293b9365688e63b"  if FREETZ_TYPE_7362 && FREETZ_TYPE_FIRMWARE_06_8X
+		default "1590f66a58a4dbeb9f0091a8582ac0c7"  if FREETZ_TYPE_7362 && FREETZ_TYPE_FIRMWARE_07_0X
 		#
 		default "71b4e72441faf20f20c83e8aa8ac7f24"  if FREETZ_TYPE_7369 && FREETZ_TYPE_FIRMWARE_06_2X
 		#
@@ -756,36 +780,45 @@ menu "Override options"
 		default "eaac80c4ae5fc3286f8333b1b987d512"  if FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_5X
 		default "6efb65fd3863236c853fc19b4ff6b5b5"  if FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_8X
 		default "aedd9ff86fc23f74d9e8d46b3dbe4df9"  if FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_9X
+		default "7136da252e6811b5623085aa877747db"  if FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_07_0X
 		default "f7cf6f0bf972e7026133d088dad4d86b"  if FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_2X
-		default "8a124bfb5958d8381951c5108fb22666"  if FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_5X
-		default "dbc07e6a125cd87b737fa275e7e12de7"  if FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_8X
+		default "2f05f8a6f4ee3d676068228315c4477a"  if FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_5X
+		default "3245344121f23077764e51099fd7111b"  if FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_8X
 		#
 		default "d971ac5a27864b3284ddbd38d4efbaef"  if FREETZ_TYPE_7560 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_5X
 		default "f1698e218e20cce40d109ef1937592ce"  if FREETZ_TYPE_7560 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_8X
 		default "5ac882d07533215fe1ee8c776ac368d7"  if FREETZ_TYPE_7560 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_9X
+		default "e73602cdcf0166ce8581ead135e6df4b"  if FREETZ_TYPE_7560 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_07_0X
 		default "811cfc851205aeb3a8cdda737f4fe666"  if FREETZ_TYPE_7560 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_8X
+		default "82b671a55d1440c802ea2348dd462996"  if FREETZ_TYPE_7560 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_07_0X
 		#
 		default "e25a82bc1d3fe2750a37a3fcdb1c254e"  if FREETZ_TYPE_7570 && ! FREETZ_TYPE_7570_7270
 		#
 		default "f9c0f0284f0b8c1024e43d2f1c1ee1a2"  if FREETZ_TYPE_7580 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_5X
 		default "4301434de4fc74fd6485e936ce4b9c1c"  if FREETZ_TYPE_7580 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_8X
 		default "3737b57f0efc04ac5607c8a45593bbe8"  if FREETZ_TYPE_7580 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_9X
+		default "222099705f0c9c6a03e7b251d73badcc"  if FREETZ_TYPE_7580 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_07_0X
 		#
 		default "d4aaca6e08639b532489415bb719b3b2"  if FREETZ_TYPE_7590 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_8X
 		default "e7a940dd13debd5531cefef1b68d4cce"  if FREETZ_TYPE_7590 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_06_9X
+		default "e91ca6610270ee7b18a8c3f5f2211642"  if FREETZ_TYPE_7590 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_07_0X
+		default "68e0bf01ace80ed151ed25cecde3bc08"  if FREETZ_TYPE_7590 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_8X
+		default "cf4a1559a0b114caec76ea2c32fa727c"  if FREETZ_TYPE_7590 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_07_0X
 		#
 		default "f64d17124ba354427a1710d12b35e00f"  if FREETZ_TYPE_W501V
 
 	config FREETZ_DL_SOURCE_CONTAINER
 		string "Downloaded container file"              if FREETZ_DL_OVERRIDE
 		#
-		default "fritzbox-7490-labor-52558.zip"         if FREETZ_TYPE_FIRMWARE_LABOR_BETA && FREETZ_TYPE_7490
+		default "fritzbox-labor_6890-60750.zip"         if FREETZ_TYPE_FIRMWARE_LABOR_BETA && FREETZ_TYPE_6890
+		default "fritzbox-7430-labor-60986.zip"         if FREETZ_TYPE_FIRMWARE_LABOR_BETA && FREETZ_TYPE_7430
 		default ""
 
 	config FREETZ_DL_SOURCE_CONTAINER_MD5
 		string "MD5 checksum for container"             if FREETZ_DL_OVERRIDE
 		#
-		default "475bed1549347ec65b373cf402ff7b1c"      if FREETZ_TYPE_FIRMWARE_LABOR_BETA && FREETZ_TYPE_7490
+		default "1eb475850901756713c59078dc63b9cb"      if FREETZ_TYPE_FIRMWARE_LABOR_BETA && FREETZ_TYPE_6890
+		default "0230a339b7520db7b81b6c0739f7caa3"      if FREETZ_TYPE_FIRMWARE_LABOR_BETA && FREETZ_TYPE_7430
 		default ""
 
 	config FREETZ_DL_ALIEN

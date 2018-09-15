@@ -124,7 +124,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-ssl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --with-suppserv=no
 $(PKG)_CONFIGURE_OPTIONS += --with-tds=no
 $(PKG)_CONFIGURE_OPTIONS += --with-termcap=no
-$(PKG)_CONFIGURE_OPTIONS += --with-timerfd=no
+$(PKG)_CONFIGURE_OPTIONS += --with-timerfd=$(if $(FREETZ_PACKAGE_ASTERISK_WITH_TIMERFD),"$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",no)
 $(PKG)_CONFIGURE_OPTIONS += --with-tinfo=no
 $(PKG)_CONFIGURE_OPTIONS += --with-tonezone=no
 $(PKG)_CONFIGURE_OPTIONS += --with-unixodbc=no

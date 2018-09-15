@@ -1,0 +1,24 @@
+--- squashfs-tools/mksquashfs.c
++++ squashfs-tools/mksquashfs.c
+@@ -28,6 +28,9 @@
+ #include <unistd.h>
+ #include <stdio.h>
+ #include <sys/types.h>
++#if defined(__linux__)
++#include <sys/sysmacros.h>
++#endif
+ #include <sys/stat.h>
+ #include <fcntl.h>
+ #include <errno.h>
+--- squashfs-tools/unsquashfs.c
++++ squashfs-tools/unsquashfs.c
+@@ -25,6 +25,9 @@
+ #define FALSE 0
+ #include <stdio.h>
+ #include <sys/types.h>
++#if defined(__linux__)
++#include <sys/sysmacros.h>
++#endif
+ #include <sys/stat.h>
+ #include <fcntl.h>
+ #include <errno.h>

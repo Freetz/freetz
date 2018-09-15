@@ -49,7 +49,7 @@ main(int argc, char *argv[])
 {
 
   FILE *in = NULL, *out = NULL, *out_optional = NULL;
-  static const uint8_t buf[4096];
+  uint8_t buf[4096];
   size_t elems;
   Elf32_Ehdr e;
   Elf32_Phdr p;

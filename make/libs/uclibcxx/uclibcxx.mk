@@ -33,7 +33,7 @@ $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	touch $@
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	$(SUBMAKE1) $(UCLIBCXX_COMMON_MAKE_OPTS)
+	$(SUBMAKE) $(UCLIBCXX_COMMON_MAKE_OPTS)
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	$(SUBMAKE) $(UCLIBCXX_COMMON_MAKE_OPTS) \

@@ -36,13 +36,13 @@ endif
 TARGET_CROSS:=$(call qstrip,$(FREETZ_TARGET_CROSS))
 KERNEL_CROSS:=$(call qstrip,$(FREETZ_KERNEL_CROSS))
 
-# TODO: investigate if the flags could/should be changed to the commented out ones
-# the current ones correspond to the flags used in Freetz up to r12843
-# binutils-2.25 require "-Wa,...", this however might break compilation of some packages (e.g. libffi)
+# arch=TUNE tune=TUNE
 TARGET_CFLAGS_ARCH_CPU_TUNE := -march=$(call qstrip,$(FREETZ_GCC_TUNE)) -mtune=$(call qstrip,$(FREETZ_GCC_TUNE))
-TARGET_CFLAGS_FLOAT_ABI     := $(if $(call qstrip,$(FREETZ_GCC_FLOAT_ABI)),-m$(call qstrip,$(FREETZ_GCC_FLOAT_ABI))-float)
+# arch=ARCH tune=TUNE
 #TARGET_CFLAGS_ARCH_CPU_TUNE := -march=$(call qstrip,$(FREETZ_GCC_ARCH)) -mtune=$(call qstrip,$(FREETZ_GCC_TUNE))
-#TARGET_CFLAGS_FLOAT_ABI     := $(if $(call qstrip,$(FREETZ_GCC_FLOAT_ABI)),-m$(call qstrip,$(FREETZ_GCC_FLOAT_ABI))-float -Wa,-m$(call qstrip,$(FREETZ_GCC_FLOAT_ABI))-float)
+
+TARGET_CFLAGS_FLOAT_ABI     := $(if $(call qstrip,$(FREETZ_GCC_FLOAT_ABI)),-m$(call qstrip,$(FREETZ_GCC_FLOAT_ABI))-float)
+
 ifneq ($(filter -march=% -mcpu=% -mtune=% -m%-float,$(call qstrip,$(FREETZ_TARGET_CFLAGS))),)
 $(error Please remove any CPU and architecture related flags (-march/-mcpu/-mtune/-m*-float) \
 	from target compiler flags (FREETZ_TARGET_CFLAGS variable in your .config). \
@@ -64,7 +64,7 @@ $(PACKAGES_DIR):
 
 # If CONFIG_SITE is exported, it can cause errors in the host builds
 unexport CONFIG_SITE
-CONFIG_SITE:=$(FREETZ_BASE_DIR)/$(INCLUDE_DIR)/site/$(TARGET_ARCH_ENDIANNESS_DEPENDENT)-linux-uclibc
+CONFIG_SITE:=$(FREETZ_BASE_DIR)/$(INCLUDE_DIR)/site/$(call qstrip,$(FREETZ_TARGET_UCLIBC_TRIPLET))
 
 TARGET_AR:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ar
 TARGET_AS:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)as
@@ -122,7 +122,6 @@ TARGET_CONFIGURE_ENV += FREETZ_LIBRARY_DIR="$(FREETZ_LIBRARY_DIR)"
 
 # Set compiler/linker flags here, not in TARGET_CONFIGURE_OPTIONS,
 # because this way they do not disturb old configure scripts
-# (e.g. pjproject, OPIE)
 TARGET_CONFIGURE_ENV += CC="$(TARGET_CC)"
 TARGET_CONFIGURE_ENV += CXX="$(TARGET_CXX)"
 TARGET_CONFIGURE_ENV += CFLAGS="$(TARGET_CFLAGS)"
@@ -140,7 +139,8 @@ endef
 
 # Common options for configure
 TARGET_CONFIGURE_OPTIONS:=
-TARGET_CONFIGURE_OPTIONS += --cache-file=$(CONFIG_CACHE_PATH)
+#TARGET_CONFIGURE_OPTIONS += --cache-file=$(CONFIG_CACHE_PATH)
+TARGET_CONFIGURE_OPTIONS += --cache-file=/dev/null
 TARGET_CONFIGURE_OPTIONS += --target=$(GNU_TARGET_NAME)
 TARGET_CONFIGURE_OPTIONS += --host=$(GNU_TARGET_NAME)
 TARGET_CONFIGURE_OPTIONS += --build=$(GNU_HOST_NAME)

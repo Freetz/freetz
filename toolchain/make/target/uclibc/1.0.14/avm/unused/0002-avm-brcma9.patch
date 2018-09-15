@@ -1,0 +1,30 @@
+--- libc/sysdeps/linux/common/bits/sched.h
++++ libc/sysdeps/linux/common/bits/sched.h
+@@ -128,6 +128,11 @@
+   __cpu_mask __bits[__CPU_SETSIZE / __NCPUBITS];
+ } cpu_set_t;
+ 
++/* Von 0.9.32 zu 0.9.33 aus uClibc entfernte Macros, die von Broadcoms
++ * Userspace Tools benoetigt werden. */
++# define __CPU_SET(cpu, cpusetp)	 __CPU_SET_S (cpu, sizeof (cpu_set_t), cpusetp)
++# define __CPU_ZERO(cpusetp)	 __CPU_ZERO_S (sizeof (cpu_set_t), cpusetp)
++
+ /* Access functions for CPU masks.  */
+ # if __GNUC_PREREQ (2, 91)
+ #  define __CPU_ZERO_S(setsize, cpusetp) \
+--- include/sys/queue.h
++++ include/sys/queue.h
+@@ -143,6 +143,13 @@
+ #define	LIST_FIRST(head)		((head)->lh_first)
+ #define	LIST_NEXT(elm, field)		((elm)->field.le_next)
+ 
++/*
++ * Re-introduced from uclibc-0.9.32.x
++ */
++#define	LIST_FOREACH_SAFE(var, head, field, tvar)			\
++	for ((var) = LIST_FIRST((head));				\
++	    (var) && ((tvar) = LIST_NEXT((var), field), 1);		\
++	    (var) = (tvar))
+ 
+ /*
+  * Singly-linked List definitions.

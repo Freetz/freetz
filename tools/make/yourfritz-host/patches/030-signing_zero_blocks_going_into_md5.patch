@@ -1,0 +1,24 @@
+--- signimage/sign_image
++++ signimage/sign_image
+@@ -362,7 +354,11 @@
+ # blocks with a size of 512 octets)                                                #
+ #                                                                                  #
+ ####################################################################################
+-"$YF_SIGNIMAGE_DD" if=/dev/zero of="$tmp/1K.bin" bs=512 count=2 status=none 2>/dev/null
++zero_blocks_in_md5=4     # 2 blocks ./var/signature member + 2 blocks EOA marker
++if [ $(( ( copy_blocks + 2 ) % 20 )) -eq 0 ]; then
++	zero_blocks_in_md5=2 # 2 blocks ./var/signature member only
++fi
++"$YF_SIGNIMAGE_DD" if=/dev/zero of="$tmp/zero_blocks_in_md5.bin" bs=512 count=$zero_blocks_in_md5 status=none 2>/dev/null
+ ####################################################################################
+ #                                                                                  #
+ # generate the signature file                                                      #
+@@ -374,7 +370,7 @@
+ #                                                                                  #
+ ##################################A#################################################
+ echo -en "Signing the image hash (\x1B[1m$hash_algo\x1B[0m) with RSA key from \x1B[1m${name_prefix}.${private_extension}\x1B[0m ... " 1>&2
+-"$YF_SIGNIMAGE_DD" if="$image_file" bs=512 count=$copy_blocks status=none 2>&1 | cat - "$tmp/1K.bin" "$tmp/1K.bin" | 
++"$YF_SIGNIMAGE_DD" if="$image_file" bs=512 count=$copy_blocks status=none 2>&1 | cat - "$tmp/zero_blocks_in_md5.bin" | 
+ "$YF_SIGNIMAGE_OPENSSL" dgst -$hash_algo -sign "${name_prefix}.${private_extension}" -out "$tmp/var/signature" -passin "pass:$KEYPASSWORD"
+ rc=$?
+ if [ $rc -eq 0 ]; then

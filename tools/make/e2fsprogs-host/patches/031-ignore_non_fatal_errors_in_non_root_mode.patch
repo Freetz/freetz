@@ -3,7 +3,7 @@
 
 --- debugfs/dump.c
 +++ debugfs/dump.c
-@@ -67,6 +67,14 @@
+@@ -70,6 +70,14 @@
  	return mode;
  }
  
@@ -18,7 +18,7 @@
  static void fix_perms(const char *cmd, const struct ext2_inode *inode,
  		      int fd, const char *name)
  {
-@@ -88,7 +96,7 @@
+@@ -91,7 +99,7 @@
  	else
  		i = chown(name, inode->i_uid, inode->i_gid);
  #endif
@@ -27,7 +27,7 @@
  		com_err(cmd, errno, "while changing ownership of %s", name);
  
  	ut.actime = inode->i_atime;
-@@ -315,13 +323,13 @@
+@@ -318,13 +326,13 @@
  		}
  
  		if (mknod(fullname, chrdev ? S_IFCHR : S_IFBLK, makedev(major, minor)) == -1) {

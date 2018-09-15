@@ -1,0 +1,87 @@
+From 3fb715b55426875902dfef3056b2cf7335953178 Mon Sep 17 00:00:00 2001
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Fri, 19 May 2017 13:25:59 -0400
+Subject: include sys/sysmacros.h as needed
+
+The minor/major/makedev macros are not entirely standard.  glibc has had
+the definitions in sys/sysmacros.h since the start, and wants to move away
+from always defining them implicitly via sys/types.h (as this pollutes the
+namespace in violation of POSIX).  Other C libraries have already dropped
+them.  Since the configure script already checks for this header, use that
+to pull in the header in files that use these macros.
+
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+
+--- lib/blkid/devname.c
++++ lib/blkid/devname.c
+@@ -36,6 +36,9 @@
+ #if HAVE_SYS_MKDEV_H
+ #include <sys/mkdev.h>
+ #endif
++#ifdef HAVE_SYS_SYSMACROS_H
++#include <sys/sysmacros.h>
++#endif
+ #include <time.h>
+ 
+ #include "blkidP.h"
+--- lib/blkid/devno.c
++++ lib/blkid/devno.c
+@@ -31,6 +31,9 @@
+ #if HAVE_SYS_MKDEV_H
+ #include <sys/mkdev.h>
+ #endif
++#ifdef HAVE_SYS_SYSMACROS_H
++#include <sys/sysmacros.h>
++#endif
+ 
+ #include "blkidP.h"
+ 
+--- lib/ext2fs/finddev.c
++++ lib/ext2fs/finddev.c
+@@ -31,6 +31,9 @@
+ #if HAVE_SYS_MKDEV_H
+ #include <sys/mkdev.h>
+ #endif
++#ifdef HAVE_SYS_SYSMACROS_H
++#include <sys/sysmacros.h>
++#endif
+ 
+ #include "ext2_fs.h"
+ #include "ext2fs.h"
+--- lib/ext2fs/ismounted.c
++++ lib/ext2fs/ismounted.c
+@@ -38,6 +38,9 @@
+ #endif /* HAVE_GETMNTINFO */
+ #include <string.h>
+ #include <sys/stat.h>
++#ifdef HAVE_SYS_SYSMACROS_H
++#include <sys/sysmacros.h>
++#endif
+ 
+ #include "ext2_fs.h"
+ #include "ext2fs.h"
+--- misc/mk_hugefiles.c
++++ misc/mk_hugefiles.c
+@@ -34,6 +34,9 @@
+ #include <sys/ioctl.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
++#ifdef HAVE_SYS_SYSMACROS_H
++#include <sys/sysmacros.h>
++#endif
+ #include <libgen.h>
+ #include <limits.h>
+ #include <blkid/blkid.h>
+--- debugfs/dump.c
++++ debugfs/dump.c
+@@ -21,6 +21,9 @@
+ #endif
+ #include <sys/types.h>
+ #include <sys/stat.h>
++#ifdef HAVE_SYS_SYSMACROS_H
++#include <sys/sysmacros.h>
++#endif
+ #include <fcntl.h>
+ #include <utime.h>
+ #ifdef HAVE_GETOPT_H

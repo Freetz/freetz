@@ -6,7 +6,7 @@
  
 -SOEXT_TLS=so.10
 -SOEXT_X509=so.0
--SOEXT_CRYPTO=so.1
+-SOEXT_CRYPTO=so.2
 +VERSION=0.0.0
 +VERSION_MAJOR=$(word 1,$(subst ., ,$(VERSION)))
 +VERSION_MINOR=$(word 2,$(subst ., ,$(VERSION)))
@@ -19,9 +19,9 @@
 +SOEXT_X509=so.$(VERSION)
 +SOEXT_CRYPTO=so.$(VERSION)
  
- DLEXT=so
- # OSX shared library extension:
-@@ -97,9 +105,11 @@
+ # Set DLEXT=dylib to compile as a shared library for Mac OS X
+ DLEXT ?= so
+@@ -100,9 +108,11 @@
  
  libmbedtls.$(SOEXT_TLS): $(OBJS_TLS) libmbedx509.so
  	echo "  LD    $@"
@@ -34,7 +34,7 @@
  	echo "  LN    $@ -> $<"
  	ln -sf $< $@
  
-@@ -120,9 +130,11 @@
+@@ -123,9 +133,11 @@
  
  libmbedx509.$(SOEXT_X509): $(OBJS_X509) libmbedcrypto.so
  	echo "  LD    $@"
@@ -47,7 +47,7 @@
  	echo "  LN    $@ -> $<"
  	ln -sf $< $@
  
-@@ -143,9 +155,11 @@
+@@ -146,9 +158,11 @@
  
  libmbedcrypto.$(SOEXT_CRYPTO): $(OBJS_CRYPTO)
  	echo "  LD    $@"

@@ -56,6 +56,7 @@ menu "Firmware packaging (fwmod) options"
 
 	config FREETZ_FWMOD_CREATE_IN_MEMORY_IMAGE
 		bool "Create in-memory image file"
+		depends on ! FREETZ_FWMOD_SKIP_PACK
 		depends on FREETZ_TARGET_ARCH_MIPS && FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
 		default n
 		help

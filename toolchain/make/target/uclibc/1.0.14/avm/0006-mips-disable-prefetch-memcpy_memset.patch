@@ -1,0 +1,53 @@
+From 557f663a8cb7de8cbbfa9ce63b2c956bcaad194c Mon Sep 17 00:00:00 2001
+From: Waldemar Brodkorb <wbx@uclibc-ng.org>
+Date: Sun, 29 May 2016 08:53:18 +0200
+Subject: mips: allow to disable prefetch support in memcpy/memset
+
+There exist some problem with the new memcpy/memset functions
+imported from GNU libc/newlib. If you have any problem
+with the new MIPS optimized assembly try to disable
+prefetching support.
+
+Thanks to Rene Nielsen and Matthew Fortune analyzing the
+problem so far.
+---
+ extra/Configs/Config.mips | 7 +++++++
+ libc/string/mips/memcpy.S | 2 +-
+ libc/string/mips/memset.S | 2 +-
+ 3 files changed, 9 insertions(+), 2 deletions(-)
+
+--- extra/Configs/Config.mips
++++ extra/Configs/Config.mips
+@@ -31,3 +31,10 @@
+ 	bool "N64 ABI"
+ 
+ endchoice
++
++config UCLIBC_USE_MIPS_PREFETCH
++	bool "Use MIPS prefetch optimization for memcpy/memset"
++	default y
++	help
++	  You get better performance when you use Prefetch.
++	  https://gcc.gnu.org/projects/prefetch.html#mips
+--- libc/string/mips/memcpy.S
++++ libc/string/mips/memcpy.S
+@@ -39,7 +39,7 @@
+ 
+ #if (_MIPS_ISA == _MIPS_ISA_MIPS4) || (_MIPS_ISA == _MIPS_ISA_MIPS5) || \
+     (_MIPS_ISA == _MIPS_ISA_MIPS32) || (_MIPS_ISA == _MIPS_ISA_MIPS64)
+-# ifndef DISABLE_PREFETCH
++# ifdef __UCLIBC_USE_MIPS_PREFETCH__
+ #  define USE_PREFETCH
+ # endif
+ #endif
+--- libc/string/mips/memset.S
++++ libc/string/mips/memset.S
+@@ -37,7 +37,7 @@
+    prefetching.  */
+ 
+ #if (__mips == 4) || (__mips == 5) || (__mips == 32) || (__mips == 64)
+-# ifndef DISABLE_PREFETCH
++# ifdef __UCLIBC_USE_MIPS_PREFETCH__
+ #  define USE_PREFETCH
+ # endif
+ #endif

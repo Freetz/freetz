@@ -4,7 +4,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=83b89587607e3eb65c70d361f13bab43
 $(PKG)_SITE:=ftp://sourceware.org/pub/libffi
 
-$(PKG)_BINARY:=$($(PKG)_DIR)/$(TARGET_ARCH_ENDIANNESS_DEPENDENT)-unknown-linux-gnu/.libs/libffi.so.$($(PKG)_LIB_VERSION)
+$(PKG)_BINARY:=$($(PKG)_DIR)/$(TARGET_GNU_TRIPLET)/.libs/libffi.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libffi.so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libffi.so.$($(PKG)_LIB_VERSION)
 

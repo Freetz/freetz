@@ -9,7 +9,7 @@ config FREETZ_AVM_SQUASHFS_VERSION
 	int "AVM SquashFS version"		if FREETZ_TYPE_CUSTOM
 	default 2 if FREETZ_KERNEL_VERSION_2_6_13
 	default 3 if FREETZ_KERNEL_VERSION_2_6_19_MIN && FREETZ_KERNEL_VERSION_2_6_32_MAX
-	default 4 if FREETZ_KERNEL_VERSION_3_10_MIN
+	default 4 if FREETZ_KERNEL_VERSION_2_6_39_MIN
 	help
 		SquashFS version used by AVM
 
@@ -35,16 +35,14 @@ config FREETZ_AVM_SQUASHFS_COMPRESSION
 	default "lzma" if FREETZ_KERNEL_VERSION_2_6_28_MAX
 	default "lzma" if FREETZ_KERNEL_VERSION_2_6_32 && !FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
 	default "gzip" if FREETZ_KERNEL_VERSION_2_6_32 &&  FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
-	default "xz"   if FREETZ_KERNEL_VERSION_3_10_MIN
+	default "xz"   if FREETZ_KERNEL_VERSION_2_6_39_MIN
 
 config FREETZ_AVM_HAS_NMI_VECTOR
 	bool "Has NMI vector within SquashFS"	if FREETZ_TYPE_CUSTOM
 	default y		if \
-		FREETZ_TYPE_4020 || \
-		FREETZ_TYPE_6810 || \
-		FREETZ_TYPE_6842 || \
-		FREETZ_TYPE_7340 || \
-		FREETZ_TYPE_7390
+		FREETZ_SYSTEM_TYPE_AR934x    || \
+		FREETZ_SYSTEM_TYPE_IKS_VX180 || \
+		FREETZ_SYSTEM_TYPE_QCA956x
 	default n
 	help
 		Select this if the original firmware image contains NMI vector
@@ -64,21 +62,12 @@ config FREETZ_AVM_IMAGES_SUBDIR
 config FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
 	bool "Has separate filesystem image"	if FREETZ_TYPE_CUSTOM
 	default y		if \
-		FREETZ_TYPE_3272 || \
-		FREETZ_TYPE_3370 || \
-		FREETZ_TYPE_3390 || \
-		FREETZ_TYPE_3490 || \
-		FREETZ_TYPE_6820 || \
-		FREETZ_TYPE_6840 || \
-		FREETZ_TYPE_7272 || \
-		FREETZ_TYPE_7362 || \
-		FREETZ_TYPE_7369 || \
-		FREETZ_TYPE_7412 || \
-		FREETZ_TYPE_7430 || \
-		FREETZ_TYPE_7490 || \
-		FREETZ_TYPE_7560 || \
-		FREETZ_TYPE_7580 || \
-		FREETZ_TYPE_7590
+		FREETZ_SYSTEM_TYPE_AR10      || \
+		FREETZ_SYSTEM_TYPE_GRX5      || \
+		FREETZ_SYSTEM_TYPE_IKS_VX185 || \
+		FREETZ_SYSTEM_TYPE_PUMA6     || \
+		FREETZ_SYSTEM_TYPE_QCA955x   || \
+		(FREETZ_SYSTEM_TYPE_VR9 && !FREETZ_TYPE_7360)
 	default n
 	help
 		Select this if you have a box with separate filesystem.image.
@@ -86,7 +75,7 @@ config FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
 config FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM
 	depends on FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
 	bool "Has inner-/outer-filesystem"	if FREETZ_TYPE_CUSTOM
-	default n				if FREETZ_KERNEL_LAYOUT_GRX5
+	default n				if FREETZ_SYSTEM_TYPE_GRX5 || FREETZ_SYSTEM_TYPE_PUMA6
 	default y
 	help
 		Select this if you have a box with root-filesystem wrapped within/by other filesystem,

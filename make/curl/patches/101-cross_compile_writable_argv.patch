@@ -1,12 +1,12 @@
 --- configure
 +++ configure
-@@ -21974,7 +21974,9 @@
- $as_echo_n "checking if argv can be written to... " >&6; }
- if test "$cross_compiling" = yes; then :
- 
-+if test "${curl_cv_writable_argv+set}" != set; then :
+@@ -21887,7 +21887,9 @@
+    LD_LIBRARY_PATH=$CURL_LIBRARY_PATH:$old
+    export LD_LIBRARY_PATH
+    if test "$cross_compiling" = yes; then :
++     if test "${curl_cv_writable_argv+set}" != set; then :
    curl_cv_writable_argv=cross
-+fi
++     fi
  
  else
    cat confdefs.h - <<_ACEOF >conftest.$ac_ext

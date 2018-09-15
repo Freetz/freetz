@@ -30,6 +30,10 @@ use String::CRC32;
 
 use warnings;
 
+use constant FLASH_TYPE_NOR  => 1;
+use constant FLASH_TYPE_NAND => 2;
+use constant FLASH_TYPE_SPI  => 4;
+
 $| = 1;
 
 my %opt;
@@ -37,7 +41,7 @@ getopts('hrf:i:l:s:u', \%opt);
 
 if ($opt{h}) {
 	print "usage: recover -h\n";
-	print "       recover [-l IPADDR] [-i IPADDR] [-f firmeware.image] [-r]\n";
+	print "       recover [-l IPADDR] [-i IPADDR] [-f firmware.image] [-r]\n";
 	print "       recover [-l IPADDR] [-i IPADDR] -s image\n";
 	print "       recover [-l IPADDR] [-i IPADDR] -u\n";
 	print "       -i IPADDR: set boot time IP to IPADDR within environment\n";
@@ -124,21 +128,59 @@ $ipaddr = (@{$boxes[0]})[4];
 	# ADAM2 requires upper case commands, some brain dead firewall doesn't ;-)
 	sub _USER { shift->command("USER",@_)->response() }
 	# sub _PASV { shift->command("P\@SW")->response() == Net::FTP::CMD_OK }
+
+	# EVA responses are not RFC 959 compliant - they miss the first line
+	# s. https://tools.ietf.org/html/rfc959, section 4.2
+	#
+	# This results in the following behavior of Net::CMD::response()
+	# in error case:
+	#    EVA outputs just one line, according to RFC 959 it's actually
+	#    the last line, but at the same time it's the 1st line
+	#    => response() parses it and (by coincidence) works as decribed
+	#       in the documentation
+	# in success case:
+	#    EVA outputs multiple lines
+	#      actual response line(s) (response payload)
+	#      and the last line
+	#    the 1st line of the actual response doesn't match "the status line"-pattern
+	#    => response() fails to parse it and returns
+	#       either empty string (older versions of Net::Cmd)
+	#       or     CMD_ERROR    (recent versions of Net::Cmd)
+	#
+	# TODO: override response if possible, overriding parse_response is not enough
+
 	sub _GETENV {
 		my $ftp = shift;
-		my ($ok, $name, $value);
+		my $value;
 
 		$ftp->command("GETENV",@_);
-		while(length($ok = $ftp->response()) < 1) {
+
+		# EVA responses are not RFC 959 compliant
+		# do not rely on the return values of Net::Cmd->response()
+		# as they depend on the version of Net::Cmd (s. the long note above)
+
+		# instead simply iterate over all response lines and exit
+		# after reaching the line matching "the status line"-pattern
+
+		while (1) {
 			my $line = $ftp->getline();
+			chomp($line);
+
+			# status line? always the last line in EVA responses
+			if ($line =~ s/^(\d\d\d)[ ]//) {
+				if ($1 eq "200") {
+					$ftp->debug_print(0, "getenv: $value\n")
+						if $ftp->debug();
+					return $value;
+				}
+				return undef;
+			}
+
 			unless (defined($value)) {
-				chomp($line);
-				($name, $value) = split(/\s+/, $line, 2);
+				my ($rname, $rvalue) = split(/\s+/, $line, 2);
+				$value = $rvalue if ($rname); # no assignment on empty lines
 			}
 		}
-		$ftp->debug_print(0, "getenv: $value\n")
-			if $ftp->debug();
-		return $value;
 	}
 	sub getenv {
 		my $ftp = shift;
@@ -240,12 +282,235 @@ $ipaddr = (@{$boxes[0]})[4];
 	}
 }
 
+sub getenv_test {
+	my $ftp = shift;
+
+	my $getenv_hwrev = $ftp->getenv('HWRevision');
+	print "getenv_hwrev is " . ($getenv_hwrev // "undef") . "\n";
+
+	my $getenv_empty = $ftp->getenv('');
+	print "getenv_empty is " . ($getenv_empty // "undef") . "\n";
+
+	my $getenv_non_existing = $ftp->getenv('non_existing');
+	print "getenv_non_existing is " . ($getenv_non_existing // "undef") . "\n";
+
+	die "getenv_test: always die\n";
+}
+
+sub is_in_HWRevision_whitelist {
+	my @hwRevisionWhiteList = (
+		"F", # FRITZ!Box SL Annex B
+		"G", # FRITZ!Box Annex B
+
+		# all other HWRevisions are known to be numerical
+		# or could be made numerical by stripping .1.0.0, .1.1.0 suffixes
+		58,
+		60..66,
+		71..73,
+		76..79,
+		82..86,
+		89,
+		93..95,
+		# unsure 96, # FRITZ!Box ATH DB120
+		97,
+		101..102,
+		# unsure 104, # VoIP Gateway 5188
+		106..109,
+		111..113,
+		116..119,
+		121..122,
+		125..129,
+		# unsure 131, # Alice IAD 5130
+		133..137,
+		# unsure 138, # FRITZ!Repeater N/G
+		139,
+		141..142,
+		# unsure 143, # Speedport W101 Bridge
+		144..146,
+		# unsure 147..149, # DSL-EasyBox A802/A602/A402
+		# unsure 150, # FRITZ!Box Ikanos
+		152,
+		# unsure 153, # Alice IAD 7570
+		154..156,
+		159..160,
+		# unsure 161, FRITZ!Box Bene
+		162,
+		164,
+		165,
+		167..168,
+		170..172,
+		# unsure 173, # FRITZ!Repeater 300E
+		# unsure 174, # Alice IAD WLAN 3331
+		178..179,
+		181, # VR9, 7360 SL but NOR-only
+		183, # VR9, 7360 v1 but NOR-only
+		188..189,
+		# unsure 191, # IKS VX185, 7369
+		196, # VR9, 7360 v2 but NOR-only
+		197
+	);
+
+	my $hwRevision = shift;
+
+	if (defined($hwRevision) && length($hwRevision) > 0) {
+		# strip suffixes: .1.0.0, .1.1.0
+		if ($hwRevision =~ m/^(\d+)[.]1[.][01][.]0$/) {
+			$hwRevision = $1;
+		}
+
+		return  1
+			if (grep($_ eq $hwRevision, @hwRevisionWhiteList));
+	}
+
+	return 0;
+}
+
+sub is_in_HWRevision_whitelist_test {
+	my %test_cases = (
+		undef => 0,
+		""  => 0,
+		#
+		"F" => 1,
+		"G" => 1,
+		#
+		"H" => 0,
+		#
+		-1 => 0,
+		0 => 0,
+		#
+		94 => 1,
+		"94" => 1,
+		"94.1.0.0" => 1,
+		"94.1.1.0" => 1,
+		#
+		"94.1.2.0" => 0,
+		#
+		185 => 0,
+		#
+		226 => 0,
+		#
+		181 => 1,
+		183 => 1,
+		196 => 1,
+		
+		182 => 0
+	);
+
+	keys %test_cases;
+	while (my($test_case, $expected_result) = each %test_cases) {
+		my $actual_result = is_in_HWRevision_whitelist($test_case);
+
+		my $ok = ( defined($actual_result) &&  defined($expected_result) && ($actual_result == $expected_result))
+		      || (!defined($actual_result) && !defined($expected_result));
+
+		print "failed: is_in_HWRevision_whitelist(" . ($test_case // "undef") . ")=" . ($actual_result // "undef") . " instead of expected " . ($expected_result // "undef") . "\n"
+			if (!$ok);
+	}
+
+	die "is_in_HWRevision_whitelist_test: always die\n";
+}
+
+sub parse_flashsize {
+	my %metric_prefix_factor = (
+		"k" => 1024,
+		"K" => 1024, # it's actually k but AVM uses capital K
+		"M" => 1024 * 1024
+	);
+
+	my $getenv_flashsize = shift;
+	my $var_name = shift;
+
+	if ($getenv_flashsize =~ m/(^|\s)\Q$var_name\E=((\d+)([kKM])B|(0x(\d|[A-Fa-f])+))(\s|$)/) {
+		return $3 * $metric_prefix_factor{$4}
+			if $3 && $4;
+		return hex($5)
+			if $5;
+	}
+
+	return undef;
+}
+
+sub flashtypes {
+	# Note: heuristic!
+	my $getenv_flashsize = shift;
+
+	if (defined($getenv_flashsize)) {
+		my $nor_size    = parse_flashsize($getenv_flashsize,    "nor_size");
+		my $nand_size   = parse_flashsize($getenv_flashsize,   "nand_size");
+		my $sflash_size = parse_flashsize($getenv_flashsize, "sflash_size");
+
+		# matches exactly an 8-digit-hex-number
+		if (!defined($nor_size) && $getenv_flashsize =~ m/^0x(\d|[A-Fa-f]){8}$/) {
+			$nor_size = hex($getenv_flashsize);
+		}
+
+		no warnings 'uninitialized';
+		return ($nor_size > 0 ? FLASH_TYPE_NOR : 0) | ($nand_size > 0 ? FLASH_TYPE_NAND : 0) | ($sflash_size > 0 ? FLASH_TYPE_SPI : 0)
+			if ($nor_size > 0                       || $nand_size > 0                        || $sflash_size > 0);
+	}
+
+	return undef;
+}
+
+sub flashtypes_string {
+	my $flashtype_bits = shift;
+
+	my @t = ();
+	if (defined(flashtype_bits)) {
+		push @t, "NOR"  if (($flashtype_bits &  FLASH_TYPE_NOR) == FLASH_TYPE_NOR );
+		push @t, "NAND" if (($flashtype_bits & FLASH_TYPE_NAND) == FLASH_TYPE_NAND);
+		push @t, "SPI"  if (($flashtype_bits &  FLASH_TYPE_SPI) == FLASH_TYPE_SPI );
+	}
+	return join(",", @t);
+}
+
+sub flashtypes_test {
+	my %test_cases = (
+		"0x00400000"                                       => FLASH_TYPE_NOR,                 # 7050
+		"0x00800000"                                       => FLASH_TYPE_NOR,                 # 7170, 7270 v1
+		"0x01000000"                                       => FLASH_TYPE_NOR,                 # 7270 v2/v3, 7390, 7570
+		"nor_size=16MB"                                    => FLASH_TYPE_NOR,                 # 7320, 7330, 7330 SL
+		"nor_size=16MB sflash_size=0KB nand_size=0MB"      => FLASH_TYPE_NOR,                 # 7360
+		"nor_size=0MB sflash_size=0KB nand_size=128MB"     => FLASH_TYPE_NAND,                # 7430
+		"nor_size=0MB sflash_size=1024KB nand_size=512MB"  => FLASH_TYPE_NAND|FLASH_TYPE_SPI, # 7490
+		"nor_size=0MB sflash_size=0KB nand_size=512MB"     => FLASH_TYPE_NAND,                # 7590
+		"nor_size=0MB sflash_size=2MB nand_size=2048MB"    => FLASH_TYPE_NAND|FLASH_TYPE_SPI, # 6490
+		"nor_size=0x0 sflash_size=16MB nand_size=0MB"      => FLASH_TYPE_SPI,                 # FRITZ!Repeater 300E
+
+		"nor_size=0x0F000000 sflash_size=0x00000D00"       => FLASH_TYPE_NOR|FLASH_TYPE_SPI ,  # manually created test-case
+		"Xnor_size=16MB"                                   => undef, # because of X at the beginning
+		"foo bar"                                          => undef,
+		""                                                 => undef,
+		"   "                                              => undef,
+		undef                                              => undef
+	);
+
+	keys %test_cases;
+	while (my($test_case, $expected_result) = each %test_cases) {
+		my $actual_result = flashtypes($test_case);
+
+		my $ok = ( defined($actual_result) &&  defined($expected_result) && ($actual_result == $expected_result))
+		      || (!defined($actual_result) && !defined($expected_result));
+
+		print "failed: flashtypes(" . ($test_case // "undef") . ")=" . ($actual_result // "undef") . " instead of expected " . ($expected_result // "undef") . "\n"
+			if (!$ok);
+	}
+
+	die "flashtypes_test: always die\n";
+}
+
 # passive mode geht mit Net::FTP nicht, connected zu spaet fuer ADAM2!
 # EVA kann nur passive mode
 $ftp = ADAM2FTP->new(inet_ntoa($ipaddr), Passive => 1, Debug => 0, Timeout => 600)
 	or die "can't FTP ADAM2";
 $ftp->login("adam2", "adam2") or die "can't login adam2";
 $ftp->binary();
+
+# tests
+#getenv_test($ftp);
+#is_in_HWRevision_whitelist_test();
+#flashtypes_test();
+
 my $pid   = $ftp->getenv('ProductID');
 my $hwrev = $ftp->getenv('HWRevision');
 my $fwrev = $ftp->getenv('firmware_info');
@@ -261,15 +526,39 @@ my $mtd2len = hex($mtd2[1]) - hex($mtd2[0]);
 my $mtd3len = hex($mtd3[1]) - hex($mtd3[0]);
 my $mtd4len = hex($mtd4[1]) - hex($mtd4[0]);
 
-print "Product ID: $pid\n";
-print "Hardware Revision: $hwrev\n";
-print "Urlader  Revision: $ulrev\n";
-print "Firmware Revision: $fwrev\n";
-print "MTD0: $mtd0len bytes\n";
-print "MTD1: $mtd1len bytes\n";
-print "MTD2: $mtd2len bytes\n";
-print "MTD3: $mtd3len bytes\n";
-print "MTD4: $mtd4len bytes\n";
+my $flashsize = $ftp->getenv('flashsize');
+my $flashtypes = flashtypes($flashsize);
+
+my $is_supported_whitelist_method = is_in_HWRevision_whitelist($hwrev);
+my $is_supported_heuristic_method = (defined($pid) && !($pid =~ m/PUMA/i))
+	&& ($flashtypes == FLASH_TYPE_NOR || $flashtypes == FLASH_TYPE_SPI);
+
+my $undef = "missing";
+print "Product ID: " . ($pid // $undef) . "\n";
+print "Hardware Revision: " . ($hwrev // $undef) . "\n";
+print "Urlader  Revision: " . ($ulrev // $undef) . "\n";
+print "Firmware Revision: " . ($fwrev // $undef) . "\n";
+print "Flash type(s): " . flashtypes_string($flashtypes) . " (heuristic!)\n";
+print "Supported box: "
+	. ($is_supported_whitelist_method ? "yes" : "no") . " (whitelist method), "
+	. ($is_supported_heuristic_method ? "yes" : "no") . " (heuristic method)\n";
+print "MTD0: " . ($mtd0len // $undef) . " bytes\n";
+print "MTD1: " . ($mtd1len // $undef) . " bytes\n";
+print "MTD2: " . ($mtd2len // $undef) . " bytes\n";
+print "MTD3: " . ($mtd3len // $undef) . " bytes\n";
+print "MTD4: " . ($mtd4len // $undef) . " bytes\n";
+
+unless ($is_supported_whitelist_method) {
+	die
+		"\n" .
+		"Failed to detect the box type or unsupported box detected, aborting...\n" .
+		"This script most likely doesn't work with your box.\n" .
+		"Please don't try to force its execution as it might\n" .
+		"irreparably brick your box.\n" .
+		"If you consider this message as being an error\n" .
+		"please make a bug report at freetz.org\n" .
+		"\n" ;
+}
 
 $ftp->hash(\*STDOUT, 64 * 1024);
 

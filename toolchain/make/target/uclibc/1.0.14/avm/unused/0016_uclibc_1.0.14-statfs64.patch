@@ -1,0 +1,24 @@
+From e3d6c8bffe79b2c070bc7a3aabc9d9c65f6b099e Mon Sep 17 00:00:00 2001
+From: Waldemar Brodkorb <wbx@uclibc-ng.org>
+Date: Fri, 3 Nov 2017 20:15:44 +0100
+Subject: [PATCH] Only emulate statfs64 if __NR_statfs64 is not defined
+
+After discussions on the busybox mailinglist.
+
+Reported-by: Ralf Friedl <Ralf.Friedl@online.de>
+Signed-off-by: Waldemar Brodkorb <wbx@uclibc-ng.org>
+---
+ libc/misc/statfs/statfs64.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- libc/misc/statfs/statfs64.c
++++ libc/misc/statfs/statfs64.c
+@@ -25,7 +25,7 @@
+ 
+ extern __typeof(statfs) __libc_statfs;
+ 
+-#if defined __NR_statfs
++#if !defined __NR_statfs64
+ /* Return information about the filesystem on which FILE resides.  */
+ int statfs64 (const char *file, struct statfs64 *buf)
+ {

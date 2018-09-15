@@ -1,16 +1,15 @@
 --- src/sock.c
 +++ src/sock.c
-@@ -39,8 +39,7 @@
-  * returned if the bind succeeded.  Otherwise, -1 is returned
+@@ -40,7 +40,7 @@
   * to indicate an error.
   */
--static int
+ static int
 -bind_socket (int sockfd, const char *addr, int family)
-+static int bind_socket (int sockfd, const char *addr)
++bind_socket (int sockfd, const char *addr)
  {
          struct addrinfo hints, *res, *ressave;
  
-@@ -48,7 +47,7 @@ bind_socket (int sockfd, const char *add
+@@ -48,7 +48,7 @@
          assert (addr != NULL && strlen (addr) != 0);
  
          memset (&hints, 0, sizeof (struct addrinfo));
@@ -19,7 +18,7 @@
          hints.ai_socktype = SOCK_STREAM;
  
          /* The local port it not important */
-@@ -106,14 +105,12 @@ int opensock (const char *host, int port
+@@ -106,14 +106,12 @@
  
                  /* Bind to the specified address */
                  if (bind_to) {

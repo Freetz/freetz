@@ -179,10 +179,10 @@
 +        fatal("Cannot use the FRITZ!Box certificate together with a certificate directory and/or file handle");
 +      }
 +      if (optarg) {
-+        check(keyPassword  = strdup(optarg));
++        keyPassword        = optarg;
 +      } else {
 +        debug("Trying to get box certificate password ...");
-+        keyPassword        = getPrivateKeyPassword();
++        keyPassword        = (char *) getPrivateKeyPassword();
 +        if (!keyPassword) fatal("Could not get the password for box certificate");
 +      }
 +    } else if (!idx--) {
@@ -219,11 +219,3 @@
      }
    }
  }
-@@ -1329,6 +1364,7 @@
-   }
-   free(services);
-   free(certificateDir);
-+  if (keyPassword) free(keyPassword);
-   free(cgiSessionKey);
-   if (pidfile) {
-     // As a convenience, remove the pidfile, if it is still the version that

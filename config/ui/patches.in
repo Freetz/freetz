@@ -55,8 +55,8 @@ config FREETZ_REMOVE_DSL_CONTROL
 			FREETZ_REMOVE_ANNEX_B_FIRMWARE || \
 			FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_PRIME \
 		) && ( \
-			FREETZ_KERNEL_LAYOUT_AR9 || \
-			FREETZ_KERNEL_LAYOUT_VR9 \
+			FREETZ_SYSTEM_TYPE_AR9 || \
+			FREETZ_SYSTEM_TYPE_VR9 \
 		)
 	default n
 	help
@@ -1163,6 +1163,14 @@ config FREETZ_PATCH_ALARMCLOCK
 	help
 		Adds a third alarm-clock to AVM-Webinterface
 
+config FREETZ_PATCH_VOL_COUNTER
+	bool "Restore volume counter support"
+	depends on FREETZ_TYPE_7412 && FREETZ_AVM_VERSION_06_8X
+	default n
+	help
+		Adds volume counter support removed by AVM
+		for some (probably marketing) reasons.
+
 config FREETZ_PATCH_SIGNED
 	bool "Patch web menu signed message"
 	default n
@@ -1448,14 +1456,6 @@ config FREETZ_ENFORCE_URLADER_SETTINGS
 		 * useful for people that do clear mtd3/mtd4 often.
 		This settings are enforced at the beginnig of the boot process.
 
-config FREETZ_ENFORCE_URLADER_SETTING_MY_IPADDRESS
-	depends on FREETZ_ENFORCE_URLADER_SETTINGS
-	string "Enforce my_ipaddress variable"
-	default "192.168.178.1"
-	help
-		This is the AVM default, enforce to also to reseller boxes, eg. from T-Com
-		If this is empty the urlader setting won't be touched.
-
 config FREETZ_ENFORCE_URLADER_SETTING_FIRMWARE_VERSION
 	depends on FREETZ_ENFORCE_URLADER_SETTINGS
 	string "Enforce firmware_version variable"
@@ -1473,6 +1473,43 @@ config FREETZ_ENFORCE_URLADER_SETTING_PRODUCTID
 		Choose wisely. Your image beeing built must support this.
 		Typical settings are eg.: Fritz_Box_DECT_7270, Fritz_Box_DECT_W920V
 		If this is empty the urlader setting won't be touched.
+
+config FREETZ_ENFORCE_URLADER_SETTING_MY_IPADDRESS
+	depends on FREETZ_ENFORCE_URLADER_SETTINGS
+	string "Enforce my_ipaddress variable"
+	default ""
+	help
+		This is the AVM default, enforce to also to reseller boxes, eg. from T-Com
+		If this is empty the urlader setting won't be touched.
+
+config FREETZ_ENFORCE_FIRMWARE_VERSION_VIA_RCCONF
+	depends on FREETZ_AVM_VERSION_06_5X_MIN
+	string "Enforce firmware_version via rc.conf"
+	default ""
+	help
+		This option enforces branding by hardcoding it in /etc/init.d/rc.conf
+
+		This method is useful on some recently produced boxes (since 2017), which
+		do not allow to change the value of the urlader variable 'firmware_version'
+		in a non-volatile way.
+
+		Affected boxes (known so far): all boxes with the following bootloaderVersion
+		 - 1.3179
+		 - 1.3229
+		use "cat /proc/sys/urlader/environment | grep bootloaderVersion" or EVA
+		to check the value
+
+		Choose the value wisely. Your image must support it.
+
+comment "modfs patches --------------------------"
+
+config FREETZ_PATCH_MODFS_BOOT_MANAGER
+	bool "Add boot manager"
+	depends on FREETZ_AVM_VERSION_06_5X_MIN
+	depends on FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
+	default n
+	help
+		Extends the "reboot" page of FRITZ!OS to select system version and branding.
 
 comment "Misc patches ---------------------------"
 

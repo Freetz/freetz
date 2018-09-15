@@ -27,7 +27,7 @@ download() {
 
 	# BETA/Labor/LabRC
 	if [ -n "$1" -a "$1" != "stable" -a "$1" != "s" ]; then
-		for url in ftp://ftp.avm.de/fritz.box/beta/ ftp://service.avm.de/Beta/; do
+		for url in ftp://ftp.avm.de/fritzbox/beta/{frisch-aus-der-entwicklung,wartung}; do
 			wget -nv -m -A '*.zip' $url
 			(
 				cd ${url#ftp://}
@@ -42,14 +42,14 @@ download() {
 
 	# stable
 	if [ -z "$1" -o "$1" == "stable" -o "$1" == "s" ]; then
-		for url in ftp://ftp.avm.de/fritz.box/ ftp://service.avm.de/Downgrade/; do
+		for url in ftp://ftp.avm.de/fritzbox/ ftp://ftp.avm.de/archive/fritz.box/; do
 			wget -nv -m -A '*.image' -R '*Powerline*,*powerline*,*Repeater*,*repeater*,*VoIP-Gateway*' $url
 			find ${url#ftp://} -type f ! -name '*.image' -exec rm -f {} '+' 2>/dev/null
 		done
 	fi
 
 	for file in $(find ftp.avm.de service.avm.de -type f); do
-		mv -f $file $(echo $file | sed -r -e 's,(ftp[.]avm[.]de/fritz.box/|service[.]avm[.]de/|firmware/),,g;s,/,--,g')
+		mv -f $file $(echo $file | sed -r -e 's,(ftp[.]avm[.]de/fritzbox/|ftp[.]avm[.]de/archive/fritz[.]box/|service[.]avm[.]de/|firmware/),,g;s,/,--,g')
 	done
 	rm -rf ftp.avm.de service.avm.de 2>/dev/null
 }

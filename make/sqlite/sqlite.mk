@@ -1,8 +1,8 @@
-$(call PKG_INIT_BIN, 3210000)
+$(call PKG_INIT_BIN, 3240000)
 $(PKG)_LIB_VERSION:=0.8.6
 $(PKG)_SOURCE:=$(pkg)-autoconf-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA1:=f56fe3407d8297fc0a68a058f4c9e6b77e83575c
-$(PKG)_SITE:=http://www.sqlite.org/2017
+$(PKG)_SOURCE_SHA1:=da68915e3563b5244cbcdb6c7e20fb35559bcfc6
+$(PKG)_SITE:=http://www.sqlite.org/2018
 
 ifeq ($(strip $(FREETZ_PACKAGE_SQLITE_WITH_READLINE)),y)
 $(PKG)_DEPENDS_ON += readline
@@ -21,12 +21,15 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-editline
 $(PKG)_CONFIGURE_OPTIONS += --disable-static-shell
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_SQLITE_WITH_READLINE),--enable-readline,--disable-readline)
 
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,header_zlib_h)
+$(PKG)_CONFIGURE_ENV += $(pkg)_header_zlib_h=no
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_LIB_BINARY): $($(PKG)_DIR)/.configured
-	$(SUBMAKE1) -C $(SQLITE_DIR)
+	$(SUBMAKE) -C $(SQLITE_DIR)
 
 $($(PKG)_BINARY): $($(PKG)_LIB_BINARY)
 	@touch -c $@

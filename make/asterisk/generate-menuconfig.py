@@ -12,7 +12,7 @@ def menuselect2kconfig(menuselectFilename):
 		"res_rtp_asterisk": ["WITH_PJPROJECT"]
 	}
 
-	dependencyMap = {
+	selectMap = {
 		"CRYPTO": ["FREETZ_LIB_libcrypto"],
 		"OPENSSL": ["FREETZ_LIB_libcrypto", "FREETZ_LIB_libssl"],
 		"CURL": ["FREETZ_LIB_libcurl"],
@@ -32,6 +32,9 @@ def menuselect2kconfig(menuselectFilename):
 		"ZLIB": ["FREETZ_LIB_libz"]
 	}
 
+	dependsOnMap = {
+		"TIMERFD": ["FREETZ_KERNEL_VERSION_2_6_28_MIN"]
+	}
 
 	packagePrefix = "FREETZ_PACKAGE_ASTERISK_"
 	withInfix = "WITH_"
@@ -136,13 +139,15 @@ def menuselect2kconfig(menuselectFilename):
 		print
 
 	for externalDependency in sorted(externalDependencies):
-		supported = externalDependency in dependencyMap
 		print "config " + packagePrefix + withInfix + externalDependency
 		print "\tbool"
-		if supported:
-			for select in dependencyMap[externalDependency]:
+		if externalDependency in dependsOnMap:
+			for dependsOn in dependsOnMap[externalDependency]:
+				print "\tdepends on " + dependsOn
+		if externalDependency in selectMap:
+			for select in selectMap[externalDependency]:
 				print "\tselect " + select
-		print "\tdefault " + ("y" if supported else "n")
+		print "\tdefault " + ("y" if (externalDependency in dependsOnMap or externalDependency in selectMap) else "n")
 		print
 
 def main():

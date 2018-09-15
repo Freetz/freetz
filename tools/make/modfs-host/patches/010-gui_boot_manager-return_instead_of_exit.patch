@@ -1,0 +1,17 @@
+--- modscripts/gui_boot_manager_v0.4
++++ modscripts/gui_boot_manager_v0.4
+@@ -13,7 +13,7 @@
+ rootdir=$2
+ mode=$3
+ step=$4
+-[ ${#4} -eq 0 ] && exit 59 # invalid call
++[ ${#4} -eq 0 ] && return 59 # invalid call
+ #
+ # execute the requested step
+ #
+@@ -766,4 +766,4 @@
+ 		rc=59
+ 		;;
+ esac
+-exit $rc
++return $rc

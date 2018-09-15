@@ -12,18 +12,43 @@ all() {
 }
 
 all_no_freetz() {
-	dummy=0
+	local freetz_base patches_scripts
 
-	# restore telnet support, the user still needs to activate it via the phone code (#96*7*)
-#	ln -sf ../../bin/busybox ./filesystem/usr/sbin/telnetd
+	freetz_base=$(dirname "$0")
+	patches_scripts="${freetz_base}/patches/scripts"
 
 	# source freetz-helper-functions and freetz .config
-	# only necessary if freetz patch-scripts are used for modifications
-#	. "$(dirname $0)"/tools/freetz_functions
-#	. "$(dirname $0)"/.config
+	source "${freetz_base}/tools/freetz_functions"
+	source "${freetz_base}/tools/freetz_patch"
+	source "${freetz_base}/.config"
 
-	# restore debug.cfg support (using Freetz script)
-#	FILESYSTEM_MOD_DIR=./filesystem . ../../patches/scripts/114-debug_cfg_support.sh
+	# restore telnet support, the user still needs to activate it via the phone code (#96*7*)
+	ln -sf ../../bin/busybox ./filesystem/usr/sbin/telnetd
+
+	# the following "mods" could (and should) be controlled used the Freetz menuconfig system
+	# i.e. enable the corresponding option in Freetz menuconfig system, otherwise the patches
+	# below won't do anything
+
+	# enforce urlader settings, useful on boxes with bootloader version >=1.3179 (7490) resp. >=1.3229 (7580)
+	source "${patches_scripts}/101-enforce_urlader-settings.sh"
+
+	# hardcode branding in rc.conf (an alternative to the enforce-urlader-settings patch above)
+	source "${patches_scripts}/101-enforce_branding_via_rc.conf.sh"
+
+	# restore debug.cfg support
+	source "${patches_scripts}/114-debug_cfg_support.sh"
+
+	# patch away / hide "vom Hersteller nicht unterstützte Änderungen"
+	source "${patches_scripts}/195-patch_webmenu_signed.sh"
+
+	# restore volume counter support, 7412 only
+	source "${patches_scripts}/241-restore_vol_counter.sh"
+
+	# add modfs boot-manager
+	source "${patches_scripts}/800-modfs_boot_manager.sh"
+
+	# workaround for "sign firmware"-issues, try enabling it if AVM web-if doesn't accept your firmware
+#	rm ./firmware/var/info.txt
 }
 
 clean() {

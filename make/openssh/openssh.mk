@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 7.6p1)
+$(call PKG_INIT_BIN, 7.8p1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA1:=a6984bc2c72192bed015c8b879b35dd9f5350b3b
+$(PKG)_SOURCE_SHA1:=27e267e370315561de96577fccae563bc2c37a60
 $(PKG)_SITE:=http://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable,ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
 
 $(PKG)_BIN_BINARIES             := ssh scp ssh-add ssh-agent ssh-keygen ssh-keysign ssh-keyscan sftp
@@ -38,9 +38,6 @@ $(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_OPENSSH_INTERNAL_CRYPTO),etc/default.op
 $(PKG)_AC_VARIABLES := have_decl_LLONG_MAX search_logout search_openpty lib_resolv_res_query lib_resolv_strcasecmp
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,$($(PKG)_AC_VARIABLES))
 
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_OPENSSH_STATIC),--disable-shared,--enable-shared)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_OPENSSH_STATIC),--enable-static,--disable-static)
-$(PKG)_CONFIGURE_OPTIONS += --disable-debug
 $(PKG)_CONFIGURE_OPTIONS += --disable-etc-default-login
 $(PKG)_CONFIGURE_OPTIONS += --disable-lastlog
 $(PKG)_CONFIGURE_OPTIONS += --disable-utmp

@@ -4,21 +4,23 @@
 
 config FREETZ_REPLACE_KERNEL_AVAILABLE
 	bool
-# Note: the conditions are grouped according to the kernel layout
+# Note: the conditions are grouped according to the system type
 	depends on \
 		! (FREETZ_TYPE_FON && FREETZ_TYPE_LANG_EN) && \
 		\
-		! (FREETZ_KERNEL_LAYOUT_AR10 && (FREETZ_TYPE_FIRMWARE_06_5X || FREETZ_TYPE_FIRMWARE_06_8X)) && \
+		! (FREETZ_SYSTEM_TYPE_AR10 && (FREETZ_TYPE_FIRMWARE_06_5X || FREETZ_TYPE_FIRMWARE_06_8X)) && \
 		\
-		! (FREETZ_KERNEL_LAYOUT_AR934x && (FREETZ_TYPE_FIRMWARE_06_5X || FREETZ_TYPE_FIRMWARE_06_8X)) && \
+		! (FREETZ_SYSTEM_TYPE_AR934x && (FREETZ_TYPE_FIRMWARE_06_5X || FREETZ_TYPE_FIRMWARE_06_8X)) && \
 		\
-		! (FREETZ_KERNEL_LAYOUT_GRX5) && \
+		! (FREETZ_SYSTEM_TYPE_GRX5) && \
 		\
-		! (FREETZ_KERNEL_LAYOUT_QCA956x && (FREETZ_TYPE_FIRMWARE_06_8X)) && \
+		! (FREETZ_SYSTEM_TYPE_IKS_VX185) && \
 		\
-		! FREETZ_TYPE_6820 && \
+		! (FREETZ_SYSTEM_TYPE_QCA955x) && \
 		\
-		! FREETZ_TYPE_7369 && \
+		! (FREETZ_SYSTEM_TYPE_QCA956x) && \
+		\
+		! FREETZ_TYPE_FIRMWARE_07_0X && \
 		\
 		! FREETZ_TYPE_FIRMWARE_LABOR
 	default y
@@ -45,19 +47,21 @@ config FREETZ_REPLACE_KERNEL_EXPERIMENTAL
 		FREETZ_AVM_SOURCE_7490_06_51 || \
 		FREETZ_AVM_SOURCE_7490_06_60 || \
 		FREETZ_AVM_SOURCE_7490_06_83 || \
-		FREETZ_AVM_SOURCE_7490_06_92 || \
+		FREETZ_AVM_SOURCE_7490_06_93 || \
 		FREETZ_AVM_SOURCE_7580_06_53 || \
 		FREETZ_AVM_SOURCE_7580_06_81 || \
-		FREETZ_AVM_SOURCE_7590_06_92
+		FREETZ_AVM_SOURCE_7590_06_92 || \
+		FREETZ_AVM_SOURCE_7590_07_00
 	default y
 
 # at the moment enabled for all configurations fulfilling the condition
 # "kernel version used by Freetz" == "kernel version used by AVM"
 config FREETZ_REPLACE_MODULE_AVAILABLE
 	bool
+	depends on !FREETZ_SYSTEM_TYPE_QCA955x # no sources at all for this system type
 #	depends on \
 #		FREETZ_REPLACE_KERNEL_AVAILABLE || \
-#		!FREETZ_KERNEL_LAYOUT_GRX5
+#		!FREETZ_AVM_VERSION_07_0X
 	default y
 	help
 		Select this if only source code from a previous firmware version is available for your box.

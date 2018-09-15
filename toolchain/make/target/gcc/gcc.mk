@@ -28,6 +28,7 @@ GCC_COMMON_CONFIGURE_OPTIONS += --with-gnu-ld
 GCC_COMMON_CONFIGURE_OPTIONS += --disable-__cxa_atexit
 GCC_COMMON_CONFIGURE_OPTIONS += --disable-libgomp
 GCC_COMMON_CONFIGURE_OPTIONS += --disable-libmudflap
+GCC_COMMON_CONFIGURE_OPTIONS += --disable-libsanitizer
 GCC_COMMON_CONFIGURE_OPTIONS += --disable-libssp
 GCC_COMMON_CONFIGURE_OPTIONS += --disable-multilib
 GCC_COMMON_CONFIGURE_OPTIONS += $(if $(FREETZ_AVM_UCLIBC_NPTL_ENABLED),--enable-tls,--disable-tls)

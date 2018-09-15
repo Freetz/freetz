@@ -1,5 +1,5 @@
-$(call PKG_INIT_LIB, v1.7.5)
-$(PKG)_LIB_VERSION:=1.7.5
+$(call PKG_INIT_LIB, v1.8.2)
+$(PKG)_LIB_VERSION:=1.8.2
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SITE:=git@https://github.com/lz4/lz4.git
 
@@ -11,6 +11,7 @@ $(PKG)_MAKE_VARS += CC="$(TARGET_CC)"
 $(PKG)_MAKE_VARS += CFLAGS="$(TARGET_CFLAGS)"
 $(PKG)_MAKE_VARS += AR="$(TARGET_AR)"
 $(PKG)_MAKE_VARS += PREFIX=/usr
+$(PKG)_MAKE_VARS += V=1
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

@@ -1,0 +1,13 @@
+--- linux-3.10/arch/mips/kernel/vmlinux.lds.S
++++ linux-3.10/arch/mips/kernel/vmlinux.lds.S
+@@ -103,7 +103,9 @@
+ 		CONSTRUCTORS
+ 		. = ALIGN(4 * 1024);
+ 		__avm_kernel_config_start = .;
+-		. += 64 * 1024;
++		arch/mips/kernel/avm_kernel_config_area.o(configarea)
++		arch/mips/kernel/avm_kernel_config_area.o(configareastrings)
++		. = __avm_kernel_config_start + (64 * 1024);
+ 		__avm_kernel_config_end = .;
+ 	}
+ 	_gp = . + 0x8000;

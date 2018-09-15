@@ -1768,31 +1768,43 @@ if [ "$DO_PACK" -gt 0 ]; then
 		[ -r "$PACKAGES_LIST_FILE" ] && cp "$PACKAGES_LIST_FILE" "$FIRMWARE_MOD_DIR/var"
 	fi
 
-	# Pack firmware image (use old tar for compatibility)
-	echo0 "packing $img_name"
-	"$TAR" -C "$FIRMWARE_MOD_DIR" -cf "$img_name" ./var
-	if [ $? -ne 0 ] || ! is_valid_tarball "$img_name"; then
-		mv "${img_name}" "${img_name}.corrupted" 2>/dev/null
+	# Pack firmware image
+
+	# use GNU tar with --format=gnu for compatibility
+	TAR_FOR_IMAGE_TARBALL="$TAR_GNU"
+	TAR_FOR_IMAGE_TARBALL_FORMAT_OPT="--format=gnu"
+
+	echo0 "packing ${img_name}"
+	"${TAR_FOR_IMAGE_TARBALL}" ${TAR_FOR_IMAGE_TARBALL_FORMAT_OPT} -C "$FIRMWARE_MOD_DIR" -cf "${img_name}.unsigned" ./var
+	if [ $? -ne 0 ] || ! is_valid_tarball "${img_name}.unsigned"; then
+		mv "${img_name}.unsigned" "${img_name}.unsigned.corrupted" 2>/dev/null
 		error 1 "packing of firmware image failed"
 	fi
-	echo1 "image file size: $(byte_to_mb $(wc -c < "${img_name}"))"
+	echo1 "unsigned image file size: $(byte_to_mb $(wc -c < "${img_name}.unsigned")) ($(wc -c < "${img_name}.unsigned") bytes)"
 
 	if [ "$DO_SIGN" -gt 0 ]; then
-		echo0 "signing $img_name"
+		echo0 "signing ${img_name}"
 		if [ -z "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" ]; then
 			# be verbose if no private key password provided
-			"${TOOLS_DIR}/yf/signimage/sign_image" "${img_name}" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}"                               > "${img_name}.signed"
+			YF_SIGNIMAGE_TAR="${TAR_FOR_IMAGE_TARBALL}" \
+			"${TOOLS_DIR}/yf/signimage/sign_image" "${img_name}.unsigned" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}"                                                > "${img_name}.signed"
 		else
-			"${TOOLS_DIR}/yf/signimage/sign_image" "${img_name}" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" 2>"${MOD_DIR}/sign_image.log" > "${img_name}.signed"
+			YF_SIGNIMAGE_TAR="${TAR_FOR_IMAGE_TARBALL}" \
+			"${TOOLS_DIR}/yf/signimage/sign_image" "${img_name}.unsigned" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" 2>"${MOD_DIR}/sign_image.log" > "${img_name}.signed"
 		fi
-		if [ $? -ne 0 ]; then
+		if [ $? -ne 0 ] || ! is_valid_tarball "${img_name}.signed"; then
 			mv "${img_name}.signed" "${img_name}.signed.corrupted" 2>/dev/null
 			error 1 "signing of firmware image failed, see console output or ${MOD_DIR}/sign_image.log for details"
 		fi
-
-		mv "${img_name}.signed" "${img_name}"
-		echo1 "signed image file size: $(byte_to_mb $(wc -c < "${img_name}"))"
+		echo1 "signed image file size: $(byte_to_mb $(wc -c < "${img_name}.signed")) ($(wc -c < "${img_name}.signed") bytes)"
 	fi
+
+	[ "$DO_SIGN" -gt 0 ] && final_img_suffix=signed || final_img_suffix=unsigned
+	echo0 "using ${final_img_suffix} image as the final one"
+	cp -a "${img_name}.${final_img_suffix}" "${img_name}"
+
+	# delete temporary unsigned/signed files unless we're debugging
+	[ "$DEBUG" != "1" ] && rm -f "${img_name}.unsigned" "${img_name}.signed"
 fi
 
 # ----------------------------------------------
