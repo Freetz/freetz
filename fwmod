@@ -1760,8 +1760,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 		error 1 "inconsistency comparing size of old and new kernel.image"
 	fi
 
-	# TODO: AVM update routines do not recognize Freetz firmware as properly signed if any additional files are added to the .image tarball
-	if [ ! "$DO_AVOID_MOD_IN_STEP3" -gt 0 -a ! "$DO_SIGN" -gt 0 ]; then
+	if [ ! "$DO_AVOID_MOD_IN_STEP3" -gt 0 ]; then
 		# Last, but not least, include .config and addon/static.pkg into firmware
 		# image for further reference, e.g. user support
 		[ -r "$DOT_CONFIG" ] && { cat "$DOT_CONFIG" | grep -v "FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD" > "$FIRMWARE_MOD_DIR/var/.config"; }
