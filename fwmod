@@ -1787,9 +1787,11 @@ if [ "$DO_PACK" -gt 0 ]; then
 		if [ -z "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" ]; then
 			# be verbose if no private key password provided
 			YF_SIGNIMAGE_TAR="${TAR_FOR_IMAGE_TARBALL}" \
+			YF_SIGNIMAGE_9K_WORKAROUND_METHOD="${FREETZ_SIGNIMAGE_9K_WORKAROUND_METHOD}" \
 			"${TOOLS_DIR}/yf/signimage/sign_image" "${img_name}.unsigned" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}"                                                > "${img_name}.signed"
 		else
 			YF_SIGNIMAGE_TAR="${TAR_FOR_IMAGE_TARBALL}" \
+			YF_SIGNIMAGE_9K_WORKAROUND_METHOD="${FREETZ_SIGNIMAGE_9K_WORKAROUND_METHOD}" \
 			"${TOOLS_DIR}/yf/signimage/sign_image" "${img_name}.unsigned" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" 2>"${MOD_DIR}/sign_image.log" > "${img_name}.signed"
 		fi
 		if [ $? -ne 0 ] || ! is_valid_tarball "${img_name}.signed"; then

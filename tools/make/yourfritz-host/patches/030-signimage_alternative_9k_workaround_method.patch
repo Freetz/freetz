@@ -1,0 +1,37 @@
+--- signimage/sign_image
++++ signimage/sign_image
+@@ -370,10 +370,17 @@
+ # needed                                                                           #
+ #                                                                                  #
+ ####################################################################################
++zero_blocks_in_hash=2K        # 2 blocks ./var/signature member + 2 blocks EoA marker
+ if [ $(( ( copy_blocks + 2 ) % 20 )) -eq 0 ]; then
++  if [ "${YF_SIGNIMAGE_9K_WORKAROUND_METHOD}" == "ZERO_BLOCKS" ]; then
++    echo -e "Workarounding 9K problem by shortening the area \x1B[1m$hash_algo\x1B[0m-sum is computed over" 1>&2
++    zero_blocks_in_hash=1K    # 2 blocks ./var/signature member only
++    touch "$tmp/filler.bin"
++  else
+ 	echo -ne "Repeating first entry as filler ... " 1>&2
+ 	"$YF_SIGNIMAGE_DD" if="$image_file" of="$tmp/filler.bin" bs=512 count=1 status=none 2>/dev/null
+ 	show_ok
++  fi
+ else
+ 	touch "$tmp/filler.bin"
+ fi
+@@ -385,6 +392,7 @@
+ #                                                                                  #
+ ####################################################################################
+ "$YF_SIGNIMAGE_DD" if=/dev/zero of="$tmp/1K.bin" bs=512 count=2 status=none 2>/dev/null
++"$YF_SIGNIMAGE_DD" if=/dev/zero of="$tmp/2K.bin" bs=512 count=4 status=none 2>/dev/null
+ ####################################################################################
+ #                                                                                  #
+ # generate the signature file                                                      #
+@@ -396,7 +404,7 @@
+ #                                                                                  #
+ ##################################A#################################################
+ echo -en "Signing the image hash (\x1B[1m$hash_algo\x1B[0m) with RSA key from \x1B[1m${name_prefix}.${private_extension}\x1B[0m ... " 1>&2
+-"$YF_SIGNIMAGE_DD" if="$image_file" bs=512 count=$copy_blocks status=none 2>&1 | cat - "$tmp/filler.bin" "$tmp/1K.bin" "$tmp/1K.bin" |
++"$YF_SIGNIMAGE_DD" if="$image_file" bs=512 count=$copy_blocks status=none 2>&1 | cat - "$tmp/filler.bin" "$tmp/${zero_blocks_in_hash}.bin" |
+ "$YF_SIGNIMAGE_OPENSSL" dgst -$hash_algo -sign "${name_prefix}.${private_extension}" -out "$tmp/var/signature" -passin "pass:$KEYPASSWORD"
+ rc=$?
+ if [ $rc -eq 0 ]; then
