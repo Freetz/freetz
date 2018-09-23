@@ -1,0 +1,15 @@
+#!/bin/sh
+
+. /mod/etc/conf/mosquitto.cfg
+
+cat << EOF
+user nobody
+pid_file /var/run/mosquitto.pid
+port $MOSQUITTO_PORT
+persistence false
+EOF
+
+if [ "$MOSQUITTO_SYSLOG" = "yes" ]; then
+	echo "# Possible destinations are: stdout stderr syslog topic file"
+	echo "log_dest syslog"
+fi

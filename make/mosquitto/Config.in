@@ -1,0 +1,62 @@
+config FREETZ_PACKAGE_MOSQUITTO
+	bool "Mosquitto 1.4.15"
+	default n
+	select FREETZ_PACKAGE_MOSQUITTO_BROKER if (!FREETZ_PACKAGE_MOSQUITTO_CLIENT_PUB && !FREETZ_PACKAGE_MOSQUITTO_CLIENT_SUB)
+	help
+		Eclipse Mosquitto™ is an open source (EPL/EDL licensed) message broker that implements
+		the MQTT protocol versions 3.1 and 3.1.1. MQTT provides a lightweight method of
+		carrying out messaging using a publish/subscribe model. This makes it suitable
+		for "Internet of Things" messaging such as with low power sensors or mobile devices
+		such as phones, embedded computers or microcontrollers like the Arduino.
+
+config FREETZ_PACKAGE_MOSQUITTO_BROKER
+	bool "include broker"
+	depends on FREETZ_PACKAGE_MOSQUITTO
+	select FREETZ_LIB_libdl
+	select FREETZ_LIB_libm
+	select FREETZ_LIB_librt
+	default y
+	help
+		Adds the mosquitto broker to the image
+
+config FREETZ_PACKAGE_MOSQUITTO_CLIENTS
+	bool "include clients"
+	depends on FREETZ_PACKAGE_MOSQUITTO
+	# libmosquitto dependencies
+	select FREETZ_LIB_librt
+	select FREETZ_LIB_libpthread
+	default n
+
+config FREETZ_PACKAGE_MOSQUITTO_CLIENT_PUB
+	bool "include publish client"
+	depends on FREETZ_PACKAGE_MOSQUITTO_CLIENTS
+	default n
+	help
+		Adds the mosquitto publish client to the image
+
+config FREETZ_PACKAGE_MOSQUITTO_CLIENT_SUB
+	bool "include subscribe client"
+	depends on FREETZ_PACKAGE_MOSQUITTO_CLIENTS
+	default n
+	help
+		Adds the mosquitto subscribe client to the image
+
+config FREETZ_PACKAGE_MOSQUITTO_WITH_UUID
+	bool "enable uuid support in mosquitto"
+	depends on FREETZ_PACKAGE_MOSQUITTO_CLIENTS
+	select FREETZ_LIB_libuuid
+	default y
+	help
+		Build using libuuid for clientid generation.
+
+config FREETZ_PACKAGE_MOSQUITTO_WITH_SSL
+	bool "build with SSL support"
+	depends on FREETZ_PACKAGE_MOSQUITTO
+		select FREETZ_OPENSSL_VERSION_PROMPT
+		select FREETZ_OPENSSL_VERSION_1_REQUIRED
+		select FREETZ_LIB_libcrypto
+		select FREETZ_LIB_libcrypto_WITH_EC
+		select FREETZ_LIB_libssl
+	default n
+	help
+		This option enables SSL support for mosquitto.

@@ -1,0 +1,29 @@
+--- lib/Makefile
++++ lib/Makefile
+@@ -21,7 +21,7 @@
+ 		  will_mosq.o
+ 
+ all : libmosquitto.so.${SOVERSION} libmosquitto.a
+-	$(MAKE) -C cpp
++#	$(MAKE) -C cpp
+ 
+ install : all
+ 	$(INSTALL) -d ${DESTDIR}$(prefix)/lib${LIB_SUFFIX}/
+@@ -29,7 +29,7 @@
+ 	ln -sf libmosquitto.so.${SOVERSION} ${DESTDIR}${prefix}/lib${LIB_SUFFIX}/libmosquitto.so
+ 	$(INSTALL) -d ${DESTDIR}${prefix}/include/
+ 	$(INSTALL) mosquitto.h ${DESTDIR}${prefix}/include/mosquitto.h
+-	$(MAKE) -C cpp install
++#	$(MAKE) -C cpp install
+ 
+ uninstall :
+ 	-rm -f ${DESTDIR}${prefix}/lib${LIB_SUFFIX}/libmosquitto.so.${SOVERSION}
+@@ -40,7 +40,7 @@
+ 
+ clean :
+ 	-rm -f *.o libmosquitto.so.${SOVERSION} libmosquitto.so libmosquitto.a
+-	$(MAKE) -C cpp clean
++#	$(MAKE) -C cpp clean
+ 
+ libmosquitto.so.${SOVERSION} : ${MOSQ_OBJS}
+ 	${CROSS_COMPILE}$(CC) -shared $(LIB_LDFLAGS) $^ -o $@ ${LIB_LIBS}
