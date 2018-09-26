@@ -357,12 +357,12 @@ choice
 			Enable this to use an AVM Labor firmware from the Beta branch as base for modding.
 			For more details see <http://www.avm.de/Labor/>.
 
-	config FREETZ_TYPE_FIRMWARE_LABOR_MESH
-		bool "FRITZ! Labor WLAN Mesh - HIGHLY EXPERIMENTAL"
-		select FREETZ_AVM_VERSION_06_9X
-		depends on FREETZ_AVM_HAS_FIRMWARE_LABOR_MESH && FREETZ_SHOW_ADVANCED
+	config FREETZ_TYPE_FIRMWARE_LABOR_MAINTENANCE
+		bool "FRITZ! Labor Maintenance - EXPERIMENTAL"
+		select FREETZ_AVM_VERSION_06_8X
+		depends on FREETZ_AVM_HAS_FIRMWARE_LABOR_MAINTENANCE && FREETZ_SHOW_ADVANCED
 		help
-			Enable this to use an AVM Labor firmware from the WLAN Mesh branch as base for modding.
+			Enable this to use an AVM Labor firmware from the Maintenance branch as base for modding.
 			For more details see <http://www.avm.de/Labor/>.
 
 endchoice # "Firmware version" #
@@ -372,7 +372,7 @@ if FREETZ_TYPE_FIRMWARE_06_5X || FREETZ_TYPE_FIRMWARE_06_8X || FREETZ_TYPE_FIRMW
 	comment "UNDER DEVELOPMENT means:"
 endif
 if FREETZ_TYPE_FIRMWARE_LABOR || FREETZ_TYPE_FIRMWARE_07_0X
-	comment "HIGHLY EXPERIMENTAL means:"
+	comment "(HIGHLY) EXPERIMENTAL means:"
 	comment " - the box may fail to boot and you need to recover it"
 	comment " - there is a higher probability to face stability issues"
 endif
@@ -406,7 +406,7 @@ config FREETZ_TYPE_FIRMWARE_FINAL
 config FREETZ_TYPE_FIRMWARE_LABOR
 	bool
 	default y
-	depends on FREETZ_TYPE_FIRMWARE_LABOR_BETA || FREETZ_TYPE_FIRMWARE_LABOR_MESH
+	depends on FREETZ_TYPE_FIRMWARE_LABOR_BETA || FREETZ_TYPE_FIRMWARE_LABOR_MAINTENANCE
 
 config FREETZ_TYPE_LANGUAGE
 	string
