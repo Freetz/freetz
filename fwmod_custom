@@ -22,6 +22,12 @@ all_no_freetz() {
 	source "${freetz_base}/tools/freetz_patch"
 	source "${freetz_base}/.config"
 
+	# run telefon daemon in in-house mode, needed for
+	# - /var/flash/calllog processing
+	# - telnet-on-/off telefon codes support
+	# - automatic telnet start
+	source "${patches_scripts}/114-run_telefon_in_inhouse_mode.sh"
+
 	# restore telnet support, the user still needs to activate it via the phone code (#96*7*)
 	ln -sf ../../bin/busybox ./filesystem/usr/sbin/telnetd
 

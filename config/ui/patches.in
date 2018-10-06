@@ -1561,6 +1561,18 @@ config FREETZ_ASYNCHRONOUS_DEBUG_CFG
 
 		Requires AVM's /sbin/delay binary in order to work.
 
+config FREETZ_RUN_TELEFON_IN_INHOUSE_MODE
+	bool "Run telefon daemon in in-house mode"
+	depends on FREETZ_AVM_HAS_PHONE
+	depends on FREETZ_AVM_VERSION_06_5X_MIN
+	default n
+	help
+		Running telefon daemon in "in-house" mode restores
+		- processing of /var/flash/calllog on incoming calls
+		- support for the telnet-on/-off phone codes (#96*7*/#96*8*)
+		- processing of /var/flash/fx_conf attributes responsible
+		  for automatic start of the telnet daemon
+
 comment "AVM daemons ----------------------------"
 
 config FREETZ_AVMDAEMON_DISABLE_IGD
