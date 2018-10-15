@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, $(if $(FREETZ_PACKAGE_TINC_VERSION_1_1),1.1pre15,1.0.33))
+$(call PKG_INIT_BIN, $(if $(FREETZ_PACKAGE_TINC_VERSION_1_1),1.1pre17,1.0.35))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5_1.0.33  :=f9080dc5f8b1c135da43b9533f69a0bb
-$(PKG)_SOURCE_MD5_1.1pre15:=64fb5847ccc7a1b35975af3eb981f727
+$(PKG)_SOURCE_MD5_1.0.35  :=c44f3eaf6264319953d0cff56f2e98d4
+$(PKG)_SOURCE_MD5_1.1pre17:=fb29dfa2e6d51cd5ab6c9d8c9bc95d48
 $(PKG)_SOURCE_MD5:=$($(PKG)_SOURCE_MD5_$($(PKG)_VERSION))
 $(PKG)_SITE:=http://www.tinc-vpn.org/packages
 
