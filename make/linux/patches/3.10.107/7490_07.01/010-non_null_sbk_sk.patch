@@ -1,0 +1,36 @@
+
+Disable strange BUG_ON's/drop added by AVM in Fritz!OS-07.0X
+
+--- linux-3.10/net/core/dev.c
++++ linux-3.10/net/core/dev.c
+@@ -3703,7 +3703,7 @@
+ {
+ 	int ret;
+ 
+-	BUG_ON(skb->sk);
++//	BUG_ON(skb->sk);
+ 	if (sk_memalloc_socks() && skb_pfmemalloc(skb)) {
+ 		unsigned long pflags = current->flags;
+ 
+@@ -3744,7 +3744,7 @@
+ {
+ 	int ret;
+ 
+-	BUG_ON(skb->sk);
++//	BUG_ON(skb->sk);
+ 	net_timestamp_check(netdev_tstamp_prequeue, skb);
+ 
+ 	if (skb_defer_rx_timestamp(skb))
+--- linux-3.10/net/ipv4/ip_forward.c
++++ linux-3.10/net/ipv4/ip_forward.c
+@@ -130,8 +130,8 @@
+ 	struct rtable *rt;	/* Route we use */
+ 	struct ip_options *opt	= &(IPCB(skb)->opt);
+ 
+-	if (unlikely(skb->sk))
+-		goto drop;
++//	if (unlikely(skb->sk))
++//		goto drop;
+ 
+ 	if (skb_warn_if_lro(skb))
+ 		goto drop;
