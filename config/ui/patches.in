@@ -473,27 +473,6 @@ config FREETZ_REMOVE_BRANDING_freenet
 
 		echo $(cat /proc/sys/urlader/firmware_version)
 
-#config FREETZ_REMOVE_BRANDING_tcom
-#	bool "T-Com"
-#	depends on \
-#		FREETZ_TYPE_LANG_DE && \
-#		( \
-#		FREETZ_TYPE_300IP || \
-#		FREETZ_TYPE_W501V || \
-#		FREETZ_TYPE_ALIEN_HARDWARE \
-#		)
-#	default n
-#	help
-#		T-Com branding
-#
-#		Each branding provides the web UI templates for a certain manufacturer or OEM.
-#
-#		NOTE: Make sure not to remove the branding corresponding to the one defined
-#		in your box's boot loader environment. It can be determined by calling the
-#		following command from the box's shell prompt:
-#
-#		echo $(cat /proc/sys/urlader/firmware_version)
-
 config FREETZ_REMOVE_BRANDING_versatel
 	bool "Versatel"
 	depends on FREETZ_TYPE_3131
@@ -1140,13 +1119,6 @@ config FREETZ_PATCH_GSMVOICE
 		Patches the WebUI to allow voice-over-GSM.
 		Highly experimental! Your UMTS stick has to support it.
 		Webif: Internet > Mobilfunk > Telefonie ueber Mobilfunk
-
-#config FREETZ_PATCH_INTERNATIONAL
-#	bool "Patch international"
-#	depends on FREETZ_AVM_HAS_PHONE && FREETZ_TYPE_LANG_DE
-#	default y
-#	help
-#		Reveals some options from the international firmware in the web menu.
 
 config FREETZ_PATCH_ALARMCLOCK
 	bool "Patch third alarm-clock"
