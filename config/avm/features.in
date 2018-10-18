@@ -603,9 +603,7 @@ config FREETZ_AVM_HAS_JFFS2_MODULE
 config FREETZ_AVM_HAS_JFFS2_BUILTIN
 	bool "jffs2 support built into the kernel"	if FREETZ_TYPE_CUSTOM
 	default y	if \
-		FREETZ_TYPE_7312 || \
-		FREETZ_TYPE_7320 || \
-		FREETZ_TYPE_7330
+		FREETZ_SYSTEM_TYPE_AR9
 	default n
 	help
 		Select this if you have a box with JFFS2 filesystem support built into the kernel.
