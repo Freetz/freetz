@@ -1,16 +1,60 @@
+#
+# TODO: check all conditions below, they are quite likely incomplete/incorrect
+#       we also need to distinguish between
+#        - CONFIG_NFS_FS (NFS client support) [nfsroot package]
+#        - CONFIG_NFSD   (NFS server support) [nfs-utils package]
+#       being built-in or available as module
+#
+
+#
+# Legend:
+#  ? - unknown (no kernel sources available)
+#  n - disabled
+#  y - built-in
+#  m - module
+#
+# 1st letter: value of CONFIG_NFS_FS
+# 2nd letter: value of CONFIG_NFSD
+#
+# FREETZ_SYSTEM_TYPE_AR7_SANGAM : avm(nn), freetz(mm)
+# FREETZ_SYSTEM_TYPE_AR7_OHIO   : avm(nn), freetz(mm)
+# FREETZ_SYSTEM_TYPE_AR9        : avm(nn), freetz(ym) # TODO: change to freetz(mm)
+# FREETZ_SYSTEM_TYPE_AR934x     : avm(nn), freetz(ym) # TODO: change to freetz(mm)
+# FREETZ_SYSTEM_TYPE_AR10       : avm(nn), freetz(ym) # TODO: change to freetz(mm)
+# FREETZ_SYSTEM_TYPE_GRX5       : avm(yn), freetz(ym)
+# FREETZ_SYSTEM_TYPE_IKS_VX180  : avm(yy), freetz(ym) # TODO: change to freetz(yy)
+# FREETZ_SYSTEM_TYPE_IKS_VX185  : avm(??), freetz(ym)
+# FREETZ_SYSTEM_TYPE_PUMA6_X86  : avm(??), freetz(??)
+# FREETZ_SYSTEM_TYPE_QCA955x    : avm(??), freetz(ym)
+# FREETZ_SYSTEM_TYPE_QCA956x    : avm(nn), freetz(ym) # TODO: change to freetz(mm)
+# FREETZ_SYSTEM_TYPE_UR8        : avm(yy), freetz([yy: 2.6.19], [mm: all other]) # TODO: change to freetz(yy), NOTE: 2.6.19 needs replace kernel for some unknown reasons
+# FREETZ_SYSTEM_TYPE_VR9        : avm(nn), freetz([ym: 2.6.32], [nn: 3.10]) # TODO: change to freetz(mm)
+
 config FREETZ_NFS_SUPPORT_NEEDS_REPLACE_KERNEL
 	bool
-	default y if FREETZ_TYPE_7270_V1 || FREETZ_TYPE_7490
+	default y if \
+		FREETZ_SYSTEM_TYPE_AR9                                                             || \
+		FREETZ_SYSTEM_TYPE_AR934x                                                          || \
+		FREETZ_SYSTEM_TYPE_AR10                                                            || \
+		FREETZ_SYSTEM_TYPE_IKS_VX185                                                       || \
+		(FREETZ_SYSTEM_TYPE_UR8 && FREETZ_KERNEL_VERSION_2_6_19)                           || \
+		(FREETZ_SYSTEM_TYPE_VR9 && FREETZ_KERNEL_VERSION_2_6_32)
+	default n
+
+config FREETZ_NFS_SUPPORT_AVAILABLE_AS_MODULE
+	bool
+	default y if \
+		FREETZ_SYSTEM_TYPE_AR7_SANGAM                                                      || \
+		FREETZ_SYSTEM_TYPE_AR7_OHIO                                                        || \
+		FREETZ_SYSTEM_TYPE_GRX5                                                            || \
+		(FREETZ_SYSTEM_TYPE_UR8 && FREETZ_KERNEL_VERSION_2_6_32 && FREETZ_REPLACE_KERNEL)
 	default n
 
 config FREETZ_NFS_SUPPORT_AVAILABLE
 	bool
 	default y if \
-		( FREETZ_NFS_SUPPORT_NEEDS_REPLACE_KERNEL && FREETZ_REPLACE_KERNEL) || \
-		(!FREETZ_NFS_SUPPORT_NEEDS_REPLACE_KERNEL && (FREETZ_KERNEL_VERSION_2_6_19 || FREETZ_REPLACE_MODULE_AVAILABLE))
-	default n
-
-config FREETZ_NFS_SUPPORT_AVAILABLE_AS_MODULE
-	bool
-	default y if (FREETZ_KERNEL_VERSION_2_6_13 || FREETZ_KERNEL_VERSION_2_6_28_MIN) && FREETZ_REPLACE_MODULE_AVAILABLE
+		(FREETZ_NFS_SUPPORT_NEEDS_REPLACE_KERNEL && FREETZ_REPLACE_KERNEL)                 || \
+		FREETZ_NFS_SUPPORT_AVAILABLE_AS_MODULE                                             || \
+		FREETZ_SYSTEM_TYPE_IKS_VX180                                                       || \
+		(FREETZ_SYSTEM_TYPE_UR8 && FREETZ_KERNEL_VERSION_2_6_32 && !FREETZ_REPLACE_KERNEL)
 	default n

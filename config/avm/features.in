@@ -890,20 +890,14 @@ config FREETZ_AVM_HAS_ALLCFGCONV_WITH_DECRYPTION_SUPPORT
 	bool "allcfgconv supports decryption"	if FREETZ_TYPE_CUSTOM
 	default n		if \
 		FREETZ_AVM_VERSION_06_2X_MIN || \
-		FREETZ_AVM_VERSION_06_0X && ( \
-			FREETZ_TYPE_7240 || \
-			FREETZ_TYPE_7270_16 \
-		)
+		(FREETZ_AVM_VERSION_06_0X && FREETZ_SYSTEM_TYPE_UR8)
 	default y
 
 config FREETZ_AVM_HAS_DEBUG_CFG_SUPPORT
 	bool "debug.cfg support"	if FREETZ_TYPE_CUSTOM
 	default n		if \
 		FREETZ_AVM_VERSION_06_2X_MIN || \
-		FREETZ_AVM_VERSION_06_0X && ( \
-			FREETZ_TYPE_7240 || \
-			FREETZ_TYPE_7270_16 \
-		)
+		(FREETZ_AVM_VERSION_06_0X && FREETZ_SYSTEM_TYPE_UR8)
 	default y
 
 # TODO: check the default values, at the moment pure assumption
