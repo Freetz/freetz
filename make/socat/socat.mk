@@ -17,6 +17,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-readline
 $(PKG)_CONFIGURE_OPTIONS += sc_cv_sys_crdly_shift=9
 $(PKG)_CONFIGURE_OPTIONS += sc_cv_sys_tabdly_shift=11
 $(PKG)_CONFIGURE_OPTIONS += sc_cv_sys_csize_shift=4
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_ARCH_X86),sc_cv_termios_ispeed=no)
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_SOCAT_WITHTERMIOS
