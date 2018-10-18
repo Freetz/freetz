@@ -5,6 +5,35 @@
 menu "Hardware / AVM Fritz!OS components"
 	visible if FREETZ_TYPE_CUSTOM
 
+config FREETZ_TYPE_CABLE
+	bool
+	default y		if \
+		FREETZ_TYPE_6490 || \
+		FREETZ_TYPE_6590
+	default n
+
+config FREETZ_TYPE_DSL
+	bool
+	default n		if \
+		FREETZ_TYPE_4020 || \
+		FREETZ_TYPE_6490 || \
+		FREETZ_TYPE_6590 || \
+		FREETZ_TYPE_6810 || \
+		FREETZ_TYPE_6820 || \
+		FREETZ_TYPE_6840 || \
+		FREETZ_TYPE_6842
+	default y
+
+config FREETZ_TYPE_LTE
+	bool
+	default y		if \
+		FREETZ_TYPE_6810 || \
+		FREETZ_TYPE_6820 || \
+		FREETZ_TYPE_6840 || \
+		FREETZ_TYPE_6842 || \
+		FREETZ_TYPE_6890
+	default n
+
 config FREETZ_AVM_HAS_AHA
 	bool "AHA support (AVM Home Automation)"	if FREETZ_TYPE_CUSTOM
 	default y		if \
@@ -77,6 +106,7 @@ config FREETZ_AVM_HAS_MYFRITZ
 
 config FREETZ_AVM_HAS_MULTI_ANNEX
 	bool "Multi-Annex (single firmware image)"	if FREETZ_TYPE_CUSTOM
+	depends on FREETZ_TYPE_DSL
 	default y		if FREETZ_AVM_VERSION_05_2X_MIN
 	default n
 	help
@@ -85,6 +115,7 @@ config FREETZ_AVM_HAS_MULTI_ANNEX
 
 config FREETZ_AVM_HAS_ANNEX_A_AND_B
 	bool "Multi-Annex (different Annex A/B images)"	if FREETZ_TYPE_CUSTOM
+	depends on FREETZ_TYPE_DSL
 	default y		if FREETZ_TYPE_LANG_EN && \
 		( \
 			FREETZ_TYPE_300IP || \
