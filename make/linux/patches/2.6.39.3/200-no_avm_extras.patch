@@ -1,0 +1,22 @@
+--- linux-2.6.39/drivers/staging/zram/Makefile
++++ linux-2.6.39/drivers/staging/zram/Makefile
+@@ -6,7 +6,7 @@
+ 
+ 
+ ifneq ($(CONFIG_ZRAM),n)
+-extra-y			+= ramzswap.sh
++#extra-y			+= ramzswap.sh
+ 
+ $(src)/ramzswap.sh: FORCE
+ 	rm -f $(src)/ramzswap.sh
+--- linux-2.6.39/drivers/net/avm_cpmac/lib/notify_avmnet/Makefile
++++ linux-2.6.39/drivers/net/avm_cpmac/lib/notify_avmnet/Makefile
+@@ -3,7 +3,7 @@
+ $(info avmnet/lib/notify: Guessing INSTALL_MOD_PATH: $(INSTALL_MOD_PATH))
+ endif
+ 
+-extra-y			+= notify_avmnet INSTALL_EXTRA_TARGETS
++#extra-y			+= notify_avmnet INSTALL_EXTRA_TARGETS
+ clean-files		+= libtest libnotify_avmnet.so.0.1 libnotify_avmnet.so.0 libnotify_avmnet.so notify_avmnet.o
+ 
+ quiet_cmd_target_cc_o_c = EXTRACC $@

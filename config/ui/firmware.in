@@ -99,6 +99,17 @@ choice
 		select FREETZ_AVM_SOURCE_04_67
 		bool "5140"
 
+	comment "Cable"
+
+	config FREETZ_TYPE_6490
+		depends on FREETZ_REAL_DEVELOPER_ONLY
+		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_PUMA6
+		bool "6490 (atom core)"
+
+	config FREETZ_TYPE_6590
+		depends on FREETZ_REAL_DEVELOPER_ONLY
+		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_PUMA6
+		bool "6590 (atom core)"
 
 	comment "LTE"
 
@@ -375,6 +386,9 @@ if FREETZ_TYPE_FIRMWARE_LABOR || FREETZ_TYPE_FIRMWARE_07_0X
 	comment "(HIGHLY) EXPERIMENTAL means:"
 	comment " - the box may fail to boot and you need to recover it"
 	comment " - there is a higher probability to face stability issues"
+endif
+if FREETZ_SYSTEM_TYPE_PUMA6
+	comment " - the box may fail to boot and you need to recover it manually via the bootlader"
 endif
 	comment " - some remove/AVM-web-interface patches are not working"
 	comment "   even if selectable in menuconfig"

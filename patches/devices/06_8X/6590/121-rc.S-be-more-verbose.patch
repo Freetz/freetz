@@ -1,0 +1,18 @@
+--- etc/init.d/rc.S
++++ etc/init.d/rc.S
+@@ -50,12 +50,13 @@
+ fi
+ done
+ fi
+-echo "exceute files in group ${gruppe} ...";
++echo "executing files in group ${gruppe} ...";
+ if ls /etc/init.d/E${gruppe}[0-9]-* 2>/dev/null ; then
+ for skript in `ls /etc/init.d/E${gruppe}[0-9]-* | sort` ; do
+ if [ ! -f /var/skip_init ] ; then
++echo "executing ${skript}"
+ if ! sh ${skript} ; then
+-echo "exceute ${skript} failed."
++echo "executing ${skript} failed."
+ fi
+ else
+ echo "skip_init: ${skript} "
