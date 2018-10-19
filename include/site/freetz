@@ -1,5 +1,4 @@
-# Common options for the mips target that configure can't find out
-# because we are cross-compiling.
+# Common options for all architectures
 
 # Types and sizes
 ac_cv_type_pid_t=yes
@@ -16,12 +15,13 @@ ac_cv_sizeof_ptrdiff_t=4
 ac_cv_sizeof_size_t=4
 ac_cv_sizeof_ssize_t=4
 ac_cv_sizeof_socklen_t=4
-ac_cv_sizeof_fpos_t=24
+# ac_cv_sizeof_fpos_t is architecture specific
 ac_cv_sizeof_off_t=8
 ac_cv_sizeof_stat_st_size=8
 
 # Header files
 ac_cv_header_time=yes
+
 # C Library function
 ac_cv_have_decl_malloc=yes
 ac_cv_func_calloc_0_nonnull=yes
@@ -93,7 +93,7 @@ ac_cv_file__usr_X11R6_lib64=no
 ac_cv_file__usr_X11R6_lib=no
 
 # Linux system
-ac_cv_linux_vers=2.6.13.1
+ac_cv_linux_vers="${FREETZ_KERNEL_VERSION_MAJOR}"
 ac_cv_CAN_USE_SYSCTL=no
 
 # Other
