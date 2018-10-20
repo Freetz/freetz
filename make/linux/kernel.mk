@@ -2,8 +2,7 @@ KERNEL_SUBVERSION:=iln6
 
 KERNEL_MAKE_DIR:=$(MAKE_DIR)/linux
 KERNEL_PATCHES_DIR:=$(KERNEL_MAKE_DIR)/patches/$(KERNEL_VERSION)$(SYSTEM_TYPE_CORE_SUFFIX)
-KERNEL_BUILD_DIR:=$(KERNEL_DIR)
-KERNEL_BUILD_ROOT_DIR:=$(KERNEL_BUILD_DIR)/linux-$(KERNEL_VERSION_SOURCES_SUBDIR)
+KERNEL_BUILD_ROOT_DIR:=$(KERNEL_DIR)/linux-$(KERNEL_VERSION_SOURCES_SUBDIR)
 
 KERNEL_IMAGE:=vmlinux.eva_pad
 KERNEL_IMAGE_BUILD_SUBDIR:=$(if $(FREETZ_KERNEL_VERSION_3_10_MIN),/arch/$(KERNEL_ARCH)/boot)
@@ -38,7 +37,7 @@ AVM_UNPACK__INT_.bz2:=j
 kernel-unpacked: $(KERNEL_DIR)/.unpacked
 $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(call qstrip,$(FREETZ_DL_KERNEL_SOURCE)) | gcc-kernel
 	$(RM) -r $(KERNEL_DIR)
-	mkdir -p $(KERNEL_BUILD_DIR)
+	mkdir -p $(KERNEL_DIR)
 	@$(call _ECHO,checking structure... )
 	@KERNEL_SOURCE_CONTENT=$$( \
 		$(TAR) -t$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) -f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE) \
@@ -54,11 +53,11 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(call qstrip,$(FREETZ_DL_KERNEL_SOURCE)) 
 				-x$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
 				-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE) \
 				--wildcards "*/$${KERNEL_SOURCE_CONTENT##*/}" | \
-			$(TAR)	-C $(KERNEL_BUILD_DIR) $(VERBOSE) \
+			$(TAR)	-C $(KERNEL_DIR) $(VERBOSE) \
 				-xz \
 				--transform="s|^.*\(linux-$(KERNEL_VERSION_SOURCES_SUBDIR_ESCAPED)/\)|\1|g" --show-transformed; \
 		else \
-			$(TAR)	-C $(KERNEL_BUILD_DIR) $(VERBOSE) \
+			$(TAR)	-C $(KERNEL_DIR) $(VERBOSE) \
 				-x$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
 				-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE) \
 				--transform="s|^.*\(linux-$(KERNEL_VERSION_SOURCES_SUBDIR_ESCAPED)/\)|\1|g" --show-transformed "$${KERNEL_SOURCE_CONTENT}"; \
@@ -69,9 +68,9 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(call qstrip,$(FREETZ_DL_KERNEL_SOURCE)) 
 	fi
 	@$(call _ECHO, preparing... )
 	#kernel version specific patches
-	@$(call APPLY_PATCHES,$(KERNEL_PATCHES_DIR),$(KERNEL_BUILD_DIR))
+	@$(call APPLY_PATCHES,$(KERNEL_PATCHES_DIR),$(KERNEL_DIR))
 	#firmware version specific patches
-	@$(call APPLY_PATCHES,$(KERNEL_PATCHES_DIR)/$(AVM_SOURCE_ID),$(KERNEL_BUILD_DIR))
+	@$(call APPLY_PATCHES,$(KERNEL_PATCHES_DIR)/$(AVM_SOURCE_ID),$(KERNEL_DIR))
 	@for i in $(KERNEL_LINKING_FILES); do \
 		if [ -e $(KERNEL_BUILD_ROOT_DIR)/$$i -a \
 		! -e $(KERNEL_BUILD_ROOT_DIR)/include/linux/$${i##*\/linux_} ]; then \
