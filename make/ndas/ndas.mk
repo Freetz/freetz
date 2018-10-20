@@ -2,7 +2,7 @@ $(call PKG_INIT_BIN, 1aaf88acd0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SITE:=git@https://github.com/iocellnetworks/ndas4linux.git
 
-$(PKG)_KERNEL_VERSION:=$(call qstrip,$(FREETZ_KERNEL_VERSION_MAJOR))
+$(PKG)_KERNEL_VERSION:=$(KERNEL_VERSION_MAJOR)
 
 $(PKG)_PRELIMINARY_BUILD_DIR:=$($(PKG)_DIR)/2.6.32
 $(PKG)_BUILD_DIR:=$($(PKG)_PRELIMINARY_BUILD_DIR)/build_freetz/ndas-$($(PKG)_KERNEL_VERSION)
