@@ -1,5 +1,5 @@
---- linux-2.6.13.1.orig/include/linux/netfilter_ipv6/ip6t_REJECT.h
-+++ linux-2.6.13.1/include/linux/netfilter_ipv6/ip6t_REJECT.h
+--- linux-2.6.13/include/linux/netfilter_ipv6/ip6t_REJECT.h
++++ linux-2.6.13/include/linux/netfilter_ipv6/ip6t_REJECT.h
 @@ -0,0 +1,18 @@
 +#ifndef _IP6T_REJECT_H
 +#define _IP6T_REJECT_H
@@ -19,8 +19,8 @@
 +};
 +
 +#endif /*_IP6T_REJECT_H*/
---- linux-2.6.13.1.orig/net/ipv6/netfilter/ip6t_REJECT.c
-+++ linux-2.6.13.1/net/ipv6/netfilter/ip6t_REJECT.c
+--- linux-2.6.13/net/ipv6/netfilter/ip6t_REJECT.c
++++ linux-2.6.13/net/ipv6/netfilter/ip6t_REJECT.c
 @@ -0,0 +1,281 @@
 +/*
 + * IP6 tables REJECT target module
@@ -303,8 +303,8 @@
 +
 +module_init(init);
 +module_exit(fini);
---- linux-2.6.13.1.orig/net/ipv6/netfilter/Kconfig
-+++ linux-2.6.13.1/net/ipv6/netfilter/Kconfig
+--- linux-2.6.13/net/ipv6/netfilter/Kconfig
++++ linux-2.6.13/net/ipv6/netfilter/Kconfig
 @@ -196,12 +196,16 @@
  
  	  To compile it as a module, choose M here.  If unsure, say N.
@@ -328,8 +328,8 @@
  config IP6_NF_MANGLE
  	tristate "Packet mangling"
  	depends on IP6_NF_IPTABLES
---- linux-2.6.13.1.orig/net/ipv6/netfilter/Makefile
-+++ linux-2.6.13.1/net/ipv6/netfilter/Makefile
+--- linux-2.6.13/net/ipv6/netfilter/Makefile
++++ linux-2.6.13/net/ipv6/netfilter/Makefile
 @@ -24,3 +24,4 @@
  obj-$(CONFIG_IP6_NF_TARGET_LOG) += ip6t_LOG.o
  obj-$(CONFIG_IP6_NF_RAW) += ip6table_raw.o

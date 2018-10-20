@@ -1,5 +1,5 @@
---- linux-2.6.13.1.orig/fs/squashfs/inode.c
-+++ linux-2.6.13.1/fs/squashfs/inode.c
+--- linux-2.6.13/fs/squashfs/inode.c
++++ linux-2.6.13/fs/squashfs/inode.c
 @@ -1,7 +1,8 @@
  /*
   * Squashfs - a compressed read only filesystem for Linux
@@ -3445,8 +3445,8 @@
 +MODULE_DESCRIPTION("squashfs 3.3, a compressed read-only filesystem");
  MODULE_AUTHOR("Phillip Lougher <phillip@lougher.demon.co.uk>");
  MODULE_LICENSE("GPL");
---- linux-2.6.13.1.orig/fs/squashfs/LzmaDecode.c
-+++ linux-2.6.13.1/fs/squashfs/LzmaDecode.c
+--- linux-2.6.13/fs/squashfs/LzmaDecode.c
++++ linux-2.6.13/fs/squashfs/LzmaDecode.c
 @@ -0,0 +1,588 @@
 +/*
 +  LzmaDecode.c
@@ -4036,12 +4036,12 @@
 +  *outSizeProcessed = nowPos;
 +  return LZMA_RESULT_OK;
 +}
---- linux-2.6.13.1.orig/fs/squashfs/LzmaDecode.h
-+++ linux-2.6.13.1/fs/squashfs/LzmaDecode.h
+--- linux-2.6.13/fs/squashfs/LzmaDecode.h
++++ linux-2.6.13/fs/squashfs/LzmaDecode.h
 @@ -0,0 +1 @@
 +#include <linux/LzmaDecode.h>
---- linux-2.6.13.1.orig/fs/squashfs/LzmaStateDecode.h
-+++ linux-2.6.13.1/fs/squashfs/LzmaStateDecode.h
+--- linux-2.6.13/fs/squashfs/LzmaStateDecode.h
++++ linux-2.6.13/fs/squashfs/LzmaStateDecode.h
 @@ -0,0 +1,115 @@
 +/* 
 +  LzmaStateDecode.h
@@ -4158,8 +4158,8 @@
 +    int finishDecoding);
 +
 +#endif
---- linux-2.6.13.1.orig/fs/squashfs/Makefile
-+++ linux-2.6.13.1/fs/squashfs/Makefile
+--- linux-2.6.13/fs/squashfs/Makefile
++++ linux-2.6.13/fs/squashfs/Makefile
 @@ -2,6 +2,10 @@
  # Makefile for the linux squashfs routines.
  #
@@ -4172,8 +4172,8 @@
 +squashfs-y += inode.o
 +squashfs-y += squashfs2_0.o
 +squashfs-y += LzmaDecode.o 
---- linux-2.6.13.1.orig/fs/squashfs/squashfs2_0.c
-+++ linux-2.6.13.1/fs/squashfs/squashfs2_0.c
+--- linux-2.6.13/fs/squashfs/squashfs2_0.c
++++ linux-2.6.13/fs/squashfs/squashfs2_0.c
 @@ -0,0 +1,743 @@
 +/*
 + * Squashfs - a compressed read only filesystem for Linux
@@ -4918,8 +4918,8 @@
 +
 +	return 1;
 +}
---- linux-2.6.13.1.orig/fs/squashfs/squashfs.h
-+++ linux-2.6.13.1/fs/squashfs/squashfs.h
+--- linux-2.6.13/fs/squashfs/squashfs.h
++++ linux-2.6.13/fs/squashfs/squashfs.h
 @@ -0,0 +1,87 @@
 +/*
 + * Squashfs - a compressed read only filesystem for Linux
@@ -5008,8 +5008,8 @@
 +	return 0;
 +}
 +#endif
---- linux-2.6.13.1.orig/include/linux/LzmaDecode.h
-+++ linux-2.6.13.1/include/linux/LzmaDecode.h
+--- linux-2.6.13/include/linux/LzmaDecode.h
++++ linux-2.6.13/include/linux/LzmaDecode.h
 @@ -22,7 +22,7 @@
  #ifndef __LZMADECODE_H
  #define __LZMADECODE_H
@@ -5019,8 +5019,8 @@
  /* Use callback for input data */
  
  /* #define _LZMA_OUT_READ */
---- linux-2.6.13.1.orig/include/linux/squashfs_fs.h
-+++ linux-2.6.13.1/include/linux/squashfs_fs.h
+--- linux-2.6.13/include/linux/squashfs_fs.h
++++ linux-2.6.13/include/linux/squashfs_fs.h
 @@ -1,9 +1,11 @@
  #ifndef SQUASHFS_FS
  #define SQUASHFS_FS
@@ -6127,8 +6127,8 @@
 +
  #endif
  #endif
---- linux-2.6.13.1/include/linux/squashfs_fs_i.h
-+++ linux-2.6.13.1/include/linux/squashfs_fs_i.h
+--- linux-2.6.13/include/linux/squashfs_fs_i.h
++++ linux-2.6.13/include/linux/squashfs_fs_i.h
 @@ -3,7 +3,8 @@
  /*
   * Squashfs
@@ -6169,8 +6169,8 @@
 -	} squashfs_inode_info;
 +};
  #endif
---- linux-2.6.13.1.orig/include/linux/squashfs_fs_sb.h
-+++ linux-2.6.13.1/include/linux/squashfs_fs_sb.h
+--- linux-2.6.13/include/linux/squashfs_fs_sb.h
++++ linux-2.6.13/include/linux/squashfs_fs_sb.h
 @@ -3,7 +3,8 @@
  /*
   * Squashfs
@@ -6258,8 +6258,8 @@
 +	CLzmaDecoderState	lzma_decoder_state;
 +};
  #endif
---- linux-2.6.13.1.orig/init/do_mounts_rd.c
-+++ linux-2.6.13.1/init/do_mounts_rd.c
+--- linux-2.6.13/init/do_mounts_rd.c
++++ linux-2.6.13/init/do_mounts_rd.c
 @@ -110,6 +110,9 @@
  		printk(KERN_NOTICE
  		       "RAMDISK: squashfs filesystem found at block %d\n",

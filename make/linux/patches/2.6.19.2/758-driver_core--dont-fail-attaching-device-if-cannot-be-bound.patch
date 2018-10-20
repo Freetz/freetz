@@ -1,5 +1,5 @@
---- linux-2.6.19.2/drivers/base/core.c
-+++ linux-2.6.19.2/drivers/base/core.c
+--- linux-2.6.19/drivers/base/core.c
++++ linux-2.6.19/drivers/base/core.c
 @@ -479,8 +479,7 @@
  	if ((error = bus_add_device(dev)))
  		goto BusError;
@@ -19,8 +19,8 @@
   BusError:
  	device_pm_remove(dev);
   PMError:
---- linux-2.6.19.2/drivers/base/dd.c
-+++ linux-2.6.19.2/drivers/base/dd.c
+--- linux-2.6.19/drivers/base/dd.c
++++ linux-2.6.19/drivers/base/dd.c
 @@ -203,7 +203,8 @@
   *	pair is found, break out and return.
   *
@@ -42,8 +42,8 @@
  	} else
  		ret = bus_for_each_drv(dev->bus, NULL, dev, __device_attach);
  	up(&dev->sem);
---- linux-2.6.19.2/drivers/base/base.h
-+++ linux-2.6.19.2/drivers/base/base.h
+--- linux-2.6.19/drivers/base/base.h
++++ linux-2.6.19/drivers/base/base.h
 @@ -16,7 +16,7 @@
  extern int attribute_container_init(void);
  
@@ -53,8 +53,8 @@
  extern void bus_remove_device(struct device * dev);
  extern struct bus_type *get_bus(struct bus_type * bus);
  extern void put_bus(struct bus_type * bus);
---- linux-2.6.19.2/drivers/base/bus.c
-+++ linux-2.6.19.2/drivers/base/bus.c
+--- linux-2.6.19/drivers/base/bus.c
++++ linux-2.6.19/drivers/base/bus.c
 @@ -406,7 +406,7 @@
   *	- Add device to bus's list of devices.
   *	- Try to attach to driver.

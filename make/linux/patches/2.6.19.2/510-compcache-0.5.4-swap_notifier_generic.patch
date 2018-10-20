@@ -1,5 +1,5 @@
---- linux-2.6.19.2/include/linux/swap.h
-+++ linux-2.6.19.2/include/linux/swap.h
+--- linux-2.6.19/include/linux/swap.h
++++ linux-2.6.19/include/linux/swap.h
 @@ -123,6 +123,12 @@
  	SWP_SCANNING	= (1 << 8),	/* refcount in scan_swap_map */
  };
@@ -32,8 +32,8 @@
  struct backing_dev_info;
  
  extern spinlock_t swap_lock;
---- linux-2.6.19.2/mm/swapfile.c
-+++ linux-2.6.19.2/mm/swapfile.c
+--- linux-2.6.19/mm/swapfile.c
++++ linux-2.6.19/mm/swapfile.c
 @@ -47,6 +47,8 @@
  static struct swap_info_struct swap_info[MAX_SWAPFILES];
  

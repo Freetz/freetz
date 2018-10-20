@@ -1,5 +1,5 @@
 --- /dev/null
-+++ linux-2.6.13.1/net/ipv4/netfilter/ipt_ipp2p.c
++++ linux-2.6.13/net/ipv4/netfilter/ipt_ipp2p.c
 @@ -0,0 +1,895 @@
 +#if defined(MODVERSIONS)
 +#include <linux/modversions.h>
@@ -897,7 +897,7 @@
 +
 +
 --- /dev/null
-+++ linux-2.6.13.1/include/linux/netfilter_ipv4/ipt_ipp2p.h
++++ linux-2.6.13/include/linux/netfilter_ipv4/ipt_ipp2p.h
 @@ -0,0 +1,31 @@
 +#ifndef __IPT_IPP2P_H
 +#define __IPT_IPP2P_H
@@ -930,8 +930,8 @@
 +#define IPP2P_MUTE		(1 << 14)
 +#define IPP2P_WASTE		(1 << 15)
 +#define IPP2P_XDCC		(1 << 16)
---- linux-2.6.13.1/net/ipv4/netfilter/Makefile
-+++ linux-2.6.13.1/net/ipv4/netfilter/Makefile
+--- linux-2.6.13/net/ipv4/netfilter/Makefile
++++ linux-2.6.13/net/ipv4/netfilter/Makefile
 @@ -46,6 +46,7 @@
  obj-$(CONFIG_IP_NF_MATCH_MARK) += ipt_mark.o
  obj-$(CONFIG_IP_NF_MATCH_MAC) += ipt_mac.o
@@ -940,8 +940,8 @@
  obj-$(CONFIG_IP_NF_MATCH_PKTTYPE) += ipt_pkttype.o
  obj-$(CONFIG_IP_NF_MATCH_MULTIPORT) += ipt_multiport.o
  obj-$(CONFIG_IP_NF_MATCH_OWNER) += ipt_owner.o
---- linux-2.6.13.1/net/ipv4/netfilter/Kconfig
-+++ linux-2.6.13.1/net/ipv4/netfilter/Kconfig
+--- linux-2.6.13/net/ipv4/netfilter/Kconfig
++++ linux-2.6.13/net/ipv4/netfilter/Kconfig
 @@ -137,6 +137,15 @@
  
  	  To compile it as a module, choose M here.  If unsure, say N.

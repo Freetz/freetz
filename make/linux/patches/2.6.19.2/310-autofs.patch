@@ -1,5 +1,5 @@
---- linux-2.6.19.2/fs/autofs/inode.c
-+++ linux-2.6.19.2/fs/autofs/inode.c
+--- linux-2.6.19/fs/autofs/inode.c
++++ linux-2.6.19/fs/autofs/inode.c
 @@ -25,6 +25,15 @@
  	struct autofs_sb_info *sbi = autofs_sbi(sb);
  	unsigned int n;
@@ -42,8 +42,8 @@
  fail_unlock:
  	return -EINVAL;
  }
---- linux-2.6.19.2/fs/autofs/waitq.c
-+++ linux-2.6.19.2/fs/autofs/waitq.c
+--- linux-2.6.19/fs/autofs/waitq.c
++++ linux-2.6.19/fs/autofs/waitq.c
 @@ -41,6 +41,7 @@
  		wq = nwq;
  	}
@@ -52,8 +52,8 @@
  	autofs_hash_dputall(&sbi->dirhash); /* Remove all dentry pointers */
  }
  
---- linux-2.6.19.2/fs/autofs4/autofs_i.h
-+++ linux-2.6.19.2/fs/autofs4/autofs_i.h
+--- linux-2.6.19/fs/autofs4/autofs_i.h
++++ linux-2.6.19/fs/autofs4/autofs_i.h
 @@ -21,6 +21,8 @@
  #define AUTOFS_IOC_FIRST     AUTOFS_IOC_READY
  #define AUTOFS_IOC_COUNT     32
@@ -150,8 +150,8 @@
  int autofs4_expire_run(struct super_block *, struct vfsmount *,
  			struct autofs_sb_info *,
  			struct autofs_packet_expire __user *);
---- linux-2.6.19.2/fs/autofs4/expire.c
-+++ linux-2.6.19.2/fs/autofs4/expire.c
+--- linux-2.6.19/fs/autofs4/expire.c
++++ linux-2.6.19/fs/autofs4/expire.c
 @@ -56,12 +56,24 @@
  	mntget(mnt);
  	dget(dentry);
@@ -397,8 +397,8 @@
  		dput(dentry);
  	}
  
---- linux-2.6.19.2/fs/autofs4/inode.c
-+++ linux-2.6.19.2/fs/autofs4/inode.c
+--- linux-2.6.19/fs/autofs4/inode.c
++++ linux-2.6.19/fs/autofs4/inode.c
 @@ -25,8 +25,10 @@
  
  static void ino_lnkfree(struct autofs_info *ino)
@@ -526,8 +526,8 @@
  fail_unlock:
  	return -EINVAL;
  }
---- linux-2.6.19.2/fs/autofs4/root.c
-+++ linux-2.6.19.2/fs/autofs4/root.c
+--- linux-2.6.19/fs/autofs4/root.c
++++ linux-2.6.19/fs/autofs4/root.c
 @@ -26,25 +26,25 @@
  static int autofs4_dir_mkdir(struct inode *,struct dentry *,int);
  static int autofs4_root_ioctl(struct inode *, struct file *,unsigned int,unsigned long);
@@ -1371,8 +1371,8 @@
  	case AUTOFS_IOC_ASKUMOUNT:
  		return autofs4_ask_umount(filp->f_vfsmnt, p);
  
---- linux-2.6.19.2/fs/autofs4/waitq.c
-+++ linux-2.6.19.2/fs/autofs4/waitq.c
+--- linux-2.6.19/fs/autofs4/waitq.c
++++ linux-2.6.19/fs/autofs4/waitq.c
 @@ -28,6 +28,12 @@
  {
  	struct autofs_wait_queue *wq, *nwq;
@@ -1840,8 +1840,8 @@
  
  	return 0;
  }
---- linux-2.6.19.2/include/linux/auto_fs4.h
-+++ linux-2.6.19.2/include/linux/auto_fs4.h
+--- linux-2.6.19/include/linux/auto_fs4.h
++++ linux-2.6.19/include/linux/auto_fs4.h
 @@ -29,6 +29,11 @@
  #define AUTOFS_EXP_IMMEDIATE		1
  #define AUTOFS_EXP_LEAVES		2
@@ -1894,8 +1894,8 @@
  #define AUTOFS_IOC_ASKUMOUNT		_IOR(0x93,0x70,int)
  
  
---- linux-2.6.19.2/include/linux/compat_ioctl.h
-+++ linux-2.6.19.2/include/linux/compat_ioctl.h
+--- linux-2.6.19/include/linux/compat_ioctl.h
++++ linux-2.6.19/include/linux/compat_ioctl.h
 @@ -568,8 +568,6 @@
  COMPATIBLE_IOCTL(AUTOFS_IOC_EXPIRE)
  COMPATIBLE_IOCTL(AUTOFS_IOC_EXPIRE_MULTI)

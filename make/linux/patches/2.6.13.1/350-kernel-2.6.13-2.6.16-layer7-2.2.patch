@@ -1,5 +1,5 @@
---- linux-2.6.13.1/include/linux/netfilter_ipv4/ip_conntrack.h
-+++ linux-2.6.13.1/include/linux/netfilter_ipv4/ip_conntrack.h
+--- linux-2.6.13/include/linux/netfilter_ipv4/ip_conntrack.h
++++ linux-2.6.13/include/linux/netfilter_ipv4/ip_conntrack.h
 @@ -177,6 +177,15 @@
  	/* Traversed often, so hopefully in different cacheline to top */
  	/* These are my tuples; original and reply */
@@ -16,8 +16,8 @@
  };
  
  struct ip_conntrack_expect
---- linux-2.6.13.1/include/linux/netfilter_ipv4/ipt_layer7.h
-+++ linux-2.6.13.1/include/linux/netfilter_ipv4/ipt_layer7.h
+--- linux-2.6.13/include/linux/netfilter_ipv4/ipt_layer7.h
++++ linux-2.6.13/include/linux/netfilter_ipv4/ipt_layer7.h
 @@ -0,0 +1,26 @@
 +/* 
 +  By Matthew Strait <quadong@users.sf.net>, Dec 2003.
@@ -45,8 +45,8 @@
 +};
 +
 +#endif /* _IPT_LAYER7_H */
---- linux-2.6.13.1/net/ipv4/netfilter/Kconfig
-+++ linux-2.6.13.1/net/ipv4/netfilter/Kconfig
+--- linux-2.6.13/net/ipv4/netfilter/Kconfig
++++ linux-2.6.13/net/ipv4/netfilter/Kconfig
 @@ -177,6 +177,24 @@
  
  	  To compile it as a module, choose M here.  If unsure, say N.
@@ -72,8 +72,8 @@
  config IP_NF_MATCH_MULTIPORT
  	tristate "Multiple port match support"
  	depends on IP_NF_IPTABLES
---- linux-2.6.13.1/net/ipv4/netfilter/Makefile
-+++ linux-2.6.13.1/net/ipv4/netfilter/Makefile
+--- linux-2.6.13/net/ipv4/netfilter/Makefile
++++ linux-2.6.13/net/ipv4/netfilter/Makefile
 @@ -66,6 +66,8 @@
  obj-$(CONFIG_IP_NF_MATCH_PHYSDEV) += ipt_physdev.o
  obj-$(CONFIG_IP_NF_MATCH_COMMENT) += ipt_comment.o
@@ -83,8 +83,8 @@
  # targets
  obj-$(CONFIG_IP_NF_TARGET_REJECT) += ipt_REJECT.o
  obj-$(CONFIG_IP_NF_TARGET_TOS) += ipt_TOS.o
---- linux-2.6.13.1/net/ipv4/netfilter/ip_conntrack_core.c
-+++ linux-2.6.13.1/net/ipv4/netfilter/ip_conntrack_core.c
+--- linux-2.6.13/net/ipv4/netfilter/ip_conntrack_core.c
++++ linux-2.6.13/net/ipv4/netfilter/ip_conntrack_core.c
 @@ -240,6 +240,13 @@
  	 * too. */
  	remove_expectations(ct);
@@ -99,8 +99,8 @@
  	/* We overload first tuple to link into unconfirmed list. */
  	if (!is_confirmed(ct)) {
  		BUG_ON(list_empty(&ct->tuplehash[IP_CT_DIR_ORIGINAL].list));
---- linux-2.6.13.1/net/ipv4/netfilter/ip_conntrack_standalone.c
-+++ linux-2.6.13.1/net/ipv4/netfilter/ip_conntrack_standalone.c
+--- linux-2.6.13/net/ipv4/netfilter/ip_conntrack_standalone.c
++++ linux-2.6.13/net/ipv4/netfilter/ip_conntrack_standalone.c
 @@ -189,6 +189,12 @@
  		return -ENOSPC;
  #endif
@@ -114,8 +114,8 @@
  	if (seq_printf(s, "use=%u\n", atomic_read(&conntrack->ct_general.use)))
  		return -ENOSPC;
  
---- linux-2.6.13.1/net/ipv4/netfilter/ipt_layer7.c
-+++ linux-2.6.13.1/net/ipv4/netfilter/ipt_layer7.c
+--- linux-2.6.13/net/ipv4/netfilter/ipt_layer7.c
++++ linux-2.6.13/net/ipv4/netfilter/ipt_layer7.c
 @@ -0,0 +1,568 @@
 +/* 
 +  Kernel module to match application layer (OSI layer 7) 
@@ -685,8 +685,8 @@
 +
 +module_init(init);
 +module_exit(fini);
---- linux-2.6.13.1/net/ipv4/netfilter/regexp/regexp.c
-+++ linux-2.6.13.1/net/ipv4/netfilter/regexp/regexp.c
+--- linux-2.6.13/net/ipv4/netfilter/regexp/regexp.c
++++ linux-2.6.13/net/ipv4/netfilter/regexp/regexp.c
 @@ -0,0 +1,1195 @@
 +/*
 + * regcomp and regexec -- regsub and regerror are elsewhere
@@ -1883,8 +1883,8 @@
 +#endif
 +
 +
---- linux-2.6.13.1/net/ipv4/netfilter/regexp/regexp.h
-+++ linux-2.6.13.1/net/ipv4/netfilter/regexp/regexp.h
+--- linux-2.6.13/net/ipv4/netfilter/regexp/regexp.h
++++ linux-2.6.13/net/ipv4/netfilter/regexp/regexp.h
 @@ -0,0 +1,41 @@
 +/*
 + * Definitions etc. for regexp(3) routines.
@@ -1927,16 +1927,16 @@
 +void regerror(char *s);
 +
 +#endif
---- linux-2.6.13.1/net/ipv4/netfilter/regexp/regmagic.h
-+++ linux-2.6.13.1/net/ipv4/netfilter/regexp/regmagic.h
+--- linux-2.6.13/net/ipv4/netfilter/regexp/regmagic.h
++++ linux-2.6.13/net/ipv4/netfilter/regexp/regmagic.h
 @@ -0,0 +1,5 @@
 +/*
 + * The first byte of the regexp internal "program" is actually this magic
 + * number; the start node begins in the second byte.
 + */
 +#define	MAGIC	0234
---- linux-2.6.13.1/net/ipv4/netfilter/regexp/regsub.c
-+++ linux-2.6.13.1/net/ipv4/netfilter/regexp/regsub.c
+--- linux-2.6.13/net/ipv4/netfilter/regexp/regsub.c
++++ linux-2.6.13/net/ipv4/netfilter/regexp/regsub.c
 @@ -0,0 +1,95 @@
 +/*
 + * regsub

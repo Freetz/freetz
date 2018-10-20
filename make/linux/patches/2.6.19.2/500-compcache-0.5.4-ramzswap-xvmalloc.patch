@@ -1,5 +1,5 @@
---- linux-2.6.19.2/block/Kconfig
-+++ linux-2.6.19.2/block/Kconfig
+--- linux-2.6.19/block/Kconfig
++++ linux-2.6.19/block/Kconfig
 @@ -54,3 +54,14 @@
  endif
  
@@ -15,8 +15,8 @@
 +	depends on XVMALLOC && LZO_COMPRESS && LZO_DECOMPRESS
 +	default m
 +
---- linux-2.6.19.2/block/Makefile
-+++ linux-2.6.19.2/block/Makefile
+--- linux-2.6.19/block/Makefile
++++ linux-2.6.19/block/Makefile
 @@ -10,3 +10,7 @@
  obj-$(CONFIG_IOSCHED_CFQ)	+= cfq-iosched.o
  
@@ -25,8 +25,8 @@
 +obj-$(CONFIG_XVMALLOC)	+= ramzswap/
 +obj-$(CONFIG_RAMZSWAP)	+= ramzswap/
 +
---- linux-2.6.19.2/block/ramzswap/compat.h
-+++ linux-2.6.19.2/block/ramzswap/compat.h
+--- linux-2.6.19/block/ramzswap/compat.h
++++ linux-2.6.19/block/ramzswap/compat.h
 @@ -0,0 +1,36 @@
 +#ifndef _RAMZSWAP_COMPAT_H_
 +#define _RAMZSWAP_COMPAT_H_
@@ -64,8 +64,8 @@
 +#define BIT(x)  (1UL << (x))
 +
 +#endif
---- linux-2.6.19.2/block/ramzswap/Makefile
-+++ linux-2.6.19.2/block/ramzswap/Makefile
+--- linux-2.6.19/block/ramzswap/Makefile
++++ linux-2.6.19/block/ramzswap/Makefile
 @@ -0,0 +1,8 @@
 +
 +EXTRA_CFLAGS	:=	-DCONFIG_BLK_DEV_RAMZSWAP_STATS	\
@@ -75,8 +75,8 @@
 +obj-m	+= xvmalloc.o
 +obj-m	+= ramzswap.o
 +
---- linux-2.6.19.2/block/ramzswap/ramzswap.c
-+++ linux-2.6.19.2/block/ramzswap/ramzswap.c
+--- linux-2.6.19/block/ramzswap/ramzswap.c
++++ linux-2.6.19/block/ramzswap/ramzswap.c
 @@ -0,0 +1,1135 @@
 +/*
 + * Compressed RAM based swap device
@@ -1213,8 +1213,8 @@
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Nitin Gupta <ngupta@vflare.org>");
 +MODULE_DESCRIPTION("Compressed RAM Based Swap Device");
---- linux-2.6.19.2/block/ramzswap/ramzswap.h
-+++ linux-2.6.19.2/block/ramzswap/ramzswap.h
+--- linux-2.6.19/block/ramzswap/ramzswap.h
++++ linux-2.6.19/block/ramzswap/ramzswap.h
 @@ -0,0 +1,160 @@
 +/*
 + * Compressed RAM based swap device
@@ -1376,8 +1376,8 @@
 +/*-- */
 +
 +#endif
---- linux-2.6.19.2/block/ramzswap/xvmalloc.c
-+++ linux-2.6.19.2/block/ramzswap/xvmalloc.c
+--- linux-2.6.19/block/ramzswap/xvmalloc.c
++++ linux-2.6.19/block/ramzswap/xvmalloc.c
 @@ -0,0 +1,557 @@
 +/*
 + * xvmalloc memory allocator
@@ -1936,8 +1936,8 @@
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Nitin Gupta <ngupta@vflare.org>");
 +MODULE_DESCRIPTION("xvmalloc memory allocator");
---- linux-2.6.19.2/block/ramzswap/xvmalloc.h
-+++ linux-2.6.19.2/block/ramzswap/xvmalloc.h
+--- linux-2.6.19/block/ramzswap/xvmalloc.h
++++ linux-2.6.19/block/ramzswap/xvmalloc.h
 @@ -0,0 +1,30 @@
 +/*
 + * xvmalloc memory allocator
@@ -1969,8 +1969,8 @@
 +u64 xv_get_total_size_bytes(struct xv_pool *pool);
 +
 +#endif
---- linux-2.6.19.2/block/ramzswap/xvmalloc_int.h
-+++ linux-2.6.19.2/block/ramzswap/xvmalloc_int.h
+--- linux-2.6.19/block/ramzswap/xvmalloc_int.h
++++ linux-2.6.19/block/ramzswap/xvmalloc_int.h
 @@ -0,0 +1,86 @@
 +/*
 + * xvmalloc memory allocator

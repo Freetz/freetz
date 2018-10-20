@@ -2,7 +2,7 @@ KERNEL_SUBVERSION:=iln6
 
 KERNEL_MAKE_DIR:=$(MAKE_DIR)/linux
 KERNEL_PATCHES_DIR:=$(KERNEL_MAKE_DIR)/patches/$(KERNEL_VERSION)$(SYSTEM_TYPE_CORE_SUFFIX)
-KERNEL_BUILD_ROOT_DIR:=$(KERNEL_DIR)/linux-$(KERNEL_VERSION_SOURCES_SUBDIR)
+KERNEL_BUILD_ROOT_DIR:=$(KERNEL_DIR)/linux-$(KERNEL_VERSION_MAJOR)
 
 KERNEL_IMAGE:=vmlinux.eva_pad
 KERNEL_IMAGE_BUILD_SUBDIR:=$(if $(FREETZ_KERNEL_VERSION_3_10_MIN),/arch/$(KERNEL_ARCH)/boot)
@@ -36,12 +36,9 @@ $(DL_FW_DIR)/$(DL_KERNEL_SOURCE): | $(DL_FW_DIR)
 kernel-unpacked: $(KERNEL_DIR)/.unpacked
 $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(DL_KERNEL_SOURCE) | $(UNPACK_TARBALL_PREREQUISITES) gcc-kernel
 	$(RM) -r $(KERNEL_DIR)
-	mkdir -p $(KERNEL_DIR)
+	mkdir -p $(KERNEL_BUILD_ROOT_DIR)
 	@$(call _ECHO, unpacking... )
-	@$(call UNPACK_TARBALL,$(DL_FW_DIR)/$(DL_KERNEL_SOURCE),$(KERNEL_DIR))
-	@if [ ! -d $(KERNEL_BUILD_ROOT_DIR) ]; then \
-		$(call ERROR,1,KERNEL_BUILD_ROOT_DIR has wrong structure) \
-	fi
+	@$(call UNPACK_TARBALL,$(DL_FW_DIR)/$(DL_KERNEL_SOURCE),$(KERNEL_BUILD_ROOT_DIR),1)
 	@$(call _ECHO, applying patches... )
 	#
 	#kernel version specific patches
@@ -111,7 +108,7 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(DL_KERNEL_SOURCE) | $(UNPACK_TARBALL_PRE
 			touch $(KERNEL_BUILD_ROOT_DIR)/$$i; \
 		fi \
 	done
-	ln -s linux-$(KERNEL_VERSION_SOURCES_SUBDIR) $(KERNEL_DIR)/linux
+	ln -s linux-$(KERNEL_VERSION_MAJOR) $(KERNEL_DIR)/linux
 	touch $@
 
 $(KERNEL_DIR)/.configured: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)

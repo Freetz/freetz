@@ -1,5 +1,5 @@
---- linux-2.6.19.2/include/linux/netfilter_helpers.h
-+++ linux-2.6.19.2/include/linux/netfilter_helpers.h
+--- linux-2.6.19/include/linux/netfilter_helpers.h
++++ linux-2.6.19/include/linux/netfilter_helpers.h
 @@ -0,0 +1,133 @@
 +/*
 + * Helpers for netfiler modules.  This file provides implementations for basic
@@ -135,8 +135,8 @@
 +
 +#endif /* _NETFILTER_HELPERS_H */
 
---- linux-2.6.19.2/include/linux/netfilter_ipv4/ip_conntrack_rtsp.h
-+++ linux-2.6.19.2/include/linux/netfilter_ipv4/ip_conntrack_rtsp.h
+--- linux-2.6.19/include/linux/netfilter_ipv4/ip_conntrack_rtsp.h
++++ linux-2.6.19/include/linux/netfilter_ipv4/ip_conntrack_rtsp.h
 @@ -0,0 +1,62 @@
 +/*
 + * RTSP extension for IP connection tracking.
@@ -201,8 +201,8 @@
 +
 +#endif /* _IP_CONNTRACK_RTSP_H */
 
---- linux-2.6.19.2/include/linux/netfilter_mime.h
-+++ linux-2.6.19.2/include/linux/netfilter_mime.h
+--- linux-2.6.19/include/linux/netfilter_mime.h
++++ linux-2.6.19/include/linux/netfilter_mime.h
 @@ -0,0 +1,89 @@
 +/*
 + * MIME functions for netfilter modules.  This file provides implementations
@@ -294,8 +294,8 @@
 +
 +#endif /* _NETFILTER_MIME_H */
 
---- linux-2.6.19.2/net/ipv4/netfilter/ip_conntrack_rtsp.c
-+++ linux-2.6.19.2/net/ipv4/netfilter/ip_conntrack_rtsp.c
+--- linux-2.6.19/net/ipv4/netfilter/ip_conntrack_rtsp.c
++++ linux-2.6.19/net/ipv4/netfilter/ip_conntrack_rtsp.c
 @@ -0,0 +1,577 @@
 +/*
 + * RTSP extension for IP connection tracking
@@ -875,8 +875,8 @@
 +module_init(init);
 +module_exit(fini);
 
---- linux-2.6.19.2/net/ipv4/netfilter/ip_nat_rtsp.c
-+++ linux-2.6.19.2/net/ipv4/netfilter/ip_nat_rtsp.c
+--- linux-2.6.19/net/ipv4/netfilter/ip_nat_rtsp.c
++++ linux-2.6.19/net/ipv4/netfilter/ip_nat_rtsp.c
 @@ -0,0 +1,585 @@
 +/*
 + * RTSP extension for TCP NAT alteration
@@ -1464,8 +1464,8 @@
 +module_init(init);
 +module_exit(fini);
 
---- linux-2.6.19.2/net/ipv4/netfilter/Kconfig
-+++ linux-2.6.19.2/net/ipv4/netfilter/Kconfig
+--- linux-2.6.19/net/ipv4/netfilter/Kconfig
++++ linux-2.6.19/net/ipv4/netfilter/Kconfig
 @@ -656,4 +656,20 @@
  	  Allows altering the ARP packet payload: source and destination
  	  hardware and network addresses.
@@ -1488,8 +1488,8 @@
 +
  endmenu
 
---- linux-2.6.19.2/net/ipv4/netfilter/Makefile
-+++ linux-2.6.19.2/net/ipv4/netfilter/Makefile
+--- linux-2.6.19/net/ipv4/netfilter/Makefile
++++ linux-2.6.19/net/ipv4/netfilter/Makefile
 @@ -25,6 +25,11 @@
  obj-$(CONFIG_IP_NF_CT_PROTO_SCTP) += ip_conntrack_proto_sctp.o
  

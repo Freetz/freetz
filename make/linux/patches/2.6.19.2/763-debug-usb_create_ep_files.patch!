@@ -1,5 +1,5 @@
---- linux-2.6.19.2/drivers/usb/core/usb.h
-+++ linux-2.6.19.2/drivers/usb/core/usb.h
+--- linux-2.6.19/drivers/usb/core/usb.h
++++ linux-2.6.19/drivers/usb/core/usb.h
 @@ -1,10 +1,11 @@
  /* Functions local to drivers/usb/core/ */
 +#define usb_create_ep_files(x,y,z) ({ printk("usb_create_ep_files_X(): %s:%d @%s\n",__FILE__,__LINE__,__FUNCTION__); usb_create_ep_files_X(x,y,z); })
@@ -13,8 +13,8 @@
  				struct usb_device *udev);
  extern void usb_remove_ep_files(struct usb_host_endpoint *endpoint);
  
---- linux-2.6.19.2/drivers/usb/core/endpoint.c
-+++ linux-2.6.19.2/drivers/usb/core/endpoint.c
+--- linux-2.6.19/drivers/usb/core/endpoint.c
++++ linux-2.6.19/drivers/usb/core/endpoint.c
 @@ -207,7 +207,7 @@
  	kfree(ep_dev);
  }

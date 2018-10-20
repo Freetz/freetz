@@ -1,5 +1,5 @@
---- linux-2.6.19.2/drivers/usb/core/sysfs.c
-+++ linux-2.6.19.2/drivers/usb/core/sysfs.c
+--- linux-2.6.19/drivers/usb/core/sysfs.c
++++ linux-2.6.19/drivers/usb/core/sysfs.c
 @@ -360,7 +360,7 @@
  		usb_remove_ep_files(&iface_desc->endpoint[i]);
  }
@@ -9,8 +9,8 @@
  {
  	struct usb_device *udev = interface_to_usbdev(intf);
  	struct usb_host_interface *alt = intf->cur_altsetting;
---- linux-2.6.19.2/drivers/usb/core/usb.h
-+++ linux-2.6.19.2/drivers/usb/core/usb.h
+--- linux-2.6.19/drivers/usb/core/usb.h
++++ linux-2.6.19/drivers/usb/core/usb.h
 @@ -1,9 +1,10 @@
  /* Functions local to drivers/usb/core/ */
  #define usb_create_ep_files(x,y,z) ({ printk("usb_create_ep_files_X(): %s:%d @%s\n",__FILE__,__LINE__,__FUNCTION__); usb_create_ep_files_X(x,y,z); })

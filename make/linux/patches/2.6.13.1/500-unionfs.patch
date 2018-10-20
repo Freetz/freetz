@@ -1,5 +1,5 @@
---- linux-2.6.13.1/fs/Kconfig
-+++ linux-2.6.13.1/fs/Kconfig
+--- linux-2.6.13/fs/Kconfig
++++ linux-2.6.13/fs/Kconfig
 @@ -1362,6 +1362,16 @@
  	  Say Y here if you want to try writing to UFS partitions. This is
  	  experimental, so you should back up your UFS partitions beforehand.
@@ -17,15 +17,15 @@
  endmenu
  
  menu "Network File Systems"
---- linux-2.6.13.1/fs/Makefile
-+++ linux-2.6.13.1/fs/Makefile
+--- linux-2.6.13/fs/Makefile
++++ linux-2.6.13/fs/Makefile
 @@ -101,3 +101,4 @@
  obj-$(CONFIG_HPPFS)		+= hppfs/
  obj-$(CONFIG_DEBUG_FS)		+= debugfs/
  obj-$(CONFIG_YFFS_FS)		+= yaffs2/
 +obj-$(CONFIG_UNION_FS)          += unionfs/
---- linux-2.6.13.1/fs/unionfs/branchman.c
-+++ linux-2.6.13.1/fs/unionfs/branchman.c
+--- linux-2.6.13/fs/unionfs/branchman.c
++++ linux-2.6.13/fs/unionfs/branchman.c
 @@ -0,0 +1,563 @@
 +/* 
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -590,8 +590,8 @@
 + * tab-width: 8
 + * End:
 + */
---- linux-2.6.13.1/fs/unionfs/commonfops.c
-+++ linux-2.6.13.1/fs/unionfs/commonfops.c
+--- linux-2.6.13/fs/unionfs/commonfops.c
++++ linux-2.6.13/fs/unionfs/commonfops.c
 @@ -0,0 +1,716 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -1309,8 +1309,8 @@
 + * tab-width: 8
 + * End:
 + */
---- linux-2.6.13.1/fs/unionfs/copyup.c
-+++ linux-2.6.13.1/fs/unionfs/copyup.c
+--- linux-2.6.13/fs/unionfs/copyup.c
++++ linux-2.6.13/fs/unionfs/copyup.c
 @@ -0,0 +1,749 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -2061,8 +2061,8 @@
 + * tab-width: 8
 + * End:
 + */
---- linux-2.6.13.1/fs/unionfs/dentry.c
-+++ linux-2.6.13.1/fs/unionfs/dentry.c
+--- linux-2.6.13/fs/unionfs/dentry.c
++++ linux-2.6.13/fs/unionfs/dentry.c
 @@ -0,0 +1,274 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -2338,8 +2338,8 @@
 + * tab-width: 8
 + * End:
 + */
---- linux-2.6.13.1/fs/unionfs/dirfops.c
-+++ linux-2.6.13.1/fs/unionfs/dirfops.c
+--- linux-2.6.13/fs/unionfs/dirfops.c
++++ linux-2.6.13/fs/unionfs/dirfops.c
 @@ -0,0 +1,331 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -2672,8 +2672,8 @@
 + * tab-width: 8
 + * End:
 + */
---- linux-2.6.13.1/fs/unionfs/dirhelper.c
-+++ linux-2.6.13.1/fs/unionfs/dirhelper.c
+--- linux-2.6.13/fs/unionfs/dirhelper.c
++++ linux-2.6.13/fs/unionfs/dirhelper.c
 @@ -0,0 +1,266 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -2941,8 +2941,8 @@
 + * tab-width: 8
 + * End:
 + */
---- linux-2.6.13.1/fs/unionfs/file.c
-+++ linux-2.6.13.1/fs/unionfs/file.c
+--- linux-2.6.13/fs/unionfs/file.c
++++ linux-2.6.13/fs/unionfs/file.c
 @@ -0,0 +1,331 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -3275,8 +3275,8 @@
 + * tab-width: 8
 + * End:
 + */
---- linux-2.6.13.1/fs/unionfs/inode.c
-+++ linux-2.6.13.1/fs/unionfs/inode.c
+--- linux-2.6.13/fs/unionfs/inode.c
++++ linux-2.6.13/fs/unionfs/inode.c
 @@ -0,0 +1,1042 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -4320,8 +4320,8 @@
 + * tab-width: 8
 + * End:
 + */
---- linux-2.6.13.1/fs/unionfs/lookup.c
-+++ linux-2.6.13.1/fs/unionfs/lookup.c
+--- linux-2.6.13/fs/unionfs/lookup.c
++++ linux-2.6.13/fs/unionfs/lookup.c
 @@ -0,0 +1,505 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -4828,8 +4828,8 @@
 + * tab-width: 8
 + * End:
 + */
---- linux-2.6.13.1/fs/unionfs/main.c
-+++ linux-2.6.13.1/fs/unionfs/main.c
+--- linux-2.6.13/fs/unionfs/main.c
++++ linux-2.6.13/fs/unionfs/main.c
 @@ -0,0 +1,820 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -5651,8 +5651,8 @@
 + * tab-width: 8
 + * End:
 + */
---- linux-2.6.13.1/fs/unionfs/Makefile
-+++ linux-2.6.13.1/fs/unionfs/Makefile
+--- linux-2.6.13/fs/unionfs/Makefile
++++ linux-2.6.13/fs/unionfs/Makefile
 @@ -0,0 +1,11 @@
 +UNIONFS_VERSION  = 1.1.5
 +EXTRA_CFLAGS+=-DUNIONFS_VERSION=\"${UNIONFS_VERSION}\"
@@ -5665,8 +5665,8 @@
 +	stale_inode.o branchman.o xattr.o rdstate.o copyup.o  \
 +	dirhelper.o rename.o unlink.o lookup.o persistent_inode.o \
 +	commonfops.o dirfops.o print.o
---- linux-2.6.13.1/fs/unionfs/malloc_debug.c
-+++ linux-2.6.13.1/fs/unionfs/malloc_debug.c
+--- linux-2.6.13/fs/unionfs/malloc_debug.c
++++ linux-2.6.13/fs/unionfs/malloc_debug.c
 @@ -0,0 +1,199 @@
 +#ifdef FIST_MALLOC_DEBUG
 +
@@ -5867,8 +5867,8 @@
 +}
 +
 +#endif				/* FIST_MALLOC_DEBUG */
---- linux-2.6.13.1/fs/unionfs/persistent_inode.c
-+++ linux-2.6.13.1/fs/unionfs/persistent_inode.c
+--- linux-2.6.13/fs/unionfs/persistent_inode.c
++++ linux-2.6.13/fs/unionfs/persistent_inode.c
 @@ -0,0 +1,662 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -6532,8 +6532,8 @@
 + * tab-width: 8
 + * End:
 + */
---- linux-2.6.13.1/fs/unionfs/print.c
-+++ linux-2.6.13.1/fs/unionfs/print.c
+--- linux-2.6.13/fs/unionfs/print.c
++++ linux-2.6.13/fs/unionfs/print.c
 @@ -0,0 +1,491 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -7026,8 +7026,8 @@
 + * tab-width: 8
 + * End:
 + */
---- linux-2.6.13.1/fs/unionfs/rdstate.c
-+++ linux-2.6.13.1/fs/unionfs/rdstate.c
+--- linux-2.6.13/fs/unionfs/rdstate.c
++++ linux-2.6.13/fs/unionfs/rdstate.c
 @@ -0,0 +1,330 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -7359,8 +7359,8 @@
 + * tab-width: 8
 + * End:
 + */
---- linux-2.6.13.1/fs/unionfs/rename.c
-+++ linux-2.6.13.1/fs/unionfs/rename.c
+--- linux-2.6.13/fs/unionfs/rename.c
++++ linux-2.6.13/fs/unionfs/rename.c
 @@ -0,0 +1,919 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -8281,8 +8281,8 @@
 + * tab-width: 8
 + * End:
 + */
---- linux-2.6.13.1/fs/unionfs/stale_inode.c
-+++ linux-2.6.13.1/fs/unionfs/stale_inode.c
+--- linux-2.6.13/fs/unionfs/stale_inode.c
++++ linux-2.6.13/fs/unionfs/stale_inode.c
 @@ -0,0 +1,142 @@
 +/*
 + *  Adpated from linux/fs/bad_inode.c
@@ -8426,8 +8426,8 @@
 + * tab-width: 8
 + * End:
 + */
---- linux-2.6.13.1/fs/unionfs/subr.c
-+++ linux-2.6.13.1/fs/unionfs/subr.c
+--- linux-2.6.13/fs/unionfs/subr.c
++++ linux-2.6.13/fs/unionfs/subr.c
 @@ -0,0 +1,172 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -8601,8 +8601,8 @@
 + * tab-width: 8
 + * End:
 + */
---- linux-2.6.13.1/fs/unionfs/super.c
-+++ linux-2.6.13.1/fs/unionfs/super.c
+--- linux-2.6.13/fs/unionfs/super.c
++++ linux-2.6.13/fs/unionfs/super.c
 @@ -0,0 +1,526 @@
 +/*
 + * Copyright (c) 2003-2005 Erez Zadok
@@ -9130,8 +9130,8 @@
 + * tab-width: 8
 + * End:
 + */
---- linux-2.6.13.1/fs/unionfs/unionctl.c
-+++ linux-2.6.13.1/fs/unionfs/unionctl.c
+--- linux-2.6.13/fs/unionfs/unionctl.c
++++ linux-2.6.13/fs/unionfs/unionctl.c
 @@ -0,0 +1,522 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -9655,8 +9655,8 @@
 + * tab-width: 8
 + * End:
 + */
---- linux-2.6.13.1/fs/unionfs/uniondbg.c
-+++ linux-2.6.13.1/fs/unionfs/uniondbg.c
+--- linux-2.6.13/fs/unionfs/uniondbg.c
++++ linux-2.6.13/fs/unionfs/uniondbg.c
 @@ -0,0 +1,169 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -9827,8 +9827,8 @@
 + * tab-width: 8
 + * End:
 + */
---- linux-2.6.13.1/fs/unionfs/unionfs_debugmacros.h
-+++ linux-2.6.13.1/fs/unionfs/unionfs_debugmacros.h
+--- linux-2.6.13/fs/unionfs/unionfs_debugmacros.h
++++ linux-2.6.13/fs/unionfs/unionfs_debugmacros.h
 @@ -0,0 +1,409 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -10239,8 +10239,8 @@
 + * tab-width: 8
 + * End:
 + */
---- linux-2.6.13.1/fs/unionfs/unionfs.h
-+++ linux-2.6.13.1/fs/unionfs/unionfs.h
+--- linux-2.6.13/fs/unionfs/unionfs.h
++++ linux-2.6.13/fs/unionfs/unionfs.h
 @@ -0,0 +1,830 @@
 +#ifndef __UNIONFS_H_
 +#define __UNIONFS_H_
@@ -11072,8 +11072,8 @@
 + * tab-width: 8
 + * End:
 + */
---- linux-2.6.13.1/fs/unionfs/unionfs_macros.h
-+++ linux-2.6.13.1/fs/unionfs/unionfs_macros.h
+--- linux-2.6.13/fs/unionfs/unionfs_macros.h
++++ linux-2.6.13/fs/unionfs/unionfs_macros.h
 @@ -0,0 +1,213 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -11288,8 +11288,8 @@
 + * tab-width: 8
 + * End:
 + */
---- linux-2.6.13.1/fs/unionfs/unionfs.mod.c
-+++ linux-2.6.13.1/fs/unionfs/unionfs.mod.c
+--- linux-2.6.13/fs/unionfs/unionfs.mod.c
++++ linux-2.6.13/fs/unionfs/unionfs.mod.c
 @@ -0,0 +1,117 @@
 +#include <linux/module.h>
 +#include <linux/vermagic.h>
@@ -11408,8 +11408,8 @@
 +
 +
 +MODULE_INFO(srcversion, "47B7DB80EF1920648319C46");
---- linux-2.6.13.1/fs/unionfs/unionimap.c
-+++ linux-2.6.13.1/fs/unionfs/unionimap.c
+--- linux-2.6.13/fs/unionfs/unionimap.c
++++ linux-2.6.13/fs/unionfs/unionimap.c
 @@ -0,0 +1,516 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -11927,8 +11927,8 @@
 + * tab-width: 8
 + * End:
 + */
---- linux-2.6.13.1/fs/unionfs/unionimap.h
-+++ linux-2.6.13.1/fs/unionfs/unionimap.h
+--- linux-2.6.13/fs/unionfs/unionimap.h
++++ linux-2.6.13/fs/unionfs/unionimap.h
 @@ -0,0 +1,89 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -12019,8 +12019,8 @@
 + * tab-width: 8
 + * End:
 + */
---- linux-2.6.13.1/fs/unionfs/unlink.c
-+++ linux-2.6.13.1/fs/unionfs/unlink.c
+--- linux-2.6.13/fs/unionfs/unlink.c
++++ linux-2.6.13/fs/unionfs/unlink.c
 @@ -0,0 +1,375 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -12397,8 +12397,8 @@
 + * tab-width: 8
 + * End:
 + */
---- linux-2.6.13.1/fs/unionfs/usercommon.c
-+++ linux-2.6.13.1/fs/unionfs/usercommon.c
+--- linux-2.6.13/fs/unionfs/usercommon.c
++++ linux-2.6.13/fs/unionfs/usercommon.c
 @@ -0,0 +1,220 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok
@@ -12620,8 +12620,8 @@
 + * tab-width: 8
 + * End:
 + */
---- linux-2.6.13.1/fs/unionfs/xattr.c
-+++ linux-2.6.13.1/fs/unionfs/xattr.c
+--- linux-2.6.13/fs/unionfs/xattr.c
++++ linux-2.6.13/fs/unionfs/xattr.c
 @@ -0,0 +1,204 @@
 +/*
 + * Copyright (c) 2003-2006 Erez Zadok

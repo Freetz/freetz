@@ -1,5 +1,5 @@
---- linux-2.6.13.1/include/linux/lzo.h
-+++ linux-2.6.13.1/include/linux/lzo.h
+--- linux-2.6.13/include/linux/lzo.h
++++ linux-2.6.13/include/linux/lzo.h
 @@ -0,0 +1,44 @@
 +#ifndef __LZO_H__
 +#define __LZO_H__
@@ -45,8 +45,8 @@
 +#define LZO_E_NOT_YET_IMPLEMENTED	(-9)
 +
 +#endif
---- linux-2.6.13.1/lib/Kconfig
-+++ linux-2.6.13.1/lib/Kconfig
+--- linux-2.6.13/lib/Kconfig
++++ linux-2.6.13/lib/Kconfig
 @@ -34,10 +34,21 @@
  # compression support is select'ed if needed
  #
@@ -71,8 +71,8 @@
  
  #
  # Generic allocator support is selected if needed
---- linux-2.6.13.1/lib/lzo/lzo1x_compress.c
-+++ linux-2.6.13.1/lib/lzo/lzo1x_compress.c
+--- linux-2.6.13/lib/lzo/lzo1x_compress.c
++++ linux-2.6.13/lib/lzo/lzo1x_compress.c
 @@ -0,0 +1,226 @@
 +/*
 + *  LZO1X Compressor from MiniLZO
@@ -300,8 +300,8 @@
 +MODULE_LICENSE("GPL");
 +MODULE_DESCRIPTION("LZO1X-1 Compressor");
 +
---- linux-2.6.13.1/lib/lzo/lzo1x_decompress.c
-+++ linux-2.6.13.1/lib/lzo/lzo1x_decompress.c
+--- linux-2.6.13/lib/lzo/lzo1x_decompress.c
++++ linux-2.6.13/lib/lzo/lzo1x_decompress.c
 @@ -0,0 +1,254 @@
 +/*
 + *  LZO1X Decompressor from MiniLZO
@@ -557,8 +557,8 @@
 +MODULE_LICENSE("GPL");
 +MODULE_DESCRIPTION("LZO1X Decompressor");
 +
---- linux-2.6.13.1/lib/lzo/lzodefs.h
-+++ linux-2.6.13.1/lib/lzo/lzodefs.h
+--- linux-2.6.13/lib/lzo/lzodefs.h
++++ linux-2.6.13/lib/lzo/lzodefs.h
 @@ -0,0 +1,43 @@
 +/*
 + *  lzodefs.h -- architecture, OS and compiler specific defines
@@ -603,16 +603,16 @@
 +#define DX2(p, s1, s2)	(((((size_t)((p)[2]) << (s2)) ^ (p)[1]) \
 +							<< (s1)) ^ (p)[0])
 +#define DX3(p, s1, s2, s3)	((DX2((p)+1, s2, s3) << (s1)) ^ (p)[0])
---- linux-2.6.13.1/lib/lzo/Makefile
-+++ linux-2.6.13.1/lib/lzo/Makefile
+--- linux-2.6.13/lib/lzo/Makefile
++++ linux-2.6.13/lib/lzo/Makefile
 @@ -0,0 +1,5 @@
 +lzo_compress-objs := lzo1x_compress.o
 +lzo_decompress-objs := lzo1x_decompress.o
 +
 +obj-$(CONFIG_LZO_COMPRESS) += lzo_compress.o
 +obj-$(CONFIG_LZO_DECOMPRESS) += lzo_decompress.o
---- linux-2.6.13.1/lib/Makefile
-+++ linux-2.6.13.1/lib/Makefile
+--- linux-2.6.13/lib/Makefile
++++ linux-2.6.13/lib/Makefile
 @@ -35,6 +35,8 @@
  obj-$(CONFIG_ZLIB_INFLATE) += zlib_inflate/
  obj-$(CONFIG_ZLIB_DEFLATE) += zlib_deflate/

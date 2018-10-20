@@ -1,7 +1,7 @@
-Index: linux-2.6.13.1/fs/autofs4/root.c
+Index: linux-2.6.13/fs/autofs4/root.c
 ===================================================================
---- linux-2.6.13.1.orig/fs/autofs4/root.c
-+++ linux-2.6.13.1/fs/autofs4/root.c
+--- linux-2.6.13/fs/autofs4/root.c
++++ linux-2.6.13/fs/autofs4/root.c
 @@ -4,7 +4,7 @@
   *
   *  Copyright 1997-1998 Transmeta Corporation -- All Rights Reserved
@@ -1100,10 +1100,10 @@ Index: linux-2.6.13.1/fs/autofs4/root.c
  	case AUTOFS_IOC_ASKUMOUNT:
  		return autofs4_ask_umount(filp->f_vfsmnt, p);
  
-Index: linux-2.6.13.1/fs/autofs4/autofs_i.h
+Index: linux-2.6.13/fs/autofs4/autofs_i.h
 ===================================================================
---- linux-2.6.13.1.orig/fs/autofs4/autofs_i.h
-+++ linux-2.6.13.1/fs/autofs4/autofs_i.h
+--- linux-2.6.13/fs/autofs4/autofs_i.h
++++ linux-2.6.13/fs/autofs4/autofs_i.h
 @@ -3,6 +3,7 @@
   * linux/fs/autofs/autofs_i.h
   *
@@ -1290,10 +1290,10 @@ Index: linux-2.6.13.1/fs/autofs4/autofs_i.h
 +
 +void autofs4_dentry_release(struct dentry *);
 +extern void autofs4_kill_sb(struct super_block *);
-Index: linux-2.6.13.1/fs/autofs4/expire.c
+Index: linux-2.6.13/fs/autofs4/expire.c
 ===================================================================
---- linux-2.6.13.1.orig/fs/autofs4/expire.c
-+++ linux-2.6.13.1/fs/autofs4/expire.c
+--- linux-2.6.13/fs/autofs4/expire.c
++++ linux-2.6.13/fs/autofs4/expire.c
 @@ -4,7 +4,7 @@
   *
   *  Copyright 1997-1998 Transmeta Corporation -- All Rights Reserved
@@ -1902,10 +1902,10 @@ Index: linux-2.6.13.1/fs/autofs4/expire.c
  	return ret;
  }
  
-Index: linux-2.6.13.1/fs/autofs4/inode.c
+Index: linux-2.6.13/fs/autofs4/inode.c
 ===================================================================
---- linux-2.6.13.1.orig/fs/autofs4/inode.c
-+++ linux-2.6.13.1/fs/autofs4/inode.c
+--- linux-2.6.13/fs/autofs4/inode.c
++++ linux-2.6.13/fs/autofs4/inode.c
 @@ -3,6 +3,7 @@
   * linux/fs/autofs/inode.c
   *
@@ -2234,10 +2234,10 @@ Index: linux-2.6.13.1/fs/autofs4/inode.c
  fail_unlock:
  	return -EINVAL;
  }
-Index: linux-2.6.13.1/fs/autofs4/waitq.c
+Index: linux-2.6.13/fs/autofs4/waitq.c
 ===================================================================
---- linux-2.6.13.1.orig/fs/autofs4/waitq.c
-+++ linux-2.6.13.1/fs/autofs4/waitq.c
+--- linux-2.6.13/fs/autofs4/waitq.c
++++ linux-2.6.13/fs/autofs4/waitq.c
 @@ -3,7 +3,7 @@
   * linux/fs/autofs/waitq.c
   *
@@ -2735,10 +2735,10 @@ Index: linux-2.6.13.1/fs/autofs4/waitq.c
  
  	return 0;
  }
-Index: linux-2.6.13.1/fs/autofs/dirhash.c
+Index: linux-2.6.13/fs/autofs/dirhash.c
 ===================================================================
---- linux-2.6.13.1.orig/fs/autofs/dirhash.c
-+++ linux-2.6.13.1/fs/autofs/dirhash.c
+--- linux-2.6.13/fs/autofs/dirhash.c
++++ linux-2.6.13/fs/autofs/dirhash.c
 @@ -92,7 +92,7 @@ struct autofs_dir_ent *autofs_expire(str
  			;
  		dput(dentry);
@@ -2748,10 +2748,10 @@ Index: linux-2.6.13.1/fs/autofs/dirhash.c
  			mntput(mnt);
  			DPRINTK(("autofs: signaling expire on %s\n", ent->name));
  			return ent; /* Expirable! */
-Index: linux-2.6.13.1/fs/namespace.c
+Index: linux-2.6.13/fs/namespace.c
 ===================================================================
---- linux-2.6.13.1.orig/fs/namespace.c
-+++ linux-2.6.13.1/fs/namespace.c
+--- linux-2.6.13/fs/namespace.c
++++ linux-2.6.13/fs/namespace.c
 @@ -308,9 +308,9 @@ resume:
  	spin_unlock(&vfsmount_lock);
  
@@ -2777,10 +2777,10 @@ Index: linux-2.6.13.1/fs/namespace.c
  }
  
  EXPORT_SYMBOL(may_umount);
-Index: linux-2.6.13.1/include/linux/auto_fs4.h
+Index: linux-2.6.13/include/linux/auto_fs4.h
 ===================================================================
---- linux-2.6.13.1.orig/include/linux/auto_fs4.h
-+++ linux-2.6.13.1/include/linux/auto_fs4.h
+--- linux-2.6.13/include/linux/auto_fs4.h
++++ linux-2.6.13/include/linux/auto_fs4.h
 @@ -19,18 +19,42 @@
  #undef AUTOFS_MIN_PROTO_VERSION
  #undef AUTOFS_MAX_PROTO_VERSION
@@ -2870,10 +2870,10 @@ Index: linux-2.6.13.1/include/linux/auto_fs4.h
  #define AUTOFS_IOC_ASKUMOUNT		_IOR(0x93,0x70,int)
  
  
-Index: linux-2.6.13.1/fs/namei.c
+Index: linux-2.6.13/fs/namei.c
 ===================================================================
---- linux-2.6.13.1.orig/fs/namei.c
-+++ linux-2.6.13.1/fs/namei.c
+--- linux-2.6.13/fs/namei.c
++++ linux-2.6.13/fs/namei.c
 @@ -317,6 +317,29 @@ void path_release_on_umount(struct namei
  	mntput_no_expire(nd->mnt);
  }
@@ -2970,10 +2970,10 @@ Index: linux-2.6.13.1/fs/namei.c
  
  fail:
  	return PTR_ERR(dentry);
-Index: linux-2.6.13.1/fs/autofs/init.c
+Index: linux-2.6.13/fs/autofs/init.c
 ===================================================================
---- linux-2.6.13.1.orig/fs/autofs/init.c
-+++ linux-2.6.13.1/fs/autofs/init.c
+--- linux-2.6.13/fs/autofs/init.c
++++ linux-2.6.13/fs/autofs/init.c
 @@ -24,7 +24,7 @@ static struct file_system_type autofs_fs
  	.owner		= THIS_MODULE,
  	.name		= "autofs",
@@ -2983,10 +2983,10 @@ Index: linux-2.6.13.1/fs/autofs/init.c
  };
  
  static int __init init_autofs_fs(void)
-Index: linux-2.6.13.1/fs/autofs/inode.c
+Index: linux-2.6.13/fs/autofs/inode.c
 ===================================================================
---- linux-2.6.13.1.orig/fs/autofs/inode.c
-+++ linux-2.6.13.1/fs/autofs/inode.c
+--- linux-2.6.13/fs/autofs/inode.c
++++ linux-2.6.13/fs/autofs/inode.c
 @@ -19,11 +19,20 @@
  #include "autofs_i.h"
  #include <linux/module.h>
@@ -3052,10 +3052,10 @@ Index: linux-2.6.13.1/fs/autofs/inode.c
  fail_unlock:
  	return -EINVAL;
  }
-Index: linux-2.6.13.1/fs/autofs/autofs_i.h
+Index: linux-2.6.13/fs/autofs/autofs_i.h
 ===================================================================
---- linux-2.6.13.1.orig/fs/autofs/autofs_i.h
-+++ linux-2.6.13.1/fs/autofs/autofs_i.h
+--- linux-2.6.13/fs/autofs/autofs_i.h
++++ linux-2.6.13/fs/autofs/autofs_i.h
 @@ -150,6 +150,7 @@ extern struct file_operations autofs_roo
  /* Initializing function */
  
@@ -3064,10 +3064,10 @@ Index: linux-2.6.13.1/fs/autofs/autofs_i.h
  
  /* Queue management functions */
  
-Index: linux-2.6.13.1/fs/autofs4/init.c
+Index: linux-2.6.13/fs/autofs4/init.c
 ===================================================================
---- linux-2.6.13.1.orig/fs/autofs4/init.c
-+++ linux-2.6.13.1/fs/autofs4/init.c
+--- linux-2.6.13/fs/autofs4/init.c
++++ linux-2.6.13/fs/autofs4/init.c
 @@ -24,7 +24,7 @@ static struct file_system_type autofs_fs
  	.owner		= THIS_MODULE,
  	.name		= "autofs",
@@ -3077,10 +3077,10 @@ Index: linux-2.6.13.1/fs/autofs4/init.c
  };
  
  static int __init init_autofs4_fs(void)
-Index: linux-2.6.13.1/fs/autofs/waitq.c
+Index: linux-2.6.13/fs/autofs/waitq.c
 ===================================================================
---- linux-2.6.13.1.orig/fs/autofs/waitq.c
-+++ linux-2.6.13.1/fs/autofs/waitq.c
+--- linux-2.6.13/fs/autofs/waitq.c
++++ linux-2.6.13/fs/autofs/waitq.c
 @@ -41,6 +41,7 @@ void autofs_catatonic_mode(struct autofs
  		wq = nwq;
  	}
@@ -3089,10 +3089,10 @@ Index: linux-2.6.13.1/fs/autofs/waitq.c
  	autofs_hash_dputall(&sbi->dirhash); /* Remove all dentry pointers */
  }
  
-Index: linux-2.6.13.1/include/linux/compat_ioctl.h
+Index: linux-2.6.13/include/linux/compat_ioctl.h
 ===================================================================
---- linux-2.6.13.1.orig/include/linux/compat_ioctl.h
-+++ linux-2.6.13.1/include/linux/compat_ioctl.h
+--- linux-2.6.13/include/linux/compat_ioctl.h
++++ linux-2.6.13/include/linux/compat_ioctl.h
 @@ -583,8 +583,6 @@ COMPATIBLE_IOCTL(AUTOFS_IOC_PROTOVER)
  COMPATIBLE_IOCTL(AUTOFS_IOC_EXPIRE)
  COMPATIBLE_IOCTL(AUTOFS_IOC_EXPIRE_MULTI)
