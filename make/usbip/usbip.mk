@@ -32,7 +32,7 @@ $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 $($(PKG)_MODULES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(USBIP_DIR)/drivers/2.6.21 \
 		KSOURCE="$(FREETZ_BASE_DIR)/$(KERNEL_SOURCE_DIR)" \
-		ARCH="$(TARGET_ARCH)" \
+		ARCH="$(KERNEL_ARCH)" \
 		CROSS_COMPILE="$(KERNEL_CROSS)"
 
 $($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/sbin/%: $($(PKG)_DIR)/src/cmd/%

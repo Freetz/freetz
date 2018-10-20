@@ -46,16 +46,21 @@ config FREETZ_TARGET_ARCH_X86
 		FREETZ_SYSTEM_TYPE_PUMA6_X86
 	default y
 
+config FREETZ_KERNEL_ARCH
+	string
+	default "mips"   if FREETZ_TARGET_ARCH_MIPS
+	default "x86"    if FREETZ_TARGET_ARCH_X86
+
 config FREETZ_TARGET_ARCH
 	string
 	default "mips"   if FREETZ_TARGET_ARCH_MIPS
-	default "x86"    if FREETZ_TARGET_ARCH_X86 # PUMA6-TODO: check the value
+	default "i686"   if FREETZ_TARGET_ARCH_X86
 
 config FREETZ_TARGET_ARCH_ENDIANNESS_DEPENDENT
 	string
 	default "mips"   if FREETZ_TARGET_ARCH_MIPS && FREETZ_TARGET_ARCH_BE
 	default "mipsel" if FREETZ_TARGET_ARCH_MIPS && FREETZ_TARGET_ARCH_LE
-	default "i686"   if FREETZ_TARGET_ARCH_X86 # PUMA6-TODO: check the value
+	default "i686"   if FREETZ_TARGET_ARCH_X86
 
 config FREETZ_TARGET_TRIPLET_VENDOR
 	string

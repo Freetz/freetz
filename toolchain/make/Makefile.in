@@ -1,6 +1,8 @@
 -include $(call sorted-wildcard,$(TOOLCHAIN_DIR)/make/kernel/*/Makefile.in)
 -include $(call sorted-wildcard,$(TOOLCHAIN_DIR)/make/target/*/Makefile.in)
 
+KERNEL_ARCH:=$(call qstrip,$(FREETZ_KERNEL_ARCH))
+
 TARGET_ARCH:=$(call qstrip,$(FREETZ_TARGET_ARCH))
 TARGET_ARCH_ENDIANNESS_DEPENDENT:=$(call qstrip,$(FREETZ_TARGET_ARCH_ENDIANNESS_DEPENDENT))
 TARGET_GNU_TRIPLET:=$(call qstrip,$(FREETZ_TARGET_GNU_TRIPLET))

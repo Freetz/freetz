@@ -854,8 +854,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 		echo "$pkg" >> "${PACKAGES_LIST_FILE}"
 	done
 
+	KERNEL_ID="${FREETZ_KERNEL_LAYOUT}${FREETZ_SYSTEM_TYPE_CORE_SUFFIX}-${FREETZ_AVM_SOURCE_ID}"
 	if [ "$FIRMWARE_NOCOMPILE" != "1" -a "$FREETZ_REPLACE_KERNEL" == "y" -a "$FWMOD_PATCH_TEST" != "y" ]; then
-		KERNEL_SUBVERSION_FILE="${KERNEL_REP_DIR}/.version-${FREETZ_KERNEL_LAYOUT}-${FREETZ_AVM_SOURCE_ID}"
+		KERNEL_SUBVERSION_FILE="${KERNEL_REP_DIR}/.version-${KERNEL_ID}"
 
 		if [ ! -r "$KERNEL_SUBVERSION_FILE" ]; then
 			error 1 "cannot determine kernel version"
@@ -1202,12 +1203,12 @@ if [ "$DO_MOD" -gt 0 ]; then
 	if [ "$NOCOMPILE" != "1" -a "$FREETZ_REPLACE_KERNEL" == "y" ]; then
 		echo0 "replacing kernel"
 
-		if [ ! -r "${KERNEL_REP_DIR}/kernel-${FREETZ_KERNEL_LAYOUT}-${FREETZ_AVM_SOURCE_ID}.bin" ]; then
-			error 1 "can't find kernel for ref ${FREETZ_KERNEL_LAYOUT}-${FREETZ_AVM_SOURCE_ID}"
+		if [ ! -r "${KERNEL_REP_DIR}/kernel-${KERNEL_ID}.bin" ]; then
+			error 1 "can't find kernel for ref ${KERNEL_ID}"
 		fi
 
-		echo1 "replacing kernel-${FREETZ_KERNEL_LAYOUT}-${FREETZ_AVM_SOURCE_ID} (${KERNEL_SUBVERSION})"
-		cp "${KERNEL_REP_DIR}/kernel-${FREETZ_KERNEL_LAYOUT}-${FREETZ_AVM_SOURCE_ID}.bin" "$RAW_KERNEL_MOD"
+		echo1 "replacing kernel-${KERNEL_ID} (${KERNEL_SUBVERSION})"
+		cp "${KERNEL_REP_DIR}/kernel-${KERNEL_ID}.bin" "$RAW_KERNEL_MOD"
 	fi
 
 	# modules directory / correctly configured kernel version
@@ -1227,14 +1228,14 @@ if [ "$DO_MOD" -gt 0 ]; then
 		echo0 "installing$strip_output modules"
 		for i in \
 		$( \
-			cd "${KERNEL_REP_DIR}/modules-${FREETZ_KERNEL_LAYOUT}-${FREETZ_AVM_SOURCE_ID}" && \
+			cd "${KERNEL_REP_DIR}/modules-${KERNEL_ID}" && \
 			find . -type d -name .svn -prune -false , -type f \( -name modules.dep -o -name "*.ko" \) \
 		); do
 			bn="$(basename "$i")"
 			ko_install="$(eval "echo \"\$FREETZ_MODULE_$(echo "${bn%\.ko}" | tr '\-+' '_x')\"")"
 			[ "$FREETZ_MODULES_ALL" = "y" -o "$ko_install" == "y" ] || continue
 			sizeinfo "$bn"
-			ko_file_src="${KERNEL_REP_DIR}/modules-${FREETZ_KERNEL_LAYOUT}-${FREETZ_AVM_SOURCE_ID}/${i}"
+			ko_file_src="${KERNEL_REP_DIR}/modules-${KERNEL_ID}/${i}"
 			ko_path_dst="${MODULES_DIR}/kernel/$(dirname "$i")"
 			[ -d "$ko_path_dst" ] || mkdir -p "$ko_path_dst"
 			cp -a $ko_file_src "$ko_path_dst/"
@@ -1248,7 +1249,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		echo1 "generating modules.dep"
 		DEPMOD_TEMP="$(mktemp)"
 		NM=$NM ${TOOLS_DIR}/depmod.pl -e -b "$MODULES_DIR" \
-			-F ${KERNEL_REP_DIR}/System-${FREETZ_KERNEL_LAYOUT}-${FREETZ_AVM_SOURCE_ID}.map \
+			-F ${KERNEL_REP_DIR}/System-${KERNEL_ID}.map \
 			2>&1 | tee "$DEPMOD_TEMP"
 		if grep -q "^unresolved symbol " "$DEPMOD_TEMP"; then
 			warn "Unresolved symbols detected, not all AVM-features may work.\nNo current sources by AVM? Error in kernel's .config?"

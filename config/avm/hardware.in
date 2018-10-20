@@ -121,6 +121,17 @@ config FREETZ_SYSTEM_TYPE_VR9
 		FREETZ_TYPE_7430 || \
 		FREETZ_TYPE_7490
 
+config FREETZ_SYSTEM_TYPE_MULTICORE
+	bool
+	default y if \
+		FREETZ_SYSTEM_TYPE_PUMA6
+
+config FREETZ_SYSTEM_TYPE_CORE_SUFFIX
+	depends on FREETZ_SYSTEM_TYPE_MULTICORE
+	string
+#	default ".${FREETZ_KERNEL_ARCH}"
+	default ".x86"  if FREETZ_SYSTEM_TYPE_PUMA6_X86
+
 # cpu model (the same variable name as in /proc/cpuinfo)
 
 config FREETZ_CPU_MODEL_MIPS_4KEc

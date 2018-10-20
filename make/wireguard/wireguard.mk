@@ -25,7 +25,7 @@ $($(PKG)_MODULES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(WIREGUARD_DIR)/src module \
 		SUBDIRS="$(FREETZ_BASE_DIR)/$(WIREGUARD_DIR)/src" \
 		KERNELDIR="$(FREETZ_BASE_DIR)/$(KERNEL_SOURCE_DIR)" \
-		ARCH="$(TARGET_ARCH)" \
+		ARCH="$(KERNEL_ARCH)" \
 		CROSS_COMPILE="$(KERNEL_CROSS)"
 
 $($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/bin/%: $($(PKG)_DIR)/src/tools/%
@@ -42,7 +42,7 @@ $(pkg)-clean:
 	-$(SUBMAKE) -C $(WIREGUARD_DIR)/src clean \
 		SUBDIRS="$(FREETZ_BASE_DIR)/$(WIREGUARD_DIR)/src" \
 		KERNELDIR="$(FREETZ_BASE_DIR)/$(KERNEL_SOURCE_DIR)" \
-		ARCH="$(TARGET_ARCH)" \
+		ARCH="$(KERNEL_ARCH)" \
 		CROSS_COMPILE="$(KERNEL_CROSS)"
 
 $(pkg)-uninstall:
