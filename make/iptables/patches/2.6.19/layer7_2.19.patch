@@ -1,12 +1,10 @@
-diff -Nurp extensions/.layer7-test extensions/.layer7-test
---- extensions/.layer7-test	1969-12-31 18:00:00.000000000 -0600
-+++ extensions/.layer7-test	2008-07-17 01:26:36.000000000 -0500
+--- extensions/.layer7-test
++++ extensions/.layer7-test
 @@ -0,0 +1,2 @@
 +#! /bin/sh
 +[ -f $KERNEL_DIR/include/linux/netfilter/xt_layer7.h ] && echo layer7
-diff -Nurp extensions/libxt_layer7.c extensions/libxt_layer7.c
---- extensions/libxt_layer7.c	1969-12-31 18:00:00.000000000 -0600
-+++ extensions/libxt_layer7.c	2008-07-17 01:26:26.000000000 -0500
+--- extensions/libxt_layer7.c
++++ extensions/libxt_layer7.c
 @@ -0,0 +1,376 @@
 +/* 
 +   Shared library add-on to iptables to add layer 7 matching support. 
@@ -384,9 +382,8 @@ diff -Nurp extensions/libxt_layer7.c extensions/libxt_layer7.c
 +{
 +	xtables_register_match(&layer7);
 +}
-diff -Nurp extensions/libxt_layer7.man extensions/libxt_layer7.man
---- extensions/libxt_layer7.man	1969-12-31 18:00:00.000000000 -0600
-+++ extensions/libxt_layer7.man	2008-07-17 01:26:26.000000000 -0500
+--- extensions/libxt_layer7.man
++++ extensions/libxt_layer7.man
 @@ -0,0 +1,14 @@
 +This module matches packets based on the application layer data of 
 +their connections.  It uses regular expression matching to compare 
