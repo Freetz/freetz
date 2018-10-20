@@ -126,6 +126,21 @@ config FREETZ_SYSTEM_TYPE_MULTICORE
 	default y if \
 		FREETZ_SYSTEM_TYPE_PUMA6
 
+config FREETZ_SYSTEM_TYPE
+	string
+	default "ar7"           if FREETZ_SYSTEM_TYPE_AR7_SANGAM
+	default "ohio"          if FREETZ_SYSTEM_TYPE_AR7_OHIO
+	default "ar9"           if FREETZ_SYSTEM_TYPE_AR9
+	default "ar934x"        if FREETZ_SYSTEM_TYPE_AR934x
+	default "ar10"          if FREETZ_SYSTEM_TYPE_AR10
+	default "grx5"          if FREETZ_SYSTEM_TYPE_GRX5
+	default "iks"           if FREETZ_SYSTEM_TYPE_IKS
+	default "puma6"         if FREETZ_SYSTEM_TYPE_PUMA6
+	default "qca955x"       if FREETZ_SYSTEM_TYPE_QCA955x
+	default "qca956x"       if FREETZ_SYSTEM_TYPE_QCA956x
+	default "ur8"           if FREETZ_SYSTEM_TYPE_UR8
+	default "vr9"           if FREETZ_SYSTEM_TYPE_VR9
+
 config FREETZ_SYSTEM_TYPE_CORE_SUFFIX
 	depends on FREETZ_SYSTEM_TYPE_MULTICORE
 	string
