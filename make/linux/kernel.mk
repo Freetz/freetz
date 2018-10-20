@@ -24,53 +24,31 @@ ifeq ($(strip $(FREETZ_VERBOSITY_LEVEL)),2)
 KERNEL_COMMON_MAKE_OPTIONS += V=1
 endif
 
-$(DL_FW_DIR)/$(call qstrip,$(FREETZ_DL_KERNEL_SOURCE)): | $(DL_FW_DIR)
+DL_KERNEL_SOURCE:=$(call qstrip,$(FREETZ_DL_KERNEL_SOURCE))
+
+$(DL_FW_DIR)/$(DL_KERNEL_SOURCE): | $(DL_FW_DIR)
 	@$(call _ECHO, downloading...)
 	$(DL_TOOL) $(DL_FW_DIR) $(FREETZ_DL_KERNEL_SOURCE) $(FREETZ_DL_KERNEL_SITE) $(FREETZ_DL_KERNEL_SOURCE_MD5) $(SILENT)
 
 # Make sure that a perfectly clean build is performed whenever Freetz package
 # options have changed. The safest way to achieve this is by starting over
 # with the source directory.
-KERNEL_VERSION_SOURCES_SUBDIR_ESCAPED:=$(subst .,\.,$(KERNEL_VERSION_SOURCES_SUBDIR))
-AVM_UNPACK__INT_.gz:=z
-AVM_UNPACK__INT_.bz2:=j
 kernel-unpacked: $(KERNEL_DIR)/.unpacked
-$(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(call qstrip,$(FREETZ_DL_KERNEL_SOURCE)) | gcc-kernel
+$(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(DL_KERNEL_SOURCE) | $(UNPACK_TARBALL_PREREQUISITES) gcc-kernel
 	$(RM) -r $(KERNEL_DIR)
 	mkdir -p $(KERNEL_DIR)
-	@$(call _ECHO,checking structure... )
-	@KERNEL_SOURCE_CONTENT=$$( \
-		$(TAR) -t$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) -f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE) \
-		| grep -E '(GPL-(release_)?kernel\.tar\.gz|linux-$(KERNEL_VERSION_SOURCES_SUBDIR_ESCAPED)/)$$' \
-		| head -n1 \
-	); \
-	if [ -z "$${KERNEL_SOURCE_CONTENT}" ]; then \
-		$(call ERROR,1,KERNEL_SOURCE_CONTENT is empty) \
-	else \
-		$(call _ECHO, unpacking... ) \
-		if echo "$${KERNEL_SOURCE_CONTENT}" | grep -qE 'GPL-(release_)?kernel\.tar\.gz$$'; then \
-			$(TAR)	-O $(VERBOSE) \
-				-x$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
-				-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE) \
-				--wildcards "*/$${KERNEL_SOURCE_CONTENT##*/}" | \
-			$(TAR)	-C $(KERNEL_DIR) $(VERBOSE) \
-				-xz \
-				--transform="s|^.*\(linux-$(KERNEL_VERSION_SOURCES_SUBDIR_ESCAPED)/\)|\1|g" --show-transformed; \
-		else \
-			$(TAR)	-C $(KERNEL_DIR) $(VERBOSE) \
-				-x$(AVM_UNPACK__INT_$(suffix $(strip $(FREETZ_DL_KERNEL_SOURCE)))) \
-				-f $(DL_FW_DIR)/$(FREETZ_DL_KERNEL_SOURCE) \
-				--transform="s|^.*\(linux-$(KERNEL_VERSION_SOURCES_SUBDIR_ESCAPED)/\)|\1|g" --show-transformed "$${KERNEL_SOURCE_CONTENT}"; \
-		fi \
-	fi
+	@$(call _ECHO, unpacking... )
+	@$(call UNPACK_TARBALL,$(DL_FW_DIR)/$(DL_KERNEL_SOURCE),$(KERNEL_DIR))
 	@if [ ! -d $(KERNEL_BUILD_ROOT_DIR) ]; then \
 		$(call ERROR,1,KERNEL_BUILD_ROOT_DIR has wrong structure) \
 	fi
-	@$(call _ECHO, preparing... )
+	@$(call _ECHO, applying patches... )
+	#
 	#kernel version specific patches
 	@$(call APPLY_PATCHES,$(KERNEL_PATCHES_DIR),$(KERNEL_DIR))
 	#firmware version specific patches
 	@$(call APPLY_PATCHES,$(KERNEL_PATCHES_DIR)/$(AVM_SOURCE_ID),$(KERNEL_DIR))
+	@$(call _ECHO, preparing... )
 	@for i in $(KERNEL_LINKING_FILES); do \
 		if [ -e $(KERNEL_BUILD_ROOT_DIR)/$$i -a \
 		! -e $(KERNEL_BUILD_ROOT_DIR)/include/linux/$${i##*\/linux_} ]; then \
