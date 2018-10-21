@@ -10,7 +10,7 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
 
 # evaluated by running test program on target platform
 $(PKG)_CONFIGURE_ENV += ac_cv_libnet_endianess=$(if $(FREETZ_TARGET_ARCH_BE),big,lil)
-$(PKG)_CONFIGURE_ENV += ac_cv_lbl_unaligned_fail=no
+$(PKG)_CONFIGURE_ENV += ac_cv_lbl_unaligned_fail=$(or $(if $(FREETZ_TARGET_ARCH_MIPS),no),$(if $(FREETZ_TARGET_ARCH_X86),yes),UNSUPPORTED_ARCH)
 $(PKG)_CONFIGURE_ENV += libnet_cv_have_packet_socket=yes
 $(PKG)_CONFIGURE_ENV += ac_cv_libnet_linux_procfs=yes
 $(PKG)_CONFIGURE_ENV += CROSS_TOOLCHAIN_STAGING_DIR=$(TARGET_TOOLCHAIN_STAGING_DIR)

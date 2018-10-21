@@ -35,7 +35,7 @@ $(PKG)_CONFIGURE_ENV += bash_cv_pgrp_pipe=no
 $(PKG)_CONFIGURE_ENV += bash_cv_printf_a_format=no
 $(PKG)_CONFIGURE_ENV += bash_cv_sys_named_pipes=present
 $(PKG)_CONFIGURE_ENV += bash_cv_sys_siglist=no
-$(PKG)_CONFIGURE_ENV += bash_cv_ulimit_maxfds=no
+$(PKG)_CONFIGURE_ENV += bash_cv_ulimit_maxfds=$(or $(if $(FREETZ_TARGET_ARCH_MIPS),no),$(if $(FREETZ_TARGET_ARCH_X86),yes),UNSUPPORTED_ARCH)
 $(PKG)_CONFIGURE_ENV += bash_cv_under_sys_siglist=no
 $(PKG)_CONFIGURE_ENV += bash_cv_unusable_rtsigs=no
 $(PKG)_CONFIGURE_ENV += bash_cv_wcontinued_broken=no
