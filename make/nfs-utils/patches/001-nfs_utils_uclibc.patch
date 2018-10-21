@@ -1,5 +1,5 @@
---- utils/mountd/cache.c.orig	2010-09-28 14:24:16.000000000 +0200
-+++ utils/mountd/cache.c	2011-04-26 17:53:26.111300281 +0200
+--- utils/mountd/cache.c
++++ utils/mountd/cache.c
 @@ -149,6 +149,7 @@
  	pw = getpwuid(uid);
  	if (!pw)
@@ -16,8 +16,8 @@
  	qword_printuint(f, uid);
  	qword_printuint(f, time(0)+30*60);
  	if (rv >= 0) {
---- support/nfs/svc_socket.c.orig	2010-09-28 14:24:16.000000000 +0200
-+++ support/nfs/svc_socket.c	2011-04-26 17:53:26.111300281 +0200
+--- support/nfs/svc_socket.c
++++ support/nfs/svc_socket.c
 @@ -66,9 +66,13 @@
  
    memset (&addr, 0, sizeof (addr));
