@@ -1,0 +1,20 @@
+--- etc/init.d/S15-filesys
++++ etc/init.d/S15-filesys
+@@ -59,7 +59,7 @@
+ fi
+ umask_save=`umask`
+ umask 0
+-if mount -t ext4 "${mtd_nand}" "${mountpoint}" -o sync,noexec ; then
++if mount -t ext4 "${mtd_nand}" "${mountpoint}" -o sync        ; then
+ chmod 775 "${mountpoint}"
+ echo "[ext4] Internal Memory assigned @ ${mountpoint}" ;
+ rm -f /var/InternerSpeicher
+@@ -75,7 +75,7 @@
+ else
+ echo "[ext4] Internal Memory erasing failed"
+ fi
+-if mount -t ext4 "${mtd_nand}" "${mountpoint}" -o sync,noexec ; then
++if mount -t ext4 "${mtd_nand}" "${mountpoint}" -o sync        ; then
+ chmod 775 "${mountpoint}"
+ echo "[ext4] Internal Memory assigned @ ${mountpoint}" ;
+ rm -f /var/InternerSpeicher
