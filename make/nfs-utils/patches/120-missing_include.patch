@@ -1,0 +1,19 @@
+Fixes the following compile error
+
+In file included from simu.c:14:0:
+../../support/include/sockaddr.h: In function 'nfs_compare_sockaddr':
+../../support/include/sockaddr.h:230:13: error: 'NULL' undeclared (first use in this function)
+  if (sa1 == NULL || sa2 == NULL)
+             ^
+../../support/include/sockaddr.h:230:13: note: each undeclared identifier is reported only once for each function it appears in
+
+--- support/include/sockaddr.h
++++ support/include/sockaddr.h
+@@ -24,6 +24,7 @@
+ #ifndef __UCLIBC__
+ #include <libio.h>
+ #endif
++#include <stddef.h>
+ #include <stdbool.h>
+ #include <sys/socket.h>
+ #include <netinet/in.h>
