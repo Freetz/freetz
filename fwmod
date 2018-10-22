@@ -82,6 +82,12 @@ shift $((OPTIND-1))
 # At least one action and one (non-empty) firmware image name must be specified
 [ $(($DO_UNPACK + $DO_MOD + $DO_PACK + $DO_ZIP)) -eq 0 -o $# -lt 1 -o $# -gt 3 -o ! "$1" ] && usage >&2 && exit 1
 
+# Check if it's a completely automated run in the "no freetz"-mode and cache the value.
+# We are interested in what the user asked us for and not what we are actually doing,
+# the UNPACK step might be skipped (and the value of DO_UNPACK changed) if the already
+# unpacked firmware is found on the disk.
+[ "$DO_UNPACK" -gt 0 -a "$DO_MOD" -eq 0 -a "$DO_PACK" -gt 0 ] && NO_FREETZ_AUTOMATED_RUN=1 || NO_FREETZ_AUTOMATED_RUN=0
+
 # Freetz base + tools directories
 BASE_DIR="$(dirname "$0")"
 ABS_BASE_DIR="$(readlink -f "$BASE_DIR")"
@@ -1474,6 +1480,19 @@ if [ "$action_names" ]; then
 	if [ ! -r "${DIR}/.modified" ]; then
 		warn "firmware does not seem to be modified by the script"
 		DO_AVOID_MOD_IN_STEP3=1
+
+		# Check if this is a completely automated run in the "no freetz"-mode
+		if [ "$NO_FREETZ_AUTOMATED_RUN" -gt 0 ]; then
+			# Removing (possibly already existing) MOD_DIR is necessary
+			# as Freetz doesn't have any checks if some of the patches
+			# are already applied and might (try to) apply them over
+			# and over again.
+			rm -rf "$MOD_DIR"
+		#else
+			# In the manual "step by step"-mode it's up to the user to invoke
+			# the script in a proper configuration so that the patches do not
+			# get applied multiple times.
+		fi
 
 		if [ ! -d "$MOD_DIR" ]; then
 			# Copy the unpacked directory
