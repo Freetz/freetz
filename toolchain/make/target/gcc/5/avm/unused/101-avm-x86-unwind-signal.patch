@@ -1,0 +1,46 @@
+--- libgcc/unwind-dw2.c
++++ libgcc/unwind-dw2.c
+@@ -1230,6 +1230,9 @@
+   const struct dwarf_fde *fde;
+   const struct dwarf_cie *cie;
+   const unsigned char *aug, *insn, *end;
++#ifdef MD_FALLBACK_FRAME_STATE_FOR
++  _Unwind_Reason_Code reason;
++#endif
+ 
+   memset (fs, 0, sizeof (*fs));
+   context->args_size = 0;
+@@ -1238,19 +1241,23 @@
+   if (context->ra == 0)
+     return _URC_END_OF_STACK;
+ 
++#ifdef MD_FALLBACK_FRAME_STATE_FOR
++  /* DDO: Check for the signal trampoline before doing the normal unwind. In rare circumstances it
++   * is possible that there is actually a FDE present for the trampoline PC-1 address which
++   * would then be used by mistake. */
++  reason = MD_FALLBACK_FRAME_STATE_FOR (context, fs);
++  if (reason == _URC_NO_REASON) {
++    return _URC_NO_REASON;
++  }
++#endif
++
++  memset (fs, 0, sizeof (*fs));
+   fde = _Unwind_Find_FDE (context->ra + _Unwind_IsSignalFrame (context) - 1,
+ 			  &context->bases);
+   if (fde == NULL)
+-    {
+-#ifdef MD_FALLBACK_FRAME_STATE_FOR
+-      /* Couldn't find frame unwind info for this function.  Try a
+-	 target-specific fallback mechanism.  This will necessarily
+-	 not provide a personality routine or LSDA.  */
+-      return MD_FALLBACK_FRAME_STATE_FOR (context, fs);
+-#else
+-      return _URC_END_OF_STACK;
+-#endif
+-    }
++  {
++    return _URC_END_OF_STACK;
++  }
+ 
+   fs->pc = context->bases.func;
+ 
