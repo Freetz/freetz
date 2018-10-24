@@ -36,10 +36,10 @@ endif
 TARGET_CROSS:=$(call qstrip,$(FREETZ_TARGET_CROSS))
 KERNEL_CROSS:=$(call qstrip,$(FREETZ_KERNEL_CROSS))
 
-# arch=TUNE tune=TUNE
-TARGET_CFLAGS_ARCH_CPU_TUNE := -march=$(call qstrip,$(FREETZ_GCC_TUNE)) -mtune=$(call qstrip,$(FREETZ_GCC_TUNE))
-# arch=ARCH tune=TUNE
-#TARGET_CFLAGS_ARCH_CPU_TUNE := -march=$(call qstrip,$(FREETZ_GCC_ARCH)) -mtune=$(call qstrip,$(FREETZ_GCC_TUNE))
+# arch=CPU tune=CPU
+TARGET_CFLAGS_ARCH_CPU_TUNE := -march=$(call qstrip,$(FREETZ_GCC_CPU)) -mtune=$(call qstrip,$(FREETZ_GCC_CPU))
+# arch=ARCH tune=CPU
+#TARGET_CFLAGS_ARCH_CPU_TUNE := -march=$(call qstrip,$(FREETZ_GCC_ARCH)) -mtune=$(call qstrip,$(FREETZ_GCC_CPU))
 
 TARGET_CFLAGS_FLOAT_ABI     := $(if $(call qstrip,$(FREETZ_GCC_FLOAT_ABI)),-m$(call qstrip,$(FREETZ_GCC_FLOAT_ABI))-float)
 
