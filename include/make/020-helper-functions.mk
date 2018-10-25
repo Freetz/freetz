@@ -57,6 +57,18 @@ $(strip $(subst $(_bang),/,$(sort $(subst /,$(_bang),$(wildcard $(1))))))
 endef
 
 #
+# $1 - some string like FOO-BAR1-BAR2-...
+# $2 (optional) - delimiter character, default '-' if omitted
+# $3 (optional) - number of components to be included, default 2
+#
+# returns:
+#   the first $(3) components of $(1), i.e. FOO-BAR for FOO-BAR1-BAR2-...
+#
+define GET_STRING_COMPONENTS
+$(strip $(subst $(_space),$(if $(strip $(2)),$(strip $(2)),-),$(wordlist 1,$(if $(strip $(3)),$(strip $(3)),2),$(subst $(if $(strip $(2)),$(strip $(2)),-),$(_space),$(1)))))
+endef
+
+#
 # $1 - some string representing a version of some package
 # $2 (optional) - number of version components to be included, default 2
 #
@@ -64,7 +76,7 @@ endef
 #   major version of the package, i.e. x.y for x.y.z
 #
 define GET_MAJOR_VERSION
-$(strip $(subst $(_space),.,$(wordlist 1,$(if $(2),$(2),2),$(subst .,$(_space),$(1)))))
+$(call GET_STRING_COMPONENTS,$(1),.,$(if $(strip $(2)),$(strip $(2)),2))
 endef
 
 
