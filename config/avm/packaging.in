@@ -53,7 +53,7 @@ config FREETZ_AVM_HAS_NMI_VECTOR
 
 config FREETZ_AVM_IMAGES_SUBDIR
 	string "Sub-dir containing image files"	if FREETZ_TYPE_CUSTOM
-	default "var/tmp"						if FREETZ_TARGET_ARCH_MIPS
+	default "var/tmp"				if FREETZ_TARGET_ARCH_ARM || FREETZ_TARGET_ARCH_MIPS
 	default "var/remote/var/tmp/x86"		if FREETZ_TARGET_ARCH_X86
 	help
 		A sub-directory within the .image tarball containing the files

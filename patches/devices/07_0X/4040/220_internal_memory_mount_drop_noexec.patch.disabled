@@ -1,0 +1,20 @@
+--- etc/init.d/S15-filesys
++++ etc/init.d/S15-filesys
+@@ -26,7 +26,7 @@
+ if [ ! -d /data ] ; then echo "[jffs2] Missing directory '/data', give up" ; jffs2_giveup=1; fi
+ if [ ! -e /dev/mtdblock${JFFS2MTD} ] ; then echo "[jffs2] Missing '/dev/mtdblock${JFFS2MTD}', give up" ; jffs2_giveup=1; fi
+ if [ $jffs2_giveup -eq 0 ] ; then
+-mount -t jffs2 /dev/mtdblock${JFFS2MTD} /data -o noexec
++mount -t jffs2 /dev/mtdblock${JFFS2MTD} /data
+ if [ $? -eq 0 ] ; then
+ echo "[jffs2] Mount /data success (mtd${JFFS2MTD} size ${JFFS2SIZE})"
+ jffs2_ok=0
+@@ -34,7 +34,7 @@
+ echo "[jffs2] 1st mount /data failed, erasing mtd ${JFFS2MTD} ..."
+ echo "mtd $JFFS2MTD erase all" >/proc/mtd
+ echo "[jffs2] try 2nd mount ... "
+-mount -t jffs2 /dev/mtdblock${JFFS2MTD} /data -o noexec
++mount -t jffs2 /dev/mtdblock${JFFS2MTD} /data
+ if [ $? -ne 0 ] ; then
+ echo "[jffs2] ERROR: 2nd mount /data failed, give up." ;
+ else

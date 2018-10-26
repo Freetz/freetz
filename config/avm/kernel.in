@@ -100,6 +100,18 @@ config FREETZ_KERNEL_VERSION_3_10
 		FREETZ_KERNEL_VERSION_3_10_104 || \
 		FREETZ_KERNEL_VERSION_3_10_107
 
+config FREETZ_KERNEL_VERSION_4_4_60
+	bool
+	default y
+	depends on \
+		FREETZ_SYSTEM_TYPE_IPQ40xx && FREETZ_AVM_VERSION_07_0X_MIN
+
+config FREETZ_KERNEL_VERSION_4_4
+	bool
+	default y
+	depends on \
+		FREETZ_KERNEL_VERSION_4_4_60
+
 # full kernel version
 config FREETZ_KERNEL_VERSION
 	string
@@ -114,6 +126,7 @@ config FREETZ_KERNEL_VERSION
 	default "3.10.73"   if FREETZ_KERNEL_VERSION_3_10_73
 	default "3.10.104"  if FREETZ_KERNEL_VERSION_3_10_104
 	default "3.10.107"  if FREETZ_KERNEL_VERSION_3_10_107
+	default "4.4.60"    if FREETZ_KERNEL_VERSION_4_4_60
 
 # major kernel version
 config FREETZ_KERNEL_VERSION_MAJOR
@@ -124,6 +137,7 @@ config FREETZ_KERNEL_VERSION_MAJOR
 	default "2.6.32"    if FREETZ_KERNEL_VERSION_2_6_32
 	default "2.6.39"    if FREETZ_KERNEL_VERSION_2_6_39
 	default "3.10"      if FREETZ_KERNEL_VERSION_3_10
+	default "4.4"       if FREETZ_KERNEL_VERSION_4_4
 
 # the name of the directory kernel modules are installed in
 # this directory contains the kernel version in its name
@@ -171,7 +185,14 @@ config FREETZ_KERNEL_VERSION_2_6_39_MIN
 config FREETZ_KERNEL_VERSION_3_10_MIN
 	bool
 	default y if \
-		FREETZ_KERNEL_VERSION_3_10
+		FREETZ_KERNEL_VERSION_3_10 || \
+		FREETZ_KERNEL_VERSION_4_4_MIN
+	default n
+
+config FREETZ_KERNEL_VERSION_4_4_MIN
+	bool
+	default y if \
+		FREETZ_KERNEL_VERSION_4_4
 	default n
 
 config FREETZ_KERNEL_VERSION_2_6_13_MAX
@@ -213,6 +234,13 @@ config FREETZ_KERNEL_VERSION_3_10_MAX
 	default y if \
 		FREETZ_KERNEL_VERSION_2_6_39_MAX || \
 		FREETZ_KERNEL_VERSION_3_10
+	default n
+
+config FREETZ_KERNEL_VERSION_4_4_MAX
+	bool
+	default y if \
+		FREETZ_KERNEL_VERSION_3_10_MAX || \
+		FREETZ_KERNEL_VERSION_4_4
 	default n
 
 # AVM kernel config area size in KB

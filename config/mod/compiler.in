@@ -1,6 +1,7 @@
 config FREETZ_GCC_ABI
 	string
-	default "32"       if FREETZ_TARGET_ARCH_MIPS
+	default "aapcs-linux" if FREETZ_TARGET_ARCH_ARM
+	default "32"          if FREETZ_TARGET_ARCH_MIPS
 
 #
 # The following code is a trade-off between being absolutely correct on the one hand
@@ -22,6 +23,9 @@ config FREETZ_GCC_ABI
 config FREETZ_GCC_ARCH
 	string
 	#
+	# UNSET if \
+	#	FREETZ_TARGET_ARCH_ARM
+	#
 	# 4KEc CPUs are mips32r2, so the correct value is actually mips32r2
 	# s. https://github.com/gcc-mirror/gcc/blob/gcc-8_1_0-release/gcc/config/mips/mips-cpus.def#L107
 	#
@@ -40,11 +44,11 @@ config FREETZ_GCC_ARCH
 	#
 	default "atom" if \
 		FREETZ_CPU_MODEL_X86_ATOM
-	#
-	default "NOT_IMPLEMENTED"
 
 config FREETZ_GCC_CPU
 	string
+	default "cortex-a9" if \
+		FREETZ_CPU_MODEL_ARM_cortex_a9
 	#
 	# TODO: the correct value is "4kec", which would result in mips32r2 binaries instead of mips32
 	#
@@ -81,9 +85,16 @@ config FREETZ_GCC_CPU
 	#
 	default "atom" if \
 		FREETZ_CPU_MODEL_X86_ATOM
-	#
-	default "NOT_IMPLEMENTED"
+
+config FREETZ_GCC_FPU
+	string
+	default "neon"     if FREETZ_TARGET_ARCH_ARM  && FREETZ_CPU_MODEL_ARM_cortex_a9
 
 config FREETZ_GCC_FLOAT_ABI
 	string
+	default "softfp"   if FREETZ_TARGET_ARCH_ARM  && FREETZ_CPU_MODEL_ARM_cortex_a9
 	default "soft"     if FREETZ_TARGET_ARCH_MIPS
+
+config FREETZ_GCC_MODE
+	string
+	default "arm"      if FREETZ_TARGET_ARCH_ARM  && FREETZ_CPU_MODEL_ARM_cortex_a9

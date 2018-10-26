@@ -74,6 +74,11 @@ config FREETZ_SYSTEM_TYPE_IKS
 		FREETZ_SYSTEM_TYPE_IKS_VX180 || \
 		FREETZ_SYSTEM_TYPE_IKS_VX185
 
+config FREETZ_SYSTEM_TYPE_IPQ40xx
+	bool
+	default y if \
+		FREETZ_TYPE_4040
+
 # not supported (yet?)
 #config FREETZ_SYSTEM_TYPE_PUMA6_ARM
 #	bool
@@ -135,6 +140,7 @@ config FREETZ_SYSTEM_TYPE
 	default "ar10"          if FREETZ_SYSTEM_TYPE_AR10
 	default "grx5"          if FREETZ_SYSTEM_TYPE_GRX5
 	default "iks"           if FREETZ_SYSTEM_TYPE_IKS
+	default "ipq40xx"       if FREETZ_SYSTEM_TYPE_IPQ40xx
 	default "puma6"         if FREETZ_SYSTEM_TYPE_PUMA6
 	default "qca955x"       if FREETZ_SYSTEM_TYPE_QCA955x
 	default "qca956x"       if FREETZ_SYSTEM_TYPE_QCA956x
@@ -148,6 +154,11 @@ config FREETZ_SYSTEM_TYPE_CORE_SUFFIX
 	default ".x86"  if FREETZ_SYSTEM_TYPE_PUMA6_X86
 
 # cpu model (the same variable name as in /proc/cpuinfo)
+
+config FREETZ_CPU_MODEL_ARM_cortex_a9
+	bool
+	default y if \
+		FREETZ_SYSTEM_TYPE_IPQ40xx
 
 config FREETZ_CPU_MODEL_MIPS_4KEc
 	bool
