@@ -53,8 +53,8 @@ config FREETZ_AVM_HAS_NMI_VECTOR
 
 config FREETZ_AVM_IMAGES_SUBDIR
 	string "Sub-dir containing image files"	if FREETZ_TYPE_CUSTOM
-	default "var/tmp"				if FREETZ_TARGET_ARCH_ARM || FREETZ_TARGET_ARCH_MIPS
-	default "var/remote/var/tmp/x86"		if FREETZ_TARGET_ARCH_X86
+	default "var/tmp"                 if FREETZ_TARGET_ARCH_ARM || FREETZ_TARGET_ARCH_MIPS
+	default "var/remote/var/tmp/x86"  if FREETZ_TARGET_ARCH_X86
 	help
 		A sub-directory within the .image tarball containing the files
 		like: kernel.image, filesystem.image, plugins.update, etc.
@@ -65,9 +65,10 @@ config FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
 		FREETZ_SYSTEM_TYPE_AR10      || \
 		FREETZ_SYSTEM_TYPE_GRX5      || \
 		FREETZ_SYSTEM_TYPE_IKS_VX185 || \
+		(FREETZ_SYSTEM_TYPE_IPQ40xx  && !FREETZ_TYPE_4040) || \
 		FREETZ_SYSTEM_TYPE_PUMA6     || \
 		FREETZ_SYSTEM_TYPE_QCA955x   || \
-		(FREETZ_SYSTEM_TYPE_VR9 && !FREETZ_TYPE_7360)
+		(FREETZ_SYSTEM_TYPE_VR9      && !FREETZ_TYPE_7360)
 	default n
 	help
 		Select this if you have a box with separate filesystem.image.
@@ -75,7 +76,10 @@ config FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
 config FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM
 	depends on FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
 	bool "Has inner-/outer-filesystem"	if FREETZ_TYPE_CUSTOM
-	default n				if FREETZ_SYSTEM_TYPE_GRX5 || FREETZ_SYSTEM_TYPE_PUMA6
+	default n				if \
+			FREETZ_SYSTEM_TYPE_GRX5    || \
+			FREETZ_SYSTEM_TYPE_IPQ40xx || \
+			FREETZ_SYSTEM_TYPE_PUMA6
 	default y
 	help
 		Select this if you have a box with root-filesystem wrapped within/by other filesystem,
