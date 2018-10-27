@@ -1475,6 +1475,14 @@ config FREETZ_PATCH_MODFS_BOOT_MANAGER
 	help
 		Extends the "reboot" page of FRITZ!OS to select system version and branding.
 
+config FREETZ_PATCH_MODFS_ANNEX_SELECTION
+	bool "Unhide Annex selection"
+	depends on FREETZ_AVM_HAS_MULTI_ANNEX
+	depends on FREETZ_TYPE_LANG_DE
+	default n
+	help
+		Unhides Annex selection in Fritz!OS web interface.
+
 comment "Misc patches ---------------------------"
 
 config FREETZ_PATCH_W920V_LED_MODULE
