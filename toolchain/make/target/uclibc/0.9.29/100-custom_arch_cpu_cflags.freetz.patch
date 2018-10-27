@@ -4,8 +4,8 @@
  ifeq ($(TARGET_ARCH),mips)
  	CPU_LDFLAGS-$(ARCH_LITTLE_ENDIAN)+=-EL
  	CPU_LDFLAGS-$(ARCH_BIG_ENDIAN)+=-EB
-+ifneq ($(strip $(CUSTOM_ARCH_CPU_CFLAGS)),)
-+	CPU_CFLAGS-y+=$(strip $(CUSTOM_ARCH_CPU_CFLAGS))
++ifneq ($(strip $(MIPS_CUSTOM_ARCH_CPU_CFLAGS)),)
++	CPU_CFLAGS-y+=$(strip $(MIPS_CUSTOM_ARCH_CPU_CFLAGS))
 +else
  	CPU_CFLAGS-$(CONFIG_MIPS_ISA_1)+=-mips1
  	CPU_CFLAGS-$(CONFIG_MIPS_ISA_2)+=-mips2 -mtune=mips2

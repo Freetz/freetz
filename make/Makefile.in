@@ -36,26 +36,32 @@ endif
 TARGET_CROSS:=$(call qstrip,$(FREETZ_TARGET_CROSS))
 KERNEL_CROSS:=$(call qstrip,$(FREETZ_KERNEL_CROSS))
 
-# arch=ARCH
-#ARGET_CFLAGS_ARCH_CPU_TUNE := $(if $(call qstrip,$(FREETZ_GCC_ARCH)),-march=$(call qstrip,$(FREETZ_GCC_ARCH)))
-# arch=CPU
-TARGET_CFLAGS_ARCH_CPU_TUNE := $(if $(call qstrip,$(FREETZ_GCC_ARCH)),-march=$(call qstrip,$(FREETZ_GCC_CPU)))
-TARGET_CFLAGS_ARCH_CPU_TUNE += $(if $(call qstrip,$(FREETZ_GCC_CPU)),-mtune=$(call qstrip,$(FREETZ_GCC_CPU)))
-TARGET_CFLAGS_ARCH_CPU_TUNE += $(if $(call qstrip,$(FREETZ_GCC_FPU)),-mfpu=$(call qstrip,$(FREETZ_GCC_FPU)))
-
-ifeq ($(strip $(FREETZ_TARGET_ARCH_MIPS)),y)
-TARGET_CFLAGS_FLOAT_ABI     := $(if $(call qstrip,$(FREETZ_GCC_FLOAT_ABI)),-m$(call qstrip,$(FREETZ_GCC_FLOAT_ABI))-float)
-else ifeq ($(strip $(FREETZ_TARGET_ARCH_ARM)),y)
-TARGET_CFLAGS_FLOAT_ABI     := $(if $(call qstrip,$(FREETZ_GCC_FLOAT_ABI)),-mfloat-abi=$(call qstrip,$(FREETZ_GCC_FLOAT_ABI)))
+TARGET_CFLAGS_HW_CAPABILITIES :=
+ifeq ($(strip $(FREETZ_TARGET_ARCH_ARM)),y)
+TARGET_CFLAGS_HW_CAPABILITIES += $(if $(call qstrip,$(FREETZ_GCC_CPU)),-mcpu=$(call qstrip,$(FREETZ_GCC_CPU)))
+else
+TARGET_CFLAGS_HW_CAPABILITIES += $(if $(call qstrip,$(FREETZ_GCC_CPU)),-march=$(call qstrip,$(FREETZ_GCC_CPU)))
+TARGET_CFLAGS_HW_CAPABILITIES += $(if $(call qstrip,$(FREETZ_GCC_CPU)),-mtune=$(call qstrip,$(FREETZ_GCC_CPU)))
 endif
+TARGET_CFLAGS_HW_CAPABILITIES += $(if $(call qstrip,$(FREETZ_GCC_FPU)),-mfpu=$(call qstrip,$(FREETZ_GCC_FPU)))
+ifeq ($(strip $(FREETZ_TARGET_ARCH_ARM)),y)
+# ARM is the only ARCH using -mfloat-abi=%
+TARGET_CFLAGS_HW_CAPABILITIES += $(if $(call qstrip,$(FREETZ_GCC_FLOAT_ABI)),-mfloat-abi=$(call qstrip,$(FREETZ_GCC_FLOAT_ABI)))
+else
+# all other ARCHs use -m%-float
+TARGET_CFLAGS_HW_CAPABILITIES += $(if $(call qstrip,$(FREETZ_GCC_FLOAT_ABI)),-m$(call qstrip,$(FREETZ_GCC_FLOAT_ABI))-float)
+endif
+TARGET_CFLAGS_HW_CAPABILITIES += $(if $(call qstrip,$(FREETZ_GCC_MODE)),-m$(call qstrip,$(FREETZ_GCC_MODE)))
 
-ifneq ($(filter -march=% -mcpu=% -mtune=% -m%-float,$(call qstrip,$(FREETZ_TARGET_CFLAGS))),)
-$(error Please remove any CPU and architecture related flags (-march/-mcpu/-mtune/-m*-float) \
+# LFS flags
+TARGET_CFLAGS_LFS:=-D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+
+ifneq ($(filter -march=% -mcpu=% -mtune=% -mfpu=% -mfloat-abi=% -m%-float -mmode=%,$(call qstrip,$(FREETZ_TARGET_CFLAGS))),)
+$(error Please remove any ARCH/CPU/FPU/FLOAT-ABI/MODE related flags (-march/-mcpu/-mtune/-mfpu/-mfloat-abi/-m*-float/-mmode) \
 	from target compiler flags (FREETZ_TARGET_CFLAGS variable in your .config). \
 	These flags are automatically set by freetz build environment now)
 endif
-TARGET_CFLAGS_LFS:=-D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
-TARGET_CFLAGS:=$(strip $(TARGET_CFLAGS_ARCH_CPU_TUNE)) $(strip $(TARGET_CFLAGS_FLOAT_ABI)) $(call qstrip,$(FREETZ_TARGET_CFLAGS)) $(strip $(TARGET_CFLAGS_LFS))
+TARGET_CFLAGS:=$(strip $(TARGET_CFLAGS_HW_CAPABILITIES) $(call qstrip,$(FREETZ_TARGET_CFLAGS)) $(TARGET_CFLAGS_LFS))
 
 FPIC:=-fPIC
 

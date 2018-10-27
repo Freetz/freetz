@@ -58,7 +58,7 @@ $(GCC_KERNEL_BUILD_DIR)/.configured: $(GCC_KERNEL_DIR)/.unpacked $(GCC_KERNEL_IN
 		--without-headers \
 		--disable-threads \
 		--disable-multilib \
-		$(GCC_COMMON_CONFIGURE_OPTIONS_ARCH_ABI) \
+		$(strip $(GCC_COMMON_CONFIGURE_OPTIONS_HW_CAPABILITIES)) \
 		$(GCC_KERNEL_DECIMAL_FLOAT) \
 		$(GCC_KERNEL_WITH_HOST_GMP) \
 		$(GCC_KERNEL_WITH_HOST_MPFR) \

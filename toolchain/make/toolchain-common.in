@@ -14,11 +14,16 @@ ifeq ($(strip $(FREETZ_TOOLCHAIN_32BIT)),y)
 TOOLCHAIN_HOST_CFLAGS+=$(HOST_CFLAGS_FORCE_32BIT_CODE)
 endif
 
-GCC_COMMON_CONFIGURE_OPTIONS_ARCH_ABI:=$(if $(call qstrip,$(FREETZ_GCC_ARCH)),--with-arch=$(call qstrip,$(FREETZ_GCC_ARCH)))
-GCC_COMMON_CONFIGURE_OPTIONS_ARCH_ABI+=$(if $(call qstrip,$(FREETZ_GCC_ABI)),--with-abi=$(call qstrip,$(FREETZ_GCC_ABI)))
-GCC_COMMON_CONFIGURE_OPTIONS_ARCH_ABI+=$(if $(call qstrip,$(FREETZ_GCC_FPU)),--with-fpu=$(call qstrip,$(FREETZ_GCC_FPU)))
-GCC_COMMON_CONFIGURE_OPTIONS_ARCH_ABI+=$(if $(call qstrip,$(FREETZ_GCC_FLOAT_ABI)),--with-float=$(call qstrip,$(FREETZ_GCC_FLOAT_ABI)))
-GCC_COMMON_CONFIGURE_OPTIONS_ARCH_ABI+=$(if $(call qstrip,$(FREETZ_GCC_MODE)),--with-mode=$(call qstrip,$(FREETZ_GCC_MODE)))
+GCC_COMMON_CONFIGURE_OPTIONS_HW_CAPABILITIES:=
+ifeq ($(strip $(FREETZ_TARGET_ARCH_ARM)),y)
+GCC_COMMON_CONFIGURE_OPTIONS_HW_CAPABILITIES+=$(if $(call qstrip,$(FREETZ_GCC_CPU)),--with-cpu=$(call qstrip,$(FREETZ_GCC_CPU)))
+else
+GCC_COMMON_CONFIGURE_OPTIONS_HW_CAPABILITIES+=$(if $(call qstrip,$(FREETZ_GCC_ARCH)),--with-arch=$(call qstrip,$(FREETZ_GCC_ARCH)))
+endif
+GCC_COMMON_CONFIGURE_OPTIONS_HW_CAPABILITIES+=$(if $(call qstrip,$(FREETZ_GCC_ABI)),--with-abi=$(call qstrip,$(FREETZ_GCC_ABI)))
+GCC_COMMON_CONFIGURE_OPTIONS_HW_CAPABILITIES+=$(if $(call qstrip,$(FREETZ_GCC_FPU)),--with-fpu=$(call qstrip,$(FREETZ_GCC_FPU)))
+GCC_COMMON_CONFIGURE_OPTIONS_HW_CAPABILITIES+=$(if $(call qstrip,$(FREETZ_GCC_FLOAT_ABI)),--with-float=$(call qstrip,$(FREETZ_GCC_FLOAT_ABI)))
+GCC_COMMON_CONFIGURE_OPTIONS_HW_CAPABILITIES+=$(if $(call qstrip,$(FREETZ_GCC_MODE)),--with-mode=$(call qstrip,$(FREETZ_GCC_MODE)))
 
 BINUTILS_BINARIES_BIN := addr2line ar as c++filt elfedit gprof ld nm objcopy objdump ranlib readelf size strings strip
 GCC_BINARIES_BIN := gcc g++ cc c++ cpp gcov gcc-ar gcc-nm gcc-ranlib

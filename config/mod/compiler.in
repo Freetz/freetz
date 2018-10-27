@@ -20,11 +20,12 @@ config FREETZ_GCC_ABI
 #       [1] http://lists.infradead.org/pipermail/lede-dev/2016-August/002351.html
 #
 
+# -march=%
 config FREETZ_GCC_ARCH
 	string
 	#
-	# UNSET if \
-	#	FREETZ_TARGET_ARCH_ARM
+	default "armv7-a" if \
+		FREETZ_CPU_MODEL_ARM_cortex_a9
 	#
 	# 4KEc CPUs are mips32r2, so the correct value is actually mips32r2
 	# s. https://github.com/gcc-mirror/gcc/blob/gcc-8_1_0-release/gcc/config/mips/mips-cpus.def#L107
@@ -45,6 +46,7 @@ config FREETZ_GCC_ARCH
 	default "atom" if \
 		FREETZ_CPU_MODEL_X86_ATOM
 
+# -mcpu=%, -mtune=%
 config FREETZ_GCC_CPU
 	string
 	default "cortex-a9" if \
@@ -86,15 +88,18 @@ config FREETZ_GCC_CPU
 	default "atom" if \
 		FREETZ_CPU_MODEL_X86_ATOM
 
+# -mfpu=%
 config FREETZ_GCC_FPU
 	string
 	default "neon"     if FREETZ_TARGET_ARCH_ARM  && FREETZ_CPU_MODEL_ARM_cortex_a9
 
+# -mfloat-abi=% (ARM) / -m%-float (MIPS)
 config FREETZ_GCC_FLOAT_ABI
 	string
 	default "softfp"   if FREETZ_TARGET_ARCH_ARM  && FREETZ_CPU_MODEL_ARM_cortex_a9
 	default "soft"     if FREETZ_TARGET_ARCH_MIPS
 
+# -mmode=%
 config FREETZ_GCC_MODE
 	string
 	default "arm"      if FREETZ_TARGET_ARCH_ARM  && FREETZ_CPU_MODEL_ARM_cortex_a9
