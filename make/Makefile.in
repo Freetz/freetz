@@ -53,15 +53,20 @@ TARGET_CFLAGS_HW_CAPABILITIES += $(if $(call qstrip,$(FREETZ_GCC_FLOAT_ABI)),-m$
 endif
 TARGET_CFLAGS_HW_CAPABILITIES += $(if $(call qstrip,$(FREETZ_GCC_MODE)),-m$(call qstrip,$(FREETZ_GCC_MODE)))
 
+# additional Freetz controlled and $(FREETZ_TARGET_ARCH) dependent flags
+TARGET_CFLAGS_arm:=
+TARGET_CFLAGS_i686:=
+TARGET_CFLAGS_mips:=-Wa,--trap
+
 # LFS flags
 TARGET_CFLAGS_LFS:=-D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 
-ifneq ($(filter -march=% -mcpu=% -mtune=% -mfpu=% -mfloat-abi=% -m%-float -mmode=%,$(call qstrip,$(FREETZ_TARGET_CFLAGS))),)
-$(error Please remove any ARCH/CPU/FPU/FLOAT-ABI/MODE related flags (-march/-mcpu/-mtune/-mfpu/-mfloat-abi/-m*-float/-mmode) \
+ifneq ($(filter -march=% -mcpu=% -mtune=% -mfpu=% -mfloat-abi=% -m%-float -Wa$(_comma)--trap,$(call qstrip,$(FREETZ_TARGET_CFLAGS))),)
+$(error Please remove any ARCH/CPU/FPU/FLOAT-ABI/MODE related flags (-march/-mcpu/-mtune/-mfpu/-mfloat-abi/-m*-float/-Wa$(_comma)--trap) \
 	from target compiler flags (FREETZ_TARGET_CFLAGS variable in your .config). \
-	These flags are automatically set by freetz build environment now)
+	These flags are automatically set by Freetz build environment now)
 endif
-TARGET_CFLAGS:=$(strip $(TARGET_CFLAGS_HW_CAPABILITIES) $(call qstrip,$(FREETZ_TARGET_CFLAGS)) $(TARGET_CFLAGS_LFS))
+TARGET_CFLAGS:=$(strip $(TARGET_CFLAGS_HW_CAPABILITIES) $(call qstrip,$(FREETZ_TARGET_CFLAGS)) $(TARGET_CFLAGS_$(call qstrip,$(FREETZ_TARGET_ARCH))) $(TARGET_CFLAGS_LFS))
 
 FPIC:=-fPIC
 
