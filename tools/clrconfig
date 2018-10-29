@@ -1,0 +1,55 @@
+#! /bin/bash
+#
+# list all symbol prefixes to unset
+#
+get_symbols()
+{
+	cat <<'eof'
+		FREETZ_AVM
+		FREETZ_BACKUP
+		FREETZ_BOX
+		FREETZ_BUILD
+		FREETZ_CIFS
+		FREETZ_CPU
+		FREETZ_CREATE
+		FREETZ_DL
+		FREETZ_GCC
+		FREETZ_GDB
+		FREETZ_INSTALL
+		FREETZ_KERNEL
+		FREETZ_NFS
+		FREETZ_PATCH
+		FREETZ_REMOVE
+		FREETZ_REPLACE
+		FREETZ_SQUASHFS
+		FREETZ_SYSTEM
+		FREETZ_TARGET
+		FREETZ_TOOLCHAIN
+		FREETZ_TYPE
+eof
+}
+#
+# make editor file
+#
+get_editor_commands()
+{
+	get_symbols | \
+	while read symbol; do
+		printf "s/^\\(%s[^=]*\\)=.*\$/# \\\\1 is not set/\n" "$symbol"
+	done
+}
+#
+# make sure, it's a bash instance, otherwise the file redirection does not work as expected
+#
+[ -z "$BASH_VERSION" ] && printf "This script need a Bourne-again Shell (bash) as its interpreter.\a\n" 1>&2 && exit 1
+#
+# check redirected STDIN and STDOUT
+#
+( [ -t 0 ] || [ -t 1 ] ) && printf "Filter script, provide a '.config' file on STDIN and save STDOUT to a (new) file.\a\n" 1>&2 && exit 1
+#
+# run editor, output goes to STDOUT, input comes from STDIN
+#
+sed -f <(get_editor_commands)
+#
+# end of script
+#

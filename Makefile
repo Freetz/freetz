@@ -403,6 +403,9 @@ listnewconfig: config-cache $(CONFIG)/conf
 oldconfig olddefconfig allnoconfig allyesconfig randconfig: config-cache $(CONFIG)/conf
 	@$(CONFIG)/conf --$@ $(CONFIG_IN_CACHE) && touch .config
 
+reuseconfig: .config
+	@tools/saveconfig
+
 config-cache: $(CONFIG_IN_CACHE)
 
 ifneq ($(findstring clean,$(MAKECMDGOALS)),clean)
