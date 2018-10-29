@@ -430,6 +430,9 @@ config-compress: .config.compressed
 oldconfig oldnoconfig allnoconfig allyesconfig randconfig listnewconfig: config-cache $(CONFIG)/conf
 	@$(CONFIG)/conf --$@ $(CONFIG_IN_CACHE)
 
+reuseconfig: .config
+	@tools/saveconfig
+
 config-cache: $(CONFIG_IN_CACHE)
 
 ifneq ($(findstring clean,$(MAKECMDGOALS)),clean)
