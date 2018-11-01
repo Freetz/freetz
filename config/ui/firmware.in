@@ -8,16 +8,6 @@ choice
 		select FREETZ_AVM_SOURCE_04_49
 		bool "300IP as Fon"
 
-	config FREETZ_TYPE_FON
-		select FREETZ_AVM_SOURCE_04_33 if FREETZ_TYPE_LANG_DE
-		select FREETZ_AVM_SOURCE_04_49 if ! FREETZ_TYPE_LANG_DE
-		bool "Fon"
-
-	config FREETZ_TYPE_WLAN
-		select FREETZ_AVM_SOURCE_04_33 if FREETZ_TYPE_LANG_DE
-		select FREETZ_AVM_SOURCE_04_49 if ! FREETZ_TYPE_LANG_DE
-		bool "Fon WLAN"
-
 	config FREETZ_TYPE_W501V
 		select FREETZ_AVM_SOURCE_r7203
 		bool "Speedport W501V"
@@ -87,6 +77,11 @@ choice
 
 	comment "Fon"
 
+	config FREETZ_TYPE_FON
+		select FREETZ_AVM_SOURCE_04_33 if FREETZ_TYPE_LANG_DE
+		select FREETZ_AVM_SOURCE_04_49 if ! FREETZ_TYPE_LANG_DE
+		bool "Fon"
+
 	config FREETZ_TYPE_5010
 		select FREETZ_AVM_SOURCE_04_40
 		bool "5010"
@@ -137,6 +132,11 @@ choice
 
 
 	comment "Fon WLAN"
+
+	config FREETZ_TYPE_WLAN
+		select FREETZ_AVM_SOURCE_04_33 if FREETZ_TYPE_LANG_DE
+		select FREETZ_AVM_SOURCE_04_49 if ! FREETZ_TYPE_LANG_DE
+		bool "Fon WLAN"
 
 	config FREETZ_TYPE_7050
 		select FREETZ_AVM_SOURCE_04_33
@@ -265,6 +265,10 @@ choice
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_GRX5
 		bool "7560"
 
+	config FREETZ_TYPE_7570
+		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_UR8
+		bool "7570"
+
 	config FREETZ_TYPE_7580
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_GRX5
 		bool "7580"
@@ -272,12 +276,6 @@ choice
 	config FREETZ_TYPE_7590
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_GRX5
 		bool "7590"
-
-	comment "VDSL"
-
-	config FREETZ_TYPE_7570
-		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_UR8
-		bool "7570"
 
 endchoice # "Hardware type" #
 
