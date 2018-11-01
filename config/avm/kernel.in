@@ -149,99 +149,99 @@ config FREETZ_KERNEL_VERSION_MODULES_SUBDIR
 
 config FREETZ_KERNEL_VERSION_2_6_13_MIN
 	bool
-	default y if \
+	default y
+	depends on \
 		FREETZ_KERNEL_VERSION_2_6_13 || \
 		FREETZ_KERNEL_VERSION_2_6_19_MIN
-	default n
 
 config FREETZ_KERNEL_VERSION_2_6_19_MIN
 	bool
-	default y if \
+	default y
+	depends on \
 		FREETZ_KERNEL_VERSION_2_6_19 || \
 		FREETZ_KERNEL_VERSION_2_6_28_MIN
-	default n
 
 config FREETZ_KERNEL_VERSION_2_6_28_MIN
 	bool
-	default y if \
+	default y
+	depends on \
 		FREETZ_KERNEL_VERSION_2_6_28 || \
 		FREETZ_KERNEL_VERSION_2_6_32_MIN
-	default n
 
 config FREETZ_KERNEL_VERSION_2_6_32_MIN
 	bool
-	default y if \
+	default y
+	depends on \
 		FREETZ_KERNEL_VERSION_2_6_32 || \
 		FREETZ_KERNEL_VERSION_2_6_39_MIN
-	default n
 
 config FREETZ_KERNEL_VERSION_2_6_39_MIN
 	bool
-	default y if \
+	default y
+	depends on \
 		FREETZ_KERNEL_VERSION_2_6_39 || \
 		FREETZ_KERNEL_VERSION_3_10_MIN
-	default n
 
 config FREETZ_KERNEL_VERSION_3_10_MIN
 	bool
-	default y if \
+	default y
+	depends on \
 		FREETZ_KERNEL_VERSION_3_10 || \
 		FREETZ_KERNEL_VERSION_4_4_MIN
-	default n
 
 config FREETZ_KERNEL_VERSION_4_4_MIN
 	bool
-	default y if \
+	default y
+	depends on \
 		FREETZ_KERNEL_VERSION_4_4
-	default n
 
 config FREETZ_KERNEL_VERSION_2_6_13_MAX
 	bool
-	default y if \
+	default y
+	depends on \
 		FREETZ_KERNEL_VERSION_2_6_13
-	default n
 
 config FREETZ_KERNEL_VERSION_2_6_19_MAX
 	bool
-	default y if \
+	default y
+	depends on \
 		FREETZ_KERNEL_VERSION_2_6_13_MAX || \
 		FREETZ_KERNEL_VERSION_2_6_19
-	default n
 
 config FREETZ_KERNEL_VERSION_2_6_28_MAX
 	bool
-	default y if \
+	default y
+	depends on \
 		FREETZ_KERNEL_VERSION_2_6_19_MAX || \
 		FREETZ_KERNEL_VERSION_2_6_28
-	default n
 
 config FREETZ_KERNEL_VERSION_2_6_32_MAX
 	bool
-	default y if \
+	default y
+	depends on \
 		FREETZ_KERNEL_VERSION_2_6_28_MAX || \
 		FREETZ_KERNEL_VERSION_2_6_32
-	default n
 
 config FREETZ_KERNEL_VERSION_2_6_39_MAX
 	bool
-	default y if \
+	default y
+	depends on \
 		FREETZ_KERNEL_VERSION_2_6_32_MAX || \
 		FREETZ_KERNEL_VERSION_2_6_39
-	default n
 
 config FREETZ_KERNEL_VERSION_3_10_MAX
 	bool
-	default y if \
+	default y
+	depends on \
 		FREETZ_KERNEL_VERSION_2_6_39_MAX || \
 		FREETZ_KERNEL_VERSION_3_10
-	default n
 
 config FREETZ_KERNEL_VERSION_4_4_MAX
 	bool
-	default y if \
+	default y
+	depends on \
 		FREETZ_KERNEL_VERSION_3_10_MAX || \
 		FREETZ_KERNEL_VERSION_4_4
-	default n
 
 # AVM kernel config area size in KB
 config FREETZ_AVM_KERNEL_CONFIG_AREA_SIZE

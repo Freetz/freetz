@@ -36,11 +36,11 @@ config FREETZ_AVM_SQUASHFS_COMPRESSION
 
 config FREETZ_AVM_HAS_NMI_VECTOR
 	bool
-	default y		if \
+	default y
+	depends on \
 		FREETZ_SYSTEM_TYPE_AR934x    || \
 		FREETZ_SYSTEM_TYPE_IKS_VX180 || \
 		FREETZ_SYSTEM_TYPE_QCA956x
-	default n
 	help
 		Select this if the original firmware image contains NMI vector
 		(at the beginning called junk bytes) within the SquashFS, see
@@ -58,7 +58,8 @@ config FREETZ_AVM_IMAGES_SUBDIR
 
 config FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
 	bool
-	default y		if \
+	default y
+	depends on \
 		FREETZ_SYSTEM_TYPE_AR10      || \
 		FREETZ_SYSTEM_TYPE_GRX5      || \
 		FREETZ_SYSTEM_TYPE_IKS_VX185 || \
@@ -66,18 +67,18 @@ config FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
 		FREETZ_SYSTEM_TYPE_PUMA6     || \
 		FREETZ_SYSTEM_TYPE_QCA955x   || \
 		(FREETZ_SYSTEM_TYPE_VR9      && !FREETZ_TYPE_7360)
-	default n
 	help
 		Select this if you have a box with separate filesystem.image.
 
 config FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM
-	depends on FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
 	bool
-	default n				if \
-			FREETZ_SYSTEM_TYPE_GRX5    || \
-			FREETZ_SYSTEM_TYPE_IPQ40xx || \
-			FREETZ_SYSTEM_TYPE_PUMA6
 	default y
+	depends on FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
+	depends on \
+		FREETZ_SYSTEM_TYPE_AR10      || \
+		FREETZ_SYSTEM_TYPE_IKS_VX185 || \
+		FREETZ_SYSTEM_TYPE_QCA955x   || \
+		FREETZ_SYSTEM_TYPE_VR9
 	help
 		Select this if you have a box with root-filesystem wrapped within/by other filesystem,
 		i.e. filesystem.image (whatever filesystem it uses) contains a file named filesystem_core.squashfs.
