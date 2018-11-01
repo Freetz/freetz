@@ -2,11 +2,8 @@
 ### Packaging/SquashFS properties
 ###
 
-menu "Packaging/SquashFS properties"
-	visible if FREETZ_TYPE_CUSTOM
-
 config FREETZ_AVM_SQUASHFS_VERSION
-	int "AVM SquashFS version"		if FREETZ_TYPE_CUSTOM
+	int
 	default 2 if FREETZ_KERNEL_VERSION_2_6_13
 	default 3 if FREETZ_KERNEL_VERSION_2_6_19_MIN && FREETZ_KERNEL_VERSION_2_6_32_MAX
 	default 4 if FREETZ_KERNEL_VERSION_2_6_39_MIN
@@ -14,7 +11,7 @@ config FREETZ_AVM_SQUASHFS_VERSION
 		SquashFS version used by AVM
 
 config FREETZ_SQUASHFS_VERSION
-	int "Target SquashFS version"		if FREETZ_TYPE_CUSTOM
+	int
 	default 3 if FREETZ_KERNEL_VERSION_2_6_13 && FREETZ_REPLACE_KERNEL
 	default FREETZ_AVM_SQUASHFS_VERSION
 	help
@@ -23,7 +20,7 @@ config FREETZ_SQUASHFS_VERSION
 		Note: this might deviate from that used by AVM (patched/replaced kernel usually required)
 
 config FREETZ_AVM_SQUASHFS_ENDIANNESS
-	string "SquashFS endianness"	if FREETZ_TYPE_CUSTOM
+	string
 	default "le" if FREETZ_TARGET_ARCH_LE
 	default "be" if FREETZ_TARGET_ARCH_BE
 	help
@@ -31,14 +28,14 @@ config FREETZ_AVM_SQUASHFS_ENDIANNESS
 		Usually the same as the endianness of the box.
 
 config FREETZ_AVM_SQUASHFS_COMPRESSION
-	string "SquashFS compression method"	if FREETZ_TYPE_CUSTOM
+	string
 	default "lzma" if FREETZ_KERNEL_VERSION_2_6_28_MAX
 	default "lzma" if FREETZ_KERNEL_VERSION_2_6_32 && !FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
 	default "gzip" if FREETZ_KERNEL_VERSION_2_6_32 &&  FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
 	default "xz"   if FREETZ_KERNEL_VERSION_2_6_39_MIN
 
 config FREETZ_AVM_HAS_NMI_VECTOR
-	bool "Has NMI vector within SquashFS"	if FREETZ_TYPE_CUSTOM
+	bool
 	default y		if \
 		FREETZ_SYSTEM_TYPE_AR934x    || \
 		FREETZ_SYSTEM_TYPE_IKS_VX180 || \
@@ -52,7 +49,7 @@ config FREETZ_AVM_HAS_NMI_VECTOR
 		for more information.
 
 config FREETZ_AVM_IMAGES_SUBDIR
-	string "Sub-dir containing image files"	if FREETZ_TYPE_CUSTOM
+	string
 	default "var/tmp"                 if FREETZ_TARGET_ARCH_ARM || FREETZ_TARGET_ARCH_MIPS
 	default "var/remote/var/tmp/x86"  if FREETZ_TARGET_ARCH_X86
 	help
@@ -60,7 +57,7 @@ config FREETZ_AVM_IMAGES_SUBDIR
 		like: kernel.image, filesystem.image, plugins.update, etc.
 
 config FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
-	bool "Has separate filesystem image"	if FREETZ_TYPE_CUSTOM
+	bool
 	default y		if \
 		FREETZ_SYSTEM_TYPE_AR10      || \
 		FREETZ_SYSTEM_TYPE_GRX5      || \
@@ -75,7 +72,7 @@ config FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
 
 config FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM
 	depends on FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
-	bool "Has inner-/outer-filesystem"	if FREETZ_TYPE_CUSTOM
+	bool
 	default n				if \
 			FREETZ_SYSTEM_TYPE_GRX5    || \
 			FREETZ_SYSTEM_TYPE_IPQ40xx || \
@@ -87,13 +84,11 @@ config FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM
 
 #config FREETZ_AVM_INNER_FILESYSTEM_TYPE
 #	depends on FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM
-#	string "Inner-filesystem type"		if FREETZ_TYPE_CUSTOM
+#	string
 #	default "SquashFS"
 
 config FREETZ_AVM_OUTER_FILESYSTEM_TYPE
 	depends on FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM
-	string "Outer-filesystem type"		if FREETZ_TYPE_CUSTOM
+	string
 	default "Ext2FS"			if FREETZ_AVM_VERSION_06_5X_MIN && FREETZ_KERNEL_VERSION_3_10
 	default "SquashFS"
-
-endmenu

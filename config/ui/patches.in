@@ -301,7 +301,6 @@ config FREETZ_REMOVE_BRANDING_1und1
 	depends on \
 		FREETZ_TYPE_LANG_DE && \
 		( \
-		FREETZ_TYPE_CUSTOM || \
 		FREETZ_TYPE_FON || \
 		FREETZ_TYPE_WLAN || \
 		FREETZ_TYPE_3020 || \
@@ -341,7 +340,6 @@ config FREETZ_REMOVE_BRANDING_avm
 	bool "AVM"
 	depends on \
 		( \
-		FREETZ_TYPE_CUSTOM || \
 		FREETZ_TYPE_LANG_A_CH || \
 		FREETZ_TYPE_LANG_DE \
 		) \
@@ -361,7 +359,6 @@ config FREETZ_REMOVE_BRANDING_avm
 config FREETZ_REMOVE_BRANDING_avme
 	bool "AVM international"
 	depends on \
-		FREETZ_TYPE_CUSTOM || \
 		FREETZ_TYPE_LANG_EN
 	default n
 	help
@@ -416,7 +413,6 @@ config FREETZ_REMOVE_BRANDING_aol
 		FREETZ_TYPE_LANG_DE && \
 		( \
 		FREETZ_TYPE_300IP || \
-		FREETZ_TYPE_CUSTOM || \
 		FREETZ_TYPE_FON || \
 		FREETZ_TYPE_WLAN || \
 		FREETZ_TYPE_7140 \
@@ -433,28 +429,12 @@ config FREETZ_REMOVE_BRANDING_aol
 
 		echo $(cat /proc/sys/urlader/firmware_version)
 
-config FREETZ_REMOVE_BRANDING_arcor
-	bool "Arcor"
-	depends on FREETZ_TYPE_CUSTOM
-	default n
-	help
-		Arcor branding
-
-		Each branding provides the web UI templates for a certain manufacturer or OEM.
-
-		NOTE: Make sure not to remove the branding corresponding to the one defined
-		in your box's boot loader environment. It can be determined by calling the
-		following command from the box's shell prompt:
-
-		echo $(cat /proc/sys/urlader/firmware_version)
-
 config FREETZ_REMOVE_BRANDING_freenet
 	bool "Freenet"
 	depends on \
 		FREETZ_TYPE_LANG_DE && \
 		( \
 		FREETZ_TYPE_300IP || \
-		FREETZ_TYPE_CUSTOM || \
 		FREETZ_TYPE_FON || \
 		FREETZ_TYPE_7150 || \
 		FREETZ_TYPE_7112 || \

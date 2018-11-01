@@ -2,11 +2,8 @@
 ### firmware versions available (and supported by Freetz)
 ###
 
-menu "Firmware availability"
-	visible if FREETZ_TYPE_CUSTOM
-
 config FREETZ_AVM_HAS_FIRMWARE_04_XX
-	bool "04.xx-firmware available" if FREETZ_TYPE_CUSTOM
+	bool
 	default y		if \
 		! FREETZ_AVM_HAS_FIRMWARE_05_2X && \
 		! FREETZ_AVM_HAS_FIRMWARE_05_5X && \
@@ -21,7 +18,7 @@ config FREETZ_AVM_HAS_FIRMWARE_04_XX
 		Select this if a 04.xx-firmware is available for your box.
 
 config FREETZ_AVM_HAS_FIRMWARE_05_2X
-	bool "05.2x-firmware available" if FREETZ_TYPE_CUSTOM
+	bool
 	default y		if \
 		FREETZ_TYPE_7270_16 || \
 		FREETZ_TYPE_7340 || \
@@ -31,7 +28,7 @@ config FREETZ_AVM_HAS_FIRMWARE_05_2X
 		Select this if a Fritz!OS-05.2x based firmware is available for your box.
 
 config FREETZ_AVM_HAS_FIRMWARE_05_5X
-	bool "05.5x-firmware available" if FREETZ_TYPE_CUSTOM
+	bool
 	default y		if \
 		( FREETZ_TYPE_LANG_DE && ( \
 			FREETZ_TYPE_3270 || \
@@ -52,7 +49,7 @@ config FREETZ_AVM_HAS_FIRMWARE_05_5X
 		Select this if a Fritz!OS-05.5x based firmware is available for your box.
 
 config FREETZ_AVM_HAS_FIRMWARE_06_0X
-	bool "06.0x-firmware available" if FREETZ_TYPE_CUSTOM
+	bool
 	default y		if \
 		( FREETZ_TYPE_LANG_DE && ( \
 			FREETZ_TYPE_7240 || \
@@ -69,7 +66,7 @@ config FREETZ_AVM_HAS_FIRMWARE_06_0X
 		Select this if a Fritz!OS-06.0x based firmware is available for your box.
 
 config FREETZ_AVM_HAS_FIRMWARE_06_2X
-	bool "06.2x/06.3x-firmware available" if FREETZ_TYPE_CUSTOM
+	bool
 	default y		if \
 		( FREETZ_TYPE_LANG_DE && ( \
 			FREETZ_TYPE_3272 || \
@@ -116,7 +113,7 @@ config FREETZ_AVM_HAS_FIRMWARE_06_2X
 		Select this if a Fritz!OS-06.2x/06.3x based firmware is available for your box.
 
 config FREETZ_AVM_HAS_FIRMWARE_06_5X
-	bool "06.5x-firmware available" if FREETZ_TYPE_CUSTOM
+	bool
 	default y		if \
 		( FREETZ_TYPE_LANG_DE && ( \
 			FREETZ_TYPE_3272 || \
@@ -155,7 +152,7 @@ config FREETZ_AVM_HAS_FIRMWARE_06_5X
 		Select this if a Fritz!OS-06.5x based firmware is available for your box.
 
 config FREETZ_AVM_HAS_FIRMWARE_06_8X
-	bool "06.8x-firmware available" if FREETZ_TYPE_CUSTOM
+	bool
 	default y		if \
 		( FREETZ_TYPE_LANG_DE && ( \
 			FREETZ_TYPE_3272 || \
@@ -197,7 +194,7 @@ config FREETZ_AVM_HAS_FIRMWARE_06_8X
 		Select this if a Fritz!OS-06.8x based firmware is available for your box.
 
 config FREETZ_AVM_HAS_FIRMWARE_06_9X
-	bool "06.9x-firmware available" if FREETZ_TYPE_CUSTOM
+	bool
 	default y		if \
 		( FREETZ_TYPE_LANG_DE && ( \
 			FREETZ_TYPE_7490 || \
@@ -210,7 +207,7 @@ config FREETZ_AVM_HAS_FIRMWARE_06_9X
 		Select this if a Fritz!OS-06.9x based firmware is available for your box.
 
 config FREETZ_AVM_HAS_FIRMWARE_07_0X
-	bool "07.0x-firmware available" if FREETZ_TYPE_CUSTOM
+	bool
 	default y		if \
 		( FREETZ_TYPE_LANG_DE && ( \
 			FREETZ_TYPE_3490 || \
@@ -241,7 +238,7 @@ config FREETZ_AVM_HAS_FIRMWARE_07_0X
 
 
 config FREETZ_AVM_HAS_FIRMWARE_LABOR_BETA
-	bool "Labor firmware from the Beta branch available" if FREETZ_TYPE_CUSTOM
+	bool
 	default y		if \
 		FREETZ_TYPE_LANG_DE && ( \
 			FREETZ_TYPE_6890 \
@@ -251,7 +248,7 @@ config FREETZ_AVM_HAS_FIRMWARE_LABOR_BETA
 		Select this if a labor firmware from the Beta branch is available for your box.
 
 config FREETZ_AVM_HAS_FIRMWARE_LABOR_MAINTENANCE
-	bool "Labor firmware from the Maintenance branch available" if FREETZ_TYPE_CUSTOM
+	bool
 	default y		if \
 		FREETZ_TYPE_LANG_DE && ( \
 			FREETZ_TYPE_6840 \
@@ -261,7 +258,7 @@ config FREETZ_AVM_HAS_FIRMWARE_LABOR_MAINTENANCE
 		Select this if a labor firmware from the Maintenance branch is available for your box.
 
 config FREETZ_AVM_HAS_LANG_DE
-	bool "German (DE) language firmware available" if FREETZ_TYPE_CUSTOM
+	bool
 	default y		if \
 		! ( \
 			FREETZ_TYPE_5010 || \
@@ -276,7 +273,7 @@ config FREETZ_AVM_HAS_LANG_DE
 		Select this if a German language (DE) firmware is available for your box.
 
 config FREETZ_AVM_HAS_LANG_A_CH
-	bool "German (AT,CH) language firmware available" if FREETZ_TYPE_CUSTOM
+	bool
 	default y		if \
 		FREETZ_TYPE_5010 || \
 		FREETZ_TYPE_7140 || \
@@ -286,7 +283,7 @@ config FREETZ_AVM_HAS_LANG_A_CH
 		Select this if a German language (AT,CH) firmware is available for your box.
 
 config FREETZ_AVM_HAS_LANG_EN
-	bool "English language or international firmware available" if FREETZ_TYPE_CUSTOM
+	bool
 	default y		if \
 		FREETZ_TYPE_FON || \
 		FREETZ_TYPE_300IP || \
@@ -327,11 +324,9 @@ config FREETZ_AVM_HAS_LANG_EN
 		multiple languages (=international) is available for your box.
 
 config FREETZ_AVM_HAS_LANG_IT
-	bool "Italian language firmware available" if FREETZ_TYPE_CUSTOM
+	bool
 	default y		if \
 		FREETZ_TYPE_3270_V3
 	default n
 	help
 		Select this if an Italian language firmware is available for your box.
-
-endmenu
