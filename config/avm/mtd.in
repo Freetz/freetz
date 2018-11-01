@@ -1,14 +1,20 @@
+#
+# number of 64K blocks in the kernel mtd device
+#
+# derived from kernel_size variable from /var/install if not set here
+#
 config FREETZ_KERNEL_CUSTOM_MTD_SIZE
 	int
 	default 59	if FREETZ_TYPE_3170_7170
 	default 119	if FREETZ_TYPE_7270_V1_V2
-	default 122	if FREETZ_TYPE_7570_IAD && ! FREETZ_REPLACE_KERNEL
-	default 244	if FREETZ_TYPE_7570_IAD && FREETZ_REPLACE_KERNEL
+	default 122	if FREETZ_TYPE_7570_IAD && !FREETZ_REPLACE_KERNEL
+	default 244	if FREETZ_TYPE_7570_IAD &&  FREETZ_REPLACE_KERNEL
 	default 246	if FREETZ_TYPE_7270_V2_V1
-	help
-		Custom number of 64K blocks in the kernel mtd device.
 
+#
+# number of 64K blocks in the filesystem mtd device
+#
+# derived from filesystem_size variable from /var/install if not set here
+#
 config FREETZ_FILESYSTEM_CUSTOM_MTD_SIZE
 	int
-	help
-		Custom number of 64K blocks in the filesystem mtd device.

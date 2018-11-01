@@ -2,30 +2,24 @@
 ### Packaging/SquashFS properties
 ###
 
+# SquashFS version used by AVM
 config FREETZ_AVM_SQUASHFS_VERSION
 	int
 	default 2 if FREETZ_KERNEL_VERSION_2_6_13
 	default 3 if FREETZ_KERNEL_VERSION_2_6_19_MIN && FREETZ_KERNEL_VERSION_2_6_32_MAX
 	default 4 if FREETZ_KERNEL_VERSION_2_6_39_MIN
-	help
-		SquashFS version used by AVM
 
+# SquashFS version used by the modified firmware
+# Note: this might deviate from that used by AVM (patched/replaced kernel required)
 config FREETZ_SQUASHFS_VERSION
 	int
 	default 3 if FREETZ_KERNEL_VERSION_2_6_13 && FREETZ_REPLACE_KERNEL
 	default FREETZ_AVM_SQUASHFS_VERSION
-	help
-		SquashFS version to be used by the modified firmware
-
-		Note: this might deviate from that used by AVM (patched/replaced kernel usually required)
 
 config FREETZ_AVM_SQUASHFS_ENDIANNESS
 	string
 	default "le" if FREETZ_TARGET_ARCH_LE
 	default "be" if FREETZ_TARGET_ARCH_BE
-	help
-		Endianness of the SquashFS filesystem.
-		Usually the same as the endianness of the box.
 
 config FREETZ_AVM_SQUASHFS_COMPRESSION
 	string
@@ -41,21 +35,16 @@ config FREETZ_AVM_HAS_NMI_VECTOR
 		FREETZ_SYSTEM_TYPE_AR934x    || \
 		FREETZ_SYSTEM_TYPE_IKS_VX180 || \
 		FREETZ_SYSTEM_TYPE_QCA956x
-	help
-		Select this if the original firmware image contains NMI vector
-		(at the beginning called junk bytes) within the SquashFS, see
-		  - http://freetz.org/ticket/1614#comment:70, and
-		  - http://www.ip-phone-forum.de/showthread.php?t=286318
-		for more information.
 
+# A sub-directory within the .image tarball containing the files like: kernel.image, filesystem.image, plugins.update, etc.
 config FREETZ_AVM_IMAGES_SUBDIR
 	string
 	default "var/tmp"                 if FREETZ_TARGET_ARCH_ARM || FREETZ_TARGET_ARCH_MIPS
 	default "var/remote/var/tmp/x86"  if FREETZ_TARGET_ARCH_X86
-	help
-		A sub-directory within the .image tarball containing the files
-		like: kernel.image, filesystem.image, plugins.update, etc.
 
+# kernel and filesystem reside in different mtd partitions
+# = both kernel.image and filesystem.image have non-zero size
+# = sometimes referred to as NAND box
 config FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
 	bool
 	default y
@@ -67,9 +56,8 @@ config FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
 		FREETZ_SYSTEM_TYPE_PUMA6     || \
 		FREETZ_SYSTEM_TYPE_QCA955x   || \
 		(FREETZ_SYSTEM_TYPE_VR9      && !FREETZ_TYPE_7360)
-	help
-		Select this if you have a box with separate filesystem.image.
 
+# root-filesystem is wrapped within/by other filesystem, i.e. filesystem.image (whatever filesystem it uses) contains a file named filesystem_core.squashfs
 config FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM
 	bool
 	default y
@@ -79,9 +67,6 @@ config FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM
 		FREETZ_SYSTEM_TYPE_IKS_VX185 || \
 		FREETZ_SYSTEM_TYPE_QCA955x   || \
 		FREETZ_SYSTEM_TYPE_VR9
-	help
-		Select this if you have a box with root-filesystem wrapped within/by other filesystem,
-		i.e. filesystem.image (whatever filesystem it uses) contains a file named filesystem_core.squashfs.
 
 #config FREETZ_AVM_INNER_FILESYSTEM_TYPE
 #	depends on FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM
