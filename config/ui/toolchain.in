@@ -473,6 +473,11 @@ config FREETZ_TARGET_UCLIBC_REDUCED_LOCALE_SET
 
 		This saves about 235KB in the image and at run-time.
 
+config FREETZ_TARGET_UCLIBC_PROVIDES_SSP
+	bool
+	default y
+	depends on FREETZ_TARGET_UCLIBC_1
+
 config FREETZ_TARGET_NLS
 #	bool "Native language support (NLS) for target toolchain" if FREETZ_BUILD_TOOLCHAIN
 	bool

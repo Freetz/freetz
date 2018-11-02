@@ -63,6 +63,12 @@ endif
 
 GCC_EXTRA_MAKE_OPTIONS := MAKEINFO=true
 
+#
+# s. https://git.buildroot.net/buildroot/commit/package/gcc/gcc.mk?id=a7463a6c8195314c870c3667a3971448e7fa4d39 for more details
+#
+GCC_HOST_COMMON_CONFIGURE_ENV += gcc_cv_libc_provides_ssp=$(if $(FREETZ_TARGET_UCLIBC_PROVIDES_SSP),yes,no)
+GCC_EXTRA_MAKE_OPTIONS        += gcc_cv_libc_provides_ssp=$(if $(FREETZ_TARGET_UCLIBC_PROVIDES_SSP),yes,no)
+
 GCC_LIB_SUBDIR=lib/gcc/$(REAL_GNU_TARGET_NAME)/$$(cat $(abspath $(GCC_DIR))/gcc/BASE-VER)
 # This macro exists for the following reason:
 #   uClibc depends on some gcc internal headers located under $(GCC_LIB_SUBDIR).
