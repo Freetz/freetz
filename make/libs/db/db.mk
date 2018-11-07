@@ -13,8 +13,12 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$($(PKG)_LIBNAME)
 $(PKG)_CONFIGURE_PRE_CMDS := ln -sf ../dist/configure $(DB_BUILD_SUBDIR)/ ;
 $(PKG)_CONFIGURE_OPTIONS += --srcdir=../dist/
 
+$(PKG)_MUTEX_arm:=ARM/gcc-assembly
+$(PKG)_MUTEX_i686:=*x86/gcc-assembly
+$(PKG)_MUTEX_mips:=MIPS/gcc-assembly
+
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
-$(PKG)_CONFIGURE_OPTIONS += --with-mutex=MIPS/gcc-assembly
+$(PKG)_CONFIGURE_OPTIONS += --with-mutex='$($(PKG)_MUTEX_$(call qstrip,$(FREETZ_TARGET_ARCH)))'
 $(PKG)_CONFIGURE_OPTIONS += --disable-cxx
 $(PKG)_CONFIGURE_OPTIONS += --disable-compat185
 $(PKG)_CONFIGURE_OPTIONS += --disable-tcl
