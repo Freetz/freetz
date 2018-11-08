@@ -1,14 +1,14 @@
-$(call PKG_INIT_LIB, 1.6.5)
-$(PKG)_LIB_VERSION:=20.0.5
+$(call PKG_INIT_LIB, 1.8.4)
+$(PKG)_LIB_VERSION:=20.2.4
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_SHA1:=c3a5a13e717f7b3e3895650afc1b6e0d3fe9c726
+$(PKG)_SOURCE_SHA1:=4a8ef9db6922f3a31992aca5640b4198a69b58fc
 $(PKG)_SITE:=ftp://ftp.gnupg.org/gcrypt/libgcrypt
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
 
-$(PKG)_DIGESTS            := crc gostr3411-94 md4 md5 rmd160 sha1 sha256 sha512 stribog tiger whirlpool
+$(PKG)_DIGESTS            := blake2 crc gostr3411-94 md4 md5 rmd160 sha1 sha256 sha512 stribog tiger whirlpool
 $(PKG)_SYMMETRIC_CIPHERS  := aes arcfour blowfish camellia cast5 des gost28147 idea rfc2268 salsa20 seed serpent twofish
 $(PKG)_ASYMMETRIC_CIPHERS := dsa ecc elgamal rsa
 $(foreach i,DIGEST SYMMETRIC_CIPHER ASYMMETRIC_CIPHER, \
@@ -21,6 +21,7 @@ $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_OPTIONS += --disable-doc
 $(PKG)_CONFIGURE_OPTIONS += --disable-asm
 $(PKG)_CONFIGURE_OPTIONS += --with-gpg-error-prefix="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --enable-digests="$(call LIB_SELECTED_SUBOPTIONS,$($(PKG)_DIGESTS),WITH_DIGEST)"

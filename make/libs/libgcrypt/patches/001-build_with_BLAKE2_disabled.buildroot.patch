@@ -1,0 +1,33 @@
+From 35b59d0ea52e8a1c30c43554dc4dbca97da4bf87 Mon Sep 17 00:00:00 2001
+From: Jussi Kivilinna <jussi.kivilinna@iki.fi>
+Date: Tue, 10 Apr 2018 22:03:49 +0300
+Subject: [PATCH] Fix building with BLAKE2 disabled
+
+* cipher/md.c (md_setkey): Enclose Blake2 part with USE_BLAKE2.
+--
+
+Signed-off-by: Jussi Kivilinna <jussi.kivilinna@iki.fi>
+---
+ cipher/md.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git cipher/md.c cipher/md.c
+index efbffe1..f6c1954 100644
+--- cipher/md.c
++++ cipher/md.c
+@@ -703,6 +703,7 @@ md_setkey (gcry_md_hd_t h, const unsigned char *key, size_t keylen)
+     {
+       switch (r->spec->algo)
+ 	{
++#if USE_BLAKE2
+ 	/* TODO? add spec->init_with_key? */
+ 	case GCRY_MD_BLAKE2B_512:
+ 	case GCRY_MD_BLAKE2B_384:
+@@ -719,6 +720,7 @@ md_setkey (gcry_md_hd_t h, const unsigned char *key, size_t keylen)
+ 					     ? GCRY_MD_FLAG_BUGEMU1:0,
+ 					   key, keylen, r->spec->algo);
+ 	  break;
++#endif
+ 	default:
+ 	  rc = GPG_ERR_DIGEST_ALGO;
+ 	  break;
