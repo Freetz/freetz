@@ -90,7 +90,7 @@
  		if [ -f "$$i" ]; then \
 --- crypto/Makefile
 +++ crypto/Makefile
-@@ -85,17 +85,17 @@
+@@ -87,17 +87,17 @@
  	@if [ -z "$(THIS)" ]; then $(MAKE) -f $(TOP)/Makefile reflect THIS=$@; fi
  
  subdirs:
@@ -111,7 +111,7 @@
  
  # lib: $(LIB): are splitted to avoid end-less loop
  lib:	$(LIB)
-@@ -111,7 +111,7 @@
+@@ -113,7 +113,7 @@
  	fi
  
  libs:
@@ -120,7 +120,7 @@
  
  install:
  	@[ -n "$(INSTALLTOP)" ] # should be set by top Makefile...
-@@ -120,17 +120,17 @@
+@@ -122,17 +122,17 @@
  	(cp $$i $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i; \
  	chmod 644 $(INSTALL_PREFIX)$(INSTALLTOP)/include/openssl/$$i ); \
  	done;
@@ -142,7 +142,7 @@
  	@if [ -z "$(THIS)" ]; then $(MAKE) -f $(TOP)/Makefile reflect THIS=$@; fi
  local_depend:
  	@[ -z "$(THIS)" -o -f buildinf.h ] || touch buildinf.h # fake buildinf.h if it does not exist
-@@ -139,13 +139,13 @@
+@@ -141,13 +141,13 @@
  
  clean:
  	rm -f buildinf.h *.s *.o */*.o *.obj lib tags core .pure .nfs* *.old *.bak fluff
