@@ -2,6 +2,8 @@ $(call PKG_INIT_BIN, 98d3ccce65)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SITE:=git@https://github.com/er13/callmonitor.git
 
+$(PKG)_CONDITIONAL_PATCHES+=$(call qstrip,$(FREETZ_TYPE_PREFIX_SERIES_SUBDIR))
+
 $(PKG)_STARTLEVEL=71
 
 $(PKG)_BUILD_DIR := $($(PKG)_DIR)/build/freetz/$(pkg)-$($(PKG)_VERSION)
