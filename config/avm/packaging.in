@@ -34,6 +34,7 @@ config FREETZ_AVM_HAS_NMI_VECTOR
 	depends on \
 		FREETZ_SYSTEM_TYPE_AR934x    || \
 		FREETZ_SYSTEM_TYPE_IKS_VX180 || \
+		(FREETZ_SYSTEM_TYPE_QCA955x && FREETZ_TYPE_1750) || \
 		FREETZ_SYSTEM_TYPE_QCA956x
 
 # A sub-directory within the .image tarball containing the files like: kernel.image, filesystem.image, plugins.update, etc.
@@ -54,7 +55,7 @@ config FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
 		FREETZ_SYSTEM_TYPE_IKS_VX185 || \
 		(FREETZ_SYSTEM_TYPE_IPQ40xx  && !FREETZ_TYPE_4040) || \
 		FREETZ_SYSTEM_TYPE_PUMA6     || \
-		FREETZ_SYSTEM_TYPE_QCA955x   || \
+		(FREETZ_SYSTEM_TYPE_QCA955x  && !FREETZ_TYPE_1750) || \
 		(FREETZ_SYSTEM_TYPE_VR9      && !FREETZ_TYPE_7360)
 
 # root-filesystem is wrapped within/by other filesystem, i.e. filesystem.image (whatever filesystem it uses) contains a file named filesystem_core.squashfs
