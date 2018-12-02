@@ -4,23 +4,17 @@ choice
 		help
 			Select your box type here.
 
-	config FREETZ_TYPE_300IP
-		select FREETZ_AVM_SOURCE_04_49
-		bool "300IP as Fon"
-
-	config FREETZ_TYPE_W501V
-		select FREETZ_AVM_SOURCE_r7203
-		bool "Speedport W501V"
-
-	config FREETZ_TYPE_2170
-		select FREETZ_AVM_SOURCE_04_57
-		bool "2170"
-
 	comment "WLAN Repeater"
 
 	config FREETZ_TYPE_1750
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_QCA955x
 		bool "1750 - EXPERIMENTAL"
+
+	comment "LAN"
+
+	config FREETZ_TYPE_2170
+		select FREETZ_AVM_SOURCE_04_57
+		bool "2170"
 
 	comment "WLAN"
 
@@ -282,6 +276,16 @@ choice
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_GRX5
 		bool "7590"
 
+	comment "T-Com hardware"
+
+	config FREETZ_TYPE_300IP
+		select FREETZ_AVM_SOURCE_04_49
+		bool "Eumex 300IP as Fon"
+
+	config FREETZ_TYPE_W501V
+		select FREETZ_AVM_SOURCE_r7203
+		bool "Speedport W501V"
+
 endchoice # "Hardware type" #
 
 choice
@@ -449,7 +453,7 @@ choice
 	depends on FREETZ_TYPE_ALIEN_HARDWARE
 
 	config FREETZ_TYPE_W701V_7170
-		bool "W701V"
+		bool "Speedport W701V"
 		depends on FREETZ_TYPE_7170 && FREETZ_TYPE_LANG_DE
 		select FREETZ_REMOVE_FTPD
 		select FREETZ_REMOVE_MEDIASRV
@@ -461,7 +465,7 @@ choice
 			on a 7170 image.
 
 	config FREETZ_TYPE_W900V_7170
-		bool "W900V"
+		bool "Speedport W900V"
 		depends on FREETZ_TYPE_7170 && FREETZ_TYPE_LANG_DE
 		help
 			Enable this to compile a mod image for T-Com Speedport W900V based
