@@ -299,13 +299,7 @@ package-list: package-list-clean $(PACKAGES_LIST)
 package-list-clean:
 	@$(RM) .static .dynamic
 
-firmware-nocompile: tools $(DL_IMAGE) $(PACKAGES) package-list .config.compressed
-ifeq ($(strip $(PACKAGES)),)
-	@echo
-	@echo "WARNING: There are no packages selected. To install packages type"
-	@echo "         'make menuconfig' and change to the 'Package selection' submenu."
-	@echo
-endif
+firmware-nocompile: tools $(DL_IMAGE)
 ifneq ($(strip $(FREETZ_FWMOD_SKIP_ALL)),y)
 	@./fwmod \
 		$(if $(call is-y,$(FREETZ_FWMOD_SKIP_UNPACK)),,-u)                                   \
@@ -320,7 +314,12 @@ ifneq ($(strip $(FREETZ_FWMOD_SKIP_ALL)),y)
 		$(DL_IMAGE)
 endif
 
-firmware: precompiled firmware-nocompile
+ifneq ($(strip $(FREETZ_FWMOD_SKIP_MODIFY)),y)
+firmware-nocompile: $(PACKAGES) package-list .config.compressed
+firmware: precompiled
+endif
+
+firmware: firmware-nocompile
 
 test: $(BUILD_DIR)/modified
 	@echo "no tests defined"
