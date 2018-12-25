@@ -1,9 +1,0 @@
-= dnsd =
-Small static DNS server daemon (BusyBox applet)
-
-== Links ==
- * [http://www.busybox.net/downloads/BusyBox.html#dnsd Man page]
- * [http://en.wikipedia.org/wiki/Domain_Name_System DNS] (wikipedia)
-
-== Example use case ==
-I forward port 53 from outside to 10053, using [wiki:packages/avm-firewall AVM firewall CGI], where [wiki:packages/iodine iodine] runs. ''iodine'' forwards requests for unknown domains to port 5353 where ''dnsd'' runs. ''dnsd'' answers requests for just a few sub-domains I want to use too.

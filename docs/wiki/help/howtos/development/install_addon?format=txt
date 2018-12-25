@@ -1,9 +1,0 @@
-[[TOC(help/howtos/development/*,depth=2,heading=Howtos: Entwicklung)]]
-
-= Addon Paket installieren =
-Pakete, die noch nicht in Freetz integriert sind, können als sogenanntes ''Addon Paket'' installiert werden. Dazu das gewünschte Paket '''vor''' dem Erstellen des Image herunterladen und nach `./addon` entpacken. Folgendes Beispiel geht davon aus, dass man sich im Verzeichnis des entpackten Freetz befindet:
-
-{{{
-tar -C addon -xjvf /pfad/zu/addon-paket-0.1-freetz.tar.bz2
-}}}
-Danach muss das Paket in der Liste `./addon/static.pkg` in eine neue Zeile eingetragen werden (im obigen Beispiel: `addon-paket-0.1`). Addon Pakete werden nach den integrierten Paketen in der Reihenfolge des Auftretens in `./addon/static.pkg` gestartet. Falls es sich bei dem Addon Paket um eine andere Version eines bereits integrierten Pakets handelt, so sollte das ursprüngliche Paket in `make menuconfig` unter ''Package selection'' deaktiviert werden, um Versionskonflikte zu vermeiden.
