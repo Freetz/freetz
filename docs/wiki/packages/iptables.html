@@ -1,8 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-  
-  
-
 
   <head>
     <title>
@@ -54,29 +51,22 @@
       </form>
       <div id="metanav" class="nav">
     <ul>
-      <li class="first"><a href="/login">Anmelden</a></li><li><a href="/prefs">Einstellungen</a></li><li><a href="../TracGuide.html">Hilfe/Anleitung</a></li><li><a href="/about">Über Trac</a></li><li><a href="/notification" title="Wiki Pages Change Notifications">My Notifications</a></li><li><a href="/register">Registrieren</a></li><li class="last"><a href="../Impressum.html">Impressum</a></li>
+      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
     </ul>
   </div>
     </div>
     <div id="mainnav" class="nav">
     <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="/timeline">Journal</a></li><li><a href="/roadmap">Projektplan</a></li><li><a href="https://github.com/Freetz/freetz/commits/master">Quellen durchsehen</a></li><li><a href="/report">Tickets anzeigen</a></li><li><a href="/search">Suche</a></li><li><a href="/tags">Tags</a></li><li><a href="/downloads">Downloads</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
+      <li class="first active"><a href="/wiki">Wiki</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
     </ul>
   </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="iptables.html" title="displaying language (default)">German</a></li><li class=" last"><a class="" href="iptables.en.html" title="">English</a></li></ul></div><div id="main">
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="iptables.html" title="displaying language (default)">German</a></li><li class=" last"><a class="" href="iptables.en.html" title="">English</a></li></ul></div><p /><div id="main">
       <div id="pagepath" class="noprint">
   <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="iptables.html" title="Zeige packages/iptables an">iptables</a>
 </div>
-      <div id="ctxtnav" class="nav">
-        <h2>Kontext-Navigation</h2>
-        <ul>
-          <li class="first"><a href="../packages.html">Aufwärts</a></li><li><a href="../index.html">Startseite</a></li><li><a href="../TitleIndex.html">Inhaltsverzeichnis</a></li><li><a href="iptables%3Faction=history.html">Änderungshistorie</a></li><li class="last"><a href="/notification/packages/iptables." title="Watch Page">Watch Page</a></li>
-        </ul>
-        <hr />
-      </div>
     <div id="content" class="wiki">
       <div class="wikipage searchable">
-        
+
           <div id="wikipage" class="trac-content"><p>
 </p><div class="wiki-toc"><h4>Inhaltsverzeichnis</h4><ol><li><a href="iptables.html#Wasistiptablesundwerbrauchtesüberhaupt">Was ist iptables und wer braucht es überhaupt?  </a></li><li><a href="iptables.html#WasistderUnterschiedzurAVMFirewallwievertragensichbeide">Was ist der Unterschied zur AVM Firewall, wie vertragen sich beide?</a></li><li><a href="iptables.html#Wiebautmaniptables">Wie baut man iptables?</a><ol><li><a href="iptables.html#Konfiguration:Firmwareerfolgreicherstelltundaufgespieltsogehtesweiter">Konfiguration: Firmware erfolgreich erstellt und aufgespielt, so geht es &hellip;</a></li><li><a href="iptables.html#AnmerkungzuKernelLogs">Anmerkung zu Kernel Logs</a></li><li><a href="iptables.html#WasistderUnterschiedvonINPUTOUTPUTundFORWARD">Was ist der Unterschied von INPUT, OUTPUT und FORWARD</a></li><li><a href="iptables.html#HinweisezumCodeBeispiel">Hinweise zum Code Beispiel</a></li></ol></li><li><a href="iptables.html#WeiterführendeLinks">Weiterführende Links</a></li><li><a href="iptables.html#KnownBugFritzBoxvor7270">Known Bug (FritzBox vor 7270)</a></li></ol></div><p>
 </p>
@@ -164,7 +154,7 @@ modprobe ip_conntrack_tftp
 
 </pre><ul><li>Danach werden die Regeln / Ketten erstellt (hier ein Beispiel für diverse Regeln):
 </li></ul><pre class="wiki">
-# # # FIREWALL RULES 
+# # # FIREWALL RULES
 
 iptables -N TRANS
 # Ausgehende Regeln für Internet Surfen:
@@ -180,7 +170,6 @@ iptables -A TRANS -m state --state RELATED,ESTABLISHED -j ACCEPT
 
 iptables -A TRANS -j LOG --log-prefix "[IPT] DENY-LAN-ACCESS "          # abgewiesene Pakete Loggen
 iptables -A TRANS -j DROP                                               # PARANOIA LINK
-
 
 # # # Rules for Fritz Device
 
@@ -207,7 +196,7 @@ iptables -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT     # stateful
 iptables -A OUTPUT -d 212.42.244.73 -p tcp --dport 80 -j ACCEPT       # Plugins Server AVM
 
 # iptables -A OUTPUT -d www.dasoertliche.de    -p tcp --dport 80 -j ACCEPT # Für Telefonbuch Abfrage durch die Box
-# iptables -A OUTPUT -d www.dastelefonbuch.de  -p tcp --dport 80 -j ACCEPT 
+# iptables -A OUTPUT -d www.dastelefonbuch.de  -p tcp --dport 80 -j ACCEPT
 # iptables -A OUTPUT -d www.goyellow.de        -p tcp --dport 80 -j ACCEPT
 # iptables -A OUTPUT -d www.11880.com          -p tcp --dport 80 -j ACCEPT
 # iptables -A OUTPUT -d www.google.de          -p tcp --dport 80 -j ACCEPT
@@ -334,31 +323,10 @@ Hier führten diese Einstellungen zu Uptimes von ~ 2 Tagen statt mindestens 5x R
 </p>
 </blockquote>
 </div>
-          
-          <div class="trac-modifiedby">
-            <span><a href="iptables%3Faction=diff&amp;version=46.html" title="Version 46 von markus: fett geschrieben">zuletzt geändert</a> <a class="timeline" href="/timeline?from=2013-01-05T09%3A41%3A04Z&amp;precision=second" title="Siehe Journal am 05.01.2013 09:41:04">vor 5 Jahren</a></span>
-            <span class="trac-print">Zuletzt geändert am 05.01.2013 09:41:04</span>
-          </div>
-        
-        
+
       </div><ul class="tags"><li class="header">Tags</li><li><a href="/tags/firewall" rel="tag">firewall</a> </li><li><a href="/tags/network" rel="tag">network</a> </li><li><a href="../packages.html" rel="tag">packages</a> </li><li><a href="/tags/routing" rel="tag">routing</a> </li><li><a href="/tags/security" rel="tag">security</a> </li><li><a href="/tags/%C3%BCberarbeiten" rel="tag">überarbeiten</a> </li></ul>
-      
 
     </div>
-    <div id="altlinks">
-      <h3>In anderen Formaten herunterladen:</h3>
-      <ul>
-        <li class="last first">
-          <a rel="nofollow" href="iptables%3Fformat=txt">Reiner Text</a>
-        </li>
-      </ul>
-    </div>
-    </div>
-    <div id="footer" lang="en" xml:lang="en"><hr />
-      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="../../chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
-      <p class="left">Betrieben mit <a href="/about"><strong>Trac 1.0.1</strong></a><br />
-        von <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
-      <p class="right"><div class="field" align="right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations"/><input type="hidden" name="business" value="spenden@freetz.org"/><input type="hidden" name="item_name" value="Freetz Entwickler-Team"/><input type="hidden" name="no_shipping" value="1"/><input type="hidden" name="return" value=""/><input type="hidden" name="cn" value="Name oder IPPF-Pseudonym"/><input type="hidden" name="currency_code" value="EUR"/><input type="hidden" name="tax" value="0"/><input type="hidden" name="lc" value="DE"/><input type="hidden" name="bn" value="PP-DonationsBF"/><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Zahlen Sie mit PayPal - schnell, kostenlos und sicher!"/><img alt="" border="0" src="/pixel.gif" width="1" height="1"/></form></div></p>
     </div>
   </body>
 </html>

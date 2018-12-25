@@ -1,8 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-  
-  
-
 
   <head>
     <title>
@@ -54,29 +51,22 @@
       </form>
       <div id="metanav" class="nav">
     <ul>
-      <li class="first"><a href="/login">Anmelden</a></li><li><a href="/prefs">Einstellungen</a></li><li><a href="../TracGuide.html">Hilfe/Anleitung</a></li><li><a href="/about">Über Trac</a></li><li><a href="/notification" title="Wiki Pages Change Notifications">My Notifications</a></li><li><a href="/register">Registrieren</a></li><li class="last"><a href="../Impressum.html">Impressum</a></li>
+      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
     </ul>
   </div>
     </div>
     <div id="mainnav" class="nav">
     <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="/timeline">Journal</a></li><li><a href="/roadmap">Projektplan</a></li><li><a href="https://github.com/Freetz/freetz/commits/master">Quellen durchsehen</a></li><li><a href="/report">Tickets anzeigen</a></li><li><a href="/search">Suche</a></li><li><a href="/tags">Tags</a></li><li><a href="/downloads">Downloads</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
+      <li class="first active"><a href="/wiki">Wiki</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
     </ul>
   </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="mediaserver.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/packages/mediaserver.en" title="(not available)">English</a></li></ul></div><div id="main">
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="mediaserver.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/packages/mediaserver.en" title="(not available)">English</a></li></ul></div><p /><div id="main">
       <div id="pagepath" class="noprint">
   <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="mediaserver.html" title="Zeige packages/mediaserver an">mediaserver</a>
 </div>
-      <div id="ctxtnav" class="nav">
-        <h2>Kontext-Navigation</h2>
-        <ul>
-          <li class="first"><a href="../packages.html">Aufwärts</a></li><li><a href="../index.html">Startseite</a></li><li><a href="../TitleIndex.html">Inhaltsverzeichnis</a></li><li><a href="mediaserver%3Faction=history.html">Änderungshistorie</a></li><li class="last"><a href="/notification/packages/mediaserver." title="Watch Page">Watch Page</a></li>
-        </ul>
-        <hr />
-      </div>
     <div id="content" class="wiki">
       <div class="wikipage searchable">
-        
+
           <div id="wikipage" class="trac-content"><p>
 </p><div class="wiki-toc"><h4>Inhaltsverzeichnis</h4><ol><li><a href="mediaserver.html#Funktionsweise">Funktionsweise</a></li><li><a href="mediaserver.html#Dateien">Dateien</a></li><li><a href="mediaserver.html#KompatibleClientsAuswahl">Kompatible Clients (Auswahl)</a><ol><li><a href="mediaserver.html#Software">Software</a></li><li><a href="mediaserver.html#Hardware">Hardware</a></li></ol></li><li><a href="mediaserver.html#Firmware-Kompatibilität">Firmware-Kompatibilität</a></li></ol></div><p>
 </p>
@@ -86,7 +76,7 @@
 </p>
 <h1 id="Mediaserver">Mediaserver</h1>
 <p>
-Der Mediaserver kann mittels Freetz aus der Labor-Version von AVM extrahiert und in andere Firmwares integriert werden. AVM beschreibt den Server als 
+Der Mediaserver kann mittels Freetz aus der Labor-Version von AVM extrahiert und in andere Firmwares integriert werden. AVM beschreibt den Server als
 <a class="ext-link" href="http://www.avm.de/de/Service/Service-Portale/Service-Portal/Labor/labor_download_usb_host/labor_download_usb_host.php"><span class="icon">​</span>FRITZ!Musikbox</a> - im Grunde ist es aber "nur" ein UPnP-Mediaserver, welcher Mediendaten (in diesem Fall MP3s) an kompatible Hard- und Software streamt.
 </p>
 <p>
@@ -113,16 +103,16 @@ Folgende Dateien gehören zum Mediaserver-Paket:
 </td></tr><tr><td> <tt>/sbin/start_mediasrv</tt> </td><td> Prüft verschiedene Ordner, setzt einen Link von /var/media/ftp auf /var/media/mediapath, startet den Mediaserver.
 </td></tr><tr><td> <tt>/sbin/stop_mediasrv</tt> </td><td> Stoppt den Mediaserver.
 </td></tr><tr><td> <tt>/sbin/mediasrv</tt> </td><td> Das eigentliche Server-Binary.
-</td></tr><tr><td> <tt>/usr/lib/mediasrv/ConnectionManager.xml</tt> 
-</td></tr><tr><td> <tt>/usr/lib/mediasrv/MediaServerDevDesc-template.xml</tt> 
-</td></tr><tr><td> <tt>/usr/lib/mediasrv/mediapath</tt> 
-</td></tr><tr><td> <tt>/usr/lib/mediasrv/MediaServerDevDesc.xml</tt> 
-</td></tr><tr><td> <tt>/usr/lib/mediasrv/ContentDirectory.xml</tt> 
-</td></tr><tr><td> <tt>/etc/default.Fritz_Box_7170/{avm,1und1,freenet}/ConnectionManager.xml</tt> 
-</td></tr><tr><td> <tt>/etc/default.Fritz_Box_7170/{avm,1und1,freenet}/MediaServerDevDesc-template.xml</tt> 
-</td></tr><tr><td> <tt>/etc/default.Fritz_Box_7170/{avm,1und1,freenet}/mediapath</tt> 
-</td></tr><tr><td> <tt>/etc/default.Fritz_Box_7170/{avm,1und1,freenet}/MediaServerDevDesc.xml</tt> 
-</td></tr><tr><td> <tt>/etc/default.Fritz_Box_7170/{avm,1und1,freenet}/ContentDirectory.xml</tt> 
+</td></tr><tr><td> <tt>/usr/lib/mediasrv/ConnectionManager.xml</tt>
+</td></tr><tr><td> <tt>/usr/lib/mediasrv/MediaServerDevDesc-template.xml</tt>
+</td></tr><tr><td> <tt>/usr/lib/mediasrv/mediapath</tt>
+</td></tr><tr><td> <tt>/usr/lib/mediasrv/MediaServerDevDesc.xml</tt>
+</td></tr><tr><td> <tt>/usr/lib/mediasrv/ContentDirectory.xml</tt>
+</td></tr><tr><td> <tt>/etc/default.Fritz_Box_7170/{avm,1und1,freenet}/ConnectionManager.xml</tt>
+</td></tr><tr><td> <tt>/etc/default.Fritz_Box_7170/{avm,1und1,freenet}/MediaServerDevDesc-template.xml</tt>
+</td></tr><tr><td> <tt>/etc/default.Fritz_Box_7170/{avm,1und1,freenet}/mediapath</tt>
+</td></tr><tr><td> <tt>/etc/default.Fritz_Box_7170/{avm,1und1,freenet}/MediaServerDevDesc.xml</tt>
+</td></tr><tr><td> <tt>/etc/default.Fritz_Box_7170/{avm,1und1,freenet}/ContentDirectory.xml</tt>
 </td></tr></table>
 <p>
 Außerdem werden verschiedene Bibliotheken benutzt, die auch in normalen Firmware enthalten sind (z.B. für UPnP oder HTTP), und verschiedene Skripte prüfen, ob ein Mediaserver in der Firmware enthalten ist und reagieren entsprechend.
@@ -146,31 +136,10 @@ Der Mediaserver aus der Laborversion 29.04.95-7553 funktioniert z.B. mit den sta
 Der Mediaserver aus 29.04.95-8221 geht mit den beiden obigen Firmwares nicht, dafür aber mit der 29.04.39.
 </p>
 </div>
-          
-          <div class="trac-modifiedby">
-            <span><a href="mediaserver%3Faction=diff&amp;version=3.html" title="Version 3 von Izzy">zuletzt geändert</a> <a class="timeline" href="/timeline?from=2011-04-11T20%3A02%3A05Z&amp;precision=second" title="Siehe Journal am 11.04.2011 20:02:05">vor 7 Jahren</a></span>
-            <span class="trac-print">Zuletzt geändert am 11.04.2011 20:02:05</span>
-          </div>
-        
-        
+
       </div><ul class="tags"><li class="header">Tags</li><li><a href="/tags/audio" rel="tag">audio</a> </li><li><a href="/tags/network" rel="tag">network</a> </li><li><a href="../packages.html" rel="tag">packages</a> </li></ul>
-      
 
     </div>
-    <div id="altlinks">
-      <h3>In anderen Formaten herunterladen:</h3>
-      <ul>
-        <li class="last first">
-          <a rel="nofollow" href="mediaserver%3Fformat=txt">Reiner Text</a>
-        </li>
-      </ul>
-    </div>
-    </div>
-    <div id="footer" lang="en" xml:lang="en"><hr />
-      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="../../chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
-      <p class="left">Betrieben mit <a href="/about"><strong>Trac 1.0.1</strong></a><br />
-        von <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
-      <p class="right"><div class="field" align="right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations"/><input type="hidden" name="business" value="spenden@freetz.org"/><input type="hidden" name="item_name" value="Freetz Entwickler-Team"/><input type="hidden" name="no_shipping" value="1"/><input type="hidden" name="return" value=""/><input type="hidden" name="cn" value="Name oder IPPF-Pseudonym"/><input type="hidden" name="currency_code" value="EUR"/><input type="hidden" name="tax" value="0"/><input type="hidden" name="lc" value="DE"/><input type="hidden" name="bn" value="PP-DonationsBF"/><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Zahlen Sie mit PayPal - schnell, kostenlos und sicher!"/><img alt="" border="0" src="/pixel.gif" width="1" height="1"/></form></div></p>
     </div>
   </body>
 </html>

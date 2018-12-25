@@ -1,8 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-  
-  
-
 
   <head>
     <title>
@@ -54,47 +51,40 @@
       </form>
       <div id="metanav" class="nav">
     <ul>
-      <li class="first"><a href="/login">Anmelden</a></li><li><a href="/prefs">Einstellungen</a></li><li><a href="../TracGuide.html">Hilfe/Anleitung</a></li><li><a href="/about">Über Trac</a></li><li><a href="/notification" title="Wiki Pages Change Notifications">My Notifications</a></li><li><a href="/register">Registrieren</a></li><li class="last"><a href="../Impressum.html">Impressum</a></li>
+      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
     </ul>
   </div>
     </div>
     <div id="mainnav" class="nav">
     <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="/timeline">Journal</a></li><li><a href="/roadmap">Projektplan</a></li><li><a href="https://github.com/Freetz/freetz/commits/master">Quellen durchsehen</a></li><li><a href="/report">Tickets anzeigen</a></li><li><a href="/search">Suche</a></li><li><a href="/tags">Tags</a></li><li><a href="/downloads">Downloads</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
+      <li class="first active"><a href="/wiki">Wiki</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
     </ul>
   </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="remove_tr069.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/patches/remove_tr069.en" title="(not available)">English</a></li></ul></div><div id="main">
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="remove_tr069.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/patches/remove_tr069.en" title="(not available)">English</a></li></ul></div><p /><div id="main">
       <div id="pagepath" class="noprint">
   <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../patches.html" title="Zeige patches an">patches</a><span class="pathentry sep">/</span><a class="pathentry" href="remove_tr069.html" title="Zeige patches/remove_tr069 an">remove_tr069</a>
 </div>
-      <div id="ctxtnav" class="nav">
-        <h2>Kontext-Navigation</h2>
-        <ul>
-          <li class="first"><a href="../patches.html">Aufwärts</a></li><li><a href="../index.html">Startseite</a></li><li><a href="../TitleIndex.html">Inhaltsverzeichnis</a></li><li><a href="remove_tr069%3Faction=history.html">Änderungshistorie</a></li><li class="last"><a href="/notification/patches/remove_tr069." title="Watch Page">Watch Page</a></li>
-        </ul>
-        <hr />
-      </div>
     <div id="content" class="wiki">
       <div class="wikipage searchable">
-        
+
           <div id="wikipage" class="trac-content"><h1 id="Removetr069stuff">Remove tr069 stuff</h1>
 <p>
 "TR69 ist [&hellip;] ein Protokoll, das die Kommunikation zwischen einem Endgerät und einem Kontrollserver regelt." So beschreibt es ein Blogeintrag (siehe unten). Verwendet wird dies bei der Fritzbox einerseits um komplexe Einstellungen bei der Einrichtung der Box zu automatisieren, andererseits damit der jeweilige Provider im Supportfall auf die Konfiguration der Box beim Kunden zugreifen kann. Das geht von der Veränderung einzelner Einstellungen bis hin zum Firmware-Upgrade oder der Feststellung von Modifikationen.
 </p>
 <p>
-Zu den Nachteilen des aktivierten TR-069 siehe insbesondere die zweite Seite des zweiten Artikels in unten stehender Link-Liste: Offensichtlich ist TR-069 bei Fritzboxen ab Werk bereits aktiviert, so dass "Big Brother" seinen Schnüffel-Zugang bereits einsatzbereit vorfindet. Wer einmal das Helferscript <em>/bin/supportdata</em> ansieht braucht sich nicht zu wundern warum Modifikationen sofort vom Provider im Supportfall entdeckt werden, genauso wie Dienste dritter (z.B. VoIP). 
+Zu den Nachteilen des aktivierten TR-069 siehe insbesondere die zweite Seite des zweiten Artikels in unten stehender Link-Liste: Offensichtlich ist TR-069 bei Fritzboxen ab Werk bereits aktiviert, so dass "Big Brother" seinen Schnüffel-Zugang bereits einsatzbereit vorfindet. Wer einmal das Helferscript <em>/bin/supportdata</em> ansieht braucht sich nicht zu wundern warum Modifikationen sofort vom Provider im Supportfall entdeckt werden, genauso wie Dienste dritter (z.B. VoIP).
 </p>
 <p>
 Viele der im <a class="wiki" href="../FAQ.html">FAQ</a> beschriebenen <strong><a class="wiki" href="../FAQ.html#NachdemFlashenistdasAVM-Webinterfacenichtmehrerreichbar">Gefahren beim Ersetzen der SSL libraries</a></strong> stehen auch in direktem Zusammenhang mit dem TR069 Dienst der scheinbar zur HTTPS gesicherten Verbindung zum ACS Server die "originalen" AVM SSL libraries braucht. Bei früheren Firmware Versionen reichte hier das Deaktivieren von TR069, jedoch tauchen die Probleme bei neueren Firmwares auch dann auf - vielleicht ein Indiz dafür das sich der Dienst garnicht mehr ganz deaktivieren lässt.
 </p>
 <p>
-<strong>Konflikte zwischen Freetz Modifikationen und TR069 tauchen meist erst bei angeschlossenem DSL auf, wodurch sich das Problem leicht eingrenzen lässt. Läuft eine Box stabil bis DSL angeschlossen bzw synchronisiert wird dann hilft dieser Patch. Warnung unten beachten!. 
+<strong>Konflikte zwischen Freetz Modifikationen und TR069 tauchen meist erst bei angeschlossenem DSL auf, wodurch sich das Problem leicht eingrenzen lässt. Läuft eine Box stabil bis DSL angeschlossen bzw synchronisiert wird dann hilft dieser Patch. Warnung unten beachten!.
 </strong></p>
 <p>
 Es ist also in vieler Hinsicht eventuell empfehlenswert, an dieser Stelle von der Möglichkeit der kompletten Entfernung von TR-069 Gebrauch zu machen. Wer also die Hilfestellung per TR-069 nicht dauerhaft benötigt (oder garnicht wünscht), kann sich den "tr069 stuff" im Image   ersparen - und den freigewordenen Platz für andere Dinge nutzen.
 </p>
 <p>
-<strong>Warnung:</strong> Entfernt man TR069 funktioniert weder automatische Einrichtung noch Startcode. Manche Provider haben komplizierte Multi-PVC Einstellungen für Internet Telefonie die sich über das Webinterface in der Form oft nicht eingeben lassen. Eine <strong>manuelle Eingabe</strong> funktioniert oft auch ist aber von der Providerseite leicht zu erkennen und wird oft in den AGBs als <strong>nicht unterstützt</strong> benannt (Bsp: 1und1). 
+<strong>Warnung:</strong> Entfernt man TR069 funktioniert weder automatische Einrichtung noch Startcode. Manche Provider haben komplizierte Multi-PVC Einstellungen für Internet Telefonie die sich über das Webinterface in der Form oft nicht eingeben lassen. Eine <strong>manuelle Eingabe</strong> funktioniert oft auch ist aber von der Providerseite leicht zu erkennen und wird oft in den AGBs als <strong>nicht unterstützt</strong> benannt (Bsp: 1und1).
 </p>
 <p>
 Auch zieht der Support im Fehlerfall eventuell jegliche Kooperationbereitschaft zurück wenn nicht mit TR069 konfiguriert wurde oder werden kann - bis hin zu angeblichem Garantieverlust des gelieferten Gerätes. Im gebrandeten Webinterface solcher Provider ist TR069 auch nicht abschaltbar. Daher empfiehlt sich folgende Vorgehensweise:
@@ -118,31 +108,10 @@ Auch zieht der Support im Fehlerfall eventuell jegliche Kooperationbereitschaft 
 </li><li><a class="ext-link" href="http://www.heise.de/netze/DSL-fernkonfiguriert--/artikel/99963/3"><span class="icon">​</span>Heise: TR-069 im laufenden Betrieb</a>
 </li><li><a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=146089"><span class="icon">​</span>IPPF Thread: tr069 verstehen und nutzen</a>
 </li></ul></div>
-          
-          <div class="trac-modifiedby">
-            <span><a href="remove_tr069%3Faction=diff&amp;version=7.html" title="Version 7 von hippie2000: link ins faq - ssl topic">zuletzt geändert</a> <a class="timeline" href="/timeline?from=2010-06-12T06%3A19%3A39Z&amp;precision=second" title="Siehe Journal am 12.06.2010 06:19:39">vor 8 Jahren</a></span>
-            <span class="trac-print">Zuletzt geändert am 12.06.2010 06:19:39</span>
-          </div>
-        
-        
+
       </div><ul class="tags"><li class="header">Tags</li><li><a href="../patches.html" rel="tag">patches</a> </li></ul>
-      
 
     </div>
-    <div id="altlinks">
-      <h3>In anderen Formaten herunterladen:</h3>
-      <ul>
-        <li class="last first">
-          <a rel="nofollow" href="remove_tr069%3Fformat=txt">Reiner Text</a>
-        </li>
-      </ul>
-    </div>
-    </div>
-    <div id="footer" lang="en" xml:lang="en"><hr />
-      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="../../chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
-      <p class="left">Betrieben mit <a href="/about"><strong>Trac 1.0.1</strong></a><br />
-        von <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
-      <p class="right"><div class="field" align="right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations"/><input type="hidden" name="business" value="spenden@freetz.org"/><input type="hidden" name="item_name" value="Freetz Entwickler-Team"/><input type="hidden" name="no_shipping" value="1"/><input type="hidden" name="return" value=""/><input type="hidden" name="cn" value="Name oder IPPF-Pseudonym"/><input type="hidden" name="currency_code" value="EUR"/><input type="hidden" name="tax" value="0"/><input type="hidden" name="lc" value="DE"/><input type="hidden" name="bn" value="PP-DonationsBF"/><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Zahlen Sie mit PayPal - schnell, kostenlos und sicher!"/><img alt="" border="0" src="/pixel.gif" width="1" height="1"/></form></div></p>
     </div>
   </body>
 </html>

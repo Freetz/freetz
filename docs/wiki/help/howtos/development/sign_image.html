@@ -1,8 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-  
-  
-
 
   <head>
     <title>
@@ -54,29 +51,22 @@
       </form>
       <div id="metanav" class="nav">
     <ul>
-      <li class="first"><a href="/login">Anmelden</a></li><li><a href="/prefs">Einstellungen</a></li><li><a href="../../../TracGuide.html">Hilfe/Anleitung</a></li><li><a href="/about">Über Trac</a></li><li><a href="/notification" title="Wiki Pages Change Notifications">My Notifications</a></li><li><a href="/register">Registrieren</a></li><li class="last"><a href="../../../Impressum.html">Impressum</a></li>
+      <li class="first"><li class="last"><a href="../../../Impressum.html">Impressum</a></li>
     </ul>
   </div>
     </div>
     <div id="mainnav" class="nav">
     <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="/timeline">Journal</a></li><li><a href="/roadmap">Projektplan</a></li><li><a href="https://github.com/Freetz/freetz/commits/master">Quellen durchsehen</a></li><li><a href="/report">Tickets anzeigen</a></li><li><a href="/search">Suche</a></li><li><a href="/tags">Tags</a></li><li><a href="/downloads">Downloads</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
+      <li class="first active"><a href="/wiki">Wiki</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
     </ul>
   </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="sign_image.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/help/howtos/development/sign_image.en" title="(not available)">English</a></li></ul></div><div id="main">
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="sign_image.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/help/howtos/development/sign_image.en" title="(not available)">English</a></li></ul></div><p /><div id="main">
       <div id="pagepath" class="noprint">
   <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../../../help.html" title="Zeige help an">help</a><span class="pathentry sep">/</span><a class="pathentry" href="../../howtos.html" title="Zeige help/howtos an">howtos</a><span class="pathentry sep">/</span><a class="pathentry" href="../development.html" title="Zeige help/howtos/development an">development</a><span class="pathentry sep">/</span><a class="pathentry" href="sign_image.html" title="Zeige help/howtos/development/sign_image an">sign_image</a>
 </div>
-      <div id="ctxtnav" class="nav">
-        <h2>Kontext-Navigation</h2>
-        <ul>
-          <li class="first"><a href="../development.html">Aufwärts</a></li><li><a href="../../../index.html">Startseite</a></li><li><a href="../../../TitleIndex.html">Inhaltsverzeichnis</a></li><li><a href="sign_image%3Faction=history.html">Änderungshistorie</a></li><li class="last"><a href="/notification/help/howtos/development/sign_image." title="Watch Page">Watch Page</a></li>
-        </ul>
-        <hr />
-      </div>
     <div id="content" class="wiki">
       <div class="wikipage searchable">
-        
+
           <div id="wikipage" class="trac-content"><h2 id="SignierenvonFirmware">Signieren von Firmware</h2>
 <p>
 Beim Signieren von Firmware handelt es sich um einen Vorgang, bei dem die Firmware mit einer <a class="ext-link" href="https://de.wikipedia.org/wiki/Digitale_Signatur"><span class="icon">​</span>digitalen Signatur</a> versehen wird. Der Einsatzzweck dieser Signatur beschränkt sich aktuell auf die Überprüfung, ob die Firmware bzw. nachladbare Teile davon (=AVM-Plugins) aus einer vertrauenswürdigen Quelle stammen und damit geflasht bzw. nachgeladen und eingebunden werden dürfen. In Bezug auf die Firmware ist dieser Mechanismus erst seit Fritz!OS-6.5x von AVM scharf geschaltet. Seit dieser Version kann über das Standard-Web-Interface von AVM nur noch eine aus einer vertrauenswürdigen und zum Flash-Zeitpunkt der auf der Box laufenden Firmware bekannten Quelle geflasht werden.
@@ -103,7 +93,7 @@ Ein (digital signiertes) Firmware-Image wird also dann als "aus einer vertrauens
 Der private, der geheime Schlüssel, mit dem AVM die Original-Images signiert, liegt uns aus verständlichen Gründen nicht vor (und wenn dies auch anders wäre, müssten wir auch noch das Passwort dazu kennen). Damit bleibt uns nichts anderes übrig, als es zu versuchen, ein selbstsigniertes Image zu erzeugen und die auf der Box laufende Firmware dazu zu zwingen dieses zu akzeptieren. Dabei sind folgende Hürden zu überwinden:
 </p>
 <ul><li>Der aus mathematischer/technischer Sicht schwierigste Teil besteht darin, es zu verstehen, worin genau nun ein Signiervorgang bzw. ein Signatur-Prüfungsvorgang in der AVM-Firmware besteht? Glücklicherweise hat der (im IPPF-Forum sehr gut bekannte) Entwickler <a class="ext-link" href="https://github.com/PeterPawn"><span class="icon">​</span>PeterPawn</a> diesbezüglich eine super Arbeit geleistet und im Rahmen seines <a class="ext-link" href="https://github.com/PeterPawn/YourFritz"><span class="icon">​</span>YourFritz-Projektes</a> alles <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=286213"><span class="icon">​</span>dokumentiert</a> und den entsprechenden <a class="ext-link" href="https://github.com/PeterPawn/YourFritz/tree/master/signimage"><span class="icon">​</span>Quellcode</a> zu Verfügung gestellt, der inzwischen auch in Freetz eingebaut ist.
-</li><li>Wie oben schon mehrfach erwähnt, damit ein signiertes Image den Prüfungsvorgang besteht, muss die auf der Box laufende Firmware den öffentlichen Schlüssel der Quelle kennen. Dies ist für unser selbstsigniertes Image natürlich nicht der Fall. D.h. wir müssen es irgendwie schaffen, unseren öffentlichen Schlüssel auf die Box einzuschleusen. Haben wir dies einmal geschafft, so kann jedes weitere selbstsignierte Image über das reguläre AVM-Web-Interface geflasht werden, vorausgesetzt man verwendet genau dasselbe Schlüsselpaar zum Signieren und vergisst es nicht, den öffentlichen Schlüssel in jedes neue Image mitaufzunehmen. 
+</li><li>Wie oben schon mehrfach erwähnt, damit ein signiertes Image den Prüfungsvorgang besteht, muss die auf der Box laufende Firmware den öffentlichen Schlüssel der Quelle kennen. Dies ist für unser selbstsigniertes Image natürlich nicht der Fall. D.h. wir müssen es irgendwie schaffen, unseren öffentlichen Schlüssel auf die Box einzuschleusen. Haben wir dies einmal geschafft, so kann jedes weitere selbstsignierte Image über das reguläre AVM-Web-Interface geflasht werden, vorausgesetzt man verwendet genau dasselbe Schlüsselpaar zum Signieren und vergisst es nicht, den öffentlichen Schlüssel in jedes neue Image mitaufzunehmen.
 </li></ul><p>
 Diese zweite Aufgabe ist streng genommen nicht ganz trivial. Es ist geplant, einen eigenen Artikel zu diesem Thema zu verfassen. An dieser Stelle seien stichwortartig mögliche Lösungen angedeutet:
 </p>
@@ -122,31 +112,10 @@ Durch das Aktivieren dieser Optionen wird folgendes bewirkt:
 </li><li>Liegen die Dateien dagegen vor, so werden sie einfach verwendet. Der öffentliche Schlüssel wird dabei in einem speziellen Format mit ins Image unter dem Namen <tt>/etc/avm_firmware_public_key9</tt> aufgenommen (bzgl. des Formats s. die detaillierte Beschreibung von PeterPawn).
 </li><li>Hat man es geschafft und der eigene öffentliche Schlüssel befindet sich auf der Box, so kann jedes weitere mit genau demselben Schlüsselpaar signierte Image über das AVM-Web-Interface geflasht werden.
 </li></ul></div>
-          
-          <div class="trac-modifiedby">
-            <span><a href="sign_image%3Faction=diff&amp;version=1.html" title="Version 1 von er13: add new article: &#34;sign image&#34;">zuletzt geändert</a> <a class="timeline" href="/timeline?from=2017-02-21T20%3A25%3A01Z&amp;precision=second" title="Siehe Journal am 21.02.2017 20:25:01">vor 12 Monaten</a></span>
-            <span class="trac-print">Zuletzt geändert am 21.02.2017 20:25:01</span>
-          </div>
-        
-        
+
       </div>
-      
 
     </div>
-    <div id="altlinks">
-      <h3>In anderen Formaten herunterladen:</h3>
-      <ul>
-        <li class="last first">
-          <a rel="nofollow" href="sign_image%3Fformat=txt">Reiner Text</a>
-        </li>
-      </ul>
-    </div>
-    </div>
-    <div id="footer" lang="en" xml:lang="en"><hr />
-      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="../../../../chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
-      <p class="left">Betrieben mit <a href="/about"><strong>Trac 1.0.1</strong></a><br />
-        von <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
-      <p class="right"><div class="field" align="right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations"/><input type="hidden" name="business" value="spenden@freetz.org"/><input type="hidden" name="item_name" value="Freetz Entwickler-Team"/><input type="hidden" name="no_shipping" value="1"/><input type="hidden" name="return" value=""/><input type="hidden" name="cn" value="Name oder IPPF-Pseudonym"/><input type="hidden" name="currency_code" value="EUR"/><input type="hidden" name="tax" value="0"/><input type="hidden" name="lc" value="DE"/><input type="hidden" name="bn" value="PP-DonationsBF"/><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Zahlen Sie mit PayPal - schnell, kostenlos und sicher!"/><img alt="" border="0" src="/pixel.gif" width="1" height="1"/></form></div></p>
     </div>
   </body>
 </html>

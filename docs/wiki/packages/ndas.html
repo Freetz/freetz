@@ -1,8 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-  
-  
-
 
   <head>
     <title>
@@ -54,29 +51,22 @@
       </form>
       <div id="metanav" class="nav">
     <ul>
-      <li class="first"><a href="/login">Anmelden</a></li><li><a href="/prefs">Einstellungen</a></li><li><a href="../TracGuide.html">Hilfe/Anleitung</a></li><li><a href="/about">Über Trac</a></li><li><a href="/notification" title="Wiki Pages Change Notifications">My Notifications</a></li><li><a href="/register">Registrieren</a></li><li class="last"><a href="../Impressum.html">Impressum</a></li>
+      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
     </ul>
   </div>
     </div>
     <div id="mainnav" class="nav">
     <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="/timeline">Journal</a></li><li><a href="/roadmap">Projektplan</a></li><li><a href="https://github.com/Freetz/freetz/commits/master">Quellen durchsehen</a></li><li><a href="/report">Tickets anzeigen</a></li><li><a href="/search">Suche</a></li><li><a href="/tags">Tags</a></li><li><a href="/downloads">Downloads</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
+      <li class="first active"><a href="/wiki">Wiki</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
     </ul>
   </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="ndas.html" title="displaying language (default)">German</a></li><li class=" last"><a class="" href="ndas.en.html" title="">English</a></li></ul></div><div id="main">
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="ndas.html" title="displaying language (default)">German</a></li><li class=" last"><a class="" href="ndas.en.html" title="">English</a></li></ul></div><p /><div id="main">
       <div id="pagepath" class="noprint">
   <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="ndas.html" title="Zeige packages/ndas an">ndas</a>
 </div>
-      <div id="ctxtnav" class="nav">
-        <h2>Kontext-Navigation</h2>
-        <ul>
-          <li class="first"><a href="../packages.html">Aufwärts</a></li><li><a href="../index.html">Startseite</a></li><li><a href="../TitleIndex.html">Inhaltsverzeichnis</a></li><li><a href="ndas%3Faction=history.html">Änderungshistorie</a></li><li class="last"><a href="/notification/packages/ndas." title="Watch Page">Watch Page</a></li>
-        </ul>
-        <hr />
-      </div>
     <div id="content" class="wiki">
       <div class="wikipage searchable">
-        
+
           <div id="wikipage" class="trac-content"><p>
 Network Direct Attached Storage (NDAS) ist ein proprietäres System zur Anbindung externer Speichermedien wie Festplatten, Flash-Speicher oder Bandlaufwerke an ein Netzwerk. Die Patente für NDAS hält die amerikanische Firma Ximeta. [1]
 </p>
@@ -130,16 +120,16 @@ Use the numeric slot number that you get from /proc/ndas/devices/MyDisk/slots. I
 </p>
 <pre class="wiki">/usr/sbin/ndasadmin enable -s 1 -o w   # exclusive write and read mode
 
-/usr/sbin/ndasadmin enable -s 1 -o r   # read-only mode 
+/usr/sbin/ndasadmin enable -s 1 -o r   # read-only mode
 
 /usr/sbin/ndasadmin enable -s 1 -o s   # for GFS/OCFS2 file system
 </pre><p>
-This command will print out the path of the block device file. For example,  
+This command will print out the path of the block device file. For example,
 </p>
 <pre class="wiki">/dev/nda, /dev/ndb, /dev/ndas-001000001-0.
 </pre><p>
 Your NetDisk will then have to be partitioned and/or formatted if not already.
- 
+
 </p>
 <h3 id="PartitionandfilesystemontheNDASdevice">Partition and file system on the NDAS device</h3>
 <p>
@@ -149,17 +139,17 @@ To partition or format, please do the following:
 WARNING: All data will be erased.
 </p>
 <h4 id="partition">partition</h4>
-<pre class="wiki">fdisk /dev/nda (fdisk &lt;path of the block device file&gt; see output of ndasadmin enable), 
+<pre class="wiki">fdisk /dev/nda (fdisk &lt;path of the block device file&gt; see output of ndasadmin enable),
 * use p to show the current partition table
 * use n to create a new partion
 </pre><h4 id="format">format</h4>
 <p>
-use for example: 
+use for example:
 </p>
-<pre class="wiki">mkfs -t ext2 /dev/nda1 
+<pre class="wiki">mkfs -t ext2 /dev/nda1
 or
 mkfs.ext3 /dev/ndas-08019896-0p1 -L ndas_disc1
-... 
+...
 </pre><p>
 where /dev/ndas-08019896-0 is the path of the block device file and p1 stands for <em>partion 1</em><br />
 (just check the output of <em>fdisk -l /dev/ndas-08019896-0</em>)<br />
@@ -172,7 +162,7 @@ Your NetDisk is now ready for use!
 <ul><li>try
 </li></ul><pre class="wiki">blkid
 </pre><p>
-which should give all partition information for your entire Linux system, including the NDAS device. This is very useful if you already have multiple partitions on your NDAS device. You then need to 
+which should give all partition information for your entire Linux system, including the NDAS device. This is very useful if you already have multiple partitions on your NDAS device. You then need to
 </p>
 <pre class="wiki">mount -t &lt;filesystem&gt; &lt;device name&gt; &lt;mount directory&gt;
 </pre><p>
@@ -237,7 +227,7 @@ We've specified all the other information about the device in /etc/fstab, so no 
 </p>
 <p>
 Due to how and when the device drivers and /etc/fstab load, setting the device to automatically mount in /etc/fstab usually does not work.  You'll need to either set a boot time cron job, add it to your X session startup, etc.  This is outside the scope of this wiki, please see your system documentation for further information on this.
- 
+
 </p>
 <h3 id="AdditionalCommandsfortheNDASdevice">Additional Commands for the NDAS device</h3>
 <p>
@@ -250,7 +240,7 @@ Note: disable is to make the NetDisk to be disconnected from the Linux machine. 
 </p>
 </blockquote>
 <p>
- 
+
 To Unregister the NetDisk
 </p>
 <pre class="wiki">/usr/sbin/ndasadmin unregister --name MyDisk
@@ -260,7 +250,7 @@ Note: 'unregister' is to delete the registration so that the NetDisk is not regi
 </p>
 </blockquote>
 <p>
- 
+
 </p>
 <blockquote>
 <p>
@@ -300,7 +290,7 @@ I wondered how robust the NDAS protocol, host device and linux driver are&hellip
 <ul><li>Mount the ndas partition on my linux host in rw mode (ext3 partition)
 </li><li>Start a copy operation on a large file
 </li><li>Turning the NDAS device by pressing the power off button
-</li><li>Turning the NDAS device on again. 
+</li><li>Turning the NDAS device on again.
 </li></ul><p>
 Result: The file transfer stopped while the device was offline, and then resumed on its own as soon as the NDAS device came online again. Unfortunately, <strong>the file was corrupted</strong> in the end.
 On a bright side, this is still better than linux hangup.
@@ -310,31 +300,10 @@ On a bright side, this is still better than linux hangup.
 [1] <a class="ext-link" href="http://de.wikipedia.org/wiki/Network_Direct_Attached_Storage"><span class="icon">​</span>Wikipedia Seite zu NDAS</a>
 </p>
 </div>
-          
-          <div class="trac-modifiedby">
-            <span><a href="ndas%3Faction=diff&amp;version=2.html" title="Version 2 von oliver: Disable Links in ndas README">zuletzt geändert</a> <a class="timeline" href="/timeline?from=2010-07-24T15%3A02%3A19Z&amp;precision=second" title="Siehe Journal am 24.07.2010 15:02:19">vor 8 Jahren</a></span>
-            <span class="trac-print">Zuletzt geändert am 24.07.2010 15:02:19</span>
-          </div>
-        
-        
+
       </div>
-      
 
     </div>
-    <div id="altlinks">
-      <h3>In anderen Formaten herunterladen:</h3>
-      <ul>
-        <li class="last first">
-          <a rel="nofollow" href="ndas%3Fformat=txt">Reiner Text</a>
-        </li>
-      </ul>
-    </div>
-    </div>
-    <div id="footer" lang="en" xml:lang="en"><hr />
-      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="../../chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
-      <p class="left">Betrieben mit <a href="/about"><strong>Trac 1.0.1</strong></a><br />
-        von <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
-      <p class="right"><div class="field" align="right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations"/><input type="hidden" name="business" value="spenden@freetz.org"/><input type="hidden" name="item_name" value="Freetz Entwickler-Team"/><input type="hidden" name="no_shipping" value="1"/><input type="hidden" name="return" value=""/><input type="hidden" name="cn" value="Name oder IPPF-Pseudonym"/><input type="hidden" name="currency_code" value="EUR"/><input type="hidden" name="tax" value="0"/><input type="hidden" name="lc" value="DE"/><input type="hidden" name="bn" value="PP-DonationsBF"/><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Zahlen Sie mit PayPal - schnell, kostenlos und sicher!"/><img alt="" border="0" src="/pixel.gif" width="1" height="1"/></form></div></p>
     </div>
   </body>
 </html>

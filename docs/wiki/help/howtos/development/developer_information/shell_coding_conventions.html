@@ -1,8 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-  
-  
-
 
   <head>
     <title>
@@ -54,29 +51,22 @@
       </form>
       <div id="metanav" class="nav">
     <ul>
-      <li class="first"><a href="/login">Anmelden</a></li><li><a href="/prefs">Einstellungen</a></li><li><a href="../../../../TracGuide.html">Hilfe/Anleitung</a></li><li><a href="/about">Über Trac</a></li><li><a href="/notification" title="Wiki Pages Change Notifications">My Notifications</a></li><li><a href="/register">Registrieren</a></li><li class="last"><a href="../../../../Impressum.html">Impressum</a></li>
+      <li class="first"><li class="last"><a href="../../../../Impressum.html">Impressum</a></li>
     </ul>
   </div>
     </div>
     <div id="mainnav" class="nav">
     <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="/timeline">Journal</a></li><li><a href="/roadmap">Projektplan</a></li><li><a href="https://github.com/Freetz/freetz/commits/master">Quellen durchsehen</a></li><li><a href="/report">Tickets anzeigen</a></li><li><a href="/search">Suche</a></li><li><a href="/tags">Tags</a></li><li><a href="/downloads">Downloads</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
+      <li class="first active"><a href="/wiki">Wiki</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
     </ul>
   </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="shell_coding_conventions.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/help/howtos/development/developer_information/shell_coding_conventions.en" title="(not available)">English</a></li></ul></div><div id="main">
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="shell_coding_conventions.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/help/howtos/development/developer_information/shell_coding_conventions.en" title="(not available)">English</a></li></ul></div><p /><div id="main">
       <div id="pagepath" class="noprint">
   <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../../../../help.html" title="Zeige help an">help</a><span class="pathentry sep">/</span><a class="pathentry" href="../../../howtos.html" title="Zeige help/howtos an">howtos</a><span class="pathentry sep">/</span><a class="pathentry" href="../../development.html" title="Zeige help/howtos/development an">development</a><span class="pathentry sep">/</span><a class="pathentry" href="../developer_information.html" title="Zeige help/howtos/development/developer_information an">developer_information</a><span class="pathentry sep">/</span><a class="pathentry" href="shell_coding_conventions.html" title="Zeige help/howtos/development/developer_information/shell_coding_conventions an">shell_coding_conventions</a>
 </div>
-      <div id="ctxtnav" class="nav">
-        <h2>Kontext-Navigation</h2>
-        <ul>
-          <li class="first"><a href="../developer_information.html">Aufwärts</a></li><li><a href="../../../../index.html">Startseite</a></li><li><a href="../../../../TitleIndex.html">Inhaltsverzeichnis</a></li><li><a href="shell_coding_conventions%3Faction=history.html">Änderungshistorie</a></li><li class="last"><a href="/notification/help/howtos/development/developer_information/shell_coding_conventions." title="Watch Page">Watch Page</a></li>
-        </ul>
-        <hr />
-      </div>
     <div id="content" class="wiki">
       <div class="wikipage searchable">
-        
+
           <div id="wikipage" class="trac-content"><h1 id="ShellCodingConventions">Shell Coding Conventions</h1>
 <p>
 As many (if not most) functional parts of freetz are implemented using (bourne) shell scripts, a need for some shell coding conventions arose. Currently, this page has the draft status. Some parts seem to be quite settled, others are just a recommendation or <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=163148&amp;highlight=coding+style"><span class="icon">​</span>need further discussion</a>. This style guide is based on <a class="ext-link" href="http://web.archive.org/web/20070422195703/http://opensolaris.org/os/community/on/shellstyle/"><span class="icon">​</span>http://www.opensolaris.org/os/community/on/shellstyle/</a> (archive.org).
@@ -324,7 +314,7 @@ if</span> <span class="o">[</span> -n <span class="s2">"$BASEDIR"</span> <span c
 <span class="k">fi</span>
 </pre></div><h2 id="Commenting">Commenting</h2>
 <p>
-<img src="../../../../../chrome/wikiextras-icons-16/exclamation.png" style="vertical-align: text-bottom" alt="/!\" /> 
+<img src="../../../../../chrome/wikiextras-icons-16/exclamation.png" style="vertical-align: text-bottom" alt="/!\" />
 As usual, comments are mainly intended for maintainers of the files, that means probably not you but someone else.
 Comments should describe why something is done the way it is done, or explain complicated statements that are not obvious.
 A summary for a whole block of code or the synopsis of a function are also useful.
@@ -339,7 +329,7 @@ Shell comments are preceded by the '#' character. Both single and multi-line com
 
 <span class="c">#
 # Modify the permissions on bar. (This is obvious from the code and not necessary.)
-# We need to set them to root/sys in order to match the package prototype. 
+# We need to set them to root/sys in order to match the package prototype.
 # (This information is useful because it is not contained in the code.)
 #
 </span>chown root bar
@@ -372,34 +362,13 @@ The proper interpreter magic (aka shebang) for shell script is:
 </p>
 <div class="code"><pre><span class="c">#!/bin/sh
 </span></pre></div></div>
-          
-          <div class="trac-modifiedby">
-            <span><a href="shell_coding_conventions%3Faction=diff&amp;version=17.html" title="Version 17 von McNetic: Link auf coding style Vorlage repariert">zuletzt geändert</a> <a class="timeline" href="/timeline?from=2014-01-16T19%3A46%3A31Z&amp;precision=second" title="Siehe Journal am 16.01.2014 19:46:31">vor 4 Jahren</a></span>
-            <span class="trac-print">Zuletzt geändert am 16.01.2014 19:46:31</span>
-          </div>
-        
-        
+
       </div>
-      
 
     </div>
     <script type="text/javascript">
         jQuery.loadStyleSheet("/pygments/trac.css", "text/css");
     </script>
-    <div id="altlinks">
-      <h3>In anderen Formaten herunterladen:</h3>
-      <ul>
-        <li class="last first">
-          <a rel="nofollow" href="shell_coding_conventions%3Fformat=txt">Reiner Text</a>
-        </li>
-      </ul>
-    </div>
-    </div>
-    <div id="footer" lang="en" xml:lang="en"><hr />
-      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="../../../../../chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
-      <p class="left">Betrieben mit <a href="/about"><strong>Trac 1.0.1</strong></a><br />
-        von <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
-      <p class="right"><div class="field" align="right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations"/><input type="hidden" name="business" value="spenden@freetz.org"/><input type="hidden" name="item_name" value="Freetz Entwickler-Team"/><input type="hidden" name="no_shipping" value="1"/><input type="hidden" name="return" value=""/><input type="hidden" name="cn" value="Name oder IPPF-Pseudonym"/><input type="hidden" name="currency_code" value="EUR"/><input type="hidden" name="tax" value="0"/><input type="hidden" name="lc" value="DE"/><input type="hidden" name="bn" value="PP-DonationsBF"/><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Zahlen Sie mit PayPal - schnell, kostenlos und sicher!"/><img alt="" border="0" src="/pixel.gif" width="1" height="1"/></form></div></p>
     </div>
   </body>
 </html>

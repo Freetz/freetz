@@ -1,8 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-  
-  
-
 
   <head>
     <title>
@@ -54,29 +51,22 @@
       </form>
       <div id="metanav" class="nav">
     <ul>
-      <li class="first"><a href="/login">Anmelden</a></li><li><a href="/prefs">Einstellungen</a></li><li><a href="../TracGuide.html">Hilfe/Anleitung</a></li><li><a href="/about">Über Trac</a></li><li><a href="/notification" title="Wiki Pages Change Notifications">My Notifications</a></li><li><a href="/register">Registrieren</a></li><li class="last"><a href="../Impressum.html">Impressum</a></li>
+      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
     </ul>
   </div>
     </div>
     <div id="mainnav" class="nav">
     <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="/timeline">Journal</a></li><li><a href="/roadmap">Projektplan</a></li><li><a href="https://github.com/Freetz/freetz/commits/master">Quellen durchsehen</a></li><li><a href="/report">Tickets anzeigen</a></li><li><a href="/search">Suche</a></li><li><a href="/tags">Tags</a></li><li><a href="/downloads">Downloads</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
+      <li class="first active"><a href="/wiki">Wiki</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
     </ul>
   </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=""><a class="" href="iptables.html" title="">German</a></li><li class=" active last"><a class="selected" href="iptables.en.html" title="selected and displaying language">English</a></li></ul></div><div id="main">
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=""><a class="" href="iptables.html" title="">German</a></li><li class=" active last"><a class="selected" href="iptables.en.html" title="selected and displaying language">English</a></li></ul></div><p /><div id="main">
       <div id="pagepath" class="noprint">
   <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="iptables.en.html" title="Zeige packages/iptables.en an">iptables.en</a>
 </div>
-      <div id="ctxtnav" class="nav">
-        <h2>Kontext-Navigation</h2>
-        <ul>
-          <li class="first"><a href="../packages.html">Aufwärts</a></li><li><a href="../index.html">Startseite</a></li><li><a href="../TitleIndex.html">Inhaltsverzeichnis</a></li><li><a href="iptables.en%3Faction=history.html">Änderungshistorie</a></li><li class="last"><a href="/notification/packages/iptables.en" title="Watch Page">Watch Page</a></li>
-        </ul>
-        <hr />
-      </div>
     <div id="content" class="wiki">
       <div class="wikipage searchable">
-        
+
           <div id="wikipage" class="trac-content"><p>
 </p><div class="wiki-toc"><h4>Table of contents</h4><ol><li><a href="iptables.en.html#Currentstatelargelybroken">Current state (largely broken)</a></li><li><a href="iptables.en.html#Whatisiptablesandwhoneedsit">What is iptables and who needs it?</a></li><li><a href="iptables.en.html#WhatisthedifferencebetweenAVMFirewallandiptablescantheyco-existonthesamesystem">What is the difference between AVM Firewall and iptables, can they &hellip;</a></li><li><a href="iptables.en.html#HowtobuildiptablesforFreetz">How to build iptables for Freetz?</a><ol><li><a href="iptables.en.html#Configuration:Aftersuccessfulfirmwarebuildandupload">Configuration: After successful firmware build and upload</a></li><li><a href="iptables.en.html#HintsregardingFritzBox7270:">Hints regarding FritzBox 7270:</a></li><li><a href="iptables.en.html#WhatisthedifferenceofINPUTOUTPUTandFORWARDchains">What is the difference of INPUT, OUTPUT and FORWARD chains</a></li><li><a href="iptables.en.html#Hintsregardingtheexamplecode">Hints regarding the example code</a></li><li><a href="iptables.en.html#IsolateguestnetworkfromLAN">Isolate guest network from LAN</a></li></ol></li><li><a href="iptables.en.html#MoreLinks">More Links</a></li><li><a href="iptables.en.html#Questions">Questions</a></li></ol></div><p>
 </p>
@@ -176,7 +166,7 @@ modprobe ip_conntrack_tftp
 
 </pre><ul><li>After registering / loading the modules we can start defining rules (here some rules for a strong basic protection):
 </li></ul><pre class="wiki">
-# # # FIREWALL RULES 
+# # # FIREWALL RULES
 
 iptables -N TRANS
 # Outbound for surfing the Internet:
@@ -194,7 +184,6 @@ iptables -A TRANS -m state --state RELATED,ESTABLISHED -j ACCEPT
 
 iptables -A TRANS -j LOG --log-prefix "[IPT] DENY-LAN-ACCESS "          # log all dropped packets
 iptables -A TRANS -j DROP                                               # PARANOIA LINK
-
 
 # # # Rules for Fritz Device
 
@@ -221,7 +210,7 @@ iptables -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT     # stateful
 iptables -A OUTPUT -d 212.42.244.73 -p tcp --dport 80 -j ACCEPT       # Plugins Server AVM
 
 # iptables -A OUTPUT -d www.dasoertliche.de    -p tcp --dport 80 -j ACCEPT # Phone book reverse look-up targets
-# iptables -A OUTPUT -d www.dastelefonbuch.de  -p tcp --dport 80 -j ACCEPT 
+# iptables -A OUTPUT -d www.dastelefonbuch.de  -p tcp --dport 80 -j ACCEPT
 # iptables -A OUTPUT -d www.goyellow.de        -p tcp --dport 80 -j ACCEPT
 # iptables -A OUTPUT -d www.11880.com          -p tcp --dport 80 -j ACCEPT
 # iptables -A OUTPUT -d www.google.de          -p tcp --dport 80 -j ACCEPT
@@ -284,10 +273,10 @@ You can also try a patch from <a href="/ticket/254">this ticket</a>, but first r
 <p>
 These rules will prevent access to the local area network, including the box itself from the guest network:
 </p>
-<pre class="wiki">iptables -A INPUT -d 192.168.178.0/24 -i guest -j DROP 
-iptables -A FORWARD -i guest -o dsl -j ACCEPT 
-iptables -A FORWARD -i guest -j DROP 
-iptables -A OUTPUT -s 192.168.178.0/24 -o guest -j DROP 
+<pre class="wiki">iptables -A INPUT -d 192.168.178.0/24 -i guest -j DROP
+iptables -A FORWARD -i guest -o dsl -j ACCEPT
+iptables -A FORWARD -i guest -j DROP
+iptables -A OUTPUT -s 192.168.178.0/24 -o guest -j DROP
 </pre><p>
 The guest network can only use the internet. Assuming the default subnet (192.168.178.0/24).
 </p>
@@ -304,31 +293,10 @@ The guest network can only use the internet. Assuming the default subnet (192.16
 <ul><li>Should UDP 80 not be blocked?
 </li><li>Should 224.0.0.1/24 and 239.255.255.250 not be blocked on the WAN side?
 </li></ul></div>
-          
-          <div class="trac-modifiedby">
-            <span><a href="iptables.en%3Faction=diff&amp;version=12.html" title="Version 12 von RomMon">zuletzt geändert</a> <a class="timeline" href="/timeline?from=2017-03-26T22%3A04%3A07Z&amp;precision=second" title="Siehe Journal am 26.03.2017 22:04:07">vor 11 Monaten</a></span>
-            <span class="trac-print">Zuletzt geändert am 26.03.2017 22:04:07</span>
-          </div>
-        
-        
+
       </div>
-      
 
     </div>
-    <div id="altlinks">
-      <h3>In anderen Formaten herunterladen:</h3>
-      <ul>
-        <li class="last first">
-          <a rel="nofollow" href="iptables.en%3Fformat=txt">Reiner Text</a>
-        </li>
-      </ul>
-    </div>
-    </div>
-    <div id="footer" lang="en" xml:lang="en"><hr />
-      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="../../chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
-      <p class="left">Betrieben mit <a href="/about"><strong>Trac 1.0.1</strong></a><br />
-        von <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
-      <p class="right"><div class="field" align="right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations"/><input type="hidden" name="business" value="spenden@freetz.org"/><input type="hidden" name="item_name" value="Freetz Entwickler-Team"/><input type="hidden" name="no_shipping" value="1"/><input type="hidden" name="return" value=""/><input type="hidden" name="cn" value="Name oder IPPF-Pseudonym"/><input type="hidden" name="currency_code" value="EUR"/><input type="hidden" name="tax" value="0"/><input type="hidden" name="lc" value="DE"/><input type="hidden" name="bn" value="PP-DonationsBF"/><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Zahlen Sie mit PayPal - schnell, kostenlos und sicher!"/><img alt="" border="0" src="/pixel.gif" width="1" height="1"/></form></div></p>
     </div>
   </body>
 </html>

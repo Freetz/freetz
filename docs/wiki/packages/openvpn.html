@@ -1,8 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-  
-  
-
 
   <head>
     <title>
@@ -54,29 +51,22 @@
       </form>
       <div id="metanav" class="nav">
     <ul>
-      <li class="first"><a href="/login">Anmelden</a></li><li><a href="/prefs">Einstellungen</a></li><li><a href="../TracGuide.html">Hilfe/Anleitung</a></li><li><a href="/about">Über Trac</a></li><li><a href="/notification" title="Wiki Pages Change Notifications">My Notifications</a></li><li><a href="/register">Registrieren</a></li><li class="last"><a href="../Impressum.html">Impressum</a></li>
+      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
     </ul>
   </div>
     </div>
     <div id="mainnav" class="nav">
     <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="/timeline">Journal</a></li><li><a href="/roadmap">Projektplan</a></li><li><a href="https://github.com/Freetz/freetz/commits/master">Quellen durchsehen</a></li><li><a href="/report">Tickets anzeigen</a></li><li><a href="/search">Suche</a></li><li><a href="/tags">Tags</a></li><li><a href="/downloads">Downloads</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
+      <li class="first active"><a href="/wiki">Wiki</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
     </ul>
   </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="openvpn.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/packages/openvpn.en" title="(not available)">English</a></li></ul></div><div id="main">
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="openvpn.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/packages/openvpn.en" title="(not available)">English</a></li></ul></div><p /><div id="main">
       <div id="pagepath" class="noprint">
   <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="openvpn.html" title="Zeige packages/openvpn an">openvpn</a>
 </div>
-      <div id="ctxtnav" class="nav">
-        <h2>Kontext-Navigation</h2>
-        <ul>
-          <li class="first"><a href="../packages.html">Aufwärts</a></li><li><a href="../index.html">Startseite</a></li><li><a href="../TitleIndex.html">Inhaltsverzeichnis</a></li><li><a href="openvpn%3Faction=history.html">Änderungshistorie</a></li><li class="last"><a href="/notification/packages/openvpn." title="Watch Page">Watch Page</a></li>
-        </ul>
-        <hr />
-      </div>
     <div id="content" class="wiki">
       <div class="wikipage searchable">
-        
+
           <div id="wikipage" class="trac-content"><p>
 </p><div class="wiki-toc"><h4>Inhaltsverzeichnis</h4><ol><li><a href="openvpn.html#Version">Version</a></li><li><a href="openvpn.html#HäufigeFragenHowto">Häufige Fragen / Howto</a></li><li><a href="openvpn.html#Konfigurationsanleitung">Konfigurationsanleitung</a><ol><li><a href="openvpn.html#Portweiterleitung">Portweiterleitung</a></li><li><a href="openvpn.html#StaticKey">Static Key</a></li><li><a href="openvpn.html#Zertifikate">Zertifikate</a></li></ol></li><li><a href="openvpn.html#Routingvs.Bridging">Routing vs. Bridging</a></li><li><a href="openvpn.html#CRL">CRL</a></li><li><a href="openvpn.html#Fehlersuche:EinpaarTipswennesnichtgleichsoklappt">Fehlersuche: Ein paar Tips wenn es nicht gleich so klappt</a></li><li><a href="openvpn.html#Verschlüsselung:WelcherCipher">Verschlüsselung: Welcher "Cipher" ?</a></li><li><a href="openvpn.html#DNSRedirectallclientstraffic">DNS &amp; Redirect all clients' traffic</a></li><li><a href="openvpn.html#Diskussion">Diskussion</a></li><li><a href="openvpn.html#NeuesimpleGUIGUI2">Neue, simple GUI (GUI2)</a><ol><li><a href="openvpn.html#WeitereKonfigsanlegen">Weitere Konfigs anlegen</a></li></ol></li></ol></div><p>
 </p>
@@ -115,7 +105,7 @@ Ich würde vorschlagen, die Datei im RAM zu editieren und dann, wenn alles "zufr
 <pre class="wiki">  cat /var/flash/ar7.cfg &gt; /var/tmp/ar7.cfg
   vi /var/tmp/ar7.cfg
 
-  # Mini-Anleitung zu vi: 
+  # Mini-Anleitung zu vi:
   # i  Insert  - an dieser Stelle etwas eingeben
   # a  append  - nach dieser Stelle etwas eingeben
   # o          - Zeile nach der aktuellen Zeile einfügen
@@ -142,7 +132,7 @@ Ich würde vorschlagen, die Datei im RAM zu editieren und dann, wenn alles "zufr
 Im Ergebnis muss zu den "forwardrules" eine der folgenden Art hinzugefügt werden, natürlich mit dem richtigen Protokoll (TCP/UDP) und der richtigen Port-Nummer. Zu beachten ist, dass die Zeilen mit "," abzuschließen sind, die letzte Zeile mit ";":
 </p>
 </blockquote>
-<pre class="wiki">  ## falls es **nicht** die letzte Zeile ist so, 
+<pre class="wiki">  ## falls es **nicht** die letzte Zeile ist so,
   ## wenn es **die letzte** ist, bitte ein ";" statt des ","
   "udp 0.0.0.0:1194 0.0.0.0:1194" ,
 </pre><p>
@@ -211,13 +201,13 @@ Wie man ganz einfach Zertifikate erstellen und auf die Box laden kann, erklären
 Zuordnung der Schlüssel und Zertifikate auf der Box:
 </p>
 <table class="wiki">
-<tr><td> GUI-Name </td><td> Datei-Name </td><td> Beispiel / Bemerkung 
-</td></tr><tr><td> Box Cert </td><td> &lt;Name&gt;.crt </td><td> server.crt od. client01.crt 
-</td></tr><tr><td> Private Key </td><td> &lt;Name&gt;.key </td><td> server.key oder client01.key 
-</td></tr><tr><td> CA Cert </td><td> ca.crt </td><td> Zertifikat der CA 
-</td></tr><tr><td> DH Param </td><td> dh&lt;Länge&gt;.pem </td><td> dh1024.pem od. dh2048.pem 
-</td></tr><tr><td> Static Key </td><td> wird generiert </td><td> muss auf Server und Client gleich sein 
-</td></tr><tr><td> CRL </td><td> leer lassen </td><td> Liste zurückgezogener Zertifikate 
+<tr><td> GUI-Name </td><td> Datei-Name </td><td> Beispiel / Bemerkung
+</td></tr><tr><td> Box Cert </td><td> &lt;Name&gt;.crt </td><td> server.crt od. client01.crt
+</td></tr><tr><td> Private Key </td><td> &lt;Name&gt;.key </td><td> server.key oder client01.key
+</td></tr><tr><td> CA Cert </td><td> ca.crt </td><td> Zertifikat der CA
+</td></tr><tr><td> DH Param </td><td> dh&lt;Länge&gt;.pem </td><td> dh1024.pem od. dh2048.pem
+</td></tr><tr><td> Static Key </td><td> wird generiert </td><td> muss auf Server und Client gleich sein
+</td></tr><tr><td> CRL </td><td> leer lassen </td><td> Liste zurückgezogener Zertifikate
 </td></tr></table>
 <p>
 In der folgenden Beispiel-Konfiguration soll der Server auf der Box mit mehreren Clients genutzt werden können und im TAP-Modus laufen. Die meiste Konfiguration der Clients (IP- und Netzwerkeinstellungen, Routing, usw.) erfolgt ebenfalls durch den Server. <br /> Der Server vergibt an die Clients IP-Adressen ab der 192.168.200.100 bis 192.168.200.150. Er übergibt dem Client auch eine Route zu seinem LAN, dem Netz 192.168.178.0. Für das "Abholen" dieser Parameter sorgt das <strong><em>pull</em></strong> in der Client-Konfiguration.
@@ -278,7 +268,7 @@ Dann suchen nach /brinterfaces und den Eintrag "tap0" vor dem Semikolon einfüge
                 ipaddr = 192.168.178.1;
                 netmask = 255.255.255.0;
                 dstipaddr = 0.0.0.0;
-                interfaces = "eth0", "usbrndis", "tiwlan0", "wdsup0", 
+                interfaces = "eth0", "usbrndis", "tiwlan0", "wdsup0",
                              "wdsdw0", "wdsdw1", "wdsdw2", "wdsdw3", "tap0";
                 dhcpenabled = yes;
                 dhcpstart = 192.168.178.20;
@@ -392,7 +382,7 @@ aes-256 cbc       4388.37k     4711.52k     4812.80k     4817.99k     4798.96k
 <p>
 I wanted to monitor all traffic coming from my Android device, so I route all my traffic through openVPN and am using tcpdump to see the traffic. I discovered that DNS going to my mobile provider is blocked via by my DSL provider (of course). To circumvent that problem I tried to specific a DNS server using openVPN, but that didn' work. Eventually I fixed this problem by using iptables to re-route DNS to the local DNS server (dnsmasq) like this:
 </p>
-<pre class="wiki">iptables -A PREROUTING -i tun0 -p tcp -m tcp --dport 53 -j DNAT --to-destination 192.168.178.1 
+<pre class="wiki">iptables -A PREROUTING -i tun0 -p tcp -m tcp --dport 53 -j DNAT --to-destination 192.168.178.1
 iptables -A PREROUTING -i tun0 -p udp -m udp --dport 53 -j DNAT --to-destination 192.168.178.1
 </pre><p>
 It is interesting to see what Android is doing &hellip;
@@ -420,15 +410,15 @@ Ein Beispiel sei hier genannt für einen Server mit Zertifikaten, zu dem sich Cl
 tls-server
 port 1194
 proto udp
-ca /tmp/flash/openvpn/ca.crt 
-cert /tmp/flash/openvpn/box.crt 
+ca /tmp/flash/openvpn/ca.crt
+cert /tmp/flash/openvpn/box.crt
 key /tmp/flash/openvpn/box.key
 dh /tmp/flash/openvpn/dh.pem
 dev tun
 topology subnet
 push "topology subnet"
 ifconfig 10.10.10.1 255.255.255.0
-cipher AES-128-CBC 
+cipher AES-128-CBC
 verb 3
 
 script-security 2
@@ -436,7 +426,7 @@ client-connect "/bin/sh /tmp/flash/openvpn/script1"
 
 daemon
 </pre><p>
-Um für die Clients IPs zu vergeben wird hier "script1" als client-connect Skript genutzt (ähnlich wie die "erweiterte Clientconfig" der "alten GUI"). 
+Um für die Clients IPs zu vergeben wird hier "script1" als client-connect Skript genutzt (ähnlich wie die "erweiterte Clientconfig" der "alten GUI").
 Die Idee/Anwendung sollte selbsterklärend sein (hoffe ich):
 </p>
 <pre class="wiki">#!/bin/sh
@@ -448,7 +438,7 @@ Client4:10.10.10.4 255.255.255.0:192.168.104.0 255.255.255.0;192.168.105.0 255.2
 client3:10.10.10.12 255.255.255.0:192.168.104.0 255.255.255.0;192.168.105.0 255.255.255.0
 Client5:10.10.10.5 255.255.255.0'
 
-# env will give name of connected client in variable "common_name" 
+# env will give name of connected client in variable "common_name"
 X=$(echo "$CLIENTS" | sed -n "/^${common_name}:/ s/^${common_name}:// p")
 CLIENTCONFIG=$1
 
@@ -472,34 +462,13 @@ Um weitere Konfigs anzulegen, muss man momentan noch von Hand einmal einen Aufru
 ACHTUNG: Nicht den Config-Namen "OpenVPN" oder "openvpn" verwenden!
 </p>
 </div>
-          
-          <div class="trac-modifiedby">
-            <span><a href="openvpn%3Faction=diff&amp;version=25.html" title="Version 25 von Whoopie">zuletzt geändert</a> <a class="timeline" href="/timeline?from=2017-12-04T10%3A07%3A24Z&amp;precision=second" title="Siehe Journal am 04.12.2017 10:07:24">vor 3 Monaten</a></span>
-            <span class="trac-print">Zuletzt geändert am 04.12.2017 10:07:24</span>
-          </div>
-        
-        
+
       </div><ul class="tags"><li class="header">Tags</li><li><a href="/tags/network" rel="tag">network</a> </li><li><a href="../packages.html" rel="tag">packages</a> </li><li><a href="/tags/routing" rel="tag">routing</a> </li><li><a href="/tags/security" rel="tag">security</a> </li><li><a href="/tags/vpn" rel="tag">vpn</a> </li></ul>
-      
 
     </div>
     <script type="text/javascript">
         jQuery.loadStyleSheet("/chrome/screenshots/css/screenshots.css", "text/css");
     </script>
-    <div id="altlinks">
-      <h3>In anderen Formaten herunterladen:</h3>
-      <ul>
-        <li class="last first">
-          <a rel="nofollow" href="openvpn%3Fformat=txt">Reiner Text</a>
-        </li>
-      </ul>
-    </div>
-    </div>
-    <div id="footer" lang="en" xml:lang="en"><hr />
-      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="../../chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
-      <p class="left">Betrieben mit <a href="/about"><strong>Trac 1.0.1</strong></a><br />
-        von <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
-      <p class="right"><div class="field" align="right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_donations"/><input type="hidden" name="business" value="spenden@freetz.org"/><input type="hidden" name="item_name" value="Freetz Entwickler-Team"/><input type="hidden" name="no_shipping" value="1"/><input type="hidden" name="return" value=""/><input type="hidden" name="cn" value="Name oder IPPF-Pseudonym"/><input type="hidden" name="currency_code" value="EUR"/><input type="hidden" name="tax" value="0"/><input type="hidden" name="lc" value="DE"/><input type="hidden" name="bn" value="PP-DonationsBF"/><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="Zahlen Sie mit PayPal - schnell, kostenlos und sicher!"/><img alt="" border="0" src="/pixel.gif" width="1" height="1"/></form></div></p>
     </div>
   </body>
 </html>
