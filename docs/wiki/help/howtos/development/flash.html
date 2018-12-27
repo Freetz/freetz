@@ -113,7 +113,7 @@ Im Folgenden werden alle verwendeten Partitionsschemata einzeln beleuchtet.
 </p>
 <h2 id="HiddenSquashFS">Hidden SquashFS</h2>
 <p>
-<span class="thumbnail-right"><span class="aux" style="width: 162px;"><a style="border-width: 1px;" href="/screenshots/55?format=raw" title="Flash Legende"><img src="/screenshots/55?width=160&amp;format=raw&amp;height=101" alt="Flash Legende" /></a><span class="description" style="width: 162px;">Flash Legende</span></span></span>
+<figure><img src="/screenshots/55.png" alt="Flash Legende" /><figcaption>Flash Legende</figcaption></figure>
 Folgende Firmware verwendet Hidden SquashFS im NOR-Flash mit Kernel 2.4:
 </p>
 <ul><li>2 MB Flash
@@ -134,11 +134,11 @@ Folgende Firmware verwendet Hidden SquashFS im NOR-Flash mit Kernel 2.4:
 Das Hidden SquashFS beginnt direkt hinter dem Kernel (256 Byte Padding) und enthält vor allem Treiber. Es wird während des Bootvorgangs im Startskript <tt>rc.S</tt> gemounted. Der Kernel und das Hidden SquashFS befinden sich in <tt>kernel.image</tt>, das root Dateisystem in <tt>filesystem.image</tt>. Diese Technik wurde verwendet um proprietäre Binär-Module von TI vom root Dateisystem zu separieren. Das Hidden SquashFS enthält Dateien wie <tt>avalanche_cpmac.o</tt>, <tt>avalanche_usb.o</tt>, <tt>tiatm.o</tt> ohne jegliche Unterverzeichnisse und wird nach <tt>/lib/modules/2.4.17_mvl21-malta-mips_fp_le/kernel/hidden</tt> gemountet.
 </p>
 <p>
-<span class="thumbnail-left"><span class="aux" style="width: 805px;"><a style="border-width: 1px;" href="/screenshots/56?format=raw" title="Flash Hidden Squashfs"><img src="/screenshots/56?width=803&amp;format=raw&amp;height=145" alt="Flash Hidden Squashfs" /></a><span class="description" style="width: 805px;">Flash Hidden Squashfs</span></span></span>
+<figure><img src="/screenshots/56.png" alt="Flash Hidden Squashfs" /><figcaption>Flash Hidden Squashfs</figcaption></figure>
 </p>
 <h2 id="ContiguousSquashFS">Contiguous SquashFS</h2>
 <p>
-<span class="thumbnail-right"><span class="aux" style="width: 162px;"><a style="border-width: 1px;" href="/screenshots/55?format=raw" title="Flash Legende"><img src="/screenshots/55?width=160&amp;format=raw&amp;height=101" alt="Flash Legende" /></a><span class="description" style="width: 162px;">Flash Legende</span></span></span>
+<figure><img src="/screenshots/55.png" alt="Flash Legende" /><figcaption>Flash Legende</figcaption></figure>
 Folgende Firmware verwendet Contiguous SquashFS im NOR-Flash mit Kernel 2.4:
 </p>
 <ul><li>2 MB Flash
@@ -150,11 +150,11 @@ Folgende Firmware verwendet Contiguous SquashFS im NOR-Flash mit Kernel 2.4:
 Beim Contiguous SquashFS fängt das root Dateisystem direkt nach dem Kernel an (256 Byte Padding). Da das root Dateisystem nun über <tt>mtd0</tt> und <tt>mtd1</tt> verteilt liegt, muss es im Firmware Update auch dementsprechend auf die Dateien <tt>kernel.image</tt> (Kernel + Anfang des root Dateisystems) und <tt>filesystem.image</tt> (Rest des root Dateisystems) aufgeteilt werden. Diese Technik wurde verwendet um ohne Umpartitionierung Platz für das wachsende root Dateisystem aus der Kernel Partition zu borgen.
 </p>
 <p>
-<span class="thumbnail-left"><span class="aux" style="width: 811px;"><a style="border-width: 1px;" href="/screenshots/57?format=raw" title="Flash Contiguous"><img src="/screenshots/57?width=809&amp;format=raw&amp;height=150" alt="Flash Contiguous" /></a><span class="description" style="width: 811px;">Flash Contiguous</span></span></span>
+<figure><img src="/screenshots/57.png" alt="Flash Contiguous" /><figcaption>Flash Contiguous</figcaption></figure>
 </p>
 <h2 id="HiddenRoot">Hidden Root</h2>
 <p>
-<span class="thumbnail-right"><span class="aux" style="width: 162px;"><a style="border-width: 1px;" href="/screenshots/55?format=raw" title="Flash Legende"><img src="/screenshots/55?width=160&amp;format=raw&amp;height=101" alt="Flash Legende" /></a><span class="description" style="width: 162px;">Flash Legende</span></span></span>
+<figure><img src="/screenshots/55.png" alt="Flash Legende" /><figcaption>Flash Legende</figcaption></figure>
 Folgende Firmware verwendet Hidden Root im NOR- oder Serial-Flash mit Kernel 2.6:
 </p>
 <ul><li>alle Firmware ab Kernel 2.6.13.1 die kein NAND Root nutzt
@@ -162,11 +162,11 @@ Folgende Firmware verwendet Hidden Root im NOR- oder Serial-Flash mit Kernel 2.6
 Bei Hidden Root befindet sich das root Dateisystem &mdash; ähnlich wie bei <a class="wiki" href="flash.html#ContiguousSquashFS">Contiguous SquashFS</a> &mdash; direkt hinter dem Kernel (256 Byte Padding). Diese Boxen kann man daran erkennen, dass die Start- und End-Adresse von <tt>mtd0</tt> in der mtd Tabelle gleich 0 und die Datei <tt>filesystem.image</tt> im Firmware Update leer ist. <tt>kernel.image</tt> enthält sowohl den Kernel als auch das root Dateisystem. Diese Technik wurde verwendet um ohne Behinderung durch Partitionsgrenzen den vorhandenen Platz dynamisch zwischen Kernel und root Dateisystem aufzuteilen.
 </p>
 <p>
-<span class="thumbnail-left"><span class="aux" style="width: 808px;"><a style="border-width: 1px;" href="/screenshots/58?format=raw" title="Flash Hidden Root"><img src="/screenshots/58?width=806&amp;format=raw&amp;height=136" alt="Flash Hidden Root" /></a><span class="description" style="width: 808px;">Flash Hidden Root</span></span></span>
+<figure><img src="/screenshots/58.png" alt="Flash Hidden Root" /><figcaption>Flash Hidden Root</figcaption></figure>
 </p>
 <h2 id="NANDRoot">NAND Root</h2>
 <p>
-<span class="thumbnail-right"><span class="aux" style="width: 162px;"><a style="border-width: 1px;" href="/screenshots/55?format=raw" title="Flash Legende"><img src="/screenshots/55?width=160&amp;format=raw&amp;height=101" alt="Flash Legende" /></a><span class="description" style="width: 162px;">Flash Legende</span></span></span>
+<figure><img src="/screenshots/55.png" alt="Flash Legende" /><figcaption>Flash Legende</figcaption></figure>
 Folgende Modelle verwenden NAND Root mit Kernel 2.6:
 </p>
 <ul><li>Fritzbox 3272
@@ -186,7 +186,7 @@ Bei Modellen die NAND nur als Datenspeicher für den NAS nutzen (z.B. die 7390) 
 Modelle bei denen auch das System im NAND-Flash liegt haben nur noch ein kleines serielles NOR-Flash für den Bootloader <tt>mtd2</tt> und zwei TFFS Partitionen <tt>mtd3</tt> und <tt>mtd4</tt>. Alle weiteren Partitionen befinden sich im NAND-Flash. Da es bei NAND keinen Platzmangel gibt wurden je 2 Partitionen für Kernel und Dateisystem vorhesehen. Dies hat den Vorteil aus dem kaufenden System heraus aktualisieren zu können (hot flashable). Dabei werden die beiden jeweils nicht in Betrieb befindlichen Partitionen geschrieben, als aktiv markiert, und das System neugestartet. Beim nächsten Update wechselt der Vorgang wieder die aktiven Partitionen. Das Kernel befindet sich auf <tt>mtd1</tt>, das Dateisystem wieder getrennt auf <tt>mtd0</tt>. Welche beiden Partitionen damit gemeint sind definiert die EVA Variable <tt>linux_fs_start</tt>.
 </p>
 <p>
-<span class="thumbnail-left"><span class="aux" style="width: 952px;"><a style="border-width: 1px;" href="/screenshots/277?format=raw" title=""><img src="/screenshots/277?width=950&amp;format=raw&amp;height=184" alt="" /></a><span class="description" style="width: 952px;"></span></span></span>
+<figure><img src="/screenshots/277.png" alt="" /><figcaption></figcaption></figure>
 </p>
 <p>
 Um unabhängig vom verwendeten Dateisystem die Vorteile des effizient komprimierbaren SquashFS weiter nutzen zu können entschied sich AVM für ein interessantes Konzept. Auf die Filesystem-Partition wird ein minimales Wrapper-System installiert, das nur aus 190 inodes und dem eigentlichen System <tt>filesystem_core.squashfs</tt> besteht. Letzteres wird als Loop-Device als / gemountet. Dies benötigt natürlich mehr RAM-Speicher, hat aber zusätzlich den Vorteil schneller zu sein und das NAND-Flash erheblich weniger zu beanspruchen.

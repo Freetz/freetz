@@ -126,9 +126,9 @@ Der Befehl zum Auschecken sieht nun etwas anders aus. Folgender Befehl ist jetzt
 </pre><p>
 <br />
 Sollte dies nicht starten, so kann es sein das die Netzwerkverbindung nicht funktioniert. In diesem Fall sollte ein <strong>ping 192.168.XXX.1</strong> über die Konsole Aufschluss geben, ob die Netzwerkverbindung funktioniert. Nun sollten die Freetz Quellen runtergeladen werden. Danach wechselt man in das Freetz Verzeichnis mit <strong>cd freetz-trunk</strong> und gibt dann ein <strong>make menuconfig</strong> ein. <br />
-<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="/screenshots/72?format=raw" title="auschecken von Freetz"><img src="/screenshots/72?width=409&amp;format=raw&amp;height=325" alt="auschecken von Freetz" /></a><span class="description" style="width: 411px;">auschecken von Freetz</span></span></span>
+<figure><img src="/screenshots/72.png" alt="auschecken von Freetz" /><figcaption>auschecken von Freetz</figcaption></figure>
 Nach dieser Eingabe solltet Ihr folgendes Bild sehen: <br />
-<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="/screenshots/73?format=raw" title="menuconfig"><img src="/screenshots/73?width=409&amp;format=raw&amp;height=325" alt="menuconfig" /></a><span class="description" style="width: 411px;">menuconfig</span></span></span>
+<figure><img src="/screenshots/73.png" alt="menuconfig" /><figcaption>menuconfig</figcaption></figure>
 Dies ist wieder die Konfigurations-Oberfläche des Freetz-Buildsystems. Dort wählt ihr den jeweiligen Router und die gewünschten Pakete aus. Für dieses HowTo haben wir beispielhaft die 7270_v2 gewählt. Als erstes aktivieren wir die erweiterte Ansicht (<strong>Level of user competence</strong>&rarr;<strong>Advanced</strong>)  auf der ersten Seite. Danach sollten in einem Freetz-Image folgende Patches ausgewählt werden: <br />
 <strong>Unter Firmware language:</strong><br />
 </p>
@@ -144,34 +144,34 @@ Dies ist wieder die Konfigurations-Oberfläche des Freetz-Buildsystems. Dort wä
 </p>
 <ul><li><strong>Remove ftpd (NEW)</strong> (ein FTP-Programm auf der Box reicht)
 </li></ul><p>
-<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="/screenshots/187?format=raw" title="Patches"><img src="/screenshots/187?width=409&amp;format=raw&amp;height=325" alt="Patches" /></a><span class="description" style="width: 411px;">Patches</span></span></span>
+<figure><img src="/screenshots/187.png" alt="Patches" /><figcaption>Patches</figcaption></figure>
 <strong>Unter Packages/Standard packages:</strong><br />
 </p>
 <ul><li><strong>Samba suite</strong> (Server der den Zugriff auf die USB Medien an der FB von Windows erlaubt). Die Haken bei den beiden Unterpunkten von Samba smbd und nmbd müssen gesetzt werden.
 </li><li><strong>VSFTP</strong> (FTP-Server). Hier bitte keine weiteren Haken bei den Unterpunkten setzen. <br />
 </li></ul><p>
-<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="/screenshots/186?format=raw" title="Patch : SAMB und VSFTP"><img src="/screenshots/186?width=409&amp;format=raw&amp;height=325" alt="Patch : SAMB und VSFTP" /></a><span class="description" style="width: 411px;">Patch : SAMB und VSFTP</span></span></span>
+<figure><img src="/screenshots/186.png" alt="Patch : SAMB und VSFTP" /><figcaption>Patch : SAMB und VSFTP</figcaption></figure>
 <strong>Unter Packages/ Web interfaces:</strong><br />
 </p>
 <ul><li><strong>AVM-firewall</strong> (Web-Oberfläche zum Administrieren der von AVM dem User vorenthaltene integrierten Firewall)
 </li><li><strong>spindown-cgi 0.2</strong>
 </li><li><strong>Syslogd CGI 0.2.3</strong>
 </li></ul><p>
-<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="/screenshots/185?format=raw" title="Patche : Web interfaces"><img src="/screenshots/185?width=409&amp;format=raw&amp;height=325" alt="Patche : Web interfaces" /></a><span class="description" style="width: 411px;">Patche : Web interfaces</span></span></span>
+<figure><img src="/screenshots/185.png" alt="Patche : Web interfaces" /><figcaption>Patche : Web interfaces</figcaption></figure>
 <strong>Unter Web Interface:</strong> <br />
 </p>
 <ul><li><strong>Favicons (none) &mdash;&rarr;</strong> einen Favicon auswählen. (Das ist das Bild was als Lesezeichen im Browser angezeigt wird)
 </li></ul><p>
-<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="/screenshots/188?format=raw" title="Patch : Advanced options"><img src="/screenshots/188?width=409&amp;format=raw&amp;height=325" alt="Patch : Advanced options" /></a><span class="description" style="width: 411px;">Patch : Advanced options</span></span></span>
-<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="/screenshots/228?format=raw" title=""><img src="/screenshots/228?width=409&amp;format=raw&amp;height=325" alt="" /></a><span class="description" style="width: 411px;"></span></span></span>
+<figure><img src="/screenshots/188.png" alt="Patch : Advanced options" /><figcaption>Patch : Advanced options</figcaption></figure>
+<figure><img src="/screenshots/228.png" alt="" /><figcaption></figcaption></figure>
 Weitere Pakete und Patches incl. der Beschreibungen findet ihr auf der <a class="wiki" href="../../../packages.html">Paketseite</a> <br />
 <br />
 Nachdem alle Pakete und Patches ausgewählt sind, beendet man die Konfiguration und gibt auf der Kommandozeile der Shell Konsole <strong>make</strong> ein. Nun solltet ihr ein solches Bild sehen: <br />
-<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="/screenshots/189?format=raw" title="make ausführen"><img src="/screenshots/189?width=409&amp;format=raw&amp;height=325" alt="make ausführen" /></a><span class="description" style="width: 411px;">make ausführen</span></span></span>
+<figure><img src="/screenshots/189.png" alt="make ausführen" /><figcaption>make ausführen</figcaption></figure>
 Nun startet wieder der Erstellungsvorgang. Der Ablauf ist identisch zum ersten Image. Das erstellte Image wird wiederum im Unterordner <strong>images</strong> des Freetz Verzeichnisses abgelegt. <br />
 <br />
 Die Abschlussmeldung sieht wie folgt aus:
-<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="/screenshots/190?format=raw" title="make ist fertig "><img src="/screenshots/190?width=409&amp;format=raw&amp;height=325" alt="make ist fertig " /></a><span class="description" style="width: 411px;">make ist fertig</span></span></span>
+<figure><img src="/screenshots/190.png" alt="make ist fertig " /><figcaption>make ist fertig </figcaption></figure>
 <br />
 <br />
 Die Schritte <strong>Image auf den PC kopieren</strong> und Flash-Vorgang sind wieder identisch zum <a class="wiki" href="newbie.html">Newbie-Tutorial</a>.
@@ -179,10 +179,10 @@ Die Schritte <strong>Image auf den PC kopieren</strong> und Flash-Vorgang sind w
 <h3 id="Sambaeinrichten">Samba einrichten</h3>
 <p>
 Samba muß zunächst eingerichtet werden. Hierfür geht man auf <strong>Pakete/Samba</strong>. Starttyp auf <strong>automatisch</strong> stellen und Netbios Name vergeben. Wichtig ist der Haken bei <strong>Bevorzugter Master</strong>, weil er den Standard Samba-Server der FritzBox ersetzt.
-<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="/screenshots/192?format=raw" title="Freetz-WebIF"><img src="/screenshots/192?width=409&amp;format=raw&amp;height=325" alt="Freetz-WebIF" /></a><span class="description" style="width: 411px;">Freetz-WebIF</span></span></span>
+<figure><img src="/screenshots/192.jpg" alt="Freetz-WebIF" /><figcaption>Freetz-WebIF</figcaption></figure>
 <br />
 Den Rest kann man so lassen und klickt auf <strong>Samba Freigaben</strong>.
-<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="/screenshots/193?format=raw" title="Freetz-WebIF"><img src="/screenshots/193?width=409&amp;format=raw&amp;height=325" alt="Freetz-WebIF" /></a><span class="description" style="width: 411px;">Freetz-WebIF</span></span></span>
+<figure><img src="/screenshots/193.jpg" alt="Freetz-WebIF" /><figcaption>Freetz-WebIF</figcaption></figure>
 Wir haben hier nun 2 Freigaben auf der USB-HDD der FB beispielhaft erstellt, ein für <strong>Gast</strong> und die zweite für <strong>Familie</strong>. Hier eine kurze Beschreibung der Parameter anhand der ersten Freigabe: <br />
 </p>
 <blockquote>
@@ -212,7 +212,7 @@ Jetzt noch unter <strong>Dienste</strong> den Samba Server starten und dann soll
 <br />
 Als erstes muss eine Order-Struktur auf der USB-Platte erzeugt werden. Dazu einfach euren USB-Stick oder Festplatte im Fat32 formatieren (NTFS würde auch gehen wird hier aber nicht näher beschrieben). <br />
 Eure Platte sollte dann wie folgt aussehen :
-<span class="thumbnail"><span class="aux" style="width: 509px;"><a style="border-width: 1px;" href="/screenshots/81?format=raw" title=""><img src="/screenshots/81?width=507&amp;format=raw&amp;height=173" alt="" /></a><span class="description" style="width: 509px;"></span></span></span>
+<figure><img src="/screenshots/81.jpg" alt="" /><figcaption></figcaption></figure>
 Wenn das der Fall sein sollte könnt ihr den Stick (wir gehen im weiteren Verlauf dieser Beschreibung von einem Stick aus) an eure FritzBox stecken. <br />
 Nun wird, wenn noch nicht unter der Samba-Einrichtung erfolgt, die AVM-Lösungen von FTP abgeschaltet: <br />
 </p>
@@ -221,7 +221,7 @@ Nun wird, wenn noch nicht unter der Samba-Einrichtung erfolgt, die AVM-Lösungen
 </li><li>USB-Netzwerkspeicher aktivieren &rarr; Häkchen weg <br />
 </li></ul><p>
 Das sollte nun so aussehen:
-<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="/screenshots/82?format=raw" title=""><img src="/screenshots/82?width=409&amp;format=raw&amp;height=325" alt="" /></a><span class="description" style="width: 411px;"></span></span></span>
+<figure><img src="/screenshots/82.jpg" alt="" /><figcaption></figcaption></figure>
 Nun wechseln wir ins Freetz-Interface: <a class="ext-link" href="http://fritz.box:81/"><span class="icon">​</span>http://fritz.box:81/</a> und geben dort unter : &mdash;&gt; Dienste &mdash;&gt; vsftp folgende Sachen ein: <br />
 </p>
 <ul><li>Starttyp : Automatisch <br />
@@ -231,23 +231,23 @@ Nun wechseln wir ins Freetz-Interface: <a class="ext-link" href="http://fritz.bo
 </li></ul><p>
 <br />
 Die ganzen Eingaben sollten nun mit dem Drücken des Button <strong>Übernehmen</strong> übernommen werden. Das sollte dann wie folgt aussehen:
-<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="/screenshots/194?format=raw" title="Freetz-WebIF"><img src="/screenshots/194?width=409&amp;format=raw&amp;height=325" alt="Freetz-WebIF" /></a><span class="description" style="width: 411px;">Freetz-WebIF</span></span></span>
-<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="/screenshots/84?format=raw" title=""><img src="/screenshots/84?width=409&amp;format=raw&amp;height=325" alt="" /></a><span class="description" style="width: 411px;"></span></span></span>
+<figure><img src="/screenshots/194.jpg" alt="Freetz-WebIF" /><figcaption>Freetz-WebIF</figcaption></figure>
+<figure><img src="/screenshots/84.jpg" alt="" /><figcaption></figcaption></figure>
 Nun wenden wir uns der AVM-Firewall zu:
 </p>
 <ul><li>[&mdash;&gt;Pakete &mdash;&gt; AVM-Firewall und dort den Pkt. Forwarding). Hier muß noch der FTP-Port freigegeben werden (siehe Bilder).
 </li></ul><p>
-<span class="thumbnail"><span class="aux" style="width: 819px;"><a style="border-width: 1px;" href="/screenshots/85?format=raw" title=""><img src="/screenshots/85?width=817&amp;format=raw&amp;height=202" alt="" /></a><span class="description" style="width: 819px;"></span></span></span>
+<figure><img src="/screenshots/85.jpg" alt="" /><figcaption></figcaption></figure>
 Nach eingabe der Zahlen (siehe Oben) einfach auf <strong>Hinzufügen</strong> drücken und das Ergenbins sollte wie Folgt aussehen:
-<span class="thumbnail"><span class="aux" style="width: 928px;"><a style="border-width: 1px;" href="/screenshots/86?format=raw" title=""><img src="/screenshots/86?width=926&amp;format=raw&amp;height=253" alt="" /></a><span class="description" style="width: 928px;"></span></span></span>
+<figure><img src="/screenshots/86.jpg" alt="" /><figcaption></figcaption></figure>
 Um diese Einstellung nun endgültig zu speichern einfach den Haken (Blinkendes Kästchen) setzen und den Reeboot der Box abwarten. <br />
 Nachdem die Box nun wieder gestartet ist öffnen wir nochmals in der Freetz-Weboberfläche den Reiter <strong>Dienste</strong> und aktivieren den Dienst <strong>telnetd</strong>. Dieser muß gestartet sein um im nächsten Schritt dieser Anweisung die FTP-User einrichten zu können. Es wird nicht empfohlen diesen Dienst auf automatisch zu setzen sondern ihn bei Bedarf manuell zu starten. <br />
 <br />
 Nun verlassen wir für's erste die Web-Oberfläche und nähern uns der Kommandozeilenebene der FritzBox ! Dazu benötigen wir als erstes das Programm <a class="ext-link" href="http://putty.softonic.de/"><span class="icon">​</span>Putty</a> welches wir uns aus dem Netz laden und auf dem PC installieren. Dieser Schritt ist nur für Windows-User nötig. Linux-User können eine Telnet-Sitzung wie gewohnt starten. <br />
 Putty kann man hier als Freeware laden :<a class="ext-link" href="http://putty.softonic.de/"><span class="icon">​</span>Download</a> und wird wie folgt eingestellt:
-<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="/screenshots/87?format=raw" title=""><img src="/screenshots/87?width=409&amp;format=raw&amp;height=325" alt="" /></a><span class="description" style="width: 411px;"></span></span></span>
+<figure><img src="/screenshots/87.jpg" alt="" /><figcaption></figcaption></figure>
 Nach drücken von <strong>Open</strong> und Eingabe folgender Daten <strong>login:root</strong> und <strong>Password:freetz</strong> solltet ihr folgendes Bild sehen:
-<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="/screenshots/88?format=raw" title=""><img src="/screenshots/88?width=409&amp;format=raw&amp;height=325" alt="" /></a><span class="description" style="width: 411px;"></span></span></span>
+<figure><img src="/screenshots/88.jpg" alt="" /><figcaption></figcaption></figure>
 <br />
 <br />
 </p>
@@ -351,8 +351,8 @@ Speedports lassen sich aufgrund einer Software-Sperre leider nicht per AVM-Webin
 1.) Freetz-Linux wie es oben beschrieben ist starten<br />
 2.) Wir arbeiten alle Schritte ab wie im <a href="first_trunk.html">HowTo</a> beschrieben, jedoch bei Boxtyp
 wählen wir die 7170 und stellen unter Alien hardware type den W701V aus.<br />
-<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="/screenshots/196?format=raw" title="Speedport_Trunk_2"><img src="/screenshots/196?width=409&amp;format=raw&amp;height=325" alt="Speedport_Trunk_2" /></a><span class="description" style="width: 411px;">Speedport_Trunk_2</span></span></span>
-<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="/screenshots/197?format=raw" title="Speedport_Trunk_3"><img src="/screenshots/197?width=409&amp;format=raw&amp;height=325" alt="Speedport_Trunk_3" /></a><span class="description" style="width: 411px;">Speedport_Trunk_3</span></span></span>
+<figure><img src="/screenshots/196.png" alt="Speedport_Trunk_2" /><figcaption>Speedport_Trunk_2</figcaption></figure>
+<figure><img src="/screenshots/197.png" alt="Speedport_Trunk_3" /><figcaption>Speedport_Trunk_3</figcaption></figure>
 </p>
 <p>
 3.) Samba und VSFTP bringen nur was bei einem W920V (7570), da dieser einen USB-Port hat. Alle anderen Schritte in dem <a href="first_trunk.html">HowTo</a> passen jedoch auch bei einem Speedport.<br />
@@ -361,7 +361,7 @@ wählen wir die 7170 und stellen unter Alien hardware type den W701V aus.<br />
 <br />
 <strong>Ergebnis:</strong>
 <br />
-<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="/screenshots/195?format=raw" title="Speedport_Trunk_1"><img src="/screenshots/195?width=409&amp;format=raw&amp;height=325" alt="Speedport_Trunk_1" /></a><span class="description" style="width: 411px;">Speedport_Trunk_1</span></span></span>
+<figure><img src="/screenshots/195.png" alt="Speedport_Trunk_1" /><figcaption>Speedport_Trunk_1</figcaption></figure>
 </p>
 <h3 id="UmbaueinesW501V">Umbau eines W501V</h3>
 <p>
@@ -373,7 +373,7 @@ Boxtyp: 7570 VDSL <br />
 Alientyp:  W920V
 </p>
 <p>
-<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="/screenshots/198?format=raw" title="Speedport_Trunk_4"><img src="/screenshots/198?width=409&amp;format=raw&amp;height=325" alt="Speedport_Trunk_4" /></a><span class="description" style="width: 411px;">Speedport_Trunk_4</span></span></span>
+<figure><img src="/screenshots/198.png" alt="Speedport_Trunk_4" /><figcaption>Speedport_Trunk_4</figcaption></figure>
 </p>
 </div>
 

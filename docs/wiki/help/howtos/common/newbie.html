@@ -202,8 +202,8 @@ Nun geht es ans Bauen des Minimal-Images:<br />
 Nun starten wir das Programm VirtualBox und wählen über Datei&rarr;Appliance importieren das heruntergeladene Image aus (freetz-linux-1.3.1.ova). Das Image wird jetzt für die Nutzung in VirtualBox vorbereitet. Dieser Schritt kann ein wenig dauern. Falls euer PC einen Prozessor mit mehr als einem Kern hat, dann könnt ihr über Ändern&rarr;System&rarr;Prozessor die Anzahl Prozessoren der virtuellen Maschine erhöhen. Desweiteren solltet ihr, wenn Virtual Box einen Fehler bezüglich der Konfiguration meldet auf Ändern klicken und die Einstellungen kontrollieren. Danach kann man das Einstellungsfenster wieder schließen und die virtuelle Maschine starten.
 Nach dem Start von Freetz-Linux meldet ihr euch mit dem Benutzer <strong>freetz</strong> und Passwort <strong>freetz</strong> an und bestätigt jede Eingabe  mit der Returntaste. (Hinweis: Bei der Eingabe des Passwortes werden die Zeichen nicht auf dem Bildschirm angezeigt.)
 <br />
-<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="/screenshots/226?format=raw" title=""><img src="/screenshots/226?width=409&amp;format=raw&amp;height=325" alt="" /></a><span class="description" style="width: 411px;"></span></span></span>
-<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="/screenshots/227?format=raw" title=""><img src="/screenshots/227?width=409&amp;format=raw&amp;height=325" alt="" /></a><span class="description" style="width: 411px;"></span></span></span>
+<figure><img src="/screenshots/226.png" alt="" /><figcaption></figcaption></figure>
+<figure><img src="/screenshots/227.png" alt="" /><figcaption></figcaption></figure>
 </p>
 <h3 id="PuTTYstarten">PuTTY starten</h3>
 <p>
@@ -211,9 +211,9 @@ Als nächstes starten wir Putty am PC. Putty ist hier zu finden: <a class="ext-l
 Als nächstes sollte folgendes Bild erscheinen.<br />
 Dort einmalig auf der linken Seite <strong>Window</strong>&rarr;<strong>Translation</strong> auswählen und in der Auswahlliste auf der rechten Seite <strong>UTF-8</strong> auswählen. Auf der linken Seite dann wieder <strong>Session</strong> auswählen und rechts den Button <strong>Save</strong> drücken. Damit kann Putty auch die Umlaute richtig anzeigen.<br />
 Zum Verbinden gebt ihr dann <strong>freetz-linux</strong> als Host Name eurer VM (Freetz-Linux) ein und bestätigt das ganze mit <strong>Open</strong>. <br />
-<span class="thumbnail"><span class="aux" style="width: 102px;"><a style="border-width: 1px;" href="/screenshots/148?format=raw" title=""><img src="/screenshots/148?width=100&amp;format=raw&amp;height=100" alt="" /></a><span class="description" style="width: 102px;"></span></span></span>
-<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="/screenshots/149?format=raw" title=""><img src="/screenshots/149?width=409&amp;format=raw&amp;height=409" alt="" /></a><span class="description" style="width: 411px;"></span></span></span>
-<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="/screenshots/150?format=raw" title=""><img src="/screenshots/150?width=409&amp;format=raw&amp;height=409" alt="" /></a><span class="description" style="width: 411px;"></span></span></span>
+<figure><img src="/screenshots/148.jpg" alt="" /><figcaption></figcaption></figure>
+<figure><img src="/screenshots/149.png" alt="" /><figcaption></figcaption></figure>
+<figure><img src="/screenshots/150.jpg" alt="" /><figcaption></figcaption></figure>
 Die Zugangsdaten für PuTTy sind die gleichen wie oben. (Auch hier wird bei der Passwort-Eingabe kein Echo angezeigt.)<br />
 So, nachdem ihr PuTTy mit Freetz-Linux verbunden habt solltet ihr Freetz-Linux auf den aktuellen Softwarestand bringen. Dazu gebt ihr folgende Befehle ein:<br />
 </p>
@@ -251,12 +251,12 @@ Danach wechselt man mit <strong>cd freetz-stable-2.0</strong> in das Freetz Verz
 <h3 id="Einstellungenimmenuconfig">Einstellungen im menuconfig</h3>
 <p>
 Nach dieser Eingabe solltet Ihr folgendes Bild sehen: <br />
-<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="/screenshots/154?format=raw" title="Mainpage "><img src="/screenshots/154?width=409&amp;format=raw&amp;height=325" alt="Mainpage " /></a><span class="description" style="width: 411px;">Mainpage</span></span></span>
+<figure><img src="/screenshots/154.png" alt="Mainpage " /><figcaption>Mainpage </figcaption></figure>
 Dies ist die Konfigurations-Oberfläche des Freetz-Buildsystems. Dort wählt ihr im ersten Anlauf nur den Router aus für den das Image bestimmt ist. Für dieses HowTo haben wir Beispielhaft die 7270_V3 gewählt. Nachdem der zu freetzende Router ausgewählt wurde, (Hardware type + <strong>Enter</strong> drücken + mit erneutem <strong>Enter</strong> zurück ins Main-Menu) beendet man menuconfig über den Button <strong>EXIT</strong> (welches man durch drücken der Pfeil nach Unten-Taste erreicht)und bestätigt das ganze mit <strong>Yes</strong>. Anschließend gibt man auf der Kommandozeile der Konsole ein <strong>make</strong> ein. Der Erstellungsvorgang beginnt nun und ihr solltet ein solches Bild sehen:
-<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="/screenshots/156?format=raw" title=""><img src="/screenshots/156?width=409&amp;format=raw&amp;height=325" alt="" /></a><span class="description" style="width: 411px;"></span></span></span>
+<figure><img src="/screenshots/156.png" alt="" /><figcaption></figcaption></figure>
 Beim ersten Build kann es je nach System und Internetanbindung sehr lange dauern, weil alle benötigten Pakete erst einmal runtergeladen werden müssen. Ist dies einmal geschehen und man passt in einem weiteren Schritt seine Konfiguration nachträglich nochmal an geht es wesentlich schneller. Während des Vorgangs gibt es etliche Warnungen. Am Ende sollte dann aber eine Meldung ausgespuckt werden, dass das Image erstellt worden ist. Das erstellte Image wird im Unterordner <strong>images</strong> des Freetz Verzeichnisses abgelegt.
 Die Abschlussmeldung sieht wie folgt aus:
-<span class="thumbnail"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="/screenshots/157?format=raw" title=""><img src="/screenshots/157?width=409&amp;format=raw&amp;height=325" alt="" /></a><span class="description" style="width: 411px;"></span></span></span>
+<figure><img src="/screenshots/157.png" alt="" /><figcaption></figcaption></figure>
 Nun müssen wir nur noch das Image auf den PC kopieren.
 </p>
 <h3 id="ImageaufdenPCkopieren">Image auf den PC kopieren</h3>
@@ -269,7 +269,7 @@ Euer Freetz-Linux könnt ihr entweder mit dem Befehl <strong>sudo poweroff</stro
 </em></strong></p>
 <h2 id="DerFlashvorgang">Der Flashvorgang</h2>
 <p>
-<span class="thumbnail-right"><span class="aux" style="width: 411px;"><a style="border-width: 1px;" href="/screenshots/184?format=raw" title="Startseite von Freetz"><img src="/screenshots/184?width=409&amp;format=raw&amp;height=325" alt="Startseite von Freetz" /></a><span class="description" style="width: 411px;">Startseite von Freetz</span></span></span>
+<figure><img src="/screenshots/184.png" alt="Startseite von Freetz" /><figcaption>Startseite von Freetz</figcaption></figure>
 Hat man das Image auf dem PC, kann es losgehen. Allerdings sollte man sicherstellen, dass man für die unwahrscheinliche Situation präpariert ist, daß die Box nach dem Flashvorgang nicht durchstartet. Hierfür sollte man folgende Vorbereitungen unbedingt treffen: <br />
 </p>
 <blockquote>
