@@ -1,0 +1,31 @@
+--- linux-3.10/drivers/net/Kconfig
++++ linux-3.10/drivers/net/Kconfig
+@@ -363,6 +363,18 @@
+ 
+ 	  If you don't know what to use this for, you don't need it.
+ 
++config YF_PATCHKERNEL_NET
++	tristate "LKM to remove/patch wrong BUG_ON statements in network code"
++	depends on TUN
++	default m
++	---help---
++	  This affected code has to be built as module, do not select 'Y' here.
++	  The built module changes three functions in the networking core, 
++	  where AVM has inserted BUG_ON statements, which lead to an unusable
++	  TUN/TAP interface and to problems with IPv4 forwarding. To circumvent
++	  these problems with an original kernel from AVM, this module may be
++	  loaded prior to receive of any packets via a TUN interface.
++
+ config VETH
+ 	tristate "Virtual ethernet pair device"
+ 	---help---
+--- linux-3.10/drivers/net/Makefile
++++ linux-3.10/drivers/net/Makefile
+@@ -21,6 +21,7 @@
+ obj-$(CONFIG_RIONET) += rionet.o
+ obj-$(CONFIG_NET_TEAM) += team/
+ obj-$(CONFIG_TUN) += tun.o
++obj-$(CONFIG_YF_PATCHKERNEL_NET) += yf_patchkernel.o
+ obj-$(CONFIG_VETH) += veth.o
+ obj-$(CONFIG_VIRTIO_NET) += virtio_net.o
+ obj-$(CONFIG_VXLAN) += vxlan.o
