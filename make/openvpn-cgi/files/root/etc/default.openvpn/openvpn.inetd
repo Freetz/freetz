@@ -5,12 +5,12 @@ TMP_IPV6=${OPENVPN_IPV6#\#}
 TMP_PORT=${TMP_PORT%%#*}
 TMP_PROTO=${TMP_PROTO%%#*}
 TMP_IPV6=${TMP_IPV6%%#*}
-[ "$OPENVPN_IPV6" == "yes" ] && TMP_PROTO=${TMP_PROTO%%#*}$1
+#[ "$TMP_IPV6" == "yes" ] && TMP_PROTO=${TMP_PROTO%%#*}$1
 
 inetdcfg_desc="OpenVPN"
 inetdcfg_port=$TMP_PORT
-inetdcfg_proto=$TMP_PROTO
-inetdcfg_sock=$(echo $inetdcfg_proto| sed 's/udp/dgram/;s/tcp/stream/')
+inetdcfg_proto=$TMP_PROTO$1
+inetdcfg_sock=$(echo ${inetdcfg_proto%6}| sed 's/udp/dgram/;s/tcp/stream/')
 inetdcfg_flags=nowait
 inetdcfg_user=root
 inetdcfg_exe=/usr/sbin/openvpn

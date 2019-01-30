@@ -56,12 +56,7 @@ if [ "openvpn_$CONFIG_NAMES" = "$prefix" ] || [ "$prefix" = "openvpn" -a  $count
 openvpn --version | head -n 2 | sed "s/\(.\{240\}\).*/\1... /g ; s/^/# /"
 echo "#  Config date: $(date)"
 
-[ "$IPV6" = yes ] && V6=6 || V6=""
-if [ "$PROTO" = "tcp" ]; then
-	echo "proto tcp${V6}-$MODE"
-else
-	echo "proto udp${V6}"
-fi
+[ "$PROTO" = "tcp" ] && echo "proto tcp-$MODE" || echo "proto udp"
 
 if [ "$TYPE" = "tap" ]; then
 	echo "dev tap$(( $count -1))"
