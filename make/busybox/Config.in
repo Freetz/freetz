@@ -395,6 +395,12 @@ config FREETZ_BUSYBOX__NOEXEC_NOFORK_OPTIMIZATIONS
 		 - non-finishing /etc/init.d/rc.S
 		 - or non-rebooting box
 
+config FREETZ_BUSYBOX__BUILD_TIMESTAMP
+	bool "allow build timestamp in banner"
+	default y
+	help
+		no build timestamp allows reproducible binary
+
 config FREETZ_BUSYBOX__IPV6_UTILS
 	bool "IPv6"
 	depends on FREETZ_TARGET_IPV6_SUPPORT
