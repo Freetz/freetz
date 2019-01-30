@@ -124,7 +124,7 @@ config FREETZ_PACKAGE_LIGHTTPD_MOD_AUTH
 config FREETZ_PACKAGE_LIGHTTPD_MOD_AUTHN_FILE
 	bool "include mod_authn_file (adds about 13kb)"
 	depends on FREETZ_PACKAGE_LIGHTTPD
-	default n
+	default y
 
 #requires GSS-API/Kerberos not (yet) available in freetz
 #config FREETZ_PACKAGE_LIGHTTPD_MOD_AUTHN_GSSAPI
@@ -176,7 +176,7 @@ config FREETZ_PACKAGE_LIGHTTPD_MOD_DEFLATE
 	bool "include mod_deflate (adds about 13kb)"
 	depends on FREETZ_PACKAGE_LIGHTTPD
 	select FREETZ_LIB_libz
-	default y
+	default n
 	help
 		This option adds mod_deflate.so to the image.
 		Please see http://redmine.lighttpd.net/wiki/1/Docs:ModDeflate
@@ -365,7 +365,7 @@ config FREETZ_PACKAGE_LIGHTTPD_MOD_STATUS
 config FREETZ_PACKAGE_LIGHTTPD_MOD_UPLOADPROGRESS
 	bool "include mod_uploadprogress (adds about 8kb)"
 	depends on FREETZ_PACKAGE_LIGHTTPD
-	default y
+	default n
 	help
 		This option adds mod_userdir.so to the image.
 		Please see http://redmine.lighttpd.net/wiki/1/Docs:ModUploadprogress
