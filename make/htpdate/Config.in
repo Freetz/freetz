@@ -1,7 +1,7 @@
 config FREETZ_PACKAGE_HTPDATE
 	bool "htpdate 1.0.4"
-	select FREETZ_AVMDAEMON_DISABLE_NTP
-	select FREETZ_REMOVE_CHRONYD if FREETZ_AVM_HAS_CHRONYD
+	select FREETZ_AVMDAEMON_DISABLE_NTP if !FREETZ_PACKAGE_HTPDATE_REMOVE_WEBIF
+	select FREETZ_REMOVE_CHRONYD if !FREETZ_PACKAGE_HTPDATE_REMOVE_WEBIF && FREETZ_AVM_HAS_CHRONYD
 	default n
 	help
 		The HTTP Time Protocol (HTP) is used to synchronize a computer's time
@@ -13,4 +13,11 @@ config FREETZ_PACKAGE_HTPDATE
 		Manpage: http://linux.die.net/man/8/htpdate
 
 		This package automatically removes AVM'S chronyd if necessary.
+
+	config FREETZ_PACKAGE_HTPDATE_REMOVE_WEBIF
+		bool "remove webinterface"
+		depends on FREETZ_PACKAGE_HTPDATE
+		default n
+		help
+			This option removes the webinterface
 

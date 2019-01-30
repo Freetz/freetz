@@ -1,7 +1,7 @@
 #!/bin/sh
 
 DAEMON=ppp
-DAEMON_LONG_NAME=PPP
+DAEMON_LONG_NAME="ppp-cgi"
 . /etc/init.d/modlibrc
 
 
@@ -68,7 +68,7 @@ case $1 in
 		[ ! -e "/tmp/flash/ppp/peers/dun" ] && /mod/etc/default.${DAEMON}/peers_options > /tmp/flash/ppp/peers/dun
 		[ ! -e "/tmp/flash/ppp/peers/dun.chat" ] && /mod/etc/default.${DAEMON}/peers_chat > /tmp/flash/ppp/peers/dun.chat
 
-		modreg cgi 'ppp' "$DAEMON_LONG_NAME"
+		modreg cgi 'ppp' "PPP"
 		modreg daemon $DAEMON
 		modreg status ppp "$DAEMON_LONG_NAME" ppplog
 		modreg file ppp 'peers_options' 'PEERS: options' 0 "peers_options"

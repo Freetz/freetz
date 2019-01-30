@@ -1,0 +1,16 @@
+--- src/bip.c	2015-03-19 13:00:12.636662328 +0100
++++ src/bip.c	2015-03-19 13:04:56.198759014 +0100
+@@ -1141,11 +1141,13 @@
+ 		mylog(LOG_ERROR, "getrlimit(): failed with %s",
+ 				strerror(errno));
+ 	} else {
++/*
+ 		if (lt.rlim_max != RLIM_INFINITY) {
+ 			mylog(LOG_WARN, "stack rlimit active, "
+ 				"bip may be KILLED by the system");
+ 			cklim = 1;
+ 		}
++*/
+ 	}
+ 
+ 	if (cklim)

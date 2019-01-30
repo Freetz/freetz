@@ -1,35 +1,36 @@
 --- utils/mountd/cache.c
 +++ utils/mountd/cache.c
-@@ -149,6 +149,7 @@
+@@ -174,6 +174,7 @@
  	pw = getpwuid(uid);
  	if (!pw)
  		rv = -1;
 +#ifndef __UCLIBC__
  	else {
  		rv = getgrouplist(pw->pw_name, pw->pw_gid, groups, &ngroups);
- 		if (rv == -1 && ngroups >= 100) {
-@@ -160,6 +161,7 @@
- 						  groups, &ngroups);
+ 		if (rv == -1 && ngroups >= groups_len) {
+@@ -188,6 +189,7 @@
+ 			}
  		}
  	}
 +#endif /* __UCLIBC__ */
- 	qword_printuint(f, uid);
- 	qword_printuint(f, time(0)+30*60);
- 	if (rv >= 0) {
+ 
+ 	bp = buf; blen = sizeof(buf);
+ 	qword_adduint(&bp, &blen, uid);
 --- support/nfs/svc_socket.c
 +++ support/nfs/svc_socket.c
-@@ -66,9 +66,13 @@
- 
-   memset (&addr, 0, sizeof (addr));
-   addr.sin_family = AF_INET;
+@@ -47,10 +47,14 @@
+ #if HAVE_GETRPCBYNUMBER_R
+ 	char rpcdata[1024];
+ 	struct rpcent rpcbuf;
 -
 +#ifndef __UCLIBC__ /* neither getrpcbynumber() nor getrpcbynumber_r() is SuSv3 */
-   ret = getrpcbynumber_r (number, &rpcbuf, rpcdata, sizeof rpcdata,
- 			  &rpcp);
-+#else
-+  rpcp = getrpcbynumber (number);
-+  ret = 0;
+ 	ret = getrpcbynumber_r(number, &rpcbuf, rpcdata, sizeof rpcdata,
+ 				&rpcp);
+ #else
++	rpcp = getrpcbynumber (number);
++	ret = 0;
 +#endif
-   if (ret == 0 && rpcp != NULL)
-     {
-       /* First try name.  */
++#else
+ 	rpcp = getrpcbynumber(number);
+ #endif
+ 
