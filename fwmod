@@ -1156,8 +1156,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 		sizeinfo "$pkg"
 		pkg_name=$(pkg_name "$pkg")
 
-		"$TAR" -c -C "${PACKAGES_DIR}/${pkg}/root" \
-			$(find "${PACKAGES_DIR}/${pkg}/" -maxdepth 1 -type f -name ".exclude*" -printf '--exclude-from=%p ') \
+		"$TAR"  $(find "${PACKAGES_DIR}/${pkg}/" -maxdepth 1 -type f -name ".exclude*" -printf '--exclude-from=%p ') \
+			-c -C "${PACKAGES_DIR}/${pkg}/root" \
 			. | \
 		"$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
 
@@ -1185,8 +1185,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 			echo "NOTICE: addon '$pkg' is in old-style format (no language support)." 1>&2
 			"$TAR" -c -C "${ADDON_DIR}/${pkg}" . | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
 		else
-			"$TAR" -c -C "${ADDON_DIR}/${pkg}/root" \
-				$(find "${ADDON_DIR}/${pkg}/" -maxdepth 1 -type f -name ".exclude*" -printf '--exclude-from=%p ') \
+			"$TAR"  $(find "${ADDON_DIR}/${pkg}/" -maxdepth 1 -type f -name ".exclude*" -printf '--exclude-from=%p ') \
+				-c -C "${ADDON_DIR}/${pkg}/root" \
 				. | \
 			"$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
 
