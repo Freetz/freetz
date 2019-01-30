@@ -65,6 +65,13 @@ config FREETZ_PACKAGE_DROPBEAR_DISABLE_HOST_LOOKUP
 		Without this option selected, the ssh server performs a DNS
 		reverse lookup of the client's IP address.
 
+config FREETZ_PACKAGE_DROPBEAR_ENABLE_MOTD
+	bool "Enable MOTD"
+	depends on FREETZ_PACKAGE_DROPBEAR
+	default y
+	help
+		This enables printing of MOTD on login.
+
 config FREETZ_PACKAGE_DROPBEAR_UTMP
 	bool "Enable utmp support"
 	depends on FREETZ_PACKAGE_DROPBEAR
