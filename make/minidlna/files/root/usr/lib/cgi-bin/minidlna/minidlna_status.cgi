@@ -8,7 +8,7 @@ eval "$(modcgi branding:pkg:cmd mod_cgi)"
 
 if [ -n "$MOD_CGI_CMD" ]; then
 	sec_begin '$(lang de:"Hinweis" en:"Remark")'
-	echo "<font size=-2 color=red><br>$(lang de:"Die Datenbank wird neu aufgebaut. Dies kann eine Weile dauern." en:"The database is being rebuilt. This may take a while.")<br></font>"
+	echo "<font size=-2 color=red><br>$(lang de:"Die Datenbank wird neu aufgebaut. Dies kann eine Weile dauern." en:"The database will be recreated. This may take a while.")<br></font>"
 	sec_end
 	/mod/etc/init.d/rc.minidlna rescan >/dev/null 2>&1
 fi
@@ -20,7 +20,12 @@ cat << EOF
 <center>
 
 <pre class="log">
-<iframe src="http://$(self_host):${MINIDLNA_PORT}/" frameborder="0" width="100%" height="400" allowTransparency="true"></iframe>
+EOF
+wget http://$(self_host):${MINIDLNA_PORT}/ -O - | sed -r ' \
+  s#(<table)#\1 width=550px style="border:0px"#g; \
+  s#(<table)#\1 width=123px#; \
+  s#(<td)#\1 style="text-align:left; border-bottom:1px dashed"#g'
+cat << EOF
 </pre>
 
 <form class="btn" action="$(href status minidlna minidlna_status)" method="post" style="display:inline;">
@@ -36,3 +41,4 @@ cat << EOF
 </center>
 EOF
 fi
+
