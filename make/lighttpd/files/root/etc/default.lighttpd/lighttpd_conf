@@ -275,6 +275,7 @@ fi
 
 socketdir="/var/run/lighttpd"
 gendir "$socketdir"
+[ "$LIGHTTPD_CHROOT" = "yes" ] && gendir "/var/tmp"
 
 genchroot() {
 #$1 prog
