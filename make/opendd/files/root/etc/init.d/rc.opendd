@@ -12,7 +12,7 @@ set_cron() {
 	if [ "$CRON_OLD" != "$CRON_NEW" ] ; then
 		mkdir -p /tmp/cron.d/
 		echo "$CRON_NEW" > /tmp/cron.d/opendd
-		/mod/etc/init.d/rc.crond reload
+		/mod/etc/init.d/rc.crond reload >/dev/null
 	fi
 }
 
@@ -87,11 +87,21 @@ case $1 in
 			if [ "$(ps | sed -rn "s/^ *$PPID .*(rc.external).*/y/p")" != "y" ]; then
 				echo "$DAEMON is enabled." 1>&2
 			else
-				run
+				echo "$DAEMON will be run in background ... active." 1>&2
+#				run
 			fi
 		fi
 		;;
+	stop)
+#		echo "$DAEMON can't be stopped." 1>&2
+		exit 1
+		;;
 	unload)
+		if [ -e /tmp/cron.d/$DAEMON ]; then
+			rm -rf /tmp/cron.d/$DAEMON
+			/mod/etc/init.d/rc.crond reload >/dev/null
+		fi
+
 		modunreg cgi 'opendd'
 		modunreg file opendd
 		modunreg daemon opendd
