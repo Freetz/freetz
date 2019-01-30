@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN,1.2.3)
+$(call PKG_INIT_BIN,1.3.4)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=1131dc5f27c4f3905a6e7ee0d594fd4d
+$(PKG)_SOURCE_MD5:=2fabdadb8ff415a1eafcfb12ab1bf781
 $(PKG)_SITE:=@SF/nfs
 
 $(PKG)_BINARIES            := exportfs mountd nfsd showmount
