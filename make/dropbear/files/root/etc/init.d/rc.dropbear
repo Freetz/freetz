@@ -13,7 +13,6 @@ pre_config() {
 		local key_file=/tmp/flash/dropbear/${alg}_host_key
 		if [ ! -e "${key_file}" ]; then
 			do_save=true
-			rm -f "${key_file}"
 			echo "Creating $(echo ${alg} | tr [a-z] [A-Z]) host key"
 			dropbearkey -t ${alg} -f "${key_file}"
 		fi

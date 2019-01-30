@@ -21,6 +21,11 @@ if [ -n "$DNSMASQ_UPSTREAM" ]; then
 	done
 fi
 
+if [ "$DNSMASQ_WPADFIX" = "yes" ]; then
+	echo "dhcp-name-match=set:wpad-ignore,wpad"
+	echo "dhcp-ignore-names=tag:wpad-ignore"
+fi
+
 [ "$DNSMASQ_BOGUSPRIV" = "yes" ] && echo "bogus-priv"
 
 if [ "$DNSMASQ_DHCP" = "yes" ]; then

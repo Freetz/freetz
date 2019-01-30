@@ -4,6 +4,7 @@
 [ -r /etc/options.cfg ] && . /etc/options.cfg
 
 check "$DNSMASQ_DHCP" yes:dhcp_yes "*":dhcp_no
+check "$DNSMASQ_WPADFIX" yes:wpadfix
 check "$DNSMASQ_BOGUSPRIV" yes:boguspriv
 check "$DNSMASQ_ETHERS" yes:ethers
 check "$DNSMASQ_DHCP_BOOT" yes:dhcp_boot_yes "*":dhcp_boot_no
@@ -95,6 +96,10 @@ cat << EOF
 <input type="hidden" name="ethers" value="no">
 <input id="ethers1" type="checkbox" name="ethers" value="yes"$ethers_chk><label for="ethers1"> $(lang de:"Statische DHCP Leases aus" en:"Static DHCP leases from") <a href="$(href file mod hosts)">hosts</a> (MAC &lt;-&gt; IP)</label><br>
 <span style="font-size:10px;">($(lang de:"nur Eintr&auml;ge, die eine g&uuml;ltige IP und MAC aufweisen" en:"items with valid IP and MAC addresses only"))</span>
+</p>
+<p>
+<input type="hidden" name="wpadfix" value="no">
+<input id="wpad1" type="checkbox" name="wpadfix" value="ves"$wpadfix_chk><label for="wpad1"> $(lang de:"Ignoriere DHCP-Clients die sich als <i>wpad</i> ausgeben" en:"Ignore wpad clients naming itself <i>wpad</i>") (Cert <a href=https://www.kb.cert.org/vuls/id/598349 target=_blank>VU#598349</a>).</label><br>
 </p>
 EOF
 sec_end
