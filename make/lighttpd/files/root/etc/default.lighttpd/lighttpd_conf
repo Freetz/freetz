@@ -225,7 +225,7 @@ fi
 getfiles() {
 	dir=$(dirname $1)
 	mkdir -p "$LIGHTTPD_DOCROOT/$dir"
-	cp -rpf "$1" "$LIGHTTPD_DOCROOT/$dir"
+	cp -Lrpf "$1" "$LIGHTTPD_DOCROOT/$dir"
 }
 
 if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_AUTH" = "y" -a "$LIGHTTPD_AUTH" = "yes" ]; then
