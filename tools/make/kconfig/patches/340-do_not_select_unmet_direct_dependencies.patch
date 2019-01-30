@@ -1,6 +1,6 @@
 --- scripts/kconfig/symbol.c
 +++ scripts/kconfig/symbol.c
-@@ -370,12 +370,14 @@
+@@ -418,12 +418,14 @@
  				    sym->dir_dep.expr);
  				fprintf(stderr, "warning: (");
  				expr_fprint(e, stderr);
@@ -15,4 +15,4 @@
 +			else
  			newval.tri = EXPR_OR(newval.tri, sym->rev_dep.tri);
  		}
- 		if (newval.tri == mod && sym_get_type(sym) == S_BOOLEAN)
+ 		if (newval.tri == mod &&
