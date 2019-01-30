@@ -44,6 +44,11 @@ cat << EOF
 <p> $(lang de:"Server binden an Port" en:"Listen on port"): <input type="text" name="port" size="5" maxlength="5" value="$(html "$LIGHTTPD_PORT")"></p>
 EOF
 
+if [ -d /proc/sys/net/ipv6 ] || find /lib/modules/*-*/kernel/net/ipv6 -maxdepth 1 -name ipv6.ko >/dev/null 2>&1; then
+	cgi_print_checkbox_p "ipv6_support" "$LIGHTTPD_IPV6_SUPPORT" \
+	  "$(lang de:"Aktiviere IPv6 Unterst&uuml;tzung" en:"Enable IPv6 support")"
+fi
+
 dirs=$LIGHTTPD_DOCROOT
 [ "$LIGHTTPD_CHROOT" = "yes" ] && dirs="$dirs/websites"
 [ "$LIGHTTPD_VIRTHOST" = "yes" ] && dirs="$dirs/default</li><li>$dirs/$LIGHTTPD_VIRTHOSTTYPE"

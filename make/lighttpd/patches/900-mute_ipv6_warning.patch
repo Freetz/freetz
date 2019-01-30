@@ -1,0 +1,10 @@
+--- src/network.c	2016-08-30 15:14:16.811606662 +0200
++++ src/network.c	2016-09-07 16:31:27.440044167 +0200
+@@ -273,7 +273,6 @@
+ 		srv_socket->addr.ipv6.sin6_family = AF_INET6;
+ 		if (host == NULL) {
+ 			srv_socket->addr.ipv6.sin6_addr = in6addr_any;
+-			log_error_write(srv, __FILE__, __LINE__, "s", "warning: please use server.use-ipv6 only for hostnames, not without server.bind / empty address; your config will break if the kernel default for IPV6_V6ONLY changes");
+ 		} else {
+ 			struct addrinfo hints, *res;
+ 			int r;

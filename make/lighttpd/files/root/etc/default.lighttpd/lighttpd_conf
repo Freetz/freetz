@@ -98,6 +98,8 @@ server.username = "wwwrun"
 server.groupname = "wwwrun"
 EOF
 
+[ "$LIGHTTPD_IPV6_SUPPORT" == "yes" ] && echo 'server.use-ipv6 = "enable"'
+
 out="connection.kbytes-per-second = $LIGHTTPD_LIMITCONN\nserver.kbytes-per-second = $LIGHTTPD_LIMITSRV"
 virthost_conf "$LIGHTTPD_LIMITVIRT" "$out"
 
@@ -150,6 +152,7 @@ if [ "$LIGHTTPD_SSLENABLE" = "enable" ]; then
 			virtsrv=${LIGHTTPD_SSLVIRT// /|}
 		fi
 		echo "\$SERVER[\"socket\"] == \":$LIGHTTPD_SSLPORT\" {"
+		[ "$LIGHTTPD_IPV6_SUPPORT" == "yes" ] && echo 'server.use-ipv6 = "enable"'
 		enable_ssl
 		[ -n "$virtsrv" ] && virthost_conf "$virtsrv" "url.access-deny = ( \"\" )" "!"
 		echo "}"
@@ -162,6 +165,7 @@ if [ "$LIGHTTPD_SSLENABLE" = "enable" ]; then
 		fi
 		if [ -n "$out" ]; then
 			echo "\$SERVER[\"socket\"] == \":$LIGHTTPD_PORT\" {"
+			[ "$LIGHTTPD_IPV6_SUPPORT" == "yes" ] && echo 'server.use-ipv6 = "enable"'
 			if [ -n "$virtsrv" ]; then
 				virthost_conf "($virtsrv)" "$out"
 			else
