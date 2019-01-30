@@ -1,8 +1,7 @@
 SUNDTEK_SITE:=http://www.sundtek.de/media
-SUNDTEK_INSTALLER_PATTERN:=$(SUNDTEK_SITE)/sundtek_installer_([0-9]{6}[.][0-9]{6})[.]sh
 
 define sundtek-get-latest-version
-$(shell ver=$$(wget -q $(SUNDTEK_SITE) -O - 2>/dev/null | grep -Eo '$(SUNDTEK_INSTALLER_PATTERN)' | sed -rne 's,$(SUNDTEK_INSTALLER_PATTERN),\1,p' | sort -u | tail -n 1); echo "$${ver:-FAILED_TO_DETERMINE_LATEST_VERSION}")
+$(shell ver=$$(wget -q $(SUNDTEK_SITE)/latest.phtml -O - 2>/dev/null | sed -rn 's/.*sundtek_installer_([0-9\.]*)\.sh.*/\1/p'); echo "$${ver:-FAILED_TO_DETERMINE_LATEST_VERSION}")
 endef
 
 $(call PKG_INIT_BIN,$(if $(FREETZ_PACKAGE_SUNDTEK_VERSION_LATEST),$(call sundtek-get-latest-version),$(if $(FREETZ_PACKAGE_SUNDTEK_VERSION_2013),130210.134617,170310.204343)))
@@ -32,7 +31,7 @@ $(PKG)_BUILD_PREREQ += dd
 define $(PKG)_CUSTOM_UNPACK
 	mkdir -p $($(PKG)_DIR); \
 	payload="$$$$(cat $(1) | sed -rn 's!^_SIZE=(.*)!\1!p')"; \
-	dd if=$(1) skip=1 bs=$$$$payload 2>/dev/null | \
+	dd if=$(strip $(1)) skip=1 bs=$$$$payload  | \
 	$(TAR) Oxz $($(PKG)_ARCH)/installer.tar.gz | \
 	$(TAR) xz -C $($(PKG)_DIR)
 endef

@@ -1,0 +1,11 @@
+--- Makefile	2015-03-16 21:50:24.000000000 +0100
++++ Makefile	2017-07-16 18:32:06.936576996 +0200
+@@ -40,7 +40,7 @@
+ check:
+ 	find base -name .svn -prune \
+ 	    -or -type f -not \( -name "*.sed" -or -name "*.txt" -or -name "*.cfg" \) -print0 \
+-	| xargs -0 -n1 -- $(BUSYBOX) ash -n
++	| ${BUSYBOX} xargs -null -n1 -- $(BUSYBOX) ash -n
+ 
+ clean:
+ 	-rm -f $(PKG)*.tar.bz2
