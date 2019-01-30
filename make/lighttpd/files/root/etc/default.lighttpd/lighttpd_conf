@@ -121,7 +121,18 @@ ssl.engine = "$LIGHTTPD_SSLENABLE"
 ssl.pemfile = "/tmp/flash/lighttpd/crt.pem"
 ssl.use-sslv2 = "disable"
 ssl.use-sslv3 = "disable"
+#ssl.use-compression = "disable"
 EOF
+if [ -n "$LIGHTTPD_SSLCIPHER" ]; then
+	echo 'ssl.honor-cipher-order = "enable"'
+	echo "ssl.cipher-list = \"$LIGHTTPD_SSLCIPHER\""
+fi
+if [ -r "/tmp/flash/lighttpd/dh.pem" -a "$FREETZ_LIB_libcrypto_WITH_EC" = "y" ]; then
+	if grep -q "BEGIN DH PARAMETERS" /tmp/flash/lighttpd/dh.pem; then
+		echo 'ssl.dh-file = "/tmp/flash/lighttpd/dh.pem"'
+		echo 'ssl.ec-curve = "secp384r1"'
+	fi
+fi
 if [ -r "/tmp/flash/lighttpd/ca.pem" ]; then
 	if grep -q "BEGIN CERTIFICATE" /tmp/flash/lighttpd/ca.pem; then
 cat << EOF

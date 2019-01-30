@@ -102,6 +102,15 @@ cat << EOF
 <p><input id="d1" type="radio" name="sslenable" value="enable"$sslenaba_chk><label for="d1"> $(lang de:"Aktiviert" en:"Activated")</label>
 <input id="d2" type="radio" name="sslenable" value="disable"$sslenabd_chk><label for="d2"> $(lang de:"Deaktiviert" en:"Deactivate")</label>
 </p>
+
+<p> $(lang de:"Verf&uuml;gbare Cipher festlegen" en:"Set available cipher"): <input type="text" name="sslcipher" size="55" maxlength="999" value="$(html "$LIGHTTPD_SSLCIPHER")"></p>
+<font size=-2>
+<ul>
+<li>$(lang de:"Sichere Liste" en:"Secure list"): EECDH+AESGCM:EDH+AESGCM:AES128+EECDH:AES128+EDH</li>
+<li>$(lang de:"Kompatible Liste" en:"Compaitble list"): EECDH+AESGCM:EDH+AESGCM:ECDHE-RSA-AES128-GCM-SHA256:AES256+EECDH:AES256+EDH:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4</li>
+</ul>
+</font>
+
 <hr>
 <p style="font-size:10px;">$(lang de:"Die SSL Unterst&uuml;tzung kann global als einzigstes konfiguriert werden (der oben konfigurierte Port wird verwendet) oder zus&auml;tzlich zur unverschl&uuml;sselten Verbindung konfiguriert werden. Falls die SSL Unterst&uuml;tzung zus&auml;tzlich gew&uuml;nscht ist, sind folgende Optionen zu setzen." en:"The SSL support can be configured globally as the exclusive access method (the above configured port will be used) or in addition to the unencrypted communication. In case the SSL support is intended to be in addition to the unencrypted communication, all of the following options must be set.")</p>
 <p><input id="d3" type="radio" name="ssladditional" value="yes"$ssladdly_chk><label for="d3"> $(lang de:"SSL zus&auml;tzlich" en:"Additional SSL support")</label>
