@@ -24,7 +24,7 @@ final_umount() {
 	reverse_order < /proc/mounts | \
 	while read des fs type modi other; do
 		case "$type" in
-			proc | sys | tmpfs )
+			proc | sys | tmpfs | yaffs* )
 				;;
 			* )
 				if [ "$fs" != "/" -a "$fs" != "/oldroot" ]; then

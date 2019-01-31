@@ -4,7 +4,8 @@
 . /usr/lib/libmodcgi.sh
 
 stat_button() {
-	echo "<form action='/cgi-bin/exec.cgi/$1' method='post'><p><input type='submit' value='$2'></p></form>"
+	[ "$1" != "reboot" ] && CHECK="" || CHECK="onsubmit='return window.confirm(\"Reboot?\")'"
+	echo "<form action='/cgi-bin/exec.cgi/$1' $CHECK method='post'><p><input type='submit' value='$2'></p></form>"
 }
 
 cgi --id=system

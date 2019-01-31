@@ -10,6 +10,9 @@ if grep -q "bs=256 skip=1 conv=sync" "${var_install_file}" 2>/dev/null; then
 	modsed -r 's,(bs=256 skip=1) conv=sync,\1,' "${var_install_file}"
 fi
 
+# fix 7390 reboot problem on module unload
+modsed '/rmmod .*dect/d' "$VARTAR_MOD_DIR/var/post_install"
+
 if grep -q "cannot mount squashfs, trying ext2" "${var_install_file}" 2>/dev/null; then
 	echo1 "adding alternative offset-based ext2-mount-method (reduces memory footprint while flashing the firmware)"
 
