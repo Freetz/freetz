@@ -30,6 +30,7 @@ getNetworkInfo() {
 if [ -r /var/env ]; then
 	while read -r key value; do
 		case $key in
+			urlader-version)   urladerversion=$value ;;
 			bootloaderVersion) loaderversion=$value ;;
 			my_ipaddress)      ip_init_address=$value ;;
 			maca)              mac_lan=$value ;;
@@ -38,6 +39,7 @@ if [ -r /var/env ]; then
 		esac
 	done < /var/env
 else
+	urladerversion=$notdefined
 	loaderversion=$notdefined
 	ip_init_address=$notdefined
 	mac_lan=$notdefined
@@ -45,7 +47,7 @@ else
 	mac_wlan=$notdefined
 fi
 if [ -r /proc/cpuinfo ]; then
-	cpu_family=$(sed -ne '/system type/ s/.*: //p' /proc/cpuinfo | sed 's/Ikanos Fusiv.*/IKS/')
+	cpu_family=$(sed -ne '/system type/ s/.*: //p' /proc/cpuinfo | sed 's/ .*//;s/Ikanos/IKS/')
 	cpu_model=$(sed -ne '/cpu model/ s/.*: //p' /proc/cpuinfo | head -n1)
 	cpu_cores=$(grep $'^processor\t*:' /proc/cpuinfo | wc -l)
 	cpu_bogom="$(sed -ne '/BogoMIPS/ s/.*: //p' /proc/cpuinfo)"
@@ -93,16 +95,15 @@ echo "</dl>"
 
 echo "<dl class='info'>"
 echo "<dt>HWRevision</dt><dd>$HWRevision.$(($HWRevision_ATA)).$((HWRevision_BitFileCount)).$(($HWRevision_Reserved1))</dd>"
+echo "<dt>HWSubRevision</dt><dd>$HWSubRevision</dd>"
 [ -n "$flash_size" ] && echo "<dt>Flash (ROM)</dt><dd>$flash_size MB</dd>"
-echo "<dt>RAM</dt><dd>$CONFIG_RAMSIZE MB</dd>"
 echo "</dl>"
 
-if [ -n "$_CONFIG_NAND$_CONFIG_TFFS" ]; then
 echo "<dl class='info'>"
-echo "<dt>NAND</dt><dd>$_CONFIG_NAND MB</dd>"
-echo "<dt>TFFS</dt><dd>$_CONFIG_TFFS MB</dd>"
+echo "<dt>RAM</dt><dd>$CONFIG_RAMSIZE MB</dd>"
+[ -n "$_CONFIG_NAND" ] && echo "<dt>NAND</dt><dd>$_CONFIG_NAND MB</dd>"
+[ -n "$_CONFIG_TFFS" ] && echo "<dt>TFFS</dt><dd>$_CONFIG_TFFS MB</dd>"
 echo "</dl>"
-fi
 
 echo "<dl class='info'>"
 [ -n "$cpu_family" ] && echo "<dt>CPU$(lang de:"-Familie" en:" family")</dt><dd>$cpu_family</dd>"
@@ -113,7 +114,18 @@ echo "</dl>"
 if [ -e /proc/clocks -o -e /proc/sys/urlader/environment ]; then
 	echo "<dl class='info'>"
 	echo "<dt>$(lang de:"Taktfrequenzen" en:"Clock frequencies")</dt><dl>"
-	if [ -e /proc/clocks ]; then
+	if [ -e /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies ]; then
+		_CPU_FQC="$(sed 's![0-9][0-9][0-9]$! MHz!' /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq)"
+		_CPU_FQZ="$(sed 's!...[ $]! MHz !g;s! *$!!;;s!MHz !MHz, !g' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies)"
+		echo "<dt>$(lang de:"Aktuell" en:"Current")</dt><dd>$_CPU_FQC</dd>"
+		echo "<dt>$(lang de:"Verf&uuml;gbar" en:"Available")<dd>$_CPU_FQZ</dd>"
+		echo "</dl>"
+		echo "</dl>"
+		echo "<dl class='info'>"
+		echo "<dt>$(lang de:"Prozessor" en:"Processor")</dt><dl>"
+		_CPU_TMP="$(sed -rn 's!^Channel .: ([0-9.]*) .*!\1!p' /proc/chip_temperature | sort -r | head -n1) $(echo -e '\260')C"
+		echo "<dt>$(lang de:"Temperatur" en:"Temperature")</dt><dd>$_CPU_TMP</dd>"
+	elif [ -e /proc/clocks ]; then
 			sed 's/ [ ]*/ /g;s/^Clocks: //;s/^[A-Z0-9 ]*Clock: //;s/\([A-Za-z0-9]*\):[ ]*\([0-9,.]*\)[ ]*\([a-zA-Z]*\) */<dt>\1<\/dt><dd>\2 \3<\/dd>/g;' /proc/clocks 2>/dev/null
 	else
 		_CPU_FRQ="$(sed -n 's/^cpufrequency\t//p' /proc/sys/urlader/environment | awk '{ printf "%.0f", $1 /1000/1000 }')"
@@ -192,6 +204,9 @@ echo "</dl>"
 
 echo "<dl class='info'>"
 echo "<dt>$(lang de:"Bootloaderversion" en:"Version of bootloader")</dt><dd>$loaderversion</dd>"
+[ -n "$urladerversion" ] && echo "<dt>$(lang de:"Urladerversion" en:"Version of urlader")</dt><dd>$urladerversion</dd>"
+reboot_status="$(cat /proc/sys/urlader/reboot_status 2>/dev/null)"
+[ -n "$reboot_status" ] && echo "<dt>$(lang de:"Rebootursache" en:"Reboot cause")</dt><dd>$reboot_status</dd>"
 echo "</dl>"
 
 sec_end
