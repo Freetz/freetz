@@ -10,10 +10,13 @@ footer() {
 
 	back_button --title="$(lang de:"Zur&uuml;ck zur &Uuml;bersicht" en:"Back to main page")" mod status
 
+	if [ "$rebootbox" != "true" ]; then
 	cat << EOF
 <form action="/cgi-bin/exec.cgi/reboot" method="post"><div class="btn"><input type="submit" value="$(lang de:"Neustart" en:"Reboot")"></div></form>
-</p>
 EOF
+	fi
+
+	echo "</p>"
 
 	cgi_end
 	touch /tmp/fw_update.done
@@ -70,9 +73,13 @@ EOF
 
 stop=${NAME%%:*}
 downgrade=false
+rebootbox=false
 delete_jffs2=false
 case $NAME in
 	*:downgrade*) downgrade=true ;;
+esac
+case $NAME in
+	*:rebootbox*) rebootbox=true ;;
 esac
 case $NAME in
 	*:delete_jffs2*) delete_jffs2=true ;;
@@ -194,6 +201,8 @@ case $result in
 	*) result_txt="$(lang de:"unbekannter Fehlercode" en:"unknown error code")" ;;
 esac
 
+[ $result -ne 1 2>/dev/null ] && rebootbox=false;
+
 [ $result -le 1 2>/dev/null ] && color=green || color=red
 
 status "done" "$(lang
@@ -227,5 +236,10 @@ the rest of the extracted firmware components."
 )
 </p>
 EOF
+
+if $rebootbox; then
+	echo "<b>$(lang de:"Neustart in 5 Sekunden" en:"Restarting in 5 seconds") ... </b>"
+	(sleep 5; reboot)&
+fi
 
 do_exit 0

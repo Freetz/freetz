@@ -14,7 +14,8 @@ function CheckInput(form) {
 	radio_semistop=form.elements[2];
 	radio_nostop=form.elements[3];
 	downgrade=form.elements[4];
-	delete_jffs2=form.elements[5];
+	rebootbox=form.elements[5];
+	delete_jffs2=form.elements[6];
 
 	if (file_selector.value=="") {
 		alert("$(lang de:"Keine Firmware-Datei angegeben!" en:"No firmware file provided!")");
@@ -31,6 +32,9 @@ function CheckInput(form) {
 	}
 	if (downgrade.checked) {
 		file_selector.name += ":downgrade";
+	}
+	if (rebootbox.checked) {
+		file_selector.name += ":rebootbox";
 	}
 	if (delete_jffs2.checked) {
 		file_selector.name += ":delete_jffs2";
@@ -72,6 +76,9 @@ automatically after 30 seconds."
 	<p>
 	<input type="checkbox" name="downgrade" id="downgrade" value="yes">
 	<label for="downgrade">$(lang de:"Downgrade auf &auml;ltere Version zulassen" en:"Allow downgrade to older version")</label>
+	<br>
+	<input type="checkbox" name="rebootbox" id="rebootbox" value="yes" checked>
+	<label for="rebootbox">$(lang de:"Reboot nach erfolgreichem Hochladen" en:"Reboot after sucessfully upload")</label>
 	</p>
 EOF
 
