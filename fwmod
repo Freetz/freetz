@@ -1069,6 +1069,17 @@ if [ "$DO_MOD" -gt 0 ]; then
 			[ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" ] && cp -a "${TARGET_SPECIFIC_ROOT_DIR}/lib/libc.so.${FREETZ_TARGET_UCLIBC_MAJOR_VERSION}" "${FILESYSTEM_OUTER_MOD_DIR}/lib/"
 		fi
 
+		echo1 "checking OpenSSL version"
+		DETECTED_OPENSSL_VER_AVM="$(find ${FILESYSTEM_DIR}/lib/libcrypto.so.* -type f  -exec strings {} \; 2>/dev/null | sed -nr 's/^OpenSSL ([10]\.[0-9a-z\.]*)[ \t]*/\1\t/p' )"
+		echo2 "... used by AVM ...... ${DETECTED_OPENSSL_VER_AVM:-none}"
+		if [ "$FREETZ_LIB_libcrypto" == "y" ]; then
+			DETECTED_OPENSSL_VER_MOD="$(find ${FILESYSTEM_MOD_DIR}/usr/lib/freetz/libcrypto.so.* -type f  -exec strings {} \; | sed -nr 's/^OpenSSL ([10]\.[0-9a-z\.]*)[ \t]*/\1\t/p' )"
+			echo2 "... used by Freetz ... ${DETECTED_OPENSSL_VER_MOD:-none}"
+		#	[ "$DETECTED_OPENSSL_VER_MOD" != "$DETECTED_OPENSSL_VER_AVM" ] & warn2 "Freetz and AVM OpenSSL versions do not match"
+		fi
+		unset DETECTED_OPENSSL_VER_AVM
+		unset DETECTED_OPENSSL_VER_MOD
+
 		echo1 "checking uClibc version"
 		DETECTED_UCLIBC_VER="$(find ${FILESYSTEM_DIR}/lib/libuClibc-*.so | sed -rn 's@.*/.*-(.*)\.so@\1@p')"
 		echo2 "... used by AVM ...... $DETECTED_UCLIBC_VER"
