@@ -3,8 +3,10 @@
 
 mode=${1:-start}
 
-[ "$mode" = start ] && modreg status mod 'Freetz$(lang de:"-Logs" en:" logs")' logs
-[ "$mode" = start ] && modreg status mod 'AVM$(lang de:"-Logs" en:" logs")' logs_avm
+if [ "$mode" = start ]; then
+	modreg status mod '$(lang de:"Logdateien" en:"Logfiles")' logs
+	modreg status mod '$(lang de:"AVM-Logs" en:"AVM logs")' logs_avm
+fi
 
 [ "$mode" = reload ] && modunreg status mod mounted
 if [ "$MOD_MOUNTED_SUB" = yes ]; then
