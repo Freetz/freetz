@@ -83,6 +83,7 @@ ${CRet}
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 EOF
+	site_refresh
 	cgi_width_setup
 	skin_head "$title" "$id"
 	cat << EOF
@@ -108,6 +109,11 @@ sec_begin() {
 sec_end() {
 	skin_sec_end
 	echo "</div>"
+}
+
+site_refresh() {
+	local refresh="$(cgi_param refresh | tr -d .)"
+	[ -n "$refresh" ] && echo "<meta http-equiv='refresh' content='$refresh'>"
 }
 
 #

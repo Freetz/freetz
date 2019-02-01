@@ -2,7 +2,7 @@ skin_head() {
 	local title=$1 id=$2
 	cat << EOF
 <title>Freetz&nbsp;&#64;$(hostname -s|html)&nbsp;&ndash; $title</title>
-<link rel="stylesheet" type="text/css" href="/style/legacy/base.css">
+<link rel="stylesheet" type="text/css" href="/style/cuma/base.css">
 <link rel="stylesheet" type="text/css" href="/style/colorscheme.css">
 EOF
 	_cgi_print_extra_styles

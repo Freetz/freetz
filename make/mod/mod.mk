@@ -2,6 +2,7 @@ $(call PKG_INIT_BIN,1.0)
 
 $(PKG_UNPACKED)
 
+$(PKG)_EXCLUDED += $(if $(FREETZ_SKIN_cuma),,usr/share/*/cuma)
 $(PKG)_EXCLUDED += $(if $(FREETZ_SKIN_legacy),,usr/share/*/legacy)
 $(PKG)_EXCLUDED += $(if $(FREETZ_SKIN_phoenix),,usr/share/*/phoenix)
 $(PKG)_EXCLUDED += $(if $(FREETZ_SKIN_newfreetz),,usr/share/*/newfreetz)

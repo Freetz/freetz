@@ -38,6 +38,7 @@ menu "Web Interface"
 
 		config FREETZ_STYLE_COLORED
 			bool "green status-bars"
+			depends on !FREETZ_SKIN_cuma
 
 		config FREETZ_STYLE_GREY
 			bool "grey status-bars"
@@ -53,9 +54,17 @@ menu "Web Interface"
 
 	comment "CAUTION: You should select at least one skin."
 	depends on \
+		!FREETZ_SKIN_cuma && \
 		!FREETZ_SKIN_legacy && \
 		!FREETZ_SKIN_phoenix && \
 		!FREETZ_SKIN_newfreetz
+
+	config FREETZ_SKIN_cuma
+		bool "cuma"
+		default y
+		help
+			Main theme dark, menu at right.
+			Size: about 12 kB (uncompressed)
 
 	config FREETZ_SKIN_legacy
 		bool "legacy"
