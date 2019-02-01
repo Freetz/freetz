@@ -11,6 +11,8 @@ get_ip - determine external IP address
 
 Usage: $0 [option]
     -a, --all      - use all methods (order: stun, route, dsld, webcm) [recommended]
+    -6  --ipv6     - IPv6 address
+    -p, --pre6     - IPv6 prefix
     -d, --dsld     - use showdsldstat (since firmware 04.86)
     -r, --route    - use routing table
     -s, --stun     - use STUN/VoIP (server: $MOD_GET_IP_STUN)
@@ -104,6 +106,17 @@ via_webcm() {
 	# Caveat: must use "-o" instead of "||", otherwise "$?" would be reset
 	[ $? -eq 0 -o $? -ge 170 ] && ip_public "$IP" && return 0 || return 1
 }
+
+case $1 in
+	-6|--ipv6)
+		showdsldstat | sed -rn 's/.* IPv6: address ([^/]*).*/\1/p'
+		exit
+		;;
+	-p|--pre6)
+		showdsldstat | sed -rn 's/.* IPv6: prefix ([^ ]*).*/\1/p'
+		exit
+		;;
+esac
 
 # If multid (or whoever) has already determined the external IP, use it
 ip_public "$IPADDR" && echo "$IPADDR" && exit 0
