@@ -121,11 +121,8 @@ do_mount_locked() {
 
 	mnt_name=$(find_mnt_name $mnt_main_dev $mnt_part_num)
 	mnt_path=$FTPDIR/$mnt_name
-	log_freetz notice "Mounting device $mnt_dev at $mnt_path ... "
 	if [ ! -d $mnt_path ]; then
 		mkdir -p $mnt_path
-	else
-		log_freetz notice "$mnt_path already exists, after mounting $mnt_dev its contents (if any) will become invisible ... "
 	fi
 
 	chmod 755 $FTPDIR                                                          # chmod for ftp top directory
