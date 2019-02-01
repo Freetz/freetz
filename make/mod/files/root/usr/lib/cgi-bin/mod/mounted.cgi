@@ -120,7 +120,7 @@ DFOUT=$(df -hP)
 mfilt=$(mount |
 	sed -rn '
 		\#^/dev/(sd|mapper/)|^https?://|^.* on .* type (cifs|fuse|jffs|ubifs|yaffs)|^.*:/.* on .* type nfs# {
-			\#^/dev/root#! {
+			\# on /wrapper | on /var/flash #! {
 				s/^([^ ]+) on (.*) type ([^ ]*) \(([^)]*)\)$/\3 \4 \1 \2/; p
 			}
 		}
