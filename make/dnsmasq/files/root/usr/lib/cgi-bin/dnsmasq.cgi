@@ -99,7 +99,7 @@ cat << EOF
 </p>
 <p>
 <input type="hidden" name="wpadfix" value="no">
-<input id="wpad1" type="checkbox" name="wpadfix" value="ves"$wpadfix_chk><label for="wpad1"> $(lang de:"Ignoriere DHCP-Clients die sich als <i>wpad</i> ausgeben" en:"Ignore wpad clients naming itself <i>wpad</i>") (Cert <a href=https://www.kb.cert.org/vuls/id/598349 target=_blank>VU#598349</a>).</label><br>
+<input id="wpad1" type="checkbox" name="wpadfix" value="ves"$wpadfix_chk><label for="wpad1"> $(lang de:"Ignoriere DHCP-Clients die sich als <i>wpad</i> ausgeben" en:"Ignore DHCP clients naming itself <i>wpad</i>") (Cert <a href=https://www.kb.cert.org/vuls/id/598349 target=_blank>VU#598349</a>).</label><br>
 </p>
 EOF
 sec_end
