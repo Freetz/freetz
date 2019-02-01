@@ -1,7 +1,7 @@
 skin_head() {
 	local title=$1 id=$2
 	cat << EOF
-<title>$title&nbsp;&ndash; Freetz</title>
+<title>$title&nbsp;&ndash; Freetz&nbsp;&#64;$(hostname -s|html)</title>
 <link rel="stylesheet" type="text/css" href="/style/phoenix/base.css">
 <link rel="stylesheet" type="text/css" href="/style/colorscheme.css">
 EOF
