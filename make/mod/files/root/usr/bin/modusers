@@ -26,7 +26,7 @@ load() {
 	# /var/tmp/passwd.tmp is created by ctlmgr, do NOT MoVe due to libctlmgr
 	cp /var/tmp/passwd.tmp /var/tmp/passwd.avm 2>/dev/null && rm -rf /var/tmp/passwd.tmp
 	# load AVM's boxusers (and ftpuser) which were created by ctlmgr
-	[ -e /var/tmp/passwd.avm ] && grep -v "^root:" /var/tmp/passwd.avm >> /tmp/passwd.mod
+	[ -e /var/tmp/passwd.avm ] && grep -vE "^nobody:|^root:" /var/tmp/passwd.avm >> /tmp/passwd.mod
 	# special case: ftpuser is created and/or used by avm and/or freetz
 	grep -q "^ftpuser" /tmp/passwd.mod || grep "^ftpuser" "$SAVE_DIR/passwd" >> /tmp/passwd.mod
 	# prevent race-condition while creating /etc/passwd
