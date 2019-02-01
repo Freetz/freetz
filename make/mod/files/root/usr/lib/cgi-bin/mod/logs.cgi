@@ -11,6 +11,7 @@ show_log() {
 
 	/usr/bin/checkempty "$log" 2>/dev/null
 	if [ $? -ne 0 ]; then
+		logg=true
 		echo "<h1><a href='$SCRIPT_NAME$log'>$title</a></h1>"
 		echo "<pre class='log ${class:-small}'>"
 		html < "$log" | highlight
@@ -32,6 +33,8 @@ fi
 
 case "$3" in
 	logs_avm*)
+		logg=false
+
 		do_log /var/flash/crash.log
 		do_log /var/flash/panic
 		do_log /var/log/messages
@@ -46,6 +49,8 @@ case "$3" in
 		do_log /var/tmp/cloudcds.log
 		do_log /var/tmp/lgpm.log
 		do_log /var/tmp/tcloud.log
+
+		$logg || echo "<br><h1>$(lang de:'Keine Logdateien gefunden' en:'No log files found')!</h1>"
 		;;
 	*)
 		do_log /var/log/mod_load.log

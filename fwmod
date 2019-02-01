@@ -1365,13 +1365,18 @@ if [ "$DO_MOD" -gt 0 ]; then
 				local tagging_pic="${TAGGING_DIR}/${FREETZ_TAGGING_STRING}.png"
 				for tagging_file in $tagging_arg; do
 					echo2 "${tagging_file}"
-					composite -dissolve 100% -gravity $tagging_pos -geometry $tagging_geo -quality 100 $tagging_pic $tagging_file $tagging_file
+					[ "${tagging_file}" != "${tagging_file%\.svg}" ] && tagging_temp="${tagging_file}.png" || tagging_temp=""
+					[ -n "$tagging_temp" ] && convert -compress NONE -background NONE -resize 100x80 "$tagging_file" "$tagging_temp"
+					composite -dissolve 100% -gravity $tagging_pos -geometry $tagging_geo -quality 100 $tagging_pic ${tagging_temp:-$tagging_file} ${tagging_temp:-$tagging_file}
 					[ $? -ne 0 ] && error 1 "tagging failed while processing ${tagging_file#${FILESYSTEM_MOD_DIR}/}"
+					[ -n "$tagging_temp" ] && mv "$tagging_temp" "$tagging_file"  #BETTER: "convert" to svg (and delete)
 				done
 			}
 			echo1 "tagging avm webif (tag by ${FREETZ_TAGGING_STRING})"
 			for d in "${HTML_MOD_DIR}" "${HTML_MOD_DIR}.nas"; do
 				[ -d "${d}" ] || continue
+				# svg since Fritz!OS 06.5x (eg 7320 06.50)
+				tagging "+0+6" "center" $(find "${d}" -name fritzLogo.svg)
 				# lua since  Fritz!OS 6.2x (small logo @left, eg 7390 06.23)
 				tagging "+0+6" "center" $(find "${d}" -name kopfbalken_links.png)
 				# lua before Fritz!OS 6.2x (small logo @left, eg 7270 04.88)
