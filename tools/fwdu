@@ -43,7 +43,7 @@ download() {
 	# stable
 	if [ -z "$1" -o "$1" == "stable" -o "$1" == "s" ]; then
 		for url in ftp://ftp.avm.de/fritzbox/ ftp://ftp.avm.de/archive/fritz.box/; do
-			wget -nv -m -A '*.image' -R '*Powerline*,*powerline*,*Repeater*,*repeater*,*VoIP-Gateway*' $url
+			wget -nv -m -A '*.image' -R '*voip-gateway*,*VoIP-Gateway*' $url
 			find ${url#ftp://} -type f ! -name '*.image' -exec rm -f {} '+' 2>/dev/null
 		done
 	fi
