@@ -16,7 +16,7 @@ if [ $# -eq 0 ]; then
 fi
 
 # Defaults
-TEXT_ROWS=18
+TEXT_ROWS=35
 CONFIG_PREPARE=
 HELP=
 
