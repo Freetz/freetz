@@ -11,18 +11,13 @@ user: "nobody";
 pidfile: "/var/run/sslh.pid";
 EOF
 
+[ "$FREETZ_TARGET_IPV6_SUPPORT" == "y" -a "$SSLH_IPV6TOO" == "yes" ] && listening='::' || listening='0.0.0.0'
 echo 'listen:'
 echo '('
 for port in $SSLH_PORTS; do
 	[ -n "$value" ] && echo "${value},"
-	value="{ host: \"0.0.0.0\"; port: \"$port\"; }"
+	value="{ host: \"${listening}\"; port: \"$port\"; }"
 done
-if [ "$FREETZ_TARGET_IPV6_SUPPORT" == "y" -a "$SSLH_IPV6TOO" == "yes" ]; then
-for port in $SSLH_PORTS; do
-	[ -n "$value" ] && echo "${value},"
-	value="{ host: \"::\"; port: \"$port\"; }"
-done
-fi
 echo "${value}"
 echo ');'
 
