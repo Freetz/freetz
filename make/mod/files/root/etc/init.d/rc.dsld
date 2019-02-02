@@ -40,7 +40,7 @@ start() {
 
 	#remove duplicate arguments
 	DAEMON_ARGS="$(for arg in $DAEMON_CMD $DAEMON_OPT; do [ "$arg" != "dsld" ] && echo " $arg"; done |sort -u)"
-	$DAEMON $DAEMON_ARGS
+	$DAEMON $DAEMON_ARGS 2>/dev/null
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'

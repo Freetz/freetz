@@ -69,7 +69,7 @@ start() {
 			export LD_PRELOAD=libmultid.so
 		fi
 	fi
-	$DAEMON_BIN $DAEMON_CMD_IGD $DAEMON_CMD_NTP $DAEMON_CMD_069 $DAEMON_CMD_IGM
+	$DAEMON_BIN $DAEMON_CMD_IGD $DAEMON_CMD_NTP $DAEMON_CMD_069 $DAEMON_CMD_IGM 2>/dev/null
 	exitval=$?
 	unset LD_PRELOAD
 	sleep 1
