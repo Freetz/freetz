@@ -103,7 +103,12 @@ image() {
 
 	rm -rf var
 
-	if [ "$img" != "${img%.exe}" ]; then
+	if [ "$img" != "${img%.cvc}" ]; then
+		local size="0x$(printf "%08X\n" $(stat -L -c %s $img))"
+		local grbg="$($FTOOLS/sfk hexfind $img _./var/_ | sed -n 's/.*hit at offset //p' |head -n1)"
+		[ -n "$grbg" ] && echo -e "\tSkipping $(($grbg)) Bytes garbage"
+		tail -c $(( $size - ${grbg:-0x0} )) $img | tar -x --wildcards './var/tmp/*.image' >/dev/null 2>&1
+	elif [ "$img" != "${img%.exe}" ]; then
 		$FTOOLS/extract-images $img >/dev/null
 		mkdir -p var/tmp
 		mv ${img##*/}.unp/*.image var/tmp/
