@@ -365,7 +365,15 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	echo "unpacking firmware image"
 	mkdir "$FIRMWARE_DIR"
 
-	if [ "$FIRMWARE_EXTENSION" != "exe" ]; then
+	if [ "$FIRMWARE_EXTENSION" == "cvc" ]; then
+		# Check and skip garbage (cvc&p7b)
+		image_size="0x$(printf "%08X\n" $(stat -c %s "$FIRMWARE"))"
+		image_grbg="$($TOOLS_DIR/sfk hexfind "$FIRMWARE" _./var/_ | sed -n 's/.*hit at offset //p' |head -n1)"
+		[ -n "$image_grbg" ] && echo "Skipping $(($image_grbg)) Bytes garbage"
+		# Unpack standard *.image file in tar format
+		tail -c $(( $image_size - ${image_grbg:-0x0} )) "$FIRMWARE" | \
+		  "$TAR_GNU" -x -C "$FIRMWARE_DIR" || untar_failed=1
+	elif [ "$FIRMWARE_EXTENSION" != "exe" ]; then
 		# Unpack standard *.image file in tar format
 		"$TAR_GNU" -xif "$FIRMWARE" -C "$FIRMWARE_DIR" || untar_failed=1
 	fi

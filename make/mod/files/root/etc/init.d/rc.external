@@ -55,9 +55,9 @@ exec_rcs() {
 			log "No services selected, failed."
 			exit 1
 		fi
-		EXTERNAL_SERVICES="$MOD_EXTERNAL_OWN_SERVICES"
+		EXTERNAL_SERVICES="$(echo $MOD_EXTERNAL_OWN_SERVICES | tr '\n' ' ')"
 	else
-		EXTERNAL_SERVICES="$(cat /mod/etc/external.pkg 2>/dev/null) $MOD_EXTERNAL_OWN_SERVICES"
+		EXTERNAL_SERVICES="$(cat /mod/etc/external.pkg 2>/dev/null) $(echo $MOD_EXTERNAL_OWN_SERVICES | tr '\n' ' ')"
 	fi
 	if ! status; then
 		log "Directory could not be found, failed."
