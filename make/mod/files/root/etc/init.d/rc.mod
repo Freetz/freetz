@@ -27,7 +27,7 @@ start() {
 	fi
 
 	# Basic Packages
-	for pkg in crond telnetd webcfg dsld ftpd multid swap external websrv smbd; do
+	for pkg in crond telnetd webcfg dsld ftpd rextd multid swap external websrv smbd; do
 		local pkg_default=/etc/default.$pkg
 		[ -d "$pkg_default" -a ! -e "/mod${pkg_default}" ] && ln -s "$pkg_default" "/mod${pkg_default}"
 		local rc="/etc/init.d/rc.$pkg"
@@ -44,7 +44,7 @@ start() {
 		[ "$MOD_IPV6_FORWARD" == "yes" ] && echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
 	fi
 
-	for pkg in crond telnetd webcfg dsld ftpd multid swap external websrv; do
+	for pkg in crond telnetd webcfg dsld ftpd rextd multid swap external websrv; do
 		local rc="/etc/init.d/rc.$pkg"
 		[ -x "$rc" ] && log "$($rc)"
 	done
@@ -135,7 +135,7 @@ stop() {
 	[ -n "$MOD_SHUTDOWN_FIRST" ] && stop_helper $MOD_SHUTDOWN_FIRST
 
 	local all_packages=""
-	for pkg in $(cat /etc/static.pkg 2>/dev/null) crond telnetd webcfg dsld ftpd multid; do
+	for pkg in $(cat /etc/static.pkg 2>/dev/null) crond telnetd webcfg dsld ftpd rextd multid; do
 		if ! echo " $MOD_SHUTDOWN_FIRST $MOD_SHUTDOWN_IGNORE $MOD_SHUTDOWN_LAST " | grep -q " $pkg "; then
 			all_packages="$all_packages $pkg"
 		fi

@@ -1,0 +1,100 @@
+#!/bin/sh
+
+DAEMON=rextd
+DAEMON_LONG_NAME="AVM rextd"
+CONF_NAME=avm
+. /etc/init.d/modlibrc
+
+[ -r /etc/options.cfg ] && . /etc/options.cfg
+# include environment required for rextd restart
+[ -r /var/env.cache ] && . /var/env.cache
+
+start() {
+	echo -n "Starting ${DAEMON_LONG_NAME} ... "
+
+	#save ipv6 for 'lan' (since fw 04.86)
+	if [ -e /proc/sys/net/ipv6/conf/lan/disable_ipv6 ]; then
+		local addresses_ipv6_lan="$(ifconfig lan | sed -rn 's/.*inet6 addr: (.*) Scope:Global/\1/p')"
+		local disable_ipv6_lan="$(cat /proc/sys/net/ipv6/conf/lan/disable_ipv6)"
+	fi
+
+	rm -rf /var/tmp/avm-resolv.conf /var/tmp/resolv.conf 2>/dev/null
+	if [ "$FREETZ_AVMDAEMON_DISABLE_MULTIDPORTS" == "y" ]; then
+		local _resolv_conf_dns="$(modconf value MOD_RESOLV_DNS mod 2>/dev/null)"
+		local _bind_enabled="$(modconf value BIND_ENABLED bind 2>/dev/null)"
+		local _dnsmasq_enabled="$(modconf value DNSMASQ_ENABLED dnsmasq 2>/dev/null)"
+		if [ "$_resolv_conf_dns" == "127.0.0.1" -a "$_bind_enabled" != yes -a "$_dnsmasq_enabled" != yes ]; then
+			echo -n "discarded libmultid, no enabled dns server ... "
+		else
+			export LD_PRELOAD=libmultid.so
+		fi
+	fi
+	$DAEMON_BIN -v 2>/dev/null
+	exitval=$?
+	unset LD_PRELOAD
+	sleep 1
+	[ -f /tmp/flash/mod/multid.start ] && . /tmp/flash/mod/multid.start
+
+	#load ipv6 for 'lan' (since fw 04.86)
+	if [ -n "$disable_ipv6_lan" ]; then
+		if [ "$(cat /proc/sys/net/ipv6/conf/lan/disable_ipv6)" != "$disable_ipv6_lan" ]; then
+			ifconfig lan down
+			echo $disable_ipv6_lan > /proc/sys/net/ipv6/conf/lan/disable_ipv6
+			ifconfig lan up
+		fi
+		for address_ipv6_lan in $addresses_ipv6_lan; do
+			ifconfig lan add $address_ipv6_lan 2>/dev/null
+		done
+	fi
+
+	# do we have another local dns-sever? multid doesn't create /var/tmp/avm-resolv.conf itself if port 53 is in use.
+	# some (older?) boxes uses /var/tmp/resolv.conf for upstream-dnsserver.
+	for resolv_file in /var/tmp/avm-resolv.conf /var/tmp/resolv.conf; do
+		[ ! -e $resolv_file ] && echo "nameserver 127.0.0.1" > $resolv_file
+	done
+
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+stop() {
+	$DAEMON_BIN -s
+}
+
+reload() {
+	$DAEMON_BIN -I
+}
+
+case $1 in
+	""|load)
+		modreg daemon -p avm rextd
+		;;
+	unload)
+		modunreg daemon avm rextd
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	reload)
+		modlib_reload
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [start|stop|restart|reload|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

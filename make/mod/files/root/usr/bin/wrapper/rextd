@@ -1,0 +1,33 @@
+#!/bin/sh
+
+log() {
+	local _log="$(cat)" # save stdin to _log
+	[ -z "$_log" ] && return
+	echo "AVMMULTID: $_log" > /dev/console
+	echo "$_log" >> /var/log/mod_net.log
+	logger -t AVMMULTID "$_log"
+}
+
+rextd_mode=start
+while [ $# -gt 0 ]; do
+	[ "$1" == "-s" ] && rextd_mode="stop"
+	[ "$1" == "-I" ] && rextd_mode="reload"
+	shift
+done
+
+if [ "$rextd_mode" == "start" ]; then
+	for dns_pkg in dnsmasq bind; do
+		if [ -e /mod/etc/init.d/rc.$dns_pkg ]; then
+			rc="/mod/etc/init.d/rc.$dns_pkg"
+		else
+			rc="/etc/init.d/rc.$dns_pkg"
+		fi
+		if [ "$($rc status 2>/dev/null)" == "stopped" ]; then
+			$rc rextd 2>&1 | log
+		fi
+	done
+fi
+
+[ "$rextd_mode" == "start" -a  "$(/etc/init.d/rc.rextd status)" == "running" ] && rextd_mode=reload
+/etc/init.d/rc.rextd $rextd_mode 2>&1 | log
+

@@ -4,10 +4,12 @@ DAEMON=dnsmasq
 PID_FILE=/var/run/$DAEMON/$DAEMON.pid
 . /etc/init.d/modlibrc
 
+[ -e /etc/init.d/rc.rextd ] && MASTER=rextd || MASTER=multid
+
 [ -r /etc/options.cfg ] && . /etc/options.cfg
 
 if [ "$FREETZ_AVMDAEMON_DISABLE_DNS" != "y" ]; then
-	[ "$(/etc/init.d/rc.multid status)" != "running" -o "$DNSMASQ_MULTID_RESTART" != "yes" ] && nomultid=y
+	[ "$(/etc/init.d/rc.$MASTER status)" != "running" -o "$DNSMASQ_MULTID_RESTART" != "yes" ] && nomultid=y
 else
 	nomultid=y
 fi
@@ -17,7 +19,7 @@ config() {
 }
 
 startdaemon_pre() {
-	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid stop >/dev/null || true
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.$MASTER stop >/dev/null || true
 }
 
 start() {
@@ -27,7 +29,7 @@ start() {
 }
 
 startdaemon_post() {
-	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid start >/dev/null
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.$MASTER start >/dev/null
 
 	if [ ! -L "/var/flash/multid.leases" -a "$DNSMASQ_DHCP" = "yes" ]; then
 		rm -f /var/flash/multid.leases
@@ -46,11 +48,11 @@ startdaemon_post() {
 }
 
 stop_pre() {
-	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid stop >/dev/null
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.$MASTER stop >/dev/null
 }
 
 stop_post() {
-	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid start >/dev/null
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.$MASTER start >/dev/null
 
 	if [ -L "/var/flash/multid.leases" ]; then
 		major=$(grep tffs /proc/devices)
@@ -60,8 +62,8 @@ stop_post() {
 }
 
 case $1 in
-	""|load|multid)
-		if [ "$1" == "multid" ]; then
+	""|load|multid|rextd)
+		if [ "$1" == "multid" -o "$1" == "rextd" ]; then
 			[ "$DNSMASQ_WRAPPER" != "yes" ] && exit
 		else
 			[ "$DNSMASQ_WRAPPER" == "yes" ] && exit

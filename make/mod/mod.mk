@@ -16,6 +16,10 @@ $(PKG)_EXCLUDED += $(if $(FREETZ_AVM_HAS_UDEV),etc/device.table,etc/udev)
 $(PKG)_EXCLUDED += $(if $(FREETZ_CUSTOM_UDEV_RULES),,etc/default.mod/udev_*.def etc/udev/rules.d/??-custom.rules)
 $(PKG)_EXCLUDED += $(if $(FREETZ_PATCH_FREETZMOUNT),,usr/lib/libmodmount.sh usr/lib/cgi-bin/mod/conf/30-mount.sh)
 
+$(PKG)_EXCLUDED += $(if $(FREETZ_TYPE_WLAN_REPEATER) ,usr/bin/wrapper/dsld   etc/init.d/rc.dsld)
+$(PKG)_EXCLUDED += $(if $(FREETZ_TYPE_WLAN_REPEATER) ,usr/bin/wrapper/multid etc/init.d/rc.multid)
+$(PKG)_EXCLUDED += $(if $(FREETZ_TYPE_WLAN_REPEATER),,usr/bin/wrapper/rextd  etc/init.d/rc.rextd)
+
 $(PKG)_EXCLUDED += $(if $(or $(call not-y,$(FREETZ_AVM_HAS_USB_HOST)),$(FREETZ_REMOVE_FTPD)),etc/init.d/rc.ftpd)
 $(PKG)_EXCLUDED += $(if $(or $(call not-y,$(FREETZ_AVM_HAS_USB_HOST)),$(FREETZ_REMOVE_SAMBA),$(FREETZ_PACKAGE_SAMBA_SMBD)),etc/init.d/rc.smbd)
 $(PKG)_EXCLUDED += $(if $(FREETZ_REMOVE_DSLD),usr/bin/wrapper/dsld etc/init.d/rc.dsld)
