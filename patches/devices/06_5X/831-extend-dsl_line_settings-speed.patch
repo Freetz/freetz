@@ -1,0 +1,93 @@
+--- usr/www/all/css/default/dsl_line_settings.css
++++ usr/www/all/css/default/dsl_line_settings.css
+@@ -31,9 +31,9 @@
+ background-image: url("images/dsl_smart_hint_good.gif");
+ }
+ div.smart_marker{
+-background-image: url("images/dsl_smart_marker.gif"),url("images/dsl_smart_marker.gif");
++background-image: url("images/dsl_smart_marker.gif"),url("images/dsl_smart_marker.gif"),url("images/dsl_smart_marker.gif");
+ background-repeat: no-repeat;
+-background-position:center left,center right;
++background-position:center left,center center,center right;
+ height: 26px;
+ }
+ .smart_marker .range {
+--- usr/www/all/internet/dsl_line_settings.lua
++++ usr/www/all/internet/dsl_line_settings.lua
+@@ -12,16 +12,16 @@
+ g_forecast = {}
+ function InitMode()
+ g_data.marge_receive = tostring(tonumber(box.query("sar:settings/DownstreamMarginOffset")))
+-g_data.marge_receive_all_values = {"0","1","2","3","4"}
++g_data.marge_receive_all_values = {"-4","-3","-2","-1","0","1","2","3","4"}
+ g_data.marge_receive_smart_dsl = tostring(tonumber(box.query("sar:status/AdvisedDownstreamMarginOffset")))
+ g_data.marge_send = box.query("sar:settings/UsNoiseBits")
+-g_data.marge_send_all_values = {"0","1","2","3","4"}
++g_data.marge_send_all_values = {"-4","-3","-2","-1","0","1","2","3","4"}
+ g_data.marge_send_smart_dsl = box.query("sar:status/AdvisedUsNoiseBits")
+ g_data.rfi = box.query("sar:settings/RFI_mode")
+-g_data.rfi_all_values = {"0","1","2","3","4"}
++g_data.rfi_all_values = {"-4","-3","-2","-1","0","1","2","3","4"}
+ g_data.rfi_smart_dsl = box.query("sar:status/AdvisedRFI_mode")
+ g_data.inp = box.query("sar:settings/DsINP")
+-g_data.inp_all_values = {"0","1","2","3","4"}
++g_data.inp_all_values = {"-4","-3","-2","-1","0","1","2","3","4"}
+ g_data.inp_smart_dsl = box.query("sar:status/AdvisedDsINP")
+ end
+ function refill_user_input()
+@@ -111,6 +111,14 @@
+ end
+ str=[[<tr>
+ <td class="title">]]..title..[[</td>
++<td class="radio"><div><input type="radio" name="]]..val_name..[[" ]]..get_selected( selected_id, all_values[9])..[[ value="]]..all_values[9]..[[" id="]]..val_id..[[8" ]]..click..[[ /></div></td>
++<td class="line"><div></div></td>
++<td class="radio"><div><input type="radio" name="]]..val_name..[[" ]]..get_selected( selected_id, all_values[8])..[[ value="]]..all_values[8]..[[" id="]]..val_id..[[7" ]]..click..[[ /></div></td>
++<td class="line"><div></div></td>
++<td class="radio"><div><input type="radio" name="]]..val_name..[[" ]]..get_selected( selected_id, all_values[7])..[[ value="]]..all_values[7]..[[" id="]]..val_id..[[6" ]]..click..[[ /></div></td>
++<td class="line"><div></div></td>
++<td class="radio"><div><input type="radio" name="]]..val_name..[[" ]]..get_selected( selected_id, all_values[6])..[[ value="]]..all_values[6]..[[" id="]]..val_id..[[5" ]]..click..[[ /></div></td>
++<td class="line"><div></div></td>
+ <td class="radio"><div><input type="radio" name="]]..val_name..[[" ]]..get_selected( selected_id, all_values[5])..[[ value="]]..all_values[5]..[[" id="]]..val_id..[[4" ]]..click..[[ /></div></td>
+ <td class="line"><div></div></td>
+ <td class="radio"><div><input type="radio" name="]]..val_name..[[" ]]..get_selected( selected_id, all_values[4])..[[ value="]]..all_values[4]..[[" id="]]..val_id..[[3" ]]..click..[[ /></div></td>
+@@ -124,6 +132,14 @@
+ if (get_smart_style()~="") then
+ str=str..[[<tr>
+ <td class="title">&nbsp;</td>
++<td class="radio"><div class="]]..get_smart( smart_id, all_values[9])..[[">&nbsp;</div></td>
++<td class="emptyline"><div></div></td>
++<td class="radio"><div class="]]..get_smart( smart_id, all_values[8])..[[">&nbsp;</div></td>
++<td class="emptyline"><div></div></td>
++<td class="radio"><div class="]]..get_smart( smart_id, all_values[7])..[[">&nbsp;</div></td>
++<td class="emptyline"><div></div></td>
++<td class="radio"><div class="]]..get_smart( smart_id, all_values[6])..[[">&nbsp;</div></td>
++<td class="emptyline"><div></div></td>
+ <td class="radio"><div class="]]..get_smart( smart_id, all_values[5])..[[">&nbsp;</div></td>
+ <td class="emptyline"><div></div></td>
+ <td class="radio"><div class="]]..get_smart( smart_id, all_values[4])..[[">&nbsp;</div></td>
+@@ -432,20 +448,21 @@
+ <?include "templates/page_head.html" ?>
+ <form id="main_form" method="POST" action="<?lua href.write(box.glob.script) ?>">
+ <div>
+-<p>{?5085:828?}</p>
++<p>Auf dieser Seite kann man Parameter der DSL-Verbindung anpassen.</p>
+ <hr>
+-<p>{?5085:492?}</p>
+ <div>
+ <table id="uiSNRSetTable" class="SNRSetTable" style="">
+ <tr>
+ <td></td>
+ <td colspan="4" class="left"><div>{?5085:720?}</div></td>
+-<td colspan="1" class="smart_line"><span class="range"></span></td>
++<td colspan="4" class="left"><div></div></td>
++<td colspan="1" class="smart_line"><span class="range"></span><center>Vorgabe</center></td>
++<td colspan="4" class="right"><div></div></td>
+ <td colspan="4" class="right"><div>{?5085:580?}</div></td>
+ </tr>
+ <tr>
+ <td></td>
+-<td colspan="9"><div class="smart_marker"><span class="range"></span></div></td>
++<td colspan="17"><div class="smart_marker"><span class="range"></span></div></td>
+ </tr>
+ <?lua
+ write_headline(box.tohtml([[{?5085:92?}]]))
