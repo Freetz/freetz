@@ -11,7 +11,9 @@ rm_files \
 
 if [ -e "${HTML_LANG_MOD_DIR}/home/home.lua" ]; then
 	# patcht Hauptseite > Kasten Anschluesse > DSL
-	homelua_disable_wrapper connect_info_dsl
+	[ "$FREETZ_AVM_VERSION_06_2X_MAX" == "y" ] && homelua_disable_wrapper connect_info_dsl
+	[ "$FREETZ_AVM_VERSION_06_5X" == "y" ] && modsed -r 's/^(gDataRd.dsl = ).*/\1nil/' "${HTML_LANG_MOD_DIR}/home/home.lua"
+	[ "$FREETZ_AVM_VERSION_06_8X_MIN" == "y" ] && modsed 's/^if (data.dsl/& \&\& false/' "${HTML_LANG_MOD_DIR}/home/home.js"
 	# patcht Internet > Online-Monitor > Online-Monitor
 	modsed \
 	  '/^box.out(connection.create_connection_row("inetmon"))$/d' \
