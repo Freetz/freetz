@@ -11,6 +11,8 @@ stat_button() {
 cgi --id=system
 cgi_begin 'System'
 
+[ -e /usr/mww/cgi-bin/system_lfs.cgi ] && . /usr/mww/cgi-bin/system_lfs.cgi
+
 echo "<h1>$(lang de:"Box neustarten" en:"Restart box")</h1>"
 stat_button reboot '$(lang de:"Reboot" en:"Reboot")'
 
