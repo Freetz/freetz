@@ -1,0 +1,75 @@
+--- usr/www/all/internet/inetstat_counter.lua	2017-12-13 11:59:11.000000000 +0100
++++ usr/www/all/internet/inetstat_counter.lua	2018-02-02 05:54:16.174895125 +0100
+@@ -22,12 +22,12 @@
+ <tr class="first_row">
+ <th class="first_col"></th>
+ <th>{?815:780?}</th>
+-<th style="text-align:center;" colspan="3">{?815:401?}</th>
++<th style="text-align:center;" colspan="3">Datenvolumen (GB)</th>
+ <th>{?815:377?}</th>
+ </tr>
+ <tr class="first_row">
+ <th class="first_col"></th>
+-<th>{?815:351?}</th>
++<th>([d+]hh:mm)</th>
+ <th>{?815:151?}</th>
+ <th>{?815:605?}</th>
+ <th>{?815:915?}</th>
+@@ -52,16 +52,32 @@
+ if 0 < result and result < 1 then
+ end
+ result = string.format([[%d]], result)
++
++result = math.floor(result /102.4 +0.5)
++if string.len(result) <2 then result = "0" .. result end
++result = string.gsub(result, "^(%d+)(%d)", '%1,%2')
++result = string.gsub(result, "^(%d+)(%d%d%d,%d)", '%1.%2')
++
+ return result
+ end
+ function get_data(request)
+ local str = ""
+ local outgoingcalls = box.query("inetstat:status/"..request.."/OutgoingCalls")
+ local time = box.query("inetstat:status/"..request.."/PhyConnTimeOutgoing")
+-str = [[<td datalabel="{?815:922?}" class="time">]] .. general.convert_to_str(time) .. [[</td>]]
++
++_time = general.convert_to_str(time)
++_hour = string.sub(_time, 0, string.len(_time)-3)
++if (tonumber(_hour) >= 24) then
++_days = math.floor(_hour/24)
++_hour = _hour - 24*_days
++if string.len(_hour) <2 then _hour = "0" .. _hour end
++_time = _days .. "+" .. _hour .. string.sub(_time, string.len(_time)-2)
++end
++str = [[<td datalabel="Online-Zeit ([d+]hh:mm)" class="time">]] .. _time .. [[</td>]]
++
+ local inh, inl, outh, outl = query_send_receive(request)
+ str = str .. core.sprintf([[
+-<td datalabel="{?815:466?}" class="vol">%1</td><td datalabel="{?815:493?}" class="vol">%2</td><td datalabel="{?815:744?}" class="vol">%3</td>]],
++<td datalabel="Datenvolumen gesamt (GB)" class="vol">%1</td><td datalabel="Datenvolumen gesendet (GB)" class="vol">%2</td><td datalabel="Datenvolumen empfangen (GB)" class="vol">%3</td>]],
+ box.tohtml(get_vol_str(inh, inl, outh, outl)),
+ box.tohtml(get_vol_str(outh, outl)),
+ box.tohtml(get_vol_str(inh, inl))
+@@ -75,8 +91,10 @@
+ Today = [[{?815:124?}]],
+ Yesterday = [[{?815:693?}]],
+ ThisWeek = [[{?815:110?}]],
++LastWeek = "Vorwoche",
+ ThisMonth = [[{?815:215?}]],
+-LastMonth = [[{?815:617?}]]
++LastMonth = [[{?815:617?}]],
++Total = "Gesamt"
+ }
+ str = str .. [[
+ <td datalabel="" class="first_col">]]
+@@ -92,8 +110,10 @@
+ local str = get_data_table_row("Today")
+ str = str .. get_data_table_row("Yesterday")
+ str = str .. get_data_table_row("ThisWeek")
++str = str .. get_data_table_row("LastWeek")
+ str = str .. get_data_table_row("ThisMonth")
+ str = str .. get_data_table_row("LastMonth")
++str = str .. get_data_table_row("Total")
+ return str
+ end
+ function get_data_table()
