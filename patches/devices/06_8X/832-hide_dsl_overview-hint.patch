@@ -1,0 +1,12 @@
+--- usr/www/all/internet/dsl_overview.lua
++++ usr/www/all/internet/dsl_overview.lua
+@@ -288,9 +288,6 @@
+ local marge_send = tonumber(box.query("sar:settings/UsNoiseBits")) or 0
+ local rfi = tonumber(box.query("sar:settings/RFI_mode")) or 0
+ local inp = tonumber(box.query("sar:settings/DsINP")) or 0
+-if marge_receive~=0 or marge_send~=0 or rfi~=0 or inp~=0 then
+-box.out([[<p>[]]..box.tohtml([[{?9855:570?}]])..[[]</p>]])
+-end
+ box.out([[</div>]])
+ end
+ function write_umts_block()
