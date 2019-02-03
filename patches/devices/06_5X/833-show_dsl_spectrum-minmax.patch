@@ -1,0 +1,20 @@
+--- usr/www/all/internet/dsl_spectrum.lua
++++ usr/www/all/internet/dsl_spectrum.lua
+@@ -227,7 +227,7 @@
+ <script type="text/javascript" src="/js/chartistplugins.js"></script>
+ <script type="text/javascript">
+ var g_spectrum = <?lua box.out(js.table(g_data)) ?>;
+-var g_show_MinMax=<?lua if box.get.min_max then box.out(" true ") else box.out(" false ") end ?>;
++var g_show_MinMax=<?lua if not box.get.min_max then box.out(" true ") else box.out(" false ") end ?>;
+ function yAxisFormatterSnr(val, axis) {
+ if (val % 10 == 0) {
+ return val;
+@@ -562,7 +562,7 @@
+ </div>
+ </div>
+ <div class="formular">
+-<a href="javascript:OnMinMax()" class="textlink nocancel" id="uiToggleMinMax">{?7888:534?}</a>
++<a href="javascript:OnMinMax()" class="textlink nocancel" id="uiToggleMinMax">{?7888:518?}</a>  <!-- from function OnMinMax() -->
+ </div>
+ </div>
+ </div>
