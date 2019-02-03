@@ -1,0 +1,27 @@
+--- usr/www/all/webservices/homeautoswitch.lua
++++ usr/www/all/webservices/homeautoswitch.lua
+@@ -192,15 +192,24 @@
+ else
+ power = tostring((multimeterdevice.Power*10))
+ energy = tostring(multimeterdevice.Energie)
++voltage = tostring(multimeterdevice.Voltage)
++current = tostring(multimeterdevice.Current)
++factor = tostring(multimeterdevice.PowerFactor)
+ end
+ else
+ power = ""
+ energy = ""
++voltage = ""
++current = ""
++factor = ""
+ end
+ --power
+ xmlinfo = xmlinfo .. [[<power>]] .. power .. [[</power>]]
+ --energy
+ xmlinfo = xmlinfo .. [[<energy>]] .. energy .. [[</energy>]]
++xmlinfo = xmlinfo .. [[<voltage>]] .. voltage .. [[</voltage>]]
++xmlinfo = xmlinfo .. [[<current>]] .. current .. [[</current>]]
++xmlinfo = xmlinfo .. [[<factor>]] .. factor .. [[</factor>]]
+ xmlinfo = xmlinfo .. [[</powermeter>]]
+ end
+ --temperaturedevice
