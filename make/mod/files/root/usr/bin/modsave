@@ -26,11 +26,9 @@ save() {
 		exit 1
 	fi
 
-	echo -n "Checking Freetz configuration ... "
 	if cmp -s $FLASHFILE $TMPFILE; then
-		echo "unchanged."
+		echo "Configuration unchanged ... skipped."
 	else
-		echo "changed."
 		echo -n "Writing $size bytes to $FLASHFILE ... "
 		MSG=$(cat $TMPFILE 2>&1 > $FLASHFILE)
 		rc=$?
