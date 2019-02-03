@@ -167,7 +167,7 @@ image() {
 		rm -f ${d}/kernel.image ${d}/filesystem.image
 
 		# strip NMI vector if any
-		($FTOOLS/remove-nmi-vector kf.image kf.image.no-nmi 2>&1 && mv kf.image.no-nmi kf.image 2>/dev/null) | sed -r -n -e 's,(.*NMI vector.*),\t\1,p'
+		($FTOOLS/remove-nmi-vector kf.image kf.image.no-nmi 2>&1 && mv kf.image.no-nmi kf.image 2>/dev/null) | sed -r -n -e 's,(.*NMI vector v.*),\t\1,p'
 
 		# and split them again... now at the right bounds (s. case 2 above)
 		$FTOOLS/find-squashfs kf.image >/dev/null 2>&1
