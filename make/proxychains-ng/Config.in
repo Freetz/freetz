@@ -1,0 +1,35 @@
+config FREETZ_PACKAGE_PROXYCHAINS_NG
+	bool "ProxyChains-NG git"
+	select FREETZ_LIB_libpthread
+	default n
+	help
+		A preloader which hooks calls to sockets in dynamically
+		linked programs and redirects it through one or more
+		socks/http proxies, tor is also supported.
+
+		Usage: proxychains4 telnet mail.example.com 25
+
+choice
+	depends on FREETZ_PACKAGE_PROXYCHAINS_NG
+	prompt "Version"
+	default FREETZ_PACKAGE_PROXYCHAINS_NG_VERSION_CUSTOM
+
+	config FREETZ_PACKAGE_PROXYCHAINS_NG_VERSION_LATEST
+		bool "latest"
+
+	config FREETZ_PACKAGE_PROXYCHAINS_NG_VERSION_CUSTOM
+		bool "custom"
+
+endchoice
+
+config FREETZ_PACKAGE_PROXYCHAINS_NG_VERSION_COMMIT
+	string "Revision"
+	depends on FREETZ_PACKAGE_PROXYCHAINS_NG && FREETZ_PACKAGE_PROXYCHAINS_NG_VERSION_CUSTOM
+	default "d21af711d8"
+
+config FREETZ_PACKAGE_PROXYCHAINS_NG__PACKAGE_PROXYCHAINS_NG
+	bool "Select Tor"
+	depends on FREETZ_PACKAGE_PROXYCHAINS_NG
+	select FREETZ_PACKAGE_TOR
+	default n
+
