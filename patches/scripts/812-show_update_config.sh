@@ -6,10 +6,5 @@ echo1 "enabling update config"
 
 # patcht System > Update > Auto-Update (Menupunkt)
 
-enable_page() {
-modsed \
-  "s/${1}.lua\"] =/& true ; dummy =/g" \
-  "${HTML_LANG_MOD_DIR}/menus/menu_show.lua"
-}
 enable_page update_auto
 
