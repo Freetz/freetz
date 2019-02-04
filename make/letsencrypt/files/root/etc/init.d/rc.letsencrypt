@@ -1,0 +1,144 @@
+#!/bin/sh
+
+DAEMON=letsencrypt
+DAEMON_LONG_NAME="Let's Encrypt"
+DAEMON_BIN=letsencrypt.sh
+DAEMON_CONFIG=/mod/etc/$DAEMON_BIN/config.sh
+. /etc/init.d/modlibrc
+
+set_cron() {
+	local CRON_OLD="$(cat /tmp/cron.d/$DAEMON 2>/dev/null)"
+	if [ "$LETSENCRYPT_ENABLED" == "yes" ]; then
+		local CRON_NEW="$LETSENCRYPT_CROND_M $LETSENCRYPT_CROND_H $LETSENCRYPT_CROND_D * *  /mod/etc/init.d/rc.$DAEMON cron"
+	fi
+	if [ "$CRON_OLD" != "$CRON_NEW" ] ; then
+		mkdir -p /tmp/cron.d/
+		echo "$CRON_NEW" > /tmp/cron.d/$DAEMON
+		/mod/etc/init.d/rc.crond reload >/dev/null
+	fi
+}
+
+run() {
+	echo -n "Running $DAEMON_LONG_NAME ... "
+	if modlib_check_running; then
+		echo 'already running.'
+		exit 0
+	fi
+	if [ "$LETSENCRYPT_ENABLED" != "yes" -a "$#" -eq 0 ]; then
+		echo 'is disabled.'
+		exit 0
+	fi
+	if [ ! -x "$(which $DAEMON_BIN)" ]; then
+		echo "binary not found, skipped."
+		exit 1
+	fi
+
+
+	modlib_config
+	[ ! -d "$LETSENCRYPT_CERTDIR" ] && mkdir "$LETSENCRYPT_CERTDIR"
+	rm -rf /tmp/flash/$DAEMON/certs
+	ln -s ${LETSENCRYPT_CERTDIR%/*} /tmp/flash/$DAEMON/certs
+
+
+	mkdir "$LETSENCRYPT_WEBROOT/.well-known/"
+	mkdir "$LETSENCRYPT_WEBROOT/.well-known/acme-challenge/"
+
+	echo >> $LETSENCRYPT_LOGFILE
+	date >> $LETSENCRYPT_LOGFILE
+	if [ "$#" -gt 0 ]; then
+		echo
+		$DAEMON_BIN $* | tee -a $LETSENCRYPT_LOGFILE 2>&1
+	else
+		$DAEMON_BIN --cron >> $LETSENCRYPT_LOGFILE 2>&1
+	fi
+
+	rm -rf "$LETSENCRYPT_WEBROOT/.well-known/acme-challenge"
+	rmdir "$LETSENCRYPT_WEBROOT/.well-known/" 2>/dev/null 
+
+
+	[ -n "$(find /tmp/flash/letsencrypt -name private_key.pem -mtime -1)" ] && modsave flash >/dev/null
+
+	LIGHTY_RESTART=n
+	for dom in $LETSENCRYPT_CERTDIR/*; do
+		[ -z "$(find $dom -name cert.pem -mtime -1)" ] && continue
+		cat $dom/privkey.pem $dom/cert.pem 2>/dev/null > $dom/ssl.pem
+		LIGHTY_RESTART=y
+	done
+	if [ "$LIGHTY_RESTART" == "y" ]; then
+		echo -n "restarting Lighttpd ... "
+		/mod/etc/init.d/rc.lighttpd restart >/dev/null
+	fi
+
+	# return-value of script is always 0
+	[ "$#" -eq 0 ] && echo 'done.'
+	return 0
+}
+
+case $1 in
+	""|load)
+		mkdir -p  /mod/etc/$DAEMON_BIN/
+		mkdir -p /tmp/flash/$DAEMON
+		[ ! -e /tmp/flash/$DAEMON/domains.txt ] && echo -e "# example.org www.example.org\n# example.net www.example.net wiki.example.net" > /tmp/flash/$DAEMON/domains.txt
+
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
+		modreg file $DAEMON letsencrypt_domains 'domains.txt' 0 "letsencrypt_domains"
+		modreg file $DAEMON letsencrypt_private 'private_key.pem' 0 "letsencrypt_private"
+		modreg daemon --hide $DAEMON
+		modreg status $DAEMON "$DAEMON_LONG_NAME" letsencrypt_log
+
+		if [ "$LETSENCRYPT_ENABLED" != "yes" ]; then
+			echo "$DAEMON is disabled." 1>&2
+			exit 1
+		else
+			set_cron
+			#check if this script is executed by rc.external
+			if [ "$(ps | sed -rn "s/^ *$PPID .*(rc.external).*/y/p")" != "y" ]; then
+				echo "$DAEMON is enabled." 1>&2
+			else
+				echo "$DAEMON will be run in background ... active." 1>&2
+#				run
+			fi
+		fi
+		;;
+        stop)
+#		echo "$DAEMON can't be stopped." 1>&2
+		exit 1
+		;;
+	unload)
+		if [ -e /tmp/cron.d/$DAEMON ]; then
+			rm -rf /tmp/cron.d/$DAEMON
+			/mod/etc/init.d/rc.crond reload >/dev/null
+		fi
+
+		modunreg status $DAEMON letsencrypt_log
+		modunreg cgi $DAEMON
+		modunreg file $DAEMON
+		modunreg daemon $DAEMON
+		;;
+	run)
+		run
+		;;
+	init)
+		run --cron
+		;;
+	force)
+		run --cron --force
+		;;
+	revoke)
+		run --revoke $2
+		;;
+	config)
+		set_cron
+		;;
+	cron)
+		[ "$LETSENCRYPT_ENABLED" != "yes" ] && return
+		logger -t info "Run $DAEMON_LONG_NAME by cron."
+ 		run
+		;;
+	*)
+		echo "Usage: $0 [load|unload|run|init|force|revoke <cert.pem>|config|cron]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
