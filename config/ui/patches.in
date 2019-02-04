@@ -235,6 +235,13 @@ config FREETZ_REMOVE_MYFRITZ
 	help
 		Removes the AVM MyFritz Webinterface. Saves about 1.1 MB uncompressed data size.
 
+config FREETZ_REMOVE_DDNSD
+	bool "Remove DDNSD"
+	bool n
+	depends on FREETZ_AVM_HAS_MYFRITZ
+	help
+		Removes the Dynamic DNS daemon (saves about 70 KB in compressed image)
+
 config FREETZ_REMOVE_FHEM
 	bool "Remove FHEM"
 	default n

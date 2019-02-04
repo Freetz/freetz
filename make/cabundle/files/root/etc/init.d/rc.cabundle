@@ -1,0 +1,48 @@
+#!/bin/sh
+
+
+case $1 in
+	""|load)
+		modreg daemon --hide cabundle
+
+		echo -n "Setting up CA-bundle for root ... "
+
+		[ -r /etc/options.cfg ] && . /etc/options.cfg
+
+		mkdir -p /mod/etc/ssl/certs
+		[ ! -e /mod/etc/ssl/certs/ca-bundle.crt ] && ln -s /etc/ssl/certs/ca-bundle.crt /mod/etc/ssl/certs/ca-bundle.crt
+
+		if [ "$FREETZ_PACKAGE_OPENSSL" == "y" ]; then
+			[ ! -e /mod/etc/ssl/openssl.cnf ] && ln -s /etc/ssl/openssl.cnf /mod/etc/ssl/openssl.cnf
+		fi
+
+		if [ "$FREETZ_PACKAGE_CURL" == "y" ]; then
+			[ ! -e ~root/.curlrc -a ! -L ~root/.curlrc ] && ln -s /tmp/flash/mod/.curlrc ~root/.curlrc
+			[ ! -e ~root/.curlrc ] && echo "cacert /mod/etc/ssl/certs/ca-bundle.crt" > ~root/.curlrc
+		fi
+
+		if [ "$FREETZ_PACKAGE_WGET" == "y" ]; then
+			[ ! -e ~root/.wgetrc -a ! -L ~root/.wgetrc ] && ln -s /tmp/flash/mod/.wgetrc ~root/.wgetrc
+			[ ! -e ~root/.wgetrc ] && echo "ca_certificate=/mod/etc/ssl/certs/ca-bundle.crt" > ~root/.wgetrc
+		fi
+
+		echo "done."
+		;;
+	unload)
+		modunreg daemon cabundle
+		;;
+	start)
+		;;
+	stop)
+		;;
+	restart)
+		;;
+	status)
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

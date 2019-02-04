@@ -1,0 +1,26 @@
+config FREETZ_PACKAGE_CABUNDLE
+	bool "CA-bundle git"
+	default n
+	help
+		This includes CA Root Certificates from mozilla.org,
+		see http://curl.haxx.se/docs/caextract.html
+		Size of uncompressed file is about 250 KB.
+
+choice
+	depends on FREETZ_PACKAGE_CABUNDLE
+	prompt "Version"
+	default FREETZ_PACKAGE_CABUNDLE_VERSION_LATEST
+
+	config FREETZ_PACKAGE_CABUNDLE_VERSION_LATEST
+		bool "latest"
+
+	config FREETZ_PACKAGE_CABUNDLE_VERSION_CUSTOM
+		bool "custom"
+
+endchoice
+
+config FREETZ_PACKAGE_CABUNDLE_VERSION_COMMIT
+	string "Revision"
+	depends on FREETZ_PACKAGE_CABUNDLE && FREETZ_PACKAGE_CABUNDLE_VERSION_CUSTOM
+	default "ca9dc7463c"
+

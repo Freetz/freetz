@@ -1,0 +1,17 @@
+--- letsencrypt.sh	2016-01-21 19:58:57.000000000 +0100
++++ letsencrypt.sh	2016-01-21 20:04:49.332985152 +0100
+@@ -203,11 +203,11 @@
+   tempcont="$(mktemp -t XXXXXX)"
+ 
+   if [[ "${1}" = "head" ]]; then
+-    statuscode="$(curl -s -w "%{http_code}" -o "${tempcont}" "${2}" -I)"
++    statuscode="$(curl -k -s -w "%{http_code}" -o "${tempcont}" "${2}" -I)"
+   elif [[ "${1}" = "get" ]]; then
+-    statuscode="$(curl -s -w "%{http_code}" -o "${tempcont}" "${2}")"
++    statuscode="$(curl -k -s -w "%{http_code}" -o "${tempcont}" "${2}")"
+   elif [[ "${1}" = "post" ]]; then
+-    statuscode="$(curl -s -w "%{http_code}" -o "${tempcont}" "${2}" -d "${3}")"
++    statuscode="$(curl -k -s -w "%{http_code}" -o "${tempcont}" "${2}" -d "${3}")"
+   else
+     _exiterr "Unknown request method: ${1}"
+   fi

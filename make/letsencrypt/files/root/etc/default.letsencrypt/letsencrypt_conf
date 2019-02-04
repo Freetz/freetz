@@ -1,0 +1,17 @@
+#!/bin/sh
+
+cat << EOF
+#!/bin/bash
+
+BASEDIR=/tmp/flash/letsencrypt
+PRIVATE_KEY=/tmp/flash/letsencrypt/private_key.pem
+
+EOF
+
+echo "WELLKNOWN=${LETSENCRYPT_WEBROOT%/*}/.well-known/acme-challenge/"
+echo "KEYSIZE=$LETSENCRYPT_KEYSIZE"
+
+[ -n "$LETSENCRYPT_REGMAIL" ] && echo "CONTACT_EMAIL=$LETSENCRYPT_REGMAIL"
+
+echo "$LETSENCRYPT_USERCFG"
+

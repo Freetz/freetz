@@ -1,0 +1,30 @@
+config FREETZ_PACKAGE_LETSENCRYPT
+	bool "LetsEncrypt.sh git"
+	select FREETZ_PACKAGE_CABUNDLE
+	select FREETZ_BUSYBOX_MKTEMP
+	select FREETZ_PACKAGE_BASH
+	select FREETZ_PACKAGE_CURL
+	select FREETZ_PACKAGE_OPENSSL
+	default n
+	help
+		This generates free Let's Encrypt SSL/TLS Certificates,
+		see https://github.com/lukas2511/letsencrypt.sh
+
+choice
+	depends on FREETZ_PACKAGE_LETSENCRYPT
+	prompt "Version"
+	default FREETZ_PACKAGE_LETSENCRYPT_VERSION_CUSTOM
+
+	config FREETZ_PACKAGE_LETSENCRYPT_VERSION_LATEST
+		bool "latest"
+
+	config FREETZ_PACKAGE_LETSENCRYPT_VERSION_CUSTOM
+		bool "custom"
+
+endchoice
+
+config FREETZ_PACKAGE_LETSENCRYPT_VERSION_COMMIT
+	string "Revision"
+	depends on FREETZ_PACKAGE_LETSENCRYPT && FREETZ_PACKAGE_LETSENCRYPT_VERSION_CUSTOM
+	default "2b50c72b75"
+
