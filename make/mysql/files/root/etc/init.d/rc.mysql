@@ -1,0 +1,123 @@
+#!/bin/sh
+
+DAEMON=mysql
+DAEMON_LONG_NAME=MySQL
+DAEMON_BIN=mysqld
+. /etc/init.d/modlibrc
+
+
+config() {
+        modlib_config
+}
+
+startdaemon_pre() {
+	[ ! -e "$MYSQL_DIR" ] && echo -n "can not find databese directory, " && return 1
+
+	if  [ ! -L "/mod/lib/libstdc++.so.6" ]; then
+		[ -r /etc/options.cfg ] && . /etc/options.cfg
+		for x in ${FREETZ_LIBRARY_DIR}/libstdc++.so.6*; do
+			ln -s $x /mod/lib/${x##*/}
+		done
+	fi
+
+	touch $PID_FILE
+	chown $DAEMON.$DAEMON $PID_FILE
+}
+
+start() {
+	modlib_startdaemon start-stop-daemon -S -b -q -n $DAEMON_BIN -a $DAEMON_BIN -- $MYSQL_ARGS
+}
+
+setup() {
+	[ -e "$MYSQL_DIR" ] && echo "Not allowed if $MYSQL_DIR exists, failed." && return 1
+	mkdir $MYSQL_DIR -p
+	mkdir $MYSQL_DIR/temp
+	mkdir $MYSQL_DIR/logs
+	mkdir $MYSQL_DIR/data
+	if [ -e /usr/share/mysql/mysql.tbz ]; then 
+		tar xf /usr/share/mysql/mysql.tbz -C $MYSQL_DIR/data
+	else
+		echo "Default tables not installed, missing in image."
+	fi
+	chown $DAEMON.$DAEMON $MYSQL_DIR -R
+	echo "Default directories and tables created, done."
+}
+
+pass() {
+	[ -z "$1"  ] && echo "No new password provided, failed." && return 1
+	[ ! -x "$(which mysql)" ] && echo "Can not find mysql binary, failed." && return 1
+	! modlib_check_running && echo "Server is not running, failed." && return 1
+
+	MYNET="$(ifconfig lan | sed -rn 's/.*inet addr:([0-9]*\.[0-9]*\.[0-9]*\.).*/\1/p')"
+	echo "Detected local IPv4 network: ${MYNET}0"
+
+	mysql -h localhost -u root -e "GRANT ALL PRIVILEGES ON *.* TO root@'${MYNET}%' IDENTIFIED BY '$1';flush privileges;"
+	[ $? -ne 0 ] && ret=failed || ret=done
+	echo "Set remote root password, $ret."
+
+	mysql -h localhost -u root -e "set password = password('$1');"
+	[ $? -ne 0 ] && ret=failed || ret=done
+	echo "Set local root password, $ret."
+
+}
+
+
+case $1 in
+	""|load)
+		modlib_add_user_and_group $DAEMON
+		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
+		[ ! -e "/tmp/flash/$DAEMON/status.sh" ] && echo "mysql -h localhost -u root -e 'show processlist'" > "/tmp/flash/$DAEMON/status.sh"
+
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
+		modreg daemon $DAEMON
+		modreg file $DAEMON mysql__my_cnf $(lang de:"Aktuell" en:"Current") 0 my_cnf
+		modreg file $DAEMON mysql__config $(lang de:"Eigene" en:"Custom") 2 config
+		[ -r /etc/options.cfg ] && . /etc/options.cfg
+		if [ "$FREETZ_PACKAGE_MYSQL_mysql" == "y" ]; then
+			modreg file $DAEMON status $(lang de:"Status" en:"Status") 2 status
+
+			modreg status $DAEMON "$DAEMON_LONG_NAME" mysql_status
+		fi
+
+		modlib_start $MYSQL_ENABLED
+		;;
+	unload)
+		modunreg status $DAEMON mysql_status
+		modunreg file $DAEMON
+		modunreg daemon $DAEMON
+		modunreg cgi $DAEMON
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	reload)
+		modlib_reload
+		;;
+	status)
+		modlib_status
+		;;
+	config)
+		config
+		;;
+	setup)
+		setup
+		;;
+	pass)
+		pass "$2"
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|reload|restart|status|config|setup|pass <word>]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
+
+

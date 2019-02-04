@@ -1,0 +1,92 @@
+Index: mysys/lf_alloc-pin.c
+==================================================================================================================
+--- mysys/lf_alloc-pin.c	2009-12-12 21:51:40.000000000 +0100
++++ mysys/lf_alloc-pin.c	2009-12-12 21:40:04.000000000 +0100
+@@ -314,7 +314,7 @@
+   return 0;
+ }
+ 
+-#if STACK_DIRECTION < 0
++#ifdef STACK_DIRECTION < 0
+ #define available_stack_size(CUR,END) (long) ((char*)(CUR) - (char*)(END))
+ #else
+ #define available_stack_size(CUR,END) (long) ((char*)(END) - (char*)(CUR))
+Index: mysys/my_thr_init.c
+==================================================================================================================
+--- mysys/my_thr_init.c	2009-12-12 21:52:28.000000000 +0100
++++ mysys/my_thr_init.c	2009-12-12 21:39:55.000000000 +0100
+@@ -338,8 +338,8 @@
+                         0);
+   pthread_cond_init(&tmp->suspend, NULL);
+ 
+-  tmp->stack_ends_here= (char*)&tmp +
+-                         STACK_DIRECTION * (long)my_thread_stack_size;
++  tmp->stack_ends_here= (char*)&tmp + 
++	STACK_DIRECTION (long)my_thread_stack_size;
+ 
+   pthread_mutex_lock(&THR_LOCK_threads);
+   tmp->id= ++thread_id;
+Index: storage/innobase/os/os0proc.c
+==================================================================================================================
+--- storage/innobase/os/os0proc.c	2009-12-12 21:53:19.000000000 +0100
++++ storage/innobase/os/os0proc.c	2009-12-12 21:39:42.000000000 +0100
+@@ -561,9 +561,9 @@
+ /*===============*/
+ 					/* out: allocated memory */
+ 	ulint		n,		/* in: number of bytes */
+-	ibool		set_to_zero,	/* in: TRUE if allocated memory
+-					should be set to zero if
+-					UNIV_SET_MEM_TO_ZERO is defined */
++	ibool		set_to_zero,	/* in: TRUE if allocated memory */
++					/* should be set to zero if */
++					/* UNIV_SET_MEM_TO_ZERO is defined */
+ 	ibool		assert_on_error)/* in: if TRUE, we crash mysqld if
+ 					 the memory cannot be allocated */
+ {
+@@ -571,7 +571,7 @@
+ 	ulint size;
+ 	int shmid;
+ 	void *ptr = NULL;
+-	struct shmid_ds buf;
++	struct shmid_ds *buf;
+ 
+ 	if (!os_use_large_pages || !os_large_page_size) {
+ 		goto skip;
+Index: sql/sql_class.cc
+==================================================================================================================
+--- sql/sql_class.cc	2009-12-12 21:54:04.000000000 +0100
++++ sql/sql_class.cc	2009-12-12 21:39:33.000000000 +0100
+@@ -1254,7 +1254,7 @@
+   mysys_var->id= thread_id;
+   real_id= pthread_self();                      // For debugging
+   mysys_var->stack_ends_here= thread_stack +    // for consistency, see libevent_thread_proc
+-                              STACK_DIRECTION * (long)my_thread_stack_size;
++                              STACK_DIRECTION (long)my_thread_stack_size;
+ 
+   /*
+     We have to call thr_lock_info_init() again here as THD may have been
+Index: sql/sql_parse.cc
+==================================================================================================================
+--- sql/sql_parse.cc	2009-12-12 21:54:56.000000000 +0100
++++ sql/sql_parse.cc	2009-12-12 21:39:19.000000000 +0100
+@@ -5527,7 +5527,7 @@
+ 
+ #ifndef EMBEDDED_LIBRARY
+ 
+-#if STACK_DIRECTION < 0
++#ifdef STACK_DIRECTION < 0
+ #define used_stack(A,B) (long) (A - B)
+ #else
+ #define used_stack(A,B) (long) (B - A)
+Index: client/strings.h
+==================================================================================================================
+--- client/strings.h	1970-01-01 01:00:00.000000000 +0100
++++ client/strings.h	2009-12-12 21:44:23.000000000 +0100
+@@ -0,0 +1 @@
++#undef CONFIG_STRINGS
+Index: sql/strings.h
+==================================================================================================================
+--- sql/strings.h	1970-01-01 01:00:00.000000000 +0100
++++ sql/strings.h	2009-12-12 21:44:23.000000000 +0100
+@@ -0,0 +1 @@
++#undef CONFIG_STRINGS

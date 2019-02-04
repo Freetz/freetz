@@ -1,0 +1,11 @@
+--- include/my_global.h	2009-05-11 14:47:21.000000000 +0200
++++ include/my_global.h	2015-04-08 14:29:44.159560984 +0200
+@@ -508,7 +508,7 @@
+ #endif
+ /* Declare madvise where it is not declared for C++, like Solaris */
+ #if HAVE_MADVISE && !HAVE_DECL_MADVISE && defined(__cplusplus)
+-extern "C" int madvise(void *addr, size_t len, int behav);
++extern "C" int madvise(void *addr, size_t len, int behav) throw ();
+ #endif
+ 
+ #ifdef __QNXNTO__

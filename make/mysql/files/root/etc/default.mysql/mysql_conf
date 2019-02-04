@@ -1,0 +1,36 @@
+#!/bin/sh
+
+cat <<EOF
+[mysqld]
+
+user=mysql
+pid-file=/var/run/mysqld.pid
+
+bind-address=$MYSQL_HOST
+port=$MYSQL_PORT
+
+datadir=${MYSQL_DIR%/}/data
+tmpdir=${MYSQL_DIR%/}/temp
+
+EOF
+
+[ "$MYSQL_LOGGEN" == 'yes' ] && cat <<EOF
+general-log
+general-log-file=${MYSQL_DIR%/}/logs/general.log
+
+EOF
+
+[ "$MYSQL_LOGERR" == 'yes' ] && cat <<EOF
+log-error=${MYSQL_DIR%/}/logs/error.log
+
+EOF
+
+
+cat <<EOF
+
+EOF
+
+
+cat /tmp/flash/mysql/my.cnf 2>/dev/null
+
+
