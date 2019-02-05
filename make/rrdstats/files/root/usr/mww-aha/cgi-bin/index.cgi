@@ -1,0 +1,1 @@
+/usr/lib/cgi-bin/rrdstats/index-avmha.cgi

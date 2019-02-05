@@ -90,3 +90,14 @@ config FREETZ_PACKAGE_RRDSTATS_DIGITEMP
 		selects DigiTemp.
 		Logging of 1-wire temperature sensors with DigiTemp.
 
+config FREETZ_PACKAGE_RRDSTATS_SMARTHOME
+	bool "Support for SmartHome"
+	depends on FREETZ_PACKAGE_RRDSTATS
+	default n
+	select FREETZ_WGET
+	help
+		Enables logging of AVM Home Automation (AHA).
+		It will record voltage, energy, power factor,
+		current and temperature.
+		This enables the options in the Webif.
+

@@ -1,0 +1,19 @@
+#!/bin/sh
+
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
+export LD_LIBRARY_PATH=/mod/lib
+
+DAEMON=rrdstats
+SUBDAEMON=aha
+DAEMON_BIN=httpd-$SUBDAEMON
+DAEMON_ENV="PATH=$PATH"
+
+if [ ! -r "/mod/etc/conf/${DAEMON}.cfg" ]; then
+	echo "Error[$DAEMON]: not configured" 1>&2
+	exit 1
+fi
+. /mod/etc/conf/${DAEMON}.cfg
+
+homedir=/mod/pkg/rrdstats/usr/mww-${SUBDAEMON}/
+
+exec env - $DAEMON_ENV $DAEMON_BIN "$@" -p "$RRDSTATS_AHA_WEBPORT" -c /mod/etc/httpd-${SUBDAEMON}.conf -h "$homedir" -r "SmartHome"
