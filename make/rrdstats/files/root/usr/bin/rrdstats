@@ -88,6 +88,28 @@ collect_upt() {
 	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $uptdata --template uptime
 }
 
+collect_pow() {
+	NAMEPREFIX=pow_$RRDSTATS_INTERVAL
+	if [ ! -e $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd ]; then
+		for sourceitem in $RRDSTATS_POWER_CFG; do
+			local datasources="$datasources DS:$sourceitem:GAUGE:600:0:100"
+		done
+		rrdtool create $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd \
+			--step $RRDSTATS_INTERVAL \
+			$datasources \
+			RRA:MAX:0.1:1:576 \
+			RRA:MAX:0.1:6:672 \
+			RRA:MAX:0.1:24:732 \
+			RRA:MAX:0.1:144:1460 \
+			RRA:MAX:0.1:360:2920
+	fi
+	for sourceitem in $RRDSTATS_POWER_CFG; do
+		local powdat="$powdat:$(ctlmgr_ctl r power status/rate_${sourceitem}act 2>/dev/null)"
+		local powtpl="$powtpl:${sourceitem}"
+	done
+	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd N${powdat} --template ${powtpl:1}
+}
+
 collect_temp() {
 	NAMEPREFIX=temp_$RRDSTATS_INTERVAL
 	if [ ! -e $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd ]; then
@@ -185,6 +207,95 @@ collect_thg() {
 		templateADD=:up:if:uc
 	fi
 	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $uptdatBL$uptdatUP$uptdatIS --template rx:sn:tx:ip$templateADD
+}
+
+collect_dvb() {
+	NAMEPREFIX=dvb_$RRDSTATS_INTERVAL
+	if [ ! -e $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd ]; then
+		count=0
+		while [ $count -lt $RRDSTATS_FRITZDVB_RX ]; do
+			let count++
+			local dvbRX="$dvbRX DS:rxdb$count:GAUGE:600:-99:99 DS:rxsn$count:GAUGE:600:0:99"
+		done
+		count=0
+		while [ $count -lt $RRDSTATS_FRITZDVB_TX ]; do
+			let count++
+			local dvbTX="$dvbTX DS:txdb$count:GAUGE:600:0:99"
+		done
+		rrdtool create $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd \
+			--step $RRDSTATS_INTERVAL \
+			$dvbRX \
+			$dvbTX \
+			RRA:LAST:0.1:1:576  \
+			RRA:LAST:0.1:6:672  \
+			RRA:LAST:0.1:24:732 \
+			RRA:LAST:0.1:144:1460 \
+			RRA:LAST:0.1:360:2920
+	fi
+	[ -z "$WGET" ] && WGET="$(detect_wget)"
+	updateT=
+	updateD=N
+
+
+	SIDF=/tmp/.fboxcable.sid
+	HOST="$RRDSTATS_FRITZDVB_AVMHOST"
+	USER="$RRDSTATS_FRITZDVB_AVMUSER"
+	PASS="$RRDSTATS_FRITZDVB_AVMPASS"
+	[ "${RRDSTATS_FRITZDVB_AVMHOST#https}" != "$RRDSTATS_FRITZDVB_AVMHOST" ] && CERT="--no-check-certificate"
+
+	local SIDS="$(cat $SIDF 2>/dev/null)"
+	local DS_IDX="$($WGET $CERT -q "$HOST/query.lua?sid=$SIDS&mq_ds=docsis:status/avmSammelDbEntry/ds_OperSnmpIndex_a" -O - 2>/dev/null | sed -rn 's/.* : "(.*)"/\1/p')"
+	if [ -z "$DS_IDX" ]; then
+		local P1="$($WGET $CERT -q "$HOST/login_sid.lua" -O - 2>/dev/null | sed 's/.*<Challenge>//;s/<.*//')"
+		local P2="$(echo -n -e $(echo -n $P1-$PASS | hexdump -v -e '"\\\x" 1/1 "%02x" "\\\x" "0" "0"' | sed 's!\\\\!\\!g' ) | md5sum | sed 's/ .*//')"
+		$WGET $CERT -q "$HOST/login_sid.lua?response=$P1-$P2&username=$USER" -O - 2>/dev/null | sed 's/.*<SID>//;s/<.*//' > $SIDF
+		SIDS="$(cat $SIDF 2>/dev/null)"
+		DS_IDX="$($WGET $CERT -q "$HOST/query.lua?sid=$SIDS&mq_ds=docsis:status/avmSammelDbEntry/ds_OperSnmpIndex_a" -O - 2>/dev/null | sed -rn 's/.* : "(.*)"/\1/p')"
+	fi
+	[ -z "$DS_IDX" ] && return
+
+	local ADD=""
+	for x in $DS_IDX; do
+		ADD="${ADD}&mse_$x=docsis:status/snmpOidCom/int/1/3/6/1/4/1/4491/2/1/20/1/24/1/1/$x"
+		ADD="${ADD}&pow_$x=docsis:status/snmpOidCom/int/1/3/6/1/2/1/10/127/1/1/1/1/6/$x"
+	done
+	local DS_RES="$($WGET $CERT -q "$HOST/query.lua?sid=$SIDS$ADD" -O - 2>/dev/null)"
+	local DS_MSE="$(echo "$DS_RES" |  sed -rn 's/.*mse_[0-9]*": "(.*)".*/\1/p')"
+	local DS_POW="$(echo "$DS_RES" |  sed -rn 's/.*pow_[0-9]*": "(.*)".*/\1/p')"
+
+	local US_POW="$($WGET $CERT -q "$HOST/query.lua?sid=$SIDS&x=docsis:status/UpstreamDbEntry/txPower_a" -O - 2>/dev/null | sed -rn 's/.*"x": "(.*)"/\1/;s/,/ /g;s/-9//gp')"
+
+
+	count=0
+	for line in $DS_MSE; do
+		let count++
+		[ $count -gt $RRDSTATS_FRITZDVB_RX ] && break
+		[ -n "$updateT" ] && updateT=$updateT:
+		updateD=${updateD}:$(echo "$line" | sed -rn 's/(.*)(.)/\1.\2/p')
+		updateT=${updateT}rxsn${count}
+	done
+
+	count=0
+	for line in $DS_POW; do
+		let count++
+		[ $count -gt $RRDSTATS_FRITZDVB_RX ] && break
+		[ -n "$updateT" ] && updateT=$updateT:
+		updateD=${updateD}:$(echo "$line" | sed -rn 's/(.*)(.)/\1.\2/p')
+		updateT=${updateT}rxdb${count}
+	done
+
+	count=0
+	for line in $US_POW; do
+		let count++
+		[ $count -gt $RRDSTATS_FRITZDVB_TX ] && break
+		[ -n "$updateT" ] && updateT=$updateT:
+		updateD=${updateD}:$(echo "$line" | sed -rn 's/(.*)(.)/\1.\2/p')
+		updateT=${updateT}txdb${count}
+	done
+
+
+	[ $updateD = N ] && return
+	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $updateD --template $updateT
 }
 
 collect_epc_100609() {
@@ -379,6 +490,13 @@ collect_net() {
 	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd $netdata --template in:out
 }
 
+revers() {
+	local x=$1
+	shift
+	[ $# -gt 0 ] && revers $*
+	echo -n "$x "
+}
+
 collect_csl() {
 	for _CURRENT_FRQ in $RRDSTATS_CABLESEG_FRQ; do
 		collect_csl_sub $_CURRENT_FRQ
@@ -402,7 +520,9 @@ collect_csl_sub() {
 	$RRDSTATS_CABLESEG_PRE
 
 	local cnt=0
-	while ! $_NICE dvbtune -f $_CURRENT_FRQ -s $RRDSTATS_CABLESEG_SRATE -qam $RRDSTATS_CABLESEG_QAM >/dev/null 2>&1; do
+	[ $_CURRENT_FRQ -lt ${RRDSTATS_CABLESEG_QAM}000000 ] && qam=$RRDSTATS_CABLESEG_QAM1 || qam=$RRDSTATS_CABLESEG_QAM2
+#	while ! $_NICE mediaclient --frequency=$_CURRENT_FRQ --Symbolrate=$RRDSTATS_CABLESEG_SRATE --Modulation=Q$qam >/dev/null 2>&1; do
+	while ! $_NICE dvbtune -f $_CURRENT_FRQ -s $RRDSTATS_CABLESEG_SRATE -qam $qam >/dev/null 2>&1; do
 		let cnt++
 		echo "$(date) $_CURRENT_FRQ TUNEFAIL $cnt" >> /var/log/rrdstats_csl.log
 		[ $cnt -gt 2 ] && break
@@ -452,7 +572,7 @@ collect_one_sub() {
 	oneretries="$RRDSTATS_DIGITEMP_RETRIES"
 	while [ -z "$onedata" -a "$oneretries" -ge 0 ]; do
 		let oneretries--
-		onedata="$($_NICE digitemp $rs_param -t$1 -q -o%$_SENSOR_UOM -c$_SENSOR_CNF)"
+		onedata="$($_NICE digitemp $rs_param -t$1 -q -o%$_SENSOR_UOM -c$_SENSOR_CNF 2>/dev/null)"
 		oneretv=$?
 		[ "$onedata" = "$_SENSOR_ERR" -a "$RRDSTATS_DIGITEMP_RETRY85" = "yes" -a "$oneretries" -ge 0 ] && onedata=""
 	done
@@ -500,6 +620,86 @@ one_alert() {
 	done
 }
 
+collect_aha() {
+	if [ ! -e /tmp/.smarthome.up ]; then
+		[ "$(sed 's/\..*//' /proc/uptime)" -gt 215 ] && touch /tmp/.smarthome.up || return
+	fi
+        _CURRENT=$(date +"%d.%m.%Y %T")
+	/usr/bin/aha.sh small | while read line; do
+		echo "$line" | while IFS='|' read  identifier name  power voltage energy  celsius offset  current factor; do
+			[ -z "$identifier" ] && continue
+			let "watt = power" 2>/dev/null
+			let "volt = voltage" 2>/dev/null
+			let "kilo = energy" 2>/dev/null
+			[ -z "$offset" ] && grad="" ||  let "grad = celsius" 2>/dev/null
+			let "curr = current" 2>/dev/null
+			let "fact = factor" 2>/dev/null
+			collect_aha_sub "$identifier"  "$watt" "$volt" "$kilo"  "$grad"  "$curr" "$fact"
+		done
+	done
+}
+
+collect_aha_sub() {
+	NAMEPREFIX=aha_${RRDSTATS_INTERVAL}-${1//:/}
+	if [ ! -e $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd ]; then
+		rrdtool create $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd \
+			--step $RRDSTATS_INTERVAL \
+			DS:volt:GAUGE:600:215:250 \
+			DS:kilo:COUNTER:600:0:U \
+			DS:grad:GAUGE:600:-20:65 \
+			DS:curr:GAUGE:600:0:12 \
+			DS:fact:GAUGE:600:0:1 \
+			RRA:MIN:0.5:1:576    RRA:AVERAGE:0.5:1:576    RRA:MAX:0.5:1:576    \
+			RRA:MIN:0.5:6:672    RRA:AVERAGE:0.5:6:672    RRA:MAX:0.5:6:672    \
+			RRA:MIN:0.5:24:732   RRA:AVERAGE:0.5:24:732   RRA:MAX:0.5:24:732   \
+			RRA:MIN:0.5:144:1460 RRA:AVERAGE:0.5:144:1460 RRA:MAX:0.5:144:1460 \
+			RRA:MIN:0.5:360:2920 RRA:AVERAGE:0.5:360:2920 RRA:MAX:0.5:360:2920
+	fi
+
+	echo "$_CURRENT;$2;$3;$4;$5;$6;$7;" >> $RRDSTATS_RRDDATA/aha_00-${1//:/}.cvs
+	[ -z "$2" ] && local watt=NaN || local watt="$(echo  000$2 | sed  's/...$/.&/g')"
+	[ -z "$3" ] && local volt=NaN || local volt="$(echo  000$3 | sed  's/...$/.&/g')"
+	[ -z "$4" ] && local kilo=NaN || local kilo="$4"
+	[ -z "$5" ] && local grad=NaN || local grad="$(echo    0$5 | sed    's/.$/.&/g')"
+	[ -z "$6" ] && local curr=NaN || local curr="$(echo 0000$6 | sed 's/....$/.&/g')"
+	[ -z "$7" ] && local fact=NaN || local fact="$(echo  000$7 | sed  's/...$/.&/g')"
+	[ "$RRDSTATS_AHA_ALERT" = "yes" ] && aha_alert $1 $watt $volt $kilo $grad $curr $fact
+	aha_data="$volt:$kilo:$grad:$curr:$fact"
+	$_NICE rrdtool update $RRDSTATS_RRDDATA/$NAMEPREFIX.rrd "N:$aha_data" --template volt:kilo:grad:curr:fact
+}
+
+aha_alert() {
+	_ALERT_NUM=0
+	grep "^$1 " /tmp/flash/rrdstats/smarthome.alert 2>/dev/null | tr -s " " | while read ain typ value condition interval command; do
+		let _ALERT_NUM++
+
+		_ALERT_FILE=/tmp/.rrdstats/smarthome_alert.$ain$_ALERT_NUM
+		[ -f $_ALERT_FILE ] && [ $(( $(cat $_ALERT_FILE)+$interval )) -gt $(date +%s) ] && continue
+
+		case $typ in
+			watt)	data=$2 ;;
+			volt)	data=$3 ;;
+			kilo)	data=$4 ;;
+			grad)	data=$5 ;;
+			curr)	data=$6 ;;
+			fact)	data=$7 ;;
+		esac
+
+		_ALERT_2DO=no
+		case "$condition" in
+			MAX|Max|max)	[ "${data%.*}" -gt "${value}" ] && _ALERT_2DO=yes ;;
+			MIN|Min|min)	[ "${data%.*}" -lt "${value}" ] && _ALERT_2DO=yes ;;
+		esac
+		[ "$_ALERT_2DO" != yes ] && continue
+
+		echo $(date +%s) > $_ALERT_FILE
+		echo "$command" > $_ALERT_FILE.run
+		chmod +x $_ALERT_FILE.run
+		$_ALERT_FILE.run $* &
+
+	done
+}
+
 
 [ "$RRDSTATS_DIGITEMP_C" = yes ] && _SENSOR_ERR="85.000000" || _SENSOR_ERR="185.000000"
 _STARTDATE=$(date +%s)
@@ -508,6 +708,7 @@ while true; do
 	collect_cpu
 	collect_mem
 	[ "$RRDSTATS_UPTIME_ENB" = yes ] && collect_upt
+	[ "$RRDSTATS_POWER_ENB" = yes ] && collect_pow
 	if [ "$FREETZ_PACKAGE_RRDSTATS_TEMPERATURE_SENSOR" == "y" ]; then
 		[ "$RRDSTATS_TEMP_ENB" = yes ] && collect_temp
 	fi
@@ -515,6 +716,7 @@ while true; do
 		[ "$RRDSTATS_CABLE_MODEM" = thg ] && collect_thg
 		[ "$RRDSTATS_CABLE_MODEM" = epc ] && collect_epc$RRDSTATS_CISCOEPC_FW
 		[ "$RRDSTATS_CABLE_MODEM" = arris ] && collect_arristm
+		[ "$RRDSTATS_CABLE_MODEM" = dvb ] && collect_dvb
 	fi
 	if [ "$FREETZ_PACKAGE_RRDSTATS_SEGMENTLOAD" == "y" ]; then
 		[ "$RRDSTATS_CABLESEG_ENABLED" = yes ] && collect_csl
@@ -533,6 +735,9 @@ while true; do
 	fi
 	if [ "$FREETZ_PACKAGE_RRDSTATS_DIGITEMP" == "y" ]; then
 		[ "$RRDSTATS_DIGITEMP1W" = yes ] && collect_one
+	fi
+	if [ "$FREETZ_PACKAGE_RRDSTATS_SMARTHOME" == "y" ]; then
+		[ "$RRDSTATS_AHA_ENB" = yes ] && collect_aha
 	fi
 	[ $# -eq 0 ] && exit
 	_SLEEPER=$(( $_NEXTRUN-$(date +%s) ))

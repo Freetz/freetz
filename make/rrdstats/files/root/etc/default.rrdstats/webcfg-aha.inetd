@@ -1,0 +1,10 @@
+. /mod/etc/conf/rrdstats.cfg
+inetdcfg_desc="SmartHome webinterface"
+inetdcfg_port=$RRDSTATS_AHA_WEBPORT
+inetdcfg_sock=stream
+inetdcfg_proto=tcp$1
+inetdcfg_flags=nowait
+inetdcfg_user=root
+inetdcfg_exe=/usr/bin/webcfg-aha
+inetdcfg_arg0=webcfg-aha
+inetdcfg_args="-i"

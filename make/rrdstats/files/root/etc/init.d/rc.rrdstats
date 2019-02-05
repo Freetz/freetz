@@ -6,9 +6,10 @@ DAEMON_LONG_NAME=RRDstats
 
 HTTPD_PID_RRD=/var/run/webcfg-rrd.pid
 HTTPD_PID_ONE=/var/run/webcfg-one.pid
+HTTPD_PID_AHA=/var/run/webcfg-aha.pid
 
 config() {
-	for SUBDAEMON in rrd one; do
+	for SUBDAEMON in rrd one aha; do
 		modlib_config httpd-$SUBDAEMON /mod/etc/httpd-${SUBDAEMON}.conf
 	done
 
@@ -20,6 +21,7 @@ config() {
 
 	# show/hide digitemp
 	modunreg status rrdstats rrddt
+	modunreg status rrdstats avmha
 	modunreg file rrdstats
 	[ -r /etc/options.cfg ] && . /etc/options.cfg
 	if [ "$FREETZ_PACKAGE_RRDSTATS_DIGITEMP" == "y" -a "$RRDSTATS_DIGITEMP1W" = "yes" ]; then
@@ -30,6 +32,14 @@ config() {
 		modreg file rrdstats dt-alias 'dt-alias' 1 "dt-alias"
 		modreg file rrdstats dt-group 'dt-group' 1 "dt-group"
 		modreg file rrdstats dt-alert 'dt-alert' 1 "dt-alert"
+	fi
+	if [ "$FREETZ_PACKAGE_RRDSTATS_SMARTHOME" == "y" -a "$RRDSTATS_AHA_ENB" = "yes" ]; then
+		mkdir -p /tmp/.rrdstats/
+		rm -f /tmp/.rrdstats/smarthome_alert*
+		modreg status rrdstats SmartHome avmha
+		modreg file rrdstats sh-alias 'sh-alias' 1 "sh-alias"
+		modreg file rrdstats sh-color 'sh-color' 1 "sh-color"
+		modreg file rrdstats sh-alert 'sh-alert' 1 "sh-alert"
 	fi
 }
 
@@ -47,6 +57,9 @@ start() {
 	if [ -x "$(which digitemp)" -a "$RRDSTATS_DIGITEMP_HTTP" = "yes" -a "$RRDSTATS_DIGITEMP_INETD" != "yes" ]; then
 		webcfg-one -P "$HTTPD_PID_ONE"
 	fi
+	if [ "$RRDSTATS_AHA_WEBENB" = "yes" -a "$RRDSTATS_AHA_WEBINETD" != "yes" ]; then
+		webcfg-aha -P "$HTTPD_PID_AHA"
+	fi
 	[ -x /mod/etc/init.d/rc.inetd ] && /mod/etc/init.d/rc.inetd config rrdstats
 	modreg status rrdstats RRDstats stats
 }
@@ -62,7 +75,9 @@ stop_post() {
 stop_status() {
 	kill -9 "$(cat $HTTPD_PID_RRD 2>/dev/null)" 2>/dev/null
 	kill -9 "$(cat $HTTPD_PID_ONE 2>/dev/null)" 2>/dev/null
+	kill -9 "$(cat $HTTPD_PID_AHA 2>/dev/null)" 2>/dev/null
 	[ -x /mod/etc/init.d/rc.inetd ] && /mod/etc/init.d/rc.inetd config rrdstats >/dev/null
+	modunreg status rrdstats avmha
 	modunreg status rrdstats rrddt
 	modunreg status rrdstats stats
 }
@@ -135,6 +150,7 @@ case $1 in
 		modlib_add_httpd_symlink rrd one
 		modreg cgi rrdstats RRDstats
 		modreg extra rrdstats "" 2 dt-init
+		modreg extra rrdstats "" 2 sh-init
 		modreg daemon $DAEMON
 		modlib_start $RRDSTATS_ENABLED
 		;;
@@ -159,6 +175,9 @@ case $1 in
 		;;
 	status_webcfg-one)
 		[ -x "$(which digitemp)" -a "$RRDSTATS_DIGITEMP_HTTP" = "yes" -a "$RRDSTATS_DIGITEMP_INETD" = "yes" -a "$(modlib_status)" == "running" ] && echo 'inetd' || modlib_status
+		;;
+	status_webcfg-aha)
+		[ "$RRDSTATS_AHA_WEBENB" = "yes" -a "$RRDSTATS_AHA_WEBINETD" = "yes" -a "$(modlib_status)" == "running" ] && echo 'inetd' || modlib_status
 		;;
 	status_webcfg-rrd)
 		[ "$RRDSTATS_WEBENABLED" = "yes" -a "$RRDSTATS_WEB_INETD" = "yes" -a "$(modlib_status)" == "running" ] && echo 'inetd' || modlib_status

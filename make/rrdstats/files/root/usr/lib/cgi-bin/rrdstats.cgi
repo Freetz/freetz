@@ -24,11 +24,12 @@ check "$RRDSTATS_START_RESTORE" yes:start_restore
 check "$RRDSTATS_DELBACKUP"  yes:delbackup
 check "$RRDSTATS_CPU100PERC" yes:cpu100perc
 check "$RRDSTATS_UPTIME_ENB" yes:uptime_enb
+check "$RRDSTATS_POWER_ENB" yes:power_enb
 check "$RRDSTATS_TEMP_ENB" yes:temp_enb
 check "$RRDSTATS_WEBENABLED" yes:webenabled
 check "$RRDSTATS_WEB_INETD"  yes:web_inetd
 check "$RRDSTATS_WEB_AUTH"   yes:web_auth
-check "$RRDSTATS_CABLE_MODEM" thg epc arris "*":no
+check "$RRDSTATS_CABLE_MODEM" thg epc arris dvb "*":no
 check "$RRDSTATS_THOMSON_ADV" yes:thomson_adv
 check "$RRDSTATS_ARRISTM_ADV" yes:arristm_adv
 check "$RRDSTATS_CISCOEPC_FW" _100609 _120225
@@ -38,6 +39,11 @@ check "$RRDSTATS_CISCOEPC_DETAILS" yes:ciscoepc_details
 check "$RRDSTATS_CABLESEG_ENABLED" yes:cableseg_enabled
 check "$RRDSTATS_CABLESEG_MAXBW" yes:cableseg_maxbw
 check "$RRDSTATS_CABLESEG_MAXBWSUB" yes:cableseg_maxbwsub
+check "$RRDSTATS_AHA_ENB" yes:aha_enb
+check "$RRDSTATS_AHA_ALERT" yes:aha_alert
+check "$RRDSTATS_AHA_WEBENB" yes:aha_webenb
+check "$RRDSTATS_AHA_WEBINETD" yes:aha_webinetd
+check "$RRDSTATS_AHA_WEBAUTH" yes:aha_webauth
 check "$RRDSTATS_DIGITEMP1W" yes:digitemp1w
 check "$RRDSTATS_DIGITEMP_C" yes:digitemp_c "*":digitemp_f
 check "$RRDSTATS_DIGITEMP_RETRY85" yes:digitemp_retry85
@@ -61,6 +67,12 @@ EOF
 if [ "$FREETZ_PACKAGE_RRDSTATS_DIGITEMP" == "y" -a "$RRDSTATS_DIGITEMP1W" = "yes" ]; then
 cat << EOF
 <li><a href="$(href status rrdstats rrddt)">$(lang de:"DigiTemp anzeigen" en:"Show DigiTemp")</a></li>
+EOF
+fi
+
+if [ "$FREETZ_PACKAGE_RRDSTATS_SMARTHOME" == "y" -a "$RRDSTATS_AHA_ENB" = "yes" ]; then
+cat << EOF
+<li><a href="$(href status rrdstats avmha)">$(lang de:"SmartHome anzeigen" en:"Show SmartHome")</a></li>
 EOF
 fi
 
@@ -128,7 +140,18 @@ $(lang de:"Graphen immer neu generieren (not lazy)" en:"Always generate new grap
 <input type="hidden" name="uptime_enb" value="no">
 <input id="u1" type="checkbox" name="uptime_enb" value="yes"$uptime_enb_chk>
 <label for="u1">$(lang de:"Uptime aufzeichnen und anzeigen" en:"Uptime logging and graphs")</label></p>
+<p>
+<input type="hidden" name="power_enb" value="no">
+<input id="u2" type="checkbox" name="power_enb" value="yes"$power_enb_chk>
+<label for="u2">$(lang de:"Energieverbrauch aufzeichnen und anzeigen" en:"Power Consumption logging and graphs")</label></p>
 EOF
+[ "$RRDSTATS_POWER_ENB" == "yes" ] && cat << EOF
+<p>$(lang de:"Diese Verbraucher &uuml;berwachen" en:"Observe these consumers"):&nbsp;<input type="text" name="power_cfg" size="45" maxlength="255" value="$(html "$RRDSTATS_POWER_CFG")">
+EOF
+for x in $(ctlmgr_ctl -v u power 2>/dev/null | sed -rn 's/.*rate_(.*)act=.*/\1/p'); do PIT="$PIT $x=$(ctlmgr_ctl r power status/rate_${x}act 2>/dev/null)"; done
+[ -n "$PIT" ] && echo "<br /><font size='-2'>$(lang de:"Verf&uuml;gabr" en:"Available"): $PIT</font>"
+echo "</p>"
+
 
 if [ "$FREETZ_PACKAGE_RRDSTATS_TEMPERATURE_SENSOR" == "y" ]; then
 cat << EOF
@@ -204,7 +227,7 @@ cat << EOF
 <p>
 <label >$(lang de:"Firmwaredatum" en:"Firmware date"): </label>
 <input id="ciscofw1" type="radio" name="ciscoepc_fw" value="_100609"$_100609_chk><label for="ciscofw1">09.06.2010</label>
-<input id="ciscofw2" type="radio" name="ciscoepc_fw" value="_120225"$_120225_chk><label for="ciscofw2">25.02.2012</label>
+<input id="ciscofw2" type="radio" name="ciscoepc_fw" value="_120225"$_120225_chk><label for="ciscofw2">25.02.2012 / 29.01.2014</label>
 </p>
 EOF
 
@@ -257,6 +280,56 @@ EOF
 fi
 cat << EOF
 </p>
+
+<hr>
+
+<p>
+<input id="modem5" type="radio" name="cable_modem" value="dvb"$dvb_chk><label for="modem5">FRITZ!Box Cable</label>
+EOF
+if [ "$RRDSTATS_CABLE_MODEM" == "dvb" ]; then
+
+cat << EOF
+<p>
+<input type="text" name="fritzdvb_rx" size="2" maxlength="2" value="$(html "$RRDSTATS_FRITZDVB_RX")">&nbsp;$(lang de:"Kan&auml;le im Downstream verf&uuml;gbar" en:"channels for downstream available")<br>
+<input type="text" name="fritzdvb_tx" size="1" maxlength="1" value="$(html "$RRDSTATS_FRITZDVB_TX")">&nbsp;$(lang de:"Kan&auml;le im Upstream verf&uuml;gbar" en:"channels for upstream available")<br>
+<font size="-2">
+$(lang de:"Vorsicht: Die Datenbank muss bei &Auml;nderung der Kan&auml;le manuell angepasst werden" en:"Warning: You have to modify the database by your own after changing the count of channels"),&nbsp;
+$(lang de:"siehe" en:"see")&nbsp;<a href='$(html "http://freetz.org/wiki/packages/rrdstats#cable")' target='_blank'>Wiki</a>.
+</font>
+</p>
+</ul>
+</p>
+EOF
+
+#let INIT_WINDOW_WIDTH=$MOD_CGI_WIDTH+78
+
+cat << EOF
+
+<hr>
+
+$(lang de:"Zugangsdaten zum AVM-Webif" en:"Credentials of AVM webif")
+
+<p>
+$(lang de:"URL" en:"URL"):
+<input type="text" name="fritzdvb_avmhost" size="25" maxlength="45" value="$(html "$RRDSTATS_FRITZDVB_AVMHOST")">
+</p>
+
+<p>
+$(lang de:"Benutzername" en:"User"):
+<input type="text" name="fritzdvb_avmuser" size="15" maxlength="25" value="$(html "$RRDSTATS_FRITZDVB_AVMUSER")">
+($(lang de:"optional" en:"optional"))
+</p>
+
+<p>
+$(lang de:"Passwort" en:"Password"):
+<input type="password" name="fritzdvb_avmpass" size="15" maxlength="25" value="$(html "$RRDSTATS_FRITZDVB_AVMPASS")">
+</p>
+
+EOF
+
+fi
+cat << EOF
+</p>
 EOF
 
 sec_end
@@ -274,7 +347,7 @@ cat << EOF
 
 <p>$(lang de:"Frequenzen" en:"Frequencies"):&nbsp;<input type="text" name="cableseg_frq" size="45" maxlength="255" value="$(html "$RRDSTATS_CABLESEG_FRQ")"></p>
 <p>$(lang de:"Symbolrate" en:"Symbol rate"):&nbsp;<input type="text" name="cableseg_srate" size="5" maxlength="4" value="$(html "$RRDSTATS_CABLESEG_SRATE")"></p>
-<p>$(lang de:"Modulation" en:"Modulation"):&nbsp;<input type="text" name="cableseg_qam" size="4" maxlength="3" value="$(html "$RRDSTATS_CABLESEG_QAM")"></p>
+<p>$(lang de:"Ab dieser Frequenz 64 QAM nutzen, darunter 256 QAM" en:"Use 256 QAM below this frequency, otherwise 64 QAM."):&nbsp;<input type="text" name="cableseg_qam" size="4" maxlength="3" value="$(html "$RRDSTATS_CABLESEG_QAM")"></p>
 <p>$(lang de:"Wartezeit nach jeder Frequenz" en:"Wait after each frequency"):&nbsp;<input type="text" name="cableseg_sleep" size="3" maxlength="2" value="$(html "$RRDSTATS_CABLESEG_SLEEP")">&nbsp;($(lang de:"Sekunden" en:"seconds"))</p>
 <p>
 <input type="hidden" name="cableseg_maxbw" value="no">
@@ -402,6 +475,91 @@ $(lang de:"Interfaces: cpmac0 (DSL-Modem), wan (ATA-Modus), lan (Netzwerk), usbr
 <br />
 $(lang de:"Maximal: Maximale Bandbreite in Megabit/Sekunde, '0' f&uuml;r automatische Zuweisung" en:"Maximum: Maximum bandwidth megabits per second, '0' for automatic allocation")
 </font>
+
+EOF
+
+sec_end
+fi
+
+if [ "$FREETZ_PACKAGE_RRDSTATS_SMARTHOME" == "y" ]; then
+sec_begin 'SmartHome'
+
+cat << EOF
+
+<p>
+<input type="hidden" name="aha_enb" value="no">
+<input id="h1" type="checkbox" name="aha_enb" value="yes"$aha_enb_chk>
+<label for="h1">$(lang de:"&Uuml;berwachung von Aktoren aktivieren" en:"Enable observation of actors")</label>
+</p>
+
+<p>
+<input type="hidden" name="aha_alert" value="no">
+<input id="h2" type="checkbox" name="aha_alert" value="yes"$aha_alert_chk>
+<label for="h2">$(lang de:"Aktiviere Alarmierungs&uuml;berwachung" en:"Activate alert observer")</label>
+</p>
+
+<p>
+<input type="button" value="SmartHome aktualisieren" onclick="if (confirm('$(lang de:"Fortfahren?" en:"Proceed?")')==true) window.open('$(href extra rrdstats sh-init)','Aktualisieren_von_SmartHome','menubar=no,width=$INIT_WINDOW_WIDTH,height=600,toolbar=no,resizable=yes,scrollbars=yes');" /> &nbsp;&nbsp;
+<br><font size="-2">$(lang de:"Vor dem ersten Aktivieren und nach Ver&auml;nderungen oder Umbenennung der Ger&auml;te ausf&uuml;hren" en:"Run this before the first start and if you change or rename your devices")</font>
+</p>
+
+<hr>
+
+<p>
+<input type="hidden" name="aha_webenb" value="no">
+<input id="h3" type="checkbox" name="aha_webenb" value="yes"$aha_webenb_chk>
+<label for="h3">$(lang de:"Webserver aktivieren auf Port" en:"Activate webserver on port")</label>&nbsp;
+<input type="text" name="aha_webport" size="4" maxlength="5" value="$(html "$RRDSTATS_AHA_WEBPORT")">
+</p>
+
+EOF
+
+if [ "$RRDSTATS_AHA_WEBENB" = "yes" ]; then
+if [ "$FREETZ_PACKAGE_INETD" == "y" ]; then
+cat << EOF
+<p>
+<input type="hidden" name="aha_webinetd" value="no">
+<input id="h4" type="checkbox" name="aha_webinetd" value="yes"$aha_webinetd_chk>
+<label for="h4">$(lang de:"Aktivieren inetd Nutzung" en:"Activate inetd support")</label>
+</p>
+EOF
+fi
+cat << EOF
+<p>
+<input type="hidden" name="aha_webauth" value="no">
+<input id="h5" type="checkbox" name="aha_webauth" value="yes"$aha_webauth_chk>
+<label for="h5">$(lang de:"Authentifizierung" en:"Authentication").&nbsp;</label>
+$(lang de:"Benutzer" en:"User"):
+<input type="text" name="aha_webuser" size="15" maxlength="15" value="$(html "$RRDSTATS_AHA_WEBUSER")">
+$(lang de:"Passwort" en:"Password"):
+<input type="password" name="aha_webpass" size="15" maxlength="15" value="$(html "$RRDSTATS_AHA_WEBPASS")">
+</p>
+EOF
+fi
+
+let INIT_WINDOW_WIDTH=$MOD_CGI_WIDTH+78
+
+cat << EOF
+
+<hr>
+
+$(lang de:"Zugangsdaten zum AVM-Webif" en:"Credentials of AVM webif")
+
+<p>
+$(lang de:"Hostname" en:"Host"):
+<input type="text" name="aha_avmhost" size="25" maxlength="45" value="$(html "$RRDSTATS_AHA_AVMHOST")">
+</p>
+
+<p>
+$(lang de:"Benutzername" en:"User"):
+<input type="text" name="aha_avmuser" size="15" maxlength="25" value="$(html "$RRDSTATS_AHA_AVMUSER")">
+($(lang de:"optional" en:"optional"))
+</p>
+
+<p>
+$(lang de:"Passwort" en:"Password"):
+<input type="password" name="aha_avmpass" size="15" maxlength="25" value="$(html "$RRDSTATS_AHA_AVMPASS")">
+</p>
 
 EOF
 
