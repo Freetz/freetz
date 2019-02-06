@@ -1138,6 +1138,34 @@ config FREETZ_ENABLE_LED_DEACTIVATION
 	help
 		Re-enables access to the LED deactivation page in expert mode.
 
+config FREETZ_MODIFY_DSL_WARNING
+	bool "Patch DSL modified message"
+	depends on FREETZ_AVM_VERSION_06_5X_MIN && FREETZ_TYPE_DSL
+	default n
+	help
+		Hides the "modified" message from the DSL page.
+
+config FREETZ_MODIFY_DSL_SPECTRUM
+	bool "Extend DSL spectrum"
+	depends on FREETZ_AVM_VERSION_06_5X_MIN && FREETZ_TYPE_DSL
+	default n
+	help
+		Shows DSL spectrum page with min/man visible initialy.
+
+config FREETZ_MODIFY_DSL_SETTINGS
+	bool "Extend DSL settings"
+	depends on FREETZ_AVM_VERSION_06_5X_MIN && FREETZ_TYPE_DSL
+	default n
+	help
+		Extends the DSL settings page with "speed" settings.
+
+config FREETZ_MODIFY_COUNTER
+	bool "Extend online counter"
+	depends on FREETZ_AVM_VERSION_06_5X_MIN
+	default n
+	help
+		Converts counter hours to days and traffic MB to GB.
+
 if FREETZ_AVM_HAS_USB_HOST
 comment "USB patches --------------------"
 
