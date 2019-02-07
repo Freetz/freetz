@@ -19,8 +19,10 @@ modsed  "/^modprobe Piglet_noemif/ {s#piglet_dectmode=0x100 ## ; s#piglet_use_pl
 
 echo2 "copying 7570 webif files"
 files="css/default/images/kopfbalken_mitte.gif"
+if [ "$FREETZ_AVM_VERSION_05_5X_MAX" == "y" ]; then
 files+=" html/de/images/kopfbalken.gif"
 files+=" html/de/images/DectFBoxIcon.png"
+fi
 for i in $files; do
 	cp -a "${DIR}/.tk/original/filesystem/usr/www/avme/$i" "${FILESYSTEM_MOD_DIR}/usr/www/all/$i"
 done
