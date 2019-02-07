@@ -20,6 +20,8 @@ DOT_CONFIG=$FREETZ_BASE_DIR/.config
 FREETZ_DL_SITE_1="http://freetz.magenbrot.net"
 FREETZ_DL_SITE_2="http://freetz.3dfxatwork.de"
 FREETZ_DL_SITE_3="http://freetz.wirsind.info"
+FREETZ_DL_SITE_4="https://boxmatrix.info/hosted/freetz"
+FREETZ_DL_SITES_COUNT=4
 
 helpmsg()
 {
@@ -280,7 +282,7 @@ fi
 
 # Get Freetz mirror sites in array
 FREETZ_SITES=( $(
-	for (( i=1; i <= 3 ; i++ )); do
+	for (( i=1; i <= $FREETZ_DL_SITES_COUNT ; i++ )); do
 		eval "echo \$FREETZ_DL_SITE_$i"
 	done
 	) )
