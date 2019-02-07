@@ -13,7 +13,7 @@ for files in \
 done
 [ "$FREETZ_REMOVE_TELEPHONY" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/dectfw_*"
 
-rm_files $(find ${FILESYSTEM_MOD_DIR}/lib/modules -name "*dect*.ko")
+[ "$FREETZ_PACKAGE_RRDSTATS_TEMPERATURE_SENSOR" == "y" -a "$FREETZ_AVM_VERSION_05_2X_MIN" != "y" ] || rm_files $(find ${FILESYSTEM_MOD_DIR}/lib/modules -name "*dect*.ko")
 
 [ "$FREETZ_REMOVE_MINID" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/lib/libfoncclient.so*"
 
@@ -35,7 +35,11 @@ fi
 MODPROBEDECT=$(grep -l -i -e "^modprobe dect_io$" "${FILESYSTEM_MOD_DIR}/etc/init.d/"* 2>/dev/null)
 if [ -e "$MODPROBEDECT" ]; then
 	echo1 "patching ${MODPROBEDECT##*/}"
+	if [ "$FREETZ_PACKAGE_RRDSTATS_TEMPERATURE_SENSOR" == "y" -a "$FREETZ_AVM_VERSION_05_2X_MIN" != "y" ]; then
+	modsed 's/^modprobe dect_io$/&\nrmmod dect_io/' $MODPROBEDECT
+	else
 	modsed '/^modprobe dect_io$/d' $MODPROBEDECT
+	fi
 fi
 
 echo1 "patching rc.conf"
