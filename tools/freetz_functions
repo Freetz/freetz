@@ -24,6 +24,13 @@ quickstart_remove() {
 	done
 }
 
+#modern_remove <menu-item>
+#removes liks within menu_data.lua (left menu, responsive)
+modern_remove() {
+	[ "$FREETZ_AVM_VERSION_06_5X_MIN" != "y" ] && return
+	modsed "s/pageData\[\"$1\"\] and /&false and /" "${HTML_LANG_MOD_DIR}/menus/menu_data.lua"
+}
+
 #menulua_remove <page-link>
 #removes links within menu_data.lua (left menu)
 menulua_remove() {
