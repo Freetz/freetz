@@ -47,6 +47,9 @@ modsed '/^<hr>$/{N;N;N;N;/^.*\n.*55:721.*/d}' "${HTML_SPEC_MOD_DIR}/internet/tra
 modsed '/^<div class="ml25">$/{N;N;N;N;N;/.*\n.*55:566.*/d}' "${HTML_SPEC_MOD_DIR}/internet/trafficappl.html"
 modsed '/^<div class="ml25 mb10">$/{N;N;N;N;N;/.*\n.*55:421.*/d}' "${HTML_SPEC_MOD_DIR}/internet/trafficappl.html"
 
+# patcht WLAN > Gastzugang > Gastzugang (privater Hotspot) aktivieren
+modsed '/^<div>$/{N;N;N;/^.*\n.*2031:1282.*/d}' "${HTML_LANG_MOD_DIR}/wlan/guest_access.lua"
+
 # redirect on webif to prio settings
 for j in home.html menu2_internet.html; do
 	for i in $(find "${HTML_LANG_MOD_DIR}" -type f -name $j); do
