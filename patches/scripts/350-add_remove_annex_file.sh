@@ -18,6 +18,10 @@ if [ "$FREETZ_REMOVE_ANNEX_B_FIRMWARE" == "y" ]; then
 fi
 
 if [ "$FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_DIFFS" == "y" ]; then
+	# <?lua write_data_pump_section() ?>
+	modsed \
+	  '/lua write_data_pump_section/d' \
+	  "${HTML_LANG_MOD_DIR}/internet/dsl_line_settings.lua"
 	echo1 "removing Multi-Annex firmware diff files"
 	for files in \
 	  lib/modules/dsp_*/*-?-dsl.bin.bsdiff \
@@ -34,8 +38,8 @@ if [ "$FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_DIFFS" == "y" ]; then
 		  lib/modules/dsp_*/*-?-dsl.bin \
 		  lib/modules/*Vx180Code.bin.gz \
 		  ${MODULES_SUBDIR}/kernel/drivers/vdsldriver/ \
-		  usr/sbin/dsl_monitor \
 		  etc/init.d/E40-dsl \
+		  etc/init.d/vr11/?40-dsl \
 		  ; do
 			rm_files "${FILESYSTEM_MOD_DIR}/$files"
 		done
