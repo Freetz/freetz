@@ -18,6 +18,14 @@ rm_files \
   "${FILESYSTEM_MOD_DIR}/usr/bin/csvd" \
   "${FILESYSTEM_MOD_DIR}/usr/www/all/assis/internet_umts.lua"
 
+[ "$FREETZ_AVM_VERSION_07_0X_MIN" == "y" ] && rm_files \
+  "${FILESYSTEM_MOD_DIR}/bin/mobiled" \
+  "${FILESYSTEM_MOD_DIR}/etc/hotplug/udev-mobiled" \
+  "${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libmobiled.so" \
+  "${FILESYSTEM_MOD_DIR}/usr/share/configd/C20_mobiled.so"
+
+[ "$FREETZ_AVM_VERSION_07_0X_MIN" == "y" ] && modern_remove mobile
+
 echo1 "patching rc.conf"
 modsed "s/CONFIG_USB_GSM=.*$/CONFIG_USB_GSM=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 modsed "s/CONFIG_USB_GSM_VOICE=.*$/CONFIG_USB_GSM_VOICE=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"

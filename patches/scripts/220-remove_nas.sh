@@ -27,6 +27,10 @@ fi
 # patcht Uebersicht
 modsed '/.*uiViewTabSpeicherNas.*/{N;N;N;/537:880/d}' "${HTML_LANG_MOD_DIR}/home/home.lua"
 
+# patcht Uebersicht > Komfortfunktionen
+#modsed '/^c.link="nasSet"$/{N;N;N;/.*\n.*\n.*\n.*/d}' "${HTML_LANG_MOD_DIR}/home/home.lua"
+homelua_disable_wrapper intern_mem
+
 # patcht Heimnetz > Speicher (NAS)
 sedfile="${HTML_LANG_MOD_DIR}/storage/settings.lua"
 if [ -e "$sedfile" ]; then

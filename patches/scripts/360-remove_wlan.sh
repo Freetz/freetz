@@ -18,6 +18,14 @@ rm_files \
 echo1 "patching webif files"
 
 menu2html_remove wlan
+modern_remove wSet
+modern_remove chan
+
+# patcht Uebersicht > Anschluesse
+sedfile="${HTML_LANG_MOD_DIR}/home/home.lua"
+if [ -e $sedfile ]; then
+	modsed "s/config.WLAN.is_double_wlan/false and &/" $sedfile
+fi
 
 # patcht System > Nachtschaltung > Klingelsperre aktivieren
 sedfile="${HTML_SPEC_MOD_DIR}/system/nacht.html"
