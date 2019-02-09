@@ -6,6 +6,7 @@
 echo1 "remove AVM's e2fsprogs/util-linux binaries"
 for files in \
   blkid \
+  chattr \
   chcpu \
   e2fsck \
   findmnt \
