@@ -36,6 +36,11 @@ if [ "$FREETZ_REMOVE_TR069_PROVIDERS" == "y" ]; then
 fi
 [ "$FREETZ_REMOVE_TR069_VOIPPROVIDERS" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_*/*/voip_providers-*.tar"
 
+# verhindert Nagscreen nach dem ersten Login mit Erlaubnis fuer Diagnosedaten und Portforward
+modsed \
+  's!.*local diagInconsistent *=!&false --OLD VALUE: !' \
+  "${LUA_MOD_DIR}/first.lua"
+
 # patcht Heimnetz > Netzwerk > Netzwerkeinstellungen > Heimnetzfreigaben > Zugriff für Anwendungen zulassen
 sedfile="${HTML_LANG_MOD_DIR}/net/network_settings.lua"
 if [ -e $sedfile ]; then
