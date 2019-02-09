@@ -20,11 +20,16 @@ fi
 
 echo1 "removing tr069 stuff"
 rm_files \
-  "${FILESYSTEM_MOD_DIR}/etc/websrv_tr064_ssl_key.pem" \
-  "${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libtr064.so" \
-  "${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libtr069.so" \
   "${FILESYSTEM_MOD_DIR}/sbin/tr069discover" \
   "${HTML_LANG_MOD_DIR}/tr69_autoconfig/"
+
+if [ "$FREETZ_REMOVE_TR064" == "y" ]; then
+	echo1 "removing tr064 stuff"
+	rm_files \
+	  "${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libtr064.so" \
+	  "${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libtr069.so" \
+	  "${FILESYSTEM_MOD_DIR}/etc/websrv_tr064_ssl_key.pem"
+fi
 
 [ "$FREETZ_REMOVE_TR069_FWUPDATE" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/usr/bin/tr069fwupdate"
 [ "$FREETZ_REMOVE_TR069_HTTPSDL" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/usr/bin/httpsdl"
@@ -43,7 +48,7 @@ modsed \
 
 # patcht Heimnetz > Netzwerk > Netzwerkeinstellungen > Heimnetzfreigaben > Zugriff für Anwendungen zulassen
 sedfile="${HTML_LANG_MOD_DIR}/net/network_settings.lua"
-if [ -e $sedfile ]; then
+if [ "$FREETZ_REMOVE_TR064" == "y" -a -e $sedfile ]; then
 	echo1 "patching ${sedfile##*/}"
 	#<input type="checkbox" id="uiViewSetTr064" name="set_tr_064" <?lua if g_var.tr064_enabled then box.out('checked') end ?>>
 	#<label for="uiViewSetTr064">{?859:511?}</label>
@@ -83,6 +88,7 @@ if [ -e "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init" ]; then
 else
 	echo1 "patching /etc/init.d/rc.conf"
 	modsed "s/CONFIG_TR069=.*$/CONFIG_TR069=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf" "CONFIG_TR069=\"n\"$"
+	[ "$FREETZ_REMOVE_TR064" == "y" ] && \
 	modsed "s/CONFIG_TR064=.*$/CONFIG_TR064=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf" "CONFIG_TR064=\"n\"$"
 fi
 

@@ -793,7 +793,14 @@ config FREETZ_REMOVE_TR069
 	select FREETZ_AVMDAEMON_DISABLE_TR069
 	default n
 	help
-		Removes libtr069 to save space. This also removes libtr064.
+		Removes libtr069 to save space.
+
+config FREETZ_REMOVE_TR064
+	bool "Remove tr064" if FREETZ_SHOW_ADVANCED
+	depends on FREETZ_REMOVE_TR069
+	default y
+	help
+		Removes libtr064 to save space.
 
 config FREETZ_REMOVE_TR069_FWUPDATE
 	bool "Remove fwupdate"
