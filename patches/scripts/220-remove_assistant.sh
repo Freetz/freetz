@@ -29,6 +29,8 @@ fi
 if [ ! -e "$HTML_SPEC_MOD_DIR/home/sitemap.html" ]; then
 	# removes link on the left (06.00)
 	linkbox_remove wizards
+	# removes link on the left (06.50)
+	modern_remove wizOv
 else
 	if [ "$FREETZ_AVM_VERSION_05_2X_MIN" == "y" ]; then
 		#lua
