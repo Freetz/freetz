@@ -1,4 +1,6 @@
+if [ "$FREETZ_REMOVE_DECT" != "y" ]; then
 [ "$FREETZ_AVM_HAS_DECT" != "y" -a "$FREETZ_AVM_VERSION_06_2X_MIN" == "y" ] || return 0
+fi
 
 for f in \
 	"${MODULES_DIR}/kernel/drivers/net/nlaudio/nlaudio.ko" \

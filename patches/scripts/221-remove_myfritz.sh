@@ -19,4 +19,14 @@ if [ "$FREETZ_AVM_HAS_ONLY_LUA" != "y" ]; then
 	modsed 's/\(setvariable var:showmyfritz \)./\10/g' ${HTML_SPEC_MOD_DIR}/menus/menu2_internet.html
 fi
 
+# patch FRITZ!NAS UI
+file="${FILESYSTEM_MOD_DIR}/usr/www.nas/all/main_menu/main_menu.lua"
+if [ -e "$file" ]; then
+	modsed "/'myfritz'/d" "$file"
+	if [ "$FREETZ_REMOVE_NAS" != "y" ]; then
+		modsed '/^},$/{N;N;/.*917:884.*/d}' $file
+		modsed '/^},$/{N;N;/.*917:591.*/d}' $file
+	fi
+fi
+
 modsed "s/CONFIG_MYFRITZ=.*/CONFIG_MYFRITZ=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"

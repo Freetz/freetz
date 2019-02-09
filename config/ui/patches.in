@@ -224,6 +224,7 @@ config FREETZ_REMOVE_NAS
 	default n
 	depends on FREETZ_AVM_HAS_NAS
 	select FREETZ_REMOVE_MEDIASRV
+	select FREETZ_REMOVE_WEBDAV if FREETZ_AVM_HAS_WEBDAV
 	help
 		Removes the AVM NAS Webinterface and internal memory file (saves about 390 KB in compressed image).
 
@@ -231,7 +232,6 @@ config FREETZ_REMOVE_MYFRITZ
 	bool "Remove MyFritz"
 	default n
 	depends on FREETZ_AVM_HAS_MYFRITZ
-	select FREETZ_REMOVE_NAS if FREETZ_AVM_HAS_NAS
 	help
 		Removes the AVM MyFritz Webinterface. Saves about 1.1 MB uncompressed data size.
 
@@ -506,7 +506,6 @@ config FREETZ_REMOVE_CDROM_ISO
 config FREETZ_REMOVE_DECT
 	bool "Remove DECT"
 	depends on FREETZ_AVM_HAS_DECT
-	select FREETZ_REMOVE_AHA if FREETZ_AVM_HAS_AHA
 	default n
 	help
 		Remove dect files (modules, dect_manager and dect related Web UI).
@@ -794,7 +793,14 @@ config FREETZ_REMOVE_TR069
 	select FREETZ_AVMDAEMON_DISABLE_TR069
 	default n
 	help
-		Removes libtr069 to save space. This also removes libtr064.
+		Removes libtr069 to save space.
+
+config FREETZ_REMOVE_TR064
+	bool "Remove tr064" if FREETZ_SHOW_ADVANCED
+	depends on FREETZ_REMOVE_TR069
+	default y
+	help
+		Removes libtr064 to save space.
 
 config FREETZ_REMOVE_TR069_FWUPDATE
 	bool "Remove fwupdate"
@@ -816,7 +822,7 @@ config FREETZ_REMOVE_TR069_HTTPSDL
 		This saves 15-45 KB of uncompressed data size.
 
 config FREETZ_REMOVE_TR069_PROVIDERS
-	bool "Remove providers db (s. help)"
+	bool "Remove ISP db"
 	depends on FREETZ_REMOVE_TR069 && FREETZ_AVM_VERSION_05_2X_MIN && FREETZ_SHOW_EXPERT
 	default n
 	help
@@ -827,6 +833,15 @@ config FREETZ_REMOVE_TR069_PROVIDERS
 		WARNING: Enable this patch only if
 		  - you already have configured your internet connection, and
 		  - don't use any predefined ISP.
+
+config FREETZ_REMOVE_TR069_VOIPPROVIDERS
+	bool "Remove VOIP db"
+	depends on FREETZ_REMOVE_TR069 && FREETZ_AVM_VERSION_07_0X_MIN && FREETZ_SHOW_EXPERT
+	default n
+	help
+		Removes /etc/default.${BOX}/${OEM}/voip_providers-${ALC}.tar files
+		containing the defaults for many VOIP providers. Every branding has
+		such a file with more than 90 KB of uncompressed data size for each.
 
 config FREETZ_REMOVE_UMTSD
 	bool "Remove UMTS (USB GSM)"
