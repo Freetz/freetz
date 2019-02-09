@@ -28,7 +28,7 @@ if isFreetzType 3170 && [ "$FREETZ_REPLACE_KERNEL" = "y" ] ; then
 fi
 
 # patcht Internet > Filter > Kindersicherung
-menulua_remove kids
+[ "$FREETZ_AVM_VERSION_06_5X_MIN" != "y" ] && menulua_remove kids
 
 # patcht Heimnetz > Netzwerk > Bearbeiten > Kindersicherung
 modsed '/<.lua show_kisi_content() .>/d' "${HTML_LANG_MOD_DIR}/net/edit_device.lua"
