@@ -28,7 +28,13 @@ rm_files \
 
 [ "$FREETZ_REMOVE_TR069_FWUPDATE" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/usr/bin/tr069fwupdate"
 [ "$FREETZ_REMOVE_TR069_HTTPSDL" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/usr/bin/httpsdl"
-[ "$FREETZ_REMOVE_TR069_PROVIDERS" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_*/*/providers-*.tar"
+if [ "$FREETZ_REMOVE_TR069_PROVIDERS" == "y" ]; then
+	rm_files "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_*/*/providers-*.tar"
+	modsed \
+	  's!\(list\[other.id\].providername=other.name\)!if other.id~=nil then\n\1\nend!' \
+	  "${HTML_LANG_MOD_DIR}/lua/isp.lua"
+fi
+[ "$FREETZ_REMOVE_TR069_VOIPPROVIDERS" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_*/*/voip_providers-*.tar"
 
 # patcht Heimnetz > Netzwerk > Netzwerkeinstellungen > Heimnetzfreigaben > Zugriff für Anwendungen zulassen
 sedfile="${HTML_LANG_MOD_DIR}/net/network_settings.lua"

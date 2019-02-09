@@ -815,7 +815,7 @@ config FREETZ_REMOVE_TR069_HTTPSDL
 		This saves 15-45 KB of uncompressed data size.
 
 config FREETZ_REMOVE_TR069_PROVIDERS
-	bool "Remove providers db (s. help)"
+	bool "Remove ISP db"
 	depends on FREETZ_REMOVE_TR069 && FREETZ_AVM_VERSION_05_2X_MIN && FREETZ_SHOW_EXPERT
 	default n
 	help
@@ -826,6 +826,15 @@ config FREETZ_REMOVE_TR069_PROVIDERS
 		WARNING: Enable this patch only if
 		  - you already have configured your internet connection, and
 		  - don't use any predefined ISP.
+
+config FREETZ_REMOVE_TR069_VOIPPROVIDERS
+	bool "Remove VOIP db"
+	depends on FREETZ_REMOVE_TR069 && FREETZ_AVM_VERSION_07_0X_MIN && FREETZ_SHOW_EXPERT
+	default n
+	help
+		Removes /etc/default.${BOX}/${OEM}/voip_providers-${ALC}.tar files
+		containing the defaults for many VOIP providers. Every branding has
+		such a file with more than 90 KB of uncompressed data size for each.
 
 config FREETZ_REMOVE_UMTSD
 	bool "Remove UMTS (USB GSM)"
