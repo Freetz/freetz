@@ -13,6 +13,17 @@ modsed "/.*javascript:doNetPage('upnp').*/d" "${HTML_SPEC_MOD_DIR}/home/clients.
 modsed "/.*javascript:DoTabsUpnp().*/d" "${HTML_SPEC_MOD_DIR}/system/net.html"
 # patcht Heimetz > Netzwerk > Programme (lua)
 menulua_remove upnp
+# patcht Internet > Freigaben > Portfreigaben > Änderungen der Sicherheitseinstellungen über UPnP gestatten
+sedfile="${HTML_LANG_MOD_DIR}/internet/port_fw.lua"
+if [ -e $sedfile ]; then
+	echo1 "patching ${sedfile##*/}"
+	mod_del_area \
+	  'id="ui_ShowUpnpControl"' \
+	  -2 \
+	  '{?4497:315?}' \
+	  +5 \
+	  $sedfile
+fi	
 # patcht Heimnetz > Netzwerk > Netzwerkeinstellungen > Heimnetzfreigaben > Statusinformationen über UPnP übertragen
 sedfile="${HTML_LANG_MOD_DIR}/net/network_settings.lua"
 if [ -e $sedfile ]; then
