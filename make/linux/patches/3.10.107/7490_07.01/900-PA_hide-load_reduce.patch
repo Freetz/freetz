@@ -1,0 +1,16 @@
+--- ./linux-3.10/net/avm_pa/avm_pa.c_	2018-07-06 09:17:53.000000000 +0200
++++ ./linux-3.10/net/avm_pa/avm_pa.c	2018-10-23 13:58:15.937633462 +0200
+@@ -7321,11 +7321,13 @@
+ 
+    if (load_reduce == 0) {
+       if (ctx->load_reduce) {
++/*
+          pr_info("avm_pa: load reduce %d => %d, rate %u (pps %lu ov_pps %lu)\n",
+                  ctx->load_reduce, load_reduce,
+                  ctx->rate,
+                  (unsigned long)ctx->stats.fw_pps,
+                  (unsigned long)ctx->stats.overlimit_pps);
++*/
+       }
+    } else if (ctx->stats.fw_pps > AVM_PA_MINRATE) {
+       int change = ctx->load_reduce - load_reduce;

@@ -1,0 +1,13 @@
+--- linux-2.6.32/net/avm_pa/avm_pa.c
++++ linux-2.6.32/net/avm_pa/avm_pa.c
+@@ -6238,8 +6238,8 @@
+    skb->dev = (struct net_device *)arg;
+    rc = dev_queue_xmit(skb);
+    if (rc != 0 && net_ratelimit()) {
+-      pa_printk(KERN_ERR, "pa_dev_transmit(%s) %d",
+-            ((struct net_device *)arg)->name, rc);
++//    pa_printk(KERN_ERR, "pa_dev_transmit(%s) %d",
++//           ((struct net_device *)arg)->name, rc);
+    }
+ }
+ 

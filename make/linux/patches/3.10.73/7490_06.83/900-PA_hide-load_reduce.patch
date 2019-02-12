@@ -1,0 +1,16 @@
+--- ./linux-3.10/net/avm_pa/avm_pa.c
++++ ./linux-3.10/net/avm_pa/avm_pa.c
+@@ -6939,11 +6939,13 @@
+ 
+    if (load_reduce == 0) {
+       if (ctx->load_reduce) {
++/*
+          printk(KERN_INFO "avm_pa: load reduce %d => %d, rate %u (pps %lu ov_pps %lu)\n",
+                        ctx->load_reduce, load_reduce,
+                        ctx->rate,
+                        (unsigned long)ctx->stats.fw_pps,
+                        (unsigned long)ctx->stats.overlimit_pps);
++*/
+       }
+    } else if (ctx->stats.fw_pps > AVM_PA_MINRATE) {
+       int change = ctx->load_reduce - load_reduce;

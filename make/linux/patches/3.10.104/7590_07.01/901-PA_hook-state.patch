@@ -1,0 +1,11 @@
+--- ./linux-3.10/net/avm_pa/avm_pa.c_	2018-07-06 09:17:53.000000000 +0200
++++ ./linux-3.10/net/avm_pa/avm_pa.c	2018-11-03 21:03:13.392200820 +0100
+@@ -6916,7 +6916,7 @@
+ 
+ void avm_pa_telefon_state(int state)
+ {
+-   pr_info("avm_pa: avm_pa_telefon_state\n");
++   pr_info("avm_pa: avm_pa_telefon_state: %d (%s)\n", state, state ? "talk" : "hook" );
+ }
+ EXPORT_SYMBOL(avm_pa_telefon_state);
+ 
