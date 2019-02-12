@@ -1,0 +1,13 @@
+--- linux-2.6.32/drivers/usb/host/xhci-ring.c
++++ linux-2.6.32/drivers/usb/host/xhci-ring.c
+@@ -997,8 +997,10 @@
+ 	/* This TRB should be in the TD at the head of this ring's TD list */
+ 	xhci_dbg(xhci, "%s - checking for list empty\n", __func__);
+ 	if (list_empty(&ep_ring->td_list)) {
++/*
+ 		xhci_warn(xhci, "WARN Event TRB for slot %d ep_index %d with no TDs queued?\n",
+ 				TRB_TO_SLOT_ID(SWAP32(event->flags)), ep_index);
++*/
+ 		xhci_dbg(xhci, "Event TRB with TRB type ID %u\n",
+ 				(unsigned int) (SWAP32(event->flags) & TRB_TYPE_BITMASK)>>10);
+ 		xhci_print_trb_offsets(xhci, (union xhci_trb *) event);

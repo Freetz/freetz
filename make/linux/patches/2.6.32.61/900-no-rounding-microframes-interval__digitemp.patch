@@ -1,0 +1,17 @@
+--- linux-2.6.32/drivers/usb/host/xhci-mem.c	2013-02-11 18:38:39.000000000 +0100
++++ linux-2.6.32/drivers/usb/host/xhci-mem.c	2015-03-17 12:45:08.614372944 +0100
+@@ -483,12 +483,14 @@
+ 
+ 	interval = fls(desc_interval) - 1;
+ 	interval = clamp_val(interval, min_exponent, max_exponent);
++/*
+ 	if ((1 << interval) != desc_interval)
+ 		dev_warn(&udev->dev,
+ 			 "ep %#x - rounding interval to %d microframes, ep desc says %d microframes\n",
+ 			 ep->desc.bEndpointAddress,
+ 			 1 << interval,
+ 			 desc_interval);
++*/
+ 
+ 	return interval;
+ }
