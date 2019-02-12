@@ -1,0 +1,11 @@
+--- linux-3.10/drivers/net/avm_cpmac/switch/ifx/common/ifx_ppa_mini_qos.c
++++ linux-3.10/drivers/net/avm_cpmac/switch/ifx/common/ifx_ppa_mini_qos.c
+@@ -182,7 +182,7 @@
+     }
+ 
+     else if(sscanf(mybuff, "avmwanqueuesetrate %u %u" , &qid, &rate) == 2){
+-            printk(KERN_ERR "[%s] avmwanqueuesetrate %u %u\n", __func__, qid, rate);
++//          printk(KERN_ERR "[%s] avmwanqueuesetrate %u %u\n", __func__, qid, rate);
+             avmnet_set_wan_tx_queue_rate_shaping(qid, rate);
+     }
+ 

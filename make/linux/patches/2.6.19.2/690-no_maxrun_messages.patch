@@ -1,0 +1,10 @@
+--- linux-2.6.19/drivers/char/avm_power/avm_power_file.c	2010-08-19 17:41:18.000000000 +0200
++++ linux-2.6.19/drivers/char/avm_power/avm_power_file.c	2014-03-12 10:41:29.312976023 +0100
+@@ -2495,6 +2495,7 @@
+         }
+         if(gdectsync.maxrun && TIME_DIFF(jiffies, gdectsync.start_maxrun) > (10 * HZ)) {
+             gdectsync.start_maxrun = jiffies;
++            if (gdectsync.maxrun > 9)
+             printk(KERN_ERR"[%lu]maxrun: %ld\n", jiffies, gdectsync.maxrun);
+             gdectsync.maxrun = 0;
+         }
