@@ -1384,6 +1384,16 @@ config FREETZ_REPLACE_OPENSSL
 
 		Activating this option saves about 400KB in the image.
 
+config FREETZ_REPLACE_OUTER_UCLIBC_AND_BUSYBOX
+	bool "Replace uClibc and BusyBox in outer image"
+	depends on FREETZ_USER_LEVEL_EXPERT && FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM
+	default y
+	help
+		This replaces uClibc and BusyBox in the outer image by
+		a self built version.
+		This could cause a bad configurstion like missing applets.
+		The worst case is a not booting image.
+
 config FREETZ_REPLACE_DTRACE
 	bool "Replace dtrace"
 	depends on FREETZ_REMOVE_DTRACE
