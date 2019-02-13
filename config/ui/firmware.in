@@ -4,11 +4,25 @@ choice
 		help
 			Select your box type here.
 
+	comment "PLC Repeater"
+
+	config FREETZ_TYPE_0540
+		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_AR934x
+		bool "540e"
+
+	config FREETZ_TYPE_0546
+		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_AR934x
+		bool "546e"
+
 	comment "WLAN Repeater"
 
 	config FREETZ_TYPE_1750
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_QCA955x
-		bool "1750 - EXPERIMENTAL"
+		bool "1750"
+
+	config FREETZ_TYPE_1759
+		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_QCA955x
+		bool "DVB-c"
 
 	comment "LAN"
 
