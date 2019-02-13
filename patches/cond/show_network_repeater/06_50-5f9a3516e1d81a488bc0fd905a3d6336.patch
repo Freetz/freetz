@@ -1,0 +1,45 @@
+--- usr/www/avm/menus/menu_data.luaa
++++ usr/www/avm/menus/menu_data.lua
+@@ -67,6 +67,16 @@
+ ["lua"] = "net/boxnet_rep.lua",
+ ["help"] = forLuaOnly and "hilfe_system_betriebsart"
+ } or nil
++pageData["repNetADD"] = {
++["show"] = true,
++["lua"] = "net/network_settings.lua",
++["help"] = false
++} or nil
++pageData["repNetDNS"] = {
++["show"] = true,
++["lua"] = "internet/dns_server_enh.lua",
++["help"] = false
++} or nil
+ pageData["boxname"] = {
+ ["show"] = true,
+ ["js"] = "net/boxname.js",
+@@ -1284,7 +1294,7 @@
+ } or nil
+ menuData["lan"] = {
+ ["txt"] = TXT([[{?menuNetwork?}]]),
+-["sub"] = {"netDev", "repNetSet"},
++["sub"] = {"netDev", "repNetSet", "repNetADD", "repNetDNS"},
+ ["pos"] = 50
+ }
+ menuData["net"] = {
+@@ -1312,6 +1322,16 @@
+ ["txt"] = TXT([[{?757:121?}]]),
+ ["par"] = "lan",
+ ["pos"] = 35
++} or nil
++menuData["repNetADD"] = pageData["repNetADD"] and {
++["txt"] = TXT([[Netzwerkoptionen]]),
++["par"] = "lan",
++["pos"] = 40
++} or nil
++menuData["repNetDNS"] = pageData["repNetDNS"] and {
++["txt"] = TXT([[DNS-Server]]),
++["par"] = "lan",
++["pos"] = 45
+ } or nil
+ menuData["usbDev"] = {
+ ["txt"] = TXT([[{?menuUsbdevices?}]]),

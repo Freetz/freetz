@@ -1,0 +1,37 @@
+--- usr/www/avm/menus/menu_data.lua	2015-08-05 13:42:29.000000000 +0200
++++ usr/www/avm/menus/menu_data.lua	2015-08-06 17:01:46.216966961 +0200
+@@ -243,16 +243,14 @@
+ }
+ }
+ menu.add_item{
+-page = "/net/network_user_devices.lua",
+ text = [[{?menuDevices?}]],
+ short = [[{?menuDevicesShort?}]],
+-menu = "net"
++menu = "net",
++tabs = {
++{ page = "/net/network_user_devices.lua", text = [[{?menuDevices?}]] },
++{ page = "/net/network_settings.lua", text = [[Netzwerkoptionen]] },
++{ page = "/internet/dns_server_enh.lua", text = [[DNS-Server]] }
+ }
+-menu.add_item{
+-page = "/net/network_settings.lua",
+-text = [[{?menuNetOption?}]],
+-short = [[{?menuNetOptionShort?}]],
+-menu = "net"
+ }
+ menu.add_item{
+ page = "/net/boxnet_rep.lua",
+--- usr/www/avm/menus/menu_show.lua	2015-08-05 13:42:27.000000000 +0200
++++ usr/www/avm/menus/menu_show.lua	2015-08-06 17:03:38.353752543 +0200
+@@ -384,8 +384,8 @@
+ show_net_sets = show_net_sets or expert_mode
+ return show_net_sets
+ end
+-menu.exists_page["/net/network_settings.lua"] = false
+-menu.exists_page["/net/boxnet_rep.lua"]=not menu.exists_page["/net/network_settings.lua"]
++menu.exists_page["/net/network_settings.lua"] = true
++menu.exists_page["/net/boxnet_rep.lua"]=true
+ menu.show_page["/net/boxnet_rep.lua"]= function ()
+ dbg.cprint("menuShow /net/boxnet_rep.lua called",tostring(menu.show_page["/net/network_settings.lua"]()))
+ return menu.show_page["/net/network_settings.lua"]()

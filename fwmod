@@ -1054,7 +1054,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 				[ -d "${FILESYSTEM_MOD_DIR}/${dn}" ] || mkdir -p "${FILESYSTEM_MOD_DIR}/${dn}"
 				cp -a $files "${FILESYSTEM_MOD_DIR}/${dn}/"
 
-				if [ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" ]; then
+				if [ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" -a "$FREETZ_REPLACE_OUTER_UCLIBC_AND_BUSYBOX" != "n" ]; then
 					wrapper_fs_required_libs="ld_uClibc libuClibc"
 
 					# replaced busybox might require some additional libraries not available in AVM's wrapper filesystem
@@ -1076,7 +1076,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 		done
 		if [ "$FREETZ_KEEP_AVM_UCLIBC" != "y" -a "$FREETZ_LIB_libuClibc" == "y" ]; then
 			cp -a "${TARGET_SPECIFIC_ROOT_DIR}/lib/libc.so.${FREETZ_TARGET_UCLIBC_MAJOR_VERSION}" "${FILESYSTEM_MOD_DIR}/lib/"
-			[ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" ] && cp -a "${TARGET_SPECIFIC_ROOT_DIR}/lib/libc.so.${FREETZ_TARGET_UCLIBC_MAJOR_VERSION}" "${FILESYSTEM_OUTER_MOD_DIR}/lib/"
+			[ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" -a "$FREETZ_REPLACE_OUTER_UCLIBC_AND_BUSYBOX" != "n" ] && \
+			  cp -a "${TARGET_SPECIFIC_ROOT_DIR}/lib/libc.so.${FREETZ_TARGET_UCLIBC_MAJOR_VERSION}" "${FILESYSTEM_OUTER_MOD_DIR}/lib/"
 		fi
 
 		echo1 "checking OpenSSL version"
@@ -1129,7 +1130,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		echo0 "installing busybox"
 
 		DIRS_BUSYBOX_TO_REPLACE_WITHIN="${FILESYSTEM_MOD_DIR}"
-		[ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" ] && DIRS_BUSYBOX_TO_REPLACE_WITHIN+=" ${FILESYSTEM_OUTER_MOD_DIR}"
+		[ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" -a "$FREETZ_REPLACE_OUTER_UCLIBC_AND_BUSYBOX" != "n" ] && DIRS_BUSYBOX_TO_REPLACE_WITHIN+=" ${FILESYSTEM_OUTER_MOD_DIR}"
 
 		echo1 "replacing busybox"
 		[ ! -r "${PACKAGES_DIR}/busybox/busybox" ] && error 1 "cannot find busybox replacement"
@@ -1356,10 +1357,17 @@ if [ "$DO_MOD" -gt 0 ]; then
 		[ "$FREETZ_REMOVE_FREETZ_INFO" != "y" ] && echo1 "integrated FREETZ-Info"
 
 		# .config
-		if [ ! "$FREETZ_REMOVE_DOT_CONFIG" == "y" ]; then
-			{ grep '^[^#].*$' "$DOT_CONFIG"; grep '^#.*$' "$DOT_CONFIG.compressed"; echo "FREETZ_LIBRARY_DIR=\"${FREETZ_LIBRARY_DIR}\""; } \
-			| grep -v "FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD" > "${FILESYSTEM_MOD_DIR}/etc/.config"
-			echo1 "integrated .config (stripped)"
+		if [ "$FREETZ_DOT_CONFIG_DONOTADD" == "y" ]; then
+			echo1 "integrating .config is disabled"
+		else
+			if [ "$FREETZ_DOT_CONFIG_STRIPPED" == "y" ]; then
+				{ grep '^[^#].*$' "$DOT_CONFIG"; grep '^#.*$' "$DOT_CONFIG.compressed"; echo "FREETZ_LIBRARY_DIR=\"${FREETZ_LIBRARY_DIR}\""; } \
+				  | grep -v "FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD" > "${FILESYSTEM_MOD_DIR}/etc/.config"
+				echo1 "integrated .config (stripped)"
+			else
+				{ grep -v "FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD" "$DOT_CONFIG"; echo "FREETZ_LIBRARY_DIR=\"${FREETZ_LIBRARY_DIR}\""; } > "${FILESYSTEM_MOD_DIR}/etc/.config"
+				echo1 "integrated .config (complete)"
+			fi
 		fi
 
 		# logo tagging
@@ -1447,7 +1455,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	if [ "$FREETZ_STRIP_BINARIES" == "y" ]; then
 		echo0 "stripping leftover unstripped binaries"
 		for i in $(find \
-				"${FILESYSTEM_MOD_DIR}" $([ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" ] && echo "${FILESYSTEM_OUTER_MOD_DIR}") \
+				"${FILESYSTEM_MOD_DIR}" $([ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" -a "$FREETZ_REPLACE_OUTER_UCLIBC_AND_BUSYBOX" != "n" ] && echo "${FILESYSTEM_OUTER_MOD_DIR}") \
 				! \( -name '*.ko' -o -path '*/usr/www/*' -o -path '*/etc/default*' -o -path '*/lib/modules*' \) \
 				\( -perm /100 -o -name "*.so*" \) \
 				-type f \

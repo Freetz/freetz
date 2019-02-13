@@ -10,7 +10,7 @@
 
 echo1 "removing uClibc-${version} files"
 rm_files "${FILESYSTEM_MOD_DIR}/lib/*${version}*"
-[ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" ] && rm_files "${FILESYSTEM_OUTER_MOD_DIR}/lib/*${version}*"
+[ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" -a "$FREETZ_REPLACE_OUTER_UCLIBC_AND_BUSYBOX" != "n" ] && rm_files "${FILESYSTEM_OUTER_MOD_DIR}/lib/*${version}*"
 
 echo1 "removing uClibc links"
 for link in \
@@ -33,7 +33,7 @@ for link in \
 	rm_files "${FILESYSTEM_MOD_DIR}/lib/$link"
 	rm_files "${FILESYSTEM_MOD_DIR}/usr/lib/$link"
 
-	if [ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" ]; then
+	if [ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" -a "$FREETZ_REPLACE_OUTER_UCLIBC_AND_BUSYBOX" != "n" ]; then
 		rm_files "${FILESYSTEM_OUTER_MOD_DIR}/lib/$link"
 		rm_files "${FILESYSTEM_OUTER_MOD_DIR}/usr/lib/$link"
 	fi

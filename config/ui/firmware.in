@@ -4,11 +4,25 @@ choice
 		help
 			Select your box type here.
 
+	comment "PLC Repeater"
+
+	config FREETZ_TYPE_0540
+		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_AR934x
+		bool "540e"
+
+	config FREETZ_TYPE_0546
+		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_AR934x
+		bool "546e"
+
 	comment "WLAN Repeater"
 
 	config FREETZ_TYPE_1750
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_QCA955x
-		bool "1750 - EXPERIMENTAL"
+		bool "1750"
+
+	config FREETZ_TYPE_1759
+		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_QCA955x
+		bool "DVB-c"
 
 	comment "LAN"
 
@@ -394,8 +408,10 @@ endif
 if FREETZ_SYSTEM_TYPE_PUMA6
 	comment " - the box may fail to boot and you need to recover it manually via the bootlader"
 endif
+if FREETZ_TYPE_FIRMWARE_LABOR
 	comment " - some remove/AVM-web-interface patches are not working"
 	comment "   even if selectable in menuconfig"
+endif
 if FREETZ_KERNEL_VERSION_3_10
 	comment " - some kernel-modules are not built/available"
 	comment "   even if selectable in menuconfig"
@@ -407,7 +423,7 @@ if FREETZ_SYSTEM_TYPE_GRX5
 	comment " - replace-kernel is not (yet) available"
 	comment "   because of changed bootloader format"
 if FREETZ_TYPE_FIRMWARE_LABOR || FREETZ_TYPE_FIRMWARE_07_0X
-	comment "   and missing kernel sources"
+	comment "   and/or missing or incomplete kernel sources"
 endif
 endif
 if !FREETZ_SYSTEM_TYPE_GRX5
