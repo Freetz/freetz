@@ -222,17 +222,35 @@ menu "Additional image/box information"
 			a much smaller subset of options included in .config. This increases image
 			size by about 160 bytes but reduces memory footprint at run-time.
 
-	config FREETZ_REMOVE_DOT_CONFIG
-		bool "Remove .config from image"
-		depends on FREETZ_SHOW_ADVANCED && FREETZ_CREATE_SEPARATE_OPTIONS_CFG
-		default n
+	choice
+		prompt "Include .config file in image"
+		depends on FREETZ_SHOW_ADVANCED &&  FREETZ_CREATE_SEPARATE_OPTIONS_CFG
+		default FREETZ_DOT_CONFIG_STRIPPED
 		help
-			Usually, a stripped version of the FREETZ configuration file .config
-			is integrated into the image for better trouble-shooting.
+			By default, a stripped version of the FREETZ configuration
+			file .config is integrated into the image for better
+			trouble-shooting.
+
+			Or you could add the full and unstripped .config file into
+			the image, just to be sure.
+
+			The password of the private key for signing is never added.
 
 			It is not recommended to remove .config from the image,
 			but if you want to save a few bytes in your image and
 			you are sure that removing this file is the last chance to have
 			a working image, you can do it on your own risk!
+
+		config FREETZ_DOT_CONFIG_DONOTADD
+			bool "do not include"
+			depends on FREETZ_USER_LEVEL_EXPERT
+
+		config FREETZ_DOT_CONFIG_STRIPPED
+			bool "stripped version"
+
+		config FREETZ_DOT_CONFIG_COMPLETE
+			bool "complete file"
+
+	endchoice # "Include .config file in image"
 
 endmenu # "Additional image/box information" #
