@@ -33,7 +33,7 @@ void usage()
 
 	fprintf(stderr, "avm_kernel_config.bin2asm - generate a kernel config source file\n\n");
 	fprintf(stderr, "(C) 2016 P. Hämmerlein (http://www.yourfritz.de)\n");
-	fprintf(stderr, "Modified by Eugene Rudoy for Freetz project (http://www.freetz.org)\n");
+	fprintf(stderr, "Modified by Eugene Rudoy for Freetz project (https://freetz.github.io)\n");
 	fprintf(stderr, "\n");
 	fprintf(stderr, "Licensed under GPLv2, see LICENSE file from source repository.\n\n");
 	fprintf(stderr, "Usage:\n\n");
