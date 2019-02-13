@@ -177,6 +177,14 @@ config FREETZ_REMOVE_ASSISTANT_SIP
 		the web menu. With this patch you can't create new phones, but change and
 		use existing ones.
 
+config FREETZ_REMOVE_NEXUS
+	bool "Remove NEXUS (AVM mesh)"
+	default n
+	depends on FREETZ_AVM_VERSION_06_9X_MIN && FREETZ_AVM_VERSION_06_9X
+	help
+		Removes "mesh" related files like
+		the nexus daemon and some scripts.
+
 config FREETZ_REMOVE_AHA
 	bool "Remove AHA (AVM Home Automation)"
 	default n
