@@ -34,7 +34,7 @@ void usage()
 {
 	fprintf(stderr, "avm_kernel_config.extract - extract (binary copy of) kernel config area from AVM's kernel\n\n");
 	fprintf(stderr, "(C) 2016-2017 P. Hämmerlein (http://www.yourfritz.de)\n");
-	fprintf(stderr, "Modified by Eugene Rudoy for Freetz project (http://www.freetz.org)\n");
+	fprintf(stderr, "Modified by Eugene Rudoy for Freetz project (https://freetz.github.io)\n");
 	fprintf(stderr, "\n");
 	fprintf(stderr, "Licensed under GPLv2, see LICENSE file from source repository.\n\n");
 	fprintf(stderr, "Usage:\n\n");
