@@ -15,8 +15,9 @@ log() {
 	logger -t FREETZMOD "$*"
 }
 
-start() {
-	log "rc.mod version $(cat /etc/.freetz-version)"
+setup() {
+	# re-set /tmp permissions as AVM overwrites them somehow after var.tar unpacking
+	chmod 1777 /var/tmp
 
 	if is_affected_by_remote_access_vulnerability; then
 		log "Firmware with remote access vulnerability detected."
@@ -25,6 +26,10 @@ start() {
 			ctlmgr_ctl w remoteman settings/enabled 0 >/dev/null 2>&1
 		fi
 	fi
+}
+
+start() {
+	log "rc.mod version $(cat /etc/.freetz-version)"
 
 	# Basic Packages
 	for pkg in crond telnetd webcfg dsld ftpd rextd multid swap external websrv smbd; do
@@ -175,6 +180,7 @@ register() {
 case $1 in
 	"")
 		register
+		setup
 		start
 		;;
 	start)
