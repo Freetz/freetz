@@ -214,6 +214,15 @@ config FREETZ_REMOVE_ETHERNET_OVER_USB
 		Removes avalanche_usb.ko to save 60kB uncompressed space.
 		This is the Ethernet-over-USB driver which provides also CDROM emulation.
 
+config FREETZ_REMOVE_WEBDAV
+	bool "Remove WebDAV (AVM Online-Speicher)"
+	depends on FREETZ_AVM_HAS_WEBDAV
+	default n
+	help
+		Remove WebDAV (Online-Speicher) feature. Saves about 510 KB of
+		uncompressed data size.
+		On 7270v1 only scripts, links and a 10KB library.
+
 config FREETZ_REMOVE_MEDIASRV
 	bool "Remove mediasrv"
 	depends on \
@@ -965,15 +974,6 @@ config FREETZ_REMOVE_TELEPHONY
 		side effects. The patch was successfully tested on a W701V IP client with
 		removed UPnP/dsld/userman. If it still works for boxes including those
 		functionalities, is unknown. Feel free to test it.
-
-config FREETZ_REMOVE_WEBDAV
-	bool "Remove WebDAV"
-	depends on FREETZ_AVM_HAS_WEBDAV
-	default n
-	help
-		Remove WebDAV (Online-Speicher) feature. Saves about 510 KB of
-		uncompressed data size.
-		On 7270v1 only scripts, links and a 10KB library.
 
 config FREETZ_REMOVE_WLAN
 	bool "Remove WLAN"
