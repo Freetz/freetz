@@ -17,16 +17,15 @@ You!
 
 <p>
 <h1>Supporters</h1>
-cuma
 hippie2000
-kriegaex
 magenbrot
-olistudent
 </p>
 
 <p>
-<h1>Unknown</h1>
-er13
+<h1>Decision supervision</h1>
+derheimi
+kriegaex
+olistudent
 </p>
 
 <p>
@@ -35,7 +34,8 @@ abraxXl
 aholler
 buehmann
 cinereous
-derheimi
+cuma
+er13
 hermann72pb
 johnbock
 M66B
