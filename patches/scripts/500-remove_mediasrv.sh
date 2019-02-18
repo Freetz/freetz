@@ -1,5 +1,5 @@
 [ "$FREETZ_REMOVE_MEDIASRV" == "y" ] || \
-[ "$FREETZ_AVMPLUGINS_INTEGRATE" -a "$FREETZ_AVMPLUGINS_MEDIASRV" != "y" ] || \
+[ "$FREETZ_AVMPLUGINS_INTEGRATE" -a "$FREETZ_AVM_HAS_PLUGIN_MEDIASRV" = "y" -a "$FREETZ_AVMPLUGINS_MEDIASRV" != "y" ] || \
 return 0
 
 # if nas, mediaserv und samba are removed -> remove_nas deletes menu item Heimnetz > Speicher (NAS)
