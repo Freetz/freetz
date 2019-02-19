@@ -6,7 +6,7 @@ echo -n 'Downgrading ... '
 if [ -e /var/tmp/version ]; then
 	echo 'already done.'
 else
-	sed 's/\({CONFIG_VERSION_MAJOR}\).*/\1.01.01/' /etc/version > /var/tmp/version
+	sed 's/\({CONFIG_VERSION_MAJOR}\)[^"]*\(.*\)/\1.01.01\2/' /etc/version > /var/tmp/version
 	chmod +x /var/tmp/version
 	mount -o bind /var/tmp/version /etc/version
 	echo 'done.'
