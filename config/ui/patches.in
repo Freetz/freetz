@@ -1185,7 +1185,7 @@ config FREETZ_MODIFY_DSL_SETTINGS
 
 config FREETZ_MODIFY_COUNTER
 	bool "Extend online counter"
-	depends on FREETZ_AVM_VERSION_06_5X_MIN
+	depends on FREETZ_AVM_VERSION_06_5X_MIN && !FREETZ_REMOVE_DSLD
 	default n
 	help
 		Converts counter hours to days and traffic MB to GB.
