@@ -66,6 +66,44 @@ config FREETZ_REMOVE_DSL_CONTROL
 		Select this only if you don't use the the DSL modem. See
 		http://wehavemorefun.de/fritzbox/Dsl_control
 
+config FREETZ_REMOVE_DSLD
+	bool "Remove dsld"
+	default n
+	select FREETZ_REMOVE_UPNP
+	select FREETZ_REMOVE_KIDS if ! \
+		( \
+		FREETZ_TYPE_5140 || \
+		FREETZ_TYPE_7112 || \
+		FREETZ_TYPE_7113 || \
+		FREETZ_TYPE_W501V \
+		)
+	help
+		Remove DSL daemon (dsld), if you are planning to use your box as a simple
+		IP client in ATA mode.
+
+		ATTENTION: You won't be able to use your box as a modem nor a router anymore.
+		As well do *not* use this option if your ATA mode box uses PPoE passthrough,
+		because in this case dsld is still needed! Furthermore, selecting this patch
+		also selects the UPnP patch, because UPnP must be deactivated anyway for
+		IP clients, otherwise dsld will be used again.
+		You can find the UPnP settings in the German web UI under
+		  Einstellungen
+		    System
+		      Netzwerkeinstellungen
+		        Statusinformationen ueber UPnP uebertragen (empfohlen)
+		Thirdly, the usermand patch will also be selected if you activate this option,
+		because kernel module userman.ko always depends on kdsldmod.ko which is
+		stripped by this patch.
+
+config FREETZ_REMOVE_SHOWDSLDSTAT
+	bool "Remove showdsldstat"
+	default n
+	help
+		Removes the showdsldstat utility which shows you the cpmac mode, connect time,
+		external ip, route and dns servers. Also the state of IPv6, voip and tr069.
+		Unsure a.t.m. if this tool is required by other AVM programs!
+		AVM-WebDAV will be patched to not depend on showdsldstat (hopefully).
+
 config FREETZ_REMOVE_PIGLET_V1_AVAILABLE
 	bool
 	default y if \
@@ -539,44 +577,6 @@ config FREETZ_REMOVE_DECT_UPDATE
 		Remove /usr/bin/dect_update. This utility is only needed to
 		update the dect firmware.
 		This will save about 32kB uncompressed size.
-
-config FREETZ_REMOVE_DSLD
-	bool "Remove dsld"
-	default n
-	select FREETZ_REMOVE_UPNP
-	select FREETZ_REMOVE_KIDS if ! \
-		( \
-		FREETZ_TYPE_5140 || \
-		FREETZ_TYPE_7112 || \
-		FREETZ_TYPE_7113 || \
-		FREETZ_TYPE_W501V \
-		)
-	help
-		Remove DSL daemon (dsld), if you are planning to use your box as a simple
-		IP client in ATA mode.
-
-		ATTENTION: You won't be able to use your box as a modem nor a router anymore.
-		As well do *not* use this option if your ATA mode box uses PPoE passthrough,
-		because in this case dsld is still needed! Furthermore, selecting this patch
-		also selects the UPnP patch, because UPnP must be deactivated anyway for
-		IP clients, otherwise dsld will be used again.
-		You can find the UPnP settings in the German web UI under
-		  Einstellungen
-		    System
-		      Netzwerkeinstellungen
-		        Statusinformationen ueber UPnP uebertragen (empfohlen)
-		Thirdly, the usermand patch will also be selected if you activate this option,
-		because kernel module userman.ko always depends on kdsldmod.ko which is
-		stripped by this patch.
-
-config FREETZ_REMOVE_SHOWDSLDSTAT
-	bool "Remove showdsldstat"
-	default n
-	help
-		Removes the showdsldstat utility which shows you the cpmac mode, connect time,
-		external ip, route and dns servers. Also the state of IPv6, voip and tr069.
-		Unsure a.t.m. if this tool is required by other AVM programs!
-		AVM-WebDAV will be patched to not depend on showdsldstat (hopefully).
 
 config FREETZ_REMOVE_DTRACE
 	bool "Remove dtrace"
