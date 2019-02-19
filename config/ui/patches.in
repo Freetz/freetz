@@ -1346,7 +1346,7 @@ endif
 
 config FREETZ_MODIFY_UMTSD
 	bool "Modify umtsd: only for known modems"
-	depends on FREETZ_AVM_HAS_UMTS && FREETZ_AVM_HAS_UDEV && ! FREETZ_REMOVE_UMTSD
+	depends on FREETZ_AVM_HAS_UMTS && FREETZ_AVM_HAS_UDEV && !FREETZ_REMOVE_UMTSD && !FREETZ_AVM_VERSION_07_0X_MIN
 	default n
 	help
 		AVM's umtsd will only be started if a *known* umts modem is
