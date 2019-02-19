@@ -1164,21 +1164,21 @@ config FREETZ_ENABLE_LED_DEACTIVATION
 
 config FREETZ_MODIFY_DSL_WARNING
 	bool "Patch DSL modified message"
-	depends on FREETZ_AVM_VERSION_06_5X_MIN && FREETZ_TYPE_DSL
+	depends on FREETZ_AVM_VERSION_06_5X_MIN && !FREETZ_REMOVE_DSLD && FREETZ_TYPE_DSL && !FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_PRIME
 	default n
 	help
 		Hides the "modified" message from the DSL page.
 
 config FREETZ_MODIFY_DSL_SPECTRUM
 	bool "Extend DSL spectrum"
-	depends on FREETZ_AVM_VERSION_06_5X_MIN && FREETZ_TYPE_DSL
+	depends on FREETZ_AVM_VERSION_06_5X_MIN && !FREETZ_REMOVE_DSLD && FREETZ_TYPE_DSL && !FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_PRIME
 	default n
 	help
 		Shows DSL spectrum page with min/man visible initialy.
 
 config FREETZ_MODIFY_DSL_SETTINGS
 	bool "Extend DSL settings"
-	depends on FREETZ_AVM_VERSION_06_5X_MIN && FREETZ_TYPE_DSL
+	depends on FREETZ_AVM_VERSION_06_5X_MIN && !FREETZ_REMOVE_DSLD && FREETZ_TYPE_DSL && !FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_PRIME
 	default n
 	help
 		Extends the DSL settings page with "speed" settings.
