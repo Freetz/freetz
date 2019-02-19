@@ -1396,6 +1396,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 			echo1 "tagging avm webif (tag by ${FREETZ_TAGGING_STRING})"
 			for d in "${HTML_MOD_DIR}" "${HTML_MOD_DIR}.nas"; do
 				[ -d "${d}" ] || continue
+				# svg since Fritz!OS 07.1x
+				tagging "+0+6" "center" $(find "${d}" -name logo_fritzDiamond.svg)
 				# svg since Fritz!OS 06.5x (eg 7320 06.50)
 				tagging "+0+6" "center" $(find "${d}" -name fritzLogo.svg)
 				# lua since  Fritz!OS 6.2x (small logo @left, eg 7390 06.23)
