@@ -298,6 +298,7 @@ if [ "$opt_append_servers" = y ]; then
 fi
 
 # Loop over servers until a download succeeds or all requests have failed.
+download_by_url() {
 IFS=$'\n'
 for i in ${sites[@]}; do
 	if [ ${DL_DIR:0:5} == "check" ]; then
@@ -333,8 +334,12 @@ for i in ${sites[@]}; do
 	exit 0
 done
 unset IFS
+}
 
-if [ -n "$VCS" ]; then
+# Download by vcs in case of a repository, try mirrors later
+download_by_vcs() {
+	[ -z "$VCS" ] && return
+
 	echo
 	case "$DL_FILE" in
 		*.tar.gz) COMPRESSION_FLAG=z ;;
@@ -372,6 +377,9 @@ if [ -n "$VCS" ]; then
 
 	rm -f "$DL_DIR/$DL_FILE"
 	rm -rf "$TMP_DIR"
-fi
+}
+
+download_by_vcs
+download_by_url
 
 exit 1
