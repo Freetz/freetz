@@ -336,7 +336,7 @@ done
 unset IFS
 }
 
-# Download by vcs in case of a repository, try mirrors later
+# Download by vcs in case of a repository, maybe try mirrors later
 download_by_vcs() {
 	[ -z "$VCS" ] && return
 
@@ -377,6 +377,8 @@ download_by_vcs() {
 
 	rm -f "$DL_DIR/$DL_FILE"
 	rm -rf "$TMP_DIR"
+
+	[ "$FREETZ_DL_VCS_FROM_MIRRORS" != "y" ] && exit 1
 }
 
 download_by_vcs

@@ -1,4 +1,4 @@
-menu "Override options"
+menu "Download options"
 	visible if FREETZ_SHOW_EXPERT
 
 	config FREETZ_DL_SITE_USER
@@ -10,6 +10,15 @@ menu "Override options"
 			Necessary means that the regular Freetz mirrors are currently unavailable
 			or the desired package cannot be found on either of them.
 
+	config FREETZ_DL_VCS_FROM_MIRRORS
+		bool "Search on mirror sites for VCS files" if FREETZ_SHOW_EXPERT
+		default y
+		help
+			Some downloads are by VCS repositories. Every time you download, the hash
+			of the file changes. Due to this, no hash is deposited within Freetz and
+			the download could not be verified.
+			If you do not want to search the download mirrors for such files, disable
+			this option.
 
 	config FREETZ_DL_TOOLCHAIN_OVERRIDE
 		bool "Override precompiled toolchain options" if FREETZ_SHOW_EXPERT
@@ -1018,4 +1027,4 @@ menu "Override options"
 		default "dd6f7461976c64b9808d2cf74ab4532f"  if FREETZ_TYPE_W900V_7170
 		default "d79c67c666416732b4822cc468da8cdf"  if FREETZ_TYPE_W920V_7570
 
-endmenu # Override options #
+endmenu # Download options #
