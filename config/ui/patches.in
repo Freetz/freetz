@@ -1527,16 +1527,6 @@ config FREETZ_ENFORCE_FIRMWARE_VERSION_VIA_RCCONF
 
 		Choose the value wisely. Your image must support it.
 
-comment "modfs patches --------------------------"
-
-config FREETZ_PATCH_MODFS_BOOT_MANAGER
-	bool "Add boot manager"
-	depends on FREETZ_AVM_VERSION_06_5X_MIN
-	depends on FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
-	default n
-	help
-		Extends the "reboot" page of FRITZ!OS to select system version and branding.
-
 comment "Misc patches ---------------------------"
 
 config FREETZ_PATCH_W920V_LED_MODULE
