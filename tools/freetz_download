@@ -280,19 +280,15 @@ if [ -n "$URLs" ]; then
 	fi
 fi
 
-# Get Freetz mirror sites in array
+# Get Freetz & user-defined mirror sites in an array
 FREETZ_SITES=( $(
 	for (( i=1; i <= $FREETZ_DL_SITES_COUNT ; i++ )); do
 		eval "echo \$FREETZ_DL_SITE_$i"
 	done
+	[ -n "$FREETZ_DL_SITE_USER" ] && echo $FREETZ_DL_SITE_USER
 	) )
 
-# Add user-defined mirror
-if [ -n "$FREETZ_DL_SITE_USER" ]; then
-	FREETZ_SITES[3]=$FREETZ_DL_SITE_USER
-fi
-
-# Fill array 'sites' with download server URLs, add Freetz Mirrors, in random order
+# Array 'sites' contains download server URL(s), add all mirrors in random order
 if [ "$opt_append_servers" = y ]; then
 	for (( n=${#FREETZ_SITES[@]}; n > 0; n-- )); do
 		p=$(( RANDOM % n ))
