@@ -381,7 +381,8 @@ download_by_vcs() {
 	[ "$FREETZ_DL_VCS_FROM_MIRRORS" != "y" ] && exit 1
 }
 
-download_by_vcs
+[ "$FREETZ_DL_VCS_REPO_FIRST" == "y" ] && download_by_vcs
 download_by_url
+[ "$FREETZ_DL_VCS_REPO_FIRST" != "y" ] && download_by_vcs
 
 exit 1

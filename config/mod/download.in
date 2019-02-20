@@ -10,8 +10,17 @@ menu "Download options"
 			Necessary means that the regular Freetz mirrors are currently unavailable
 			or the desired package cannot be found on either of them.
 
+	config FREETZ_DL_VCS_REPO_FIRST
+		bool "Search first on repository for VCS downloads" if FREETZ_SHOW_EXPERT
+		default y
+		help
+			For a download by VCS, try first the repositories
+			itself and then the download mirrors.
+			If not enabled the mirrors are used first.
+
 	config FREETZ_DL_VCS_FROM_MIRRORS
 		bool "Search on mirror sites for VCS files" if FREETZ_SHOW_EXPERT
+		depends on FREETZ_DL_VCS_REPO_FIRST
 		default y
 		help
 			Some downloads are by VCS repositories. Every time you download, the hash
