@@ -387,14 +387,6 @@ choice
 			Enable this to use an AVM Labor firmware from the Beta branch as base for modding.
 			For more details see <http://www.avm.de/Labor/>.
 
-	config FREETZ_TYPE_FIRMWARE_LABOR_MAINTENANCE
-		bool "FRITZ! Labor Maintenance - EXPERIMENTAL"
-		select FREETZ_AVM_VERSION_06_8X
-		depends on FREETZ_AVM_HAS_FIRMWARE_LABOR_MAINTENANCE && FREETZ_SHOW_ADVANCED
-		help
-			Enable this to use an AVM Labor firmware from the Maintenance branch as base for modding.
-			For more details see <http://www.avm.de/Labor/>.
-
 endchoice # "Firmware version" #
 
 if FREETZ_AVM_VERSION_06_5X_MIN && ! FREETZ_REAL_DEVELOPER_ONLY
@@ -441,7 +433,7 @@ config FREETZ_TYPE_FIRMWARE_FINAL
 config FREETZ_TYPE_FIRMWARE_LABOR
 	bool
 	default y
-	depends on FREETZ_TYPE_FIRMWARE_LABOR_BETA || FREETZ_TYPE_FIRMWARE_LABOR_MAINTENANCE
+	depends on FREETZ_TYPE_FIRMWARE_LABOR_BETA
 
 config FREETZ_TYPE_LANGUAGE
 	string
