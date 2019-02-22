@@ -398,6 +398,15 @@ choice
 
 endchoice # "Firmware version" #
 
+config FREETZ_TYPE_FIRMWARE_LABOR_LATEST
+	bool "Detect the latest firmware version"
+	default y
+	select FREETZ_DL_DETECT_IMAGE_NAME
+	depends on FREETZ_SHOW_ADVANCED && FREETZ_AVM_HAS_FIRMWARE_LABOR && FREETZ_TYPE_FIRMWARE_LABOR
+	help
+		Automatically detect the latest labor firmware
+		version by using https://www.boxmatrix.info
+
 if FREETZ_AVM_VERSION_06_5X_MIN && ! FREETZ_REAL_DEVELOPER_ONLY
 if FREETZ_TYPE_FIRMWARE_06_5X || FREETZ_TYPE_FIRMWARE_06_8X || FREETZ_TYPE_FIRMWARE_06_9X
 	comment "UNDER DEVELOPMENT means:"

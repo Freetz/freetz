@@ -244,6 +244,22 @@ else
 include $(TOOLCHAIN_DIR)/make/download-toolchain.mk
 endif
 
+# Detect automatically the latest labor version
+ifeq (y,$(call qstrip,$(FREETZ_TYPE_FIRMWARE_LABOR_LATEST)))
+ifeq (,$(call qstrip,$(FREETZ_DL_URL_CONTAINER)))
+#FREETZ_DL_URL_CONTAINER=
+endif
+ifeq (,$(call qstrip,$(FREETZ_DL_URL_CONTAINER)))
+$(error Failed to detect the URL of the latest firmware version. Is the internet connection up?)
+endif
+
+$(info Available download URL: $(FREETZ_DL_URL_CONTAINER))
+DL_SITE:=$(dir $(FREETZ_DL_URL_CONTAINER))
+DL_SOURCE_CONTAINER_MD5:=
+DL_SOURCE_CONTAINER:=$(notdir $(FREETZ_DL_URL_CONTAINER))
+DL_SOURCE_CONTAINER_SUFFIX:=$(suffix $(DL_SOURCE_CONTAINER))
+endif
+
 # Detect the .image file name inside an archive
 ifeq (y,$(call qstrip,$(FREETZ_DL_DETECT_IMAGE_NAME)))
 DL_SOURCE_MD5:=
