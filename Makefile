@@ -278,7 +278,7 @@ else
 		case "$$(DL_SOURCE$(1)_CONTAINER_SUFFIX)" in \
 			.zip|.ZIP) \
 				if [ "$$(FREETZ_DL_DETECT_IMAGE_NAME)" == "y" ]; then \
-					DL_SOURCE_DETECTED=$$$$(unzip -j $$(QUIETSHORT) -l $$(DL_FW_DIR)/$$(DL_SOURCE$(1)_CONTAINER) *.image | sed -rn 's/.* (.*\.image)/\1/p'); \
+					DL_SOURCE_DETECTED=$$$$(unzip -j $$(QUIETSHORT) -l $$(DL_FW_DIR)/$$(DL_SOURCE$(1)_CONTAINER) *.image | sed -rn 's/.*( |\/)(.*\.image)/\2/p'); \
 					echo "Using detected .image name: $$$$DL_SOURCE_DETECTED"; \
 				else \
 					DL_SOURCE_DETECTED=$$(DL_SOURCE); \
