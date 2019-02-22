@@ -1,5 +1,5 @@
 [ "$FREETZ_AVM_VERSION_06_0X_MIN" == "y" ] || return 0
-[ "$FREETZ_TYPE_WLAN_REPEATER" != "y"  ] || return 0
+[ "$FREETZ_TYPE_EXTENDER" != "y"  ] || return 0
 echo1 "enabling ipclient guest"
 
 
