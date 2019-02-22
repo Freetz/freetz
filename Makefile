@@ -244,6 +244,13 @@ else
 include $(TOOLCHAIN_DIR)/make/download-toolchain.mk
 endif
 
+# Detect the .image file name inside an archive
+ifeq ($(strip $(FREETZ_DL_DETECT_IMAGE_NAME)),y)
+DL_SOURCE_MD5:=
+DL_SOURCE:=$(patsubst "%",%,$(FREETZ_TYPE_PREFIX))-latest-firmware.image
+$(shell $(RM) $(DL_FW_DIR)/$(DL_SOURCE))
+endif
+
 DL_IMAGE:=
 image:
 
@@ -270,12 +277,26 @@ else
 		fi; \
 		case "$$(DL_SOURCE$(1)_CONTAINER_SUFFIX)" in \
 			.zip|.ZIP) \
-				if ! unzip -j $$(QUIETSHORT) $$(DL_FW_DIR)/$$(DL_SOURCE$(1)_CONTAINER) *$$(DL_SOURCE$(1)) -d $$(DL_FW_DIR); then \
-					$$(call ERROR,3,Could not unzip firmware image.) \
-				fi \
+				if [ "$$(FREETZ_DL_DETECT_IMAGE_NAME)" == "y" ]; then \
+					DL_SOURCE_DETECTED=$$$$(unzip -j $$(QUIETSHORT) -l $$(DL_FW_DIR)/$$(DL_SOURCE$(1)_CONTAINER) *.image | sed -rn 's/.* (.*\.image)/\1/p'); \
+					echo "Using detected .image name: $$$$DL_SOURCE_DETECTED"; \
+				else \
+					DL_SOURCE_DETECTED=$$(DL_SOURCE); \
+					echo "Using hardcoded .image name: $$$$DL_SOURCE_DETECTED"; \
+				fi; \
+				if [ ! -f $$(DL_FW_DIR)/$$$$DL_SOURCE_DETECTED ]; then \
+					echo "Unzipping archive file: $$(DL_SOURCE$(1)_CONTAINER)"; \
+					if ! unzip -j $$(QUIETSHORT) $$(DL_FW_DIR)/$$(DL_SOURCE$(1)_CONTAINER) $$$$DL_SOURCE_DETECTED -d $$(DL_FW_DIR); then \
+						$$(call ERROR,3,Could not unzip firmware image.) \
+					fi; \
+				fi; \
+				if [ "$$(FREETZ_DL_DETECT_IMAGE_NAME)" == "y" ]; then \
+					[ -f $$(DL_FW_DIR)/$$$$DL_SOURCE_DETECTED ] && ln $$(DL_FW_DIR)/$$$$DL_SOURCE_DETECTED $$(DL_FW_DIR)/$$(DL_SOURCE$(1)); \
+					echo "Created hardlink for .image file"; \
+				fi; \
 				;; \
 			*) \
-				$$(call ERROR,3,Could not extract firmware image.) \
+				$$(call ERROR,3,Not able to extract $$(DL_SOURCE_CONTAINER_SUFFIX) firmware archives at all.) \
 				;; \
 		esac \
 	elif ! $$(DL_TOOL) --no-append-servers $$(DL_FW_DIR) "$$(DL_SOURCE$(1))" "$$(DL_SITE$(1))" $$(DL_SOURCE$(1)_MD5) $$(SILENT); then \

@@ -10,6 +10,15 @@ menu "Download options"
 			Necessary means that the regular Freetz mirrors are currently unavailable
 			or the desired package cannot be found on either of them.
 
+	config FREETZ_DL_DETECT_IMAGE_NAME
+		bool "Detect the .image file name inside a .zip" if FREETZ_SHOW_EXPERT
+		depends on FREETZ_TYPE_FIRMWARE_LABOR
+		default n
+		help
+			Detect the .image file name inside a .zip.
+			With this it is not needed anymore to define
+			FREETZ_DL_SOURCE and FREETZ_DL_SOURCE_MD5
+
 	config FREETZ_DL_VCS_REPO_FIRST
 		bool "Search first on repository for VCS downloads" if FREETZ_SHOW_EXPERT
 		default y
@@ -418,6 +427,7 @@ menu "Download options"
 
 	config FREETZ_DL_SOURCE
 		string "Firmware source"                                                if FREETZ_DL_OVERRIDE
+		depends                                                                 on !FREETZ_DL_DETECT_IMAGE_NAME
 		#
 		default "fritz.box_fon.06.04.33.image"                                  if FREETZ_TYPE_FIRMWARE_FINAL && (FREETZ_TYPE_300IP || FREETZ_TYPE_FON) && FREETZ_TYPE_LANG_DE
 		default "fritz.box_fon.annexa.en.06.04.49.image"                        if FREETZ_TYPE_FIRMWARE_FINAL && (FREETZ_TYPE_300IP || FREETZ_TYPE_FON) && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
@@ -663,7 +673,7 @@ menu "Download options"
 
 	config FREETZ_DL_SOURCE_MD5
 		string "MD5 checksum for downloaded Image"  if FREETZ_DL_OVERRIDE
-		depends on FREETZ_TYPE_FIRMWARE_FINAL
+		depends                                     on !FREETZ_DL_DETECT_IMAGE_NAME && FREETZ_TYPE_FIRMWARE_FINAL
 		#
 		default "57692fa45d7d8cfa9c97be2cbe3879ad"  if (FREETZ_TYPE_300IP || FREETZ_TYPE_FON) && FREETZ_TYPE_LANG_DE
 		default "8acd3c4d936b7ff8c5d2065ee7bc7f9b"  if (FREETZ_TYPE_300IP || FREETZ_TYPE_FON) && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
