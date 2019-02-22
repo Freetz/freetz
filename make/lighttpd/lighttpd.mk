@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.4.45)
+$(call PKG_INIT_BIN, 1.4.53)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=1c97225deea33eefba6d4158c2cef27913d47553263516bbe9d2e2760fc43a3f
+$(PKG)_SOURCE_SHA256:=3bdfce1cf3e9650a556a8c26fb15342c5717c63f530c54693db632b0371dcb78
 $(PKG)_SITE:=http://download.lighttpd.net/lighttpd/releases-1.4.x
 
 $(PKG)_BINARY_BUILD_DIR := $($(PKG)_DIR)/src/lighttpd
@@ -17,6 +17,7 @@ $(PKG)_MODULES_ALL := \
 	geoip \
 	indexfile \
 	magnet mysql_vhost \
+	openssl \
 	proxy \
 	redirect rewrite rrdtool \
 	scgi secdownload setenv simple_vhost ssi staticfile status \

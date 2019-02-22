@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_LIGHTTPD
-	bool "lighttpd 1.4.45"
+	bool "lighttpd 1.4.53"
 	select FREETZ_LIB_libpthread
 	select FREETZ_LIB_libpcre
 	select FREETZ_PACKAGE_LIGHTTPD_MOD_ACCESS
@@ -23,8 +23,7 @@ config FREETZ_PACKAGE_LIGHTTPD
 config FREETZ_PACKAGE_LIGHTTPD_WITH_SSL
 	bool "build with SSL support"
 	depends on FREETZ_PACKAGE_LIGHTTPD
-	select FREETZ_LIB_libcrypto
-	select FREETZ_LIB_libssl
+	select FREETZ_PACKAGE_LIGHTTPD_MOD_OPENSSL
 	default n
 	help
 		This option enables SSL support for lighttpd.
@@ -260,6 +259,17 @@ config FREETZ_PACKAGE_LIGHTTPD_MOD_MAGNET
 #		This option adds mod_mysql_vhost.so to the image.
 #		Please see http://redmine.lighttpd.net/wiki/1/Docs:ModMySQLVhost
 #		for more information on this module.
+
+config FREETZ_PACKAGE_LIGHTTPD_MOD_OPENSSL
+	bool "include mod_openssl (adds about 43kb)"
+	depends on FREETZ_PACKAGE_LIGHTTPD && FREETZ_PACKAGE_LIGHTTPD_WITH_SSL
+	select FREETZ_LIB_libcrypto
+	select FREETZ_LIB_libssl
+	default n
+	help
+		This option adds mod_openssl.so to the image.
+		Please see http://redmine.lighttpd.net/wiki/1/Docs:SSL
+		for more information on this module.
 
 config FREETZ_PACKAGE_LIGHTTPD_MOD_PROXY
 	bool "include mod_proxy (adds about 24kb)"
