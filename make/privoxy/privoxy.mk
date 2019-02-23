@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 3.0.26)
+$(call PKG_INIT_BIN, 3.0.28)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-stable-src.tar.gz
-$(PKG)_SOURCE_MD5:=8a1c842112ccea68c19b7ceb4a0e999f
+$(PKG)_SOURCE_MD5:=c7e8900d5aff33d9a5fc37ac28154f21
 $(PKG)_SITE:=@SF/ijbswa
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/privoxy
