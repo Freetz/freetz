@@ -10,6 +10,11 @@ menu "Download options"
 			Necessary means that the regular Freetz mirrors are currently unavailable
 			or the desired package cannot be found on either of them.
 
+	config FREETZ_DL_URL_LATEST_USER
+		string "Custom URL for detection of latest firmware" if FREETZ_TYPE_FIRMWARE_LABOR_LATEST
+		help
+			You could set the URL for detection of latest firmware version here
+
 	config FREETZ_DL_DETECT_IMAGE_NAME
 		bool "Detect the .image file name inside a .zip" if FREETZ_SHOW_EXPERT
 		depends on FREETZ_TYPE_FIRMWARE_LABOR
@@ -427,8 +432,8 @@ menu "Download options"
 		default "@AVM/fileadmin/user_upload/DE/Labor/Download,@AVM/beta/frisch-aus-der-entwicklung"                        if FREETZ_TYPE_FIRMWARE_LABOR_TEST
 
 	config FREETZ_DL_SOURCE
-		string "Firmware source"                                                if FREETZ_DL_OVERRIDE
-		depends                                                                 on !FREETZ_DL_DETECT_IMAGE_NAME
+		string "Firmware source"                                                if FREETZ_DL_OVERRIDE && !FREETZ_DL_DETECT_IMAGE_NAME
+		default "${FREETZ_TYPE_PREFIX}${FREETZ_TYPE_PREFIX_LABOR_FIRMWARE}.detected.image" if FREETZ_DL_DETECT_IMAGE_NAME
 		#
 		default "fritz.box_fon.06.04.33.image"                                  if FREETZ_TYPE_FIRMWARE_FINAL && (FREETZ_TYPE_300IP || FREETZ_TYPE_FON) && FREETZ_TYPE_LANG_DE
 		default "fritz.box_fon.annexa.en.06.04.49.image"                        if FREETZ_TYPE_FIRMWARE_FINAL && (FREETZ_TYPE_300IP || FREETZ_TYPE_FON) && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
@@ -934,10 +939,13 @@ menu "Download options"
 		#
 		default ""
 
-	config FREETZ_DL_URL_CONTAINER
-		string "Full URL of download container"         if FREETZ_DL_OVERRIDE
-		depends                                         on FREETZ_TYPE_FIRMWARE_LABOR_LATEST
-		default ""
+	config FREETZ_DL_URL_LATEST
+		string
+		depends                                                        on FREETZ_TYPE_FIRMWARE_LABOR_LATEST
+		#
+		default "https://boxmatrix.info/hosted/exports/labors.txt"     if FREETZ_TYPE_FIRMWARE_LABOR
+		#
+		default "shit"
 
 	config FREETZ_DL_ALIEN
 		bool

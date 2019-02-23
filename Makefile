@@ -246,24 +246,36 @@ endif
 
 # Detect automatically the latest labor version
 ifeq (y,$(call qstrip,$(FREETZ_TYPE_FIRMWARE_LABOR_LATEST)))
-ifeq (,$(call qstrip,$(FREETZ_DL_URL_CONTAINER)))
-#FREETZ_DL_URL_CONTAINER=
+# Set autodetect URL
+ifneq (,$(call qstrip,$(FREETZ_DL_URL_LATEST_USER)))
+FREETZ_DL_URL_LATEST:=$(call qstrip,$(FREETZ_DL_URL_LATEST_USER))
 endif
-ifeq (,$(call qstrip,$(FREETZ_DL_URL_CONTAINER)))
-$(error Failed to detect the URL of the latest firmware version. Is the internet connection up?)
+#$(info URL to detect latest firmware: $(FREETZ_DL_URL_LATEST))
+# clear cached URL if old
+$(shell find $(DL_FW_DIR) -name $(DL_SOURCE).url -mmin +360 -exec rm {} ';')
+# read cached URL if exists
+FREETZ_DL_URL_CONTAINER=$(shell cat $(DL_FW_DIR)/$(DL_SOURCE).url 2>/dev/null)
+# search URL if not cached
+ifeq (,$(FREETZ_DL_URL_CONTAINER))
+#$(info Need to refresh .zip container URL)
+FREETZ_DL_URL_CONTAINER=$(shell wget -q $(call qstrip,$(FREETZ_DL_URL_LATEST)) -O -| \
+sed -rn "s/^$(call qstrip,$(FREETZ_TYPE_PREFIX_BOXMATRIX))\t.*\t(.*)$$/\1/p" | \
+grep -i "$(patsubst _%,%,$(call qstrip,$(FREETZ_TYPE_PREFIX_LABOR_FIRMWARE)))")
+$(shell echo $(FREETZ_DL_URL_CONTAINER) > $(DL_FW_DIR)/$(DL_SOURCE).url)
 endif
-
-$(info Available download URL: $(FREETZ_DL_URL_CONTAINER))
+# exit if URL is empty
+ifeq (,$(FREETZ_DL_URL_CONTAINER))
+$(error Failed to detect the URL of the latest firmware version)
+endif
+# use detected URL for vars
+#$(info Available download URL: $(FREETZ_DL_URL_CONTAINER))
 DL_SITE:=$(dir $(FREETZ_DL_URL_CONTAINER))
-DL_SOURCE_CONTAINER_MD5:=
 DL_SOURCE_CONTAINER:=$(notdir $(FREETZ_DL_URL_CONTAINER))
 DL_SOURCE_CONTAINER_SUFFIX:=$(suffix $(DL_SOURCE_CONTAINER))
 endif
 
 # Detect the .image file name inside an archive
 ifeq (y,$(call qstrip,$(FREETZ_DL_DETECT_IMAGE_NAME)))
-DL_SOURCE_MD5:=
-DL_SOURCE:=$(call qstrip,$(FREETZ_TYPE_PREFIX))$(call qstrip,$(FREETZ_TYPE_PREFIX_LABOR_FIRMWARE))-latest-firmware.image
 $(shell $(RM) $(DL_FW_DIR)/$(DL_SOURCE))
 endif
 
