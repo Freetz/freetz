@@ -16,13 +16,17 @@ Signed-off-by: Willy Tarreau <w@1wt.eu>
  arch/x86/include/asm/ptrace.h | 5 ++---
  1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/include/asm/ptrace.h b/arch/x86/include/asm/ptrace.h
-index e668d72..0f0d908 100644
 --- linux-2.6.39/arch/x86/include/asm/ptrace.h
 +++ linux-2.6.39/arch/x86/include/asm/ptrace.h
-@@ -5,1 +5,0 @@
+@@ -3,7 +3,6 @@
+ 
+ #include <linux/compiler.h>	/* For __user */
+ #ifdef __KERNEL__
 -#include <linux/linkage.h>
-@@ -144,8 +143,8 @@ extern void send_sigtrap(struct task_struct *tsk, struct pt_regs *regs,
+ #endif
+ #include <asm/ptrace-abi.h>
+ #include <asm/processor-flags.h>
+@@ -146,8 +145,8 @@
  			 int error_code, int si_code);
  void signal_fault(struct pt_regs *regs, void __user *frame, char *where);
  
