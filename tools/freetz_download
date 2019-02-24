@@ -21,7 +21,8 @@ FREETZ_DL_SITE_1="http://freetz.magenbrot.net"
 FREETZ_DL_SITE_2="http://freetz.3dfxatwork.de"
 FREETZ_DL_SITE_3="http://freetz.wirsind.info"
 FREETZ_DL_SITE_4="https://boxmatrix.info/hosted/freetz"
-FREETZ_DL_SITES_COUNT=4
+FREETZ_DL_SITE_5="http://freetz.digital-eliteboard.com/Teamserver/dl"
+FREETZ_DL_SITES_COUNT=5
 
 helpmsg()
 {
@@ -285,15 +286,15 @@ FREETZ_SITES=( $(
 	for (( i=1; i <= $FREETZ_DL_SITES_COUNT ; i++ )); do
 		eval "echo \$FREETZ_DL_SITE_$i"
 	done
-	[ -n "$FREETZ_DL_SITE_USER" ] && echo $FREETZ_DL_SITE_USER
+	[ -n "$FREETZ_DL_SITE_USER" ] && echo "$FREETZ_DL_SITE_USER"
 	) )
 
 # Array 'sites' contains download server URL(s), add all mirrors in random order
 if [ "$opt_append_servers" = y ]; then
 	for (( n=${#FREETZ_SITES[@]}; n > 0; n-- )); do
 		p=$(( RANDOM % n ))
-		sites[(( num_sites++ ))]=${FREETZ_SITES[$p]}
-		FREETZ_SITES[$p]=${FREETZ_SITES[$((n-1))]}
+		sites[(( num_sites++ ))]="${FREETZ_SITES[$p]}"
+		FREETZ_SITES[$p]="${FREETZ_SITES[$((n-1))]}"
 	done
 fi
 
