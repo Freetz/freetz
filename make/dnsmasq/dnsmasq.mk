@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2.79)
+$(call PKG_INIT_BIN, 2.80)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=64010c9734f5e275eb591374a6dad924
+$(PKG)_SOURCE_MD5:=e040e72e6f377a784493c36f9e788502
 $(PKG)_SITE:=http://thekelleys.org.uk/dnsmasq
 #$(PKG)_SITE:=git://thekelleys.org.uk/dnsmasq.git
 
