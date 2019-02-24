@@ -263,10 +263,16 @@ sed -rn "s/^$(call qstrip,$(FREETZ_TYPE_PREFIX_BOXMATRIX))\t.*\t(.*)$$/\1/p" | \
 grep -i "$(patsubst _%,%,$(call qstrip,$(FREETZ_TYPE_PREFIX_LABOR_FIRMWARE)))")
 $(shell echo $(FREETZ_DL_URL_CONTAINER) > $(DL_FW_DIR)/$(DL_SOURCE).url)
 endif
+# use backup if not got an URL
+ifeq (,$(FREETZ_DL_URL_CONTAINER))
+FREETZ_DL_URL_CONTAINER=$(shell cat $(DL_FW_DIR)/$(DL_SOURCE).url.bak 2>/dev/null)
+endif
 # exit if URL is empty
 ifeq (,$(FREETZ_DL_URL_CONTAINER))
 $(error Failed to detect the URL of the latest firmware version)
 endif
+# save URL as backup
+$(shell echo $(FREETZ_DL_URL_CONTAINER) > $(DL_FW_DIR)/$(DL_SOURCE).url.bak)
 # use detected URL for vars
 #$(info Available download URL: $(FREETZ_DL_URL_CONTAINER))
 DL_SITE:=$(dir $(FREETZ_DL_URL_CONTAINER))
