@@ -280,13 +280,12 @@ DL_SOURCE_CONTAINER:=$(notdir $(FREETZ_DL_URL_CONTAINER))
 DL_SOURCE_CONTAINER_SUFFIX:=$(suffix $(DL_SOURCE_CONTAINER))
 endif
 
+DL_IMAGE:=
+image:
 # Detect the .image file name inside an archive
 ifeq (y,$(call qstrip,$(FREETZ_DL_DETECT_IMAGE_NAME)))
 $(shell $(RM) $(DL_FW_DIR)/$(DL_SOURCE))
 endif
-
-DL_IMAGE:=
-image:
 
 # Download Firmware Image
 #  $(1) Suffix
