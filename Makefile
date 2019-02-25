@@ -312,20 +312,20 @@ else
 			.zip|.ZIP) \
 				if [ "$$(FREETZ_DL_DETECT_IMAGE_NAME)" == "y" ]; then \
 					DL_SOURCE_DETECTED=$$$$(unzip -j $$(QUIETSHORT) -l $$(DL_FW_DIR)/$$(DL_SOURCE$(1)_CONTAINER) *.image | sed -rn 's/.*( |\/)(.*\.image)/\2/p'); \
-					echo "Using detected .image name: $$$$DL_SOURCE_DETECTED"; \
+					echo "Using detected .image name: $$$$DL_SOURCE_DETECTED" >/dev/null; \
 				else \
 					DL_SOURCE_DETECTED=$$(DL_SOURCE); \
-					echo "Using hardcoded .image name: $$$$DL_SOURCE_DETECTED"; \
+					echo "Using hardcoded .image name: $$$$DL_SOURCE_DETECTED" >/dev/null; \
 				fi; \
 				if [ ! -f $$(DL_FW_DIR)/$$$$DL_SOURCE_DETECTED ]; then \
-					echo "Unzipping archive file: $$(DL_SOURCE$(1)_CONTAINER)"; \
+					echo "Unzipping archive file: $$(DL_SOURCE$(1)_CONTAINER)" >/dev/null; \
 					if ! unzip -j $$(QUIETSHORT) $$(DL_FW_DIR)/$$(DL_SOURCE$(1)_CONTAINER) *$$$$DL_SOURCE_DETECTED -d $$(DL_FW_DIR); then \
 						$$(call ERROR,3,Could not unzip firmware image.) \
 					fi; \
 				fi; \
 				if [ "$$(FREETZ_DL_DETECT_IMAGE_NAME)" == "y" ]; then \
 					[ -f $$(DL_FW_DIR)/$$$$DL_SOURCE_DETECTED ] && ln $$(DL_FW_DIR)/$$$$DL_SOURCE_DETECTED $$(DL_FW_DIR)/$$(DL_SOURCE$(1)); \
-					echo "Created hardlink for .image file: $(DL_SOURCE)"; \
+					echo "Created hardlink for .image file: $(DL_SOURCE)" >/dev/null; \
 				fi; \
 				;; \
 			*) \
