@@ -39,6 +39,12 @@ config() {
 
 
 start() {
+	if [ -n "$(find /lib/modules/$(uname -r) -name tun.ko)" ]; then
+		modprobe tun 2>/dev/null
+	fi
+	if [ -n "$(find /lib/modules/$(uname -r) -name yf_patchkernel.ko)" ]; then
+		insmod $(find /lib/modules/$(uname -r) -name yf_patchkernel.ko | sed -n -e 1p) 2>/dev/null
+	fi
 	modlib_startdaemon ${DAEMON} --config /mod/etc/${DAEMON}.conf --writepid /var/run/${DAEMON}.pid --daemon
 }
 
@@ -63,6 +69,9 @@ stop() {
 
 	rm -f /mod/etc/${daemon}.conf
 	rm -f /var/run/${daemon}.pid
+
+	rmmod yf_patchkernel 2>/dev/null
+	rmmod tun 2>/dev/null
 }
 
 case $1 in
