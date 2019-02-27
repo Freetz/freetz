@@ -16,7 +16,8 @@ CHECKSUM_ALGOS[40]="sha1"
 CHECKSUM_ALGOS[64]="sha256"
 CHECKSUM_ALGOS[128]="sha512"
 
-DOT_CONFIG=$FREETZ_BASE_DIR/.config
+FREETZ_BASE_DIR_FOUND="${FREETZ_BASE_DIR:-.}"
+DOT_CONFIG="$FREETZ_BASE_DIR_FOUND/.config"
 FREETZ_DL_SITE_1="http://freetz.magenbrot.net"
 FREETZ_DL_SITE_2="http://freetz.3dfxatwork.de"
 FREETZ_DL_SITE_3="http://freetz.wirsind.info"
@@ -199,8 +200,9 @@ CHECKSUM="$(echo ${4,,})" # convert to lower-case and trim whitespaces (checksum
 
 if [ "$DEBUG" == "1" ]; then
 	echo "freetz_download parameters:"
-	echo "    DL_DIR=$DL_DIR"
+	echo "    FREETZ_BASE_DIR_FOUND=$FREETZ_BASE_DIR_FOUND"
 	echo "    DOT_CONFIG=$DOT_CONFIG"
+	echo "    DL_DIR=$DL_DIR"
 	echo "    DL_FILE=$DL_FILE"
 	echo "    URLs=$URLs"
 	echo "    CHECKSUM=$CHECKSUM"
