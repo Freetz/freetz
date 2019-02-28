@@ -24,7 +24,7 @@ if [ "$FREETZ_AVM_VERSION_07_0X_MIN" == "y" ]; then
 	  "${FILESYSTEM_MOD_DIR}/etc/hotplug/udev-mobiled" \
 	  "${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libmobiled.so" \
 	  "${FILESYSTEM_MOD_DIR}/usr/share/configd/C20_mobiled.so" \
-	  "${FILESYSTEM_MOD_DIR}/usr/lua/mobile*.lua"
+	  "${FILESYSTEM_MOD_DIR}/usr/lua/mobile_*.lua"
 
 	modern_remove mobile
 fi
