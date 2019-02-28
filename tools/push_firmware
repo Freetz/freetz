@@ -209,6 +209,7 @@ telnet_hn() {
 
 prepare_image() {
 	file=$1
+	[ -L "$file" ] && file="$(realpath $file)" && file=${file#$PWD/}
 	[ -e "$file" ] || { echo "No such file or directory: $file"; exit 1; }
 	[ -f "$file" ] || { echo "Not a file: $file"; exit 1; }
 	[ -r "$file" ] || { echo "Access denied: $file"; exit 1; }
@@ -271,23 +272,24 @@ trap cleanup EXIT SIGTERM SIGINT
 usage()
 {
 	echo
-	echo "Usage: $0 -m<s|r|d> <image> [ -f[orce] ] [ -ip <ip> ] [ -ram <mb> ] [ -lfs <0|1> ] [ -hn ]"
-	echo ""
-	echo "-ms[ingle]   Mode single-boot (like 7270 & 7390):"
-	echo "               Flashes the given 'image' to classic devices"
-	echo "-mr[am]      Mode ram-boot (like 7490 & 7590):"
-	echo "               The 'image' will be flashed into currently active partition."
-	echo "               You could use -lfs parameter to change this."
-	echo "-md[ual]     Mode dual-boot (like 6490 & 6590):"
-	echo "               Flashes the Atom/x86 part of the 'image'."
-	echo "               It is mandatory to set the -lfs parameter too."
-	echo "-f[orce]     Disable safety prompt."
-	echo "-ip <ip>     Bootloader IP address or hostname, default 192.168.178.1"
-	echo "-ram <mb>    Only ram-boot mode: Ram size in MB of your device, default 256."
-	echo "             Some devices have more ram, like 7590 has 512 MB."
-	echo "             But for flashing 256 should be okay."
-	echo "-lfs <0|1>   Not single-boot mode: Set linux_fs_start to 0 or 1 and flash into this."
-	echo "-hn          Only single-boot mode: Flash to an 'Alice/HanseNet' version of 7570."
+	echo "Usage: $0 -m<s|r|d> [image] [ -f ] [ -ip <ip> ] [ -ram <mb> ] [ -lfs <0|1> ] [ -hn ]"
+	echo
+	echo "              When no 'image' is given, images/latest.image will be tried."
+	echo "-ms [image]   Mode single-boot (like 7270 & 7390):"
+	echo "                Flashes the given 'image' to classic devices"
+	echo "-mr [image]   Mode ram-boot (like 7490 & 7590):"
+	echo "                The 'image' will be flashed into currently active partition."
+	echo "                You could use -lfs parameter to change this."
+	echo "-md [image]   Mode dual-boot (like 6490 & 6590):"
+	echo "                Flashes the Atom/x86 part of the 'image'."
+	echo "                It is mandatory to set the -lfs parameter too."
+	echo "-f            Disable safety prompt."
+	echo "-ip <ip>      Bootloader IP address or hostname, default 192.168.178.1"
+	echo "-ram <mb>     Only ram-boot mode: Ram size in MB of your device, default 256."
+	echo "              Some devices have more ram, like 7590 has 512 MB."
+	echo "              But for flashing 256 should be okay."
+	echo "-lfs <0|1>    Not single-boot mode: Set linux_fs_start to 0 or 1 and flash into this."
+	echo "-hn           Only single-boot mode: Flash to an 'Alice/HanseNet' version of 7570."
 	echo
 	exit 1
 }
@@ -311,8 +313,15 @@ while [ $# -ge 1 ]; do
 					;;
 			esac
 			shift
-			[ -z "$1" -o "$1" != "${1#\-}" ] && usage
-			prepare_image $1
+			if [ -z "$1" -o "$1" != "${1#\-}" ]; then
+				if [ -e images/latest.image ]; then
+					prepare_image images/latest.image
+				else
+					usage
+				fi
+			else
+				prepare_image $1
+			fi
 			;;
 		(-f|-force)
 			ISFORCE=true
@@ -343,6 +352,7 @@ while [ $# -ge 1 ]; do
 done
 
 # arg check
+[ ! $ISSINGLE$ISDUAL$ISRAM ]     && echo "Parameter '-m<s|r|d>' is mandatory."                   && exit 1
 [ ! $ISSINGLE ] && [ $ISALICE ]  && echo "Parameter '-hn' is only allowed for single-boot mode." && exit 1
 [ $ISSINGLE ]   && [ $LFS ]      && echo "Parameter '-lfs' is not allowed for single-boot mode." && exit 1
 [ $ISDUAL ]     && [ ! $LFS ]    && echo "Parameter '-lfs' is mandatory for dual-boot mode."     && exit 1
@@ -419,9 +429,9 @@ if [ $ISDUAL ]; then
 fi
 
 if [ $ISFORCE ]; then
+	echo -e " * Flashing: \033[4m$file\033[0m"
 	push_fw "$img" "$sys"
 else
-	echo
 	echo    "!!! WARNING !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!!"
 	echo    "!!!  THERE IS NO WARRANTY AT ALL !!! USE AT YOUR OWN RISK   !!!"
 	echo
