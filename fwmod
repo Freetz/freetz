@@ -1864,6 +1864,11 @@ if [ "$DO_PACK" -gt 0 ]; then
 	echo0 "using ${final_img_suffix} image as the final one"
 	cp -a "${img_name}.${final_img_suffix}" "${img_name}"
 
+	# create the link images/latest.image to the just created .image
+	img_link="${img_name%/*}/latest.image"
+	rm -f "$img_link"
+	ln -s "${img_name#*/}" "$img_link"
+
 	# delete temporary unsigned/signed files unless we're debugging
 	[ "$DEBUG" != "1" ] && rm -f "${img_name}.unsigned" "${img_name}.signed"
 fi
