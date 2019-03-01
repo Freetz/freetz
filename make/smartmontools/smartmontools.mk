@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 6.6)
+$(call PKG_INIT_BIN, 7.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=@SF/smartmontools
-$(PKG)_SOURCE_MD5:=9ae2c6e7131cd2813edcc65cbe5f223f
+$(PKG)_SOURCE_MD5:=b2a80e4789af23d67dfe1e88a997abbf
 
 $(PKG)_BINARIES := smartctl
 $(PKG)_BINARIES_BUILD_DIR := $(addprefix $($(PKG)_DIR)/,$($(PKG)_BINARIES))
