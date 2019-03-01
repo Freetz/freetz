@@ -1247,7 +1247,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	echo1 "checking kernel version"
 	echo2 "... used by AVM ...... ${MODULES_SUBDIR##*/}"
 	echo2 "... used by Freetz ... ${FREETZ_KERNEL_VERSION_MODULES_SUBDIR}"
-	if [ "lib/modules/${FREETZ_KERNEL_VERSION_MODULES_SUBDIR%%-*}" != "${MODULES_SUBDIR%%-*}" ]; then
+	if [ "lib/modules/${FREETZ_KERNEL_VERSION_MODULES_SUBDIR}" != "$MODULES_SUBDIR" -a "lib/modules/${FREETZ_KERNEL_VERSION_MODULES_SUBDIR%%\**}" != "$MODULES_SUBDIR" ]; then
 		if [ "$FREETZ_REPLACE_MODULE_AVAILABLE" == "y" ]; then
 			error 1 "Freetz and AVM kernel versions do not match. Wrong kernel version configuration in Freetz?"
 		else
