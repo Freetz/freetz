@@ -59,6 +59,7 @@ function push_fw() {
 	done
 	echo
 
+	echo
 	echo " * Box is back up again, initiating transfer."
 	echo
 
@@ -420,9 +421,9 @@ fi
 
 if [ $ISDUAL ]; then
 	echo
-	echo     "Warning! Flashing of DOCSIS devices was not yet tested!" 
-	echo     "You know what you are doing? Are the values above okay?"
-	echo -n  "Proceed anyway? (y/[n]) "
+	echo     " * Warning! Flashing of DOCSIS devices was not yet tested!"
+	echo     "   You know what you are doing? Are the values above okay?"
+	echo -n  "   Proceed anyway? (y/[n]) "
 	read -n 1 -s PROCEED_DOCSIS
 	[ "$PROCEED_DOCSIS" != "y" ] && echo -e "\n\naborted\n" && exit
 	echo     "$PROCEED_DOCSIS"
@@ -435,9 +436,9 @@ else
 	echo    "!!! WARNING !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!!"
 	echo    "!!!  THERE IS NO WARRANTY AT ALL !!! USE AT YOUR OWN RISK   !!!"
 	echo
-	echo -e "Are you sure, that you want to flash this file to the device?"
-	echo -e "\033[4m$file\033[0m"
-	echo -n "Proceed? (y/[n]) "
+	echo -e " * Are you sure, that you want to flash this file to the device?"
+	echo -e "   \033[4m$file\033[0m"
+	echo -n "   Proceed? (y/[n]) "
 
 	read -n 1 -s PROCEED
 	echo    "$PROCEED"
