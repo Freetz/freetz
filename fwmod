@@ -1795,23 +1795,13 @@ if [ "$DO_PACK" -gt 0 ]; then
 		fi
 	fi
 
-	# Create in-memory image
-	img_name="${FW_IMAGES_DIR:-$DIR}/${modimage}"
-	if [ "${FREETZ_FWMOD_CREATE_IN_MEMORY_IMAGE}" == "y" ]; then
-		echo0 "creating in-memory image ${img_name}.in-memory"
-		{
-			cat "$KERNEL_MOD"     | dd bs=256 conv=sync 2>/dev/null;
-			cat "$FILESYSTEM_MOD" | dd bs=256 conv=sync 2>/dev/null;
-		} > "${img_name}.in-memory"
-	fi
-
 	# Write checksum
 	for f in "$KERNEL_MOD" "$FILESYSTEM_MOD"; do
 		[ -s "$f" ] || continue
 
 		fbn=$(basename $f)
 		echo0 "adding checksum to $fbn"
-		"$TICHKSUM" -a "$f" > "${MOD_DIR}/$fbn-chksum.log" || { rm -f "${img_name}.in-memory"; error 1 "adding checksum to $fbn failed"; }
+		"$TICHKSUM" -a "$f" > "${MOD_DIR}/$fbn-chksum.log" || error 1 "adding checksum to $fbn failed"
 	done
 
 	# Consistency check
@@ -1833,6 +1823,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	TAR_FOR_IMAGE_TARBALL="$TAR_GNU"
 	TAR_FOR_IMAGE_TARBALL_FORMAT_OPT="--format=gnu"
 
+	img_name="${FW_IMAGES_DIR:-$DIR}/${modimage}"
 	echo0 "packing ${img_name}"
 	"${TAR_FOR_IMAGE_TARBALL}" ${TAR_FOR_IMAGE_TARBALL_FORMAT_OPT} -C "$FIRMWARE_MOD_DIR" -cf "${img_name}.unsigned" ./var
 	if [ $? -ne 0 ] || ! is_valid_tarball "${img_name}.unsigned"; then
