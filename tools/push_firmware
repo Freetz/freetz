@@ -35,8 +35,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-img=""
-
 function push_fw() {
 	trap 'echo ; echo "aborted" ; exit 1' TERM INT
 
@@ -52,7 +50,7 @@ function push_fw() {
 	echo
 
 	echo    " * No reply from box. Assuming switch-off or restart. Trying to re-detect box."
-	echo -n "   "
+	echo -n "   ."
 	while ! ping $ping_params $ip > /dev/null; do
 		echo -n "."
 		sleep 0.2
@@ -63,12 +61,7 @@ function push_fw() {
 	echo " * Box is back up again, initiating transfer."
 	echo
 
-	if [ $ISRAM ]; then
-		mtdram1=$1
-	elif [ $ISDUAL ]; then
-		img=$1
-		sys=$2
-	elif [ $ISSINGLE ]; then
+	if [ $ISSINGLE ]; then
 		if [ $ISALICE ]; then
 			basename=$(basename $0)
 			echo "$basename: Trying to flash an image to an \"Alice\" 7570 FritzBox."
@@ -80,7 +73,7 @@ function push_fw() {
 			$(echo $MTD | tr -d '\n' | grep '0x90040000,0x907E0000' | grep -q '0x907E0000,0x90F80000') || \
 				{ echo -e "$basename: Error veryfing mtd values for \"Alice\" box. Found values:\n$MTD" ; exit 1 ;}
 
-			size=$(stat -c %s $1)
+			size=$(stat -c %s $img)
 			let max_size=7808*1024
 			if [ $size -ge $max_size ]; then
 				kernel_mtd1=$(mktemp -t freetz_mtd1_XXX) || { echo "$basename: Error creating temporary file for mtd1."; exit 1; }
@@ -89,21 +82,18 @@ function push_fw() {
 				dd if=${file} of=${kernel_mtd5} bs=1k skip=7808 >/dev/null 2>&1 || { echo "$basename: Error creating image part for mtd5."; exit 1; }
 			else
 				ISALICE=false
-				kernel_mtd1=$1
+				kernel_mtd1=$img
 			fi
 		else
-			kernel_mtd1=$1
+			kernel_mtd1=$img
 		fi
 	fi
 
 	if [ $FOUND_NCFTP ]; then
 		if [ $ISRAM ]; then
 			ncftpput \
-				-C \
-				-d stdout \
+				-C -d stdout -u adam2 -p adam2 \
 				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
-				-u adam2 \
-				-p adam2 \
 				-W "quote MEDIA SDRAM" \
 				-W "quote SETENV memsize ${FREESIZE}" \
 				-W "quote SETENV kernel_args_tmp mtdram1=${MTDSTART},${MAPLIMIT}" \
@@ -112,38 +102,36 @@ function push_fw() {
 				$ip ${mtdram1} "${MTDSTART} ${MAPLIMIT}"
 		elif [ $ISDUAL ]; then
 			ncftpput \
-				-C \
-				-d stdout \
+				-C -d stdout -u adam2 -p adam2 \
 				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
-				-u adam2 \
-				-p adam2 \
 				-W "quote MEDIA FLSH" \
-				$ip $sys mtd$sysMTD
+				$ip $ARMsys mtd$ARMsysMTD
 			ncftpput \
-				-C \
-				-d stdout \
+				-C -d stdout -u adam2 -p adam2 \
 				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
-				-u adam2 \
-				-p adam2 \
+				-W "quote MEDIA FLSH" \
+				$ip $ARMkrn mtd$ARMkrnMTD
+			ncftpput \
+				-C -d stdout -u adam2 -p adam2 \
+				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
+				-W "quote MEDIA FLSH" \
+				$ip $X86sys mtd$X86sysMTD
+			ncftpput \
+				-C -d stdout -u adam2 -p adam2 \
+				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
 				-W "quote MEDIA FLSH" \
 				-X "quote SETENV linux_fs_start $LFS" \
 				-Y "quote REBOOT" \
-				$ip $img mtd$imgMTD
+				$ip $X86krn mtd$X86krnMTD
 		elif [ $ISSINGLE ]; then
 			[ $ISALICE ] && ncftpput \
-				-C \
-				-d stdout \
+				-C -d stdout -u adam2 -p adam2 \
 				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
-				-u adam2 \
-				-p adam2 \
 				-W "quote MEDIA FLSH" \
 				$ip ${kernel_mtd5} mtd5
 			ncftpput \
-				-C \
-				-d stdout \
+				-C -d stdout -u adam2 -p adam2 \
 				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
-				-u adam2 \
-				-p adam2 \
 				-W "quote MEDIA FLSH" \
 				-Y "quote REBOOT" \
 				$ip ${kernel_mtd1} mtd1
@@ -169,8 +157,10 @@ user adam2 adam2
 debug
 bin
 quote MEDIA FLSH
-put $sys mtd$sysMTD
-put $img mtd$imgMTD
+put $ARMsys mtd$ARMsysMTD
+put $ARMkrn mtd$ARMkrnMTD
+put $X86sys mtd$X86sysMTD
+put $X86krn mtd$X86krnMTD
 quote SETENV linux_fs_start $LFS
 quote REBOOT
 quit
@@ -209,51 +199,57 @@ telnet_hn() {
 }
 
 prepare_image() {
-	file=$1
 	[ -L "$file" ] && file="$(realpath $file)" && file=${file#$PWD/}
 	[ -e "$file" ] || { echo "No such file or directory: $file"; exit 1; }
 	[ -f "$file" ] || { echo "Not a file: $file"; exit 1; }
 	[ -r "$file" ] || { echo "Access denied: $file"; exit 1; }
 	if [ $ISRAM ]; then
-		tmpdir=$(mktemp -td freetzXXX) || { echo "Error creating temporary directory."; exit 1; }
-		img="$tmpdir/ramboot.flash"
-		if tar -C $tmpdir/ -xf $file */var/tmp/*.image --transform='s!.*/!!' >/dev/null 2>&1; then
-			if [ -s "$tmpdir/kernel.image" -a -s "$tmpdir/filesystem.image" ]; then
+		tmpdir=$(mktemp -td freetz_XXX) || { echo "Error creating temporary directory."; exit 1; }
+		mtdram1="$tmpdir/ramboot.flash"
+		if tar -C $tmpdir/ -xf $file *.image >/dev/null 2>&1; then
+			if [ -s "$tmpdir/var/tmp/kernel.image" -a -s "$tmpdir/var/tmp/filesystem.image" ]; then
 				{
-					cat "$tmpdir/kernel.image"     | dd bs=256 conv=sync 2>/dev/null;
-					cat "$tmpdir/filesystem.image" | dd bs=256 conv=sync 2>/dev/null;
-				} > "$img"
+					cat "$tmpdir/var/tmp/kernel.image"     | dd bs=256 conv=sync 2>/dev/null;
+					cat "$tmpdir/var/tmp/filesystem.image" | dd bs=256 conv=sync 2>/dev/null;
+				} > "$mtdram1"
 			fi
 		fi
-		if [ ! -s "$img" ]; then
-			echo -e "\nError: file is not a valid image to be written to the device.\n" >&2
+		if [ ! -s "$mtdram1" ]; then
+			echo -e "\nError: file is not a valid ram-boot image to be written to the device.\n" >&2
 			exit 1
 		fi
 	elif [ $ISDUAL ]; then
-		tmpdir=$(mktemp -td freetzXXX) || { echo "Error creating temporary directory."; exit 1; }
-		if tar -C $tmpdir/ -xf $file */var/tmp/x86/*.image --transform='s!.*/!!' >/dev/null 2>&1; then
-			img="$tmpdir/kernel.image"
-			sys="$tmpdir/filesystem.image"
+		tmpdir=$(mktemp -td freetz_XXX) || { echo "Error creating temporary directory."; exit 1; }
+		ARMsys="$tmpdir/ARM-system.image"
+		ARMkrn="$tmpdir/ARM-kernel.image"
+		X86sys="$tmpdir/X86-system.image"
+		X86krn="$tmpdir/X86-kernel.image"
+		if tar -C $tmpdir/ -xf $file *.image >/dev/null 2>&1; then
+			mv "$tmpdir/var/remote/var/tmp/filesystem.image"     "$ARMsys" 2>/dev/null
+			mv "$tmpdir/var/remote/var/tmp/kernel.image"         "$ARMkrn" 2>/dev/null
+			mv "$tmpdir/var/remote/var/tmp/x86/filesystem.image" "$X86sys" 2>/dev/null
+			mv "$tmpdir/var/remote/var/tmp/x86/kernel.image"     "$X86krn" 2>/dev/null
 		fi
-		if [ ! -s "$img" -o ! -s "$sys" ]; then
-			echo -e "\nError: file is not a valid image to be written to the device.\n" >&2
+		if [ ! -s "$ARMsys" -o ! -s "$ARMkrn" -o ! -s "$X86sys" -o ! -s "$X86krn" ]; then
+			echo -e "\nError: file is not a valid dual-boot image to be written to the device.\n" >&2
 			exit 1
 		fi
 	elif [ $ISSINGLE ]; then
 		work=$file
+		img=""
 		while [ -z "$img" ]; do
 			[ "$(uname -s)" == "Darwin" ] && CHECK="81 12 ed fe" || CHECK="1281 feed"
 			hexdump -n4 "$work" | grep -iq "$CHECK" && img="$work"
 			if [ -z "$img" ]; then
 				if tar tf "$work" ./var/tmp/kernel.image >/dev/null 2>&1; then
-					tmpimg=$(mktemp -t freetzXXX) || { echo "Error creating temporary file."; exit 1; }
+					tmpimg=$(mktemp -t freetz_XXX) || { echo "Error creating temporary file."; exit 1; }
 					echo -e "\nHint: file seems to be a full firmware image archive in 'tar' format" >&2
-					echo -e "containing the 'kernel.image'. Now trying to unpack and use that image.\n" >&2
+					echo -e "containing the 'kernel.image'. Now trying to unpack and use that image." >&2
 					tar -Oxf "$work" ./var/tmp/kernel.image > $tmpimg
 					work=$tmpimg
 				else
-					echo -e "\nError: file is not a valid image to be written to mtd1. Please use a" >&2
-					echo -e "hidden root 'kernel.image' containing both Linux kernel and file system.\n" >&2
+					echo -e "\nError: file is not a valid single-boot image to be written to mtd1. Please use" >&2
+					echo -e "a hidden root 'kernel.image' containing both Linux kernel and file system.\n" >&2
 					exit 1
 				fi
 			fi
@@ -282,7 +278,7 @@ usage()
 	echo "                The 'image' will be flashed into currently active partition."
 	echo "                You could use -lfs parameter to change this."
 	echo "-md [image]   Mode dual-boot (like 6490 & 6590):"
-	echo "                Flashes the Atom/x86 part of the 'image'."
+	echo "                Flashes the Arm and x86 part of the 'image'."
 	echo "                It is mandatory to set the -lfs parameter too."
 	echo "-f            Disable safety prompt."
 	echo "-ip <ip>      Bootloader IP address or hostname, default 192.168.178.1"
@@ -313,34 +309,34 @@ while [ $# -ge 1 ]; do
 					usage
 					;;
 			esac
-			shift
-			if [ -z "$1" -o "$1" != "${1#\-}" ]; then
+			if [ -z "$2" -o "$2" != "${2#\-}" ]; then
 				if [ -e images/latest.image ]; then
-					prepare_image images/latest.image
+					file="images/latest.image"
 				else
 					usage
 				fi
 			else
-				prepare_image $1
+				file="$2"
+				shift
 			fi
 			;;
 		(-f|-force)
 			ISFORCE=true
 			;;
 		(-ip)
+			[ -z "$2" -o "$2" != "${2#\-}" ] && usage
+			ip=$2
 			shift
-			[ -z "$1" -o "$1" != "${1#\-}" ] && usage
-			ip=$1
 			;;
 		(-ram)
+			[ -z "$2" -o "$2" != "${2#\-}" ] && usage
+			FULLSIZE="0x$(printf '%x' "$(( $2 * 1048576 ))")"
 			shift
-			[ -z "$1" -o "$1" != "${1#\-}" ] && usage
-			FULLSIZE="0x$(printf '%x' "$(( $1 * 1048576 ))")"
 			;;
 		(-lfs)
+			[ "$2" != "0" -a "$2" != "1" ] && echo "Invalid linux_fs_start value" && exit
+			LFS=$2
 			shift
-			[ "$1" != "0" -a "$1" != "1" ] && echo "Invalid linux_fs_start value" && exit
-			LFS=$1
 			;;
 		(-hn)
 			ISALICE=true
@@ -353,27 +349,55 @@ while [ $# -ge 1 ]; do
 done
 
 # arg check
-[ ! $ISSINGLE$ISDUAL$ISRAM ]     && echo "Parameter '-m<s|r|d>' is mandatory."                   && exit 1
+[ -z "$ISSINGLE$ISDUAL$ISRAM" ]  && echo "Parameter '-m<s|r|d>' is mandatory."                   && exit 1
 [ ! $ISSINGLE ] && [ $ISALICE ]  && echo "Parameter '-hn' is only allowed for single-boot mode." && exit 1
 [ $ISSINGLE ]   && [ $LFS ]      && echo "Parameter '-lfs' is not allowed for single-boot mode." && exit 1
 [ $ISDUAL ]     && [ ! $LFS ]    && echo "Parameter '-lfs' is mandatory for dual-boot mode."     && exit 1
 [ ! $ISRAM ]    && [ $FULLSIZE ] && echo "Parameter '-ram' is only allowed for ram-boot mode."   && exit 1
 
+prepare_image
+
 if [ $ISRAM ]; then
 	[ ! $FULLSIZE ] && FULLSIZE=0x10000000  # 256MB for 7490. 7590 has 0x20000000, but anyway..
 	MAPSTART=0x80000000  # start mapped memory
 	MAPLIMIT="0x$(printf '%x' $(( $MAPSTART + $FULLSIZE )))"
-	FILESIZE="0x$(printf '%x' $(stat --printf='%s' "$img"))"
+	FILESIZE="0x$(printf '%x' $(stat --printf='%s' "$mtdram1"))"
 	FREESIZE="0x$(printf '%x' $(( $FULLSIZE - $FILESIZE )))"
 	MTDSTART="0x$(printf '%x' $(( $MAPSTART + $FULLSIZE - $FILESIZE )))"
 fi
 
 if [ $ISDUAL ]; then
-	[ $LFS -ne 1 ] && sysMTD=6 || sysMTD=13
-	imgMTD=$(( $sysMTD + 1 ))
+	[ $LFS -ne 1 ] && ARMsysMTD=0  && ARMkrnMTD=1  && X86sysMTD=6  && X86krnMTD=7
+	[ $LFS -eq 1 ] && ARMsysMTD=11 && ARMkrnMTD=12 && X86sysMTD=13 && X86krnMTD=14
 fi
 
+# IPs
 [ ! $ip ] && ip=192.168.178.1
+oa="unknown"
+for horst in $(hostname -I); do
+	[ ${horst%.*} == ${ip%.*} ] && oa=$horst
+done
+if [ "$oa" == "unknown" ]; then
+	echo
+	echo     " * Warning: It seems your network is not able to reach"
+	case $(ls /sys/class/net/ | grep -v "^lo$" | wc -w) in
+		0)
+			;;
+		1)
+			echo     "   $ip directly. This command could help to fix:"
+			;;
+		*)
+			echo     "   $ip directly. One(!) of these commands could help to fix:"
+			;;
+	esac
+	for x in $(ls /sys/class/net/ | grep -v "^lo$" ); do
+		echo -e  "   $ \033[4msudo ifconfig $x:0 ${ip%.*}.$(ifconfig $x | sed -rn 's/.*inet [0-9\.]*\.([0-9]*) .*/\1/p') up\033[0m"
+	done
+	echo -n  "   Proceed anyway? ([y]/n) "
+	read -n 1 -s PROCEED_NETCFG
+	[ "$PROCEED_NETCFG" != "y" -a -n "$PROCEED_NETCFG" ] && echo -e "n\n\naborted\n" && exit
+	echo     "$PROCEED_NETCFG"
+fi
 
 ping_params="-c1 -w1"
 if [ "$(uname -s)" == "Darwin" ]; then
@@ -382,21 +406,25 @@ elif [ "$(uname -o)" == "Cygwin" ]; then
 	CYGWIN=1
 	ping_params="-n 1 -w 500"
 fi
-
-if [ -x "$(which ncftpput 2>/dev/null)" ] ; then
-	FOUND_NCFTP=1
-elif [ "$(uname -s)" == "Linux" -a -x "$(which ftp 2>/dev/null)" ] ; then
-	FOUND_FTP=1
-else
+[ -x "$(which ncftpput 2>/dev/null)" ] && FOUND_NCFTP=true
+[ "$(uname -s)" == "Linux" -a -x "$(which ftp 2>/dev/null)" ] && FOUND_FTP=true
+if [ -z "$FOUND_NCFTP" -a -z "$FOUND_FTP" ]; then
 	echo "You have to install 'ncftp' or 'ftp' in order to use this script."
 	exit 1
 fi
+if [ -n "$FOUND_NCFTP" -a -n "$FOUND_FTP" ]; then
+	[ $ISRAM ]    && FOUND_FTP=""
+	[ $ISDUAL ]   && FOUND_NCFTP=""
+	[ $ISSINGLE ] && FOUND_FTP=""
+	[ $ISALICE ]  && FOUND_NCFTP=""
+fi
+[ -n "$FOUND_NCFTP" ] && UCMD="ncftpput" || UCMD="ftp"
 
 # logging
 echo
-[ $FOUND_NCFTP ] && UCMD=ncftpput || UCMD=ftp
 echo " * Using command: $UCMD"
 echo " * Target host: $ip"
+echo " * Outgoing IP: $oa"
 if [ $ISDUAL ]; then
 	MODE="dual"
 elif [ $ISRAM ]; then
@@ -407,7 +435,14 @@ fi
 echo " * Flash mode: $MODE-boot"
 [ $FULLSIZE ] && echo " * Allowed memory size: $(( $FULLSIZE /1024/1024 )) MB"
 [ $LFS ]      && echo " * Designated linux_fs_start: $LFS"
-[ $ISDUAL ]   && echo " * Atom-System mtd: $sysMTD" && echo " * Atom-Kernel mtd: $imgMTD"
+if [ $ISDUAL ]; then
+	echo
+	echo " * Arm-System mtd: $ARMsysMTD"
+	echo " * Arm-Kernel mtd: $ARMkrnMTD"
+	echo " * x86-System mtd: $X86sysMTD"
+	echo " * x86-Kernel mtd: $X86krnMTD"
+	echo
+fi
 if [ $ISRAM ]; then
 	echo -e
 	echo -e " * MAPSTART=$MAPSTART"
@@ -419,34 +454,29 @@ if [ $ISRAM ]; then
 	echo -e
 fi
 
+#TODO: remove this later
 if [ $ISDUAL ]; then
-	echo
 	echo     " * Warning! Flashing of DOCSIS devices was not yet tested!"
 	echo     "   You know what you are doing? Are the values above okay?"
 	echo -n  "   Proceed anyway? (y/[n]) "
 	read -n 1 -s PROCEED_DOCSIS
-	[ "$PROCEED_DOCSIS" != "y" ] && echo -e "\n\naborted\n" && exit
-	echo     "$PROCEED_DOCSIS"
+	[ "$PROCEED_DOCSIS" != "y" ] && echo -e "n\n\naborted\n" && exit
+	echo -e  "$PROCEED_DOCSIS\n"
 fi
 
 if [ $ISFORCE ]; then
 	echo -e " * Flashing: \033[4m$file\033[0m"
-	push_fw "$img" "$sys"
+	push_fw
 else
-	echo    "!!! WARNING !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!!"
-	echo    "!!!  THERE IS NO WARRANTY AT ALL !!! USE AT YOUR OWN RISK   !!!"
+	echo    " !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!!"
+	echo    " !!!  THERE IS NO WARRANTY AT ALL !!! USE AT YOUR OWN RISK   !!!"
 	echo
-	echo -e " * Are you sure, that you want to flash this file to the device?"
+	echo    " * Are you sure, that you want to flash this file to the device?"
 	echo -e "   \033[4m$file\033[0m"
 	echo -n "   Proceed? (y/[n]) "
-
 	read -n 1 -s PROCEED
+	[ "$PROCEED" != "y" ] && echo -e "n\n\naborted\n" && exit
 	echo    "$PROCEED"
-
-	if [ "$PROCEED" = "y" ]; then
-		push_fw "$img" "$sys"
-	else
-		echo -e "\naborted\n"
-	fi
+	push_fw
 fi
 
