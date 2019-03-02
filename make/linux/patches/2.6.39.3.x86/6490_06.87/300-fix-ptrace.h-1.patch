@@ -1,0 +1,35 @@
+From 3ad35bf84f747cafa2766c56cb21a0229b4def5e Mon Sep 17 00:00:00 2001
+From: Willy Tarreau <w@1wt.eu>
+Date: Thu, 13 Jun 2013 16:40:05 +0200
+Subject: [PATCH 1/2] Revert "x86, ptrace: fix build breakage with gcc 4.7"
+
+This reverts commit 4ed3bb08f1698c62685278051c19f474fbf961d2.
+
+As reported by Sven-Haegar Koch, this patch breaks make headers_check :
+
+   CHECK   include (0 files)
+   CHECK   include/asm (54 files)
+   /home/haegar/src/2.6.32/linux/usr/include/asm/ptrace.h:5: included file 'linux/linkage.h' is not exported
+
+Signed-off-by: Willy Tarreau <w@1wt.eu>
+---
+ arch/x86/include/asm/ptrace.h | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/include/asm/ptrace.h b/arch/x86/include/asm/ptrace.h
+index e668d72..0f0d908 100644
+--- linux-2.6.39/arch/x86/include/asm/ptrace.h
++++ linux-2.6.39/arch/x86/include/asm/ptrace.h
+@@ -5,1 +5,0 @@
+-#include <linux/linkage.h>
+@@ -144,8 +143,8 @@ extern void send_sigtrap(struct task_struct *tsk, struct pt_regs *regs,
+ 			 int error_code, int si_code);
+ void signal_fault(struct pt_regs *regs, void __user *frame, char *where);
+ 
+-extern asmregparm long syscall_trace_enter(struct pt_regs *);
+-extern asmregparm void syscall_trace_leave(struct pt_regs *);
++extern long syscall_trace_enter(struct pt_regs *);
++extern void syscall_trace_leave(struct pt_regs *);
+ 
+ static inline unsigned long regs_return_value(struct pt_regs *regs)
+ {
