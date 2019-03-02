@@ -838,7 +838,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			[ "${REVISION:0:6}" == "export" ] && REVISION=""
 		fi
 	elif [ -d .git ]; then
-		REVISION="$(git rev-list --count HEAD)"
+		REVISION="branch-$(git status | sed -rn 's/.* Branch ([^/]*)$/\1/p')-$(git rev-list --count HEAD)"
 	fi
 	[ -n "$REVISION" ] && REVISION="-$REVISION"
 
