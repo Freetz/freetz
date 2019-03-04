@@ -9,13 +9,41 @@ choice
 
 	config FREETZ_DOWNLOAD_TOOLCHAIN
 		bool "Download and use precompiled toolchains"
-		depends on FREETZ_AVM_VERSION_07_0X_MAX
+		depends on (FREETZ_USER_LEVEL_EXPERT && FREETZ_AVM_VERSION_07_0X_MAX) || FREETZ_AVM_VERSION_06_9X_MAX
+		depends on !(!FREETZ_USER_LEVEL_EXPERT && FREETZ_SYSTEM_TYPE_IPQ40xx)
+		depends on !(!FREETZ_USER_LEVEL_EXPERT && FREETZ_SYSTEM_TYPE_PUMA6)
+		depends on !(!FREETZ_USER_LEVEL_EXPERT && FREETZ_SYSTEM_TYPE_QCA956x)
 #		depends on !FREETZ_TYPE_FIRMWARE_LABOR_TEST
 
 	config FREETZ_BUILD_TOOLCHAIN
 		bool "Build own toolchains (requires 4GB diskspace)"
 
 endchoice # "Toolchains" #
+
+choice
+	prompt "Toolchain version"
+	depends on FREETZ_DOWNLOAD_TOOLCHAIN
+	default FREETZ_DOWNLOAD_TOOLCHAIN_13747
+	help
+		Chose version of precompiled toolchains
+
+	config FREETZ_DOWNLOAD_TOOLCHAIN_13747
+		bool "r13747"
+		depends on FREETZ_AVM_VERSION_06_9X_MAX
+		depends on !FREETZ_SYSTEM_TYPE_IPQ40xx
+		depends on !FREETZ_SYSTEM_TYPE_PUMA6
+		depends on !FREETZ_SYSTEM_TYPE_QCA956x
+		help
+			Uses r13747 (and some r14612)
+
+	config FREETZ_DOWNLOAD_TOOLCHAIN_15256
+		bool "r15256"
+		depends on FREETZ_USER_LEVEL_EXPERT
+		depends on FREETZ_AVM_VERSION_07_0X_MAX
+		help
+			Use r15256 (and some r13747)
+
+endchoice # "Toolchain version" #
 
 comment "Kernel toolchain options ----------------------------------"
 
