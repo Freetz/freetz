@@ -125,7 +125,7 @@ via_ctlm6() {
 	IP=$(ctlmgr_ctl r ipv6 status/ip)
 }
 
-via_ctlmpre6 {
+via_ctlmpre6() {
 	# use cltmgr_ctl for determing the IPv6 prefix
 	IP=$(ctlmgr_ctl r ipv6 status/prefix | sed 's/\/.*//g')
 }
