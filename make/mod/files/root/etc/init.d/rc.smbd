@@ -11,6 +11,9 @@ set_mode() {
 }
 
 case $1 in
+	""|load)
+		[ -e /tmp/smbd_add_to_inetd_later ] && inetdctl enable smbd
+		;;
 	inetd_enable)
 		set_mode inetd
 		;;
@@ -21,7 +24,7 @@ case $1 in
 		cat $STATUS_FILE 2>/dev/null
 		;;
 	*)
-		echo "Usage: $0 [inetd_enable|inetd_disable|status]" 1>&2
+		echo "Usage: $0 [load|inetd_enable|inetd_disable|status]" 1>&2
 		exit 1
 		;;
 esac
