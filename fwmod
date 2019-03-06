@@ -840,11 +840,12 @@ if [ "$DO_MOD" -gt 0 ]; then
 		SUBVERSION="$(cat $SUBVERSION_FILE)"
 	elif [ -d .git ]; then
 		SUBVERSION="freetz-branch"
-		SHORT_COMMIT_HASH="$(git log -1 --format=%h)"
-		LONG_COMMIT_HASH="$(git log -1 --format=%H)"
+		SHORT_LATEST_COMMIT_HASH="$(git log --format=%h -1)"
+		LONG_LATEST_COMMIT_HASH="$(git log --format=%H -1)"
 		COUNT_OF_COMMITS="$(git rev-list --count HEAD)"
+		TS_OF_LATEST_COMMIT="$(git log --format=%ct -1)"
 		GIT_BRANCH="$(git status | sed -rn 's/.*ranch ([^/]*)$/\1/p')"
-		REVISION="${GIT_BRANCH}-${SHORT_COMMIT_HASH}"
+		REVISION="${GIT_BRANCH}-${SHORT_LATEST_COMMIT_HASH}(${TS_OF_LATEST_COMMIT})"
 	fi
 	[ -n "$REVISION" ] && REVISION="-$REVISION"
 
