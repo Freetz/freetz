@@ -109,11 +109,15 @@ via_webcm() {
 
 case $1 in
 	-6|--ipv6)
-		showdsldstat | sed -rn 's/.* IPv6: address ([^/]*).*/\1/p'
+		VAL="$(showdsldstat 2>/dev/null | sed -rn 's/.* IPv6: address ([^/]*).*/\1/p')"
+		[ -z "$VAL" ] && echo "get_ip error" >&2 && exit 1
+		echo "$VAL"
 		exit
 		;;
 	-p|--pre6)
-		showdsldstat | sed -rn 's/.* IPv6: prefix ([^ ]*).*/\1/p'
+		VAL="$(showdsldstat 2>/dev/null | sed -rn 's/.* IPv6: prefix ([^ ]*).*/\1/p')"
+		[ -z "$VAL" ] && echo "get_ip error" >&2 && exit 1
+		echo "$VAL"
 		exit
 		;;
 esac
