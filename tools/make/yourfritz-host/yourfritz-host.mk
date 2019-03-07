@@ -1,4 +1,4 @@
-YOURFRITZ_HOST_VERSION:=eaa8e3b2ba
+YOURFRITZ_HOST_VERSION:=2aa2e986ef
 YOURFRITZ_HOST_SOURCE:=yourfritz-$(YOURFRITZ_HOST_VERSION).tar.xz
 YOURFRITZ_HOST_SITE:=git_no_submodules@https://github.com/PeterPawn/YourFritz.git
 
