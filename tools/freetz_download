@@ -9,6 +9,7 @@
 # also be called directly. It expects to find a file with necessary variables
 # at a relative location '../.config' to this script. The variables are:
 #   - FREETZ_DL_SITE_USER     (URL, e.g. http://my.server.org)
+#   - FREETZ_DL_SITE_CUSTOM   (URL, set by config/custom.in)
 
 # supported checksum algorithms
 CHECKSUM_ALGOS[32]="md5"
@@ -294,8 +295,8 @@ FREETZ_SITES=( $(
 #  use the user defined mirror(s) always at first, if any
 #  the FREETZ_DL_SITES_NORND count of mirrors always as last
 if [ "$opt_append_servers" != n ]; then
-	if [ -n "$FREETZ_DL_SITE_USER" ]; then
-		for user_site in $FREETZ_DL_SITE_USER; do
+	if [ -n "$FREETZ_DL_SITE_USER" -o -n "$FREETZ_DL_SITE_CUSTOM" ]; then
+		for user_site in $FREETZ_DL_SITE_USER $FREETZ_DL_SITE_CUSTOM; do
 			sites[(( num_sites++ ))]="$user_site"
 		done
 	fi
