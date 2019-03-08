@@ -360,6 +360,9 @@ ifneq ($(strip $(FREETZ_FWMOD_SKIP_ALL)),y)
 		$(if $(call is-y,$(FREETZ_FWMOD_SKIP_UNPACK)),,-u)                                   \
 		$(if $(call is-y,$(FREETZ_FWMOD_SKIP_MODIFY)),,-m)                                   \
 		$(if $(call is-y,$(FREETZ_FWMOD_SKIP_PACK)),,-p)                                     \
+		$(if $(call is-y,$(FREETZ_FWMOD_VALIDATE)),-v "$(strip $(FREETZ_AVM_SIGNATURE_KEY))",)                                         \
+		$(if $(call is-y,$(FREETZ_FWMOD_VALIDATE)),$(if $(call is-y,$(FREETZ_DL_ALIEN)),-w "$(strip $(FREETZ_AVM_SIGNATURE_KEY2))",),) \
+		$(if $(call is-y,$(FREETZ_FWMOD_VALIDATE)),$(if $(call is-y,$(FREETZ_DL_ALIEN)),-x "$(strip $(FREETZ_AVM_SIGNATURE_KEY3))",),) \
 		$(if $(call is-y,$(FREETZ_FWMOD_SIGN)),-s)                                           \
 		$(if $(call is-y,$(FREETZ_FWMOD_USBROOT)),-z)                                        \
 		$(if $(strip $(FREETZ_FWMOD_NFSROOT_DIR)),-c "$(strip $(FREETZ_FWMOD_NFSROOT_DIR))") \

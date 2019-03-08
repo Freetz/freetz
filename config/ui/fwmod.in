@@ -17,6 +17,15 @@ menu "Firmware packaging (fwmod) options"
 			In 99,9% of all cases you want this option deactivated because usually
 			it makes a lot of sense to unpack a firmware before modifying it. ;-)
 
+	config FREETZ_FWMOD_VALIDATE
+		bool "Verify signature of image file" if FREETZ_SHOW_EXPERT
+		depends on FREETZ_AVM_HAS_SIGNATURE && ! FREETZ_FWMOD_SKIP_UNPACK
+		default y
+		help
+			Keep this enabled to check the signature of the image
+			file with AVM's device specific public key.
+			Some very old devices have no signed firmware yet.
+
 	config FREETZ_FWMOD_SKIP_MODIFY
 		bool "Skip modifying unpacked firmware, adding Freetz stuff"
 		default n

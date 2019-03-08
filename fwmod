@@ -18,7 +18,7 @@
 usage()
 {
 	cat << EOF
-Usage: $SELF [-u|-m|-p|-a] [-z] [-c <dir>] [-n] [-f] [-i <cfg>] [-d <dir>] <orig_fw> [<tk_fw> [<aux_fw>]]
+Usage: $SELF [-u|-m|-p|-a] [-s] [ -v <pub> [ -w <pub> [ -x <pub> ]]] [-z] [-c <dir>] [-n] [-f] [-i <cfg>] [-d <dir>] <orig_fw> [<tk_fw> [<aux_fw>]]
   main actions
     -u         unpack firmware image
     -m         modify previously unpacked image
@@ -26,6 +26,9 @@ Usage: $SELF [-u|-m|-p|-a] [-z] [-c <dir>] [-n] [-f] [-i <cfg>] [-d <dir>] <orig
     -a         all: unpack, modify and pack firmware image
   special actions
     -s         sign firmware image
+    -v <pub>   validate firmware image with the pub key (not for recovery.exe)
+    -w <pub>   validate 2nd firmware image with the pub key (not for recovery.exe)
+    -x <pub>   validate 3rd firmware image with the pub key (not for recovery.exe)
     -z         zip file system into archive for USB/NFS root
     -c <dir>   copy file system to target directory for NFS/USB root (implies -z)
   options
@@ -58,15 +61,18 @@ done
 
 # Default values for unset command line parameters
 DOT_CONFIG="$(dirname "$0")/.config"
-DO_UNPACK=0; DO_MOD=0; DO_PACK=0; DO_SIGN=0
+DO_UNPACK=0; DO_MOD=0; DO_PACK=0; DO_SIGN=0; DO_VALIDATE=0; DO_VALIDATE2=0; DO_VALIDATE3=0
 FIRMWARE_NOCOMPILE=0; FORCE_PACK=0; DO_ZIP=0; COPY_FS_DIR=; DIR=
 
 # Parse command line parameters
-while getopts umpsanfzc:i:d: opt; do
+while getopts umpsanfzc:i:d:v:w:x: opt; do
 	case "$opt" in
 		u) DO_UNPACK=1 ;;
 		m) DO_MOD=1 ;;
 		p) DO_PACK=1 ;;
+		v) DO_VALIDATE=1;  FIRMWARE_PUB="$OPTARG"  ;;
+		w) DO_VALIDATE2=1; FIRMWARE2_PUB="$OPTARG" ;;
+		x) DO_VALIDATE3=1; FIRMWARE3_PUB="$OPTARG" ;;
 		s) DO_SIGN=1 ;;
 		a) DO_UNPACK=1; DO_MOD=1; DO_PACK=1 ;;
 		n) FIRMWARE_NOCOMPILE=1 ;;
@@ -352,6 +358,42 @@ fi
 AVMPLUGINS="${FIRMWARE_DIR}/${AVMPLUGINS_FILE}"
 VARTAR="${FILESYSTEM_DIR}/${VARTAR_FILE}"
 
+# validate_signature
+# $1 ("1") when signature validating is enabled
+# $2 (img) the .image file to validate
+# $3 (key) public key, format: "EXPONENTxMODULUS". If no EXPONENT is given, default 010001 will be used (as in all images at the moment)
+validate_signature() {
+	echo -n "checking signature: "
+	[ "$1" != "1" ] && echo -e "\033[1;33mdisabled\033[0m" &&  return
+	[ -z "$3" ] && echo -e "\033[1;34munknown\033[0m" &&  error 1 "no public key available to validate signature"
+	# var
+	local TMP="$(mktemp -dt freetz-sig-XXX)"
+	local MOD="${3#*x}"
+	local EXP="${3%x*}"
+	[ "$EXP" == "$MOD" ] && EXP='010001'
+	# img
+	cat "$2" > "$TMP/img"
+	# sig
+	"$TAR_GNU"  -f "$TMP/img"  --owner=0 --group=0 --mode=0755 --format=oldgnu  -C "$TMP"  --extract ./var/signature --transform='s!.*!sig!' >/dev/null 2>&1
+	"$TAR_GNU"  -f "$TMP/img"  --owner=0 --group=0 --mode=0755 --format=oldgnu             --delete  ./var/signature                         >/dev/null 2>&1
+	# key
+	{
+		echo -n 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQ==' | base64 -d
+		echo -n "$MOD" | while read -n2 x; do echo -ne "\x$x"; done
+		echo -ne "\x2"
+		echo -ne "\x$((${#EXP}/2))"
+		echo -n "$EXP" | while read -n2 x; do echo -ne "\x$x"; done
+	} > "$TMP/key"
+	# chk
+	VAL="$(openssl md5 -verify "$TMP/key" -keyform der -signature "$TMP/sig" "$TMP/img" 2>&1)"
+	RET="$?"
+	# clr
+	rm -rf "$TMP"
+	# act
+	[ "$RET" != "0" ] && echo -e "\033[0;31mfailed\033[0m\nOpenSSL: $VAL" && error 1 "image could not be verified with stored public key"
+	echo -e "\033[0;32mvalid\033[0m"
+}
+
 if [ "$DO_UNPACK" -gt 0 ]; then
 	[ "$FIRMWARE2" ] && UNPACK_SUBSTEP="A" && UNPACK_MAIN=" MAIN" && FIRMWARE_MAIN=" main"
 	echo0 -b "STEP 1${UNPACK_SUBSTEP}: UNPACK${UNPACK_MAIN}${FORCE_UNPACK}"
@@ -363,6 +405,15 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	rm -rf "$ORG_DIR"
 	mkdir "$ORG_DIR"
 
+	# validate_signature
+	if [ "$FIRMWARE_EXTENSION" == "cvc" ]; then
+		[ $DO_VALIDATE -ne 1 ] && validate_signature "$DO_VALIDATE"
+	elif [ "$FIRMWARE_EXTENSION" != "exe" ]; then
+		validate_signature "$DO_VALIDATE" "$FIRMWARE" "$FIRMWARE_PUB"
+	else
+		validate_signature "0"
+	fi
+
 	echo "unpacking firmware image"
 	mkdir "$FIRMWARE_DIR"
 
@@ -371,6 +422,13 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		image_size="0x$(printf "%08X\n" $(stat -c %s "$FIRMWARE"))"
 		image_grbg="$($TOOLS_DIR/sfk hexfind "$FIRMWARE" _./var/_ | sed -n 's/.*hit at offset //p' |head -n1)"
 		[ -n "$image_grbg" ] && echo "Skipping $(($image_grbg)) Bytes garbage"
+		# validate_signature
+		if [ $DO_VALIDATE -eq 1 ]; then
+			TMP_SIG="$(mktemp -t freetz-sig-XXX)"
+			tail -c $(( $image_size - ${image_grbg:-0x0} )) "$FIRMWARE" > "$TMP_SIG"
+			validate_signature "$DO_VALIDATE" "$TMP_SIG" "$FIRMWARE_PUB"
+			rm "$TMP_SIG"
+		fi
 		# Unpack standard *.image file in tar format
 		tail -c $(( $image_size - ${image_grbg:-0x0} )) "$FIRMWARE" | \
 		  "$TAR_GNU" -x -C "$FIRMWARE_DIR" || untar_failed=1
@@ -503,15 +561,21 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	if [ -n "$FIRMWARE2" ]; then
 		echo0 -b "FINISHED"
 		rm -rf "${DIR}/.tk"
-		"$0" -u -d "${DIR}/.tk" "$FIRMWARE2" |
-			sed "s/STEP 1: UNPACK/STEP 1B: UNPACK SECONDARY${FORCE_UNPACK}/;s/ firmware/ secondary&/"
+		# validate_signature
+		[ $DO_VALIDATE2 -eq 1 ] && UNPACK_VALIDATE2="-v $FIRMWARE2_PUB"
+		( set -o pipefail; "$0" -u $UNPACK_VALIDATE2 -d "${DIR}/.tk" "$FIRMWARE2" |
+			sed "s/STEP 1: UNPACK/STEP 1B: UNPACK SECONDARY${FORCE_UNPACK}/;s/ firmware/ secondary&/" )
+		[ $? -ne 0 ] && exit 1
 	fi
 
 	# Unpack auxiliary firmware image
 	if [ -n "$FIRMWARE3" ]; then
 		rm -rf "${DIR}/.aux"
-		"$0" -u -d "${DIR}/.aux" "$FIRMWARE3" |
-			sed "s/STEP 1: UNPACK/STEP 1C: UNPACK AUXILIARY${FORCE_UNPACK}/;s/ firmware/ auxiliary&/"
+		# validate_signature
+		[ $DO_VALIDATE3 -eq 1 ] && UNPACK_VALIDATE3="-v $FIRMWARE3_PUB"
+		( set -o pipefail; "$0" -u $UNPACK_VALIDATE3 -d "${DIR}/.aux" "$FIRMWARE3" |
+			sed "s/STEP 1: UNPACK/STEP 1C: UNPACK AUXILIARY${FORCE_UNPACK}/;s/ firmware/ auxiliary&/" )
+		[ $? -ne 0 ] && exit 1
 	fi
 
 	# Create "unpacked" marker, recording exactly *what* was unpacked (MD5)
