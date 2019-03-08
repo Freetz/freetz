@@ -1,8 +1,8 @@
-$(call PKG_INIT_BIN, 1.8.12)
+$(call PKG_INIT_BIN, 1.8.24)
 $(PKG)_LIB_VERSION:=1.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=0be8ccfe749314dc8200bddcd2d5fa43
-$(PKG)_SITE:=https://alioth.debian.org/frs/download.php/file/4115
+$(PKG)_SOURCE_MD5:=3113e8cdddf3dc42ea35f3cac040624f
+$(PKG)_SITE:=https://pcsclite.apdu.fr/files
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/pcscd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/pcscd
@@ -22,6 +22,7 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-libusb
 $(PKG)_CONFIGURE_OPTIONS += --enable-scf
 $(PKG)_CONFIGURE_OPTIONS += --disable-libhal
 $(PKG)_CONFIGURE_OPTIONS += --disable-libudev
+$(PKG)_CONFIGURE_OPTIONS += --disable-libsystemd
 $(PKG)_CONFIGURE_OPTIONS += --enable-embedded
 $(PKG)_CONFIGURE_OPTIONS += --enable-usbdropdir=$(PCSC_LITE_USBDROPDIR)
 
