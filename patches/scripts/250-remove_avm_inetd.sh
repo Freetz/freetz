@@ -13,6 +13,6 @@ else
 	if [ $count -gt 1 ]; then
 		modsed '/if \[ \-x \/usr\/sbin\/inetd \] \; then/!b;:x1;/fi/!{N;bx1;};d' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 	else
-		modsed '@^/usr/sbin/inetd.*$@echo INTERCHANGED: &@' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
+		modsed '/^\/usr\/sbin\/inetd.*$/echo INTERCHANGED: &/' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 	fi
 fi
