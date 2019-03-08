@@ -419,10 +419,16 @@ tools-dirclean: $(TOOLS_DIRCLEAN)
 tools-distclean: $(TOOLS_DISTCLEAN)
 
 push-firmware:
-	@if [ ! -f "build/modified/firmware/var/tmp/kernel.image" ]; then \
+	@if [ ! -e "images/latest.image" ]; then \
 		echo "Please run 'make' first."; \
 	else \
-		$(TOOLS_DIR)/push_firmware build/modified/firmware/var/tmp/kernel.image ; \
+		if [ "$(FREETZ_SYSTEM_TYPE_MULTICORE)" == "y" ]; then \
+			$(TOOLS_DIR)/push_firmware -md -lfs 1; \
+		elif [ "$(FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE)" == "y" ]; then \
+			$(TOOLS_DIR)/push_firmware -mr; \
+		else \
+			$(TOOLS_DIR)/push_firmware -ms; \
+		fi; \
 	fi
 
 recover:
