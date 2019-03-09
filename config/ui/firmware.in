@@ -1,6 +1,7 @@
 choice
 	prompt "Hardware series"
-		default FREETZ_SERIES_ALL
+		depends on !FREETZ_USER_LEVEL_BEGINNER
+		default FREETZ_SERIES_ALL_CHOICE
 		help
 			Select your hardware series here.
 			Mostly it is the second number of the
@@ -21,12 +22,22 @@ choice
 		help
 			Flagships: 7490 and 7590
 
-	config FREETZ_SERIES_ALL
-		bool "all"
+	config FREETZ_SERIES_ALL_CHOICE
+		bool "all" if FREETZ_SHOW_ADVANCED
 		help
 			Every supported device
 
 endchoice # "Hardware series" #
+
+config FREETZ_SERIES_ALL_CONFIG
+	bool
+	default y
+	depends on FREETZ_USER_LEVEL_BEGINNER
+
+config FREETZ_SERIES_ALL
+	bool
+	default y
+	depends on FREETZ_SERIES_ALL_CONFIG || FREETZ_SERIES_ALL_CHOICE
 
 choice
 	prompt "Hardware type"
