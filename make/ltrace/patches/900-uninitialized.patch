@@ -1,0 +1,15 @@
+--- expr.c
++++ expr.c
+@@ -236,8 +236,12 @@
+ 		if (expr_alloc_and_clone(&nlhs, node->lhs, node->own_lhs) < 0) {
+ 			if (node->kind == EXPR_OP_CALL2
+ 			    && node->u.call.own_rhs) {
++/* disable warning, nrhs is set due to previous fall-through */
++#pragma GCC diagnostic push
++#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+ 				expr_destroy(nrhs);
+ 				free(nrhs);
++#pragma GCC diagnostic pop
+ 				return -1;
+ 			}
+ 		}
