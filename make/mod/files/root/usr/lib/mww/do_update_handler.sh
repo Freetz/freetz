@@ -238,7 +238,7 @@ the rest of the extracted firmware components."
 EOF
 
 if $rebootbox; then
-	echo "<b>$(lang de:"Neustart in 5 Sekunden" en:"Restarting in 5 seconds") ... </b>"
+	echo "<b>$(lang de:"Fritz!Box startet automatisch neu" en:"Fritz!Box will reboot automatically") ... </b>"
 	(sleep 5; reboot)&
 fi
 
