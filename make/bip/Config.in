@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_BIP
-	bool "Bip 0.8.9"
+	bool "Bip"
 	default n
 	help
 		Bip is an IRC proxy, which means it keeps connected to your
@@ -10,8 +10,21 @@ config FREETZ_PACKAGE_BIP
 		workstations, or when you simply want to have a playback of what
 		was said while you were away.
 
+choice
+	depends on FREETZ_PACKAGE_BIP
+	prompt "version"
+	default FREETZ_PACKAGE_BIP_VERSION_089
+
+	config FREETZ_PACKAGE_BIP_VERSION_089
+		bool "0.8.9 - 2013"
+
+	config FREETZ_PACKAGE_BIP_VERSION_090
+		bool "0.9.0-rc3 - 2018"
+
+endchoice
+
 config FREETZ_PACKAGE_BIP_BIPMKPW
-	bool "build password hasher for BIP"
+	bool "build password hasher for Bip"
 	depends on FREETZ_PACKAGE_BIP
 	default n
 	help

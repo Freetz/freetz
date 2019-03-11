@@ -1,0 +1,16 @@
+--- src/bip.c
++++ src/bip.c
+@@ -1181,11 +1181,13 @@
+ 		mylog(LOG_ERROR, "getrlimit(): failed with %s",
+ 				strerror(errno));
+ 	} else {
++/*
+ 		if (lt.rlim_max != RLIM_INFINITY) {
+ 			mylog(LOG_WARN, "stack rlimit active, "
+ 				"bip may be KILLED by the system");
+ 			cklim = 1;
+ 		}
++*/
+ 	}
+ 
+ 	if (cklim)
