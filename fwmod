@@ -259,6 +259,47 @@ if [ "${FREETZ_SQUASHFS_VERSION}" -eq 3 -a "${FREETZ_AVM_SQUASHFS_COMPRESSION}" 
 fi
 
 
+#################################
+## Validate firmware signature ##
+#################################
+
+# validate_signature
+# $1 ("1") when signature validating is enabled
+# $2 (img) the .image file to validate
+# $3 (key) public key, format: "EXPONENTxMODULUS". If no EXPONENT is given, default 010001 will be used (as in all images at the moment)
+validate_signature() {
+	echo -n "checking signature: "
+	[ "$1" != "1" ] && echo -e "\033[1;33mdisabled\033[0m" &&  return
+	[ -z "$3" ] && echo -e "\033[1;34munknown\033[0m" &&  error 1 "no public key available to validate signature"
+	# var
+	local TMP="$(mktemp -dt freetz-sig-XXX)"
+	local MOD="${3#*x}"
+	local EXP="${3%x*}"
+	[ "$EXP" == "$MOD" ] && EXP='010001'
+	# img
+	cat "$2" > "$TMP/img"
+	# sig
+	"$TAR_GNU"  -f "$TMP/img"  --owner=0 --group=0 --mode=0755 --format=oldgnu  -C "$TMP"  --extract ./var/signature --transform='s!.*!sig!' >/dev/null 2>&1
+	"$TAR_GNU"  -f "$TMP/img"  --owner=0 --group=0 --mode=0755 --format=oldgnu             --delete  ./var/signature                         >/dev/null 2>&1
+	# key
+	{
+		echo -n 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQ==' | base64 -d
+		echo -n "$MOD" | while read -n2 x; do echo -ne "\x$x"; done
+		echo -ne "\x2"
+		echo -ne "\x$((${#EXP}/2))"
+		echo -n "$EXP" | while read -n2 x; do echo -ne "\x$x"; done
+	} > "$TMP/key"
+	# chk
+	VAL="$(openssl md5 -verify "$TMP/key" -keyform der -signature "$TMP/sig" "$TMP/img" 2>&1)"
+	RET="$?"
+	# clr
+	rm -rf "$TMP"
+	# act
+	[ "$RET" != "0" ] && echo -e "\033[0;31mfailed\033[0m\nOpenSSL: $VAL" && error 1 "image could not be verified with public key"
+	echo -e "\033[0;32mvalid\033[0m"
+}
+
+
 #######################################
 ## Initialise fakeroot incl. caching ##
 #######################################
@@ -357,42 +398,6 @@ else
 fi
 AVMPLUGINS="${FIRMWARE_DIR}/${AVMPLUGINS_FILE}"
 VARTAR="${FILESYSTEM_DIR}/${VARTAR_FILE}"
-
-# validate_signature
-# $1 ("1") when signature validating is enabled
-# $2 (img) the .image file to validate
-# $3 (key) public key, format: "EXPONENTxMODULUS". If no EXPONENT is given, default 010001 will be used (as in all images at the moment)
-validate_signature() {
-	echo -n "checking signature: "
-	[ "$1" != "1" ] && echo -e "\033[1;33mdisabled\033[0m" &&  return
-	[ -z "$3" ] && echo -e "\033[1;34munknown\033[0m" &&  error 1 "no public key available to validate signature"
-	# var
-	local TMP="$(mktemp -dt freetz-sig-XXX)"
-	local MOD="${3#*x}"
-	local EXP="${3%x*}"
-	[ "$EXP" == "$MOD" ] && EXP='010001'
-	# img
-	cat "$2" > "$TMP/img"
-	# sig
-	"$TAR_GNU"  -f "$TMP/img"  --owner=0 --group=0 --mode=0755 --format=oldgnu  -C "$TMP"  --extract ./var/signature --transform='s!.*!sig!' >/dev/null 2>&1
-	"$TAR_GNU"  -f "$TMP/img"  --owner=0 --group=0 --mode=0755 --format=oldgnu             --delete  ./var/signature                         >/dev/null 2>&1
-	# key
-	{
-		echo -n 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQ==' | base64 -d
-		echo -n "$MOD" | while read -n2 x; do echo -ne "\x$x"; done
-		echo -ne "\x2"
-		echo -ne "\x$((${#EXP}/2))"
-		echo -n "$EXP" | while read -n2 x; do echo -ne "\x$x"; done
-	} > "$TMP/key"
-	# chk
-	VAL="$(openssl md5 -verify "$TMP/key" -keyform der -signature "$TMP/sig" "$TMP/img" 2>&1)"
-	RET="$?"
-	# clr
-	rm -rf "$TMP"
-	# act
-	[ "$RET" != "0" ] && echo -e "\033[0;31mfailed\033[0m\nOpenSSL: $VAL" && error 1 "image could not be verified with stored public key"
-	echo -e "\033[0;32mvalid\033[0m"
-}
 
 if [ "$DO_UNPACK" -gt 0 ]; then
 	[ "$FIRMWARE2" ] && UNPACK_SUBSTEP="A" && UNPACK_MAIN=" MAIN" && FIRMWARE_MAIN=" main"
