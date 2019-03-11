@@ -18,7 +18,7 @@
 usage()
 {
 	cat << EOF
-Usage: $SELF [-u|-m|-p|-a] [-s] [ -v <pub> [ -w <pub> [ -x <pub> ]]] [-z] [-c <dir>] [-n] [-f] [-i <cfg>] [-d <dir>] <orig_fw> [<tk_fw> [<aux_fw>]]
+Usage: $SELF [-u|-m|-p|-a] [-s] [-v <pub> [-w <pub> [-x <pub>]]] [-z] [-c <dir>] [-n] [-f] [-i <cfg>] [-d <dir>] <orig_fw> [<tk_fw> [<aux_fw>]]
   main actions
     -u         unpack firmware image
     -m         modify previously unpacked image
@@ -87,7 +87,7 @@ done
 shift $((OPTIND-1))
 
 # At least one action and one (non-empty) firmware image name must be specified
-[ $(($DO_UNPACK + $DO_MOD + $DO_PACK + $DO_ZIP)) -eq 0 -o $# -lt 1 -o $# -gt 3 -o ! "$1" ] && usage >&2 && exit 1
+[ $(($DO_UNPACK + $DO_MOD + $DO_PACK + $DO_ZIP + $DO_VALIDATE)) -eq 0 -o $# -lt 1 -o $# -gt 3 -o ! "$1" ] && usage >&2 && exit 1
 
 # Check if it's a completely automated run in the "no freetz"-mode and cache the value.
 # We are interested in what the user asked us for and not what we are actually doing,
@@ -298,6 +298,8 @@ validate_signature() {
 	[ "$RET" != "0" ] && echo -e "\033[0;31mfailed\033[0m\nOpenSSL: $VAL" && error 1 "image could not be verified with public key"
 	echo -e "\033[0;32mvalid\033[0m"
 }
+# validate_signature only
+[ $DO_VALIDATE -eq 1 -a $(($DO_UNPACK + $DO_MOD + $DO_PACK + $DO_ZIP)) -eq 0 ] && validate_signature "$DO_VALIDATE" "$FIRMWARE" "$FIRMWARE_PUB" && exit 0
 
 
 #######################################
