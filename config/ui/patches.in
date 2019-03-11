@@ -805,6 +805,27 @@ config FREETZ_REMOVE_SUPPORT_EVENTSDUMP
 		With the file you could dump AVM's "Ereignisse" to the console.
 		Seem to be use only by AVM's support-files.
 
+config FREETZ_REMOVE_PUBKEY
+	bool "Remove public firmware key" if FREETZ_SHOW_ADVANCED
+	depends on FREETZ_AVM_HAS_SIGNATURE
+	default n
+	help
+		Removes /etc/avm_firmware_public_key1, just 266 bytes.
+		And removes also /etc/avm_firmware_public_key4 which exists
+		only in some rare experimental firmware versions of AVM.
+
+		Because the signature validation will fail on update:
+		 - You can't flash firmware from AVM with the AVM Webinterface anymore.
+		 - Online-Update can't install updates automatically anymore, but is
+		   still able to detect and inform you about new firmware versions.
+		 - Most important: No more "spontaneous self updates". There are
+		   several reports on the web, that AVM is sometimes disrespecting
+		   your update settings to not automatically install new versions.
+		   Such a spontaneous self update would remove Freetz.
+
+		Beside that, it's still possible to flash any firmware by bootloader
+		or Freetz. Updates for Dect devices are not affected by this patch.
+
 config FREETZ_REMOVE_TR069
 	bool "Remove tr069" if FREETZ_SHOW_ADVANCED
 	depends on FREETZ_AVM_HAS_TR069
