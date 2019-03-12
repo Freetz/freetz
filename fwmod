@@ -129,8 +129,8 @@ FIRMWARE_EXTENSION="${FIRMWARE_EXTENSION,,}"
 
 # Set default output directory, if not specified on command line
 : ${DIR:=$FIRMWARE.mod}
-# Create output directory if necessary
-mkdir -p "$DIR"
+# Create output directory if not yet exists (not in validate only mode)
+[ $(($DO_UNPACK + $DO_MOD + $DO_PACK + $DO_ZIP )) -ne 0 ] && mkdir -p "$DIR"
 
 
 #################################
