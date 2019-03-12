@@ -146,6 +146,7 @@ AVMPLUGINS_SUBDIR="plugins.image"
 EXTERNAL_SUBDIR="external"
 KERNEL_SUBDIR="kernel"
 VARTAR_SUBDIR="var.tar"
+SIGNATURE_SUBDIR=".signature"
 HTML_SUBDIR="usr/www"
 GRAPHICS_SUBDIR="graphics"
 
@@ -1681,9 +1682,50 @@ if [ "$action_names" ]; then
 		$MAKEDEVS -d $MAKEDEVS_FILE $FILESYSTEM_MOD_DIR > $MOD_DIR/filesystem.log 2>&1
 fi
 
+# -------------------------------------------
+# -- Check and maybe create signature keys --
+# -------------------------------------------
 
 if [ "$DO_SIGN" -gt 0 ]; then
-	echo
+	echo1 "checking signature key files"
+
+	#len
+	[ ${#FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD} -lt 6 ] && \
+		error 1 "password for private signature key file is to short"
+	#dir
+	[ ! -e "${SIGNATURE_SUBDIR}" -a ! -L "${SIGNATURE_SUBDIR}" ] && \
+		ln -s ~/.freetz-signature "${SIGNATURE_SUBDIR}"
+	[ ! -d "${SIGNATURE_SUBDIR}" ] && \
+		mkdir -p "$(readlink "${SIGNATURE_SUBDIR}")"
+	[ ! -d "${SIGNATURE_SUBDIR}" ] && \
+		error 1 "can not create ./${SIGNATURE_SUBDIR} directory"
+
+	#prv
+	if [ ! -s "${SIGNATURE_SUBDIR}/prv" ]; then
+		echo2 "creating private signature key file"
+		rm -f "${SIGNATURE_SUBDIR}/prv" "${SIGNATURE_SUBDIR}/pub"
+		openssl genrsa -des3 -passout "pass:$FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD" -out "${SIGNATURE_SUBDIR}/prv" 1024 >/dev/null 2>&1 || \
+			error 1 "could not create private signature key file"
+	else
+		openssl rsa -in "${SIGNATURE_SUBDIR}/prv" -passin "pass:$FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD" -noout >/dev/null 2>&1 || \
+			error 1 "wrong password for private signature key file"
+	fi
+	#pub
+	if [ ! -s "${SIGNATURE_SUBDIR}/pub" ]; then
+		echo2 "creating public signature key file"
+		EXP="$(openssl rsa -in "${SIGNATURE_SUBDIR}/prv" -passin "pass:$FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD" -noout -text    | sed -rn 's/^publicExponent:.*\(0x(.*)\).*/\1/p')"
+		MOD="$(openssl rsa -in "${SIGNATURE_SUBDIR}/prv" -passin "pass:$FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD" -noout -modulus | sed -rn 's/^Modulus=(.*)/\1/p')"
+		[ $(( ${#EXP} % 2 )) != 0 ] && EXP="0$EXP"
+		[ $(( ${#MOD} % 2 )) != 0 ] && MOD="0$MOD"
+		[ "${MOD:0:2}" != "00" ] && MOD="00$MOD"
+		echo -e "$MOD\n$EXP" > "${SIGNATURE_SUBDIR}/pub"
+		[ "$(stat -c%s "${SIGNATURE_SUBDIR}/pub" 2>/dev/null)" != "266" ] && \
+			error 1 "could not create public signature key file"
+	fi
+
+	#cpy
+	echo2 "adding public signature key file"
+	cp -p "${SIGNATURE_SUBDIR}/pub" "${FILESYSTEM_MOD_DIR}/etc/avm_firmware_public_key8"
 fi
 
 # ------------------------------------------------------------------
@@ -1863,13 +1905,22 @@ if [ "$DO_PACK" -gt 0 ]; then
 	echo0 "packing ${img_name}"
 	"$TAR_GNU"  -f "${img_name}"  --owner=0 --group=0 --mode=0755 --format=oldgnu  -C "$FIRMWARE_MOD_DIR"  --create ./var >/dev/null 2>&1
 	if [ $? -ne 0 ] || ! is_valid_tarball "${img_name}"; then
-		mv "${img_name}" "${img_name}.unsigned.corrupted" 2>/dev/null
+		mv "${img_name}" "${img_name}.packed.corrupted" 2>/dev/null
 		error 1 "packing of firmware image failed"
 	fi
-	echo1 "unsigned image file size: $(byte_to_mb $(wc -c < "${img_name}")) ($(wc -c < "${img_name}") bytes)"
+	echo1 "packed image file size: $(byte_to_mb $(wc -c < "${img_name}")) ($(wc -c < "${img_name}") bytes)"
 
-	if [ "$DO_SIGN" -gt 0 ]; then
-		echo
+	# Sign firmware image
+	if [ "$DO_SIGN" -eq 1 ]; then
+		[ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && echo0 "signing ${img_name}"
+		openssl md5 -sign "${SIGNATURE_SUBDIR}/prv" -passin "pass:$FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD" -out "${FIRMWARE_MOD_DIR}/var/signature" "${img_name}" || \
+			error 1 "could not create signature file for firmware image"
+		"$TAR_GNU"  -f "${img_name}"  --owner=0 --group=0 --mode=0755 --format=oldgnu  -C "$FIRMWARE_MOD_DIR"  --append ./var/signature >/dev/null 2>&1
+		if [ $? -ne 0 ] || ! is_valid_tarball "${img_name}"; then
+			mv "${img_name}" "${img_name}.signed.corrupted" 2>/dev/null
+			error 1 "adding signature to firmware image failed"
+		fi
+		echo1 "signed image file size: $(byte_to_mb $(wc -c < "${img_name}")) ($(wc -c < "${img_name}") bytes)"
 	fi
 
 	# create the link images/latest.image to the just created .image
