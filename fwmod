@@ -1683,37 +1683,7 @@ fi
 
 
 if [ "$DO_SIGN" -gt 0 ]; then
-	FREETZ_IMAGE_SIGNING_PREFIX="${HOME}/.freetz.image_signing"
-	function getNumberOfImageSigningFiles() {
-		local ret=0
-		for i in asc key pem; do
-			[ -e "${FREETZ_IMAGE_SIGNING_PREFIX}.$i" ] && ret=$((ret+1))
-		done
-		echo $ret
-	}
-
-	NO_IMAGE_SIGNING_FILES=$(getNumberOfImageSigningFiles)
-	if [ "${NO_IMAGE_SIGNING_FILES}" -eq 0 ]; then
-		echo0 "No image signing files found, generating them ..."
-		if [ -z "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" ]; then
-			# be verbose if no private key password provided
-			"${TOOLS_DIR}/yf/signimage/generate_signing_key" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}"
-		else
-			"${TOOLS_DIR}/yf/signimage/generate_signing_key" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" 2>"${MOD_DIR}/generate_signing_key.log"
-		fi
-		if [ $? -ne 0 ]; then
-			error 1 "failed to generate image signing files, see console output or ${MOD_DIR}/generate_signing_key.log for details"
-		fi
-		NO_IMAGE_SIGNING_FILES=$(getNumberOfImageSigningFiles)
-	else
-		echo0 "Image signing files found, checking their consistency"
-	fi
-	if [ "${NO_IMAGE_SIGNING_FILES}" -ne 3 ]; then
-		error 1 "Unexpected/wrong number of image signing files"
-	fi
-
-	echo0 "Copying ${FREETZ_IMAGE_SIGNING_PREFIX}.asc to /etc/avm_firmware_public_key9"
-	cp -a "${FREETZ_IMAGE_SIGNING_PREFIX}.asc" "${FILESYSTEM_MOD_DIR}/etc/avm_firmware_public_key9"
+	echo
 fi
 
 # ------------------------------------------------------------------
@@ -1891,43 +1861,21 @@ if [ "$DO_PACK" -gt 0 ]; then
 	# Pack firmware image
 	img_name="${FW_IMAGES_DIR:-$DIR}/${modimage}"
 	echo0 "packing ${img_name}"
-	"$TAR_GNU"  -f "${img_name}.unsigned"  --owner=0 --group=0 --mode=0755 --format=oldgnu  -C "$FIRMWARE_MOD_DIR"  --create ./var >/dev/null 2>&1
-	if [ $? -ne 0 ] || ! is_valid_tarball "${img_name}.unsigned"; then
-		mv "${img_name}.unsigned" "${img_name}.unsigned.corrupted" 2>/dev/null
+	"$TAR_GNU"  -f "${img_name}"  --owner=0 --group=0 --mode=0755 --format=oldgnu  -C "$FIRMWARE_MOD_DIR"  --create ./var >/dev/null 2>&1
+	if [ $? -ne 0 ] || ! is_valid_tarball "${img_name}"; then
+		mv "${img_name}" "${img_name}.unsigned.corrupted" 2>/dev/null
 		error 1 "packing of firmware image failed"
 	fi
-	echo1 "unsigned image file size: $(byte_to_mb $(wc -c < "${img_name}.unsigned")) ($(wc -c < "${img_name}.unsigned") bytes)"
+	echo1 "unsigned image file size: $(byte_to_mb $(wc -c < "${img_name}")) ($(wc -c < "${img_name}") bytes)"
 
 	if [ "$DO_SIGN" -gt 0 ]; then
-		echo0 "signing ${img_name}"
-		if [ -z "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" ]; then
-			# be verbose if no private key password provided
-			YF_SIGNIMAGE_TAR="${TAR_GNU}" \
-			YF_SIGNIMAGE_9K_WORKAROUND_METHOD="${FREETZ_SIGNIMAGE_9K_WORKAROUND_METHOD}" \
-			"${TOOLS_DIR}/yf/signimage/sign_image" "${img_name}.unsigned" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}"                                                > "${img_name}.signed"
-		else
-			YF_SIGNIMAGE_TAR="${TAR_GNU}" \
-			YF_SIGNIMAGE_9K_WORKAROUND_METHOD="${FREETZ_SIGNIMAGE_9K_WORKAROUND_METHOD}" \
-			"${TOOLS_DIR}/yf/signimage/sign_image" "${img_name}.unsigned" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" 2>"${MOD_DIR}/sign_image.log" > "${img_name}.signed"
-		fi
-		if [ $? -ne 0 ] || ! is_valid_tarball "${img_name}.signed"; then
-			mv "${img_name}.signed" "${img_name}.signed.corrupted" 2>/dev/null
-			error 1 "signing of firmware image failed, see console output or ${MOD_DIR}/sign_image.log for details"
-		fi
-		echo1 "signed image file size: $(byte_to_mb $(wc -c < "${img_name}.signed")) ($(wc -c < "${img_name}.signed") bytes)"
+		echo
 	fi
-
-	[ "$DO_SIGN" -gt 0 ] && final_img_suffix=signed || final_img_suffix=unsigned
-	echo0 "using ${final_img_suffix} image as the final one"
-	cp -a "${img_name}.${final_img_suffix}" "${img_name}"
 
 	# create the link images/latest.image to the just created .image
 	img_link="${img_name%/*}/latest.image"
 	rm -f "$img_link"
 	ln -s "${img_name#*/}" "$img_link"
-
-	# delete temporary unsigned/signed files unless we're debugging
-	[ "$DEBUG" != "1" ] && rm -f "${img_name}.unsigned" "${img_name}.signed"
 fi
 
 # ----------------------------------------------
