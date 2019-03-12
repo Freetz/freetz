@@ -44,6 +44,29 @@ menu "Firmware packaging (fwmod) options"
 			flash memory anyway if you have chosen a lot of packages. In that
 			case you want to activate this option.
 
+	config FREETZ_FWMOD_SIGN
+		bool "Sign image file"
+		depends on FREETZ_AVM_HAS_SIGNATURE && ! FREETZ_FWMOD_SKIP_PACK
+		default y
+		help
+			The firmware image will be signed with a self created key.
+			It can only be flashed by bootloader or with Freetz.
+			In case the installed firmware contains already your public
+			signature key, you could also flash it by AVM web interface.
+
+	config FREETZ_FWMOD_SIGN_PASSWORD
+		string "Password of the private key to sign the image"
+		depends on FREETZ_FWMOD_SIGN
+		default "freetz"
+		help
+			A password has to be set and needs at least 6 characters.
+			If you have forgotten the password, you could delete the
+			~/.freetz-signature/ directory to create a new key file set.
+
+			As ~/.freetz-signature/ is used by all you Freetz checkouts,
+			you need to use for all the same password! Or you link/create
+			./signature directory by yourself
+
 	config FREETZ_FWMOD_FORCE_PACK
 		bool "Force pack even if image is too big (SDK stick mode)"
 		depends on ! FREETZ_FWMOD_SKIP_PACK
@@ -54,16 +77,6 @@ menu "Firmware packaging (fwmod) options"
 			At the time of writing this, SDK stick mode is only supported on
 			7270_v2/3, but maybe you found a way to port it to another firmware,
 			so you are free to use this option at will.
-
-	config FREETZ_FWMOD_SIGN
-		bool "Sign image"
-		depends on ! FREETZ_FWMOD_SKIP_PACK
-		default n
-
-	config FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD
-		string "Password of the private key to be used for signing"
-		depends on FREETZ_FWMOD_SIGN
-		default ""
 
 	config FREETZ_FWMOD_USBROOT
 		bool "Pack file system into archive (USB root mode)"

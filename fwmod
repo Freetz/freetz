@@ -1438,10 +1438,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 		else
 			if [ "$FREETZ_DOT_CONFIG_STRIPPED" == "y" ]; then
 				{ grep '^[^#].*$' "$DOT_CONFIG"; grep '^#.*$' "$DOT_CONFIG.compressed"; echo "FREETZ_LIBRARY_DIR=\"${FREETZ_LIBRARY_DIR}\""; } \
-				  | grep -v "FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD" > "${FILESYSTEM_MOD_DIR}/etc/.config"
+				  | grep -v "FREETZ_FWMOD_SIGN_PASSWORD" > "${FILESYSTEM_MOD_DIR}/etc/.config"
 				echo1 "integrated .config (stripped)"
 			else
-				{ grep -v "FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD" "$DOT_CONFIG"; echo "FREETZ_LIBRARY_DIR=\"${FREETZ_LIBRARY_DIR}\""; } > "${FILESYSTEM_MOD_DIR}/etc/.config"
+				{ grep -v "FREETZ_FWMOD_SIGN_PASSWORD" "$DOT_CONFIG"; echo "FREETZ_LIBRARY_DIR=\"${FREETZ_LIBRARY_DIR}\""; } > "${FILESYSTEM_MOD_DIR}/etc/.config"
 				echo1 "integrated .config (complete)"
 			fi
 		fi
@@ -1690,7 +1690,7 @@ if [ "$DO_SIGN" -gt 0 ]; then
 	echo1 "checking signature key files"
 
 	#len
-	[ ${#FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD} -lt 6 ] && \
+	[ ${#FREETZ_FWMOD_SIGN_PASSWORD} -lt 6 ] && \
 		error 1 "password for private signature key file is to short"
 	#dir
 	[ ! -e "${SIGNATURE_SUBDIR}" -a ! -L "${SIGNATURE_SUBDIR}" ] && \
@@ -1704,17 +1704,17 @@ if [ "$DO_SIGN" -gt 0 ]; then
 	if [ ! -s "${SIGNATURE_SUBDIR}/prv" ]; then
 		echo2 "creating private signature key file"
 		rm -f "${SIGNATURE_SUBDIR}/prv" "${SIGNATURE_SUBDIR}/pub"
-		openssl genrsa -des3 -passout "pass:$FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD" -out "${SIGNATURE_SUBDIR}/prv" 1024 >/dev/null 2>&1 || \
+		openssl genrsa -des3 -passout "pass:$FREETZ_FWMOD_SIGN_PASSWORD" -out "${SIGNATURE_SUBDIR}/prv" 1024 >/dev/null 2>&1 || \
 			error 1 "could not create private signature key file"
 	else
-		openssl rsa -in "${SIGNATURE_SUBDIR}/prv" -passin "pass:$FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD" -noout >/dev/null 2>&1 || \
+		openssl rsa -in "${SIGNATURE_SUBDIR}/prv" -passin "pass:$FREETZ_FWMOD_SIGN_PASSWORD" -noout >/dev/null 2>&1 || \
 			error 1 "wrong password for private signature key file"
 	fi
 	#pub
 	if [ ! -s "${SIGNATURE_SUBDIR}/pub" ]; then
 		echo2 "creating public signature key file"
-		EXP="$(openssl rsa -in "${SIGNATURE_SUBDIR}/prv" -passin "pass:$FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD" -noout -text    | sed -rn 's/^publicExponent:.*\(0x(.*)\).*/\1/p')"
-		MOD="$(openssl rsa -in "${SIGNATURE_SUBDIR}/prv" -passin "pass:$FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD" -noout -modulus | sed -rn 's/^Modulus=(.*)/\1/p')"
+		EXP="$(openssl rsa -in "${SIGNATURE_SUBDIR}/prv" -passin "pass:$FREETZ_FWMOD_SIGN_PASSWORD" -noout -text    | sed -rn 's/^publicExponent:.*\(0x(.*)\).*/\1/p')"
+		MOD="$(openssl rsa -in "${SIGNATURE_SUBDIR}/prv" -passin "pass:$FREETZ_FWMOD_SIGN_PASSWORD" -noout -modulus | sed -rn 's/^Modulus=(.*)/\1/p')"
 		[ $(( ${#EXP} % 2 )) != 0 ] && EXP="0$EXP"
 		[ $(( ${#MOD} % 2 )) != 0 ] && MOD="0$MOD"
 		[ "${MOD:0:2}" != "00" ] && MOD="00$MOD"
@@ -1896,7 +1896,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	if [ ! "$DO_AVOID_MOD_IN_STEP3" -gt 0 ]; then
 		# Last, but not least, include .config and addon/static.pkg into firmware
 		# image for further reference, e.g. user support
-		[ -r "$DOT_CONFIG" ] && { cat "$DOT_CONFIG" | grep -v "FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD" > "$FIRMWARE_MOD_DIR/var/.config"; }
+		[ -r "$DOT_CONFIG" ] && { cat "$DOT_CONFIG" | grep -v "FREETZ_FWMOD_SIGN_PASSWORD" > "$FIRMWARE_MOD_DIR/var/.config"; }
 		[ -r "$PACKAGES_LIST_FILE" ] && cp "$PACKAGES_LIST_FILE" "$FIRMWARE_MOD_DIR/var"
 	fi
 
@@ -1913,7 +1913,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	# Sign firmware image
 	if [ "$DO_SIGN" -eq 1 ]; then
 		[ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && echo0 "signing ${img_name}"
-		openssl md5 -sign "${SIGNATURE_SUBDIR}/prv" -passin "pass:$FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD" -out "${FIRMWARE_MOD_DIR}/var/signature" "${img_name}" || \
+		openssl md5 -sign "${SIGNATURE_SUBDIR}/prv" -passin "pass:$FREETZ_FWMOD_SIGN_PASSWORD" -out "${FIRMWARE_MOD_DIR}/var/signature" "${img_name}" || \
 			error 1 "could not create signature file for firmware image"
 		"$TAR_GNU"  -f "${img_name}"  --owner=0 --group=0 --mode=0755 --format=oldgnu  -C "$FIRMWARE_MOD_DIR"  --append ./var/signature >/dev/null 2>&1
 		if [ $? -ne 0 ] || ! is_valid_tarball "${img_name}"; then
