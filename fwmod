@@ -1900,8 +1900,19 @@ if [ "$DO_PACK" -gt 0 ]; then
 		[ -r "$PACKAGES_LIST_FILE" ] && cp "$PACKAGES_LIST_FILE" "$FIRMWARE_MOD_DIR/var"
 	fi
 
-	# Pack firmware image
+	# Set img_name for in-memory, pack, sign & link
 	img_name="${FW_IMAGES_DIR:-$DIR}/${modimage}"
+
+	# Create in-memory image
+	if [ "${FREETZ_FWMOD_CREATE_IN_MEMORY_IMAGE}" == "y" ]; then
+		echo0 "creating in-memory image ${img_name}.in-memory"
+		{
+			cat "$KERNEL_MOD"     | dd bs=256 conv=sync 2>/dev/null;
+			cat "$FILESYSTEM_MOD" | dd bs=256 conv=sync 2>/dev/null;
+		} > "${img_name}.in-memory"
+	fi
+
+	# Pack firmware image
 	echo0 "packing ${img_name}"
 	"$TAR_GNU"  -f "${img_name}"  --owner=0 --group=0 --mode=0755 --format=oldgnu  -C "$FIRMWARE_MOD_DIR"  --create ./var >/dev/null 2>&1
 	if [ $? -ne 0 ] || ! is_valid_tarball "${img_name}"; then
