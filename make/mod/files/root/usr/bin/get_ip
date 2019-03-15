@@ -10,20 +10,24 @@ cat << EOF
 get_ip - determine external IP address
 
 Usage: $0 [option]
-    -a, --all      - use all methods (order: stun, route, dsld, webcm) [recommended]
+    -h, --help     - print this help message
+
+  IPv6 options:
     -6, --ipv6     - IPv6 address (showdsldstat)
     -p, --pre6     - IPv6 prefix (showdsldstat)
         --gua      - IPv6 address (ctlmgr_ctl)
         --pd       - IPv6 prefix (ctlmgr_ctl)
+
+  IPv4 options:
+    -a, --all      - use all methods (order: stun, route, dsld, webcm) [recommended]
     -d, --dsld     - use showdsldstat (since firmware 04.86)
     -r, --route    - use routing table
     -s, --stun     - use STUN/VoIP (server: $MOD_GET_IP_STUN)
     -w, --webcm    - use webcm CGI handler / ctlmgr_ctl
-    -?, --help     - print this help message
 
-Current default method: $MOD_GET_IP_METHOD
+Current default IPv4 method: $MOD_GET_IP_METHOD
 
-Note: If environment variable IPADDR is set and contains a public IP (not from
+Note: If environment variable IPADDR is set and contains a public IPv4 (not from
 a private or link-local network), its value will be returned.
 
 EOF
