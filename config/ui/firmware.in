@@ -595,6 +595,7 @@ config FREETZ_TYPE_ALIEN_HARDWARE
 		(FREETZ_TYPE_7330_XL && FREETZ_TYPE_LANG_DE &&                             FREETZ_TYPE_FIRMWARE_06_5X ) || \
 		(FREETZ_TYPE_7330 &&                                                      (FREETZ_TYPE_FIRMWARE_06_2X)) || \
 		(FREETZ_TYPE_7390 && FREETZ_TYPE_LANG_EN && (FREETZ_TYPE_FIRMWARE_05_2X || FREETZ_TYPE_FIRMWARE_06_0X)) || \
+		FREETZ_TYPE_7530 || \
 		FREETZ_TYPE_7570 \
 		)
 	default n
@@ -750,6 +751,12 @@ choice
 		help
 			Enable this to compile an alien image for FritzBox FON WLAN 7320 based
 			on a 7330 SL image.
+
+	config FREETZ_TYPE_7520_7530
+		bool "7520"
+		depends on FREETZ_TYPE_7530
+		help
+			Enable this to compile an alien image for FritzBox 7520 based on a 7530 image.
 
 	config FREETZ_TYPE_7340_7390
 		bool "7340"
