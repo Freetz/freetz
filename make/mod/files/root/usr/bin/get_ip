@@ -199,4 +199,5 @@ case $method in
 esac
 
 [ $? -ne 0 ] && echo "get_ip error" >&2 && exit 1
+[ -z $IP ] && echo "get_ip error: no ip address found" >&2 && exit 1
 echo "$IP"
