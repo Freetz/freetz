@@ -104,9 +104,11 @@ TOOLS_DIR="${ABS_BASE_DIR}/tools"
 source "${TOOLS_DIR}/freetz_functions" ||
 	(echo "cannot find script freetz_functions" >&2; exit 1)
 
-if [ "$DO_SIGN" -gt 0 -a $(($DO_PACK + $DO_ZIP)) -eq 0 ]; then
-	error 1 "Firmware signing without packing is not supported, please use PeterPawn's sign_image tool directly if you plan to sign some already existing .image file"
-fi
+[ "$DO_SIGN" -gt 0 -a $(($DO_PACK + $DO_ZIP)) -eq 0 ] && \
+	error 1 "Firmware signing without packing is not supported. Please use PeterPawn's sign_image tool to sign an already existing .image file."
+
+[ $(($DO_SIGN + $DO_VALIDATE + $DO_VALIDATE2 + $DO_VALIDATE3 )) -gt 0 -a ! -x "$(which openssl 2>/dev/null)" ] && \
+	error 1 "OpenSSL is required to verify and create image signature. Please install it or disable the option(s) in menuconfig."
 
 # Initialise firmware image names
 FIRMWARE="$1"
