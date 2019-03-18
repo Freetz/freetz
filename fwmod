@@ -845,7 +845,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		COUNT_OF_COMMITS="$(git rev-list --count HEAD)"
 		TS_OF_LATEST_COMMIT="$(git log --format=%ct -1)"
 		GIT_BRANCH="$(git status | sed -rn 's/.*ranch ([^/]*)$/\1/p')"
-		REVISION="${GIT_BRANCH}-${SHORT_LATEST_COMMIT_HASH}(${TS_OF_LATEST_COMMIT})"
+		REVISION="${GIT_BRANCH}-${SHORT_LATEST_COMMIT_HASH}-${TS_OF_LATEST_COMMIT}"
 	fi
 	[ -n "$REVISION" ] && REVISION="-$REVISION"
 
