@@ -31,7 +31,7 @@ setup() {
 start() {
 	log "rc.mod version $(cat /etc/.freetz-version)"
 
-	# Basic Packages
+	# Basic Packages: links
 	for pkg in crond telnetd webcfg dsld ftpd rextd multid swap external websrv smbd; do
 		local pkg_default=/etc/default.$pkg
 		[ -d "$pkg_default" -a ! -e "/mod${pkg_default}" ] && ln -s "$pkg_default" "/mod${pkg_default}"
@@ -49,6 +49,10 @@ start() {
 		[ "$MOD_IPV6_FORWARD" == "yes" ] && echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
 	fi
 
+	# AVM+inetd: enable pending daemons which tried to start early during startup
+	[ -x /bin/inetdctl ] && /bin/inetdctl pending
+
+	# Basic Packages: load
 	for pkg in crond telnetd webcfg dsld ftpd rextd multid swap external websrv; do
 		local rc="/etc/init.d/rc.$pkg"
 		[ -x "$rc" ] && log "$($rc)"
