@@ -99,42 +99,42 @@ function push_fw() {
 				-W "quote SETENV kernel_args_tmp mtdram1=${MTDSTART},${MAPLIMIT}" \
 				-X "$([ ! $LFS ] && echo "quote SYST" || echo "quote SETENV linux_fs_start $LFS")" \
 				-Y "quote QUIT" \
-				$ip ${mtdram1} "${MTDSTART} ${MAPLIMIT}"
+				$ip ${mtdram1} "${MTDSTART} ${MAPLIMIT}" || exit $?
 		elif [ $ISDUAL ]; then
 			ncftpput \
 				-C -d stdout -u adam2 -p adam2 \
 				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
 				-W "quote MEDIA FLSH" \
-				$ip $ARMsys mtd$ARMsysMTD
+				$ip $ARMsys mtd$ARMsysMTD || exit $?
 			ncftpput \
 				-C -d stdout -u adam2 -p adam2 \
 				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
 				-W "quote MEDIA FLSH" \
-				$ip $ARMkrn mtd$ARMkrnMTD
+				$ip $ARMkrn mtd$ARMkrnMTD || exit $?
 			ncftpput \
 				-C -d stdout -u adam2 -p adam2 \
 				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
 				-W "quote MEDIA FLSH" \
-				$ip $X86sys mtd$X86sysMTD
+				$ip $X86sys mtd$X86sysMTD || exit $?
 			ncftpput \
 				-C -d stdout -u adam2 -p adam2 \
 				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
 				-W "quote MEDIA FLSH" \
 				-X "quote SETENV linux_fs_start $LFS" \
 				-Y "quote REBOOT" \
-				$ip $X86krn mtd$X86krnMTD
+				$ip $X86krn mtd$X86krnMTD || exit $?
 		elif [ $ISSINGLE ]; then
 			[ $ISALICE ] && ncftpput \
 				-C -d stdout -u adam2 -p adam2 \
 				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
 				-W "quote MEDIA FLSH" \
-				$ip ${kernel_mtd5} mtd5
+				$ip ${kernel_mtd5} mtd5 || exit $?
 			ncftpput \
 				-C -d stdout -u adam2 -p adam2 \
 				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
 				-W "quote MEDIA FLSH" \
 				-Y "quote REBOOT" \
-				$ip ${kernel_mtd1} mtd1
+				$ip ${kernel_mtd1} mtd1 || exit $?
 		fi
 	elif [ $FOUND_FTP ]; then
 		if [ $ISRAM ]; then
@@ -258,11 +258,12 @@ prepare_image() {
 }
 
 function cleanup() {
+	local val=$?
 	[ -n "$tmpdir"        -a -d "$tmpdir"        ] && rm -rf "$tmpdir";
 	[ -n "$tmpimg"        -a -f "$tmpimg"        ] && rm -rf "$tmpimg";
 	[ -n "${kernel_mtd1}" -a -f "${kernel_mtd1}" ] && rm -rf "${kernel_mtd1}";
 	[ -n "${kernel_mtd5}" -a -f "${kernel_mtd5}" ] && rm -rf "${kernel_mtd5}";
-	exit 1
+	exit $val
 }
 trap cleanup EXIT SIGTERM SIGINT
 
@@ -479,4 +480,6 @@ else
 	echo    "$PROCEED"
 	push_fw
 fi
+
+exit 0
 
