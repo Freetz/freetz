@@ -16,6 +16,7 @@ Usage: $0 [option]
     -a, --all      	- use all methods (order: stun, route, dsld, webcm) [recommended]
     -c, --ctlm	   	- use ctlmgr_ctl
     -d, --dsld     	- use showdsldstat (since firmware 04.86)
+    -e, --env		- use environment variable [IPADDR]
     -r, --route    	- use routing table
     -s, --stun     	- use STUN/VoIP (server: $MOD_GET_IP_STUN)
     -w, --webcm    	- use webcm CGI handler / ctlmgr_ctl
@@ -59,6 +60,12 @@ via_ctlm() {
 via_dsld() {
 	# Firmware ca. 04.68 and newer should be safe, but some boxes had it since 04.31
 	IP="$(/sbin/showdsldstat 2>/dev/null | sed -nr 's/0:.*ip ([0-9.]+).*/\1/p')"
+	ip_public "$IP" || return 1
+}
+
+via_env() {
+	# Use the environmend variable IPADDR, used by AVMs multid
+	IP=$(echo $IPADDR)
 	ip_public "$IP" || return 1
 }
 
@@ -160,6 +167,9 @@ case $method in
 		;;
 	-d|--dsld)
 		via_dsld
+		;;
+	-e|--env)
+		via_env
 		;;
 	-r|--route)
 		via_route
