@@ -26,10 +26,7 @@ Usage: $0 [option]
     -cp6, --ctlmpre6	- use ctlmgr_ctl (IPv6 prefix)
     -dp6, --dlsdpre6	- use showdsldstat (IPv6 prefix)
     
-Current default method: $MOD_GET_IP_METHOD
-
-Note: If environment variable IPADDR is set and contains a public IP (not from
-a private or link-local network), its value will be returned.
+Current default IPv4 method: $MOD_GET_IP_METHOD
 
 EOF
 }
@@ -140,17 +137,10 @@ via_dsldpre6() {
 	IP=$(showdsldstat | sed -rn 's/.* IPv6: prefix ([^ ]*).*/\1/p')
 }
 
-# If multid (or whoever) has already determined the external IP, use it
-ip_public "$IPADDR" && echo "$IPADDR" && exit 0
-
 # Set user-defined method (e.g. via web UI) if no argument is given
 [ $# -eq 0 ] && method="$MOD_GET_IP_METHOD" || method="$1"
 
-case $method in
-	-h|--help)
-		helpmsg
-		exit 0
-		;;	
+case $method in	
 	-a|--all|""|-e|--extquery|-o|--ostat)
 		# for compatibility reason only, may be removed later
 		[ "$method" ] && [ "$method" != "-a" ] && [ "$method" != "--all" ] &&
