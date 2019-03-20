@@ -770,13 +770,13 @@ menu "Download options"
 
 	config FREETZ_DL_SOURCE_CONTAINER
 		string "Downloaded container file"              if FREETZ_DL_OVERRIDE
-		depends                                         on !FREETZ_TYPE_FIRMWARE_LABOR_LATEST
+		depends                                         on FREETZ_TYPE_FIRMWARE_LABOR && !FREETZ_TYPE_FIRMWARE_LABOR_LATEST
 		#
 		default ""
 
 	config FREETZ_DL_SOURCE_CONTAINER_MD5
 		string "MD5 checksum for container"             if FREETZ_DL_OVERRIDE
-		depends                                         on !FREETZ_TYPE_FIRMWARE_LABOR_LATEST
+		depends                                         on FREETZ_TYPE_FIRMWARE_LABOR && !FREETZ_TYPE_FIRMWARE_LABOR_LATEST
 		#
 		default ""
 
