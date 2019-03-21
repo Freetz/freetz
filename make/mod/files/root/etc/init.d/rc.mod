@@ -51,9 +51,6 @@ start() {
 		[ "$MOD_IPV6_FORWARD" == "yes" ] && echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
 	fi
 
-	# AVM+inetd: enable pending daemons which tried to start early during startup
-	[ -x /bin/inetdctl ] && /bin/inetdctl pending
-
 	# Basic Packages: load
 	for pkg in crond telnetd webcfg dsld ftpd rextd multid swap external websrv; do
 		local rc="/etc/init.d/rc.$pkg"
