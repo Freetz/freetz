@@ -11,8 +11,10 @@ DAEMON=mod
 
 log() {
 	[ "$*" == "" ] && return
-	echo "$*"
-	logger -t FREETZMOD "$*"
+	IFS='\n' echo "$*" | while read -r line; do
+		echo "$line"
+		logger -t FREETZMOD "$line"
+	done
 }
 
 setup() {
