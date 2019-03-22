@@ -46,7 +46,7 @@
  
      if (e->http_proxy_options)
      {
-@@ -1491,6 +1497,9 @@
+@@ -1430,6 +1436,9 @@
      SHOW_BOOL(bind_ipv6_only);
      SHOW_INT(connect_retry_seconds);
      SHOW_INT(connect_timeout);
@@ -56,7 +56,7 @@
  
      if (o->http_proxy_options)
      {
-@@ -5991,6 +6000,36 @@
+@@ -5936,6 +5945,36 @@
          }
          options->proto_force = proto_force;
      }
@@ -168,7 +168,7 @@
  /*
   * Some Posix/Win32 differences.
   */
-@@ -1053,30 +1057,52 @@
+@@ -1065,30 +1069,52 @@
  static inline int
  link_socket_read(struct link_socket *sock,
                   struct buffer *buf,
@@ -225,7 +225,7 @@
  }
  
  /*
-@@ -1166,8 +1192,30 @@
+@@ -1178,8 +1204,30 @@
  static inline int
  link_socket_write(struct link_socket *sock,
                    struct buffer *buf,
