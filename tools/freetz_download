@@ -56,8 +56,8 @@ do_download()
 
 	echo
 	[ "$DEBUG" == "1" ] && echo \
-	"wget -nd -t3 --timeout=20 --passive-ftp -N -P \"${1%/}/\" \"${fullURL}\""
-	 wget -nd -t3 --timeout=20 --passive-ftp -N -P  "${1%/}/"   "${fullURL}"
+	"wget -nd -t3 --timeout=20 --progress=bar:force:noscroll --passive-ftp -N -P \"${1%/}/\" \"${fullURL}\""
+	 wget -nd -t3 --timeout=20 --progress=bar:force:noscroll --passive-ftp -N -P  "${1%/}/"   "${fullURL}"
 	wget_result=$?
 	if [ "$wget_result" != "0" ]; then
 		echo "Download failed - \"${fullURL}\"  ->  error code $wget_result" >&2
