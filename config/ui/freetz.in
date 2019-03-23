@@ -162,24 +162,6 @@ menu "Additional image/box information"
 			from your image. But usualy it is not necessary: The size of FREETZ-Info
 			is very small (2-3 kByte).
 
-	config FREETZ_MODIFY_AVM_VERSION
-		bool "Add Freetz version to AVM version data"
-		default n
-		help
-			Add or append freetz version string (e.g. freetz-devel or freetz-devel-8849M)
-			to AVM firmware version data stored in /etc/.subversion, /etc/version and some
-			other places within the firmware itself.
-
-			Note: AVM firmware version data is exchanged with AVMs firmware update server
-			during automatic firmware update checks and in some other situations.
-			Enable this if you dont care if AVM or your ISP are knowing that you're running
-			a box with customized firmware.
-
-			Disable this if you have trouble with your isp or plugin downloads from
-			AVM don't work.
-
-			Maybe you want to change this too: http://wehavemorefun.de/fritzbox/AVM-Dienste
-
 	config FREETZ_USER_DEFINED_COMMENT
 		string "User defined comment"
 		default ""
