@@ -16,6 +16,7 @@ Usage: $0 [option]
     -a, --all      	- use all methods (order: stun, route, dsld, webcm) [recommended]
     -c, --ctlm	   	- use ctlmgr_ctl
     -d, --dsld     	- use showdsldstat (since firmware 04.86)
+    -e, --env		- display environment variable IPADDR, used by multid
     -r, --route    	- use routing table
     -s, --stun     	- use STUN/VoIP (server: $MOD_GET_IP_STUN)
     -w, --webcm    	- use webcm CGI handler / ctlmgr_ctl
@@ -27,9 +28,6 @@ Usage: $0 [option]
     -dp6, --dlsdpre6	- use showdsldstat (IPv6 prefix)
     
 Current default IPv4 method: $MOD_GET_IP_METHOD
-
-Note: If environment variable IPADDR is set and contains a public IP (not from
-a private or link-local network), its value will be returned.
 
 EOF
 }
@@ -62,6 +60,12 @@ via_ctlm() {
 via_dsld() {
 	# Firmware ca. 04.68 and newer should be safe, but some boxes had it since 04.31
 	IP="$(/sbin/showdsldstat 2>/dev/null | sed -nr 's/0:.*ip ([0-9.]+).*/\1/p')"
+	ip_public "$IP" || return 1
+}
+
+via_env() {
+	# If multid (or whoever) has already determined the external IP, use it
+	IP="$IPADDR"
 	ip_public "$IP" || return 1
 }
 
@@ -140,9 +144,6 @@ via_dsldpre6() {
 	IP=$(showdsldstat | sed -rn 's/.* IPv6: prefix ([^ ]*).*/\1/p')
 }
 
-# If multid (or whoever) has already determined the external IP, use it
-ip_public "$IPADDR" && echo "$IPADDR" && exit 0
-
 # Set user-defined method (e.g. via web UI) if no argument is given
 [ $# -eq 0 ] && method="$MOD_GET_IP_METHOD" || method="$1"
 
@@ -151,7 +152,7 @@ case $method in
 		helpmsg
 		exit 0
 		;;	
-	-a|--all|""|-e|--extquery|-o|--ostat)
+	-a|--all|""|--extquery|-o|--ostat)
 		# for compatibility reason only, may be removed later
 		[ "$method" ] && [ "$method" != "-a" ] && [ "$method" != "--all" ] &&
 			echo "warning: method $method is obsolete, using --all instead" >&2
@@ -170,6 +171,9 @@ case $method in
 		;;
 	-d|--dsld)
 		via_dsld
+		;;
+	-e|--env)
+		via_env
 		;;
 	-r|--route)
 		via_route
