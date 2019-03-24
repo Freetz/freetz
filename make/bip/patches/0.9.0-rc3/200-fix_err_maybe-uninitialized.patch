@@ -1,0 +1,11 @@
+--- src/irc.c	2019-03-24 17:07:09.467032775 +0100
++++ src/irc.c	2019-03-24 17:11:01.025039210 +0100
+@@ -1586,7 +1586,7 @@
+ 	int add = 1;
+ 	unsigned cur_arg = 0;
+ 	array_t *mode_args = NULL;
+-	int ret;
++	int ret = NULL;
+ 
+ 	if (!irc_line_includes(line, 2))
+ 		return ERR_PROTOCOL;
