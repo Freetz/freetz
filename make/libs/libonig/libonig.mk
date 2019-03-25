@@ -1,6 +1,6 @@
 $(call PKG_INIT_LIB, v6.7.1)
 $(PKG)_LIB_VERSION:=4.0.0
-$(PKG)_SOURCE:=$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE:=onig-$($(PKG)_VERSION).tar.xz
 $(PKG)_SITE:=git@https://github.com/kkos/oniguruma
 
 $(PKG)_LIBBASE:=libonig.so
