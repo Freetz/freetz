@@ -843,12 +843,17 @@ if [ "$DO_MOD" -gt 0 ]; then
 		if REVISION="$(svnversion . 2>/dev/null | tr ":" "_")"; then
 			[ "${REVISION:0:6}" == "export" ] && REVISION=""
 		fi
+		SUBVERSION="$(cat $SUBVERSION_FILE)"
 	elif [ -d .git ]; then
-		REVISION="$(git log 2>/dev/null | sed -rn 's!.*git-svn-id.*\@([^ ]*).*!\1!p' | head -n1)"
+		SUBVERSION="freetz"
+		GIT_BRANCH="$(git status | sed -rn 's/.*ranch ([^/]*)$/\1/p')"
+		GIT_LATEST_COMMIT_HASH="$(git log --format=%h -1)"
+		GIT_LATEST_COMMIT_YYMMDD="$(git log --pretty='format:%cd' --date=format:'%y%m%d' -1)"
+		REVISION="${GIT_BRANCH}-${GIT_LATEST_COMMIT_HASH}-${GIT_LATEST_COMMIT_YYMMDD}"
 	fi
 	[ -n "$REVISION" ] && REVISION="-$REVISION"
 
-	SUBVERSION="$(cat $SUBVERSION_FILE)${REVISION}"
+	SUBVERSION="${SUBVERSION}${REVISION}"
 
 	for i in $(set | sed -rn 's:^FREETZ_REMOVE_(.*)=y$:\1:gp' | tr '[:upper:]' '[:lower:]' | sort); do
 		OPTIONS+=" -$i"
