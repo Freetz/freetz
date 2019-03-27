@@ -281,9 +281,12 @@ validate_signature() {
 	[ "$EXP" == "$MOD" ] && EXP='010001'
 	# img
 	cat "$2" > "$TMP/img"
+	# fix
+	local FIX="$(mktemp -p $TMP)"
+	"$TAR_GNU"  -f "$TMP/img"  --owner=0 --group=0 --mode=0755 --format=oldgnu  -C "$TMP"  --append  ${FIX##*/}                              >/dev/null 2>&1
 	# sig
 	"$TAR_GNU"  -f "$TMP/img"  --owner=0 --group=0 --mode=0755 --format=oldgnu  -C "$TMP"  --extract ./var/signature --transform='s!.*!sig!' >/dev/null 2>&1
-	"$TAR_GNU"  -f "$TMP/img"  --owner=0 --group=0 --mode=0755 --format=oldgnu             --delete  ./var/signature                         >/dev/null 2>&1
+	"$TAR_GNU"  -f "$TMP/img"  --owner=0 --group=0 --mode=0755 --format=oldgnu             --delete  ./var/signature ${FIX##*/}              >/dev/null 2>&1
 	# key
 	{
 		echo -n 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQ==' | base64 -d
