@@ -47,6 +47,7 @@ $(PKG)_CONFIGURE_OPTIONS += --libexecdir=$($(PKG)_LIBEXECDIR)
 $(PKG)_CONFIGURE_OPTIONS += --datadir=/usr/share/$(pkg)
 $(PKG)_CONFIGURE_OPTIONS += --localstatedir=/var/$(pkg)
 
+$(PKG)_CONFIGURE_OPTIONS += --with-mpm=prefork
 $(PKG)_CONFIGURE_OPTIONS += --enable-substitute
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_APACHE2_DEFLATE),--enable-deflate,--disable-deflate)
 $(PKG)_CONFIGURE_OPTIONS += --enable-expires
