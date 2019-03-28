@@ -1,0 +1,11 @@
+--- scripts/kconfig/Makefile
++++ scripts/kconfig/Makefile
+@@ -144,6 +144,8 @@
+ common-objs	:= confdata.o expr.o lexer.lex.o parser.tab.o preprocess.o \
+ 		   symbol.o
+ LEX = flex
++YACC = bison
++YFLAGS = -Wnone
+ 
+ $(obj)/lexer.lex.o: $(obj)/parser.tab.h
+ HOSTCFLAGS_lexer.lex.o	:= -I$(src)
