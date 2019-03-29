@@ -1,18 +1,31 @@
 --- scripts/kconfig/symbol.c
 +++ scripts/kconfig/symbol.c
-@@ -370,12 +370,14 @@
- 				    sym->dir_dep.expr);
- 				fprintf(stderr, "warning: (");
- 				expr_fprint(e, stderr);
--				fprintf(stderr, ") selects %s which has unmet direct dependencies (",
-+				fprintf(stderr, ") can NOT select %s because of unmet direct dependencies (",
- 					sym->name);
- 				expr_fprint(sym->dir_dep.expr, stderr);
- 				fprintf(stderr, ")\n");
- 				expr_free(e);
-+				newval.tri = no;
+@@ -300,10 +300,10 @@
+ 	struct gstr gs = str_new();
+ 
+ 	str_printf(&gs,
+-		   "\nWARNING: unmet direct dependencies detected for %s\n",
++		   "\nWARNING: unmet direct dependencies detected for %s, value remains unselected\n",
+ 		   sym->name);
+ 	str_printf(&gs,
+-		   "  Depends on [%c]: ",
++		   "  Would depend on [%c]: ",
+ 		   sym->dir_dep.tri == mod ? 'm' : 'n');
+ 	expr_gstr_print(sym->dir_dep.expr, &gs);
+ 	str_printf(&gs, "\n");
+@@ -397,9 +397,13 @@
+ 				}
  			}
-+			else
- 			newval.tri = EXPR_OR(newval.tri, sym->rev_dep.tri);
+ 		calc_newval:
+-			if (sym->dir_dep.tri < sym->rev_dep.tri)
++			if (sym->dir_dep.tri < sym->rev_dep.tri) {
+ 				sym_warn_unmet_dep(sym);
+-			newval.tri = EXPR_OR(newval.tri, sym->rev_dep.tri);
++				newval.tri = no;
++			}
++			else {
++				newval.tri = EXPR_OR(newval.tri, sym->rev_dep.tri);
++			}
  		}
- 		if (newval.tri == mod && sym_get_type(sym) == S_BOOLEAN)
+ 		if (newval.tri == mod &&
+ 		    (sym_get_type(sym) == S_BOOLEAN || sym->implied.tri == yes))
