@@ -18,7 +18,6 @@ message()
 upstream_branch="$(git rev-parse --abbrev-ref @{u} 2>/dev/null)"
 [ $? -ne 0 ] && printf "Unable to get info for remote tracking branch or upstream repository.\n" && exit 1
 local_branch="$(git rev-parse --abbrev-ref @)"
-[ -z "$upstream_branch" ] && printf "" && exit 1
 behind_count="$(git rev-list --count HEAD..${upstream_branch})"
 ahead_count="$(git rev-list --count ${upstream_branch}..HEAD)"
 message "$behind_count" "$ahead_count" "$local_branch" "$upstream_branch"
