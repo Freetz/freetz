@@ -64,8 +64,7 @@ fi
 # execute onlinechanged scripts
 eventadd 1 "Running onlinechanged: $OC_STATE"
 log "approved"
-for i in /etc/onlinechanged/* /mod/etc/onlinechanged/* /tmp/onlinechanged/* /tmp/flash/onlinechanged/*; do
-	[ ! -s "$i" ] && continue
+for i in $(for x in $(ls /etc/onlinechanged/* /mod/etc/onlinechanged/* /tmp/onlinechanged/* /tmp/flash/onlinechanged/* 2>/dev/null); do echo ${x##*/} $x; done | sort | while read l; do echo ${l#* }; done); do
 	log "executing $i"
 	sh "$i" "$@" 2>&1 | while read line; do [ -n "$line" ] && log " * $line"; done
 done
