@@ -1,0 +1,10 @@
+--- linux-3.10/drivers/net/avm_cpmac/common/avmnet_config.c
++++ linux-3.10/drivers/net/avm_cpmac/common/avmnet_config.c
+@@ -857,6 +857,7 @@
+     }
+ 
+     AVMNET_INFO("[%s] done\n", __func__ );
++    AVMNET_WARN("AVMNET: compiled with sizeof(struct sk_buff) = %d\n", sizeof(struct sk_buff));
+     return 0;
+ }
+ arch_initcall(avmnet_cfg_init);

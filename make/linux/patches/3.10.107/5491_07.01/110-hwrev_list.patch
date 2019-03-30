@@ -1,0 +1,32 @@
+--- linux-3.10/drivers/net/avm_cpmac/common/Makefile
++++ linux-3.10/drivers/net/avm_cpmac/common/Makefile
+@@ -3,7 +3,7 @@
+ # Copyright (C) 2011 AVM GmbH <fritzbox_info@avm.de>
+ #
+ 
+-AVMNET_VERSION = $(shell echo "`cat $(obj)/.avmnet-version` - `date -r $(obj)/.avmnet-version`")
++AVMNET_VERSION = "6.295.2.2-iq17p2_nl1-jz32984_revert_NL1Mi 29. Aug 19:45:02 CEST 2018"
+ 
+ obj-y	+= avmnet_config.o avmnet_common.o .avmnet-version.o
+ 
+@@ -17,6 +17,7 @@
+ quiet_cmd_set_executable = CHMOD+x $@
+       cmd_set_executable = chmod +x $@
+ 
++ifdef DETERMINE_AVMNET_VERSION_USING_VCS
+ .INTERMEDIATE: $(obj)/.avmnet-version.new
+ 
+ $(obj)/.avmnet-version.new: FORCE
+@@ -36,6 +37,12 @@
+ 	@echo "  GEN     $@"
+ 	@echo '#include <avmnet_common.h>' > $@
+ 	@echo 'const char *avmnet_version = "$(shell echo "`cat $<``date -r $<`")";' >> $@
++else
++$(obj)/.avmnet-version.c:
++	@echo "  GEN     $@"
++	@echo '#include <avmnet_common.h>' > $@
++	@echo 'const char *avmnet_version = "$(subst ",,$(AVMNET_VERSION))";' >> $@
++endif
+ 
+ $(obj)/.avmnet-version.o: $(obj)/.avmnet-version.c
+ 
