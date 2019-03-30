@@ -505,25 +505,6 @@ common-distclean: common-dirclean
 download-clean:
 	$(RM) -r $(DL_DIR)
 
-dist: distclean download-clean
-	version="$$(cat .version)"; \
-	curdir="$$(basename $$(pwd))"; \
-	dir="$$(cat .version | $(SED) -e 's#^\(ds-[0-9\.]*\).*$$#\1#')"; \
-	( \
-		cd ../; \
-		[ "$$curdir" == "$$dir" ] || mv "$$curdir" "$$dir"; \
-		( \
-			find "$$dir" -type d -name .svn -prune; \
-			$(SED) -e "s/\(.*\)/$$dir\/\1/" "$$dir/.exclude-dist"; \
-			echo "$${dir}/.exclude-dist"; \
-			echo "$${dir}/.exclude-dist-tmp"; \
-		) > "$$dir/.exclude-dist-tmp"; \
-		tar --exclude-from="$${dir}/.exclude-dist-tmp" -cvjf "$${version}.tar.bz2" "$$dir"; \
-		[ "$$curdir" == "$$dir" ] || mv "$$dir" "$$curdir"; \
-		cd "$$curdir"; \
-	)
-	$(RM) .exclude-dist-tmp
-
 # Check .config is up-to-date. Any change to any of the menuconfig configuration files (either manual or one caused by 'svn up') require .config to be updated.
 check-dot-config-uptodateness: $(CONFIG_IN_CACHE)
 	@if [ -e .config -a $(CONFIG_IN_CACHE) -nt .config ]; then \
