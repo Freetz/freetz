@@ -548,7 +548,7 @@ $(eval $(call CONFIG_CLEAN_DEPS,config-clean-deps-keep-busybox,kernel modules$(_
 common-clean:
 	./fwmod_custom clean
 	$(RM) make/Config.in.generated make/external.in.generated
-	$(RM) .static .dynamic .packages .exclude-dist-tmp $(CONFIG_IN_CACHE)
+	$(RM) .static .dynamic .packages .exclude-release-tmp $(CONFIG_IN_CACHE)
 	$(RM) -r $(BUILD_DIR)
 	$(RM) -r $(FAKEROOT_CACHE_DIR)
 
@@ -569,24 +569,27 @@ common-distclean: common-dirclean
 download-clean:
 	$(RM) -r $(DL_DIR)
 
-dist: distclean download-clean
+release: distclean
 	version="$$(cat .version)"; \
 	curdir="$$(basename $$(pwd))"; \
-	dir="$$(cat .version | $(SED) -e 's#^\(ds-[0-9\.]*\).*$$#\1#')"; \
+	dir="$$(cat .version | $(SED) -e 's#^\(freetz.*-[0-9\.]*\).*$$#\1#')"; \
 	( \
 		cd ../; \
 		[ "$$curdir" == "$$dir" ] || mv "$$curdir" "$$dir"; \
 		( \
-			find "$$dir" -type d -name .svn -prune; \
-			$(SED) -e "s/\(.*\)/$$dir\/\1/" "$$dir/.exclude-dist"; \
-			echo "$${dir}/.exclude-dist"; \
-			echo "$${dir}/.exclude-dist-tmp"; \
-		) > "$$dir/.exclude-dist-tmp"; \
-		tar --exclude-from="$${dir}/.exclude-dist-tmp" -cvjf "$${version}.tar.bz2" "$$dir"; \
+			find "$$dir" -type f -name .gitignore; \
+			$(SED) "s/^/$$dir\//" "$$dir/.exclude-release"; \
+			echo "$$dir/.exclude-release-tmp"; \
+		) > "$$dir/.exclude-release-tmp"; \
+		echo "excluding:"; \
+		cat "$$dir/.exclude-release-tmp" ; \
+		echo "creating: $${version}.tar.bz2"; \
+		tar --exclude-from="$${dir}/.exclude-release-tmp"  --owner=0 --group=0  -cjf "$${version}.tar.bz2" "$$dir"; \
+		du -h "$${version}.tar.bz2"; \
 		[ "$$curdir" == "$$dir" ] || mv "$$dir" "$$curdir"; \
 		cd "$$curdir"; \
 	)
-	$(RM) .exclude-dist-tmp
+	$(RM) .exclude-release-tmp
 
 # Check .config is up-to-date. Any change to any of the menuconfig configuration files (either manual or one caused by 'svn up') require .config to be updated.
 check-dot-config-uptodateness: $(CONFIG_IN_CACHE)
@@ -606,6 +609,6 @@ help:
 
 .PHONY: all world step $(KCONFIG_TARGETS) config-cache tools recover \
 	config-clean-deps-modules config-clean-deps-libs config-clean-deps-busybox config-clean-deps-terminfo config-clean-deps config-clean-deps-keep-busybox \
-	clean dirclean distclean common-clean common-dirclean common-distclean dist \
+	clean dirclean distclean common-clean common-dirclean common-distclean release \
 	$(TOOLS) $(TOOLS_CLEAN) $(TOOLS_DIRCLEAN) $(TOOLS_DISTCLEAN) $(TOOLS_SOURCE) \
 	check-dot-config-uptodateness
