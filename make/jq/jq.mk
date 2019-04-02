@@ -29,7 +29,6 @@ endif
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
-$(PKG)_CONFIGURE_OPTIONS += --cache-file=/dev/null
 $(PKG)_CONFIGURE_ENV += $(foreach opt,j0 j1 y0 y1,ac_cv_funclib_$(opt)=no)
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-silent-rules
