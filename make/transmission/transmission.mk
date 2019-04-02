@@ -38,7 +38,6 @@ ifeq ($(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),y)
 $(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e 's,iconv_open,no_iconv_open_in_0928,' ./configure;
 endif
 
-$(PKG)_CONFIGURE_OPTIONS += --cache-file=/dev/null
 ifeq ($(strip $(FREETZ_PACKAGE_TRANSMISSION_WITH_MBEDTLS)),y)
 $(PKG)_CONFIGURE_ENV += MBEDTLS_CFLAGS="-D_MBEDTLS_DUMMY_"
 $(PKG)_CONFIGURE_ENV += MBEDTLS_LIBS="-lmbedcrypto"

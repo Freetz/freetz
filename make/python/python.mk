@@ -59,10 +59,6 @@ $(PKG)_CONFIGURE_ENV += ac_cv_file__dev_ptmx=no
 $(PKG)_CONFIGURE_ENV += ac_cv_file__dev_ptc=no
 $(PKG)_CONFIGURE_ENV += OPT="-fno-inline"
 
-# use local config.cache to avoid conflicts with other packages
-# TODO: check if this is still necessary
-$(PKG)_CONFIGURE_OPTIONS += --cache-file=config.cache
-
 $(PKG)_CONFIGURE_OPTIONS += --with-system-expat
 $(PKG)_CONFIGURE_OPTIONS += --with-system-ffi
 $(PKG)_CONFIGURE_OPTIONS += --with-threads
