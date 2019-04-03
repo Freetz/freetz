@@ -61,9 +61,6 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-systemtap
 $(PKG)_CONFIGURE_OPTIONS += --with-pcre=system
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,func_dlerror)
-# the test "checking whether to use statfs or statvfs" sets ac_cv_func_statvfs to 'no' even if it's available
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,func_statfs func_statvfs)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

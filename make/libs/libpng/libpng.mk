@@ -13,9 +13,8 @@ $(PKG)_DEPENDS_ON += zlib
 $(PKG)_CONFIGURE_ENV += gl_cv_func_malloc_0_nonnull=yes
 $(PKG)_CONFIGURE_ENV += ac_cv_func_strtod=yes
 
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,func_pow lib_m_pow)
-$(PKG)_CONFIGURE_ENV += libpng_func_pow=no   # semantic pow is in libc
-$(PKG)_CONFIGURE_ENV += libpng_lib_m_pow=yes # semantic pow is in libm
+$(PKG)_CONFIGURE_ENV += ac_cv_func_pow=no   # semantic pow is in libc
+$(PKG)_CONFIGURE_ENV += ac_cv_lib_m_pow=yes # semantic pow is in libm
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static

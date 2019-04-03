@@ -35,9 +35,6 @@ $(PKG)_EXCLUDED += $(addprefix usr/lib/,$(filter-out $($(PKG)_LIB_BINARIES_INCLU
 $(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_OPENSSH_sshd),,etc/default.openssh etc/init.d/rc.openssh usr/lib/cgi-bin/openssh.cgi)
 $(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_OPENSSH_INTERNAL_CRYPTO),etc/default.openssh/rsa_key.def etc/default.openssh/dsa_key.def)
 
-$(PKG)_AC_VARIABLES := have_decl_LLONG_MAX search_logout search_openpty lib_resolv_res_query lib_resolv_strcasecmp
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,$($(PKG)_AC_VARIABLES))
-
 $(PKG)_CONFIGURE_OPTIONS += --disable-etc-default-login
 $(PKG)_CONFIGURE_OPTIONS += --disable-lastlog
 $(PKG)_CONFIGURE_OPTIONS += --disable-utmp

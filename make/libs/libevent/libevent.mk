@@ -10,9 +10,8 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/$($(PKG)_LIBNAME)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$($(PKG)_LIBNAME)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$($(PKG)_LIBNAME)
 
-# zlib is needed only for tests
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,header_zlib_h)
-$(PKG)_CONFIGURE_ENV += $(pkg)_header_zlib_h=no
+# zlib is needed only for tests, pretend not to have it to avoid the run-time dependency
+$(PKG)_CONFIGURE_ENV += ac_cv_header_zlib_h=no
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
