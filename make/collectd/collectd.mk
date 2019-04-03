@@ -19,7 +19,6 @@ $(PKG)_CONFIGURE_ENV += LIBLTDL_PREFIX="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_PRE_CMDS += sed -i -r -e 's,-Werror,,g' ./configure ./src/Makefile.in ./src/libcollectdclient/Makefile.in ./src/owniptc/Makefile.in;
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,header_oping_h header_rrd_h)
 
 $(PKG)_CONFIGURE_OPTIONS += --with-nan-emulation
 $(PKG)_CONFIGURE_OPTIONS += --with-fp-layout=$(if $(FREETZ_TARGET_ARCH_BE),endianflip,nothing)

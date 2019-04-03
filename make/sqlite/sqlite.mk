@@ -21,8 +21,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-editline
 $(PKG)_CONFIGURE_OPTIONS += --disable-static-shell
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_SQLITE_WITH_READLINE),--enable-readline,--disable-readline)
 
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,header_zlib_h)
-$(PKG)_CONFIGURE_ENV += $(pkg)_header_zlib_h=no
+$(PKG)_CONFIGURE_ENV += ac_cv_header_zlib_h=no
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

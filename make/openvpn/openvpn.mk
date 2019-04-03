@@ -33,14 +33,10 @@ $(PKG)_REBUILD_SUBOPTS += $(if $(FREETZ_PACKAGE_OPENVPN_MBEDTLS),FREETZ_LIB_libm
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-http-proxy
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,lib_mbedtls_mbedtls_ssl_init)
-# don't cache any pkg_cv_* variable
-$(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e 's,pkg_cv_,openvpn_,g' ./configure;
 
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,path_IFCONFIG path_IPROUTE path_ROUTE)
-$(PKG)_CONFIGURE_ENV += $(pkg)_path_IFCONFIG=/sbin/ifconfig
-$(PKG)_CONFIGURE_ENV += $(pkg)_path_IPROUTE=/sbin/ip
-$(PKG)_CONFIGURE_ENV += $(pkg)_path_ROUTE=/sbin/route
+$(PKG)_CONFIGURE_ENV += ac_cv_path_IFCONFIG=/sbin/ifconfig
+$(PKG)_CONFIGURE_ENV += ac_cv_path_IPROUTE=/sbin/ip
+$(PKG)_CONFIGURE_ENV += ac_cv_path_ROUTE=/sbin/route
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_ADD_EXTRA_FLAGS,(C|LD)FLAGS|LIBS)
 

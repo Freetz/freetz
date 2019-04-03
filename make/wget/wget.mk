@@ -10,8 +10,6 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/wget-gnu
 $(PKG)_PATCH_POST_CMDS += find $(abspath $($(PKG)_DIR)) \( -name *.h -o -name *.c \) -type f \
 	-exec $(SED) -i -r -e 's,(base64_(en|de)code),wget_\1,g' \{\} \+;
 
-$(PKG)_PATCH_POST_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,lib_z_compress)
-
 $(PKG)_PATCH_POST_CMDS += $(call PKG_ADD_EXTRA_FLAGS,(C|LD)FLAGS|LIBS)
 
 $(PKG)_EXTRA_CFLAGS  += -ffunction-sections -fdata-sections
