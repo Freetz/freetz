@@ -34,8 +34,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-os-name="FRITZ!Box"
 $(PKG)_CONFIGURE_OPTIONS += --with-os-version=""
 $(PKG)_CONFIGURE_OPTIONS += --with-os-url="http://freetz.org"
 
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,lib_avahi_client_avahi_threaded_poll_new)
-$(PKG)_CONFIGURE_ENV += minidlna_lib_avahi_client_avahi_threaded_poll_new=no
+$(PKG)_CONFIGURE_ENV += ac_cv_lib_avahi_client_avahi_threaded_poll_new=no
 
 ifeq ($(strip $(FREETZ_PACKAGE_MINIDLNA_STATIC)),y)
 # sqlite

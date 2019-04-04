@@ -10,7 +10,6 @@ $(PKG)_DEPENDS_ON += ncurses
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(AUTORECONF)
 
-$(PKG)_CONFIGURE_OPTIONS += --cache-file=/dev/null
 $(PKG)_CONFIGURE_OPTIONS += --disable-socket-dir
 $(PKG)_CONFIGURE_OPTIONS += --with-sys-screenrc=/mod/etc/screenrc
 $(PKG)_CONFIGURE_OPTIONS += --enable-colors256

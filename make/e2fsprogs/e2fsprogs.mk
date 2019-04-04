@@ -87,8 +87,6 @@ $(PKG)_LINK_MODE := $(call PKG_SELECTED_SUBOPTIONS,ALL_DYN PKG_STAT ALL_STAT)
 $(PKG)_CONFIGURE_ENV += ac_cv_path_LDCONFIG=$(TARGET_LDCONFIG)
 $(PKG)_CONFIGURE_ENV += gt_cv_func_printf_posix=yes
 
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,gnu_library_2_1)
-
 # uClibc-0.9.29 yields yes, 0.9.28 to be evaluated, it's however absolutely safe to say no
 $(PKG)_CONFIGURE_ENV += gt_cv_int_divbyzero_sigfpe=no
 
