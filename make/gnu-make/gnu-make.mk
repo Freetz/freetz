@@ -6,8 +6,7 @@ $(PKG)_SITE:=@GNU/make
 $(PKG)_BINARY:=$($(PKG)_DIR)/make
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/make
 
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,lib_elf_elf_begin struct_st_mtim_nsec)
-$(PKG)_CONFIGURE_ENV += gnu_make_lib_elf_elf_begin=no
+$(PKG)_CONFIGURE_ENV += ac_cv_lib_elf_elf_begin=no
 
 $(PKG)_CONFIGURE_ENV += make_cv_sys_gnu_glob=no
 $(PKG)_CONFIGURE_ENV += GLOBINC='-Iglob/'

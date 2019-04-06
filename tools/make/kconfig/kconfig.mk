@@ -1,6 +1,6 @@
-KCONFIG_VERSION:=v3.11-rc3
+KCONFIG_VERSION:=v5.1-rc2
 KCONFIG_SOURCE:=kconfig-$(KCONFIG_VERSION).tar.xz
-KCONFIG_SITE:=git_archive@git://repo.or.cz/linux-2.6.git,scripts/basic,scripts/kconfig,scripts/Kbuild.include,scripts/Makefile.build,scripts/Makefile.host,scripts/Makefile.lib
+KCONFIG_SITE:=git_archive@git://repo.or.cz/linux.git,scripts/basic,scripts/kconfig,scripts/Kbuild.include,scripts/Makefile.build,scripts/Makefile.host,scripts/Makefile.lib,Documentation/kbuild/kconfig-language.txt,Documentation/kbuild/kconfig-macro-language.txt,Documentation/kbuild/kconfig.txt
 KCONFIG_DIR:=$(TOOLS_SOURCE_DIR)/kconfig-$(KCONFIG_VERSION)
 KCONFIG_MAKE_DIR:=$(TOOLS_DIR)/make/kconfig
 KCONFIG_TARGET_DIR:=$(TOOLS_DIR)/config

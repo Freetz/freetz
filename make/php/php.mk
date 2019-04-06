@@ -58,9 +58,8 @@ endif
 ifeq ($(strip $(FREETZ_PACKAGE_PHP_WITH_ICONV)),y)
 $(PKG)_CONFIGURE_OPTIONS += --with-iconv
 
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,func_iconv func_libiconv)
-$(PKG)_CONFIGURE_ENV += php_func_iconv=$(if $(FREETZ_PACKAGE_PHP_WITH_LIBICONV),no,yes)
-$(PKG)_CONFIGURE_ENV += php_func_libiconv=$(if $(FREETZ_PACKAGE_PHP_WITH_LIBICONV),yes,no)
+$(PKG)_CONFIGURE_ENV += ac_cv_func_iconv=$(if $(FREETZ_PACKAGE_PHP_WITH_LIBICONV),no,yes)
+$(PKG)_CONFIGURE_ENV += ac_cv_func_libiconv=$(if $(FREETZ_PACKAGE_PHP_WITH_LIBICONV),yes,no)
 
 ifeq ($(strip $(FREETZ_PACKAGE_PHP_WITH_LIBICONV)),y)
 $(PKG)_DEPENDS_ON += iconv
