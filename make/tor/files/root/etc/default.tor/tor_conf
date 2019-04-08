@@ -8,6 +8,8 @@ _join() {
 	(IFS="$separator"; echo -n "$*")
 }
 
+echo "PidFile /var/run/tor/tor.pid"
+echo "Log warn syslog"
 echo "User tor"
 
 [ -n "$TOR_DATADIRECTORY" ] && echo "DataDirectory $TOR_DATADIRECTORY" || echo "DataDirectory /var/tmp/tor"

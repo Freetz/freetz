@@ -40,7 +40,7 @@ start() {
 	echo -n "Starting ${DAEMON_LONG_NAME} ... "
 	config
 	[ -f $DAEMON_STORAGE/secret_id_key ] && savetimer=no
-	$DAEMON --runasdaemon 1 --log "notice syslog" --pidfile $PID_FILE > /dev/null 2>&1
+	$DAEMON --runasdaemon 1 >/dev/null 2>&1
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		if [ "$savetimer" != "no" -a "$TOR_RELAY_ENABLED" == "yes" ]; then
