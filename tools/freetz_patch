@@ -174,19 +174,20 @@ modpatch()
 	fi
 }
 
+if [ "$(basename "$0")" == "freetz_patch" ]; then
+	# standalone invocation
+	TOOLS_DIR=$(dirname "$0")
+else
+	# possibly sourced invocation
+	[ -z "$TOOLS_DIR" ] && TOOLS_DIR="tools"
+fi
 
 # Include freetz_functions if not already done by fwmod
 if ! declare -F | cut -d ' ' -f 3 | grep -q echoX; then
-	# Let's hope we find the right file no matter if we are sourced or
-	# stand-alone
-	if [ "$(basename "$0")" == "freetz_patch" ] && [ -f "$(dirname "$0")/freetz_functions" ]; then
-		source "$(dirname "$0")/freetz_functions"
-	elif [ "$TOOLS_DIR" ] && [ -f "$TOOLS_DIR/freetz_functions" ]; then
+	if [ -f "$TOOLS_DIR/freetz_functions" ]; then
 		source "$TOOLS_DIR/freetz_functions"
-	elif [ -f tools/freetz_functions ]; then
-		source tools/freetz_functions
 	else
-		echo "tools/freetz_functions not found" >&2
+		echo "$TOOLS_DIR/freetz_functions not found" >&2
 		exit 1
 	fi
 fi
