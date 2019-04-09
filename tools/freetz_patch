@@ -80,7 +80,8 @@ modpatch()
 		fi
 		[ -e "$target_dir"/"$patch_target" ] || error 2 "modpatch: Target file $patch_target does not exist"
 
-		local MD5SUM=$(_findTool md5sum) || exit $?
+		local MD5SUM
+		MD5SUM=$(_findTool md5sum) || exit $?
 
 		local target_md5="$($MD5SUM "$target_dir"/"$patch_target" | sed -n 's/\([a-f0-9]*\) .*$/\1/p')"
 
