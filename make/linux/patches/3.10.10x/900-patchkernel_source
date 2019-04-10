@@ -1,6 +1,6 @@
 --- /dev/null
 +++ linux-3.10/drivers/net/yf_patchkernel.c
-@@ -0,0 +1,217 @@
+@@ -0,0 +1,237 @@
 +/************************************************************************************************
 + *                                                                                              *
 + * @file        yf_patchkernel.c                                                                *
@@ -12,6 +12,24 @@
 + * @date        17.01.2019                                                                      *
 + *                                                                                              *
 + ************************************************************************************************
++ *                                                                                              *
++ * Copyright (C) 2019 Peter Haemmerlein (peterpawn@yourfritz.de)                                *
++ *                                                                                              *
++ ************************************************************************************************
++ *                                                                                              *
++ * This project is free software, you can redistribute it and/or modify it under the terms of   *
++ * the GNU General Public License (version 2) as published by the Free Software Foundation.     *
++ *                                                                                              *
++ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;    *
++ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.    *
++ * See the GNU General Public License under https://www.gnu.org/licenses/gpl-2.0.html for more  *
++ * details.                                                                                     *
++ *                                                                                              *
++ ************************************************************************************************
++ *                                                                                              *
++ * This loadable kernel module looks for machine instructions at specified locations in the     *
++ * running kernel and replaces them (in case of a hit) with another instruction (only in-place  *
++ * patches are supported).                                                                      *
 + *                                                                                              *
 + ************************************************************************************************
 +*/
@@ -56,26 +74,28 @@
 +
 +typedef struct patchEntry
 +{
-+	unsigned char	*fname;
-+	unsigned int	*startAddress;
-+	unsigned int	startOffset;
-+	unsigned int	maxOffset;
-+	unsigned int	lookFor;
-+	unsigned int	andMask;
-+	unsigned int	orMask;
-+	unsigned int	verifyOffset;
-+	unsigned int	verifyValue;
-+	unsigned int	verifyAndMask;
-+	unsigned int	verifyOrMask;
-+	unsigned int	patchOffset;
-+	unsigned int	patchValue;
-+	unsigned int	*patchAddress;
-+	unsigned int	originalValue;
-+	int		isPatched;
++	unsigned char   *fname;         // kernel symbol name, where to start with a search
++	unsigned int    *startAddress;  // the result from kallsyms_lookup_name for the above symbol
++	unsigned int    startOffset;    // number of instructions (32 bits per instruction) to skip prior to first comparision
++	unsigned int    maxOffset;      // maximum number of instructions to process, while searching for this patch
++	unsigned int    lookFor;        // the value to look for, the source value will be modified by AND and OR masks first (see below)
++	unsigned int    andMask;        // the mask to use for a logical AND operation, may be used to mask out unwanted bits from value
++	unsigned int    orMask;         // the mask to use for a logical OR operation, may be used as a mask to set some additional bits or to ensure, they're set already
++	unsigned int    verifyOffset;   // the offset of another value to check, if the search from above was successful, if it's 0, no further check is performed
++	unsigned int    verifyValue;    // the expected value from verification, after processing AND and OR operations with masks below
++	unsigned int    verifyAndMask;  // the AND mask for verification
++	unsigned int    verifyOrMask;   // the OR mask for verification
++	unsigned int    patchOffset;    // the offset of instruction to patch, relative to the search result (not to verification offset)
++	unsigned int    patchValue;     // the new value to store at patched location
++	unsigned int    *patchAddress;  // the address, where the change was applied
++	unsigned int    originalValue;  // the original value prior to patching
++	int             isPatched;      // not zero, if this patch was applied successfully
 +} patchEntry_t;
 +
 +static unsigned int yf_patchkernel_patch(patchEntry_t *);
 +static void yf_patchkernel_restore(patchEntry_t *);
++
++// entries to patch for TUN device on 7490/75x0 devices, starting with FRITZ!OS version 07.0x
 +
 +static patchEntry_t patchesForTunDevice[] = {
 +	{
@@ -108,9 +128,11 @@
 +		.patchValue = MIPS_NOP
 +	},
 +	{
-+		.fname = NULL
++		.fname = NULL		// last entry needed as 'end of list' marker
 +	}
 +};
++
++static unsigned int	patches_applied = 0;	// number of patches applied successfully
 +
 +static unsigned int yf_patchkernel_patch(patchEntry_t *patches)
 +{
@@ -135,7 +157,7 @@
 +		{
 +			YF_INFO("Patching kernel function '%s' at address %#010x.\n", patch->fname, (unsigned int)ptr);
 +
-+			for (offset = 0; offset < patch->maxOffset; offset++, ptr++)
++			for (offset = 0, patch->startAddress = ptr, ptr += patch->startOffset; offset < patch->maxOffset; offset++, ptr++)
 +			{
 +				value = (*ptr & patch->andMask) | patch->orMask;
 +				orgValue = *(ptr + patch->patchOffset);
@@ -160,7 +182,7 @@
 +					patch->isPatched = 1;
 +					patches_applied++;
 +
-+					YF_INFO("Found instruction to patch (%#010x) at address %#010x, replaced it with %#010x.\n", patch->originalValue, (unsigned int)(patch->patchAddress), patch->patchValue);
++					YF_INFO("Found instruction to patch (%#010x) at address %#010x, replaced it with %#010x.\n", patch->originalValue, (unsigned int)(patch->patchAddress), *(patch->patchAddress));
 +
 +					break;
 +				}
@@ -195,8 +217,6 @@
 +
 +static int __init yf_patchkernel_init(void)
 +{
-+	unsigned int	patches_applied = 0;
-+
 +	YF_INFO("Initialization started\n");
 +	YF_INFO("Any preceding error messages regarding memory allocation are expected and may be ignored.\n");
 +
