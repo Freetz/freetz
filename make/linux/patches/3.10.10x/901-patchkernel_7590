@@ -6,7 +6,7 @@
  
 +config YF_PATCHKERNEL_NET
 +	tristate "LKM to remove/patch wrong BUG_ON statements in network code"
-+	depends on TUN
++	depends on TUN && m
 +	default m
 +	---help---
 +	  This affected code has to be built as module, do not select 'Y' here.
