@@ -41,6 +41,17 @@ Environment variables changing behaviour:
 EOF
 }
 
+_findTool()
+{
+	local tool="$1"
+	if [ -f "$TOOLS_DIR/$tool" ] && [ -x "$TOOLS_DIR/$tool" ]; then
+		# prefer the tool from the TOOLS_DIR if available
+		echo "$TOOLS_DIR/$tool"
+	else
+		# fallback to that found by which otherwise
+		which $tool 2>/dev/null || error 1 "$freetz_patch_name: required tool $tool missing, please install"
+	fi
+}
 
 modpatch()
 {
@@ -48,22 +59,19 @@ modpatch()
 		helpmsg
 		return 1
 	fi
-	# Check prerequisites for auto-fix
-	if [ "$AUTO_FIX_PATCHES" == "y" ]; then
-		for tool in lsdiff filterdiff; do
-			which $tool > /dev/null || error 1 "$freetz_patch_name: tool $tool needed for auto-fix mode, please install"
-		done
-	fi
+
 	local is_verbose=""
 	if [ "$FREETZ_VERBOSITY_LEVEL" ] && [ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ] || [ "$VERBOSE" == "-v" ]; then
 		is_verbose="y"
 	fi
-	local _auto_fix_patches="$AUTO_FIX_PATCHES"
+
 	local target_dir="$1"
 	local patch_file="$2"
+	local _auto_fix_supported="y"
+
 	## md5 start
 	if [ -d "$patch_file" ]; then
-		_auto_fix_patches=""
+		_auto_fix_supported="n"
 		local patch_target="$3"
 		if [ -z "$patch_target" ]; then
 			patch_target="$(grep -m1 '^+++ ' $patch_file/*.patch 2>/dev/null | sed -r -n 's,.*patch:[+]{3} ([^\t]*)(\t.*)?,\1,p' | sort -u)"
@@ -72,9 +80,9 @@ modpatch()
 		fi
 		[ -e "$target_dir"/"$patch_target" ] || error 2 "modpatch: Target file $patch_target does not exist"
 
-		# System's md5sum is used if busybox applet is not available, eg while download of busybox (see #1535)
-		local MD5SUM=$(dirname $0)/md5sum
-		[ ! -x $MD5SUM ] && MD5SUM="$(which md5sum)"
+		local MD5SUM
+		MD5SUM=$(_findTool md5sum) || exit $?
+
 		local target_md5="$($MD5SUM "$target_dir"/"$patch_target" | sed -n 's/\([a-f0-9]*\) .*$/\1/p')"
 
 		local md5_patch="$(find "$patch_file" -name *${target_md5}*.patch)"
@@ -89,9 +97,47 @@ modpatch()
 
 	[ ! -e $patch_file ] && error 2 "modpatch: Could not find patch-file $patch_file"
 
+	local uncompress_tool
+	case "$patch_file" in
+		*.gz)
+			uncompress_tool=$(_findTool gunzip) || exit $?
+			;;
+		*.bzip2|*.bz2|*.bz)
+			uncompress_tool=$(_findTool bunzip2) || exit $?
+			;;
+		*.xz)
+			uncompress_tool=$(_findTool unxz) || exit $?
+			;;
+		*.lz)
+			uncompress_tool=$(_findTool lunzip) || exit $?
+			;;
+		*.lzma)
+			uncompress_tool=$(_findTool unlzma) || exit $?
+			;;
+		*.Z)
+			uncompress_tool=$(_findTool uncompress) || exit $?
+			;;
+	esac
+
+	local read_patch_cmd
+	if [ -n "$uncompress_tool" ]; then
+		_auto_fix_supported="n"
+		read_patch_cmd="$uncompress_tool -c"
+	else
+		read_patch_cmd="cat"
+	fi
+
+	local _auto_fix_patches
+	[ "$_auto_fix_supported" == "y" ] && _auto_fix_patches="$AUTO_FIX_PATCHES"
+
 	local backup
 	local do_fix
 	if [ "$_auto_fix_patches" == "y" ]; then
+		# Check prerequisites for auto-fix
+		for tool in lsdiff filterdiff; do
+			which $tool > /dev/null || error 1 "$freetz_patch_name: tool $tool needed for auto-fix mode, please install"
+		done
+
 		local output=$(patch --dry-run -d "$target_dir" -p0 < "$patch_file" 2> /dev/null)
 		if [ $? -eq 0 ] && echo "$output" | grep -sqE '^Hunk '; then
 			# Is any target file patched more than once per patch? -> skip auto-fix
@@ -110,17 +156,20 @@ modpatch()
 		fi
 	fi
 
-	local STATUS
+	local READ_PATCH_STATUS
+	local APPLY_PATCH_STATUS
 	if [ "$is_verbose" ]; then
 		echo2 "applying patch file $patch_file"
-		patch --force ${backup}-d "$target_dir" -p0 --no-backup-if-mismatch < "$patch_file" 2>&1 | sed -e "s/^/${L2}/g"
-		STATUS=${PIPESTATUS[0]}
+		$read_patch_cmd "$patch_file" | patch --force ${backup}-d "$target_dir" -p0 --no-backup-if-mismatch 2>&1 | sed -e "s/^/${L2}/g"
+		READ_PATCH_STATUS=${PIPESTATUS[0]} APPLY_PATCH_STATUS=${PIPESTATUS[1]}
 		echo2 -- "----------------------------------------------------------------------"
 	else
-		patch --force ${backup}-d "$target_dir" -p0 --no-backup-if-mismatch < "$patch_file" > /dev/null
-		STATUS=$?
+		$read_patch_cmd "$patch_file" | patch --force ${backup}-d "$target_dir" -p0 --no-backup-if-mismatch >/dev/null
+		READ_PATCH_STATUS=${PIPESTATUS[0]} APPLY_PATCH_STATUS=${PIPESTATUS[1]}
 	fi
-	if [ $STATUS -gt 0 ]; then
+	if [ $READ_PATCH_STATUS -gt 0 ]; then
+		error 2 "modpatch: Failed to read/decompress patch-file $patch_file"
+	elif [ $APPLY_PATCH_STATUS -gt 0 ]; then
 		error 2 "modpatch: Error in patch-file $patch_file"
 	elif [ "$_auto_fix_patches" == "y" ] && [ "$do_fix" == "y" ]; then
 		# Create (temporary) clean patch file copy without any comments in between change sets
@@ -174,19 +223,20 @@ modpatch()
 	fi
 }
 
+if [ "$(basename "$0")" == "freetz_patch" ]; then
+	# standalone invocation
+	TOOLS_DIR=$(dirname "$0")
+else
+	# possibly sourced invocation
+	[ -z "$TOOLS_DIR" ] && TOOLS_DIR="tools"
+fi
 
 # Include freetz_functions if not already done by fwmod
 if ! declare -F | cut -d ' ' -f 3 | grep -q echoX; then
-	# Let's hope we find the right file no matter if we are sourced or
-	# stand-alone
-	if [ "$(basename "$0")" == "freetz_patch" ] && [ -f "$(dirname "$0")/freetz_functions" ]; then
-		source "$(dirname "$0")/freetz_functions"
-	elif [ "$TOOLS_DIR" ] && [ -f "$TOOLS_DIR/freetz_functions" ]; then
+	if [ -f "$TOOLS_DIR/freetz_functions" ]; then
 		source "$TOOLS_DIR/freetz_functions"
-	elif [ -f tools/freetz_functions ]; then
-		source tools/freetz_functions
 	else
-		echo "tools/freetz_functions not found" >&2
+		echo "$TOOLS_DIR/freetz_functions not found" >&2
 		exit 1
 	fi
 fi
