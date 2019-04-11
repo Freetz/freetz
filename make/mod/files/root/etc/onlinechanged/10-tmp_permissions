@@ -1,0 +1,9 @@
+#!/bin/sh
+
+case "$1" in
+	online*)
+		# re-set /tmp permissions as AVM overwrites them somehow after connect
+		chmod 1777 /var/tmp
+		;;
+esac
+
