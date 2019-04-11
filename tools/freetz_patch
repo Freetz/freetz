@@ -100,28 +100,29 @@ modpatch()
 	local uncompress_tool
 	case "$patch_file" in
 		*.gz)
-			uncompress_tool=$(_findTool gunzip) || exit $?
+			uncompress_tool="gunzip"
 			;;
 		*.bzip2|*.bz2|*.bz)
-			uncompress_tool=$(_findTool bunzip2) || exit $?
+			uncompress_tool="bunzip2"
 			;;
 		*.xz)
-			uncompress_tool=$(_findTool unxz) || exit $?
+			uncompress_tool="unxz"
 			;;
 		*.lz)
-			uncompress_tool=$(_findTool lunzip) || exit $?
+			uncompress_tool="lunzip"
 			;;
 		*.lzma)
-			uncompress_tool=$(_findTool unlzma) || exit $?
+			uncompress_tool="unlzma"
 			;;
 		*.Z)
-			uncompress_tool=$(_findTool uncompress) || exit $?
+			uncompress_tool="uncompress"
 			;;
 	esac
 
 	local read_patch_cmd
 	if [ -n "$uncompress_tool" ]; then
 		_auto_fix_supported="n"
+		uncompress_tool=$(_findTool "$uncompress_tool") || exit $?
 		read_patch_cmd="$uncompress_tool -c"
 	else
 		read_patch_cmd="cat"
