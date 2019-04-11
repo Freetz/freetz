@@ -450,6 +450,7 @@ endchoice # "Firmware language" #
 
 choice
 	prompt "Firmware version"
+	default FREETZ_TYPE_FIRMWARE_07_1X
 	default FREETZ_TYPE_FIRMWARE_07_0X
 	default FREETZ_TYPE_FIRMWARE_06_9X
 	default FREETZ_TYPE_FIRMWARE_06_8X
@@ -503,6 +504,11 @@ choice
 		select FREETZ_AVM_VERSION_07_0X
 		depends on FREETZ_AVM_HAS_FIRMWARE_07_0X
 
+	config FREETZ_TYPE_FIRMWARE_07_1X
+		bool "FRITZ!OS 07.1x - HIGHLY EXPERIMENTAL"
+		select FREETZ_AVM_VERSION_07_1X
+		depends on FREETZ_AVM_HAS_FIRMWARE_07_1X
+
 	config FREETZ_TYPE_FIRMWARE_LABOR_BETA
 		bool "FRITZ!OS 07.03 Beta - HIGHLY EXPERIMENTAL"
 		select FREETZ_AVM_VERSION_07_0X
@@ -536,7 +542,7 @@ if FREETZ_AVM_VERSION_06_5X_MIN && ! FREETZ_REAL_DEVELOPER_ONLY
 if FREETZ_TYPE_FIRMWARE_06_5X || FREETZ_TYPE_FIRMWARE_06_8X || FREETZ_TYPE_FIRMWARE_06_9X
 	comment "UNDER DEVELOPMENT means:"
 endif
-if FREETZ_TYPE_FIRMWARE_LABOR || FREETZ_TYPE_FIRMWARE_07_0X
+if FREETZ_TYPE_FIRMWARE_LABOR || FREETZ_TYPE_FIRMWARE_07_0X_MIN
 	comment "(HIGHLY) EXPERIMENTAL means:"
 	comment " - the box may fail to boot and you need to recover it"
 	comment " - there is a higher probability to face stability issues"
