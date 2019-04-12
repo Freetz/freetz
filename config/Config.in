@@ -5,55 +5,56 @@ config FREETZ_HAVE_DOT_CONFIG
 	default y
 
 comment "User competence ------------------------"
-source config/ui/user-competence.in
+source "config/ui/user-competence.in"
 
 comment "Hardware/Firmware ----------------------"
-source config/ui/firmware.in
+source "config/ui/firmware.in"
 
 comment "Original components --------------------"
-source config/ui/ipv6.in
-source config/ui/kernel.in
-source config/ui/avm-plugins.in
-source config/ui/patches.in
+source "config/ui/ipv6.in"
+source "config/ui/kernel.in"
+source "config/ui/avm-plugins.in"
+source "config/ui/patches.in"
 
 comment "Additional components ------------------"
-source config/ui/packages.in
-source config/ui/shared-libraries.in
-source config/ui/modules.in
-source config/ui/busybox.in
-source config/ui/external.in
+source "config/ui/packages.in"
+source "config/ui/shared-libraries.in"
+source "config/ui/modules.in"
+source "config/ui/busybox.in"
+source "config/ui/external.in"
 
 comment "Mod customizations ---------------------"
-source config/ui/freetz.in
+source "config/ui/freetz.in"
 
 comment "Build system ---------------------------"
 	depends on FREETZ_SHOW_ADVANCED
-source config/ui/toolchain.in
-source config/ui/build-system.in
-source config/ui/fwmod.in
-source config/ui/squashfs.in
-source config/ui/strip.in
-source config/mod/download.in
-source config/custom.in
+source "config/ui/toolchain.in"
+source "config/ui/build-system.in"
+source "config/ui/fwmod.in"
+source "config/ui/squashfs.in"
+source "config/ui/strip.in"
+source "config/mod/download.in"
+source "config/custom.in"
 
 ### everything below is not visible
 
-source config/avm/availability.in
-source config/avm/features.in
-source config/avm/packaging.in
-source config/avm/signature.in
-source config/avm/mtd.in
+source "config/avm/availability.in"
+source "config/avm/features.in"
+source "config/avm/packaging.in"
+source "config/avm/signature.in"
+source "config/avm/mtd.in"
 
-source config/avm/version.in
-source config/avm/hardware.in
-source config/avm/architecture.in
-source config/avm/compiler.in
-source config/avm/compiler-traits.in
-source config/avm/kernel.in
-source config/avm/uclibc.in
-source config/avm/source.in
-source config/mod/kernel.in
-source config/mod/prefix.in
-source config/pkg/mandatory.in
-source config/pkg/cifs.in
-source config/pkg/nfs.in
+source "config/avm/version.in"
+source "config/avm/hardware.in"
+source "config/avm/architecture.in"
+source "config/avm/compiler.in"
+source "config/avm/compiler-traits.in"
+source "config/avm/kernel.in"
+source "config/avm/uclibc.in"
+source "config/avm/source.in"
+source "config/mod/kernel.in"
+source "config/mod/prefix.in"
+source "config/pkg/mandatory.in"
+source "config/pkg/cifs.in"
+source "config/pkg/nfs.in"
+
