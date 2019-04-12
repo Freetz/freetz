@@ -260,7 +260,7 @@ ifeq (,$(FREETZ_DL_URL_CONTAINER))
 #$(info Need to refresh .zip container URL)
 FREETZ_DL_URL_CONTAINER=$(shell wget -q $(call qstrip,$(FREETZ_DL_URL_LATEST)) -O -| \
 sed -rn "s/^$(call qstrip,$(FREETZ_TYPE_PREFIX_BOXMATRIX))\t.*\t(.*)$$/\1/p" | \
-grep -i "$(patsubst _%,%,$(call qstrip,$(FREETZ_TYPE_PREFIX_LABOR_FIRMWARE)))")
+grep -i "$(patsubst _%,%,$(call qstrip,$(FREETZ_TYPE_PREFIX_LABOR_FIRMWARE)))" | head -n1)
 $(shell echo $(FREETZ_DL_URL_CONTAINER) > $(DL_FW_DIR)/$(DL_SOURCE).url)
 endif
 # use backup if not got an URL
