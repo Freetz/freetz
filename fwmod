@@ -928,11 +928,18 @@ if [ "$DO_MOD" -gt 0 ]; then
 		if REVISION="$(svnversion . 2>/dev/null | tr ":" "_")"; then
 			[ "${REVISION:0:6}" == "export" ] && REVISION=""
 		fi
+		[ -n "$REVISION" ] && REVISION="-$REVISION"
 	elif [ -d .git ]; then
-		REVISION="$(git log -n1 2>/dev/null | sed -rn 's!.*git-svn-id.*\@([^ ]*).*!\1!p')"
-		[ -z "$REVISION" ] && REVISION="$(git rev-parse --short HEAD | tr a-z A-Z)"
+		GIT_LINK="$(git config --get remote.origin.url)"
+		GIT_USER="${GIT_LINK%/*}"
+		GIT_USER="${GIT_USER#*:}"
+		GIT_USER="${GIT_USER##*/}"
+		GIT_FILE="${GIT_LINK%.git}"
+		GIT_FILE="${GIT_FILE##*/}"
+		GIT_TICK="$(git log -1 --format="%at")"
+		GIT_HASH="$(git rev-parse --short HEAD | tr a-z A-Z)"
+		REVISION="_$GIT_USER${GIT_USER:+-}${GIT_FILE}_${GIT_TICK}-$GIT_HASH"
 	fi
-	[ -n "$REVISION" ] && REVISION="-$REVISION"
 
 	SUBVERSION="$(cat $SUBVERSION_FILE)${REVISION}"
 
