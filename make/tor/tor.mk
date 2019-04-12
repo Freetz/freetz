@@ -1,9 +1,9 @@
-$(call PKG_INIT_BIN, 0.3.2.11)
+$(call PKG_INIT_BIN, 0.3.5.8)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=a6ad216d7e5db63ccdcb8a7a3e86c69c5709ddcf08ece44cb5599eed42fa20f0
+$(PKG)_SOURCE_SHA256:=d5c56603942a8927670f50a4a469fb909e29d3571fdd013389d567e57abc0b47
 $(PKG)_SITE:=https://www.torproject.org/dist
 
-$(PKG)_BINARY:=$($(PKG)_DIR)/src/or/tor
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/app/tor
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/tor
 
 $(PKG)_DEPENDS_ON += zlib openssl libevent
