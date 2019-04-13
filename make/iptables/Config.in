@@ -54,10 +54,10 @@ config FREETZ_PACKAGE_IPTABLES_STATIC
 		Build a statically linked binary with all libraries compiled in
 
 # Include here for a cleaner menu structure (list packages before modules/libs)
-source make/iptables-cgi/Config.in
-source make/nhipt/Config.in
+source "make/iptables-cgi/Config.in"
+source "make/nhipt/Config.in"
 
-source make/iptables/Config.in.modules
+source "make/iptables/Config.in.modules"
 
 comment "CAUTION: Use of module ip_conntrack can lead to spontaneous reboots"
 	depends on FREETZ_PACKAGE_IPTABLES && \
