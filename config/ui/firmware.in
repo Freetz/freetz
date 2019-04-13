@@ -47,6 +47,19 @@ choice
 		help
 			Select your box type here.
 
+	comment "T-Com hardware"
+		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_0N1
+
+	config FREETZ_TYPE_300IP
+		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_0N1
+		select FREETZ_AVM_SOURCE_04_49
+		bool "Eumex 300IP as Fon"
+
+	config FREETZ_TYPE_W501V
+		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_0N1
+		select FREETZ_AVM_SOURCE_r7203
+		bool "Speedport W501V"
+
 	comment "LAN"
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_0N1
 
@@ -418,19 +431,6 @@ choice
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_4N5
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_QCA955x
 		bool "DVB-c"
-
-	comment "T-Com hardware"
-		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_0N1
-
-	config FREETZ_TYPE_300IP
-		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_0N1
-		select FREETZ_AVM_SOURCE_04_49
-		bool "Eumex 300IP as Fon"
-
-	config FREETZ_TYPE_W501V
-		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_0N1
-		select FREETZ_AVM_SOURCE_r7203
-		bool "Speedport W501V"
 
 endchoice # "Hardware type" #
 
