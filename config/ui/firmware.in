@@ -47,32 +47,6 @@ choice
 		help
 			Select your box type here.
 
-	comment "Powerline"
-		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_4N5
-
-	config FREETZ_TYPE_0540
-		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_4N5
-		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_AR934x
-		bool "540e"
-
-	config FREETZ_TYPE_0546
-		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_4N5
-		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_AR934x
-		bool "546e"
-
-	comment "Repeater"
-		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_4N5
-
-	config FREETZ_TYPE_1750
-		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_4N5
-		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_QCA955x
-		bool "1750e"
-
-	config FREETZ_TYPE_1759
-		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_4N5
-		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_QCA955x
-		bool "DVB-c"
-
 	comment "LAN"
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_0N1
 
@@ -418,6 +392,32 @@ choice
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_4N5
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_GRX5
 		bool "7590"
+
+	comment "Powerline"
+		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_4N5
+
+	config FREETZ_TYPE_0540
+		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_4N5
+		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_AR934x
+		bool "540e"
+
+	config FREETZ_TYPE_0546
+		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_4N5
+		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_AR934x
+		bool "546e"
+
+	comment "Repeater"
+		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_4N5
+
+	config FREETZ_TYPE_1750
+		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_4N5
+		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_QCA955x
+		bool "1750e"
+
+	config FREETZ_TYPE_1759
+		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_4N5
+		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_QCA955x
+		bool "DVB-c"
 
 	comment "T-Com hardware"
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_0N1
