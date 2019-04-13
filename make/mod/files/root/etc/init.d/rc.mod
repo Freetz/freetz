@@ -18,9 +18,6 @@ log() {
 }
 
 setup() {
-	# re-set /tmp permissions as AVM overwrites them somehow after var.tar unpacking
-	chmod 1777 /var/tmp
-
 	if is_affected_by_remote_access_vulnerability; then
 		log "Firmware with remote access vulnerability detected."
 		if [ ! -e /tmp/flash/mod/dont_touch_https ]; then
