@@ -1,6 +1,6 @@
 config EXTERNAL_FREETZ_PACKAGE_SUBVERSION
 	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_SUBVERSION
-	boolean "subversion"
+	bool "subversion"
 	default n
 	help
 		external subversion tools and libraries
@@ -9,7 +9,7 @@ menu subversion
 	depends on EXTERNAL_FREETZ_PACKAGE_SUBVERSION
 
 config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVN
-	boolean "svn"
+	bool "svn"
 	depends on FREETZ_PACKAGE_SUBVERSION_SVN
 	default n
 	help
@@ -17,7 +17,7 @@ config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVN
 		 /usr/bin/svn
 
 config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNADMIN
-	boolean "svnadmin"
+	bool "svnadmin"
 	depends on FREETZ_PACKAGE_SUBVERSION_SVNADMIN
 	default n
 	help
@@ -25,7 +25,7 @@ config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNADMIN
 		 /usr/bin/svnadmin
 
 config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNDUMPFILTER
-	boolean "svndumpfilter"
+	bool "svndumpfilter"
 	depends on FREETZ_PACKAGE_SUBVERSION_SVNDUMPFILTER
 	default n
 	help
@@ -33,7 +33,7 @@ config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNDUMPFILTER
 		 /usr/bin/svndumpfilter
 
 config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNLOOK
-	boolean "svnlook"
+	bool "svnlook"
 	depends on FREETZ_PACKAGE_SUBVERSION_SVNLOOK
 	default n
 	help
@@ -41,7 +41,7 @@ config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNLOOK
 		 /usr/bin/svnlook
 
 config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNRDUMP
-	boolean "svnrdump"
+	bool "svnrdump"
 	depends on FREETZ_PACKAGE_SUBVERSION_SVNRDUMP
 	default n
 	help
@@ -49,7 +49,7 @@ config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNRDUMP
 		 /usr/bin/svnrdump
 
 config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNSERVE
-	boolean "svnserve"
+	bool "svnserve"
 	depends on FREETZ_PACKAGE_SUBVERSION_SVNSERVE
 	default n
 	help
@@ -57,7 +57,7 @@ config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNSERVE
 		 /usr/bin/svnserve
 
 config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNSYNC
-	boolean "svnsync"
+	bool "svnsync"
 	depends on FREETZ_PACKAGE_SUBVERSION_SVNSYNC
 	default n
 	help
@@ -65,7 +65,7 @@ config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNSYNC
 		 /usr/bin/svnsync
 
 config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNVERSION
-	boolean "svnversion"
+	bool "svnversion"
 	depends on FREETZ_PACKAGE_SUBVERSION_SVNVERSION
 	default n
 	help
@@ -73,7 +73,7 @@ config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNVERSION
 		 /usr/bin/svnversion
 
 config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_mod_authz_svn
-	boolean "mod_authz_svn"
+	bool "mod_authz_svn"
 	depends on FREETZ_PACKAGE_SUBVERSION_mod_authz_svn
 	default n
 	help
@@ -81,7 +81,7 @@ config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_mod_authz_svn
 		 /usr/lib/apache2/mod_authz_svn
 
 config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_mod_dav_svn
-	boolean "mod_dav_svn"
+	bool "mod_dav_svn"
 	depends on FREETZ_PACKAGE_SUBVERSION_mod_dav_svn
 	default n
 	help
@@ -89,7 +89,7 @@ config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_mod_dav_svn
 		 /usr/lib/apache2/mod_dav_svn
 
 config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_mod_dontdothat
-	boolean "mod_dontdothat"
+	bool "mod_dontdothat"
 	depends on FREETZ_PACKAGE_SUBVERSION_mod_dontdothat
 	default n
 	help
@@ -97,7 +97,7 @@ config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_mod_dontdothat
 		 /usr/lib/apache2/mod_dontdothat
 
 config EXTERNAL_FREETZ_PACKAGE_SUBVERSION_LIBRARIES
-	boolean "svn libraries"
+	bool "svn libraries"
 	depends on FREETZ_PACKAGE_SUBVERSION_LIBRARIES \
 		&& (!FREETZ_PACKAGE_SUBVERSION_SVN || EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVN) \
 		&& (!FREETZ_PACKAGE_SUBVERSION_SVNADMIN || EXTERNAL_FREETZ_PACKAGE_SUBVERSION_SVNADMIN) \

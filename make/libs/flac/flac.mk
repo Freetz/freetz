@@ -23,12 +23,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-debug
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += --disable-stack-smash-protection
 
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,c_inline)
-$(PKG)_CONFIGURE_ENV += $(pkg)_c_inline=no
-
-# don't cache and don't use cached values for ac_cv_c_bswap16 and ac_cv_c_bswap32
-# when cached values are used HAVE_BSWAP16 and HAVE_BSWAP32 are not defined (configure test bug)
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,c_bswap16 c_bswap32)
+$(PKG)_CONFIGURE_ENV += ac_cv_c_inline=no
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

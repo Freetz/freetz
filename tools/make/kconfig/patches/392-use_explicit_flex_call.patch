@@ -1,0 +1,12 @@
+Use explicitly 'flex' as lexer - else openSuSE uses a call with 'flex -l' from a shell wrapper and compilation fails.
+ 
+--- scripts/kconfig/Makefile
++++ scripts/kconfig/Makefile
+@@ -143,6 +143,7 @@
+ # object files used by all kconfig flavours
+ common-objs	:= confdata.o expr.o lexer.lex.o parser.tab.o preprocess.o \
+ 		   symbol.o
++LEX = flex
+ 
+ $(obj)/lexer.lex.o: $(obj)/parser.tab.h
+ HOSTCFLAGS_lexer.lex.o	:= -I$(src)

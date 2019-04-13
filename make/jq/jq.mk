@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.5)
+$(call PKG_INIT_BIN, 1.6)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=0933532b086bd8b6a41c1b162b1731f9
+$(PKG)_SOURCE_SHA256:=5de8c8e29aaa3fb9cc6b47bb27299f271354ebb72514e3accadc7d38b5bbaa72
 $(PKG)_SITE:=https://github.com/stedolan/jq/releases/download/jq-$($(PKG)_VERSION)
 
 $(PKG)_BINARY := $($(PKG)_DIR)/jq
@@ -19,6 +19,7 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_JQ_STATIC
 ifeq ($(strip $(FREETZ_PACKAGE_JQ_WITH_RE_SUPPORT)),y)
 $(PKG)_DEPENDS_ON += libonig
 else
+$(PKG)_CONFIGURE_OPTIONS += --without-oniguruma
 $(PKG)_CONFIGURE_ENV += ac_cv_header_oniguruma_h=no
 endif
 
@@ -28,13 +29,13 @@ endif
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
-$(PKG)_CONFIGURE_OPTIONS += --cache-file=/dev/null
 $(PKG)_CONFIGURE_ENV += $(foreach opt,j0 j1 y0 y1,ac_cv_funclib_$(opt)=no)
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-silent-rules
 $(PKG)_CONFIGURE_OPTIONS += --disable-shared
 $(PKG)_CONFIGURE_OPTIONS += --disable-docs
 $(PKG)_CONFIGURE_OPTIONS += --disable-valgrind
+$(PKG)_CONFIGURE_OPTIONS += --disable-maintainer-mode
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

@@ -150,16 +150,8 @@ TARGET_CONFIGURE_ENV += LDFLAGS=""
 TARGET_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../lib/pkgconfig"
 TARGET_CONFIGURE_ENV += PKG_CONFIG_LIBDIR="$(TARGET_MAKE_PATH)/../lib/pkgconfig"
 
-CONFIG_CACHE_PATH := $(FREETZ_BASE_DIR)/$(SOURCE_DIR)/config.cache
-CONFIG_CACHE_BACKUP_DIR := $(FREETZ_BASE_DIR)/$(SOURCE_DIR)/_config.cache-backup
-# $1 optional suffix
-define BACKUP_CONFIG_CACHE
-if [ -e $(CONFIG_CACHE_PATH) ]; then mkdir -p $(CONFIG_CACHE_BACKUP_DIR); cp -a $(CONFIG_CACHE_PATH) $(CONFIG_CACHE_BACKUP_DIR)/config.cache-`date +%Y%m%d-%H%M%S`$(if $1,-$1,); fi;
-endef
-
 # Common options for configure
 TARGET_CONFIGURE_OPTIONS:=
-#TARGET_CONFIGURE_OPTIONS += --cache-file=$(CONFIG_CACHE_PATH)
 TARGET_CONFIGURE_OPTIONS += --cache-file=/dev/null
 TARGET_CONFIGURE_OPTIONS += --target=$(GNU_TARGET_NAME)
 TARGET_CONFIGURE_OPTIONS += --host=$(GNU_TARGET_NAME)
@@ -315,14 +307,6 @@ PKG_PREVENT_RPATH_HARDCODING1 = $(subst $$$$,$$,$(call PKG_PREVENT_RPATH_HARDCOD
 # $1 - variable name or variable names separated by |, i.e. regex OR pattern
 # $2 - optional $($(PKG)_DIR) subdir
 PKG_ADD_EXTRA_FLAGS = find $(abspath $($(PKG)_DIR))$(if $(strip $2),/$(strip $2)) -name Makefile.in -type f -exec $(SED) -i -r -e 's,^($(strip $1))[ \t]*=[ \t]*@\1@,& $$$$(EXTRA_\1),' \{\} \+;
-
-# Change prefix of all $3_cv_* variables in $1 to $(pkg).
-#  $1 is allowed to be a space separated list of variables or a ready to be used sed pattern
-#  $2 (optional) is the file to be patched, default ./$($(PKG)_BUILD_SUBDIR)/configure
-#  $3 (optional) is the prefix of the variables to rename, default ac
-PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC = \
-	$(SED) -i -r -e 's/$(if $(strip $3),$(strip $3),ac)(_cv(_('"$(shell echo "$(strip $1)" | tr " " "|")"')))/'"$(shell echo $(pkg) | tr '[\-\+]' '[_x]')"'\2/g' \
-	$(if $(strip $2),$(strip $2),./$(if $(strip $($(PKG)_BUILD_SUBDIR)),$(strip $($(PKG)_BUILD_SUBDIR))/)configure);
 
 # Usage:
 # $(call REPLACE_LIBTOOL,$1,$2,$3)
@@ -857,7 +841,6 @@ $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.build-prereq-checked $($(PKG)_DIR)/.un
 	@$(call _ECHO,configuring... )
 	($(CONFIGURE) \
 		cd $($(PKG)_DIR); \
-		$(if $(strip $(FREETZ_BACKUP_CONFIG_CACHE)),$(call BACKUP_CONFIG_CACHE,before-$(pkg)),) \
 		$(TARGET_CONFIGURE_PRE_CMDS) \
 		$($(PKG)_CONFIGURE_PRE_CMDS) \
 		$(if $(strip $($(PKG)_BUILD_SUBDIR)),cd $(strip $($(PKG)_BUILD_SUBDIR));,) \
@@ -869,7 +852,6 @@ $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.build-prereq-checked $($(PKG)_DIR)/.un
 		$($(PKG)_CONFIGURE_OPTIONS) \
 		$(if $(strip $($(PKG)_BUILD_SUBDIR)),&& { cd $(abspath $($(PKG)_DIR)); },) \
 		$(if $($(PKG)_CONFIGURE_POST_CMDS),&& { $($(PKG)_CONFIGURE_POST_CMDS) },) \
-		$(if $(strip $(FREETZ_BACKUP_CONFIG_CACHE)),&& { $(call BACKUP_CONFIG_CACHE,after-$(pkg)) },) \
 	)
 	@touch $$@
 endef

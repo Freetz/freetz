@@ -15,8 +15,7 @@ $(PKG)_DEPENDS_ON += pppd
 
 # disable NLS related code
 $(PKG)_AC_VARIABLES := lib_c_gettext lib_intl_gettext header_libintl_h
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,$($(PKG)_AC_VARIABLES))
-$(PKG)_CONFIGURE_ENV += $(foreach variable,$($(PKG)_AC_VARIABLES),$(pkg)_$(variable)=no)
+$(PKG)_CONFIGURE_ENV += $(foreach variable,$($(PKG)_AC_VARIABLES),ac_cv_$(variable)=no)
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-bcrelay
 

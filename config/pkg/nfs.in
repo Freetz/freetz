@@ -28,7 +28,7 @@
 # FREETZ_SYSTEM_TYPE_QCA955x    : avm(??), freetz(ym)
 # FREETZ_SYSTEM_TYPE_QCA956x    : avm(nn), freetz(ym) # TODO: change to freetz(mm)
 # FREETZ_SYSTEM_TYPE_UR8        : avm(yy), freetz([yy: 2.6.19], [mm: all other]) # TODO: change to freetz(yy), NOTE: 2.6.19 needs replace kernel for some unknown reasons
-# FREETZ_SYSTEM_TYPE_VR9        : avm(nn), freetz([ym: 2.6.32], [nn: 3.10]) # TODO: change to freetz(mm)
+# FREETZ_SYSTEM_TYPE_VR9        : avm([nn: 2.6.32], [nm: 3.10]), freetz([ym: 2.6.32], [nm: 3.10]) # TODO: change to freetz(mm)
 
 config FREETZ_NFS_SUPPORT_NEEDS_REPLACE_KERNEL
 	bool
@@ -39,7 +39,7 @@ config FREETZ_NFS_SUPPORT_NEEDS_REPLACE_KERNEL
 		FREETZ_SYSTEM_TYPE_IKS_VX185                                                       || \
 		FREETZ_SYSTEM_TYPE_PUMA6                                                           || \
 		(FREETZ_SYSTEM_TYPE_UR8 && FREETZ_KERNEL_VERSION_2_6_19)                           || \
-		(FREETZ_SYSTEM_TYPE_VR9 && FREETZ_KERNEL_VERSION_2_6_32)
+		(FREETZ_SYSTEM_TYPE_VR9 && FREETZ_KERNEL_VERSION_2_6_32_MAX)
 	default n
 
 config FREETZ_NFS_SUPPORT_AVAILABLE_AS_MODULE
@@ -48,7 +48,9 @@ config FREETZ_NFS_SUPPORT_AVAILABLE_AS_MODULE
 		FREETZ_SYSTEM_TYPE_AR7_SANGAM                                                      || \
 		FREETZ_SYSTEM_TYPE_AR7_OHIO                                                        || \
 		FREETZ_SYSTEM_TYPE_GRX5                                                            || \
-		(FREETZ_SYSTEM_TYPE_UR8 && FREETZ_KERNEL_VERSION_2_6_32 && FREETZ_REPLACE_KERNEL)
+		(FREETZ_SYSTEM_TYPE_PUMA6 && FREETZ_REPLACE_KERNEL)                                || \
+		(FREETZ_SYSTEM_TYPE_UR8 && FREETZ_KERNEL_VERSION_2_6_32 && FREETZ_REPLACE_KERNEL)  || \
+		(FREETZ_SYSTEM_TYPE_VR9 && FREETZ_KERNEL_VERSION_3_10_MIN)
 	default n
 
 config FREETZ_NFS_SUPPORT_AVAILABLE

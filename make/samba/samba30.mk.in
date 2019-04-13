@@ -1,9 +1,10 @@
 $(PKG)_TARGET_CFLAGS += -DAVM_NO_PRINTING -DAVM_SMALLER
 
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,sys_stat_statvfs,,fu)
 $(PKG)_CONFIGURE_ENV += \
 	ac_cv_func_prctl=yes \
 	fu_cv_sys_stat_statfs2_bsize=yes \
+	fu_cv_sys_stat_statvfs=no \
+	fu_cv_sys_stat_statvfs64=yes \
 	libreplace_cv_HAVE_IPV6=$(if $(FREETZ_TARGET_IPV6_SUPPORT),yes,no) \
 	LINUX_LFS_SUPPORT=yes \
 	samba_cv_fpie=no \
@@ -42,8 +43,6 @@ $(PKG)_CONFIGURE_ENV += \
 	samba_cv_SIZEOF_OFF_T=yes \
 	samba_cv_SIZEOF_TIME_T=no \
 	samba_cv_USE_SETREUID=yes \
-	samba_sys_stat_statvfs=no \
-	samba_sys_stat_statvfs64=yes \
 	SMB_BUILD_CC_NEGATIVE_ENUM_VALUES=yes
 
 $(PKG)_CONFIGURE_OPTIONS += \

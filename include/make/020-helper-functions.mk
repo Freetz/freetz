@@ -144,7 +144,11 @@ UNPACK_TARBALL_PREREQUISITES := busybox-host tar-host
 # $1: list of directories containing the patches
 # $2: directory to apply the patches to
 define APPLY_PATCHES
-	set -e; shopt -s nullglob; for i in $(strip $(foreach dir,$(strip $1),$(dir)/*.patch)); do \
+	set -e; shopt -s nullglob; for i in $(strip $(foreach dir,$(strip $1),$(dir)/*.patch*)); do \
+		case $(_dollar)i in \
+			*.patch|*.patch.gz|*.patch.bzip2|*.patch.bz2|*.patch.bz|*.patch.xz|*.patch.lz|*.patch.lzma|*.patch.Z) ;; \
+			*) continue ;; \
+		esac; \
 		$(PATCH_TOOL) $(strip $2) $(_dollar)i; \
 	done;
 endef

@@ -29,13 +29,21 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_APACHE2_STATIC
 
 $(PKG)_CONFIGURE_ENV += ap_cv_void_ptr_lt_long=no
 
+# TODO: investigate why
+#   apr_pollset_create(&event_pollset, 1, plog, APR_POLLSET_THREADSAFE | APR_POLLSET_NOCOPY);
+# call fails (s. server/mpm/event/event.c) and provide a better fix than that below (if possible).
+#
+# Until then provide a hint that MPM=event doesn't work and let the apache configure script
+# decide which MPM to use. According to http://httpd.apache.org/docs/2.4/mpm.html#defaults
+# this most likely be the MPM=worker.
+$(PKG)_CONFIGURE_ENV += ac_cv_have_threadsafe_pollset=no
+
 $(PKG)_CONFIGURE_OPTIONS += --with-apr="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/apr-1-config"
 $(PKG)_CONFIGURE_OPTIONS += --with-apr-util="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/apu-1-config"
 $(PKG)_CONFIGURE_OPTIONS += --with-pcre="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/pcre-config"
 $(PKG)_CONFIGURE_OPTIONS += --with-ssl=$(if $(FREETZ_PACKAGE_APACHE2_SSL),"$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",no)
 $(PKG)_CONFIGURE_OPTIONS += --with-z=$(if $(FREETZ_PACKAGE_APACHE2_DEFLATE),"$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",no)
 
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,libxml2)
 $(PKG)_CONFIGURE_OPTIONS += --with-libxml2=$(if $(FREETZ_PACKAGE_APACHE2_LIBXML),"$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/libxml2",no)
 
 $(PKG)_LIBEXECDIR := /usr/lib/$(pkg)
@@ -47,7 +55,6 @@ $(PKG)_CONFIGURE_OPTIONS += --libexecdir=$($(PKG)_LIBEXECDIR)
 $(PKG)_CONFIGURE_OPTIONS += --datadir=/usr/share/$(pkg)
 $(PKG)_CONFIGURE_OPTIONS += --localstatedir=/var/$(pkg)
 
-$(PKG)_CONFIGURE_OPTIONS += --with-mpm=prefork
 $(PKG)_CONFIGURE_OPTIONS += --enable-substitute
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_APACHE2_DEFLATE),--enable-deflate,--disable-deflate)
 $(PKG)_CONFIGURE_OPTIONS += --enable-expires

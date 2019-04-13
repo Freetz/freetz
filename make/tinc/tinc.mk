@@ -27,8 +27,7 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 
 $(PKG)_HARDENING_OPTS := check_cflags___fPIE check_ldflags___pie
 #$(PKG)_HARDENING_OPTS += check_ldflags___Wl__z_relro check_ldflags___Wl__z_now
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_MAKE_AC_VARIABLES_PACKAGE_SPECIFIC,$($(PKG)_HARDENING_OPTS),,ax)
-$(PKG)_CONFIGURE_ENV += $(foreach opt,$($(PKG)_HARDENING_OPTS),$(pkg)_$(opt)=no)
+$(PKG)_CONFIGURE_ENV += $(foreach opt,$($(PKG)_HARDENING_OPTS),ax_cv_$(opt)=no)
 
 $(PKG)_EXTRA_CFLAGS  += -ffunction-sections -fdata-sections
 $(PKG)_EXTRA_LDFLAGS += -Wl,--gc-sections

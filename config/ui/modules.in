@@ -635,6 +635,11 @@ config FREETZ_MODULE_tun
 	depends on !FREETZ_AVM_HAS_TUN_BUILTIN
 	default n
 
+config FREETZ_MODULE_yf_patchkernel
+	bool "yf_patchkernel.ko"
+	depends on FREETZ_AVM_HAS_BUGON_IN_NET_CORE
+	default n
+
 config FREETZ_MODULE_rfcomm
 	bool "rfcomm.ko"
 	select FREETZ_MODULE_l2cap

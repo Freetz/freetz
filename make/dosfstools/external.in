@@ -1,6 +1,6 @@
 config EXTERNAL_FREETZ_PACKAGE_DOSFSTOOLS
 	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_DOSFSTOOLS
-	boolean "dosfstools"
+	bool "dosfstools"
 	default n
 	help
 		external dosfsprogs file(s)
@@ -9,7 +9,7 @@ menu dosfstools
 	depends on EXTERNAL_FREETZ_PACKAGE_DOSFSTOOLS
 
 config EXTERNAL_FREETZ_PACKAGE_DOSFSTOOLS_fsck_fat
-	boolean "fsck.fat"
+	bool "fsck.fat"
 	depends on FREETZ_PACKAGE_DOSFSTOOLS_fsck_fat
 	default n
 	help
@@ -18,7 +18,7 @@ config EXTERNAL_FREETZ_PACKAGE_DOSFSTOOLS_fsck_fat
 		 (use at your own risk, fsck.fat is needed to check an uncleanly umounted filesystem)
 
 config EXTERNAL_FREETZ_PACKAGE_DOSFSTOOLS_fatlabel
-	boolean "fatlabel"
+	bool "fatlabel"
 	depends on FREETZ_PACKAGE_DOSFSTOOLS_fatlabel
 	default n
 	help
@@ -26,7 +26,7 @@ config EXTERNAL_FREETZ_PACKAGE_DOSFSTOOLS_fatlabel
 		 /usr/sbin/fatlabel
 
 config EXTERNAL_FREETZ_PACKAGE_DOSFSTOOLS_mkfs_fat
-	boolean "mkfs.fat"
+	bool "mkfs.fat"
 	depends on FREETZ_PACKAGE_DOSFSTOOLS_mkfs_fat
 	default n
 	help
