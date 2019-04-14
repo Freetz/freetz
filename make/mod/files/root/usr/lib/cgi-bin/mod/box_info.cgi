@@ -60,7 +60,11 @@ else
 	cpu_bogom=""
 fi
 if [ -r /etc/version ]; then
-	avm_date=$(sed -ne 's/^export FIRMWARE_DATE\="\(.*\)"/\1/p' /etc/version)
+	if grep -q FIRMWARE_DATE /etc/version; then
+		avm_date=$(sed -ne 's/^export FIRMWARE_DATE\="\(.*\)"/\1/p' /etc/version)
+	else
+		avm_date=$(date -r /etc/version "+%d.%m.%Y %H:%M:%S")
+	fi
 else
 	avm_date=$notdefined
 fi
