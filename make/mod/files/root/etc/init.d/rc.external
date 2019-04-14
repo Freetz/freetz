@@ -22,8 +22,10 @@ log() {
 	[ -z "$*" ] && return
 	echo $newl -e "$addl$*" | tee -a $LOG_FILE
 	[ "$*" == "." -o "$*" == " ." ] && return
-	echo "EXTERNAL: $*" > /dev/console
-	logger -t EXTERNAL "$*"
+	IFS='\n' echo "$*" | while read -r line; do
+		echo "EXTERNAL: $line" > /dev/console
+		logger -t EXTERNAL "$line"
+	done
 }
 
 check_date() {
