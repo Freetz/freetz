@@ -493,32 +493,32 @@ choice
 		depends on FREETZ_AVM_HAS_FIRMWARE_06_2X
 
 	config FREETZ_TYPE_FIRMWARE_06_5X
-		bool "FRITZ!OS 06.5x/06.6x - UNDER DEVELOPMENT"
+		bool "FRITZ!OS 06.5x/06.6x"
 		select FREETZ_AVM_VERSION_06_5X
 		depends on FREETZ_AVM_HAS_FIRMWARE_06_5X
 
 	config FREETZ_TYPE_FIRMWARE_06_8X
-		bool "FRITZ!OS 06.8x - UNDER DEVELOPMENT"
+		bool "FRITZ!OS 06.8x"
 		select FREETZ_AVM_VERSION_06_8X
 		depends on FREETZ_AVM_HAS_FIRMWARE_06_8X
 
 	config FREETZ_TYPE_FIRMWARE_06_9X
-		bool "FRITZ!OS 06.9x - UNDER DEVELOPMENT"
+		bool "FRITZ!OS 06.9x"
 		select FREETZ_AVM_VERSION_06_9X
 		depends on FREETZ_AVM_HAS_FIRMWARE_06_9X
 
 	config FREETZ_TYPE_FIRMWARE_07_0X
-		bool "FRITZ!OS 07.0x - HIGHLY EXPERIMENTAL"
+		bool "FRITZ!OS 07.0x"
 		select FREETZ_AVM_VERSION_07_0X
 		depends on FREETZ_AVM_HAS_FIRMWARE_07_0X
 
 	config FREETZ_TYPE_FIRMWARE_07_1X
-		bool "FRITZ!OS 07.1x - HIGHLY EXPERIMENTAL"
+		bool "FRITZ!OS 07.1x"
 		select FREETZ_AVM_VERSION_07_1X
 		depends on FREETZ_AVM_HAS_FIRMWARE_07_1X
 
 	config FREETZ_TYPE_FIRMWARE_LABOR_BETA
-		bool "FRITZ!OS 07.03 Beta - HIGHLY EXPERIMENTAL"
+		bool "FRITZ!OS 07.03 Beta"
 		select FREETZ_AVM_VERSION_07_0X
 		select FREETZ_TYPE_FIRMWARE_LABOR_LATEST
 		depends on FREETZ_AVM_HAS_FIRMWARE_LABOR_BETA && FREETZ_SHOW_ADVANCED
@@ -526,7 +526,7 @@ choice
 			Enable this to use an AVM Beta firmware as base for modding.
 
 	config FREETZ_TYPE_FIRMWARE_LABOR_TEST
-		bool "FRITZ!OS 07.08 Labor - HIGHLY EXPERIMENTAL"
+		bool "FRITZ!OS 07.08 Labor - EXPERIMENTAL"
 		select FREETZ_AVM_VERSION_07_0X
 		select FREETZ_TYPE_FIRMWARE_LABOR_LATEST
 		depends on FREETZ_AVM_HAS_FIRMWARE_LABOR_TEST && FREETZ_SHOW_ADVANCED
@@ -547,18 +547,15 @@ config FREETZ_TYPE_FIRMWARE_LABOR_LATEST
 		It will be refreshed every 6 hours.
 
 if FREETZ_AVM_VERSION_06_5X_MIN && ! FREETZ_REAL_DEVELOPER_ONLY
-if FREETZ_TYPE_FIRMWARE_06_5X || FREETZ_TYPE_FIRMWARE_06_8X || FREETZ_TYPE_FIRMWARE_06_9X
-	comment "UNDER DEVELOPMENT means:"
-endif
-if FREETZ_TYPE_FIRMWARE_LABOR || FREETZ_TYPE_FIRMWARE_07_0X_MIN
-	comment "(HIGHLY) EXPERIMENTAL means:"
+	comment "WARNINGS -------------------------------"
+if FREETZ_TYPE_FIRMWARE_LABOR_TEST || FREETZ_TYPE_FIRMWARE_07_0X_MIN
 	comment " - the box may fail to boot and you need to recover it"
 	comment " - there is a higher probability to face stability issues"
 endif
 if FREETZ_SYSTEM_TYPE_PUMA6
 	comment " - the box may fail to boot and you need to recover it manually via the bootlader"
 endif
-if FREETZ_TYPE_FIRMWARE_LABOR
+if FREETZ_TYPE_FIRMWARE_LABOR_TEST
 	comment " - some remove/AVM-web-interface patches are not working"
 	comment "   even if selectable in menuconfig"
 endif
@@ -572,7 +569,7 @@ endif
 if FREETZ_SYSTEM_TYPE_GRX5
 	comment " - replace-kernel is not (yet) available"
 	comment "   because of changed bootloader format"
-if FREETZ_TYPE_FIRMWARE_LABOR || FREETZ_TYPE_FIRMWARE_07_0X
+if FREETZ_TYPE_FIRMWARE_LABOR || FREETZ_TYPE_FIRMWARE_07_0X_MIN
 	comment "   and/or missing or incomplete kernel sources"
 endif
 endif
