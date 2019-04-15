@@ -568,10 +568,7 @@ common-distclean: common-dirclean
 	$(RM) -r $(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT)
 	$(RM) -r $(TOOLCHAIN_BUILD_DIR)
 	$(RM) -r $(TOOLS_BUILD_DIR)
-	@echo "Use 'make download-clean' to remove the download directory"
-
-download-clean:
-	$(RM) -r $(DL_DIR)
+	@echo "The download directory ./$(DL_DIR) was not removed"
 
 release: distclean
 	version="$$(cat .version)"; \
