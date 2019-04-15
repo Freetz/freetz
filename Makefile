@@ -183,8 +183,9 @@ $(DL_DIR):
 	[ ! -e "$(DL_DIR)" -a ! -L "$(DL_DIR)" ] && ln -s ~/.freetz-dl "$(DL_DIR)"; \
 	[ -d "$(DL_DIR)" ] || mkdir -p "$$(readlink "$(DL_DIR)")"
 
-$(DL_FW_DIR) \
-$(MIRROR_DIR) \
+$(DL_FW_DIR) $(MIRROR_DIR): | $(DL_DIR)
+	@mkdir -p $@
+
 $(BUILD_DIR) \
 $(KERNEL_TARGET_DIR) \
 $(PACKAGES_DIR_ROOT) \
