@@ -178,7 +178,11 @@ TOOLS_DIRCLEAN:=$(patsubst %,%-dirclean,$(TOOLS))
 TOOLS_DISTCLEAN:=$(patsubst %,%-distclean,$(TOOLS))
 TOOLS_SOURCE:=$(patsubst %,%-source,$(TOOLS))
 
-$(DL_DIR) \
+$(DL_DIR):
+	@ \
+	[ ! -e "$(DL_DIR)" -a ! -L "$(DL_DIR)" ] && ln -s ~/.freetz-dl "$(DL_DIR)"; \
+	[ -d "$(DL_DIR)" ] || mkdir -p "$$(readlink "$(DL_DIR)")"
+
 $(DL_FW_DIR) \
 $(MIRROR_DIR) \
 $(BUILD_DIR) \
