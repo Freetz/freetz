@@ -510,7 +510,7 @@ $(CONFIG_IN_CACHE) include/config/cache.conf.cmd: $(CONFIG_IN_CUSTOM) $(PARSE_CO
 	@$(PARSE_CONFIG_TOOL) $(CONFIG_IN) > $(CONFIG_IN_CACHE)
 endif
 
-$(CONFIG_IN_CUSTOM):
+$(CONFIG_IN_CUSTOM): | $(DL_DIR)
 	@touch $@
 
 # Macro to clean up config dependencies
