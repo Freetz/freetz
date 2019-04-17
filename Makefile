@@ -287,10 +287,6 @@ endif
 
 DL_IMAGE:=
 image:
-# Detect the .image file name inside an archive
-ifeq (y,$(call qstrip,$(FREETZ_DL_DETECT_IMAGE_NAME)))
-$(shell $(RM) $(DL_FW_DIR)/$(DL_SOURCE))
-endif
 
 # Download Firmware Image
 #  $(1) Suffix
@@ -299,15 +295,17 @@ ifneq ($(strip $(DL_SOURCE$(1))),)
 IMAGE$(1):=$(DL_FW_DIR)/$(DL_SOURCE$(1))
 DL_IMAGE+=$$(IMAGE$(1))
 image: $$(IMAGE$(1))
+.PHONY: $$(DL_FW_DIR)/$$(DL_SOURCE$(1))
 $$(DL_FW_DIR)/$$(DL_SOURCE$(1)): | $(DL_FW_DIR)
 ifeq ($$(strip $$(DL_SITE$(1))),)
-	@echo
-	@echo "Please copy the following file into the '$$(DL_FW_DIR)' sub-directory manually:"
-	@echo "$$(DL_SOURCE$(1))"
-	@echo
-	@exit 3
+	@if [ ! -e "$$(DL_FW_DIR)/$$(DL_SOURCE$(1))" ]; then \
+		echo -e "\nPlease copy the following file into the './$$(DL_FW_DIR)/' sub-directory manually:\n$$(DL_SOURCE$(1))\n"; \
+		exit 3; \
+	fi
 else
-	@if [ -n "$$(DL_SOURCE$(1)_CONTAINER)" ]; then \
+	@if [ "$(FREETZ_DL_DETECT_IMAGE_NAME)" == "y" ]; then $(RM) -f "$(DL_FW_DIR)/$(DL_SOURCE)"; fi; \
+	if [ ! -e "$$(DL_FW_DIR)/$$(DL_SOURCE$(1))" ]; then \
+	if [ -n "$$(DL_SOURCE$(1)_CONTAINER)" ]; then \
 		if [ ! -r $$(DL_FW_DIR)/$$(DL_SOURCE$(1)_CONTAINER) ]; then \
 			if ! $$(DL_TOOL) --no-append-servers $$(DL_FW_DIR) "$$(DL_SOURCE$(1)_CONTAINER)" "$$(DL_SITE$(1))" $$(DL_SOURCE$(1)_CONTAINER_MD5) $$(SILENT); then \
 				$$(call ERROR,3,Could not download firmware image. See https://freetz.github.io/wiki/FAQ#Couldnotdownloadfirmwareimage for details.) \
@@ -339,6 +337,7 @@ else
 		esac \
 	elif ! $$(DL_TOOL) --no-append-servers $$(DL_FW_DIR) "$$(DL_SOURCE$(1))" "$$(DL_SITE$(1))" $$(DL_SOURCE$(1)_MD5) $$(SILENT); then \
 		$$(call ERROR,3,Could not download firmware image. See https://freetz.github.io/wiki/FAQ#Couldnotdownloadfirmwareimage for details.) \
+	fi; \
 	fi
 endif
 endif
