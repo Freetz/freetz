@@ -420,7 +420,7 @@ menu "Download options"
 
 	config FREETZ_DL_SOURCE
 		string "Firmware source"                                                   if FREETZ_DL_OVERRIDE && !FREETZ_DL_DETECT_IMAGE_NAME
-		default "${FREETZ_TYPE_PREFIX}${FREETZ_TYPE_PREFIX_LABOR_FIRMWARE}.detected.image" if FREETZ_DL_DETECT_IMAGE_NAME
+		default "${FREETZ_TYPE_PREFIX}-${FREETZ_TYPE_LANGUAGE}${FREETZ_TYPE_PREFIX_LABOR_FIRMWARE}.detected.image" if FREETZ_DL_DETECT_IMAGE_NAME
 		#
 		default "fritz.box_fon.06.04.33.image"                                     if (FREETZ_TYPE_300IP || FREETZ_TYPE_FON) && FREETZ_TYPE_LANG_DE
 		default "fritz.box_fon.annexa.en.06.04.49.image"                           if (FREETZ_TYPE_300IP || FREETZ_TYPE_FON) && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_ANNEX_A
