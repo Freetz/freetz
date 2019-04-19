@@ -1,5 +1,6 @@
 $(call PKG_INIT_BIN, c22d359433)
 $(PKG)_SOURCE:=ltrace-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE_SHA256:=aab15b5a24feb952221cb195854fafeacc08a26564bb922184e1bb29ad57dd1e
 $(PKG)_SITE:=git@https://github.com/dkogan/ltrace.git
 
 $(PKG)_CATEGORY:=Debug helpers
