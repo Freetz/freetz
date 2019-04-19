@@ -249,44 +249,6 @@ else
 include $(TOOLCHAIN_DIR)/make/download-toolchain.mk
 endif
 
-# Detect automatically the latest labor version
-ifeq (y,$(call qstrip,$(FREETZ_TYPE_FIRMWARE_LABOR_LATEST)))
-# Set autodetect URL
-ifneq (,$(call qstrip,$(FREETZ_DL_URL_LATEST_USER)))
-FREETZ_DL_URL_LATEST:=$(call qstrip,$(FREETZ_DL_URL_LATEST_USER))
-endif
-#$(info URL to detect latest firmware: $(FREETZ_DL_URL_LATEST))
-# clear cached URL if old
-$(shell find $(DL_FW_DIR) -name $(DL_SOURCE).url -mmin +360 -exec rm {} ';')
-# read cached URL if exists
-FREETZ_DL_URL_CONTAINER=$(shell cat $(DL_FW_DIR)/$(DL_SOURCE).url 2>/dev/null)
-# search URL if not cached
-ifeq (,$(FREETZ_DL_URL_CONTAINER))
-#$(info Need to refresh .zip container URL)
-FREETZ_DL_URL_CONTAINER=$(shell wget -q $(call qstrip,$(FREETZ_DL_URL_LATEST)) -O -| \
-sed -r  's/\tint\t/\ten\t/g;s/\t\t/\tde\t/g;s/\t\t/\tde\t/g;s/(.*)(\t[^\t]*)/\1\tlabor\2/g;s/(.*\t)labor(\t.*07\.03.*)/\1beta\2/g' | \
-grep -P "^$(call qstrip,$(FREETZ_TYPE_PREFIX_BOXMATRIX))\t$(call qstrip,$(FREETZ_TYPE_LANGUAGE))\t" | \
-sed -rn "s/.*\t$(patsubst _%,%,$(call qstrip,$(FREETZ_TYPE_PREFIX_LABOR_FIRMWARE)))\t([^\t]*)$$/\1/p" | \
-head -n1)
-$(shell echo $(FREETZ_DL_URL_CONTAINER) > $(DL_FW_DIR)/$(DL_SOURCE).url)
-endif
-# use backup if not got an URL
-ifeq (,$(FREETZ_DL_URL_CONTAINER))
-FREETZ_DL_URL_CONTAINER=$(shell cat $(DL_FW_DIR)/$(DL_SOURCE).url.bak 2>/dev/null)
-endif
-# exit if URL is empty
-ifeq (,$(FREETZ_DL_URL_CONTAINER))
-$(error Failed to detect the URL of the latest firmware version)
-endif
-# save URL as backup
-$(shell echo $(FREETZ_DL_URL_CONTAINER) > $(DL_FW_DIR)/$(DL_SOURCE).url.bak)
-# use detected URL for vars
-#$(info Available download URL: $(FREETZ_DL_URL_CONTAINER))
-DL_SITE:=$(dir $(FREETZ_DL_URL_CONTAINER))
-DL_SOURCE_CONTAINER:=$(notdir $(FREETZ_DL_URL_CONTAINER))
-DL_SOURCE_CONTAINER_SUFFIX:=$(suffix $(DL_SOURCE_CONTAINER))
-endif
-
 DL_IMAGE:=
 image:
 
@@ -305,39 +267,77 @@ ifeq ($$(strip $$(DL_SITE$(1))),)
 		exit 3; \
 	fi
 else
-	@if [ "$(FREETZ_DL_DETECT_IMAGE_NAME)" == "y" ]; then $(RM) -f "$(DL_FW_DIR)/$(DL_SOURCE)"; fi; \
+	@ \
+	if [ "$$(call qstrip,$(FREETZ_TYPE_FIRMWARE_LABOR_LATEST))" == "y" ]; then \
+		if [ -n "$$(call qstrip,$(FREETZ_DL_URL_LATEST_USER))" ]; then \
+			DL_URL_LATEST="$$(call qstrip,$(FREETZ_DL_URL_LATEST_USER))"; \
+		else \
+			DL_URL_LATEST="$$(call qstrip,$(FREETZ_DL_URL_LATEST))"; \
+		fi; \
+		echo "Source to get latest firmware URLs: $$$$DL_URL_LATEST" >/dev/null; \
+		find $$(DL_FW_DIR) -maxdepth 1 -name $$(DL_SOURCE$(1)).url -mmin +3600 -exec rm -f {} ';'; \
+		DL_URL_CONTAINER="$$$$(cat $$(DL_FW_DIR)/$$(DL_SOURCE$(1)).url 2>/dev/null)"; \
+		if [ -z "$$$$DL_URL_CONTAINER" ]; then \
+			echo "No cache, refresh URL by web" >/dev/null; \
+			DL_URL_CONTAINER="$$$$(wget --timeout=20 -q $$$$DL_URL_LATEST -O -| \
+			sed -r "s/\tint\t/\ten\t/g;s/\t\t/\tde\t/g;s/\t\t/\tde\t/g;s/(.*)(\t[^\t]*)/\1\tlabor\2/g;s/(.*\t)labor(\t.*07\.03.*)/\1beta\2/g" | \
+			grep -P "^$$(call qstrip,$(FREETZ_TYPE_PREFIX_BOXMATRIX))\t$$(call qstrip,$(FREETZ_TYPE_LANGUAGE))\t" | \
+			sed -rn "s/.*\t$$(call patsubst,_%,%,$$(call qstrip,$(FREETZ_TYPE_PREFIX_LABOR_FIRMWARE)))\t([^\t]*)$$$$/\1/p" | \
+			head -n1)"; \
+			echo "$$$$DL_URL_CONTAINER" > "$$(DL_FW_DIR)/$$(DL_SOURCE$(1)).url"; \
+		fi; \
+		if [ -z "$$$$DL_URL_CONTAINER" ]; then \
+			echo "No URL found, reading backup" >/dev/null; \
+			DL_URL_CONTAINER="$$$$(cat $$(DL_FW_DIR)/$$(DL_SOURCE$(1)).url.bak 2>/dev/null)"; \
+		fi; \
+		if [ -z "$$$$DL_URL_CONTAINER" ]; then \
+			$$(call ERROR,3,Failed to detect the URL of the latest firmware version.) \
+		fi; \
+		echo "$$$$DL_URL_CONTAINER" > "$$(DL_FW_DIR)/$$(DL_SOURCE$(1)).url.bak"; \
+		echo "Available download URL: $$$$DL_URL_CONTAINER" >/dev/null; \
+		DL_SITE0="$$$${DL_URL_CONTAINER%/*}"; \
+		DL_SOURCE0_CONTAINER="$$$${DL_URL_CONTAINER##*/}"; \
+		DL_SOURCE0_CONTAINER_SUFFIX=".$$$${DL_URL_CONTAINER##*\.}"; \
+	else \
+		DL_SITE0="$$(DL_SITE$(1))"; \
+		DL_SOURCE0_CONTAINER="$$(DL_SOURCE$(1)_CONTAINER)"; \
+		DL_SOURCE0_CONTAINER_SUFFIX="$$(DL_SOURCE$(1)_CONTAINER_SUFFIX)"; \
+	fi; \
+	if [ "$$(call qstrip,$(FREETZ_DL_DETECT_IMAGE_NAME))" == "y" ]; then \
+		rm -f "$$(DL_FW_DIR)/$$(DL_SOURCE$(1))"; \
+	fi; \
 	if [ ! -e "$$(DL_FW_DIR)/$$(DL_SOURCE$(1))" ]; then \
-		if [ -n "$$(DL_SOURCE$(1)_CONTAINER)" ]; then \
-			if [ ! -r $$(DL_FW_DIR)/$$(DL_SOURCE$(1)_CONTAINER) ]; then \
-				if ! $$(DL_TOOL) --no-append-servers $$(DL_FW_DIR) "$$(DL_SOURCE$(1)_CONTAINER)" "$$(DL_SITE$(1))" $$(DL_SOURCE$(1)_CONTAINER_MD5) $$(SILENT); then \
+		if [ -n "$$$$DL_SOURCE0_CONTAINER" ]; then \
+			if [ ! -r $$(DL_FW_DIR)/$$$$DL_SOURCE0_CONTAINER ]; then \
+				if ! $$(DL_TOOL) --no-append-servers $$(DL_FW_DIR) "$$$$DL_SOURCE0_CONTAINER" "$$$$DL_SITE0" $$(DL_SOURCE$(1)_CONTAINER_MD5) $$(SILENT); then \
 					$$(call ERROR,3,Could not download firmware image. See https://freetz.github.io/wiki/FAQ#Couldnotdownloadfirmwareimage for details.) \
 				fi; \
 			fi; \
-			case "$$(DL_SOURCE$(1)_CONTAINER_SUFFIX)" in \
+			case "$$$$DL_SOURCE0_CONTAINER_SUFFIX" in \
 				.zip|.ZIP) \
 					if [ "$$(FREETZ_DL_DETECT_IMAGE_NAME)" == "y" ]; then \
-						DL_SOURCE_DETECTED=$$$$(unzip -j $$(QUIETSHORT) -l $$(DL_FW_DIR)/$$(DL_SOURCE$(1)_CONTAINER) *.image | sed -rn 's/.*( |\/)(.*\.image)/\2/p'); \
+						DL_SOURCE_DETECTED=$$$$(unzip -j $$(QUIETSHORT) -l $$(DL_FW_DIR)/$$$$DL_SOURCE0_CONTAINER *.image | sed -rn 's/.*( |\/)(.*\.image)/\2/p'); \
 						echo "Using detected .image name: $$$$DL_SOURCE_DETECTED" >/dev/null; \
 					else \
-						DL_SOURCE_DETECTED=$$(DL_SOURCE); \
+						DL_SOURCE_DETECTED=$$(DL_SOURCE$(1)); \
 						echo "Using hardcoded .image name: $$$$DL_SOURCE_DETECTED" >/dev/null; \
 					fi; \
 					if [ ! -f $$(DL_FW_DIR)/$$$$DL_SOURCE_DETECTED ]; then \
-						echo "Unzipping archive file: $$(DL_SOURCE$(1)_CONTAINER)" >/dev/null; \
-						if ! unzip -j $$(QUIETSHORT) $$(DL_FW_DIR)/$$(DL_SOURCE$(1)_CONTAINER) *$$$$DL_SOURCE_DETECTED -d $$(DL_FW_DIR); then \
+						echo "Unzipping archive file: $$$$DL_SOURCE0_CONTAINER" >/dev/null; \
+						if ! unzip -j $$(QUIETSHORT) $$(DL_FW_DIR)/$$$$DL_SOURCE0_CONTAINER *$$$$DL_SOURCE_DETECTED -d $$(DL_FW_DIR); then \
 							$$(call ERROR,3,Could not unzip firmware image.) \
 						fi; \
 					fi; \
 					if [ "$$(FREETZ_DL_DETECT_IMAGE_NAME)" == "y" ]; then \
 						[ -f $$(DL_FW_DIR)/$$$$DL_SOURCE_DETECTED ] && ln $$(DL_FW_DIR)/$$$$DL_SOURCE_DETECTED $$(DL_FW_DIR)/$$(DL_SOURCE$(1)); \
-						echo "Created hardlink for .image file: $(DL_SOURCE)" >/dev/null; \
+						echo "Created hardlink for .image file: $$(DL_SOURCE$(1))" >/dev/null; \
 					fi; \
 					;; \
 				*) \
-					$$(call ERROR,3,Not able to extract $$(DL_SOURCE_CONTAINER_SUFFIX) firmware archives at all.) \
+					$$(call ERROR,3,Not able to extract '$$$$DL_SOURCE0_CONTAINER_SUFFIX' archives at all.) \
 					;; \
 			esac \
-		elif ! $$(DL_TOOL) --no-append-servers $$(DL_FW_DIR) "$$(DL_SOURCE$(1))" "$$(DL_SITE$(1))" $$(DL_SOURCE$(1)_MD5) $$(SILENT); then \
+		elif ! $$(DL_TOOL) --no-append-servers $$(DL_FW_DIR) "$$(DL_SOURCE$(1))" "$$$$DL_SITE0" $$(DL_SOURCE$(1)_MD5) $$(SILENT); then \
 			$$(call ERROR,3,Could not download firmware image. See https://freetz.github.io/wiki/FAQ#Couldnotdownloadfirmwareimage for details.) \
 		fi; \
 	fi
