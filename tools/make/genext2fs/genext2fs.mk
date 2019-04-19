@@ -1,5 +1,6 @@
 GENEXT2FS_VERSION:=20131004
 GENEXT2FS_SOURCE:=genext2fs-$(GENEXT2FS_VERSION).tar.xz
+GENEXT2FS_SOURCE_SHA256:=492052c02f774fa15e8d2dc0a49d0749d97ababbaf40ac7d3e93eda99b6fc777
 # see http://genext2fs.cvs.sourceforge.net/viewvc/genext2fs/genext2fs/genext2fs.c?view=log for more info
 GENEXT2FS_SITE:=cvs@pserver:anonymous@genext2fs.cvs.sourceforge.net:/cvsroot/genext2fs
 
