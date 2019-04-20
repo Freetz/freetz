@@ -31,7 +31,7 @@ helpmsg()
 cat << 'EOF'
 freetz_download - download Freetz packages
 
-Usage: freetz_download (-?|--help) | [--no-append-servers] ( (<download-dir> | check) <filename> [<main-url>,<mirror1>,<mirror2>,...] [<checksum>] )
+Usage: freetz_download (-?|--help) | [--no-append-servers] [--checksum_optional] ( (<download-dir> | check) <filename> [<main-url>,<mirror1>,<mirror2>,...] [<checksum>] )
     check         - check download
     download-dir  - target directory for download file
     filename      - download file name
@@ -172,10 +172,15 @@ if [ "$1" == "-?" -o "$1" == "--help" ]; then
 fi
 
 opt_append_servers=y
+opt_needs_checksum=y
 while [ $# -gt 1 ]; do
 	case "$1" in
 		--no-append-servers)
 			opt_append_servers=n
+			shift
+			;;
+		--checksum_optional)
+			opt_needs_checksum=n
 			shift
 			;;
 		*)
@@ -331,20 +336,34 @@ for i in ${sites[@]}; do
 			if [ -n "${CHECKSUM_ALGO}" ]; then
 				CHECKSUM_PROG="$(dirname $0)/${CHECKSUM_ALGO}sum"
 				[ ! -x "$CHECKSUM_PROG" ] && CHECKSUM_PROG="$(which ${CHECKSUM_ALGO}sum)"
+			else
+				echo "Unknown checksum algorithm for a hash length of ${#CHECKSUM}"
+				exit 1
 			fi
 
 			if [ -x "$CHECKSUM_PROG" ]; then
 				FILE_CHECKSUM=$($CHECKSUM_PROG "$DL_DIR/$DL_FILE" | sed 's/ .*//')
 				if [ "$CHECKSUM" != "$FILE_CHECKSUM" ]; then
-					echo "${CHECKSUM_ALGO^^} mismatch for $DL_DIR/$DL_FILE: $CHECKSUM $FILE_CHECKSUM" 1>&1
+					echo -e "\033[0;31mChecksum mismatch for $DL_DIR/$DL_FILE: ${CHECKSUM_ALGO^^}:=$FILE_CHECKSUM (expected: $CHECKSUM)\033[0m" 1>&1
 					rm -f "$DL_DIR/$DL_FILE"
 					continue;
 				else
-					echo "${CHECKSUM_ALGO^^} verified for $DL_DIR/$DL_FILE: $FILE_CHECKSUM"
+					echo -e "\033[0;32mChecksum verified for $DL_DIR/$DL_FILE: ${CHECKSUM_ALGO^^}:=$FILE_CHECKSUM\033[0m"
 				fi
 			else
 				echo "Can not find '${CHECKSUM_ALGO}sum' to check $CHECKSUM_ALGO"
 				exit 1
+			fi
+		else
+			if [ "$opt_needs_checksum" != n ]; then
+				CHECKSUM_ALGO="${CHECKSUM_ALGOS[32]}"
+				CHECKSUM_PROG="$(dirname $0)/${CHECKSUM_ALGO}sum"
+				[ ! -x "$CHECKSUM_PROG" ] && CHECKSUM_PROG="$(which ${CHECKSUM_ALGO}sum)"
+				[ -x "$CHECKSUM_PROG" ] && FILE_CHECKSUM=$($CHECKSUM_PROG "$DL_DIR/$DL_FILE" | sed 's/ .*//') || FILE_CHECKSUM=""
+				[ -n "$FILE_CHECKSUM" ] && FULL_CHECKSUM=": ${CHECKSUM_ALGO^^}:=$FILE_CHECKSUM" || FULL_CHECKSUM=""
+				echo -e "\033[1;33mChecksum unavailable for $DL_DIR/$DL_FILE$FULL_CHECKSUM\033[0m"
+			else
+				echo -e "\033[1;34mChecksum disabled for $DL_DIR/$DL_FILE\033[0m"
 			fi
 		fi
 	fi
