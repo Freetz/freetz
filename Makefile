@@ -309,7 +309,7 @@ else
 	if [ ! -e "$$(DL_FW_DIR)/$$(DL_SOURCE$(1))" ]; then \
 		if [ -n "$$$$DL_SOURCE0_CONTAINER" ]; then \
 			if [ ! -r $$(DL_FW_DIR)/$$$$DL_SOURCE0_CONTAINER ]; then \
-				if ! $$(DL_TOOL) --no-append-servers --checksum_optional $$(DL_FW_DIR) "$$$$DL_SOURCE0_CONTAINER" "$$$$DL_SITE0" $$(DL_SOURCE$(1)_CONTAINER_MD5) $$(SILENT); then \
+				if ! $$(DL_TOOL) --no-append-servers --checksum-optional $$(DL_FW_DIR) "$$$$DL_SOURCE0_CONTAINER" "$$$$DL_SITE0" $$(DL_SOURCE$(1)_CONTAINER_MD5) $$(SILENT); then \
 					$$(call ERROR,3,Could not download firmware image. See https://freetz.github.io/wiki/FAQ#Couldnotdownloadfirmwareimage for details.) \
 				fi; \
 			fi; \
@@ -337,7 +337,7 @@ else
 					$$(call ERROR,3,Not able to extract '$$$$DL_SOURCE0_CONTAINER_SUFFIX' archives at all.) \
 					;; \
 			esac \
-		elif ! $$(DL_TOOL) --no-append-servers --checksum_optional $$(DL_FW_DIR) "$$(DL_SOURCE$(1))" "$$$$DL_SITE0" $$(DL_SOURCE$(1)_MD5) $$(SILENT); then \
+		elif ! $$(DL_TOOL) --no-append-servers --checksum-optional $$(DL_FW_DIR) "$$(DL_SOURCE$(1))" "$$$$DL_SITE0" $$(DL_SOURCE$(1)_MD5) $$(SILENT); then \
 			$$(call ERROR,3,Could not download firmware image. See https://freetz.github.io/wiki/FAQ#Couldnotdownloadfirmwareimage for details.) \
 		fi; \
 	fi

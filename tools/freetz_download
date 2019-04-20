@@ -31,7 +31,7 @@ helpmsg()
 cat << 'EOF'
 freetz_download - download Freetz packages
 
-Usage: freetz_download (-?|--help) | [--no-append-servers] [--checksum_optional] ( (<download-dir> | check) <filename> [<main-url>,<mirror1>,<mirror2>,...] [<checksum>] )
+Usage: freetz_download (-?|--help) | [--no-append-servers] [--checksum-optional] ( (<download-dir> | check) <filename> [<main-url>,<mirror1>,<mirror2>,...] [<checksum>] )
     check         - check download
     download-dir  - target directory for download file
     filename      - download file name
@@ -179,7 +179,7 @@ while [ $# -gt 1 ]; do
 			opt_append_servers=n
 			shift
 			;;
-		--checksum_optional)
+		--checksum-optional)
 			opt_needs_checksum=n
 			shift
 			;;
