@@ -316,6 +316,14 @@ if [ "$opt_append_servers" != n ]; then
 	done
 fi
 
+calculate_full_checksum() {
+	local CHECKSUM_ALGO="${CHECKSUM_ALGOS[64]}"
+	local CHECKSUM_PROG="$(dirname $0)/${CHECKSUM_ALGO}sum"
+	[ ! -x "$CHECKSUM_PROG" ] && CHECKSUM_PROG="$(which ${CHECKSUM_ALGO}sum)"
+	[ -x "$CHECKSUM_PROG" ] && FILE_CHECKSUM=$($CHECKSUM_PROG "$DL_DIR/$DL_FILE" | sed 's/ .*//') || FILE_CHECKSUM=""
+	[ -n "$FILE_CHECKSUM" ] && FULL_CHECKSUM=": ${CHECKSUM_ALGO^^}:=$FILE_CHECKSUM" || FULL_CHECKSUM=""
+}
+
 # Loop over servers until a download succeeds or all requests have failed.
 download_by_url() {
 IFS=$'\n'
@@ -337,7 +345,9 @@ for i in ${sites[@]}; do
 				CHECKSUM_PROG="$(dirname $0)/${CHECKSUM_ALGO}sum"
 				[ ! -x "$CHECKSUM_PROG" ] && CHECKSUM_PROG="$(which ${CHECKSUM_ALGO}sum)"
 			else
-				echo "Unknown checksum algorithm for a hash length of ${#CHECKSUM}"
+				calculate_full_checksum
+				echo -e "\033[1;35mERROR: Unknown checksum algorithm for a hash length of ${#CHECKSUM}$FULL_CHECKSUM\033[0m"
+				rm -f "$DL_DIR/$DL_FILE"
 				exit 1
 			fi
 
@@ -351,16 +361,13 @@ for i in ${sites[@]}; do
 					echo -e "\033[0;32mChecksum verified for $DL_DIR/$DL_FILE: ${CHECKSUM_ALGO^^}:=$FILE_CHECKSUM\033[0m"
 				fi
 			else
-				echo "Can not find '${CHECKSUM_ALGO}sum' to check $CHECKSUM_ALGO"
+				echo -e "\033[1;33mERROR: Can not find '${CHECKSUM_ALGO}sum' to check $CHECKSUM_ALGO\033[0m"
+				rm -f "$DL_DIR/$DL_FILE"
 				exit 1
 			fi
 		else
 			if [ "$opt_needs_checksum" != n ]; then
-				CHECKSUM_ALGO="${CHECKSUM_ALGOS[32]}"
-				CHECKSUM_PROG="$(dirname $0)/${CHECKSUM_ALGO}sum"
-				[ ! -x "$CHECKSUM_PROG" ] && CHECKSUM_PROG="$(which ${CHECKSUM_ALGO}sum)"
-				[ -x "$CHECKSUM_PROG" ] && FILE_CHECKSUM=$($CHECKSUM_PROG "$DL_DIR/$DL_FILE" | sed 's/ .*//') || FILE_CHECKSUM=""
-				[ -n "$FILE_CHECKSUM" ] && FULL_CHECKSUM=": ${CHECKSUM_ALGO^^}:=$FILE_CHECKSUM" || FULL_CHECKSUM=""
+				calculate_full_checksum
 				echo -e "\033[1;33mChecksum unavailable for $DL_DIR/$DL_FILE$FULL_CHECKSUM\033[0m"
 			else
 				echo -e "\033[1;34mChecksum disabled for $DL_DIR/$DL_FILE\033[0m"
