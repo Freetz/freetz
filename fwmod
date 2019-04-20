@@ -371,8 +371,9 @@ else
 		sudo "$TAR" -C "$COPY_FS_DIR" -xf "$rootfs_archive" ||
 			error 1 "cannot unpack root file system"
 		echo -e "done.\n"
-		echo0 -b "FINISHED"
 	fi
+
+	echo0 -b "FINISHED"
 
 	exit 0
 fi
@@ -407,13 +408,55 @@ fi
 AVMPLUGINS="${FIRMWARE_DIR}/${AVMPLUGINS_FILE}"
 VARTAR="${FILESYSTEM_DIR}/${VARTAR_FILE}"
 
+# avm image details
+function image_details() {
+	local AVM_FW_PRODUCT
+	local AVM_FW_LANGUAGE
+	local AVM_FW_MAJOR
+	#AVM_FW_VERSION
+	local AVM_FW_LABOR
+	#AVM_FW_REVISION
+	local AVM_FW_DATE
+	#SOURCE_IMAGE_DETAILS
+	#
+	AVM_FW_PRODUCT="$(sed -rn 's/export CONFIG_PRODUKT_NAME=".*([0-9]{3}[0-9V].*)"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | head -n1)" # 4-digits in /etc/init.d/rc.conf
+	[ -z "${AVM_FW_PRODUCT}" ] && AVM_FW_PRODUCT="$(sed -rn 's/export CONFIG_PRODUKT_NAME="(FRITZ!Box|Speedport|Sinus|Eumex) ([^"]+)"/\2/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | head -n1 | tr ' ' '-')" # symbolic name in /etc/init.d/rc.conf
+	if [ -e "${FILESYSTEM_DIR}/etc/init.d/rc.init" ]; then
+		# /etc/init.d/rc.init is not available in all firmwares
+		[ -z "${AVM_FW_PRODUCT}" ] && AVM_FW_PRODUCT="$(sed -rn 's/^HW=[0-9]* OEM=all _PRODUKT_NAME=(FRITZ!Box|Speedport|Sinus|Eumex)#//p' ${FILESYSTEM_DIR}/etc/init.d/rc.init | head -n1 | sed 's/#//g;s/Annex.//;s/WLAN/-&/g;s/^$/FritzBox/g')" # symbolic name in /etc/init.d/rc.init
+		[ -z "${AVM_FW_PRODUCT}" ] && AVM_FW_PRODUCT="$(sed -rn 's/^HW=[0-9]* OEM=all _PRODUKT_NAME=([0-9A-Z\#]{4,6}).*/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.init)" # 4-digits in /etc/init.d/rc.init
+	fi
+	[ -z "${AVM_FW_PRODUCT}" ] && AVM_FW_PRODUCT="$(sed -rn 's/export CONFIG_PRODUKT_NAME=.*( Repeater|Powerline) (.*)"/\2/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf)" # Repeater like 'DVB-C'
+	[ -z "${AVM_FW_PRODUCT}" ] && warn "Failed to determine AVM_FW_PRODUCT, even though this is a cosmetic bug only please report it to the Freetz developers and provide your .config"
+	AVM_FW_PRODUCT="${AVM_FW_PRODUCT%% Edition*}"
+	AVM_FW_PRODUCT="${AVM_FW_PRODUCT% }"
+	AVM_FW_LANGUAGE="$(sed -n 's/^language /_/p' ${FILESYSTEM_DIR}/etc/default.language)" #primary language
+	AVM_FW_LANGUAGE="${AVM_FW_LANGUAGE}$(for x in $(ls ${FILESYSTEM_DIR}/etc/htmltext_??.db 2>/dev/null| sed 's/.*_//g;s/\.db//g'); do [ "_$x" != "${AVM_FW_LANGUAGE}" ] && echo -en "-$x"; done; echo)" # other languages
+	AVM_FW_MAJOR="$(sed -rn 's/^export CONFIG_VERSION_MAJOR="(.*)"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | tail -n1)" # newer firmware
+	[ -z "${AVM_FW_MAJOR}" ] && AVM_FW_MAJOR="$(sed -n 's/^HW=[0-9].*VERSION_MAJOR=//p' ${FILESYSTEM_DIR}/etc/init.d/rc.init)" # older firmware
+	AVM_FW_VERSION="$(sed -n 's/^export FIRMWARE_VERSION=.*}[.]//p' ${FILESYSTEM_DIR}/etc/version)" # older firmware
+	[ -z "$AVM_FW_VERSION" ] && AVM_FW_VERSION="$(sed -rn 's/^export CONFIG_VERSION=\"?([^\"]*)\"?/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf)" # newer firmware
+	AVM_FW_LABOR="$(sed -rn 's/^export CONFIG_LABOR_ID_NAME="(.*)"/-\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf)"
+	AVM_FW_REVISION="$(sed -n '/--project)$/{N;s/.*echo //p}' ${FILESYSTEM_DIR}/etc/version)" # older firmware
+	[ -z "$AVM_FW_REVISION" ] && AVM_FW_REVISION="$(sed -rn 's/^export CONFIG_SUBVERSION=\"?-?([^\"]*)\"?/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf)" # newer firmware
+	[ -z "$AVM_FW_REVISION" ] && AVM_FW_REVISION="$(sed -rn 's/^export CONFIG_BUILDNUMBER=\"([^\"]*)\"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf)" # latest firmware
+	AVM_FW_DATE="$(sed -rn 's/^export FIRMWARE_DATE="(.*)"/\1/p' ${FILESYSTEM_DIR}/etc/version)" # older firmware
+	[ -z "$AVM_FW_DATE" ] && AVM_FW_DATE="$(date -d"$(stat -c '%y' ${FILESYSTEM_DIR}/etc/version)" "+%d.%m.%Y %H:%M:%S")" # newer firmware
+	#
+	SOURCE_IMAGE_DETAILS="${AVM_FW_PRODUCT/ /-}${AVM_FW_LANGUAGE} ${AVM_FW_MAJOR}.${AVM_FW_VERSION}${AVM_FW_LABOR} rev${AVM_FW_REVISION} (${AVM_FW_DATE})"
+}
+
+echo
 if [ "$DO_UNPACK" -gt 0 ]; then
-	[ "$FIRMWARE2" ] && UNPACK_SUBSTEP="A" && UNPACK_MAIN=" MAIN" && FIRMWARE_MAIN=" main"
+	[ "$FIRMWARE2" ] && UNPACK_SUBSTEP="A" && UNPACK_MAIN=" 1ST"
 	echo0 -b "STEP 1${UNPACK_SUBSTEP}: UNPACK${UNPACK_MAIN}${FORCE_UNPACK}"
 
 	# Remove old "unpacked" marker to avoid an undefined state in case of
 	# interruption before unpacking operation is finished
 	rm -f "$UNPACKED_FILE"
+
+	REAL_FIRMWARE="$(readlink ${FIRMWARE} 2>/dev/null || echo ${FIRMWARE##*/})"
+	echo2 -l "source firmware file: ${FIRMWARE/${FIRMWARE##*\/}/$REAL_FIRMWARE}"
 
 	rm -rf "$ORG_DIR"
 	mkdir "$ORG_DIR"
@@ -568,16 +611,18 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	mkdir "$VARTAR_DIR"
 	"$TAR_GNU" -xipf "$VARTAR" -C "$VARTAR_DIR" || exit 1
 
+	image_details
+	echo2 -l "detected firmware version: ${SOURCE_IMAGE_DETAILS}"
+
 	echo -e "done.\n"
 
 	# Unpack secondary firmware image
 	if [ -n "$FIRMWARE2" ]; then
-		echo0 -b "FINISHED"
 		rm -rf "${DIR}/.tk"
 		# validate_signature
 		[ $DO_VALIDATE2 -eq 1 ] && UNPACK_VALIDATE2="-v $FIRMWARE2_PUB"
 		( set -o pipefail; "$0" -u $UNPACK_VALIDATE2 -d "${DIR}/.tk" "$FIRMWARE2" |
-			sed "s/STEP 1: UNPACK/STEP 1B: UNPACK SECONDARY${FORCE_UNPACK}/;s/ firmware/ secondary&/" )
+			sed "s/STEP 1: UNPACK/STEP 1B: UNPACK 2ND${FORCE_UNPACK}/" )
 		[ $? -ne 0 ] && exit 1
 	fi
 
@@ -587,7 +632,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		# validate_signature
 		[ $DO_VALIDATE3 -eq 1 ] && UNPACK_VALIDATE3="-v $FIRMWARE3_PUB"
 		( set -o pipefail; "$0" -u $UNPACK_VALIDATE3 -d "${DIR}/.aux" "$FIRMWARE3" |
-			sed "s/STEP 1: UNPACK/STEP 1C: UNPACK AUXILIARY${FORCE_UNPACK}/;s/ firmware/ auxiliary&/" )
+			sed "s/STEP 1: UNPACK/STEP 1C: UNPACK 3RD${FORCE_UNPACK}/" )
 		[ $? -ne 0 ] && exit 1
 	fi
 
@@ -722,31 +767,7 @@ function sizeinfo()
 	echo
 }
 
-# show avm image details
-AVM_FW_PRODUCT="$(sed -rn 's/export CONFIG_PRODUKT_NAME=".*([0-9]{3}[0-9V].*)"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | head -n1)" # 4-digits in /etc/init.d/rc.conf
-[ -z "${AVM_FW_PRODUCT}" ] && AVM_FW_PRODUCT="$(sed -rn 's/export CONFIG_PRODUKT_NAME="(FRITZ!Box|Speedport|Sinus|Eumex) ([^"]+)"/\2/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | head -n1 | tr ' ' '-')" # symbolic name in /etc/init.d/rc.conf
-if [ -e "${FILESYSTEM_DIR}/etc/init.d/rc.init" ]; then
-	# /etc/init.d/rc.init is not available in all firmwares
-	[ -z "${AVM_FW_PRODUCT}" ] && AVM_FW_PRODUCT="$(sed -rn 's/^HW=[0-9]* OEM=all _PRODUKT_NAME=(FRITZ!Box|Speedport|Sinus|Eumex)#//p' ${FILESYSTEM_DIR}/etc/init.d/rc.init | head -n1 | sed 's/#//g;s/Annex.//;s/WLAN/-&/g;s/^$/FritzBox/g')" # symbolic name in /etc/init.d/rc.init
-	[ -z "${AVM_FW_PRODUCT}" ] && AVM_FW_PRODUCT="$(sed -rn 's/^HW=[0-9]* OEM=all _PRODUKT_NAME=([0-9A-Z\#]{4,6}).*/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.init)" # 4-digits in /etc/init.d/rc.init
-fi
-[ -z "${AVM_FW_PRODUCT}" ] && AVM_FW_PRODUCT="$(sed -rn 's/export CONFIG_PRODUKT_NAME=.*( Repeater|Powerline) (.*)"/\2/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf)" # Repeater like 'DVB-C'
-[ -z "${AVM_FW_PRODUCT}" ] && warn "Failed to determine AVM_FW_PRODUCT, even though this is a cosmetic bug only please report it to the Freetz developers and provide your .config"
-AVM_FW_PRODUCT="${AVM_FW_PRODUCT%% Edition*}"
-AVM_FW_PRODUCT="${AVM_FW_PRODUCT% }"
-AVM_FW_LANGUAGE="$(sed -n 's/^language /_/p' ${FILESYSTEM_DIR}/etc/default.language)" #primary language
-AVM_FW_LANGUAGE="${AVM_FW_LANGUAGE}$(for x in $(ls ${FILESYSTEM_DIR}/etc/htmltext_??.db 2>/dev/null| sed 's/.*_//g;s/\.db//g'); do [ "_$x" != "${AVM_FW_LANGUAGE}" ] && echo -en "-$x"; done; echo)" # other languages
-AVM_FW_MAJOR="$(sed -rn 's/^export CONFIG_VERSION_MAJOR="(.*)"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | tail -n1)" # newer firmware
-[ -z "${AVM_FW_MAJOR}" ] && AVM_FW_MAJOR="$(sed -n 's/^HW=[0-9].*VERSION_MAJOR=//p' ${FILESYSTEM_DIR}/etc/init.d/rc.init)" # older firmware
-AVM_FW_VERSION="$(sed -n 's/^export FIRMWARE_VERSION=.*}[.]//p' ${FILESYSTEM_DIR}/etc/version)" # older firmware
-[ -z "$AVM_FW_VERSION" ] && AVM_FW_VERSION="$(sed -rn 's/^export CONFIG_VERSION="?([^"]*)"?/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf)" # newer firmware
-AVM_FW_LABOR="$(sed -rn 's/^export CONFIG_LABOR_ID_NAME="(.*)"/-\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf)"
-AVM_FW_REVISION="$(sed -n '/--project)$/{N;s/.*echo //p}' ${FILESYSTEM_DIR}/etc/version)" # older firmware
-[ -z "$AVM_FW_REVISION" ] && AVM_FW_REVISION="$(sed -rn 's/^export CONFIG_SUBVERSION="?-?([^"]*)"?/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf)" # newer firmware
-[ -z "$AVM_FW_REVISION" ] && AVM_FW_REVISION="$(sed -rn 's/^export CONFIG_BUILDNUMBER="([^"]*)"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf)" # latest firmware
-AVM_FW_DATE="$(sed -rn 's/^export FIRMWARE_DATE="(.*)"/\1/p' ${FILESYSTEM_DIR}/etc/version)" # older firmware
-[ -z "$AVM_FW_DATE" ] && AVM_FW_DATE="$(date -d"$(stat -c '%y' ${FILESYSTEM_DIR}/etc/version)" "+%d.%m.%Y %H:%M:%S")" # newer firmware
-echo1 -l "detected${FIRMWARE_MAIN} firmware ${AVM_FW_PRODUCT/ /-}${AVM_FW_LANGUAGE} ${AVM_FW_MAJOR}.${AVM_FW_VERSION}${AVM_FW_LABOR} rev${AVM_FW_REVISION} (${AVM_FW_DATE})\n"
+image_details
 
 if [ "$DO_MOD" -gt 0 ]; then
 	echo0 -b "STEP 2: MODIFY"
@@ -778,7 +799,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 	oems=$(sed -n -r -e '/'"${iterate_over_oems_pattern}"'/ { s/^.*for[ ]+i[ ]+in[ ]+([^;]+);[ ]+do.*$/\1/p; q }' "${FIRMWARE_MOD_DIR}/var/install")
 	[ -z "$oems" ] && error 1 "failed to determine OEMs supported by the original firmware"
 
-	echo0 -n "applying symlinks, deleting additional webinterfaces in:"
+	echo0 -n "applying symlinks, deleting additional webinterfaces"
+	[ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && echo0 -n " in:"
 	for webdir in \
 	  ${FILESYSTEM_MOD_DIR}/usr/www \
 	  ${FILESYSTEM_MOD_DIR}/usr/www.nas \
@@ -799,7 +821,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		main_oem=$(find "${webdir}" -maxdepth 1 -type d -name "avm*" -printf "%P\n" | sort | head -n 1)
 
 		if [ -n "${main_oem}" ]; then
-			echo0 -n " ${webdir#${FILESYSTEM_MOD_DIR}/}"
+			[ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && echo0 -n " ${webdir#${FILESYSTEM_MOD_DIR}/}"
 			mv ${webdir}/${main_oem} ${webdir}/all
 			for i in $oems; do
 				rm -rf ${webdir}/$i
@@ -1922,7 +1944,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 
 	# Sign firmware image
 	if [ "$DO_SIGN" -eq 1 ]; then
-		[ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && echo0 "signing ${img_name}"
+		[ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && echo0 "signing packed .image file"
 		openssl md5 -sign "${SIGNATURE_SUBDIR}/prv" -passin "pass:$FREETZ_FWMOD_SIGN_PASSWORD" -out "${FIRMWARE_MOD_DIR}/var/signature" "${img_name}" || \
 			error 1 "could not create signature file for firmware image"
 		"$TAR_GNU"  -f "${img_name}"  --owner=0 --group=0 --mode=0755 --format=oldgnu  -C "$FIRMWARE_MOD_DIR"  --append ./var/signature
@@ -1932,6 +1954,9 @@ if [ "$DO_PACK" -gt 0 ]; then
 		fi
 		echo1 "signed image file size: $(byte_to_mb $(wc -c < "${img_name}")) ($(wc -c < "${img_name}") bytes)"
 	fi
+
+	echo0 "source firmware details: ${SOURCE_IMAGE_DETAILS} ${SOURCE_IMAGE_SIZE}"
+	echo1 "source image file size: $(byte_to_mb $(wc -c < "${FIRMWARE}")) ($(wc -c < "${FIRMWARE}") bytes)"
 
 	# create the link images/latest.image to the just created .image
 	img_link="${img_name%/*}/latest.image"
@@ -1982,5 +2007,5 @@ if [ "$action_names" ]; then
 	[ "$COPY_FS_DIR" ] || echo -e "done.\n"
 fi
 
-[ "$COPY_FS_DIR" ] || echo0 -b "FINISHED"
 exit 0
+

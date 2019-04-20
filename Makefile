@@ -329,7 +329,7 @@ else
 						fi; \
 					fi; \
 					if [ "$$(FREETZ_DL_DETECT_IMAGE_NAME)" == "y" ]; then \
-						[ -f $$(DL_FW_DIR)/$$$$DL_SOURCE_DETECTED ] && ln $$(DL_FW_DIR)/$$$$DL_SOURCE_DETECTED $$(DL_FW_DIR)/$$(DL_SOURCE$(1)); \
+						[ -f $$(DL_FW_DIR)/$$$$DL_SOURCE_DETECTED ] && ln -s $$$$DL_SOURCE_DETECTED $$(DL_FW_DIR)/$$(DL_SOURCE$(1)); \
 						echo "Created hardlink for .image file: $$(DL_SOURCE$(1))" >/dev/null; \
 					fi; \
 					;; \
