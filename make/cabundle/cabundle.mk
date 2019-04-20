@@ -1,6 +1,7 @@
 CABUNDLE_GIT_REPOSITORY:=https://github.com/bagder/ca-bundle.git
 $(call PKG_INIT_BIN, $(if $(FREETZ_PACKAGE_CABUNDLE_VERSION_LATEST), $(call git-get-latest-revision,$(CABUNDLE_GIT_REPOSITORY),), $(if $(FREETZ_PACKAGE_CABUNDLE_VERSION_CUSTOM), $(shell echo "$(FREETZ_PACKAGE_CABUNDLE_VERSION_COMMIT)"), 1) ))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE_CHECKSUM:=X
 $(PKG)_SITE:=git@$($(PKG)_GIT_REPOSITORY)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/ca-bundle.crt

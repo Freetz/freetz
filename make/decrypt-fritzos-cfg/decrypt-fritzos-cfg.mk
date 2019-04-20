@@ -1,5 +1,6 @@
 $(call PKG_INIT_BIN, 84e9555131)
 $(PKG)_SOURCE:=$(subst -,_,$(pkg))-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE_CHECKSUM:=X
 $(PKG)_SITE:=git@https://github.com/PeterPawn/decoder.git
 
 # silence format warnings
