@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.0)
 $(PKG)_SOURCE_DOWNLOAD_NAME:=rtspd
-$(PKG)_SOURCE:=sundtek-$($(PKG)_SOURCE_DOWNLOAD_NAME)-$(SUNDTEK_ARCH)
+$(PKG)_SOURCE:=$(if $(FREETZ_PACKAGE_SUNDTEK),sundtek-$($(PKG)_SOURCE_DOWNLOAD_NAME)-$(SUNDTEK_ARCH))
 $(PKG)_SITE:=http://sundtek.de/media/streamer/$(SUNDTEK_ARCH)
 
 $(PKG)_TARGET_PATH:=/usr/bin/sundtek-$($(PKG)_SOURCE_DOWNLOAD_NAME)
