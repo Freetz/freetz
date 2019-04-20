@@ -1,6 +1,7 @@
 $(call PKG_INIT_LIB, 978b733462)
 $(PKG)_LIB_VERSION:=3.1.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE_MD5:=61ce8d6121d5bb339fd1150624681a60
 $(PKG)_SITE:=git@https://code.google.com/p/iksemel
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/lib$(pkg).so.$($(PKG)_LIB_VERSION)
