@@ -11,6 +11,7 @@ SUBCATS=tools/genin.cat
 CATs=""
 CATTABLE=""
 NONHIDDEN="#"
+[ "$1" != "legacy" ] && CATMARK="0123456789"
 
 for PKG_DIR in $(find -L make -mindepth 2 -maxdepth 2 -type f -name Config.in -printf "%h\n" | sort); do
 	PKG="${PKG_DIR#make/}"
@@ -23,7 +24,11 @@ for PKG_DIR in $(find -L make -mindepth 2 -maxdepth 2 -type f -name Config.in -p
 
 	# extract CATEGORY from the .mk file
 	CAT=$(sed -r -n -e 's,^[ \t]*\$\(PKG\)_CATEGORY[ \t]*:?=[ \t]*(.*),\1,p' ${PKG_DIR}/${PKG}.mk 2>/dev/null)
-	[ -z "$CAT" ] && CAT=Packages
+	if [ -z "$CATMARK" ]; then
+		[ -z "$CAT" ] && CAT=Packages
+	else
+		[ -z "$CAT" ] && CAT="$CATMARK${PKG:0:1}" && CAT="${CAT^^}"
+	fi
 
 	NONHIDDEN="${NONHIDDEN//%$CAT/}%${CAT}"
 
@@ -101,7 +106,7 @@ done
 NONHIDDEN=${NONHIDDEN/\#%/}
 
 # sort "nonhidden" categories
-CATs=$( echo -e "${NONHIDDEN//%/\\n}" | sort -u )
+CATs=$( echo -e "${NONHIDDEN//%/\\n}" | sort -uV )
 #CATTABLE_NEW=$( echo -e "${CATTABLE// /\n}" | sort -u )
 
 #echo -e "CATTABLE=$CATTABLE"
@@ -123,11 +128,16 @@ echo -e "\ncomment \"packages\"\n\tdepends on EXTERNAL_ENABLED"                 
 for CAT in $CATs; do
 	while [ -n "$SAVEMENU" -a -n "${SAVEMENU##*${CAT%##*}}" ]; do
 		# the actual CAT is NO subCAT of previous, so close menu(s)
-		echo "endmenu"                                                                                  >> $CFILE
+		echo "endmenu"                                                                          >> $CFILE
 		SAVEMENU=${SAVEMENU%\%%*}
 	done
 	CATONLY=${CAT##*##}
-	echo -e "\nmenu \"${CATONLY}\""                                                                     >> $CFILE
+	CATREAL="${CATONLY/$CATMARK/}"
+	if [ "$CATONLY" == "$CATREAL" -a -z "$CATDIV" -a -n "$CATMARK" ]; then
+		echo "comment \"----------------------------------------\""                             >> $CFILE
+		CATDIV=y
+	fi
+	echo -e "\nmenu \"${CATREAL}\""                                                                 >> $CFILE
 	for PKG in $(echo -e "${CATTABLE}"| sed "/^${CATONLY/\//\\/}##/ !d ; s/^[^#]*##// "); do
 		[ -e "make/$PKG/external.in" ] && echo "source \"make/$PKG/external.in\""               >> $EFILE
 		case "$PKG" in asterisk-*|nhipt|sg3_utils|busybox|ruby-fcgi|iptables-cgi|python-*) continue ;; esac

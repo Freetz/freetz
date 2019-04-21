@@ -135,7 +135,7 @@ endif
 ifneq ($(findstring clean,$(MAKECMDGOALS)),clean)
 # Note: the list of the packages to be treated specially (the 3rd argument of get-subdirs-containing) should match that used in genin
 ifneq ($(call genin-get-considered-packages,make/Config.in.generated),$(call get-subdirs-containing,make,Config.in,libs busybox asterisk[-].* python[-].* iptables-cgi ruby-fcgi nhipt sg3_utils))
-ifneq ($(shell $(GENERATE_IN_TOOL) >&2 && echo OK),OK)
+ifneq ($(shell $(GENERATE_IN_TOOL) $(if $(findstring legacy,$(MAKECMDGOALS)),legacy) >&2 && echo OK),OK)
 $(error genin failed)
 endif
 endif
