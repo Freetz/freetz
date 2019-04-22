@@ -85,7 +85,7 @@ menulua_remove dect.internetradio
 menulua_remove dect.podcast
 
 # patcht Dect > Internetdienste
-menulua_remove dect.radiopodcast
+[ "$FREETZ_AVM_HAS_DECT" == "y" ] && menulua_remove dect.radiopodcast
 
 # patcht USB-Geraete > USB-Speicher >  Musikbox aktivieren
 mod_del_area \
