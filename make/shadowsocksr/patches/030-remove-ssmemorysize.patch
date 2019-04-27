@@ -1,0 +1,29 @@
+--- ssrutils.c
++++ ssrutils.c
+@@ -234,6 +234,7 @@
+     exit(-1);
+ }
+ 
++/*
+ size_t
+ ss_memory_size(void *ptr)
+ {
+@@ -248,6 +249,7 @@
+     return malloc_usable_size(ptr); // Linux and __MINGW32__
+ #endif
+ }
++*/
+ 
+ void
+ usage(const char *version, const char *encrypt_lib)
+--- ssrutils.h
++++ ssrutils.h
+@@ -207,7 +207,7 @@
+ int set_nofile(int nofile);
+ #endif
+ 
+-size_t ss_memory_size(void *ptr);
++//size_t ss_memory_size(void *ptr);
+ 
+ #define safe_free(ptr)        \
+     do {                    \
