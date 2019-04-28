@@ -53,6 +53,7 @@ fi
 if [ "$FREETZ_PACKAGE_DNSMASQ_WITH_DNSSEC" = "y" -a "$DNSMASQ_DNSSEC" = "yes" ]; then
 	[ -r /mod/etc/default.dnsmasq/trust-anchors.conf ] && echo "conf-file=/mod/etc/default.dnsmasq/trust-anchors.conf"
 	echo "dnssec"
+	echo "dnssec-timestamp=/etc/version"
 fi
 
 isdhcphost () {
