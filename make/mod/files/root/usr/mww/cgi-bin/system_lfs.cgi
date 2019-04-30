@@ -71,7 +71,7 @@ resmnt() {
 	mkdir $OUTER
 	[ -d /wrapper ] && fst=yaffs2 || fst=squashfs
 	[ "$FREETZ_TYPE_CABLE" != "y" ] && DEV=mtdblock || DEV=mmcblk0p
-	mount -t $fst -o ro /dev/$DEV$DEAD $OUTER || mount -o ro /dev/$DV$DEAD $OUTER
+	mount -t $fst -o ro /dev/$DEV$DEAD $OUTER || mount -o ro /dev/$DEV$DEAD $OUTER
 	MNT=$OUTER
 
 	if [ -f $OUTER/filesystem_core.squashfs ]; then
