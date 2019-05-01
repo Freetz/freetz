@@ -5,52 +5,26 @@
 config FREETZ_TARGET_ARCH_LE
 	bool
 	default y
-	depends on \
-		FREETZ_SYSTEM_TYPE_AR7_SANGAM || \
-		FREETZ_SYSTEM_TYPE_AR7_OHIO   || \
-		FREETZ_SYSTEM_TYPE_IPQ40xx    || \
-		FREETZ_SYSTEM_TYPE_PUMA6_X86  || \
-		FREETZ_SYSTEM_TYPE_UR8
+	depends on FREETZ_AVM_PROP_ARCH_LE
 
 config FREETZ_TARGET_ARCH_BE
 	bool
 	default y
-	depends on \
-		FREETZ_SYSTEM_TYPE_AR9        || \
-		FREETZ_SYSTEM_TYPE_AR10       || \
-		FREETZ_SYSTEM_TYPE_AR934x     || \
-		FREETZ_SYSTEM_TYPE_GRX5       || \
-		FREETZ_SYSTEM_TYPE_IKS        || \
-		FREETZ_SYSTEM_TYPE_QCA955x    || \
-		FREETZ_SYSTEM_TYPE_QCA956x    || \
-		FREETZ_SYSTEM_TYPE_VR9
+	depends on FREETZ_AVM_PROP_ARCH_BE
 
 config FREETZ_TARGET_ARCH_ARM
 	bool
-	depends on \
-		FREETZ_SYSTEM_TYPE_IPQ40xx
 	default y
+	depends on FREETZ_AVM_PROP_ARCH_ARM
 
 config FREETZ_TARGET_ARCH_MIPS
 	bool
-	depends on \
-		FREETZ_SYSTEM_TYPE_AR7_SANGAM || \
-		FREETZ_SYSTEM_TYPE_AR7_OHIO   || \
-		FREETZ_SYSTEM_TYPE_AR9        || \
-		FREETZ_SYSTEM_TYPE_AR10       || \
-		FREETZ_SYSTEM_TYPE_AR934x     || \
-		FREETZ_SYSTEM_TYPE_GRX5       || \
-		FREETZ_SYSTEM_TYPE_IKS        || \
-		FREETZ_SYSTEM_TYPE_QCA955x    || \
-		FREETZ_SYSTEM_TYPE_QCA956x    || \
-		FREETZ_SYSTEM_TYPE_UR8        || \
-		FREETZ_SYSTEM_TYPE_VR9
 	default y
+	depends on FREETZ_AVM_PROP_ARCH_MIPS
 
 config FREETZ_TARGET_ARCH_X86
 	bool
-	depends on \
-		FREETZ_SYSTEM_TYPE_PUMA6_X86
+	depends on FREETZ_AVM_PROP_ARCH_X86
 	default y
 
 config FREETZ_KERNEL_ARCH
@@ -109,3 +83,4 @@ config FREETZ_KERNEL_CROSS
 config FREETZ_KERNEL_MAKE_PATH
 	string
 	default "toolchain/kernel/bin"
+
