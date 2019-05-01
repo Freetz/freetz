@@ -64,9 +64,8 @@ imginfo() {
 	fi
 }
 
-NOW="$(date +%s)"
-OUTER="/tmp/reserve_$NOW"
-INNER="/tmp/wrapper_$NOW"
+OUTER="/tmp/.lfs.reserve"
+INNER="/tmp/.lfs.wrapper"
 resmnt() {
 	mkdir $OUTER
 	[ -d /wrapper ] && fst=yaffs2 || fst=squashfs
@@ -81,13 +80,11 @@ resmnt() {
 	fi
 }
 resunm() {
-	if [ -d $INNER ]; then
-		umount $INNER
-		rmdir $INNER
-	fi
-
-	umount $OUTER
-	rmdir $OUTER
+	for X in $INNER $OUTER; do
+		[ -d $X ] || continue
+		umount $X
+		rmdir $X
+	done
 }
 
 NEXT="$(sed -n 's/^linux_fs_start[ \t]*//p' /proc/sys/urlader/environment)"
@@ -97,6 +94,7 @@ LIVE="$(get_partition_by_name filesystem)"
 DEAD="$(get_partition_by_name filesystem reserved)"
 
 PRIB="$(imginfo /)"
+(sleep 3; resunm)&
 resmnt
 SECB="$(imginfo $MNT)"
 resunm
