@@ -264,5 +264,7 @@ fi
 strip_patch_level()
 {
 	echo "Stripping one directory level from $1"
-	sed -i -r 's/^(---|\+\+\+) [^/]+\//\1 /' "$1"
+	local tmp_fn="$(mktemp)"
+	sed -r 's/^(---|\+\+\+) [^/]+\//\1 /' < "$1" > "$tmp_fn"
+	mv "$tmp_fn" "$1"
 }

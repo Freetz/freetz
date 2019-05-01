@@ -677,7 +677,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	# Copy the unpacked directory
 	mkdir -p "$MOD_DIR"
 	[ "$FREETZ_AVM_HAS_UDEV" == y ] || exclude_dev="--exclude=./filesystem/dev"
-	"$TAR" -c -C "$ORG_DIR" $exclude_dev  --exclude='*.log' . | "$TAR" -x -C "$MOD_DIR" || exit 1
+	"$TAR" -c -C "$ORG_DIR" $exclude_dev  --exclude='*.log' . | "$TAR" -xp -C "$MOD_DIR" || exit 1
 
 	# Fix some permissions
 	chmod -R u+w "$FILESYSTEM_MOD_DIR"
@@ -889,7 +889,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	if isFreetzType W501V; then
 		oem_list="tcom avm"
 	fi
-	sed -i -r -e 's/'"${iterate_over_oems_pattern}"'/for i in '"$oem_list"' ; do/' "${FIRMWARE_MOD_DIR}/var/install"
+	modsed -r 's/'"${iterate_over_oems_pattern}"'/for i in '"$oem_list"' ; do/' "${FIRMWARE_MOD_DIR}/var/install"
 
 	if [ "$oem_kept" -eq 0 ]; then
 		error 1 "please choose at least one OEM (branding) in menuconfig: AVM, 1&1, Freenet etc."
@@ -1110,12 +1110,12 @@ if [ "$DO_MOD" -gt 0 ]; then
 		"$TAR" -c -C "${PACKAGES_DIR}/${pkg}/root" \
 			$(find "${PACKAGES_DIR}/${pkg}/" -maxdepth 1 -type f -name ".exclude*" -printf '--exclude-from=%p ') \
 			. | \
-		"$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
+		"$TAR" -xp -C "$FILESYSTEM_MOD_DIR" || exit 1
 
 		[ -d "${PACKAGES_DIR}/${pkg}/${VARTAR_SUBDIR}" ] && \
 			$(
 				"$TAR" -c -C "${PACKAGES_DIR}/${pkg}/${VARTAR_SUBDIR}" . | \
-				"$TAR" -x -C ${VARTAR_MOD_DIR} || exit 1
+				"$TAR" -xp -C ${VARTAR_MOD_DIR} || exit 1
 			)
 
 		[ -r "${PACKAGES_DIR}/${pkg}/.language" ] && \
@@ -1128,6 +1128,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		pkgfiles=$(collect_pkg_files "${pkg}" | sed -e "s,^,${PACKAGES_DIR}/${pkg}/root,")
 		sizeinfo pkg "${PACKAGES_DIR}/${pkg}" $pkgfiles
 	done
+
 	for pkg in $(static_addons); do
 		sizeinfo "$pkg (addon)"
 		pkg_name=$(pkg_name "$pkg")
@@ -1275,7 +1276,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 		# security level
 		echo1 "patching security level ($FREETZ_SECURITY_LEVEL)"
-		sed -i -e "s/sec_level=1/sec_level=$FREETZ_SECURITY_LEVEL/g" ${FILESYSTEM_MOD_DIR}/usr/lib/libmodcgi.sh
+		modsed "s/sec_level=1/sec_level=$FREETZ_SECURITY_LEVEL/g" ${FILESYSTEM_MOD_DIR}/usr/lib/libmodcgi.sh
 
 		# external
 		[ ! "$EXTERNAL_ENABLED" != "y" ] && echo1 "integrated external"
@@ -1366,7 +1367,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			if [ "${f: -3:3}" != ".py" ]; then
 				STRIP_SCRIPTS_SED_SCRIPT+='s/^[ \t]*//g;'     # and indentation if it's not a python script
 			fi
-			sed -i -r "${STRIP_SCRIPTS_SED_SCRIPT}" "$f" &&
+			modsed -r "${STRIP_SCRIPTS_SED_SCRIPT}" "$f" &&
 			echo2 "${f##${FILESYSTEM_MOD_DIR}}"
 		done
 	fi
@@ -1391,6 +1392,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 		[ ! -x "$EXTERNAL" ] && error 1 "cannot find the tool $EXTERNAL_TOOL"
 		source "${EXTERNAL}"
 	fi
+
+	# Ensure there are no inaccessible files (could be an issue when using sed -i command)
+	find "${MOD_DIR}" -perm 0 -print0 | xargs -0 -r -I '{}' sh -c 'echo "Inaccessible files found: {}" 1>&2 && error 1 "Inaccessible files found."'
 
 	touch "${DIR}/.modified"
 	echo -e "done.\n"
