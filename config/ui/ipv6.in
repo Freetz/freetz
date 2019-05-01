@@ -7,7 +7,7 @@ comment "Hint: Select build toolchain if you want to enable IPv6 support"
 		(FREETZ_TARGET_UCLIBC_0_9_28 && FREETZ_DOWNLOAD_TOOLCHAIN && !FREETZ_DL_TOOLCHAIN_OVERRIDE)
 
 config FREETZ_TARGET_IPV6_SUPPORT
-	bool "IPv6 support"
+	bool "IPv6 support" if !FREETZ_AVM_VERSION_05_2X_MIN
 	depends on \
 		( \
 			FREETZ_AVM_HAS_IPV6 || \
@@ -27,3 +27,4 @@ config FREETZ_TARGET_IPV6_SUPPORT
 		The toolchain will automatically be rebuild to achieve this.
 		It is also recommended to include the package iptables/ip6tables for
 		firewall settings.
+
