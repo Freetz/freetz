@@ -64,6 +64,7 @@ imginfo() {
 	fi
 }
 
+CACHE="/tmp/.lfs.caching"
 OUTER="/tmp/.lfs.reserve"
 INNER="/tmp/.lfs.wrapper"
 resmnt() {
@@ -94,9 +95,13 @@ LIVE="$(get_partition_by_name filesystem)"
 DEAD="$(get_partition_by_name filesystem reserved)"
 
 PRIB="$(imginfo /)"
-(sleep 3; resunm)&
-resmnt
-SECB="$(imginfo $MNT)"
+find "${CACHE%/*}/" -maxdepth 1 -name "${CACHE##*/}" -mmin +9 -exec rm -f {} ';'
+SECB="$(cat $CACHE 2>/dev/null)"
+if [ -z "$SECB" ]; then
+	(sleep 3; resunm)&
+	resmnt
+	SECB="$(imginfo $MNT | tee $CACHE)"
+fi
 resunm
 
 [ $LIVE -gt $DEAD ] && LFS=1 || LFS=0
