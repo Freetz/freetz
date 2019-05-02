@@ -36,8 +36,8 @@ config FREETZ_AVM_HAS_NMI_VECTOR
 # A sub-directory within the .image tarball containing the files like: kernel.image, filesystem.image, plugins.update, etc.
 config FREETZ_AVM_IMAGES_SUBDIR
 	string
-	default "var/tmp"                 if FREETZ_TARGET_ARCH_ARM || FREETZ_TARGET_ARCH_MIPS
 	default "var/remote/var/tmp/x86"  if FREETZ_TARGET_ARCH_X86
+	default "var/tmp"
 
 # kernel and filesystem reside in different mtd partitions
 # = both kernel.image and filesystem.image have non-zero size
