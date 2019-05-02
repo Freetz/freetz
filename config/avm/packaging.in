@@ -44,20 +44,13 @@ config FREETZ_AVM_IMAGES_SUBDIR
 config FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
 	bool
 	default y
-	depends on \
-		FREETZ_SYSTEM_TYPE_AR10      || \
-		FREETZ_SYSTEM_TYPE_GRX5      || \
-		FREETZ_SYSTEM_TYPE_IKS_VX185 || \
-		(FREETZ_SYSTEM_TYPE_IPQ40xx  && !FREETZ_TYPE_4040) || \
-		FREETZ_SYSTEM_TYPE_PUMA6     || \
-		(FREETZ_SYSTEM_TYPE_QCA955x  && !FREETZ_TYPE_EXTENDER) || \
-		(FREETZ_SYSTEM_TYPE_VR9      && !FREETZ_TYPE_7360)
+	depends on FREETZ_AVM_PROP_SEPARATE_FILESYSTEM_IMAGE
 
 # root-filesystem is wrapped within/by other filesystem, i.e. filesystem.image (whatever filesystem it uses) contains a file named filesystem_core.squashfs
 config FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM
 	bool
 	default y
-	depends on FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
+#	depends on FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
 	depends on FREETZ_AVM_PROP_INNER_OUTER_FILESYSTEM
 
 #config FREETZ_AVM_INNER_FILESYSTEM_TYPE
