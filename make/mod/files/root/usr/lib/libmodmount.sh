@@ -87,8 +87,12 @@ mount_fs() {
 			[ -x "$(which ntfs-3g)" ] && { ntfs-3g $dev_node $mnt_path -o force ; err_mo=$? ; } || err_mo=111
 			;;
 		swap)
-			/etc/init.d/rc.swap autostart $dev_node
-			err_mo=$((17+$?))
+			if [ -f /proc/swaps ]; then
+				/etc/init.d/rc.swap autostart $dev_node
+				err_mo=$((17+$?))
+			else
+				err_mo=22                                         # issue a warning, if an unusable swap partition was found
+			fi
 			;;
 		*)                                                                # fs type unknown
 			mount $dev_node $mnt_path
@@ -163,7 +167,7 @@ do_mount_locked() {
 		fi
 
 		# freetz extras
-		/etc/init.d/rc.swap autostart $mnt_path                                                                 # swap
+		[ -f /proc/swaps ] && /etc/init.d/rc.swap autostart $mnt_path                                           # swap
 		[ "$MOD_STOR_AUTORUNEND" == "yes" -a -x $autorun ] && $autorun &                                        # autorun
 		[ -r /mod/etc/external.pkg ] && /etc/init.d/rc.external start $mnt_path &                               # external
 
@@ -227,6 +231,10 @@ do_mount_locked() {
 				20)                                                           # disabled
 					eventadd 140 "SWAP ($mnt_dev) NOT/NICHT"
 					log_freetz notice "SWAP partition $mnt_dev was not mounted, auto-mode is disabled"
+					;;
+				22)                                                           # unsupported
+					eventadd 140 "SWAP ($mnt_dev) NOT/NICHT"
+					log_freetz notice "SWAP partition $mnt_dev was not mounted, missing kernel support"
 					;;
 				*)                                                            # error
 					eventadd 140 "SWAP ($mnt_dev) NOT/NICHT"
@@ -469,17 +477,18 @@ is_ctlmgr_parent_of_storage_unplug() {
 # remove swap partition
 # freetz internal function
 remove_swap() {
+	local swap_map="/proc/swaps"
+	[ -f "$swap_map" ] || return 0                                            # no error, if unsupported
 	if [ "${2:1:4}" == "proc" ]; then
-		local mnt_dev_name=$3                                                 # new parameter style
+		local mnt_dev_name=$3                                             # new parameter style
 	else
-		local mnt_dev_name=$4                                                 # old parameter style
+		local mnt_dev_name=$4                                             # old parameter style
 	fi
 	local tmpret='/tmp/remove_swap.tmp'
 	local retval=20                                                           # no swap devices found
-	local swap_map="/proc/swaps"
 	local swap_devs=$(grep "^/dev/$mnt_dev_name" $swap_map | sed 's/\t[\t]*/ /g;s/ [ ]*/ /g')
 	if [ -n "$swap_devs" ]; then
-		retval=21                                                             # swap devices found
+		retval=21                                                         # swap devices found
 		echo "$swap_devs" | while read -r swap_dev swap_type swap_size swap_used swap_prio; do
 			if [ "$swap_type" == "partition" ]; then
 				/etc/init.d/rc.swap autostop $swap_dev

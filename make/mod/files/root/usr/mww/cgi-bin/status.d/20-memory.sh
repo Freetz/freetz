@@ -1,5 +1,6 @@
 
 has_swap() {
+	[ -f /proc/swaps ] || return 1
 	sed '1d' /proc/swaps | grep -q ''
 }
 

@@ -1,3 +1,4 @@
+if [ -f /proc/swaps ]; then # only include content, if swap support is available - indentations are (intentionally) ignored here, the whole file gets excluded, if kernel lacks swap support
 sec_begin 'Swap'
 
 cgi_print_radiogroup_active \
@@ -17,3 +18,4 @@ EOF
 cgi_print_textline_p "swap_swappiness" "$MOD_SWAP_SWAPPINESS" 3/4 '<a href="http://lwn.net/Articles/83588/">$(lang de:"Swappiness" en:"Swappiness")</a> (0-100): '
 
 sec_end
+fi
