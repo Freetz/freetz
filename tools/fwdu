@@ -72,26 +72,31 @@ unpack() {
 }
 
 # $1 is expected to be NMI-vector-removed and kernel-filesystem-splitted
-unfs_probe() {
+unfs_probe_() {
 	{
-		{ $FTOOLS/blkid -O 256 "$1" 2>/dev/null | grep -q 'TYPE="ext2"'; } \
-		&& dd if="$1" of="$1.ext2" bs=256 skip=1 conv=sync >/dev/null 2>&1   \
-		&& { mkdir -p "squashfs-root"; echo "rdump / squashfs-root" | $FTOOLS/debugfs "$1.ext2"; }
+		$FTOOLS/blkid -O 256 "$1" 2>/dev/null | grep -q 'TYPE="ext2"' \
+		  && dd if="$1" of="$1.ext2" bs=256 skip=1 conv=sync >/dev/null 2>&1 \
+		  && mkdir -p "squashfs-root" \
+		  && echo "rdump / squashfs-root" | $FTOOLS/debugfs "$1.ext2" \
+		  && echo -e "\nFilesystem on $1 is ext2 formated"
 	} \
 	|| $FTOOLS/unsquashfs4-avm-be "$1" \
 	|| $FTOOLS/unsquashfs4-avm-le "$1"
+}
+unfs_probe() {
+	unfs_probe_ "$1" 2>/dev/null | sed -rn "s/^Filesystem on .* is .*/${2:+$2-}&/p" >> "$nfo"
 }
 
 image() {
 	local img=$1
 	local dst=$2
-	[ -n "${dst}" -a "${dst: -1: 1}" != "/" ] && dst="${dst}/" # add trailing slash if missing
+	[ -n "${dst}" ] && dst="${dst%/}/"
 
 	local imgID=$(basename "${img}")
 	imgID=${imgID%.*}
 
 	declare -A probeDirs=(
-		[mips]=var/tmp
+		[default]=var/tmp
 		 [arm]=var/remote/var/tmp
 		[atom]=var/remote/var/tmp/x86
 	)
@@ -152,10 +157,14 @@ image() {
 
 	for arch in "${!probeDirs[@]}"; do
 		d="${probeDirs[$arch]}"
+		[ "$arch" != 'default' ] && arch="-$arch" || arch=
+		nfo="${dst}${imgID}${arch}.nfo"
 
-		if [ ! -s ${d}/kernel.image ]; then
-			continue;
-		fi
+		[ ! -s ${d}/kernel.image ] && continue;
+
+		echo -n > "$nfo"
+		SIZE_K1="$(stat -c %s ${d}/kernel.image)"
+		SIZE_F1="$(stat -c %s ${d}/filesystem.image)"
 
 		# remove TI checksum and concatenate kernel & filesystem images
 		for f in ${d}/kernel.image ${d}/filesystem.image; do
@@ -167,32 +176,47 @@ image() {
 		rm -f ${d}/kernel.image ${d}/filesystem.image
 
 		# strip NMI vector if any
-		($FTOOLS/remove-nmi-vector kf.image kf.image.no-nmi 2>&1 && mv kf.image.no-nmi kf.image 2>/dev/null) | sed -r -n -e 's,(.*NMI vector v.*),\t\1,p'
+		($FTOOLS/remove-nmi-vector kf.image kf.image.no-nmi 2>&1 && mv kf.image.no-nmi kf.image 2>/dev/null) | grep "NMI vector v" >> "$nfo"
 
 		# and split them again... now at the right bounds (s. case 2 above)
-		$FTOOLS/find-squashfs kf.image >/dev/null 2>&1
+		$FTOOLS/find-squashfs kf.image 2>&1 | grep 'signature found' >> "$nfo"
+		SIZE_K2="$(stat -c %s kernel.raw)"
+		SIZE_F2="$(stat -c %s kernelsquashfs.raw)"
 		rm -f kf.image kernel.raw
 
+		SIZEKD="$(($SIZE_K1 - $SIZE_K2))"
+		SIZEFD="$(($SIZE_F1 - $SIZE_F2))"
+		if [ "$SIZE_F1" == "0" ]; then
+			FLV=2 # most
+		elif [ "$SIZEKD" == "8" -a "$SIZEFD" == "8" ]; then
+			FLV=3 # nand
+		elif [ "${SIZEKD#-}" -lt 192 -a "${SIZEFD#-}" -lt 446 ]; then
+			FLV=4 # docis
+		else
+			FLV=1 # old
+		fi
+		echo "firmware layout v$FLV" >> "$nfo"
+
 		# unpack it
-		unfs_probe kernelsquashfs.raw >/dev/null 2>&1 || echo FALSE ${img}-${arch}
+		unfs_probe kernelsquashfs.raw || echo FALSE ${img}${arch}
 		rm -f kernelsquashfs.raw kernelsquashfs.raw.ext2
 
 		# unpack the inner / the outer root-filesystem if found
 		if [ -e squashfs-root/filesystem_core.squashfs ]; then
 			mv squashfs-root filesystem.outer
-			unfs_probe filesystem.outer/filesystem_core.squashfs >/dev/null 2>&1
+			unfs_probe filesystem.outer/filesystem_core.squashfs 'INNER'
 			rm -f filesystem.outer/filesystem_core.squashfs
 			[ -d squashfs-root ] && mv filesystem.outer squashfs-root/ || rm -rf filesystem.outer
 		fi
 
 		if [ -d squashfs-root ]; then
 			local numberOfFiles=$(find squashfs-root -type f \! -path '*filesystem.outer*' | wc -l)
-			echo -e "${numberOfFiles}\t${imgID}-${arch}"
-			mv squashfs-root "${dst}${imgID}-${arch}"
+			echo -e "${numberOfFiles}\t${imgID}${arch}"
+			mv squashfs-root "${dst}${imgID}${arch}"
 		fi
 
 		if [ -e ${d}/plugins.update ]; then
-			pluginsTmpDir="${imgID}.plugins-${arch}.tmp"
+			pluginsTmpDir="${imgID}.plugins${arch}.tmp"
 			mkdir -p "${pluginsTmpDir}"
 			tar -xif "${d}/plugins.update" \
 			  -C "${pluginsTmpDir}" \
@@ -203,7 +227,7 @@ image() {
 			for pluginImage in $(find "${pluginsTmpDir}/var" -type f -name "*.image"); do
 				pluginID=$(basename "${pluginImage}"); pluginID=${pluginID%.*}
 
-				unfs_probe "$pluginImage" >/dev/null 2>&1
+				unfs_probe "$pluginImage" 'PLUGIN'
 				if [ -d squashfs-root ]; then
 					((numberOfPlugins++))
 					mv squashfs-root "${pluginsTmpDir}/${pluginID}"
@@ -214,17 +238,19 @@ image() {
 			if [ "$numberOfPlugins" -eq 0 ]; then
 				rm -rf "${pluginsTmpDir}"
 			else
-				if [ -d "${dst}${imgID}-${arch}" ]; then
-					mv "${pluginsTmpDir}" "${dst}${imgID}-${arch}/plugins"
+				if [ -d "${dst}${imgID}${arch}" ]; then
+					mv "${pluginsTmpDir}" "${dst}${imgID}${arch}/plugins"
 				else
-					mv "${pluginsTmpDir}" "${dst}${imgID}.plugins-${arch}"
+					mv "${pluginsTmpDir}" "${dst}${imgID}.plugins${arch}"
 				fi
 			fi
 		fi
 
-		if [ ! -e "${dst}${imgID}-${arch}" -a ! -e "${dst}${imgID}.plugins-${arch}" ]; then
-			echo -e "====\t${img}-${arch}" | tee -a _failed.log
+		if [ ! -e "${dst}${imgID}${arch}" -a ! -e "${dst}${imgID}.plugins${arch}" ]; then
+			echo -e "====\t${img}${arch}" | tee -a _failed.log
 		fi
+
+		[ -n "$verbose" ] && cat "$nfo" | sed 's/^/\t/g' && echo
 	done
 
 	rm -rf var
@@ -233,6 +259,9 @@ image() {
 # check args
 while [ $# -gt 0 ]; do
 	case $1 in
+		v|verbose)
+			verbose=y
+			;;
 		d|download)
 			download=y
 			case $2 in
@@ -259,13 +288,21 @@ while [ $# -gt 0 ]; do
 done
 
 if [ "$download" != "y" -a "$unpack" != "y" ]; then
-	echo "usage: ${0##*/} <download [stable|labor|all] AND/OR unpack [image1 .. imageN]>"
+	echo "usage: ${0##*/} [verbose] <download [stable|labor|all] AND/OR unpack [image1 .. imageN]>"
 	exit 1
 fi
 
 # check tools
 if [ "$unpack" == "y" ]; then
 	FTOOLS="$(dirname $(readlink -f ${0}))"
+	if [ ! -e $FTOOLS/find-squashfs ]; then
+		for fdir in ~/*freetz*; do
+			[ -d "$fdir" ] || continue
+			FTMP="$(dirname $(readlink -f ${fdir}/tools/busybox))"
+			[ -e "$FTMP/busybox" ] && FTOOLS="$FTMP"
+		done
+		[ -n "$verbose" ] && echo -e "Using 'tools' of ${FTOOLS%/*}\n"
+	fi
 	if [ ! -e $FTOOLS/find-squashfs ]; then
 		echo "You have to run 'make tools' first."
 		exit 1
@@ -280,3 +317,4 @@ if [ "$unpack" == "y" ]; then
 		image $imgfile
 	done
 fi
+
