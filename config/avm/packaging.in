@@ -31,11 +31,7 @@ config FREETZ_AVM_SQUASHFS_COMPRESSION
 config FREETZ_AVM_HAS_NMI_VECTOR
 	bool
 	default y
-	depends on \
-		FREETZ_SYSTEM_TYPE_AR934x    || \
-		FREETZ_SYSTEM_TYPE_IKS_VX180 || \
-		(FREETZ_SYSTEM_TYPE_QCA955x && FREETZ_TYPE_EXTENDER) || \
-		FREETZ_SYSTEM_TYPE_QCA956x
+	depends on FREETZ_AVM_PROP_NMI_V1 || FREETZ_AVM_PROP_NMI_V2 || FREETZ_AVM_PROP_NMI_V3
 
 # A sub-directory within the .image tarball containing the files like: kernel.image, filesystem.image, plugins.update, etc.
 config FREETZ_AVM_IMAGES_SUBDIR
@@ -79,3 +75,4 @@ config FREETZ_AVM_OUTER_FILESYSTEM_TYPE
 	string
 	default "Ext2FS"			if FREETZ_AVM_VERSION_06_5X_MIN && FREETZ_KERNEL_VERSION_3_10
 	default "SquashFS"
+
