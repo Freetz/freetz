@@ -32,7 +32,7 @@ apply_changes() {
 			start_stop $startORstop websrv "$OLDSTATUS_websrv"
 			;;
 		mod)
-			start_stop $startORstop swap "$OLDSTATUS_swap"
+			[ -f /proc/swaps ] && start_stop $startORstop swap "$OLDSTATUS_swap"
 			# external
 			if [ -x /mod/etc/init.d/rc.external ]; then
 				if [ "$startORstop" == "stop" ]; then
