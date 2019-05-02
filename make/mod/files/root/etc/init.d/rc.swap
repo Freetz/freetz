@@ -58,6 +58,11 @@ autohelper() {
 	$1 >> /var/log/mod_swap.log
 }
 
+if ! [ -f /proc/swaps ]; then
+	[ "$1" = "status" ] && echo 'unsupported' && exit 0
+	exit 1	
+fi
+
 case $1 in
 	""|load)
 		modreg daemon -p mod swap
