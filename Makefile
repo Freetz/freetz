@@ -260,7 +260,7 @@ IMAGE$(1):=$(DL_FW_DIR)/$(DL_SOURCE$(1))
 DL_IMAGE+=$$(IMAGE$(1))
 image: $$(IMAGE$(1))
 .PHONY: $$(DL_FW_DIR)/$$(DL_SOURCE$(1))
-$$(DL_FW_DIR)/$$(DL_SOURCE$(1)): | $(DL_FW_DIR)
+$$(IMAGE$(1)): | $(DL_FW_DIR)
 ifeq ($$(strip $$(DL_SITE$(1))),)
 	@if [ ! -e "$$(DL_FW_DIR)/$$(DL_SOURCE$(1))" ]; then \
 		echo -e "\nPlease copy the following file into the './$$(DL_FW_DIR)/' sub-directory manually:\n$$(DL_SOURCE$(1))\n"; \
