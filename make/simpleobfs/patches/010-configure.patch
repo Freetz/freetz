@@ -1,0 +1,11 @@
+--- configure.ac	2018-04-05 06:19:43.000000000 +0200
++++ configure.ac	2018-04-05 09:23:24.084054475 +0200
+@@ -206,7 +206,7 @@
+    CPPFLAGS="$CPPFLAGS -I$withval/include"
+    LDFLAGS="$LDFLAGS -L$withval/lib"]
+ )
+-AC_CHECK_LIB([ev], [ev_loop_destroy], [LIBS="-lev $LIBS"], [AC_MSG_ERROR([Couldn't find libev. Try installing libev-dev@<:@el@:>@.])])
++AC_CHECK_LIB([ev], [ev_loop_destroy], [LIBS="-lev $LIBS"], [LIBS="-lev $LIBS"])
+ 
+ AM_COND_IF([ENABLE_DOCUMENTATION],
+   [AC_CONFIG_FILES([doc/Makefile])

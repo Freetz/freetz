@@ -1,0 +1,61 @@
+#!/bin/sh
+
+DAEMON=simpleobfs
+DAEMON_BIN=obfs-server
+DAEMON_CONFIG=/tmp/flash/${DAEMON}/simpleobfs.conf
+PID_FILE=/var/run/${DAEMON_BIN}.pid
+. /etc/init.d/modlibrc
+
+[ -r /etc/options.cfg ] && . /etc/options.cfg
+
+
+
+start() {
+#	echo -n "Starting Shadowsocks"
+	modlib_startdaemon $DAEMON_BIN -c $DAEMON_CONFIG -f $PID_FILE $SIMPLEOBFS_CMDLINE 
+	return 0
+}
+
+#stop() {
+#	kill $(cat $PID_FILE) 2>/dev/null
+#	return 0
+#}
+
+case $1 in
+	""|load)
+
+		mkdir -p "/tmp/flash/${DAEMON}"
+
+		[ ! -e "$DAEMON_CONFIG" ] && /mod/etc/default.$DAEMON/${DAEMON_BIN}_conf > $DAEMON_CONFIG
+
+		modreg cgi "$DAEMON" "Simple Obfs"
+		modreg daemon $DAEMON
+		modreg file $DAEMON conf 'Konfiguration' 0 "simpleobfs_conf"
+
+		modlib_start $SIMPLEOBFS_ENABLED
+		;;
+	unload)
+		modunreg file $DAEMON
+		modunreg daemon $DAEMON
+		modunreg cgi $DAEMON
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
