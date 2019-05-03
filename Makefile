@@ -253,7 +253,7 @@ ifneq ($(strip $(DL_SOURCE$(1))),)
 IMAGE$(1):=$(DL_FW_DIR)/$(DL_SOURCE$(1))
 DL_IMAGE+=$$(IMAGE$(1))
 image: $$(IMAGE$(1))
-$$(DL_FW_DIR)/$$(DL_SOURCE$(1)): | $(DL_FW_DIR)
+$$(IMAGE$(1)): | $(DL_FW_DIR)
 ifeq ($$(strip $$(DL_SITE$(1))),)
 	@echo
 	@echo "Please copy the following file into the '$$(DL_FW_DIR)' sub-directory manually:"
