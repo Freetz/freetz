@@ -514,36 +514,6 @@ config FREETZ_AVM_HAS_NLS_UTF8_BUILTIN
 			)
 	# configured as module in AVM's kernel .config's for IKS, GRX5
 
-config FREETZ_AVM_HAS_ISOFS_MODULE
-	bool
-	default y
-	depends on \
-		FREETZ_TYPE_5124 || \
-		FREETZ_TYPE_7140 || \
-		FREETZ_TYPE_7141 || \
-		FREETZ_TYPE_7150 || \
-		FREETZ_TYPE_7170
-
-config FREETZ_AVM_HAS_JFFS2_MODULE
-	bool
-	default y
-	depends on \
-		(FREETZ_TYPE_7140 && !FREETZ_TYPE_LANG_DE) || \
-		FREETZ_TYPE_7141 || \
-		FREETZ_TYPE_7150 || \
-		FREETZ_TYPE_7170 || \
-		\
-		FREETZ_TYPE_3270 || \
-		FREETZ_TYPE_7240 || \
-		FREETZ_TYPE_7270 || \
-		FREETZ_TYPE_7570 || \
-		\
-		FREETZ_TYPE_7340 || \
-		\
-		FREETZ_TYPE_4020 || \
-		FREETZ_TYPE_6810 || \
-		FREETZ_TYPE_7360_V2
-
 config FREETZ_AVM_HAS_JFFS2_BUILTIN
 	bool
 	default y
@@ -551,12 +521,6 @@ config FREETZ_AVM_HAS_JFFS2_BUILTIN
 		FREETZ_SYSTEM_TYPE_AR9     || \
 		FREETZ_SYSTEM_TYPE_IPQ40xx || \
 		FREETZ_SYSTEM_TYPE_PUMA6
-
-config FREETZ_AVM_HAS_RAMZSWAP_MODULE
-	bool
-	default y
-	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN && FREETZ_KERNEL_VERSION_2_6_32_MAX
-	depends on FREETZ_AVM_VERSION_05_2X_MIN
 
 config FREETZ_AVM_HAS_TUN_BUILTIN
 	bool
@@ -736,17 +700,6 @@ config FREETZ_AVM_HAS_CRYPTO_WORKQUEUE_BUILTIN
 ### binaries/daemons/libraries related properties
 ###
 
-config FREETZ_AVM_HAS_CDROM_ISO
-	bool
-	default y
-	depends on \
-		FREETZ_TYPE_FON   || \
-		FREETZ_TYPE_WLAN  || \
-		FREETZ_TYPE_300IP || \
-		FREETZ_TYPE_3020  || \
-		FREETZ_TYPE_3030  || \
-		FREETZ_TYPE_5050
-
 config FREETZ_AVM_HAS_CHRONYD
 	bool
 	select FREETZ_AVMDAEMON_DISABLE_NTP if ! FREETZ_REMOVE_CHRONYD
@@ -754,11 +707,6 @@ config FREETZ_AVM_HAS_CHRONYD
 	depends on \
 		FREETZ_AVM_VERSION_05_2X_MIN || \
 		FREETZ_TYPE_7570
-
-config FREETZ_AVM_HAS_E2FSPROGS
-	bool
-	default y
-	depends on FREETZ_AVM_VERSION_05_2X_MIN
 
 config FREETZ_AVM_HAS_INETD
 	bool
@@ -769,12 +717,6 @@ config FREETZ_AVM_HAS_INETD
 		FREETZ_TYPE_7170 || \
 		FREETZ_TYPE_7270_V1 || \
 		FREETZ_TYPE_7570
-
-config FREETZ_AVM_HAS_LSOF
-	bool
-	default y
-	# TODO: check the condition, most likely it's wrong
-	depends on FREETZ_AVM_VERSION_05_2X_MIN
 
 # original firmware contains microvoip-dsl.bin
 config FREETZ_AVM_HAS_MICROVOIP_DSL
@@ -808,30 +750,6 @@ config FREETZ_AVM_HAS_MINID
 		FREETZ_TYPE_7141 || \
 		FREETZ_TYPE_7170 || \
 		FREETZ_TYPE_7270_V1
-
-config FREETZ_AVM_HAS_OPENSSL
-	bool
-	default y
-	depends on \
-		!FREETZ_TYPE_WLAN  && \
-		!FREETZ_TYPE_W501V && \
-		!FREETZ_TYPE_300IP && \
-		!FREETZ_TYPE_3020  && \
-		!FREETZ_TYPE_3030  && \
-		!FREETZ_TYPE_5010  && \
-		!FREETZ_TYPE_5050  && \
-		!FREETZ_TYPE_7050  && \
-		!FREETZ_TYPE_7140
-
-config FREETZ_AVM_HAS_OPENSSL_VERSION_0
-	bool
-	default y
-	depends on FREETZ_AVM_HAS_OPENSSL && FREETZ_AVM_VERSION_06_0X_MAX
-
-config FREETZ_AVM_HAS_OPENSSL_VERSION_1
-	bool
-	default y
-	depends on FREETZ_AVM_HAS_OPENSSL && FREETZ_AVM_VERSION_06_2X_MIN
 
 # original firmware contains piglet file for POTS
 config FREETZ_AVM_HAS_PIGLET_POTS
@@ -868,11 +786,6 @@ config FREETZ_AVM_HAS_PIGLET_ISDN
 		FREETZ_TYPE_7340 || \
 		FREETZ_TYPE_7340_7390
 
-config FREETZ_AVM_HAS_SOCAT
-	bool
-	default y
-	depends on (FREETZ_TYPE_7390 && FREETZ_AVM_VERSION_06_0X_MAX)
-
 
 
 ###
@@ -901,3 +814,4 @@ config FREETZ_AVM_HAS_MULTID_LEASES_FORMAT_V2
 	default y
 	depends on \
 		FREETZ_AVM_VERSION_05_2X_MIN
+
