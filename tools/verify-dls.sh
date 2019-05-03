@@ -55,7 +55,7 @@ extract_urls() {
 	fi
 
 	for condition in "${!filenames[@]}"; do
-		filename=${filenames["$condition"]}
+		filename=$(echo ${filenames["$condition"]} | cut -d '/' -f 2)
 		site=${sites["$condition"]}
 		if [ -z "${site}" ]; then
 			echo >&2 "No ${site_symbol}-entry for \"${filename}\" found."

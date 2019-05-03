@@ -9,6 +9,8 @@ define DEFINE_DL_SOURCE_VARS
 ifneq ($(strip $(FREETZ_DL_SOURCE$(1))),)
 DL_SITE$(1):=$(call qstrip,$(FREETZ_DL_SITE$(1)))
 DL_SOURCE$(1):=$(call qstrip,$(FREETZ_DL_SOURCE$(1)))
+DL_SOURCE$(1)_LOCAL:=$(call GET_STRING_COMPONENT,$(call qstrip,$(FREETZ_DL_SOURCE$(1))),/,1)
+DL_SOURCE$(1)_REMOTE:=$(call GET_STRING_COMPONENT,$(call qstrip,$(FREETZ_DL_SOURCE$(1))),/,2)
 DL_SOURCE$(1)_MD5:=$(call qstrip,$(FREETZ_DL_SOURCE$(1)_MD5))
 endif
 
@@ -23,7 +25,7 @@ $(eval $(call DEFINE_DL_SOURCE_VARS))
 $(eval $(call DEFINE_DL_SOURCE_VARS,2))
 $(eval $(call DEFINE_DL_SOURCE_VARS,3))
 
-export DL_SOURCE_ID=$(shell echo $(DL_SOURCE) | tools/imagename2id)
+export DL_SOURCE_ID=$(shell echo $(DL_SOURCE_LOCAL) | tools/imagename2id)
 
 
 
@@ -34,14 +36,14 @@ image:
 #  $(1) Suffix
 define DOWNLOAD_FIRMWARE
 ifneq ($(strip $(DL_SOURCE$(1))),)
-IMAGE$(1):=$(DL_FW_DIR)/$(DL_SOURCE$(1))
+IMAGE$(1):=$(DL_FW_DIR)/$(DL_SOURCE$(1)_LOCAL)
 DL_IMAGE+=$$(IMAGE$(1))
 image: $$(IMAGE$(1))
 .PHONY: $$(IMAGE$(1))
 $$(IMAGE$(1)): | $(DL_FW_DIR)
 ifeq ($$(strip $$(DL_SITE$(1))),)
 	@if [ ! -e "$$(IMAGE$(1))" ]; then \
-		echo -e "\nPlease copy the following file into the './$$(DL_FW_DIR)/' sub-directory manually:\n$$(DL_SOURCE$(1))\n"; \
+		echo -e "\nPlease copy the following file into the './$$(DL_FW_DIR)/' sub-directory manually:\n$$(DL_SOURCE$(1)_LOCAL)\n$$(if $$(DL_SOURCE$(1)_REMOTE),(rename original AVM '$$(DL_SOURCE$(1)_REMOTE)' for that)\n)"; \
 		exit 3; \
 	fi
 else
@@ -53,7 +55,7 @@ else
 			DL_URL_LATEST="$$(call qstrip,$(FREETZ_DL_URL_LATEST))"; \
 		fi; \
 		echo "Source to get latest firmware URLs: $$$$DL_URL_LATEST" >/dev/null; \
-		find $$(DL_FW_DIR) -maxdepth 1 -name $$(DL_SOURCE$(1)).url -mmin +3600 -exec rm -f {} ';'; \
+		find $$(DL_FW_DIR) -maxdepth 1 -name $$(DL_SOURCE$(1)_LOCAL).url -mmin +3600 -exec rm -f {} ';'; \
 		DL_URL_CONTAINER="$$$$(cat $$(IMAGE$(1)).url 2>/dev/null)"; \
 		if [ -z "$$$$DL_URL_CONTAINER" ]; then \
 			echo "No cache, refresh URL by web" >/dev/null; \
@@ -98,7 +100,7 @@ else
 						DL_SOURCE_DETECTED=$$$$(unzip -j $$(QUIETSHORT) -l $$(DL_FW_DIR)/$$$$DL_SOURCE0_CONTAINER *.image | sed -rn 's/.*( |\/)(.*\.image)/\2/p'); \
 						echo "Using detected .image name: $$$$DL_SOURCE_DETECTED" >/dev/null; \
 					else \
-						DL_SOURCE_DETECTED=$$(DL_SOURCE$(1)); \
+						DL_SOURCE_DETECTED=$$(DL_SOURCE$(1)_LOCAL); \
 						echo "Using hardcoded .image name: $$$$DL_SOURCE_DETECTED" >/dev/null; \
 					fi; \
 					if [ ! -f $$(DL_FW_DIR)/$$$$DL_SOURCE_DETECTED ]; then \
@@ -109,15 +111,19 @@ else
 					fi; \
 					if [ "$$(FREETZ_DL_DETECT_IMAGE_NAME)" == "y" ]; then \
 						[ -f $$(DL_FW_DIR)/$$$$DL_SOURCE_DETECTED ] && ln -s $$$$DL_SOURCE_DETECTED $$(IMAGE$(1)); \
-						echo "Created hardlink for .image file: $$(DL_SOURCE$(1))" >/dev/null; \
+						echo "Created hardlink for .image file: $$(DL_SOURCE$(1)_LOCAL)" >/dev/null; \
 					fi; \
 					;; \
 				*) \
 					$$(call ERROR,3,Not able to extract '$$$$DL_SOURCE0_CONTAINER_SUFFIX' archives at all.) \
 					;; \
 			esac \
-		elif ! $$(DL_TOOL) --delete-on-trap --no-append-servers --checksum-optional $$(DL_FW_DIR) "$$(DL_SOURCE$(1))" "$$$$DL_SITE0" $$(DL_SOURCE$(1)_MD5) $$(SILENT); then \
+		elif ! $$(DL_TOOL) --delete-on-trap --no-append-servers --checksum-optional $$(DL_FW_DIR) "$$(if $$(DL_SOURCE$(1)_REMOTE),$$(DL_SOURCE$(1)_REMOTE),$$(DL_SOURCE$(1)_LOCAL))" "$$$$DL_SITE0" $$(DL_SOURCE$(1)_MD5) $$(SILENT); then \
 			$$(call ERROR,3,Could not download firmware image. See https://trac.boxmatrix.info/freetz-ng/wiki/FAQ#Couldnotdownloadfirmwareimage for details.) \
+		else \
+			$$(if $$(DL_SOURCE$(1)_REMOTE),echo "Renaming '$$(DL_SOURCE$(1)_REMOTE)' to '$$(DL_SOURCE$(1)_LOCAL)' to make the filename unique." $$(SILENT);) \
+			$$(if $$(DL_SOURCE$(1)_REMOTE),mv -f "$$(DL_FW_DIR)/$$(DL_SOURCE$(1)_REMOTE)" "$$(DL_FW_DIR)/$$(DL_SOURCE$(1)_LOCAL)";) \
+			dummy=0; \
 		fi; \
 	fi
 endif
