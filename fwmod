@@ -873,14 +873,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	KERNEL_ID="${FREETZ_SYSTEM_TYPE}${FREETZ_SYSTEM_TYPE_CORE_SUFFIX}-${FREETZ_AVM_SOURCE_ID}"
 	if [ "$FIRMWARE_NOCOMPILE" != "1" -a "$FREETZ_REPLACE_KERNEL" == "y" -a "$FWMOD_PATCH_TEST" != "y" ]; then
-		KERNEL_SUBVERSION_FILE="${KERNEL_REP_DIR}/.version-${KERNEL_ID}"
-
-		if [ ! -r "$KERNEL_SUBVERSION_FILE" ]; then
-			error 1 "cannot determine kernel version"
-		fi
-
-		KERNEL_SUBVERSION="$(cat $KERNEL_SUBVERSION_FILE)"
-		OPTIONS_ADD+=" +kernel ($KERNEL_SUBVERSION)"
+		OPTIONS_ADD+=" +kernel (${KERNEL_ID})"
 	fi
 
 	for i in $(echo ${OPTIONS_ADD}|sed -e's: +:\n+:g'|sort); do
@@ -1210,7 +1203,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			error 1 "can't find kernel for ref ${KERNEL_ID}"
 		fi
 
-		echo1 "replacing kernel-${KERNEL_ID} (${KERNEL_SUBVERSION})"
+		echo1 "replacing kernel-${KERNEL_ID}"
 		cp "${KERNEL_REP_DIR}/kernel-${KERNEL_ID}.bin" "$RAW_KERNEL_MOD"
 	fi
 
