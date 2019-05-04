@@ -855,29 +855,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 	SUBVERSION="${SUBVERSION}${REVISION}"
 
-	for i in $(set | sed -rn 's:^FREETZ_REMOVE_(.*)=y$:\1:gp' | tr '[:upper:]' '[:lower:]' | sort); do
-		OPTIONS+=" -$i"
-	done
-
-	OPTIONS_ADD=" +busybox"
-	for i in $(set | sed -rn 's:^FREETZ_PATCH_(.*)=y$:\1:gp' | tr '[:upper:]' '[:lower:]'); do
-		OPTIONS_ADD+=" +$i"
-	done
-
 	PACKAGES_LIST_FILE="${BASE_DIR}/.packages"
 	rm -f "${PACKAGES_LIST_FILE}"
 	for pkg in $(static_packages) $(static_addons); do
-		OPTIONS_ADD+=" +$pkg"
 		echo "$pkg" >> "${PACKAGES_LIST_FILE}"
-	done
-
-	KERNEL_ID="${FREETZ_SYSTEM_TYPE}${FREETZ_SYSTEM_TYPE_CORE_SUFFIX}-${FREETZ_AVM_SOURCE_ID}"
-	if [ "$FIRMWARE_NOCOMPILE" != "1" -a "$FREETZ_REPLACE_KERNEL" == "y" -a "$FWMOD_PATCH_TEST" != "y" ]; then
-		OPTIONS_ADD+=" +kernel (${KERNEL_ID})"
-	fi
-
-	for i in $(echo ${OPTIONS_ADD}|sed -e's: +:\n+:g'|sort); do
-		OPTIONS+=" $i"
 	done
 
 	echo1 "setting freetz-version '${SUBVERSION}'"
@@ -1196,6 +1177,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		sizeinfo add "${ADDON_DIR}/${pkg}"
 	done
 
+	KERNEL_ID="${FREETZ_SYSTEM_TYPE}${FREETZ_SYSTEM_TYPE_CORE_SUFFIX}-${FREETZ_AVM_SOURCE_ID}"
 	if [ "$NOCOMPILE" != "1" -a "$FREETZ_REPLACE_KERNEL" == "y" ]; then
 		echo0 "replacing kernel"
 
