@@ -65,6 +65,7 @@ config FREETZ_REMOVE_DSL_CONTROL
 config FREETZ_REMOVE_DSLD
 	bool "Remove dsld"
 	default n
+	depends on FREETZ_AVM_HAS_DSLD
 	select FREETZ_REMOVE_UPNP
 	select FREETZ_REMOVE_KIDS if ! \
 		( \
@@ -94,6 +95,7 @@ config FREETZ_REMOVE_DSLD
 config FREETZ_REMOVE_SHOWDSLDSTAT
 	bool "Remove showdsldstat"
 	default n
+	depends on FREETZ_AVM_HAS_SHOWDSLDSTAT
 	help
 		Removes the showdsldstat utility which shows you the cpmac mode, connect time,
 		external ip, route and dns servers. Also the state of IPv6, voip and tr069.
@@ -214,7 +216,7 @@ config FREETZ_REMOVE_ASSISTANT_SIP
 config FREETZ_REMOVE_NEXUS
 	bool "Remove NEXUS (AVM mesh)"
 	default n
-	depends on FREETZ_AVM_VERSION_06_9X_MIN && FREETZ_AVM_VERSION_06_9X
+	depends on FREETZ_AVM_HAS_NEXUS && FREETZ_AVM_VERSION_06_9X
 	help
 		Removes "mesh" related files like
 		the nexus daemon and some scripts.
@@ -259,11 +261,7 @@ config FREETZ_REMOVE_WEBDAV
 
 config FREETZ_REMOVE_MEDIASRV
 	bool "Remove mediasrv"
-	depends on \
-		(FREETZ_AVM_HAS_USB_HOST && !FREETZ_TYPE_7270_V1) || \
-		FREETZ_TYPE_7112_7170 || \
-		FREETZ_TYPE_7113_7170 || \
-		FREETZ_TYPE_W701V_7170
+	depends on FREETZ_AVM_HAS_MEDIASRV
 	default n
 	help
 		Remove the MediaServer-daemon (mediasrv) and some other related files.
@@ -520,11 +518,7 @@ config FREETZ_REMOVE_HELP
 
 config FREETZ_REMOVE_LIBFUSE
 	bool "Remove libfuse.so"
-	depends on \
-		( \
-			FREETZ_TYPE_7570 || \
-			FREETZ_TYPE_7270_V1 \
-		)
+	depends on FREETZ_AVM_HAS_LIBFUSE
 	select FREETZ_REMOVE_NTFS if FREETZ_AVM_HAS_NTFS && !FREETZ_AVMPLUGINS_NTFS
 	select FREETZ_REMOVE_WEBDAV if FREETZ_AVM_HAS_WEBDAV
 	default n
@@ -535,7 +529,7 @@ config FREETZ_REMOVE_LIBFUSE
 config FREETZ_REMOVE_EXT2
 	bool "Remove ext2.ko"
 	default n
-	depends on FREETZ_AVM_HAS_USB_HOST && !FREETZ_AVM_HAS_EXT2_BUILTIN
+	depends on FREETZ_AVM_HAS_EXT2_MODULE
 	help
 		Remove ext2.ko (about 81 kB uncompressed / 24 kB compressed).
 
@@ -601,10 +595,7 @@ config FREETZ_REMOVE_MINID
 
 config FREETZ_REMOVE_FAT
 	bool "Remove FAT"
-	depends on \
-			! FREETZ_AUTOMOUNT_FAT && \
-			FREETZ_AVM_HAS_USB_HOST && \
-			! FREETZ_TYPE_7270_16
+	depends on FREETZ_AVM_HAS_FAT_MODULE && ! FREETZ_AUTOMOUNT_FAT
 	default n
 	help
 		Remove FAT modules
@@ -614,9 +605,7 @@ config FREETZ_REMOVE_FAT
 
 config FREETZ_REMOVE_NTFS
 	bool "Remove NTFS"
-	depends on \
-			FREETZ_AVM_HAS_NTFS && \
-			! FREETZ_AVMPLUGINS_NTFS
+	depends on FREETZ_AVM_HAS_NTFS && ! FREETZ_AVMPLUGINS_NTFS
 	default n
 	help
 		Remove NTFS support
@@ -626,7 +615,7 @@ config FREETZ_REMOVE_NTFS
 
 config FREETZ_REMOVE_NLS
 	bool "Remove NLS"
-	depends on FREETZ_AVM_HAS_USB_HOST
+	depends on FREETZ_AVM_HAS_NLS_MODULE
 	default n
 	help
 		Remove NLS support
@@ -648,11 +637,7 @@ config FREETZ_REMOVE_USBHOST
 
 config FREETZ_REMOVE_PRINTSERV
 	bool "Remove printserv"
-	depends on \
-		FREETZ_AVM_HAS_USB_HOST || \
-		FREETZ_TYPE_7112_7170 || \
-		FREETZ_TYPE_7113_7170 || \
-		FREETZ_TYPE_W701V_7170
+	depends on FREETZ_AVM_HAS_PRINTSERV
 	default n
 	help
 		Remove /sbin/printserv daemon. Select this patch if you don't want to
@@ -677,14 +662,7 @@ config FREETZ_REMOVE_RUNCLOCK
 
 config FREETZ_REMOVE_SAMBA
 	bool "Remove Samba (smbd/nmbd)"
-	depends on \
-		!FREETZ_PACKAGE_SAMBA_SMBD && \
-		( \
-			(FREETZ_AVM_HAS_USB_HOST && !FREETZ_TYPE_7270_V1) || \
-			FREETZ_TYPE_7112_7170 || \
-			FREETZ_TYPE_7113_7170 || \
-			FREETZ_TYPE_W701V_7170 \
-		)
+	depends on FREETZ_AVM_HAS_SAMBA_SMBD && ! FREETZ_PACKAGE_SAMBA_SMBD
 	default n
 	help
 		Remove Samba daemons (smbd, and nmbd if available)
@@ -837,17 +815,14 @@ config FREETZ_REMOVE_UPNP_LIBS
 
 config FREETZ_REMOVE_KIDS
 	bool "Remove kids (usermand/contfiltd)"
-	depends on \
-		! FREETZ_TYPE_5140 && \
-		! FREETZ_TYPE_7112 && \
-		! FREETZ_TYPE_7113 && \
-		! FREETZ_TYPE_W501V
+	depends on FREETZ_AVM_HAS_KIDS
 	default n
 	help
 		Remove userman/contfiltd files (Kindersicherung)
 
 config FREETZ_REMOVE_QOS
 	bool "Remove QoS (tc)"
+	depends on FREETZ_AVM_HAS_TC
 	default n
 	help
 		Removes tc and some kernel modules.
@@ -899,8 +874,7 @@ config FREETZ_REMOVE_TELEPHONY
 
 config FREETZ_REMOVE_WLAN
 	bool "Remove WLAN"
-	depends on FREETZ_SHOW_ADVANCED && \
-		FREETZ_AVM_HAS_WLAN
+	depends on FREETZ_AVM_HAS_WLAN && FREETZ_SHOW_ADVANCED
 	default n
 	help
 		Radically remove a lot of wlan-related files. This patch saves about
@@ -941,6 +915,7 @@ config FREETZ_PATCH_VCC
 
 config FREETZ_PATCH_ATA
 	bool "Patch ATA"
+	depends on !FREETZ_TYPE_EXTENDER
 	default n
 	help
 		Patches the ATA mode configuration pages into the web menu.
@@ -1086,7 +1061,7 @@ config FREETZ_ENABLE_LED_DEACTIVATION
 
 config FREETZ_PATCH_MODFS_ANNEX_SELECTION
 	bool "Unhide Annex selection"
-	depends on FREETZ_AVM_HAS_MULTI_ANNEX
+	depends on FREETZ_TYPE_DSL && FREETZ_AVM_HAS_MULTI_ANNEX
 	depends on !FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_PRIME && !FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_DIFFS
 	depends on FREETZ_TYPE_LANG_DE
 	default n
@@ -1095,28 +1070,28 @@ config FREETZ_PATCH_MODFS_ANNEX_SELECTION
 
 config FREETZ_MODIFY_DSL_WARNING
 	bool "Patch DSL modified message"
-	depends on FREETZ_AVM_VERSION_06_5X_MIN && !FREETZ_REMOVE_DSLD && FREETZ_TYPE_DSL && !FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_PRIME
+	depends on FREETZ_TYPE_DSL && FREETZ_AVM_VERSION_06_5X_MIN && !FREETZ_REMOVE_DSLD && !FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_PRIME
 	default n
 	help
 		Hides the "modified" message from the DSL page.
 
 config FREETZ_MODIFY_DSL_SPECTRUM
 	bool "Extend DSL spectrum"
-	depends on FREETZ_AVM_VERSION_06_5X_MIN && !FREETZ_REMOVE_DSLD && FREETZ_TYPE_DSL && !FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_PRIME
+	depends on FREETZ_TYPE_DSL && FREETZ_AVM_VERSION_06_5X_MIN && !FREETZ_REMOVE_DSLD && !FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_PRIME
 	default n
 	help
 		Shows DSL spectrum page with min/man visible initialy.
 
 config FREETZ_MODIFY_DSL_SETTINGS
 	bool "Extend DSL settings"
-	depends on FREETZ_AVM_VERSION_06_5X_MIN && !FREETZ_REMOVE_DSLD && FREETZ_TYPE_DSL && !FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_PRIME && !FREETZ_TYPE_FIRMWARE_LABOR_TEST
+	depends on FREETZ_TYPE_DSL && FREETZ_AVM_VERSION_06_5X_MIN && !FREETZ_REMOVE_DSLD && !FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_PRIME && !FREETZ_TYPE_FIRMWARE_LABOR_TEST
 	default n
 	help
 		Extends the DSL settings page with "speed" settings.
 
 config FREETZ_MODIFY_COUNTER
 	bool "Extend online counter"
-	depends on FREETZ_AVM_VERSION_06_5X_MIN && !FREETZ_REMOVE_DSLD
+	depends on !FREETZ_TYPE_EXTENDER && FREETZ_AVM_VERSION_06_5X_MIN && !FREETZ_REMOVE_DSLD
 	default n
 	help
 		Converts counter hours to days and traffic MB to GB.
@@ -1254,7 +1229,7 @@ config FREETZ_PATCH_MAXDEVCOUNT
 
 config FREETZ_PATCH_MULTIPLE_PRINTERS
 	bool "Add support for multiple printers"
-	depends on ! FREETZ_REMOVE_PRINTSERV && \
+	depends on FREETZ_AVM_HAS_PRINTSERV && ! FREETZ_REMOVE_PRINTSERV && \
 		( \
 		( FREETZ_TYPE_7140 && ! FREETZ_TYPE_LANG_DE ) || \
 		FREETZ_TYPE_7570 || \
@@ -1501,6 +1476,7 @@ config FREETZ_ASYNCHRONOUS_DEBUG_CFG
 
 config FREETZ_RUN_TELEFON_IN_INHOUSE_MODE
 	bool "Run telefon daemon in in-house mode"
+	depends on FREETZ_TYPE_FIRMWARE_LABOR
 	depends on FREETZ_AVM_HAS_PHONE
 	depends on FREETZ_AVM_VERSION_06_5X_MIN
 	default n
