@@ -179,6 +179,7 @@ endef
 define COPY_USING_TAR
 	$(TAR) -cf - -C $(strip $(1)) \
 		--exclude=.svn \
+		--exclude=.git \
 		--exclude=.gitignore \
 		--exclude=.build-prereq-checked \
 		--exclude=.unpacked \
