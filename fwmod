@@ -941,19 +941,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 	# Determine Freetz version
 	if [ -d .svn ]; then
 		# be compatible: older versions of svnversion need WC_PATH
-		if REVISION="$(svnversion . 2>/dev/null | tr ":" "_")"; then
-			[ "${REVISION:0:6}" == "export" ] && REVISION=""
-		fi
+		REVISION="$(svnversion . 2>/dev/null | tr ":" "_")"
+		[ "${REVISION:0:6}" == "export" ] && REVISION=""
 	elif [ -d .git ]; then
-		GIT_LINK="$(git config --get remote.origin.url)"
-		GIT_USER="${GIT_LINK%/*}"
-		GIT_USER="${GIT_USER#*:}"
-		GIT_USER="${GIT_USER##*/}"
-		GIT_FILE="${GIT_LINK%.git}"
-		GIT_FILE="${GIT_FILE##*/}"
-		GIT_TICK="$(git log -1 --format="%at")"
-		GIT_HASH="$(git rev-parse --short HEAD | tr a-z A-Z)"
-		REVISION="_$GIT_USER${GIT_USER:+-}${GIT_FILE}_${GIT_TICK}-$GIT_HASH"
+		REVISION="$(${TOOLS_DIR}/freetz-version 2>/dev/null)"
 	fi
 	FREETZ_VERSION="$(cat ${BASE_DIR}/.version 2>/dev/null || echo -n freetz)${REVISION:+-$REVISION}"
 
