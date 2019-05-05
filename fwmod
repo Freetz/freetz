@@ -1207,7 +1207,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		for i in \
 		$( \
 			cd "${KERNEL_REP_DIR}/modules-${KERNEL_ID}" && \
-			find . -type d -name .svn -prune -false , -type f \( -name modules.dep -o -name "*.ko" \) \
+			find . -type f \( -name modules.dep -o -name "*.ko" \) \
 		); do
 			bn="$(basename "$i")"
 			ko_install="$(eval "echo \"\$FREETZ_MODULE_$(echo "${bn%\.ko}" | tr '\-+' '_x')\"")"
