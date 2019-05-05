@@ -41,7 +41,13 @@ if head_id_long=$(git_hash @ 2>/dev/null); then
 	local_branch=$(git_branch @)
 
 	# check for uncommitted changes
-	if git diff-index --name-only @ | read dummy; then
+	#
+	# Note:
+	#  do not use "git diff-index --name-only @"
+	#  it has issues when invoked in fakeroot context
+	#  s. https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6147b1cf19651c7de297e69108b141fb30aa2349
+	#  for a detailed explanation
+	if git status -uno --porcelain | read dummy; then
 		dirty="-dirty"
 	fi
 
