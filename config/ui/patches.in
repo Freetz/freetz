@@ -646,8 +646,7 @@ config FREETZ_REMOVE_PRINTSERV
 
 config FREETZ_REMOVE_PRINTSERV_MODULE
 	bool "Remove usblp.ko"
-	depends on FREETZ_REMOVE_PRINTSERV && \
-		! FREETZ_MODULE_usblp
+	depends on FREETZ_REMOVE_PRINTSERV && ! FREETZ_MODULE_usblp
 	default n
 	help
 		Remove usblp kernel module. Without this module it's not possible to run

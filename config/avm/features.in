@@ -9,18 +9,32 @@ config FREETZ_TYPE_CABLE
 		FREETZ_TYPE_6490 || \
 		FREETZ_TYPE_6590
 
+config FREETZ_TYPE_DSL
+	bool
+	default y
+	depends on \
+		FREETZ_TYPE_6890 || \
+		( \
+			!FREETZ_TYPE_CABLE && \
+			!FREETZ_TYPE_EXTENDER && \
+			!FREETZ_TYPE_FIBER && \
+			!FREETZ_TYPE_LTE \
+		)
+
+config FREETZ_TYPE_EXTENDER
+	bool
+	default y
+	depends on \
+		FREETZ_TYPE_0540 || \
+		FREETZ_TYPE_0546 || \
+		FREETZ_TYPE_1750 || \
+		FREETZ_TYPE_1759
+
 config FREETZ_TYPE_FIBER
 	bool
 	default y
 	depends on \
 		FREETZ_TYPE_5491
-
-config FREETZ_TYPE_DSL
-	bool
-	default y
-	depends on \
-		(!FREETZ_TYPE_CABLE && !FREETZ_TYPE_LTE && !FREETZ_TYPE_FIBER && !FREETZ_TYPE_EXTENDER) || \
-		FREETZ_TYPE_6890
 
 config FREETZ_TYPE_LTE
 	bool
@@ -32,106 +46,6 @@ config FREETZ_TYPE_LTE
 		FREETZ_TYPE_6842 || \
 		FREETZ_TYPE_6890
 
-config FREETZ_TYPE_EXTENDER
-	bool
-	default y
-	depends on \
-		FREETZ_TYPE_0540 || \
-		FREETZ_TYPE_0546 || \
-		FREETZ_TYPE_1750 || \
-		FREETZ_TYPE_1759
-
-# CONFIG_HOME_AUTO=y
-config FREETZ_AVM_HAS_AHA
-	bool
-	default y
-	depends on \
-		FREETZ_AVM_VERSION_05_5X_MIN && \
-		( \
-			!FREETZ_TYPE_3270 && \
-			!FREETZ_TYPE_3272 && \
-			!FREETZ_TYPE_3370 && \
-			!FREETZ_TYPE_3390 && \
-			!FREETZ_TYPE_3490 && \
-			!FREETZ_TYPE_4020 && \
-			!FREETZ_TYPE_4040 && \
-			!FREETZ_TYPE_7312 && \
-			!FREETZ_TYPE_7412    \
-		)
-
-config FREETZ_AVM_HAS_DECT
-	bool
-	default y
-	depends on \
-		FREETZ_TYPE_7150 || \
-		FREETZ_TYPE_7150_7170 || \
-		FREETZ_TYPE_7270_V1 || \
-		FREETZ_TYPE_7570 || \
-		FREETZ_TYPE_W900V_7170 || \
-		( \
-			FREETZ_AVM_VERSION_05_2X_MIN && \
-			!FREETZ_TYPE_EXTENDER && \
-			!FREETZ_TYPE_3270 && \
-			!FREETZ_TYPE_3272 && \
-			!FREETZ_TYPE_3370 && \
-			!FREETZ_TYPE_3390 && \
-			!FREETZ_TYPE_3490 && \
-			!FREETZ_TYPE_4020 && \
-			!FREETZ_TYPE_4040 \
-		)
-
-config FREETZ_AVM_HAS_FHEM
-	bool
-	default y
-	depends on \
-		FREETZ_AVM_VERSION_05_2X_MIN && \
-		( \
-			FREETZ_TYPE_3270    || \
-			FREETZ_TYPE_3370    || \
-			FREETZ_TYPE_3390    || \
-			FREETZ_TYPE_3490    || \
-			FREETZ_TYPE_5491    || \
-			FREETZ_TYPE_6840    || \
-			FREETZ_TYPE_7240    || \
-			FREETZ_TYPE_7270_16 || \
-			FREETZ_TYPE_7320    || \
-			FREETZ_TYPE_7330_XL || \
-			FREETZ_TYPE_7340    || \
-			FREETZ_TYPE_7360_V1 || \
-			FREETZ_TYPE_7360_V2 || \
-			FREETZ_TYPE_7362_SL || \
-			FREETZ_TYPE_7369    || \
-			FREETZ_TYPE_7390    || \
-			FREETZ_TYPE_7430    || \
-			FREETZ_TYPE_7490       \
-		)
-
-config FREETZ_AVM_HAS_SIGNATURE
-	bool
-	default y
-	depends on !FREETZ_TYPE_FON
-	depends on !FREETZ_TYPE_WLAN
-	depends on !FREETZ_TYPE_W501V
-	depends on !FREETZ_TYPE_300IP
-	depends on !FREETZ_TYPE_2170
-	depends on !FREETZ_TYPE_3020
-	depends on !FREETZ_TYPE_3030
-	depends on !FREETZ_TYPE_3130
-	depends on !FREETZ_TYPE_3131
-	depends on !FREETZ_TYPE_3170
-	depends on !FREETZ_TYPE_3170_7170
-	depends on !FREETZ_TYPE_5010
-	depends on !FREETZ_TYPE_5050
-	depends on !FREETZ_TYPE_5140
-	depends on !FREETZ_TYPE_7050
-	depends on !FREETZ_TYPE_7150
-	depends on !FREETZ_TYPE_7150_7170
-
-config FREETZ_AVM_HAS_MYFRITZ
-	bool
-	default y
-	depends on !FREETZ_TYPE_EXTENDER
-	depends on FREETZ_AVM_VERSION_05_2X_MIN
 
 # Multi-Annex support, i.e. the same firmware image can be used both for Annex A and B
 config FREETZ_AVM_HAS_MULTI_ANNEX
@@ -155,60 +69,6 @@ config FREETZ_AVM_HAS_ANNEX_A_AND_B
 			FREETZ_TYPE_7170 \
 		)
 
-config FREETZ_AVM_HAS_NAS
-	bool
-	select FREETZ_BUSYBOX_FEATURE_TAR_OLDGNU_COMPATIBILITY
-	default y
-	depends on \
-			FREETZ_AVM_VERSION_05_2X_MIN && \
-			!FREETZ_TYPE_EXTENDER && \
-			!FREETZ_TYPE_6810 && \
-			!FREETZ_TYPE_6820 && \
-			!FREETZ_TYPE_7312 && \
-			!FREETZ_TYPE_7412
-
-config FREETZ_AVM_HAS_NTFS
-	bool
-	default y
-	depends on \
-		(FREETZ_TYPE_7270_V1 && FREETZ_AVMPLUGINS_NTFS) || \
-		FREETZ_TYPE_7570 || \
-		( \
-			FREETZ_AVM_VERSION_05_2X_MIN && \
-			!FREETZ_TYPE_EXTENDER && \
-			!FREETZ_TYPE_6810 && \
-			!FREETZ_TYPE_6820 && \
-			!FREETZ_TYPE_7312 && \
-			!FREETZ_TYPE_7412    \
-		)
-
-config FREETZ_AVM_HAS_PHONE
-	bool
-	default y
-	depends on \
-		!FREETZ_TYPE_EXTENDER && \
-		!FREETZ_TYPE_2170 && \
-		!FREETZ_TYPE_3020 && \
-		!FREETZ_TYPE_3030 && \
-		!FREETZ_TYPE_3130 && \
-		!FREETZ_TYPE_3131 && \
-		!FREETZ_TYPE_3170 && \
-		!FREETZ_TYPE_3270 && \
-		!FREETZ_TYPE_4020 && \
-		!FREETZ_TYPE_4040
-
-# TAM = Telephone Answering Machine
-config FREETZ_AVM_HAS_TAM
-	bool
-	default y
-	depends on !FREETZ_TYPE_EXTENDER
-	depends on \
-		FREETZ_AVM_VERSION_05_2X_MIN || \
-		FREETZ_TYPE_7150 || \
-		FREETZ_TYPE_7141 || \
-		FREETZ_TYPE_7170 || \
-		FREETZ_TYPE_7270_V1 || \
-		FREETZ_TYPE_7570
 
 config FREETZ_AVM_HAS_TEMPERATURE_SENSOR
 	bool
@@ -217,166 +77,6 @@ config FREETZ_AVM_HAS_TEMPERATURE_SENSOR
 		(FREETZ_AVM_VERSION_05_2X_MIN && FREETZ_AVM_VERSION_05_5X_MAX) || \
 		(FREETZ_AVM_VERSION_06_0X_MIN && (FREETZ_TYPE_7490 || FREETZ_TYPE_7590) ) || \
 		FREETZ_SYSTEM_TYPE_UR8
-
-config FREETZ_AVM_HAS_TR069
-	bool
-	default y
-	depends on \
-		FREETZ_AVM_VERSION_05_2X_MIN || \
-		FREETZ_TYPE_FON     || \
-		FREETZ_TYPE_WLAN    || \
-		FREETZ_TYPE_300IP   || \
-		FREETZ_TYPE_3020    || \
-		FREETZ_TYPE_3030    || \
-		FREETZ_TYPE_3130    || \
-		FREETZ_TYPE_3131    || \
-		FREETZ_TYPE_5010    || \
-		FREETZ_TYPE_5050    || \
-		FREETZ_TYPE_5124    || \
-		FREETZ_TYPE_5140    || \
-		FREETZ_TYPE_7050    || \
-		FREETZ_TYPE_7112    || \
-		FREETZ_TYPE_7113    || \
-		FREETZ_TYPE_7140    || \
-		FREETZ_TYPE_7141    || \
-		FREETZ_TYPE_7150    || \
-		FREETZ_TYPE_7170    || \
-		FREETZ_TYPE_7270_V1 || \
-		FREETZ_TYPE_7570
-
-# firmware contains tr069fwupdate binary (for MT-D)
-config FREETZ_AVM_HAS_TR069_FWUPDATE
-	bool
-	default y
-	depends on \
-		FREETZ_AVM_VERSION_05_2X_MIN || \
-		FREETZ_TYPE_300IP   || \
-		FREETZ_TYPE_3130    || \
-		FREETZ_TYPE_3131    || \
-		FREETZ_TYPE_5010    || \
-		FREETZ_TYPE_5124    || \
-		FREETZ_TYPE_5140    || \
-		FREETZ_TYPE_7112    || \
-		FREETZ_TYPE_7113    || \
-		FREETZ_TYPE_7140    || \
-		FREETZ_TYPE_7141    || \
-		FREETZ_TYPE_7150    || \
-		FREETZ_TYPE_7170    || \
-		FREETZ_TYPE_7270_V1 || \
-		FREETZ_TYPE_7570
-
-config FREETZ_AVM_HAS_UDEV
-	bool
-	default y
-	depends on FREETZ_AVM_VERSION_05_2X_MIN
-
-config FREETZ_AVM_HAS_UMTS
-	bool
-	default y
-	depends on !FREETZ_TYPE_EXTENDER
-	depends on \
-		FREETZ_AVM_VERSION_05_2X_MIN || \
-		FREETZ_TYPE_7270_V1
-
-config FREETZ_AVM_HAS_USB_HOST
-	bool
-	default y
-	depends on !FREETZ_TYPE_EXTENDER
-	depends on \
-		!FREETZ_TYPE_FON        && \
-		!FREETZ_TYPE_WLAN       && \
-		!FREETZ_TYPE_W501V      && \
-		!FREETZ_TYPE_W701V_7170 && \
-		!FREETZ_TYPE_300IP      && \
-		!FREETZ_TYPE_3020       && \
-		!FREETZ_TYPE_3030       && \
-		!FREETZ_TYPE_5010       && \
-		!FREETZ_TYPE_5050       && \
-		!FREETZ_TYPE_5140       && \
-		!FREETZ_TYPE_7050       && \
-		!FREETZ_TYPE_7112       && \
-		!FREETZ_TYPE_7112_7170  && \
-		!FREETZ_TYPE_7113       && \
-		!FREETZ_TYPE_7113_7170  && \
-		!FREETZ_TYPE_7312       && \
-		!FREETZ_TYPE_7412
-
-# box has USB host controller named AHCI (= AVM [USB] Host Controller Interface)
-# note: no support for "low speed" devices
-config FREETZ_AVM_HAS_USB_HOST_AHCI
-	bool
-	depends on FREETZ_AVM_HAS_USB_HOST
-	default y
-	depends on \
-		FREETZ_TYPE_2170 || \
-		FREETZ_TYPE_3130 || \
-		FREETZ_TYPE_3131 || \
-		FREETZ_TYPE_3170 || \
-		FREETZ_TYPE_5124 || \
-		FREETZ_TYPE_7140 || \
-		FREETZ_TYPE_7141 || \
-		FREETZ_TYPE_7150 || \
-		FREETZ_TYPE_7170
-
-# firmware contains aura-usb daemon (remote USB connection, USB-Fernanschluss)
-config FREETZ_AVM_HAS_AURA_USB
-	bool
-	select FREETZ_REMOVE_AURA_USB if ! FREETZ_AVM_HAS_USB_HOST
-	default y
-	depends on \
-		FREETZ_AVM_HAS_USB_HOST || \
-		FREETZ_TYPE_7112_7170 || \
-		FREETZ_TYPE_7113_7170 || \
-		FREETZ_TYPE_W701V_7170
-
-config FREETZ_AVM_HAS_ETHERNET_OVER_USB
-	bool
-	default y
-	depends on \
-		FREETZ_TYPE_FON   || \
-		FREETZ_TYPE_WLAN  || \
-		FREETZ_TYPE_2170  || \
-		FREETZ_TYPE_300IP || \
-		FREETZ_TYPE_3020  || \
-		FREETZ_TYPE_3030  || \
-		FREETZ_TYPE_3131  || \
-		FREETZ_TYPE_3170  || \
-		FREETZ_TYPE_5050  || \
-		FREETZ_TYPE_7050
-
-config FREETZ_AVM_HAS_WEBDAV
-	bool
-	default y
-	depends on \
-		FREETZ_TYPE_7270_V1 || \
-		FREETZ_TYPE_7570 || \
-		( \
-			FREETZ_AVM_VERSION_05_2X_MIN && \
-			!FREETZ_TYPE_EXTENDER && \
-			!FREETZ_TYPE_6810 && \
-			!FREETZ_TYPE_6820 && \
-			!FREETZ_TYPE_7312 && \
-			!FREETZ_TYPE_7412    \
-		)
-
-config FREETZ_AVM_HAS_WLAN
-	bool
-	default y
-	depends on \
-		!FREETZ_TYPE_FON   && \
-		!FREETZ_TYPE_2170  && \
-		!FREETZ_TYPE_300IP && \
-		!FREETZ_TYPE_5010  && \
-		!FREETZ_TYPE_5050  && \
-		!FREETZ_TYPE_5124  && \
-		!FREETZ_TYPE_5140
-
-config FREETZ_AVM_SERIAL_CONSOLE_DEVICE
-	string
-	default "/dev/ttyS1"           if FREETZ_AVM_HAS_TTY_S1
-	default "/dev/ttyLTQ0"         if FREETZ_AVM_HAS_TTY_LTQ0
-	default "/dev/ttyMSM0"         if FREETZ_AVM_HAS_TTY_MSM0
-	default "/dev/ttyS0"
 
 
 
@@ -700,24 +400,6 @@ config FREETZ_AVM_HAS_CRYPTO_WORKQUEUE_BUILTIN
 ### binaries/daemons/libraries related properties
 ###
 
-config FREETZ_AVM_HAS_CHRONYD
-	bool
-	select FREETZ_AVMDAEMON_DISABLE_NTP if ! FREETZ_REMOVE_CHRONYD
-	default y
-	depends on \
-		FREETZ_AVM_VERSION_05_2X_MIN || \
-		FREETZ_TYPE_7570
-
-config FREETZ_AVM_HAS_INETD
-	bool
-	select FREETZ_PACKAGE_INETD
-	default y
-	depends on \
-		FREETZ_AVM_VERSION_05_2X_MIN || \
-		FREETZ_TYPE_7170 || \
-		FREETZ_TYPE_7270_V1 || \
-		FREETZ_TYPE_7570
-
 # original firmware contains microvoip-dsl.bin
 config FREETZ_AVM_HAS_MICROVOIP_DSL
 	bool
@@ -737,19 +419,6 @@ config FREETZ_AVM_HAS_MICROVOIP_DSL
 		FREETZ_TYPE_7141 || \
 		FREETZ_TYPE_7150 || \
 		FREETZ_TYPE_7170
-
-config FREETZ_AVM_HAS_MINID
-	bool
-	select FREETZ_REMOVE_MINID if \
-		FREETZ_TYPE_7113_7170 || \
-		FREETZ_TYPE_7112_7170 || \
-		FREETZ_TYPE_3170_7170 || \
-		FREETZ_TYPE_W701V_7170
-	default y
-	depends on \
-		FREETZ_TYPE_7141 || \
-		FREETZ_TYPE_7170 || \
-		FREETZ_TYPE_7270_V1
 
 # original firmware contains piglet file for POTS
 config FREETZ_AVM_HAS_PIGLET_POTS

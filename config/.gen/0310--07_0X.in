@@ -4,6 +4,10 @@ config FREETZ_AVM_PROP_NAME
 	string
 	default "FRITZ!WLAN Repeater 310"
 
+config FREETZ_AVM_HAS_SIGNATURE
+	bool
+	default y
+
 config FREETZ_AVM_PROP_PRODUKT
 	string
 	default "Fritz_Box_HW215"
@@ -20,11 +24,31 @@ config FREETZ_AVM_HAS_BRANDING_avme
 	bool
 	default y
 
-config FREETZ_AVM_HAS_TTY_S0
+config FREETZ_AVM_SERIAL_CONSOLE_DEVICE
+	string
+	default "/dev/ttyS0"
+
+config FREETZ_AVM_HAS_REBOOT_SCRIPT
 	bool
 	default y
 
-config FREETZ_AVM_HAS_REBOOT_SCRIPT
+config FREETZ_AVM_HAS_WLAN
+	bool
+	default y
+
+config FREETZ_AVM_HAS_INETD
+	bool
+	default y
+
+config FREETZ_AVM_HAS_TR069
+	bool
+	default y
+
+config FREETZ_AVM_HAS_TR069_FWUPDATE
+	bool
+	default y
+
+config FREETZ_AVM_HAS_UDEV
 	bool
 	default y
 

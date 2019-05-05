@@ -4,6 +4,10 @@ config FREETZ_AVM_PROP_NAME
 	string
 	default "FRITZ!Box Fon WLAN 7113 Annex A"
 
+config FREETZ_AVM_HAS_SIGNATURE
+	bool
+	default y
+
 config FREETZ_AVM_PROP_PRODUKT
 	string
 	default "Fritz_Box_7113_AnnexA"
@@ -12,7 +16,23 @@ config FREETZ_AVM_HAS_BRANDING_avme
 	bool
 	default y
 
-config FREETZ_AVM_HAS_TTY_CONSOLE
+config FREETZ_AVM_SERIAL_CONSOLE_DEVICE
+	string
+	default "/dev/ttyS0"
+
+config FREETZ_AVM_HAS_WLAN
+	bool
+	default y
+
+config FREETZ_AVM_HAS_PHONE
+	bool
+	default y
+
+config FREETZ_AVM_HAS_TR069
+	bool
+	default y
+
+config FREETZ_AVM_HAS_TR069_FWUPDATE
 	bool
 	default y
 
