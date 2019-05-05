@@ -755,7 +755,7 @@ define PKG_UNPACKED_CHECK_CHANGES__INT2
 $(PKG)_FREETZ_CHANGES_CHECK: $(PKG)_SOURCE_DIR
 	@find $($(PKG)_MAKE_DIR) \
 		-regex "^$($(PKG)_MAKE_DIR)/\($($(PKG)_FREETZ_CHANGES_RECOMPILE_SEARCH)\|$($(PKG)_FREETZ_CHANGES_REPACK_SEARCH)\)" \
-		! -wholename '*/.svn*' -printf '%TY-%Tm-%Td %TH:%TM:%TS\t%P\n' 2>/dev/null | sort -k 3 >$($(PKG)_FREETZ_CHANGES_FILE).temp
+		-printf '%TY-%Tm-%Td %TH:%TM:%TS\t%P\n' 2>/dev/null | sort -k 3 >$($(PKG)_FREETZ_CHANGES_FILE).temp
 	@if [ -e $($(PKG)_FREETZ_CHANGES_FILE) ]; then \
 		for i in 1 2; do \
 			PATTERN=; \
