@@ -1626,9 +1626,9 @@ if [ "$action_names" ]; then
 		invoke_fwmod_custom all_no_freetz
 	fi
 
-	# Remove left over Subversion directories
-	echo1 "checking for left over Subversion directories"
-	find "$MOD_DIR" \( -type d -name '.svn' \) -o -name '.gitignore' | xargs rm -rf
+	# Remove left over version-constrol-system files
+	echo1 "checking for left over version-control-system files"
+	find "$MOD_DIR" \( -type d -name '.svn' \) -o \( -type d -name '.git' \) -o -name '.gitignore' | xargs rm -rf
 
 	# Delete all files that we are going to re-create now
 	rm -f "$VARTAR_MOD"
