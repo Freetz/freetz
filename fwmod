@@ -938,19 +938,12 @@ if [ "$DO_MOD" -gt 0 ]; then
 	# 7390: /opt is symlink to /var/InternerSpeicher/opt
 	[ ! -L "$FILESYSTEM_MOD_DIR"/opt ] && mkdir -p "$FILESYSTEM_MOD_DIR"/opt
 
-	# Set version and options
-	FREETZ_VERSION_FILE="${BASE_DIR}/.version"
-
-	if [ ! -r "$FREETZ_VERSION_FILE" ]; then
-		error 1 "cannot determine version"
-	fi
-
+	# Determine Freetz version
 	if [ -d .svn ]; then
 		# be compatible: older versions of svnversion need WC_PATH
 		if REVISION="$(svnversion . 2>/dev/null | tr ":" "_")"; then
 			[ "${REVISION:0:6}" == "export" ] && REVISION=""
 		fi
-		[ -n "$REVISION" ] && REVISION="-$REVISION"
 	elif [ -d .git ]; then
 		GIT_LINK="$(git config --get remote.origin.url)"
 		GIT_USER="${GIT_LINK%/*}"
@@ -962,17 +955,16 @@ if [ "$DO_MOD" -gt 0 ]; then
 		GIT_HASH="$(git rev-parse --short HEAD | tr a-z A-Z)"
 		REVISION="_$GIT_USER${GIT_USER:+-}${GIT_FILE}_${GIT_TICK}-$GIT_HASH"
 	fi
+	FREETZ_VERSION="$(cat ${BASE_DIR}/.version 2>/dev/null || echo -n freetz)${REVISION:+-$REVISION}"
 
-	FREETZ_VERSION="$(cat $$FREETZ_VERSION_FILE)${REVISION}"
+	echo1 "setting freetz-version '${FREETZ_VERSION}'"
+	echo "${FREETZ_VERSION}" > "${FILESYSTEM_MOD_DIR}/etc/.freetz-version"
 
 	PACKAGES_LIST_FILE="${BASE_DIR}/.packages"
 	rm -f "${PACKAGES_LIST_FILE}"
 	for pkg in $(static_packages) $(static_addons); do
 		echo "$pkg" >> "${PACKAGES_LIST_FILE}"
 	done
-
-	echo1 "setting freetz-version '${FREETZ_VERSION}'"
-	echo "${FREETZ_VERSION}" > "${FILESYSTEM_MOD_DIR}/etc/.freetz-version"
 
 	# Execute general patch scripts
 	for i in "${PATCHES_SCRIPTS_DIR}/"*.sh; do
