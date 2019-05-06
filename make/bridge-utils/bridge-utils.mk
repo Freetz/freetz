@@ -8,7 +8,12 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/sbin/brctl
 $(PKG)_CONFIGURE_PRE_CMDS += ln -sf configure.in configure.ac;
 $(PKG)_CONFIGURE_PRE_CMDS += autoconf > /dev/null 2>&1;
 
-$(PKG)_CONFIGURE_OPTIONS += --with-linux-headers=$(KERNEL_HEADERS_DIR)
+# TODO: check if this package really requires internal kernel headers
+#       I doubt this is the case as the following path is relative,
+#       i.e. doesn't really point to the kernel headers dir while
+#       package is being built
+#$(PKG)_REBUILD_SUBOPTS += FREETZ_KERNEL_VERSION
+$(PKG)_CONFIGURE_OPTIONS += --with-linux-headers=$(KERNEL_SOURCE_DIR)/include
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
