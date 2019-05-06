@@ -14,6 +14,14 @@ menu "External processing"
 			-------------------------- WARNING ----------------------------------
 			Do NOT external files needed to boot up Freetz!
 
+	config EXTERNAL_NOEXEC
+		bool "Select drop-noexec patch"
+		default y
+		depends on FREETZ_AVM_HAS_NOEXEC
+		select FREETZ_DROP_NOEXEC
+		help
+			Selects the "Drop noexec on mount" patch
+
 	config EXTERNAL_DOWNLOADER
 		bool "Prepare files for Downloader"
 		default n

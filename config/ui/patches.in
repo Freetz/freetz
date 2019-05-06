@@ -1264,6 +1264,13 @@ config FREETZ_CUSTOM_UDEV_RULES
 	help
 		You could use own rules for UDEV.
 
+config FREETZ_DROP_NOEXEC
+	bool "Drop noexec on mount"
+	depends on FREETZ_AVM_HAS_NOEXEC
+	default n
+	help
+		Allows to execute files on storages.
+
 comment "Replacement patches --------------------"
 
 config FREETZ_KEEP_AVM_UCLIBC
