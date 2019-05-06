@@ -440,7 +440,7 @@ $(eval $(call CONFIG_CLEAN_DEPS,config-clean-deps-keep-busybox,kernel modules$(_
 common-clean:
 	./fwmod_custom clean
 	$(RM) make/Config.in.generated make/external.in.generated
-	$(RM) .static .dynamic .packages .exclude-dist-tmp $(CONFIG_IN_CACHE)
+	$(RM) .static .dynamic .packages $(CONFIG_IN_CACHE)
 	$(RM) -r $(BUILD_DIR)
 	$(RM) -r $(FAKEROOT_CACHE_DIR)
 
