@@ -11,11 +11,6 @@ KERNEL_COMMON_MAKE_OPTIONS := -C $(KERNEL_BUILD_ROOT_DIR)
 KERNEL_COMMON_MAKE_OPTIONS += CROSS_COMPILE="$(KERNEL_CROSS)"
 KERNEL_COMMON_MAKE_OPTIONS += KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)"
 KERNEL_COMMON_MAKE_OPTIONS += ARCH="$(KERNEL_ARCH)"
-# TODO: KERNEL_LAYOUT is referenced just once in kernel's makefiles.
-# It causes additional fusiv-sources to be added to the list of sources
-# to compile. Compiling these sources however fails, that's the reason
-# the following line is commented out.
-#KERNEL_COMMON_MAKE_OPTIONS += KERNEL_LAYOUT="$(SYSTEM_TYPE)"
 KERNEL_COMMON_MAKE_OPTIONS += INSTALL_HDR_PATH=$(KERNEL_HEADERS_DEVEL_DIR)
 KERNEL_COMMON_MAKE_OPTIONS += INSTALL_MOD_PATH="$(FREETZ_BASE_DIR)/$(KERNEL_DIR)"
 ifeq ($(strip $(FREETZ_VERBOSITY_LEVEL)),2)
