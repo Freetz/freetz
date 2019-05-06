@@ -1,0 +1,110 @@
+#!/bin/bash
+
+SELF=$(basename "${0}")
+
+usage() {
+	echo "Usage: ${SELF} [srctree]" >&2
+	exit 1
+}
+
+cd "${1:-.}" || usage
+
+# helper functions
+invoked_as() {
+	[[ "${SELF}" == *"${1}" ]]
+}
+print_value_fallback_to_unknown() {
+	echo "${1:-unknown}"
+}
+
+# git helper functions
+git_hash() {
+	git rev-parse --verify "$@"
+}
+git_hash_YYYYMMDD() {
+	git log --pretty='format:%cd' --date=format:'%Y%m%d' -1 "$@"
+}
+git_branch() {
+	git rev-parse --abbrev-ref "$@"
+}
+github_commit_url() {
+	local remote_origin_url="$1"
+	local commit_id="$2"
+	local domain_pattern="github[.]com"
+	echo "${remote_origin_url}" \
+		| sed -r -e 's,^(git://|http://|https://|ssh://git@|git@)('"${domain_pattern}"')[:/],https://\2/,' \
+		| sed -n -r -e 's,^(https://'"${domain_pattern}"'/.+)[.]git$,\1/commit/'"${commit_id}"',p'
+}
+
+# check for git and a git repo
+if head_id_long=$(git_hash @ 2>/dev/null); then
+	local_branch=$(git_branch @)
+
+	# check for uncommitted changes
+	#
+	# The solution implemented below is based on the following kernel commits (time order, the latest is the most important one):
+	#   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=6147b1cf19651c7de297e69108b141fb30aa2349
+	#   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=8ef14c2c41d962756d314f1d7dc972b0ea7a180f
+	#   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=ff64dd4857303dd5550faed9fd598ac90f0f2238
+	# We intentionally do not implement the fallback to
+	#   git diff-index --name-only @
+	# as it produces unreliable results (false positives for "dirty") when invoked in fakeroot context.
+	# Instead we prefer to omit the dirty-flag completely if it could not be determined in a reliable way.
+	# Note --no-optional-locks is supported since git-2.15.0
+	if git --no-optional-locks status -uno --porcelain 2>/dev/null | read dummy; then
+		dirty="-dirty"
+	fi
+
+	# check for untracked files (unused so far)
+#	if git ls-files --other --directory --exclude-standard | read dummy; then
+#		untracked="-untracked"
+#	fi
+
+	# HEAD based version
+	if invoked_as version; then
+		head_id_short=$(git_hash --short @)
+		head_YYYYMMDD=$(git_hash_YYYYMMDD @)
+
+		VERSION="${local_branch}-${head_YYYYMMDD}-${head_id_short}${dirty}"
+	fi
+
+	# URL of the HEAD based version
+	if invoked_as version-url; then
+		remote_origin_url=$(git config --get remote.origin.url)
+		VERSION_URL=$(github_commit_url "${remote_origin_url}" "${head_id_long}")
+	fi
+
+	# "upstream + number of local commits" based version
+	if invoked_as version-upstream; then
+		upstream_branch=$(git_branch @{upstream} 2>/dev/null || git_branch master@{upstream} 2>/dev/null)
+		if [ $? -eq 0 ]; then
+			upstream_last_commit_id_long=$(git_hash ${upstream_branch})
+			upstream_last_commit_id_short=$(git_hash --short ${upstream_branch})
+			upstream_last_commit_YYYYMMDD=$(git_hash_YYYYMMDD ${upstream_last_commit_id_long})
+
+			local_branch_no_of_commits_ahead=$(git rev-list --no-merges --count ${upstream_branch}..@)
+			if [ "${local_branch_no_of_commits_ahead}" -gt 0 ]; then
+				ahead="+${local_branch_no_of_commits_ahead}"
+			fi
+
+			local_branch_no_of_commits_behind=$(git rev-list --no-merges --count @..${upstream_branch})
+			if [ "${local_branch_no_of_commits_behind}" -gt 0 ]; then
+				behind="-${local_branch_no_of_commits_behind}"
+			fi
+
+			VERSION_UPSTREAM="${local_branch}-${upstream_last_commit_YYYYMMDD}-${upstream_last_commit_id_short}${ahead}${behind}${dirty}"
+		fi
+	fi
+elif [ -f .freetz-version ] || [ -f ../.freetz-version ]; then
+	# .freetz-version file containing the (fixed) version number
+	# this is intended to be used for release tarballs containing no repository information
+	VERSION=$(cat .freetz-version 2>/dev/null || cat ../.freetz-version 2>/dev/null)
+fi
+
+if invoked_as version; then
+	print_value_fallback_to_unknown "${VERSION}"
+elif invoked_as version-url; then
+	print_value_fallback_to_unknown "${VERSION_URL}"
+elif invoked_as version-upstream; then
+	print_value_fallback_to_unknown "${VERSION_UPSTREAM}"
+fi

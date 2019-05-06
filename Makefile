@@ -203,6 +203,7 @@ step: image world tools firmware
 -include .config.cmd
 
 include $(TOOLCHAIN_DIR)/make/Makefile.in
+include $(MAKE_DIR)/Makefile.image.in
 include $(MAKE_DIR)/Makefile.in
 include $(call sorted-wildcard,$(MAKE_DIR)/libs/*/Makefile.in)
 include $(call sorted-wildcard,$(MAKE_DIR)/*/Makefile.in)
@@ -242,51 +243,6 @@ include $(TOOLCHAIN_DIR)/make/target-toolchain.mk
 else
 include $(TOOLCHAIN_DIR)/make/download-toolchain.mk
 endif
-
-DL_IMAGE:=
-image:
-
-# Download Firmware Image
-#  $(1) Suffix
-define DOWNLOAD_FIRMWARE
-ifneq ($(strip $(DL_SOURCE$(1))),)
-IMAGE$(1):=$(DL_FW_DIR)/$(DL_SOURCE$(1))
-DL_IMAGE+=$$(IMAGE$(1))
-image: $$(IMAGE$(1))
-$$(DL_FW_DIR)/$$(DL_SOURCE$(1)): | $(DL_FW_DIR)
-ifeq ($$(strip $$(DL_SITE$(1))),)
-	@echo
-	@echo "Please copy the following file into the '$$(DL_FW_DIR)' sub-directory manually:"
-	@echo "$$(DL_SOURCE$(1))"
-	@echo
-	@exit 3
-else
-	@if [ -n "$$(DL_SOURCE$(1)_CONTAINER)" ]; then \
-		if [ ! -r $$(DL_FW_DIR)/$$(DL_SOURCE$(1)_CONTAINER) ]; then \
-			if ! $$(DL_TOOL) --no-append-servers $$(DL_FW_DIR) "$$(DL_SOURCE$(1)_CONTAINER)" "$$(DL_SITE$(1))" $$(DL_SOURCE$(1)_CONTAINER_MD5) $$(SILENT); then \
-				$$(call ERROR,3,Could not download firmware image. See http://trac.freetz.org/wiki/FAQ#Couldnotdownloadfirmwareimage for details.) \
-			fi; \
-		fi; \
-		case "$$(DL_SOURCE$(1)_CONTAINER_SUFFIX)" in \
-			.zip|.ZIP) \
-				if ! unzip -j $$(QUIETSHORT) $$(DL_FW_DIR)/$$(DL_SOURCE$(1)_CONTAINER) *$$(DL_SOURCE$(1)) -d $$(DL_FW_DIR); then \
-					$$(call ERROR,3,Could not unzip firmware image.) \
-				fi \
-				;; \
-			*) \
-				$$(call ERROR,3,Could not extract firmware image.) \
-				;; \
-		esac \
-	elif ! $$(DL_TOOL) --no-append-servers $$(DL_FW_DIR) "$$(DL_SOURCE$(1))" "$$(DL_SITE$(1))" $$(DL_SOURCE$(1)_MD5) $$(SILENT); then \
-		$$(call ERROR,3,Could not download firmware image. See http://trac.freetz.org/wiki/FAQ#Couldnotdownloadfirmwareimage for details.) \
-	fi
-endif
-endif
-endef
-
-$(eval $(call DOWNLOAD_FIRMWARE))
-$(eval $(call DOWNLOAD_FIRMWARE,2))
-$(eval $(call DOWNLOAD_FIRMWARE,3))
 
 package-list: package-list-clean $(PACKAGES_LIST)
 	@touch .static
@@ -484,7 +440,7 @@ $(eval $(call CONFIG_CLEAN_DEPS,config-clean-deps-keep-busybox,kernel modules$(_
 common-clean:
 	./fwmod_custom clean
 	$(RM) make/Config.in.generated make/external.in.generated
-	$(RM) .static .dynamic .packages .exclude-dist-tmp $(CONFIG_IN_CACHE)
+	$(RM) .static .dynamic .packages $(CONFIG_IN_CACHE)
 	$(RM) -r $(BUILD_DIR)
 	$(RM) -r $(FAKEROOT_CACHE_DIR)
 
