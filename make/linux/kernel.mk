@@ -1,13 +1,12 @@
 KERNEL_MAKE_DIR:=$(MAKE_DIR)/linux
 KERNEL_PATCHES_DIR:=$(KERNEL_MAKE_DIR)/patches/$(KERNEL_VERSION)$(SYSTEM_TYPE_CORE_SUFFIX)
-KERNEL_BUILD_ROOT_DIR:=$(KERNEL_DIR)/linux-$(KERNEL_VERSION_MAJOR)
 
 KERNEL_IMAGE:=vmlinux.eva_pad
 KERNEL_IMAGE_BUILD_SUBDIR:=$(if $(FREETZ_KERNEL_VERSION_3_10_MIN),/arch/$(KERNEL_ARCH)/boot)
 KERNEL_TARGET_BINARY:=kernel-$(KERNEL_ID).bin
 KERNEL_CONFIG_FILE:=$(KERNEL_MAKE_DIR)/configs/freetz/config-$(KERNEL_ID)
 
-KERNEL_COMMON_MAKE_OPTIONS := -C $(KERNEL_BUILD_ROOT_DIR)
+KERNEL_COMMON_MAKE_OPTIONS := -C $(KERNEL_SOURCE_DIR)
 KERNEL_COMMON_MAKE_OPTIONS += CROSS_COMPILE="$(KERNEL_CROSS)"
 KERNEL_COMMON_MAKE_OPTIONS += KERNEL_MAKE_PATH="$(KERNEL_MAKE_PATH):$(PATH)"
 KERNEL_COMMON_MAKE_OPTIONS += ARCH="$(KERNEL_ARCH)"
@@ -29,9 +28,9 @@ $(DL_FW_DIR)/$(DL_KERNEL_SOURCE): | $(DL_FW_DIR)
 kernel-unpacked: $(KERNEL_DIR)/.unpacked
 $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(DL_KERNEL_SOURCE) | $(UNPACK_TARBALL_PREREQUISITES) gcc-kernel
 	$(RM) -r $(KERNEL_DIR)
-	mkdir -p $(KERNEL_BUILD_ROOT_DIR)
+	mkdir -p $(KERNEL_SOURCE_DIR)
 	@$(call _ECHO, unpacking... )
-	@$(call UNPACK_TARBALL,$(DL_FW_DIR)/$(DL_KERNEL_SOURCE),$(KERNEL_BUILD_ROOT_DIR),1)
+	@$(call UNPACK_TARBALL,$(DL_FW_DIR)/$(DL_KERNEL_SOURCE),$(KERNEL_SOURCE_DIR),1)
 	@$(call _ECHO, applying patches... )
 	#
 	#kernel version specific patches
@@ -40,28 +39,28 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(DL_KERNEL_SOURCE) | $(UNPACK_TARBALL_PRE
 	@$(call APPLY_PATCHES,$(KERNEL_PATCHES_DIR)/$(AVM_SOURCE_ID),$(KERNEL_DIR))
 	@$(call _ECHO, preparing... )
 	@for i in $(KERNEL_LINKING_FILES); do \
-		if [ -e $(KERNEL_BUILD_ROOT_DIR)/$$i -a \
-		! -e $(KERNEL_BUILD_ROOT_DIR)/include/linux/$${i##*\/linux_} ]; then \
-			$(call MESSAGE, Linking  $(KERNEL_BUILD_ROOT_DIR)/include/linux/$${i##*\/linux_}); \
-			ln -sf ../../$$i $(KERNEL_BUILD_ROOT_DIR)/include/linux/$${i##*\/linux_}; \
+		if [ -e $(KERNEL_SOURCE_DIR)/$$i -a \
+		! -e $(KERNEL_SOURCE_DIR)/include/linux/$${i##*\/linux_} ]; then \
+			$(call MESSAGE, Linking  $(KERNEL_SOURCE_DIR)/include/linux/$${i##*\/linux_}); \
+			ln -sf ../../$$i $(KERNEL_SOURCE_DIR)/include/linux/$${i##*\/linux_}; \
 		fi \
 	done
 	@for i in avm_net_trace.h avm_net_trace_ioctl.h; do \
-		if [ -e $(KERNEL_BUILD_ROOT_DIR)/drivers/char/avm_net_trace/$$i -a \
-			! -e $(KERNEL_BUILD_ROOT_DIR)/include/linux/$$i ]; then \
-				$(call MESSAGE, Linking  $(KERNEL_BUILD_ROOT_DIR)/include/linux/$$i); \
+		if [ -e $(KERNEL_SOURCE_DIR)/drivers/char/avm_net_trace/$$i -a \
+			! -e $(KERNEL_SOURCE_DIR)/include/linux/$$i ]; then \
+				$(call MESSAGE, Linking  $(KERNEL_SOURCE_DIR)/include/linux/$$i); \
 				ln -sf ../../drivers/char/avm_net_trace/$$i \
-					$(KERNEL_BUILD_ROOT_DIR)/include/linux/$$i; \
+					$(KERNEL_SOURCE_DIR)/include/linux/$$i; \
 		fi \
 	done
-	@for i in $$(find $(KERNEL_BUILD_ROOT_DIR) -name Makefile.26 -printf '%h\n'); do \
+	@for i in $$(find $(KERNEL_SOURCE_DIR) -name Makefile.26 -printf '%h\n'); do \
 		if [ ! -e $$i/Makefile ] ; then \
 			$(call MESSAGE, Linking  $$i/Makefile); \
 			ln -sf Makefile.26 $$i/Makefile; \
 		fi \
 	done
 	@for i in $$( \
-		find $(KERNEL_BUILD_ROOT_DIR) -name Makefile -exec \
+		find $(KERNEL_SOURCE_DIR) -name Makefile -exec \
 		awk '/(obj|subdir)-.*=/ && !/(obj|subdir)-ccflags.*=/ { \
 			while (match ($$0,/\\/)) {sub(/\\/," "); getline l;$$0=$$0""l} \
 			sub(/\r/,""); \
@@ -90,15 +89,15 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(DL_KERNEL_SOURCE) | $(UNPACK_TARBALL_PRE
 		touch $$i; \
 	done
 	@for i in $$( \
-		find $(KERNEL_BUILD_ROOT_DIR) -name Kconfig -exec grep -hs "source.*Kconfig" {} '+' \
+		find $(KERNEL_SOURCE_DIR) -name Kconfig -exec grep -hs "source.*Kconfig" {} '+' \
 		| sed -e 's/\(.*\)#.*/\1/g;s/.*source //g;s/"//g' \
 		| sort -u \
 	); do \
-		if [ ! -e $(KERNEL_BUILD_ROOT_DIR)/$$i ]; then \
-			$(call MESSAGE, Creating $(KERNEL_BUILD_ROOT_DIR)/$$i); \
-			mkdir -p $(KERNEL_BUILD_ROOT_DIR)/$${i%\/*}; \
-			[ -h $(KERNEL_BUILD_ROOT_DIR)/$$i ] && $(RM) $(KERNEL_BUILD_ROOT_DIR)/$$i; \
-			touch $(KERNEL_BUILD_ROOT_DIR)/$$i; \
+		if [ ! -e $(KERNEL_SOURCE_DIR)/$$i ]; then \
+			$(call MESSAGE, Creating $(KERNEL_SOURCE_DIR)/$$i); \
+			mkdir -p $(KERNEL_SOURCE_DIR)/$${i%\/*}; \
+			[ -h $(KERNEL_SOURCE_DIR)/$$i ] && $(RM) $(KERNEL_SOURCE_DIR)/$$i; \
+			touch $(KERNEL_SOURCE_DIR)/$$i; \
 		fi \
 	done
 	ln -s linux-$(KERNEL_VERSION_MAJOR) $(KERNEL_DIR)/linux
@@ -106,7 +105,7 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(DL_KERNEL_SOURCE) | $(UNPACK_TARBALL_PRE
 
 $(KERNEL_DIR)/.configured: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
 	$(call _ECHO, configuring... )
-	cp $(KERNEL_CONFIG_FILE) $(KERNEL_BUILD_ROOT_DIR)/.config
+	cp $(KERNEL_CONFIG_FILE) $(KERNEL_SOURCE_DIR)/.config
 	$(SUBMAKE) $(KERNEL_COMMON_MAKE_OPTIONS) oldconfig
 	touch $@
 
@@ -116,7 +115,7 @@ $(KERNEL_DIR)/.prepared: $(KERNEL_DIR)/.configured
 
 $(KERNEL_HEADERS_DEVEL_DIR)/include/linux/version.h: $(KERNEL_DIR)/.prepared
 ifeq ($(strip $(FREETZ_KERNEL_VERSION_2_6_13)),y)
-	$(call COPY_KERNEL_HEADERS,$(KERNEL_BUILD_ROOT_DIR),$(KERNEL_HEADERS_DEVEL_DIR),{asm$(_comma)asm-generic$(_comma)linux$(_comma)mtd$(_comma)scsi$(_comma)video})
+	$(call COPY_KERNEL_HEADERS,$(KERNEL_SOURCE_DIR),$(KERNEL_HEADERS_DEVEL_DIR),{asm$(_comma)asm-generic$(_comma)linux$(_comma)mtd$(_comma)scsi$(_comma)video})
 else
 	$(SUBMAKE) $(KERNEL_COMMON_MAKE_OPTIONS) headers_install
 	find "$(KERNEL_HEADERS_DEVEL_DIR)" \( -name "..install.cmd" -o -name ".install" \) -exec rm -f \{\} \+
@@ -153,17 +152,17 @@ $(AVM_KERNEL_CONFIG_DIR)/avm_kernel_config_area.S: $(AVM_KERNEL_CONFIG_DIR)/avm_
 avm_kernel_config: $(AVM_KERNEL_CONFIG_DIR)/avm_kernel_config_area.S
 endif
 
-$(KERNEL_BUILD_ROOT_DIR)$(KERNEL_IMAGE_BUILD_SUBDIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.prepared $(KERNEL_BUILD_DEPENDENCIES) | $(TOOLS_DIR)/lzma $(TOOLS_DIR)/lzma2eva
+$(KERNEL_SOURCE_DIR)$(KERNEL_IMAGE_BUILD_SUBDIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.prepared $(KERNEL_BUILD_DEPENDENCIES) | $(TOOLS_DIR)/lzma $(TOOLS_DIR)/lzma2eva
 	$(call _ECHO, kernel image... )
 	$(SUBMAKE) $(KERNEL_COMMON_MAKE_OPTIONS) $(KERNEL_IMAGE)
 	touch -c $@
 
-$(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY): $(KERNEL_BUILD_ROOT_DIR)$(KERNEL_IMAGE_BUILD_SUBDIR)/$(KERNEL_IMAGE) | $(KERNEL_TARGET_DIR)
-	cp $(KERNEL_BUILD_ROOT_DIR)$(KERNEL_IMAGE_BUILD_SUBDIR)/$(KERNEL_IMAGE) $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY)
-	cp $(KERNEL_BUILD_ROOT_DIR)/System.map $(KERNEL_TARGET_DIR)/System-$(KERNEL_ID).map
+$(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY): $(KERNEL_SOURCE_DIR)$(KERNEL_IMAGE_BUILD_SUBDIR)/$(KERNEL_IMAGE) | $(KERNEL_TARGET_DIR)
+	cp $(KERNEL_SOURCE_DIR)$(KERNEL_IMAGE_BUILD_SUBDIR)/$(KERNEL_IMAGE) $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY)
+	cp $(KERNEL_SOURCE_DIR)/System.map $(KERNEL_TARGET_DIR)/System-$(KERNEL_ID).map
 	touch -c $@
 
-$(KERNEL_DIR)/.modules-$(SYSTEM_TYPE)$(SYSTEM_TYPE_CORE_SUFFIX): $(KERNEL_BUILD_ROOT_DIR)$(KERNEL_IMAGE_BUILD_SUBDIR)/$(KERNEL_IMAGE)
+$(KERNEL_DIR)/.modules-$(SYSTEM_TYPE)$(SYSTEM_TYPE_CORE_SUFFIX): $(KERNEL_SOURCE_DIR)$(KERNEL_IMAGE_BUILD_SUBDIR)/$(KERNEL_IMAGE)
 	@$(call _ECHO, modules... )
 	$(SUBMAKE) $(KERNEL_COMMON_MAKE_OPTIONS) modules
 	$(SUBMAKE) $(KERNEL_COMMON_MAKE_OPTIONS) modules_install
@@ -186,16 +185,16 @@ kernel-help:
 
 kernel-menuconfig: $(KERNEL_DIR)/.configured
 	$(SUBMAKE) $(KERNEL_COMMON_MAKE_OPTIONS) menuconfig
-	-cp -f $(KERNEL_BUILD_ROOT_DIR)/.config $(KERNEL_CONFIG_FILE) && \
+	-cp -f $(KERNEL_SOURCE_DIR)/.config $(KERNEL_CONFIG_FILE) && \
 	touch $(KERNEL_DIR)/.configured
 
 kernel-xconfig: $(KERNEL_DIR)/.configured
 	$(SUBMAKE) $(KERNEL_COMMON_MAKE_OPTIONS) xconfig
-	-cp -f $(KERNEL_BUILD_ROOT_DIR)/.config $(KERNEL_CONFIG_FILE) && \
+	-cp -f $(KERNEL_SOURCE_DIR)/.config $(KERNEL_CONFIG_FILE) && \
 	touch $(KERNEL_DIR)/.configured
 
 kernel-oldconfig: $(KERNEL_DIR)/.configured
-	-cp -f $(KERNEL_BUILD_ROOT_DIR)/.config $(KERNEL_CONFIG_FILE) && \
+	-cp -f $(KERNEL_SOURCE_DIR)/.config $(KERNEL_CONFIG_FILE) && \
 	touch $(KERNEL_DIR)/.configured
 
 kernel-source: $(KERNEL_DIR)/.unpacked
@@ -204,9 +203,9 @@ kernel-clean:
 	-$(SUBMAKE) $(KERNEL_COMMON_MAKE_OPTIONS) clean
 
 kernel-mrproper:
-	-cp -f $(KERNEL_BUILD_ROOT_DIR)/.config $(KERNEL_CONFIG_FILE)
+	-cp -f $(KERNEL_SOURCE_DIR)/.config $(KERNEL_CONFIG_FILE)
 	$(SUBMAKE) $(KERNEL_COMMON_MAKE_OPTIONS) mrproper
-	-cp -f $(KERNEL_CONFIG_FILE) $(KERNEL_BUILD_ROOT_DIR)/.config
+	-cp -f $(KERNEL_CONFIG_FILE) $(KERNEL_SOURCE_DIR)/.config
 	-$(SUBMAKE) kernel-oldconfig
 
 kernel-dirclean:
