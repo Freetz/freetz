@@ -42,12 +42,16 @@ if head_id_long=$(git_hash @ 2>/dev/null); then
 
 	# check for uncommitted changes
 	#
-	# Note:
-	#  do not use "git diff-index --name-only @"
-	#  it has issues when invoked in fakeroot context
-	#  s. https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6147b1cf19651c7de297e69108b141fb30aa2349
-	#  for a detailed explanation
-	if git status -uno --porcelain | read dummy; then
+	# The solution implemented below is based on the following kernel commits (time order, the latest is the most important one):
+	#   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=6147b1cf19651c7de297e69108b141fb30aa2349
+	#   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=8ef14c2c41d962756d314f1d7dc972b0ea7a180f
+	#   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=ff64dd4857303dd5550faed9fd598ac90f0f2238
+	# We intentionally do not implement the fallback to
+	#   git diff-index --name-only @
+	# as it produces unreliable results (false positives for "dirty") when invoked in fakeroot context.
+	# Instead we prefer to omit the dirty-flag completely if it could not be determined in a reliable way.
+	# Note --no-optional-locks is supported since git-2.15.0
+	if git --no-optional-locks status -uno --porcelain 2>/dev/null | read dummy; then
 		dirty="-dirty"
 	fi
 
