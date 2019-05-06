@@ -15,6 +15,8 @@ $(PKG)_MODULES_TARGET_DIR := $($(PKG)_MODULES:%=$(KERNEL_MODULES_DIR)/drivers/us
 
 $(PKG)_DEPENDS_ON += kernel sysfsutils glib2
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_KERNEL_VERSION
+
 $(PKG)_CONFIGURE_PRE_CMDS += cd src; ./autogen.sh;
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
