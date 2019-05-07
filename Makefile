@@ -281,6 +281,7 @@ else
 			echo "No cache, refresh URL by web" >/dev/null; \
 			DL_URL_CONTAINER="$$$$(wget --timeout=20 -q $$$$DL_URL_LATEST -O -| \
 			sed -r "s/\tint\t/\ten\t/g;s/\t\t/\tde\t/g;s/\t\t/\tde\t/g;s/(.*)(\t[^\t]*)/\1\tlabor\2/g;s/(.*\t)labor(\t.*07\.03.*)/\1beta\2/g" | \
+			grep -vP "\t2018-[0-9 :-]*\t" | \
 			grep -P "^$$(call qstrip,$(FREETZ_TYPE_PREFIX_BOXMATRIX))\t$$(call qstrip,$(FREETZ_TYPE_LANGUAGE))\t" | \
 			sed -rn "s/.*\t$$(call patsubst,_%,%,$$(call qstrip,$(FREETZ_TYPE_PREFIX_LABOR_FIRMWARE)))\t([^\t]*)$$$$/\1/p" | \
 			head -n1)"; \
