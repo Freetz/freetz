@@ -32,7 +32,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-log-path="/var/log"
 $(PKG)_CONFIGURE_OPTIONS += --with-db-path="/tmp/minidlna"
 $(PKG)_CONFIGURE_OPTIONS += --with-os-name="FRITZ!Box"
 $(PKG)_CONFIGURE_OPTIONS += --with-os-version=""
-$(PKG)_CONFIGURE_OPTIONS += --with-os-url="https://freetz.github.io"
+$(PKG)_CONFIGURE_OPTIONS += --with-os-url="https://trac.boxmatrix.info/freetz-ng"
 
 $(PKG)_CONFIGURE_ENV += ac_cv_lib_avahi_client_avahi_threaded_poll_new=no
 
