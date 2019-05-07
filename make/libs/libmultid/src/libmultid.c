@@ -85,6 +85,7 @@ change_port (u_short *pport)
 {
 	u_short port = ntohs (*pport);
 	switch (port) {
+#if defined(D_DNS) || defined(D_DHCP) || defined(D_LLMNR)
 #ifdef D_DNS
 	case 53:
 #endif
@@ -98,6 +99,7 @@ change_port (u_short *pport)
 		port += 50000;
 		*pport = htons (port);
 		return 1;
+#endif
 	default:
 		return 0;
 	}
