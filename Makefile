@@ -291,7 +291,7 @@ else
 			DL_URL_CONTAINER="$$$$(cat $$(DL_FW_DIR)/$$(DL_SOURCE$(1)).url.bak 2>/dev/null)"; \
 		fi; \
 		if [ -z "$$$$DL_URL_CONTAINER" ]; then \
-			$$(call ERROR,3,Failed to detect the URL of the latest firmware version - check https://boxmatrix.info/wiki/Download-News) \
+			$$(call ERROR,3,Failed to detect the URL of the latest firmware version - check https://boxmatrix.info/wiki/Labor-Files) \
 		fi; \
 		echo "$$$$DL_URL_CONTAINER" > "$$(DL_FW_DIR)/$$(DL_SOURCE$(1)).url.bak"; \
 		echo "Available download URL: $$$$DL_URL_CONTAINER" >/dev/null; \
