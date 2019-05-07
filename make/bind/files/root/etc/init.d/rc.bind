@@ -21,10 +21,10 @@ start() {
 	return 0
 }
 
-stop_checkmultid() {
+stop() {
 	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid stop >/dev/null
-	#kill $(cat $PID_FILE) 2>/dev/null
-	modlib_stop $DAEMON_BIN 
+	kill $(cat $PID_FILE) 2>/dev/null
+	sleep 1
 	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid start >/dev/null
 	return 0
 }
@@ -57,7 +57,7 @@ case $1 in
 		modlib_start
 		;;
 	stop)
-		stop_checkmultid
+		modlib_stop
 		;;
 	restart)
 		if [ "$FREETZ_AVMDAEMON_DISABLE_DNS" != "y" ]; then
