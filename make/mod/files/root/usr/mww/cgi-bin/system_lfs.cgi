@@ -82,9 +82,10 @@ resmnt() {
 }
 resunm() {
 	for X in $INNER $OUTER; do
-		[ -d $X ] || continue
-		umount $X
-		rmdir $X
+		while [ -d $X ]; do
+			umount $X
+			rmdir $X
+		done
 	done
 }
 
@@ -98,7 +99,6 @@ PRIB="$(imginfo /)"
 find "${CACHE%/*}/" -maxdepth 1 -name "${CACHE##*/}" -mmin +9 -exec rm -f {} ';'
 SECB="$(cat $CACHE 2>/dev/null)"
 if [ -z "$SECB" ]; then
-	(sleep 3; resunm)&
 	resmnt
 	SECB="$(imginfo $MNT | tee $CACHE)"
 fi

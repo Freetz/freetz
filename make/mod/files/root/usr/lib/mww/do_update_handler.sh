@@ -55,6 +55,14 @@ status() {
 
 cgi_begin '$(lang de:"Firmware-Update" en:"Firmware update")'
 
+#system_lfs
+for X in /tmp/.lfs.wrapper /tmp/.lfs.reserve; do
+	while [ -d $X ]; do
+		umount $X
+		rmdir $X
+	done
+done
+
 if [ "${FILENAME##*.}" != "image" ]; then
 	"<h1>$(lang de:"Update vorbereiten" en:"Prepare update")</h1>"
 	pre_begin
