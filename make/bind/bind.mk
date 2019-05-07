@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 9.11.4)
+$(call PKG_INIT_BIN, 9.11.6-P1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=595070b031f869f8939656b5a5d11b121211967f15f6afeafa895df745279617
+$(PKG)_SOURCE_SHA256:=58ace2abb4d048b67abcdef0649ecd6cbd3b0652734a41a1d34f942d5500f8ef
 $(PKG)_SITE:=http://ftp.isc.org/isc/bind9/$($(PKG)_VERSION)
 
 $(PKG)_STARTLEVEL=40 # multid-wrapper may start it earlier!
@@ -19,7 +19,7 @@ $(eval $(call $(PKG)_DEFS,bin,nsupdate dig))
 
 $(PKG)_EXCLUDED+=$(if $(FREETZ_PACKAGE_BIND_NAMED),,usr/lib/bind usr/lib/cgi-bin/bind.cgi etc/default.bind etc/init.d/rc.bind)
 
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure ./unit/atf-src/configure)
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure) 
 
 $(PKG)_CONFIGURE_OPTIONS += BUILD_CC="$(HOSTCC)"
 $(PKG)_CONFIGURE_OPTIONS += --disable-shared
@@ -29,6 +29,7 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-epoll=no
 $(PKG)_CONFIGURE_OPTIONS += --with-randomdev="/dev/random"
 $(PKG)_CONFIGURE_OPTIONS += --with-libtool
 $(PKG)_CONFIGURE_OPTIONS += --without-openssl
+$(PKG)_CONFIGURE_OPTIONS += --without-python
 $(PKG)_CONFIGURE_OPTIONS += --without-gssapi
 $(PKG)_CONFIGURE_OPTIONS += --disable-isc-spnego
 $(PKG)_CONFIGURE_OPTIONS += --without-pkcs11
@@ -47,9 +48,6 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 $(PKG)_MAKE_FLAGS += EXTRA_CFLAGS="-ffunction-sections -fdata-sections" EXTRA_BINARY_LDFLAGS="-Wl,--gc-sections"
 
 $(PKG)_EXPORT_LIB_DIR := $(FREETZ_BASE_DIR)/$(BIND_DIR)/_exportlib
-#$(PKG)_CONFIGURE_OPTIONS += --enable-exportlib
-#$(PKG)_CONFIGURE_OPTIONS += --with-export-includedir="$($(PKG)_EXPORT_LIB_DIR)/include"
-#$(PKG)_CONFIGURE_OPTIONS += --with-export-libdir="$($(PKG)_EXPORT_LIB_DIR)/lib"
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
