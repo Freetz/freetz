@@ -2,7 +2,7 @@
 
 echo1 "removing WLAN files"
 rm_files $(find ${FILESYSTEM_MOD_DIR}/lib/modules -name '*wireless*')
-rm_files $(find ${FILESYSTEM_MOD_DIR} ! -name '*.cfg' -a -name '*wlan*' | grep -Ev '^${FILESYSTEM_MOD_DIR}/(dev|oldroot|proc|sys|var)/')
+rm_files $(find ${FILESYSTEM_MOD_DIR} ! -name '*.cfg' -a -name '*wlan*' | grep -Ev "^${FILESYSTEM_MOD_DIR}/(dev|oldroot|proc|sys|var)/")
 rm_files \
   ${FILESYSTEM_MOD_DIR}/lib/modules/fw_dcrhp_1150_ap.bin \
   ${FILESYSTEM_MOD_DIR}/sbin/hostapd \
@@ -40,7 +40,7 @@ sedfile="${HTML_LANG_MOD_DIR}/net/boxnet.lua"
 
 # patcht Internet > Zugangsdaten > Internetzugang
 sedfile="${HTML_LANG_MOD_DIR}/internet/internet_settings.lua"
-if [ -e $sedfile ]; then
+if [ "$FREETZ_AVM_VERSION_06_0X_MAX" == "y" -a -e $sedfile ]; then
 	modsed '/^require"wlanscan"$/d' $sedfile
 	modsed '/^wlanscanOnload.*$/d' $sedfile
 fi
