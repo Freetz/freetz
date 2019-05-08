@@ -81,6 +81,7 @@ homelua_disable_wrapper() {
 #enable_page <page>
 #enabled hidden/disabled menu entries in menu_show.lua
 enable_page() {
+	[ -e "${HTML_LANG_MOD_DIR}/menus/menu_show.lua" ] || return
 	modsed \
  	  "s/${1}.lua\"] =/& true ; dummy =/g" \
 	  "${HTML_LANG_MOD_DIR}/menus/menu_show.lua"
@@ -248,13 +249,14 @@ echoX()
 	local indent no_indent prefix no_newline bold unbold colour uncolour
 	OPTIND=0
 	# Leading colon means: silent error handling, no getopts errors on console
-	while getopts :i:p:lnbc opt; do
+	while getopts :i:p:lnbhc opt; do
 		case $opt in
 			i) indent="$OPTARG" ;;
 			l) no_indent=1 ;;
 			p) prefix="$OPTARG" ;;
 			n) no_newline=-n ;;
 			b) bold='\033[1m'; unbold='\033[0m' ;;
+			h) [ "$FREETZ_VERBOSITY_LEVEL" -gt 2 ] && colour='\033[94m' && uncolour='\033[m' ;;
 			c) colour='\033[33m'; uncolour='\033[m' ;; # ANSI brown/yellow
 			?) break ;; # unknown parameter -> stop option parsing
 		esac
