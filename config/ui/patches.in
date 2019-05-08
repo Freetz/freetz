@@ -839,7 +839,7 @@ config FREETZ_REMOVE_AVM_E2FSPROGS
 
 config FREETZ_REMOVE_VOIPD
 	bool "Remove VoIP"
-	depends on FREETZ_AVM_HAS_PHONE
+	depends on FREETZ_AVM_HAS_PHONE && !FREETZ_AVM_VERSION_06_5X_MIN
 	default n
 	help
 		This removes the integrated sip-client and -server and the releated Web menu,
