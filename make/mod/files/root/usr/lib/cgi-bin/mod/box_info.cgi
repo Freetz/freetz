@@ -32,19 +32,23 @@ if [ -r /var/env ]; then
 		case $key in
 			urlader-version)   urladerversion=$value ;;
 			bootloaderVersion) loaderversion=$value ;;
+			webgui_pass)       defaultpass=$value ;;
 			my_ipaddress)      ip_init_address=$value ;;
 			maca)              mac_lan=$value ;;
 			macdsl)            mac_dsl=$value ;;
 			macwlan)           mac_wlan=$value ;;
+			macwlan2)          mac_wlan2=$value ;;
 		esac
 	done < /var/env
 else
 	urladerversion=$notdefined
 	loaderversion=$notdefined
+	defaultpass=$notdefined
 	ip_init_address=$notdefined
 	mac_lan=$notdefined
 	mac_dsl=$notdefined
 	mac_wlan=$notdefined
+	mac_wlan2=$notdefined
 fi
 if [ -r /proc/cpuinfo ]; then
 	cpu_family=$(sed -ne '/system type/ s/.*: //p' /proc/cpuinfo | sed 's/ .*//;s/Ikanos/IKS/')
@@ -89,8 +93,9 @@ fi
 _CONFIG_NAND="$(echo $CONFIG_ROMSIZE | sed -ne "s/^.*nand_size=\([0-9]*\).*/\1/p")"
 _CONFIG_TFFS="$(echo $CONFIG_ROMSIZE | sed -ne "s/^.*sflash_size=\([0-9]*\).*/\1/p")"
 [ $(which run_clock) ] && run_clock=$(run_clock | sed 's/.*: //')
+reboot_status="$(cat /proc/sys/urlader/reboot_status 2>/dev/null)"
 
-sec_begin '$(lang de:"Hardware-Informationen" en:"Information about hardware")'
+sec_begin '$(lang de:"Hardware" en:"Hardware")'
 
 echo "<dl class='info'>"
 echo "<dt>$(lang de:"Boxname" en:"Box name")</dt><dd>$CONFIG_PRODUKT_NAME</dd>"
@@ -142,6 +147,17 @@ if [ -e /proc/clocks -o -e /proc/sys/urlader/environment ]; then
 	echo "</dl>"
 fi
 
+sec_end
+
+sec_begin '$(lang de:"Bootenvironment" en:"Boot environment")'
+
+echo "<dl class='info'>"
+[ -n "$loaderversion" ]  && echo "<dt>$(lang de:"Bootloaderversion" en:"Version of bootloader")</dt><dd>$loaderversion</dd>"
+[ -n "$urladerversion" ] && echo "<dt>$(lang de:"Urladerversion" en:"Version of urlader")</dt><dd>$urladerversion</dd>"
+[ -n "$loaderversion$urladerversion" -a -n "$defaultpass$reboot_status" ] && echo "</dl>"&& echo "<dl class='info'>"
+[ -n "$defaultpass" ]    && echo "<dt>$(lang de:"Standardpasswort" en:"Default password")</dt><dd>$defaultpass</dd>"
+[ -n "$reboot_status" ]  && echo "<dt>$(lang de:"Rebootursache" en:"Reboot cause")</dt><dd>$reboot_status</dd>"
+echo "</dl>"
 if [ -n "$run_clock" ]; then
 	echo "<dl class='info'>"
 	echo "<dt>$(lang de:"Betriebsstundenz&auml;hler" en:"Operating hours counter")</dt><dd>$run_clock</dd>"
@@ -183,18 +199,19 @@ echo "<dt>MAC$(lang de:"-Adressen" en:" address")</dt><dd><dl>"
 echo "<dt>DSL</dt><dd><small>$mac_dsl</small></dd>"
 echo "<dt>LAN</dt><dd><small>$mac_lan</small></dd>"
 echo "<dt>WLAN</dt><dd><small>$mac_wlan</small></dd>"
+[ -n "$$mac_wlan2" ] && echo "<dt>WLAN2</dt><dd><small>$mac_wlan2</small></dd>"
 echo "</dl></dd></dl>"
 
 sec_end
 
 avsar_ver=/proc/avalanche/avsar_ver
 if [ -r "$avsar_ver" ]; then
-	sec_begin '$(lang de:"DSL-Treiber und Hardware" en:"DSL drivers and hardware")'
+	sec_begin '$(lang de:"DSL-Treiber und -Hardware" en:"DSL drivers and hardware")'
 		echo "<pre class='plain'>$(cat "$avsar_ver")</pre>"
 	sec_end
 fi
 
-sec_begin '$(lang de:"Firmware-Informationen" en:"Information about firmware")'
+sec_begin '$(lang de:"Firmware" en:"Firmware")'
 
 echo "<dl class='info'>"
 echo "<dt>Firmware$(lang de:"" en:" ")version</dt><dd>${CONFIG_VERSION_MAJOR}.${CONFIG_VERSION}"
@@ -206,17 +223,10 @@ echo "<dl class='info'>"
 echo "<dt>$(lang de:"Erstellungsdatum" en:"Compilation date") (AVM)</dt><dd>$avm_date</dd>"
 echo "</dl>"
 
-echo "<dl class='info'>"
-echo "<dt>$(lang de:"Bootloaderversion" en:"Version of bootloader")</dt><dd>$loaderversion</dd>"
-[ -n "$urladerversion" ] && echo "<dt>$(lang de:"Urladerversion" en:"Version of urlader")</dt><dd>$urladerversion</dd>"
-reboot_status="$(cat /proc/sys/urlader/reboot_status 2>/dev/null)"
-[ -n "$reboot_status" ] && echo "<dt>$(lang de:"Rebootursache" en:"Reboot cause")</dt><dd>$reboot_status</dd>"
-echo "</dl>"
-
 sec_end
 
 if [ -r /var/env.cache ]; then
-	sec_begin '$(lang de:"Umgebungsvariablen" en:"Environment variables")'
+	sec_begin '$(lang de:"Eigenschaften" en:"Properties")'
 		echo -n '<div class="textwrapper"><textarea style="margin-top:6px;" name="content" rows="5" cols="10" wrap="off" readonly>'
 		sed -e "s/^export //g" /var/env.cache | html
 		echo -n '</textarea></div>'
