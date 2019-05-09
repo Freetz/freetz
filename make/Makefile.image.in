@@ -17,7 +17,6 @@ endif
 ifneq ($(strip $(FREETZ_DL_SOURCE$(1)_CONTAINER)),)
 DL_SOURCE$(1)_CONTAINER:=$(call qstrip,$(FREETZ_DL_SOURCE$(1)_CONTAINER))
 DL_SOURCE$(1)_CONTAINER_MD5:=$(call qstrip,$(FREETZ_DL_SOURCE$(1)_CONTAINER_MD5))
-DL_SOURCE$(1)_CONTAINER_SUFFIX:=$(suffix $(call qstrip,$(FREETZ_DL_SOURCE$(1)_CONTAINER)))
 endif
 endef
 
@@ -53,7 +52,7 @@ else
 				$$(call ERROR,3,Could not download firmware image. See http://trac.freetz.org/wiki/FAQ#Couldnotdownloadfirmwareimage for details.) \
 			fi; \
 		fi; \
-		case "$$(DL_SOURCE$(1)_CONTAINER_SUFFIX)" in \
+		case "$$(suffix $$(DL_SOURCE$(1)_CONTAINER))" in \
 			.zip|.ZIP) \
 				if ! unzip -j $$(QUIETSHORT) $$(DL_FW_DIR)/$$(DL_SOURCE$(1)_CONTAINER) *$$(if $$(DL_SOURCE$(1)_REMOTE),$$(DL_SOURCE$(1)_REMOTE),$$(DL_SOURCE$(1)_LOCAL)) -d $$(DL_FW_DIR); then \
 					$$(call ERROR,3,Could not unzip firmware image.) \
