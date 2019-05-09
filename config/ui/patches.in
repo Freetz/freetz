@@ -324,7 +324,7 @@ menu "Remove brandings"
 	depends on FREETZ_AVM_HAS_MULTIPLE_BRANDINGS
 
 config FREETZ_REMOVE_BRANDING_1und1
-	bool "1&1"
+	bool "1und1"
 	depends on FREETZ_AVM_HAS_BRANDING_1und1
 	default n
 	help
@@ -338,12 +338,27 @@ config FREETZ_REMOVE_BRANDING_1und1
 
 		echo $(cat /proc/sys/urlader/firmware_version)
 
+config FREETZ_REMOVE_BRANDING_aol
+	bool "aol"
+	depends on FREETZ_AVM_HAS_BRANDING_aol
+	default n
+	help
+		AOL branding
+
+		Each branding provides the web UI templates for a certain manufacturer or OEM.
+
+		NOTE: Make sure not to remove the branding corresponding to the one defined
+		in your box's boot loader environment. It can be determined by calling the
+		following command from the box's shell prompt:
+
+		echo $(cat /proc/sys/urlader/firmware_version)
+
 config FREETZ_REMOVE_BRANDING_avm
-	bool "AVM"
+	bool "avm"
 	depends on FREETZ_AVM_HAS_BRANDING_avm
 	default n
 	help
-		AVM branding
+		AVM (german) branding
 
 		Each branding provides the web UI templates for a certain manufacturer or OEM.
 
@@ -354,11 +369,11 @@ config FREETZ_REMOVE_BRANDING_avm
 		echo $(cat /proc/sys/urlader/firmware_version)
 
 config FREETZ_REMOVE_BRANDING_avme
-	bool "AVM international"
+	bool "avme"
 	depends on FREETZ_AVM_HAS_BRANDING_avme
 	default n
 	help
-		AVM international branding
+		AVME (international) branding
 
 		Each branding provides the web UI templates for a certain manufacturer or OEM.
 
@@ -382,6 +397,21 @@ config FREETZ_REMOVE_BRANDING_ewetel
 
 		echo $(cat /proc/sys/urlader/firmware_version)
 
+config FREETZ_REMOVE_BRANDING_freenet
+	bool "freenet"
+	depends on FREETZ_AVM_HAS_BRANDING_freenet
+	default n
+	help
+		Freenet branding
+
+		Each branding provides the web UI templates for a certain manufacturer or OEM.
+
+		NOTE: Make sure not to remove the branding corresponding to the one defined
+		in your box's boot loader environment. It can be determined by calling the
+		following command from the box's shell prompt:
+
+		echo $(cat /proc/sys/urlader/firmware_version)
+
 config FREETZ_REMOVE_BRANDING_otwo
 	bool "otwo"
 	depends on FREETZ_AVM_HAS_BRANDING_otwo
@@ -396,38 +426,8 @@ config FREETZ_REMOVE_BRANDING_otwo
 
 		echo $(cat /proc/sys/urlader/firmware_version)
 
-config FREETZ_REMOVE_BRANDING_aol
-	bool "AOL"
-	depends on FREETZ_AVM_HAS_BRANDING_aol
-	default n
-	help
-		AOL branding
-
-		Each branding provides the web UI templates for a certain manufacturer or OEM.
-
-		NOTE: Make sure not to remove the branding corresponding to the one defined
-		in your box's boot loader environment. It can be determined by calling the
-		following command from the box's shell prompt:
-
-		echo $(cat /proc/sys/urlader/firmware_version)
-
-config FREETZ_REMOVE_BRANDING_freenet
-	bool "Freenet"
-	depends on FREETZ_AVM_HAS_BRANDING_freenet
-	default n
-	help
-		Freenet branding
-
-		Each branding provides the web UI templates for a certain manufacturer or OEM.
-
-		NOTE: Make sure not to remove the branding corresponding to the one defined
-		in your box's boot loader environment. It can be determined by calling the
-		following command from the box's shell prompt:
-
-		echo $(cat /proc/sys/urlader/firmware_version)
-
 config FREETZ_REMOVE_BRANDING_versatel
-	bool "Versatel"
+	bool "versatel"
 	depends on FREETZ_AVM_HAS_BRANDING_versatel
 	default n
 	help
