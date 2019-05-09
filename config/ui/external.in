@@ -15,12 +15,12 @@ menu "External processing"
 			Do NOT external files needed to boot up Freetz!
 
 	config EXTERNAL_NOEXEC
-		bool "Select drop-noexec patch"
+		bool "Select: Drop noexec on external storages"
 		default y
-		depends on FREETZ_AVM_HAS_NOEXEC
-		select FREETZ_DROP_NOEXEC
+		depends on EXTERNAL_ENABLED && FREETZ_AVM_HAS_NOEXEC
+		select FREETZ_DROP_NOEXEC_EXTERNAL
 		help
-			Selects the "Drop noexec on mount" patch
+			Selects the "Drop noexec on external storages" patch
 
 	config EXTERNAL_DOWNLOADER
 		bool "Prepare files for Downloader"
