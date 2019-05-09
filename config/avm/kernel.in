@@ -250,10 +250,13 @@ config FREETZ_AVM_KERNEL_CONFIG_AREA_SIZE
 	depends on FREETZ_KERNEL_VERSION_3_10_MIN
 	int
 	#
-	default 96              if FREETZ_SYSTEM_TYPE_GRX5 && FREETZ_AVM_VERSION_06_8X_MAX
-	default 160             if FREETZ_SYSTEM_TYPE_GRX5 && FREETZ_AVM_VERSION_06_9X_MIN
+	default 96              if FREETZ_SYSTEM_TYPE_GRX5    && FREETZ_AVM_VERSION_06_8X_MAX
+	default 160             if FREETZ_SYSTEM_TYPE_GRX5    && FREETZ_AVM_VERSION_06_9X_MIN
 	#
-	# TODO: might be higher starting from Fritz!OS-7.1x, check the sources as soon as these are available, most likely 256
-	default 128             if FREETZ_SYSTEM_TYPE_IPQ40xx
+	default 128             if FREETZ_SYSTEM_TYPE_IPQ40xx && FREETZ_AVM_VERSION_07_0X_MAX
+	default 256             if FREETZ_SYSTEM_TYPE_IPQ40xx && FREETZ_AVM_VERSION_07_1X_MIN
 	#
-	default 64
+	default 64              if FREETZ_SYSTEM_TYPE_VR9
+	#
+	# unknown, let it intentionally fail
+	default -1

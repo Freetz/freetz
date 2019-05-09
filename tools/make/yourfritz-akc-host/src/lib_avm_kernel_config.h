@@ -11,7 +11,7 @@
 #include "linux/include/uapi/linux/avm_kernel_config.h"
 #endif
 
-bool isConsistentConfigArea(void *configArea, size_t configSize, bool *swapNeeded, uint32_t *moduleStructSize);
+bool isConsistentConfigArea(void *configArea, size_t configAreaBufferSize, size_t configSize, bool *swapNeeded, uint32_t *moduleStructSize);
 struct _avm_kernel_config* * relocateConfigArea(void *configArea, size_t configSize, uint32_t *moduleStructSize);
 
 uint32_t determineConfigAreaKernelSegment(uint32_t targetAddressSpacePtr);

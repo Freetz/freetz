@@ -39,30 +39,46 @@ void usage()
 	fprintf(stderr, "Licensed under GPLv2, see LICENSE file from source repository.\n\n");
 	fprintf(stderr, "Usage:\n\n");
 	fprintf(stderr, "avm_kernel_config.extract [ -s <size in KByte> ] [ -l <kernel load address> ] <unpacked_kernel> [<dtb_file>]\n");
-	fprintf(stderr, "\nThe specified DTB content (a compiled OF device tree BLOB) is");
-	fprintf(stderr, "\nsearched in the unpacked kernel and the place, where it's found");
-	fprintf(stderr, "\nis assumed to be within the original kernel config area.\n");
-	fprintf(stderr, "\nIf the DTB file is omitted, the kernel will be searched");
-	fprintf(stderr, "\nfor the FDT signature (0xD00DFEED in BE) and some checks");
-	fprintf(stderr, "\nare performed to guess the correct location.\n");
-	fprintf(stderr, "\nThe output is written to STDOUT, so you've to redirect it to the");
-	fprintf(stderr, "\nproper location.\n");
-	fprintf(stderr, "\nTo support different models with changing sizes of the embedded");
-	fprintf(stderr, "\nconfiguration area, a default size of 64 KB for this area is used,");
-	fprintf(stderr, "\nwhich may be overwritten with the -s option.\n");
+	fprintf(stderr, "\nThe unpacked kernel is searched for the specified DTB content (a compiled");
+	fprintf(stderr, "\ndevice tree BLOB). The position it's found at is assumed to be within the");
+	fprintf(stderr, "\noriginal kernel config area.\n");
+	fprintf(stderr, "\nIf the DTB file is omitted the kernel is searched for the FDT signature");
+	fprintf(stderr, "\n(0xD00DFEED in BE) and some checks are performed to guess the correct");
+	fprintf(stderr, "\nlocation.\n");
+	fprintf(stderr, "\nThe output is written to STDOUT, so you have to redirect it to a proper");
+	fprintf(stderr, "\nlocation.\n");
+	fprintf(stderr, "\nThe size of the embedded configuration area depends on the system type");
+	fprintf(stderr, "\nof the box and the firmware version. This tool implements a heuristic");
+	fprintf(stderr, "\ntrying to detect the proper size automatically. If it however fails");
+	fprintf(stderr, "\nthe option -s could be used to specify it explicitly.\n");
 	fprintf(stderr, "\nFor kernels loaded at addresses not aligned at 4K boundaries (GRX5 boxes)");
 	fprintf(stderr, "\n-l option must be used to make guessing the config area location possible.\n");
 }
 
-void * findConfigArea(void *kernelBuffer, void *dtbLocation, uint32_t kernelLoadAddr /* target address space */, size_t size)
+void * findConfigArea(void *kernelBuffer, size_t kernelBufferSize, void *dtbLocation, uint32_t kernelLoadAddr /* target address space */, size_t *size)
 {
-	if (kernelBuffer < dtbLocation)
+	if (kernelBuffer < dtbLocation && size != NULL)
 	{
 		uint32_t kernelSegmentStart = determineConfigAreaKernelSegment(kernelLoadAddr + (uint32_t)((char *)dtbLocation - (char *)kernelBuffer)); // target address space
 		void *configArea = targetPtr2HostPtr(kernelSegmentStart, kernelLoadAddr, kernelBuffer); // host address space
 
-		if (isConsistentConfigArea(configArea, size, NULL, NULL))
-			return configArea;
+		uint32_t configAreaOffset = (uint32_t)((char *)configArea - (char *)kernelBuffer);
+
+		if (configAreaOffset < kernelBufferSize) {
+			if (*size == 0) { // 0 means guess / try to autodetect
+				size_t potentialSize;
+				for (potentialSize = 16 * 1024; potentialSize <= 1024 * 1024; potentialSize += 16 * 1024) {
+					if (isConsistentConfigArea(configArea, (kernelBufferSize - configAreaOffset), potentialSize, NULL, NULL)) {
+						*size = potentialSize; // return detected size to the caller
+						return configArea;
+					}
+				}
+			} else {
+				// we intentionally pass *size, *size here as we want to be able to create shorter / less padded dumps
+				if (isConsistentConfigArea(configArea, *size, *size, NULL, NULL))
+					return configArea;
+			}
+		}
 	}
 
 	return NULL;
@@ -171,7 +187,7 @@ int main(int argc, char * argv[])
 	struct memoryMappedFile	dtb;
 	void *					dtbLocation = NULL;
 	uint32_t				kernelLoadAddr = 0;
-	ssize_t					size = 64 * 1024;
+	size_t					size = 0; // 0 means guess
 	int						i = 1;
 
 	/* no reason to use a getopt implementation for our simple calling convention */
@@ -279,13 +295,13 @@ int main(int argc, char * argv[])
 
 		if (dtbLocation != NULL)
 		{
-			void *configArea = findConfigArea(kernel.fileBuffer, dtbLocation, kernelLoadAddr, size);
+			void *configArea = findConfigArea(kernel.fileBuffer, kernel.fileStat.st_size, dtbLocation, kernelLoadAddr, &size);
 
 			if (configArea != NULL)
 			{
 				ssize_t written = write(1, configArea, size);
 
-				if (written == size)
+				if (written == (ssize_t)size)
 				{
 					returnCode = 0;
 				}
