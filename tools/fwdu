@@ -182,7 +182,18 @@ image() {
 		$FTOOLS/find-squashfs kf.image 2>&1 | grep 'signature found' >> "$nfo"
 		SIZE_K2="$(stat -c %s kernel.raw)"
 		SIZE_F2="$(stat -c %s kernelsquashfs.raw)"
-		rm -f kf.image kernel.raw
+		rm -f kf.image
+
+		# get avm_kernel_config size
+		declare -a load_addrs
+		load_addrs=($($FTOOLS/unpack-kernel kernel.raw kernel.raw.unpacked 2>/dev/null | sed -nre 's,.*LoadAddress=(.+),\1,p'))
+		for file in kernel.raw.unpacked kernel.raw.unpacked.2ND; do
+			[ -e $file ] || continue
+			[ "$file" != "${file/2ND/}" ] && load_addr="${load_addrs[1]}" || load_addr="${load_addrs[0]}"
+			akc_size="$($FTOOLS/avm_kernel_config.extract -l $load_addr $file 2>/dev/null | wc -c)"
+			[ "$akc_size" != "0" ] && echo "avm_kernel_config${file#kernel.raw.unpacked} size is $(( $akc_size / 1024 )) KB" >> "$nfo"
+		done
+		rm -f kernel.raw kernel.raw.unpacked kernel.raw.unpacked.2ND
 
 		SIZEKD="$(($SIZE_K1 - $SIZE_K2))"
 		SIZEFD="$(($SIZE_F1 - $SIZE_F2))"
