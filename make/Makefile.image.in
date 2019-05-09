@@ -17,7 +17,6 @@ endif
 ifneq ($(strip $(FREETZ_DL_SOURCE$(1)_CONTAINER)),)
 DL_SOURCE$(1)_CONTAINER:=$(call qstrip,$(FREETZ_DL_SOURCE$(1)_CONTAINER))
 DL_SOURCE$(1)_CONTAINER_MD5:=$(call qstrip,$(FREETZ_DL_SOURCE$(1)_CONTAINER_MD5))
-DL_SOURCE$(1)_CONTAINER_SUFFIX:=$(suffix $(DL_SOURCE$(1)_CONTAINER))
 endif
 endef
 
@@ -78,11 +77,9 @@ else
 		echo "Available download URL: $$$$DL_URL_CONTAINER" >/dev/null; \
 		DL_SITE0="$$$${DL_URL_CONTAINER%/*}"; \
 		DL_SOURCE0_CONTAINER="$$$${DL_URL_CONTAINER##*/}"; \
-		DL_SOURCE0_CONTAINER_SUFFIX=".$$$${DL_URL_CONTAINER##*\.}"; \
 	else \
 		DL_SITE0="$$(DL_SITE$(1))"; \
 		DL_SOURCE0_CONTAINER="$$(DL_SOURCE$(1)_CONTAINER)"; \
-		DL_SOURCE0_CONTAINER_SUFFIX="$$(DL_SOURCE$(1)_CONTAINER_SUFFIX)"; \
 	fi; \
 	if [ "$$(call qstrip,$(FREETZ_DL_DETECT_IMAGE_NAME))" == "y" ]; then \
 		rm -f "$$(IMAGE$(1))"; \
@@ -94,7 +91,7 @@ else
 					$$(call ERROR,3,Could not download firmware image. See https://trac.boxmatrix.info/freetz-ng/wiki/FAQ#Couldnotdownloadfirmwareimage for details.) \
 				fi; \
 			fi; \
-			case "$$$$DL_SOURCE0_CONTAINER_SUFFIX" in \
+			case ".$$$${DL_SOURCE0_CONTAINER##*\.}" in \
 				.zip|.ZIP) \
 					if [ "$$(FREETZ_DL_DETECT_IMAGE_NAME)" == "y" ]; then \
 						DL_SOURCE_DETECTED=$$$$(unzip -j $$(QUIETSHORT) -l $$(DL_FW_DIR)/$$$$DL_SOURCE0_CONTAINER *.image | sed -rn 's/.*( |\/)(.*\.image)/\2/p'); \
@@ -115,7 +112,7 @@ else
 					fi; \
 					;; \
 				*) \
-					$$(call ERROR,3,Not able to extract '$$$$DL_SOURCE0_CONTAINER_SUFFIX' archives at all.) \
+					$$(call ERROR,3,Not able to extract '$$$$DL_SOURCE0_CONTAINER' archive at all.) \
 					;; \
 			esac \
 		elif ! $$(DL_TOOL) --delete-on-trap --no-append-servers --checksum-optional $$(DL_FW_DIR) "$$(if $$(DL_SOURCE$(1)_REMOTE),$$(DL_SOURCE$(1)_REMOTE),$$(DL_SOURCE$(1)_LOCAL))" "$$$$DL_SITE0" $$(DL_SOURCE$(1)_MD5) $$(SILENT); then \
