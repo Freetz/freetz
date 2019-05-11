@@ -17,7 +17,7 @@ $(lang de:"Server f&uuml;r STUN/VoIP Methode" en:"Server for STUN/VoIP method"):
 <div style='margin-top:6px;'>$(lang de:"M&ouml;gliche Methoden" en:"Available methods"):</div>
 <pre>
 EOF
-get_ip --help | sed -nr 's/    -.,()/\1/p' | html
+get_ip --help | sed -nr '/^ *-h/d;s/    [- ][0-9 a-z][, ]()/\1/p' | html
 cat << EOF
 </pre>
 </p>
