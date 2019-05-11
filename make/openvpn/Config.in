@@ -8,42 +8,6 @@ config FREETZ_PACKAGE_OPENVPN
 	help
 		VPN Server
 
-choice
-	depends on FREETZ_PACKAGE_OPENVPN
-	prompt "SSL library"
-	default FREETZ_PACKAGE_OPENVPN_OPENSSL
-
-	config FREETZ_PACKAGE_OPENVPN_OPENSSL
-		bool "OpenSSL"
-		select FREETZ_OPENSSL_VERSION_PROMPT if FREETZ_PACKAGE_OPENVPN_STATIC
-		select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_OPENVPN_STATIC
-		select FREETZ_LIB_libssl    if ! FREETZ_PACKAGE_OPENVPN_STATIC
-
-	config FREETZ_PACKAGE_OPENVPN_MBEDTLS
-		bool "mbed TLS"
-		select FREETZ_LIB_libmbedcrypto if ! FREETZ_PACKAGE_OPENVPN_STATIC
-		select FREETZ_LIB_libmbedtls    if ! FREETZ_PACKAGE_OPENVPN_STATIC
-		select FREETZ_LIB_libmbedx509   if ! FREETZ_PACKAGE_OPENVPN_STATIC
-		help
-			Leads to smaller binaries, but lacks support for some openssl features.
-
-endchoice
-
-config FREETZ_PACKAGE_OPENVPN_FORCE_BLOWFISH
-	bool "Include cipher blowfish in mbedTLS"
-	depends on FREETZ_PACKAGE_OPENVPN && FREETZ_PACKAGE_OPENVPN_MBEDTLS
-	select FREETZ_LIB_libmbedcrypto_WITH_BLOWFISH if FREETZ_PACKAGE_OPENVPN_MBEDTLS
-	default n
-	help
-		Compile mbedTLS with support for OpenVPN default cipher "blowfish" (BF-CBC).
-		Library/Binary size will increase approx. 7k (uncompressed).
-
-config FREETZ_PACKAGE_OPENVPN_WITH_BLOWFISH
-	bool
-	depends on FREETZ_PACKAGE_OPENVPN_OPENSSL \
-		|| (FREETZ_PACKAGE_OPENVPN_MBEDTLS  && FREETZ_LIB_libmbedcrypto_WITH_BLOWFISH)
-	default y
-
 config FREETZ_PACKAGE_OPENVPN_STATIC
 	bool "Create statically linked binary"
 	depends on FREETZ_PACKAGE_OPENVPN
@@ -123,3 +87,38 @@ config FREETZ_PACKAGE_OPENVPN_USE_V2_CGI
 		New quite simple OpenVPN configuration interface.
 		It will not generate a configuration file based on GUI settings
 		but just ask for an existing configuration.
+		
+choice
+	depends on FREETZ_PACKAGE_OPENVPN
+	prompt "SSL library"
+	default FREETZ_PACKAGE_OPENVPN_OPENSSL
+
+	config FREETZ_PACKAGE_OPENVPN_OPENSSL
+		bool "OpenSSL"
+		select FREETZ_OPENSSL_VERSION_PROMPT if FREETZ_PACKAGE_OPENVPN_STATIC
+		select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_OPENVPN_STATIC
+		select FREETZ_LIB_libssl    if ! FREETZ_PACKAGE_OPENVPN_STATIC
+
+	config FREETZ_PACKAGE_OPENVPN_MBEDTLS
+		bool "mbed TLS"
+		select FREETZ_LIB_libmbedcrypto if ! FREETZ_PACKAGE_OPENVPN_STATIC
+		select FREETZ_LIB_libmbedtls    if ! FREETZ_PACKAGE_OPENVPN_STATIC
+		select FREETZ_LIB_libmbedx509   if ! FREETZ_PACKAGE_OPENVPN_STATIC
+		help
+			Leads to smaller binaries, but lacks support for some openssl features.
+endchoice
+
+config FREETZ_PACKAGE_OPENVPN_FORCE_BLOWFISH
+	bool "Include cipher blowfish in mbedTLS"
+	depends on FREETZ_PACKAGE_OPENVPN && FREETZ_PACKAGE_OPENVPN_MBEDTLS
+	select FREETZ_LIB_libmbedcrypto_WITH_BLOWFISH if FREETZ_PACKAGE_OPENVPN_MBEDTLS
+	default n
+	help
+		Compile mbedTLS with support for OpenVPN default cipher "blowfish" (BF-CBC).
+		Library/Binary size will increase approx. 7k (uncompressed).
+
+config FREETZ_PACKAGE_OPENVPN_WITH_BLOWFISH
+	bool
+	depends on FREETZ_PACKAGE_OPENVPN_OPENSSL \
+		|| (FREETZ_PACKAGE_OPENVPN_MBEDTLS  && FREETZ_LIB_libmbedcrypto_WITH_BLOWFISH)
+	default y
