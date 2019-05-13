@@ -419,7 +419,7 @@ function image_details() {
 	local AVM_FW_DATE
 	#SOURCE_IMAGE_DETAILS
 	#
-	AVM_FW_PRODUCT="$(sed -rn 's/export CONFIG_PRODUKT_NAME=".*([0-9]{3}[0-9V].*)"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | head -n1)" # 4-digits in /etc/init.d/rc.conf
+	AVM_FW_PRODUCT="$(sed -rn 's/Annex./Annex/;s/export CONFIG_PRODUKT_NAME=".*([0-9]{3}[0-9V].*)"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | head -n1)" # 4-digits in /etc/init.d/rc.conf
 	[ -z "${AVM_FW_PRODUCT}" ] && AVM_FW_PRODUCT="$(sed -rn 's/export CONFIG_PRODUKT_NAME="(FRITZ!Box|Speedport|Sinus|Eumex) ([^"]+)"/\2/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | head -n1 | tr ' ' '-')" # symbolic name in /etc/init.d/rc.conf
 	if [ -e "${FILESYSTEM_DIR}/etc/init.d/rc.init" ]; then
 		# /etc/init.d/rc.init is not available in all firmwares
@@ -1621,6 +1621,11 @@ if [ "$action_names" ]; then
 
 	modmakedate=$(date +%Y%m%d-%H%M%S)
 	modbaseimagename="${FREETZ_TYPE_PREFIX_ALIEN_HARDWARE}${FREETZ_TYPE_PREFIX%_0?_??}"
+	if [ "$FREETZ_AVM_HAS_ANNEX_A_AND_B" == "y" ]; then
+		modbaseimagename+="-Annex"
+		[ "$FREETZ_TYPE_ANNEX_A" ==  "y" ] && modbaseimagename+="A"
+		[ "$FREETZ_TYPE_ANNEX_B" ==  "y" ] && modbaseimagename+="B"
+	fi
 	modbaseimagename+="_${AVM_FW_VERSION}"
 	if [ -n "$FREETZ_TYPE_PREFIX_LABOR_FIRMWARE" ]; then
 		modbaseimagename+="-rev${AVM_FW_REVISION}${FREETZ_TYPE_PREFIX_LABOR_FIRMWARE}"
