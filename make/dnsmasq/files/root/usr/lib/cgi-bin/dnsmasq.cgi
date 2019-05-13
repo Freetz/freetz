@@ -69,13 +69,12 @@ cat << EOF
 <input type="hidden" name="avm_dns" value="no">
 <input id="avmdns1" type="checkbox" name="avm_dns" value="yes"$avm_dns_chk><label for="avmdns1"> $(lang de:"Durch AVM/Provider zugewiesene Upstream Nameserver nutzen." en:"Use the upstream nameservers of your provider/AVM.")</label>
 <br>$(lang de:"momentan: " en:"at the moment: ")
+<pre>
 EOF
-echo 'servercfg.dns1' | ar7cfgctl -s
+cat /var/tmp/avm-resolv.conf | cut -c 12- | sed 's/^/  /'
+
 cat << EOF
-$(lang de:" und " en:" and ")
-EOF
-echo 'servercfg.dns2' | ar7cfgctl -s
-cat << EOF
+</pre>
 </p>
 <p>$(lang de:"zus&auml;tzlich diese Upstream Nameserver nutzen (durch Leerzeichen getrennt)" en:"Use these upstream nameservers additionally (separated by space)"): <input type="text" name="upstream" size="55" maxlength="255" value="$(html "$DNSMASQ_UPSTREAM")"></p>
 <h2>$(lang de:"Zus&auml;tzliche Kommandozeilen-Optionen (f&uuml;r Experten)" en:"Additional command-line options (for experts)"):</h2>

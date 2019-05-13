@@ -11,8 +11,7 @@ EOF
 grep -i "^resolv-file=" /tmp/flash/dnsmasq/dnsmasq.extra -q 2>/dev/null || echo "no-resolv"
 #add avm upstream-servers
 if [ "$DNSMASQ_AVM_DNS" = yes ]; then
-	echo "server=$(echo 'servercfg.dns1' | ar7cfgctl -s)"
-	echo "server=$(echo 'servercfg.dns2' | ar7cfgctl -s)"
+	echo "resolv-file=/var/tmp/avm-resolv.conf"
 fi
 #add own upstream-servers
 if [ -n "$DNSMASQ_UPSTREAM" ]; then
