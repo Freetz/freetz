@@ -56,7 +56,7 @@ cat << EOF
 <p>$(lang de:"Skinauswahl" en:"Skin selection"):
 EOF
 for skin in $skins; do
-	skin_nice_name="$(echo -n "${skin:0:1}" | tr [:lower:] [:upper:])${skin:1}"
+	skin_nice_name="$(echo -n "${skin:0:1}" | tr '[:lower:]' '[:upper:]')${skin:1}"
 	echo "<input id=\""$skin"\" type=\"radio\" name=\"skin\" value=\""$skin"\" "$(eval echo \$${skin}_chk)"><label for=\""$skin"\"> "$skin_nice_name"</label>"
 done
 

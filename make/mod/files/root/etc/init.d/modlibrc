@@ -112,7 +112,7 @@ modlib_add_user_and_group() {
 modlib_check_running() {
 	[ -n "$FORCE_STATUS" ] && return $FORCE_STATUS
 	if [ -x /mod/etc/init.d/rc.inetd ]; then
-		[ "$(eval echo \$$(echo ${CONF_ENABLED} | tr [:lower:]- [:upper:]_))" == "inetd" ] && return 5
+		[ "$(eval echo \$$(echo ${CONF_ENABLED} | tr '[:lower:]-' '[:upper:]_'))" == "inetd" ] && return 5
 	fi
 	if [ -n "$DAEMON_CHECK" ]; then
 		for DAEMON_single in $DAEMON_CHECK; do

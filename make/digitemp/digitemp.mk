@@ -18,7 +18,7 @@ ifeq ($(strip $(FREETZ_PACKAGE_DIGITEMP_DS9097U)),y)
 $(PKG)_MAKE_TARGET:=ds9097u
 endif
 
-$(PKG)_MAKE_BINARY:=$($(PKG)_DIR)/digitemp_$(shell echo $($(PKG)_MAKE_TARGET) | tr [:lower:] [:upper:])
+$(PKG)_MAKE_BINARY:=$($(PKG)_DIR)/digitemp_$(shell echo $($(PKG)_MAKE_TARGET) | tr '[:lower:]' '[:upper:]')
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DIGITEMP_DS9097
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DIGITEMP_DS2490

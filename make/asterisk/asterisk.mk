@@ -267,7 +267,7 @@ $(pkg)-generate: | $($(PKG)_DIR)/menuselect-tree
 		| grep -v 'FREETZ_PACKAGE_ASTERISK_WITH' \
 		| sort -u \
 		| sed -r -e 's,[ \t]*config FREETZ_PACKAGE_ASTERISK_([0-9A-Za-z_]*).*,\1 \\,g' \
-		| tr [:upper:] [:lower:] \
+		| tr '[:upper:]' '[:lower:]' \
 		| sed -r -e 's,(res_xmpp) \\,\1,g' \
 		>> $(ASTERISK_MAKE_DIR)/asterisk-modules.mk.in \
 	) && echo "done"
