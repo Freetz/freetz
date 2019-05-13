@@ -23,8 +23,15 @@ start() {
 
 stop() {
 	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid stop >/dev/null
-	kill $(cat $PID_FILE) 2>/dev/null
-	sleep 1
+	local current_pid="$(cat $PID_FILE 2>/dev/null)"
+	kill $current_pid 2>/dev/null
+	#wait for shutdown
+	local cnt=0
+	while kill -0 $current_pid 2>/dev/null; do
+		let cnt++
+		[ $cnt -gt 9 ] && break
+		sleep 1
+	done
 	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid start >/dev/null
 	return 0
 }
