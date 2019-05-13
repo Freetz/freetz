@@ -56,16 +56,40 @@ define sorted-wildcard
 $(strip $(subst $(_bang),/,$(sort $(subst /,$(_bang),$(wildcard $(1))))))
 endef
 
+# 1 - string spaces to (un)escape within
+define escape-space
+$(subst $(_space),$(_space_escape),$(1))
+endef
+define unescape-space
+$(subst $(_space_escape),$(_space),$(1))
+endef
+
 #
-# $1 - some string like FOO-BAR1-BAR2-...
+# $1            - some string like FOO-BAR1-BAR2-...
+#                 the string is allowed to contain spaces
 # $2 (optional) - delimiter character, default '-' if omitted
+#                 the delimiter character it NOT allowed to be one of the (lower-case) hex digits, i.e. 0-9 a-f
+# $3 (optional) - component index, default 1
+#
+# returns:
+#   the $(3) component of $(1), i.e. BAR1 for $(call GET_STRING_COMPONENT,FOO-BAR1-BAR2-BAR3,-,2)
+#
+define GET_STRING_COMPONENT
+$(call unescape-space,$(subst $(_space),$(if $(strip $(2)),$(strip $(2)),-),$(word $(if $(strip $(3)),$(strip $(3)),1),$(subst $(if $(strip $(2)),$(strip $(2)),-),$(_space),$(call escape-space,$(1))))))
+endef
+
+#
+# $1            - some string like FOO-BAR1-BAR2-...
+#                 the string is allowed to contain spaces
+# $2 (optional) - delimiter character, default '-' if omitted
+#                 the delimiter character it NOT allowed to be one of the (lower-case) hex digits, i.e. 0-9 a-f
 # $3 (optional) - number of components to be included, default 2
 #
 # returns:
 #   the first $(3) components of $(1), i.e. FOO-BAR for FOO-BAR1-BAR2-...
 #
 define GET_STRING_COMPONENTS
-$(strip $(subst $(_space),$(if $(strip $(2)),$(strip $(2)),-),$(wordlist 1,$(if $(strip $(3)),$(strip $(3)),2),$(subst $(if $(strip $(2)),$(strip $(2)),-),$(_space),$(1)))))
+$(call unescape-space,$(subst $(_space),$(if $(strip $(2)),$(strip $(2)),-),$(wordlist 1,$(if $(strip $(3)),$(strip $(3)),2),$(subst $(if $(strip $(2)),$(strip $(2)),-),$(_space),$(call escape-space,$(1))))))
 endef
 
 #
@@ -76,7 +100,7 @@ endef
 #   major version of the package, i.e. x.y for x.y.z
 #
 define GET_MAJOR_VERSION
-$(call GET_STRING_COMPONENTS,$(1),.,$(if $(strip $(2)),$(strip $(2)),2))
+$(call GET_STRING_COMPONENTS,$(strip $(1)),.,$(if $(strip $(2)),$(strip $(2)),2))
 endef
 
 
@@ -159,6 +183,7 @@ endef
 define COPY_USING_TAR
 	$(TAR) -cf - -C $(strip $(1)) \
 		--exclude=.svn \
+		--exclude=.git \
 		--exclude=.gitignore \
 		--exclude=.build-prereq-checked \
 		--exclude=.unpacked \

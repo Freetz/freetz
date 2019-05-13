@@ -38,7 +38,7 @@ static void swapEndianness(bool needed, uint32_t *ptr)
 			(*ptr & 0xFF000000) >> 24;
 }
 
-bool isConsistentConfigArea(void *configArea, size_t configSize, bool *swapNeeded, uint32_t *moduleStructSize)
+bool isConsistentConfigArea(void *configArea, size_t configAreaBufferSize, size_t configSize, bool *swapNeeded, uint32_t *moduleStructSize)
 {
 	uint32_t *					arrayStart = NULL;
 	uint32_t *					arrayEnd = NULL;
@@ -70,6 +70,38 @@ bool isConsistentConfigArea(void *configArea, size_t configSize, bool *swapNeede
 		// 1st 32-bit word is the pointer to the config area array
 		// and is thus not allowed/expected to be NULL
 		return false;
+	}
+
+	if ((configSize % (16 * 1024)) != 0) {
+		// configSize is expected to be a multiple of 16K
+		return false;
+	}
+
+	if (configSize > configAreaBufferSize) {
+		// config area could not be bigger than the available buffer
+		return false;
+	}
+
+	{
+		int i;
+
+		uint32_t *configAreaBeyondPtr = (uint32_t *) (((char *)configArea) + configSize);
+
+		// heuristic:
+		//   config area is known to be padded with zeros
+		//   check last N 32-bit words are zeros
+		for (i = 1; i <= 4; i++) {
+			if ( *(configAreaBeyondPtr-i) != 0) {
+				return false;
+			}
+		}
+
+		if (configSize < configAreaBufferSize) {
+			// and the first bytes right after the config area are not zeros
+			if (*configAreaBeyondPtr == 0) {
+				return false;
+			}
+		}
 	}
 
 	while (++ptr < ((uint32_t *) configArea) + (4096 / sizeof(uint32_t)))
@@ -191,7 +223,7 @@ struct _avm_kernel_config* * relocateConfigArea(void *configArea, size_t configS
 	//  - we take the first 32 bit value from the dump and align this pointer to 4K to get
 	//    the start address of the area in the linked kernel
 
-	if (!isConsistentConfigArea(configArea, configSize, &swapNeeded, &_moduleStructSize))
+	if (!isConsistentConfigArea(configArea, configSize, configSize, &swapNeeded, &_moduleStructSize))
 		return NULL;
 
 	swapEndianness(swapNeeded, (uint32_t *) configArea);
