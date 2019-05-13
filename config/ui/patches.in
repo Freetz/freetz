@@ -1270,10 +1270,10 @@ config FREETZ_DROP_NOEXEC_EXTERNAL
 	default n
 	help
 		Allows to execute files on external
-		storages like USB sticks and hdd.
+		storages like USB sticks and HDDs.
 
 config FREETZ_DROP_NOEXEC_INTERNAL
-	bool "Drop noexec on internal storages"
+	bool "Drop noexec on internal storages" if FREETZ_REAL_DEVELOPER_ONLY
 	depends on FREETZ_AVM_HAS_NOEXEC
 	default y
 	help
