@@ -158,7 +158,7 @@ image() {
 	for arch in "${!probeDirs[@]}"; do
 		d="${probeDirs[$arch]}"
 		[ "$arch" != 'default' ] && arch="-$arch" || arch=
-		nfo="${dst}${imgID}${arch}.nfo"
+		[ -z "$do_verbose" -a -z "$do_nfo" ] && nfo="/dev/null" || nfo="${dst}${imgID}${arch}.nfo"
 
 		[ ! -s ${d}/kernel.image ] && continue;
 
@@ -185,16 +185,20 @@ image() {
 		rm -f kf.image
 
 		# get avm_kernel_config size
-		declare -a load_addrs
-		load_addrs=($($FTOOLS/unpack-kernel kernel.raw kernel.raw.unpacked 2>/dev/null | sed -nre 's,.*LoadAddress=(.+),\1,p'))
-		for file in kernel.raw.unpacked kernel.raw.unpacked.2ND; do
-			[ -e $file ] || continue
-			[ "$file" != "${file/2ND/}" ] && load_addr="${load_addrs[1]}" || load_addr="${load_addrs[0]}"
-			akc_size="$($FTOOLS/avm_kernel_config.extract -l $load_addr $file 2>/dev/null | wc -c)"
-			[ "$akc_size" != "0" ] && echo "avm_kernel_config${file#kernel.raw.unpacked} size is $(( $akc_size / 1024 )) KB" >> "$nfo"
-		done
-		rm -f kernel.raw kernel.raw.unpacked kernel.raw.unpacked.2ND
+		if [ "$nfo" != "/dev/null" ]; then
+			declare -a load_addrs
+			load_addrs=($($FTOOLS/unpack-kernel kernel.raw kernel.raw.unpacked 2>/dev/null | sed -nre 's,.*LoadAddress=(.+),\1,p'))
+			for file in kernel.raw.unpacked kernel.raw.unpacked.2ND; do
+				[ -e $file ] || continue
+				[ "$file" != "${file/2ND/}" ] && load_addr="${load_addrs[1]}" || load_addr="${load_addrs[0]}"
+				akc_size="$($FTOOLS/avm_kernel_config.extract -l $load_addr $file 2>/dev/null | wc -c)"
+				[ "$akc_size" != "0" ] && echo "avm_kernel_config${file#kernel.raw.unpacked} size is $(( $akc_size / 1024 )) KB" >> "$nfo"
+			done
+			rm -f kernel.raw.unpacked kernel.raw.unpacked.2ND
+		fi
+		rm -f kernel.raw
 
+		# detect firmware layout
 		SIZEKD="$(($SIZE_K1 - $SIZE_K2))"
 		SIZEFD="$(($SIZE_F1 - $SIZE_F2))"
 		if [ "$SIZE_F1" == "0" ]; then
@@ -202,7 +206,7 @@ image() {
 		elif [ "$SIZEKD" == "8" -a "$SIZEFD" == "8" ]; then
 			FLV=3 # nand
 		elif [ "${SIZEKD#-}" -lt 192 -a "${SIZEFD#-}" -lt 446 ]; then
-			FLV=4 # docis
+			FLV=4 # docsis
 		else
 			FLV=1 # old
 		fi
@@ -261,7 +265,8 @@ image() {
 			echo -e "====\t${img}${arch}" | tee -a _failed.log
 		fi
 
-		[ -n "$verbose" ] && cat "$nfo" | sed 's/^/\t/g' && echo
+		[ -n "$do_verbose" ] && sed 's/^/\t/g' "$nfo" && echo
+		[ -z "$do_nfo" -a "$nfo" != "/dev/null" ] && rm "$nfo"
 	done
 
 	rm -rf var
@@ -270,8 +275,11 @@ image() {
 # check args
 while [ $# -gt 0 ]; do
 	case $1 in
+		n|nfo)
+			do_nfo=y
+			;;
 		v|verbose)
-			verbose=y
+			do_verbose=y
 			;;
 		d|download)
 			download=y
@@ -299,7 +307,7 @@ while [ $# -gt 0 ]; do
 done
 
 if [ "$download" != "y" -a "$unpack" != "y" ]; then
-	echo "usage: ${0##*/} [verbose] <download [stable|labor|all] AND/OR unpack [image1 .. imageN]>"
+	echo "usage: ${0##*/} [nfo] [verbose] <download [stable|labor|all] AND/OR unpack [image1 .. imageN]>"
 	exit 1
 fi
 
@@ -312,7 +320,7 @@ if [ "$unpack" == "y" ]; then
 			FTMP="$(dirname $(readlink -f ${fdir}/tools/busybox))"
 			[ -e "$FTMP/busybox" ] && FTOOLS="$FTMP"
 		done
-		[ -n "$verbose" ] && echo -e "Using 'tools' of ${FTOOLS%/*}\n"
+		[ -n "$do_verbose" ] && echo -e "Using 'tools' of ${FTOOLS%/*}\n"
 	fi
 	if [ ! -e $FTOOLS/find-squashfs ]; then
 		echo "You have to run 'make tools' first."
