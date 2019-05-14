@@ -2,7 +2,7 @@
 
 ## Store 'clean' environment for later use
 # overwrite AVM's version
-env - /bin/sh -c 'VERBOSE_RC_CONF=n; . /etc/init.d/rc.conf; unset PWD; env' | sed -re 's/^([^=]+)=(.*)$/export \1='"'\2'"/ > /var/env.cache
+[ -z "$1" ] && env - /bin/sh -c 'VERBOSE_RC_CONF=n; . /etc/init.d/rc.conf; unset PWD; env' | sed -re 's/^([^=]+)=(.*)$/export \1='"'\2'"/ > /var/env.cache
 
 DAEMON=mod
 . /etc/init.d/modlibrc
