@@ -497,33 +497,26 @@ collect_pkg_files()
 }
 
 #
-# checks if fwmod_custom script exists, has correct syntax, and invokes it
+# checks if fwmod_custom(.sh) scripts exists, have correct syntax, and invokes them
 # with exactly the same parameters as those passed to invoke_fwmod_custom itself
 #
 invoke_fwmod_custom()
 {
-	if [ -x "${BASE_DIR}/fwmod_custom" ]; then
-		echo "invoking custom script"
+	echo "invoking custom scripts"
+	for file in fwmod_custom fwmod_custom.sh; do
+		[ -x "${BASE_DIR}/$file" ] || continue
 
 		# syntax check
-		$SHELL -n "${BASE_DIR}/fwmod_custom"
-
-		if [ $? -ne 0 ]; then
-			error 1 "syntax error in fwmod_custom script"
-		fi
+		$SHELL -n "${BASE_DIR}/$file" || error 1 "syntax error in $file script"
 
 		(
 		  cd "$MOD_DIR" && \
 		  TOOLS_DIR=../../tools \
 		  FILESYSTEM_MOD_DIR=./filesystem \
 		  PATCHES_COND_DIR=../../patches/cond \
-		  ../../fwmod_custom "$@"
-		) || exit 1
-
-		if [ $? -ne 0 ]; then
-			error 1 "fwmod_custom script returned error"
-		fi
-	fi
+		  ../../$file "$@"
+		) || error 1 "$file script returned error $?"
+	done
 }
 
 #
