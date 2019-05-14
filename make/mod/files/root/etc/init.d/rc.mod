@@ -17,7 +17,7 @@ log() {
 	done
 }
 
-setup() {
+vulcheck() {
 	if is_affected_by_remote_access_vulnerability; then
 		log "Firmware with remote access vulnerability detected."
 		if [ ! -e /tmp/flash/mod/dont_touch_https ]; then
@@ -104,6 +104,7 @@ start() {
 		echo " ... done."
 	fi
 
+	vulcheck
 	utmp_wtmp
 
 	if [ -r /tmp/flash/mod/rc.custom ]; then
@@ -180,7 +181,6 @@ register() {
 case $1 in
 	"")
 		register
-		setup
 		start
 		;;
 	start)
