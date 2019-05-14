@@ -497,13 +497,13 @@ collect_pkg_files()
 }
 
 #
-# checks if fwmod_custom(.sh) scripts exists, have correct syntax, and invokes them
+# checks if (.)fwmod_custom scripts exists, have correct syntax, and invokes them
 # with exactly the same parameters as those passed to invoke_fwmod_custom itself
 #
 invoke_fwmod_custom()
 {
 	echo "invoking custom scripts"
-	for file in fwmod_custom fwmod_custom.sh; do
+	for file in fwmod_custom .fwmod_custom; do
 		[ -x "${BASE_DIR}/$file" ] || continue
 
 		# syntax check

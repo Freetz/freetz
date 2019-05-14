@@ -553,7 +553,7 @@ $(eval $(call CONFIG_CLEAN_DEPS,config-clean-deps,kernel modules$(_comma) shared
 $(eval $(call CONFIG_CLEAN_DEPS,config-clean-deps-keep-busybox,kernel modules$(_comma) shared libraries and terminfos,MODULE|LIB|SHARE_terminfo))
 
 common-clean:
-	[ ! -x fwmod_custom.sh ] || ./fwmod_custom.sh clean
+	[ ! -x .fwmod_custom ] || ./.fwmod_custom clean
 	./fwmod_custom clean
 	$(RM) make/Config.in.generated make/external.in.generated
 	$(RM) .static .dynamic .packages .exclude-release-tmp $(CONFIG_IN_CACHE)
