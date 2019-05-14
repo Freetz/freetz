@@ -259,10 +259,10 @@ ifneq ($(strip $(DL_SOURCE$(1))),)
 IMAGE$(1):=$(DL_FW_DIR)/$(DL_SOURCE$(1))
 DL_IMAGE+=$$(IMAGE$(1))
 image: $$(IMAGE$(1))
-.PHONY: $$(DL_FW_DIR)/$$(DL_SOURCE$(1))
+.PHONY: $$(IMAGE$(1))
 $$(IMAGE$(1)): | $(DL_FW_DIR)
 ifeq ($$(strip $$(DL_SITE$(1))),)
-	@if [ ! -e "$$(DL_FW_DIR)/$$(DL_SOURCE$(1))" ]; then \
+	@if [ ! -e "$$(IMAGE$(1))" ]; then \
 		echo -e "\nPlease copy the following file into the './$$(DL_FW_DIR)/' sub-directory manually:\n$$(DL_SOURCE$(1))\n"; \
 		exit 3; \
 	fi
@@ -276,7 +276,7 @@ else
 		fi; \
 		echo "Source to get latest firmware URLs: $$$$DL_URL_LATEST" >/dev/null; \
 		find $$(DL_FW_DIR) -maxdepth 1 -name $$(DL_SOURCE$(1)).url -mmin +3600 -exec rm -f {} ';'; \
-		DL_URL_CONTAINER="$$$$(cat $$(DL_FW_DIR)/$$(DL_SOURCE$(1)).url 2>/dev/null)"; \
+		DL_URL_CONTAINER="$$$$(cat $$(IMAGE$(1)).url 2>/dev/null)"; \
 		if [ -z "$$$$DL_URL_CONTAINER" ]; then \
 			echo "No cache, refresh URL by web" >/dev/null; \
 			DL_URL_CONTAINER="$$$$(wget --timeout=20 -q $$$$DL_URL_LATEST -O -| \
@@ -285,16 +285,16 @@ else
 			grep -P "^$$(call qstrip,$(FREETZ_TYPE_PREFIX_BOXMATRIX))\t$$(call qstrip,$(FREETZ_TYPE_LANGUAGE))\t" | \
 			sed -rn "s/.*\t$$(call patsubst,_%,%,$$(call qstrip,$(FREETZ_TYPE_PREFIX_LABOR_FIRMWARE)))\t([^\t]*)$$$$/\1/p" | \
 			head -n1)"; \
-			echo "$$$$DL_URL_CONTAINER" > "$$(DL_FW_DIR)/$$(DL_SOURCE$(1)).url"; \
+			echo "$$$$DL_URL_CONTAINER" > "$$(IMAGE$(1)).url"; \
 		fi; \
 		if [ -z "$$$$DL_URL_CONTAINER" ]; then \
 			echo "No URL found, reading backup" >/dev/null; \
-			DL_URL_CONTAINER="$$$$(cat $$(DL_FW_DIR)/$$(DL_SOURCE$(1)).url.bak 2>/dev/null)"; \
+			DL_URL_CONTAINER="$$$$(cat $$(IMAGE$(1)).url.bak 2>/dev/null)"; \
 		fi; \
 		if [ -z "$$$$DL_URL_CONTAINER" ]; then \
 			$$(call ERROR,3,Failed to detect the URL of the latest firmware version - check https://boxmatrix.info/wiki/Labor-Files) \
 		fi; \
-		echo "$$$$DL_URL_CONTAINER" > "$$(DL_FW_DIR)/$$(DL_SOURCE$(1)).url.bak"; \
+		echo "$$$$DL_URL_CONTAINER" > "$$(IMAGE$(1)).url.bak"; \
 		echo "Available download URL: $$$$DL_URL_CONTAINER" >/dev/null; \
 		DL_SITE0="$$$${DL_URL_CONTAINER%/*}"; \
 		DL_SOURCE0_CONTAINER="$$$${DL_URL_CONTAINER##*/}"; \
@@ -305,9 +305,9 @@ else
 		DL_SOURCE0_CONTAINER_SUFFIX="$$(DL_SOURCE$(1)_CONTAINER_SUFFIX)"; \
 	fi; \
 	if [ "$$(call qstrip,$(FREETZ_DL_DETECT_IMAGE_NAME))" == "y" ]; then \
-		rm -f "$$(DL_FW_DIR)/$$(DL_SOURCE$(1))"; \
+		rm -f "$$(IMAGE$(1))"; \
 	fi; \
-	if [ ! -e "$$(DL_FW_DIR)/$$(DL_SOURCE$(1))" ]; then \
+	if [ ! -e "$$(IMAGE$(1))" ]; then \
 		if [ -n "$$$$DL_SOURCE0_CONTAINER" ]; then \
 			if [ ! -r $$(DL_FW_DIR)/$$$$DL_SOURCE0_CONTAINER ]; then \
 				if ! $$(DL_TOOL) --delete-on-trap --no-append-servers --checksum-optional $$(DL_FW_DIR) "$$$$DL_SOURCE0_CONTAINER" "$$$$DL_SITE0" $$(DL_SOURCE$(1)_CONTAINER_MD5) $$(SILENT); then \
@@ -330,7 +330,7 @@ else
 						fi; \
 					fi; \
 					if [ "$$(FREETZ_DL_DETECT_IMAGE_NAME)" == "y" ]; then \
-						[ -f $$(DL_FW_DIR)/$$$$DL_SOURCE_DETECTED ] && ln -s $$$$DL_SOURCE_DETECTED $$(DL_FW_DIR)/$$(DL_SOURCE$(1)); \
+						[ -f $$(DL_FW_DIR)/$$$$DL_SOURCE_DETECTED ] && ln -s $$$$DL_SOURCE_DETECTED $$(IMAGE$(1)); \
 						echo "Created hardlink for .image file: $$(DL_SOURCE$(1))" >/dev/null; \
 					fi; \
 					;; \
