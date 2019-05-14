@@ -32,8 +32,6 @@ endif
 ifeq ($(FREETZ_PACKAGE_DNSMASQ_WITH_DNSSEC),y)
 $(PKG)_DEPENDS_ON += nettle
 $(PKG)_COPTS += -DHAVE_DNSSEC -DHAVE_DNSSEC_STATIC
-else
-$(PKG)_EXCLUDED += etc/onlinechanged/zz-dnsmasq
 endif
 
 $(PKG_SOURCE_DOWNLOAD)

@@ -103,19 +103,11 @@ case $1 in
 	reload)
 		modlib_reload
 		;;
-	timecheck)
-		[ ! -e /tmp/.dnsmasq.timecheck ] && exit
-		echo -n "$DAEMON_LONG_NAME is enabling timecheck ... "
-		[ "$(date +'%Y')" -lt 2019 ] && echo "failed." && exit
-		rm -f /tmp/.dnsmasq.timecheck
-		kill -SIGINT "$(cat $PID_FILE 2>/dev/null)" 2>/dev/null
-		echo "done."
-		;;
 	status)
 		modlib_status
 		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|reload|timecheck|status]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|reload|status]" 1>&2
 		exit 1
 		;;
 esac
