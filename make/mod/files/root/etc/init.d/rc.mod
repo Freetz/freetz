@@ -48,6 +48,10 @@ utmp_wtmp() {
 	fi
 }
 
+motd() {
+	( [ -e /tmp/flash/mod/motd ] && sh /tmp/flash/mod/motd || sh /mod/etc/default.mod/motd )> /etc/motd
+}
+
 start() {
 	log "rc.mod version $(cat /etc/.freetz-version)"
 
@@ -106,6 +110,7 @@ start() {
 
 	vulcheck
 	utmp_wtmp
+	motd
 
 	if [ -r /tmp/flash/mod/rc.custom ]; then
 		echo -n "Starting rc.custom ... "
@@ -192,8 +197,13 @@ case $1 in
 	config)
 		utmp_wtmp
 		;;
+	motd)
+		echo -n "Updating motd ... "
+		motd
+		echo "done."
+		;;
 	*)
-		echo "Usage: $0 [start|stop]" 1>&2
+		echo "Usage: $0 [start|stop|motd]" 1>&2
 		exit 1
 		;;
 esac
