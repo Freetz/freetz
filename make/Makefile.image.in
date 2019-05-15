@@ -115,12 +115,9 @@ else
 					$$(call ERROR,3,Not able to extract '$$$$DL_SOURCE0_CONTAINER' archive at all.) \
 					;; \
 			esac \
-		elif ! $$(DL_TOOL) --delete-on-trap --no-append-servers --checksum-optional $$(DL_FW_DIR) "$$(if $$(DL_SOURCE$(1)_REMOTE),$$(DL_SOURCE$(1)_REMOTE),$$(DL_SOURCE$(1)_LOCAL))" "$$$$DL_SITE0" $$(DL_SOURCE$(1)_MD5) $$(SILENT); then \
+		elif ! $$(DL_TOOL) $$(if $$(DL_SOURCE$(1)_REMOTE),--out-file $$(DL_SOURCE$(1)_LOCAL)) --delete-on-trap --no-append-servers --checksum-optional $$(DL_FW_DIR) \
+			  "$$(if $$(DL_SOURCE$(1)_REMOTE),$$(DL_SOURCE$(1)_REMOTE),$$(DL_SOURCE$(1)_LOCAL))" "$$$$DL_SITE0" $$(DL_SOURCE$(1)_MD5) $$(SILENT); then \
 			$$(call ERROR,3,Could not download firmware image. See https://trac.boxmatrix.info/freetz-ng/wiki/FAQ#Couldnotdownloadfirmwareimage for details.) \
-		else \
-			$$(if $$(DL_SOURCE$(1)_REMOTE),echo "Renaming '$$(DL_SOURCE$(1)_REMOTE)' to '$$(DL_SOURCE$(1)_LOCAL)' to make the filename unique." $$(SILENT);) \
-			$$(if $$(DL_SOURCE$(1)_REMOTE),mv -f "$$(DL_FW_DIR)/$$(DL_SOURCE$(1)_REMOTE)" "$$(DL_FW_DIR)/$$(DL_SOURCE$(1)_LOCAL)";) \
-			dummy=0; \
 		fi; \
 	fi
 endif
