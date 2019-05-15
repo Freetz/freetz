@@ -222,6 +222,7 @@ if [ "$DEBUG" == "1" ]; then
 	echo "    DOT_CONFIG=$DOT_CONFIG"
 	echo "    DL_DIR=$DL_DIR"
 	echo "    DL_FILE=$DL_FILE"
+	echo "    OUT-FILE=$opt_out_file"
 	echo "    URLs=$URLs"
 	echo "    CHECKSUM=$CHECKSUM"
 fi
@@ -333,7 +334,7 @@ calculate_full_checksum() {
 	local CHECKSUM_ALGO="${CHECKSUM_ALGOS[64]}"
 	local CHECKSUM_PROG="$(dirname $0)/${CHECKSUM_ALGO}sum"
 	[ ! -x "$CHECKSUM_PROG" ] && CHECKSUM_PROG="$(which ${CHECKSUM_ALGO}sum)"
-	[ -x "$CHECKSUM_PROG" ] && FILE_CHECKSUM=$($CHECKSUM_PROG "$DL_DIR/$DL_FILE" | sed 's/ .*//') || FILE_CHECKSUM=""
+	[ -x "$CHECKSUM_PROG" ] && FILE_CHECKSUM=$($CHECKSUM_PROG "${opt_out_file:-$DL_FILE}" | sed 's/ .*//') || FILE_CHECKSUM=""
 	[ -n "$FILE_CHECKSUM" ] && FULL_CHECKSUM=": ${CHECKSUM_ALGO^^}:=$FILE_CHECKSUM" || FULL_CHECKSUM=""
 }
 
@@ -352,6 +353,7 @@ for i in ${sites[@]}; do
 			continue
 		fi
 
+		local DL_DNF="$DL_DIR/${opt_out_file:-$DL_FILE}"
 		if [ -n "$CHECKSUM" ]; then
 			CHECKSUM_ALGO="${CHECKSUM_ALGOS[${#CHECKSUM}]}"
 			if [ -n "${CHECKSUM_ALGO}" ]; then
@@ -360,30 +362,30 @@ for i in ${sites[@]}; do
 			else
 				calculate_full_checksum
 				echo -e "\033[1;35mERROR: Unknown checksum algorithm for a hash length of ${#CHECKSUM}$FULL_CHECKSUM\033[0m"
-				rm -f "$DL_DIR/$DL_FILE"
+				rm -f "$DL_DNF"
 				exit 1
 			fi
 
 			if [ -x "$CHECKSUM_PROG" ]; then
-				FILE_CHECKSUM=$($CHECKSUM_PROG "$DL_DIR/$DL_FILE" | sed 's/ .*//')
+				FILE_CHECKSUM=$($CHECKSUM_PROG "$DL_DNF" | sed 's/ .*//')
 				if [ "$CHECKSUM" != "$FILE_CHECKSUM" ]; then
-					echo -e "\033[0;31mChecksum mismatch for $DL_DIR/$DL_FILE: ${CHECKSUM_ALGO^^}:=$FILE_CHECKSUM (expected: $CHECKSUM)\033[0m" 1>&1
-					rm -f "$DL_DIR/$DL_FILE"
+					echo -e "\033[0;31mChecksum mismatch for $DL_DNF: ${CHECKSUM_ALGO^^}:=$FILE_CHECKSUM (expected: $CHECKSUM)\033[0m" 1>&1
+					rm -f "$DL_DNF"
 					continue;
 				else
-					echo -e "\033[0;32mChecksum verified for $DL_DIR/$DL_FILE: ${CHECKSUM_ALGO^^}:=$FILE_CHECKSUM\033[0m"
+					echo -e "\033[0;32mChecksum verified for $DL_DNF: ${CHECKSUM_ALGO^^}:=$FILE_CHECKSUM\033[0m"
 				fi
 			else
 				echo -e "\033[1;33mERROR: Can not find '${CHECKSUM_ALGO}sum' to check $CHECKSUM_ALGO\033[0m"
-				rm -f "$DL_DIR/$DL_FILE"
+				rm -f "$DL_DNF"
 				exit 1
 			fi
 		else
 			if [ "$opt_needs_checksum" != n ]; then
 				calculate_full_checksum
-				echo -e "\033[1;33mChecksum unavailable for $DL_DIR/$DL_FILE$FULL_CHECKSUM\033[0m"
+				echo -e "\033[1;33mChecksum unavailable for $DL_DNF$FULL_CHECKSUM\033[0m"
 			else
-				echo -e "\033[1;34mChecksum disabled for $DL_DIR/$DL_FILE\033[0m"
+				echo -e "\033[1;34mChecksum disabled for $DL_DNF\033[0m"
 			fi
 		fi
 	fi
