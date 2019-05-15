@@ -938,41 +938,24 @@ if [ "$DO_MOD" -gt 0 ]; then
 	# 7390: /opt is symlink to /var/InternerSpeicher/opt
 	[ ! -L "$FILESYSTEM_MOD_DIR"/opt ] && mkdir -p "$FILESYSTEM_MOD_DIR"/opt
 
-	# Set version and options
-	SUBVERSION_FILE="${BASE_DIR}/.version"
-
-	if [ ! -r "$SUBVERSION_FILE" ]; then
-		error 1 "cannot determine version"
-	fi
-
+	# Determine Freetz version
 	if [ -d .svn ]; then
 		# be compatible: older versions of svnversion need WC_PATH
-		if REVISION="$(svnversion . 2>/dev/null | tr ":" "_")"; then
-			[ "${REVISION:0:6}" == "export" ] && REVISION=""
-		fi
-		[ -n "$REVISION" ] && REVISION="-$REVISION"
+		REVISION="$(svnversion . 2>/dev/null | tr ":" "_")"
+		[ "${REVISION:0:6}" == "export" ] && REVISION=""
 	elif [ -d .git ]; then
-		GIT_LINK="$(git config --get remote.origin.url)"
-		GIT_USER="${GIT_LINK%/*}"
-		GIT_USER="${GIT_USER#*:}"
-		GIT_USER="${GIT_USER##*/}"
-		GIT_FILE="${GIT_LINK%.git}"
-		GIT_FILE="${GIT_FILE##*/}"
-		GIT_TICK="$(git log -1 --format="%at")"
-		GIT_HASH="$(git rev-parse --short HEAD | tr a-z A-Z)"
-		REVISION="_$GIT_USER${GIT_USER:+-}${GIT_FILE}_${GIT_TICK}-$GIT_HASH"
+		REVISION="$(${TOOLS_DIR}/freetz-version 2>/dev/null)"
 	fi
+	FREETZ_VERSION="$(cat ${BASE_DIR}/.version 2>/dev/null || echo -n freetz)${REVISION:+-$REVISION}"
 
-	SUBVERSION="$(cat $SUBVERSION_FILE)${REVISION}"
+	echo1 "setting freetz-version '${FREETZ_VERSION}'"
+	echo "${FREETZ_VERSION}" > "${FILESYSTEM_MOD_DIR}/etc/.freetz-version"
 
 	PACKAGES_LIST_FILE="${BASE_DIR}/.packages"
 	rm -f "${PACKAGES_LIST_FILE}"
 	for pkg in $(static_packages) $(static_addons); do
 		echo "$pkg" >> "${PACKAGES_LIST_FILE}"
 	done
-
-	echo1 "setting freetz-version '${SUBVERSION}'"
-	echo "$SUBVERSION" > "${FILESYSTEM_MOD_DIR}/etc/.freetz-version"
 
 	# Execute general patch scripts
 	for i in "${PATCHES_SCRIPTS_DIR}/"*.sh; do
@@ -1327,7 +1310,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		for i in \
 		$( \
 			cd "${KERNEL_REP_DIR}/modules-${KERNEL_ID}" && \
-			find . -type d -name .svn -prune -false , -type f \( -name modules.dep -o -name "*.ko" \) \
+			find . -type f \( -name modules.dep -o -name "*.ko" \) \
 		); do
 			bn="$(basename "$i")"
 			ko_install="$(eval "echo \"\$FREETZ_MODULE_$(echo "${bn%\.ko}" | tr '\-+' '_x')\"")"
@@ -1631,7 +1614,7 @@ if [ "$action_names" ]; then
 		modbaseimagename+="-rev${AVM_FW_REVISION}${FREETZ_TYPE_PREFIX_LABOR_FIRMWARE}"
 	fi
 	modbaseimagename+=".${FREETZ_TYPE_LANGUAGE}"
-	modbaseimagename+="${SUBVERSION:+-}${SUBVERSION}" # missing in DO_MOD=0 mode
+	modbaseimagename+="${FREETZ_VERSION:+-}${FREETZ_VERSION}" # missing in DO_MOD=0 mode
 	if [ "$FREETZ_CUSTOM_IMAGE_NAME" == "y" -a ! -z "$FREETZ_USER_DEFINED_COMMENT" ]; then
 		modcustomimagestring=$(echo $FREETZ_USER_DEFINED_COMMENT | sed -e "s/ /_/g" | tr -cd 'a-zA-Z0-9_+-.<->')
 	else
@@ -1661,7 +1644,7 @@ if [ "$action_names" ]; then
 		freetz_info_file="$MOD_DIR/filesystem/etc/freetz_info.cfg"
 		echo "export FREETZ_INFO_BOXTYPE='${FREETZ_TYPE_PREFIX_ALIEN_HARDWARE}${FREETZ_TYPE_PREFIX%_0?_??}${FREETZ_TYPE_PREFIX_LABOR_FIRMWARE}'" > "$freetz_info_file"
 		echo "export FREETZ_INFO_FIRMWAREVERSION='${AVM_FW_VERSION}'" >> "$freetz_info_file"
-		echo "export FREETZ_INFO_SUBVERSION='${SUBVERSION}'" >> "$freetz_info_file"
+		echo "export FREETZ_INFO_VERSION='${FREETZ_VERSION}'" >> "$freetz_info_file"
 		echo "export FREETZ_INFO_LANG='${FREETZ_TYPE_LANGUAGE}'" >> "$freetz_info_file"
 		echo "export FREETZ_INFO_MAKEDATE='${modmakedate}'" >> "$freetz_info_file"
 		echo "export FREETZ_INFO_IMAGE_NAME='$modimage'" >> "$freetz_info_file"
