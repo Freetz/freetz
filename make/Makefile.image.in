@@ -54,7 +54,7 @@ else
 			DL_URL_LATEST="$$(call qstrip,$(FREETZ_DL_URL_LATEST))"; \
 		fi; \
 		echo "Source to get latest firmware URLs: $$$$DL_URL_LATEST" >/dev/null; \
-		find $$(DL_FW_DIR) -maxdepth 1 -name $$(DL_SOURCE$(1)_LOCAL).url -mmin +3600 -exec rm -f {} ';'; \
+		find $$(DL_FW_DIR) -maxdepth 1 -name $$(DL_SOURCE$(1)_LOCAL).url -mmin +60 -exec rm -f {} ';'; \
 		DL_URL_CONTAINER="$$$$(cat $$(IMAGE$(1)).url 2>/dev/null)"; \
 		if [ -z "$$$$DL_URL_CONTAINER" ]; then \
 			echo "No cache, refresh URL by web" >/dev/null; \
