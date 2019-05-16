@@ -122,7 +122,7 @@ menu "Web Interface"
 
 	choice
 		prompt "AVM tagging"
-		default FREETZ_TAGGING_NONE
+		default FREETZ_TAGGING_NG
 		help
 			Adds a tag to the AVM web-interface, so it is obvious to
 			everybody that this box was modified by Freetz.
@@ -131,7 +131,10 @@ menu "Web Interface"
 			bool "none"
 
 		config FREETZ_TAGGING_CUMA
-			bool "cuma's tagging"
+			bool "Freetz MOD"
+
+		config FREETZ_TAGGING_NG
+			bool "Freetz-NG"
 
 	endchoice # "AVM tagging" #
 
@@ -139,6 +142,7 @@ menu "Web Interface"
 		string
 		default "none"          if FREETZ_TAGGING_NONE
 		default "cuma"          if FREETZ_TAGGING_CUMA
+		default "freetz-ng"     if FREETZ_TAGGING_NG
 
 endmenu # "Webif customization" #
 
