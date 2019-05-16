@@ -8,8 +8,9 @@ config FREETZ_PACKAGE_OPENVPN
 	help
 		VPN Server
 
+if FREETZ_PACKAGE_OPENVPN
+
 choice
-	depends on FREETZ_PACKAGE_OPENVPN
 	prompt "SSL library"
 	default FREETZ_PACKAGE_OPENVPN_OPENSSL
 
@@ -31,7 +32,7 @@ endchoice
 
 config FREETZ_PACKAGE_OPENVPN_FORCE_BLOWFISH
 	bool "Include cipher blowfish in mbedTLS"
-	depends on FREETZ_PACKAGE_OPENVPN && FREETZ_PACKAGE_OPENVPN_MBEDTLS
+	depends on FREETZ_PACKAGE_OPENVPN_MBEDTLS
 	select FREETZ_LIB_libmbedcrypto_WITH_BLOWFISH if FREETZ_PACKAGE_OPENVPN_MBEDTLS
 	default n
 	help
@@ -46,14 +47,12 @@ config FREETZ_PACKAGE_OPENVPN_WITH_BLOWFISH
 
 config FREETZ_PACKAGE_OPENVPN_STATIC
 	bool "Create statically linked binary"
-	depends on FREETZ_PACKAGE_OPENVPN
 	default n
 	help
 		Causes all libraries OpenVPN depends on to be linked in statically.
 
 config FREETZ_PACKAGE_OPENVPN_WITH_LZO
 	bool "With LZO compression"
-	depends on FREETZ_PACKAGE_OPENVPN
 	select FREETZ_LIB_liblzo2 if ! FREETZ_PACKAGE_OPENVPN_STATIC
 	default y
 	help
@@ -61,7 +60,6 @@ config FREETZ_PACKAGE_OPENVPN_WITH_LZO
 
 config FREETZ_PACKAGE_OPENVPN_WITH_LZ4
 	bool "With LZ4 compression"
-	depends on FREETZ_PACKAGE_OPENVPN
 	select FREETZ_LIB_liblz4 if ! FREETZ_PACKAGE_OPENVPN_STATIC
 	default n
 	help
@@ -69,7 +67,6 @@ config FREETZ_PACKAGE_OPENVPN_WITH_LZ4
 
 config FREETZ_PACKAGE_OPENVPN_WITH_TRAFFIC_OBFUSCATION
 	bool "With traffic obfuscation"
-	depends on FREETZ_PACKAGE_OPENVPN
 	default n
 	help
 		Adds support for an additional configuration option 'scramble'
@@ -90,7 +87,6 @@ comment "Warning: OpenVPN traffic obfuscation and SSLH are not compatible"
 
 config FREETZ_PACKAGE_OPENVPN_WITH_MGMNT
 	bool "Enable Management Console"
-	depends on FREETZ_PACKAGE_OPENVPN
 	default n
 	help
 		Enables OpenVPN's Management Console for administrative Tasks.
@@ -98,7 +94,6 @@ config FREETZ_PACKAGE_OPENVPN_WITH_MGMNT
 
 config FREETZ_PACKAGE_OPENVPN_ENABLE_SMALL
 	bool "Optimize for size"
-	depends on FREETZ_PACKAGE_OPENVPN
 	default y
 	help
 		Enables binary optimiziation for size.
@@ -106,7 +101,6 @@ config FREETZ_PACKAGE_OPENVPN_ENABLE_SMALL
 
 config FREETZ_PACKAGE_OPENVPN_USE_IPROUTE
 	bool "Use 'ip' instead of 'ifconfig' and 'route'"
-	depends on FREETZ_PACKAGE_OPENVPN
 	select FREETZ_BUSYBOX_IP
 	default n
 	help
@@ -115,7 +109,7 @@ config FREETZ_PACKAGE_OPENVPN_USE_IPROUTE
 
 config FREETZ_PACKAGE_OPENVPN_USE_V2_CGI
 	bool "Use new (simple) GUI - EXPERIMENTAL"
-	depends on FREETZ_PACKAGE_OPENVPN && FREETZ_SHOW_ADVANCED
+	depends on FREETZ_SHOW_ADVANCED
 	select FREETZ_PACKAGE_OPENVPN_V2_CGI
 	default n
 	help
@@ -123,3 +117,5 @@ config FREETZ_PACKAGE_OPENVPN_USE_V2_CGI
 		New quite simple OpenVPN configuration interface.
 		It will not generate a configuration file based on GUI settings
 		but just ask for an existing configuration.
+
+endif # FREETZ_PACKAGE_OPENVPN
