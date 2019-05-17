@@ -35,6 +35,7 @@ comment "Hint: Select replace kernel if need pty-support"
 config FREETZ_PACKAGE_DROPBEAR_SFTP_SERVER
 	bool "Add SFTP support"
 	depends on FREETZ_PACKAGE_DROPBEAR
+	select FREETZ_PACKAGE_OPENSSH
 	select FREETZ_PACKAGE_OPENSSH_sftp_server
 	default n
 	help

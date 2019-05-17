@@ -1,6 +1,5 @@
-menu "OpenSSH"
 config FREETZ_PACKAGE_OPENSSH
-	bool
+	bool "OpenSSH 7.9p1"
 	select FREETZ_LIB_libcrypt                if !FREETZ_PACKAGE_OPENSSH_STATIC
 	select FREETZ_LIB_libutil                 if !FREETZ_PACKAGE_OPENSSH_STATIC
 	select FREETZ_LIB_libz                    if !FREETZ_PACKAGE_OPENSSH_STATIC
@@ -10,40 +9,31 @@ config FREETZ_PACKAGE_OPENSSH
 	select FREETZ_LIB_libcrypto               if !FREETZ_PACKAGE_OPENSSH_INTERNAL_CRYPTO && !FREETZ_PACKAGE_OPENSSH_STATIC
 	select FREETZ_LIB_libcrypto_WITH_EC       if !FREETZ_PACKAGE_OPENSSH_INTERNAL_CRYPTO
 	#
-	depends on FREETZ_PACKAGE_OPENSSH_sshd \
-		|| FREETZ_PACKAGE_OPENSSH_ssh \
-		|| FREETZ_PACKAGE_OPENSSH_scp \
-		|| FREETZ_PACKAGE_OPENSSH_CLIENTUTILS \
-		|| FREETZ_PACKAGE_OPENSSH_KEYUTILS \
-		|| FREETZ_PACKAGE_OPENSSH_sftp \
-		|| FREETZ_PACKAGE_OPENSSH_sftp_server
 	default n
+
+if FREETZ_PACKAGE_OPENSSH
 
 config FREETZ_PACKAGE_OPENSSH_sshd
-	bool "Build OpenSSH server (sshd)"
-	select FREETZ_PACKAGE_OPENSSH
+	bool "SSH server (sshd)"
 	default n
 
-comment "Build OpenSSH client (ssh) (not available, provided by dropbear)"
+comment "SSH client (ssh) (not available, provided by dropbear)"
 	depends on FREETZ_PACKAGE_DROPBEAR && !FREETZ_PACKAGE_DROPBEAR_SERVER_ONLY
 config FREETZ_PACKAGE_OPENSSH_ssh
-	bool "Build OpenSSH client (ssh)"
+	bool "SSH client (ssh)"
 	depends on !FREETZ_PACKAGE_DROPBEAR || FREETZ_PACKAGE_DROPBEAR_SERVER_ONLY
-	select FREETZ_PACKAGE_OPENSSH
 	default n
 
-comment "Build OpenSSH secure copy utility (scp) (not available, provided by dropbear)"
+comment "Secure copy (scp) (not available, provided by dropbear)"
 	depends on FREETZ_PACKAGE_DROPBEAR && !FREETZ_PACKAGE_DROPBEAR_SERVER_ONLY
 config FREETZ_PACKAGE_OPENSSH_scp
-	bool "Build OpenSSH secure copy utility (scp)"
+	bool "Secure copy (scp)"
 	depends on !FREETZ_PACKAGE_DROPBEAR || FREETZ_PACKAGE_DROPBEAR_SERVER_ONLY
-	select FREETZ_PACKAGE_OPENSSH
 	select FREETZ_PACKAGE_OPENSSH_ssh
 	default n
 
 config FREETZ_PACKAGE_OPENSSH_CLIENTUTILS
-	bool "Build OpenSSH client utilities (ssh-add, ssh-agent)"
-	select FREETZ_PACKAGE_OPENSSH
+	bool "Client utilities (ssh-add, ssh-agent)"
 	select FREETZ_PACKAGE_OPENSSH_ssh_add
 	select FREETZ_PACKAGE_OPENSSH_ssh_agent
 	default n
@@ -54,8 +44,7 @@ config FREETZ_PACKAGE_OPENSSH_ssh_agent
 	bool
 
 config FREETZ_PACKAGE_OPENSSH_KEYUTILS
-	bool "Build OpenSSH key utilities (ssh-keygen, ssh-keysign, ssh-keyscan)"
-	select FREETZ_PACKAGE_OPENSSH
+	bool "Key utilities (ssh-keygen, ssh-keysign, ssh-keyscan)"
 	select FREETZ_PACKAGE_OPENSSH_ssh_keygen
 	select FREETZ_PACKAGE_OPENSSH_ssh_keysign
 	select FREETZ_PACKAGE_OPENSSH_ssh_keyscan
@@ -69,21 +58,17 @@ config FREETZ_PACKAGE_OPENSSH_ssh_keyscan
 	bool
 
 config FREETZ_PACKAGE_OPENSSH_sftp
-	bool "Build OpenSSH SFTP client (sftp)"
-	select FREETZ_PACKAGE_OPENSSH
+	bool "SFTP client (sftp)"
 	default n
 
 config FREETZ_PACKAGE_OPENSSH_sftp_server
-	bool "Build OpenSSH SFTP server (sftp-server)"
-	select FREETZ_PACKAGE_OPENSSH
+	bool "SFTP server (sftp-server)"
 	default n
 
-comment "OpenSSH configuration ---"
-	depends on FREETZ_PACKAGE_OPENSSH
+comment "Configuration ---"
 
 config FREETZ_PACKAGE_OPENSSH_INTERNAL_CRYPTO
 	bool "Use internal crypto algorithms only"
-	depends on FREETZ_PACKAGE_OPENSSH
 	default n
 	help
 		Disable use of OpenSSL and use internal crypto algorithms only.
@@ -94,8 +79,7 @@ config FREETZ_PACKAGE_OPENSSH_INTERNAL_CRYPTO
 		   on the other one (your client must support it)
 
 config FREETZ_PACKAGE_OPENSSH_STATIC
-	bool "Statically link OpenSSH binaries"
-	depends on FREETZ_PACKAGE_OPENSSH
+	bool "Create statically linked binaries"
 	default n
 	help
 		OpenSSH needs the following shared libraries which
@@ -106,4 +90,4 @@ config FREETZ_PACKAGE_OPENSSH_STATIC
 		- libutil
 		- libz
 
-endmenu
+endif # FREETZ_PACKAGE_OPENSSH
