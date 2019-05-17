@@ -1,8 +1,8 @@
-$(call PKG_INIT_BIN, 7.0.5-4)
+$(call PKG_INIT_BIN, 7.0.8-45)
 $(PKG)_MAJOR_VERSION:=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION),1)
 $(PKG)_ABI_SUFFIX:=Q16
 $(PKG)_SOURCE:=ImageMagick-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=4a1dde5bdfec0fc549955a051be25b7ff96dfb192060997699e43c7ce0f06ab2
+$(PKG)_SOURCE_SHA256:=d892b41a08b24baa058bc59cee2dd329584525446e03a414bc250b93a2f2fc79
 $(PKG)_SITE:=@SF/$(pkg),http://www.imagemagick.org/download
 
 $(PKG)_BINARY := magick
@@ -12,11 +12,11 @@ $(PKG)_BINARY_TARGET_DIR := $($(PKG)_BINARY:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 $(PKG)_SYMLINKS := animate compare composite conjure convert display identify import magick-script mogrify montage stream
 $(PKG)_SYMLINKS_TARGET_DIR := $($(PKG)_SYMLINKS:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 
-$(PKG)_LIB_CORE := libMagickCore-$($(PKG)_MAJOR_VERSION)-$($(PKG)_ABI_SUFFIX).so.2.0.0
+$(PKG)_LIB_CORE := libMagickCore-$($(PKG)_MAJOR_VERSION)-$($(PKG)_ABI_SUFFIX).so.6.0.0
 $(PKG)_LIB_CORE_BUILD_DIR := $($(PKG)_LIB_CORE:%=$($(PKG)_DIR)/MagickCore/.libs/%)
 $(PKG)_LIB_CORE_TARGET_DIR := $($(PKG)_LIB_CORE:%=$($(PKG)_DEST_LIBDIR)/%)
 
-$(PKG)_LIB_WAND := libMagickWand-$($(PKG)_MAJOR_VERSION)-$($(PKG)_ABI_SUFFIX).so.0.0.0
+$(PKG)_LIB_WAND := libMagickWand-$($(PKG)_MAJOR_VERSION)-$($(PKG)_ABI_SUFFIX).so.6.0.0
 $(PKG)_LIB_WAND_BUILD_DIR := $($(PKG)_LIB_WAND:%=$($(PKG)_DIR)/MagickWand/.libs/%)
 $(PKG)_LIB_WAND_TARGET_DIR := $($(PKG)_LIB_WAND:%=$($(PKG)_DEST_LIBDIR)/%)
 
