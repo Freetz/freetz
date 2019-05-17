@@ -500,8 +500,8 @@ release: distclean
 check-dot-config-uptodateness: $(CONFIG_IN_CACHE)
 	@if [ -e .config -a $(CONFIG_IN_CACHE) -nt .config ]; then \
 		echo -n -e $(_Y); \
-		echo "ERROR: You have either updated to a newer svn version  or changed one of"; \
-		echo "       the menuconfig files manually  since last modifying  your config."; \
+		echo "ERROR: You have either updated to a newer reversion or changed one of"; \
+		echo "       the menuconfig files manually since last modifying your config."; \
 		echo "       You should either run 'make oldconfig' once before building again"; \
 		echo "       or 'make menuconfig' and change the config (otherwise it will not"; \
 		echo "       be saved and you will see this message again)."; \
