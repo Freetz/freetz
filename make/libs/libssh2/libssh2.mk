@@ -1,6 +1,7 @@
 $(call PKG_INIT_LIB, libssh2-1.8.0)
 $(PKG)_LIB_VERSION:=1.0.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
+$(PKG)_CHECKSUM:=X
 $(PKG)_SITE:=git@https://github.com/libssh2/libssh2.git
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
