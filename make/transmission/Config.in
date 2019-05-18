@@ -15,6 +15,8 @@ config FREETZ_PACKAGE_TRANSMISSION
 		If needed, remember to change the base directory as well
 		as the installation directory on the webif.
 
+if FREETZ_PACKAGE_TRANSMISSION
+
 config FREETZ_PACKAGE_TRANSMISSION_WITH_OPENSSL
 	bool
 	default n
@@ -31,7 +33,6 @@ config FREETZ_PACKAGE_TRANSMISSION_WITH_MBEDTLS
 
 config FREETZ_PACKAGE_TRANSMISSION_CLIENT
 	bool "Transmission interactive client"
-	depends on FREETZ_PACKAGE_TRANSMISSION
 	default n
 	help
 		Torrent client (interactive)
@@ -42,7 +43,6 @@ config FREETZ_PACKAGE_TRANSMISSION_CLIENT
 
 config FREETZ_PACKAGE_TRANSMISSION_DAEMON
 	bool "Transmission daemon"
-	depends on FREETZ_PACKAGE_TRANSMISSION
 	default y
 	help
 		Torrent client (daemon)
@@ -56,28 +56,24 @@ config FREETZ_PACKAGE_TRANSMISSION_REMOTE
 
 config FREETZ_PACKAGE_TRANSMISSION_CREATE
 	bool "transmission-create"
-	depends on FREETZ_PACKAGE_TRANSMISSION
 	default n
 	help
 		A command-line utility to create .torrent files
 
 config FREETZ_PACKAGE_TRANSMISSION_EDIT
 	bool "transmission-edit"
-	depends on FREETZ_PACKAGE_TRANSMISSION
 	default n
 	help
 		A command-line utility to modify .torrent files' announce URLs
 
 config FREETZ_PACKAGE_TRANSMISSION_SHOW
 	bool "transmission-show"
-	depends on FREETZ_PACKAGE_TRANSMISSION
 	default n
 	help
 		A command-line utility to show .torrent file metadata
 
 config FREETZ_PACKAGE_TRANSMISSION_STATIC
 	bool "Statically link libraries"
-	depends on FREETZ_PACKAGE_TRANSMISSION
 	default n
 	help
 		Build transmission binaries with statically linked libraries.
@@ -88,3 +84,5 @@ config FREETZ_PACKAGE_TRANSMISSION_WEBINTERFACE
 	default y
 	help
 		The official web interface for transmission called clutch
+
+endif # FREETZ_PACKAGE_TRANSMISSION
