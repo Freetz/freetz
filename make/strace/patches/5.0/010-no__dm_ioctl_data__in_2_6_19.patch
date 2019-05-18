@@ -1,6 +1,6 @@
 --- dm.c
 +++ dm.c
-@@ -484,7 +484,10 @@
+@@ -464,7 +464,10 @@
  		ioc = alloca(sizeof(*ioc));
  	}
  
@@ -12,7 +12,7 @@
  	    (ioc->data_size < offsetof(struct dm_ioctl, data_size))) {
  		if (entering(tcp))
  			free(ioc);
-@@ -531,10 +534,12 @@
+@@ -511,10 +514,12 @@
  
  	PRINT_FIELD_U(", ", *ioc, data_size);
  
