@@ -24,7 +24,6 @@ menu Configuration
 
 config FREETZ_PACKAGE_SANE_BACKENDS_WITH_AVAHI
 	bool "enable avahi support"
-	depends on FREETZ_PACKAGE_SANE_BACKENDS
 	select FREETZ_PACKAGE_AVAHI
 	select FREETZ_LIB_libavahi_client
 	default n
@@ -33,12 +32,10 @@ config FREETZ_PACKAGE_SANE_BACKENDS_WITH_AVAHI
 
 config FREETZ_PACKAGE_SANE_BACKENDS_sane_find_scanner
 	bool "sane-find-scanner"
-	depends on FREETZ_PACKAGE_SANE_BACKENDS
 	default n
 
 config FREETZ_PACKAGE_SANE_BACKENDS_scanimage
 	bool "scanimage"
-	depends on FREETZ_PACKAGE_SANE_BACKENDS
 	default n
 
 EOF
@@ -47,7 +44,6 @@ EOF
 		print $out <<EOF;
 config FREETZ_PACKAGE_SANE_BACKENDS_BACKEND_$backend
 	bool "$backend backend"
-	depends on FREETZ_PACKAGE_SANE_BACKENDS
 EOF
 
 		if ($backend ne "dll") {
