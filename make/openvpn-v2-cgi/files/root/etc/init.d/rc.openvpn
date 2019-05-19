@@ -34,16 +34,16 @@ fi
 
 
 config() {
-	modlib_config
-}
-
-
-start() {
 	if [ "$OPENVPN_LOAD_TUN" == "yes" ]; then
 		modprobe tun 2>/dev/null
 		modprobe yf_patchkernel 2>/dev/null
 	fi
 
+	modlib_config
+}
+
+
+start() {
 	modlib_startdaemon ${DAEMON} --config /mod/etc/${DAEMON}.conf --writepid /var/run/${DAEMON}.pid --daemon
 }
 
