@@ -5,7 +5,7 @@
 [ -r /etc/options.cfg ] && . /etc/options.cfg
 
 MYVARS='AUTOSTART DEBUG DEBUG_TIME LOCAL MODE REMOTE PORT PROTO IPV6 TYPE BOX_IP BOX_MASK REMOTE_IP DHCP_RANGE LOCAL_NET REMOTE_NET DHCP_CLIENT MTU AUTH_TYPE CIPHER TLS_AUTH FLOAT KEEPALIVE KEEPALIVE_PING KEEPALIVE_TIMEOUT COMPLZO MAXCLIENTS CLIENT2CLIENT PUSH_DOMAIN PUSH_DNS PUSH_WINS REDIRECT VERBOSE SHAPER UDP_FRAGMENT PULL LOGFILE MGMNT CLIENTS_DEFINED CLIENT_INFO CLIENT_IPS CLIENT_NAMES CLIENT_NETS CLIENT_MASKS CONFIG_NAMES ADDITIONAL OWN_KEYS NO_CERTTYPE TAP2LAN FILES2CP PARAM_1 PARAM_2 PARAM_3'
-ALLVARS="$MYVARS ENABLED CONFIG_COUNT CONFIG_CHANGED EXPERT"
+ALLVARS="$MYVARS ENABLED CONFIG_COUNT CONFIG_CHANGED LOADTUN EXPERT"
 
 #if which openvpn >/dev/null; then
 #	HASBLOWFISH=$(openvpn --show-ciphers | grep -q BF-CBC && echo true)
@@ -143,6 +143,12 @@ cat << EOF
 EOF
 fi
 cat << EOF
+	</td>
+</tr>
+<tr>
+	<td colspan="3">
+	  <input id="id_is_loadtun" type="checkbox" onclick='if (this.checked) (local_loadtun="yes"); else (local_loadtun=""); changeval();'>
+	  <label for="id_is_loadtun">$(lang de:"Lade das tun Modul (und falls vorhanden yf_patchkernel) automatisch" en:"Load the tun module (and if available yf_patchkernel) automatically")</label>
 	</td>
 </tr>
 <tr>
@@ -575,6 +581,7 @@ variablen=[ "$(echo $MYVARS| sed 's/ /"\, "/ g')" ]
 function Init_Vars() {
 local_config_count=$OPENVPN_CONFIG_COUNT;
 backup_config_count=$OPENVPN_CONFIG_COUNT;
+local_loadtun="$OPENVPN_LOADTUN";
 local_expert="$OPENVPN_EXPERT";
 local_config_changed=new Array();
 local_config_changed[0]="new";
@@ -588,6 +595,7 @@ for (v=0; v<variablen.length; v++) {
 
 function Consolidate_Vars() {
 	document.getElementById("id_config_count").value=local_config_count;
+	document.getElementById("id_loadtun").value=local_loadtun;
 	document.getElementById("id_expert").value=local_expert;
 	document.getElementById("id_enabled").value=local_autostart[1];
 	Find_changes();
@@ -667,6 +675,13 @@ alert_cipher = false;
 	}
 	else {
 		document.getElementById("id_act_own_keys").checked = false
+	}
+
+	if ( local_loadtun == "yes" ) {
+		document.getElementById("id_is_loadtun").checked = true
+	}
+	else {
+		document.getElementById("id_is_loadtun").checked = false
 	}
 
 	if ( local_expert == "yes" ) {

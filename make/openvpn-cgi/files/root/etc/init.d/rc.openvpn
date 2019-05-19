@@ -9,6 +9,11 @@ mypidof() {
 }
 
 config(){
+	if [ "$OPENVPN_LOADTUN" == "yes" ]; then
+		modprobe tun 2>/dev/null
+		modprobe yf_patchkernel 2>/dev/null
+	fi
+
 	if [ -r "/tmp/flash/openvpn/own_${DAEMON}.conf" ]; then
 		cp /tmp/flash/openvpn/own_${DAEMON}.conf ${DAEMON_CONFIG}
 	else
