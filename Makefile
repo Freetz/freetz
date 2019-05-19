@@ -462,8 +462,6 @@ common-clean:
 
 common-dirclean: common-clean $(if $(FREETZ_HAVE_DOT_CONFIG),kernel-dirclean)
 	$(RM) -r $(if $(FREETZ_HAVE_DOT_CONFIG),$(PACKAGES_DIR) $(SOURCE_DIR) $(TARGET_TOOLCHAIN_DIR),$(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT))
-	-cp .defstatic $(ADDON_DIR)/static.pkg
-	-cp .defdynamic $(ADDON_DIR)/dynamic.pkg
 
 common-distclean: common-dirclean
 	$(RM) -r .config .config.compressed .config.old .config.cmd .tmpconfig.h include/config
