@@ -19,6 +19,7 @@ config() {
 			exit $exitval
 		fi
 		chown $DAEMON:$DAEMON "$TOR_DATADIRECTORY"
+		chmod 700 "$TOR_DATADIRECTORY"
 	fi
 
 	if [ "$TOR_RELAY_ENABLED" = "yes" ] && [ -e "$DAEMON_STORAGE/secret_id_key" ] && [ ! -e "$TOR_DATADIRECTORY/keys/secret_id_key" ]; then

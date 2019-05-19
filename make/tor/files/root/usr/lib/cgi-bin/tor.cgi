@@ -26,7 +26,7 @@ $(lang de:"Port" en:"Port"):&nbsp;<input id="port" type="text" size="5" maxlengt
 <p>Control Password Hash:&nbsp;<input id="controlpw" type="text" size="61" maxlength="61" name="control_hashed_pass" value="$(html "$TOR_CONTROL_HASHED_PASS")"><br />
 <span style="font-size:10px;">$(lang de:"Falls ein Control Interface angegeben wurde, muss hier ebenfalls ein Passwort-Hash angegeben werden." en:"If Control Interface is not empty you must provide a password.")<br />
 ($(lang de:"Ein Passwort Hash kann durch den Befehl <i>tor --hash-password mein_passwort</i> erzeugt werden." en:"You can create a password hash with <i>tor --hash-password my_password</i>."))</span></p>
-<p>$(lang de:"Zeitlimit f&uuml;r Tor-Verbindungen" en:"Circuit Idle Timeout") (optional):&nbsp;<input id="idle_timeout" type="text" size="5" maxlength="5" name="circuit_idle_timeout" value="$(html "$TOR_CIRCUIT_IDLE_TIMEOUT")"></p>
+<p>$(lang de:"Zeitlimit f&uuml;r Tor-Verbindungen" en:"Circuits Available Timeout") (optional):&nbsp;<input id="circuits_available_timeout" type="text" size="5" maxlength="5" name="circuits_available_timeout" value="$(html "$TOR_CIRCUITS_AVAILABLE_TIMEOUT")"></p>
 EOF
 
 sec_end
