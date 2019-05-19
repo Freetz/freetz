@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 3.7.2)
-$(PKG)_SOURCE:=v$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=683df4ab5cc53a45fe4f860c698f148d34bcca91b3e0568a342f32d64d12ba24
-$(PKG)_SITE:=https://github.com/bcl/digitemp/archive
+$(call PKG_INIT_BIN, a162e63aad35358aab325388f3d5e88121606419)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE_CHECKSUM:=X
+$(PKG)_SITE:=git@https://github.com/bcl/digitemp.git
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/digitemp
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/digitemp
