@@ -144,6 +144,13 @@ menu "Web Interface"
 		default "cuma"          if FREETZ_TAGGING_CUMA
 		default "freetz-ng"     if FREETZ_TAGGING_NG
 
+	config FREETZ_WEBIF_LINK
+		bool "AVM menu link"
+		depends on FREETZ_AVM_VERSION_06_5X_MIN
+		default y
+		help
+			Adds a link to the Freetz webif into the menu on the AVM webif.
+
 endmenu # "Webif customization" #
 
 menu "Additional image/box information"
