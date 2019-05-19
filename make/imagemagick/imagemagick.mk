@@ -21,8 +21,8 @@ $(PKG)_LIB_WAND_BUILD_DIR := $($(PKG)_LIB_WAND:%=$($(PKG)_DIR)/MagickWand/.libs/
 $(PKG)_LIB_WAND_TARGET_DIR := $($(PKG)_LIB_WAND:%=$($(PKG)_DEST_LIBDIR)/%)
 
 $(PKG)_XML_CONFIGS := \
-	coder.xml colors.xml delegates.xml english.xml locale.xml log.xml magic.xml mime.xml policy.xml \
-	quantization-table.xml thresholds.xml type.xml type-apple.xml type-dejavu.xml type-ghostscript.xml type-windows.xml
+	coder.xml colors.xml delegates.xml english.xml locale.xml log.xml magic.xml mime.xml policy.xml quantization-table.xml \
+	thresholds.xml type.xml type-apple.xml type-dejavu.xml type-ghostscript.xml type-urw-base35.xml type-windows.xml
 
 $(PKG)_XML_CONFIGS_BUILD_DIR := $($(PKG)_XML_CONFIGS:%=$($(PKG)_DIR)/config/%)
 $(PKG)_XML_CONFIGS_TARGET_DIR := $($(PKG)_XML_CONFIGS:%=$($(PKG)_DEST_DIR)/etc/ImageMagick-$($(PKG)_MAJOR_VERSION)/%)
@@ -48,6 +48,10 @@ $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 $(PKG)_CONFIGURE_PRE_CMDS += \
 	find $(abspath $($(PKG)_DIR)) -name "*.in" -type f -exec \
 	$(SED) -i -r -e 's,($($(PKG)_MAJOR_VERSION)|@MAGICK_MAJOR_VERSION@)[.]($($(PKG)_ABI_SUFFIX)|@MAGICK_ABI_SUFFIX@),\1-\2,g' \{\} \+;
+
+ifeq ($(or $(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),$(strip $(FREETZ_TARGET_UCLIBC_0_9_29))),y)
+$(PKG)_CONFIGURE_ENV += ac_cv_func_newlocale=no
+endif
 
 $(PKG)_CONFIGURE_OPTIONS += --with-modules=no
 $(PKG)_CONFIGURE_OPTIONS += --enable-hdri=no
