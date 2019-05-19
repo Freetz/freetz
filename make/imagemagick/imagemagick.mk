@@ -49,9 +49,7 @@ $(PKG)_CONFIGURE_PRE_CMDS += \
 	find $(abspath $($(PKG)_DIR)) -name "*.in" -type f -exec \
 	$(SED) -i -r -e 's,($($(PKG)_MAJOR_VERSION)|@MAGICK_MAJOR_VERSION@)[.]($($(PKG)_ABI_SUFFIX)|@MAGICK_ABI_SUFFIX@),\1-\2,g' \{\} \+;
 
-ifeq ($(or $(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),$(strip $(FREETZ_TARGET_UCLIBC_0_9_29))),y)
 $(PKG)_CONFIGURE_ENV += ac_cv_func_newlocale=no
-endif
 
 $(PKG)_CONFIGURE_OPTIONS += --with-modules=no
 $(PKG)_CONFIGURE_OPTIONS += --enable-hdri=no
