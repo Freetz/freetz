@@ -1,5 +1,5 @@
-$(call PKG_INIT_LIB, v1.8.2)
-$(PKG)_LIB_VERSION:=1.8.2
+$(call PKG_INIT_LIB, v1.9.1)
+$(PKG)_LIB_VERSION:=1.9.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SITE:=git@https://github.com/lz4/lz4.git
 
