@@ -12,14 +12,13 @@ echo "User tor"
 
 [ -n "$TOR_DATADIRECTORY" ] && echo "DataDirectory $TOR_DATADIRECTORY" || echo "DataDirectory /var/tmp/tor"
 
-[ "$TOR_SOCKS_PORT" ] && echo "SocksPort $TOR_SOCKS_PORT"
-[ "$TOR_SOCKS_ADDRESS" ] && echo "SocksListenAddress $TOR_SOCKS_ADDRESS"
+[ "$TOR_SOCKS_PORT" ] && echo "SocksPort ${TOR_SOCKS_ADDRESS}${TOR_SOCKS_ADDRESS:+:}${TOR_SOCKS_PORT}"
 
 [ "$TOR_CONTROL_PORT" ] && echo "ControlPort $TOR_CONTROL_PORT"
 [ "$TOR_CONTROL_ADDRESS" ] && echo "ControlListenAddress $TOR_CONTROL_ADDRESS"
 [ "$TOR_CONTROL_HASHED_PASS" ] && echo "HashedControlPassword $TOR_CONTROL_HASHED_PASS"
 
-[ "$TOR_CIRCUIT_IDLE_TIMEOUT" ] && echo "CircuitIdleTimeout $TOR_CIRCUIT_IDLE_TIMEOUT"
+[ "$TOR_CIRCUITS_AVAILABLE_TIMEOUT" ] && echo "CircuitsAvailableTimeout $TOR_CIRCUITS_AVAILABLE_TIMEOUT"
 
 if [ "$TOR_SOCKS_POLICY_REJECT" != "no" ]; then
 	_join $'\n' $(echo "$TOR_SOCKS_POLICY_ACCEPT" | grep -v "^#") | sed -e 's/^/SocksPolicy accept /'; echo
