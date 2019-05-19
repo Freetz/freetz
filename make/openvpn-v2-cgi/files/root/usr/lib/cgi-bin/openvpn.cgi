@@ -24,6 +24,16 @@ cgi_print_radiogroup_service_starttype \
 	"enabled" "$OPENVPN_ENABLED" "" "" 1
 
 sec_end
+
+if [ -n "$(find /lib/modules/ -name tun.ko)" ]; then
+sec_begin '$(lang de:"Optionen" en:"Options")' sec_opts
+
+cgi_print_checkbox_p "load_tun" "$OPENVPN_LOAD_TUN" \
+	"$(lang de:"Lade das tun Modul (und falls vorhanden yf_patchkernel) automatisch" en:"Load the tun module (and if available yf_patchkernel) automatically")."
+
+sec_end
+fi
+
 sec_begin '$(lang de:"Einstellungen" en:"Configuration")' sec_conf
 
 cat << EOF
