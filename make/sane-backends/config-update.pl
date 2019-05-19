@@ -7,8 +7,6 @@ sub write_config_in {
 
 	open(my $out, ">", $file) or die "Can't open $file for writing: $!";
 	print $out <<EOF;
-menu SANE
-
 config FREETZ_PACKAGE_SANE_BACKENDS
 	bool "SANE $version"
 	select FREETZ_PACKAGE_INETD
@@ -20,6 +18,9 @@ config FREETZ_PACKAGE_SANE_BACKENDS
 	help
 		SANE - Scanner support
 		(initial Freetz package by Michael Denk, tehron @ http://www.ip-phone-forum.de/)
+
+if FREETZ_PACKAGE_SANE_BACKENDS
+menu Configuration
 
 config FREETZ_PACKAGE_SANE_BACKENDS_WITH_AVAHI
 	bool "enable avahi support"
@@ -69,6 +70,7 @@ EOF
 
 	print $out <<EOF;
 endmenu
+endif # FREETZ_PACKAGE_SANE_BACKENDS
 EOF
 
 	close($out);
