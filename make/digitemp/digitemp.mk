@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 3.6.0)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=9be2e48db37920f21925ae6e88f83b84
-$(PKG)_SITE:=http://www.digitemp.com/software/linux
+$(call PKG_INIT_BIN, 3.7.2)
+$(PKG)_SOURCE:=v$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_SHA256:=683df4ab5cc53a45fe4f860c698f148d34bcca91b3e0568a342f32d64d12ba24
+$(PKG)_SITE:=https://github.com/bcl/digitemp/archive
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/digitemp
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/digitemp
@@ -31,7 +31,7 @@ $(PKG_CONFIGURED_NOP)
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(DIGITEMP_DIR) \
 		CC="$(TARGET_CC)" \
-		OPT_CFLAGS="$(TARGET_CFLAGS)" \
+		CFLAGS="$(TARGET_CFLAGS)" \
 		$(DIGITEMP_MAKE_TARGET)
 	cp $(DIGITEMP_MAKE_BINARY) $(DIGITEMP_BINARY)
 
