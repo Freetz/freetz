@@ -4,6 +4,17 @@ Latest changes:
 
 === devel ===
 
+- Known problems:
+  * Replace kernel does not work for most latest firmware versions
+  * Loading build kernel modules may work or do not. You'll notice
+  * No download toolchains for firmware versions since FritzOS 7.0
+
+- Unsupported devices:
+  * Repeater 310: It has no LAN port, so a recovery is impossbile
+  * Repeater 450E, Powerline 540E & 546E: No sources for v4 kernel
+  * Repeater 1160 & Powerline 1240E: Problems with the toolchain
+  * FRITZ!Box 7581 & 7582: These don't use uClib, but old glibc
+
 - Build system:
   * binutils:
     + add support for binutils-2.24.x/2.25.x/2.26.x
@@ -35,6 +46,15 @@ Latest changes:
   * patchelf: small utility to modify the dynamic linker and RPATH of ELF executables
 
 - New patches (read online help for more info):
+    * Remove public firmware key: You could remove AVM's public firmware "key1" from image. This prevents
+      unrequest self-updates of the FritzBox.
+    * Drop noexec on external storages: Newer FritzOS versions don't allow to execute files on storages.
+      Enable the noexec patch to allow it.
+    * Patch DSL modified message: The DSL main page does not show a warning anymore.
+    * Extend DSL spectrum: Shows DSL spectrum page with min/man visible initialy.
+    * Extend DSL settings:Extends the DSL settings page with "speed" settings (lower SNR-margin etc).
+    * Extend online counter: AVM's online counter page could be modified by convert the hours in days and
+      traffic MB in GB.
 
 - New packages, libs, modules:
     * asterisk 11.25.3
@@ -89,9 +109,27 @@ Latest changes:
     * WireGuard 0.0.20190406
     * xz 5.2.4
 
+- Updated build system:
+    * The ./dl directory is no more a directory, but a link to ~/freetz-dl. So all downloads are share between all
+      checkouts. If you don't like it just create ./dl as a directory by yourself.
+    * Firmware files are verifyed before unpacking by the signature of AVM. The public key is unique per device (and
+      for some also by annex or language), but not by FritzOS version. The first FritzBox devices had no siganture
+      and as fallback the checksum-check on download is used.
+    * Downloads are verifyed by a checksum, the result is colored. Downloads from svn, git etc repositories have
+      no checksum when they are not on the mirros.
+    * Additionally to ./fwmod_custom the file ./.fwmod_custom is executed but the later is unversioned.
+    * You could set a user defined mirror as known (menuconfig > Download options > user-defined site) or by
+      config/custom.in: Set a string for FREETZ_DL_SITE_CUSTOM symbol. User defined mirrors are now always used first
+    * The link ./images/latest.image points always to the latest successfully created firmware.
+
 - Updated tools and hooks:
+    * push_firmware: updated for ram-boot and dual-boot devices. Use it by execute "make push-firmware"
+      to flash the latest compiled image or use "./tools/push_firmware" for more options. The inmemory-image
+      format is deprecated and no longer needed, but still selectable.
 
 - Updated patches:
+    * All selectable patches are expected to work. If a patch fails, report it! Disable the
+      patch in menuconfig or remove the patches/scripts/*.sh file to build image anyway.
 
 - Updated packages and libs:
     * apache 2.4.39
@@ -189,6 +227,7 @@ Latest changes:
     * pyOpenSSL 0.13.1
     * radvd 1.9.3
     * readline 6.3-p8
+    * RRDstats 0.7.2: support for FRITZ!Box cable, SmartHome & local power consumption
     * rsync 3.1.2
     * samba 3.6.25
     * sane-backends 1.0.27
@@ -242,10 +281,27 @@ Latest changes:
     * Updated to version 1.27.2
 
 - Web interface:
-    * add basic web interface for HAProxy
+    * It shows the device's hostname (without domain) in the title and header. Set it by Heimnetz > FRITZ!Box-Name. If you want
+      a FQDN set it in ar7.cfg directly.
+    * The reboot button asks before rebooting.
+    * Automatic refresh of wev pages added, just add a "refresh" parameter with the count of seconds, like ​http://fritz:81/?refresh=3
+    * It could be set that the device reboots automatically after successfully flash.
+    * New, dark skin called 'cuma' added. If you have selected (menuconfig > Web Interface Freetz skins) multiple, you could switch
+      them (Webif > System > Weboberfläche).
+    * On supported devices, the system page shows the 2 partition sets and the containing FritzOS versions.
+
+- menuconfig:
+    * menuconfig help: shows howtos/make_targets.txt
+    * menuconfig push-firmware: flashes the latest build image ./images/latest.image Use ./tools/push_firmware for more options
+    * sorting: The packages in menuconfig are sorted now alphabetical. For a faster navigation just type the character, or
+      space for pre-assigned.
+    * labor detection: Labor firmware URL is not hardcoded anymore in Freetz, the current URL is detected by using
+      boxmatrix.info, see https://boxmatrix.info/wiki/Labor-Files for currently availabele labor firmwares.
+      The labor option is enabled for all devices without current FritzOS, but having previous FritzOS version.
 
 - Other stuff:
-    * menuconfig help (shows howtos/make_targets.txt)
+    * motd: It could be changed and also be dynamic. You could put your own content into /tmp/flash/mod/motd. It will be
+      generated 1 time at boot, to update it more often, run "/mod/etc/init.d/rc.mod motd", eg by cron .
 
 === Freetz-2.0 ===
 
