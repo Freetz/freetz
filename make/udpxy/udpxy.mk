@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.0.23-9)
+$(call PKG_INIT_BIN, 1.0.23-12)
 $(PKG)_SOURCE:=$(pkg).$($(PKG)_VERSION)-prod.tar.gz
-$(PKG)_SOURCE_MD5:=0c953f7dd80329c1a062997afb9b6744
+$(PKG)_SOURCE_MD5:=6f77d05e18f0e959375d51a8447f7461
 $(PKG)_SITE:=http://www.udpxy.com/download/1_23
 $(PKG)_BINARY:=$($(PKG)_DIR)/udpxy
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/udpxy
