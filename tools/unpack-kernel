@@ -253,7 +253,7 @@ findAndProcessTiRecord() {
 	TI_RECORD_OFFSET=""
 
 	local tiRecordOffset=""
-	{ tiRecordOffset=$(getDecOffsetOf1stMagicSequenceMatch $magic "$tiRecordName" 1 $lowerBound); } || return 1
+	{ tiRecordOffset=$(getDecOffsetOf1stMagicSequenceMatch $magic "$tiRecordName" 2 $lowerBound); } || return 1
 
 	local tiRecordLoadAddr=$(getLoadAddr $tiRecordOffset)
 	echo "${tiRecordPrefix}LoadAddress=$(print08X $tiRecordLoadAddr)"
