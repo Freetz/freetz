@@ -59,7 +59,7 @@ if [ "$FREETZ_PACKAGE_DNSMASQ_WITH_DNSSEC" = "y" -a "$DNSMASQ_DNSSEC" = "yes" ];
 	[ -r /mod/etc/default.dnsmasq/trust-anchors.conf ] && echo "conf-file=/mod/etc/default.dnsmasq/trust-anchors.conf"
 	echo "dnssec"
 	if [ "$(date +'%Y')" -lt 2019 ]; then
-		[ -e /tmp/.dnsmasq.timestamp ] || cp -p /etc/version /tmp/.dnsmasq.timestamp
+		[ ! -e /tmp/.dnsmasq.timestamp ] && cp -p /etc/version /tmp/.dnsmasq.timestamp && chown nobody.nobody /tmp/.dnsmasq.timestamp
 		echo "dnssec-timestamp=/tmp/.dnsmasq.timestamp"
 	fi
 fi
