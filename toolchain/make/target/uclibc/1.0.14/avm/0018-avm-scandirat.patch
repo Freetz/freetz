@@ -1,0 +1,214 @@
+diff --git a/include/dirent.h b/include/dirent.h
+index 00aa077..d25fdb6 100644
+--- include/dirent.h
++++ include/dirent.h
+@@ -286,6 +286,42 @@ extern int scandir64 (const char *__restrict __dir,
+      __nonnull ((1, 2));
+ # endif
+ 
++/* Scan the directory DIR, calling SELECTOR on each directory entry.
++   Entries for which SELECT returns nonzero are individually malloc'd,
++   sorted using qsort with CMP, and collected in a malloc'd array in
++   *NAMELIST.  Returns the number of entries selected, or -1 on error.  */
++# ifndef __USE_FILE_OFFSET64
++extern int scandirat (const int dirfd, const char *__restrict __dir,
++		    struct dirent ***__restrict __namelist,
++		    int (*__selector) (const struct dirent *),
++		    int (*__cmp) (const struct dirent **,
++				  const struct dirent **))
++     __nonnull ((2, 3));
++# else
++#  ifdef __REDIRECT
++extern int __REDIRECT (scandirat,
++		       (const int dirfd, const char *__restrict __dir,
++			struct dirent ***__restrict __namelist,
++			int (*__selector) (const struct dirent *),
++			int (*__cmp) (const struct dirent **,
++				      const struct dirent **)),
++		       scandir64) __nonnull ((2, 3));
++#  else
++#   define scandir scandirat64
++#  endif
++# endif
++
++# if defined __USE_GNU && defined __USE_LARGEFILE64
++/* This function is like `scandir' but it uses the 64bit dirent structure.
++   Please note that the CMP function must now work with struct dirent64 **.  */
++extern int scandirat64 (const int dirfd, const char *__restrict __dir,
++		      struct dirent64 ***__restrict __namelist,
++		      int (*__selector) (const struct dirent64 *),
++		      int (*__cmp) (const struct dirent64 **,
++				    const struct dirent64 **))
++     __nonnull ((2, 3));
++# endif
++
+ /* Function to compare two `struct dirent's alphabetically.  */
+ # ifndef __USE_FILE_OFFSET64
+ extern int alphasort (const struct dirent **__e1,
+diff --git a/libc/misc/dirent/Makefile.in b/libc/misc/dirent/Makefile.in
+index 5cae8d4..11146f6 100644
+--- libc/misc/dirent/Makefile.in
++++ libc/misc/dirent/Makefile.in
+@@ -7,7 +7,7 @@
+ 
+ subdirs += libc/misc/dirent
+ 
+-CSRC   := alphasort.c readdir.c scandir.c versionsort.c
++CSRC   := alphasort.c readdir.c scandir.c scandirat.c versionsort.c
+ CSRC_R := readdir_r.c
+ CSRC-y := closedir.c dirfd.c opendir.c rewinddir.c seekdir.c telldir.c $(CSRC) \
+ 		  $(CSRC_R)
+diff --git a/libc/misc/dirent/scandirat.c b/libc/misc/dirent/scandirat.c
+new file mode 100644
+index 0000000..545412c
+--- /dev/null
++++ libc/misc/dirent/scandirat.c
+@@ -0,0 +1,126 @@
++/* vi: set sw=4 ts=4: */
++/*
++ * Copyright (C) 2000-2011 Erik Andersen <andersen@uclibc.org>
++ *
++ * Licensed under the LGPL v2.1, see the file COPYING.LIB in this tarball.
++ */
++
++#include <dirent.h>
++#include <string.h>
++#include <stdlib.h>
++#include <errno.h>
++#include <sys/types.h>  /* openat */
++#include <sys/stat.h>   /* openat */
++#include <fcntl.h>      /* openat */
++#include <unistd.h>     /* fstatat */
++
++#include "dirstream.h"
++
++#ifndef __SCANDIRAT
++# define __SCANDIRAT scandirat
++# define __DIRENT_TYPE struct dirent
++# define __READDIR readdir
++#endif
++
++int __SCANDIRAT(const int dirfd, const char *dir, __DIRENT_TYPE ***namelist,
++	int (*selector) (const __DIRENT_TYPE *),
++	int (*compar) (const __DIRENT_TYPE **, const __DIRENT_TYPE **))
++{
++    DIR *dp; /*--- = opendir (dir); ---*/
++    __DIRENT_TYPE *current;
++    __DIRENT_TYPE **names = NULL;
++    size_t names_size = 0, pos;
++    int save;
++    struct stat statbuf;
++    int err;
++    int fdat;
++
++    err = fstatat(dirfd, dir, &statbuf, 0);
++    if (err == -1) {
++        return -1;
++    }
++    if (!S_ISDIR(statbuf.st_mode)) {
++        __set_errno (ENOTDIR);
++        return -1;
++    }
++
++    fdat = openat(dirfd, dir, O_RDONLY);
++    if (fdat == -1) {
++        return -1;
++    }
++
++    dp = fdopendir(fdat);
++
++    if (dp == NULL)
++	return -1;
++
++    save = errno;
++    __set_errno (0);
++
++    pos = 0;
++    while ((current = __READDIR (dp)) != NULL) {
++	int use_it = selector == NULL;
++
++	if (! use_it)
++	{
++	    use_it = (*selector) (current);
++	    /* The selector function might have changed errno.
++	     * It was zero before and it need to be again to make
++	     * the latter tests work.  */
++	    if (! use_it)
++		__set_errno (0);
++	}
++	if (use_it)
++	{
++	    __DIRENT_TYPE *vnew;
++	    size_t dsize;
++
++	    /* Ignore errors from selector or readdir */
++	    __set_errno (0);
++
++	    if (unlikely(pos == names_size))
++	    {
++		__DIRENT_TYPE **new;
++		if (names_size == 0)
++		    names_size = 10;
++		else
++		    names_size *= 2;
++		new = (__DIRENT_TYPE **) realloc (names,
++					names_size * sizeof (__DIRENT_TYPE *));
++		if (new == NULL)
++		    break;
++		names = new;
++	    }
++
++	    dsize = &current->d_name[_D_ALLOC_NAMLEN(current)] - (char*)current;
++	    vnew = (__DIRENT_TYPE *) malloc (dsize);
++	    if (vnew == NULL)
++		break;
++
++	    names[pos++] = (__DIRENT_TYPE *) memcpy (vnew, current, dsize);
++	}
++    }
++
++    if (unlikely(errno != 0))
++    {
++	save = errno;
++	closedir (dp);
++	while (pos > 0)
++	    free (names[--pos]);
++	free (names);
++	__set_errno (save);
++	return -1;
++    }
++
++    closedir (dp);
++    __set_errno (save);
++
++    /* Sort the list if we have a comparison function to sort with.  */
++    if (compar != NULL)
++	qsort (names, pos, sizeof (__DIRENT_TYPE *), (comparison_fn_t) compar);
++    *namelist = names;
++    return pos;
++}
++#if defined __UCLIBC_HAS_LFS__ && __WORDSIZE == 64
++strong_alias_untyped(scandirat,scandirat64)
++#endif
+diff --git a/libc/misc/dirent/scandirat64.c b/libc/misc/dirent/scandirat64.c
+new file mode 100644
+index 0000000..4609aea
+--- /dev/null
++++ libc/misc/dirent/scandirat64.c
+@@ -0,0 +1,16 @@
++/*
++ * Copyright (C) 2000-2011 Erik Andersen <andersen@uclibc.org>
++ *
++ * Licensed under the LGPL v2.1, see the file COPYING.LIB in this tarball.
++ */
++
++#include <_lfs_64.h>
++#include <dirent.h>
++
++#if __WORDSIZE != 64
++# define __SCANDIRAT scandirat64
++# define __DIRENT_TYPE struct dirent64
++# define __READDIR readdir64
++
++# include "scandirat.c"
++#endif
