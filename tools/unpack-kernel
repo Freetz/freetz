@@ -104,13 +104,26 @@ print08X() {
 # $4 - tight lower bound of the match, i.e. the returned offset
 #      must fulfill the condition "tight-lower-bound < offset"
 #      (no lower bound restriction if omitted)
+# $5 - optional usually heuristic based function intended to reduce
+#      the number of potential matches by doing some additional checks
 #
 getDecOffsetOf1stMagicSequenceMatch() {
 	local sequenceNamePrefix=${2}${2:+ } # sequence name with space added
 	local maxNumberOfMatches=$3          # unlimited if omitted
 	local lowerBound=${4:--1}            # -1        if omitted
+	local deeperCheckFct=$5              # deeper check function
 
 	declare -a offsetCandidates=($(getDecOffsetsOfAllMatches "$INPUT_FILE" bin $(echo -n $1 | invertEndianness)))
+
+	if [ -n "${deeperCheckFct}" ]; then
+		declare -a filteredOffsetCandidates
+		for ((i=0; i<${#offsetCandidates[@]}; i++)); do
+			if eval "${deeperCheckFct} ${offsetCandidates[i]}"; then
+				filteredOffsetCandidates+=(${offsetCandidates[i]})
+			fi
+		done
+		offsetCandidates=("${filteredOffsetCandidates[@]}")
+	fi
 
 	for ((i=0; i<${#offsetCandidates[@]}; i++)); do
 		if [ $((lowerBound)) -lt ${offsetCandidates[i]} ]; then
@@ -232,6 +245,23 @@ getTiRecordChecksum() {
 	getLEu32AtOffset "$INPUT_FILE" $((tiRecordOffset + tiRecordLen  + 12))
 }
 
+maybeTiRecord() {
+	local tiRecordOffset=$1      # a _potential_ tiRecordOffset
+	local tiRecordPayloadOffset
+	local payloadFirst16Bytes
+	local TI_AR7_MAGIC_BE=$(echo -n "$TI_AR7_MAGIC" | invertEndianness)
+
+	tiRecordPayloadOffset=$((tiRecordOffset+12))
+	payloadFirst16Bytes=$(getHexContentAtOffset "$INPUT_FILE" ${tiRecordPayloadOffset} 16 2>/dev/null) || return 1
+
+	# heuristic, check if payload contains one of the known magic sequences
+	[ "${payloadFirst16Bytes:0:${#EVA_LZMA_RECORD_MAGIC_BE}}" == "$EVA_LZMA_RECORD_MAGIC_BE" ] \
+	|| \
+	[ "${payloadFirst16Bytes:0:${#X86_BOOT_SECTOR_MAGIC_BE}}" == "$X86_BOOT_SECTOR_MAGIC_BE" ] \
+	|| \
+	[ "${payloadFirst16Bytes:0:${#TI_AR7_MAGIC_BE}}"          == "$TI_AR7_MAGIC_BE" ]
+}
+
 
 #
 # $1 - magic sequence (in little-endian notation)
@@ -253,7 +283,7 @@ findAndProcessTiRecord() {
 	TI_RECORD_OFFSET=""
 
 	local tiRecordOffset=""
-	{ tiRecordOffset=$(getDecOffsetOf1stMagicSequenceMatch $magic "$tiRecordName" 1 $lowerBound); } || return 1
+	{ tiRecordOffset=$(getDecOffsetOf1stMagicSequenceMatch $magic "$tiRecordName" 1 "$lowerBound" "maybeTiRecord"); } || return 1
 
 	local tiRecordLoadAddr=$(getLoadAddr $tiRecordOffset)
 	echo "${tiRecordPrefix}LoadAddress=$(print08X $tiRecordLoadAddr)"
@@ -298,7 +328,7 @@ EVA_LZMA_RECORD_MAGIC_BE=$(echo -n 075A0201 | invertEndianness)
 X86_BOOT_SECTOR_MAGIC_BE=EA0500C0078CC88ED88EC08ED031E4FB
 
 # 1st kernel (PUMA6 boxes, x86 kernel)
-if getDecOffsetOf1stMagicSequenceMatch $TI_PUMA6_MAGIC "TI-PUMA6" 1 >/dev/null 2>&1; then
+if getDecOffsetOf1stMagicSequenceMatch $TI_PUMA6_MAGIC "TI-PUMA6" 1 "" "maybeTiRecord" >/dev/null 2>&1; then
 	findAndProcessTiRecord $TI_PUMA6_MAGIC "TI-PUMA6" "$OUTPUT_FILE" || exit 1
 	exit 0
 fi
@@ -308,7 +338,7 @@ findAndProcessTiRecord $TI_AR7_MAGIC "TI-AR7" "$OUTPUT_FILE" || exit 1
 feed1281_Offset=$TI_RECORD_OFFSET
 
 # 2nd kernel (GRX5 boxes only)
-feed9112_Offset=$(getDecOffsetOf1stMagicSequenceMatch $DUAL_KERNEL_MAGIC "DUAL-kernel" 1 2>/dev/null)
+feed9112_Offset=$(getDecOffsetOf1stMagicSequenceMatch $DUAL_KERNEL_MAGIC "DUAL-kernel" 1 "" "maybeTiRecord" 2>/dev/null)
 if [ -n "$feed9112_Offset" ]; then
 	if [ $((feed1281_Offset - feed9112_Offset)) -ne 12 ]; then
 		echo >&2 "ERROR: DUAL-kernel magic sequence (0x$DUAL_KERNEL_MAGIC) is expected to be found exactly 12 bytes before TI-AR7 record"; exit 1
