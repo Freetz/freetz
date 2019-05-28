@@ -1,6 +1,6 @@
 --- src/Makefile.in
 +++ src/Makefile.in
-@@ -1247,6 +1247,7 @@
+@@ -1272,6 +1272,7 @@
  CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
  CPP = @CPP@
  CPPFLAGS = @CPPFLAGS@
@@ -8,10 +8,10 @@
  CPPFLAGS_FOR_BUILD = @CPPFLAGS_FOR_BUILD@
  CPP_FOR_BUILD = @CPP_FOR_BUILD@
  CRYPTO_LIB = @CRYPTO_LIB@
-@@ -1684,6 +1685,7 @@
- @LIGHTTPD_STATIC_TRUE@	$(am__append_29) $(am__append_32) \
- @LIGHTTPD_STATIC_TRUE@	$(am__append_35) $(am__append_37) \
- @LIGHTTPD_STATIC_TRUE@	$(am__append_39) $(am__append_40)
+@@ -1715,6 +1716,7 @@
+ @LIGHTTPD_STATIC_TRUE@	$(am__append_32) $(am__append_35) \
+ @LIGHTTPD_STATIC_TRUE@	$(am__append_38) $(am__append_40) \
+ @LIGHTTPD_STATIC_TRUE@	$(am__append_42) $(am__append_43)
 +lighttpd_LDADD += $(strip $(filter -lpthread,$(FAM_LIBS) $(LIBEV_LIBS) $(LIBUNWIND_LIBS) $(LUA_LIBS) $(MYSQL_LIBS) $(SQLITE_LIBS) $(UUID_LIBS) $(XML_LIBS)))
  @LIGHTTPD_STATIC_FALSE@lighttpd_LDFLAGS = -export-dynamic
  @LIGHTTPD_STATIC_TRUE@lighttpd_LDFLAGS = -export-dynamic

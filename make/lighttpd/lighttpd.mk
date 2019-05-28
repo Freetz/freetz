@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.4.53)
+$(call PKG_INIT_BIN, 1.4.54)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=3bdfce1cf3e9650a556a8c26fb15342c5717c63f530c54693db632b0371dcb78
+$(PKG)_SOURCE_SHA256:=cf14cce2254a96d8fcb6d3181e1a3c29a8f832531c3e86ff6f2524ecda9a8721
 $(PKG)_SITE:=http://download.lighttpd.net/lighttpd/releases-1.4.x
 
 $(PKG)_BINARY_BUILD_DIR := $($(PKG)_DIR)/src/lighttpd
@@ -16,7 +16,7 @@ $(PKG)_MODULES_ALL := \
 	fastcgi flv_streaming \
 	geoip \
 	indexfile \
-	magnet mysql_vhost \
+	magnet maxminddb mysql_vhost \
 	openssl \
 	proxy \
 	redirect rewrite rrdtool \
@@ -79,6 +79,7 @@ $(PKG)_CONFIGURE_OPTIONS += --without-geoip
 $(PKG)_CONFIGURE_OPTIONS += --without-krb5
 $(PKG)_CONFIGURE_OPTIONS += --without-ldap
 $(PKG)_CONFIGURE_OPTIONS += --without-libev
+$(PKG)_CONFIGURE_OPTIONS += --without-maxminddb
 $(PKG)_CONFIGURE_OPTIONS += --without-memcache
 $(PKG)_CONFIGURE_OPTIONS += --with-pcre="yes"
 $(PKG)_CONFIGURE_OPTIONS += --without-valgrind
