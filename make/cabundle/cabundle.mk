@@ -1,21 +1,17 @@
-CABUNDLE_GIT_REPOSITORY:=https://github.com/bagder/ca-bundle.git
-$(call PKG_INIT_BIN, $(if $(FREETZ_PACKAGE_CABUNDLE_VERSION_LATEST), $(call git-get-latest-revision,$(CABUNDLE_GIT_REPOSITORY),), $(if $(FREETZ_PACKAGE_CABUNDLE_VERSION_CUSTOM), $(shell echo "$(FREETZ_PACKAGE_CABUNDLE_VERSION_COMMIT)"), 449f554bb6) ))
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_CHECKSUM:=X
-$(PKG)_SITE:=git@$($(PKG)_GIT_REPOSITORY)
+$(call PKG_INIT_BIN, 2019-05-15)
+$(PKG)_SOURCE:=cacert-$($(PKG)_VERSION).pem
+$(PKG)_SOURCE_SHA256:=cb2eca3fbfa232c9e3874e3852d43b33589f27face98eef10242a853d83a437a
+$(PKG)_SITE:=https://curl.haxx.se/ca
 
-$(PKG)_BINARY:=$($(PKG)_DIR)/ca-bundle.crt
+$(PKG)_BINARY:=$($(PKG)_DIR)/cacert.pem
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/etc/ssl/certs/ca-bundle.crt
 
-$(PKG)_BUILD_PREREQ += git
-$(PKG)_BUILD_PREREQ_HINT := Hint: on Debian-like systems this binary is provided by the git package (sudo apt-get install git)
-
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_CABUNDLE_VERSION_TESTED
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_CABUNDLE_VERSION_LATEST
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_CABUNDLE_VERSION_CUSTOM
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_CABUNDLE_VERSION_COMMIT
-
 $(PKG)_STARTLEVEL=30
+
+define $(PKG)_CUSTOM_UNPACK
+	mkdir -p $($(PKG)_DIR); \
+	cp -p $(strip $(1)) $($(PKG)_BINARY)
+endef
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
