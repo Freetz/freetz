@@ -1,0 +1,20 @@
+--- ./linux-3.10/net/avm_pa/avm_pa.c
++++ ./linux-3.10/net/avm_pa/avm_pa.c
+@@ -585,7 +585,7 @@
+    .udp_timeout_secs = 10,
+    .echo_timeout_secs = 3,
+    .bridge_timeout_secs = 30,
+-   .load_control = LOADCONTROL_IDLE,
++   .load_control = LOADCONTROL_OFF,
+    .telephony_reduce = AVM_PA_DEFAULT_TELEPHONY_REDUCE,
+    .irq_mswin_low = AVM_PA_CPUTIME_IRQ_MSWIN_LOW,
+    .irq_mswin_high = AVM_PA_CPUTIME_IRQ_MSWIN_HIGH,
+@@ -6903,7 +6903,7 @@
+    } else {
+       if (ctx->telephony_active) {
+ #if AVM_LOAD_CONTROL_ENABLED
+-         ctx->load_control = LOADCONTROL_IDLE;
++         ctx->load_control = LOADCONTROL_OFF;
+          avm_pa_tbf_disable();
+ #endif
+          pr_info("avm_pa: telephony inactive\n");
