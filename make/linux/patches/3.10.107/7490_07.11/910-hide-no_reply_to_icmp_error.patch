@@ -1,0 +1,11 @@
+--- linux-3.10/net/ipv6/icmp.c	2015-03-31 14:03:21.000000000 +0200
++++ linux-3.10/net/ipv6/icmp.c	2016-10-20 19:47:35.117957050 +0200
+@@ -443,7 +443,7 @@
+ 	 *	Never answer to a ICMP packet.
+ 	 */
+ 	if (is_ineligible(skb)) {
+-		LIMIT_NETDEBUG(KERN_DEBUG "icmp6_send: no reply to icmp error\n");
++//		LIMIT_NETDEBUG(KERN_DEBUG "icmp6_send: no reply to icmp error\n");
+ 		return;
+ 	}
+ 
