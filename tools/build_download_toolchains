@@ -109,7 +109,7 @@ for options in \
 	ln -sf $DOWNLOADS dl
 	make $TOOL_CONF
 	miniconfig $options > $DOT_CONFIG
-	$TOOL_CONF --oldnoconfig config/Config.in
+	$TOOL_CONF --olddefconfig config/Config.in
 	cp -a $DOT_CONFIG $DOT_CONFIG.$optionsUnderscoreSep
 	make KTV=${KERNEL_TOOLCHAIN_FILENAME_SUFFIX} TTV=${TARGET_TOOLCHAIN_FILENAME_SUFFIX} toolchain
 done
