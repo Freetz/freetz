@@ -75,6 +75,10 @@ define MESSAGE
 printf "%s\n" "$(1)" $(SILENT)
 endef
 
+define nMESSAGE
+printf "\n%s" "$(1)" $(SILENT)
+endef
+
 # Print yellow error message and exit
 define ERROR
 printf "\n$(_Y)%s$(_N)\n" "ERROR: $(2)";  exit $(1);
