@@ -30,6 +30,12 @@ choice
 		select FREETZ_LIB_libgnutls if !FREETZ_PACKAGE_WGET_STATIC
 endchoice
 
+config FREETZ_PACKAGE_WGET_CA_BUNDLE
+	bool "Select CA-bundle"
+	depends on FREETZ_PACKAGE_WGET_WITH_SSL
+	default y
+	select FREETZ_PACKAGE_CA_BUNDLE
+
 config FREETZ_PACKAGE_WGET_STATIC
 	bool "Link statically"
 	depends on FREETZ_PACKAGE_WGET_WITH_SSL
