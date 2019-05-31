@@ -29,6 +29,6 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 $(pkg)-clean:
 
 $(pkg)-uninstall:
-	$(RM) $(CABUNDLE_TARGET_BINARY)
+	$(RM) $(CA_BUNDLE_TARGET_BINARY)
 
 $(PKG_FINISH)
