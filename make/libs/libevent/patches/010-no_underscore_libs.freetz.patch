@@ -1,6 +1,6 @@
 --- Makefile.in
 +++ Makefile.in
-@@ -1005,8 +1005,7 @@
+@@ -1064,8 +1064,7 @@
  # series won't be binary-compatible.
  @INSTALL_LIBEVENT_TRUE@dist_bin_SCRIPTS = event_rpcgen.py
  pkgconfigdir = $(libdir)/pkgconfig
@@ -10,10 +10,10 @@
  
  # These sources are conditionally added by configure.ac or conditionally
  # included from other files.
-@@ -1020,8 +1019,7 @@
- 	whatsnew-2.1.txt $(PLATFORM_DEPENDENT_SRC) \
+@@ -1104,8 +1103,7 @@
  	test/check-dumpevents.py test/regress.gen.c test/regress.gen.h \
- 	test/regress.rpc test/rpcgen_wrapper.sh test/test.sh
+ 	test/regress.rpc test/rpcgen_wrapper.sh \
+ 	test/print-winsock-errors.c test/test.sh
 -LIBEVENT_LIBS_LA = libevent.la libevent_core.la libevent_extra.la \
 -	$(am__append_1) $(am__append_3)
 +LIBEVENT_LIBS_LA = libevent.la
