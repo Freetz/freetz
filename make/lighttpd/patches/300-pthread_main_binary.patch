@@ -1,18 +1,18 @@
 --- src/Makefile.in
 +++ src/Makefile.in
-@@ -858,6 +858,7 @@
+@@ -1272,6 +1272,7 @@
  CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
  CPP = @CPP@
  CPPFLAGS = @CPPFLAGS@
 +CPPFLAGS += $(if $(strip $(filter -lpthread,@FAM_LIBS@ @LIBEV_LIBS@ @LIBUNWIND_LIBS@ @LUA_LIBS@ @MYSQL_LIBS@ @SQLITE_LIBS@ @UUID_LIBS@ @XML_LIBS@)),-D_REENTRANT)
  CPPFLAGS_FOR_BUILD = @CPPFLAGS_FOR_BUILD@
  CPP_FOR_BUILD = @CPP_FOR_BUILD@
- CRYPT_LIB = @CRYPT_LIB@
-@@ -1237,6 +1238,7 @@
- @LIGHTTPD_STATIC_TRUE@	$(am__append_14) $(am__append_16) \
- @LIGHTTPD_STATIC_TRUE@	$(am__append_18) $(am__append_21) \
- @LIGHTTPD_STATIC_TRUE@	$(am__append_23) $(am__append_24)
+ CRYPTO_LIB = @CRYPTO_LIB@
+@@ -1715,6 +1716,7 @@
+ @LIGHTTPD_STATIC_TRUE@	$(am__append_32) $(am__append_35) \
+ @LIGHTTPD_STATIC_TRUE@	$(am__append_38) $(am__append_40) \
+ @LIGHTTPD_STATIC_TRUE@	$(am__append_42) $(am__append_43)
 +lighttpd_LDADD += $(strip $(filter -lpthread,$(FAM_LIBS) $(LIBEV_LIBS) $(LIBUNWIND_LIBS) $(LUA_LIBS) $(MYSQL_LIBS) $(SQLITE_LIBS) $(UUID_LIBS) $(XML_LIBS)))
  @LIGHTTPD_STATIC_FALSE@lighttpd_LDFLAGS = -export-dynamic
  @LIGHTTPD_STATIC_TRUE@lighttpd_LDFLAGS = -export-dynamic
- proc_open_SOURCES = proc_open.c buffer.c
+ t_test_array_SOURCES = t/test_array.c array.c data_array.c data_integer.c data_string.c buffer.c

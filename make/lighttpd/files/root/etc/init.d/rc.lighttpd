@@ -40,6 +40,7 @@ case $1 in
 		if [ "$FREETZ_PACKAGE_LIGHTTPD_WITH_SSL" = "y" ]; then
 			modreg file lighttpd crt 'Cert/Key' 0 "lighttpd_crt"
 			modreg file lighttpd ca 'CA Cert' 0 "lighttpd_ca"
+			[ "$FREETZ_LIB_libcrypto_WITH_EC" = "y" ] && modreg file lighttpd dh 'DHparam' 0 "lighttpd_dh"
 		fi
 
 		if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_AUTH" = "y" ]; then
