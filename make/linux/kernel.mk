@@ -39,26 +39,35 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(DL_KERNEL_SOURCE) | $(UNPACK_TARBALL_PRE
 	@$(call APPLY_PATCHES,$(KERNEL_PATCHES_DIR)/$(AVM_SOURCE_ID),$(KERNEL_DIR))
 	@$(call _ECHO, preparing... )
 	@for i in $(KERNEL_LINKING_FILES); do \
-		if [ -e $(KERNEL_SOURCE_DIR)/$$i -a \
-		! -e $(KERNEL_SOURCE_DIR)/include/linux/$${i##*\/linux_} ]; then \
-			$(call MESSAGE, Linking  $(KERNEL_SOURCE_DIR)/include/linux/$${i##*\/linux_}); \
-			ln -sf ../../$$i $(KERNEL_SOURCE_DIR)/include/linux/$${i##*\/linux_}; \
-		fi \
-	done
-	@for i in avm_net_trace.h avm_net_trace_ioctl.h; do \
-		if [ -e $(KERNEL_SOURCE_DIR)/drivers/char/avm_net_trace/$$i -a \
-			! -e $(KERNEL_SOURCE_DIR)/include/linux/$$i ]; then \
-				$(call MESSAGE, Linking  $(KERNEL_SOURCE_DIR)/include/linux/$$i); \
-				ln -sf ../../drivers/char/avm_net_trace/$$i \
-					$(KERNEL_SOURCE_DIR)/include/linux/$$i; \
-		fi \
-	done
+		f="$${i%%,*}"; symlink_location="$${i##*,}"; \
+		if [ -e "$(KERNEL_SOURCE_DIR)/$${f}" ] && [ -d "$(KERNEL_SOURCE_DIR)/$$(dirname $${symlink_location})" ]; then \
+			 symlink_target="$$(dirname $${symlink_location} | sed -r -e 's,([^/]+),..,g')/$$f"; \
+			if [ -h "$(KERNEL_SOURCE_DIR)/$${symlink_location}" ]; then \
+				if \
+					[ "$$(readlink "$(KERNEL_SOURCE_DIR)/$${symlink_location}")" != "$${symlink_target}" ] \
+					&& \
+					[ "$$(readlink -f "$(KERNEL_SOURCE_DIR)/$${symlink_location}")" != "$(abspath $(KERNEL_SOURCE_DIR))/$${f}" ] \
+				; then \
+					$(call nMESSAGE, Warning: Symlink \"$(KERNEL_SOURCE_DIR)/$${symlink_location}\" doesn't point to expected \"$${symlink_target}\"); \
+				fi; \
+				continue; \
+			fi; \
+			\
+			if [ -e "$(KERNEL_SOURCE_DIR)/$${symlink_location}" ]; then \
+				$(call nMESSAGE, Warning: \"$(KERNEL_SOURCE_DIR)/$${symlink_location}\" is expected to be a symlink to \"$${symlink_target}\"); \
+				continue; \
+			fi; \
+			\
+			$(call nMESSAGE, Linking  \"$(KERNEL_SOURCE_DIR)/$${symlink_location}\" to \"$${symlink_target}\"); \
+			ln -sf "$${symlink_target}" "$(KERNEL_SOURCE_DIR)/$${symlink_location}"; \
+		fi; \
+	done;
 	@for i in $$(find $(KERNEL_SOURCE_DIR) -name Makefile.26 -printf '%h\n'); do \
-		if [ ! -e $$i/Makefile ] ; then \
-			$(call MESSAGE, Linking  $$i/Makefile); \
+		if [ ! -e $$i/Makefile ]; then \
+			$(call nMESSAGE, Linking  \"$$i/Makefile\" to \"Makefile.26\"); \
 			ln -sf Makefile.26 $$i/Makefile; \
-		fi \
-	done
+		fi; \
+	done;
 	@for i in $$( \
 		find $(KERNEL_SOURCE_DIR) -name Makefile -exec \
 		awk '/(obj|subdir)-.*=/ && !/(obj|subdir)-ccflags.*=/ { \
@@ -83,23 +92,24 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(DL_KERNEL_SOURCE) | $(UNPACK_TARBALL_PRE
 		}' {} '+' \
 		| sort -u \
 	); do \
-		$(call MESSAGE, Creating $$i); \
+		$(call nMESSAGE, Creating \"$$i\"); \
 		mkdir -p $$(dirname "$$i"); \
 		[ -h $$i ] && $(RM) $$i; \
 		touch $$i; \
-	done
+	done;
 	@for i in $$( \
 		find $(KERNEL_SOURCE_DIR) -name Kconfig -exec grep -hs "source.*Kconfig" {} '+' \
 		| sed -e 's/\(.*\)#.*/\1/g;s/.*source //g;s/"//g' \
 		| sort -u \
 	); do \
 		if [ ! -e $(KERNEL_SOURCE_DIR)/$$i ]; then \
-			$(call MESSAGE, Creating $(KERNEL_SOURCE_DIR)/$$i); \
+			$(call nMESSAGE, Creating \"$(KERNEL_SOURCE_DIR)/$$i\"); \
 			mkdir -p $(KERNEL_SOURCE_DIR)/$${i%\/*}; \
 			[ -h $(KERNEL_SOURCE_DIR)/$$i ] && $(RM) $(KERNEL_SOURCE_DIR)/$$i; \
 			touch $(KERNEL_SOURCE_DIR)/$$i; \
-		fi \
-	done
+		fi; \
+	done; \
+	$(call nMESSAGE);
 	ln -s linux-$(KERNEL_VERSION_MAJOR) $(KERNEL_DIR)/linux
 	touch $@
 

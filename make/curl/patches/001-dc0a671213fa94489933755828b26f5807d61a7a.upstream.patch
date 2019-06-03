@@ -1,0 +1,26 @@
+From dc0a671213fa94489933755828b26f5807d61a7a Mon Sep 17 00:00:00 2001
+From: Daniel Stenberg <daniel@haxx.se>
+Date: Wed, 22 May 2019 13:28:22 +0200
+Subject: [PATCH] url: fix bad #ifdef
+
+Regression since e91e48161235272ff485.
+
+Reported-by: Tom Greenslade
+Fixes #3924
+Closes #3925
+---
+ lib/url.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+index 5b4b00eacd..db76fa6566 100644
+--- lib/url.c
++++ lib/url.c
+@@ -439,7 +439,7 @@ CURLcode Curl_init_userdefined(struct Curl_easy *data)
+ 
+   set->httpreq = HTTPREQ_GET; /* Default HTTP request */
+   set->rtspreq = RTSPREQ_OPTIONS; /* Default RTSP request */
+-#ifndef CURL_DISABLE_FILE
++#ifndef CURL_DISABLE_FTP
+   set->ftp_use_epsv = TRUE;   /* FTP defaults to EPSV operations */
+   set->ftp_use_eprt = TRUE;   /* FTP defaults to EPRT operations */
+   set->ftp_use_pret = FALSE;  /* mainly useful for drftpd servers */

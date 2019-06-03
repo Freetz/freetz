@@ -170,9 +170,9 @@ comment "CAUTION: Usage of an uClibc version higher than that used by AVM may le
 
 config FREETZ_TARGET_UCLIBC_SUPPORTS_libubacktrace
 	bool
-	#default y	if FREETZ_TARGET_UCLIBC_0_9_32
-	default y	if FREETZ_TARGET_UCLIBC_0_9_33
-	default y	if FREETZ_TARGET_UCLIBC_1
+	#default y  if FREETZ_TARGET_UCLIBC_0_9_32
+	default y   if FREETZ_TARGET_UCLIBC_0_9_33
+	default y   if FREETZ_TARGET_UCLIBC_1
 	default n
 
 config FREETZ_TARGET_UCLIBC_REQUIRES_libubacktrace
@@ -316,72 +316,72 @@ endchoice
 
 config FREETZ_TARGET_UCLIBC_0
 	bool
-	default y			if FREETZ_TARGET_UCLIBC_0_9_28
-	default y			if FREETZ_TARGET_UCLIBC_0_9_29
-	default y			if FREETZ_TARGET_UCLIBC_0_9_32
-	default y			if FREETZ_TARGET_UCLIBC_0_9_33
+	default y           if FREETZ_TARGET_UCLIBC_0_9_28
+	default y           if FREETZ_TARGET_UCLIBC_0_9_29
+	default y           if FREETZ_TARGET_UCLIBC_0_9_32
+	default y           if FREETZ_TARGET_UCLIBC_0_9_33
 	default n
 
 config FREETZ_TARGET_UCLIBC_1
 	bool
-	default y			if FREETZ_TARGET_UCLIBC_1_0_14
+	default y           if FREETZ_TARGET_UCLIBC_1_0_14
 	default n
 
 config FREETZ_TARGET_UCLIBC_VERSION
 	string
-	default "0.9.28"	if FREETZ_TARGET_UCLIBC_0_9_28
-	default "0.9.29"	if FREETZ_TARGET_UCLIBC_0_9_29
-	default "0.9.32.1"	if FREETZ_TARGET_UCLIBC_0_9_32
-	default "0.9.33.2"	if FREETZ_TARGET_UCLIBC_0_9_33
-	default "1.0.14"	if FREETZ_TARGET_UCLIBC_1_0_14
+	default "0.9.28"    if FREETZ_TARGET_UCLIBC_0_9_28
+	default "0.9.29"    if FREETZ_TARGET_UCLIBC_0_9_29
+	default "0.9.32.1"  if FREETZ_TARGET_UCLIBC_0_9_32
+	default "0.9.33.2"  if FREETZ_TARGET_UCLIBC_0_9_33
+	default "1.0.14"    if FREETZ_TARGET_UCLIBC_1_0_14
 
 config FREETZ_TARGET_UCLIBC_MAJOR_VERSION
 	string
-	default "1"			if FREETZ_TARGET_UCLIBC_1
-	default "0"			if FREETZ_TARGET_UCLIBC_0
+	default "1"         if FREETZ_TARGET_UCLIBC_1
+	default "0"         if FREETZ_TARGET_UCLIBC_0
 
 config FREETZ_TARGET_BINUTILS_VERSION
 	string
-	default "2.22"		if FREETZ_TARGET_BINUTILS_2_22
-	default "2.23.2"	if FREETZ_TARGET_BINUTILS_2_23
-	default "2.24"		if FREETZ_TARGET_BINUTILS_2_24
-	default "2.25.1"	if FREETZ_TARGET_BINUTILS_2_25
-	default "2.26.1"	if FREETZ_TARGET_BINUTILS_2_26
+	default "2.22"      if FREETZ_TARGET_BINUTILS_2_22
+	default "2.23.2"    if FREETZ_TARGET_BINUTILS_2_23
+	default "2.24"      if FREETZ_TARGET_BINUTILS_2_24
+	default "2.25.1"    if FREETZ_TARGET_BINUTILS_2_25
+	default "2.26.1"    if FREETZ_TARGET_BINUTILS_2_26
 
 config FREETZ_TARGET_GCC_MAJOR_VERSION
 	string
-	default "4.6"		if FREETZ_TARGET_GCC_4_6
-	default "4.7"		if FREETZ_TARGET_GCC_4_7
-	default "4.8"		if FREETZ_TARGET_GCC_4_8
-	default "4.9"		if FREETZ_TARGET_GCC_4_9
-	default "5"		if FREETZ_TARGET_GCC_5
+	default "4.6"       if FREETZ_TARGET_GCC_4_6
+	default "4.7"       if FREETZ_TARGET_GCC_4_7
+	default "4.8"       if FREETZ_TARGET_GCC_4_8
+	default "4.9"       if FREETZ_TARGET_GCC_4_9
+	default "5"         if FREETZ_TARGET_GCC_5
 
 config FREETZ_TARGET_GCC_MINOR_VERSION
 	depends on !FREETZ_TARGET_GCC_SNAPSHOT
 	string
-	default "4"		if FREETZ_TARGET_GCC_4_6
-	default "4"		if FREETZ_TARGET_GCC_4_7
-	default "5"		if FREETZ_TARGET_GCC_4_8
-	default "4"		if FREETZ_TARGET_GCC_4_9
-	default "5.0"		if FREETZ_TARGET_GCC_5
+	default "4"         if FREETZ_TARGET_GCC_4_6
+	default "4"         if FREETZ_TARGET_GCC_4_7
+	default "5"         if FREETZ_TARGET_GCC_4_8
+	default "4"         if FREETZ_TARGET_GCC_4_9
+	default "5.0"       if FREETZ_TARGET_GCC_5
 
 config FREETZ_TARGET_GCC_VERSION
 	string
-	default "${FREETZ_TARGET_GCC_MAJOR_VERSION}.${FREETZ_TARGET_GCC_MINOR_VERSION}"		if !FREETZ_TARGET_GCC_SNAPSHOT
-	default "${FREETZ_TARGET_GCC_MAJOR_VERSION}-${FREETZ_TARGET_GCC_SNAPSHOT_DATE}"		if  FREETZ_TARGET_GCC_SNAPSHOT
+	default "${FREETZ_TARGET_GCC_MAJOR_VERSION}.${FREETZ_TARGET_GCC_MINOR_VERSION}"  if !FREETZ_TARGET_GCC_SNAPSHOT
+	default "${FREETZ_TARGET_GCC_MAJOR_VERSION}-${FREETZ_TARGET_GCC_SNAPSHOT_DATE}"  if  FREETZ_TARGET_GCC_SNAPSHOT
 
 config FREETZ_GNULIBSTDCXX_VERSION
 	string
-	default "6.0.16"	if FREETZ_TARGET_GCC_4_6
-	default "6.0.17"	if FREETZ_TARGET_GCC_4_7
-	default "6.0.19"	if FREETZ_TARGET_GCC_4_8
-	default "6.0.20"	if FREETZ_TARGET_GCC_4_9
-	default "6.0.21"	if FREETZ_TARGET_GCC_5
+	default "6.0.16"    if FREETZ_TARGET_GCC_4_6
+	default "6.0.17"    if FREETZ_TARGET_GCC_4_7
+	default "6.0.19"    if FREETZ_TARGET_GCC_4_8
+	default "6.0.20"    if FREETZ_TARGET_GCC_4_9
+	default "6.0.21"    if FREETZ_TARGET_GCC_5
 
 config FREETZ_STDCXXLIB
 	string
-	default "uclibcxx"	if FREETZ_STDCXXLIB_USE_UCLIBCXX
-	default "libstdcxx"	if FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
+	default "uclibcxx"  if FREETZ_STDCXXLIB_USE_UCLIBCXX
+	default "libstdcxx" if FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
 
 config FREETZ_TARGET_CFLAGS
 	string "Target compiler flags"

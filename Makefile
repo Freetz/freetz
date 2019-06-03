@@ -75,6 +75,10 @@ define MESSAGE
 printf "%s\n" "$(1)" $(SILENT)
 endef
 
+define nMESSAGE
+printf "\n%s" "$(1)" $(SILENT)
+endef
+
 # Print yellow error message and exit
 define ERROR
 printf "\n$(_Y)%s$(_N)\n" "ERROR: $(2)";  exit $(1);
@@ -447,7 +451,6 @@ common-clean:
 common-dirclean: common-clean $(if $(FREETZ_HAVE_DOT_CONFIG),kernel-dirclean)
 	$(RM) -r $(if $(FREETZ_HAVE_DOT_CONFIG),$(PACKAGES_DIR) $(SOURCE_DIR) $(TARGET_TOOLCHAIN_DIR),$(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT))
 	-cp .defstatic $(ADDON_DIR)/static.pkg
-	-cp .defdynamic $(ADDON_DIR)/dynamic.pkg
 
 common-distclean: common-dirclean
 	$(RM) -r .config .config.compressed .config.old .config.cmd .tmpconfig.h include/config

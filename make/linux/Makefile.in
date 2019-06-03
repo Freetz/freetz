@@ -13,24 +13,82 @@ KERNEL_HEADERS_DEVEL_DIR:=$(TARGET_TOOLCHAIN_DIR)/linux-dev/$(KERNEL_VERSION_MAJ
 KERNEL_MODULES_DIR:=$(KERNEL_TARGET_DIR)/modules-$(KERNEL_ID)
 AVM_KERNEL_CONFIG_DIR:=$(KERNEL_SOURCE_DIR)/arch/$(KERNEL_ARCH)/kernel
 
-KERNEL_LINKING_FILES = \
-	drivers/char/avm_new/linux_ar7wdt.h \
-	drivers/char/avm_new/linux_avm_debug.h \
-	drivers/char/avm_new/linux_avm_event.h \
-	drivers/char/avm_new/linux_avm_led.h \
-	drivers/char/avm_new/linux_avm_profile.h \
-	drivers/char/avm_power/linux_avm_power.h \
-	drivers/char/ubik2/linux_ubik2_debug.h \
-	drivers/char/ubik2/linux_ubik2_interface.h \
-	drivers/char/ubik2/linux_ubik2_ul.h \
-	drivers/isdn/capi_oslib/linux_capi_oslib.h \
-	drivers/isdn/capi_oslib/linux_new_capi.h \
-	drivers/isdn/capi_oslib/linux_new_capi_debug.h \
-	drivers/isdn/capi_oslib/linux_zugriff.h \
-	drivers/net/avm_cpmac/linux_adm_reg.h \
-	drivers/net/avm_cpmac/linux_ar_reg.h \
-	drivers/net/avm_cpmac/linux_avm_cpmac.h
-
 ifneq (,$(filter y,$(FREETZ_REPLACE_KERNEL) $(shell grep -qe '^FREETZ_MODULE_.*=y$$' $(TOPDIR)/.config && echo y)))
 	TARGETS+=kernel
 endif
+
+# The following list could be generated using the following code (TODO: valid for opensrc packages >= Fritz!OS-6.5x)
+#   cd kernel-sources-dir-from-AVM-opensrc-package
+#   find include -type l -printf '%l,%p\n' | sed -r -e 's,^(../)+,,' | sort -t ',' -k 1 | sed -e 's,^,KERNEL_LINKING_FILES += ,'
+#
+# WARNING:
+#   the generated list is only valid for one ARCH/kernel-version, it has to be manually
+#   checked and merged in order to be able to support all ARCHs/kernel-versions using
+#   just one single list
+#
+# The list below is a subset of what AVM does in their kernel-init-scripts, see
+#   gpl_compile_kernel.sh::run_avm_init_scripts
+#   drivers/char/avm_new/init_avm_sammel
+#   drivers/char/avm_power/init_power
+#   drivers/char/tffs/init_avm_tffs
+#   drivers/isdn/capi_oslib/init_capi_oslib
+# for more details.
+
+KERNEL_LINKING_FILES += drivers/char/avm_net_trace/avm_net_trace.h,include/linux/avm_net_trace.h
+KERNEL_LINKING_FILES += drivers/char/avm_net_trace/avm_net_trace_ioctl.h,include/linux/avm_net_trace_ioctl.h
+KERNEL_LINKING_FILES += drivers/char/avm_net_trace/avm_net_trace_ioctl.h,include/uapi/linux/avm_net_trace_ioctl.h
+
+ifeq ($(strip $(FREETZ_KERNEL_VERSION_2_6_32_MAX)),y)
+KERNEL_LINKING_FILES += drivers/char/avm_new/linux_avm_event.h,include/linux/avm_event.h
+else
+KERNEL_LINKING_FILES += drivers/char/avm_new/avm_event.h,include/linux/avm_event.h
+KERNEL_LINKING_FILES += drivers/char/avm_new/avm_event.h,include/uapi/linux/avm_event.h
+endif
+
+KERNEL_LINKING_FILES += drivers/char/avm_new/linux_ar7wdt.h,include/linux/ar7wdt.h
+KERNEL_LINKING_FILES += drivers/char/avm_new/linux_avm_debug.h,include/linux/avm_debug.h
+KERNEL_LINKING_FILES += drivers/char/avm_new/linux_avm_helpers.h,include/linux/avm_helpers.h
+KERNEL_LINKING_FILES += drivers/char/avm_new/linux_avm_kpi.h,include/linux/avm_kpi.h
+KERNEL_LINKING_FILES += drivers/char/avm_new/linux_avm_profile.h,include/linux/avm_profile.h
+KERNEL_LINKING_FILES += drivers/char/avm_new/linux_avm_reboot_status.h,include/linux/avm_reboot_status.h
+KERNEL_LINKING_FILES += drivers/char/avm_new/linux_irq_on.h,include/linux/irq_on.h
+KERNEL_LINKING_FILES += drivers/char/avm_new/linux_simple_mempool.h,include/linux/simple_mempool.h
+KERNEL_LINKING_FILES += drivers/char/avm_new/linux_simple_proc.h,include/linux/simple_proc.h
+
+KERNEL_LINKING_FILES += drivers/char/avm_power/linux_avm_power.h,include/linux/avm_power.h
+
+KERNEL_LINKING_FILES += drivers/char/tffs/linux_tffs.h,include/linux/tffs.h
+KERNEL_LINKING_FILES += drivers/char/tffs/uapi_linux_tffs.h,include/uapi/linux/tffs.h
+
+KERNEL_LINKING_FILES += drivers/char/ubik2/linux_pcmlink_ul.h,include/linux/pcmlink_ul.h
+KERNEL_LINKING_FILES += drivers/char/ubik2/linux_ubik2_debug.h,include/linux/ubik2_debug.h
+KERNEL_LINKING_FILES += drivers/char/ubik2/linux_ubik2_interface.h,include/linux/ubik2_interface.h
+KERNEL_LINKING_FILES += drivers/char/ubik2/linux_ubik2_ul.h,include/linux/ubik2_ul.h
+
+KERNEL_LINKING_FILES += drivers/isdn/capi_oslib/linux_capi_oslib.h,include/linux/capi_oslib.h
+KERNEL_LINKING_FILES += drivers/isdn/capi_oslib/linux_capi_oslib.h,include/uapi/linux/capi_oslib.h
+KERNEL_LINKING_FILES += drivers/isdn/capi_oslib/linux_new_capi.h,include/linux/new_capi.h
+KERNEL_LINKING_FILES += drivers/isdn/capi_oslib/linux_new_capi.h,include/uapi/linux/new_capi.h
+KERNEL_LINKING_FILES += drivers/isdn/capi_oslib/linux_new_capi_debug.h,include/linux/new_capi_debug.h
+KERNEL_LINKING_FILES += drivers/isdn/capi_oslib/linux_new_capi_debug.h,include/uapi/linux/new_capi_debug.h
+KERNEL_LINKING_FILES += drivers/isdn/capi_oslib/linux_zugriff.h,include/linux/zugriff.h
+KERNEL_LINKING_FILES += drivers/isdn/capi_oslib/linux_zugriff.h,include/uapi/linux/zugriff.h
+
+KERNEL_LINKING_FILES += drivers/net/avm_cpmac/include/linux_avmnet.h,include/linux/avmnet.h
+KERNEL_LINKING_FILES += drivers/net/avm_cpmac/include/linux_ifx_ppa_api_common.h,include/net/ifx_ppa_api_common.h
+KERNEL_LINKING_FILES += drivers/net/avm_cpmac/include/linux_ifx_ppa_api_directpath.h,include/net/ifx_ppa_api_directpath.h
+KERNEL_LINKING_FILES += drivers/net/avm_cpmac/include/linux_ifx_ppa_api.h,include/net/ifx_ppa_api.h
+KERNEL_LINKING_FILES += drivers/net/avm_cpmac/include/linux_ifx_ppa_hook.h,include/net/ifx_ppa_hook.h
+KERNEL_LINKING_FILES += drivers/net/avm_cpmac/include/linux_ifx_ppa_ppe_hal.h,include/net/ifx_ppa_ppe_hal.h
+KERNEL_LINKING_FILES += drivers/net/avm_cpmac/include/linux_ifx_ppa_stack_al.h,include/net/ifx_ppa_stack_al.h
+KERNEL_LINKING_FILES += drivers/net/avm_cpmac/include/linux_ltq_eth_oam_handler.h,include/net/ltq_eth_oam_handler.h
+
+KERNEL_LINKING_FILES += net/avm_pa/avm_pa.h,include/linux/avm_pa.h
+KERNEL_LINKING_FILES += net/avm_pa/avm_pa_hw.h,include/linux/avm_pa_hw.h
+KERNEL_LINKING_FILES += net/avm_pa/avm_pa_ifx_multiplexer.h,include/linux/avm_pa_ifx_multiplexer.h
+
+# 2.6.13, 2.6.19, 2.6.28
+KERNEL_LINKING_FILES += drivers/char/avm_new/linux_avm_led.h,include/linux/avm_led.h
+KERNEL_LINKING_FILES += drivers/net/avm_cpmac/linux_adm_reg.h,include/linux/adm_reg.h
+KERNEL_LINKING_FILES += drivers/net/avm_cpmac/linux_ar_reg.h,include/linux/ar_reg.h
+KERNEL_LINKING_FILES += drivers/net/avm_cpmac/linux_avm_cpmac.h,include/linux/avm_cpmac.h
