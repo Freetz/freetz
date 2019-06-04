@@ -289,11 +289,17 @@ config FREETZ_AVM_HAS_FIRMWARE_LABOR_TEST
 	bool
 	default y
 	depends on \
-		!FREETZ_AVM_HAS_FIRMWARE_07_1X && \
-		( \
+		( FREETZ_TYPE_LANG_DE && ( \
+			FREETZ_TYPE_3000 || \
+			FREETZ_TYPE_6820_V1 || \
+			FREETZ_TYPE_6890 \
+		)) \
+		|| \
+		( FREETZ_TYPE_LANG_EN && ( \
+			FREETZ_TYPE_6820_V1 || \
 			FREETZ_TYPE_6820_V2 || \
-			FREETZ_AVM_HAS_FIRMWARE_07_0X \
-		)
+			FREETZ_TYPE_6890 \
+		))
 
 config FREETZ_AVM_HAS_FIRMWARE_LABOR
 	bool
