@@ -1,5 +1,15 @@
 if !FREETZ_KERNEL_VERSION_3_10_MIN
 
+config FREETZ_PACKAGE_IPTABLES_IS_SELECTABLE
+	bool
+	default y if \
+		FREETZ_REPLACE_MODULE_AVAILABLE && \
+		!FREETZ_TYPE_W501V && \
+		!FREETZ_TYPE_5140
+	default n
+	help
+		Select this if you are sure that Iptables should work on your box
+
 config FREETZ_PACKAGE_IPTABLES
 	bool "Iptables 1.4.11.1 (binary only)"
 	depends on FREETZ_PACKAGE_IPTABLES_IS_SELECTABLE
@@ -22,15 +32,7 @@ config FREETZ_PACKAGE_IPTABLES
 		and NAT, as well as the tool itself. iptables is a standard part of all
 		modern Linux distributions.
 
-config FREETZ_PACKAGE_IPTABLES_IS_SELECTABLE
-	bool
-	default y if \
-		FREETZ_REPLACE_MODULE_AVAILABLE && \
-		!FREETZ_TYPE_W501V && \
-		!FREETZ_TYPE_5140
-	default n
-	help
-		Select this if you are sure that Iptables should work on your box
+if FREETZ_PACKAGE_IPTABLES
 
 config FREETZ_PACKAGE_IPTABLES_SAVE_RESTORE
 	bool "Iptables-save / iptables-restore"
@@ -1822,4 +1824,5 @@ config FREETZ_LIB_libip6t_rt
 		Match on IPv6 routing header.
 endmenu
 
+endif # FREETZ_PACKAGE_IPTABLES
 endif
