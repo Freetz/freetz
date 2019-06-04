@@ -566,14 +566,14 @@ config FREETZ_TYPE_FIRMWARE_LABOR_LATEST
 
 if FREETZ_AVM_VERSION_06_5X_MIN && ! FREETZ_REAL_DEVELOPER_ONLY
 	comment "WARNINGS -------------------------------"
-if FREETZ_TYPE_FIRMWARE_LABOR_TEST || FREETZ_TYPE_FIRMWARE_07_0X_MIN
+if FREETZ_TYPE_FIRMWARE_LABOR || FREETZ_TYPE_FIRMWARE_07_0X_MIN
 	comment " - the box may fail to boot and you need to recover it"
 	comment " - there is a higher probability to face stability issues"
 endif
 if FREETZ_SYSTEM_TYPE_PUMA6
 	comment " - the box may fail to boot and you need to recover it manually via the bootlader"
 endif
-if FREETZ_TYPE_FIRMWARE_LABOR_TEST
+if FREETZ_TYPE_FIRMWARE_LABOR
 	comment " - some remove/AVM-web-interface patches are not working"
 	comment "   even if selectable in menuconfig"
 endif
@@ -605,7 +605,7 @@ config FREETZ_TYPE_FIRMWARE_FINAL
 config FREETZ_TYPE_FIRMWARE_LABOR
 	bool
 	default y
-	depends on FREETZ_TYPE_FIRMWARE_LABOR_BETA ||  FREETZ_TYPE_FIRMWARE_LABOR_TEST
+	depends on FREETZ_TYPE_FIRMWARE_LABOR_TEST
 
 config FREETZ_TYPE_LANGUAGE
 	string
