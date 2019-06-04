@@ -25,18 +25,18 @@ config FREETZ_PACKAGE_IPTABLES_STANDARD_MODULES
 	select FREETZ_MODULE_ipt_REJECT
 
 	# Shared libs
-	select FREETZ_LIB_libxt_iprange
-	select FREETZ_LIB_libipt_LOG
-	select FREETZ_LIB_libxt_mac
-	select FREETZ_LIB_libxt_multiport
-	select FREETZ_LIB_libxt_standard
-	select FREETZ_LIB_libxt_state
-	select FREETZ_LIB_libxt_tcp
-	select FREETZ_LIB_libxt_udp
-	select FREETZ_LIB_libipt_DNAT
-	select FREETZ_LIB_libipt_SNAT
-	select FREETZ_LIB_libipt_MASQUERADE
-	select FREETZ_LIB_libipt_REDIRECT
+	select FREETZ_LIB_libxt_iprange if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_LOG if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_mac if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_multiport if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_standard if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_state if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_tcp if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_udp if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_DNAT if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_SNAT if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_MASQUERADE if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_REDIRECT if !FREETZ_PACKAGE_IPTABLES_STATIC
 endif
 
 if FREETZ_KERNEL_VERSION_2_6_19
@@ -76,34 +76,34 @@ config FREETZ_PACKAGE_IPTABLES_STANDARD_MODULES
 	select FREETZ_MODULE_xt_tcpudp
 
 	# Shared libs
-	select FREETZ_LIB_libxt_CLASSIFY
-	select FREETZ_LIB_libxt_connbytes
-	select FREETZ_LIB_libxt_connmark
-	select FREETZ_LIB_libxt_CONNMARK
-	select FREETZ_LIB_libxt_conntrack
-	select FREETZ_LIB_libxt_iprange
-	select FREETZ_LIB_libxt_length
-	select FREETZ_LIB_libxt_limit
-	select FREETZ_LIB_libxt_mac
-	select FREETZ_LIB_libxt_mark
-	select FREETZ_LIB_libxt_MARK
-	select FREETZ_LIB_libxt_multiport
-	select FREETZ_LIB_libxt_physdev
-	select FREETZ_LIB_libxt_pkttype
-	select FREETZ_LIB_libxt_standard
-	select FREETZ_LIB_libxt_state
-	select FREETZ_LIB_libxt_TCPMSS
-	select FREETZ_LIB_libxt_tcp
-	select FREETZ_LIB_libxt_udp
-	select FREETZ_LIB_libipt_addrtype
-	select FREETZ_LIB_libipt_DNAT
-	select FREETZ_LIB_libipt_icmp
-	select FREETZ_LIB_libipt_LOG
-	select FREETZ_LIB_libipt_MASQUERADE
-	select FREETZ_LIB_libipt_REDIRECT
-	select FREETZ_LIB_libipt_REJECT
-	select FREETZ_LIB_libipt_SNAT
-	select FREETZ_LIB_libipt_ULOG
+	select FREETZ_LIB_libxt_CLASSIFY if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_connbytes if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_connmark if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_CONNMARK if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_conntrack if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_iprange if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_length if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_limit if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_mac if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_mark if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_MARK if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_multiport if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_physdev if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_pkttype if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_standard if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_state if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_TCPMSS if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_tcp if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_udp if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_addrtype if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_DNAT if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_icmp if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_LOG if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_MASQUERADE if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_REDIRECT if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_REJECT if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_SNAT if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_ULOG if !FREETZ_PACKAGE_IPTABLES_STATIC
 endif
 
 if FREETZ_KERNEL_VERSION_2_6_28
@@ -140,34 +140,34 @@ config FREETZ_PACKAGE_IPTABLES_STANDARD_MODULES
 	select FREETZ_MODULE_xt_tcpudp
 
 	# Shared libs
-	select FREETZ_LIB_libxt_CLASSIFY
-	select FREETZ_LIB_libxt_connbytes
-	select FREETZ_LIB_libxt_connmark
-	select FREETZ_LIB_libxt_CONNMARK
-	select FREETZ_LIB_libxt_conntrack
-	select FREETZ_LIB_libxt_iprange
-	select FREETZ_LIB_libxt_length
-	select FREETZ_LIB_libxt_limit
-	select FREETZ_LIB_libxt_mac
-	select FREETZ_LIB_libxt_mark
-	select FREETZ_LIB_libxt_MARK
-	select FREETZ_LIB_libxt_multiport
-	select FREETZ_LIB_libxt_physdev
-	select FREETZ_LIB_libxt_pkttype
-	select FREETZ_LIB_libxt_standard
-	select FREETZ_LIB_libxt_state
-	select FREETZ_LIB_libxt_TCPMSS
-	select FREETZ_LIB_libxt_tcp
-	select FREETZ_LIB_libxt_udp
-	select FREETZ_LIB_libipt_addrtype
-	select FREETZ_LIB_libipt_DNAT
-	select FREETZ_LIB_libipt_icmp
-	select FREETZ_LIB_libipt_LOG
-	select FREETZ_LIB_libipt_MASQUERADE
-	select FREETZ_LIB_libipt_REDIRECT
-	select FREETZ_LIB_libipt_REJECT
-	select FREETZ_LIB_libipt_SNAT
-	select FREETZ_LIB_libipt_ULOG
+	select FREETZ_LIB_libxt_CLASSIFY if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_connbytes if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_connmark if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_CONNMARK if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_conntrack if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_iprange if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_length if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_limit if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_mac if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_mark if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_MARK if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_multiport if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_physdev if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_pkttype if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_standard if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_state if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_TCPMSS if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_tcp if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_udp if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_addrtype if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_DNAT if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_icmp if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_LOG if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_MASQUERADE if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_REDIRECT if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_REJECT if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_SNAT if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_ULOG if !FREETZ_PACKAGE_IPTABLES_STATIC
 endif
 
 if FREETZ_KERNEL_VERSION_2_6_32
@@ -204,32 +204,32 @@ config FREETZ_PACKAGE_IPTABLES_STANDARD_MODULES
 	select FREETZ_MODULE_xt_tcpudp
 
 	# Shared libs
-	select FREETZ_LIB_libxt_CLASSIFY
-	select FREETZ_LIB_libxt_connbytes
-	select FREETZ_LIB_libxt_connmark
-	select FREETZ_LIB_libxt_CONNMARK
-	#select FREETZ_LIB_libxt_conntrack
-	select FREETZ_LIB_libxt_iprange
-	select FREETZ_LIB_libxt_length
-	select FREETZ_LIB_libxt_limit
-	select FREETZ_LIB_libxt_mac
-	select FREETZ_LIB_libxt_mark
-	select FREETZ_LIB_libxt_MARK
-	select FREETZ_LIB_libxt_multiport
-	select FREETZ_LIB_libxt_physdev
-	select FREETZ_LIB_libxt_pkttype
-	select FREETZ_LIB_libxt_standard
-	select FREETZ_LIB_libxt_state
-	select FREETZ_LIB_libxt_TCPMSS
-	select FREETZ_LIB_libxt_tcp
-	select FREETZ_LIB_libxt_udp
-	select FREETZ_LIB_libipt_addrtype
-	select FREETZ_LIB_libipt_DNAT
-	select FREETZ_LIB_libipt_icmp
-	select FREETZ_LIB_libipt_LOG
-	select FREETZ_LIB_libipt_MASQUERADE
-	select FREETZ_LIB_libipt_REDIRECT
-	select FREETZ_LIB_libipt_REJECT
-	select FREETZ_LIB_libipt_SNAT
-	select FREETZ_LIB_libipt_ULOG
+	select FREETZ_LIB_libxt_CLASSIFY if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_connbytes if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_connmark if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_CONNMARK if !FREETZ_PACKAGE_IPTABLES_STATIC
+	#select FREETZ_LIB_libxt_conntrack if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_iprange if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_length if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_limit if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_mac if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_mark if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_MARK if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_multiport if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_physdev if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_pkttype if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_standard if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_state if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_TCPMSS if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_tcp if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libxt_udp if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_addrtype if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_DNAT if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_icmp if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_LOG if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_MASQUERADE if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_REDIRECT if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_REJECT if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_SNAT if !FREETZ_PACKAGE_IPTABLES_STATIC
+	select FREETZ_LIB_libipt_ULOG if !FREETZ_PACKAGE_IPTABLES_STATIC
 endif
