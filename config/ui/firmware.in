@@ -542,6 +542,13 @@ choice
 		select FREETZ_AVM_VERSION_07_1X
 		depends on FREETZ_AVM_HAS_FIRMWARE_07_1X
 
+	config FREETZ_TYPE_FIRMWARE_07_1X_INHAUS
+		bool "FRITZ!OS 07.08 Inhaus"
+		select FREETZ_AVM_VERSION_07_1X
+		depends on FREETZ_AVM_HAS_FIRMWARE_07_1X_INHAUS && FREETZ_SHOW_ADVANCED
+		help
+			Enable this to use an AVM Inhaus firmware as base for modding.
+
 	config FREETZ_TYPE_FIRMWARE_LABOR_TEST
 		bool "FRITZ!OS 07.08 Labor - EXPERIMENTAL"
 		select FREETZ_AVM_VERSION_07_0X
