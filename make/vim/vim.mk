@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, v7.4.2367)
+$(call PKG_INIT_BIN, v8.1.1365)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SOURCE_CHECKSUM:=X
 $(PKG)_SITE:=git@https://github.com/vim/vim.git
@@ -11,7 +11,6 @@ $(PKG)_DEPENDS_ON += ncurses
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_VIM_TINY
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_VIM_NORMAL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_VIM_HUGE
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_VIM_MULTIBYTE
 
 $(PKG)_CONFIGURE_ENV += vim_cv_getcwd_broken=no
 $(PKG)_CONFIGURE_ENV += vim_cv_memmove_handles_overlap=yes
@@ -23,7 +22,6 @@ $(PKG)_CONFIGURE_ENV += vim_cv_tty_group=root
 $(PKG)_CONFIGURE_ENV += vim_cv_tty_mode=0620
 
 $(PKG)_CONFIGURE_OPTIONS += --with-features=$(if $(FREETZ_PACKAGE_VIM_HUGE),huge,$(if $(FREETZ_PACKAGE_VIM_NORMAL),normal,tiny))
-$(PKG)_CONFIGURE_OPTIONS += --$(if $(FREETZ_PACKAGE_VIM_MULTIBYTE),enable,disable)-multibyte
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-gui
 $(PKG)_CONFIGURE_OPTIONS += --disable-gtktest

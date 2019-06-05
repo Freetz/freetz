@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_VIM
-	bool "vim (VI Improved) (binary only)"
+	bool "Vim 8.1.1365 (binary only)"
 	select FREETZ_LIB_libdl
 	select FREETZ_LIB_libm
 	select FREETZ_LIB_libncurses
@@ -34,12 +34,3 @@ choice
 			bool "huge - EXPERIMENTAL"
 
 endchoice
-
-config FREETZ_PACKAGE_VIM_MULTIBYTE
-	depends on FREETZ_PACKAGE_VIM
-	bool "Enable multibyte encodings support"
-	default n
-	help
-		Enables support for multibyte encodings (like UTF-8) in vim.
-
-		Note: enabling this option increases binary size by about 65KB.
