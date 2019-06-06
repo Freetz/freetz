@@ -19,16 +19,16 @@ load() {
 			# save default users&groups from var.tar
 			cat "/tmp/$f" > "$SAVE_DIR/$f" 2>/dev/null
 		else
-			# load saved users&groups from flash
-			grep -vE "^boxusr|^ftpuser" "$SAVE_DIR/$f" > "/tmp/${f/passwd/passwd.mod}" 2>/dev/null
+			# load saved freetz-users & -groups from flash
+			grep -vE '^(app|boxusr|ftpuser)[0-9]*(int|-internet)*:' "$SAVE_DIR/$f" | sort -u > "/tmp/${f/passwd/passwd.mod}" 2>/dev/null
 		fi
 	done
 	# /var/tmp/passwd.tmp is created by ctlmgr, do NOT MoVe due to libctlmgr
 	cp /var/tmp/passwd.tmp /var/tmp/passwd.avm 2>/dev/null && rm -rf /var/tmp/passwd.tmp
-	# load AVM's boxusers (and ftpuser) which were created by ctlmgr
-	[ -e /var/tmp/passwd.avm ] && grep -vE "^nobody:|^root:" /var/tmp/passwd.avm >> /tmp/passwd.mod
+	# load AVM's app-users, boxusrs (and ftpusers) which were created by ctlmgr
+	[ -e /var/tmp/passwd.avm ] && grep -E '^(app|boxusr|ftpuser)[0-9]*(int|-internet)*:' /var/tmp/passwd.avm >> /tmp/passwd.mod
 	# special case: ftpuser is created and/or used by avm and/or freetz
-	grep -q "^ftpuser" /tmp/passwd.mod || grep "^ftpuser" "$SAVE_DIR/passwd" >> /tmp/passwd.mod
+	grep -q "^ftpuser:" /tmp/passwd.mod || grep "^ftpuser:" "$SAVE_DIR/passwd" >> /tmp/passwd.mod 2>/dev/null
 	# prevent race-condition while creating /etc/passwd
 	mv /tmp/passwd.mod /tmp/passwd
 	touch /tmp/.usersloaded
