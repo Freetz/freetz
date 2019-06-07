@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, v7.4.2367)
+$(call PKG_INIT_BIN, v8.1.1491)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SITE:=git@https://github.com/vim/vim.git
 
