@@ -1,7 +1,7 @@
-CCACHE_VERSION:=3.1.9
-CCACHE_SOURCE:=ccache-$(CCACHE_VERSION).tar.bz2
-CCACHE_MD5:=65f48376a91d3651d6527ca568858be8
-CCACHE_SITE:=http://samba.org/ftp/ccache
+CCACHE_VERSION:=3.7.1
+CCACHE_SOURCE:=ccache-$(CCACHE_VERSION).tar.xz
+CCACHE_MD5:=30f5f6fa06a95bba94695e8fa6a05899
+CCACHE_SITE:=https://github.com/ccache/ccache/releases/download/v$(CCACHE_VERSION)
 
 CCACHE_DIR:=$(TARGET_TOOLCHAIN_DIR)/ccache-$(CCACHE_VERSION)
 CCACHE_BINARY:=ccache
@@ -23,11 +23,10 @@ $(CCACHE_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_SOURCE) | $(TARGET_TOOLCHAIN_DIR) $(
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(CCACHE_SOURCE),$(TARGET_TOOLCHAIN_DIR))
 	# WARNING - this will break if the toolchain is moved.
 	# Should probably patch things to use a relative path.
-	$(SED) -i -e "s,getenv(\"CCACHE_PATH\"),\"$(CCACHE_BIN_DIR)\",g" \
-		$(CCACHE_DIR)/execute.c
+	$(SED) -i 's,conf->path,"$(CCACHE_BIN_DIR)",' $(CCACHE_DIR)/src/execute.c
 #	$(SED) -i -e "s,getenv(\"CCACHE_DIR\"),\"$(TARGET_TOOLCHAIN_STAGING_DIR)/var/cache\",g" \
 #		$(CCACHE_DIR)/ccache.c
-	$(SED) -i 's,getenv("CCACHE_DIR"),"$(CCACHE_CACHE_DIR)",' $(CCACHE_DIR)/ccache.c
+	$(SED) -i 's,getenv("CCACHE_DIR"),"$(CCACHE_CACHE_DIR)",' $(CCACHE_DIR)/src/ccache.c
 	mkdir -p $(CCACHE_DIR)/cache
 	touch $@
 

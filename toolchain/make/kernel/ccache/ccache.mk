@@ -1,7 +1,7 @@
-CCACHE_KERNEL_VERSION:=3.1.9
-CCACHE_KERNEL_SOURCE:=ccache-$(CCACHE_KERNEL_VERSION).tar.bz2
-CCACHE_KERNEL_MD5:=65f48376a91d3651d6527ca568858be8
-CCACHE_KERNEL_SITE:=http://samba.org/ftp/ccache
+CCACHE_KERNEL_VERSION:=3.7.1
+CCACHE_KERNEL_SOURCE:=ccache-$(CCACHE_KERNEL_VERSION).tar.xz
+CCACHE_KERNEL_MD5:=30f5f6fa06a95bba94695e8fa6a05899
+CCACHE_KERNEL_SITE:=https://github.com/ccache/ccache/releases/download/v$(CCACHE_KERNEL_VERSION)
 
 CCACHE_KERNEL_DIR:=$(KERNEL_TOOLCHAIN_DIR)/ccache-$(CCACHE_KERNEL_VERSION)
 CCACHE_KERNEL_BINARY:=ccache
@@ -21,11 +21,10 @@ $(CCACHE_KERNEL_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_KERNEL_SOURCE) | $(KERNEL_TOO
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(CCACHE_KERNEL_SOURCE),$(KERNEL_TOOLCHAIN_DIR))
 	# WARNING - this will break if the toolchain is moved.
 	# Should probably patch things to use a relative path.
-	$(SED) -i -e "s,getenv(\"CCACHE_PATH\"),\"$(CCACHE_KERNEL_BIN_DIR)\",g" \
-		$(CCACHE_KERNEL_DIR)/execute.c
+	$(SED) -i 's,conf->path,"$(CCACHE_KERNEL_BIN_DIR)",' $(CCACHE_KERNEL_DIR)/src/execute.c
 #	$(SED) -i -e "s,getenv(\"CCACHE_DIR\"),\"$(KERNEL_TOOLCHAIN_STAGING_DIR)/var/cache\",g" \
 #		$(CCACHE_KERNEL_DIR)/ccache.c
-	$(SED) -i 's,getenv("CCACHE_DIR"),"$(CCACHE_CACHE_DIR)",' $(CCACHE_KERNEL_DIR)/ccache.c
+	$(SED) -i 's,getenv("CCACHE_DIR"),"$(CCACHE_CACHE_DIR)",' $(CCACHE_KERNEL_DIR)/src/ccache.c
 	mkdir -p $(CCACHE_KERNEL_DIR)/cache
 	touch $@
 
