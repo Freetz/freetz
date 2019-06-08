@@ -463,6 +463,10 @@ choice
 	prompt "Firmware language"
 		default FREETZ_TYPE_LANG_DE
 
+	config FREETZ_TYPE_LANG_XX
+		bool "multi-language"
+		depends on FREETZ_AVM_HAS_LANG_XX
+
 	config FREETZ_TYPE_LANG_DE
 		bool "de - deutsch"
 		depends on FREETZ_AVM_HAS_LANG_DE
@@ -616,6 +620,7 @@ config FREETZ_TYPE_FIRMWARE_LABOR
 
 config FREETZ_TYPE_LANGUAGE
 	string
+	default "xx"        if FREETZ_TYPE_LANG_XX
 	default "de"        if FREETZ_TYPE_LANG_DE
 	default "a-ch"      if FREETZ_TYPE_LANG_A_CH
 	default "en"        if FREETZ_TYPE_LANG_EN
