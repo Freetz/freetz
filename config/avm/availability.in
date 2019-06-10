@@ -116,6 +116,7 @@ config FREETZ_AVM_HAS_FIRMWARE_06_5X
 	default y
 	depends on \
 		( FREETZ_TYPE_LANG_XX && ( \
+			FREETZ_TYPE_0450 || \
 			FREETZ_TYPE_0540 || \
 			FREETZ_TYPE_0546 || \
 			FREETZ_TYPE_1750 || \
@@ -305,6 +306,7 @@ config FREETZ_AVM_HAS_LANG_XX
 	bool
 	default y
 	depends on \
+		FREETZ_TYPE_0450 || \
 		FREETZ_TYPE_0540 || \
 		FREETZ_TYPE_0546 || \
 		FREETZ_TYPE_1260 || \
