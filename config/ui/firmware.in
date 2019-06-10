@@ -567,7 +567,7 @@ choice
 		depends on FREETZ_AVM_HAS_FIRMWARE_07_1X
 
 	config FREETZ_TYPE_FIRMWARE_07_1X_INHAUS
-		bool "FRITZ!OS 07.08 Inhaus"
+		bool "FRITZ!OS 07.08/07.10 Inhaus"
 		select FREETZ_AVM_VERSION_07_1X
 		depends on FREETZ_AVM_HAS_FIRMWARE_07_1X_INHAUS && FREETZ_SHOW_ADVANCED
 		help
@@ -597,14 +597,14 @@ config FREETZ_TYPE_FIRMWARE_LABOR_LATEST
 
 if FREETZ_AVM_VERSION_06_5X_MIN && ! FREETZ_REAL_DEVELOPER_ONLY
 	comment "WARNINGS -------------------------------"
-if FREETZ_TYPE_FIRMWARE_LABOR || FREETZ_TYPE_FIRMWARE_07_0X_MIN
+if FREETZ_TYPE_FIRMWARE_LABOR || FREETZ_TYPE_FIRMWARE_INHAUS || FREETZ_TYPE_FIRMWARE_07_0X_MIN
 	comment " - the box may fail to boot and you need to recover it"
 	comment " - there is a higher probability to face stability issues"
 endif
 if FREETZ_SYSTEM_TYPE_PUMA6
 	comment " - the box may fail to boot and you need to recover it manually via the bootlader"
 endif
-if FREETZ_TYPE_FIRMWARE_LABOR
+if FREETZ_TYPE_FIRMWARE_LABOR || FREETZ_TYPE_FIRMWARE_INHAUS
 	comment " - some remove/AVM-web-interface patches are not working"
 	comment "   even if selectable in menuconfig"
 endif
@@ -618,7 +618,7 @@ endif
 if FREETZ_SYSTEM_TYPE_GRX5
 	comment " - replace-kernel is not (yet) available"
 	comment "   because of changed bootloader format"
-if FREETZ_TYPE_FIRMWARE_LABOR || FREETZ_TYPE_FIRMWARE_07_0X_MIN
+if FREETZ_TYPE_FIRMWARE_LABOR || FREETZ_TYPE_FIRMWARE_INHAUS || FREETZ_TYPE_FIRMWARE_07_0X_MIN
 	comment "   and/or missing or incomplete kernel sources"
 endif
 endif
@@ -631,7 +631,12 @@ endif
 config FREETZ_TYPE_FIRMWARE_FINAL
 	bool
 	default y
-	depends on !FREETZ_TYPE_FIRMWARE_LABOR
+	depends on !FREETZ_TYPE_FIRMWARE_LABOR && !FREETZ_TYPE_FIRMWARE_INHAUS
+
+config FREETZ_TYPE_FIRMWARE_INHAUS
+	bool
+	default y
+	depends on FREETZ_TYPE_FIRMWARE_07_1X_INHAUS
 
 config FREETZ_TYPE_FIRMWARE_LABOR
 	bool
