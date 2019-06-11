@@ -50,7 +50,7 @@ case "$3" in
 		do_log /var/tmp/lgpm.log
 		do_log /var/tmp/tcloud.log
 
-		$logg || echo "<br><h1>$(lang de:'Keine Logdateien gefunden' en:'No log files found')!</h1>"
+		$logg || echo "<br><h1>$(lang de:"Keine Logdateien gefunden" en:"No log files found")!</h1>"
 		;;
 	*)
 		do_log /var/log/mod_load.log
