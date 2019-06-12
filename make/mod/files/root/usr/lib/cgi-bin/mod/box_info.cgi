@@ -51,8 +51,8 @@ else
 	mac_wlan2=$notdefined
 fi
 if [ -r /proc/cpuinfo ]; then
-	cpu_family=$(sed -ne '/system type/ s/.*: //p' /proc/cpuinfo | sed 's/ .*//;s/Ikanos/IKS/')
-	cpu_model=$(sed -ne '/cpu model/ s/.*: //p' /proc/cpuinfo | head -n1)
+	cpu_family=$(sed -ne '/\(system type\|Hardware\)/ s/.*: //p' /proc/cpuinfo | sed 's/ .*//;s/Ikanos/IKS/')
+	cpu_model=$(sed -ne '/\(cpu model\|model name\)/ s/.*: //p' /proc/cpuinfo | head -n1)
 	cpu_cores=$(grep $'^processor\t*:' /proc/cpuinfo | wc -l)
 	cpu_bogom="$(sed -ne '/BogoMIPS/ s/.*: //p' /proc/cpuinfo)"
 	cpu_bogom="$(echo $cpu_bogom | sed 's! ! / !g')"
