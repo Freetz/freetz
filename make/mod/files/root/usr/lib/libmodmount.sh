@@ -87,8 +87,12 @@ mount_fs() {
 			[ -x "$(which ntfs-3g)" ] && { ntfs-3g $dev_node $mnt_path -o force ; err_mo=$? ; } || err_mo=111
 			;;
 		swap)
-			/etc/init.d/rc.swap autostart $dev_node
-			err_mo=$((17+$?))
+			if [ -e /etc/init.d/rc.swap ]; then
+				/etc/init.d/rc.swap autostart $dev_node
+				err_mo=$((17+$?))
+			else
+				err_mo=18
+			fi
 			;;
 		*)                                                                # fs type unknown
 			mount $dev_node $mnt_path
@@ -160,7 +164,7 @@ do_mount_locked() {
 		fi
 
 		# freetz extras
-		/etc/init.d/rc.swap autostart $mnt_path                                                                 # swap
+		[ -e /etc/init.d/rc.swap ] && /etc/init.d/rc.swap autostart $mnt_path                                   # swap
 		[ "$MOD_STOR_AUTORUNEND" == "yes" -a -x $autorun ] && $autorun &                                        # autorun
 		[ -r /mod/etc/external.pkg ] && /etc/init.d/rc.external start $mnt_path &                               # external
 
@@ -217,6 +221,10 @@ do_mount_locked() {
 					eventadd 140 "SWAP ($mnt_dev)"
 					log_freetz notice "SWAP partition $mnt_dev was mounted successfully"
 					;;
+				18)                                                           # unavailable
+					eventadd 140 "SWAP ($mnt_dev) NOT/NICHT"
+					log_freetz notice "SWAP partition $mnt_dev was not mounted, rc.swap is not available"
+					;;
 				19)                                                           # other partition
 					eventadd 140 "SWAP ($mnt_dev) NOT/NICHT"
 					log_freetz notice "SWAP partition $mnt_dev was not mounted, not the defined swap-partition"
@@ -264,7 +272,7 @@ do_umount_locked() {
 	# freetz extras
 	[ "$MOD_STOR_AUTORUNEND" == "yes" -a -x $autoend ] && $autoend            # autoend
 	[ -r /mod/etc/external.pkg ] && /etc/init.d/rc.external stop $mnt_path    # external
-	/etc/init.d/rc.swap autostop $mnt_path                                    # swap
+	[ -e /etc/init.d/rc.swap ] && /etc/init.d/rc.swap autostop $mnt_path      # swap
 
 	# notify webdav & TAM unconditionally, i.e. before both "mount -o move" & the actual unmount (this is what AVM does)
 	[ -x $webdav_control ] && $webdav_control lost_partition $mnt_path        # webdav
@@ -466,13 +474,14 @@ is_ctlmgr_parent_of_storage_unplug() {
 # remove swap partition
 # freetz internal function
 remove_swap() {
+	[ -e /etc/init.d/rc.swap ] || return 22
 	if [ "${2:1:4}" == "proc" ]; then
 		local mnt_dev_name=$3                                                 # new parameter style
 	else
 		local mnt_dev_name=$4                                                 # old parameter style
 	fi
 	local tmpret='/tmp/remove_swap.tmp'
-	local retval=20                                                           # no swap devices found
+	local retval=20                                                               # no swap devices found
 	local swap_map="/proc/swaps"
 	local swap_devs=$(grep "^/dev/$mnt_dev_name" $swap_map | sed 's/\t[\t]*/ /g;s/ [ ]*/ /g')
 	if [ -n "$swap_devs" ]; then

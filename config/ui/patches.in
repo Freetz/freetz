@@ -1358,6 +1358,14 @@ config FREETZ_REPLACE_ONLINECHANGED
 
 comment "Additional patches ---------------------"
 
+config FREETZ_ADD_SWAPOPTIONS
+	bool "Add swap options"
+	depends on FREETZ_REPLACE_KERNEL || !FREETZ_SYSTEM_TYPE_IPQ40xx
+	default n
+	select FREETZ_PACKAGE_MOD_SWAPOPTIONS
+	help
+		Add swap configuration options.
+
 config FREETZ_ADD_ETCSERVICES
 	bool "Add /etc/services"
 	default y

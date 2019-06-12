@@ -8,6 +8,7 @@ $(PKG)_EXCLUDED += $(if $(FREETZ_SKIN_phoenix),,usr/share/*/phoenix)
 $(PKG)_EXCLUDED += $(if $(FREETZ_SKIN_newfreetz),,usr/share/*/newfreetz)
 $(PKG)_EXCLUDED += $(if $(FREETZ_STYLE_COLORED),usr/share/style/colorscheme-grey.css,usr/share/style/colorscheme-colored.css)
 
+$(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_MOD_SWAPOPTIONS),,etc/init.d/rc.swap usr/mww/cgi-bin/exec.d/create-swap.sh usr/lib/cgi-bin/mod/conf/20-swap.sh)
 $(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_MOD_ETCSERVICES),,etc/services)
 
 $(PKG)_EXCLUDED += $(if $(FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE),,usr/mww/cgi-bin/system_lfs.cgi usr/mww/cgi-bin/exec.d/linux_fs_start.sh)

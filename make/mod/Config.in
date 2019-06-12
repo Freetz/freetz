@@ -17,8 +17,16 @@ config FREETZ_PACKAGE_MOD
 	help
 		This package is mandatory
 
+config FREETZ_PACKAGE_MOD_SWAPOPTIONS
+	bool
+	default n
+	depends on FREETZ_ADD_SWAPOPTIONS
+	help
+		Add swap configuration options
+
 config FREETZ_PACKAGE_MOD_ETCSERVICES
 	bool
+	depends on FREETZ_ADD_ETCSERVICES
 	default n
 	help
 		Add small /etc/services file

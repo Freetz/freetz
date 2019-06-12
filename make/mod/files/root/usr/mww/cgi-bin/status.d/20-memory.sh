@@ -1,6 +1,6 @@
 
 has_swap() {
-	sed '1d' /proc/swaps | grep -q ''
+	[ -e /proc/swaps ] && sed '1d' /proc/swaps | grep -q ''
 }
 
 decim="$(lang de:"," en:".")"
