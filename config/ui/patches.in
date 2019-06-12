@@ -1257,20 +1257,12 @@ config FREETZ_CUSTOM_UDEV_RULES
 		You could use own rules for UDEV.
 
 config FREETZ_DROP_NOEXEC_EXTERNAL
-	bool "Drop noexec on external storages"
+	bool "Drop noexec for (external) storages"
 	depends on FREETZ_AVM_HAS_NOEXEC
 	default n
 	help
 		Allows to execute files on external
 		storages like USB sticks and HDDs.
-
-config FREETZ_DROP_NOEXEC_INTERNAL
-	bool "Drop noexec on internal storages" if FREETZ_REAL_DEVELOPER_ONLY
-	depends on FREETZ_AVM_HAS_NOEXEC
-	default y
-	help
-		Allows to execute files on internal
-		storages like flash, data and 'nand'.
 
 comment "Replacement patches --------------------"
 
