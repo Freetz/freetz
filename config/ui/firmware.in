@@ -478,27 +478,27 @@ choice
 endchoice # "Hardware type" #
 
 choice
-	prompt "Firmware language"
+	prompt "Target region"
 		default FREETZ_TYPE_LANG_DE
 
 	config FREETZ_TYPE_LANG_XX
-		bool "multi-language"
+		bool "all - avm+avme"
 		depends on FREETZ_AVM_HAS_LANG_XX
 
 	config FREETZ_TYPE_LANG_DE
-		bool "de - deutsch"
+		bool "avm - germany"
 		depends on FREETZ_AVM_HAS_LANG_DE
 
 	config FREETZ_TYPE_LANG_A_CH
-		bool "a-ch - deutsch"
+		bool "avme - a-ch"
 		depends on FREETZ_AVM_HAS_LANG_A_CH
 
 	config FREETZ_TYPE_LANG_EN
-		bool "en - international"
+		bool "avme - international"
 		depends on FREETZ_AVM_HAS_LANG_EN
 
 	config FREETZ_TYPE_LANG_IT
-		bool "it - italian"
+		bool "avme - italia"
 		depends on FREETZ_AVM_HAS_LANG_IT
 
 endchoice # "Firmware language" #
