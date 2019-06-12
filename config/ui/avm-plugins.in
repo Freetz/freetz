@@ -1,4 +1,4 @@
-config FREETZ_AVMPLUGINS_INTEGRATE
+menuconfig FREETZ_AVMPLUGINS_INTEGRATE
 	bool "Integrate AVM Plugins into the image"
 	depends on FREETZ_AVM_HAS_PLUGINS_UPDATE
 	default n
@@ -8,9 +8,7 @@ config FREETZ_AVMPLUGINS_INTEGRATE
 		selecting them below. This saves some resources because plugins are
 		neither copied to the RAM nor mounted with loop-devices.
 
-menu "Plugin selection"
-	depends on FREETZ_AVMPLUGINS_INTEGRATE
-	comment "Select plugin(s) for integration"
+if FREETZ_AVMPLUGINS_INTEGRATE
 
 	config FREETZ_AVMPLUGINS_MEDIASRV
 		bool "MEDIASRV"
@@ -74,5 +72,5 @@ menu "Plugin selection"
 		depends on FREETZ_AVM_HAS_PLUGIN_WLAN
 		default n
 
-endmenu # "Plugin selection" #
+endif
 
