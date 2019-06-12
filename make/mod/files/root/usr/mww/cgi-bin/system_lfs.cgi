@@ -48,7 +48,7 @@ imginfo() {
 	VER="$(cat ${DIR}/etc/.version)"
 	REV="$(cat ${DIR}/etc/.revision)"
 	DAT="$(sed -rn 's!.*FIRMWARE_DATE=!!p' ${DIR}/etc/version | sed 's/\"//g')"
-	[ -z "$DAT" ] && DAT="$(date -d"$(stat -c '%y' ${FILESYSTEM_DIR}/etc/version | sed 's/\..*//')" "+%d.%m.%Y %H:%M:%S")"
+	[ -z "$DAT" ] && DAT="$(date -d"$(stat -c '%y' ${DIR}/etc/version | sed 's/\..*//')" "+%d.%m.%Y %H:%M:%S")"
 	echo "FritzOS $VER rev$REV ($DAT)"
 
 	if [ -e ${DIR}/etc/.freetz-version ]; then
