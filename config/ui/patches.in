@@ -321,6 +321,51 @@ config FREETZ_REMOVE_WEBSRV
 		will be removed too, because only those two binaries use it.
 
 
+config FREETZ_REMOVE_LANGUAGES
+	bool "Remove languages"
+	depends on FREETZ_AVM_HAS_MULTIPLE_LANGUAGES
+	default n
+	help
+		This removes the selected language db /etc/htmltext_??.db
+		files. Make sure you don't remove the active language!
+		A single db file is 40-950 KB big.
+
+config FREETZ_REMOVE_LANGUAGE_de
+	bool "de"
+	depends on FREETZ_REMOVE_LANGUAGES && FREETZ_AVM_HAS_LANGUAGE_de
+	default n
+
+config FREETZ_REMOVE_LANGUAGE_en
+	bool "en"
+	depends on FREETZ_REMOVE_LANGUAGES && FREETZ_AVM_HAS_LANGUAGE_en
+	default n
+
+config FREETZ_REMOVE_LANGUAGE_es
+	bool "es"
+	depends on FREETZ_REMOVE_LANGUAGES && FREETZ_AVM_HAS_LANGUAGE_es
+	default y
+
+config FREETZ_REMOVE_LANGUAGE_fr
+	bool "fr"
+	depends on FREETZ_REMOVE_LANGUAGES && FREETZ_AVM_HAS_LANGUAGE_fr
+	default y
+
+config FREETZ_REMOVE_LANGUAGE_it
+	bool "it"
+	depends on FREETZ_REMOVE_LANGUAGES && FREETZ_AVM_HAS_LANGUAGE_it
+	default y
+
+config FREETZ_REMOVE_LANGUAGE_nl
+	bool "nl"
+	depends on FREETZ_REMOVE_LANGUAGES && FREETZ_AVM_HAS_LANGUAGE_nl
+	default y
+
+config FREETZ_REMOVE_LANGUAGE_pl
+	bool "pl"
+	depends on FREETZ_REMOVE_LANGUAGES && FREETZ_AVM_HAS_LANGUAGE_pl
+	default y
+
+
 config FREETZ_REMOVE_BRANDINGS
 	bool "Remove brandings"
 	depends on FREETZ_AVM_HAS_MULTIPLE_BRANDINGS
