@@ -17,7 +17,7 @@ menu "External processing"
 	config EXTERNAL_NOEXEC
 		bool "Select: Drop noexec on external storages"
 		default y
-		depends on EXTERNAL_ENABLED && FREETZ_AVM_HAS_NOEXEC
+		depends on EXTERNAL_ENABLED && FREETZ_AVM_HAS_USB_HOST && FREETZ_AVM_HAS_NOEXEC
 		select FREETZ_DROP_NOEXEC_EXTERNAL
 		help
 			Selects the "Drop noexec on external storages" patch

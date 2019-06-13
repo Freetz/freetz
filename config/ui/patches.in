@@ -1242,8 +1242,6 @@ config FREETZ_PATCH_MULTIPLE_PRINTERS
 	help
 		Use this patch if you want to use more than one printer.
 
-endif
-
 config FREETZ_MODIFY_UMTSD
 	bool "Modify umtsd: only for known modems"
 	depends on FREETZ_AVM_HAS_UMTS && FREETZ_AVM_HAS_UDEV && !FREETZ_REMOVE_UMTSD && !FREETZ_AVM_VERSION_07_0X_MIN
@@ -1266,6 +1264,8 @@ config FREETZ_DROP_NOEXEC_EXTERNAL
 	help
 		Allows to execute files on external
 		storages like USB sticks and HDDs.
+
+endif
 
 comment "Replacement patches --------------------"
 
