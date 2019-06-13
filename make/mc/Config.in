@@ -1,12 +1,11 @@
-config FREETZ_PACKAGE_MC
+menuconfig FREETZ_PACKAGE_MC
 	bool "Midnight Commander (mc) 4.8.22 (binary only)"
 	select FREETZ_SHARE_terminfo
 	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_0_9_28
 	select FREETZ_LIB_libglib_2
 	default n
 
-menu "Configuration"
-	depends on FREETZ_PACKAGE_MC
+if FREETZ_PACKAGE_MC
 
 choice
 	prompt "Widget library"
@@ -105,4 +104,4 @@ config FREETZ_PACKAGE_MC_WITH_SYNTAX
 	bool "Include syntax files"
 	default y
 
-endmenu
+endif # FREETZ_PACKAGE_MC

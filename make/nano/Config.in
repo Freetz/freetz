@@ -1,4 +1,4 @@
-config FREETZ_PACKAGE_NANO
+menuconfig FREETZ_PACKAGE_NANO
 	bool "Nano 2.4.3 text editor (binary only)"
 	select FREETZ_LIB_libncurses
 	default n
@@ -26,8 +26,7 @@ config FREETZ_PACKAGE_NANO
 
 		3.) Note that UTF8 support and spell checking is disabled by default.
 
-menu "Nano additional features"
-	depends on FREETZ_PACKAGE_NANO
+if FREETZ_PACKAGE_NANO
 
 config FREETZ_PACKAGE_NANO_TINY
 	bool "Tiny binary"
@@ -241,4 +240,4 @@ config FREETZ_PACKAGE_NANO_SYNTAX_FILE_XML
 
 endmenu
 
-endmenu
+endif # FREETZ_PACKAGE_NANO

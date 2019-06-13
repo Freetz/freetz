@@ -1,4 +1,4 @@
-config FREETZ_PACKAGE_IMAGEMAGICK
+menuconfig FREETZ_PACKAGE_IMAGEMAGICK
 	bool "ImageMagick 7.0.8-45 (binary only)"
 	select FREETZ_LIB_libpthread
 	select FREETZ_LIB_libm
@@ -14,14 +14,7 @@ config FREETZ_PACKAGE_IMAGEMAGICK
 		the command line as well as through C, C++, and PERL-based programming
 		interfaces.
 
-menu "Configuration"
-	depends on FREETZ_PACKAGE_IMAGEMAGICK
-
-config FREETZ_PACKAGE_IMAGEMAGICK_freetype
-	bool "freetype"
-	depends on FREETZ_PACKAGE_IMAGEMAGICK
-	default y
-	select FREETZ_LIB_libfreetype
+if FREETZ_PACKAGE_IMAGEMAGICK
 
 config FREETZ_PACKAGE_IMAGEMAGICK_ghostscript_fonts
 	bool "Ghostscript fonts"
@@ -29,31 +22,36 @@ config FREETZ_PACKAGE_IMAGEMAGICK_ghostscript_fonts
 	default n
 	select FREETZ_PACKAGE_GHOSTSCRIPT_FONTS
 
+config FREETZ_PACKAGE_IMAGEMAGICK_freetype
+	bool "Support freetype"
+	depends on FREETZ_PACKAGE_IMAGEMAGICK
+	default y
+	select FREETZ_LIB_libfreetype
+
 config FREETZ_PACKAGE_IMAGEMAGICK_jpeg
-	bool "jpeg"
+	bool "Support jpeg"
 	depends on FREETZ_PACKAGE_IMAGEMAGICK
 	default y
 	select FREETZ_LIB_libjpeg
 
 config FREETZ_PACKAGE_IMAGEMAGICK_libz
-	bool "libz"
+	bool "Support libz"
 	depends on FREETZ_PACKAGE_IMAGEMAGICK
 	default y
 	select FREETZ_LIB_libz
 
 config FREETZ_PACKAGE_IMAGEMAGICK_png
-	bool "png"
+	bool "Support png"
 	depends on FREETZ_PACKAGE_IMAGEMAGICK
 	default y
 	select FREETZ_LIB_libpng12
 
 config FREETZ_PACKAGE_IMAGEMAGICK_xml
-	bool "xml"
+	bool "Support xml"
 	depends on FREETZ_PACKAGE_IMAGEMAGICK
 	default y
 	select FREETZ_LIB_libxml2
 
-endmenu
 
 config FREETZ_PACKAGE_IMAGEMAGICK_STATIC
 	bool "Link statically"
@@ -61,3 +59,5 @@ config FREETZ_PACKAGE_IMAGEMAGICK_STATIC
 	default n
 	help
 		Causes all dependent libraries to be linked in statically.
+
+endif # FREETZ_PACKAGE_IMAGEMAGICK
