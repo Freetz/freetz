@@ -1,4 +1,4 @@
-config FREETZ_PACKAGE_COLLECTD
+menuconfig FREETZ_PACKAGE_COLLECTD
 	bool "Collectd 4.10.3"
 	select FREETZ_LIB_libdl
 	select FREETZ_LIB_libltdl
@@ -15,8 +15,7 @@ config FREETZ_PACKAGE_COLLECTD
 		want pretty graphs of your private server and are fed up with some
 		homegrown solution you're at the right place, too.
 
-menu "plugins"
-	depends on FREETZ_PACKAGE_COLLECTD
+if FREETZ_PACKAGE_COLLECTD
 
 config FREETZ_PACKAGE_COLLECTD_PLUGIN_apache
 	bool "apache"
@@ -76,4 +75,4 @@ config FREETZ_PACKAGE_COLLECTD_PLUGIN_syslog
 config FREETZ_PACKAGE_COLLECTD_PLUGIN_uptime
 	bool "uptime"
 
-endmenu
+endif # FREETZ_PACKAGE_COLLECTD

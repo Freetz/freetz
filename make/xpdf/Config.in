@@ -1,4 +1,4 @@
-config FREETZ_PACKAGE_XPDF
+menuconfig FREETZ_PACKAGE_XPDF
 	bool "Xpdf 3.04 (binary only)"
 	select FREETZ_LIB_libm
 	select FREETZ_LIB_STDCXXLIB
@@ -12,8 +12,7 @@ config FREETZ_PACKAGE_XPDF
 
 		This packages includes only the non-X utilities.
 
-menu "Xpdf options"
-	depends on FREETZ_PACKAGE_XPDF
+if FREETZ_PACKAGE_XPDF
 
 config FREETZ_PACKAGE_XPDF_pdftops
 	bool "pdftops"
@@ -35,4 +34,4 @@ config FREETZ_PACKAGE_XPDF_pdfimages
 	bool "pdfimages"
 	default n
 
-endmenu
+endif # FREETZ_PACKAGE_XPDF

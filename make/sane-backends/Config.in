@@ -1,4 +1,4 @@
-config FREETZ_PACKAGE_SANE_BACKENDS
+menuconfig FREETZ_PACKAGE_SANE_BACKENDS
 	bool "SANE 1.0.27"
 	select FREETZ_PACKAGE_INETD
 	select FREETZ_PACKAGE_SANE_BACKENDS_BACKEND_dll
@@ -11,7 +11,6 @@ config FREETZ_PACKAGE_SANE_BACKENDS
 		(initial Freetz package by Michael Denk, tehron @ http://www.ip-phone-forum.de/)
 
 if FREETZ_PACKAGE_SANE_BACKENDS
-menu Configuration
 
 config FREETZ_PACKAGE_SANE_BACKENDS_WITH_AVAHI
 	bool "enable avahi support"
@@ -441,5 +440,4 @@ config FREETZ_PACKAGE_SANE_BACKENDS_BACKEND_xerox_mfp
 	select FREETZ_PACKAGE_SANE_BACKENDS_BACKEND_dll
 	default n
 
-endmenu
 endif # FREETZ_PACKAGE_SANE_BACKENDS

@@ -1,12 +1,11 @@
-config FREETZ_PACKAGE_FFMPEG
+menuconfig FREETZ_PACKAGE_FFMPEG
 	bool "FFmpeg 1.2.12"
 	default n
 	help
 		FFmpeg is a complete, cross-platform solution to record,
 		convert and stream audio and video.
 
-menu "Configuration"
-	depends on FREETZ_PACKAGE_FFMPEG
+if FREETZ_PACKAGE_FFMPEG
 
 config FREETZ_PACKAGE_FFMPEG_ffmpeg
 	bool "Include ffmpeg"
@@ -354,4 +353,4 @@ config FREETZ_PACKAGE_FFMPEG_PROTOCOL_tcp
 config FREETZ_PACKAGE_FFMPEG_PROTOCOL_udp
 	bool "udp:"
 
-endmenu
+endif # FREETZ_PACKAGE_FFMPEG
