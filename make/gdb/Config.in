@@ -1,8 +1,7 @@
 config FREETZ_PACKAGE_GDB
 	bool "gdb GNU debugger"
 
-menu "binaries"
-	depends on FREETZ_PACKAGE_GDB
+if FREETZ_PACKAGE_GDB
 
 config FREETZ_PACKAGE_GDB_GDB
 	bool "Build gdb for target"
@@ -28,10 +27,7 @@ config FREETZ_PACKAGE_GDB_HOST
 	help
 		Build gdb to run on the host to debug programs run on the target.
 
-endmenu
-
 choice
-depends on FREETZ_PACKAGE_GDB
 	prompt "version"
 	default FREETZ_GDB_VERSION_7_9
 	help
@@ -43,3 +39,5 @@ depends on FREETZ_PACKAGE_GDB
 	config FREETZ_GDB_VERSION_7_9
 		bool "gdb 7.9.1"
 endchoice
+
+endif # FREETZ_PACKAGE_GDB

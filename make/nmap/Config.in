@@ -20,8 +20,7 @@ config FREETZ_PACKAGE_NMAP
 		networks, but works fine against single hosts. Nmap runs on all major computer
 		operating systems, and both console and graphical versions are available.
 
-menu "nmap options"
-depends on FREETZ_PACKAGE_NMAP
+if FREETZ_PACKAGE_NMAP
 
 choice
 	depends on FREETZ_PACKAGE_NMAP
@@ -104,4 +103,4 @@ config FREETZ_PACKAGE_NMAP_STATIC
 	help
 		Causes all libraries to be linked in statically.
 
-endmenu
+endif # FREETZ_PACKAGE_NMAP

@@ -9,8 +9,7 @@ config FREETZ_PACKAGE_NETATALK
 		Netatalk is a kernel level implementation of the AppleTalk
 		Protocol Suite which contains the AppleShare file server (AFP).
 
-menu "netatalk options"
-depends on FREETZ_PACKAGE_NETATALK
+if FREETZ_PACKAGE_NETATALK
 
 config FREETZ_PACKAGE_NETATALK_ENABLE_ZEROCONF
 	bool "build with zeroconf support"
@@ -55,4 +54,4 @@ config FREETZ_PACKAGE_NETATALK_DHX2
 		http://netatalk.sourceforge.net/2.2/htmldocs/configuration.html#id4167131
 		for further details.
 
-endmenu
+endif # FREETZ_PACKAGE_NETATALK

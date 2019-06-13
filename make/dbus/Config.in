@@ -11,8 +11,7 @@ config FREETZ_PACKAGE_DBUS
 		application or daemon, and to launch applications and daemons
 		on demand when their services are needed.
 
-menu "D-Bus tools"
-	depends on FREETZ_PACKAGE_DBUS
+if FREETZ_PACKAGE_DBUS
 
 config FREETZ_PACKAGE_DBUS_monitor
 	bool "dbus-monitor"
@@ -38,4 +37,4 @@ config FREETZ_PACKAGE_DBUS_uuidgen
 	help
 		dbus-uuidgen generates or reads a universally unique ID.
 
-endmenu
+endif # FREETZ_PACKAGE_DBUS
