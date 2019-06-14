@@ -349,12 +349,6 @@ recover:
 	@if [ -z "$(IMAGE)" ]; then \
 		echo "Specify an image to recover." 1>&2; \
 		echo "e.g. make recover IMAGE=some.image" 1>&2; \
-	elif [ -z "$(RECOVER)" ]; then \
-		echo "Specify recover script." 1>&2; \
-		echo "make recover RECOVER=[adam|eva|ds]" 1>&2; \
-		echo "  adam - old boxes like ATA (kernel 2.4)" 1>&2; \
-		echo "  eva  - all boxes with kernel 2.6" 1>&2; \
-		echo "  ds   - modified adam script from freetz" 1>&2; \
 	elif [ ! -r "$(IMAGE)" ]; then \
 		echo "Cannot read $(IMAGE)." 1>&2; \
 	else \
@@ -375,9 +369,9 @@ recover:
 						echo "local IP has to be in the 192.168.178.0/24 subnet."; \
 						echo "e.g. make recover LOCALIP=192.168.178.20"; \
 						echo; \
-						$(TOOLS_DIR)/recover-$(RECOVER) -f "$(IMAGE)"; \
+						$(TOOLS_DIR)/recover-eva -f "$(IMAGE)"; \
 					else \
-						$(TOOLS_DIR)/recover-$(RECOVER) -l $(LOCALIP) -f "$(IMAGE)"; \
+						$(TOOLS_DIR)/recover-eva -l $(LOCALIP) -f "$(IMAGE)"; \
 					fi; break ;; \
 				[nN]*) \
 					break ;; \
