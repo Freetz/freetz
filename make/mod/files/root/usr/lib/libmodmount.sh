@@ -91,7 +91,7 @@ mount_fs() {
 				/etc/init.d/rc.swap autostart $dev_node
 				err_mo=$((17+$?))
 			else
-				err_mo=18
+				err_mo=22
 			fi
 			;;
 		*)                                                                # fs type unknown
@@ -221,10 +221,6 @@ do_mount_locked() {
 					eventadd 140 "SWAP ($mnt_dev)"
 					log_freetz notice "SWAP partition $mnt_dev was mounted successfully"
 					;;
-				18)                                                           # unavailable
-					eventadd 140 "SWAP ($mnt_dev) NOT/NICHT"
-					log_freetz notice "SWAP partition $mnt_dev was not mounted, rc.swap is not available"
-					;;
 				19)                                                           # other partition
 					eventadd 140 "SWAP ($mnt_dev) NOT/NICHT"
 					log_freetz notice "SWAP partition $mnt_dev was not mounted, not the defined swap-partition"
@@ -232,6 +228,10 @@ do_mount_locked() {
 				20)                                                           # disabled
 					eventadd 140 "SWAP ($mnt_dev) NOT/NICHT"
 					log_freetz notice "SWAP partition $mnt_dev was not mounted, auto-mode is disabled"
+					;;
+				22)                                                           # unavailable
+					eventadd 140 "SWAP ($mnt_dev) NOT/NICHT"
+					log_freetz notice "SWAP partition $mnt_dev was not mounted, rc.swap is not available"
 					;;
 				*)                                                            # error
 					eventadd 140 "SWAP ($mnt_dev) NOT/NICHT"
