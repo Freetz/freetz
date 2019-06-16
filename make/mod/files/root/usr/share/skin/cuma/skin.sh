@@ -1,7 +1,9 @@
 skin_head() {
 	local title=$1 id=$2
+	local hname="$(hostname -s|html)"
+	[ "$hname" != "fritz" ] && hname="&#64;${hname}&nbsp;" || hname=""
 	cat << EOF
-<title>Freetz&nbsp;&#64;$(hostname -s|html)&nbsp;&ndash; $title</title>
+<title>Freetz&nbsp;${hname}&ndash; $title</title>
 <link rel="stylesheet" type="text/css" href="/style/cuma/base.css">
 <link rel="stylesheet" type="text/css" href="/style/colorscheme.css">
 EOF
@@ -21,6 +23,8 @@ skin_body_begin() {
 	if [ -n "$_CGI_HELP" ]; then
 		help="&nbsp;<span class='help'>(<a href='$(html "$_CGI_HELP")' target='_blank'>$(lang de:"Hilfe" en:"Help")</a>)</span>"
 	fi
+	local hname="$(hostname -s|html)"
+	[ "$hname" != "fritz" ] && hname="&#64;<a href="/cgi-bin/avm" target="_blank">${hname}</a>&nbsp;" || hname=""
 	cat << EOF
 <table id="edge" border="0" cellspacing="0" cellpadding="0" width="$_cgi_total_width">
 <colgroup><col width="20"><col width="*"><col width="20"></colgroup>
@@ -28,7 +32,7 @@ skin_body_begin() {
 <td id="edge-top-left"></td>
 <td id="edge-top">
 <div class="version">$(html < /etc/.freetz-version)</div>
-<div class="titlebar"><a href="https://trac.boxmatrix.info/freetz-ng/" target="_blank" class="logo">Freetz</a>&nbsp;&#64;<a href="/cgi-bin/avm" target="_blank">$(hostname -s|html)</a>&nbsp;<a href="/cgi-bin/about.cgi" target="_blank">&ndash;</a>&nbsp;<span class="title">$title</span>$help &nbsp; &nbsp; $([ "$isauth" = 1 ] && echo "<small>Session timeout: $(date -d @$(( $MOD_HTTPD_SESSIONTIMEOUT + $(date +%s) )) +'%H:%M:%S')</small>") </div>
+<div class="titlebar"><a href="https://trac.boxmatrix.info/freetz-ng/" target="_blank" class="logo">Freetz</a>&nbsp;${hname}<a href="/cgi-bin/about.cgi" target="_blank">&ndash;</a>&nbsp;<span class="title">$title</span>$help &nbsp; &nbsp; $([ "$isauth" = 1 ] && echo "<small>Session timeout: $(date -d @$(( $MOD_HTTPD_SESSIONTIMEOUT + $(date +%s) )) +'%H:%M:%S')</small>") </div>
 </td>
 <td id="edge-top-right"></td>
 </tr>

@@ -1,7 +1,9 @@
 skin_head() {
 	local title=$1 id=$2
+	local hname="$(hostname -s|html)"
+	[ "$hname" != "fritz" ] && hname="&nbsp;&#64;${hname}" || hname=""
 	cat << EOF
-<title>$title&nbsp;&ndash; Freetz&nbsp;&#64;$(hostname -s|html)</title>
+<title>$title&nbsp;&ndash; Freetz${hname}</title>
 <link rel="stylesheet" type="text/css" href="/style/phoenix/base.css">
 <link rel="stylesheet" type="text/css" href="/style/colorscheme.css">
 EOF
