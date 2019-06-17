@@ -8,3 +8,6 @@ rm_files "${MODULES_DIR}/kernel/drivers/usb/storage/usb-storage.ko"
 rm_files "${MODULES_DIR}/kernel/drivers/scsi/scsi_mod.ko"
 rm_files "${MODULES_DIR}/kernel/drivers/scsi/sd_mod.ko"
 rm_files "${MODULES_DIR}/kernel/drivers/scsi/sg.ko"
+
+modsed -r 's/(CONFIG_USB.*)=.*/\1="n"/g' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+
