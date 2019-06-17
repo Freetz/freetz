@@ -65,10 +65,14 @@ for files in \
 done
 
 # don't remove libwebusb*.so, see http://freetz.org/ticket/2020
+modsed -r 's/(CONFIG_WEBUSB)=.*$/\1="n"/g' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 # MEDIASRV & NAS are using this file
 [ "$FREETZ_REMOVE_NAS" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/lib/libavmdb.so*"
 # MEDIASRV & UPNP (started by NAS) are using this file
 [ "$FREETZ_REMOVE_UPNP" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/lib/libsqlite3*.so*"
+modsed -r 's/(CONFIG_SQLITE)=.*$/\1="n"/g'        "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+modsed -r 's/(CONFIG_SQLITE_BILDER)=.*$/\1="n"/g' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+modsed -r 's/(CONFIG_SQLITE_VIDEO)=.*$/\1="n"/g'  "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 # MEDIASRV & MINID are using this file
 [ "$FREETZ_REMOVE_MINID" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/lib/libavmid3*.so*"
 
