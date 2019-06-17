@@ -11,7 +11,8 @@ for oem in $(supported_brandings) all; do
 	echo2 "adding boot-manager front end to branding \"${oem}\""
 
 	TARGET_BRANDING="${oem}" \
-	TARGET_SYSTEM_VERSION="${AVM_FW_MAJOR}.${AVM_FW_VERSION}" \
+	TARGET_SYSTEM_VERSION="autodetect" \
+	TARGET_SYSTEM_VERSION_DETECTOR="${TOOLS_DIR}/yf/bootmanager/extract_version_values" \
 	TARGET_DIR="${FILESYSTEM_MOD_DIR}" \
 	TMP="$TEMPDIR" \
 	sh "${TOOLS_DIR}/yf/bootmanager/add_to_system_reboot.sh"
