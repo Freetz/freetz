@@ -1,0 +1,151 @@
+--- etc/hotplug/printer
++++ etc/hotplug/printer
+@@ -14,10 +14,20 @@
+ # no K2.4 support
+ BIN=/sbin/printserv
+ 
+-USB_DEVICE=/dev/usblp0
+-test -c $USB_DEVICE || USB_DEVICE=/dev/usb/lp0
++DEFAULT_NODE=/dev/usblp0
++DEV_PREFIX=/dev/usb_prntsvr
++test -c $DEFAULT_NODE || DEFAULT_NODE=/dev/usb/lp0
++
++UNUM="$(echo $2 | sed -n 's/.*\/\([0-9]*\)$/\1/p')"
++
++# Get physical USB port
++UPRT=$(lsusb -t -h $2 | sed -n 's/.*TOPO=\([0-9]*\).*/\1/p')
++UPRT=$(printf "%02d" $UPRT)
++UPRT=${UPRT:0:1}
++
++# AVM's printserv does need two ports, therefore skip every other port
++PORT=$((9100 + 2 * UPRT))
+ 
+-PORT=9100
+ PRINTER_STATUS_FILE=/var/log/printer_status
+ PRINTER_ID_FILE=/var/log/printer_id
+ DEVICE=$2
+@@ -40,10 +50,11 @@
+ 
+ add)	local FIRST=$5
+ 	
+-	if test "$FIRST" = "1"; then
++#	if test "$FIRST" = "1"; then
+ 
+ 		# Detect supported printer...
+-		PROTOCOL=`grep "print" /proc/bus/usb/devices | sed -n 's/.*Prot=\(0[12]\).*/\1/p'`
++#		PROTOCOL=`grep "print" /proc/bus/usb/devices | sed -n 's/.*Prot=\(0[12]\).*/\1/p'`
++		PROTOCOL=$(hexdump -s 34 -n 1 -e '1/1 "%02x"' $2)
+ 		case $PROTOCOL in
+ 			01*|02*) # uni- and bidirectional
+ 				 ;;
+@@ -54,43 +65,97 @@
+ 				 ;;
+ 		esac
+ 
++		# Get next USB minor number...
++		MINOR=0
++		while [ -c $DEV_PREFIX-*.$MINOR ]; do
++			if [ "$MINOR" = "15" ]; then
++				eventadd 1 "Printer limit exceeded"
++				exit 1;
++			fi
++			MINOR=$((MINOR + 1))
++		done
++		# Device node
++		USB_DEVICE=$DEV_PREFIX-$UNUM.$MINOR
++		# Create it
++		mknod -m 666 $USB_DEVICE c 180 $MINOR
++
++		# Set printer on physical USB port 0 as default
++		if [ "$UPRT" = "0" ]; then
++			rm -f $DEFAULT_NODE
++			mknod -m 666 $DEFAULT_NODE c 180 $MINOR
++		# Disable default printer
++		#elif [ "$MINOR" = "0" ]; then
++		#	rm -f $DEFAULT_NODE
++		#	mknod -m 666 $DEFAULT_NODE c 180 255
++		fi
++
+ 		# Load usb printer class module...
+ 		modprobe $MODULE
+ 
++		# Printserver port already in use?
++		netstat -nlt | grep ":$PORT" > /dev/null 2>&1 && PORT=n/a
++
+ 		# Find device's strings...
+ 		for var in `/sbin/lsusb -s -h $DEVICE |tr " " "_"`; do
+ 			if echo $var | grep "='" > /dev/null 2>&1; then
+ 				eval $var
+ 			fi
+ 		done
+-		echo "${MANU:=USB}:${PROD:=Printer}"|tr "_" " " > $PRINTER_ID_FILE
++#		echo "${MANU:=USB}:${PROD:=Printer}"|tr "_" " " > $PRINTER_ID_FILE
++		[ ! -e $PRINTER_ID_FILE ] && echo -e ":\t" > $PRINTER_ID_FILE
++		# Add to available printers
++		sed -i "s/\t$/\t$UNUM: `echo ${MANU:=USB} ${PROD:=Drucker} | tr "_" " "` (Port $PORT)\t/" $PRINTER_ID_FILE
+ 		
++		echo "0" > $PRINTER_STATUS_FILE
++		echo "1" > $HANDLE
+ 		# Starting printserver...
++		if [ "$PORT" != "n/a" ]; then
+ 		if ! $BIN -d $USB_DEVICE -p $PORT -c $CONSOLE; then
+ 			eventadd 153
+ 			vrijgeven
+ 			exit 1
+ 		fi
+ 
+-		echo "1" > $HANDLE
+-		
+-		eventadd 150 9100 	# `echo ar7cfg.brinterfaces.ipaddr | ar7cfgctl -s` 
++		eventadd 150 $PORT  # `echo ar7cfg.brinterfaces.ipaddr | ar7cfgctl -s` 
+ 					# (IP address should not be displayed in log at the moment.)
+-	else	
+-		eventadd 152
+-		echo "0" > $HANDLE
+-	fi
++		fi
++#	else
++#		eventadd 152
++#		echo "0" > $HANDLE
++#	fi
+ 	;;
+ 
+ remove)	local VALUE=$3
+ 	if test "$VALUE" -eq 1; then
+ 
+ 		# Stop it all...
+-		killall ${BIN##*/}
+-		rm -f $PRINTER_STATUS_FILE
+-		rm -f $PRINTER_ID_FILE
+-		sleep 1;
+-		rmmod $MODULE
++#		killall ${BIN##*/}
++
++		# Remove device node
++		rm -f $DEV_PREFIX-$UNUM*
++		# Update available printers
++		sed -i "s/\t$UNUM[^\t]*//" $PRINTER_ID_FILE
++
++		# Get corresponding pids
++		PIDS=$(ps w | sed -n "s=^ *\([0-9]*\).*$BIN.*$DEV_PREFIX-$UNUM.*=\1=p")
++
++		# Check for other printers
++		if [ -c $DEV_PREFIX-* ]; then
++			# This prevents semaphore failures within other printserv processes
++			[ -n "$PIDS" ] && kill -KILL $PIDS
++			# Be sure the status file exists, even if deleted by killed process
++			[ ! -e $PRINTER_STATUS_FILE ] && echo "0" > $PRINTER_STATUS_FILE
++		# No printers left
++		else
++			# Terminate as usual
++			[ -n "$PIDS" ] && kill -TERM $PIDS
++			# Clean up
++			rm -f $PRINTER_STATUS_FILE
++			rm -f $PRINTER_ID_FILE
++			sleep 1;
++			rmmod $MODULE
++		fi
++
+ 		eventadd 151
+ 	fi
+ 	;;
