@@ -1,0 +1,20 @@
+Improve dnssec-timestamp-checking related logging behavior.
+
+dnsmasq already logs (at startup)
+  DNSSEC signature timestamps not checked until system time valid
+if the system time is considered to be invalid.
+
+Do also log the opposite case, i.e. if the time at startup is valid.
+
+--- src/dnsmasq.c
++++ src/dnsmasq.c
+@@ -806,6 +806,9 @@
+       if (rc == 1)
+ 	my_syslog(LOG_INFO, _("DNSSEC signature timestamps not checked until system time valid"));
+ 
++      if (daemon->timestamp_file && rc == 0) /* daemon->back_to_the_future is probably an equivalent condition */
++        my_syslog(LOG_INFO, _("system time considered valid, checking DNSSEC signature timestamps."));
++
+       for (ds = daemon->ds; ds; ds = ds->next)
+ 	my_syslog(LOG_INFO, _("configured with trust anchor for %s keytag %u"),
+ 		  ds->name[0] == 0 ? "<root>" : ds->name, ds->keytag);
