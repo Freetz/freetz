@@ -574,7 +574,7 @@ choice
 	config FREETZ_TYPE_FIRMWARE_LABOR_BETA
 		bool "FRITZ!OS 07.11 Beta"
 		select FREETZ_AVM_VERSION_07_1X
-		select FREETZ_DL_DETECT_IMAGE_NAME
+		select FREETZ_TYPE_FIRMWARE_LABOR_LATEST
 		depends on FREETZ_AVM_HAS_FIRMWARE_LABOR_BETA && FREETZ_SHOW_ADVANCED
 		help
 			Enable this to use an AVM Beta firmware as base for modding.
@@ -594,7 +594,7 @@ config FREETZ_TYPE_FIRMWARE_LABOR_LATEST
 	bool "Detect the latest firmware version"
 	default y
 	select FREETZ_DL_DETECT_IMAGE_NAME
-	depends on FREETZ_SHOW_ADVANCED && FREETZ_AVM_HAS_FIRMWARE_LABOR && FREETZ_TYPE_FIRMWARE_LABOR_TEST
+	depends on FREETZ_SHOW_ADVANCED && FREETZ_AVM_HAS_FIRMWARE_LABOR && FREETZ_TYPE_FIRMWARE_LABOR
 	help
 		Automatically detect the latest labor firmware
 		version by using https://www.boxmatrix.info

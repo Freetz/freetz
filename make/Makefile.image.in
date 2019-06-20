@@ -60,12 +60,13 @@ else
 			echo "No cache, refresh URL by web" >/dev/null; \
 			[ "$(FREETZ_TYPE_LANGUAGE)" != "xx" ] && LANG_COL="$(FREETZ_TYPE_LANGUAGE)\t"; \
 			DL_URL_CONTAINER="$$$$(wget --no-check-certificate -t1 --timeout=9 -q $$$$DL_URL_LATEST -O -| \
-			sed -r "s/\tint\t/\ten\t/g;s/\t\t/\tde\t/g;s/\t\t/\tde\t/g;s/(.*)(\t[^\t]*)/\1\tlabor\2/g;s/(.*\t)labor(\t.*07\.03.*)/\1beta\2/g" | \
+			sed -r "s/\tint\t/\ten\t/g;s/\t\t/\tde\t/g;s/\t\t/\tde\t/g;s/(.*)(\t[^\t]*)/\1\tlabor\2/g;s/(.*\t)labor(\t.*[-0]7\.(03|11).*)/\1beta\2/g" | \
 			grep -vP "\t2018-[0-9 :-]*\t" | \
 			grep -P "^$$(call qstrip,$(FREETZ_TYPE_PREFIX_BOXMATRIX))\t$$$$LANG_COL" | \
 			sed -rn "s/.*\t$$(call patsubst,_%,%,$$(call qstrip,$(FREETZ_TYPE_PREFIX_LABOR_FIRMWARE)))\t([^\t]*)$$$$/\1/p" | \
 			head -n1)"; \
 			echo "$$$$DL_URL_CONTAINER" > "$$(IMAGE$(1)).url"; \
+			[ -n "$$$$DL_URL_CONTAINER" ] && echo "Found URL: $$$$DL_URL_CONTAINER" >/dev/null; \
 		fi; \
 		if [ -z "$$$$DL_URL_CONTAINER" ]; then \
 			echo "No URL found, reading backup" >/dev/null; \

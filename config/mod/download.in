@@ -425,8 +425,7 @@ menu "Download options"
 		default "@AVM/{fritzbox-7430/deutschland/fritz.os,fritzbox.7430/firmware/deutsch}"                                 if (FREETZ_TYPE_7430 || FREETZ_TYPE_7412_7430) && FREETZ_TYPE_LANG_DE
 		default "@AVM/{fritzbox-7430/other/fritz.os,fritzbox.7430/firmware/english}"                                       if FREETZ_TYPE_7430 && FREETZ_TYPE_LANG_EN
 		#
-		default "@AVM/beta/fritzbox-7490/deutschland"                                                                      if FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_LABOR_BETA
-		default "@AVM/{fritzbox-7490/deutschland/fritz.os,fritzbox.7490/firmware/deutsch},@1&1/7490"                       if FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_DE && !FREETZ_TYPE_FIRMWARE_LABOR_BETA
+		default "@AVM/{fritzbox-7490/deutschland/fritz.os,fritzbox.7490/firmware/deutsch},@1&1/7490"                       if FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_DE
 		default "@AVM/{fritzbox-7490/{other,belgium}/fritz.os,fritzbox.7490/firmware/{english,belgium}}"                   if FREETZ_TYPE_7490 && FREETZ_TYPE_LANG_EN
 		#
 		default "@AVM/fritzbox-7520/deutschland/fritz.os,@1&1/7520"                                                        if FREETZ_TYPE_7520 && FREETZ_TYPE_LANG_DE
@@ -439,8 +438,7 @@ menu "Download options"
 		#
 		default "@AVM/fritzbox.fon_wlan_7570/firmware/english"                                                             if FREETZ_TYPE_7570 && ! FREETZ_TYPE_7570_7270
 		#
-		default "@AVM/beta/fritzbox-7580/deutschland"                                                                      if FREETZ_TYPE_7580 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_LABOR_BETA
-		default "@AVM/{fritzbox-7580/deutschland/fritz.os,fritzbox.7580/firmware/deutsch},@1&1/7580"                       if FREETZ_TYPE_7580 && FREETZ_TYPE_LANG_DE && !FREETZ_TYPE_FIRMWARE_LABOR_BETA
+		default "@AVM/{fritzbox-7580/deutschland/fritz.os,fritzbox.7580/firmware/deutsch},@1&1/7580"                       if FREETZ_TYPE_7580 && FREETZ_TYPE_LANG_DE
 		#
 		default "@AVM/fritzbox-7581/other/fritz.os"                                                                        if FREETZ_TYPE_7581 && FREETZ_TYPE_LANG_EN
 		#
@@ -448,8 +446,7 @@ menu "Download options"
 		#
 		default "@AVM/fritzbox-7583/deutschland/fritz.os"                                                                  if FREETZ_TYPE_7583 && FREETZ_TYPE_LANG_DE
 		#
-		default "@AVM/beta/fritzbox-7590/deutschland"                                                                      if FREETZ_TYPE_7590 && FREETZ_TYPE_LANG_DE && FREETZ_TYPE_FIRMWARE_LABOR_BETA
-		default "@AVM/{fritzbox-7590/deutschland/fritz.os,fritzbox.7590/firmware/deutsch},@1&1/7590"                       if FREETZ_TYPE_7590 && FREETZ_TYPE_LANG_DE && !FREETZ_TYPE_FIRMWARE_LABOR_BETA
+		default "@AVM/{fritzbox-7590/deutschland/fritz.os,fritzbox.7590/firmware/deutsch},@1&1/7590"                       if FREETZ_TYPE_7590 && FREETZ_TYPE_LANG_DE
 		default "@AVM/fritzbox-7590/{other,italy,belgium}/fritz.os"                                                        if FREETZ_TYPE_7590 && FREETZ_TYPE_LANG_EN
 		#
 		default "@TELEKOM/Speedport/Speedport_W501V"                                                                       if FREETZ_TYPE_W501V
@@ -776,9 +773,6 @@ menu "Download options"
 	config FREETZ_DL_SOURCE_CONTAINER
 		string "Downloaded container file"              if FREETZ_DL_OVERRIDE
 		depends                                         on FREETZ_TYPE_FIRMWARE_LABOR && !FREETZ_TYPE_FIRMWARE_LABOR_LATEST
-		default "fritzbox-beta-7490-7.11-69455.zip"     if FREETZ_TYPE_7490
-		default "fritzbox-beta-7580-7.11-69456.zip"     if FREETZ_TYPE_7580
-		default "fritzbox-beta-7590-7.11-69457.zip"     if FREETZ_TYPE_7590
 		#
 		default ""
 
