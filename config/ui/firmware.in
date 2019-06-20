@@ -571,6 +571,14 @@ choice
 		help
 			Enable this to use an AVM Inhaus firmware as base for modding.
 
+	config FREETZ_TYPE_FIRMWARE_LABOR_BETA
+		bool "FRITZ!OS 07.11 Beta"
+		select FREETZ_AVM_VERSION_07_1X
+		select FREETZ_DL_DETECT_IMAGE_NAME
+		depends on FREETZ_AVM_HAS_FIRMWARE_LABOR_BETA && FREETZ_SHOW_ADVANCED
+		help
+			Enable this to use an AVM Beta firmware as base for modding.
+
 	config FREETZ_TYPE_FIRMWARE_LABOR_TEST
 		bool "FRITZ!OS 07.08 Labor - EXPERIMENTAL"
 		select FREETZ_AVM_VERSION_07_0X
@@ -586,7 +594,7 @@ config FREETZ_TYPE_FIRMWARE_LABOR_LATEST
 	bool "Detect the latest firmware version"
 	default y
 	select FREETZ_DL_DETECT_IMAGE_NAME
-	depends on FREETZ_SHOW_ADVANCED && FREETZ_AVM_HAS_FIRMWARE_LABOR && FREETZ_TYPE_FIRMWARE_LABOR
+	depends on FREETZ_SHOW_ADVANCED && FREETZ_AVM_HAS_FIRMWARE_LABOR && FREETZ_TYPE_FIRMWARE_LABOR_TEST
 	help
 		Automatically detect the latest labor firmware
 		version by using https://www.boxmatrix.info
@@ -639,7 +647,7 @@ config FREETZ_TYPE_FIRMWARE_INHAUS
 config FREETZ_TYPE_FIRMWARE_LABOR
 	bool
 	default y
-	depends on FREETZ_TYPE_FIRMWARE_LABOR_TEST
+	depends on FREETZ_TYPE_FIRMWARE_LABOR_TEST || FREETZ_TYPE_FIRMWARE_LABOR_BETA
 
 config FREETZ_TYPE_LANGUAGE
 	string
