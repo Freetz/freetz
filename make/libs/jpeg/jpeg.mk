@@ -1,8 +1,8 @@
-$(call PKG_INIT_LIB, 6b2)
-$(PKG)_LIB_VERSION:=62.0.0
+$(call PKG_INIT_LIB, 9c)
+$(PKG)_LIB_VERSION:=9.3.0
 $(PKG)_SOURCE:=jpegsrc.v$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=f453ae54062c14b0b8deec9c7de6cf58
-$(PKG)_SITE:=http://jpegclub.org/support/files
+$(PKG)_SOURCE_MD5:=93c62597eeef81a84d988bccbda1e990
+$(PKG)_SITE:=http://ijg.org/files
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libjpeg.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg.so.$($(PKG)_LIB_VERSION)
