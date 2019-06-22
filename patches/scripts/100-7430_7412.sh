@@ -7,6 +7,9 @@ fi
 
 echo1 "adapt firmware for 7412"
 
+cp -a "${FILESYSTEM_TK_DIR}/etc/default.Fritz_Box_HW209/avm/wlan_product.cfg" \
+     "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_HW218/avm/wlan_product.cfg"
+
 files="lib/modules/dectfw_secondlevel_441.hex"
 #files="\
 #  lib/modules/dectfw_secondlevel_441.hex \
