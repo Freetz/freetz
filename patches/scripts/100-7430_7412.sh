@@ -11,11 +11,14 @@ cp -a "${FILESYSTEM_TK_DIR}/etc/default.Fritz_Box_HW209/avm/wlan_product.cfg" \
      "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_HW218/avm/wlan_product.cfg"
 
 files="lib/modules/dectfw_secondlevel_441.hex"
-#files="\
-#  lib/modules/dectfw_secondlevel_441.hex \
-#  lib/modules/3.10.73/net/aae.ko"
 for i in $files; do
 	cp -a "${FILESYSTEM_TK_DIR}/$i" "${FILESYSTEM_MOD_DIR}/$i"
+done
+
+modules=" net/ath_hal.ko"
+#modules=" net/ath_hal.ko net/aae.ko net/asf.ko"
+for i in $modules; do
+	cp -a "${FILESYSTEM_TK_DIR}/lib/modules/3.10.73/$i" "${FILESYSTEM_MOD_DIR}/lib/modules/${FREETZ_KERNEL_VERSION_MODULES_SUBDIR}/$i"
 done
 
 echo2 "moving default config dir"
