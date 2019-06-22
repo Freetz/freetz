@@ -6,6 +6,8 @@ $(PKG)_SITE:=svn@https://ssl.bulix.org/svn/lcd4linux/trunk
 $(PKG)_BINARY:=$($(PKG)_DIR)/lcd4linux
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/lcd4linux
 
+$(PKG)_DEPENDS_ON += ncurses libgd jpeg libusb libusb1 libftdi
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += --with-x=no
 $(PKG)_CONFIGURE_OPTIONS += --with-drivers=all,!DPF,!LCDLinux,!LUIse,!RouterBoard,!serdisplib,!st2205,!VNC,!X11,!HD44780,!LPH7508,!M50530,!T6963,!Noritake,!T6963,!Sample
