@@ -1,0 +1,60 @@
+#!/bin/sh
+
+DAEMON=lcd4linux
+DAEMON_CHECK=lcd4linux
+DAEMON_LONG_NAME=LCD4linux
+. /etc/init.d/modlibrc
+
+
+start() {
+	[ -n "${LCD4LINUX_OUTFILE/ /}" ] && OUTPUT="-o $LCD4LINUX_OUTFILE"
+	modlib_startdaemon nice $DAEMON_BIN $OUTPUT $LCD4LINUX_CMDLINE
+}
+
+stop() {
+	killall $DAEMON_BIN 2>/dev/null
+	local c=0
+	while [ -n "$(pidof $DAEMON_BIN)" -a $c -lt 9 ]; do
+		let c++
+		sleep 1
+	done
+	[ -z "$(pidof $DAEMON_BIN)" ] || killall -9 $DAEMON_BIN 2>/dev/null
+}
+
+case $1 in
+	""|load)
+		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
+		[ ! -e "/tmp/flash/$DAEMON/$DAEMON.conf" ] && sed "s/^Display *'.*/Display 'Image'/" /etc/$DAEMON.conf.example > /etc/$DAEMON.conf
+		chmod 600 /etc/$DAEMON.conf
+
+		modreg file $DAEMON lcd4linux_conf 'lcd4linux.conf' 1 lcd4linux_conf
+		modreg cgi $DAEMON $DAEMON_LONG_NAME
+		modreg daemon $DAEMON
+
+		modlib_start $LCD4LINUX_ENABLED
+		;;
+	unload)
+		modunreg daemon $DAEMON
+		modunreg cgi $DAEMON
+		modunreg file $DAEMON
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
