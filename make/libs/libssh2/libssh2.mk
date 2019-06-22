@@ -1,8 +1,8 @@
-$(call PKG_INIT_LIB, libssh2-1.8.0)
+$(call PKG_INIT_LIB, 1.9.0)
 $(PKG)_LIB_VERSION:=1.0.1
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_CHECKSUM:=X
-$(PKG)_SITE:=git@https://github.com/libssh2/libssh2.git
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_SHA256:=d5fb8bd563305fd1074dda90bd053fb2d29fc4bce048d182f96eaa466dfadafd
+$(PKG)_SITE:=https://www.libssh2.org/download
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
