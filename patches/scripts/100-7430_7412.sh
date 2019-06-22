@@ -1,6 +1,19 @@
 isFreetzType 7412_7430 || return 0
+
+if [ -z "$FIRMWARE2" ]; then
+	echo "ERROR: no tk firmware" 1>&2
+	exit 1
+fi
+
 echo1 "adapt firmware for 7412"
 
+files="lib/modules/dectfw_secondlevel_441.hex"
+#files="\
+#  lib/modules/dectfw_secondlevel_441.hex \
+#  lib/modules/3.10.73/net/aae.ko"
+for i in $files; do
+	cp -a "${FILESYSTEM_TK_DIR}/$i" "${FILESYSTEM_MOD_DIR}/$i"
+done
 
 echo2 "moving default config dir"
 mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_HW218 \
