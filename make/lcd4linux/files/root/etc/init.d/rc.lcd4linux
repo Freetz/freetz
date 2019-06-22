@@ -24,7 +24,7 @@ stop() {
 case $1 in
 	""|load)
 		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
-		[ ! -e "/tmp/flash/$DAEMON/$DAEMON.conf" ] && sed "s/^Display *'.*/Display 'Image'/" /etc/$DAEMON.conf.example > /etc/$DAEMON.conf
+		[ ! -e "/tmp/flash/$DAEMON/$DAEMON.conf" ] && sed "s/^Display *'.*/Display 'Image'/" /etc/default.$DAEMON/$DAEMON.conf > /etc/$DAEMON.conf
 		chmod 600 /etc/$DAEMON.conf
 
 		modreg file $DAEMON lcd4linux_conf 'lcd4linux.conf' 1 lcd4linux_conf
