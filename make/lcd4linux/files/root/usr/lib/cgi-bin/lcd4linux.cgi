@@ -11,7 +11,7 @@ sec_begin '$(lang de:"Starttyp" en:"Start type")'
 cgi_print_radiogroup_service_starttype "enabled" "$LCD4LINUX_ENABLED" "" "" 0
 sec_end
 
-if [ "${LCD4LINUX_OUTFILE%.png}" != "$LCD4LINUX_OUTFILE" ]; then
+if [ "$(/mod/etc/init.d/rc.lcd4linux status)" == "running" -a "${LCD4LINUX_OUTFILE%.png}" != "$LCD4LINUX_OUTFILE" ]; then
 if [ "$LCD4LINUX_WEBENABLED" = "yes" -o "$LCD4LINUX_STATUSPAGE" = "yes" ]; then
 sec_begin '$(lang de:"Anzeigen" en:"Show")'
 
