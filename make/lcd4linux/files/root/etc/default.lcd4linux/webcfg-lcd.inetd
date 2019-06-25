@@ -1,0 +1,10 @@
+. /mod/etc/conf/lcd4linux.cfg
+inetdcfg_desc="lcd4linux webinterface"
+inetdcfg_port=$LCD4LINUX_WEB_PORT
+inetdcfg_sock=stream
+inetdcfg_proto=tcp$1
+inetdcfg_flags=nowait
+inetdcfg_user=root
+inetdcfg_exe=/usr/bin/webcfg-lcd
+inetdcfg_arg0=webcfg-lcd
+inetdcfg_args="-i"

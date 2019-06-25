@@ -5,13 +5,33 @@ DAEMON_CHECK=lcd4linux
 DAEMON_LONG_NAME=LCD4linux
 . /etc/init.d/modlibrc
 
+HTTPD_PID_LCD=/var/run/httpd_lcd.pid
+
+config() {
+	local SUBDAEMON=lcd
+	modlib_config httpd-$SUBDAEMON /mod/etc/httpd-${SUBDAEMON}.conf
+}
+
+stop_status() {
+	kill -9 "$(cat $HTTPD_PID_LCD 2>/dev/null)" 2>/dev/null
+	[ -x /mod/etc/init.d/rc.inetd ] && /mod/etc/init.d/rc.inetd config lcd4linux >/dev/null
+	modunreg status $DAEMON stats
+}
 
 start() {
-	[ -n "${LCD4LINUX_OUTFILE/ /}" ] && OUTPUT="-o $LCD4LINUX_OUTFILE"
+	stop_status
+	if [ "${LCD4LINUX_OUTFILE%.png}" != "$LCD4LINUX_OUTFILE" -a "$LCD4LINUX_WEBENABLED" = "yes" -a "$LCD4LINUX_WEB_INETD" != "yes" ]; then
+		webcfg-lcd -P $HTTPD_PID_LCD
+	fi
+	[ "$LCD4LINUX_OUTFILE" == "/tmp/lcd4linux.png" ] && rm -f /tmp/lcd4linux.png
+	[ "${LCD4LINUX_OUTFILE%.png}" != "$LCD4LINUX_OUTFILE" ] && OUTPUT="-o $LCD4LINUX_OUTFILE"
 	modlib_startdaemon nice $DAEMON_BIN $OUTPUT $LCD4LINUX_CMDLINE
+	[ -x /mod/etc/init.d/rc.inetd ] && //mod/etc/init.d/rc.inetd config $DAEMON
+	[ "${LCD4LINUX_OUTFILE%.png}" != "$LCD4LINUX_OUTFILE" -a "$LCD4LINUX_STATUSPAGE" = "yes" ] && modreg status $DAEMON $DAEMON_LONG_NAME stats
 }
 
 stop() {
+	stop_status
 	killall $DAEMON_BIN 2>/dev/null
 	local c=0
 	while [ -n "$(pidof $DAEMON_BIN)" -a $c -lt 9 ]; do
@@ -22,7 +42,11 @@ stop() {
 }
 
 case $1 in
+	config)
+		config
+		;;
 	""|load)
+		modlib_add_httpd_symlink lcd
 		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
 		[ ! -e "/tmp/flash/$DAEMON/$DAEMON.conf" ] && sed "s/^Display *'.*/Display 'Image'/" /etc/default.$DAEMON/$DAEMON.conf > /etc/$DAEMON.conf
 		chmod 600 /etc/$DAEMON.conf
@@ -51,8 +75,15 @@ case $1 in
 	status)
 		modlib_status
 		;;
+	status_webcfg-lcd)
+		if [ "${LCD4LINUX_OUTFILE%.png}" == "$LCD4LINUX_OUTFILE" -o "$LCD4LINUX_WEBENABLED" == "no" ]; then
+			echo 'stopped'
+		else
+			[ "$LCD4LINUX_WEB_INETD" = "yes" -a "$(modlib_status)" == "running" ] && echo 'inetd' || modlib_status
+		fi
+		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|status|config]" 1>&2
 		exit 1
 		;;
 esac
