@@ -1,14 +1,4 @@
 #!/bin/sh
-#by cuma
-
-
-. /mod/etc/conf/lcd4linux.cfg
-
-
-if [ "$LCD4LINUX_OUTFILE" != "/tmp/lcd4linux.png" ]; then
-	rm -f "/tmp/lcd4linux.png"
-	ln -s "$LCD4LINUX_OUTFILE" "/tmp/lcd4linux.png" 
-fi
 
 echo "<center>"
 echo "<br />"

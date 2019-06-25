@@ -23,7 +23,8 @@ start() {
 	if [ "${LCD4LINUX_OUTFILE%.png}" != "$LCD4LINUX_OUTFILE" -a "$LCD4LINUX_WEBENABLED" = "yes" -a "$LCD4LINUX_WEB_INETD" != "yes" ]; then
 		webcfg-lcd -P $HTTPD_PID_LCD
 	fi
-	[ "$LCD4LINUX_OUTFILE" == "/tmp/lcd4linux.png" ] && rm -f /tmp/lcd4linux.png
+	rm -f /tmp/lcd4linux.png
+	[ "$LCD4LINUX_OUTFILE" != "/tmp/lcd4linux.png" ] && ln -s "$LCD4LINUX_OUTFILE" "/tmp/lcd4linux.png"
 	[ "${LCD4LINUX_OUTFILE%.png}" != "$LCD4LINUX_OUTFILE" ] && OUTPUT="-o $LCD4LINUX_OUTFILE"
 	modlib_startdaemon nice $DAEMON_BIN $OUTPUT $LCD4LINUX_CMDLINE
 	[ -x /mod/etc/init.d/rc.inetd ] && //mod/etc/init.d/rc.inetd config $DAEMON
