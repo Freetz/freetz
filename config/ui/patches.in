@@ -1094,6 +1094,14 @@ config FREETZ_MODIFY_COUNTER
 	help
 		Converts counter hours to days and traffic MB to GB.
 
+config FREETZ_PATCH_MODFS_BOOT_MANAGER
+	bool "Add boot manager"
+	depends on FREETZ_AVM_VERSION_06_5X_MIN
+	depends on FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
+	default n
+	help
+		Extends the "reboot" page of FRITZ!OS to select system version and branding.
+
 if FREETZ_AVM_HAS_USB_HOST
 comment "USB patches --------------------"
 
