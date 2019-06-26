@@ -20,15 +20,17 @@ stop_status() {
 
 start() {
 	stop_status
-	if [ "${LCD4LINUX_OUTFILE%.png}" != "$LCD4LINUX_OUTFILE" -a "$LCD4LINUX_WEBENABLED" = "yes" -a "$LCD4LINUX_WEB_INETD" != "yes" ]; then
+	if [ "$LCD4LINUX_OUTPUT" == "yes" -a "$LCD4LINUX_WEBENABLED" = "yes" -a "$LCD4LINUX_WEB_INETD" != "yes" ]; then
 		webcfg-lcd -P $HTTPD_PID_LCD
 	fi
-	rm -f /tmp/lcd4linux.png
-	[ "$LCD4LINUX_OUTFILE" != "/tmp/lcd4linux.png" ] && ln -s "$LCD4LINUX_OUTFILE" "/tmp/lcd4linux.png"
-	[ "${LCD4LINUX_OUTFILE%.png}" != "$LCD4LINUX_OUTFILE" ] && OUTPUT="-o $LCD4LINUX_OUTFILE"
+	if [ "$LCD4LINUX_OUTPUT" == "yes" ]; then
+		rm -f /tmp/lcd4linux.png
+		[ "$LCD4LINUX_OUTFILE" != "/tmp/lcd4linux.png" ] && ln -s "$LCD4LINUX_OUTFILE" "/tmp/lcd4linux.png"
+		OUTPUT="-o $LCD4LINUX_OUTFILE"
+	fi
 	modlib_startdaemon nice $DAEMON_BIN $OUTPUT $LCD4LINUX_CMDLINE
 	[ -x /mod/etc/init.d/rc.inetd ] && //mod/etc/init.d/rc.inetd config $DAEMON
-	[ "${LCD4LINUX_OUTFILE%.png}" != "$LCD4LINUX_OUTFILE" -a "$LCD4LINUX_STATUSPAGE" = "yes" ] && modreg status $DAEMON $DAEMON_LONG_NAME stats
+	[ "$LCD4LINUX_OUTPUT" == "yes" -a "$LCD4LINUX_STATUSPAGE" = "yes" ] && modreg status $DAEMON $DAEMON_LONG_NAME stats
 }
 
 stop() {
@@ -77,7 +79,7 @@ case $1 in
 		modlib_status
 		;;
 	status_webcfg-lcd)
-		if [ "${LCD4LINUX_OUTFILE%.png}" == "$LCD4LINUX_OUTFILE" -o "$LCD4LINUX_WEBENABLED" == "no" ]; then
+		if [ "$LCD4LINUX_OUTPUT" != "yes" -o "$LCD4LINUX_WEBENABLED" == "no" ]; then
 			echo 'stopped'
 		else
 			[ "$LCD4LINUX_WEB_INETD" = "yes" -a "$(modlib_status)" == "running" ] && echo 'inetd' || modlib_status

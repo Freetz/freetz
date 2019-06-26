@@ -3,15 +3,18 @@
 . /usr/lib/libmodcgi.sh
 . /usr/lib/libmodredir.sh
 
+check "$LCD4LINUX_OUTPUT" yes:output
 check "$LCD4LINUX_STATUSPAGE" yes:statuspage
 check "$LCD4LINUX_WEBENABLED" yes:webenabled
 check "$LCD4LINUX_WEB_INETD" yes:web_inetd
+
 
 sec_begin '$(lang de:"Starttyp" en:"Start type")'
 cgi_print_radiogroup_service_starttype "enabled" "$LCD4LINUX_ENABLED" "" "" 0
 sec_end
 
-if [ "$(/mod/etc/init.d/rc.lcd4linux status)" == "running" -a "${LCD4LINUX_OUTFILE%.png}" != "$LCD4LINUX_OUTFILE" ]; then
+
+if [ "$(/mod/etc/init.d/rc.lcd4linux status)" == "running" -a "$LCD4LINUX_OUTPUT" == "yes" ]; then
 if [ "$LCD4LINUX_WEBENABLED" = "yes" -o "$LCD4LINUX_STATUSPAGE" = "yes" ]; then
 sec_begin '$(lang de:"Anzeigen" en:"Show")'
 
@@ -35,19 +38,33 @@ sec_end
 fi
 fi
 
+
 sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
+
 cat << EOF
+<p>
+<input type="hidden" name="output" value="no">
+<input id="o" type="checkbox" name="output" value="yes"$output_chk>
+<label for="o">$(lang de:"Schreibe Ausgabedatei" en:"Write output file")</label>
+</p>
+EOF
 
-<h2>$(lang de:"Ausgabedatei (leer f&uuml;r keine):" en:"Out file (empty for none):")</h2>
+if [ "$LCD4LINUX_OUTPUT" == "yes" ]; then
+cat << EOF
+<h2>$(lang de:"Ausgabedatei (png):" en:"Out file (png):")</h2>
 <p><input type="text" name="outfile" size="55" maxlength="250" value="$(html "$LCD4LINUX_OUTFILE")"></p>
+EOF
+fi
 
+cat << EOF
 <h2>$(lang de:"Optionale Parameter (au&szlig;er -o):" en:"Optional parameters (except -o):")</h2>
 <p><input type="text" name="cmdline" size="55" maxlength="250" value="$(html "$LCD4LINUX_CMDLINE")"></p>
-
 EOF
+
 sec_end
 
-if [ "${LCD4LINUX_OUTFILE%.png}" != "$LCD4LINUX_OUTFILE" ]; then
+
+if [ "$LCD4LINUX_OUTPUT" == "yes" ]; then
 sec_begin '$(lang de:"Ausgabe" en:"Output")'
 
 cat << EOF
