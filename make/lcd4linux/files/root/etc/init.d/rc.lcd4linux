@@ -28,7 +28,7 @@ start() {
 		[ "$LCD4LINUX_OUTFILE" != "/tmp/lcd4linux.png" ] && ln -s "$LCD4LINUX_OUTFILE" "/tmp/lcd4linux.png"
 		OUTPUT="-o $LCD4LINUX_OUTFILE"
 	fi
-	modlib_startdaemon nice $DAEMON_BIN $OUTPUT $LCD4LINUX_CMDLINE
+	modlib_startdaemon $(which nice) "$(which $DAEMON_BIN)" $OUTPUT $LCD4LINUX_CMDLINE
 	[ -x /mod/etc/init.d/rc.inetd ] && //mod/etc/init.d/rc.inetd config $DAEMON
 	[ "$LCD4LINUX_OUTPUT" == "yes" -a "$LCD4LINUX_STATUSPAGE" = "yes" ] && modreg status $DAEMON $DAEMON_LONG_NAME stats
 }

@@ -14,8 +14,8 @@ $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += --with-x=no
-$(PKG)_CONFIGURE_OPTIONS += --with-drivers=all,!DPF,!LCDLinux,!LUIse,!RouterBoard,!serdisplib,!st2205,!VNC,!X11,!HD44780,!LPH7508,!M50530,!T6963,!Noritake,!T6963,!Sample
-$(PKG)_CONFIGURE_OPTIONS += --with-plugins=all,!dbus,!gps,!mpd,!mpris_dbus,!mysql,!netinfo,!qnaplog,!wireless
+$(PKG)_CONFIGURE_OPTIONS += --with-drivers=all,!LCDLinux,!LUIse,!RouterBoard,!serdisplib,!st2205,!VNC,!X11,!HD44780,!LPH7508,!M50530,!T6963,!Noritake,!T6963,!Sample
+$(PKG)_CONFIGURE_OPTIONS += --with-plugins=all,!dbus,!gps,!mpd,!mpris_dbus,!mysql,!netinfo,!qnaplog,!raspi,!wireless
 
 #$(PKG)_CONFIGURE_POST_CMDS += $(SED) -i "s,.*AM_V_CCLD.*.\(.\).lcd4linux_LDADD.*,& \1(EXTRA_LIBS)," Makefile;
 #$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_LCD4LINUX_STATIC

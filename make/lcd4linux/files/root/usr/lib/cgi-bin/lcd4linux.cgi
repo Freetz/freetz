@@ -51,7 +51,7 @@ EOF
 
 if [ "$LCD4LINUX_OUTPUT" == "yes" ]; then
 cat << EOF
-<h2>$(lang de:"Ausgabedatei (png):" en:"Out file (png):")</h2>
+$(lang de:"Ausgabedatei (png):" en:"Out file (png):")
 <p><input type="text" name="outfile" size="55" maxlength="250" value="$(html "$LCD4LINUX_OUTFILE")"></p>
 EOF
 fi
