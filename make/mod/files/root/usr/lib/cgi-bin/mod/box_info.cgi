@@ -167,7 +167,15 @@ fi
 
 sec_end
 
+donet_val="$(cgi_param net)"
+if [ "$donet_val" != "0" ]; then
 sec_begin '$(lang de:"Netzwerk" en:"Network")'
+
+if [ "${donet_val%1}" == "$donet_val" ]; then
+donet_arg='?net=1'
+donet_msg='$(lang de:"Sektion anzeigen" en:"Show section")'
+else
+donet_msg='$(lang de:"Sektion ausblenden" en:"Hide section")'
 
 host_name=$(hostname)
 ext_name="$(sed 's/.*[ \t]//g' /var/tmp/ddnsstat.txt 2>/dev/null | sort -u)"
@@ -203,7 +211,11 @@ echo "<dt>WLAN</dt><dd><small>$mac_wlan</small></dd>"
 [ -n "$$mac_wlan2" ] && echo "<dt>WLAN2</dt><dd><small>$mac_wlan2</small></dd>"
 echo "</dl></dd></dl>"
 
+fi
+[ "${donet_val#0}" == "$donet_val" ] && echo "<form class='btn' method='post'><input type='reset' value='$donet_msg' onclick='window.location=\"$(href status mod box_info)$donet_arg\" '></form>"
+
 sec_end
+fi
 
 avsar_ver=/proc/avalanche/avsar_ver
 if [ -r "$avsar_ver" ]; then
