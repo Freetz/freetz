@@ -136,7 +136,7 @@ stop_helper() {
 	for pkg in $*; do
 		[ "$pkg" = mod ] && continue
 		local rc="/etc/init.d/rc.$pkg"
-		[ -x "$rc" ] && log "$pkg: $($rc stop)"
+		[ -x "$rc" ] && log "$($rc stop | sed "s,^,$pkg: ,g")"
 	done
 }
 
