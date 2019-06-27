@@ -43,6 +43,14 @@ cat << EOF
 EOF
 sec_end
 
+sec_begin '$(lang de:"Allgemeine Optionen" en:"Global options")'
+cat << EOF
+<p>$(lang de:"Maximale Anzahl gepufferter Zeilen beim Loggen" en:"Maximum count of buffered lines on logging") (0-100): <input type="text" name="log_async" size="5" maxlength="3" value="$(html "$DNSMASQ_LOG_ASYNC")"></p>
+<h2>$(lang de:"Zus&auml;tzliche Kommandozeilen-Optionen (f&uuml;r Experten)" en:"Additional command-line options (for experts)"):</h2>
+<p>$(lang de:"Optionen" en:"Options"): <input type="text" name="options" size="55" maxlength="255" value="$(html "$DNSMASQ_OPTIONS")"></p>
+EOF
+sec_end
+
 sec_begin '$(lang de:"DNS Server" en:"DNS server")'
 cat << EOF
 <h2>$(lang de:"Der DNS Server ist gebunden an" en:"The DNS server is listening on"):</h2>
@@ -51,21 +59,24 @@ cat << EOF
 <p>
 <input type="hidden" name="boguspriv" value="no">
 <input id="bogus1" type="checkbox" name="boguspriv" value="yes"$boguspriv_chk><label for="bogus1"> $(lang de:"Reverse DNS-Anfragen f&uuml;r private IP-Adressen (RFC1918) nicht an andere DNS-Server (z.B. im VPN) weiterleiten." en:"Do not forward reverse DNS lookups for private IP address ranges (RFC1918).")</label><br>
+</p>
+<p>
 <input type="hidden" name="stop_dns_rebind" value="no">
 <input id="dnsrebind1" type="checkbox" name="stop_dns_rebind" value="yes"$stop_dns_rebind_chk><label for="dnsrebind1"> $(lang de:"Adressen von Upstream Nameservern ablehnen, wenn sie in privaten IP-Bereichen sind." en:"Reject addresses from upstream nameservers which are in private IP ranges.")</label><br>
+</p>
 EOF
 
 if [ "$FREETZ_PACKAGE_DNSMASQ_WITH_DNSSEC" = "y" ]; then
 cat << EOF
+<p>
 <input type="hidden" name="dnssec" value="no">
 <input id="dnssec1" type="checkbox" name="dnssec" value="yes"$dnssec_chk><label for="dnssec1"> $(lang de:"DNSSEC-Validierungen durchf&uuml;hren und DNSSEC-Daten cachen." en:"Validate DNS replies and cache DNSSEC data.")</label><br>
+</p>
 EOF
 fi
 
 cat << EOF
-<br>
-$(lang de:"Puffer f&uuml;r asynchrones Logging (Zeilen)" en:"Buffer for ansynchronous logging (lines)") (min 10 / max 100): <input type="text" name="log_async" size="5" maxlength="3" value="$(html "$DNSMASQ_LOG_ASYNC")">
-<br>
+<p>
 <input type="hidden" name="log_queries" value="no">
 <input id="logq1" type="checkbox" name="log_queries" value="yes"$log_queries_chk><label for="logq1"> $(lang de:"Namensaufl&ouml;sung loggen." en:"Log name resolution.")</label><br>
 </p>
@@ -82,8 +93,6 @@ echo 'servercfg.dns2' | ar7cfgctl -s
 cat << EOF
 </p>
 <p>$(lang de:"zus&auml;tzlich diese Upstream Nameserver nutzen (durch Leerzeichen getrennt)" en:"Use these upstream nameservers additionally (separated by space)"): <input type="text" name="upstream" size="55" maxlength="255" value="$(html "$DNSMASQ_UPSTREAM")"></p>
-<h2>$(lang de:"Zus&auml;tzliche Kommandozeilen-Optionen (f&uuml;r Experten)" en:"Additional command-line options (for experts)"):</h2>
-<p>$(lang de:"Optionen" en:"Options"): <input type="text" name="options" size="55" maxlength="255" value="$(html "$DNSMASQ_OPTIONS")"></p>
 EOF
 sec_end
 

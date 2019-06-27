@@ -6,7 +6,7 @@
 echo "domain-needed"
 
 #set asynchronous logging
-echo "log-async${DNSMASQ_LOG_ASYNC:+=$DNSMASQ_LOG_ASYNC}"
+[ "$DNSMASQ_LOG_ASYNC" -ge 0 2>/dev/null ] && echo "log-async=$DNSMASQ_LOG_ASYNC" || echo "log-async"
 
 #don't read /etc/resolv.conf, it's pointing local. but allow user-defined files
 grep -i "^resolv-file=" /tmp/flash/dnsmasq/dnsmasq.extra -q 2>/dev/null || echo "no-resolv"
