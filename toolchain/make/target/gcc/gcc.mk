@@ -61,6 +61,11 @@ GCC_WITH_HOST_MPFR  = --with-mpfr=$(MPFR_HOST_DESTDIR)
 GCC_WITH_HOST_MPC   = --with-mpc=$(MPC_HOST_DESTDIR)
 endif
 
+# --with-isl is available since gcc-4.8.x, exclude all versions before
+ifneq ($(or $(FREETZ_TARGET_GCC_4_6),$(FREETZ_TARGET_GCC_4_7)),y)
+GCC_WITH_HOST_ISL   = --with-isl=no
+endif
+
 GCC_EXTRA_MAKE_OPTIONS := MAKEINFO=true
 
 #
@@ -131,6 +136,7 @@ $(GCC_BUILD_DIR1)/.configured: $(GCC_DIR)/.unpacked $(GCC_INITIAL_PREREQ) | binu
 		$(GCC_WITH_HOST_GMP) \
 		$(GCC_WITH_HOST_MPFR) \
 		$(GCC_WITH_HOST_MPC) \
+		$(GCC_WITH_HOST_ISL) \
 		$(GCC_COMMON_CONFIGURE_OPTIONS) \
 	);
 	touch $@
@@ -189,6 +195,7 @@ $(GCC_BUILD_DIR2)/.configured: $(GCC_DIR)/.unpacked $(GCC_STAGING_PREREQ) | binu
 		$(GCC_WITH_HOST_GMP) \
 		$(GCC_WITH_HOST_MPFR) \
 		$(GCC_WITH_HOST_MPC) \
+		$(GCC_WITH_HOST_ISL) \
 		$(GCC_COMMON_CONFIGURE_OPTIONS) \
 	);
 	touch $@

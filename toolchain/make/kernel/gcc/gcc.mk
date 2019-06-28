@@ -24,6 +24,11 @@ GCC_KERNEL_WITH_HOST_MPFR  = --with-mpfr=$(MPFR_HOST_DESTDIR)
 GCC_KERNEL_WITH_HOST_MPC   = --with-mpc=$(MPC_HOST_DESTDIR)
 endif
 
+# --with-isl is available since gcc-4.8.x, exclude all versions before
+ifneq ($(or $(FREETZ_KERNEL_GCC_3_4),$(FREETZ_KERNEL_GCC_4_6),$(FREETZ_KERNEL_GCC_4_7)),y)
+GCC_KERNEL_WITH_HOST_ISL   = --with-isl=no
+endif
+
 GCC_KERNEL_EXTRA_MAKE_OPTIONS := MAKEINFO=true
 
 gcc-kernel-source: $(DL_DIR)/$(GCC_KERNEL_SOURCE)
@@ -63,6 +68,7 @@ $(GCC_KERNEL_BUILD_DIR)/.configured: $(GCC_KERNEL_DIR)/.unpacked $(GCC_KERNEL_IN
 		$(GCC_KERNEL_WITH_HOST_GMP) \
 		$(GCC_KERNEL_WITH_HOST_MPFR) \
 		$(GCC_KERNEL_WITH_HOST_MPC) \
+		$(GCC_KERNEL_WITH_HOST_ISL) \
 		--disable-nls \
 	);
 	touch $@
