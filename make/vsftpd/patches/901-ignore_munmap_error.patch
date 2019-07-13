@@ -1,0 +1,12 @@
+--- secbuf.c    2008-02-02 02:30:41.000000000 +0100
++++ secbuf.c    2019-01-14 20:00:38.265565570 +0100
+@@ -51,7 +51,8 @@
+    */
+   *((unsigned int*)p_mmap) = round_up;
+   p_no_access_page = p_mmap;
+-  vsf_sysutil_memprotect(p_no_access_page, page_size, kVSFSysUtilMapProtNone);
++  /* fix issue with MIPS SCACHE on MT7621 (and no sense to hide value of mapped block size) */
++  vsf_sysutil_memprotect(p_no_access_page, page_size, kVSFSysUtilMapProtReadOnly);
+
+   p_mmap += page_size;
+   if (page_offset)
