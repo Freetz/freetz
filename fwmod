@@ -1435,10 +1435,14 @@ if [ "$DO_MOD" -gt 0 ]; then
 					for tagging_file in $(find "$d" -name "$tagging_arg"); do
 						echo2 "${tagging_file}"
 						[ "${tagging_file}" != "${tagging_file%svg}" ] && tagging_temp="${tagging_file%svg}png" || tagging_temp=""
-						[ -n "$tagging_temp" ] && convert -compress NONE -background NONE -resize 100x80 "$tagging_file" "$tagging_temp"
+						if [ -n "$tagging_temp" ]; then
+							#convert -compress NONE -background NONE -resize 100x80 "$tagging_file" "$tagging_temp"
+							inkscape --without-gui "$tagging_file" --export-png="$tagging_temp" -w 100 -h 80 -y 0 &>/dev/null
+							[ $? -ne 0 ] && error 1 "tagging failed on converting, is inkscape installed?"
+						fi
 						composite -dissolve 100% -gravity $tagging_pos -geometry $tagging_geo -quality 100 \
 						  "${TAGGING_DIR}/${FREETZ_TAGGING_STRING}.png" ${tagging_temp:-$tagging_file} ${tagging_temp:-$tagging_file}
-						[ $? -ne 0 ] && error 1 "tagging failed while processing ${tagging_file#${FILESYSTEM_MOD_DIR}/}"
+						[ $? -ne 0 ] && error 1 "tagging failed on compositing, is imagemagick installed?"
 						[ -n "$tagging_temp" ] && tagging_ren="$tagging_ren ${tagging_file##*/}" && rm -f "${tagging_file}"
 					done
 					[ -z "$tagging_temp" ] && continue
