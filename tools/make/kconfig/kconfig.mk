@@ -1,4 +1,4 @@
-KCONFIG_VERSION:=v5.1
+KCONFIG_VERSION:=v5.2
 KCONFIG_SOURCE:=kconfig-$(KCONFIG_VERSION).tar.xz
 KCONFIG_SITE:=git_archive@git://repo.or.cz/linux.git,scripts/basic,scripts/kconfig,scripts/Kbuild.include,scripts/Makefile.build,scripts/Makefile.host,scripts/Makefile.lib,Documentation/kbuild/kconfig-language.txt,Documentation/kbuild/kconfig-macro-language.txt,Documentation/kbuild/kconfig.txt
 KCONFIG_DIR:=$(TOOLS_SOURCE_DIR)/kconfig-$(KCONFIG_VERSION)
