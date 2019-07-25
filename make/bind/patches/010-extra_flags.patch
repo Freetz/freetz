@@ -11,7 +11,7 @@
  STD_CINCLUDES =	@STD_CINCLUDES@
  STD_CDEFINES =	@STD_CDEFINES@
  STD_CWARNINGS =	@STD_CWARNINGS@
-@@ -186,24 +187,24 @@
+@@ -193,24 +194,24 @@
  ### See bin/check/Makefile.in for a complete example of the use of LIBS0.
  ###
  FINALBUILDCMD = if [ X"${MKSYMTBL_PROGRAM}" = X -o X"$${MAKE_SYMTABLE:-${ALWAYS_MAKE_SYMTABLE}}" = X ] ; then \
@@ -40,7 +40,7 @@
  		-o $@tmp2 $${BASEOBJS} $@-symtbl.@O@ $${LIBS0} ${NOSYMLIBS}; \
  		${MKSYMTBL_PROGRAM} ${top_srcdir}/util/mksymtbl.pl \
  		-o $@-symtbl2.c $@tmp2; \
-@@ -217,7 +218,7 @@
+@@ -224,7 +225,7 @@
  			-o $@-symtbl.c $@tmp2 || exit 1; \
  			$(MAKE) $@-symtbl.@O@ || exit 1; \
  			${LIBTOOL_MODE_LINK} ${PURIFY} ${CC} ${ALL_CFLAGS} \
