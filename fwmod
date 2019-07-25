@@ -417,6 +417,7 @@ function image_details() {
 	local AVM_FW_LABOR
 	#AVM_FW_REVISION
 	local AVM_FW_DATE
+	local AVM_FW_CYCLE
 	#SOURCE_IMAGE_DETAILS
 	#
 	AVM_FW_PRODUCT="$(sed -rn 's/Annex./Annex/;s/export CONFIG_PRODUKT_NAME=".*([0-9]{3}[0-9V].*)"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | head -n1)" # 4-digits in /etc/init.d/rc.conf
@@ -442,8 +443,9 @@ function image_details() {
 	[ -z "$AVM_FW_REVISION" ] && AVM_FW_REVISION="$(sed -rn 's/^export CONFIG_BUILDNUMBER=\"([^\"]*)\"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf)" # latest firmware
 	AVM_FW_DATE="$(sed -rn 's/^export FIRMWARE_DATE="(.*)"/\1/p' ${FILESYSTEM_DIR}/etc/version)" # older firmware
 	[ -z "$AVM_FW_DATE" ] && AVM_FW_DATE="$(date -d"$(stat -c '%y' ${FILESYSTEM_DIR}/etc/version)" "+%d.%m.%Y %H:%M:%S")" # newer firmware
+	AVM_FW_CYCLE="${FREETZ_AVM_PROP_CYCLE:+ [$FREETZ_AVM_PROP_CYCLE]}"
 	#
-	SOURCE_IMAGE_DETAILS="${AVM_FW_PRODUCT/ /-}${AVM_FW_LANGUAGE} ${AVM_FW_MAJOR}.${AVM_FW_VERSION}${AVM_FW_LABOR} rev${AVM_FW_REVISION} (${AVM_FW_DATE})"
+	SOURCE_IMAGE_DETAILS="${AVM_FW_PRODUCT/ /-}${AVM_FW_LANGUAGE} ${AVM_FW_MAJOR}.${AVM_FW_VERSION}${AVM_FW_LABOR} rev${AVM_FW_REVISION}$AVM_FW_CYCLE (${AVM_FW_DATE})"
 }
 
 echo
