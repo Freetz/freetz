@@ -120,6 +120,7 @@ image() {
 		rm -rf ${img##*/}.unp
 	else
 		tar -xif $img \
+		  $(printf " --wildcards ./var/content"                        ) \
 		  $(printf " --wildcards ./%s/*.image"        "${probeDirs[@]}") \
 		  $(printf " --wildcards ./%s/plugins.update" "${probeDirs[@]}") \
 		  >/dev/null 2>&1
@@ -165,6 +166,9 @@ image() {
 		echo -n > "$nfo"
 		SIZE_K1="$(stat -c %s ${d}/kernel.image)"
 		SIZE_F1="$(stat -c %s ${d}/filesystem.image)"
+
+		# get additional details
+		[ -e ./var/content ] && grep '^Releasecycle=' ./var/content >> "$nfo"
 
 		# remove TI checksum and concatenate kernel & filesystem images
 		for f in ${d}/kernel.image ${d}/filesystem.image; do
