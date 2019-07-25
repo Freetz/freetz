@@ -148,7 +148,7 @@ endif
 all: step
 world: check-dot-config-uptodateness $(DL_DIR) $(BUILD_DIR) $(KERNEL_TARGET_DIR) $(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT) $(TOOLCHAIN_BUILD_DIR)
 
-KCONFIG_TARGETS:=menuconfig menuconfig-single config oldconfig oldnoconfig allnoconfig allyesconfig randconfig listnewconfig config-compress
+KCONFIG_TARGETS:=menuconfig menuconfig-single config oldconfig olddefconfig allnoconfig allyesconfig randconfig listnewconfig config-compress
 
 -include $(TOPDIR)/.config
 
@@ -397,8 +397,8 @@ config-compress: .config.compressed
 #	@echo "Compressed configuration written to $@."; \
 #	echo  "It is equivalent to .config, but contains only non-default user selections."
 
-oldconfig oldnoconfig allnoconfig allyesconfig randconfig listnewconfig: config-cache $(CONFIG)/conf
-	@$(CONFIG)/conf --$@ $(CONFIG_IN_CACHE)
+oldconfig olddefconfig allnoconfig allyesconfig randconfig listnewconfig: config-cache $(CONFIG)/conf
+	@$(CONFIG)/conf --$@ $(CONFIG_IN_CACHE) && touch .config
 
 config-cache: $(CONFIG_IN_CACHE)
 
@@ -432,7 +432,7 @@ $(1):
 	$$(SED) -i -r 's/^(FREETZ_($(3))_)/# \1/' .config; \
 	echo "DONE"; \
 	echo -n "Step 2: reactivate only elements required by selected packages or active by default ... "; \
-	make oldnoconfig > /dev/null; \
+	make olddefconfig > /dev/null; \
 	echo "DONE"; \
 	echo "The following elements have been deactivated:"; \
 	diff -U 0 .config_tmp .config | $$(SED) -rn 's/^\+# ([^ ]+) is not set$$$$/  \1/p'; \
@@ -498,9 +498,9 @@ check-dot-config-uptodateness: $(CONFIG_IN_CACHE)
 		echo -n -e $(_Y); \
 		echo "ERROR: You have either updated to a newer revision or changed one of"; \
 		echo "       the menuconfig files manually since last modifying your config."; \
-		echo "       You should either run 'make oldconfig' once before building again"; \
-		echo "       or 'make menuconfig' and change the config (otherwise it will not"; \
-		echo "       be saved and you will see this message again)."; \
+		echo "       You should either run 'make olddefconfig' once before building"; \
+		echo "       again or 'make menuconfig' and change the config (otherwise it"; \
+		echo "       will not be saved and you will see this message again)."; \
 		echo -n -e $(_N); \
 		exit 3; \
 	fi
