@@ -397,7 +397,10 @@ config-compress: .config.compressed
 #	@echo "Compressed configuration written to $@."; \
 #	echo  "It is equivalent to .config, but contains only non-default user selections."
 
-oldconfig olddefconfig allnoconfig allyesconfig randconfig listnewconfig: config-cache $(CONFIG)/conf
+listnewconfig: config-cache $(CONFIG)/conf
+	@$(CONFIG)/conf --listnewconfig $(CONFIG_IN_CACHE)
+
+oldconfig olddefconfig allnoconfig allyesconfig randconfig: config-cache $(CONFIG)/conf
 	@$(CONFIG)/conf --$@ $(CONFIG_IN_CACHE) && touch .config
 
 config-cache: $(CONFIG_IN_CACHE)
@@ -496,11 +499,10 @@ release: distclean
 check-dot-config-uptodateness: $(CONFIG_IN_CACHE)
 	@if [ -e .config -a $(CONFIG_IN_CACHE) -nt .config ]; then \
 		echo -n -e $(_Y); \
-		echo "ERROR: You have either updated to a newer revision or changed one of"; \
-		echo "       the menuconfig files manually since last modifying your config."; \
-		echo "       You should either run 'make olddefconfig' once before building"; \
-		echo "       again or 'make menuconfig' and change the config (otherwise it"; \
-		echo "       will not be saved and you will see this message again)."; \
+		echo "ERROR: The .config file needs to be updated, because"; \
+		echo "       you have either updated to a newer revision"; \
+		echo "       or altered one of the menuconfig files manually."; \
+		echo "       Please run 'make olddefconfig'."; \
 		echo -n -e $(_N); \
 		exit 3; \
 	fi
