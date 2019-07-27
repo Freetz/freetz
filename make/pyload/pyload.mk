@@ -6,9 +6,6 @@ $(PKG)_SITE:=git@$($(PKG)_GIT_REPOSITORY)
 
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/opt/pyLoad/pyLoadCore.py
 
-$(PKG)_BUILD_PREREQ += git
-$(PKG)_BUILD_PREREQ_HINT := Hint: on Debian-like systems this binary is provided by the git package (sudo apt-get install git)
-
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYLOAD_VERSION_LATEST_TESTED
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PYLOAD_VERSION_LATEST_GIT
 

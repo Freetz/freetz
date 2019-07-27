@@ -2,9 +2,6 @@ $(call PKG_INIT_BIN, fa8646daeb)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SITE:=git://git.ffmpeg.org/rtmpdump.git
 
-$(PKG)_BUILD_PREREQ += git
-$(PKG)_BUILD_PREREQ_HINT := Hint: on Debian-like systems this binary is provided by the git package (sudo apt-get install git)
-
 $(PKG)_BINARIES_ALL := rtmpdump rtmpgw
 $(PKG)_BINARIES := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_BINARIES_ALL))
 $(PKG)_BINARIES_BUILD_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/%)

@@ -10,9 +10,6 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/proxychains4
 $(PKG)_MODULE:=$($(PKG)_DIR)/libproxychains4.so
 $(PKG)_TARGET_MODULE := $($(PKG)_DEST_LIBDIR)/libproxychains4.so
 
-$(PKG)_BUILD_PREREQ += git
-$(PKG)_BUILD_PREREQ_HINT := Hint: on Debian-like systems this binary is provided by the git package (sudo apt-get install git)
-
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PROXYCHAINS_NG_VERSION_STABLE
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PROXYCHAINS_NG_VERSION_LATEST
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PROXYCHAINS_NG_VERSION_CUSTOM
