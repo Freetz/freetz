@@ -738,7 +738,7 @@ function sizeinfo()
 			local sfile="${1}/.sizeinfo.MD5_${shash/ */}.BS_${FILESYSTEM_BLOCKSIZE_KB}"
 			shift
 			;;
-		add)	#addons: one directory
+		dir)	#addons/plugins: one directory
 			local shash="$(find $1 -type f -exec ls -l {} ';' | $MD5SUM)"
 			local sfile="${SIZEINFO_CACHEDIR}/${1##*/}.sizeinfo.MD5_${shash/ */}.BS_${FILESYSTEM_BLOCKSIZE_KB}"
 			;;
@@ -1017,7 +1017,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 		for i in `find "${AVMPLUGINS_MOD_DIR}" -maxdepth 1 -type d -name var -prune -false , -type d -name "plugin-*" 2>/dev/null`; do
 			AVMPLUGIN="${i##*plugin-}"
 			if [ "$(eval "echo \"\$FREETZ_AVMPLUGINS_$(echo "$AVMPLUGIN" | tr '[:lower:]' '[:upper:]')\"")" == "y" ]; then
-				echo1 "$AVMPLUGIN plugin"
+				sizeinfo "$AVMPLUGIN"
+				sizeinfo dir "$i"
 				cp -a "${AVMPLUGINS_MOD_DIR}/plugin-${AVMPLUGIN}" "${AVMPLUGINS_FILESYSTEM_MOD_DIR}/plugin-${AVMPLUGIN}"
 				ln -s "/usr/share/avmplugins/plugin-${AVMPLUGIN}" "${VARTAR_MOD_DIR}/var/plugin-${AVMPLUGIN}"
 				for module in `cd "${AVMPLUGINS_FILESYSTEM_MOD_DIR}/plugin-${AVMPLUGIN}";find -type f -name "*.ko"`; do
@@ -1279,7 +1280,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		if ! grep -q "^$pkg_name$" "${VARTAR_MOD_DIR}/var/mod/etc/static.pkg" >/dev/null 2>&1; then
 			echo "$pkg_name" >> "${VARTAR_MOD_DIR}/var/mod/etc/static.pkg"
 		fi
-		sizeinfo add "${ADDON_DIR}/${pkg}"
+		sizeinfo dir "${ADDON_DIR}/${pkg}"
 	done
 
 	KERNEL_ID="${FREETZ_SYSTEM_TYPE}${FREETZ_SYSTEM_TYPE_CORE_SUFFIX}-${FREETZ_AVM_SOURCE_ID}"
