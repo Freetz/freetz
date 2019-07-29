@@ -1414,7 +1414,10 @@ EOF
 					if [ "$pdev" != x ]; then
 						if [ "$pdev" == w -o "$pdev" == s ]; then
 							grep -vE "^[ \t]*$|^#" /tmp/flash/rrdstats/smarthome.alias 2>/dev/null | while IFS='|' read ain name; do
-								[ "$(sed -n "s/^$ain|//p" /tmp/flash/rrdstats/smarthome.kinds)" == "HKR" ] && continue
+								case "$(sed -n "s/^$ain|//p" /tmp/flash/rrdstats/smarthome.kinds)" in
+									AKT|PLC) ;;
+									*) continue ;;
+								esac
 								gen_main "aha_pdev" "$name" "$periodnn" "$ain" "$pdev"
 							done
 						fi

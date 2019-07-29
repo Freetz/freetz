@@ -9,6 +9,7 @@ echo "<p>$(lang de:"Aktualisiere SmartHome" en:"Refreshing SmartHome") ... $(lan
 echo -n '<pre>'
 {
     mkdir -p /tmp/flash/rrdstats
+    echo -n | tee /tmp/flash/rrdstats/smarthome.alias > /tmp/flash/rrdstats/smarthome.kinds
     /usr/bin/aha.sh alias
     cat /tmp/flash/rrdstats/smarthome.alias 2>/dev/null 
 } 2>&1 | html

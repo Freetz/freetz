@@ -50,35 +50,17 @@ get_web() { REST="$(wget $CERT -q "$PROT://$HOST/webservices/homeautoswitch.lua?
 set_web() { REST="$(wget $CERT -q "$PROT://$HOST/webservices/homeautoswitch.lua?sid=$SID&switchcmd=$2&ain=$1" -O - 2>/dev/null)" ; }
 
 
-readval() { echo -n "$1" | sed -e "s!.*<$2>!!;s!<.*!!" ; }
+readval() { [ "$1" != "${1%</$2>*}" ] && echo -n "$1" | sed -e "s!</$2>.*!!;s!.*<$2>!!" ; }
 
 listgen() {
 	echo "$REST" | sed 's,</*devicelist[^>]*>,,g;s!<\(device\|group\) !\n&!g' | grep -v '^$' | while read line; do
-		[ "${line#<group }" != "$line" ] && continue
+		[ "$2" == "NG" ] && [ "${line#<group }" != "$line" ] && continue
 
-		echo -n "$line" | sed 's!.*<device ! !;s!>.*!!' | sed -e "s!.* identifier=\"!!;s!\" .*!!;s! !!" 
-
-		for child in name power voltage energy  celsius offset  current factor; do
-			echo -n '|'
-			readval "$line" $child
-		done
-
-		echo
-	done
-}
-
-modegen() {
-	local childs="name state lock"
-	[ "$1" == "temps" ] && childs="$childs  celsius  tsoll"
-
-	echo "$REST" | sed 's,</*devicelist[^>]*>,,g;s!<\(device\|group\) !\n&!g' | grep -v '^$' | while read line; do
 		echo -n "$line" | sed 's!.*<\(device\|group\) ! !;s!>.*!!' | sed -e "s!.* identifier=\"!!;s!\" .*!!;s! !!"
-
-		for child in $childs; do
+		for child in $1; do
 			echo -n '|'
 			readval "$line" $child
 		done
-
 		echo
 	done
 }
@@ -91,7 +73,14 @@ dec2bin() {
 		bin="$(( $dec % 2 ))$bin"
 		dec="$(( $dec / 2 ))"
 	done
+	while [ ${#bin} -le 13 ]; do bin="0$bin"; done
 	echo -n "$bin"
+}
+
+min_len() {
+	local string="$1"
+	while [ ${#string} -lt 27 ]; do string=" $string"; done
+	echo -n "$string"
 }
 
 readitm() { echo "$1" | sed -e "s!.* $2=\"!!;s!\" .*!!" ; }
@@ -103,27 +92,52 @@ raw_out() {
 
 		device="$(echo "$line" | sed 's!.*<device ! !;s!>.*!!')"
 		for item in manufacturer productname fwversion functionbitmask identifier id; do
-			echo -ne "$item\t= " | sed 's!^id\t!id\t\t!'
+			min_len "$item = "
 			readitm "$device " $item
-			[ "$item" == "functionbitmask" ] && echo -e "\t\t  $(dec2bin $(readitm "$device " $item) | sed -re 's/(.*)(.....)(.)$/\1 \2 \3/')"
+			[ "$item" == "functionbitmask" ] && min_len && dec2bin $(readitm "$device " $item) | sed -re 's/(.*)(....)(.....)(.)$/\1 \2 \3 \4\n/;s/0/-/g'
 		done
 
-		for child in name present state mode lock devicelock  power voltage energy  celsius offset  current factor  masterdeviceid members  tist tsoll absenk komfort; do
+		for child in name  present state mode lock devicelock  power voltage energy  celsius offset  current factor  masterdeviceid members  tist tsoll absenk komfort windowopenactiv  battery batterylow  lastpressedtimestamp; do
 			dummy="$(readval "$line" $child)"
-			#[ -z "$dummy" ] && dummy="#"
-			[ -n "$dummy" ] && echo -e "$child\t\t= $dummy" | sed 's!^masterdeviceid\t!masterdeviceid!;s!^devicelock\t!devicelock!'
+			[ -z "$dummy" ] && continue
+			if [ "$child" == "lastpressedtimestamp" ]; then
+				num=0
+				echo "$line" | sed 's/<button /\n&/g' | grep '^<button ' | while read button; do
+					echo
+					let num++
+					for sub in identifier id; do
+						min_len "$sub #$num = " && echo "$button" | sed -e "s!.* $sub=\"!!;s!\"[ >].*!!"
+					done
+					for sub in name lastpressedtimestamp; do
+						val="$(readval "$button" $sub)"
+						min_len "$sub #$num = " && echo "$val"
+						[ "$sub" == "lastpressedtimestamp" ] && min_len && date -d @$val
+					done
+				done
+			else
+				min_len "$child = " && echo "$dummy"
+			fi
 		done
 
-		echo
+		echo -e "\n"
 	done
 
-	echo "                A 9876 54321 0 "
-	echo "                | ||||"
-	echo "                | |||+- Bit  6: Heizkostenregler"
-	echo "                | ||+-- Bit  7: Energiemessgerät"
-	echo "                | |+--- Bit  8: Temperatursensor"
-	echo "                | +---- Bit  9: Schaltsteckdose"
-	echo "                +------ Bit 10: DECT-Repeater"
+	min_len && echo "DCBA 9876 54321 0 "
+	min_len && echo "|||| |||| ||    | "
+	min_len && echo "|||| |||| ||    +- Bit  0: HANFUN Gerät"
+	min_len && echo "|||| |||| ||      "
+	min_len && echo "|||| |||| |+------ Bit  4: Alarm-Sensor"
+	min_len && echo "|||| |||| +------- Bit  5: ?Trigger"
+	min_len && echo "|||| ||||         "
+	min_len && echo "|||| |||+--------- Bit  6: Heizkostenregler"
+	min_len && echo "|||| ||+---------- Bit  7: Energiemessgerät"
+	min_len && echo "|||| |+----------- Bit  8: Temperatursensor"
+	min_len && echo "|||| +------------ Bit  9: Schaltsteckdose"
+	min_len && echo "||||              "
+	min_len && echo "|||+-------------- Bit 10: DECT-Repeater"
+	min_len && echo "||+--------------- Bit 11: Mikrofon"
+	min_len && echo "|+---------------- Bit 12: ?Bundle"
+	min_len && echo "+----------------- Bit 13: HANFUN Unit"
 	echo
 }
 
@@ -131,22 +145,30 @@ raw_out() {
 ali_chk() {
 	[ ! -d ${NAME%/*} ] && mkdir -p ${NAME%/*}
 	echo "$LIST" | while read line; do
-		line="$(echo $line | cut -d '|' -f 1,2)"
-		grep -q "^$line$" "$NAME" 2>/dev/null && continue
+		grep -q "$line$" "$NAME" 2>/dev/null && continue
 		local identifier="$(echo "$line" | cut -d '|' -f 1)"
 		sed -i "/^$identifier|.*/d" "$NAME" 2>/dev/null
 		echo "$line" >> "$NAME"
 	done
 }
 art_chk() {
+	[ -r /etc/options.cfg ] && . /etc/options.cfg
 	[ ! -d ${KIND%/*} ] && mkdir -p ${KIND%/*}
 	echo "$REST" | sed 's,</*devicelist[^>]*>,,g;s!<\(device\|group\) !\n&!g' | grep -v '^$' | while read line; do
 		idf="$(echo -n "$line" | sed 's!.*<\(device\|group\) ! !;s!>.*!!' | sed -e "s!.* identifier=\"!!;s!\" .*!!;s! !!")"
-		grep -q "^$idf|" "$KIND" 2>/dev/null && continue
-		if [ "${idf%:*}" != "$idf" ]; then
-			[ "${idf%-*}" != "$idf" ] && art=GRP || art=PLC
+		grep -q "$idf|" "$KIND" 2>/dev/null && continue
+		if [ "$FREETZ_AVM_VERSION_07_0X_MIN" == "y" ]; then
+			fbm="$(echo "$line" | sed 's!.*<\(device\|group\) ! !;s!>.*!!' | sed -e "s!.* functionbitmask=\"!!;s!\" .*!!")"
+			art=XXX
+			[ "0" != "$(( $fbm & 0x40   ))" ] && art=HKR
+			[ "0" != "$(( $fbm & 0x200  ))" ] && art=AKT
+			[ "0" != "$(( $fbm & 0x1000 ))" ] && art=GRP
 		else
-			[ -n "$(readval "$line" lock)" ] && art=AKT || art=HKR
+			if [ "${idf%:*}" != "$idf" ]; then
+				[ "${idf%-*}" != "$idf" ] && art=GRP || art=PLC
+			else
+				[ -n "$(readval "$line" lock)" ] && art=AKT || art=HKR
+			fi
 		fi
 		echo "$idf|$art" >> "$KIND"
 	done
@@ -208,7 +230,7 @@ docmd() {
 case $1 in
 	a|alias)
 		readweb
-		LIST="$(listgen)"
+		LIST="$(listgen 'name')"
 		ali_chk
 		art_chk
 		modsave flash >/dev/null
@@ -219,15 +241,19 @@ case $1 in
 		;;
 	s|small)
 		readweb
-		listgen
+		listgen 'name  power voltage energy  celsius offset  current factor' 'NG' | grep -v '|||||||$'
+		;;
+	b|battery)
+		readweb
+		listgen 'name  battery batterylow' 'NG' | grep -v '|$'
 		;;
 	m|modus)
 		readweb
-		modegen
+		listgen 'name  state lock'
 		;;
 	g|gradc)
 		readweb
-		modegen temps
+		listgen 'name  state lock  celsius  tsoll'
 		;;
 	t|translate)
 		[ "$#" != "2" ] && echo "Missing arguments: <ain|name>" 1>&2 && dellock 1
@@ -244,7 +270,7 @@ case $1 in
 		dellock $?
 		;;
 	*)
-		echo "Usage: $0 <alias|fancy|small|modus|gradc|translate <ain|name>|docmd <device> <command>|-1|0|1|16-56|8,0-28,0 >" 1>&2
+		echo "Usage: $0 <alias|fancy|small|battery|modus|gradc|translate <ain|name>|docmd <device> <command>|-1|0|1|16-56|8,0-28,0 >" 1>&2
 		dellock
 		exit 1
 		;;
