@@ -7,6 +7,7 @@ echo1 "removing ddnsd"
 modsed \
   's/^pageData\["dyndns"\] =/& nil ; dummy =/g' \
   "${HTML_LANG_MOD_DIR}/menus/menu_data.lua"
+menulua_remove internet.dyn_dns
 
 modsed -r \
   's/(AVMDAEMONS.* )ddnsd /\1/g' \
