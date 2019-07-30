@@ -247,7 +247,7 @@ case $1 in
 		;;
 	b|battery)
 		readweb
-		listgen 'name  battery batterylow' 'NG' | grep -v '|$'
+		listgen 'name  battery batterylow  present' 'NG' | sed -n 's/|1$//p' | grep -v '||$'
 		;;
 	m|modus)
 		readweb
