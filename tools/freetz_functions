@@ -422,20 +422,16 @@ modlang()
 # list of static packages, sorted by start level
 static_packages()
 {
-	if [ -r "$STATIC_PACKAGES_FILE" ]; then
-		sort "$STATIC_PACKAGES_FILE" \
-		  | sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' -e 's/^S[0-9]*//' \
-		  | grep -v '^#' | grep -v '^$'
-	fi
+	sort $STATIC_PACKAGES_FILE 2>/dev/null \
+	  | sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' -e 's/^S[0-9]*//' \
+	  | grep -v '^#' | grep -v '^$'
 }
 
 static_addons()
 {
-	if [ -r "$STATIC_ADDON_FILE" ]; then
-		cat "$STATIC_ADDON_FILE" \
-		  | sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' \
-		  | grep -v '^#' | grep -v '^$'
-	fi
+	cat $STATIC_ADDON_FILES 2>/dev/null \
+	  | sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' \
+	  | grep -v '^#' | grep -v '^$'
 }
 
 #
