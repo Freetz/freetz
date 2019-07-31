@@ -1254,8 +1254,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 		pkgfiles=$(collect_pkg_files "${pkg}" | sed -e "s,^,${PACKAGES_DIR}/${pkg}/root,")
 		sizeinfo pkg "${PACKAGES_DIR}/${pkg}" $pkgfiles
 	done
+
+	[ -n "$(static_addons)" ] && echo0 "installing addons"
 	for pkg in $(static_addons); do
-		sizeinfo "$pkg (addon)"
+		sizeinfo "$pkg"
 		pkg_name=$(pkg_name "$pkg")
 
 		if [ -e "${ADDON_DIR}/${pkg}/etc/init.d/rc.${pkg_name}" ]; then
