@@ -1016,9 +1016,9 @@ generate_graph() {
 				for _CURRENT_HEX in $_SENSOR_HEX; do
 					local art="$(sed -n "s/^$_CURRENT_HEX|//p" /tmp/flash/rrdstats/smarthome.kinds)"
 					if [ "$kind" == "grad" ]; then
-						[ "$art" == "PLC" ] && continue
+						[ "$art" != "AKT" -a "$art" != "HKR" ] && continue
 					else
-						[ "$art" == "HKR" ] && continue
+						[ "$art" != "AKT" -a "$art" != "PLC" ] && continue
 					fi
 					FILE=$RRDSTATS_RRDDATA/aha_${RRDSTATS_INTERVAL}-${_CURRENT_HEX//:/}.rrd
 					if [ -e $FILE ]; then
