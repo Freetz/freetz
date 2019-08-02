@@ -206,7 +206,7 @@ prepare_image() {
 	if [ $ISRAM ]; then
 		tmpdir=$(mktemp -td freetz_XXX) || { echo "Error creating temporary directory."; exit 1; }
 		mtdram1="$tmpdir/ramboot.flash"
-		if tar -C $tmpdir/ -xf $file '*.image' >/dev/null 2>&1; then
+		if tar -C $tmpdir/ -xf $file --wildcards '*.image' >/dev/null 2>&1; then
 			if [ -s "$tmpdir/var/tmp/kernel.image" -a -s "$tmpdir/var/tmp/filesystem.image" ]; then
 				{
 					cat "$tmpdir/var/tmp/kernel.image"     | dd bs=256 conv=sync 2>/dev/null;
@@ -224,7 +224,7 @@ prepare_image() {
 		ARMkrn="$tmpdir/ARM-kernel.image"
 		X86sys="$tmpdir/X86-system.image"
 		X86krn="$tmpdir/X86-kernel.image"
-		if tar -C $tmpdir/ -xf $file '*.image' >/dev/null 2>&1; then
+		if tar -C $tmpdir/ -xf $file --wildcards '*.image' >/dev/null 2>&1; then
 			mv "$tmpdir/var/remote/var/tmp/filesystem.image"     "$ARMsys" 2>/dev/null
 			mv "$tmpdir/var/remote/var/tmp/kernel.image"         "$ARMkrn" 2>/dev/null
 			mv "$tmpdir/var/remote/var/tmp/x86/filesystem.image" "$X86sys" 2>/dev/null
