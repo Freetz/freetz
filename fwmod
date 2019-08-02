@@ -1623,7 +1623,7 @@ if [ "$action_names" ]; then
 	if [ -n "$FREETZ_TYPE_PREFIX_LABOR_FIRMWARE" ]; then
 		modbaseimagename+="-rev${AVM_FW_REVISION}${FREETZ_TYPE_PREFIX_LABOR_FIRMWARE}"
 	fi
-	[ "$FREETZ_TYPE_LANGUAGE" != "xx" ] && modbaseimagename+=".${FREETZ_TYPE_LANGUAGE}"
+	modbaseimagename+=".$(echo ${FREETZ_TYPE_LANGUAGE} | sed 's/^de$/ger/;s/^en$/int/;s/^xx$/all/')"
 	modbaseimagename+="${FREETZ_VERSION:+-}${FREETZ_VERSION}" # missing in DO_MOD=0 mode
 	if [ "$FREETZ_CUSTOM_IMAGE_NAME" == "y" -a ! -z "$FREETZ_USER_DEFINED_COMMENT" ]; then
 		modcustomimagestring=$(echo $FREETZ_USER_DEFINED_COMMENT | sed -e "s/ /_/g" | tr -cd 'a-zA-Z0-9_+-.<->')
