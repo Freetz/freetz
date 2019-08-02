@@ -120,8 +120,8 @@ sec_begin '$(lang de:"Peer-Einstellungen" en:"Peer-Settings")'
 
 cat << EOF
 <small>$(lang
-de:"Es ist die Aufgabe des Users, diesen Port nach au&szlig;en zu &ouml;ffnen. Dazu kann z.B. das Freetz-Paket AVM-Firewall verwendet werden."
-en:"Don't forget to open this port. Use the freetz' package AVM-Firewall for this purpose."
+de:"Dieser Port muss selbst freigegeben werden."
+en:"Don't forget to open this port."
 )</small>
 <p>
 <label for='peerport'>Peer-Port: </label>
