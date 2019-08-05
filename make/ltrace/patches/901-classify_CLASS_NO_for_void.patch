@@ -1,0 +1,17 @@
+Fixes the following warning
+
+ fetch.c: In function 'classify_eightbyte':
+ fetch.c:377:33: error: 'cls2' may be used uninitialized in this function [-Werror=maybe-uninitialized]
+    else if (cls == CLASS_INTEGER || cls2 == CLASS_INTEGER)
+                                     ^
+
+--- sysdeps/linux-gnu/x86/fetch.c
++++ sysdeps/linux-gnu/x86/fetch.c
+@@ -461,6 +461,7 @@
+ 	switch (info->type) {
+ 		struct arg_type_info flattened;
+ 	case ARGTYPE_VOID:
++		classes[0] = CLASS_NO;
+ 		return 0;
+ 
+ 	case ARGTYPE_CHAR:
