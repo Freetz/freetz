@@ -1612,37 +1612,89 @@ if [ "$action_names" ]; then
 	rm -f "${DIR}/*.image"
 	rm -f "${FIRMWARE_MOD_DIR}/var/signature"
 
-	modmakedate=$(date +%Y%m%d-%H%M%S)
-	modbaseimagename="${FREETZ_TYPE_PREFIX_ALIEN_HARDWARE}${FREETZ_TYPE_PREFIX%_0?_??}"
-	if [ "$FREETZ_AVM_HAS_ANNEX_A_AND_B" == "y" ]; then
-		modbaseimagename+="-Annex"
-		[ "$FREETZ_TYPE_ANNEX_A" ==  "y" ] && modbaseimagename+="A"
-		[ "$FREETZ_TYPE_ANNEX_B" ==  "y" ] && modbaseimagename+="B"
-	fi
-	modbaseimagename+="_${AVM_FW_VERSION}"
-	if [ -n "$FREETZ_TYPE_PREFIX_LABOR_FIRMWARE" ]; then
-		modbaseimagename+="-rev${AVM_FW_REVISION}${FREETZ_TYPE_PREFIX_LABOR_FIRMWARE}"
-	fi
-	modbaseimagename+=".$(echo ${FREETZ_TYPE_LANGUAGE} | sed 's/^de$/ger/;s/^en$/int/;s/^xx$/all/')"
-	modbaseimagename+="${FREETZ_VERSION:+-}${FREETZ_VERSION}" # missing in DO_MOD=0 mode
-	if [ "$FREETZ_CUSTOM_IMAGE_NAME" == "y" -a ! -z "$FREETZ_USER_DEFINED_COMMENT" ]; then
-		modcustomimagestring=$(echo $FREETZ_USER_DEFINED_COMMENT | sed -e "s/ /_/g" | tr -cd 'a-zA-Z0-9_+-.<->')
-	else
-		modcustomimagestring=""
-	fi
-	if [ "$FREETZ_CUSTOM_IMAGE_NAME" == "y" -a ! -z "${modcustomimagestring}" ]; then
-		if [ "$FREETZ_CUSTOM_IMAGE_NAME_PREFIX" == "y" ]; then
-			modimagenameprefix="${modcustomimagestring}_"
-			modimagenamesuffix=""
-		else
-			modimagenameprefix=""
-			modimagenamesuffix="_${modcustomimagestring}"
+	# Assemble output file name
+	get_modstring() {
+		local modstring=
+		local prefix=
+		local brandings=
+		local languages=
+		#PREFIX
+		if [ "$FREETZ_IMAGE_NAME_PREFIX" == "y" ]; then
+			prefix="$(echo $FREETZ_USER_DEFINED_COMMENT | sed -e "s/ /_/g" | tr -cd 'a-zA-Z0-9_+-.<->')"
+			[ -n "${prefix}" ] && modstring="${prefix%%_}_"
 		fi
-	else
-		modimagenameprefix=""
-		modimagenamesuffix=""
-	fi
-	modstring="${modimagenameprefix}${modbaseimagename}${modimagenamesuffix}_${modmakedate}"
+		#DEVICE
+		if [ "$FREETZ_IMAGE_NAME_DEVICE" == "y" ] \
+		  || [ -z "$FREETZ_IMAGE_NAME_CUSTOM" ]; then
+			[ -n "$FREETZ_TYPE_PREFIX_ALIEN_HARDWARE" ] && modstring+="${FREETZ_TYPE_PREFIX_ALIEN_HARDWARE/_/}" || modstring+="${FREETZ_TYPE_PREFIX/_/}"
+		fi
+		#ALIEN
+		if [ "$FREETZ_IMAGE_NAME_ALIEN" == "y" ] \
+		  || [ -z "$FREETZ_IMAGE_NAME_CUSTOM" -a -n "$FREETZ_TYPE_PREFIX_ALIEN_HARDWARE" ]; then
+			modstring+="-Alien${FREETZ_TYPE_PREFIX/_/}"
+		fi
+		#ANNEX
+		if [ "$FREETZ_IMAGE_NAME_ANNEX" == "y" ] \
+		  || [ -z "$FREETZ_IMAGE_NAME_CUSTOM" -a "$FREETZ_AVM_HAS_ANNEX_A_AND_B" == "y" ]; then
+			modstring+="-Annex"
+			[ "$FREETZ_TYPE_ANNEX_A" ==  "y" ] && modstring+="A"
+			[ "$FREETZ_TYPE_ANNEX_B" ==  "y" ] && modstring+="B"
+		fi
+		#FRITZOS
+		if [ "$FREETZ_IMAGE_NAME_FRITZOS" == "y" ] \
+		  || [ -z "$FREETZ_IMAGE_NAME_CUSTOM" ]; then
+			modstring+="_${AVM_FW_VERSION}"
+		fi
+		#REGION
+		if [ "$FREETZ_IMAGE_NAME_REGION" == "y" ] \
+		  || [ -z "$FREETZ_IMAGE_NAME_CUSTOM" ]; then
+			modstring+=".$(echo ${FREETZ_TYPE_LANGUAGE} | sed 's/^de$/ger/;s/^en$/int/;s/^xx$/all/;s/^a-ch$/ach/;s/^it$/ita/')"
+		fi
+		#CHECKPOINT
+		if [ "$FREETZ_IMAGE_NAME_CHECKPOINT" == "y" ] \
+		  || [ -z "$FREETZ_IMAGE_NAME_CUSTOM" -a -n "$FREETZ_TYPE_PREFIX_LABOR_FIRMWARE" ]; then
+			modstring+="-rev${AVM_FW_REVISION}"
+		fi
+		#RELEASECYCLE
+		if [ "$FREETZ_IMAGE_NAME_RELEASECYCLE" == "y" ]; then
+			RELEASECYCLE="$(sed -rn 's/^Releasecycle=//p' "${FIRMWARE_DIR}/var/content" 2>/dev/null)"
+			[ -n "$RELEASECYCLE" ] && modstring+="_${RELEASECYCLE/ /-}"
+		fi
+		#BUILDTYPE
+		if [ "$FREETZ_IMAGE_NAME_BUILDTYPE" == "y" ] \
+		  || [ -z "$FREETZ_IMAGE_NAME_CUSTOM" -a -n "$FREETZ_TYPE_PREFIX_LABOR_FIRMWARE" ]; then
+			modstring+="${FREETZ_TYPE_PREFIX_LABOR_FIRMWARE:-_release}"
+		fi
+		#BRANDINGS
+		if [ "$FREETZ_IMAGE_NAME_BRANDINGS" == "y" ]; then
+			for x in $(sed -rn 's/^FREETZ_AVM_HAS_BRANDING_(.*)=y$/\1/p' "$DOT_CONFIG" | sort); do
+				[ "$(eval "echo \"\$FREETZ_REMOVE_BRANDING_$x\"")" != "y" ] && brandings+="-$x"
+			done
+			modstring+="_${brandings#-}"
+		fi
+		#LANGUAGES
+		if [ "$FREETZ_IMAGE_NAME_LANGUAGES" == "y" ]; then
+			for x in $((sed -n 's/^language //p' $FILESYSTEM_DIR/etc/*.language && \
+			  ls $FILESYSTEM_DIR/etc/htmltext_??.db 2>/dev/null | sed -rn 's/.*_(..)\.db/\1/p') | sort -u); do
+				[ "$(eval "echo \"\$FREETZ_REMOVE_LANGUAGE_$x\"")" != "y" ] && languages+="-$x"
+			done
+			modstring+="_${languages#-}"
+		fi
+		#FREETZ
+		if [ "$FREETZ_IMAGE_NAME_FREETZ" == "y" ] \
+		  || [ -z "$FREETZ_IMAGE_NAME_CUSTOM" ]; then
+			[ -n "$FREETZ_VERSION" ] && modstring+="_${FREETZ_VERSION}" # missing in DO_MOD=0 mode
+		fi
+		#TIMESTAMP
+		if [ "$FREETZ_IMAGE_NAME_TIMESTAMP" == "y" ] \
+		  || [ -z "$FREETZ_IMAGE_NAME_CUSTOM" ]; then
+			modstring+="_${modmakedate}"
+		fi
+		#done
+		echo -n "$modstring"
+	}
+	modmakedate="$(date +%Y%m%d-%H%M%S)"
+	modstring="$(get_modstring)"
 
 	# collect externalized files
 	externalised_files=$(find "$EXTERNAL_MOD_DIR/" -type f 2>/dev/null | sed -e "/external[.]pkg/d;/[.]external/d;s,$EXTERNAL_MOD_DIR/,,")

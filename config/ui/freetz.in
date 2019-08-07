@@ -157,7 +157,7 @@ menu "Web Interface"
 
 endmenu # "Webif customization" #
 
-menu "Additional image/box information"
+menu "Additional informations"
 	visible if FREETZ_SHOW_ADVANCED
 
 	# TODO: invert logic
@@ -192,21 +192,112 @@ menu "Additional image/box information"
 		help
 			User defined comment for generated image.
 
-	config FREETZ_CUSTOM_IMAGE_NAME
-		bool "Add user defined comment to image name"
-		depends on FREETZ_SHOW_ADVANCED
+	menuconfig FREETZ_IMAGE_NAME_CUSTOM
+		bool "Custom output file name"
+		select FREETZ_IMAGE_NAME_DEVICE
+		select FREETZ_IMAGE_NAME_ANNEX if FREETZ_AVM_HAS_ANNEX_A_AND_B
+		select FREETZ_IMAGE_NAME_FRITZOS
+		select FREETZ_IMAGE_NAME_CHECKPOINT if !FREETZ_TYPE_FIRMWARE_FINAL
+		select FREETZ_IMAGE_NAME_BUILDTYPE if !FREETZ_TYPE_FIRMWARE_FINAL
+		select FREETZ_IMAGE_NAME_FREETZ
 		default n
-		help
-			Add the user defined comment to the file name of the created image
 
-	config FREETZ_CUSTOM_IMAGE_NAME_PREFIX
-		bool "Add custom string as prefix"
-		depends on FREETZ_SHOW_ADVANCED && FREETZ_CUSTOM_IMAGE_NAME
-		default n
-		help
-			Add the user defined comment as a prefix in front of the image file name.
-			Otherwise the user defined comment will be added between the language setting
-			and the build date
+	if FREETZ_IMAGE_NAME_CUSTOM
+
+		config FREETZ_IMAGE_NAME_PREFIX
+			bool "Prefix"
+			default n
+			help
+				Adds the "User defined comment".
+
+		config FREETZ_IMAGE_NAME_DEVICE
+			bool "Device"
+			default y
+			help
+				Adds hardware name.
+				Example: 7590
+
+		config FREETZ_IMAGE_NAME_ALIEN
+			bool "Alien"
+			depends on FREETZ_TYPE_ALIEN_HARDWARE
+			default y
+			help
+				Adds alien source.
+				Example: Alien7330
+
+		config FREETZ_IMAGE_NAME_ANNEX
+			bool "Annex"
+			depends on FREETZ_AVM_HAS_ANNEX_A_AND_B
+			default y
+			help
+				Adds annex version.
+				Values: AnnexA/AnnexB
+
+		config FREETZ_IMAGE_NAME_FRITZOS
+			bool "FritzOS"
+			default y
+			help
+				Adds FritzOS version.
+				Example: 07.12
+
+		config FREETZ_IMAGE_NAME_REGION
+			bool "Region"
+			default y
+			help
+				Adds the target region.
+				Values: all/ger/int/ach/ita
+
+		config FREETZ_IMAGE_NAME_CHECKPOINT
+			bool "Checkpoint"
+			default n
+			help
+				Adds the avm checkpoint.
+				Values: rev12345
+
+		config FREETZ_IMAGE_NAME_RELEASECYCLE
+			bool "Releasecycle"
+			default n
+			help
+				Adds the avm release cycle.
+				Example: MESH18-NL2
+
+		config FREETZ_IMAGE_NAME_BUILDTYPE
+			bool "Buildtype"
+			default n
+			help
+				Adds the  build type.
+				Values: release/labor/beta/inhaus
+
+		config FREETZ_IMAGE_NAME_BRANDINGS
+			bool "Brandings"
+			default n
+			help
+				Adds all included brandings.
+				Example: 1und1-aol-avm-avme-ewetel-freenet-otwo-tcom-versatel
+
+
+		config FREETZ_IMAGE_NAME_LANGUAGES
+			bool "Languages"
+			default n
+			help
+				Adds all included languages.
+				Example: de-en-es-fr-it-nl-pl
+
+		config FREETZ_IMAGE_NAME_FREETZ
+			bool "Freetz"
+			default y
+			help
+				Adds Freetz fork name and revision.
+				Example: freetz-ng-12345
+
+		config FREETZ_IMAGE_NAME_TIMESTAMP
+			bool "Timestamp"
+			default y
+			help
+				Adds date and time.
+				Example: 20190101-123456
+
+	endif # FREETZ_IMAGE_NAME_CUSTOM
 
 	config FREETZ_CREATE_SEPARATE_OPTIONS_CFG
 		bool "Create options.cfg as a separate file"
@@ -250,5 +341,5 @@ menu "Additional image/box information"
 
 	endchoice # "Include .config file in image"
 
-endmenu # "Additional image/box information" #
+endmenu # "Additional informations" #
 
