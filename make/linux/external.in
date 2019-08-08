@@ -1,24 +1,29 @@
-menu "Kernel modules"
-	depends on EXTERNAL_ENABLED && FREETZ_SHOW_ADVANCED
+if FREETZ_SHOW_ADVANCED
+
+comment "modules"
+
 
 config EXTERNAL_OWN_MODULES
-	string "own kernel modules"
+	string "own modules"
 	default ""
-	depends on EXTERNAL_ENABLED && FREETZ_SHOW_ADVANCED
 	help
 		Put your own kernel modules here (space separated, without extension)
 
-comment "each of the following options will external the named kernel module"
 
-
-comment "fs"
+menu "fs"
+	depends on FREETZ_MODULE_cifs
 
 config EXTERNAL_FREETZ_MODULE_cifs
 	depends on FREETZ_MODULE_cifs
 	bool "cifs.ko"
 	default n
 
-comment "net"
+endmenu # fs
+
+
+menu "net"
+	depends on FREETZ_MODULE_ipv6
+	depends on FREETZ_MODULE_wireguard
 
 config EXTERNAL_FREETZ_MODULE_ipv6
 	depends on FREETZ_MODULE_ipv6
@@ -30,4 +35,7 @@ config EXTERNAL_FREETZ_MODULE_wireguard
 	bool "wireguard.ko"
 	default n
 
-endmenu
+endmenu # net
+
+
+endif # FREETZ_SHOW_ADVANCED
