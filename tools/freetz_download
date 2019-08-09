@@ -127,7 +127,7 @@ do_checkout_svn()
 }
 do_checkout_git()
 {
-	GIT_SSL_NO_VERIFY=true git clone "$1" "$2" \
+	git clone "$1" "$2" \
 	&& pushd "$2" >/dev/null \
 	&& git checkout "$3" \
 	&& LAST_COMMIT_TIMESTAMP=$(git log -1 --pretty=format:%cD) \
