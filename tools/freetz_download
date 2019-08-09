@@ -51,8 +51,8 @@ do_download()
 
 	echo
 	[ "$DEBUG" == "1" ] && echo \
-	"wget -nd -t3 --timeout=20 --no-check-certificate --passive-ftp -N -P \"${1%/}/\" \"${fullURL}\""
-	 wget -nd -t3 --timeout=20 --no-check-certificate --passive-ftp -N -P  "${1%/}/"   "${fullURL}"
+	"wget -nd -t3 --timeout=20 --passive-ftp -N -P \"${1%/}/\" \"${fullURL}\""
+	 wget -nd -t3 --timeout=20 --passive-ftp -N -P  "${1%/}/"   "${fullURL}"
 	wget_result=$?
 	if [ "$wget_result" != "0" ]; then
 		echo "Download failed - \"${fullURL}\"  ->  error code $wget_result" >&2
@@ -67,8 +67,8 @@ do_check()
 	local mode wget_output wget_result
 	for mode in --spider --output-document=/dev/null; do
 		[ "$DEBUG" == "1" ] && \
-		echo         "LC_ALL=C wget -t3 --timeout=20 --no-check-certificate --passive-ftp -S $mode \"$1\" 2>&1"
-		wget_output=$(LC_ALL=C wget -t3 --timeout=20 --no-check-certificate --passive-ftp -S $mode "$1" 2>&1)
+		echo         "LC_ALL=C wget -t3 --timeout=20 --passive-ftp -S $mode \"$1\" 2>&1"
+		wget_output=$(LC_ALL=C wget -t3 --timeout=20 --passive-ftp -S $mode "$1" 2>&1)
 		wget_result=$?
 		if [ "$wget_result" != "0" ]; then
 			# workaround wget spider-mode bug (false negative): known to happen with all sites
@@ -120,7 +120,7 @@ do_checkout_svn()
 }
 do_checkout_git()
 {
-	GIT_SSL_NO_VERIFY=true git clone "$1" "$2" \
+	git clone "$1" "$2" \
 	&& pushd "$2" >/dev/null \
 	&& git checkout "$3" \
 	&& LAST_COMMIT_TIMESTAMP=$(git log -1 --pretty=format:%cD) \
