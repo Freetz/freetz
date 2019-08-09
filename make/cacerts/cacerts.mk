@@ -1,19 +1,19 @@
-$(call PKG_INIT_BIN, 0.1)
-$(PKG)_SOURCE:=cacert.pem
+$(call PKG_INIT_BIN, 2019-05-15)
+$(PKG)_SOURCE:=cacert-$($(PKG)_VERSION).pem
+$(PKG)_SOURCE_SHA256:=cb2eca3fbfa232c9e3874e3852d43b33589f27face98eef10242a853d83a437a
 $(PKG)_SITE:=https://curl.haxx.se/ca
 
-$(PKG)_TARGET_PATH:=/etc/ssl/certs/
-
-$(if $(FREETZ_PACKAGE_CACERTS_FORCE_DOWNLOAD),.PHONY: $(DL_DIR)/$($(PKG)_SOURCE))
+$(PKG)_BINARY:=$(DL_DIR)/$($(PKG)_SOURCE)
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/etc/ssl/certs/cacert.pem
 
 $(PKG_SOURCE_DOWNLOAD)
 
-$($(PKG)_DEST_DIR)$($(PKG)_TARGET_PATH): $(DL_DIR)/$($(PKG)_SOURCE)
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_FILE)
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_DEST_DIR)$($(PKG)_TARGET_PATH)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 
