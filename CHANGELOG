@@ -8,6 +8,18 @@ Latest changes:
   * Replace kernel does not work for most latest firmware versions
   * Loading build kernel modules may work or do not. You'll notice
   * No download toolchains for firmware versions since FritzOS 7.0
+  * Wlan does not work with Freetz/dhcp is not working.
+    Run "ifconfig wlan up" every boot with "rc.custom".
+
+- Good to know:
+  * Execute files on storages?
+    Disabled by default since some time by AVM. To allow,
+    select "Drop noexec for (external) storages" patch.
+    For internal storages, it is enabled always with Freetz!
+  * Change motd?
+    You could put your own "script" here: /tmp/flash/mod/motd
+    The motd will be generated 1 time at boot. To update it
+    regularly, run "/mod/etc/init.d/rc.mod motd" eg by cron.
 
 - Unsupported devices:
   * Repeater 310, 600 & 1160: No LAN ports, so a recovery is not possible
