@@ -12,6 +12,17 @@ Latest changes:
     Run "ifconfig wlan up" every boot with "rc.custom".
 
 - Good to know:
+  * Flash an (avm or modified) image?
+    Use "tools/push_firmware" with arguments.
+    Or just "make push-firmware" after "make".
+  * in-memory image format?
+    I's no longer needed, as push_firmware can flash an image itself.
+  * Unpack an image?
+    Use "tools/fwdu unpack the.image" to extrace the (inner) filesystem.
+  * Replace kernel?
+    Don't use it - until you know why you need it!!
+    You'll never have an kernel as expected by avm. Maybe some patches
+    are missing, maybe some options are not selected as avm intended.
   * Execute files on storages?
     Disabled by default since some time by AVM. To allow,
     select "Drop noexec for (external) storages" patch.
@@ -28,6 +39,7 @@ Latest changes:
   * FRITZ!Box 7581 & 7582: These don't use uClib, but old glibc
 
 - Build system:
+  * addons: additional to addon/static.pkg, addon/*.pkg could be used to enable addons, since r15856/3dda64565e
   * binutils:
     + add support for binutils-2.24.x/2.25.x/2.26.x
   * ccache 3.7.2
