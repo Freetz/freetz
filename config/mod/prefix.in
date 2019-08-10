@@ -4,7 +4,10 @@
 
 config FREETZ_TYPE_PREFIX
 	string
+	default "fon"               if FREETZ_TYPE_FON
 	default "300ip"             if FREETZ_TYPE_300IP
+	default "wlan"              if FREETZ_TYPE_WLAN
+	default "300e"              if FREETZ_TYPE_0300
 	default "450e"              if FREETZ_TYPE_0450
 	default "540e"              if FREETZ_TYPE_0540
 	default "546e"              if FREETZ_TYPE_0546
@@ -29,14 +32,12 @@ config FREETZ_TYPE_PREFIX
 	default "3490"              if FREETZ_TYPE_3490
 	default "4020"              if FREETZ_TYPE_4020
 	default "4040"              if FREETZ_TYPE_4040
-	default "fon"               if FREETZ_TYPE_FON
 	default "5010"              if FREETZ_TYPE_5010
 	default "5050"              if FREETZ_TYPE_5050
 	default "5124"              if FREETZ_TYPE_5124
 	default "5140"              if FREETZ_TYPE_5140
 	default "5490"              if FREETZ_TYPE_5490
 	default "5491"              if FREETZ_TYPE_5491
-	default "wlan"              if FREETZ_TYPE_WLAN
 	default "6430"              if FREETZ_TYPE_6430
 	default "6490"              if FREETZ_TYPE_6490
 	default "6590"              if FREETZ_TYPE_6590
