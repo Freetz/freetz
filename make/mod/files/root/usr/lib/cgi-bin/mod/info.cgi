@@ -11,7 +11,7 @@ cat << EOF
 <dl class="info">
 <dt>$(lang de:"Boxtyp" en:"Box type")</dt><dd>$FREETZ_INFO_BOXTYPE</dd>
 <dt>$(lang de:"AVM-Firmwareversion" en:"AVM firmware version")</dt><dd>$FREETZ_INFO_FIRMWAREVERSION</dd>
-<dt>$(lang de:"Sprache" en:"Language")</dt><dd>$FREETZ_INFO_LANG</dd>
+<dt>$(lang de:"Region" en:"Region")</dt><dd>$(echo "$FREETZ_INFO_LANG" | sed 's/^de$/ger/;s/^en$/int/;s/^xx$/all/;s/^a-ch$/ach/;s/^it$/ita/')</dd>
 </dl>
 EOF
 unset -v _kernelversion
