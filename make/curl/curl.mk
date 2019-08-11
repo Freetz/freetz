@@ -78,7 +78,7 @@ $(PKG)_CONFIGURE_OPTIONS += --without-gnutls
 $(PKG)_CONFIGURE_OPTIONS += --without-polarssl
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libcurl_WITH_OPENSSL),--with-ssl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",--without-ssl)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libcurl_WITH_MBEDTLS),--with-mbedtls="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",--without-mbedtls)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_CACERTS),--with-ca-bundle=/etc/ssl/certs/cacert.pem",--without-ca-bundle)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_CACERTS),--with-ca-bundle="/etc/ssl/certs/cacert.pem",--without-ca-bundle)
 $(PKG)_CONFIGURE_OPTIONS += --without-gssapi
 $(PKG)_CONFIGURE_OPTIONS += --without-libidn
 $(PKG)_CONFIGURE_OPTIONS += --without-libmetalink
