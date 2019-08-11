@@ -124,9 +124,7 @@ if [ -e /proc/clocks -o -e /proc/sys/urlader/environment ]; then
 	echo "<dl class='info'>"
 	echo "<dt>$(lang de:"Taktfrequenzen" en:"Clock frequencies")</dt><dl>"
 	if [ -e /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies ]; then
-		_CPU_FQC="$(sed 's![0-9][0-9][0-9]$! MHz!' /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq)"
 		_CPU_FQZ="$(sed 's!...[ $]! MHz !g;s! *$!!;;s!MHz !MHz, !g' /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies)"
-		echo "<dt>$(lang de:"Aktuell" en:"Current")</dt><dd>$_CPU_FQC</dd>"
 		echo "<dt>$(lang de:"Verf&uuml;gbar" en:"Available")</dt><dd>$_CPU_FQZ</dd>"
 		echo "</dl>"
 		echo "</dl>"
