@@ -15,10 +15,21 @@ Latest changes:
   * Flash an (avm or modified) image?
     Use "tools/push_firmware" with arguments.
     Or just "make push-firmware" after "make".
+  * Flash with Raspberry?
+    Put the created image onto the raspberry. Download the current push_firmware script:
+    "wget 'https://trac.boxmatrix.info/freetz-ng/browser/freetz-ng/trunk/tools/push_firmware?format=txt' -O push_firmware"
+    Make it executable: "chmod +x push_firmware". Now run it: "./push_firmware" ...
   * in-memory image format?
     I's no longer needed, as push_firmware can flash an image itself.
   * Unpack an image?
     Use "tools/fwdu unpack the.image" to extrace the (inner) filesystem.
+  * Older modem/DSL driver?
+    Unpack the source image file with fwdu. Then copy the needed files
+    with directories to a sub directory of the addon/ directory in Freetz.
+    Now enable the new addon in a addon/*.pkg file
+    The needed files depend on you device.
+    7490: the whole directory /lib/modules/dsp_vr9/
+    7590: the whole directory /lib/modules/dsp_vr11/
   * Replace kernel?
     Don't use it - until you know why you need it!!
     You'll never have an kernel as expected by avm. Maybe some patches
