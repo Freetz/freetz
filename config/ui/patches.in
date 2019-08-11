@@ -207,6 +207,7 @@ config FREETZ_REMOVE_ASSISTANT
 config FREETZ_REMOVE_ASSISTANT_SIP
 	bool "Remove SIP assistant"
 	default n
+	depends on !FREETZ_TYPE_EXTENDER
 	depends on FREETZ_REMOVE_ASSISTANT
 	help
 		Removes the SIP configuration assistant (about 155kB uncompressed) from
@@ -749,6 +750,7 @@ config FREETZ_REMOVE_TR069_HTTPSDL
 config FREETZ_REMOVE_TR069_PROVIDERS
 	bool "Remove ISP db"
 	depends on FREETZ_REMOVE_TR069 && FREETZ_AVM_VERSION_05_2X_MIN && FREETZ_SHOW_EXPERT
+	depends on !FREETZ_TYPE_EXTENDER
 	default n
 	help
 		Removes /etc/default.${BOX}/${OEM}/providers-${ALC}.tar  files
@@ -762,6 +764,7 @@ config FREETZ_REMOVE_TR069_PROVIDERS
 config FREETZ_REMOVE_TR069_VOIPPROVIDERS
 	bool "Remove VOIP db"
 	depends on FREETZ_REMOVE_TR069 && FREETZ_AVM_VERSION_07_0X_MIN && FREETZ_SHOW_EXPERT
+	depends on !FREETZ_TYPE_EXTENDER
 	default n
 	help
 		Removes /etc/default.${BOX}/${OEM}/voip_providers-${ALC}.tar files
@@ -779,6 +782,7 @@ config FREETZ_REMOVE_UMTSD
 
 config FREETZ_REMOVE_UPNP
 	bool "Remove UPnP (igdd/upnpd)"
+	depends on !FREETZ_TYPE_EXTENDER
 	select FREETZ_AVMDAEMON_DISABLE_IGD
 	select FREETZ_REMOVE_UPNP_LIBS if \
 		FREETZ_TYPE_2170 || \
