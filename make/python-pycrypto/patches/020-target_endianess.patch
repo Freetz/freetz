@@ -14,11 +14,11 @@
  def endianness_macro():
 -    s = struct.pack("@I", 0x33221100)
 -    if s == "\x00\x11\x22\x33".encode():     # little endian
-+    s = os.getenv('TARGET_ARCH', '')
-+    if s == "mipsel":   # little endian
++    s = os.getenv('TARGET_ARCH_BE', 'n')
++    if s == "n":   # little endian
          return ('PCT_LITTLE_ENDIAN', 1)
 -    elif s == "\x33\x22\x11\x00".encode():   # big endian
-+    elif s == "mips":   # big endian
++    elif s == "y":   # big endian
          return ('PCT_BIG_ENDIAN', 1)
      raise AssertionError("Machine is neither little-endian nor big-endian")
  
