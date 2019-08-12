@@ -11,6 +11,12 @@ Latest changes:
   * Wlan does not work with Freetz/dhcp is not working.
     Run "ifconfig wlan up" every boot with "rc.custom".
 
+- Unsupported devices:
+  * Repeater 310, 600 & 1160: No LAN ports, so a recovery is not possible
+  * Repeater 450E, Powerline 540E & 546E: No sources for v4 kernel, ask fritzbox_info@avm.de
+  * Repeater 300E & Powerline 1240E: Problems with the toolchain
+  * FRITZ!Box 7581 & 7582: These don't use uClib, but old glibc
+
 - Good to know:
   * Flash an (avm or modified) image?
     Use "tools/push_firmware" with arguments.
@@ -27,9 +33,9 @@ Latest changes:
     Unpack the source image file with fwdu. Then copy the needed files
     with directories to a sub directory of the addon/ directory in Freetz.
     Now enable the new addon in a addon/*.pkg file
-    The needed files depend on you device.
-    7490: the whole directory /lib/modules/dsp_vr9/
-    7590: the whole directory /lib/modules/dsp_vr11/
+    The needed files depends on your device. Examples:
+     - For 7490, the whole directory /lib/modules/dsp_vr9/
+     - For 7590, the whole directory /lib/modules/dsp_vr11/
   * Replace kernel?
     Don't use it - until you know why you need it!!
     You'll never have an kernel as expected by avm. Maybe some patches
@@ -42,12 +48,6 @@ Latest changes:
     You could put your own "script" here: /tmp/flash/mod/motd
     The motd will be generated 1 time at boot. To update it
     regularly, run "/mod/etc/init.d/rc.mod motd" eg by cron.
-
-- Unsupported devices:
-  * Repeater 310, 600 & 1160: No LAN ports, so a recovery is not possible
-  * Repeater 450E, Powerline 540E & 546E: No sources for v4 kernel, ask fritzbox_info@avm.de
-  * Repeater 300E & Powerline 1240E: Problems with the toolchain
-  * FRITZ!Box 7581 & 7582: These don't use uClib, but old glibc
 
 - Build system:
   * addons: additional to addon/static.pkg, addon/*.pkg could be used to enable addons, since r15856/3dda64565e
