@@ -13,7 +13,6 @@ all() {
 
 all_no_freetz() {
 	local freetz_base patches_scripts
-
 	freetz_base=$(dirname "$0")
 	patches_scripts="${freetz_base}/patches/scripts"
 
@@ -22,18 +21,19 @@ all_no_freetz() {
 	source "${freetz_base}/tools/freetz_patch"
 	source "${freetz_base}/.config"
 
-	# run telefon daemon in in-house mode, needed for
-	# - /var/flash/calllog processing
-	# - telnet-on-/off phone codes support
-	# - automatic telnet start
-	source "${patches_scripts}/114-run_telefon_in_inhouse_mode.sh"
-
-	# restore telnet support, the user still needs to activate it via the phone code (#96*7*)
+	# restore telnetd support, still needs the additional "inhaus mode" patch below
 	ln -sf ../../bin/busybox ./filesystem/usr/sbin/telnetd
 
-	# the following "mods" could (and should) be controlled used the Freetz menuconfig system
-	# i.e. enable the corresponding option in Freetz menuconfig system, otherwise the patches
-	# below won't do anything
+	########################################################
+	# The mods/patches below need to be enabled by you in  #
+	# Freetz menuconfig, otherwise they won't do anything! #
+	########################################################
+
+	# run telefon daemon in "inhaus mode", needed for
+	# - /var/flash/calllog processing
+	# - telnetd on/off by phone (#96*7* / #96*8*)
+	# - automatic telnetd start
+	source "${patches_scripts}/114-run_telefon_in_inhouse_mode.sh"
 
 	# enforce urlader settings, useful on boxes with bootloader version >=1.3179 (7490) resp. >=1.3229 (7580)
 	source "${patches_scripts}/101-enforce_urlader-settings.sh"
@@ -78,3 +78,4 @@ case "$1" in
 esac
 
 exit 0
+
