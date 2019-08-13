@@ -7,6 +7,7 @@ $(PKG)_BINARY:=$(DL_DIR)/$($(PKG)_SOURCE)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/etc/ssl/certs/cacert.pem
 
 $(PKG_SOURCE_DOWNLOAD)
+$(PKG_UNPACKED)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_FILE)
@@ -18,6 +19,6 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 $(pkg)-clean:
 
 $(pkg)-uninstall:
-	$(RM) $($(PKG)_DEST_DIR)$($(PKG)_TARGET_PATH)
+	$(RM) $(CACERTS_TARGET_BINARY)
 
 $(PKG_FINISH)
