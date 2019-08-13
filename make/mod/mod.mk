@@ -25,7 +25,7 @@ $(PKG)_EXCLUDED += $(if $(or $(call not-y,$(FREETZ_AVM_HAS_USB_HOST)),$(FREETZ_R
 $(PKG)_EXCLUDED += $(if $(or $(call not-y,$(FREETZ_AVM_HAS_USB_HOST)),$(FREETZ_REMOVE_SAMBA),$(FREETZ_PACKAGE_SAMBA_SMBD)),etc/init.d/rc.smbd)
 $(PKG)_EXCLUDED += $(if $(FREETZ_REMOVE_DSLD),usr/bin/wrapper/dsld etc/init.d/rc.dsld)
 $(PKG)_EXCLUDED += $(if $(FREETZ_REMOVE_WEBSRV),,etc/init.d/rc.websrv usr/bin/websrv usr/lib/cgi-bin/conf.avm/20-websrv.sh)
-$(PKG)_EXCLUDED += $(if $(FREETZ_BUSYBOX_TELNETD),,etc/init.d/rc.telnetd usr/lib/cgi-bin/conf.avm/10-telnet.sh)
+$(PKG)_EXCLUDED += $(if $(FREETZ_BUSYBOX_TELNETD),,etc/init.d/rc.telnetd usr/lib/cgi-bin/conf.avm/10-telnetd.sh)
 $(PKG)_EXCLUDED += $(if $(or $(call not-y,$(EXTERNAL_ENABLED)),$(EXTERNAL_DOWNLOADER)),usr/lib/cgi-bin/mod/conf/40-external.sh etc/init.d/rc.external etc/external.pkg)
 
 $(PKG)_EXCLUDED += $(if $(FREETZ_BUSYBOX_FEATURE_WTMP),,usr/lib/cgi-bin/mod/conf/60-utmp_wtmp.sh)
