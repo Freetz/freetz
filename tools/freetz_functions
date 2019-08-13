@@ -410,10 +410,12 @@ modlang()
 				modlangsubst "$lang" "${i}"
 			else
 				do_excluded=n
+				do_asterisk=n
 				while read l; do
 					echo $i | grep -q $l && do_excluded=y
 				done 2>/dev/null < "$dot_exclude"
-				[ "$do_excluded" != "y" ] && warn "modlang: ${2}/${i} not found"
+				[ "${i}" != "${i/*/}" ] && do_asterisk=y
+				[ "$do_excluded" != "y" -a "$do_asterisk" != "y" ] && warn "modlang: ${2}/${i} not found"
 			fi
 		done
 	)
