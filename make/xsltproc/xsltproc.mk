@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.1.33-rc1)
+$(call PKG_INIT_BIN, 1.1.33)
 $(PKG)_SOURCE:=libxslt-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=fe5c2cc487b010dac66529d494f220683dcc26b9c75e33518db9b37f52ee7f77
+$(PKG)_SOURCE_SHA256:=8e36605144409df979cab43d835002f63988f3dc94d5d3537c12796db90e38c8
 $(PKG)_SITE:=ftp://xmlsoft.org/libxslt
 
 $(PKG)_BINARY_BUILD_DIR := $($(PKG)_DIR)/$(pkg)$(if $(FREETZ_PACKAGE_XSLTPROC_STATIC),,/.libs)/$(pkg)
