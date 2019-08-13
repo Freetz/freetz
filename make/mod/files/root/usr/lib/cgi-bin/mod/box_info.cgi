@@ -208,8 +208,8 @@ echo "<dt>MAC$(lang de:"-Adressen" en:" address")</dt><dd><dl>"
 echo "<dt>DSL</dt><dd><small>$mac_dsl</small></dd>"
 echo "<dt>LAN</dt><dd><small>$mac_lan</small></dd>"
 echo "<dt>WLAN</dt><dd><small>$mac_wlan</small></dd>"
-[ -n "$$mac_wlan2" ] && echo "<dt>WLAN2</dt><dd><small>$mac_wlan2</small></dd>"
-[ -n "$$mac_wlan3" ] && echo "<dt>WLAN3</dt><dd><small>$mac_wlan3</small></dd>"
+[ -n "$mac_wlan2" ] && echo "<dt>WLAN2</dt><dd><small>$mac_wlan2</small></dd>"
+[ -n "$mac_wlan3" ] && echo "<dt>WLAN3</dt><dd><small>$mac_wlan3</small></dd>"
 echo "</dl></dd></dl>"
 
 fi
