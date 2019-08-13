@@ -6792,6 +6792,7 @@ config FREETZ_BUSYBOX_TELNETD
 	bool "telnetd"
 	default n
 	select FREETZ_BUSYBOX_FEATURE_SYSLOG
+	depends on !FREETZ_REMOVE_TELNETD
 	help
 	  A daemon for the TELNET protocol, allowing you to log onto the host
 	  running the daemon. Please keep in mind that the TELNET protocol

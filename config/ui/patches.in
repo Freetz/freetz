@@ -330,6 +330,13 @@ config FREETZ_REMOVE_WEBSRV
 		If "Remove UPnP daemon (igdd/upnpd)" patch is also selected, 'libwebsrv.so'
 		will be removed too, because only those two binaries use it.
 
+config FREETZ_REMOVE_TELNETD
+	bool "Remove telnetd"
+	depends on FREETZ_AVM_HAS_TELNETD
+	default y
+	help
+		This disables the busybox applet for telnetd and removes the link to it.
+
 
 config FREETZ_REMOVE_LANGUAGES
 	bool "Remove languages"
