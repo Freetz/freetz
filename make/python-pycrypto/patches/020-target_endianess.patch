@@ -14,8 +14,8 @@
  def endianness_macro():
 -    s = struct.pack("@I", 0x33221100)
 -    if s == "\x00\x11\x22\x33".encode():     # little endian
-+    s = os.getenv('TARGET_ARCH_BE', 'n')
-+    if s == "n":   # little endian
++    s = os.getenv('TARGET_ARCH_BE', '')
++    if s == "":   # little endian
          return ('PCT_LITTLE_ENDIAN', 1)
 -    elif s == "\x33\x22\x11\x00".encode():   # big endian
 +    elif s == "y":   # big endian

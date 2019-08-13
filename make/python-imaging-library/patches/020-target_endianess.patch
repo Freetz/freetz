@@ -14,7 +14,7 @@
          if sys.platform == "win32":
              libs.extend(["kernel32", "user32", "gdi32"])
 -        if struct.unpack("h", "\0\1")[0] == 1:
-+        if os.getenv('TARGET_ARCH_BE', 'n') == "y":
++        if os.getenv('TARGET_ARCH_BE', '') == "y":
              defs.append(("WORDS_BIGENDIAN", None))
  
          exts = [(Extension(
