@@ -1385,6 +1385,13 @@ config FREETZ_REPLACE_ONLINECHANGED
 
 comment "Additional patches ---------------------"
 
+config FREETZ_ADD_TELNETD
+	bool "Add telnetd"
+	depends on !FREETZ_AVM_HAS_TELNETD
+	default n
+	help
+		Adds the busybox applet for telnetd, its link and the configuration webif.
+
 config FREETZ_ADD_SWAPOPTIONS
 	bool "Add swap options"
 	depends on FREETZ_REPLACE_KERNEL || !FREETZ_SYSTEM_TYPE_IPQ40xx
