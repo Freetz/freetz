@@ -38,6 +38,7 @@ if [ -r /var/env ]; then
 			macdsl)            mac_dsl=$value ;;
 			macwlan)           mac_wlan=$value ;;
 			macwlan2)          mac_wlan2=$value ;;
+			macwlan3)          mac_wlan3=$value ;;
 		esac
 	done < /var/env
 else
@@ -49,6 +50,7 @@ else
 	mac_dsl=$notdefined
 	mac_wlan=$notdefined
 	mac_wlan2=$notdefined
+	mac_wlan3=$notdefined
 fi
 if [ -r /proc/cpuinfo ]; then
 	cpu_family=$(sed -ne '/\(system type\|Hardware\)/ s/.*: //p' /proc/cpuinfo | sed 's/ .*//;s/Ikanos/IKS/')
@@ -207,6 +209,7 @@ echo "<dt>DSL</dt><dd><small>$mac_dsl</small></dd>"
 echo "<dt>LAN</dt><dd><small>$mac_lan</small></dd>"
 echo "<dt>WLAN</dt><dd><small>$mac_wlan</small></dd>"
 [ -n "$$mac_wlan2" ] && echo "<dt>WLAN2</dt><dd><small>$mac_wlan2</small></dd>"
+[ -n "$$mac_wlan3" ] && echo "<dt>WLAN3</dt><dd><small>$mac_wlan3</small></dd>"
 echo "</dl></dd></dl>"
 
 fi
