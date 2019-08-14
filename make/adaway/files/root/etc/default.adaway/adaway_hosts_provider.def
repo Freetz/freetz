@@ -1,0 +1,7 @@
+CAPTION='Ad hosts provider'
+DESCRIPTION='Ad hosts provider typically offer a replacement file for an <a href="https://en.wikipedia.org/wiki/Hosts_%28file%29" target="_new">operating system hosts file</a>. AdAway should be able to cope any file that contains domains and not just hosts files. Lines beginning with the characters "#", "//" and ";" will be ignored.'
+CONFIG_TEMPLATE='/mod/etc/default.adaway/adaway_hosts_provider'
+CONFIG_FILE='/tmp/flash/adaway_hosts_provider'
+CONFIG_PREPARE="[[ -e '$CONFIG_FILE' ]] || ( touch $CONFIG_FILE; chmod 0644 $CONFIG_FILE; cat $CONFIG_TEMPLATE > $CONFIG_FILE)"
+CONFIG_SAVE='modsave flash;'
+CONFIG_TYPE='text'

@@ -1,0 +1,73 @@
+#!/bin/sh
+
+DAEMON=adaway
+DAEMON_LONG_NAME="AdAway"
+DAEMON_CONFIG=/mod/etc/adaway.conf
+PID_FILE=/var/run/adaway.pid
+
+. /etc/init.d/modlibrc
+
+config() {
+	modlib_config
+}
+
+prepare_configs () {
+	for EXTRA_CONFIG in /mod/etc/default.$DAEMON/*.def
+	do
+		. $EXTRA_CONFIG
+		eval "$CONFIG_PREPARE"
+	done
+}
+
+start() {
+	echo -n "Starting ${DAEMON_LONG_NAME} ..."
+	config
+	$DAEMON > /dev/null 2>&1
+	exitval=$?
+	if [ "$exitval" -eq 0 ]; then
+		echo "done."
+	else
+		echo "failed."
+		exit $exitval
+	fi
+}
+
+case $1 in
+	""|load)
+		modreg cgi "$DAEMON" "AdAway"
+		modreg daemon $DAEMON
+		modreg file $DAEMON 'ad_hosts_provider' 'Ad hosts provider' 0 "adaway_hosts_provider"
+		modreg file $DAEMON 'ad_blacklist' 'Blacklist domains' 0 "adaway_blacklist"
+		modreg file $DAEMON 'ad_whitelist' 'Whitelist domains' 0 "adaway_whitelist"
+
+		prepare_configs
+		modlib_start $ADAWAY_ENABLED
+		$DAEMON --enable
+		;;
+	unload)
+		$DAEMON --disable
+		modunreg file $DAEMON
+		modunreg daemon $DAEMON
+		modunreg cgi "$DAEMON"
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		killall $DAEMON
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

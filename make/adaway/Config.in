@@ -1,0 +1,14 @@
+config FREETZ_PACKAGE_ADAWAY
+	bool "AdAway"
+	default n
+	select FREETZ_BUSYBOX_MD5SUM
+	select FREETZ_PACKAGE_CURL
+	select FREETZ_PACKAGE_DNSMASQ
+	help
+		Ads get blocked by resolving corresponding domain name
+		queries via dnsmasq to 127.0.0.1.
+		Ad domains are periodically downloaded and updated
+		from several providers.
+		
+		Size: about 13 kB (uncompressed)
+

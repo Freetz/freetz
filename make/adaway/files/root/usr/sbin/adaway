@@ -1,0 +1,384 @@
+#!/bin/sh
+
+log () {
+  SEVERITY=$1
+  LOG_LEVEL=${LOG_LEVEL:-4}
+
+  case $SEVERITY in
+    ( emerg   )
+      SEVERITY=0
+      shift
+      ;;
+    ( alert   )
+      SEVERITY=1
+      shift
+      ;;
+    ( crit    )
+      SEVERITY=2
+      shift
+      ;;
+    ( err     )
+      SEVERITY=3
+      shift
+      ;;
+    ( warning )
+      SEVERITY=4
+      shift
+      ;;
+    ( notice  )
+      SEVERITY=5
+      shift
+      ;;
+    ( info    )
+      SEVERITY=6
+      shift
+      ;;
+    ( debug   )
+      SEVERITY=7
+      shift
+      ;;
+    ( *       )
+      SEVERITY=6
+      ;;
+  esac
+
+  [[ $SEVERITY -le $LOG_LEVEL ]] && logger -s -t adaway -p user.${SEVERITY} -- $*
+}
+
+skip_comments () {
+  grep -v '^ *#\|^ *//\|^ *;'
+}
+
+extract_domains () {
+  grep -o '[a-zA-Z0-9_][a-zA-Z0-9_\.\-]*\.[a-zA-Z\.\-]*[a-zA-Z][a-zA-Z]'
+}
+
+download_adhosts () {
+  local PROXY="$1"
+  local ADHOSTS_PROVIDER_FILE=/tmp/flash/adaway_hosts_provider
+  local URL=''
+
+  while read URL
+  do [[ -n "$URL" ]] && curl -so- ${PROXY:+-x $PROXY} "$URL"
+  done <<- EOT
+	$(skip_comments < $ADHOSTS_PROVIDER_FILE)
+	EOT
+}
+
+add_target_ip () {
+  local TGT_IP="${1:-127.0.0.1}"
+  sed "s/\(.*\)/$TGT_IP \1/"
+}
+
+format_adhosts () {
+    local TGT_IP="$1"
+
+    skip_comments            \
+    | extract_domains        \
+    | sort -u                \
+    | add_target_ip "$TGT_IP"
+}
+
+save_adhosts () {
+  local FILE=$1
+
+  touch $FILE
+  chown root: $FILE
+  chmod 644 $FILE
+  cat > $FILE
+  md5sum < $FILE > ${FILE}.new.md5
+}
+
+adhosts_changed () {
+  local FILE=$1
+  local CUR_SUM="$(cat ${FILE}.cur.md5 2> /dev/null)"
+  local NEW_SUM="$(cat ${FILE}.new.md5 2> /dev/null)"
+
+  if [[ "$CUR_SUM" == "$NEW_SUM" ]]
+  then
+    log debug No new or deprecated ad domains
+    return 1
+  else
+    log debug New or deprecated ad domains
+    return 0
+  fi
+}
+
+load_adhosts () {
+  local FILE=$1
+  local DNSMASQ_PID=$(cat /var/run/dnsmasq/dnsmasq.pid)
+  cat ${FILE}.new.md5 > ${FILE}.cur.md5
+
+  if kill -1 $DNSMASQ_PID
+  then log info Successfully signaled dnsmasq to reload ad domains
+  else log err Signaling dnsmasq to reload ad domains failed
+  fi
+}
+
+dnsmasq_is_running () {
+  /mod/etc/init.d/rc.dnsmasq status \
+  | grep -q running
+}
+
+disable_adaway () {
+  local ADHOSTS_FILE=$1
+  local ADHOSTS_FILE_ESC=$(echo $ADHOSTS_FILE | sed 's|/|\\/|g')
+  local RC=0
+
+  if . /etc/default.dnsmasq/dnsmasq_extra.def
+  then
+    log debug Successfully sourced dnsmasq_extra.def
+  else
+    RC=1
+    log error Sourcing dnsmasq_extra.def failed
+  fi
+
+  if sed -i "/addn-hosts=$ADHOSTS_FILE_ESC/d" $CONFIG_FILE
+  then
+    log debug Successfully edited $CONFIG_FILE
+  else
+    RC=1
+    log error Editing $CONFIG_FILE failed
+  fi
+
+  if rm -f $ADHOSTS_FILE ${ADHOSTS_FILE}.cur.md5 ${ADHOSTS_FILE}.new.md5
+  then
+    log debug Successfully removed adaway files
+  else
+    RC=1
+    log warn Issues occuerd while removing adaway files
+  fi
+
+  return $RC
+}
+
+enable_adaway () {
+  local ADHOSTS_FILE=$1
+  local RC=0
+
+  if . /etc/default.dnsmasq/dnsmasq_extra.def
+  then
+    log debug Successfully sourced dnsmasq_extra.def
+  else
+    RC=1
+    log error Sourcing dnsmasq_extra.def failed
+  fi
+
+  if echo 'addn-hosts=/tmp/hosts.adaway' >> $CONFIG_FILE
+  then
+    log debug Successfully edited $CONFIG_FILE
+  else
+    RC=1
+    log error Editing $CONFIG_FILE failed
+  fi
+
+  if touch $ADHOSTS_FILE
+  then
+    log debug Successfully touched $ADHOSTS_FILE
+  else
+    RC=1
+    log error Failiure while touching $ADHOSTS_FILE
+  fi
+
+  if chown root: $ADHOSTS_FILE
+  then
+    log debug Successfully set owndership of $ADHOSTS_FILE
+  else
+    RC=1
+    log error Setting owndership of $ADHOSTS_FILE failed
+  fi
+
+  if chmod 644 $ADHOSTS_FILE
+  then
+    log debug Successfully set permissions for $ADHOSTS_FILE
+  else
+    RC=1
+    log error Setting permissions for $ADHOSTS_FILE failed
+  fi
+
+  return $RC
+}
+
+add_blacklisted () {
+  local BLACKLIST_FILE=/tmp/flash/adaway_blacklist
+
+  cat
+
+  if [[ -f $BLACKLIST_FILE ]]
+  then
+    log debug Blacklist file \'$BLACKLIST_FILE\' exists and will be considered
+    cat $BLACKLIST_FILE
+  else
+    log warn Blacklist file \'$BLACKLIST_FILE\' does not exist. Skip blacklisting.
+  fi
+}
+
+remove_whitelisted () {
+  local WHITELIST_FILE=/tmp/flash/adaway_whitelist
+
+  if [[ -f $WHITELIST_FILE ]]
+  then
+    log debug Whitelist file \'$WHITELIST_FILE\' exists and will be considered
+    grep -vf $WHITELIST_FILE
+  else
+    log warn Whitelist file \'$WHITELIST_FILE\' does not exist. Skip whitelisting.
+    cat
+  fi
+}
+
+oneshot () {
+  local ADHOSTS_FILE="$1"
+  local PROXY="$2"
+  local TGT_IP="$3"
+  local RC=0
+
+  download_adhosts "$PROXY"   \
+  | add_blacklisted           \
+  | remove_whitelisted        \
+  | format_adhosts "$TGT_IP"  \
+  | save_adhosts $ADHOSTS_FILE
+
+  if adhosts_changed $ADHOSTS_FILE
+  then
+    if load_adhosts $ADHOSTS_FILE
+    then
+      log notice dnsmasq successfully updated
+    else
+      RC=1
+      log err failed to update dnsmasq
+    fi
+  else
+    log notice No need to update dnsmasq
+  fi
+
+  return $RC
+}
+
+kill_bg_and_exit () {
+  kill %1
+  exit 1
+}
+
+periodic_update () {
+  local ADHOSTS_FILE="$1"
+  local PROXY="$2"
+  local INTERVAL=${3:-86400}
+  local TGT_IP="$4"
+  local PID_FILE=/var/run/adaway.pid
+
+  echo $$ > $PID_FILE
+  log info Update ad hosts periodically every \'$INTERVAL\' seconds
+
+  while :
+  do
+    if oneshot "$ADHOSTS_FILE" "$PROXY" "$TGT_IP"
+    then
+      log notice No issues occured
+    else
+      log warn Issues occured
+    fi
+
+    trap 'kill_bg_and_exit' TERM
+    sleep $INTERVAL &
+    wait
+    trap - TERM
+  done
+}
+
+main () {
+  . /mod/etc/adaway.conf                                                               
+                                                                                                
+  export LOG_LEVEL                                                                            
+                                                                                                  
+  local ADHOSTS_FILE=/tmp/hosts.adaway
+  local INTERVAL="$DOWNLOAD_INTERVAL"
+  local PROXY="$DOWNLOAD_PROXY"
+  local TGT_IP="$TARGET_IP"
+  local RC=0
+
+  export ME=$0
+
+  case $1 in
+    ( --enable )
+      if disable_adaway $ADHOSTS_FILE
+      then
+        log debug Removing \(potential\) existing hosts reference from dnsmasq successfully.
+      else
+        RC=1
+        log error Removing \(potential\) existing hosts reference from dnsmasq failed.
+      fi
+
+      if enable_adaway $ADHOSTS_FILE
+      then
+        log info Adding hosts reference to dnsmasq successfully.
+
+        if dnsmasq_is_running
+        then
+          log debug Dnsmasq is already runnnig and needs to be restarted
+      
+          if /mod/etc/init.d/rc.dnsmasq restart
+          then
+            log info Dnsmasq successfully restarted
+          else
+            log error Restart of dnsmasq failed.
+          fi
+        else
+          log debug Dnsmasq is stopped and will get the right configuration on startup
+        fi
+      else
+        RC=1
+        log error Adding hosts reference to dnsmasq failed.
+      fi
+      ;;
+    ( --disable )
+      if disable_adaway $ADHOSTS_FILE
+      then
+        log debug Removing \(potential\) existing hosts reference from dnsmasq successfully.
+
+        if dnsmasq_is_running
+        then
+          log debug Dnsmasq is runnnig and needs to be restarted
+      
+          if /mod/etc/init.d/rc.dnsmasq restart
+          then
+            log info Dnsmasq successfully restarted
+          else
+            log error Restart of dnsmasq failed.
+          fi
+        else
+          log debug Dnsmasq is stopped and will get the right configuration on startup
+        fi
+      else
+        RC=1
+        log error Removing \(potential\) existing hosts reference from dnsmasq failed.
+      fi
+      ;;
+    ( --continuous )
+      log notice Continuous mode
+      periodic_update "$ADHOSTS_FILE" "$PROXY" "$INTERVAL" "$TGT_IP"
+      ;;
+    ( --oneshot )
+      log notice One shot mode
+
+      if oneshot "$ADHOSTS_FILE" "$PROXY" "$TGT_IP"
+      then
+        log notice No issues occured
+      else
+        RC=1
+        log warning Issues occured
+      fi
+      ;;
+    ( --daemonize \
+    | *           )
+      log notice Fork continuous mode
+      nohup $ME --continuous &> /dev/null &
+      ;;
+  esac
+
+  return $RC
+}
+
+[[ -e /usr/bin/logger ]] || log () { :; }
+
+main "$@"
+exit $?

@@ -1,0 +1,7 @@
+CAPTION='Whitelist domains'
+DESCRIPTION='Whitelisted domains will not be considered as ad domain'
+CONFIG_TEMPLATE='/mod/etc/default.adaway/adaway_whitelist'
+CONFIG_FILE='/tmp/flash/adaway_whitelist'
+CONFIG_PREPARE="[[ -e '$CONFIG_FILE' ]] || ( touch $CONFIG_FILE; chmod 0644 $CONFIG_FILE; cat $CONFIG_TEMPLATE > $CONFIG_FILE)"
+CONFIG_SAVE='modsave flash;'
+CONFIG_TYPE='text'

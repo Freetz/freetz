@@ -1,0 +1,7 @@
+CAPTION='Blacklist domains'
+DESCRIPTION='Blacklisted domains will be considered like domains from downloaded ad hosts'
+CONFIG_TEMPLATE='/mod/etc/default.adaway/adaway_blacklist'
+CONFIG_FILE='/tmp/flash/adaway_blacklist'
+CONFIG_PREPARE="[[ -e '$CONFIG_FILE' ]] || ( touch $CONFIG_FILE; chmod 0644 $CONFIG_FILE; cat $CONFIG_TEMPLATE > $CONFIG_FILE)"
+CONFIG_SAVE='modsave flash;'
+CONFIG_TYPE='text'
