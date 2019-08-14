@@ -1,6 +1,6 @@
-$(call PKG_INIT_LIB, 2.9.8)
+$(call PKG_INIT_LIB, 2.9.9)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=0b74e51595654f958148759cfef0993114ddccccbb6f31aee018f3558e8e2732
+$(PKG)_SOURCE_SHA256:=94fb70890143e3c6549f265cee93ec064c80a84c42ad0f23e85ee1fd6540a871
 $(PKG)_SITE:=ftp://xmlsoft.org/$(pkg)
 
 $(PKG)_LIBNAME:=$(pkg).so.$($(PKG)_VERSION)
