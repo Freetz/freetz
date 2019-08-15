@@ -16,10 +16,12 @@ start() {
 	fi
 	wg setconf wg0 /tmp/flash/wireguard/wireguard.conf
 	ip link set wg0 up
+	wg show wg0 allowed-ips | awk '{for(i = 1; i <= NF; i++) if (i != 1) { system("ip route add "$i" dev wg0"); }}'
 	echo 'done.'
 }
 
 stop() {
+	wg show wg0 allowed-ips | awk '{for(i = 1; i <= NF; i++) if (i != 1) { system("ip route del "$i" dev wg0"); }}'
 	ip link set wg0 down
 	ip link delete dev wg0 type wireguard
 }
