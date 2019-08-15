@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo -n "$([ -e .version ] && cat .version || echo 'freetz-undefined') "
+[ -d .git ] && tools/freetz-version
+[ -d .svn ] && svnversion . -n && LC_ALL=C svn info | sed -n 's/^Last Changed Date: \([^+(]*\).*/ -- \1/p'
+

@@ -4,6 +4,11 @@ config FREETZ_HAVE_DOT_CONFIG
 	bool
 	default y
 
+comment "Freetz revision  -----------------------"
+	depends on FREETZ_MENUCONFIG_REVISION
+comment " $(shell,tools/freetz-revision 2>&1)"
+	depends on FREETZ_MENUCONFIG_REVISION
+
 comment "User competence ------------------------"
 source "config/ui/user-competence.in"
 
