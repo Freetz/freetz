@@ -283,9 +283,13 @@ usage()
 	echo "                It is mandatory to set the -lfs parameter too."
 	echo "-f            Disable safety prompt."
 	echo "-ip <ip>      Bootloader IP address or hostname, default 192.168.178.1"
-	echo "-ram <mb>     Only ram-boot mode: Ram size in MB of your device, default 256."
-	echo "              Some devices have more ram, like 7590 has 512 MB."
-	echo "              But for flashing 256 should be okay."
+	echo "-ram <mb>     Only ram-boot mode: Ram size in MB of your device."
+	echo "                It may work to use a smaler value, but not with a larger!"
+	echo "                Ram size of some devices:"
+	echo "                 - 128 MB: 3272 3370 3390 6820 6840 7272 7362 7412 7430"
+	echo "                 - 256 MB: 1200 3000 3490 5490 5491 7369 7490 7520 7530 7560"
+	echo "                 - 512 MB: 6890 7580 7583 7590"
+	echo "                Hint: The correct value is automatically used by 'make push-firmware'."
 	echo "-lfs <0|1>    Not single-boot mode: Set linux_fs_start to 0 or 1 and flash into this."
 	echo "-hn           Only single-boot mode: Flash to an 'Alice/HanseNet' version of 7570."
 	echo
@@ -332,6 +336,7 @@ while [ $# -ge 1 ]; do
 		(-ram)
 			[ -z "$2" -o "$2" != "${2#\-}" ] && usage
 			FULLSIZE="0x$(printf '%x' "$(( $2 * 1048576 ))")"
+			[ "$2" -ge 99 2>/dev/null ] || FULLSIZE=
 			shift
 			;;
 		(-lfs)
@@ -350,16 +355,16 @@ while [ $# -ge 1 ]; do
 done
 
 # arg check
-[ -z "$ISSINGLE$ISDUAL$ISRAM" ]  && echo "Parameter '-m<s|r|d>' is mandatory."                   && exit 1
-[ ! $ISSINGLE ] && [ $ISALICE ]  && echo "Parameter '-hn' is only allowed for single-boot mode." && exit 1
-[ $ISSINGLE ]   && [ $LFS ]      && echo "Parameter '-lfs' is not allowed for single-boot mode." && exit 1
-[ $ISDUAL ]     && [ ! $LFS ]    && echo "Parameter '-lfs' is mandatory for dual-boot mode."     && exit 1
-[ ! $ISRAM ]    && [ $FULLSIZE ] && echo "Parameter '-ram' is only allowed for ram-boot mode."   && exit 1
+[ -z "$ISSINGLE$ISDUAL$ISRAM" ]    && echo "Parameter '-m<s|r|d>' is mandatory."                   && exit 1
+[ ! $ISSINGLE ] && [ $ISALICE ]    && echo "Parameter '-hn' is only allowed for single-boot mode." && exit 1
+[ $ISSINGLE ]   && [ $LFS ]        && echo "Parameter '-lfs' is not allowed for single-boot mode." && exit 1
+[ $ISDUAL ]     && [ ! $LFS ]      && echo "Parameter '-lfs' is mandatory for dual-boot mode."     && exit 1
+[ $ISRAM ]      && [ ! $FULLSIZE ] && echo "Parameter '-ram' is mandatory for ram-boot mode."      && exit 1
+[ ! $ISRAM ]    && [ $FULLSIZE ]   && echo "Parameter '-ram' is only allowed for ram-boot mode."   && exit 1
 
 prepare_image
 
 if [ $ISRAM ]; then
-	[ ! $FULLSIZE ] && FULLSIZE=0x10000000  # 256MB for 7490. 7590 has 0x20000000, but anyway..
 	MAPSTART=0x80000000  # start mapped memory
 	MAPLIMIT="0x$(printf '%x' $(( $MAPSTART + $FULLSIZE )))"
 	FILESIZE="0x$(printf '%x' $(stat --printf='%s' "$mtdram1"))"
