@@ -199,10 +199,6 @@ telnet_hn() {
 }
 
 prepare_image() {
-	[ -L "$file" ] && file="$(realpath $file)" && file=${file#$PWD/}
-	[ -e "$file" ] || { echo "No such file or directory: $file"; exit 1; }
-	[ -f "$file" ] || { echo "Not a file: $file"; exit 1; }
-	[ -r "$file" ] || { echo "Access denied: $file"; exit 1; }
 	if [ $ISRAM ]; then
 		tmpdir=$(mktemp -td freetz_XXX) || { echo "Error creating temporary directory."; exit 1; }
 		mtdram1="$tmpdir/ramboot.flash"
@@ -270,15 +266,15 @@ trap cleanup EXIT SIGTERM SIGINT
 usage()
 {
 	echo
-	echo "Usage: $0 -m<s|r|d> [image] [ -f ] [ -ip <ip> ] [ -ram <mb> ] [ -lfs <0|1> ] [ -hn ]"
+	echo "Usage: $0 [image] [ -m<s|r|d> ] [ -f ] [ -ip <ip> ] [ -ram <mb> ] [ -lfs <0|1> ] [ -hn ]"
 	echo
-	echo "              When no 'image' is given, images/latest.image will be tried."
-	echo "-ms [image]   Mode single-boot (like 7270 & 7390):"
+	echo "[image]       When no 'image' file is given, images/latest.image will be tried."
+	echo "-ms           Mode single-boot (like 7270 & 7390):"
 	echo "                Flashes the given 'image' to classic devices"
-	echo "-mr [image]   Mode ram-boot (like 7490 & 7590):"
+	echo "-mr           Mode ram-boot (like 7490 & 7590):"
 	echo "                The 'image' will be flashed into currently active partition."
 	echo "                You could use -lfs parameter to change this."
-	echo "-md [image]   Mode dual-boot (like 6490 & 6590):"
+	echo "-md           Mode dual-boot (like 6490 & 6590):"
 	echo "                Flashes the Arm and x86 part of the 'image'."
 	echo "                It is mandatory to set the -lfs parameter too."
 	echo "-f            Disable safety prompt."
@@ -295,35 +291,17 @@ usage()
 	echo
 	exit 1
 }
-[ -z "$1" ] && usage
 
 while [ $# -ge 1 ]; do
 	case "$1" in
-		(-m*)
-			case "$1" in
-				(-ms|-msingle)
-					ISSINGLE=true
-					;;
-				(-mr|-mram)
-					ISRAM=true
-					;;
-				(-md|-mdual)
-					ISDUAL=true
-					;;
-				(*)
-					usage
-					;;
-			esac
-			if [ -z "$2" -o "$2" != "${2#\-}" ]; then
-				if [ -e images/latest.image ]; then
-					file="images/latest.image"
-				else
-					usage
-				fi
-			else
-				file="$2"
-				shift
-			fi
+		(-ms|-msingle)
+			ISSINGLE=true
+			;;
+		(-mr|-mram)
+			ISRAM=true
+			;;
+		(-md|-mdual)
+			ISDUAL=true
 			;;
 		(-f|-force)
 			ISFORCE=true
@@ -335,27 +313,52 @@ while [ $# -ge 1 ]; do
 			;;
 		(-ram)
 			[ -z "$2" -o "$2" != "${2#\-}" ] && usage
-			FULLSIZE="0x$(printf '%x' "$(( $2 * 1048576 ))")"
-			[ "$2" -ge 99 2>/dev/null ] || FULLSIZE=
+			[ "$2" -gt 0 2>/dev/null ] && FULLSIZE="0x$(printf '%x' "$(( $2 * 1048576 ))")"
+			[ -z "$FULLSIZE" ] && echo "Invalid value for ram size" && usage
 			shift
 			;;
 		(-lfs)
-			[ "$2" != "0" -a "$2" != "1" ] && echo "Invalid linux_fs_start value" && exit
+			[ "$2" != "0" -a "$2" != "1" ] && echo "Invalid linux_fs_start value" && usage
 			LFS=$2
 			shift
 			;;
 		(-hn)
 			ISALICE=true
 			;;
+		(-h|--help)
+			usage
+			;;
 		(*)
-			echo "Unknown parameter: $1" && usage
+			if [ -z "$file" -a "$1" == "${1#\-}" ]; then
+				file="$1"
+			else
+				echo "Unknown parameter: $1" && usage
+			fi
 			;;
 	esac
 	shift
 done
 
+# file checks
+[ -z "$file" ] && [ -e images/latest.image ] && file="images/latest.image"
+[ -L "$file" ] && file="$(realpath "$file")" && file=${file#$PWD/}
+[ -z "$file" ] && usage
+[ -n "$file" ] || { echo "An image file is mandatory."      ; exit 1; }
+[ -e "$file" ] || { echo "No such file or directory: $file" ; exit 1; }
+[ -f "$file" ] || { echo "Not a file: $file"                ; exit 1; }
+[ -r "$file" ] || { echo "Access denied: $file"             ; exit 1; }
+
+# img detect
+if [ -z "$ISSINGLE$ISDUAL$ISRAM" ]; then
+	echo "Analyzing '$file' ... "
+	N="$(tar tf "$file" --wildcards '*/kernel.image' 2>/dev/null | wc -l)"
+	S="$(tar -Oxf "$file" ./var/tmp/filesystem.image 2>/dev/null | wc -c)"
+fi
+[ "$N" == "2" -a "$S" == "0" ] && ISDUAL=true
+[ "$N" == "1" -a "$S" == "0" ] && ISSINGLE=true
+[ "$N" == "1" -a "$S" != "0" ] && ISRAM=true
+[ -z "$ISSINGLE$ISDUAL$ISRAM" ]    && echo "Can not recognize image, please use '-m<s|r|d>'."      && exit 1
 # arg check
-[ -z "$ISSINGLE$ISDUAL$ISRAM" ]    && echo "Parameter '-m<s|r|d>' is mandatory."                   && exit 1
 [ ! $ISSINGLE ] && [ $ISALICE ]    && echo "Parameter '-hn' is only allowed for single-boot mode." && exit 1
 [ $ISSINGLE ]   && [ $LFS ]        && echo "Parameter '-lfs' is not allowed for single-boot mode." && exit 1
 [ $ISDUAL ]     && [ ! $LFS ]      && echo "Parameter '-lfs' is mandatory for dual-boot mode."     && exit 1
