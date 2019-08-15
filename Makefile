@@ -339,7 +339,7 @@ push-firmware:
 		if [ "$(FREETZ_SYSTEM_TYPE_MULTICORE)" == "y" ]; then \
 			$(TOOLS_DIR)/push_firmware -md -lfs 1; exit $?; \
 		elif [ "$(FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE)" == "y" ]; then \
-			$(TOOLS_DIR)/push_firmware -mr; exit $?; \
+			$(TOOLS_DIR)/push_firmware -mr -ram $(FREETZ_AVM_PROP_RAMSIZE); exit $?; \
 		else \
 			$(TOOLS_DIR)/push_firmware -ms; exit $?; \
 		fi; \
