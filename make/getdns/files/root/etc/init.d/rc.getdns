@@ -1,0 +1,51 @@
+#!/bin/sh
+
+DAEMON=getdns
+DAEMON_LONG_NAME="Stubby"
+DAEMON_CONFIG=/tmp/flash/$DAEMON/$DAEMON.yml
+CONF_NAME=getdns
+DAEMON_BIN=stubby
+
+. /etc/init.d/modlibrc
+
+start() {
+	modlib_startdaemon $DAEMON_BIN -C $DAEMON_CONFIG -g -v $GETDNS_LOGLEVEL
+}
+
+case $1 in
+	""|load)
+		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
+		[ ! -e "$DAEMON_CONFIG" ] && /mod/etc/default.$DAEMON/getdns_conf > $DAEMON_CONFIG
+
+		modreg file $DAEMON config '$(lang de:"Konfiguration" en:"Configuration")' 1 "getdns_conf"
+		[ -r /etc/options.cfg ] && . /etc/options.cfg
+		modreg cgi $DAEMON $DAEMON_LONG_NAME
+		modreg daemon $DAEMON
+
+		modlib_start $GETDNS_ENABLED
+		;;
+	unload)
+		modunreg daemon $DAEMON
+		modunreg cgi $DAEMON
+		modunreg file $DAEMON
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
