@@ -20,7 +20,9 @@ sec_begin 'AdAway blocking status'
 ADAWAY_BLOCK_COUNT=`wc -l /tmp/hosts.adaway | awk '{print $1}'`
 
 cat << EOF
-Number of blocking domains: $ADAWAY_BLOCK_COUNT<br>
+<ul>
+<li><p>Number of blocking domains: $ADAWAY_BLOCK_COUNT  - <a href="$(href cgi adaway)"><i>refresh</i></a></p></li>
+</ul>
 EOF
 
 sec_end
