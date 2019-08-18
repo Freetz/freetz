@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, master)
+$(call PKG_INIT_BIN, 1ac45e08d4)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SITE:=git@https://github.com/D1W0U/vermagic
 
