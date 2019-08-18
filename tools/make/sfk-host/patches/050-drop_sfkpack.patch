@@ -20,12 +20,23 @@
  all: config.h
 --- sfkbase.hpp
 +++ sfkbase.hpp
-@@ -296,7 +296,7 @@
+@@ -319,6 +319,7 @@
+ #define WITH_CASE_XNN
  #define SFKDEEPZIP   // sfk175
  
++#define SFKNOPACK
  #ifndef SFKNOPACK
-- #define SFKPACK      // sfk191
-+// #define SFKPACK      // sfk191
- #endif
+  #define SFKPACK     // sfk191
+  #define SFKOFFICE   // sfk194
+--- sfk.cpp
++++ sfk.cpp
+@@ -44864,7 +44864,9 @@
+       cs.precachezip = 1;
+       #endif // VFILEBASE
  
- #ifdef _WIN32
++      #ifdef SFKPACK
+       cs.hidezipcomment = 1; // snapto
++      #endif // SFKPACK
+ 
+       const char *poutmode = "w";
+ 
