@@ -5,6 +5,15 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 check "$ADAWAY_ENABLED" yes:auto_c "*":man_c
 check "$ADAWAY_LOGLEVEL" 0:loglevel_c0 1:loglevel_c1 2:loglevel_c2 3:loglevel_c3 5:loglevel_c5 6:loglevel_c6 7:loglevel_c7 "*":loglevel_c4
+
+
+sec_begin 'AdAway blocking status'
+ADAWAY_BLOCK_COUNT=`wc -l /tmp/hosts.adaway | awk '{print $1}'`
+
+cat << EOF
+Number of blocking domains: $ADAWAY_BLOCK_COUNT<br>
+EOF
+sec_end
 sec_begin 'Activation'
 
 cat << EOF
@@ -27,6 +36,9 @@ Update interval:<br><span style="font-size:10px;">The ad hosts files will be per
 
 Target IP address:<br><span style="font-size:10px;">Domains of ad hosts files will be resolved to this IP address.</span><br>
 <input id="targetip" type="text" name="target_ip" size="15" maxlength="15" value="$(html "$ADAWAY_TARGET_IP")"><p>
+
+CA-file:<br><span style="font-size:10px;">trusted CA-File for https provider</span><br>
+<input id="cafile" type="text" name="cafile" size="40" maxlength="80" value="$(html "$ADAWAY_CAFILE")"><p>
 
 Debug level:<br>
 <span style="font-size:10px;">Logging via syslog. Logging is disabled if syslog logger (/usr/sbin/logger) does not exist.</span><br>

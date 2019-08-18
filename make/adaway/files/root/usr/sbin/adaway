@@ -59,7 +59,7 @@ download_adhosts () {
   local URL=''
 
   while read URL
-  do [[ -n "$URL" ]] && curl -so- ${PROXY:+-x $PROXY} "$URL"
+  do [[ -n "$URL" ]] && curl --retry 3 --retry-connrefused --retry-delay 60 -so- ${PROXY:+-x $PROXY} ${CAFILE:+--cacert $CAFILE} "$URL"
   done <<- EOT
 	$(skip_comments < $ADHOSTS_PROVIDER_FILE)
 	EOT
@@ -286,10 +286,10 @@ periodic_update () {
 }
 
 main () {
-  . /mod/etc/adaway.conf                                                               
-                                                                                                
-  export LOG_LEVEL                                                                            
-                                                                                                  
+  . /mod/etc/adaway.conf
+
+  export LOG_LEVEL
+
   local ADHOSTS_FILE=/tmp/hosts.adaway
   local INTERVAL="$DOWNLOAD_INTERVAL"
   local PROXY="$DOWNLOAD_PROXY"
@@ -315,7 +315,7 @@ main () {
         if dnsmasq_is_running
         then
           log debug Dnsmasq is already runnnig and needs to be restarted
-      
+
           if /mod/etc/init.d/rc.dnsmasq restart
           then
             log info Dnsmasq successfully restarted
@@ -338,7 +338,7 @@ main () {
         if dnsmasq_is_running
         then
           log debug Dnsmasq is runnnig and needs to be restarted
-      
+
           if /mod/etc/init.d/rc.dnsmasq restart
           then
             log info Dnsmasq successfully restarted
