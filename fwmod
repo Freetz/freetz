@@ -1451,7 +1451,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 						fi
 						composite -dissolve 100% -gravity $tagging_pos -geometry $tagging_geo -quality 100 \
 						  "${TAGGING_DIR}/${FREETZ_TAGGING_STRING}.png" ${tagging_temp:-$tagging_file} ${tagging_temp:-$tagging_file}
-						[ $? -ne 0 ] && error 1 "tagging failed on compositing, is imagemagick installed?"
+						[ $? -ne 0 ] && error 1 "tagging failed on compositing, is imagemagick and libpng installed?"
 						[ -n "$tagging_temp" ] && tagging_ren="$tagging_ren ${tagging_file##*/}" && rm -f "${tagging_file}"
 					done
 					[ -z "$tagging_temp" ] && continue
