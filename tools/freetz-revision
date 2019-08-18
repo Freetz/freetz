@@ -1,6 +1,11 @@
 #!/bin/bash
 
-echo -n "$([ -e .version ] && cat .version || echo 'freetz-undefined') "
-[ -d .git ] && tools/freetz-version
-[ -d .svn ] && svnversion . -n && LC_ALL=C svn info | sed -n 's/^Last Changed Date: \([^+(]*\).*/ -- \1/p'
+[ -d .git ] && R=" $(tools/freetz-version)"
+if [ -d .svn ]; then
+	RB="$(svn info . --no-newline --show-item relative-url | sed 's/.*\///')"
+	[ "$1" ] && RB="${RB/trunk/}" || RD="$(svn info . --no-newline --show-item last-changed-date | sed 's/T.*//')"
+	R=" $(svnversion . 2>/dev/null | tr ":" "_")${RB:+ $RB}${RD:+ $RD}"
+fi
+[ "$1" ] && R="${R// /-}"
+echo "$(cat .version)${R}"
 
