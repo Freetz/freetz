@@ -4,7 +4,7 @@ $(PKG)_SOURCE_SHA256:=cb2eca3fbfa232c9e3874e3852d43b33589f27face98eef10242a853d8
 $(PKG)_SITE:=https://curl.haxx.se/ca
 
 $(PKG)_BINARY:=$(DL_DIR)/$($(PKG)_SOURCE)
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/etc/ssl/certs/cacert.pem
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)$(CACERTS_FILE)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
