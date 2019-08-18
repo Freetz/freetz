@@ -6,14 +6,6 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 check "$ADAWAY_ENABLED" yes:auto_c "*":man_c
 check "$ADAWAY_LOGLEVEL" 0:loglevel_c0 1:loglevel_c1 2:loglevel_c2 3:loglevel_c3 5:loglevel_c5 6:loglevel_c6 7:loglevel_c7 "*":loglevel_c4
 
-
-sec_begin 'AdAway blocking status'
-ADAWAY_BLOCK_COUNT=`wc -l /tmp/hosts.adaway | awk '{print $1}'`
-
-cat << EOF
-Number of blocking domains: $ADAWAY_BLOCK_COUNT<br>
-EOF
-sec_end
 sec_begin 'Activation'
 
 cat << EOF
@@ -21,6 +13,14 @@ cat << EOF
 <input id="e1" type="radio" name="enabled" value="yes"$auto_c_chk><label for="e1"> Automatic</label>
 <input id="e2" type="radio" name="enabled" value="no"$man_c_chk><label for="e2"> Manual</label>
 </p>
+EOF
+
+sec_end
+sec_begin 'AdAway blocking status'
+ADAWAY_BLOCK_COUNT=`wc -l /tmp/hosts.adaway | awk '{print $1}'`
+
+cat << EOF
+Number of blocking domains: $ADAWAY_BLOCK_COUNT<br>
 EOF
 
 sec_end
