@@ -26,8 +26,11 @@ endif
 $(PKG)_DEPENDS_ON += pcre
 $(PKG)_CONFIGURE_OPTIONS += --with-pcre-regex="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 
+$(PKG)_LIBS += -ldl
 $(PKG)_CONFIGURE_OPTIONS += --enable-cli
 $(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_PHP_cli),,$($(PKG)_CLI_TARGET_BINARY))
+$(PKG)_CONFIGURE_ENV +=ac_cv_func_dlopen=yes ac_cv_lib_dl_dlopen=yes ac_cv_func_mprotect=yes
+# ^ fix php build so its able to use zend extensions.
 
 ifeq ($(strip $(FREETZ_PACKAGE_PHP_apxs2)),y)
 $(PKG)_DEPENDS_ON += apache2
@@ -185,7 +188,12 @@ $(PKG)_CONFIGURE_ENV += lt_cv_path_NM="$(TARGET_NM) -B"
 # caching the value breaks a version bump as it points to a directory containing the php version number in it
 $(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i -r -e 's,pdo_cv_inc_path,php_pdo_inc_path,g' ./configure;
 
-$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
++# Remove hardcoded rpath locations / Fix sys_lib_dlsearch_path so php will find its runtime dependencies. 
+$(PKG)_CONFIGURE_PRE_CMDS += sed -i \
+			    -e 's|sys_lib_search_path_spec=.*|sys_lib_search_path_spec="$(TARGET_TOOLCHAIN_STAGING_DIR)/lib"|g' \
+			    -e 's|sys_lib_dlsearch_path_spec=.*|sys_lib_dlsearch_path_spec=""|g' \
+			    -e 's|hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' ./configure;
+
 ifneq ($(strip $(FREETZ_TARGET_IPV6_SUPPORT)),y)
 $(PKG)_CONFIGURE_OPTIONS += --disable-ipv6
 endif
