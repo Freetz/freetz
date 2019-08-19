@@ -1,0 +1,10 @@
+config FREETZ_PACKAGE_CACERTS
+	bool "CA Certs"
+	default n
+	help
+		This package provides up-to-date ca-certs from curl.haxx.se
+
+config FREETZ_PACKAGE_CACERTS_FILE
+	depends on FREETZ_PACKAGE_CACERTS
+	string
+	default "/etc/ssl/cacert.pem"

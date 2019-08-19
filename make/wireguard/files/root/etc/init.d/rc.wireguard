@@ -16,10 +16,12 @@ start() {
 	fi
 	wg setconf wg0 /tmp/flash/wireguard/wireguard.conf
 	ip link set wg0 up
+	wg show wg0 allowed-ips | while read peer ip; do for i in $ip; do if [ "$i" != "0.0.0.0/0" ]; then ip route add $i dev wg0 ; fi ; done ; done
 	echo 'done.'
 }
 
 stop() {
+	wg show wg0 allowed-ips | while read peer ip; do for i in $ip; do if [ "$i" != "0.0.0.0/0" ]; then ip route del $i dev wg0 ; fi ; done ; done
 	ip link set wg0 down
 	ip link delete dev wg0 type wireguard
 }

@@ -31,6 +31,7 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libcurl_WITH_SFTP
 $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libcurl_WITH_ZLIB
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_CURL_STATIC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_CACERTS_FILE
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
@@ -78,7 +79,7 @@ $(PKG)_CONFIGURE_OPTIONS += --without-gnutls
 $(PKG)_CONFIGURE_OPTIONS += --without-polarssl
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libcurl_WITH_OPENSSL),--with-ssl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",--without-ssl)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libcurl_WITH_MBEDTLS),--with-mbedtls="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",--without-mbedtls)
-$(PKG)_CONFIGURE_OPTIONS += --without-ca-bundle
+$(PKG)_CONFIGURE_OPTIONS += $(if $(CACERTS_FILE),--with-ca-bundle="$(CACERTS_FILE)",--without-ca-bundle)
 $(PKG)_CONFIGURE_OPTIONS += --without-gssapi
 $(PKG)_CONFIGURE_OPTIONS += --without-libidn
 $(PKG)_CONFIGURE_OPTIONS += --without-libmetalink
