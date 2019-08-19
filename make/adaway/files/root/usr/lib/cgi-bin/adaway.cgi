@@ -27,6 +27,10 @@ EOF
 
 sec_end
 sec_begin 'AdAway daemon'
+ADAWAY_CAFILE_MSG=
+if [ ! -f $ADAWAY_CAFILE ]; then
+  ADAWAY_CAFILE_MSG='<br><span style="color:red">'$ADAWAY_CAFILE' does not exists!</span>'
+fi
 
 cat << EOT
 Download ad hosts files via HTTP-Proxy:<br>
@@ -40,7 +44,8 @@ Target IP address:<br><span style="font-size:10px;">Domains of ad hosts files wi
 <input id="targetip" type="text" name="target_ip" size="15" maxlength="15" value="$(html "$ADAWAY_TARGET_IP")"><p>
 
 CA-file:<br><span style="font-size:10px;">trusted CA-File for https provider</span><br>
-<input id="cafile" type="text" name="cafile" size="40" maxlength="80" value="$(html "$ADAWAY_CAFILE")"><p>
+<input id="cafile" type="text" name="cafile" size="40" maxlength="80" value="$(html "$ADAWAY_CAFILE")">$ADAWAY_CAFILE_MSG<p>
+
 
 Debug level:<br>
 <span style="font-size:10px;">Logging via syslog. Logging is disabled if syslog logger (/usr/sbin/logger) does not exist.</span><br>
