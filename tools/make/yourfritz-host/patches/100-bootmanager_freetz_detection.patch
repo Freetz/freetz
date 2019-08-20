@@ -1,0 +1,21 @@
+--- bootmanager/gui_bootmanager
++++ bootmanager/gui_bootmanager
+@@ -127,8 +127,8 @@
+ readonly avm_version_file2_prefix="CONFIG_"
+ readonly avm_version_main_components="VERSION SUBVERSION"
+ readonly avm_version_date="DATE"
+-readonly version_files="$yourfritz_version_file $freetz_version_file $modfs_version_file"
+-readonly modified_by="YourFritz Freetz modfs -"
++readonly version_files="$yourfritz_version_file $freetz_version_file $freetz_version_file $modfs_version_file"
++readonly modified_by="YourFritz Freetz-NG Freetz modfs -"
+ #######################################################################################################
+ #                                                                                                     #
+ # GRX5 and VR9 specific settings                                                                      #
+@@ -758,6 +758,7 @@
+ 	for f in $version_files; do
+ 		i=$(( i + 1 ))
+ 		if [ -f "$base/$f" ]; then
++			[ "$i" == "2" ] && [ -z "$(grep '^freetz-ng-' "$base/$f")" ] && continue
+ 			set -- $modified_by
+ 			eval printf "%s" "\$$i"
+ 			exit 0
