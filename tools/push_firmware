@@ -442,8 +442,8 @@ else
 	MODE="single"
 fi
 echo " * Flash mode: $MODE-boot"
-[ $FULLSIZE ] && echo " * Allowed memory size: $(( $FULLSIZE /1024/1024 )) MB"
-[ $LFS ]      && echo " * Designated linux_fs_start: $LFS"
+[ $FULLSIZE ]   && echo " * Allowed memory size: $(( $FULLSIZE /1024/1024 )) MB"
+[ ! $ISSINGLE ] && echo " * Designated linux_fs_start: ${LFS:-<current>}"
 if [ $ISDUAL ]; then
 	echo
 	echo " * Arm-System mtd: $ARMsysMTD"
