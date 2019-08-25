@@ -18,7 +18,6 @@ case $1 in
 		[ ! -e "$DAEMON_CONFIG" ] && /mod/etc/default.$DAEMON/getdns_conf > $DAEMON_CONFIG
 
 		modreg file $DAEMON config '$(lang de:"Konfiguration" en:"Configuration")' 1 "getdns_conf"
-		[ -r /etc/options.cfg ] && . /etc/options.cfg
 		modreg cgi $DAEMON $DAEMON_LONG_NAME
 		modreg daemon $DAEMON
 
