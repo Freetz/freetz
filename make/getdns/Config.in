@@ -15,3 +15,10 @@ config FREETZ_PACKAGE_GETDNS
 		Privacy stub resolver (using DNS-over-TLS). Stubby encrypts
 		DNS queries sent from a client machine (desktop or laptop)
 		to a DNS Privacy resolver increasing end user privacy.
+
+	config FREETZ_PACKAGE_GETDNS_CA_BUNDLE
+		bool "Select CA-bundle"
+		depends on FREETZ_PACKAGE_GETDNS
+		default y
+		select FREETZ_PACKAGE_CA_BUNDLE
+
