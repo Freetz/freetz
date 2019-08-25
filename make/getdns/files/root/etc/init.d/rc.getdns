@@ -17,7 +17,7 @@ case $1 in
 		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
 		[ ! -e "$DAEMON_CONFIG" ] && /mod/etc/default.$DAEMON/getdns_conf > $DAEMON_CONFIG
 
-		modreg file $DAEMON config '$(lang de:"Konfiguration" en:"Configuration")' 1 "getdns_conf"
+		modreg file $DAEMON getdns_conf '$(lang de:"Konfiguration" en:"Configuration")' 0 getdns_conf
 		modreg cgi $DAEMON $DAEMON_LONG_NAME
 		modreg daemon $DAEMON
 
