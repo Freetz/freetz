@@ -35,6 +35,26 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+function wait_loader() {
+	echo -en " * No reply from box, assuming switch-off or restart. Trying to re-detect box.\n   Waiting "
+	[ -z "$SLEEP1" ] && SLEEP1=do || sleep 1
+	while ! ping $ping_params $ip > /dev/null; do
+		echo -n "."
+		sleep 0.2
+	done
+	echo -e ". found!\n"
+}
+
+function read_enval() {
+	ftp -v -n <<EOT | sed -rn "s/^$1[ \t]*//p"
+open $ip
+user adam2 adam2
+quote GETENV $1
+quote REBOOT
+quit
+EOT
+}
+
 function push_fw() {
 	trap 'echo ; echo "aborted" ; exit 1' TERM INT
 
@@ -49,15 +69,57 @@ function push_fw() {
 	done
 	echo
 
-	echo    " * No reply from box. Assuming switch-off or restart. Trying to re-detect box."
-	echo -n "   ."
-	while ! ping $ping_params $ip > /dev/null; do
-		echo -n "."
-		sleep 0.2
-	done
-	echo
+	if [ $ISRAM ]; then
+		if [ ! $FULLSIZE ]; then
+			wait_loader
+			enval="$(read_enval memsize)"
+			[ "$enval" != "${enval#0x}" ] && FULLSIZE="$enval"
+			[ -z "$FULLSIZE" ] && echo "Invalid value for memsize." && exit 1
+			echo " * Detected memsize: '$enval'"
+			echo
+		fi
 
-	echo
+		MAPSTART=0x80000000  # start mapped memory
+		MAPLIMIT="0x$(printf '%x' $(( $MAPSTART + $FULLSIZE )))"
+		FILESIZE="0x$(printf '%x' $(stat --printf='%s' "$mtdram1"))"
+		FREESIZE="0x$(printf '%x' $(( $FULLSIZE - $FILESIZE )))"
+		MTDSTART="0x$(printf '%x' $(( $MAPSTART + $FULLSIZE - $FILESIZE )))"
+
+		echo -e " * MAPSTART=$MAPSTART"
+		echo -e " * FULLSIZE=$FULLSIZE\t ($(($FULLSIZE/1024/1024)) MB)"
+		echo -e " * MAPLIMIT=$MAPLIMIT"
+		echo -e " * FILESIZE=$FILESIZE\t ($(($FILESIZE/1024/1024)) MB)"
+		echo -e " * FREESIZE=$FREESIZE\t ($(($FREESIZE/1024/1024)) MB)"
+		echo -e " * MTDSTART=$MTDSTART"
+		echo -e
+	fi
+
+	if [ ! $ISSINGLE ]; then
+		if [ ! $LFS ] || [ -n "$ISDUAL" -a "$LFS" == "9" ]; then
+			wait_loader
+			enval="$(read_enval linux_fs_start)"
+			[ "$enval" != "0" -a "$enval" != "1" -a "$enval" != "" ] && echo "Invalid value for linux_fs_start." && exit 1
+			echo " * Detected linux_fs_start: '${enval:-<unset>}'"
+			[ -z "$enval" ] && enval=0 #factory
+			[ -z "$LFS" ]     && LFS="$(( ($enval + 1) % 2))" #other
+			[ "$LFS" == "9" ] && LFS="$enval" #current
+			echo " * Designated linux_fs_start: $LFS"
+			echo
+		fi
+		[ $ISRAM ] && [ "$LFS" == "9" ] && LFS=
+
+		if [ $ISDUAL ]; then
+			[ $LFS -ne 1 ] && ARMsysMTD=0  && ARMkrnMTD=1  && X86sysMTD=6  && X86krnMTD=7
+			[ $LFS -eq 1 ] && ARMsysMTD=11 && ARMkrnMTD=12 && X86sysMTD=13 && X86krnMTD=14
+			echo " * Arm-System mtd: $ARMsysMTD"
+			echo " * Arm-Kernel mtd: $ARMkrnMTD"
+			echo " * x86-System mtd: $X86sysMTD"
+			echo " * x86-Kernel mtd: $X86krnMTD"
+			echo
+		fi
+	fi
+
+	wait_loader
 	echo " * Box is back up again, initiating transfer."
 	echo
 
@@ -266,28 +328,19 @@ trap cleanup EXIT SIGTERM SIGINT
 usage()
 {
 	echo
-	echo "Usage: $0 [image] [ -m<s|r|d> ] [ -f ] [ -ip <ip> ] [ -ram <mb> ] [ -lfs <0|1> ] [ -hn ]"
+	echo "Usage: $0 [image] [ -m<s|r|d> ] [ -f ] [ -ip <ip> ] [ -ram <mb> ] [ -lfs <0|1|9> ] [ -hn ]"
 	echo
 	echo "[image]       When no 'image' file is given, images/latest.image will be tried."
-	echo "-ms           Mode single-boot (like 7270 & 7390):"
-	echo "                Flashes the given 'image' to classic devices"
-	echo "-mr           Mode ram-boot (like 7490 & 7590):"
-	echo "                The 'image' will be flashed into currently active linux_fs_start."
-	echo "                You could use -lfs parameter to change this."
-	echo "                It is mandatory to set the -ram parameter."
-	echo "-md           Mode dual-boot (like 6490 & 6590):"
-	echo "                Flashes the Arm and x86 parts of the 'image' into linux_fs_start=1."
-	echo "                You could use -lfs parameter to change this."
+	echo "-ms           Force mode single-boot (classic devices, like 7270 & 7390)"
+	echo "-mr           Force mode ram-boot (newer devices, like 7490 & 7590)"
+	echo "-md           Force mode dual-boot (docsis devices, like 6490 & 6590)"
 	echo "-f            Disable safety prompt."
 	echo "-ip <ip>      Bootloader IP address or hostname, default 192.168.178.1"
 	echo "-ram <mb>     Only ram-boot mode: Ram size in MB of your device."
-	echo "                It may work to use a smaler value, but not with a larger!"
-	echo "                Ram sizes of some ram-boot devices:"
-	echo "                 - 128 MB: 3272 3370 3390 6820 6840 7272 7362 7412 7430"
-	echo "                 - 256 MB: 1200 3000 3490 5490 5491 7369 7490 7520 7530 7560"
-	echo "                 - 512 MB: 6890 7580 7583 7590"
-	echo "                Hint: The correct value is automatically used by 'make push-firmware'."
-	echo "-lfs <0|1>    Not single-boot mode: Set linux_fs_start to 0 or 1 and flash into this."
+	echo "                Without this parameter, the correct value will be detected."
+	echo "-lfs <0|1|9>  Not single-boot mode: Set linux_fs_start to 0 or 1 and flash into this."
+	echo "                Without this parameter, the inactive linux_fs_start will be used."
+	echo "                Use '9' for the currently active linux_fs_start."
 	echo "-hn           Only single-boot mode: Flash to an 'Alice/HanseNet' version of 7570."
 	echo
 	exit 1
@@ -319,7 +372,7 @@ while [ $# -ge 1 ]; do
 			shift
 			;;
 		(-lfs)
-			[ "$2" != "0" -a "$2" != "1" ] && echo "Invalid linux_fs_start value" && usage
+			[ "$2" != "0" -a "$2" != "1" -a "$2" != "9" ] && echo "Invalid linux_fs_start value" && usage
 			LFS=$2
 			shift
 			;;
@@ -351,7 +404,7 @@ done
 
 # img detect
 if [ -z "$ISSINGLE$ISDUAL$ISRAM" ]; then
-	echo "Analyzing '$file' ... "
+	echo -e "\n * Analyzing '$file' ... "
 	N="$(tar tf "$file" --wildcards '*/kernel.image' 2>/dev/null | wc -l)"
 	S="$(tar -Oxf "$file" ./var/tmp/filesystem.image 2>/dev/null | wc -c)"
 fi
@@ -363,23 +416,9 @@ fi
 [ ! $ISSINGLE ] && [ $ISALICE ]    && echo "Parameter '-hn' is only allowed for single-boot mode." && exit 1
 [ $ISSINGLE ]   && [ $LFS ]        && echo "Parameter '-lfs' is not allowed for single-boot mode." && exit 1
 [ $ISDUAL ]     && [ ! $LFS ]      && LFS="1"
-[ $ISRAM ]      && [ ! $FULLSIZE ] && echo "Parameter '-ram' is mandatory for ram-boot mode."      && exit 1
 [ ! $ISRAM ]    && [ $FULLSIZE ]   && echo "Parameter '-ram' is only allowed for ram-boot mode."   && exit 1
 
 prepare_image
-
-if [ $ISRAM ]; then
-	MAPSTART=0x80000000  # start mapped memory
-	MAPLIMIT="0x$(printf '%x' $(( $MAPSTART + $FULLSIZE )))"
-	FILESIZE="0x$(printf '%x' $(stat --printf='%s' "$mtdram1"))"
-	FREESIZE="0x$(printf '%x' $(( $FULLSIZE - $FILESIZE )))"
-	MTDSTART="0x$(printf '%x' $(( $MAPSTART + $FULLSIZE - $FILESIZE )))"
-fi
-
-if [ $ISDUAL ]; then
-	[ $LFS -ne 1 ] && ARMsysMTD=0  && ARMkrnMTD=1  && X86sysMTD=6  && X86krnMTD=7
-	[ $LFS -eq 1 ] && ARMsysMTD=11 && ARMkrnMTD=12 && X86sysMTD=13 && X86krnMTD=14
-fi
 
 # IPs
 [ ! $ip ] && ip=192.168.178.1
@@ -388,17 +427,11 @@ for horst in $(hostname -I); do
 	[ ${horst%.*} == ${ip%.*} ] && oa=$horst
 done
 if [ "$oa" == "unknown" ]; then
-	echo
-	echo     " * Warning: It seems your network is not able to reach"
+	echo -ne "\n * Warning: It seems your network is not able to reach\n   $ip directly."
 	case $(ls /sys/class/net/ | grep -v "^lo$" | wc -w) in
-		0)
-			;;
-		1)
-			echo     "   $ip directly. This command could help to fix:"
-			;;
-		*)
-			echo     "   $ip directly. One(!) of these commands could help to fix:"
-			;;
+		0)	echo ;;
+		1)	echo " This command could help to fix:" ;;
+		*)	echo " One(!) of these commands could help to fix:" ;;
 	esac
 	for x in $(ls /sys/class/net/ | grep -v "^lo$" ); do
 		echo -e  "   $ \033[4msudo ifconfig $x:0 ${ip%.*}.$(ifconfig $x | sed -rn 's/.*inet [0-9\.]*\.([0-9]*) .*/\1/p') up\033[0m"
@@ -422,6 +455,11 @@ if [ -z "$FOUND_NCFTP" -a -z "$FOUND_FTP" ]; then
 	echo "You have to install 'ncftp' or 'ftp' in order to use this script."
 	exit 1
 fi
+if [ -z "$FOUND_FTP" ]; then
+	[ $ISRAM ]       && [ -z "$FULLSIZE" ] && echo "Parameter '-ram' is mandatory if you have no 'ftp' installed."             && exit 1
+	[ ! $ISSINGLE ]  && [ -z "$LFS" ]      && echo "Parameter '-lfs' is mandatory if you have no 'ftp' installed."             && exit 1
+	[ $ISDUAL ]      && [ "$LFS" == "9" ]  && echo "Parameter '-lfs' with 0 or 1 is mandatory if you have no 'ftp' installed." && exit 1
+fi
 if [ -n "$FOUND_NCFTP" -a -n "$FOUND_FTP" ]; then
 	[ $ISRAM ]    && FOUND_FTP=""
 	[ $ISDUAL ]   && FOUND_NCFTP=""
@@ -435,39 +473,35 @@ echo
 echo " * Using command: $UCMD"
 echo " * Target host: $ip"
 echo " * Outgoing IP: $oa"
+
 if [ $ISDUAL ]; then
-	MODE="dual"
+	OUTVAL="dual"
 elif [ $ISRAM ]; then
-	MODE="ram"
+	OUTVAL="ram"
 else
-	MODE="single"
+	OUTVAL="single"
 fi
-echo " * Flash mode: $MODE-boot"
-[ $FULLSIZE ]   && echo " * Allowed memory size: $(( $FULLSIZE /1024/1024 )) MB"
-[ ! $ISSINGLE ] && echo " * Designated linux_fs_start: ${LFS:-<current>}"
-if [ $ISDUAL ]; then
-	echo
-	echo " * Arm-System mtd: $ARMsysMTD"
-	echo " * Arm-Kernel mtd: $ARMkrnMTD"
-	echo " * x86-System mtd: $X86sysMTD"
-	echo " * x86-Kernel mtd: $X86krnMTD"
-	echo
-fi
+echo " * Flash mode: $OUTVAL-boot"
+
 if [ $ISRAM ]; then
-	echo -e
-	echo -e " * MAPSTART=$MAPSTART"
-	echo -e " * FULLSIZE=$FULLSIZE\t ($(($FULLSIZE/1024/1024)) MB)"
-	echo -e " * MAPLIMIT=$MAPLIMIT"
-	echo -e " * FILESIZE=$FILESIZE\t ($(($FILESIZE/1024/1024)) MB)"
-	echo -e " * FREESIZE=$FREESIZE\t ($(($FREESIZE/1024/1024)) MB)"
-	echo -e " * MTDSTART=$MTDSTART"
-	echo -e
+	[ -z "$FULLSIZE" ] && OUTVAL="<detect>"
+	[ -n "$FULLSIZE" ] && OUTVAL="$(( $FULLSIZE /1024/1024 )) MB"
+	echo " * Allowed memory size: $OUTVAL"
 fi
 
+if [ ! $ISSINGLE ]; then
+	[ -n "$LFS" ]     && OUTVAL="$LFS"
+	[ -z "$LFS" ]     && OUTVAL="<other>"
+	[ "$LFS" == "9" ] && OUTVAL="<current>"
+	echo " * Designated linux_fs_start: $OUTVAL"
+fi
+
+#
 if [ $ISFORCE ]; then
-	echo -e " * Flashing: \033[4m$file\033[0m"
+	echo -e " * File: \033[4m$file\033[0m"
 	push_fw
 else
+	echo
 	echo    " !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!! WARNING !!!"
 	echo    " !!!  THERE IS NO WARRANTY AT ALL !!! USE AT YOUR OWN RISK   !!!"
 	echo
@@ -480,5 +514,7 @@ else
 	push_fw
 fi
 
+echo
+echo done
 exit 0
 
