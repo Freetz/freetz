@@ -11,7 +11,7 @@ config() {
 }
 
 start() {
-	modlib_startdaemon $DAEMON_BIN -g -v $GETDNS_LOGLEVEL
+	modlib_startdaemon $DAEMON_BIN -g -v $GETDNS_LOGLEVEL 2>/dev/null
 }
 
 case $1 in
