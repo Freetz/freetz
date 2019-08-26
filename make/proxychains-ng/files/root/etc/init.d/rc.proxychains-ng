@@ -2,6 +2,8 @@
 
 DAEMON=proxychains-ng
 DAEMON_LONG_NAME="ProxyChains-NG"
+DAEMON_CFGFILE=/tmp/flash/proxychains-ng/proxychains.conf
+. /etc/init.d/modlibrc
 
 
 case $1 in
@@ -10,25 +12,8 @@ case $1 in
 		modreg daemon --hide $DAEMON
 		modreg file $DAEMON proxychains_conf "proxychains.conf" 0 proxychains_conf
 
-
 		echo -n "Setting up $DAEMON_LONG_NAME ... "
-
-		if [ ! -e /tmp/flash/proxychains-ng/proxychains.conf ]; then
-		mkdir -p /tmp/flash/proxychains-ng
-cat > /tmp/flash/proxychains-ng/proxychains.conf <<'EOX'
-strict_chain
-
-tcp_read_time_out 15000
-tcp_connect_time_out 8000
-
-localnet 127.0.0.0/255.0.0.0
-localnet 192.168.178.1/255.255.0.0
-
-[ProxyList]
-socks5  127.0.0.1 9050
-EOX
-		fi
-
+		modlib_defaults $DAEMON_CFGFILE
 		echo "done."
 		;;
 	unload)
