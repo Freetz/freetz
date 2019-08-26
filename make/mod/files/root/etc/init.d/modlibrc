@@ -440,11 +440,7 @@ modlib_status() {
 #    loads the configuration
 modlib_loadconfig() {
 	local CONF_FILE="/mod/etc/conf/${1-$CONF_NAME}.cfg"
-	if [ ! -r "$CONF_FILE" ]; then
-		echo "Error [${DAEMON_LONG_NAME}]: not configured." 1>&2
-		exit 1
-	fi
-	. "$CONF_FILE"
+	[ -r "$CONF_FILE" ] && . "$CONF_FILE"
 }
 
 # for each parameter passed creates symlink httpd-$parameter pointing to httpd
