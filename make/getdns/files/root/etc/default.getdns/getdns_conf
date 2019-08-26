@@ -1,0 +1,7 @@
+#!/bin/sh
+
+[ -r /etc/options.cfg ] && . /etc/options.cfg
+[ "$FREETZ_PACKAGE_CA_BUNDLE" == "y" ] && echo 'tls_ca_file: "/etc/ssl/certs/ca-bundle.crt"'
+
+cat /tmp/flash/getdns/getdns.yml
+
