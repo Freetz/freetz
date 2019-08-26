@@ -1,21 +1,19 @@
 #!/bin/sh
-
 DAEMON=getdns
 DAEMON_LONG_NAME="Stubby"
-DAEMON_CONFIG=/tmp/flash/$DAEMON/$DAEMON.yml
-CONF_NAME=getdns
 DAEMON_BIN=stubby
-
+DAEMON_CFGFILE=/tmp/flash/$DAEMON/$DAEMON.yml
 . /etc/init.d/modlibrc
 
+
 start() {
-	modlib_startdaemon $DAEMON_BIN -C $DAEMON_CONFIG -g -v $GETDNS_LOGLEVEL
+	modlib_startdaemon $DAEMON_BIN -C $DAEMON_CFGFILE -g -v $GETDNS_LOGLEVEL
 }
 
 case $1 in
 	""|load)
 		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
-		[ ! -e "$DAEMON_CONFIG" ] && /mod/etc/default.$DAEMON/getdns_conf > $DAEMON_CONFIG
+		[ ! -e "$DAEMON_CFGFILE" ] && cat /mod/etc/default.$DAEMON/$DAEMON.defaults > $DAEMON_CFGFILE
 
 		modreg file $DAEMON getdns_conf '$(lang de:"Konfiguration" en:"Configuration")' 0 getdns_conf
 		modreg cgi $DAEMON $DAEMON_LONG_NAME
