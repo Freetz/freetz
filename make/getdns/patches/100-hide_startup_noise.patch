@@ -1,0 +1,12 @@
+--- stubby/src/stubby.c	2019-04-03 15:37:03.000000000 +0200
++++ stubby/src/stubby.c	2019-08-26 23:08:36.902950890 +0200
+@@ -335,9 +335,6 @@
+ 	r = parse_config(config_file, strstr(fn, ".yml") != NULL
+ 	                           || strstr(fn, ".yaml") != NULL);
+ 	free(config_file);
+-	if (r == GETDNS_RETURN_GOOD)
+-		stubby_local_log(NULL,GETDNS_LOG_UPSTREAM_STATS, GETDNS_LOG_DEBUG,
+-			       "Read config from file %s\n", fn);
+ 	return r;
+ }
+ 
