@@ -24,7 +24,7 @@ HELP=
 [ -r "$def" ] && . "$def"
 
 allowed() {
-	! [ -z "$CONFIG_FILE" -o "$sec_level" -gt "$sec" ]
+	! [ -z "$CONFIG_CMD$CONFIG_FILE" -o "$sec_level" -gt "$sec" ]
 }
 print_access_denied() {
 	print_warning '$(lang
