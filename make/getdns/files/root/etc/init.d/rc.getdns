@@ -1,4 +1,5 @@
 #!/bin/sh
+
 DAEMON=getdns
 DAEMON_LONG_NAME="Stubby"
 DAEMON_BIN=stubby
@@ -12,8 +13,7 @@ start() {
 
 case $1 in
 	""|load)
-		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
-		[ ! -e "$DAEMON_CFGFILE" ] && cat /mod/etc/default.$DAEMON/$DAEMON.defaults > $DAEMON_CFGFILE
+		modlib_defaults $DAEMON_CFGFILE
 
 		modreg file $DAEMON getdns_conf '$(lang de:"Konfiguration" en:"Configuration")' 0 getdns_conf
 		modreg cgi $DAEMON $DAEMON_LONG_NAME
