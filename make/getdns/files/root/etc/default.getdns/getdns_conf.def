@@ -1,8 +1,8 @@
-CAPTION='Stubby: getdns.yml'
-DESCRIPTION='$(lang de:"Dokumentation" en:"Documentation"): <a target=blank href=https://getdnsapi.net/documentation/manpages/stubby/>https://getdnsapi.net/documentation/manpages/stubby/</a>'
+CAPTION='Stubby: $(lang de:"Aktuelle Konfiguration" en:"Current configuration")'
 
-CONFIG_FILE='/tmp/flash/getdns/getdns.yml'
-CONFIG_SAVE='modsave flash; if pidof stubby > /dev/null; then echo ""; /mod/etc/init.d/rc.getdns restart; fi'
+CONFIG_CMD='stubby -i 2>/dev/null'
+CONFIG_SAVE='false'
 CONFIG_TYPE='text'
 
-TEXT_ROWS=25
+TEXT_ROWS=40
+

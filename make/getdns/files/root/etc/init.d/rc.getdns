@@ -18,7 +18,8 @@ case $1 in
 	""|load)
 		modlib_defaults $DAEMON.yml
 
-		modreg file $DAEMON getdns_conf '$(lang de:"Konfiguration" en:"Configuration")' 0 getdns_conf
+		modreg file $DAEMON getdns_conf '$(lang de:"Konfiguration" en:"Current config")' 2 "getdns_conf"
+		modreg file $DAEMON getdns_user '$(lang de:"Benutzerdefiniert" en:"Custom config")' 0 "getdns_user"
 		modreg cgi $DAEMON $DAEMON_LONG_NAME
 		modreg daemon $DAEMON
 
