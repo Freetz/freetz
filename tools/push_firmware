@@ -393,6 +393,9 @@ while [ $# -ge 1 ]; do
 	shift
 done
 
+# environment
+[ "$FREETZ_FORCEPF" == "true" ] && ISFORCE=true
+
 # file checks
 [ -z "$file" ] && [ -e images/latest.image ] && file="images/latest.image"
 [ -L "$file" ] && file="$(realpath "$file")" && file=${file#$PWD/}
