@@ -50,7 +50,7 @@ case $1 in
 		;;
 	""|load)
 		modlib_add_httpd_symlink lcd
-		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
+		modlib_defaults
 		[ ! -e "/tmp/flash/$DAEMON/$DAEMON.conf" ] && sed "s/^Display *'.*/Display 'Image'/" /etc/default.$DAEMON/$DAEMON.conf > /etc/$DAEMON.conf
 		chmod 600 /etc/$DAEMON.conf
 
