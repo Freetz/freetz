@@ -328,12 +328,13 @@ trap cleanup EXIT SIGTERM SIGINT
 usage()
 {
 	echo
-	echo "Usage: $0 [image] [ -m<s|r|d> ] [ -f ] [ -ip <ip> ] [ -ram <mb> ] [ -lfs <0|1|9> ] [ -hn ]"
+	echo "Usage: $0 [image] [ -m<s|r|d|u> ] [ -f ] [ -ip <ip> ] [ -ram <mb> ] [ -lfs <0|1|9> ] [ -hn ]"
 	echo
 	echo "[image]       When no 'image' file is given, images/latest.image will be tried."
 	echo "-ms           Force mode single-boot (classic devices, like 7270 & 7390)"
 	echo "-mr           Force mode ram-boot (newer devices, like 7490 & 7590)"
 	echo "-md           Force mode dual-boot (docsis devices, like 6490 & 6590)"
+	echo "-mu           Force mode uimg-boot (not supported yet, only 6591)"
 	echo "-f            Disable safety prompt."
 	echo "-ip <ip>      Bootloader IP address or hostname, default 192.168.178.1"
 	echo "-ram <mb>     Only ram-boot mode: Ram size in MB of your device."
@@ -356,6 +357,9 @@ while [ $# -ge 1 ]; do
 			;;
 		(-md|-mdual)
 			ISDUAL=true
+			;;
+		(-mu|-muimg)
+			ISUIMG=true
 			;;
 		(-f|-force)
 			ISFORCE=true
@@ -406,20 +410,23 @@ done
 [ -r "$file" ] || { echo "Access denied: $file"             ; exit 1; }
 
 # img detect
-if [ -z "$ISSINGLE$ISDUAL$ISRAM" ]; then
+if [ -z "$ISSINGLE$ISDUAL$ISRAM$ISUIMG" ]; then
 	echo -e "\n * Analyzing '$file' ... "
-	N="$(tar tf "$file" --wildcards '*/kernel.image' 2>/dev/null | wc -l)"
-	S="$(tar -Oxf "$file" ./var/tmp/filesystem.image 2>/dev/null | wc -c)"
+	U="$(tar tf "$file" --wildcards '*/firmware-update.uimg' 2>/dev/null | wc -l)"
+	N="$(tar tf "$file" --wildcards '*/kernel.image'         2>/dev/null | wc -l)"
+	S="$(tar -Oxf "$file" ./var/tmp/filesystem.image         2>/dev/null | wc -c)"
 fi
+[ "$N" == "0" -a "$U" == "1" ] && ISUIMG=true
 [ "$N" == "2" -a "$S" == "0" ] && ISDUAL=true
 [ "$N" == "1" -a "$S" == "0" ] && ISSINGLE=true
 [ "$N" == "1" -a "$S" != "0" ] && ISRAM=true
-[ -z "$ISSINGLE$ISDUAL$ISRAM" ]    && echo "Can not recognize image, please use '-m<s|r|d>'."      && exit 1
+[ -z "$ISSINGLE$ISDUAL$ISRAM$ISUIMG" ] && echo "Can not recognize image, please use '-m<s|r|d|u>'."    && exit 1
 # arg check
-[ ! $ISSINGLE ] && [ $ISALICE ]    && echo "Parameter '-hn' is only allowed for single-boot mode." && exit 1
-[ $ISSINGLE ]   && [ $LFS ]        && echo "Parameter '-lfs' is not allowed for single-boot mode." && exit 1
-[ $ISDUAL ]     && [ ! $LFS ]      && LFS="1"
-[ ! $ISRAM ]    && [ $FULLSIZE ]   && echo "Parameter '-ram' is only allowed for ram-boot mode."   && exit 1
+[ ! $ISSINGLE ] && [ $ISALICE ]        && echo "Parameter '-hn' is only allowed for single-boot mode." && exit 1
+[ $ISSINGLE ]   && [ $LFS ]            && echo "Parameter '-lfs' is not allowed for single-boot mode." && exit 1
+[ $ISDUAL ]     && [ ! $LFS ]          && LFS="1"
+[ ! $ISRAM ]    && [ $FULLSIZE ]       && echo "Parameter '-ram' is only allowed for ram-boot mode."   && exit 1
+[ $ISUIMG ]                            && echo 'The mode uimg-boot is not yet supported!'              && exit 1
 
 prepare_image
 
@@ -477,7 +484,9 @@ echo " * Using command: $UCMD"
 echo " * Target host: $ip"
 echo " * Outgoing IP: $oa"
 
-if [ $ISDUAL ]; then
+if [ $ISUIMG ]; then
+	OUTVAL="uimg"
+elif [ $ISDUAL ]; then
 	OUTVAL="dual"
 elif [ $ISRAM ]; then
 	OUTVAL="ram"
