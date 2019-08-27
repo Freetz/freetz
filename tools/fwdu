@@ -97,6 +97,7 @@ image() {
 
 	declare -A probeDirs=(
 		[default]=var/tmp
+		[uimg]=var
 		 [arm]=var/remote/var/tmp
 		[atom]=var/remote/var/tmp/x86
 	)
@@ -120,9 +121,10 @@ image() {
 		rm -rf ${img##*/}.unp
 	else
 		tar -xif $img \
-		  $(printf " --wildcards ./var/content"                        ) \
-		  $(printf " --wildcards ./%s/*.image"        "${probeDirs[@]}") \
-		  $(printf " --wildcards ./%s/plugins.update" "${probeDirs[@]}") \
+		  $(printf " --wildcards ./var/content"                              ) \
+		  $(printf " --wildcards ./%s/*.image"        "${probeDirs[@]}"      ) \
+		  $(printf " --wildcards ./%s/*.uimg"         "${probeDirs[uimg]}"   ) \
+		  $(printf " --wildcards ./%s/plugins.update" "${probeDirs[default]}") \
 		  >/dev/null 2>&1
 	fi
 	if [ ! -d var ]; then
@@ -131,7 +133,7 @@ image() {
 	fi
 
 	for d in "${probeDirs[@]}" no_kernel_image_found; do
-		if [ -s ${d}/kernel.image ]; then
+		if [ -s ${d}/kernel.image -o -s ${d}/firmware-update.uimg ]; then
 			break;
 		fi
 
@@ -158,26 +160,27 @@ image() {
 
 	for arch in "${!probeDirs[@]}"; do
 		d="${probeDirs[$arch]}"
-		[ "$arch" != 'default' ] && arch="-$arch" || arch=
+		[ "$arch" != 'default' -a "$arch" != 'uimg' ] && arch="-$arch" || arch=
 		[ -z "$do_verbose" -a -z "$do_nfo" ] && nfo="/dev/null" || nfo="${dst}${imgID}${arch}.nfo"
 
-		[ ! -s ${d}/kernel.image ] && continue;
+		[ ! -s ${d}/kernel.image -a ! -s ${d}/firmware-update.uimg ] && continue;
 
 		echo -n > "$nfo"
-		SIZE_K1="$(stat -c %s ${d}/kernel.image)"
-		SIZE_F1="$(stat -c %s ${d}/filesystem.image)"
+		SIZE_K1="$(stat -c %s ${d}/kernel.image 2>/dev/null || echo -n '-1')"
+		SIZE_F1="$(stat -c %s ${d}/filesystem.image 2>/dev/null || echo -n '-1')"
+		SIZE_U1="$(stat -c %s ${d}/firmware-update.uimg 2>/dev/null || echo -n '-1')"
 
 		# get additional details
 		[ -e ./var/content ] && grep '^Releasecycle=' ./var/content >> "$nfo"
 
 		# remove TI checksum and concatenate kernel & filesystem images
-		for f in ${d}/kernel.image ${d}/filesystem.image; do
+		for f in ${d}/kernel.image ${d}/filesystem.image ${d}/firmware-update.uimg; do
 			if [ -s "$f" ]; then
 				$FTOOLS/tichksum -r "$f" >/dev/null 2>&1
 				cat "$f" | dd bs=256 conv=sync 2>/dev/null;
 			fi
 		done > kf.image
-		rm -f ${d}/kernel.image ${d}/filesystem.image
+		rm -f ${d}/kernel.image ${d}/filesystem.image ${d}/firmware-update.uimg
 
 		# strip NMI vector if any
 		($FTOOLS/remove-nmi-vector kf.image kf.image.no-nmi 2>&1 && mv kf.image.no-nmi kf.image 2>/dev/null) | grep "NMI vector v" >> "$nfo"
@@ -205,7 +208,9 @@ image() {
 		# detect firmware layout
 		SIZEKD="$(($SIZE_K1 - $SIZE_K2))"
 		SIZEFD="$(($SIZE_F1 - $SIZE_F2))"
-		if [ "$SIZE_F1" == "0" ]; then
+		if [ "$SIZE_U1" != "-1" ]; then
+			FLV=5 # umig
+		elif [ "$SIZE_F1" == "0" ]; then
 			FLV=2 # most
 		elif [ "$SIZEKD" == "8" -a "$SIZEFD" == "8" ]; then
 			FLV=3 # nand
