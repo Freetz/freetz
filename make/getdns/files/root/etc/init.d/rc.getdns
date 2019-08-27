@@ -11,13 +11,14 @@ config() {
 }
 
 start() {
-	modlib_startdaemon $DAEMON_BIN -g -v $GETDNS_LOGLEVEL 2>/dev/null
+	modlib_startdaemon $DAEMON_BIN -g -v $GETDNS_LOGLEVEL 2>>/var/log/$DAEMON.log
 }
 
 case $1 in
 	""|load)
 		modlib_defaults $DAEMON.yml
 
+		modreg file $DAEMON getdns_logs '$(lang de:"Logdatei" en:"Log file")' 2 "getdns_logs"
 		modreg file $DAEMON getdns_conf '$(lang de:"Konfiguration" en:"Current config")' 2 "getdns_conf"
 		modreg file $DAEMON getdns_user '$(lang de:"Benutzerdefiniert" en:"Custom config")' 0 "getdns_user"
 		modreg cgi $DAEMON $DAEMON_LONG_NAME
