@@ -92,7 +92,7 @@ EOF
 echo 'servercfg.dns2' | ar7cfgctl -s
 cat << EOF
 </p>
-<p>$(lang de:"zus&auml;tzlich diese Upstream Nameserver nutzen (durch Leerzeichen getrennt)" en:"Use these upstream nameservers additionally (separated by space)"): <input type="text" name="upstream" size="55" maxlength="255" value="$(html "$DNSMASQ_UPSTREAM")"></p>
+<p>$(lang de:"zus&auml;tzlich diese Upstream Nameserver nutzen (durch Leerzeichen getrennt)" en:"Use these upstream nameservers additionally (separated by space)"): <input type="text" name="upstream" size="55" maxlength="255" value="$(html "$DNSMASQ_UPSTREAM")"><br>$(lang de:"Beispiel" en:"Example"):  1.1.1.1  9.9.9.9  127.0.0.1#11153</p>
 EOF
 sec_end
 
