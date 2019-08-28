@@ -336,13 +336,7 @@ push-firmware:
 	@if [ ! -e "images/latest.image" ]; then \
 		echo "Please run 'make' first."; exit 1; \
 	else \
-		if [ "$(FREETZ_SYSTEM_TYPE_MULTICORE)" == "y" ]; then \
-			$(TOOLS_DIR)/push_firmware -md; exit $?; \
-		elif [ "$(FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE)" == "y" ]; then \
-			$(TOOLS_DIR)/push_firmware -mr -ram $(FREETZ_AVM_PROP_RAMSIZE); exit $?; \
-		else \
-			$(TOOLS_DIR)/push_firmware -ms; exit $?; \
-		fi; \
+		$(TOOLS_DIR)/push_firmware; exit $?; \
 	fi
 
 recover:
