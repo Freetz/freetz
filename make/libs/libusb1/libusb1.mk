@@ -1,8 +1,8 @@
-$(call PKG_INIT_LIB, 1.0.22)
+$(call PKG_INIT_LIB, 1.0.23)
 $(PKG)_SHORT_VERSION:=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
-$(PKG)_LIB_VERSION:=0.1.0
+$(PKG)_LIB_VERSION:=0.2.0
 $(PKG)_SOURCE:=libusb-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=466267889daead47674df933cea9cacb
+$(PKG)_SOURCE_MD5:=1e29700f6a134766d32b36b8d1d61a95
 $(PKG)_SITE:=@SF/libusb,https://github.com/libusb/libusb/releases/download/v$($(PKG)_VERSION)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/libusb/.libs/libusb-$($(PKG)_SHORT_VERSION).so.$($(PKG)_LIB_VERSION)
