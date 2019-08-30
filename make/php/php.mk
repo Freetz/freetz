@@ -28,6 +28,9 @@ $(PKG)_CONFIGURE_OPTIONS += --with-pcre-regex="$(TARGET_TOOLCHAIN_STAGING_DIR)/u
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-cli
 $(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_PHP_cli),,$($(PKG)_CLI_TARGET_BINARY))
+$(PKG)_CONFIGURE_OPTIONS += --enable-shared
+$(PKG)_CONFIGURE_ENV +=ac_cv_func_dlopen=yes ac_cv_lib_dl_dlopen=yes ac_cv_func_mprotect=yes
+# ^ fix configure to enable dynamic library loading when cross-compiling.
 
 ifeq ($(strip $(FREETZ_PACKAGE_PHP_apxs2)),y)
 $(PKG)_DEPENDS_ON += apache2
