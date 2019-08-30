@@ -1,0 +1,26 @@
+// Fix using shared libs with php (phpinfo->General->Dynamic Library support)
+--- configure.in
++++ configure.in
+@@ -453,8 +453,9 @@
+ PHP_CHECK_FUNC(gethostbyaddr, nsl)
+ PHP_CHECK_FUNC(yp_get_default_domain, nsl)
+ 
+-PHP_CHECK_FUNC(dlopen, dl)
+ if test "$ac_cv_func_dlopen" = "yes"; then
++  PHP_ADD_LIBRARY(dl)
++  PHP_DEF_HAVE(dlopen)
+   AC_DEFINE(HAVE_LIBDL, 1, [ ])
+ fi
+ AC_CHECK_LIB(m, sin)
+--- configure
++++ configure
+@@ -17682,7 +17682,7 @@
+     ac_libs=$LIBS
+     LIBS="$LIBS -ldl"
+     if test "$cross_compiling" = yes; then :
+-  found=no
++#  found=no
+ else
+   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+
