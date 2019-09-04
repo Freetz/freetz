@@ -1140,10 +1140,11 @@ if [ "$DO_MOD" -gt 0 ]; then
 		unset DETECTED_OPENSSL_VER_MOD
 
 		echo1 "checking uClibc version"
-		DETECTED_UCLIBC_VER="$(find ${FILESYSTEM_DIR}/lib/libuClibc-*.so | sed -rn 's@.*/.*-(.*)\.so@\1@p')"
+		DETECTED_UCLIBC_VER="$(readlink ${FILESYSTEM_DIR}/lib/libc.so.? | sed 's/\.so$//;s/^libuClibc-//;s/-.*//')"
 		echo2 "... used by AVM ...... $DETECTED_UCLIBC_VER"
 		echo2 "... used by Freetz ... ${FREETZ_TARGET_UCLIBC_VERSION}"
 		if [ "${FREETZ_TARGET_UCLIBC_VERSION#$DETECTED_UCLIBC_VER}" == "$FREETZ_TARGET_UCLIBC_VERSION" \
+		  -a "${DETECTED_UCLIBC_VER}" == "${DETECTED_UCLIBC_VER#libc}" \
 		  -a "${FREETZ_TARGET_UCLIBC_VERSION}" != "$DETECTED_UCLIBC_VER" ]; then
 			warn2 "Freetz and AVM uClibc versions do not match"
 		fi
