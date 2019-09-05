@@ -2,11 +2,11 @@
 
 [ -d .git ] && R=" $(tools/freetz-version)"
 if [ -d .svn ]; then
-	RB="$(svn info . --no-newline --show-item relative-url | sed 's/.*\///')"
+	RB="$(svn info . --show-item relative-url | sed 's/.*\///')"
 	RC="$(svnversion . | tr ":" "_")"
-	[ "${RB}" != "trunk" -a "${RC}" == "${RC/_/}" -a "$1" ] && RC="$(svn info . --no-newline --show-item last-changed-revision)"
+	[ "${RB}" != "trunk" -a "${RC}" == "${RC/_/}" -a "$1" ] && RC="$(svn info . --show-item last-changed-revision)"
 	[ "${RB}" != "trunk" -o "${RC}" != "${RC/_/}" -o "$1" ] && [ "$(svn status . | wc -l)" != "0" ] && RC="${RC%M}M"
-	[ "$1" ] && RB="${RB/trunk/}" || RD="$(svn info . --no-newline --show-item last-changed-date | sed 's/T.*//')"
+	[ "$1" ] && RB="${RB/trunk/}" || RD="$(svn info . --show-item last-changed-date | sed 's/T.*//')"
 	R="${RC:+ $RC}${RB:+ $RB}${RD:+ $RD}"
 fi
 [ "$1" ] && R="${R// /-}"
