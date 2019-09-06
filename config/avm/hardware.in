@@ -58,6 +58,13 @@ config FREETZ_SYSTEM_TYPE_AR10
 		FREETZ_TYPE_3272 || \
 		FREETZ_TYPE_7272
 
+config FREETZ_SYSTEM_TYPE_BCM63138
+	bool
+	default y
+	depends on \
+		FREETZ_TYPE_7581 || \
+		FREETZ_TYPE_7582
+
 config FREETZ_SYSTEM_TYPE_GRX5
 	bool
 	default y
@@ -118,6 +125,22 @@ config FREETZ_SYSTEM_TYPE_PUMA6
 		FREETZ_SYSTEM_TYPE_PUMA6_ARM || \
 		FREETZ_SYSTEM_TYPE_PUMA6_X86
 
+#config FREETZ_SYSTEM_TYPE_PUMA7_ARM
+#	bool
+
+config FREETZ_SYSTEM_TYPE_PUMA7_X86
+	bool
+	default y
+	depends on \
+		FREETZ_TYPE_6591
+
+config FREETZ_SYSTEM_TYPE_PUMA7
+	bool
+	default y
+	depends on \
+		FREETZ_SYSTEM_TYPE_PUMA7_ARM || \
+		FREETZ_SYSTEM_TYPE_PUMA7_X86
+
 config FREETZ_SYSTEM_TYPE_QCA955x
 	bool
 	default y
@@ -162,7 +185,8 @@ config FREETZ_SYSTEM_TYPE_MULTICORE
 	bool
 	default y
 	depends on \
-		FREETZ_SYSTEM_TYPE_PUMA6
+		FREETZ_SYSTEM_TYPE_PUMA6 || \
+		FREETZ_SYSTEM_TYPE_PUMA7
 
 config FREETZ_SYSTEM_TYPE
 	string
@@ -171,10 +195,12 @@ config FREETZ_SYSTEM_TYPE
 	default "ar9"           if FREETZ_SYSTEM_TYPE_AR9
 	default "ar934x"        if FREETZ_SYSTEM_TYPE_AR934x
 	default "ar10"          if FREETZ_SYSTEM_TYPE_AR10
+	default "bcm63138"      if FREETZ_SYSTEM_TYPE_BCM63138
 	default "grx5"          if FREETZ_SYSTEM_TYPE_GRX5
 	default "iks"           if FREETZ_SYSTEM_TYPE_IKS
 	default "ipq40xx"       if FREETZ_SYSTEM_TYPE_IPQ40xx
 	default "puma6"         if FREETZ_SYSTEM_TYPE_PUMA6
+	default "puma7"         if FREETZ_SYSTEM_TYPE_PUMA7
 	default "qca955x"       if FREETZ_SYSTEM_TYPE_QCA955x
 	default "qca956x"       if FREETZ_SYSTEM_TYPE_QCA956x
 	default "ur8"           if FREETZ_SYSTEM_TYPE_UR8
@@ -192,6 +218,7 @@ config FREETZ_CPU_MODEL_ARM_cortex_a9
 	bool
 	default y
 	depends on \
+		FREETZ_SYSTEM_TYPE_BCM63138 || \
 		FREETZ_SYSTEM_TYPE_IPQ40xx
 
 config FREETZ_CPU_MODEL_MIPS_4KEc
@@ -234,5 +261,6 @@ config FREETZ_CPU_MODEL_X86_ATOM
 	bool
 	default y
 	depends on \
-		FREETZ_SYSTEM_TYPE_PUMA6_X86
+		FREETZ_SYSTEM_TYPE_PUMA6_X86 || \
+		FREETZ_SYSTEM_TYPE_PUMA7_X86
 
