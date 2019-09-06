@@ -48,6 +48,16 @@ utmp_wtmp() {
 	fi
 }
 
+wlan_up() {
+	[ "$FREETZ_PATCH_START_WLAN_IF_ON_BOOT" != "y" ] && return
+	echo -n "Starting wlan interface ... "
+	if grep "^up$" /sys/class/net/wlan/operstate; then
+		echo "skipped."
+	else
+		ifconfig wlan up && echo "done." || echo "failed."
+	fi
+}
+
 motd() {
 	( [ -e /tmp/flash/mod/motd ] && sh /tmp/flash/mod/motd || sh /mod/etc/default.mod/motd )> /etc/motd
 }
@@ -110,6 +120,7 @@ start() {
 
 	vulcheck
 	utmp_wtmp
+	wlan_up
 	motd
 
 	if [ -r /tmp/flash/mod/rc.custom ]; then

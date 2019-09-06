@@ -1536,6 +1536,19 @@ config FREETZ_RUN_TELEFON_IN_INHOUSE_MODE
 		 - Processing of /var/flash/fx_conf attributes responsible
 		   for automatic start of telnetd.
 
+config FREETZ_PATCH_START_WLAN_IF_ON_BOOT
+	bool "Start wlan interface on boot"
+	depends on FREETZ_AVM_HAS_WLAN && !FREETZ_REMOVE_WLAN
+	depends on FREETZ_SYSTEM_TYPE_VR9 && FREETZ_AVM_VERSION_06_8X_MIN
+	default y if FREETZ_AVM_VERSION_06_9X_MIN
+	default n
+	help
+		Runs "ifconfig wlan up" on system start to
+		enable ip assignment etc, which fails on
+		some devices with installed Freetz.
+		This is a workaround!
+		The cause of this problem is still unknown.
+
 comment "AVM daemons ----------------------------"
 
 config FREETZ_AVMDAEMON_DISABLE_IGD
