@@ -1,0 +1,13 @@
+config FREETZ_PACKAGE_AVM_RULES
+	bool "AVM-rules - EXPERMENTAL"
+	depends on FREETZ_AVM_HAS_DSLD
+	depends on !FREETZ_REMOVE_DSLD
+	depends on FREETZ_AVM_VERSION_06_8X_MIN
+	default n
+	help
+		Configuration of port forwardings to the FritzBox itself
+		by using voip_forwardrules.
+		Warning:
+		This package changes the ar7.cfg. On syntax errors AVM
+		will reset the whole file to default, including default
+		password and default ip. Backup you config before!

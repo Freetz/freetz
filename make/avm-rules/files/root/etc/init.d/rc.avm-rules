@@ -1,0 +1,69 @@
+#!/bin/sh
+
+DAEMON=avm-rules
+DAEMON_LONG_NAME=AVM-rules
+. /etc/init.d/modlibrc
+
+
+apply() {
+	[ "$1" == "default" ] && AVM_RULES_SIP=yes && AVM_RULES_TCP= && AVM_RULES_UDP=
+	echo -n "Applying rules ... "
+	local L N C F P TMP="/tmp/avm-rules.tmp.$(date +%s)"
+	cat /var/flash/ar7.cfg > $TMP
+	L="$(cat $TMP | wc -l)"
+	N="$(grep -n voip_forwardrules $TMP | sed 's/:.*//')"
+	C="$(tail -n $(( $L - $N +1 )) $TMP | grep -m1 -n ';' | sed 's/:.*//')"
+
+	[ $L -gt 0 -a $N -gt 0 -a $C -gt 0 2>/dev/null ] || F='1'
+	[ -n "$(echo "$AVM_RULES_TCP$AVM_RULES_UDP" | sed 's/[\+ 0-9]//g')" ] && F='2'
+	[ "$AVM_RULES_SIP" != "yes" -a -z "${AVM_RULES_TCP/ /}${AVM_RULES_UDP/ /}" ] && F='3'
+	if [ -n "$F" ]; then
+		rm $TMP
+		echo "failed."
+		exit $F
+	fi
+
+	(
+		head -n $(( $N - 1 )) $TMP
+		P="$(for x in $AVM_RULES_TCP; do echo -n "${x}_tcp "; done) $(for x in $AVM_RULES_UDP; do echo -n "${x}_udp "; done)"
+		[ "$AVM_RULES_SIP" == "yes" ] && P="$P 5060_tcp 5060_udp 7078+32_udp"
+		for x in $(echo "$P" | sed 's/  */\n/g' | sort -n | sort -u); do
+			echo -n "$x" | sed -rn 's/^([0-9]*)(.*)_(.*)/"\3 0.0.0.0:\1\2 0.0.0.0:\1",/p'
+		done | sed 's/,$/;\n/;s/,/,\n                            /g;s/^/        voip_forwardrules = /'
+		tail -n $(( $L - $N - $C + 1 )) $TMP
+	) > /var/flash/ar7.cfg
+	rm $TMP
+	echo "done."
+
+	/mod/etc/init.d/rc.dsld reload
+
+	echo -n "Restarting ctlmgr ... "
+	. /var/env.cache
+	ctlmgr -s
+	sleep 1
+	killall -9 ctlmgr 2> /dev/null
+	ctlmgr 2>&1
+	echo "done."
+}
+
+case $1 in
+	""|load)
+		modreg cgi $DAEMON $DAEMON_LONG_NAME
+		modreg daemon --hide $DAEMON
+
+		echo "Setting up $DAEMON_LONG_NAME ... done."
+		;;
+	unload)
+		modunreg cgi $DAEMON
+		modunreg daemon $DAEMON
+		;;
+	apply)
+		apply $2
+		;;
+	*)
+		echo "Usage: $0 [load|unload|apply]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
