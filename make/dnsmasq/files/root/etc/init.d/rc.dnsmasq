@@ -69,8 +69,7 @@ case $1 in
 			[ "$DNSMASQ_WRAPPER" == "yes" ] && exit
 		fi
 
-		mkdir -p "/tmp/flash/${DAEMON}"
-		[ -r "/tmp/flash/${DAEMON}.extra" ] && mv "/tmp/flash/${DAEMON}.extra" "/tmp/flash/${DAEMON}/${DAEMON}.extra"
+		modlib_defaults
 
 		modreg cgi 'dnsmasq' 'Dnsmasq'
 		modreg daemon $DAEMON
