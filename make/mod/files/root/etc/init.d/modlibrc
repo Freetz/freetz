@@ -61,7 +61,7 @@ modlib_defaults() {
 	local dir="/tmp/flash/$DAEMON"
 	[ ! -d "$dir" ] && mkdir -p "$dir"
 	local arg="${1##*/}"
-	local dst="/tmp/flash/$DAEMON/${arg:$DAEMON.cfg}"
+	local dst="/tmp/flash/$DAEMON/${arg:-$DAEMON.cfg}"
 	local src="/mod/etc/default.$DAEMON/$DAEMON.defaults"
 	[ -e "$src" -a ! -e "$dst" ] && cat "$src" > "$dst"
 }
