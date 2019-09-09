@@ -70,6 +70,11 @@ if [ "$FREETZ_PACKAGE_DNSMASQ_WITH_DNSSEC" = "y" -a "$DNSMASQ_DNSSEC" = "yes" ];
 	fi
 fi
 
+if [ "$FREETZ_PACKAGE_ADDHOLE" == "y" -o -e "/tmp/.dnsmasq.addhole" ]; then
+	[ ! -e "/tmp/.dnsmasq.addhole" ] && touch "/tmp/.dnsmasq.addhole"
+	echo "addn-hosts=/tmp/.dnsmasq.addhole"
+fi
+
 egrep -v '^(#|[[:space:]]*$)' /tmp/flash/mod/hosts 2>/dev/null | \
   while read -r ip mac interface host desc; do
 	[ "${mac}" == "dhcp-host" ] && echo "dhcp-host=${host}"
