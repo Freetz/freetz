@@ -67,12 +67,8 @@ if [ "$FREETZ_PACKAGE_DNSMASQ_WITH_DNSSEC" = "y" -a "$DNSMASQ_DNSSEC" = "yes" ];
 	fi
 fi
 
-isdhcphost () {
-	echo $1 | grep '^dhcp-host$' >/dev/null
-}
-if [ -r /tmp/flash/mod/hosts ]; then
-	egrep -v '^(#|[[:space:]]*$)' /tmp/flash/mod/hosts |
-		while read -r ip mac interface host desc; do
-			isdhcphost $mac && echo "dhcp-host=${host}"
-		done
-fi
+egrep -v '^(#|[[:space:]]*$)' /tmp/flash/mod/hosts 2>/dev/null | \
+  while read -r ip mac interface host desc; do
+	[ "${mac}" == "dhcp-host" ] && echo "dhcp-host=${host}"
+done
+
