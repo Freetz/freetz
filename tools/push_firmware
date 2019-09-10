@@ -301,13 +301,10 @@ prepare_image() {
 			if [ -z "$img" ]; then
 				if tar tf "$work" ./var/tmp/kernel.image >/dev/null 2>&1; then
 					tmpimg=$(mktemp -t freetz_XXX) || { echo "Error creating temporary file."; exit 1; }
-					echo -e "\nHint: file seems to be a full firmware image archive in 'tar' format" >&2
-					echo -e "containing the 'kernel.image'. Now trying to unpack and use that image." >&2
 					tar -Oxf "$work" ./var/tmp/kernel.image > $tmpimg
 					work=$tmpimg
 				else
-					echo -e "\nError: file is not a valid single-boot image to be written to mtd1. Please use" >&2
-					echo -e "a hidden root 'kernel.image' containing both Linux kernel and file system.\n" >&2
+					echo -e "\nError: file is not a valid single-boot image to be written to the device.\n" >&2
 					exit 1
 				fi
 			fi
