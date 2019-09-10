@@ -186,11 +186,11 @@ function push_fw() {
 				-Y "quote REBOOT" \
 				$ip $X86krn mtd$X86krnMTD || exit $?
 		elif [ $ISSINGLE ]; then
-			[ $ISALICE ] && ncftpput \
+			[ $ISALICE ] && ( ncftpput \
 				-C -d stdout -u adam2 -p adam2 \
 				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
 				-W "quote MEDIA FLSH" \
-				$ip ${kernel_mtd5} mtd5 || exit $?
+				$ip ${kernel_mtd5} mtd5 || exit $? )
 			ncftpput \
 				-C -d stdout -u adam2 -p adam2 \
 				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
