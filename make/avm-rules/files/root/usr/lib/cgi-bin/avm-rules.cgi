@@ -12,7 +12,7 @@ echo -e "AVM_RULES_SIP='$AVM_RULES_SIP'\nAVM_RULES_TCP='$AVM_RULES_TCP'\nAVM_RUL
 
 sec_begin '$(lang de:"Einstellungen" en:"Settings")'
 
-cgi_print_checkbox_p "SIP" "$AVM_RULES_SIP" "$(lang de:"VoIP-Ports" en:"VoIP ports"): tcp+udp 5060 + udp 7078-7109"
+cgi_print_checkbox_p "sip" "$AVM_RULES_SIP" "$(lang de:"VoIP-Ports" en:"VoIP ports"): tcp+udp 5060 + udp 7078-7109"
 
 cat << EOF
 $(lang de:"Freizugebende Ports, mehrere durch Leerzeichen getrennt" en:"Ports to open, multiple seperated by spaces").
