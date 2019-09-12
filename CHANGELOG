@@ -4,12 +4,19 @@ Latest changes:
 
 === devel ===
 
+- Quick start:
+  * svn co https://svn.boxmatrix.info/freetz-ng/trunk freetz-ng
+  * cd freetz-ng/
+  * svn up
+  * make help
+  * make menuconfig
+  * make
+  * make push-firmware
+
 - Known problems:
   * Replace kernel does not work for most latest firmware versions
   * Loading build kernel modules may work or do not. You'll notice
   * No download toolchains for firmware versions since FritzOS 7.0
-  * Wlan does not work with Freetz/dhcp is not working.
-    Run "ifconfig wlan up" every boot with "rc.custom".
 
 - Unsupported devices:
   * Repeater 310, 600 & 1160: No LAN ports, so a recovery is not possible
@@ -48,6 +55,8 @@ Latest changes:
     You could put your own "script" here: /tmp/flash/mod/motd
     The motd will be generated 1 time at boot. To update it
     regularly, run "/mod/etc/init.d/rc.mod motd" eg by cron.
+  * Old packages structure?
+    To use old packages structure in menuconfig, run "make menuconfig-single"
 
 - Build system:
   * addons: additional to addon/static.pkg, addon/*.pkg could be used to enable addons, since r15856/3dda64565e
