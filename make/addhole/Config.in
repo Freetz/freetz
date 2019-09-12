@@ -1,0 +1,16 @@
+comment "Addhole (needs dnsmasq)"
+	depends on !FREETZ_PACKAGE_DNSMASQ
+
+config FREETZ_PACKAGE_ADDHOLE
+	bool "Addhole (for dnsmasq)"
+	depends on FREETZ_PACKAGE_DNSMASQ
+	select FREETZ_PACKAGE_WGET
+	select FREETZ_PACKAGE_WGET_WITH_SSL
+	select FREETZ_PACKAGE_WGET_CA_BUNDLE
+	default n
+	help
+		Downloads block lists and adds them to dnsmasq.
+		Warning:
+		If you enable all included lists, dnsmasq will
+		need 25 MB of RAM instead of 1MB without them.
+

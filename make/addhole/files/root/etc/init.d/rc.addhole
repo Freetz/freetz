@@ -1,0 +1,122 @@
+#!/bin/sh
+
+DAEMON=addhole
+DAEMON_LONG_NAME=Addhole
+. /etc/init.d/modlibrc
+
+HOSTS=/tmp/.dnsmasq.addhole
+
+
+reload() {
+	[ "$(/mod/etc/init.d/rc.dnsmasq status)" == "running" ] && /mod/etc/init.d/rc.dnsmasq reload >/dev/null
+}
+
+download() {
+	local STF="$1"
+	local TMP="$HOSTS.tmp"
+	[ -z "$STF" ] && echo -e "\n"
+
+	echo '#' > $TMP
+	[ "$ADDHOLE_KEEP" == "yes" ] && cat "$HOSTS" | awk '{print $2}' >> $TMP
+
+	echo "$ADDHOLE_URLS" | sed 's/^ *//g;s/ *$//g' | grep -vE "^#|^$" | while read -r line; do
+		[ -z "$STF" ] && echo -n "Downloading from " && echo $line | sed -rn  's/^(.*\/\/[^\/]*).*/\1/p'
+		wget -q "$line" -O - | grep -vE "^[ \t]*#|^[ \t]*$" | sed 's/#.*//g' | awk '{print $2}' >> $TMP
+	done
+
+	[ -z "$STF" ] && echo
+	[ -z "$STF" ] && echo -n "Old count of blocked domains: " && status
+	cat $TMP | dos2unix | grep -vE "^[ \t]*$|localhost|ɢ|é" | grep "\." | sort -u | sed "s/^/$ADDHOLE_SINK /g" > "$HOSTS"
+	[ -z "$STF" ] && echo -n "New count of blocked domains: " && status
+	[ -z "$STF" ] && echo
+	rm $TMP
+
+	reload
+}
+
+clear() {
+	echo '#' > "$HOSTS"
+	reload
+}
+
+config() {
+	local NEW OLD="$(cat /tmp/cron.d/$DAEMON 2>/dev/null)"
+	if [ "$ADDHOLE_CRON_ENABLED" == "yes" -a -n "$ADDHOLE_CRON_TIMEM" -a -n "ADDHOLE_CRON_TIMEH" -a -n "ADDHOLE_CRON_WEEKD" ]; then
+		NEW="$ADDHOLE_CRON_TIMEM $ADDHOLE_CRON_TIMEH * * $ADDHOLE_CRON_WEEKD  /mod/etc/init.d/rc.addhole download quiet"
+	fi
+	if [ "$OLD" != "$NEW" ] ; then
+		mkdir -p /tmp/cron.d/
+		echo "$NEW" > /tmp/cron.d/$DAEMON
+		/mod/etc/init.d/rc.crond reload >/dev/null
+	fi
+
+	if [ "$(readlink -n $HOSTS 2>/dev/null)" != "$ADDHOLE_FILE" ]; then
+		rm -f "$HOSTS"
+		ln -s "$ADDHOLE_FILE" "$HOSTS"
+		[ ! -e "$HOSTS" ] && echo '#' > "$HOSTS"
+		reload
+	fi
+}
+
+status() {
+	echo "$(grep -v '^#' $HOSTS | wc -l | sed 's/[ \t].*//') (Bytes: $(du -sh $(realpath $HOSTS) | sed 's/[ \t].*//'))"
+}
+
+case $1 in
+	""|load)
+		modreg file $DAEMON addhole_hosts 'Hosts' 1 addhole_hosts
+		modreg cgi $DAEMON $DAEMON_LONG_NAME
+		modreg extra $DAEMON "" 2 download
+		modreg extra $DAEMON "" 2 clear
+		modreg daemon --hide $DAEMON
+
+		echo -n "Setting up $DAEMON_LONG_NAME ... "
+		config
+		echo "done."
+		;;
+	unload)
+		modunreg daemon $DAEMON
+		modunreg extra $DAEMON
+		modunreg cgi $DAEMON
+		modunreg file $DAEMON
+
+		if [ -e /tmp/cron.d/$DAEMON ]; then
+			rm -f /tmp/cron.d/$DAEMON
+			/mod/etc/init.d/rc.crond reload >/dev/null
+		fi
+
+		rm -f "$HOSTS"
+		echo '#' > "$HOSTS"
+		reload
+		;;
+	reload)
+		echo -n "Reloading $DAEMON_LONG_NAME ... "
+		reload
+		echo "done."
+		;;
+	download)
+		echo -n "Downloading $DAEMON_LONG_NAME ... "
+		download $2
+		echo "done."
+		;;
+	clear)
+		echo -n "Clearing $DAEMON_LONG_NAME ... "
+		clear
+		echo "done."
+		;;
+	config)
+		echo -n "Configuring $DAEMON_LONG_NAME ... "
+		config
+		echo "done."
+		;;
+	status)
+		echo -n "Count of blocked domains: "
+		status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|reload|download|clear|config|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

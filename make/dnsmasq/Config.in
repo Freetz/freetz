@@ -11,6 +11,14 @@ config FREETZ_PACKAGE_DNSMASQ_WITH_DNSSEC
 	help
 		Build with DNSSEC support enabled.
 
+config FREETZ_PACKAGE_DNSMASQ_ADDHOLE
+	bool "Select Addhole"
+	depends on FREETZ_PACKAGE_DNSMASQ
+	select FREETZ_PACKAGE_ADDHOLE
+	default n
+	help
+		Selects Addhole package.
+
 comment "HINT: Don't forget to enable a dns/dhcp server."
 depends on FREETZ_PACKAGE_DNSMASQ && \
 	( FREETZ_AVMDAEMON_DISABLE_DNS || FREETZ_AVMDAEMON_DISABLE_DHCP )
