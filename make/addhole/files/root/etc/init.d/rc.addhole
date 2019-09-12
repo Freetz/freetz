@@ -26,7 +26,7 @@ download() {
 
 	[ -z "$STF" ] && echo
 	[ -z "$STF" ] && echo -n "Old count of blocked domains: " && status
-	cat $TMP | dos2unix | grep -vE "^[ \t]*$|localhost|ɢ|é" | grep "\." | sort -u | sed "s/^/$ADDHOLE_SINK /g" > "$HOSTS"
+	cat $TMP | dos2unix | grep -vE "^[ \t]*$|localhost|‐|ק|ɢ|é" | grep "\." | sort -u | sed "s/^/$ADDHOLE_SINK /g" > "$HOSTS"
 	[ -z "$STF" ] && echo -n "New count of blocked domains: " && status
 	[ -z "$STF" ] && echo
 	rm $TMP
