@@ -79,6 +79,18 @@ menu "Firmware packaging (fwmod) options"
 			7270_v2/3, but maybe you found a way to port it to another firmware,
 			so you are free to use this option at will.
 
+	config FREETZ_FWMOD_BUGGY_FLASH_COMPAT
+		bool "Compatibility for forks with buggy flash"
+		depends on ! FREETZ_FWMOD_SKIP_PACK
+		default n
+		help
+			Some Freetz forks have a buggy flash method. If you have
+			installed such one, you can not flash images by AVM or
+			modified with Freetz-NG.
+			Enable this option to be compatible and allow to flash
+			Freetz-NG for the 1st time.
+			If you plan to flash by the bootloader, this option isn't needed.
+
 	config FREETZ_FWMOD_CREATE_IN_MEMORY_IMAGE
 		bool "Create in-memory image file"
 		depends on ! FREETZ_FWMOD_SKIP_PACK
