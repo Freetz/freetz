@@ -48,26 +48,11 @@ start() {
 }
 
 stop() {
-	echo -n "Stopping ${DAEMON} ... "
-	PID=$(mypidof $DAEMON)
-
-	if [ -z "$PID" ]; then
-		echo "not running."
-		return 1
-	fi
-
-	kill $PID > /dev/null 2>&1
-	exitval=$?
-
-	if [ "$exitval" -eq 0 ]; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		exit $exitval
-	fi
-
-	rm -f /mod/etc/${daemon}.conf
-	rm -f /var/run/${daemon}.pid
+	local PID=$(mypidof $DAEMON)
+	[ -z "$PID" ] && return 1
+	kill $PID &>/dev/null || return 1
+	rm -f /mod/etc/${daemon}.conf /var/run/${daemon}.pid
+	return 0
 }
 
 case $1 in
@@ -87,7 +72,8 @@ case $1 in
 		modlib_start "${OPENVPN_ENABLED}"
 		;;
 	unload)
-		stop
+		modlib_stop
+
 		modunreg file ${DAEMON}
 		modunreg daemon ${DAEMON}
 		modunreg cgi ${DAEMON}
