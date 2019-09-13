@@ -12,14 +12,16 @@ reload() {
 }
 
 download() {
-	local STF="$1"
-	local TMP="$HOSTS.tmp"
+	local SFT OTH TMP="$HOSTS.tmp"
+	[ "$1" == "quiet" ] && SFT="$1"
+	[ "$1" == "other" ] && OTH="$1"
 	[ -z "$STF" ] && echo -e "\n"
 
 	echo '#' > $TMP
 	[ "$ADDHOLE_KEEP" == "yes" ] && cat "$HOSTS" | awk '{print $2}' >> $TMP
+	cat "$DAEMON_CFGFILE" >> $TMP 2>/dev/null
 
-	echo "$ADDHOLE_URLS" | sed 's/^ *//g;s/ *$//g' | grep -vE "^#|^$" | while read -r line; do
+	[ -z "$OTH" ] && echo "$ADDHOLE_URLS" | sed 's/^ *//g;s/ *$//g' | grep -vE "^#|^$" | while read -r line; do
 		[ -z "$STF" ] && echo -n "Downloading from " && echo $line | sed -rn  's/^(.*\/\/[^\/]*).*/\1/p'
 		wget -q "$line" -O - | grep -vE "^[ \t]*#|^[ \t]*$" | sed 's/#.*//g' | awk '{print $2}' >> $TMP
 	done
@@ -35,7 +37,8 @@ download() {
 }
 
 clear() {
-	echo '#' > "$HOSTS"
+	cat "$DAEMON_CFGFILE" | grep -vE "^[ \t]*#|^[ \t]*$|localhost" | sed 's/#.*//g' | grep "\." | sort -u | sed "s/^/$ADDHOLE_SINK /g" > $HOSTS 2>/dev/null
+	[ -s "$HOSTS" ] || echo '#' > "$HOSTS"
 	reload
 }
 
@@ -64,7 +67,10 @@ status() {
 
 case $1 in
 	""|load)
-		modreg file $DAEMON addhole_hosts 'Hosts' 1 addhole_hosts
+		modlib_defaults
+
+		modreg file $DAEMON addhole_other '$(lang de:"Eigene" en:"Other")' 1 addhole_other
+		modreg file $DAEMON addhole_hosts '$(lang de:"Hosts" en:"Hosts")' 1 addhole_hosts
 		modreg cgi $DAEMON $DAEMON_LONG_NAME
 		modreg extra $DAEMON "" 2 download
 		modreg extra $DAEMON "" 2 clear
@@ -95,7 +101,7 @@ case $1 in
 		echo "done."
 		;;
 	download)
-		echo -n "Downloading $DAEMON_LONG_NAME ... "
+		echo -n "Updating $DAEMON_LONG_NAME ... "
 		download $2
 		echo "done."
 		;;
