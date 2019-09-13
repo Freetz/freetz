@@ -180,11 +180,6 @@ new_menu_prepare() {
 		done < /mod/etc/reg/extra.reg
 	fi
 
-	# hard-coded packages; FIXME
-	if [ -e "$p/authorized-keys.sub" ]; then
-		echo "title=SSH" >> "$p/authorized-keys.meta"
-	fi
-
 	# system menu
 	{
 		cat << EOF
