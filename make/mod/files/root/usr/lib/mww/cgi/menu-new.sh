@@ -151,7 +151,7 @@ new_menu_prepare() {
 	if [ -r /mod/etc/reg/pkg.reg ]; then
 		local pkg title
 		while IFS='|' read -r pkg title; do
-			echo "title=$(shell_escape "$title")" >> "$p/$pkg.meta"
+			echo "title='${title//\'/\\\'}'" >> "$p/$pkg.meta"
 		done < /mod/etc/reg/pkg.reg
 	fi
 
@@ -238,6 +238,3 @@ new_menu_prepare_package() {
 	echo -n "<a id='$(_cgi_id "pkg:$pkg")' class='package' href='$(cat "$p/$pkg.index")'>$(html "$title")</a>"
 }
 
-shell_escape() {
-	echo -n "'${1//'/'\''}'"
-}
