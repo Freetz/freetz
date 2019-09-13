@@ -29,6 +29,7 @@ download() {
 	[ -z "$STF" ] && echo
 	[ -z "$STF" ] && echo -n "Old count of blocked domains: " && status
 	cat $TMP | dos2unix | grep -vE "^[ \t]*$|localhost|‐|ק|ɢ|é" | grep "\." | sort -u | sed "s/^/$ADDHOLE_SINK /g" > "$HOSTS"
+	[ -s "$ADDHOLE_FILE" ] || echo '#' > "$HOSTS"
 	[ -z "$STF" ] && echo -n "New count of blocked domains: " && status
 	[ -z "$STF" ] && echo
 	rm $TMP
@@ -38,7 +39,7 @@ download() {
 
 clear() {
 	cat "$DAEMON_CFGFILE" | grep -vE "^[ \t]*#|^[ \t]*$|localhost" | sed 's/#.*//g' | grep "\." | sort -u | sed "s/^/$ADDHOLE_SINK /g" > $HOSTS 2>/dev/null
-	[ -s "$HOSTS" ] || echo '#' > "$HOSTS"
+	[ -s "$ADDHOLE_FILE" ] || echo '#' > "$HOSTS"
 	reload
 }
 
@@ -70,7 +71,7 @@ case $1 in
 		modlib_defaults
 
 		modreg file $DAEMON addhole_other '$(lang de:"Eigene" en:"Other")' 1 addhole_other
-		modreg file $DAEMON addhole_hosts '$(lang de:"Hosts" en:"Hosts")' 1 addhole_hosts
+		modreg file $DAEMON addhole_hosts '$(lang de:"Hosts" en:"Hosts")' 2 addhole_hosts
 		modreg cgi $DAEMON $DAEMON_LONG_NAME
 		modreg extra $DAEMON "" 2 download
 		modreg extra $DAEMON "" 2 clear
