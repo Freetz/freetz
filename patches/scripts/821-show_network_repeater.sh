@@ -10,5 +10,5 @@ echo1 "enabling network config"
 modpatch \
   "$FILESYSTEM_MOD_DIR" \
   "${PATCHES_COND_DIR}/show_network_repeater/" \
-  "/usr/www/all/menus/menu_data.lua"
+  "${MENU_DATA_LUA}"
 

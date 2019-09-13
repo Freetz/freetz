@@ -7,7 +7,7 @@ echo1 "hiding TAM plugin"
 # patcht Telefonie > Anrufbeantworter
 modsed \
   's/pageData\["tam"\] /&and nil /g' \
-  "${HTML_LANG_MOD_DIR}/menus/menu_data.lua"
+  "${MENU_DATA_LUA}"
 	
 # patcht Übersicht > Anrufbeantworter
 modsed \

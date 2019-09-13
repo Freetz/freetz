@@ -9,12 +9,12 @@ if [ "$FREETZ_AVM_VERSION_06_5X_MAX" == "y" ]; then
 	# patcht WLAN > Funknetz
 	modsed \
 	  's/^pageData\["wSet"\] =/& false and /g' \
-	  "${HTML_LANG_MOD_DIR}/menus/menu_data.lua"
+	  "${MENU_DATA_LUA}"
 
 	# patcht WLAN > Zeitschaltung
 	modsed \
 	  's/^pageData\["wTime"\] =/& false and /g' \
-	  "${HTML_LANG_MOD_DIR}/menus/menu_data.lua"
+	  "${MENU_DATA_LUA}"
 
 fi
 
@@ -23,12 +23,12 @@ if [ "$FREETZ_AVM_VERSION_06_8X_MIN" == "y" ]; then
 	# patcht WLAN > Funknetz
 	modsed \
 	  's/ = pageData\["wSet"\] /&and false /g' \
-	  "${HTML_LANG_MOD_DIR}/menus/menu_data.lua"
+	  "${MENU_DATA_LUA}"
 
 	# patcht WLAN > Zeitschaltung
 	modsed \
 	  's/ = pageData\["wTime"\] /&and false /g' \
-	  "${HTML_LANG_MOD_DIR}/menus/menu_data.lua"
+	  "${MENU_DATA_LUA}"
 
 fi
 

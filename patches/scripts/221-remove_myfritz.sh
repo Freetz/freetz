@@ -11,7 +11,7 @@ rm_files "${HTML_LANG_MOD_DIR}/internet/myfritz*.lua"
 # entfernt Internet > Freigaben > Tab: Speicher
 modsed \
   's/pageData\["shareUsb"\] =/& false and/' \
-  "${HTML_LANG_MOD_DIR}/menus/menu_data.lua"
+  "${MENU_DATA_LUA}"
 #lua
 homelua_disable_wrapper myfritz
 quickstart_remove myfritz

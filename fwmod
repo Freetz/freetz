@@ -878,6 +878,12 @@ if [ "$DO_MOD" -gt 0 ]; then
 		fi
 	done
 
+	# Find menu_data.lua
+	MENU_DATA_LUA="filenotavailable"
+	for dir in "${FILESYSTEM_MOD_DIR}/usr/lua" "${HTML_LANG_MOD_DIR}/menus"; do
+		[ -f "$dir/menu_data.lua" ] && MENU_DATA_LUA="$dir/menu_data.lua" && break
+	done
+
 	# Now check language specific html directory (if there is any)
 	for i in de en; do
 		if [ -d "${HTML_LANG_MOD_DIR}/html/$i" ]; then

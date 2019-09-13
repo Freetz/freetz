@@ -6,7 +6,7 @@ echo1 "removing ddnsd"
 # patcht Internet > Freigaben > Dynamic DNS
 modsed \
   's/^pageData\["dyndns"\] =/& nil ; dummy =/g' \
-  "${HTML_LANG_MOD_DIR}/menus/menu_data.lua"
+  "${MENU_DATA_LUA}"
 menulua_remove internet.dyn_dns
 
 modsed -r \

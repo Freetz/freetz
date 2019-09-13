@@ -28,13 +28,13 @@ quickstart_remove() {
 #removes liks within menu_data.lua (left menu, responsive)
 modern_remove() {
 	[ "$FREETZ_AVM_VERSION_06_5X_MIN" != "y" ] && return
-	modsed "s/pageData\[\"$1\"\] and /&false and /" "${HTML_LANG_MOD_DIR}/menus/menu_data.lua"
+	modsed "s/pageData\[\"$1\"\] and /&false and /" "${MENU_DATA_LUA}"
 }
 
 #menulua_remove <page-link>
 #removes links within menu_data.lua (left menu)
 menulua_remove() {
-	local file="${HTML_LANG_MOD_DIR}/menus/menu_data.lua"
+	local file="${MENU_DATA_LUA}"
 	if [ "$FREETZ_AVM_HAS_LUA_SCALABLE" == "y" ]; then
 		# find ["lua"] line
 		local pattern='\["lua"\] = "[^"]*'"$1"'.lua"'
