@@ -110,6 +110,7 @@ raw_out() {
 					done
 					for sub in name lastpressedtimestamp; do
 						val="$(readval "$button" $sub)"
+						[ -z "$val" ] && continue
 						min_len "$sub #$num = " && echo "$val"
 						[ "$sub" == "lastpressedtimestamp" ] && min_len && date -d @$val
 					done
