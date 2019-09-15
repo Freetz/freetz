@@ -5,7 +5,7 @@ VALS="$(echo ar7cfg.voip_forwardrules | ar7cfgctl -s | sed 's/, /\n/g' | sed -rn
 [ "$AVM_RULES_SIP" == "yes" ] && VALS="$(echo "$VALS" | grep -vE '5060_tcp|5060_udp|7078\+32_udp')"
 AVM_RULES_TCP="$(for x in $(echo "$VALS" | sed -rn 's/_tcp$//p'); do echo -n "$x "; done | sed 's/ $//')"
 AVM_RULES_UDP="$(for x in $(echo "$VALS" | sed -rn 's/_udp$//p'); do echo -n "$x "; done | sed 's/ $//')"
-echo -e "AVM_RULES_SIP='$AVM_RULES_SIP'\nAVM_RULES_TCP='$AVM_RULES_TCP'\nAVM_RULES_UDP='$AVM_RULES_UDP'" > /mod/etc/conf/avm-rules.cfg
+echo -e "export AVM_RULES_SIP='$AVM_RULES_SIP'\nexport AVM_RULES_TCP='$AVM_RULES_TCP'\nexport AVM_RULES_UDP='$AVM_RULES_UDP'" > /mod/etc/conf/avm-rules.cfg
 
 . /usr/lib/libmodcgi.sh
 
