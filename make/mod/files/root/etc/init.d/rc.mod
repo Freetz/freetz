@@ -75,6 +75,9 @@ start() {
 
 	[ -d /tmp/flash ] || /usr/bin/modload
 
+	# udev: reload rules after link targets are unpacked
+	[ "$FREETZ_CUSTOM_UDEV_RULES" == "y" ] && udevadm control --reload-rules
+
 	# set ipv6
 	if [ "$FREETZ_TARGET_IPV6_SUPPORT" == "y" -a -d /proc/sys/net/ipv6 ]; then
 		echo "$MOD_IPV6_ASSIGN" | grep -v "^ *#" | while read -r if6 ip6; do
