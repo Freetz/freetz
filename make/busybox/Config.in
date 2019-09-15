@@ -1,4 +1,13 @@
 
+choice
+	prompt "BusyBox version"
+		default FREETZ_BUSYBOX__VERSION_1_27_2
+
+	config FREETZ_BUSYBOX__VERSION_1_27_2
+		bool "1.27.2"
+
+endchoice # "BusyBox version" #
+
 config FREETZ_BUSYBOX__RECOMMENDED
 	bool "recommended"
 	default y
@@ -490,5 +499,8 @@ config FREETZ_BUSYBOX__DEVELOPER
 		and time.
 
 comment ""
-source "make/busybox/Config.in.busybox"
+
+if FREETZ_BUSYBOX__VERSION_1_27_2
+source "make/busybox/Config.in.busybox.1.27.2"
+endif # FREETZ_BUSYBOX__VERSION_1_27_2 #
 
