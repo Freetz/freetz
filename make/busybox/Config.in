@@ -1,10 +1,23 @@
 
 choice
 	prompt "BusyBox version"
-		default FREETZ_BUSYBOX__VERSION_1_27_2
+	help
+		The BusyBox version could not be changed here. Kconfig doesn't support
+		conditional sourceing of files and messes with the config and default
+		of choices in multiple files.
+		So run one of these commands to switch between versions:
+		 ln -s -f Config.in.busybox.1.27.2 make/busybox/Config.in.busybox
+		 ln -s -f Config.in.busybox.1.31.0 make/busybox/Config.in.busybox
+		Kernel 2.6 is not supported since version 1.31 (until you change it).
 
-	config FREETZ_BUSYBOX__VERSION_1_27_2
+	config FREETZ_BUSYBOX__VERSION_1_27_2_PROMPT
+		depends on FREETZ_BUSYBOX__VERSION_1_27_2
 		bool "1.27.2"
+
+	config FREETZ_BUSYBOX__VERSION_1_31_0_PROMPT
+		depends on FREETZ_BUSYBOX__VERSION_1_31_0
+#		depends on FREETZ_KERNEL_VERSION_3_10_MIN
+		bool "1.31.0 - EXPERIMENTAL"
 
 endchoice # "BusyBox version" #
 
@@ -499,7 +512,13 @@ config FREETZ_BUSYBOX__DEVELOPER
 
 comment ""
 
-if FREETZ_BUSYBOX__VERSION_1_27_2
-source "make/busybox/Config.in.busybox.1.27.2"
-endif # FREETZ_BUSYBOX__VERSION_1_27_2 #
+#if FREETZ_BUSYBOX__VERSION_1_27_2
+#source "make/busybox/Config.in.busybox.1.27.2"
+#endif # FREETZ_BUSYBOX__VERSION_1_27_2 #
+
+#if FREETZ_BUSYBOX__VERSION_1_31_0
+#source "make/busybox/Config.in.busybox.1.31.0"
+#endif # FREETZ_BUSYBOX__VERSION_1_31_0 #
+
+source "make/busybox/Config.in.busybox"
 
