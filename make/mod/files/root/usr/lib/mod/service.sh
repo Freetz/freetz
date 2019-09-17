@@ -87,7 +87,7 @@ stat_line() {
 
 	if [ "$MOD_SHOW_MEMORY_USAGE" = yes ] && [ $class = running ]; then
 		pid=""
-		pidfile="$(ls /var/run/$daemon*.pid /var/run/$daemon*/*.pid /var/run/$daemon*/pid/$daemon* -1 2>/dev/null | head -1)"
+		pidfile="$(ls /var/run/$daemon*.pid /var/run/$daemon*/*.pid -1 2>/dev/null | head -1)"
 		[ -n "$pidfile" ] && pid=$(cat "$pidfile")
 		if [ -n "$pid" ] && [ -e "/proc/$pid/status" ]; then
 			vmsize=$(cat "/proc/$pid/status" | grep "VmSize" | tr -s " " | cut -d " " -f 2)

@@ -1,0 +1,10 @@
+--- base/usr/lib/callmonitor/applets/rc.callmonitor.sh
++++ base/usr/lib/callmonitor/applets/rc.callmonitor.sh
+@@ -89,6 +89,7 @@
+ 	if have monitor; then
+ 	    try_start
+ 	fi
++	ln -sf "${PIDFILE#/var/run/}" "/var/run/$DAEMON.pid"
+ 	;;
+     unload)
+ 	stop
