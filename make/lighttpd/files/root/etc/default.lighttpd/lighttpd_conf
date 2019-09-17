@@ -33,7 +33,7 @@ fi
 }
 
 cat << EOF
-server.modules = ( "mod_access" )
+server.modules += ( "mod_access" )
 index-file.names = ( "index.cgi", "index.html", "index.htm", "default.htm", "index.php", "index.rb" )
 mimetype.assign = (
 ".pdf" => "application/pdf",
@@ -118,6 +118,7 @@ virthost_conf "$LIGHTTPD_DIRLISTINGVIRT" "$out"
 fi
 
 enable_ssl() {
+[ "$LIGHTTPD_SSLENABLE" == "enable" ] && echo 'server.modules += ( "mod_openssl" )'
 cat << EOF
 ssl.engine = "$LIGHTTPD_SSLENABLE"
 ssl.pemfile = "/tmp/flash/lighttpd/crt.pem"
