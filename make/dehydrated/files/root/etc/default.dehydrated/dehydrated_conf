@@ -1,0 +1,17 @@
+#!/bin/sh
+
+cat << EOF
+#!/bin/bash
+
+BASEDIR=/tmp/flash/dehydrated
+PRIVATE_KEY=/tmp/flash/dehydrated/private_key.pem
+
+EOF
+
+echo "WELLKNOWN=${DEHYDRATED_WEBROOT%/*}/.well-known/acme-challenge/"
+echo "KEYSIZE=$DEHYDRATED_KEYSIZE"
+
+[ -n "$DEHYDRATED_REGMAIL" ] && echo "CONTACT_EMAIL=$DEHYDRATED_REGMAIL"
+
+echo "$DEHYDRATED_USERCFG"
+

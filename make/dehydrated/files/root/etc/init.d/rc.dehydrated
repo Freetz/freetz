@@ -1,0 +1,142 @@
+#!/bin/sh
+
+DAEMON=dehydrated
+. /etc/init.d/modlibrc
+
+set_cron() {
+	local CRON_NEW CRON_OLD="$(cat /tmp/cron.d/$DAEMON 2>/dev/null)"
+	if [ "$DEHYDRATED_ENABLED" == "yes" ]; then
+		CRON_NEW="$DEHYDRATED_CROND_M $DEHYDRATED_CROND_H $DEHYDRATED_CROND_D * *  /mod/etc/init.d/rc.$DAEMON cron"
+	fi
+	if [ "$CRON_OLD" != "$CRON_NEW" ] ; then
+		mkdir -p /tmp/cron.d/
+		echo "$CRON_NEW" > /tmp/cron.d/$DAEMON
+		/mod/etc/init.d/rc.crond reload >/dev/null
+	fi
+}
+
+run() {
+	echo -n "Running $DAEMON_LONG_NAME ... "
+	if modlib_check_running; then
+		echo 'already running.'
+		exit 0
+	fi
+	if [ "$DEHYDRATED_ENABLED" != "yes" -a "$#" -eq 0 ]; then
+		echo 'is disabled.'
+		exit 0
+	fi
+	if [ ! -x "$(which $DAEMON)" ]; then
+		echo "binary not found, skipped."
+		exit 1
+	fi
+
+
+	modlib_config
+	[ ! -d "$DEHYDRATED_CERTDIR" ] && mkdir "$DEHYDRATED_CERTDIR"
+	rm -rf /tmp/flash/$DAEMON/certs
+	ln -s ${DEHYDRATED_CERTDIR%/*} /tmp/flash/$DAEMON/certs
+
+
+	mkdir "$DEHYDRATED_WEBROOT/.well-known/"
+	mkdir "$DEHYDRATED_WEBROOT/.well-known/acme-challenge/"
+
+	echo >> $DEHYDRATED_LOGFILE
+	date >> $DEHYDRATED_LOGFILE
+	local rv
+	if [ "$#" -gt 0 ]; then
+		echo
+		$DAEMON $* | tee -a $DEHYDRATED_LOGFILE 2>&1
+		rv=$?
+	else
+		$DAEMON --cron >> $DEHYDRATED_LOGFILE 2>&1
+		rv=$?
+	fi
+
+	rm -rf "$DEHYDRATED_WEBROOT/.well-known/acme-challenge"
+	rmdir "$DEHYDRATED_WEBROOT/.well-known/" 2>/dev/null 
+
+
+	[ -n "$(find /tmp/flash/dehydrated/accounts/ -type f -mtime -1)" ] && modsave flash >/dev/null
+
+	LIGHTY_RESTART=n
+	for dom in $DEHYDRATED_CERTDIR/*; do
+		[ -z "$(find $dom -name cert.pem -mtime -1)" ] && continue
+		cat $dom/privkey.pem $dom/cert.pem 2>/dev/null > $dom/ssl.pem
+		LIGHTY_RESTART=y
+	done
+	if [ "$LIGHTY_RESTART" == "y" ]; then
+		echo -n "restarting Lighttpd ... "
+		[ "$(/mod/etc/init.d/rc.lighttpd status)" == "running" ] && /mod/etc/init.d/rc.lighttpd restart >/dev/null
+	fi
+
+	# the script return always 0
+	[ "$rv" -eq 0 ] && echo 'done.' || echo 'failed.'
+	return $rv
+}
+
+case $1 in
+	""|load)
+		modlib_defaults domains.txt
+		mkdir -p  /mod/etc/$DAEMON/
+
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
+		modreg file $DAEMON dehydrated_domains 'domains.txt' 0 "dehydrated_domains"
+		modreg daemon --hide $DAEMON
+		modreg status $DAEMON "$DAEMON_LONG_NAME" dehydrated_log
+
+		if [ "$DEHYDRATED_ENABLED" != "yes" ]; then
+			echo "$DAEMON is disabled." 1>&2
+			exit 1
+		else
+			set_cron
+			#check if this script is executed by rc.external
+			if [ "$(ps | sed -rn 's/^ *$PPID .*(rc.external).*/y/p')" != "y" ]; then
+				echo "$DAEMON is enabled." 1>&2
+			else
+				echo "$DAEMON will be run in background ... active." 1>&2
+#				run
+			fi
+		fi
+		;;
+	stop)
+#		echo "$DAEMON can't be stopped." 1>&2
+		exit 1
+		;;
+	unload)
+		if [ -e /tmp/cron.d/$DAEMON ]; then
+			rm -rf /tmp/cron.d/$DAEMON
+			/mod/etc/init.d/rc.crond reload >/dev/null
+		fi
+
+		modunreg status $DAEMON dehydrated_log
+		modunreg cgi $DAEMON
+		modunreg file $DAEMON
+		modunreg daemon $DAEMON
+		;;
+	run)
+		run
+		;;
+	init)
+		run --cron
+		;;
+	force)
+		run --cron --force
+		;;
+	revoke)
+		run --revoke $2
+		;;
+	config)
+		set_cron
+		;;
+	cron)
+		[ "$DEHYDRATED_ENABLED" != "yes" ] && return
+		logger -t info "Run $DAEMON_LONG_NAME by cron."
+ 		run
+		;;
+	*)
+		echo "Usage: $0 [load|unload|run|init|force|revoke <cert.pem>|config|cron]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
