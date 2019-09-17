@@ -149,9 +149,9 @@ new_menu_prepare() {
 
 	# collect data for packages
 	if [ -r /mod/etc/reg/pkg.reg ]; then
-		local pkg title
+		local pkg title escaped="'\''"
 		while IFS='|' read -r pkg title; do
-			echo "title='${title//\'/\\\'}'" >> "$p/$pkg.meta"
+			echo "title='${title//\'/$escaped}'" >> "$p/$pkg.meta"
 		done < /mod/etc/reg/pkg.reg
 	fi
 
