@@ -1,0 +1,10 @@
+--- base/usr/lib/callmonitor/modules/util.sh
++++ base/usr/lib/callmonitor/modules/util.sh
+@@ -6,5 +6,6 @@
+ }
+ grep_re_escape() { sed_re_escape "$@"; }
+ sh_escape() {
+-    echo -n "'${1//'/'\''}'"
++    local escaped="'\''"
++    echo -n "'${1//\'/$escaped}'"
+ }
