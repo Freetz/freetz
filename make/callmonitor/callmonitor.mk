@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SOURCE_CHECKSUM:=X
 $(PKG)_SITE:=git@https://github.com/er13/callmonitor.git
 
-$(PKG)_CONDITIONAL_PATCHES+=$(call qstrip,$(FREETZ_TYPE_PREFIX_SERIES_SUBDIR))
+$(PKG)_CONDITIONAL_PATCHES+=$(if $(FREETZ_AVM_VERSION_07_0X_MIN),07_0X)
 
 $(PKG)_STARTLEVEL=71
 
