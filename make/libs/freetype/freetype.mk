@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 2.5.5)
-$(PKG)_LIB_VERSION:=6.11.4
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=2a7a314927011d5030903179cf183be0
+$(call PKG_INIT_LIB, 2.10.1)
+$(PKG)_LIB_VERSION:=6.17.1
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE_MD5:=bd42e75127f8431923679480efb5ba8f
 $(PKG)_SITE:=@SF/freetype
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/objs/.libs/libfreetype.so.$($(PKG)_LIB_VERSION)
@@ -31,7 +31,6 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfreetype.la \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/freetype-config \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/freetype2.pc
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
@@ -45,11 +44,8 @@ $(pkg)-clean:
 	-$(SUBMAKE) -C $(FREETYPE_DIR) distclean
 	$(RM) $(FREETYPE_DIR)/.configured
 	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfreetype* \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/freetype-config \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/ft2build.h \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/freetype2 \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/freetype2.pc \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/share/man/man?/freetype-config* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/aclocal/freetype2.m4
 
 $(pkg)-uninstall:
