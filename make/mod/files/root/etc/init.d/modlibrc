@@ -223,6 +223,10 @@ modlib_startdaemon() {
 #    returns: 0=success or 1=error
 modlib_start() {
 	local DAEMON_ENABLED=$1
+
+	# create on "load" a link to pid file for memory usage (on services/dienste)
+	[ -n "$DAEMON_ENABLED" ] && [ "$PID_FILE" != "/var/run/${DAEMON}.pid" ] && ln -s "${PID_FILE#/var/run/}" "/var/run/${DAEMON}.pid"
+
 	if [ "$DAEMON_ENABLED" == "no" ]; then
 		echo "${DAEMON_LONG_NAME} is disabled." 1>&2
 		exit 1
