@@ -118,7 +118,6 @@ virthost_conf "$LIGHTTPD_DIRLISTINGVIRT" "$out"
 fi
 
 enable_ssl() {
-[ "$LIGHTTPD_SSLENABLE" == "enable" ] && echo 'server.modules += ( "mod_openssl" )'
 cat << EOF
 ssl.engine = "$LIGHTTPD_SSLENABLE"
 ssl.pemfile = "/tmp/flash/lighttpd/crt.pem"
@@ -147,6 +146,7 @@ fi
 
 if [ "$FREETZ_PACKAGE_LIGHTTPD_WITH_SSL" = "y" ]; then
 if [ "$LIGHTTPD_SSLENABLE" = "enable" ]; then
+	[ "$LIGHTTPD_SSLENABLE" == "enable" ] && echo 'server.modules += ( "mod_openssl" )'
 	if [ "$LIGHTTPD_SSLADDITIONAL" = "yes" ]; then
 		virtsrv=""
 		if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_EVHOST" = "y" -a "$LIGHTTPD_VIRTHOST" = "yes" ]; then
@@ -160,7 +160,7 @@ if [ "$LIGHTTPD_SSLENABLE" = "enable" ]; then
 		out=""
 		[ -n "$virtsrv" ] && out="url.access-deny = ( \"\" )"
 		if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_REDIRECT" = "y" -a "$LIGHTTPD_SSLREDIRECT" = "yes" ]; then
-			echo "server.modules += ( \"mod_redirect\" )"
+			echo 'server.modules += ( "mod_redirect" )'
 			[ "$LIGHTTPD_SSLPORT" != "443" ] && REDIRECT_PORT_SUFFIX=":$LIGHTTPD_SSLPORT" || REDIRECT_PORT_SUFFIX=""
 			out="url.redirect = ( \"^/(.*)\" => \"https://%1${REDIRECT_PORT_SUFFIX}/\$1\" )"
 		fi
