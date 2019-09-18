@@ -69,10 +69,8 @@ cat << EOF
 <p>MaxOnionsPending (Default 100): &nbsp;<input id="maxonions" type="text" size="5" maxlength="5" name="maxonionspending" value="$(html "$TOR_MAXONIONSPENDING")"></p>
 <p>ExitPolicy ($(lang de:"z.B." en:"e.g.") "reject *.*" = no exits allowed):&nbsp;<input id="policy" type="text" size="20" maxlength="20" name="exitpolicy" value="$(html "$TOR_EXITPOLICY")"></p>
 <p>$(lang de:"Diesen Server als Bridge verwenden" en:"Use this server as a bridge"): <input type="hidden" name="bridgerelay" value="no"><input id="e10" type="checkbox" name="bridgerelay" value="yes"$bridgerelay_chk></p>
-<p>DataDirectory (Default /var/tmp/tor): &nbsp;<input id="datadir" type="text" size="40" maxlength="40" name="datadirectory"
-value="$(html "$TOR_DATADIRECTORY")"> &nbsp;
-$(lang de:"Verzeichnis" en:"directory") persistent: <input type="hidden" name="datadirpersistent" value="no"><input id="e9" type="checkbox" name="datadirpersistent" value="yes"$datadirpersistent_enabled_chk></p>
-</p>
+<p>DataDirectory (Default /var/tmp/tor): &nbsp;<input id="datadir" type="text" size="40" maxlength="40" name="datadirectory" value="$(html "$TOR_DATADIRECTORY")"></p>
+<p>$(lang de:"Verzeichnis" en:"directory") persistent: <input type="hidden" name="datadirpersistent" value="no"><input id="e9" type="checkbox" name="datadirpersistent" value="yes"$datadirpersistent_enabled_chk></p>
 
 EOF
 
