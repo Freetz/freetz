@@ -86,9 +86,7 @@ stat_line() {
 	stat_button "$pkg" "$daemon" $(lang de:"restart" en:"restart") $stop
 
 	if [ "$MOD_SHOW_MEMORY_USAGE" = yes ] && [ $class = running ]; then
-		pid=""
-		pidfile="$(ls /var/run/$daemon*.pid /var/run/$daemon*/*.pid -1 2>/dev/null | head -1)"
-		[ -n "$pidfile" ] && pid=$(cat "$pidfile")
+		pid="$(cat /var/run/$daemon.pid 2>/dev/null)"
 		if [ -n "$pid" ] && [ -e "/proc/$pid/status" ]; then
 			vmsize=$(cat "/proc/$pid/status" | grep "VmSize" | tr -s " " | cut -d " " -f 2)
 			[ -n "$vmsize" ] && vmsize="$vmsize kB"
