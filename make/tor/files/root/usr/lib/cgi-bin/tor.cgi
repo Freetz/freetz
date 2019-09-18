@@ -4,7 +4,6 @@
 
 check "$TOR_SOCKS_POLICY_REJECT" yes:closed "*":open
 check "$TOR_STRICT_NODES" yes:strict_nodes
-check "$TOR_FORCE_GEOIP_UPDATE" yes:force_geoip_update
 check "$TOR_RELAY_ENABLED" yes:relay_enabled
 check "$TOR_DATADIRPERSISTENT" yes:datadirpersistent_enabled
 check "$TOR_BRIDGERELAY" yes:bridgerelay
@@ -55,17 +54,6 @@ cat << EOF
 <p><textarea id="accept" name="exclude_nodes" rows="4" cols="50" maxlength="255">$(html "$TOR_EXCLUDE_NODES")</textarea></p>
 
 <p>$(lang de:"Zu vermeidende Knoten als sicher auszuschlie&szlig;ende interpretieren" en:"Treat nodes to avoid as the ones definitely to exclude"): <input type="hidden" name="strict_nodes" value="no"><input id="e7" type="checkbox" name="strict_nodes" value="yes"$strict_nodes_chk></p>
-
-<p>
-<label for="geoip_file">$(lang de:"Pfad zu GeoIP-Datenbank" en:"Path to GeoIP database"): </label>
-<input type="text" id="geoip_file" name="geoip_file" size="55" maxlength="255" value="$(html "$TOR_GEOIP_FILE")">
-</p>
-
-<p>
-<label for="force_geoip_update">$(lang de:"Aktualisiere GeoIP-Datenbank bei jedem Start" en:"Update GeoIP database on each start"): </label>
-<input type="hidden" name="force_geoip_update" value="no">
-<input id="force_geoip_update" type="checkbox" name="force_geoip_update" value="yes"$force_geoip_update_chk>
-</p>
 EOF
 
 sec_end

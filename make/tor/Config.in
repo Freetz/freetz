@@ -14,20 +14,26 @@ config FREETZ_PACKAGE_TOR
 
 		Anonymous Internet communication system.
 
-config FREETZ_PACKAGE_TOR_GEOIP
-	bool "Select features required for automatic fetching of GeoIP database"
-	depends on FREETZ_PACKAGE_TOR
-	select FREETZ_BUSYBOX_UNZIP
-	select FREETZ_BUSYBOX_GUNZIP
-	select FREETZ_WGET
+if FREETZ_PACKAGE_TOR
+
+config FREETZ_PACKAGE_TOR_GEOIP_V4
+	bool "With GeoIP database for IPv4"
 	default n
 	help
-		This option activates busybox features required
-		for automatic fetching of GeoIP database.
+		This includes the GeoIP database for IPv4.
+		Needs about 850KB (compressed).
+
+config FREETZ_PACKAGE_TOR_GEOIP_V6
+	bool "With GeoIP database for IPv6"
+	default n
+	help
+		This includes the GeoIP database for IPv6.
+		Needs about 180 KB (compressed).
 
 config FREETZ_PACKAGE_TOR_STATIC
 	bool "Link statically"
-	depends on FREETZ_PACKAGE_TOR
 	default n
 	help
 		Build tor binary with statically linked libraries.
+
+endif # FREETZ_PACKAGE_TOR

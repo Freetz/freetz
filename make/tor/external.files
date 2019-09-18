@@ -1,1 +1,5 @@
-[ "$EXTERNAL_FREETZ_PACKAGE_TOR" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/tor"
+if [ "$EXTERNAL_FREETZ_PACKAGE_TOR" == "y" ]; then
+	EXTERNAL_FILES+=" /usr/sbin/tor"
+	[ "$FREETZ_PACKAGE_TOR_GEOIP_V4" == "y" ] && EXTERNAL_FILES+=" /usr/share/tor/geoip"
+	[ "$FREETZ_PACKAGE_TOR_GEOIP_V6" == "y" ] && EXTERNAL_FILES+=" /usr/share/tor/geoip6"
+fi

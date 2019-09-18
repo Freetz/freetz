@@ -1,5 +1,7 @@
 #!/bin/sh
 
+[ -r /etc/options.cfg ] && . /etc/options.cfg
+
 # $1:       separator (use $'\n' for newline)
 # $2..$end: strings to join
 _join() {
@@ -44,5 +46,6 @@ if [ "$TOR_RELAY_ENABLED" == "yes" ]; then
 	[ "$TOR_BRIDGERELAY" == "yes" ] && echo "BridgeRelay 1"
 fi
 
-[ "$TOR_GEOIP_FILE" ] && echo "GeoIPFile $TOR_GEOIP_FILE.IPv4"
-[ "$TOR_GEOIP_FILE" ] && echo "GeoIPv6File $TOR_GEOIP_FILE.IPv6"
+[ "$FREETZ_PACKAGE_TOR_GEOIP_V4" == "y" ] && echo "GeoIPFile /usr/share/tor/geoip"
+[ "$FREETZ_PACKAGE_TOR_GEOIP_V6" == "y" ] && echo "GeoIPv6File /usr/share/tor/geoip6"
+

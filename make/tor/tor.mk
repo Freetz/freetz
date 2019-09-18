@@ -8,6 +8,17 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/tor
 
 $(PKG)_DEPENDS_ON += zlib openssl libevent
 
+$(PKG)_GEOIPDB_DIR := /usr/share/tor
+$(PKG)_GEOIPDB_ALL := geoip geoip6
+
+$(PKG)_GEOIPDB := $(if $(FREETZ_PACKAGE_TOR_GEOIP_V4),geoip) $(if $(FREETZ_PACKAGE_TOR_GEOIP_V6),geoip6)
+$(PKG)_GEOIPDB_BUILD_DIR := $($(PKG)_GEOIPDB:%=$($(PKG)_DIR)/src/config/%)
+$(PKG)_GEOIPDB_TARGET_DIR := $($(PKG)_GEOIPDB:%=$($(PKG)_DEST_DIR)$($(PKG)_GEOIPDB_DIR)/%)
+
+$(PKG)_EXCLUDED += $(patsubst %,$($(PKG)_DEST_DIR)$($(PKG)_GEOIPDB_DIR)/%,$(filter-out $($(PKG)_GEOIPDB),$($(PKG)_GEOIPDB_ALL)))
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_TOR_GEOIP_V4
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_TOR_GEOIP_V6
+
 $(PKG)_CONFIGURE_ENV += tor_cv_malloc_zero_works=no
 $(PKG)_CONFIGURE_ENV += tor_cv_null_is_zero=yes
 $(PKG)_CONFIGURE_ENV += tor_cv_sign_extend=yes
@@ -52,17 +63,22 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		EXTRA_CFLAGS="$(TOR_EXTRA_CFLAGS)" \
 		EXTRA_LDFLAGS="$(TOR_EXTRA_LDFLAGS)"
 
+$($(PKG)_GEOIPDB_BUILD_DIR): $($(PKG)_DIR)/.unpacked
+
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
+$($(PKG)_GEOIPDB_TARGET_DIR): $($(PKG)_DEST_DIR)$($(PKG)_GEOIPDB_DIR)/%: $($(PKG)_DIR)/src/config/%
+	$(INSTALL_FILE)
+
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_GEOIPDB_TARGET_DIR)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(TOR_DIR) clean
 
 $(pkg)-uninstall:
-	$(RM) $(TOR_TARGET_BINARY)
+	$(RM) -r $(TOR_TARGET_BINARY) $(TOR_DEST_DIR)$(MNISATIP_GEOIPDB_DIR)
 
 $(PKG_FINISH)
