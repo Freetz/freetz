@@ -1,15 +1,9 @@
 #!/bin/sh
 
-scriptname=$0
-scriptname=${scriptname##*/}
-prefix=${scriptname%%_conf}
-
-CCD_REL=/clients_$prefix
-CCD=/var/tmp/openvpn$CCD_REL
-
+script=${0##*/}
+prefix=${script%%_conf}
 
 . /mod/etc/conf/${prefix}.cfg
 
-CFILE=${1-"/mod/etc/${prefix}.conf"}
+echo "$OPENVPN_CONF" > ${1-"/mod/etc/${prefix}.conf"}
 
-echo "$OPENVPN_CONF" > $CFILE

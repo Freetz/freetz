@@ -25,7 +25,7 @@ cgi_print_radiogroup_service_starttype \
 
 sec_end
 
-if [ -n "$(find /lib/modules/ -name tun.ko)" ]; then
+if [ -n "$(find /lib/modules/ -name tun.ko -o -name yf_patchkernel.ko)" ]; then
 sec_begin '$(lang de:"Optionen" en:"Options")' sec_opts
 
 cgi_print_checkbox_p "load_tun" "$OPENVPN_LOAD_TUN" \
