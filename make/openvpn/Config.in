@@ -3,12 +3,47 @@ config FREETZ_PACKAGE_OPENVPN
 	select FREETZ_BUSYBOX_BRCTL         if ! FREETZ_PACKAGE_BRIDGE_UTILS
 	select FREETZ_MODULE_tun            if ! FREETZ_AVM_HAS_TUN_BUILTIN
 	select FREETZ_MODULE_yf_patchkernel if FREETZ_AVM_HAS_BUGON_IN_NET_CORE
-	select FREETZ_PACKAGE_OPENVPN_CGI if ! FREETZ_PACKAGE_OPENVPN_USE_V2_CGI || ! FREETZ_SHOW_ADVANCED
 	default n
 	help
 		VPN Server
 
 if FREETZ_PACKAGE_OPENVPN
+
+
+choice
+	prompt "GUI"
+	default FREETZ_PACKAGE_OPENVPN_USE_V1_CGI
+
+	config FREETZ_PACKAGE_OPENVPN_USE_V0_CGI
+		bool "none - binary only"
+		depends on FREETZ_SHOW_ADVANCED
+		help
+			No configuration interface, just the binary.
+
+	config FREETZ_PACKAGE_OPENVPN_USE_V1_CGI
+		bool "v1 - old full featured"
+		select FREETZ_PACKAGE_OPENVPN_V1_CGI
+		help
+			Old full featured OpenVPN configuration interface v1.
+
+			CAUTION: You have to delete configurations made with "new"/v2 GUI!
+			They share to save the same directory and are not compatible.
+
+	config FREETZ_PACKAGE_OPENVPN_USE_V2_CGI
+		bool "v2 - new simple-gui"
+		depends on FREETZ_SHOW_ADVANCED
+		select FREETZ_PACKAGE_OPENVPN_V2_CGI
+		help
+			New quite simple OpenVPN configuration interface v2.
+
+			It will not generate a configuration file based on GUI settings
+			but just ask for an existing configuration.
+
+			CAUTION: You have to delete configurations made with "old"/v1 GUI!
+			They share to save the same directory and are not compatible.
+
+endchoice
+
 
 choice
 	prompt "SSL library"
@@ -29,6 +64,7 @@ choice
 			Leads to smaller binaries, but lacks support for some openssl features.
 
 endchoice
+
 
 config FREETZ_PACKAGE_OPENVPN_FORCE_BLOWFISH
 	bool "Include cipher blowfish in mbedTLS"
@@ -106,16 +142,5 @@ config FREETZ_PACKAGE_OPENVPN_USE_IPROUTE
 	help
 		Enables openvpn to use ip when setting IPs, link parameters and routes.
 		This selects busybox's 'IP' applet.
-
-config FREETZ_PACKAGE_OPENVPN_USE_V2_CGI
-	bool "Use new (simple) GUI - EXPERIMENTAL"
-	depends on FREETZ_SHOW_ADVANCED
-	select FREETZ_PACKAGE_OPENVPN_V2_CGI
-	default n
-	help
-		CAUTION: This option will delete configurations made with "old" GUI!
-		New quite simple OpenVPN configuration interface.
-		It will not generate a configuration file based on GUI settings
-		but just ask for an existing configuration.
 
 endif # FREETZ_PACKAGE_OPENVPN
