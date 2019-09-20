@@ -91,7 +91,6 @@ sed -n 's/^config /$(PKG)_REBUILD_SUBOPTS += /p' "$BBOUT" | sort -u >> "$BBDEP.$
 for file in $BBDEP.*; do echo "include \$(MAKE_DIR)/busybox/${file##*/}"; done | sort -u >> "$BBDEP"
 
 echo -n " defaults ..."
-default MD5SUM "y" # for modsave
 default FEATURE_COPYBUF_KB 64
 default FEATURE_VI_MAX_LEN 1024
 default SUBST_WCHAR 0
