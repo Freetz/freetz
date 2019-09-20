@@ -1226,6 +1226,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 				ln -sf "$BUSYBOX_PATH" "${d}${LINK_DIR}/$LINK_NAME" || error 1 "could not create link for $link"
 			done
 		done || exit 1
+
+		echo1 "checking BusyBox version"
+		echo2 "... used by AVM ...... $(strings ${FILESYSTEM_DIR}/bin/busybox | sed -n 's/BusyBox v//p')"
+		echo2 "... used by Freetz ... $(strings ${FILESYSTEM_MOD_DIR}/bin/busybox | sed -n 's/BusyBox v//p')"
 	fi
 
 	echo0 "installing packages"
