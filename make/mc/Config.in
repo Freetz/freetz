@@ -39,6 +39,7 @@ config FREETZ_PACKAGE_MC_WITH_DIFF_VIEWER
 config FREETZ_PACKAGE_MC_WITH_SUBSHELL
 	bool "Subshell support"
 	default y
+	select FREETZ_LIB_libutil
 	help
 		Subshell support means you can press Ctrl-O to hide the mc panels and
 		have a real subshell. Both Bash (if package is installed) and BusyBox
@@ -54,47 +55,42 @@ config FREETZ_PACKAGE_MC_WITH_VFS
 	bool "Virtual filesystem support"
 	default n
 
+if FREETZ_PACKAGE_MC_WITH_VFS
+
 config FREETZ_PACKAGE_MC_WITH_VFS_CPIO
-	depends on FREETZ_PACKAGE_MC_WITH_VFS
 	bool "cpio"
 
 config FREETZ_PACKAGE_MC_WITH_VFS_EXTFS
-	depends on FREETZ_PACKAGE_MC_WITH_VFS
 	bool "extfs"
 	default y
 
 config FREETZ_PACKAGE_MC_WITH_VFS_FTP
-	depends on FREETZ_PACKAGE_MC_WITH_VFS
 	bool "ftp"
 	default n
 
 config FREETZ_PACKAGE_MC_WITH_VFS_SFS
-	depends on FREETZ_PACKAGE_MC_WITH_VFS
 	bool "sfs"
 	default n
 
 config FREETZ_PACKAGE_MC_WITH_VFS_TAR
-	depends on FREETZ_PACKAGE_MC_WITH_VFS
 	bool "tar"
 	default y
 
 # TODO
 #config FREETZ_PACKAGE_MC_WITH_VFS_FISH
-#	depends on FREETZ_PACKAGE_MC_WITH_VFS
 #	bool "fish"
 #	default n
 #config FREETZ_PACKAGE_MC_WITH_VFS_SFTP
-#	depends on FREETZ_PACKAGE_MC_WITH_VFS
 #	bool "sftp"
 #	default n
 #config FREETZ_PACKAGE_MC_WITH_VFS_SMB
-#	depends on FREETZ_PACKAGE_MC_WITH_VFS
 #	bool "smb"
 #	default n
 #config FREETZ_PACKAGE_MC_WITH_VFS_UNDELFS
-#	depends on FREETZ_PACKAGE_MC_WITH_VFS
 #	bool "undelfs"
 #	default n
+
+endif # FREETZ_PACKAGE_MC_WITH_VFS
 
 config FREETZ_PACKAGE_MC_WITH_HELP
 	bool "Include online help"
