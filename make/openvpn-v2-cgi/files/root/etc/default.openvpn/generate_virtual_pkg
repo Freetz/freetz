@@ -23,7 +23,6 @@ if [ -d /tmp/flash/openvpn/${packagename#openvpn-} ]; then
 	for x in /tmp/flash/openvpn/${packagename}/*; do
 		[ -e "$x" ] && sed "s%/tmp/flash/openvpn/${packagename#openvpn-}%/tmp/flash/openvpn/${packagename}%g" -i "$x"
 	done
-	ln -s ${packagename} /tmp/flash/openvpn/${packagename#openvpn-}
 fi
 
 mkdir -p /tmp/flash/openvpn/${packagename}
