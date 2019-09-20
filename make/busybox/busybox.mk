@@ -36,7 +36,7 @@ $(PKG_UNPACKED)
 
 $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	@cat $(TOPDIR)/.config \
-		| sed -nr 's!^(# )*(FREETZ_BUSYBOX_)([^_].*)!\1CONFIG_\3!p' \
+		| sed -nr 's!^(# )*(FREETZ_BUSYBOX___V[0-9]{4}_)([^_].*)!\1CONFIG_\3!p' \
 		> $(BUSYBOX_DIR)/.config ;\
 	for bbsym in $$(sed -rn 's/^depends_on ([^ ]+) .*/\1/p' "$(BUSYBOX_MAKE_DIR)/generate.sh"); do \
 		if ! grep -qE "(# )?CONFIG_$$bbsym[= ]" "$(BUSYBOX_DIR)/.config"; then \
