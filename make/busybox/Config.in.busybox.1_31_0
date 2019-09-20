@@ -4031,6 +4031,7 @@ config FREETZ_BUSYBOX___V1310_DEPMOD
 	bool "depmod (27 kb)"
 	default n
 	select FREETZ_BUSYBOX___V1310_PLATFORM_LINUX
+	depends on !FREETZ_PACKAGE_MODULE_INIT_TOOLS_depmod
 	help
 	depmod generates modules.dep (and potentially modules.alias
 	and modules.symbols) that contain dependency information
@@ -4039,12 +4040,14 @@ config FREETZ_BUSYBOX___V1310_INSMOD
 	bool "insmod (22 kb)"
 	default n
 	select FREETZ_BUSYBOX___V1310_PLATFORM_LINUX
+	depends on !FREETZ_PACKAGE_MODULE_INIT_TOOLS_insmod
 	help
 	insmod is used to load specified modules in the running kernel.
 config FREETZ_BUSYBOX___V1310_LSMOD
 	bool "lsmod (1.9 kb)"
 	default n
 	select FREETZ_BUSYBOX___V1310_PLATFORM_LINUX
+	depends on !FREETZ_PACKAGE_MODULE_INIT_TOOLS_lsmod
 	help
 	lsmod is used to display a list of loaded modules.
 
@@ -4060,12 +4063,14 @@ config FREETZ_BUSYBOX___V1310_MODINFO
 	bool "modinfo (24 kb)"
 	default n
 	select FREETZ_BUSYBOX___V1310_PLATFORM_LINUX
+	depends on !FREETZ_PACKAGE_MODULE_INIT_TOOLS_modinfo
 	help
 	Show information about a Linux Kernel module
 config FREETZ_BUSYBOX___V1310_MODPROBE
 	bool "modprobe (28 kb)"
 	default n
 	select FREETZ_BUSYBOX___V1310_PLATFORM_LINUX
+	depends on !FREETZ_PACKAGE_MODULE_INIT_TOOLS_modprobe
 	help
 	Handle the loading of modules, and their dependencies on a high
 	level.
@@ -4084,6 +4089,7 @@ config FREETZ_BUSYBOX___V1310_RMMOD
 	bool "rmmod (3.3 kb)"
 	default n
 	select FREETZ_BUSYBOX___V1310_PLATFORM_LINUX
+	depends on !FREETZ_PACKAGE_MODULE_INIT_TOOLS_rmmod
 	help
 	rmmod is used to unload specified modules from the kernel.
 
