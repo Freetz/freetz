@@ -1,13 +1,12 @@
 #!/bin/sh
 
 DAEMON="${0##*/rc.}"
-DAEMON_LONG_NAME="${DAEMON/openvpn/OpenVPN}"
+DAEMON_LONG_NAME="$(cat /tmp/.openvpn.title.${DAEMON} 2>/dev/null || echo -n ${DAEMON/openvpn/OpenVPN})"
 PID_FILE="/var/run/${DAEMON}.pid"
 CONF_ENABLED="OPENVPN_ENABLED"
 . /etc/init.d/modlibrc
 
 [ -z "$OPENVPN_ENABLED" ] && OPENVPN_ENABLED="no"
-TITLE="OpenVPN${2:+-$2}"
 
 
 config() {
@@ -32,7 +31,7 @@ configs() {
 
 case $1 in
 	""|load)
-		modreg cgi "${DAEMON}" "${TITLE}"
+		modreg cgi "${DAEMON}" "${DAEMON_LONG_NAME}"
 		modreg daemon ${DAEMON}
 
 		if [ "$DAEMON" == "openvpn" ]; then
@@ -83,7 +82,7 @@ case $1 in
 		modlib_status
 		;;
 	*)
-		echo "Usage: $0 [load [title]|unload|start|stop|restart|reload|configs|status]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|reload|configs|status]" 1>&2
 		exit 1
 		;;
 esac

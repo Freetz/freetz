@@ -1,6 +1,8 @@
 #!/bin/sh
-title=$1
-packagename=openvpn-$(echo "$title" | tr 'A-Z\-' 'a-z\_')
+[ "$(echo ${1:0:7} | tr 'A-Z' 'a-z')" == "openvpn" ] && title="${1:8}"
+title="OpenVPN-${title:-$1}"
+packagename="$(echo $title | tr 'A-Z' 'a-z')"
+echo -n "$title" > "/tmp/.openvpn.title.$packagename"
 
 mkdir -p /mod/etc/default.${packagename}
 rm -f /mod/etc/default.${packagename}/${packagename}_conf
@@ -27,5 +29,5 @@ fi
 
 mkdir -p /tmp/flash/openvpn/${packagename}
 modconf load ${packagename}
-/mod/etc/init.d/rc.${packagename} load $title
+/mod/etc/init.d/rc.${packagename} load
 
