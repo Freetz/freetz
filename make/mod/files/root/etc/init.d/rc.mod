@@ -63,7 +63,7 @@ motd() {
 }
 
 start() {
-	log "rc.mod version $(cat /etc/.freetz-version)"
+	log "Freetz version $(sed 's/^freetz-//' /etc/.freetz-version)"
 
 	# Basic Packages: links
 	for pkg in crond telnetd webcfg dsld ftpd rextd multid swap external websrv smbd; do
@@ -143,7 +143,7 @@ start() {
 
 	/usr/lib/mod/menu-update
 
-	log "rc.mod finished."
+	log "Startup finished."
 }
 
 stop_helper() {
