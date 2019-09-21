@@ -148,17 +148,17 @@ case $1 in
 		;;
 	""|load)
 		modlib_add_httpd_symlink rrd one
-		modreg cgi rrdstats RRDstats
-		modreg extra rrdstats "" 2 dt-init
-		modreg extra rrdstats "" 2 sh-init
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
+		modreg extra $DAEMON "" 2 dt-init
+		modreg extra $DAEMON "" 2 sh-init
 		modreg daemon $DAEMON
 		modlib_start $RRDSTATS_ENABLED
 		;;
 	unload)
 		modunreg daemon $DAEMON
-		modunreg cgi rrdstats
-		modunreg file rrdstats
-		modunreg extra rrdstats
+		modunreg cgi $DAEMON
+		modunreg file $DAEMON
+		modunreg extra $DAEMON
 		modlib_stop
 		;;
 	start)

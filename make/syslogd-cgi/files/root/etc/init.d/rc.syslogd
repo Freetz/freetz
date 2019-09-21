@@ -1,6 +1,7 @@
 #!/bin/sh
 
 DAEMON=syslogd
+DAEMON_LONG_NAME=Syslogd
 . /etc/init.d/modlibrc
 
 start() {
@@ -80,7 +81,7 @@ stop () {
 
 case $1 in
 	""|load)
-		modreg cgi $DAEMON 'Syslogd'
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
 		modreg daemon $DAEMON
 
 		modlib_start $SYSLOGD_ENABLED

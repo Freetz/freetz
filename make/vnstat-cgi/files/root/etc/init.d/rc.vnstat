@@ -2,6 +2,7 @@
 
 DAEMON=vnstat
 DAEMON_BIN=vnstatd
+DAEMON_LONG_NAME=VNstat
 . /etc/init.d/modlibrc
 
 HTTPD_PID_VNS=/var/run/httpd_vns.pid
@@ -77,16 +78,16 @@ case $1 in
 		[ ! -d "/tmp/flash/vnstat" ] && mkdir -p /tmp/flash/vnstat
 		[ ! -e "/tmp/flash/vnstat/vnstat.conf" ] && /mod/etc/default.vnstat/vnstat_conf > /tmp/flash/vnstat/vnstat.conf
 
-		modreg file vnstat conf 'vnstat.conf' 1 "vnstat_conf"
-		modreg cgi vnstat vnstat
+		modreg file $DAEMON conf 'vnstat.conf' 1 "vnstat_conf"
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
 		modreg daemon $DAEMON
 
 		modlib_start $VNSTAT_ENABLED
 		;;
 	unload)
 		modunreg daemon $DAEMON
-		modunreg cgi vnstat
-		modunreg file vnstat
+		modunreg cgi $DAEMON
+		modunreg file $DAEMON
 		modlib_stop
 		;;
 	start)

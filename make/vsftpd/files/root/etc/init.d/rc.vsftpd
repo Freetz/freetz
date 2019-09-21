@@ -1,7 +1,7 @@
 #!/bin/sh
 
 DAEMON=vsftpd
-PID_FILE=/var/run/$DAEMON.pid
+DAEMON_LONG_NAME=Vsftpd
 . /etc/init.d/modlibrc
 
 
@@ -39,18 +39,18 @@ case $1 in
 		mkdir -p /var/run/vsftpd
 		[ -e "/var/tmp/ftp" ] || ln -s /mod/home/ftp /var/tmp/ftp
 
-		modreg cgi 'vsftpd' 'Vsftpd'
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
 		modreg daemon $DAEMON
 		[ -r /etc/options.cfg ] && . /etc/options.cfg
-		[ "$FREETZ_PACKAGE_VSFTPD_WITH_SSL" == "y" ] && modreg file vsftpd crt 'Cert+Key' 0 "vsftpd_crt"
+		[ "$FREETZ_PACKAGE_VSFTPD_WITH_SSL" == "y" ] && modreg file $DAEMON crt 'Cert+Key' 0 "vsftpd_crt"
 
 		modlib_start $VSFTPD_ENABLED
 		;;
 	unload)
-		modunreg file vsftpd
-		modunreg status vsftpd vsftpd_log
+		modunreg file $DAEMON
+		modunreg status $DAEMON vsftpd_log
 		modunreg daemon $DAEMON
-		modunreg cgi vsftpd
+		modunreg cgi $DAEMON
 		modlib_stop
 		;;
 	start)

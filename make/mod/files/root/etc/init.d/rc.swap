@@ -1,6 +1,7 @@
 #!/bin/sh
 
 DAEMON=swap
+DAEMON_LONG_NAME=Swap
 CONF_NAME=mod
 . /etc/init.d/modlibrc
 
@@ -9,7 +10,7 @@ has_swap() {
 }
 
 start() {
-	echo -n "Starting $DAEMON ... "
+	echo -n "Starting $DAEMON_LONG_NAME ... "
 
 	if has_swap; then
 		echo 'already running.'
@@ -29,7 +30,7 @@ start() {
 }
 
 stop() {
-	echo -n "Stopping $DAEMON ... "
+	echo -n "Stopping $DAEMON_LONG_NAME ... "
 
 	if ! has_swap; then
 		echo 'not running.'
@@ -60,16 +61,16 @@ autohelper() {
 
 case $1 in
 	""|load)
-		modreg daemon -p mod swap
+		modreg daemon -p mod $DAEMON
 		if [ "$MOD_SWAP" != yes ]; then
-			echo "$DAEMON is disabled." 1>&2
+			echo "$DAEMON_LONG_NAME is disabled." 1>&2
 			exit 1
 		fi
-		echo "$DAEMON is enabled." 1>&2
+		echo "$DAEMON_LONG_NAME is enabled." 1>&2
 		;;
 	unload)
 		stop
-		modunreg daemon mod swap
+		modunreg daemon mod $DAEMON
 		;;
 	start)
 		start

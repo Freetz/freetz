@@ -1,6 +1,7 @@
 #!/bin/sh
 
 DAEMON=crond
+DAEMON_LONG_NAME=Crond
 CONF_NAME=mod
 CONF_ENABLED=MOD_CROND
 . /etc/init.d/modlibrc
@@ -18,14 +19,14 @@ reload() { :; }
 
 case $1 in
 	""|load)
-		modreg daemon -p mod crond
+		modreg daemon -p mod $DAEMON
 		modreg file mod crontab 'crontab' 0 "crontab"
 
 		modlib_start $MOD_CROND
 		;;
 	unload)
 		modunreg file mod crontab
-		modunreg daemon mod crond
+		modunreg daemon mod $DAEMON
 		modlib_stop
 		;;
 	start)

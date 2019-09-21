@@ -1,6 +1,7 @@
 #!/bin/sh
 
 DAEMON=inetd
+DAEMON_LONG_NAME=Inetd
 . /etc/init.d/modlibrc
 . /etc/init.d/modlibinetd
 
@@ -11,11 +12,12 @@ start() {
 
 case $1 in
 	""|load)
-		mkdir -p /tmp/flash/$DAEMON
-		modreg cgi 'inetd' 'Inetd'
+		modlib_defaults
+
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
 		modreg daemon $DAEMON
-		modreg file inetd conf '$(lang en:"Inetd config" de:"Konfiguration")' 2 "inetd_conf"
-		modreg file inetd user '$(lang en:"Inetd custom" de:"Benutzerdefiniert")' 0 "inetd_user"
+		modreg file $DAEMON conf '$(lang en:"Inetd config" de:"Konfiguration")' 2 "inetd_conf"
+		modreg file $DAEMON user '$(lang en:"Inetd custom" de:"Benutzerdefiniert")' 0 "inetd_user"
 
 		# enable pending AVM daemons which tried to start early during startup by inetdctl
 		for daemon in /tmp/.inetd.pending.*; do
@@ -27,8 +29,8 @@ case $1 in
 		;;
 	unload)
 		modunreg daemon $DAEMON
-		modunreg cgi inetd
-		modunreg file inetd
+		modunreg cgi $DAEMON
+		modunreg file $DAEMON
 		modlib_stop
 		;;
 	start)

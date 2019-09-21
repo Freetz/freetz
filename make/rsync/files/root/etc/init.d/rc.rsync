@@ -1,34 +1,33 @@
 #!/bin/sh
 
 DAEMON=rsync
-MODPATH=/mod/etc
-CONF=$MODPATH/rsync.conf
-PID_FILE=/var/run/rsync.pid
+DAEMON_LONG_NAME=Rsync
 . /etc/init.d/modlibrc
+
 
 config() {
 	modlib_config
 }
 
 start() {
-	modlib_startdaemon $DAEMON --daemon --config=$CONF --ipv4
+	modlib_startdaemon $DAEMON --daemon --config=/mod/etc/rsync.conf --ipv4
 }
 
 case "$1" in
 	""|load)
-		mkdir -p /tmp/flash/rsync
+		modlib_defaults
 
-		modreg cgi 'rsync' 'RSync-Server'
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
 		modreg daemon $DAEMON
-		modreg file rsync shares '$(lang de:"Freigaben" en:"Shares")' 1 "shares"
-		modreg file rsync sharesx '$(lang de:"Erweitert" en:"Options")' 1 "sharesx"
+		modreg file $DAEMON shares '$(lang de:"Freigaben" en:"Shares")' 1 "shares"
+		modreg file $DAEMON sharesx '$(lang de:"Erweitert" en:"Options")' 1 "sharesx"
 
 		modlib_start $RSYNC_ENABLED
 		;;
 	unload)
-		modunreg file rsync
+		modunreg file $DAEMON
 		modunreg daemon $DAEMON
-		modunreg cgi rsync
+		modunreg cgi $DAEMON
 		modlib_stop
 		;;
 	start)

@@ -1,6 +1,7 @@
 #!/bin/sh
 
 DAEMON=oidentd
+DAEMON_LONG_NAME=Oidentd
 DAEMON_CONFIG=/tmp/flash/$DAEMON/oidentd.conf
 . /etc/init.d/modlibrc
 
@@ -10,11 +11,11 @@ start() {
 
 case $1 in
 	""|load)
-		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
+		modlib_defaults
 		[ ! -e "$DAEMON_CONFIG" ] && /mod/etc/default.$DAEMON/oidentd_conf > $DAEMON_CONFIG
 
 		modreg file $DAEMON conf 'oidentd.conf' 1 "oidentd_conf"
-		modreg cgi $DAEMON oidentd
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
 		modreg daemon $DAEMON
 
 		modlib_start $OIDENTD_ENABLED

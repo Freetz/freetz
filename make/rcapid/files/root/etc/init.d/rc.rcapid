@@ -1,19 +1,20 @@
 #!/bin/sh
 
 DAEMON=rcapid
+DAEMON_LONG_NAME=Rcapid
 . /etc/init.d/modlibrc
 
 
 case $1 in
 	""|load)
-		modreg cgi 'rcapid' 'Rcapid'
-		modreg daemon --disable rcapid
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
+		modreg daemon --disable $DAEMON
 
 		modlib_start $RCAPID_ENABLED
 		;;
 	unload)
-		modunreg cgi 'rcapid'
-		modunreg daemon rcapid
+		modunreg cgi $DAEMON
+		modunreg daemon $DAEMON
 		;;
 	start)
 		;;

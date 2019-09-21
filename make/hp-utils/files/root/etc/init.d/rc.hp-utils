@@ -2,7 +2,7 @@
 
 DAEMON=hp-utils
 DAEMON_BIN=httpd-$DAEMON
-DAEMON_LONG_NAME="hp-utils webinterface"
+DAEMON_LONG_NAME="HP-utils"
 DAEMON_CONFIG=/mod/etc/httpd-${DAEMON}.conf
 PID_FILE=/var/run/webcfg-${DAEMON}.pid
 . /etc/init.d/modlibrc
@@ -19,14 +19,14 @@ case $1 in
 	""|load)
 		modlib_add_httpd_symlink $DAEMON
 
-		modreg cgi 'hp-utils' 'hp-utils'
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
 		modreg daemon $DAEMON
 
 		modlib_start $HP_UTILS_ENABLED
 		;;
 	unload)
 		modunreg daemon $DAEMON
-		modunreg cgi 'hp-utils'
+		modunreg cgi $DAEMON
 		modlib_stop
 		;;
 	start)

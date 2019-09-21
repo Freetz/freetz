@@ -3,6 +3,7 @@
 DAEMON=sane-backends
 DAEMON_BIN=saned
 DAEMON_CONFIG=/mod/etc/sane.d/$DAEMON_BIN.conf
+DAEMON_LONG_NAME=SANE
 . /etc/init.d/modlibrc
 
 CONFDIR=/mod/etc/sane.d
@@ -25,8 +26,8 @@ case $1 in
 			[ -e $conf ] && ln -sf $conf $CONFDIR/dll.d/$(basename $conf)
 		done
 
-		modreg cgi 'sane-backends' 'SANE'
-		modreg daemon sane-backends
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
+		modreg daemon $DAEMON
 
 		modlib_start $SANE_BACKENDS_ENABLED
 		;;
@@ -34,8 +35,8 @@ case $1 in
 		config
 		;;
 	unload)
-		modunreg cgi 'sane-backends'
-		modunreg daemon sane-backends
+		modunreg cgi $DAEMON
+		modunreg daemon $DAEMON
 		modlib_stop
 		;;
 	start)

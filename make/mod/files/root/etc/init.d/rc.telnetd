@@ -1,7 +1,7 @@
 #!/bin/sh
 
 DAEMON=telnetd
-DAEMON_LONG_NAME="AVM telnetd"
+DAEMON_LONG_NAME="Telnetd"
 CONF_NAME=avm
 CONF_ENABLED=AVM_TELNETD
 . /etc/init.d/modlibrc
@@ -52,7 +52,7 @@ if [ "$telnetd_phone" == "y" ]; then
 	if [ "$1" == "status" ]; then
 		echo "byphone"
 	else
-		echo "$DAEMON_LONG_NAME is started by phone, failed."
+		echo "$DAEMON_LONG_NAME was started by phone, failed."
 	fi
 	exit 1
 fi
