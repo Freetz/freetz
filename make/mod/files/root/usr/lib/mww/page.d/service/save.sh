@@ -1,15 +1,17 @@
 . /usr/lib/cgi-bin/mod/modlibcgi
 
 cgi --style=mod/daemons.css
-REG=/mod/etc/reg/daemon.reg
+SERVICE_REG=/mod/etc/reg/daemon.reg
+SERVICE_PKG=/mod/etc/reg/pkg.reg
 eval "$(modcgi cmd service)"
 
 # retrieve package information
 OIFS=$IFS; IFS="|"
-set -- $(grep "^$ID|.*|$PACKAGE\$" "$REG")
+set -- $(grep "^$ID|.*|$PACKAGE\$" "$SERVICE_REG")
 IFS=$OIFS
 if [ $# -gt 0 ]; then
-	description=$2
+	long="$(sed -n "s/^${3#rc.}|//p" "$SERVICE_PKG")"
+	description=${long:-$2}
 	rcfile=${3:+/mod/etc/init.d/$3}
 fi
 if [ ! -x "$rcfile" ]; then

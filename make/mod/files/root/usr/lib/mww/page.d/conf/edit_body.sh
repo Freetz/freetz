@@ -16,6 +16,7 @@ EOF
 
 source /usr/lib/mod/service.sh
 SERVICE_REG=/mod/etc/reg/daemon.reg
+SERVICE_PKG=/mod/etc/reg/pkg.reg
 package_services() {
 	local selected_pkg=$1 count=0
 	while IFS='|' read -r daemon description rcscript disable hide pkg; do
@@ -25,7 +26,8 @@ package_services() {
 			sec_begin '$(lang de:"Status" en:"Status")'
 			stat_begin
 		fi
-		stat_line "$pkg" "$daemon" "$description" "$rcscript" "$disable" "$hide"
+		local long="$(sed -n "s/^$daemon|//p" "$SERVICE_PKG")"
+		stat_line "$pkg" "$daemon" "${long:-$description}" "$rcscript" "$disable" "$hide"
 	done < "$SERVICE_REG"
 	if [ $count -gt 0 ]; then
 		stat_end
