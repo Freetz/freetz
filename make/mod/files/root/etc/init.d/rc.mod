@@ -102,7 +102,8 @@ start() {
 		local rc="/etc/init.d/rc.$pkg"
 		if [ -x "$rc" ]; then
 			if echo "$EXTERNAL_SERVICES" | grep -q " $pkg "; then
-				log "$pkg will be started by external."
+				local long="$(sed -n "s/^DAEMON_LONG_NAME=[\"' ]*\([^\""\$"' ]*\).*/\1/p" "$rc")"
+				log "${long:-$pkg} will be started by external."
 			else
 				log "$($rc)"
 			fi
