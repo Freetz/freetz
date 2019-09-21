@@ -61,6 +61,7 @@ autohelper() {
 
 case $1 in
 	""|load)
+		modreg pkg $DAEMON "$DAEMON_LONG_NAME"
 		modreg daemon -p mod $DAEMON
 		if [ "$MOD_SWAP" != yes ]; then
 			echo "$DAEMON_LONG_NAME is disabled." 1>&2
@@ -71,6 +72,7 @@ case $1 in
 	unload)
 		stop
 		modunreg daemon mod $DAEMON
+		modunreg pkg $DAEMON
 		;;
 	start)
 		start

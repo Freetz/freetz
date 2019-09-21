@@ -1,7 +1,7 @@
 #!/bin/sh
 
 DAEMON=multid
-DAEMON_LONG_NAME="AVM-multid"
+DAEMON_LONG_NAME="AVM-$DAEMON"
 CONF_NAME=avm
 . /etc/init.d/modlibrc
 
@@ -111,10 +111,12 @@ reload() {
 
 case $1 in
 	""|load)
-		modreg daemon -p avm multid
+		modreg pkg $DAEMON "$DAEMON_LONG_NAME"
+		modreg daemon -p avm $DAEMON
 		;;
 	unload)
-		modunreg daemon avm multid
+		modunreg daemon avm $DAEMON
+		modunreg pkg $DAEMON
 		;;
 	start)
 		modlib_start

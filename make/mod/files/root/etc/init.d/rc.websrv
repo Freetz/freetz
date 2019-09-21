@@ -5,7 +5,7 @@
 
 DAEMON=websrv
 DAEMON_BIN=httpd-$DAEMON
-DAEMON_LONG_NAME="AVM-websrv"
+DAEMON_LONG_NAME="AVM-$DAEMON"
 PID_FILE=/var/run/websrv.pid
 CONF_NAME=avm
 CONF_ENABLED=AVM_WEBSRV
@@ -23,13 +23,16 @@ case $1 in
 		touch /tmp/.websrvload
 
 		modlib_add_httpd_symlink $DAEMON
+		modreg pkg $DAEMON "$DAEMON_LONG_NAME"
 		modreg daemon -p avm $DAEMON
 
 		modlib_start $AVM_WEBSRV
 		;;
 	unload)
-		modlib_stop
 		modunreg daemon avm $DAEMON
+		modunreg pkg $DAEMON
+
+		modlib_stop
 		;;
 	start)
 		modlib_start

@@ -60,9 +60,13 @@ fi
 
 case $1 in
 	""|load)
+		modreg pkg $DAEMON "$DAEMON_LONG_NAME"
+
 		modlib_start $AVM_TELNETD
 		;;
 	unload)
+		modunreg pkg $DAEMON
+
 		modlib_stop
 		;;
 	start)

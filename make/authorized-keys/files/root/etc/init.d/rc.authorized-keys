@@ -1,14 +1,15 @@
 #!/bin/sh
 
 DAEMON=authorized-keys
-DAEMON_LONG_NAME=authorized-keys
+DAEMON_LONG_NAME="SSH authorized-keys"
 
 case $1 in
 	""|load)
+		modreg pkg $DAEMON "$DAEMON_LONG_NAME"
+		modreg daemon --hide $DAEMON
 		for ak_file in authorized_keys known_hosts id_dsa id_rsa id_ed25519 id_ecdsa; do
 			modreg file authorized-keys $ak_file "$ak_file" 0 $ak_file
 		done
-		modreg daemon --hide $DAEMON
 
 		echo -n "Setting up $DAEMON_LONG_NAME for root ... "
 		dir="/tmp/flash/authorized_keys_root"
@@ -20,6 +21,7 @@ case $1 in
 	unload)
 		modunreg file $DAEMON
 		modunreg daemon $DAEMON
+		modunreg pkg $DAEMON
 		;;
 	start)
 		;;

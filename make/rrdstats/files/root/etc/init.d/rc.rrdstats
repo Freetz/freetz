@@ -151,14 +151,20 @@ case $1 in
 		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
 		modreg extra $DAEMON "" 2 dt-init
 		modreg extra $DAEMON "" 2 sh-init
+		modreg pkg ${DAEMON}-rrd "${DAEMON_LONG_NAME}-rrd"
+		modreg pkg ${DAEMON}-one "${DAEMON_LONG_NAME}-one"
+		modreg pkg ${DAEMON}-aha "${DAEMON_LONG_NAME}-aha"
 		modreg daemon $DAEMON
+
 		modlib_start $RRDSTATS_ENABLED
 		;;
 	unload)
 		modunreg daemon $DAEMON
+		modunreg pkg $DAEMON
 		modunreg cgi $DAEMON
 		modunreg file $DAEMON
 		modunreg extra $DAEMON
+
 		modlib_stop
 		;;
 	start)

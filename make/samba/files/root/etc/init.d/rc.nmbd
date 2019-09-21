@@ -1,8 +1,8 @@
 #!/bin/sh
 
 DAEMON=samba
-DAEMON_LONG_NAME="Samba-nmbd"
 DAEMON_BIN=nmbd
+DAEMON_LONG_NAME="Samba-$DAEMON_BIN"
 DAEMON_CONFIG=/mod/etc/samba/smb.conf
 CONF_ENABLED=SAMBA_NMBD_ENABLED
 . /etc/init.d/modlibrc
@@ -20,12 +20,15 @@ case $1 in
 		if [ ! -e /var/mod/etc/init.d/rc.$DAEMON_BIN ]; then
 			ln -s /etc/init.d/rc.$DAEMON_BIN /var/mod/etc/init.d/rc.$DAEMON_BIN
 		fi
-		modreg daemon -n samba-nmbd -r rc.$DAEMON_BIN -p samba nmbd
+		modreg pkg $DAEMON_BIN "$DAEMON_LONG_NAME"
+		modreg daemon -n "$DAEMON_LONG_NAME" -r rc.$DAEMON_BIN -p $DAEMON $DAEMON_BIN
 
 		modlib_start $SAMBA_NMBD_ENABLED
 		;;
 	unload)
-		modunreg daemon samba nmbd
+		modunreg daemon $DAEMON $DAEMON_BIN
+		modunreg pkg $DAEMON_BIN
+
 		modlib_stop
 		;;
 	start)

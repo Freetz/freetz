@@ -19,6 +19,7 @@ reload() { :; }
 
 case $1 in
 	""|load)
+		modreg pkg $DAEMON "$DAEMON_LONG_NAME"
 		modreg daemon -p mod $DAEMON
 		modreg file mod crontab 'crontab' 0 "crontab"
 
@@ -27,6 +28,7 @@ case $1 in
 	unload)
 		modunreg file mod crontab
 		modunreg daemon mod $DAEMON
+		modunreg pkg $DAEMON
 		modlib_stop
 		;;
 	start)
