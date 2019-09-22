@@ -14,7 +14,7 @@ get_preferred_blkid_version() {
 	if [ "$FREETZ_PACKAGE_UTIL_LINUX" == "y" -a "$EXTERNAL_FREETZ_PACKAGE_UTIL_LINUX" != "y" ]; then
 		echo "blkid-util-linux"
 	else
-		if [ "$FREETZ_PATCH_FREETZMOUNT" != "y " ]; then
+		if [ "$FREETZ_PATCH_FREETZMOUNT" != "y" ]; then
 			if [ -x "${FILESYSTEM_MOD_DIR}/sbin/blkid-avm" ]; then
 				echo "blkid-avm"
 			elif [ "$FREETZ_BUSYBOX_BLKID" == "y" ]; then
