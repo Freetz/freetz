@@ -25,7 +25,7 @@ exec 2>&1
 case $SERVICE_CMD in
 	start)   message="$(lang de:"Starte" en:"Starting") $description" ;;
 	stop)    message="$(lang de:"Stoppe" en:"Stopping") $description" ;;
-	restart) message="$(lang de:"Starte $description neu" en:"Restarting $description")" ;;
+	restart) message="$(lang de:"Restarte $description" en:"Restarting $description")" ;;
 	*)
 		cgi_error "$(lang de:"Unbekannter Befehl" en:"Unknown command") '$(html "$SERVICE_CMD")'"
 		exit 1
