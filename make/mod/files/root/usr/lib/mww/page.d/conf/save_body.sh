@@ -68,7 +68,30 @@ rc_status() {
 default=false
 case $QUERY_STRING in
 	*default*) default=true ;;
+	stop|start|restart) SERVICE_CMD=$QUERY_STRING ;;
 esac
+
+if [ -n "$SERVICE_CMD" ]; then
+	SERVICE_PKG=/mod/etc/reg/pkg.reg
+	description="$(sed -n "s/^$PACKAGE|//p" "$SERVICE_PKG")"
+
+	# redirect stderr to stdout so we see output in webif
+	exec 2>&1
+
+	case $SERVICE_CMD in
+		start)   message='$(lang de:"Starte" en:"Starting")' ;;
+		stop)    message='$(lang de:"Stoppe" en:"Stopping")' ;;
+		restart) message='$(lang de:"Restarte" en:"Restarting")' ;;
+	esac
+
+	echo "<div id='result'>"
+	echo -n "<p>$message ${description:-$PACKAGE}:</p><pre class='log.small'>"
+	"/mod/etc/init.d/rc.$PACKAGE" "$SERVICE_CMD" | html | highlight
+	echo '</pre>'
+	echo "</div>"
+
+	exit
+fi
 
 package=$PACKAGE
 
