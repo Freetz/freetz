@@ -1,0 +1,19 @@
+--- bootstrap
++++ bootstrap
+@@ -6,13 +6,11 @@
+ # exit on errors
+ set -e
+ 
+-# set nicer prompt for tracing
+-PS4="$0:\$LINENO> "
+-set -x
++mkdir ./m4
+ 
+ aclocal
+-libtoolize --copy --force 
++libtoolize --copy --force --quiet
+ autoheader
+-automake --add-missing --copy --foreign 
++automake --add-missing --copy --foreign 2>&1 | grep -v ' installing '
+ autoconf
+ 
