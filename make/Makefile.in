@@ -357,13 +357,14 @@ ECHO_ITEM_START:=$(SOURCE_DIR_ROOT)/.echo_item_start
 ECHO_ITEM_BUILD:=$(SOURCE_DIR_ROOT)/.echo_item_build
 
 define _ECHO_START
-	echo -n "---> "; \
+	echo -ne "\e[48;5;90m---> "; \
 	case "$(PKG_TYPE)" in \
-		BIN)	echo -n "package/$(pkg): " ;; \
-		LIB)	echo -n "library/$(pkg): " ;; \
-		TOOL)	echo -n "tool/$(pkg): " ;; \
-		*)	echo -n "kernel: " ;; \
+		BIN)	echo -n "package/$(pkg)" ;; \
+		LIB)	echo -n "library/$(pkg)" ;; \
+		TOOL)	echo -n "tool/$(pkg)" ;; \
+		*)	echo -n "kernel" ;; \
 	esac; \
+	echo -ne "\e[49m ... "; \
 	$(RM) $(ECHO_ITEM_BUILD); \
 	touch $(ECHO_ITEM_START);
 endef
@@ -372,19 +373,19 @@ define _ECHO
 	if [ ! -e $(ECHO_ITEM_START) ]; then \
 		$(call _ECHO_START) \
 	fi; \
-	echo -n "$(1)";
+	echo -ne "\e[48;5;56m$(1)\e[49m ... ";
 endef
 
 define _ECHO_BUILD
 	if [ -e $(ECHO_ITEM_START) -a ! -e $(ECHO_ITEM_BUILD) ]; then \
-		echo -n "building... "; \
+		echo -ne "\e[48;5;56mbuilding\e[49m ... "; \
 		touch $(ECHO_ITEM_BUILD); \
 	fi;
 endef
 
 define _ECHO_DONE
 	if [ -e $(ECHO_ITEM_START) ]; then \
-		echo "done."; \
+		echo -e "\e[48;5;56mdone\e[49m."; \
 	fi; \
 	$(RM) $(ECHO_ITEM_START) $(ECHO_ITEM_BUILD);
 endef
@@ -619,7 +620,7 @@ PKG_FINISH+=$(eval $(PKG_FINISH__INT))
 define PKG_SOURCE_DOWNLOAD__INT
 NON_LOCALSOURCE_PACKAGES+=$(pkg)
 $(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
-	$(call _ECHO,downloading... )
+	$(call _ECHO,downloading)
 	@if [ -e $(MIRROR_DIR)/$($(PKG)_SOURCE) ]; then \
 		$(call MESSAGE, Found $($(PKG)_SOURCE) in $(MIRROR_DIR), creating hard link); \
 		ln $(MIRROR_DIR)/$($(PKG)_SOURCE) $(DL_DIR); \
@@ -709,7 +710,7 @@ endef
 ## Unpack and patch package
 define PKG_UNPACKED__INT
 $($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) $(if $($(PKG)_CUSTOM_UNPACK),$($(PKG)_DIR)/.build-prereq-checked) | $(PKG)_SOURCE_DIR $(UNPACK_TARBALL_PREREQUISITES)
-	@$(call _ECHO,preparing... )
+	@$(call _ECHO,preparing)
 	@$(call RMDIR_KEEP_FILES__INT,$($(PKG)_DIR),.build-prereq-checked)
 	$(call PKG_UNPACK)
 	$(call PKG_EXECUTE_WITHIN__INT,$($(PKG)_PATCH_PRE_CMDS))
@@ -724,7 +725,7 @@ endef
 ## "unpack" (actually copy) local source package
 define PKG_UNPACKED_LOCALSOURCE_PACKAGE__INT
 $($(PKG)_DIR)/.unpacked: $(wildcard $($(PKG)_MAKE_DIR)/src/*) | $(PKG)_SOURCE_DIR
-	@$(call _ECHO,preparing... )
+	@$(call _ECHO,preparing)
 	@$(call RMDIR_KEEP_FILES__INT,$($(PKG)_DIR),.build-prereq-checked)
 	mkdir -p $($(PKG)_DIR)
 	cp -a $$^ $($(PKG)_DIR)
@@ -803,7 +804,7 @@ define PKG_CONFIGURED_CONFIGURE__INT
 # Must be first
 $(PKG_CONFIGURED_COMMON__INT)
 $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.build-prereq-checked $($(PKG)_DIR)/.unpacked
-	@$(call _ECHO,configuring... )
+	@$(call _ECHO,configuring)
 	($(CONFIGURE) \
 		cd $($(PKG)_DIR); \
 		$(TARGET_CONFIGURE_PRE_CMDS) \

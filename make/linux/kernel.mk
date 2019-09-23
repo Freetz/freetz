@@ -19,7 +19,7 @@ endif
 DL_KERNEL_SOURCE:=$(call qstrip,$(FREETZ_DL_KERNEL_SOURCE))
 
 $(DL_FW_DIR)/$(DL_KERNEL_SOURCE): | $(DL_FW_DIR)
-	@$(call _ECHO, downloading...)
+	@$(call _ECHO,downloading)
 	$(DL_TOOL) $(DL_FW_DIR) $(FREETZ_DL_KERNEL_SOURCE) $(FREETZ_DL_KERNEL_SITE) $(FREETZ_DL_KERNEL_SOURCE_MD5) $(SILENT)
 
 # Make sure that a perfectly clean build is performed whenever Freetz package
@@ -29,15 +29,15 @@ kernel-unpacked: $(KERNEL_DIR)/.unpacked
 $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(DL_KERNEL_SOURCE) | $(UNPACK_TARBALL_PREREQUISITES) gcc-kernel
 	$(RM) -r $(KERNEL_DIR)
 	mkdir -p $(KERNEL_SOURCE_DIR)
-	@$(call _ECHO, unpacking... )
+	@$(call _ECHO,unpacking)
 	@$(call UNPACK_TARBALL,$(DL_FW_DIR)/$(DL_KERNEL_SOURCE),$(KERNEL_SOURCE_DIR),1)
-	@$(call _ECHO, applying patches... )
+	@$(call _ECHO,patching)
 	#
 	#kernel version specific patches
 	@$(call APPLY_PATCHES,$(KERNEL_PATCHES_DIR),$(KERNEL_DIR))
 	#firmware version specific patches
 	@$(call APPLY_PATCHES,$(KERNEL_PATCHES_DIR)/$(AVM_SOURCE_ID),$(KERNEL_DIR))
-	@$(call _ECHO, preparing... )
+	@$(call _ECHO,preparing)
 	@for i in $(KERNEL_LINKING_FILES); do \
 		f="$${i%%,*}"; symlink_location="$${i##*,}"; \
 		if [ -e "$(KERNEL_SOURCE_DIR)/$${f}" ] && [ -d "$(KERNEL_SOURCE_DIR)/$$(dirname $${symlink_location})" ]; then \
@@ -114,7 +114,7 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(DL_KERNEL_SOURCE) | $(UNPACK_TARBALL_PRE
 	touch $@
 
 $(KERNEL_DIR)/.configured: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
-	$(call _ECHO, configuring... )
+	$(call _ECHO,configuring)
 	cp $(KERNEL_CONFIG_FILE) $(KERNEL_SOURCE_DIR)/.config
 	$(SUBMAKE) $(KERNEL_COMMON_MAKE_OPTIONS) oldconfig
 	touch $@
@@ -163,7 +163,7 @@ avm_kernel_config: $(AVM_KERNEL_CONFIG_DIR)/avm_kernel_config_area.S
 endif
 
 $(KERNEL_SOURCE_DIR)$(KERNEL_IMAGE_BUILD_SUBDIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.prepared $(KERNEL_BUILD_DEPENDENCIES) | $(TOOLS_DIR)/lzma $(TOOLS_DIR)/lzma2eva
-	$(call _ECHO, kernel image... )
+	$(call _ECHO,image)
 	$(SUBMAKE) $(KERNEL_COMMON_MAKE_OPTIONS) $(KERNEL_IMAGE)
 	touch -c $@
 
@@ -173,7 +173,7 @@ $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY): $(KERNEL_SOURCE_DIR)$(KERNEL_IMAGE
 	touch -c $@
 
 $(KERNEL_DIR)/.modules-$(SYSTEM_TYPE)$(SYSTEM_TYPE_CORE_SUFFIX): $(KERNEL_SOURCE_DIR)$(KERNEL_IMAGE_BUILD_SUBDIR)/$(KERNEL_IMAGE)
-	@$(call _ECHO, modules... )
+	@$(call _ECHO,modules)
 	$(SUBMAKE) $(KERNEL_COMMON_MAKE_OPTIONS) modules
 	$(SUBMAKE) $(KERNEL_COMMON_MAKE_OPTIONS) modules_install
 	touch $@
