@@ -73,8 +73,9 @@ case $QUERY_STRING in
 esac
 
 if [ -n "$SERVICE_CMD" ]; then
+	eval "$(modcgi rc package)"
 	SERVICE_PKG=/mod/etc/reg/pkg.reg
-	description="$(sed -n "s/^$PACKAGE|//p" "$SERVICE_PKG")"
+	description="$(sed -n "s/^$PACKAGE_RC|//p" "$SERVICE_PKG")"
 
 	# redirect stderr to stdout so we see output in webif
 	exec 2>&1
@@ -86,8 +87,8 @@ if [ -n "$SERVICE_CMD" ]; then
 	esac
 
 	echo "<div id='result'>"
-	echo -n "<p>$message ${description:-$PACKAGE}:</p><pre class='log.small'>"
-	"/mod/etc/init.d/rc.$PACKAGE" "$SERVICE_CMD" | html | highlight
+	echo -n "<p>$message ${description:-$PACKAGE_RC}:</p><pre class='log.small'>"
+	"/mod/etc/init.d/rc.$PACKAGE_RC" "$SERVICE_CMD" | html | highlight
 	echo '</pre>'
 	echo "</div>"
 
