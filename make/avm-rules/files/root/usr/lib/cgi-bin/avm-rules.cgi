@@ -24,8 +24,9 @@ cgi_print_textline_p "udp" "$AVM_RULES_UDP" 55/255 "UDP$(lang de:"-Ports" en:" p
 
 cat << EOF
 <ul>
-<li>$(lang de:"Portbl&ouml;cke so angeben: PORT+ANZAHL, zB 55500+3 f&uuml;r 55500-55502" en:"For blocks of ports: PORT+COUNT, eg 55500+3 for 55500-55502").</li>
+<li>$(lang de:"Portbl&ouml;cke so angeben: PORT+ANZAHL, zB 55500+3 f&uuml;r 55500-55502" en:"For a range of ports: PORT+COUNT, eg 55500+3 for 55500-55502").</li>
 <li>$(lang de:"Es muss insgesamt mindestens 1 Port freigegeben werden" en:"You have to open at least 1 port at all").</li>
+<li>$(lang de:"Mindestens eine VoIP-Rufnummer muss konfiguriert sein" en:"It is mandatory to configure at least one VoIP account").</li>
 <li>$(lang de:"Die Eintr&auml;ge k&ouml;nnen im AVM-Webif unter Diagnose > Sicherheit &uuml;berpr&uuml;ft werden" en:"You could check the settings by AVM webif with Diagnose > Sicherheit").</li>
 <li>$(lang de:"Bei Syntaxfehlern wird die komplette ar7.cfg von AVM zur&uuml;ckgesetzt" en:"On syntax errors, the whole ar7.cfg will be reset by AVM").</li>
 </ul>
