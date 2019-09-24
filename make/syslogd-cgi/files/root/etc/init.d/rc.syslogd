@@ -68,15 +68,9 @@ start() {
 	fi
 }
 
-stop () {
-	killall $DAEMON > /dev/null 2>&1
-	exitval=$?
-
+stop_post() {
 	modunreg status $DAEMON log
-
-	[ -n "$(pidof klogd)" ] && killall klogd > /dev/null 2>&1
-
-	return $exitval
+	pidof klogd >/dev/null && killall klogd >/dev/null 2>&1
 }
 
 case $1 in
