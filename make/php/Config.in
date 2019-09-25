@@ -25,11 +25,13 @@ depends on FREETZ_PACKAGE_PHP
 
 config FREETZ_PACKAGE_PHP_cgi
 	bool "PHP CGI"
+	select FREETZ_LIB_libdl   if ! FREETZ_PACKAGE_PHP_STATIC
 	select FREETZ_LIB_libpcre if ! FREETZ_PACKAGE_PHP_STATIC
 	default y
 
 config FREETZ_PACKAGE_PHP_cli
 	bool "PHP CLI"
+	select FREETZ_LIB_libdl   if ! FREETZ_PACKAGE_PHP_STATIC
 	select FREETZ_LIB_libpcre if ! FREETZ_PACKAGE_PHP_STATIC
 	default n
 
