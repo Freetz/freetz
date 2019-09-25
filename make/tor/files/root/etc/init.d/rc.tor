@@ -79,23 +79,18 @@ update_geoipv4_db_impl() {
 	local outputFilename="$1.IPv4"
 	shift
 	local countryCodes="$(IFS='|'; echo -n "$*" | tr [a-z] [A-Z])"
-	[ -n "$countryCodes" ] && local countryCodesPattern="/, *\"($countryCodes)\",/ "
-	# note unzipping from stdin is a busybox extension
-	wget -q -O - http://geolite.maxmind.com/download/geoip/database/GeoIPCountryCSV.zip \
-	| busybox unzip -p - GeoIPCountryWhois.csv \
-	| sed -n -r -e "${countryCodesPattern}s/[ \"]//gp" \
-	| cut -d, -f3-5 \
+	[ -n "$countryCodes" ] && local countryCodesPattern="($countryCodes)"
+	wget --no-check-certificate -q -O - https://gitweb.torproject.org/tor.git/plain/src/config/geoip \
+	| sed -n -r "/^#.*updated|(,.*${countryCodesPattern}$)/p" \
 	> "$outputFilename"
 }
 update_geoipv6_db_impl() {
 	local outputFilename="$1.IPv6"
 	shift
 	local countryCodes="$(IFS='|'; echo -n "$*" | tr [a-z] [A-Z])"
-	[ -n "$countryCodes" ] && local countryCodesPattern="/, *\"($countryCodes)\",/ "
-	wget -q -O - http://geolite.maxmind.com/download/geoip/database/GeoIPv6.csv.gz \
-	| gunzip -c \
-	| sed -n -r -e "${countryCodesPattern}s/[ \"]//gp" \
-	| cut -d, -f1,2,5 \
+	[ -n "$countryCodes" ] && local countryCodesPattern="($countryCodes)"
+	wget --no-check-certificate -q -O - https://gitweb.torproject.org/tor.git/plain/src/config/geoip6 \
+	| sed -n -r "/^#.*updated|(,.*${countryCodesPattern}$)/p" \
 	> "$outputFilename"
 }
 
