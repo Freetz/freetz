@@ -1,0 +1,20 @@
+--- etc/init.d/S15-filesys
++++ etc/init.d/S15-filesys
+@@ -71,7 +71,7 @@
+ mknod /var/dev/nand b 31 ${mtd_nand}
+ umask_save=`umask`
+ umask 0
+-if mount -t yaffs2 /var/dev/nand "${mountpoint}" -o sync,noexec ; then
++if mount -t yaffs2 /var/dev/nand "${mountpoint}" -o sync        ; then
+ chmod 775 "${mountpoint}"
+ echo "[yaffs] Internal Memory assigned @ ${mountpoint}" ;
+ rm -f /var/InternerSpeicher
+@@ -84,7 +84,7 @@
+ echo "[yaffs] Internal Memory erasing with ${nand_erasestring}"
+ echo "${nand_erasestring}" > /proc/mtd
+ echo "[yaffs] Internal Memory erasing done"
+-if mount -t yaffs2 /var/dev/nand "${mountpoint}" -o sync,noexec ; then
++if mount -t yaffs2 /var/dev/nand "${mountpoint}" -o sync        ; then
+ chmod 775 "${mountpoint}"
+ echo "[yaffs] Internal Memory assigned @ ${mountpoint}" ;
+ rm -f /var/InternerSpeicher
