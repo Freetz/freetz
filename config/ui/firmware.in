@@ -127,9 +127,13 @@ choice
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_AR934x
 		bool "6810 - EXPERIMENTAL (status: unknown)"
 
-	config FREETZ_TYPE_6820
+	config FREETZ_TYPE_6820_V1
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_QCA955x
-		bool "6820"
+		bool "6820 v1"
+
+	config FREETZ_TYPE_6820_V2
+		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_QCA955x
+		bool "6820 v2"
 
 	config FREETZ_TYPE_6840
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_VR9
@@ -663,6 +667,11 @@ endchoice # "Alien hardware type" #
 #alias for (3270v2 or 3270v3)
 config FREETZ_TYPE_3270
 	bool
+
+config FREETZ_TYPE_6820
+	depends on FREETZ_TYPE_6820_V1 || FREETZ_TYPE_6820_V2
+	bool
+	default y
 
 #alias for (7270v1 or 7270v2 or 7270v3)
 config FREETZ_TYPE_7270
