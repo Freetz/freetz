@@ -492,21 +492,14 @@ choice
 
 	config FREETZ_TYPE_7570_IAD
 		bool "Alice IAD 7570"
-		depends on FREETZ_TYPE_7570 || FREETZ_TYPE_7270
-
-	comment "Hint: Use replace kernel to get max filesystem size"
-		depends on \
-			( \
-				FREETZ_TYPE_7570_IAD || \
-				FREETZ_TYPE_7270 \
-			) && ! FREETZ_REPLACE_KERNEL
+		depends on FREETZ_TYPE_7570 || FREETZ_TYPE_7270_16
 
 	config FREETZ_TYPE_W920V_7570
 		bool "Speedport W920V"
-		depends on FREETZ_TYPE_7570 || FREETZ_TYPE_7270
+		depends on FREETZ_TYPE_7570 || FREETZ_TYPE_7270_16
 		help
 			Enable this to compile a mod image for T-Com Speedport W920V based
-			on a 7570 image.
+			on a 7570 or on a 7270v2/v3 image.
 
 	config FREETZ_TYPE_3170_7170
 		bool "3170"
@@ -590,12 +583,12 @@ choice
 			Enable this to compile a mod image for FritzBox FON WLAN 7270 v2 based
 			on a 7270 v1 image.
 
-	config FREETZ_TYPE_7570_7270_MENUITEM
+	config FREETZ_TYPE_7570_7270_16
 		bool "7570"
-		depends on FREETZ_TYPE_7270
+		depends on FREETZ_TYPE_7270_16
 		help
 			Enable this to compile an alien image for FritzBox FON WLAN 7570 based
-			on a 7270 image.
+			on a 7270 v2/v3 image.
 
 	config FREETZ_TYPE_7320_7330_XL
 		bool "7320"
@@ -630,21 +623,27 @@ choice
 			in the 7170_HN bootloader.
 			Initial flashing might only be possible via ./tools/push_firmware
 
+# Actually "if FREETZ_TYPE_7570_7270", but if we would write the condition
+# this way the comments would only be shown after the affected choices are
+# selected which is simply too late. We would like the comments to be shown
+# before the affected choices are selected.
+if FREETZ_TYPE_7270_16
 	comment "Please note that (V)DSL is *not*"
-		depends on FREETZ_TYPE_7270
-	comment "possible for 7570 or W920V aliens!"
-		depends on FREETZ_TYPE_7270
+	comment "possible for 7270 based 7570/W920V aliens!"
 	comment "(there are no vinax modules for 7270 kernel)."
-		depends on FREETZ_TYPE_7270
 	comment "Please use a 7570 based image, if you need it"
-		depends on FREETZ_TYPE_7270
+endif
 
 endchoice # "Alien hardware type" #
-	comment "! no (V)DSL with this alien !"
-		depends on \
-			(FREETZ_TYPE_7570_7270_MENUITEM && FREETZ_TYPE_7270) || \
-			(FREETZ_TYPE_W920V_7570 && FREETZ_TYPE_7270) || \
-			(FREETZ_TYPE_7570_IAD && FREETZ_TYPE_7270)
+
+if FREETZ_TYPE_ALIEN_HARDWARE
+	comment "Note: no (V)DSL with this alien"
+	depends on FREETZ_TYPE_7570_7270
+
+	# this comment refers to FREETZ_KERNEL_CUSTOM_MTD_SIZE
+	comment "Hint: Use replace kernel to get max filesystem size"
+	depends on FREETZ_TYPE_7570_IAD && !FREETZ_REPLACE_KERNEL
+endif
 
 #
 # FREETZ_TYPE - aliases
@@ -675,6 +674,7 @@ config FREETZ_TYPE_7330
 	bool
 	default y
 
+# alias for all 7330/7330SL based 7320 aliens
 config FREETZ_TYPE_7320_7330
 	depends on FREETZ_TYPE_7320_7330_XL || FREETZ_TYPE_7320_7330_SL
 	bool
@@ -685,14 +685,12 @@ config FREETZ_TYPE_7360
 	bool
 	default y
 
-#alias for all 7570 aliens
+# alias for all 7270v2/7270v3 based 7570 (and its derivatives) aliens
 config FREETZ_TYPE_7570_7270
 	depends on \
-		FREETZ_AVM_VERSION_05_2X_MIN && ( \
-			FREETZ_TYPE_7570_IAD || \
-			FREETZ_TYPE_W920V_7570 || \
-			FREETZ_TYPE_7570_7270_MENUITEM \
-		)
+		(FREETZ_TYPE_7570_IAD   && FREETZ_TYPE_7270_16) || \
+		(FREETZ_TYPE_W920V_7570 && FREETZ_TYPE_7270_16) || \
+		FREETZ_TYPE_7570_7270_16
 	bool
 	default y
 
