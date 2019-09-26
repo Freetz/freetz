@@ -1,6 +1,6 @@
-$(call PKG_INIT_LIB, 2.7.11)
+$(call PKG_INIT_LIB, 2.7.12)
 $(PKG)_SOURCE:=mbedtls-$($(PKG)_VERSION)-gpl.tgz
-$(PKG)_SOURCE_SHA1:=5814a00323bbfa0e8a7e19ae92ad07c42b52d3cf
+$(PKG)_SOURCE_SHA1:=957297531379ecbdb0f3fd32c08489db3b88d10e
 $(PKG)_SITE:=https://tls.mbed.org/download
 
 $(PKG)_LIBNAMES_SHORT      := crypto tls x509
