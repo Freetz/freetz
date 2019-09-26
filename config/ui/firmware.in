@@ -99,13 +99,11 @@ choice
 
 	config FREETZ_TYPE_3270_V2
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_2N3
-		select FREETZ_TYPE_3270
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_UR8
 		bool "3270 v2"
 
 	config FREETZ_TYPE_3270_V3
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_2N3
-		select FREETZ_TYPE_3270
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_UR8
 		bool "3270 v3"
 
@@ -293,21 +291,16 @@ choice
 
 	config FREETZ_TYPE_7270_V1
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_2N3
-		select FREETZ_TYPE_7270
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_UR8
 		bool "7270 v1"
 
 	config FREETZ_TYPE_7270_V2
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_2N3
-		select FREETZ_TYPE_7270
-		select FREETZ_TYPE_7270_16
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_UR8
 		bool "7270 v2"
 
 	config FREETZ_TYPE_7270_V3
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_2N3
-		select FREETZ_TYPE_7270
-		select FREETZ_TYPE_7270_16
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_UR8
 		bool "7270 v3"
 
@@ -329,13 +322,11 @@ choice
 	config FREETZ_TYPE_7330_XL
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_2N3
 		bool "7330"
-		select FREETZ_TYPE_7330
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_AR9
 
 	config FREETZ_TYPE_7330_SL
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_2N3
 		bool "7330 SL"
-		select FREETZ_TYPE_7330
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_AR9
 
 	config FREETZ_TYPE_7340
@@ -346,19 +337,16 @@ choice
 	config FREETZ_TYPE_7360_V1
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_2N3
 		bool "7360 v1"
-		select FREETZ_TYPE_7360
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_VR9
 
 	config FREETZ_TYPE_7360_V2
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_2N3
 		bool "7360 v2"
-		select FREETZ_TYPE_7360
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_VR9
 
 	config FREETZ_TYPE_7360_SL
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_2N3
 		bool "7360 SL"
-		select FREETZ_TYPE_7360
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_VR9
 
 	config FREETZ_TYPE_7362
@@ -837,7 +825,6 @@ choice
 	config FREETZ_TYPE_7320_7330_XL
 		bool "7320"
 		depends on FREETZ_TYPE_7330_XL
-		select FREETZ_TYPE_7320_7330
 		help
 			Enable this to compile an alien image for FritzBox FON WLAN 7320 based
 			on a 7330 (XL) image.
@@ -845,7 +832,6 @@ choice
 	config FREETZ_TYPE_7320_7330_SL
 		bool "7320"
 		depends on FREETZ_TYPE_7330_SL
-		select FREETZ_TYPE_7320_7330
 		help
 			Enable this to compile an alien image for FritzBox FON WLAN 7320 based
 			on a 7330 SL image.
@@ -915,45 +901,6 @@ endchoice # "Alien hardware type" #
 			(FREETZ_TYPE_W920V_7570 && FREETZ_TYPE_7270) || \
 			(FREETZ_TYPE_7570_IAD && FREETZ_TYPE_7270)
 
-#
-# FREETZ_TYPE - aliases
-#
-
-#alias for (3270v2 or 3270v3)
-config FREETZ_TYPE_3270
-	bool
-
-#alias for (7270v1 or 7270v2 or 7270v3)
-config FREETZ_TYPE_7270
-	bool
-
-#alias for (7270v2 or 7270v3)
-config FREETZ_TYPE_7270_16
-	bool
-
-#alias for (7330 (XL) or 7330 SL)
-config FREETZ_TYPE_7330
-	bool
-
-#alias for (7330 (XL) or 7330 SL) aliens
-config FREETZ_TYPE_7320_7330
-	bool
-
-#alias for (7360v1 or 7360v2 or 7360 SL)
-config FREETZ_TYPE_7360
-	bool
-
-#alias for all 7570 aliens
-config FREETZ_TYPE_7570_7270
-	bool
-	default y
-	depends on \
-		FREETZ_AVM_VERSION_05_2X_MIN && ( \
-			FREETZ_TYPE_7570_IAD || \
-			FREETZ_TYPE_W920V_7570 || \
-			FREETZ_TYPE_7570_7270_MENUITEM \
-		)
-
 choice
 	prompt "Annex"
 		depends on FREETZ_AVM_HAS_ANNEX_A_AND_B
@@ -966,4 +913,48 @@ choice
 		bool "B"
 
 endchoice # prompt "Annex" #
+
+#
+# FREETZ_TYPE - device aliases
+#
+
+config FREETZ_TYPE_3270
+	bool
+	depends on FREETZ_TYPE_3270_V2 || FREETZ_TYPE_3270_V3
+	default y
+
+config FREETZ_TYPE_7270
+	bool
+	depends on FREETZ_TYPE_7270_V1 || FREETZ_TYPE_7270_V2 || FREETZ_TYPE_7270_V3
+	default y
+
+config FREETZ_TYPE_7270_16
+	bool
+	depends on                        FREETZ_TYPE_7270_V2 || FREETZ_TYPE_7270_V3
+	default y
+
+config FREETZ_TYPE_7330
+	bool
+	depends on FREETZ_TYPE_7330_XL || FREETZ_TYPE_7330_SL
+	default y
+
+config FREETZ_TYPE_7360
+	bool
+	depends on FREETZ_TYPE_7360_V1 || FREETZ_TYPE_7360_V2 || FREETZ_TYPE_7360_SL
+	default y
+
+#
+# FREETZ_TYPE - alien aliases
+#
+
+config FREETZ_TYPE_7320_7330
+	bool
+	depends on FREETZ_TYPE_7320_7330_XL || FREETZ_TYPE_7320_7330_SL
+	default y
+
+config FREETZ_TYPE_7570_7270
+	bool
+	depends on FREETZ_TYPE_7570_IAD || FREETZ_TYPE_W920V_7570 || FREETZ_TYPE_7570_7270_MENUITEM
+	depends on FREETZ_AVM_VERSION_05_2X_MIN
+	default y
 
