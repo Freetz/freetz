@@ -1146,7 +1146,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		unset DETECTED_OPENSSL_VER_MOD
 
 		echo1 "checking uClibc version"
-		DETECTED_UCLIBC_VER="$(readlink ${FILESYSTEM_DIR}/lib/libc.so.? | sed 's/\.so$//;s/^libuClibc-//;s/-.*//')"
+		DETECTED_UCLIBC_VER="$(readlink ${FILESYSTEM_DIR}/lib/libc.so.? | sed 's/\.so$//;s/^libuClibc-//;s/-.*//' | head -n1)"
 		echo2 "... used by AVM ...... $DETECTED_UCLIBC_VER"
 		echo2 "... used by Freetz ... ${FREETZ_TARGET_UCLIBC_VERSION}"
 		if [ "${FREETZ_TARGET_UCLIBC_VERSION#$DETECTED_UCLIBC_VER}" == "$FREETZ_TARGET_UCLIBC_VERSION" \
