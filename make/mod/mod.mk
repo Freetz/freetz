@@ -22,7 +22,7 @@ $(PKG)_EXCLUDED += $(if $(FREETZ_TYPE_EXTENDER) ,usr/bin/wrapper/multid etc/init
 $(PKG)_EXCLUDED += $(if $(FREETZ_TYPE_EXTENDER),,usr/bin/wrapper/rextd  etc/init.d/rc.rextd)
 
 $(PKG)_EXCLUDED += $(if $(or $(call not-y,$(FREETZ_AVM_HAS_USB_HOST)),$(FREETZ_REMOVE_FTPD)),etc/init.d/rc.ftpd)
-$(PKG)_EXCLUDED += $(if $(or $(call not-y,$(FREETZ_AVM_HAS_USB_HOST)),$(FREETZ_REMOVE_SAMBA),$(FREETZ_PACKAGE_SAMBA_SMBD)),etc/init.d/rc.smbd)
+$(PKG)_EXCLUDED += $(if $(or $(call not-y,$(FREETZ_AVM_HAS_USB_HOST)),$(FREETZ_REMOVE_SAMBA),$(FREETZ_PACKAGE_SAMBA_SMBD),$(FREETZ_AVM_HAS_SAMBA_NQCS)),etc/init.d/rc.smbd)
 $(PKG)_EXCLUDED += $(if $(FREETZ_REMOVE_DSLD),usr/bin/wrapper/dsld etc/init.d/rc.dsld)
 $(PKG)_EXCLUDED += $(if $(FREETZ_REMOVE_WEBSRV),,etc/init.d/rc.websrv usr/bin/websrv usr/lib/cgi-bin/conf.avm/20-websrv.sh)
 $(PKG)_EXCLUDED += $(if $(FREETZ_BUSYBOX_TELNETD),,etc/init.d/rc.telnetd usr/lib/cgi-bin/conf.avm/10-telnetd.sh)
