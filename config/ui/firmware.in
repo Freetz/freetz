@@ -588,6 +588,13 @@ choice
 		help
 			Enable this to use an AVM Inhaus firmware as base for modding.
 
+	config FREETZ_TYPE_FIRMWARE_07_2X_INHAUS
+		bool "FRITZ!OS 07.19 Inhaus - DONOTUSE"
+		select FREETZ_AVM_VERSION_07_2X
+		depends on FREETZ_AVM_HAS_FIRMWARE_07_2X_INHAUS && FREETZ_REAL_DEVELOPER_ONLY
+		help
+			Enable this to use an AVM Inhaus firmware as base for modding.
+
 #	config FREETZ_TYPE_FIRMWARE_LABOR_BETA
 #		bool "FRITZ!OS 07.11 Beta"
 #		select FREETZ_AVM_VERSION_07_1X
@@ -654,17 +661,23 @@ endif
 config FREETZ_TYPE_FIRMWARE_FINAL
 	bool
 	default y
-	depends on !FREETZ_TYPE_FIRMWARE_LABOR && !FREETZ_TYPE_FIRMWARE_INHAUS
+	depends on \
+		!FREETZ_TYPE_FIRMWARE_LABOR && \
+		!FREETZ_TYPE_FIRMWARE_INHAUS
 
 config FREETZ_TYPE_FIRMWARE_INHAUS
 	bool
 	default y
-	depends on FREETZ_TYPE_FIRMWARE_07_1X_INHAUS
+	depends on \
+		FREETZ_TYPE_FIRMWARE_07_1X_INHAUS || \
+		FREETZ_TYPE_FIRMWARE_07_2X_INHAUS
 
 config FREETZ_TYPE_FIRMWARE_LABOR
 	bool
 	default y
-	depends on FREETZ_TYPE_FIRMWARE_LABOR_TEST || FREETZ_TYPE_FIRMWARE_LABOR_BETA
+	depends on \
+		FREETZ_TYPE_FIRMWARE_LABOR_BETA || \
+		FREETZ_TYPE_FIRMWARE_LABOR_TEST
 
 config FREETZ_TYPE_LANGUAGE
 	string
