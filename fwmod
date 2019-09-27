@@ -1450,7 +1450,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 						[ "${tagging_file}" != "${tagging_file%svg}" ] && tagging_temp="${tagging_file%svg}png" || tagging_temp=""
 						if [ -n "$tagging_temp" ]; then
 							#convert -compress NONE -background NONE -resize 100x80 "$tagging_file" "$tagging_temp"
-							inkscape --without-gui "$tagging_file" --export-png="$tagging_temp" -w 100 -h 80 -y 0 &>/dev/null
+							inkscape --without-gui "$tagging_file" --export-png="$tagging_temp" -w 98 -h 77 -y 0 &>/dev/null
 							[ $? -ne 0 ] && error 1 "tagging failed on converting, is inkscape installed?"
 						fi
 						composite -dissolve 100% -gravity $tagging_pos -geometry $tagging_geo -quality 100 \
