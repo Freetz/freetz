@@ -1,6 +1,7 @@
 #!/bin/sh
 
 DAEMON=dnsmasq
+DAEMON_LONG_NAME=Dnsmasq
 PID_FILE=/var/run/$DAEMON/$DAEMON.pid
 . /etc/init.d/modlibrc
 
@@ -71,9 +72,9 @@ case $1 in
 
 		modlib_defaults
 
-		modreg cgi 'dnsmasq' 'Dnsmasq'
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
 		modreg daemon $DAEMON
-		modreg file dnsmasq extra 'extra' 0 dnsmasq_extra
+		modreg file $DAEMON extra 'extra' 0 dnsmasq_extra
 
 		modlib_add_user_and_group nobody
 		mkdir -p ${PID_FILE%/*}
@@ -82,9 +83,9 @@ case $1 in
 		modlib_start $DNSMASQ_ENABLED
 		;;
 	unload)
-		modunreg file dnsmasq
+		modunreg file $DAEMON
 		modunreg daemon $DAEMON
-		modunreg cgi dnsmasq
+		modunreg cgi $DAEMON
 		modlib_stop
 		;;
 	start)
