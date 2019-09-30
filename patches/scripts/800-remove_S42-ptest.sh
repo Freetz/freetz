@@ -1,8 +1,8 @@
-[ -e "${FILESYSTEM_MOD_DIR}/etc/init.d/S42-ptest" ] || return 0
 
-# iDea:  Hippie2000
-
-echo1 "removing 'S42-ptest'"
+echo1 "removing ptest"
 rm_files \
-  "${FILESYSTEM_MOD_DIR}/etc/init.d/S42-ptest"
+  "${FILESYSTEM_MOD_DIR}/lib/systemd/system/ptest.service" \
+  "${FILESYSTEM_MOD_DIR}/etc/init.d/S42-ptest" \
+  "${FILESYSTEM_MOD_DIR}/etc/init.d/S46-ptest" \
+  "${FILESYSTEM_MOD_DIR}/etc/boot.d/ptest"
 

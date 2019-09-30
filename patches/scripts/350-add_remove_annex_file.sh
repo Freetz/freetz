@@ -38,6 +38,7 @@ if [ "$FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_DIFFS" == "y" ]; then
 		  lib/modules/dsp_*/*-?-dsl.bin \
 		  lib/modules/*Vx180Code.bin.gz \
 		  ${MODULES_SUBDIR}/kernel/drivers/vdsldriver/ \
+		  lib/systemd/system/dsl.service \
 		  etc/init.d/E40-dsl \
 		  etc/init.d/vr11/?40-dsl \
 		  ; do

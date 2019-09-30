@@ -8,7 +8,9 @@ else
 	echo '/etc/init.d/rc.usbip reload >/dev/null' > "${FILESYSTEM_MOD_DIR}/sbin/printserv"
 fi
 
-rm_files "${FILESYSTEM_MOD_DIR}/etc/hotplug/udev-printer-lp"
+rm_files \
+  "${FILESYSTEM_MOD_DIR}/lib/systemd/system/printer.service" \
+  "${FILESYSTEM_MOD_DIR}/etc/hotplug/udev-printer-lp"
 
 [ "$FREETZ_REMOVE_PRINTSERV_MODULE" == "y" ] && \
 	rm_files ${MODULES_DIR}/kernel/drivers/usb/class/usblp.ko

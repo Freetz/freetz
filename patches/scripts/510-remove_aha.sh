@@ -5,6 +5,7 @@ for files in \
   usr/bin/ahamailer \
   lib/libaha.so* \
   usr/share/aha/ \
+  lib/systemd/system/aha.service \
   etc/init.d/S78-aha \
   usr/www/all/lua/ha_func_lib.lua \
   usr/www/all/net/home_auto_*.lua \
