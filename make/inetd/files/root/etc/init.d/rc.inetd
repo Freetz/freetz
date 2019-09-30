@@ -25,7 +25,7 @@ case $1 in
 			[ -n "$action" ] && inetdctl "$action" "${daemon##*.}"
 		done
 
-		modlib_start $INETD_ENABLED
+		modlib_start "yes"
 		;;
 	unload)
 		modunreg daemon $DAEMON

@@ -3,13 +3,6 @@
 
 . /usr/lib/libmodcgi.sh
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
-
-cgi_print_radiogroup_service_starttype \
-	"enabled" "$INETD_ENABLED" "" "" 0
-
-sec_end
-
 sec_begin '$(lang de:"Internet 'Superserver' (inetd)" en:"Internet 'super-server' (inetd)")'
 
 if [ -d /proc/sys/net/ipv6 ] || find /lib/modules/*-*/kernel/net/ipv6 -maxdepth 1 -name ipv6.ko >/dev/null 2>&1; then
