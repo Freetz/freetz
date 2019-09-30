@@ -15,7 +15,7 @@ start() {
 
 case $1 in
 	""|load)
-		modlib_defaults
+		modlib_defaults "${DAEMON}.user"
 
 		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
 		modreg daemon $DAEMON
