@@ -10,9 +10,7 @@ if [ -d /proc/sys/net/ipv6 ] || find /lib/modules/*-*/kernel/net/ipv6 -maxdepth 
 		"$(lang de:"Aktiviere IPv6 Unterst&uuml;tzung" en:"Enable IPv6 support")."
 fi
 
-cat << EOF
-<h2>$(lang de:"Zus&auml;tzliche Kommandozeilen-Optionen (f&uuml;r Experten)" en:"Additional command-line options (for experts)"):</h2>
-EOF
-cgi_print_textline_p "options" "$INETD_OPTIONS" 20/255 "$(lang de:"Optionen" en:"Options"): "
+cgi_print_textline_p "slq" "$INETD_SLQ" 4/5 "$(lang de:"Gr&ouml;&szlig;e Socket-Abh&ouml;rwarteschlange" en:"Size of socket listen queue"): "
+cgi_print_textline_p "psa" "$INETD_PSA" 4/5 "$(lang de:"Maximum Verbindungen pro Minute" en:"Maximum connections per minute"): "
 
 sec_end
