@@ -6,7 +6,6 @@
 
 DAEMON=mod
 . /etc/init.d/modlibrc
-. /etc/init.d/modlibfw
 [ -r /etc/options.cfg ] && . /etc/options.cfg
 
 log() {
@@ -18,12 +17,13 @@ log() {
 }
 
 vulcheck() {
-	if is_affected_by_remote_access_vulnerability; then
-		log "Firmware with remote access vulnerability detected."
-		if [ ! -e /tmp/flash/mod/dont_touch_https ]; then
-			log "Remote access via https will be disabled. Create /tmp/flash/mod/dont_touch_https if you don't want this behavior."
-			ctlmgr_ctl w remoteman settings/enabled 0 >/dev/null 2>&1
-		fi
+	[ "$FREETZ_AVM_HAS_CVE_2014_9727" != "y" ] && return
+	# 04.55 is the version of the first firmware with support for remote access (according to AVM)
+	# 27349 is the revision of the first firmware remote access vulnerability has been fixed in
+	log "Firmware with remote access vulnerability detected."
+	if [ ! -e /tmp/flash/mod/dont_touch_https ]; then
+		log "Remote access via https will be disabled. Create /tmp/flash/mod/dont_touch_https if you don't want this behavior."
+		ctlmgr_ctl w remoteman settings/enabled 0 >/dev/null 2>&1
 	fi
 }
 
