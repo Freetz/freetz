@@ -1,7 +1,0 @@
-# returns AVM firmware version as integer (i.e. with all dots removed)
-get_avm_firmware_version() {
-	# use CONFIG_VERSION if set, /etc/.version otherwise
-	local v="${CONFIG_VERSION:-$(cat /etc/.version 2>/dev/null || echo 0000)}"
-	echo "${v//.}"
-}
-

@@ -1,7 +1,13 @@
 #! /bin/sh
 
-. /etc/init.d/modlibfw
 [ -r /mod/etc/conf/mod.cfg ] && . /mod/etc/conf/mod.cfg
+
+# returns AVM firmware version as integer (i.e. without dot)
+get_avm_firmware_version() {
+	# use CONFIG_VERSION if set, /etc/.version otherwise
+	local v="${CONFIG_VERSION:-$(cat /etc/.version)}"
+	echo "${v/.}"
+}
 
 # Log to Syslog & Console
 log_freetz() {
