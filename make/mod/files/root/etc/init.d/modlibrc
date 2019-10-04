@@ -59,7 +59,10 @@ stop_post() { :; }
 #   $1: Use as target file instead: /tmp/flash/$DAEMON/${1##*/}
 modlib_defaults() {
 	local dir="/tmp/flash/$DAEMON"
-	[ ! -d "$dir" ] && mkdir -p "$dir"
+	if [ ! -d "$dir" ]; then
+		[ ! -L "$dir" ] && mkdir -p "$dir"
+		[ ! -d "$dir" ] && return
+	fi
 	local arg="${1##*/}"
 	local dst="/tmp/flash/$DAEMON/${arg:-$DAEMON.cfg}"
 	local src="/mod/etc/default.$DAEMON/$DAEMON.defaults"
