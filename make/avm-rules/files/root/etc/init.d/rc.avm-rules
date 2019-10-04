@@ -15,7 +15,7 @@ apply() {
 	C="$(tail -n $(( $L - $N +1 )) $TMP | grep -m1 -n ';' | sed 's/:.*//')"
 
 	[ $L -gt 0 -a $N -gt 0 -a $C -gt 0 2>/dev/null ] || F='1'
-	[ -n "$(echo "$AVM_RULES_TCP$AVM_RULES_UDP" | sed 's/[\+ 0-9]//g')" ] && F='2'
+	[ -n "$(echo "$AVM_RULES_TCP$AVM_RULES_UDP" | sed 's/[+: 0-9]//g')" ] && F='2'
 	[ "$AVM_RULES_SIP" != "yes" -a -z "${AVM_RULES_TCP/ /}${AVM_RULES_UDP/ /}" ] && F='3'
 	if [ -n "$F" ]; then
 		rm $TMP
@@ -25,10 +25,10 @@ apply() {
 
 	(
 		head -n $(( $N - 1 )) $TMP
-		P="$(for x in $AVM_RULES_TCP; do echo -n "${x}_tcp "; done) $(for x in $AVM_RULES_UDP; do echo -n "${x}_udp "; done)"
-		[ "$AVM_RULES_SIP" == "yes" ] && P="$P 5060_tcp 5060_udp 7078+32_udp"
+		P="$(for x in $AVM_RULES_TCP; do echo -n "${x%:*}_tcp:${x#*:} "; done) $(for x in $AVM_RULES_UDP; do echo -n "${x%:*}_udp:${x#*:} "; done)"
+		[ "$AVM_RULES_SIP" == "yes" ] && P="$P 5060_tcp:5060 5060_udp:5060 7078+32_udp:7078"
 		for x in $(echo "$P" | sed 's/  */\n/g' | sort -n | sort -u); do
-			echo -n "$x" | sed -rn 's/^([0-9]*)(.*)_(.*)/"\3 0.0.0.0:\1\2 0.0.0.0:\1",/p'
+			echo -n "$x" | sed -rn 's/^([0-9]*)(.*)_(.*):([^+]*).*/"\3 0.0.0.0:\1\2 0.0.0.0:\4",/p'
 		done | sed 's/,$/;\n/;s/,/,\n                            /g;s/^/        voip_forwardrules = /'
 		tail -n $(( $L - $N - $C + 1 )) $TMP
 	) > /var/flash/ar7.cfg
