@@ -15,12 +15,6 @@ RUN_LIBMODMOUNT="[ -x /usr/lib/libmodmount.sh ] && . /usr/lib/libmodmount.sh$PAT
 # (filesystem) modules are loaded by modload
 modsed 's/modprobe vfat//' "${STORAGE_FILE}"
 
-# replace rm -rf $dir with rmdir $dir
-# remove all lines with "chmod 000"
-for file in "${STORAGE_FILE}" "${RUN_MOUNT_FILE}"; do
-	modsed 's/rm -rf /rmdir /g' "${file}"
-	modsed "/chmod 000.*$/d" "${file}"
-done
 
 # and now patch /etc/hotplug/storage and /etc/hotplug/run_mount
 
