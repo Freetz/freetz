@@ -17,7 +17,7 @@ if EXTERNAL_ENABLED
 	config EXTERNAL_UDEVM
 		bool "Select: Add udevmount"
 		default y
-		depends on EXTERNAL_ENABLED && FREETZ_AVM_HAS_UDEV && FREETZ_AVM_HAS_USB_HOST && !FREETZ_PATCH_FREETZMOUNT
+		depends on FREETZ_AVM_HAS_UDEV && FREETZ_AVM_HAS_USB_HOST && !FREETZ_PATCH_FREETZMOUNT
 		select FREETZ_PATCH_UDEVMOUNT
 		help
 			Selects the "Add udevmount" patch
@@ -25,7 +25,7 @@ if EXTERNAL_ENABLED
 	config EXTERNAL_NOEXEC
 		bool "Select: Drop noexec on external storages"
 		default y
-		depends on EXTERNAL_ENABLED && FREETZ_AVM_HAS_USB_HOST && FREETZ_AVM_HAS_NOEXEC
+		depends on FREETZ_AVM_HAS_USB_HOST && FREETZ_AVM_HAS_NOEXEC
 		select FREETZ_DROP_NOEXEC_EXTERNAL
 		help
 			Selects the "Drop noexec on external storages" patch
@@ -33,7 +33,7 @@ if EXTERNAL_ENABLED
 	config EXTERNAL_DOWNLOADER
 		bool "Prepare files for Downloader"
 		default n
-		depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_DOWNLOADER
+		depends on FREETZ_PACKAGE_DOWNLOADER
 		help
 			Prepare files for Downloader package.
 			Downloader loads usualy files from a http or ftp server into the RAM of the box.
@@ -41,7 +41,7 @@ if EXTERNAL_ENABLED
 	config EXTERNAL_SUBDIRS
 		bool "Keep subdirectories"
 		default y
-		depends on EXTERNAL_ENABLED && !EXTERNAL_DOWNLOADER
+		depends on !EXTERNAL_DOWNLOADER
 		help
 			Keep the original directory structure.
 
@@ -57,14 +57,14 @@ if EXTERNAL_ENABLED
 	config EXTERNAL_DYNAMIC
 		bool "Dynamic packages"
 		default y
-		depends on EXTERNAL_ENABLED && !EXTERNAL_DOWNLOADER && EXTERNAL_SUBDIRS
+		depends on !EXTERNAL_DOWNLOADER && EXTERNAL_SUBDIRS
 		help
 			Enable dynamic package processing.
 
 	config EXTERNAL_DYNAMIC_SCRIPTS
 		bool "Process scripts too"
 		default y
-		depends on EXTERNAL_ENABLED && EXTERNAL_DYNAMIC
+		depends on EXTERNAL_DYNAMIC
 		help
 			Do not exclude these files:
 			- /etc/default.PKG/
@@ -79,7 +79,7 @@ if EXTERNAL_ENABLED
 	config EXTERNAL_CREATEPAK
 		bool "Create file for upload" if ! EXTERNAL_DOWNLOADER
 		default y
-		depends on EXTERNAL_ENABLED && ! EXTERNAL_DOWNLOADER
+		depends on ! EXTERNAL_DOWNLOADER
 		help
 			Creates a file for upload with the webinterface.
 
@@ -93,7 +93,7 @@ if EXTERNAL_ENABLED
 	config EXTERNAL_OWN_FILES
 		string "own files"
 		default ""
-		depends on EXTERNAL_ENABLED && FREETZ_SHOW_ADVANCED
+		depends on FREETZ_SHOW_ADVANCED
 		help
 			Put your own files/directories here (space separated)
 
