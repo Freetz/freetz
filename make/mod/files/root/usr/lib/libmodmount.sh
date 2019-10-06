@@ -327,7 +327,7 @@ do_umount_locked() {
 	if [ "$MOD_STOR_KILLBLOCKER" == "yes" ]; then                              # kill blocker
 		for SIGN in TERM KILL; do
 			if grep -q " $mnt_path " /proc/mounts; then                # still mounted?
-				for pid in $(ps | sed 's/^ *//g;s/ .*//g'); do
+				for pid in $(busybox ps | sed 's/^ *//g;s/ .*//g'); do
 					umount_files="$(realpath /proc/$pid/cwd /proc/$pid/exe /proc/$pid/fd/* 2>/dev/null | grep $mnt_path)"
 					if [ -n "$umount_files" ]; then
 						umount_blocker="$mnt_path ($mnt_dev) - sending SIG$SIGN to [$pid] $(realpath /proc/$pid/exe):"
@@ -357,7 +357,7 @@ do_umount_locked() {
 	fi
 
 	if grep -q " $mnt_path " /proc/mounts; then                               # umount failed
-		for pid in $(ps | sed 's/^ *//g;s/ .*//g'); do                    # log blocker
+		for pid in $(busybox ps | sed 's/^ *//g;s/ .*//g'); do            # log blocker
 			umount_files="$(realpath /proc/$pid/cwd /proc/$pid/exe /proc/$pid/fd/* 2>/dev/null | grep $mnt_path)"
 			if [ -n "$umount_files" ]; then
 				umount_blocker="$mnt_path ($mnt_dev) - still used by $(realpath /proc/$pid/exe):"
@@ -471,8 +471,8 @@ storage_reload() {
 # if so, the unplug was initiated via AVM-web-if
 # freetz internal function
 is_ctlmgr_parent_of_storage_unplug() {
-	local storage_unplug_parent_pid=$(ps -l | awk '/sh -c \/etc\/hotplug\/storage (unplug|umount_usb)/ { print $4; }') # pid of parent of 'sh -c /etc/hotplug/storage unplug' (umount_usb since 5.5x)
-	[ -z "${storage_unplug_parent_pid}" ] && return 1                                                                  # storage unplug is not listed under running processes => return false
+	local storage_unplug_parent_pid=$(busybox ps -l | awk '/sh -c \/etc\/hotplug\/storage (unplug|umount_usb)/ { print $4; }') # pid of parent of 'sh -c /etc/hotplug/storage unplug' (umount_usb since 5.5x)
+	[ -z "${storage_unplug_parent_pid}" ] && return 1                                                                          # storage unplug is not listed under running processes => return false
 
 	cat "/proc/${storage_unplug_parent_pid}/cmdline" 2>/dev/null | grep -q ctlmgr 2>/dev/null
 }
