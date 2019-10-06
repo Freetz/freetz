@@ -1128,6 +1128,7 @@ comment "USB patches --------------------"
 config FREETZ_PATCH_UDEVMOUNT
 	bool "Add udevmount"
 	depends on FREETZ_AVM_HAS_UDEV && FREETZ_AVM_HAS_USB_HOST && !FREETZ_PATCH_FREETZMOUNT
+	default n
 	help
 		Adds a mount/unmount hook to:
 		 - Automatically start/stop external.
