@@ -10,7 +10,15 @@ do_remount() {
 do_unmount() {
 	sec_begin '$(lang de:"Unmount-Meldungen" en:"Unmount messages")'
 	echo "<pre class='plain'>"
-	/etc/hotplug/storage unplug "$MOUNTED_PATH" 2> "$ERRORFILE" | html
+	if [ ! -e /var/tmp/mediadevmap ]; then
+		/etc/hotplug/storage unplug "$MOUNTED_PATH" 2> "$ERRORFILE" | html
+	else
+		for _UD in $(sed -rn "s,=[^:]*:${MOUNTED_PATH##*/}$,,p" /var/tmp/mediadevmap); do
+			/etc/hotplug/storage remove "$_UD" 2> "$ERRORFILE" | html
+		done
+		grep -q ":${MOUNTED_PATH##*/}$" /var/tmp/mediadevmap && \
+		  /etc/hotplug/storage umount_all 2> "$ERRORFILE" | html
+	fi
 	echo "</pre>"
 	sec_end
 }
@@ -136,4 +144,4 @@ fi
 sec_end
 
 rm -f "$ERRORFILE"
-# vim: set ts=4:
+
