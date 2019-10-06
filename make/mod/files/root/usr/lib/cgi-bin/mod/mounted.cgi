@@ -14,10 +14,10 @@ do_unmount() {
 		/etc/hotplug/storage unplug "$MOUNTED_PATH" 2> "$ERRORFILE" | html
 	else
 		for _UD in $(sed -rn "s,=[^:]*:${MOUNTED_PATH##*/}$,,p" /var/tmp/mediadevmap); do
-			/etc/hotplug/storage remove "$_UD" 2> "$ERRORFILE" | html
+			/sbin/hotplug_env /etc/hotplug/storage remove "$_UD" 2> "$ERRORFILE" | html
 		done
 		grep -q ":${MOUNTED_PATH##*/}$" /var/tmp/mediadevmap && \
-		  /etc/hotplug/storage umount_all 2> "$ERRORFILE" | html
+		  /sbin/hotplug_env /etc/hotplug/storage umount_all 2> "$ERRORFILE" | html
 	fi
 	echo "</pre>"
 	sec_end
@@ -25,11 +25,10 @@ do_unmount() {
 
 errpath=""
 if [ "$sec_level" -eq 0 -a -n "$MOUNTED_CMD" ]; then
-	local U="$(echo -ne '\xa0U\xa0')"
 	case $MOUNTED_CMD in
 		R)       do_remount -r "$MOUNTED_PATH" ;;
 		W)       do_remount -w "$MOUNTED_PATH" ;;
-		$U)      do_unmount    "$MOUNTED_PATH" ;;
+		*U*)     do_unmount    "$MOUNTED_PATH" ;;
 	esac
 	if [ -r "$ERRORFILE" ]; then
 		errpath=$MOUNTED_PATH
