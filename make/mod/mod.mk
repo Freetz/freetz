@@ -16,6 +16,7 @@ $(PKG)_EXCLUDED += $(if $(FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE),,usr/mww/cgi
 $(PKG)_EXCLUDED += $(if $(FREETZ_AVM_HAS_UDEV),etc/device.table,etc/udev)
 $(PKG)_EXCLUDED += $(if $(FREETZ_CUSTOM_UDEV_RULES),,etc/default.mod/udev_*.def etc/udev/rules.d/??-custom.rules)
 $(PKG)_EXCLUDED += $(if $(FREETZ_PATCH_FREETZMOUNT),,usr/lib/libmodmount.sh usr/lib/cgi-bin/mod/conf/30-mount.sh)
+$(PKG)_EXCLUDED += $(if $(FREETZ_PATCH_UDEVMOUNT),,usr/lib/libmodudevm.sh usr/lib/cgi-bin/mod/conf/30-udevm.sh)
 
 $(PKG)_EXCLUDED += $(if $(FREETZ_TYPE_EXTENDER) ,usr/bin/wrapper/dsld   etc/init.d/rc.dsld)
 $(PKG)_EXCLUDED += $(if $(FREETZ_TYPE_EXTENDER) ,usr/bin/wrapper/multid etc/init.d/rc.multid)

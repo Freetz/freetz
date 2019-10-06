@@ -1125,6 +1125,16 @@ config FREETZ_PATCH_MODFS_BOOT_MANAGER
 if FREETZ_AVM_HAS_USB_HOST
 comment "USB patches --------------------"
 
+config FREETZ_PATCH_UDEVMOUNT
+	bool "Add udevmount"
+	depends on FREETZ_AVM_HAS_UDEV && FREETZ_AVM_HAS_USB_HOST && !FREETZ_PATCH_FREETZMOUNT
+	help
+		Adds a mount/unmount hook to:
+		 - Automatically start/stop external.
+		 - Execute autorun.sh/autoend.sh.
+		 - Terminate programs blocking unmount.
+		 - Logging of (un)mount events.
+
 config FREETZ_PATCH_FREETZMOUNT
 	bool "Add FREETZMOUNT"
 	depends on FREETZ_AVM_VERSION_06_2X_MAX

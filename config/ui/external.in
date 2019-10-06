@@ -14,6 +14,14 @@ menuconfig EXTERNAL_ENABLED
 
 if EXTERNAL_ENABLED
 
+	config EXTERNAL_UDEVM
+		bool "Select: Add udevmount"
+		default y
+		depends on EXTERNAL_ENABLED && FREETZ_AVM_HAS_UDEV && FREETZ_AVM_HAS_USB_HOST && !FREETZ_PATCH_FREETZMOUNT
+		select FREETZ_PATCH_UDEVMOUNT
+		help
+			Selects the "Add udevmount" patch
+
 	config EXTERNAL_NOEXEC
 		bool "Select: Drop noexec on external storages"
 		default y
