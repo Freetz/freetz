@@ -328,7 +328,7 @@ do_umount_locked() {
 		for SIGN in TERM KILL; do
 			if grep -q " $mnt_path " /proc/mounts; then                # still mounted?
 				for pid in $(ps | sed 's/^ *//g;s/ .*//g'); do
-					umount_files="$(realpath /proc/$pid/cwd /proc/$pid/fd/* 2>/dev/null | grep $mnt_path)"
+					umount_files="$(realpath /proc/$pid/cwd /proc/$pid/exe /proc/$pid/fd/* 2>/dev/null | grep $mnt_path)"
 					if [ -n "$umount_files" ]; then
 						umount_blocker="$mnt_path ($mnt_dev) - sending SIG$SIGN to [$pid] $(realpath /proc/$pid/exe):"
 						for umount_file in $umount_files; do
@@ -358,7 +358,7 @@ do_umount_locked() {
 
 	if grep -q " $mnt_path " /proc/mounts; then                               # umount failed
 		for pid in $(ps | sed 's/^ *//g;s/ .*//g'); do                    # log blocker
-			umount_files="$(realpath /proc/$pid/cwd /proc/$pid/fd/* 2>/dev/null | grep $mnt_path)"
+			umount_files="$(realpath /proc/$pid/cwd /proc/$pid/exe /proc/$pid/fd/* 2>/dev/null | grep $mnt_path)"
 			if [ -n "$umount_files" ]; then
 				umount_blocker="$mnt_path ($mnt_dev) - still used by $(realpath /proc/$pid/exe):"
 				for umount_file in $umount_files; do
