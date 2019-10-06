@@ -25,10 +25,11 @@ do_unmount() {
 
 errpath=""
 if [ "$sec_level" -eq 0 -a -n "$MOUNTED_CMD" ]; then
+	local U="$(echo -ne '\xa0U\xa0')"
 	case $MOUNTED_CMD in
 		R)       do_remount -r "$MOUNTED_PATH" ;;
 		W)       do_remount -w "$MOUNTED_PATH" ;;
-		unmount) do_unmount "$MOUNTED_PATH" ;;
+		$U)      do_unmount    "$MOUNTED_PATH" ;;
 	esac
 	if [ -r "$ERRORFILE" ]; then
 		errpath=$MOUNTED_PATH
@@ -101,12 +102,12 @@ print_mp() {
 	echo '</td></tr>'
 	echo -n "<tr><td colspan='3' class='free'>${used} $(lang de:"von" en:"of") ${total} $(lang de:"belegt" en:"used"), ${free} $(lang de:"frei" en:"free")</td>"
 	echo '<td colspan="1" class="actions">'
-	echo "<form class='btn' action='$formact' method='post'>"
+	echo "<form class='btn' action='$formact' method='post' onsubmit='return confirm(\"$(lang de:"Ausf&uuml;hren" en:"Execute")?\")' >"
 	echo "<input type='hidden' name='path' value='$(html "$path")'>"
 	echo "<input class='button' type='submit' name='cmd' value='R' $rdisabled>"
 	echo "<input class='button' type='submit' name='cmd' value='W' $wdisabled>"
 	if $actions; then
-		echo "<input type='submit' name='cmd' value='unmount'>"
+		echo "<input type='submit' name='cmd' value='&nbsp;U&nbsp;'>"
 	fi
 	echo '</form>'
 	echo '</td></tr>'
