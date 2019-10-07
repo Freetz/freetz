@@ -41,7 +41,8 @@ config FREETZ_WGET
 	select FREETZ_BUSYBOX_WGET if !FREETZ_PACKAGE_WGET || FREETZ_WGET_ALWAYS_AVAILABLE
 
 config FREETZ_BUSYBOX__MANDATORY
-	bool "mandatory"
+	bool # mandatory
+	select FREETZ_BUSYBOX__MANDATORY_05_2X if FREETZ_AVM_VERSION_05_2X_MIN
 	select FREETZ_BUSYBOX_ADDGROUP
 	select FREETZ_BUSYBOX_ADDUSER
 	select FREETZ_BUSYBOX_ASH_ALIAS
@@ -302,10 +303,9 @@ config FREETZ_BUSYBOX__MANDATORY
 	help
 		Selects everything Freetz needs to run properly
 
-config FREETZ_BUSYBOX__MANDATORY_05_XX
-	bool "mandatory (since Fritz!OS 05.xx)"
+config FREETZ_BUSYBOX__MANDATORY_05_2X
+	bool # mandatory (since Fritz!OS 5.2)"
 	depends on FREETZ_AVM_VERSION_05_2X_MIN
-	select FREETZ_BUSYBOX__MANDATORY
 	select FREETZ_BUSYBOX_ARP
 	select FREETZ_BUSYBOX_ARPING
 	select FREETZ_BUSYBOX_BRCTL
@@ -316,7 +316,7 @@ config FREETZ_BUSYBOX__MANDATORY_05_XX
 	select FREETZ_BUSYBOX_CHROOT
 	select FREETZ_BUSYBOX_FEATURE_BRCTL_FANCY # used by /etc/ath/*
 	select FREETZ_BUSYBOX_FEATURE_BRCTL_SHOW  # used by /etc/ath/*
-	select FREETZ_BUSYBOX_FEATURE_DD_IBS_OBS  # used by /var/install since Fritz!OS 6.5x
+	select FREETZ_BUSYBOX_FEATURE_DD_IBS_OBS  # used by /var/install since Fritz!OS 6.5
 	#
 	# enabled in AVM .config but (it looks like) unused (see ifconfig --help)
 	# select FREETZ_BUSYBOX_FEATURE_IFCONFIG_SLIP
@@ -395,7 +395,7 @@ config FREETZ_BUSYBOX__MANDATORY_05_XX
 	select FREETZ_BUSYBOX_UNZIP
 	select FREETZ_BUSYBOX_XZ if !FREETZ_PACKAGE_XZ
 	help
-		Selects everything Freetz needs to run properly (with Fritz!OS 05.xx and up)
+		Selects everything Freetz needs to run properly (with Fritz!OS 5.2 and up)
 
 config FREETZ_BUSYBOX__NOEXEC_NOFORK_OPTIMIZATIONS
 	bool "enable NOEXEC/NOFORK performance optimizations"
@@ -421,7 +421,7 @@ config FREETZ_BUSYBOX__BUILD_TIMESTAMP
 		no build timestamp allows reproducible binary
 
 config FREETZ_BUSYBOX__IPV6_UTILS
-	bool "IPv6"
+	bool # IPv6
 	depends on FREETZ_TARGET_IPV6_SUPPORT
 	select FREETZ_BUSYBOX_FEATURE_IPV6
 	select FREETZ_BUSYBOX_FEATURE_IFUPDOWN_IPV6
