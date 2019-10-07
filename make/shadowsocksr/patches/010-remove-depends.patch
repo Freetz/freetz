@@ -1,6 +1,6 @@
---- CMakeLists.txt.org	2019-05-01 12:15:36.312323809 +0200
-+++ CMakeLists.txt	2019-05-01 12:16:21.202128278 +0200
-@@ -18,9 +18,9 @@
+--- CMakeLists.txt	2019-10-05 20:30:18.431578823 +0200
++++ CMakeLists.txt	2019-10-05 20:28:47.901967398 +0200
+@@ -15,9 +15,9 @@
  
  set(with_crypto_library "mbedtls" CACHE STRING "build with the given crypto library, TYPE=mbedtls")
  
@@ -13,7 +13,7 @@
  
  include ( cmake/dist.cmake )
  include ( configure )
-@@ -28,11 +28,11 @@
+@@ -25,11 +25,11 @@
  configure_file ( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h )
  ADD_DEFINITIONS(-DHAVE_CONFIG_H)
  
@@ -25,6 +25,6 @@
 -add_subdirectory(depends/json-c/staticbuild)
 +#add_subdirectory(depends/libuv)
 +#add_subdirectory(depends/json-c/staticbuild)
+ add_subdirectory(depends/uv-mbed/win32)
  
  include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
- 
