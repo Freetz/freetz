@@ -43,6 +43,7 @@ config FREETZ_WGET
 config FREETZ_BUSYBOX__MANDATORY
 	bool # mandatory
 	select FREETZ_BUSYBOX__MANDATORY_05_2X if FREETZ_AVM_VERSION_05_2X_MIN
+	select FREETZ_BUSYBOX__MANDATORY_07_0X if FREETZ_AVM_VERSION_07_0X_MIN
 	select FREETZ_BUSYBOX_ADDGROUP
 	select FREETZ_BUSYBOX_ADDUSER
 	select FREETZ_BUSYBOX_ASH_ALIAS
@@ -396,6 +397,19 @@ config FREETZ_BUSYBOX__MANDATORY_05_2X
 	select FREETZ_BUSYBOX_XZ if !FREETZ_PACKAGE_XZ
 	help
 		Selects everything Freetz needs to run properly (with Fritz!OS 5.2 and up)
+
+config FREETZ_BUSYBOX__MANDATORY_07_0X
+	bool # mandatory (since Fritz!OS 7.0)"
+	depends on FREETZ_AVM_VERSION_07_0X_MIN
+	select FREETZ_BUSYBOX_FSTRIM
+	select FREETZ_BUSYBOX_FUSER
+#	select FREETZ_BUSYBOX_NANDDUMP # applet enabled, but a binary exists
+	select FREETZ_BUSYBOX_SHA3SUM
+	select FREETZ_BUSYBOX_TASKSET
+#	select FREETZ_BUSYBOX_UBIATTACH # applet enabled, but a binary exists
+#	select FREETZ_BUSYBOX_UBIDETACH # applet enabled, but a binary exists
+	help
+		Selects everything Freetz needs to run properly (with Fritz!OS 7.0 and up)
 
 config FREETZ_BUSYBOX__NOEXEC_NOFORK_OPTIMIZATIONS
 	bool "enable NOEXEC/NOFORK performance optimizations"
