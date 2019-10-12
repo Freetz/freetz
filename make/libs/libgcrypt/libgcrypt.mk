@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 1.8.4)
-$(PKG)_LIB_VERSION:=20.2.4
+$(call PKG_INIT_LIB, 1.8.5)
+$(PKG)_LIB_VERSION:=20.2.5
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_SHA1:=4a8ef9db6922f3a31992aca5640b4198a69b58fc
+$(PKG)_SOURCE_SHA1:=2d8781e92f88706707a1e76fb628b499ad538a30
 $(PKG)_SITE:=ftp://ftp.gnupg.org/gcrypt/libgcrypt
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)

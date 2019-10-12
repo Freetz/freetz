@@ -11,11 +11,9 @@ Signed-off-by: Jussi Kivilinna <jussi.kivilinna@iki.fi>
  cipher/md.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git cipher/md.c cipher/md.c
-index efbffe1..f6c1954 100644
 --- cipher/md.c
 +++ cipher/md.c
-@@ -703,6 +703,7 @@ md_setkey (gcry_md_hd_t h, const unsigned char *key, size_t keylen)
+@@ -700,6 +700,7 @@
      {
        switch (r->spec->algo)
  	{
@@ -23,7 +21,7 @@ index efbffe1..f6c1954 100644
  	/* TODO? add spec->init_with_key? */
  	case GCRY_MD_BLAKE2B_512:
  	case GCRY_MD_BLAKE2B_384:
-@@ -719,6 +720,7 @@ md_setkey (gcry_md_hd_t h, const unsigned char *key, size_t keylen)
+@@ -716,6 +717,7 @@
  					     ? GCRY_MD_FLAG_BUGEMU1:0,
  					   key, keylen, r->spec->algo);
  	  break;
