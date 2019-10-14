@@ -137,6 +137,10 @@ define INSTALL_FILE
 mkdir -p $(dir $@); \
 cp $< $@;
 endef
+define INSTALL_DIR
+mkdir -p $(dir $@); \
+cp -r $< $@;
+endef
 
 # $1: path to the file to be unpacked
 # $2: directory files to be unpacked to
