@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 60925a0)
+$(call PKG_INIT_BIN, ca13a1dcb4e5c0dbdca48ede39655d8870621980)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SOURCE_CHECKSUM:=X
 $(PKG)_SITE:=git@https://github.com/TangoCash/lcd4linux.git
