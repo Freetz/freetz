@@ -13,11 +13,18 @@ This is a fork of Freetz.
 All commits not by administrator (svn),
 cuma (trac) or fda77 (git) are merged.
 
-### Quick start:
+### Download:
 ```
-  svn co https://svn.boxmatrix.info/freetz-ng/trunk freetz-ng
-  cd freetz-ng/
-  svn up
+  svn co https://svn.boxmatrix.info/freetz-ng/trunk ~/freetz-ng
+  or
+  git clone https://gitlab.com/Freetz-NG/freetz-ng ~/freetz-ng
+  or
+  git clone https://github.com/Freetz-NG/freetz-ng ~/freetz-ng
+```
+
+### Quickstart:
+```
+  cd ~/freetz-ng
   make help
   make menuconfig
   make
