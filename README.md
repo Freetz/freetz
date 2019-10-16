@@ -76,9 +76,6 @@ cuma (trac) or fda77 (git) are merged.
     regularly, run ```/mod/etc/init.d/rc.mod motd``` eg by cron.
   * Old packages structure in menuconfig?<br>
     To use old packages structure, run ```make menuconfig-single```.
-  * I am a git lover, how to clone?<br>
-    You could use one of these mirrors:
-     - git clone ```https://gitlab.com/Freetz-NG/freetz-ng.git``` freetz-ng
-     - git clone ```https://github.com/Freetz-NG/freetz-ng.git``` freetz-ng
+  * I am a git lover, how to handle it?<br>
      - Git quick start guide for begitners: https://xkcd.com/1597/
 
