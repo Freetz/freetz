@@ -28,6 +28,14 @@ config FREETZ_PACKAGE_LIGHTTPD_WITH_SSL
 	help
 		This option enables SSL support for lighttpd.
 
+config FREETZ_PACKAGE_LIGHTTPD_ACME
+	bool "Select ACME.sh (letsencrypt)"
+	depends on FREETZ_PACKAGE_LIGHTTPD_WITH_SSL
+	select FREETZ_PACKAGE_ACME
+	default n
+	help
+		This selects ACME.sh package for Let's Encrypt certificates.
+
 config FREETZ_PACKAGE_LIGHTTPD_DEHYDRATED
 	bool "Select dehydrated (letsencrypt)"
 	depends on FREETZ_PACKAGE_LIGHTTPD_WITH_SSL
