@@ -49,7 +49,7 @@ cuma (trac) or fda77 (git) are merged.
     Or just ```make push-firmware``` after ```make```.
   * Flash with Raspberry?<br>
     Put the created image onto the raspberry. Download the current push\_firmware script:
-    ```wget 'https://trac.boxmatrix.info/freetz-ng/browser/freetz-ng/trunk/tools/push_firmware?format=txt' -O push_firmware```
+    ```wget https://raw.githubusercontent.com/Freetz-NG/freetz-ng/master/tools/push_firmware```
     Make it executable: ```chmod +x push_firmware```. Now run it: ```./push_firmware ...```
   * Why in-memory image format?<br>
     It's no longer needed, as push\_firmware can flash an image itself.

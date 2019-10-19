@@ -3,7 +3,7 @@
 # Copyright (C) 1999-2004 by Erik Andersen <andersen@codepoet.org>
 # Copyright (C) 2005-2006 by Daniel Eiband <eiband@online.de>
 # Copyright (C) 2006-2018 by the Freetz developers (http://freetz.org)
-# Copyright (C) 2019 by Freetz developers (https://trac.boxmatrix.info/freetz-ng/ and https://freetz.github.io)
+# Copyright (C) 2019 by Freetz developers (https://freetz-ng.github.io/freetz-ng/ and https://freetz.github.io)
 #
 # Licensed under the GPL v2, see the file COPYING in this tarball.
 
@@ -126,7 +126,7 @@ endif
 # Simple checking of build prerequisites
 ifneq ($(NO_PREREQ_CHECK),y)
 ifneq (OK,$(shell $(CHECK_PREREQ_TOOL) $$(cat .build-prerequisites) >&2 && echo OK))
-$(error Some build prerequisites are missing! Please install the missing packages before trying again. See https://trac.boxmatrix.info/freetz-ng/wiki/help/howtos/common/install#NotwendigePakete for installation hints)
+$(error Some build prerequisites are missing! Please install the missing packages before trying again. See https://freetz-ng.github.io/freetz-ng/wiki/help/howtos/common/install#NotwendigePakete for installation hints)
 endif
 endif
 
