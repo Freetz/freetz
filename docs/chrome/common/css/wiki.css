@@ -1,0 +1,124 @@
+@import url(code.css);
+
+#info { margin: 0 0 1em 0 }
+#wikipage { clear: both }
+
+.wikipage h2 {
+ border-bottom: 1px solid #ddd;
+ box-shadow: .1em .4em .7em 0 #f2f2f2;
+ padding: 0.2em .3em .1em;
+}
+@media print { .wikipage h2 { box-shadow: none } }
+
+.wikipage h3 {
+ border-bottom: 1px dashed #ddd;
+}
+.wikipage .trac-content {
+ margin-left: -18px;
+ padding-left: 28px;
+}
+
+/* Styles for the path of hierarchical pages */
+#pagepath {
+ font-size: 10px; /* same as .nav ul in trac.css */
+ float: left;
+ padding: .4em 0;
+}
+#pagepath :link, #pagepath :visited { margin: 0 .2em }
+#pagepath .first:link, #pagepath .first:visited { color: #998 }
+#pagepath .sep { color: #666; padding: 0 .1em }
+#pagepath .pathentry { float: left }
+
+/* Styles for the page editing form */
+.preview-right {
+ float: right;
+ width: 50%;
+ display: block;
+ margin: 0 0 0 1em;
+}
+.sidebyside > h2 { margin: .4em 0 }
+.sidebyside #preview { margin: 0 }
+.sidebyside #text { overflow: hidden }
+
+#edit { margin-top: .5em }
+#edit #rows {
+ float: right;
+ font-size: 80%;
+ margin: .4em 0 0 0;
+}
+#edit #rows select { font-size: 90% }
+#edit fieldset { margin-left: 1px; margin-right: 1px }
+#edit #text {
+ clear: both;
+ min-height: 10em;
+ resize: vertical;
+}
+#edit .wikitoolbar { float: left }
+#edit div.trac-resizable { clear: both }
+#edit + #info { margin-top: 1em }
+#edit + #attachments { margin-top: 1.5em }
+#changeinfo { padding: .5em }
+#changeinfo .field { float: left; margin: 0 1em .5em 0 }
+#changeinfo { clear: both }
+#changeinfo br { clear: left }
+#changeinfo .options { padding: 0 0 1em 1em }
+#changeinfo .options, #changeinfo .buttons { clear: left }
+#delete, #rename, #save { margin-left: 3em }
+#preview {
+ background: #f8f8f8 url(../draft.png);
+ margin: 1em 0 2em;
+ overflow: auto;
+}
+#template { vertical-align: middle; padding-top: 1em; }
+
+/* Diff view */
+#overview .multi { color: #999 }
+#overview .ipnr { color: #999; font-size: 80% }
+#overview .comment { padding: 1em 0 0 }
+
+@media print {
+ th.diff, td.diff { display: none }
+}
+
+/* Styles for the TracGuideToc wikimacro */
+.wiki-toc {
+ padding: .5em 1em;
+ margin: 0 0 2em 1em;
+ float: right;
+ clear: right;
+ border: 1px outset #ddc;
+ background: #ffd;
+ font-size: 85%;
+ position: relative;
+}
+.wiki-toc h4 { font-size: 12px; margin: 0 }
+.wiki-toc ul, .wiki-toc ol { list-style: none; padding: 0; margin: 0 }
+.wiki-toc ul ul, .wiki-toc ol ol { padding-left: 1.2em }
+.wiki-toc li { margin: 0; padding: 0 }
+.wiki-toc .active { background: #ff9; position: relative; }
+.wiki-toc-un ul, .wiki-toc-un ol { list-style: none; }
+
+div.trac-modifiedby {
+ margin: .3em .5em;
+ *width: 100%; /* Workaround horizontal scrollbar on IE7 */
+ color: #888;
+ font-size: 80%;
+ font-style: italic;
+ text-align: right;
+ float: right;
+}
+div.trac-modifiedby :link, div.trac-modifiedby :visited { color: inherit }
+div.trac-modifiedby span.trac-print { display: none; }
+@media print {
+ div.trac-modifiedby span { display: none; }
+ div.trac-modifiedby span.trac-print { display: block; }
+}
+
+/* TracIni default value */
+div.tracini td.default { font-size: 90% }
+div.tracini td.nodefault {
+ color: #777;
+ font-size: 85%;
+ font-style: italic;
+ white-space: nowrap;
+}

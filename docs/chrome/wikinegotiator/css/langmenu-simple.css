@@ -1,0 +1,74 @@
+/* styles for simple language selector bellow the main navigation menu. */
+/* Current language has background color.
+   Explicit preferred language is bolded.
+   Non existing lang is grayed out.
+ */
+  
+div#langmenu {
+  text-align: right;
+  color: black;
+}
+
+div#langmenu ul {
+  margin-top: 3px;
+  margin-bottom: 3px;
+  font-size: 10px;
+}
+
+div#langmenu li a {
+  border-right: solid #dddddd 1px;
+}
+div#langmenu li.last a {
+  border-right: none;
+}
+
+div#langmenu li:hover,
+div#langmenu li.active:hover,
+div#langmenu li a:hover {
+}
+
+div#langmenu li {
+  padding: 1px;
+  display: inline;
+  white-space: nowrap;
+}
+
+div#langmenu li.last {
+}
+
+div#langmenu li.first {
+  color: black;
+}
+
+div#langmenu a.notexist {
+  color: gray;
+}
+
+div#langmenu a.selected {
+  /* user selected lang => bolded */
+  font-weight: bold;
+}
+
+div#langmenu li.active {
+}
+
+div#langmenu li a {
+  padding-right: 0.5em;
+  padding-left: 0.5em;
+}
+
+div#langmenu li.active a:link, div#langmenu li.active a:visited {
+  border-bottom: solid gold 2px;
+}
+
+div#langmenu li a:link, div#langmenu li a:visited {
+  border-bottom: none;
+  text-decoration: none;
+}
+
+
+@media print {
+  div#langmenu {
+    display: none;
+  }
+}
