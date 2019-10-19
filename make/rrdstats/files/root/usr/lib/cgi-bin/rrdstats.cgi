@@ -247,7 +247,7 @@ cat << EOF
 <input type="text" name="ciscoepc_tx" size="1" maxlength="1" value="$(html "$RRDSTATS_CISCOEPC_TX")">&nbsp;$(lang de:"Kan&auml;le im Upstream verf&uuml;gbar" en:"channels for upstream available")<br>
 <font size="-2">
 $(lang de:"Vorsicht: Die Datenbank muss bei &Auml;nderung der Kan&auml;le manuell angepasst werden" en:"Warning: You have to modify the database by your own after changing the count of channels"),&nbsp;
-$(lang de:"siehe" en:"see")&nbsp;<a href='$(html "https://trac.boxmatrix.info/freetz-ng/wiki/packages/rrdstats#cable")' target='_blank'>Wiki</a>.
+$(lang de:"siehe" en:"see")&nbsp;<a href='$(html "https://freetz-ng.github.io/freetz-ng/wiki/packages/rrdstats#cable")' target='_blank'>Wiki</a>.
 </font>
 </p>
 <p>
@@ -294,7 +294,7 @@ cat << EOF
 <input type="text" name="fritzdvb_tx" size="1" maxlength="1" value="$(html "$RRDSTATS_FRITZDVB_TX")">&nbsp;$(lang de:"Kan&auml;le im Upstream verf&uuml;gbar" en:"channels for upstream available")<br>
 <font size="-2">
 $(lang de:"Vorsicht: Die Datenbank muss bei &Auml;nderung der Kan&auml;le manuell angepasst werden" en:"Warning: You have to modify the database by your own after changing the count of channels"),&nbsp;
-$(lang de:"siehe" en:"see")&nbsp;<a href='$(html "https://trac.boxmatrix.info/freetz-ng/wiki/packages/rrdstats#cable")' target='_blank'>Wiki</a>.
+$(lang de:"siehe" en:"see")&nbsp;<a href='$(html "https://freetz-ng.github.io/freetz-ng/wiki/packages/rrdstats#cable")' target='_blank'>Wiki</a>.
 </font>
 </p>
 </ul>

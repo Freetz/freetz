@@ -1,4 +1,4 @@
 _cgi_help_url() {
 	local path=$1
-	echo "https://trac.boxmatrix.info/freetz-ng/wiki${path}"
+	echo "https://freetz-ng.github.io/freetz-ng/wiki${path}"
 }
