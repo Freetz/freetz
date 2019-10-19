@@ -25,8 +25,8 @@ download() {
 	cd $DL_DIR
 	rm -rf ftp.avm.de 2>/dev/null
 
-	# BETA/Labor/LabRC
-	if [ -n "$1" -a "$1" != "stable" -a "$1" != "s" ]; then
+	# labor
+	if [ -n "$1" -a "$1" != "s" ]; then  # labor / all
 		for url in ftp://ftp.avm.de/fritzbox/beta/{frisch-aus-der-entwicklung,wartung}; do
 			wget -nv -m -A '*.zip' $url
 			(
@@ -34,14 +34,14 @@ download() {
 				for i in $(find . -type f -iname '*.zip'); do
 					unzip -q -o -j $i
 				done
-				# remove all files with no beta|labor in name
+				# remove all files with no beta|labor|labrc in name
 				find . -type f -regextype posix-egrep ! -iregex '.*(beta|labor|labrc).*[.]image' -exec rm -f {} '+' 2>/dev/null
 			)
 		done
 	fi
 
 	# stable
-	if [ -z "$1" -o "$1" == "stable" -o "$1" == "s" ]; then
+	if [ "$1" != "l" ]; then  # default / stable / all
 		for url in ftp://ftp.avm.de/archive/fritz.box/ ftp://ftp.avm.de/fritzbox/ ftp://ftp.avm.de/fritzpowerline/ ftp://ftp.avm.de/fritzwlan/; do
 			wget -nv -m -A '*.image' -R '*voip-gateway*,*VoIP-Gateway*' $url
 			find ${url#ftp://} -type f ! -name '*.image' -exec rm -f {} '+' 2>/dev/null
@@ -293,8 +293,8 @@ while [ $# -gt 0 ]; do
 		d|download)
 			download=y
 			case $2 in
-				s|l|b|a|stable|labor|beta|all)
-					dl_arg="$2"
+				s|stable|l|labor|a|all)
+					dl_arg="${2:0:1}"
 					shift
 					;;
 				u|unpack|"")
