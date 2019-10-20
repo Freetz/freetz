@@ -66,10 +66,19 @@ cuma (trac) or fda77 (git) are merged.
     Don't use it - until you know why you need it!
     You'll never have an kernel as expected by avm. Maybe some patches
     are missing, maybe some options are not selected as avm intended.
+  * Build kernel modules?<br>
+    Make sure the latest source code for your device is available at
+    http://osp.avm.de/ and integrated into Freetz. The source code for
+    the flag ship model of your series (xx90) should be also available
+    to create a "delta" patch. If not, ask AVM: fritzbox_info@avm.de
+    The module needs to be enabled with ```make kernel-menuconfig```
+    as "M(odule)" and selected with ```make menuconfig```.
   * Execute files on storages?<br>
     Disabled by default since some time by AVM. To allow,
     select "Drop noexec for (external) storages" patch.
     For internal storages, it is enabled always with Freetz!
+  * Execute commands on reboot?<br>
+    Put your executable script here: ```/tmp/flash/mod/shutdown```
   * Change motd?<br>
     You could put your own \*script\* here: ```/tmp/flash/mod/motd```
     The motd will be generated 1 time at boot. To update it
