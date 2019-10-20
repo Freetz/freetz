@@ -1,0 +1,16 @@
+--- /dev/null
++++ Net-SSLeay_Makefile.PL
+@@ -0,0 +1,13 @@
++#!/usr/bin/perl
++
++use strict;
++use warnings;
++use lib 'ext';
++use ExtUtils::MakeMaker;
++
++WriteMakefile(
++    'NAME'             => 'Net::SSLeay',
++    'VERSION_FROM'     => 'lib/Net/SSLeay.pm',
++    'INC'              => '-I$$FREETZ_BASE_DIR/toolchain/target/include',
++    'LIBS'             => ['-L$$FREETZ_BASE_DIR/toolchain/target/lib -lssl -lcrypto -lcrypt32 -lz'],
++);

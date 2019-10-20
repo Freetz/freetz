@@ -1,0 +1,42 @@
+--- /dev/null
++++ DBD-SQLite_Makefile.PL
+@@ -0,0 +1,39 @@
++# From ExtUtils::MakeMaker 6.48 and DBI 1.43
++use 5.006;
++use strict;
++use ExtUtils::MakeMaker;
++use Config;
++use File::Spec;
++
++my @CC_DEFINE = (
++	'-DSQLITE_ENABLE_FTS4',             # for sqlite >= 3.7.4
++	'-DSQLITE_ENABLE_FTS3_PARENTHESIS', # for sqlite >= 3.6.10
++	'-DSQLITE_ENABLE_RTREE',            # for sqlite >= 3.6.10
++	'-DSQLITE_ENABLE_COLUMN_METADATA',
++	'-DSQLITE_ENABLE_STAT3',            # for sqlite >= 3.7.9
++	'-DSQLITE_ENABLE_STAT4',            # for sqlite >= 3.8.3.1
++	'-DSQLITE_ENABLE_JSON1',            # for sqlite >= 3.9.0
++	'-DSQLITE_ENABLE_FTS5',             # for sqlite >= 3.9.0
++	'-DNDEBUG=1',
++	'-DHAVE_USLEEP=1',
++);
++
++my %CC_OPTIONS = (
++	DEFINE       => join( ' ', @CC_DEFINE ),
++);
++
++#####################################################################
++# Hand off to ExtUtils::MakeMaker
++
++WriteMakefile(
++	NAME             => 'DBD::SQLite',
++	ABSTRACT         => 'Self Contained SQLite RDBMS in a DBI Driver',
++	VERSION_FROM     => 'lib/DBD/SQLite.pm',
++	'INC'		 => '-I$$FREETZ_BASE_DIR/toolchain/target/include -I../DBI -I.',
++	'LIBS'		 => ['-L$$FREETZ_BASE_DIR/toolchain/target/lib -lsqlite3'],
++	OBJECT           => 'SQLite.o dbdimp.o',
++	clean            => {
++		FILES => 'config.h tv.log *.old',
++	},
++	%CC_OPTIONS,
++);
