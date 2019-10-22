@@ -43,6 +43,8 @@
   * **<u>libart_lgpl: Libart 2D graphics (libart.so)</u><a id='libart_lgpl'></a>**<br>
     Libart is a library for high-performance 2D graphics. It supports a very powerful imaging model, basically the same as SVG and the Java 2D API. It includes all PostScript imaging operations, and adds antialiasing and alpha-transparency. It is also highly tuned for incremental rendering. It contains data structures and algorithms suited to rapid, precise computation of Region of Interest, and a two-phase rendering pipeline
 
+  * **<u>libavmacl2</u><a id='libavmacl2'></a>**<br>
+
   * **<u>libavmhmac: Replace libavmhmac - EXPERIMENTAL</u><a id='libavmhmac'></a>**<br>
     Our libavmhmac only forwards functions to openssl's libcrypto where AVM
 
@@ -154,6 +156,8 @@
   * **<u>LZ4 (liblz4.so)</u><a id='lz4'></a>**<br>
     LZ4 is a very fast lossless compression algorithm, providing compression speed at 400 MB/s per core, scalable with multi-cores CPU. It also features an extremely fast decoder, with speed in multiple GB/s per core, typically reaching RAM speed limits
 
+  * **<u>lzma1</u><a id='lzma1'></a>**<br>
+
   * **<u>LZO (liblzo2.so)</u><a id='lzo'></a>**<br>
     LZO is a portable lossless data compression library written in ANSI C. It offers pretty fast compression and *very* fast decompression. Decompression requires no memory. In addition there are slower compression levels achieving a quite competitive compression ratio
 
@@ -187,6 +191,8 @@
     A Perl Compatible Regular Expression library
 
   * **<u>pjproject2: libpj (libpj.so)</u><a id='pjproject2'></a>**<br>
+
+  * **<u>pkcs11</u><a id='pkcs11'></a>**<br>
 
   * **<u>polarssl12: PolarSSL-1.2.x (libpolarssl12.so)</u><a id='polarssl12'></a>**<br>
     The aim of the PolarSSL project is to provide a quality, open-source cryptographic library written in C and targeted at embedded systems. See https://polarssl.org for more details.
