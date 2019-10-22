@@ -4,7 +4,7 @@ MYPWD="$(dirname $(realpath $0))"
 
 PKGS=$(
 for dir in avm $(find "$MYPWD" -maxdepth 1 -mindepth 1 -type d); do
-pkg=${dir##*/}
+pkg="${dir##*/}"
 echo "$pkg" | grep -qE "^(busybox|libs|linux)$" && continue
 cat="$(sed -n 's/^$(PKG)_CATEGORY *:= *//p' $dir/$pkg.mk 2>/dev/null)"
 echo "${cat:-000Packages}##$pkg"

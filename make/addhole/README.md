@@ -1,7 +1,7 @@
 # Addhole
 Addhole ist eine Erweiterung für Dnsmasq.<br>
 <br>
-<a href='../../docs/screenshots/000-PKG_addhole.png'><img src='../../docs/screenshots/000-PKG_addhole.png' height='33%'></a>
+<a href='../../docs/screenshots/000-PKG_addhole.png'><img src='../../docs/screenshots/999-PKG_addhole.png'></a>
 <br>
 
  - Mit Addhole können Listen mit Hostnamen in Dnsmasq eingebunden werdend die blockiert werden. Es gibt Listen mit Hosts die Werbung, Malware, Viren etc verbreiten.
