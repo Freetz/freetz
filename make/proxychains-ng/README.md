@@ -1,5 +1,5 @@
 # ProxyChains-NG
-Mit ProxyChains-NG kann (fast) jedes Programm einen Proxy werden.<br>
+Mit ProxyChains-NG kann (fast) jedes Programm einen Proxy verwenden.<br>
 <br>
 <a href='../../docs/screenshots/000-PKG_proxychains-ng.png'><img src='../../docs/screenshots/999-PKG_proxychains-ng.png'></a>
 &emsp;

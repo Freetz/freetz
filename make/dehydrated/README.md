@@ -12,7 +12,7 @@ Mit Dehydrated (und LigHTTPd) können Let's Encrypt Zertifikate erstellt und aut
 ### Zertifikat benutzen
  * In LigHTTPd unter "erweitert" einen vhost für https mit den Pfaden zum Zertifikat eintragen.
  * Oder die ssl.pem und fullchain.pem übers webif von LigHTTPd eintragen.
- * Noch besser ( falls nur 1 Domaingenutzt wird) die Dehydrated Zertifikate so verlinken:
+ * Noch besser (falls nur 1 Domain genutzt wird) die Dehydrated Zertifikate so verlinken:
 ```
 rm -f /tmp/flash/lighttpd/ca.pem
 ln -s /var/media/ftp/.. ../dehydrated/DOMAIN/fullchain.pem /tmp/flash/lighttpd/ca.pem
