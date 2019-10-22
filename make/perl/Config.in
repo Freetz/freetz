@@ -67,6 +67,56 @@ config FREETZ_PACKAGE_PERL_NETSSLEY
 	help
 		Add Net:SSLEY -- High level functions for accessing web servers
 
+
+config FREETZ_PACKAGE_PERL_MAILDKIM
+        bool "add module Mail::DKIM"
+        depends on FREETZ_PACKAGE_PERL
+        select FREETZ_PACKAGE_OPENSSL
+	select FREETZ_PACKAGE_OPENSSLRSA
+	select FREETZ_PACKAGE_DIGESTSHA
+	select FREETZ_PACKAGE_MAILADDRESS
+	select FREETZ_PACKAGE_MIMEBASE64
+	select FREETZ_PACKAGE_NETDNS
+        default y
+        help
+                Add Mail:DKIM - Signs/verifies Internet mail with DKIM/DomainKey signatures
+
+config FREETZ_PACKAGE_PERL_OPENSSLRSA
+        bool "add module Crypt::OpenSSL::RSA"
+        depends on FREETZ_PACKAGE_PERL
+        default y
+        help
+                Add Crypt::OpenSSL::RSA
+
+config FREETZ_PACKAGE_PERL_DIGESTSHA
+        bool "add module Digest::SHA"
+        depends on FREETZ_PACKAGE_PERL
+        default y
+        help
+                Add Digest::SHA
+
+config FREETZ_PACKAGE_PERL_MAILADDRESS
+        bool "add module Mail::Address"
+        depends on FREETZ_PACKAGE_PERL
+        default y
+        help
+                Add Mail:Address
+
+config FREETZ_PACKAGE_PERL_MIMEBASE64
+        bool "add module MIME::Base64"
+        depends on FREETZ_PACKAGE_PERL
+        default y
+        help
+                Add MIME::Base64
+
+config FREETZ_PACKAGE_PERL_NETDNS
+        bool "add module Net::DNS"
+        depends on FREETZ_PACKAGE_PERL
+        default y
+        help
+                Add Net::DNS
+		
+
 config FREETZ_PACKAGE_PERL_IOSOCKETSSL
 	bool "add module IO::Socket::SSL"
 	depends on FREETZ_PACKAGE_PERL
