@@ -9,5 +9,4 @@ dst="999-${src##000-}"
 echo "$src -> $dst"
 convert "$MYPWD/$src" -resize x333 "$MYPWD/$dst"
 done
-echo "done."
 

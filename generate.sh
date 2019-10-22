@@ -2,23 +2,18 @@
 # generates everything
 MYPWD="$(dirname $(realpath $0))"
 
-echo -e "\nConfig:"
-"$MYPWD/config/generate.sh"
+generate_info() {
+[ -e "$MYPWD/$2" ] && echo -e "\n$1:" && "$MYPWD/$2" && echo "done."
+}
 
-echo -e "\nBusyBox:"
-"$MYPWD/make/busybox/generate.sh"
+generate_warn() {
+generate_info $@ 2>&1 | grep -v '^nohelp'
+}
 
-echo -e "\nScreenshots:"
-"$MYPWD/docs/screenshots/generate.sh"
-
-echo -e "\nPackages:"
-"$MYPWD/make/generate.sh" 2>&1 | grep -v '^nohelp'
-
-echo -e "\nLibraries"
-"$MYPWD/make/libs/generate.sh" 2>&1 | grep -v '^nohelp'
-
-echo -e "\nPatches:"
-"$MYPWD/patches/generate.sh" 2>&1 | grep -v '^nohelp'
-
+#generate_info "Config" "config/generate.sh"
+generate_warn "Packages" "make/generate.sh"
+generate_warn "Libraries" "make/libs/generate.sh"
+generate_warn "Patches" "patches/generate.sh"
+generate_info "Screenshots" "docs/screenshots/generate.sh"
+#generate_info "BusyBox" "make/busybox/generate.sh"
 echo
-
