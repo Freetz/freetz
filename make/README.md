@@ -1,4 +1,3 @@
-
 ### Packages
 
   * **<u>ACME.sh 2.83 (letsencrypt)</u><a id='acme'></a>**<br>
@@ -28,6 +27,8 @@
 
   * **<u>Avahi 0.6.31</u><a id='avahi'></a>**<br>
     An mDNS/DNS-SD (aka RendezVous/Bonjour/ZeroConf) implementation (library).  Avahi is a system which facilitates service discovery on a local network -- this means that you can plug your laptop or computer into a network and instantly be able to view other people who you can chat with, find printers to print to or find files being shared. This kind of technology is already found in MacOS X (branded 'Rendezvous', 'Bonjour' and sometimes 'ZeroConf') and is very convenient.
+
+  * **[AVM Services](https://freetz-ng.github.io/freetz-ng/wiki/packages/avm)<a id='avm'></a>**<br>
 
   * **[bash 3.2.57 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/bash)<a id='bash'></a>**<br>
     Bash is an sh-compatible command language interpreter that executes commands read from the standard input or from a file. Bash also incorporates useful features from the Korn and C shells (ksh and csh).(roundabout 540K minimal and 840K full featured)
@@ -668,7 +669,6 @@
 
   * **<u>xz-utils (binary only)</u><a id='xz'></a>**<br>
     XZ is the successor to the Lempel-Ziv/Markov-chain Algorithm compression format, which provides memory-hungry but powerful compression (often better than bzip2) and fast, easy decompression. This package provides the command line tools for working with XZ compression. They can also handle the older LZMA format, and if invoked via appropriate
-
 ### Debug helpers
 
   * **<u>gdb GNU debugger</u><a id='gdb'></a>**<br>
@@ -703,7 +703,6 @@
 
   * **<u>vermagic 1ac45e08d4-git (binary only)</u><a id='vermagic'></a>**<br>
     A tool dump .modinfo section and set vermagic variable of Linux Kernel Modules. It also supports (not tested) CRC dump and changes, including the vermagic string. The original work is from here: https://github.com/fanfuqiang/vc The extended code of this tool: https://github.com/D1W0U/vermagic
-
 ### Unstable
 
   * **[Asterisk 11.25.3 - EXPERIMENTAL](https://freetz-ng.github.io/freetz-ng/wiki/packages/asterisk)<a id='asterisk'></a>**<br>
@@ -754,7 +753,6 @@
 
   * **<u>Zabbix 2.4.6 (binary only)</u><a id='zabbix'></a>**<br>
     Zabbix is an enterprise-class open source distributed monitoring solution. Zabbix is software that monitors numerous parameters of a network and the health and integrity of servers. Zabbix uses a flexible notification mechanism that allows users to configure e-mail based alerts for virtually any event. This allows a fast reaction to server problems. Zabbix offers excellent reporting and data visualisation features based on the stored data. This makes Zabbix ideal for capacity planning. Zabbix supports both polling and trapping. All Zabbix reports and statistics, as well as configuration parameters, are accessed through a web-based front end. A web-based front end ensures that the status of your network and the health of your servers can be assessed from any location. Properly configured, Zabbix can play an important role in monitoring IT infrastructure. This is equally true for small organisations with a few servers and for large companies with a multitude of servers. Zabbix is free of cost. Zabbix is written and distributed under the GPL General Public License version 2. It means that its source code is freely distributed and available for the general public.
-
 ### Web interfaces
 
   * **<u>Addhole (for dnsmasq)</u><a id='addhole'></a>**<br>
