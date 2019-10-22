@@ -1,9 +1,12 @@
 # MySQL
 MySQL ist ein Datenbankserver
-<a href='../../docs/screenshots/000-PKG_mysql.png'><img src='../../docs/screenshots/000-PKG_mysql.png' style="width:33%;height:33%;border:0;"></a>&emsp;
-<a href='../../docs/screenshots/000-PKG_mysql_status.png'><img src='../../docs/screenshots/000-PKG_mysql_status.png' style="width:33%;height:33%;border:0;"></a><br>
+<br>
+<a href='../../docs/screenshots/000-PKG_mysql.png'><img src='../../docs/screenshots/000-PKG_mysql.png' height='33%'></a>
+&emsp;
+<a href='../../docs/screenshots/000-PKG_mysql_status.png'><img src='../../docs/screenshots/000-PKG_mysql_status.png' height='33%'></a>
+<br>
 
 <br>
- * Als Mindestvoraussetzung wird eine Fritz!Box 7390 angesehen.
- * Diese version ist sehr als und sollte auf keinen Fall ins Internet freigegeben werden!
+ - Als Mindestvoraussetzung wird eine Fritz!Box 7390 angesehen.
+ - Diese Version ist sehr alt und sollte auf keinen Fall ins Internet freigegeben werden!
 

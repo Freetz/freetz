@@ -32,14 +32,14 @@ cuma (trac) or fda77 (git) are merged.
 ```
 
 ### Unsupported devices (at the moment):
-  * Repeater 310, 600 & 1160: No LAN ports, so a recovery is not possible
-  * FRITZ!Box 6591: Firmware image is in Intel Unified Image v3 format
-  * FRITZ!Box 6591, 7581 & 7582, Inhaus: These don't use supported uClib or glibc
+  * Repeater 310, 600 & 1160: No LAN ports, so a recovery is not possible.
+  * FRITZ!Box 6591: Firmware image is in Intel Unified Image v3 format.
+  * FRITZ!Box 6591, 7581 & 7582, Inhaus: These don't use supported uClib or glibc.
 
 ### Known problems (at the moment):
-  * Replace kernel does not work for most latest firmware versions
-  * Loading build kernel modules may work or do not. You'll notice
-  * No download toolchains for firmware versions since FritzOS 7.0
+  * Replace kernel does not work for most latest firmware versions.
+  * Loading build kernel modules may work or do not. You'll notice.
+  * No download toolchains for firmware versions since FritzOS 7.0.
 
 ### Good to know:
   * Find an entry in menuconfig/kconfig?<br>
@@ -78,7 +78,7 @@ cuma (trac) or fda77 (git) are merged.
     select "Drop noexec for (external) storages" patch.
     For internal storages, it is enabled always with Freetz!
   * Execute commands on reboot?<br>
-    Put your executable script here: ```/tmp/flash/mod/shutdown```
+    Put your executable script here: ```/tmp/flash/mod/shutdown```.
   * Change motd?<br>
     You could put your own \*script\* here: ```/tmp/flash/mod/motd```
     The motd will be generated 1 time at boot. To update it
@@ -86,5 +86,5 @@ cuma (trac) or fda77 (git) are merged.
   * Old packages structure in menuconfig?<br>
     To use old packages structure, run ```make menuconfig-single```.
   * I am a git lover, how to handle it?<br>
-     - Git quick start guide for begitners: https://xkcd.com/1597/
+    Git quick start guide for begitners: https://xkcd.com/1597/
 
