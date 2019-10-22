@@ -1,7 +1,9 @@
 # LCD4linux
 Mit LCD4linux kann ein an die Fritz!Box angeschlossenes Display angesteuert werden.<br>
 <br>
-<a href='../../docs/screenshots/000-PKG_avm-rules.png'><img src='../../docs/screenshots/999-PKG_avm-rules.png'></a>
+<a href='../../docs/screenshots/000-PKG_lcd4linux.png'><img src='../../docs/screenshots/999-PKG_lcd4linux.png'></a>
+&emsp;
+<a href='../../docs/screenshots/000-PKG_lcd4linux_output.png'><img src='../../docs/screenshots/999-PKG_lcd4linux_output.png'></a>
 <br>
 
 Aktuell verfügbare Displays und Plugins:
