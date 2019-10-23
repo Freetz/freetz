@@ -4,6 +4,7 @@ comment "Addhole (needs dnsmasq)"
 config FREETZ_PACKAGE_ADDHOLE
 	bool "Addhole (for dnsmasq)"
 	depends on FREETZ_PACKAGE_DNSMASQ
+	select FREETZ_BUSYBOX_DOS2UNIX
 	select FREETZ_PACKAGE_WGET
 	select FREETZ_PACKAGE_WGET_WITH_SSL
 	select FREETZ_PACKAGE_WGET_CA_BUNDLE
