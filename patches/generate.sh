@@ -19,7 +19,7 @@ dsc="$(echo "$TMP" | grep -P '^[ \t]*$' -m1 -B80 | sed -rn 's/[ \t]*(bool|string
 [ "${dsc// /_}" != "$(echo ${dsc// /_} | sed "s/^$sym//I")" ] && itm="$dsc" || itm="$sym: $dsc"
 
 [ -e "$MYPWD/../docs/wiki/patches/${sym,,}.html" ] && lnk="https://freetz-ng.github.io/freetz-ng/wiki/patches/${sym,,}" || lnk=""
-[ -e "$MYPWD/docs/$sym.md" ] && lnk="docs/$sym.md"
+[ -e "$MYPWD/README/$sym.md" ] && lnk="README/$sym.md"
 [ -n "$lnk" ] && itm="[$itm]($lnk)" || itm="<u>$itm</u>"
 
 echo -e "\n  * **$itm<a id='${sym,,}'></a>**<br>"

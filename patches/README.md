@@ -356,10 +356,10 @@
 
   * **<u>Keep AVM uClibc - FOR TESTING PURPOSES ONLY</u><a id='keep_avm_uclibc'></a>**<br>
 
-  * **<u>MODIFY_COUNTER: Extend online counter</u><a id='modify_counter'></a>**<br>
+  * **[MODIFY_COUNTER: Extend online counter](README/MODIFY_COUNTER.md)<a id='modify_counter'></a>**<br>
     Converts counter hours to days and traffic MB to GB.
 
-  * **<u>MODIFY_DSL_SETTINGS: Extend DSL settings</u><a id='modify_dsl_settings'></a>**<br>
+  * **[MODIFY_DSL_SETTINGS: Extend DSL settings](README/MODIFY_DSL_SETTINGS.md)<a id='modify_dsl_settings'></a>**<br>
     Extends the DSL settings page with "speed" settings.
 
   * **<u>MODIFY_DSL_SPECTRUM: Extend DSL spectrum</u><a id='modify_dsl_spectrum'></a>**<br>
