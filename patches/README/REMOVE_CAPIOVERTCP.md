@@ -1,105 +1,35 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+# Remove CAPIoverTCP
+Entfernt CapiOverTCP-Schnittstelle der FritzBox.
+Achtung! CapiOverTCP wird von mehreren nützlichen PC-Programmen für den Zugriff auf die Box benutzt!
+FritzFax nutzt z.B. diese Schnittstelle, um Faxe von PC aus über die FritzBox zu verschicken.<br>
+<br>
 
-  <head>
-    <title>
-      patches/remove_capi – Freetz
-    </title>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!--[if IE]><script type="text/javascript">
-      if (/^#__msie303:/.test(window.location.hash))
-        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
-    </script><![endif]-->
-        <link rel="search" href="/search" />
-        <link rel="help" href="../TracGuide.html" />
-        <link rel="alternate" href="remove_capi%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
-        <link rel="up" href="../patches.html" title="Übergeordnete Wiki-Seite anzeigen" />
-        <link rel="start" href="/wiki" />
-        <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-      <link type="application/opensearchdescription+xml" rel="search" href="/search/opensearch" title="Freetz durchsuchen" />
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/jquery.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/babel.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/messages/de.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/trac.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/search.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/folding.js"></script>
-    <script type="text/javascript">
-      jQuery(document).ready(function($) {
-        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
-        $("#content").find(".wikianchor").each(function() {
-          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
-        });
-        $(".foldable").enableFolding(true, true);
-      });
-    </script>
-  </head>
-  <body>
-    <div id="banner">
-      <div id="header">
-        <a id="logo" href="/wiki"><img src="../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
-      </div>
-      <form id="search" action="https://www.google.com/search" method="get" onsubmit="; this.elements.namedItem('q').value = this.elements.namedItem('oq').value + ' site:freetz.github.io'">
-        <div>
-          <label for="proj-search">Suche:</label>
-          <input type="text" id="proj-search" name="oq" size="18" value="" />
-          <input type="hidden" name="q" value="" />
-          <input type="submit" value="Suche" />
-        </div>
-      </form>
-      <div id="metanav" class="nav">
-    <ul>
-      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
-    </ul>
-  </div>
-    </div>
-    <div id="mainnav" class="nav">
-    <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="https://github.com/Freetz-NG/freetz-ng/commits/master">Quellen durchsehen</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
-    </ul>
-  </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="remove_capi.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/patches/remove_capi.en" title="(not available)">English</a></li></ul></div><p /><div id="main">
-      <div id="pagepath" class="noprint">
-  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../patches.html" title="Zeige patches an">patches</a><span class="pathentry sep">/</span><a class="pathentry" href="remove_capi.html" title="Zeige patches/remove_capi an">remove_capi</a>
-</div>
-    <div id="content" class="wiki">
-      <div class="wikipage searchable">
-
-          <div id="wikipage" class="trac-content"><h1 id="RemoveCapiOverTCP">Remove CapiOverTCP</h1>
-<p>
 Dieser Patch entfernt das Binary "capiotcpserver" (Größe 13 KB) aus der Firmware. Dieses Binary lauscht normalerweise auf Port 5031.
-</p>
-<h2 id="CapiOverIPunterWindows">CapiOverIP unter Windows</h2>
-<p>
+
+### CapiOverIP unter Windows
+
 Unter Windows wird CapiOverIP u.a. benutzt von:
-</p>
-<ul><li>FritzFax
-</li><li>OutLook Wählhilfe (zum Zugriff auf die die FritzBox)
-</li><li><a class="ext-link" href="http://www.lachenmann-net.de/displaycall/"><span class="icon">​</span>DisplayCall</a>]
-</li><li><a class="ext-link" href="http://www.phoner.de/"><span class="icon">​</span>Phoner</a>]
-</li></ul><h2 id="CapiOverIPunterLinux">CapiOverIP unter Linux</h2>
-<p>
-Auch unter Linux lässt sich das CapiOverTCP nutzen, wie es <a class="ext-link" href="http://wiki.ip-phone-forum.de/gateways:avm:howtos:mods:remotecapi"><span class="icon">​</span>dieses Howto</a> beschreibt, und zwar z.B. zum
-</p>
-<ul><li>Faxe versenden und empfangen mithilfe eines Soft-DSP
-</li><li>Telefonieren mit Headset
-</li><li>Verbinden mit Asterisk
-</li></ul><h2 id="CapiOverIPaufdemMac">CapiOverIP auf dem Mac</h2>
-<p>
+
+ * FritzFax
+ * OutLook Wählhilfe (zum Zugriff auf die die FritzBox)
+ * ​[isplayCall](http://www.lachenmann-net.de/displaycall/)
+ * [Phoner](http://www.phoner.de/)
+
+### CapiOverIP unter Linux
+
+Auch unter Linux lässt sich das CapiOverTCP nutzen, wie es ​dieses [Howto](http://wiki.ip-phone-forum.de/gateways:avm:howtos:mods:remotecapi) beschreibt, und zwar z.B. zum
+
+ * Faxe versenden und empfangen mithilfe eines Soft-DSP
+ * Telefonieren mit Headset
+ * Verbinden mit Asterisk 
+
+### CapiOverIP auf dem Mac
+
 Wenn hier jemand was weiß, bitte eintragen!
-</p>
-<h2 id="WeiterführendeLinks">Weiterführende Links</h2>
-<ul><li><a class="ext-link" href="http://www.wehavemorefun.de/fritzbox/Nutzung_des_Capi-over-TCP_Server_der_Fritzbox"><span class="icon">​</span>CapiOverTCP im Fritzbox-Wiki</a>
-</li><li><a class="ext-link" href="http://www.avm.de/de/Service/FAQs/FAQ_Sammlung/11843.php3"><span class="icon">​</span>AVM FAQ zu Fritz!Fax</a>
-</li><li><a class="ext-link" href="http://a-sawicki.de/cms/index.php?option=com_content&amp;task=view&amp;id=38&amp;Itemid=29"><span class="icon">​</span>a-sa Wiki: Faxen über die Fritz!Box</a>
-</li><li><a class="ext-link" href="http://wiki.ip-phone-forum.de/gateways:avm:howtos:mods:remotecapi"><span class="icon">​</span>Howto: CapiOverIp unter Linux</a>
-</li></ul></div>
+Weiterführende Links
 
-      </div><ul class="tags"><li class="header">Tags</li><li><a href="../patches.html" rel="tag">patches</a> </li></ul>
+ * [​CapiOverTCP im Fritzbox-Wiki](http://www.wehavemorefun.de/fritzbox/Nutzung_des_Capi-over-TCP_Server_der_Fritzbox)
+ * ​[AVM FAQ zu Fritz!Fax](http://www.avm.de/de/Service/FAQs/FAQ_Sammlung/11843.php3)
+ * ​[a-sa Wiki: Faxen über die Fritz!Box](http://a-sawicki.de/cms/index.php?option=com_content&task=view&id=38&Itemid=29)
+ * ​[Howto: CapiOverIp unter Linux](http://wiki.ip-phone-forum.de/gateways:avm:howtos:mods:remotecapi)
 
-    </div>
-    </div>
-  </body>
-</html>

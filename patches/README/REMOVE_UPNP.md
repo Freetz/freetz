@@ -1,102 +1,30 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+# Remove UPnP (igdd/upnpd)
+Entfernt den UPnP-daemon. Achtung! Ohne UPnP-daemon ist keine Einrichtung von FritzFax möglich.<br>
+<br>
 
-  <head>
-    <title>
-      patches/remove_upnp – Freetz
-    </title>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!--[if IE]><script type="text/javascript">
-      if (/^#__msie303:/.test(window.location.hash))
-        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
-    </script><![endif]-->
-        <link rel="search" href="/search" />
-        <link rel="help" href="../TracGuide.html" />
-        <link rel="alternate" href="remove_upnp%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
-        <link rel="up" href="../patches.html" title="Übergeordnete Wiki-Seite anzeigen" />
-        <link rel="start" href="/wiki" />
-        <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-      <link type="application/opensearchdescription+xml" rel="search" href="/search/opensearch" title="Freetz durchsuchen" />
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/jquery.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/babel.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/messages/de.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/trac.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/search.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/folding.js"></script>
-    <script type="text/javascript">
-      jQuery(document).ready(function($) {
-        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
-        $("#content").find(".wikianchor").each(function() {
-          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
-        });
-        $(".foldable").enableFolding(true, true);
-      });
-    </script>
-  </head>
-  <body>
-    <div id="banner">
-      <div id="header">
-        <a id="logo" href="/wiki"><img src="../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
-      </div>
-      <form id="search" action="https://www.google.com/search" method="get" onsubmit="; this.elements.namedItem('q').value = this.elements.namedItem('oq').value + ' site:freetz.github.io'">
-        <div>
-          <label for="proj-search">Suche:</label>
-          <input type="text" id="proj-search" name="oq" size="18" value="" />
-          <input type="hidden" name="q" value="" />
-          <input type="submit" value="Suche" />
-        </div>
-      </form>
-      <div id="metanav" class="nav">
-    <ul>
-      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
-    </ul>
-  </div>
-    </div>
-    <div id="mainnav" class="nav">
-    <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="https://github.com/Freetz-NG/freetz-ng/commits/master">Quellen durchsehen</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
-    </ul>
-  </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="remove_upnp.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/patches/remove_upnp.en" title="(not available)">English</a></li></ul></div><p /><div id="main">
-      <div id="pagepath" class="noprint">
-  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../patches.html" title="Zeige patches an">patches</a><span class="pathentry sep">/</span><a class="pathentry" href="remove_upnp.html" title="Zeige patches/remove_upnp an">remove_upnp</a>
-</div>
-    <div id="content" class="wiki">
-      <div class="wikipage searchable">
+uPnP steht für "universal Plug'n'Play". Hiermit lassen sich, sofern aktiviert und freigegeben, von Clients auf Verlangen Ports an der Box freischalten.
+Dies ist einerseits sicher ganz praktisch, da man dies dann nicht mehr manuell in der Web-Oberfläche erledigen muss - birgt aber auch seine Risiken:
+Auch ein Trojaner könnte auf diese Weise seine "Autobahn-nach-Hause" schalten - siehe dazu auch den Artikel ​Router hacken per uPnP.
+Bei aktiviertem uPnP auf der Box gibt man quasi die Kontrolle zumindest ein gutes Stück ab.
 
-          <div id="wikipage" class="trac-content"><p>
-</p><div class="wiki-toc"><h4>Inhaltsverzeichnis</h4><ol><li><a href="remove_upnp.html#Waswirdentfernt">Was wird entfernt?</a></li><li><a href="remove_upnp.html#Wasistzubeachten">Was ist zu beachten?</a></li><li><a href="remove_upnp.html#WeiterführendeLinks">Weiterführende Links</a></li></ol></div><p>
-</p>
-<h1 id="RemoveuPnPdaemon">Remove uPnP daemon</h1>
-<p>
-<strong>uPnP</strong> steht für "<strong>u</strong>niversal <strong>P</strong>lug<strong>'n'P</strong>lay". Hiermit lassen sich, sofern aktiviert und freigegeben, von Clients auf Verlangen Ports an der Box freischalten. Dies ist einerseits sicher ganz praktisch, da man dies dann nicht mehr manuell in der Web-Oberfläche erledigen muss - birgt aber auch seine Risiken: Auch ein Trojaner könnte auf diese Weise seine "Autobahn-nach-Hause" schalten - siehe dazu auch den Artikel <a class="ext-link" href="http://forum.ubuntuusers.de/topic/router-hacken-mit-hilfe-von-upnp/"><span class="icon">​</span>Router hacken per uPnP</a>. Bei aktiviertem uPnP auf der Box gibt man quasi die Kontrolle zumindest ein gutes Stück ab.
-</p>
-<p>
-Einige AVM Software benötigt diese Funktionalität (u.a. FritzFax) - andere Programme u.U. auch. Wer es hingegen nicht braucht, kann es hier entfernen. Und wer sich dessen nicht ganz sicher ist, kann es ja zunächst in der Web-Oberfläche deaktivieren und schauen, ob irgend ein Programm schreit - passiert dies bis zum nächsten Firmware-Update nicht, kann man den Kram dann rauswerfen <img src="../../chrome/wikiextras-icons-16/smiley-wink.png" style="vertical-align: text-bottom" alt=";)" />
-</p>
-<h2 id="Waswirdentfernt">Was wird entfernt?</h2>
-<p>
+Einige AVM Software benötigt diese Funktionalität (u.a. FritzFax) - andere Programme u.U. auch. Wer es hingegen nicht braucht, kann es hier entfernen.
+Und wer sich dessen nicht ganz sicher ist, kann es ja zunächst in der Web-Oberfläche deaktivieren und schauen, ob irgend ein Programm
+schreit - passiert dies bis zum nächsten Firmware-Update nicht, kann man den Kram dann rauswerfen ;)
+
+### Was wird entfernt?
+
 Mit dem Patch wird der uPnP Daemon (igdd) aus dem Image entfernt. Außerdem werden die Init-Skripte angepasst, damit sie nicht über dessen Fehlen stolpern.
-</p>
-<h2 id="Wasistzubeachten">Was ist zu beachten?</h2>
-<p>
+
+### Was ist zu beachten?
+
 Zum einen, wie schon oben erwähnt: Einige Software ist auf den uPnP Server hier angewiesen - diese funktioniert dann mit großer Wahrscheinlichkeit maximal noch eingeschränkt.
-</p>
-<p>
-Desweiteren sollte man vor Einspielen eines Images mit entferntem uPnP Server sicherstellen, dass alle uPnP Features im aktuellen Image deaktiviert wurden. Die entsprechenden Optionen finden sich unter  "Einstellungen &rArr; System &rArr; Netzwerkeinstellungen &rArr; Statusinformationen über UPnP übertragen (empfohlen)".
-</p>
-<h2 id="WeiterführendeLinks">Weiterführende Links</h2>
-<ul><li><a class="ext-link" href="http://de.wikipedia.org/wiki/Universal_Plug_and_Play"><span class="icon">​</span>Wikipedia: uPnP</a>
-</li><li><a class="ext-link" href="http://blog.jbbr.net/2008/01/03/fritzbox-schneller-reconnect-unter-linux/"><span class="icon">​</span>DSL Re-Connect per uPnP</a>
-</li><li><a class="ext-link" href="http://forum.ubuntuusers.de/topic/router-hacken-mit-hilfe-von-upnp/"><span class="icon">​</span>Router hacken per uPnP</a>
-</li></ul></div>
 
-      </div><ul class="tags"><li class="header">Tags</li><li><a href="../patches.html" rel="tag">patches</a> </li></ul>
+Desweiteren sollte man vor Einspielen eines Images mit entferntem uPnP Server sicherstellen, dass alle uPnP Features im aktuellen Image deaktiviert wurden.
+Die entsprechenden Optionen finden sich unter "Einstellungen ⇒ System ⇒ Netzwerkeinstellungen ⇒ Statusinformationen über UPnP übertragen (empfohlen)".
 
-    </div>
-    </div>
-  </body>
-</html>
+### Weiterführende Links
+
+ * [Wikipedia: uPnP](http://de.wikipedia.org/wiki/Universal_Plug_and_Play)
+ * [DSL Re-Connect per uPnP](http://blog.jbbr.net/2008/01/03/fritzbox-schneller-reconnect-unter-linux/)
+ * [Router hacken per uPnP](http://forum.ubuntuusers.de/topic/router-hacken-mit-hilfe-von-upnp/)
+

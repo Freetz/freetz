@@ -16,12 +16,12 @@ Ein Skript in /etc/onlinechanged könnte zum Beispiel folgendermaßen aussehen:
 #!/bin/sh
 
 case "$1" in
-   online )
-          /etc/init.d/rc.package online
+   online)
+      /etc/init.d/rc.package online
       ;;
 
-   offline )
-         /etc/init.d/rc.package offline
+   offline)
+      /etc/init.d/rc.package offline
       ;;
 esac
 ```
@@ -38,9 +38,9 @@ logger -t dnsd "IP set to $EXTIP"
 You can send yourself an e-mail when your box comes online like this:
 
 ```
-  online)
-    mailer -s "Freetz online" -t <your e-mail address>
-    ;;
+   online)
+      mailer -s "Freetz online" -t <your e-mail address>
+      ;;
 ```
 
 For this to work, you should configure the ​AVM Push service, but it is not necessary to enable it. 
