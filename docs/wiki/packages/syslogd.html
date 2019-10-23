@@ -3,7 +3,7 @@
 
   <head>
     <title>
-      packages/syslogd – Freetz
+      packages/syslogd.en – Freetz
     </title>
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
       <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -13,7 +13,7 @@
     </script><![endif]-->
         <link rel="search" href="/search" />
         <link rel="help" href="../TracGuide.html" />
-        <link rel="alternate" href="syslogd%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
+        <link rel="alternate" href="syslogd.en%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
         <link rel="up" href="../packages.html" title="Übergeordnete Wiki-Seite anzeigen" />
         <link rel="start" href="/wiki" />
         <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
@@ -60,60 +60,44 @@
       <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="https://github.com/Freetz-NG/freetz-ng/commits/master">Quellen durchsehen</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
     </ul>
   </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="syslogd.html" title="displaying language (default)">German</a></li><li class=" last"><a class="" href="syslogd.en.html" title="">English</a></li></ul></div><p /><div id="main">
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=""><a class="" href="syslogd.html" title="">German</a></li><li class=" active last"><a class="selected" href="syslogd.en.html" title="selected and displaying language">English</a></li></ul></div><p /><div id="main">
       <div id="pagepath" class="noprint">
-  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="syslogd.html" title="Zeige packages/syslogd an">syslogd</a>
+  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="syslogd.en.html" title="Zeige packages/syslogd.en an">syslogd.en</a>
 </div>
     <div id="content" class="wiki">
       <div class="wikipage searchable">
 
-          <div id="wikipage" class="trac-content"><h1 id="Syslogd">Syslogd</h1>
+          <div id="wikipage" class="trac-content"><h2 id="Syslog">Syslog</h2>
 <p>
-<figure><img src="/freetz-ng/screenshots/199.png" alt="Bild der Oberfläche von Syslogd" /><figcaption>Bild der Oberfläche von Syslogd</figcaption></figure>
-Das Syslogd-CGI Package stellt die Konfiguration des syslog über das Webinterface bereit. Es kann lokal in eine Datei oder einen Ringpuffer oder über Netzwerk geloggt werden.
+The syslog package enables to log messages local to memory, to a local disk (e.g. USB), or remote to another server. <br />
+For the local memory a FIFO buffer is used, with a default size of 200KB.
+</p>
+<h3 id="SetupinFreetzweb-interface">Setup in Freetz web-interface</h3>
+<p>
+<figure><img src="/freetz-ng/screenshots/239.jpg" alt="Howto Syslog Setup" /><figcaption>Howto Syslog Setup</figcaption></figure>
+</p>
+<h3 id="Usageofsyslog">Usage of syslog</h3>
+<p>
+The syslog messages can be displayed via the web-interface via:
+</p>
+<pre class="wiki">Status &gt; Syslog
+</pre><p>
+You can filter on some items depending on your configuration and used packages (e.g. hostapd, login, INADYN).
 </p>
 <p>
-Der Inhalt des Logs lässt sich über das Webinterface (Status&rarr;Syslog) anzeigen.
+Another option is to view the messages via a telnet or ssh connection using the following commands:
 </p>
-<p>
-Es kann entweder über <strong>Netzwerk</strong> oder <strong>lokal</strong> geloggt werden.
+<pre class="wiki">logread
+</pre><p>
+You can monitor the syslog messages where all new messages are displayed using the command:
 </p>
-<ul><li>Lokal gibt es die Möglichkeit in ein <strong>Ringpuffer</strong> zu schreiben oder in eine <strong>Datei</strong>. Beim Ringpuffer wird, sobald der Puffer voll ist, der älteste Eintrag gelöscht. Wenn lokal in eine Datei geloggt wird, dann sollte sich diese auf einem USB-Medium befinden, sonst kann es passieren, dass das RAM der Box voll läuft und die Box neu startet.
-</li><li>Um mit Windows Meldungen von Syslog über das Netzwerk zu empfangen kann zB die Freeware <a class="ext-link" href="http://tftpd32.jounin.net/tftpd32.html"><span class="icon">​</span>Tftpd32</a> genutzt werden.<br />
-</li></ul><p>
-Wer zusätzlich die Kernelmessages im Syslog haben will kann die Option <strong>Kernel-Log-Dämon aktivieren</strong> auswählen (funktioniert auf den Boxen 3270, 7240, 7270, 7320 und 7390 womöglich aufgrund von AVM-Änderungen nicht).
-<br />
-<br />
+<pre class="wiki">logread -f
+</pre><p>
+(With CTRL-C you can stop the monitoring.)
 </p>
-<h2 id="Optionen">Optionen</h2>
-<pre class="wiki">Usage: syslogd [OPTIONS]
+</div>
 
-System logging utility.
-This version of syslogd ignores /etc/syslog.conf
-
-Options:
-        -n              Run in foreground
-        -O FILE         Log to given file (default:/var/log/messages)
-        -l N            Set local log level
-        -S              Smaller logging output
-        -s SIZE         Max size (KB) before rotate (default:200KB, 0=off)
-        -b N            N rotated logs to keep (default:1, max=99, 0=purge)
-        -R HOST[:PORT]  Log to IP or hostname on PORT (default PORT=514/UDP)
-        -L              Log locally and via network (default is network only if -R)
-        -C[size(KiB)]   Log to shared mem buffer (read it using logread)
-
-Usage: klogd [-c N] [-n]
-
-Kernel logger
-
-Options:
-        -c N    Only messages with level &lt; N are printed to console
-        -n      Run in foreground
-</pre><h2 id="Sieheauch">Siehe auch</h2>
-<ul><li><a class="wiki" href="../costumscript_dublesyslog.html">costumscript_dublesyslog</a>
-</li></ul></div>
-
-      </div><ul class="tags"><li class="header">Tags</li><li><a href="/tags/cgi" rel="tag">cgi</a> </li><li><a href="/tags/debug" rel="tag">debug</a> </li><li><a href="../packages.html" rel="tag">packages</a> </li><li><a href="/tags/system" rel="tag">system</a> </li></ul>
+      </div>
 
     </div>
     <script type="text/javascript">

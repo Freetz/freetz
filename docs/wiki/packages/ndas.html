@@ -3,7 +3,7 @@
 
   <head>
     <title>
-      packages/ndas – Freetz
+      packages/ndas.en – Freetz
     </title>
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
       <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -13,7 +13,7 @@
     </script><![endif]-->
         <link rel="search" href="/search" />
         <link rel="help" href="../TracGuide.html" />
-        <link rel="alternate" href="ndas%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
+        <link rel="alternate" href="ndas.en%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
         <link rel="up" href="../packages.html" title="Übergeordnete Wiki-Seite anzeigen" />
         <link rel="start" href="/wiki" />
         <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
@@ -60,244 +60,262 @@
       <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="https://github.com/Freetz-NG/freetz-ng/commits/master">Quellen durchsehen</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
     </ul>
   </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="ndas.html" title="displaying language (default)">German</a></li><li class=" last"><a class="" href="ndas.en.html" title="">English</a></li></ul></div><p /><div id="main">
+    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=""><a class="" href="ndas.html" title="">German</a></li><li class=" active last"><a class="selected" href="ndas.en.html" title="selected and displaying language">English</a></li></ul></div><p /><div id="main">
       <div id="pagepath" class="noprint">
-  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="ndas.html" title="Zeige packages/ndas an">ndas</a>
+  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="ndas.en.html" title="Zeige packages/ndas.en an">ndas.en</a>
 </div>
     <div id="content" class="wiki">
       <div class="wikipage searchable">
 
-          <div id="wikipage" class="trac-content"><p>
-Network Direct Attached Storage (NDAS) ist ein proprietäres System zur Anbindung externer Speichermedien wie Festplatten, Flash-Speicher oder Bandlaufwerke an ein Netzwerk. Die Patente für NDAS hält die amerikanische Firma Ximeta. [1]
-</p>
+          <div id="wikipage" class="trac-content"><h2 id="NDAS">NDAS</h2>
 <p>
-Da Ximeta seinen Linux Support eingestellt hat hier die original Anleitung. Die Links darin funktionieren nicht mehr.
+NDAS (<strong>N</strong>etwork <strong>D</strong>irect <strong>A</strong>ttached <strong>S</strong>torage) is Ximeta's patented technology which enables all digital storage devices (HDD, ODD, Memory, Tape Drives) direct connection into standard Ethernet networks. <br />
+All users or systems on the network can directly control, use and share those devices. <br />
+More info about NDAS on Linux can be found via: <a class="ext-link" href="http://ndas4linux.iocellnetworks.com/"><span class="icon">​</span>http://ndas4linux.iocellnetworks.com/</a> <br />
+I'm using NDAS currenlty to play movies up to 720p.
 </p>
-<h2 id="a1.UsingNDASdriver">1. Using NDAS driver</h2>
-<h3 id="RegistertheNDASdevice">Register the NDAS device</h3>
+<h3 id="CreatingaFeetzImagewithNDAS">Creating a Feetz Image with NDAS</h3>
 <p>
-You can find NDAS "ID" and NDAS "key" from the the bottom of the NetDisk.
+<strong>Note</strong> NDAS is now supported for little endian (e.g. 7170, 7270) and big endian (e.g. 7390) thanks to <a class="ext-link" href="http://www.ip-phone-forum.de/member.php?u=83184"><span class="icon">​</span>ER13</a>.<br />
+The changes are introduced in <a href="/changeset/11390">11390</a> to <a href="/changeset/11392">11392</a>, <a href="/changeset/11434">11434</a>, and <a href="/changeset/11464">11464</a>.<br /><br />
+Follow the directions from the <a href="../index.en.html#">Wiki</a> <br />
+After the following step you can configure the packages you want to have included in your image.
 </p>
-<p>
-If your NDAS ID (20 characters) and NDAS key (5 characters) are
-</p>
-<pre class="wiki">  ID: AF7R2-2MKK4-UHG9S-5RHTG
-  KEY: 8QT6U
+<pre class="wiki">make menuconfig
 </pre><p>
-then execute the following commands as root (in most systems it will be sufficient to type <tt># ndasadmin... </tt> rather than full <tt># /usr/sbin/ndasadmin...</tt>)
+Make sure the following is selected:
 </p>
-<pre class="wiki">/usr/sbin/ndasadmin register &lt;NDAS ID&gt;-&lt;NDAS key&gt; --name &lt;NetDisk Name to be&gt;
-or
-/usr/sbin/ndasadmin register &lt;NDAS ID&gt;-&lt;NDAS key&gt; -n &lt;NetDisk Name to be&gt;
+<pre class="wiki">Package selection  ---&gt; Packages  ---&gt; [*] (binary only)
 </pre><p>
-vis:
-</p>
-<pre class="wiki">/usr/sbin/ndasadmin register AF7R2-2MKK4-UHG9S-5RHTG-8QT6U --name MyDisk
-or
-/usr/sbin/ndasadmin register AF7R2-2MKK4-UHG9S-5RHTG-8QT6U -n MyDisk
-</pre><p>
-Please note that 'MyDisk' is any name named by you.<br />
-Sucessful registering means NOT the Disk ist reached sucessful via Network! <br />
-You will get the numeric slot number(s) for each disk on the NetDisk by
-</p>
-<pre class="wiki">cat /proc/ndas/devices/MyDisk/slots
-</pre><p>
-check the status of the NetDisks, if you can't get the slot number from commands above.
-</p>
-<pre class="wiki">cat /proc/ndas/devs
-Name            ID                     Key Serial           Ver Status         Slots
-MyDisk01        ABCDEFGHIJKLMNO*****   Yes 00800000         1   Online         1
-MyDisk02        ABCDEFGHIJKLMNP*****   Yes 00800001         1   Offline
-</pre><p>
-If the Status is "Offline" make sure the NetDisk turns on and is attached in the same network.
-</p>
-<h3 id="EnabletheNDASdevice">Enable the NDAS device</h3>
-<p>
-To enable the NetDisk, please type the following commands:
-</p>
-<p>
-Use the numeric slot number that you get from /proc/ndas/devices/MyDisk/slots. If you get '1' as the slot number from /proc/ndas/devices/MyDisk/slots then, execute one of the following command with root privilege.
-</p>
-<pre class="wiki">/usr/sbin/ndasadmin enable -s 1 -o w   # exclusive write and read mode
-
-/usr/sbin/ndasadmin enable -s 1 -o r   # read-only mode
-
-/usr/sbin/ndasadmin enable -s 1 -o s   # for GFS/OCFS2 file system
-</pre><p>
-This command will print out the path of the block device file. For example,
-</p>
-<pre class="wiki">/dev/nda, /dev/ndb, /dev/ndas-001000001-0.
-</pre><p>
-Your NetDisk will then have to be partitioned and/or formatted if not already.
-
-</p>
-<h3 id="PartitionandfilesystemontheNDASdevice">Partition and file system on the NDAS device</h3>
-<p>
-To partition or format, please do the following:
-</p>
-<p>
-WARNING: All data will be erased.
-</p>
-<h4 id="partition">partition</h4>
-<pre class="wiki">fdisk /dev/nda (fdisk &lt;path of the block device file&gt; see output of ndasadmin enable),
-* use p to show the current partition table
-* use n to create a new partion
-</pre><h4 id="format">format</h4>
-<p>
-use for example:
-</p>
-<pre class="wiki">mkfs -t ext2 /dev/nda1
-or
-mkfs.ext3 /dev/ndas-08019896-0p1 -L ndas_disc1
-...
-</pre><p>
-where /dev/ndas-08019896-0 is the path of the block device file and p1 stands for <em>partion 1</em><br />
-(just check the output of <em>fdisk -l /dev/ndas-08019896-0</em>)<br />
-The option -L lables the partition as <em>ndas_disc1</em><br />
-</p>
-<p>
-Your NetDisk is now ready for use!
-</p>
-<h3 id="ReadingPartitionsonalreadyformattedNDASdevicemounting">Reading Partitions on already formatted NDAS device &amp; mounting</h3>
-<ul><li>try
-</li></ul><pre class="wiki">blkid
-</pre><p>
-which should give all partition information for your entire Linux system, including the NDAS device. This is very useful if you already have multiple partitions on your NDAS device. You then need to
-</p>
-<pre class="wiki">mount -t &lt;filesystem&gt; &lt;device name&gt; &lt;mount directory&gt;
-</pre><p>
-in normal way.
-</p>
-<ul><li><strong>If the disk is formatted other than NDAS mode, there is a possibility that partitions may not be accessed. This is because NDAS reserves some data from the end of disk. You need to format again in NDAS mode.</strong>
-</li><li><strong>If you don't have "blkid" on your system, try "ls /dev/nd*", or "cat /proc/partitions"</strong>
-</li></ul><h3 id="AutomaticUserMounting">Automatic User Mounting</h3>
-<p>
-These commands may differ slightly for your particular configuration.
-</p>
-<p>
-Once your Netdisk drivers are properly setup, create a mount point for the device:
-</p>
-<pre class="wiki"># mkdir /mnt/netdisk
-</pre><p>
-Under Ubuntu distrobutions, it's best to put this point in /media, rather than /mnt, for conformity.  You may name the point anything you like.
-</p>
-<p>
-Next, locate the device.
-</p>
-<pre class="wiki">$ ls /dev/ndas*
-/dev/ndas  /dev/ndas-00110749-0  /dev/ndas-00110749-0p1
-</pre><p>
-The drive itself, in this example, is at /dev/ndas-00110749-0.  The primary (and only, in this case) partition is /dev/ndas-00110749-0p1.
-</p>
-<p>
-Determine the format of the disk
-</p>
-<pre class="wiki"># fdisk -l /dev/ndas-00110749-0
-
-Disk /dev/ndas-00110749-0: 160.0 GB, 160039788544 bytes
-255 heads, 63 sectors/track, 19457 cylinders
-Units = cylinders of 16065 * 512 = 8225280 bytes
-
-                Device Boot      Start         End      Blocks   Id  System
-/dev/ndas-00110749-0p1               1       19457   156288321    b  W95 FAT32
-</pre><p>
-In this example, it is a FAT32 drive.
-</p>
-<p>
-Next, back up and add this information to your /etc/fstab file
-</p>
-<pre class="wiki"># cp /etc/fstab /etc/fstab.backup
-# nano /etc/fstab
-</pre><p>
-You may use any text editor you like in place of nano.
-</p>
-<p>
-At the end of this file, add the information for your netdisk.  The basic format for a line is DEVICE LOCATION FORMAT OPTIONS DUMP PASS.  For our example, we have a netdisk at /dev/ndas-00110749-0p1.  We want it mounted at /mnt/netdisk.  The format of the netdisk is vfat.  For options, we want to use the defaults, allow users to mount it, and to not mount it automatically at boot.  We don't need dump or pass for anything.  The line we'd add is:
-</p>
-<pre class="wiki">/dev/ndas-00110749-0p1 /mnt/netdisk vfat defaults,user,noauto 0 0
-</pre><p>
-Save the file, and exit your editor.
-</p>
-<p>
-Now, any user on this machine should be able to mount the netdisk with this command:
-</p>
-<pre class="wiki">$ mount /mnt/netdisk
-</pre><p>
-We've specified all the other information about the device in /etc/fstab, so no more is required.
-</p>
-<p>
-Due to how and when the device drivers and /etc/fstab load, setting the device to automatically mount in /etc/fstab usually does not work.  You'll need to either set a boot time cron job, add it to your X session startup, etc.  This is outside the scope of this wiki, please see your system documentation for further information on this.
-
-</p>
-<h3 id="AdditionalCommandsfortheNDASdevice">Additional Commands for the NDAS device</h3>
-<p>
-To disable the NetDisk:
-</p>
-<pre class="wiki">/usr/sbin/ndasadmin disable -s 1
-</pre><blockquote>
-<p>
-Note: disable is to make the NetDisk to be disconnected from the Linux machine. especially it will release the exclusively write permission and the other Linux / MS Windows machine can gain the exclusive write permission.
-</p>
-</blockquote>
-<p>
-
-To Unregister the NetDisk
-</p>
-<pre class="wiki">/usr/sbin/ndasadmin unregister --name MyDisk
-</pre><blockquote>
-<p>
-Note: 'unregister' is to delete the registration so that the NetDisk is not registered in the next booting of Linux machine.
-</p>
-</blockquote>
-<p>
-
+Recommended optional additional packages:
 </p>
 <blockquote>
 <p>
-Note: The name 'MyDisk' should be the parameter you set on 'register' command.
+<a href="ntfs-3g.html">NTFS-3G</a> <br />
+<a href="samba.html">Samba</a> <br />
 </p>
 </blockquote>
 <p>
-Please refer to README as the original document.
+or(/and)
 </p>
-<h2 id="a2.UsingNDASharddiskarray">2. Using NDAS harddisk array</h2>
-<ul><li>Add how to use the NDAS harddisks with Linux Software RAID
-</li><li>Add how to use the NDAS hard disks with XIMETA RAID
-</li><li>Add how to use the NDAS hard disks with Linux LVM
-</li></ul><h2 id="a3.SharethedatafilesontheNDASharddisks">3. Share the data/files on the NDAS hard disks</h2>
+<blockquote>
 <p>
-NDAS on WINDOWS apparently supports simultaneous r/w from multiple machines on the LAN. I could not find any documentation explaining if this is only true for partitions formated as FAT or NTFS, or for any file system, but for the moment I'll assume that this fiture does not depend on the filesystem. Since a Windows ext3 driver exists, this could be used for sharing the data between windows and Linux machines. Alternativelz, Linux can also access NTFS, but last time I checked (long ago), r/w support was poor&hellip;
+<a href="nfsd.html">NFS Server</a> (no ntfs support, but a faster) <br />
+with optionally some additional patches for ext3 or/and ReiserFS (see Patches  &mdash;&rarr; &hellip; in menuconfig) <br />
 </p>
+</blockquote>
 <p>
-Unfortunately, the Linux version of the driver does not support the simultanous r/w from multiple machines. An NDAS partition can only be mounted r/w from ONE linux machine at a time, the rest of the machines may only use it in ro mode. The only exceptions are the shared filesystems such as GFS and OCFS2. A simple GFS configuration is shown in this Wiki. I just checked the documentation, and unfortunately neither OCFS2 noe GFS drivers for windows exist. So in short, there is no way to simultanously mount any filesystem in r/w mode on both Linux and Windows machines. This is so sad. <img src="../../chrome/wikiextras-icons-16/smiley-sad.png" style="vertical-align: text-bottom" alt=":-(" />
-</p>
-<ul><li>How to share the NDAS hard disk with GFS
-</li><li>How to share the NDAS hard disk with FAT32 file system
-</li><li>How to share the NDAS hard disk with OCFS2
-</li><li>Add how to share the NDAS hard disk with NTFS
-</li></ul><pre class="wiki">For example type on the command line:
 
-mount -t ntfs-3g /dev/ndas-00611109-0p1 /mnt/windows  &lt; -o force &gt;
-
-Or add the option to the relevant row in the /etc/fstab file:
-
-/dev/ndas-00611109-0p1 /mnt/windows ntfs-3g defaults 0 0
-</pre><ul><li>Add how to share the NDAS hard disk with ext2/3
-</li></ul><h2 id="a4.NDASrobustnes">4. NDAS robustnes?</h2>
-<p>
-I wondered how robust the NDAS protocol, host device and linux driver are&hellip; The result of the small test I just did is not so good as I hoped:
 </p>
-<ul><li>Mount the ndas partition on my linux host in rw mode (ext3 partition)
-</li><li>Start a copy operation on a large file
-</li><li>Turning the NDAS device by pressing the power off button
-</li><li>Turning the NDAS device on again.
-</li></ul><p>
-Result: The file transfer stopped while the device was offline, and then resumed on its own as soon as the NDAS device came online again. Unfortunately, <strong>the file was corrupted</strong> in the end.
-On a bright side, this is still better than linux hangup.
-</p>
-<h2 id="Referenzen">Referenzen</h2>
+<h3 id="SetupinFreetz">Setup in Freetz</h3>
 <p>
-[1] <a class="ext-link" href="http://de.wikipedia.org/wiki/Network_Direct_Attached_Storage"><span class="icon">​</span>Wikipedia Seite zu NDAS</a>
+There is currently (Freetz-trunk <a href="/changeset/11464">11464</a>) no web-interface available for NDAS. <br />
+You can configure NDAS via console (e.g. via ssh or telnet access), but you can also use a script in rc.custom to get all configured for NDAS to work at startup. <br />
+</p>
+<h4 id="Manualconfigureviaconsole">Manual configure via console</h4>
+<p>
+Details can be found in the following two threads <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=241882"><span class="icon">​</span>http://www.ip-phone-forum.de/showthread.php?t=241882</a> and <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=149182"><span class="icon">​</span>http://www.ip-phone-forum.de/showthread.php?t=149182</a>
+</p>
+<p>
+First create the needed character and block-devices using the mknod command. <br />
+You can create block-devices for multiple drives and multiple partitions. Below example for one drive with one partition.
+</p>
+<pre class="wiki">mknod -m 644 /dev/ndas c 60 0
+mknod -m 644 /dev/nda b 60 0
+mknod -m 644 /dev/nda1 b 60 1
+</pre><blockquote>
+<p>
+For additional partitions you can create the devices nodes with /dev/nda&lt;partition-number&gt; b 60 &lt;partition-number&gt;
+</p>
+</blockquote>
+<p>
+You can verify the creation of the devices with the following well known command
+</p>
+<pre class="wiki">ls -la /dev/nd*
+</pre><blockquote>
+<p>
+The block-devices will start with a 'b', character-devices start will a 'c'.
+</p>
+</blockquote>
+<p>
+Next the kernel moduls needs to be loaded.
+</p>
+<pre class="wiki">insmod /lib/modules/`uname -r`/kernel/fs/ndas/ndas_sal.ko
+insmod /lib/modules/`uname -r`/kernel/fs/ndas/ndas_core.ko ndas_dev=lan
+insmod /lib/modules/`uname -r`/kernel/fs/ndas/ndas_block.ko
+</pre><blockquote>
+<p>
+The option ndas_dev=lan enables the module only for Eth and WiFi, and not for Wan interfaces. <br />
+If you have your internal Ethernet switch configured as router (see <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=243444"><span class="icon">​</span>here</a> for more background info in German), you will connect and access the NDAS device only via one of the routed Ethernet ports, and you can/should use ndas_dev=eth0 <br />
+Be aware that the protocol used by the NDAS device is not routed, so only within the broadcast domain you can access the NDAS device. <br />
+</p>
+</blockquote>
+<p>
+To verify the three modules are loaded properly you can use the following command:
+</p>
+<pre class="wiki">lsmod
+</pre><p>
+Now the NDAS driver 'NDAS Administration Tool' should be started. This is done with:
+</p>
+<pre class="wiki">ndasadmin start
+</pre><p>
+Following is to register the netdisk with the ID and key, that should be found on the NDAS device.
+</p>
+<pre class="wiki">ndasadmin register "rrrrr-rrrrr-rrrrr-rrrrr-wwwww" --name ndas-01
+</pre><blockquote>
+<p>
+The ID is the 'rrrrr-rrrrr-rrrrr-rrrrr' part which is 20 characters long, and is always needed.
+The key is the 'wwwww' part which is 5 characters long and is optional to allow write access.
+</p>
+</blockquote>
+<p>
+If the disk is connected to the LAN network, and powered on the disk should become visible at this point. <br />
+Verify the status via the proc filesystem /proc with the following commands.
+</p>
+<pre class="wiki">cat /proc/ndas/devs
+</pre><blockquote>
+<p>
+To see the disk details and the status.
+</p>
+</blockquote>
+<pre class="wiki">cat /proc/ndas/devices/ndas-01/slots
+</pre><blockquote>
+<p>
+Shows the number of slots.
+</p>
+</blockquote>
+<p>
+The NetDisks can be enabled with one of the following three modes:
+For read access use the following
+</p>
+<pre class="wiki">ndasadmin enable -s 1 -o r
+</pre><p>
+For read/write access the following can be used:
+</p>
+<pre class="wiki">ndasadmin enable -s 1 -o w
+</pre><p>
+For shared write access use:
+</p>
+<pre class="wiki">ndasadmin enable -s 1 -o s
+</pre><p>
+Also a mountpoint is needed that can be created with:
+</p>
+<pre class="wiki">mkdir /var/media/ndas/ntfs/
+</pre><p>
+As last step, mounting the block-device under the mountpoint just created.
+The mount command depends on the formatting of the drive.
+So far I had only success with an NTFS formatted drive.
+</p>
+<p>
+Mount an NTFS formatted drive:
+</p>
+<pre class="wiki">ntfs-3g -o rw /dev/nda1 /var/media/ndas
+</pre><p>
+A FAT formatted drive should be mounted with:
+</p>
+<pre class="wiki">mount -t fat /dev/nda1 /var/media/ndas
+</pre><p>
+But I wasn't able to mount my FAT32 formatted drive, also tried -t vfat.
+</p>
+<h4 id="Scriptatstartup">Script at startup</h4>
+<p>
+You can use the script in file rc.custom, which can be edited via the <a href="mod.html#rc_custom">web-interface</a>.
+</p>
+<pre class="wiki">#! /bin/sh
+# Create the character file to send the commands
+test ! -c /dev/ndas &amp;&amp; mknod -m 644 /dev/ndas c 60 0
+M=0
+# Let's create the block device files to access the hard disk.
+# Just for 3 hard disk, each with 3 partitions, but you can increase if you want.
+for s in a b c;
+do
+    test ! -b /dev/nd${s} &amp;&amp; mknod -m 644 /dev/nd${s} b 60 $M
+    for t in 1 2 3;
+    do
+        M=$(($M + 1))
+        test ! -b /dev/nd${s}${t} &amp;&amp; mknod -m 644 /dev/nd${s}${t} b 60 $M
+    done
+    M=$(($M + 16 - $t))
+done
+
+# Now load the system abstraced layer implementation for NDAS technology
+insmod /lib/modules/`uname -r`/kernel/fs/ndas/ndas_sal.ko &gt; /dev/null 2&gt;&amp;1
+if [ ! $? ] ; then
+    echo " Module ndas_sal failed to load";
+    exit 1;
+fi
+# Load the NDAS core functions, the proprietary driver.
+insmod /lib/modules/`uname -r`/kernel/fs/ndas/ndas_core.ko ndas_dev=lan &gt; /dev/null 2&gt;&amp;1
+if [ ! $? ] ; then
+    echo " Module ndas_core failed to load"
+    exit 1;
+fi
+# Load the block device implementation for NDAS
+insmod /lib/modules/`uname -r`/kernel/fs/ndas/ndas_block.ko &gt; /dev/null 2&gt;&amp;1
+if [ ! $? ] ; then
+    echo " Module ndas_block failed to load"
+    exit 1;
+fi
+# Start the service
+/usr/bin/ndasadmin start &gt; /dev/null 2&gt;&amp;1
+if [ ! $? ]; then
+    echo " ndasadmin start failed"
+    exit 1;
+fi
+
+# Register the device
+/usr/bin/ndasadmin register rrrrr-rrrrr-rrrrr-rrrrr-wwwww --name ndas-01 &gt; /dev/null 2&gt;&amp;1
+sleep 5
+
+# Enable connection with first NDAS blockdevice in exclusive-write mode
+/usr/bin/ndasadmin enable -s 1 -o s
+sleep 5
+mkdir -p /var/media/ndas/usb /var/media/ndas/ntfs /var/media/ndas/fat /var/media/ndas/ext2
+sleep 5
+# mount ntfs NDAS disk, /dev/nda1 in this case, in read write mode
+ntfs-3g -o rw /dev/nda1 /var/media/ndas/ntfs
+# mount ext2 NDAS disk, /dev/nda2 in this case
+mount /dev/nda2 /var/media/ndas/ext2
+
+# Restart Samba with NetDisk mounted
+/etc/init.d/rc.samba restart
+# Restart NFS server with NetDisk mounted
+/etc/init.d/rc.nfsd restart
+</pre><h4 id="Troubleshooting">Troubleshooting</h4>
+<p>
+Here a list of troubleshooting commands.
+</p>
+<ol><li> ls -la /dev/nd* <br /> The output should give one character device /dev/ndas, per disk one block device starting with /dev/nda for the first disk, and for each partition another block device. <br /><br />
+</li><li> lsmod <br /> The output should show the 3 modules loaded, which are <strong>ndas_sal</strong>, <strong>ndas_core</strong>, <strong>ndas_block</strong>. <br /><br />
+</li><li> cat /proc/ndas/devs <br /> The output should give the NDASName choosen, the ID, an indication if the key is used for write access, serialnumber of the NetDisk, NDAS version which is 1, the status of the NetDisk, and the slot number that is assigned to the NetDisk. <br /><br />
+</li><li> cat /proc/ndas/devices/ndas-01/slots <br /> The output should give the assigned slots number, which is <strong>1</strong> in my case. <br /><br />
+</li><li> cat /proc/partitions <br /> The output should show a NDAS partition for each NetDisk, and one for each partition on that NetDisk (so at least two). <br /><br />
+</li><li> ls -la /var/media/ndas <br /> The output should show the mountpoint, and if the NetDisk is mounted the content of the NetDisk. <br /><br />
+</li><li> mount <br /> The output should show one line for each partition mounted. It will show the device node, the mountpoint, the filesystem type and the options used (e.g. read/write (rw) or read only (ro)) <br /><br />
+</li><li> cat /etc/debug <br /> Behaves like a tail -f of a regular file where debug messages are shown to standard output.
+</li></ol><h4 id="Troubleclearing">Troubleclearing</h4>
+<p>
+Some hints that could be helpful.
+</p>
+<ol><li>Unmount the NetDrive partition with <br /> <tt> umount /dev/nda&lt;partition-number&gt; </tt> <br /> If the umount fails verify if applications like Samba are stopped. <br /><br />
+</li><li>Disable the NetDisk with <br /> <tt> ndasadmin disable -s 1 </tt> <br /><br />
+</li><li>Stop the NDAS Driver with <br /> <tt> ndasadmin stop </tt> <br /> Be aware that after stopping the driver you also have to re-register the NetDrive. <br /><br />
+</li><li>If the enable command indicates the NetDrive is in use by another entity, and you know it isn't, power off the NetDrive and try again. <br /><br />
+</li><li>After powering off the NetDisk I had to do the following to get it working again:
+<ul><li>Stop Samba or NFS (e.g. /etc/init.d/rc.samba stop, or /etc/init.d/rc.nfsd stop)
+</li><li>Unmount the NetDisk (e.g. umount /dev/nda1)
+</li><li>Disable the NDAS NetDisk (e.g. ndasadmin disable -s 1)
+</li><li>Enable the NDAS NetDisk (e.g. ndasadmin enable -s 1 -o s)
+</li><li>Mount the NetDisk again (e.g. ntfs-3g -o rw /dev/nda1 /var/media/ndas/ntfs)
+</li><li>Start Samba or NFS again (e.g. /etc/init.d/rc.samba start, or /etc/init.d/rc.nfsd start)
+</li></ul></li></ol><h3 id="Usages">Usages</h3>
+<p>
+I used to have Ndas toghether with Samba on my 7270v3, to play movies from the ntfs formated NetDrive, via a Win7 pc over HDMI to my TV.<br />
+This is working well for movies upto 720p, 1080p (e.g. upto 8GB). I also tried a 1080p of about 25GB, but that didn't work out.<br />
+Via monitoring using <a href="netsnmp.en.html">Net-SNMP</a> I found that it is the CPU resources on the 7270v3, which is the limiting factor.<br /><br />
+Currently I'm using Ndas with NFS on my 7390, with ext3 formatted NetDrive, via a Win7 pc over HDMI to my TV.<br />
+I found it possible to play a movie of about 25GB with 1080p, only the very high detailed fragments where causing issues.<br />
+It is still the CPU resources on the 7390 causing a bottleneck.
 </p>
 </div>
 

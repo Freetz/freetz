@@ -312,7 +312,7 @@
   * **[minidlna 1.2.1](https://freetz-ng.github.io/freetz-ng/wiki/packages/minidlna)<a id='minidlna'></a>**<br>
     The MiniDLNA daemon is an UPnP-A/V and DLNA service which serves multimedia content to compatible clients on the network.
 
-  * **<u>minisatip 1.0.2 (binary only)</u><a id='minisatip'></a>**<br>
+  * **[minisatip 1.0.2 (binary only)](minisatip/README.md)<a id='minisatip'></a>**<br>
     Minisatip is a multi-threaded satip server version 1.2 that runs under Linux and it was tested with DVB-S, DVB-S2, DVB-T, DVB-T2, DVB-C, DVB-C2, ATSC and ISDB-T cards.
 
   * **<u>mini-snmpd 1.2b (binary only)</u><a id='mini-snmpd'></a>**<br>
@@ -414,7 +414,7 @@
   * **[Pingtunnel 0.72](https://freetz-ng.github.io/freetz-ng/wiki/packages/pingtunnel)<a id='pingtunnel'></a>**<br>
     Ptunnel is an application that allows you to reliably tunnel TCP connections to a remote host using ICMP echo request and reply packets, commonly known as ping requests and replies. At first glance, this might seem like a rather useless thing to do, but it can actually come in
 
-  * **<u>Polipo 1.1.1</u><a id='polipo'></a>**<br>
+  * **[Polipo 1.1.1](https://freetz-ng.github.io/freetz-ng/wiki/packages/polipo)<a id='polipo'></a>**<br>
     Polipo is a small and fast caching web proxy (a web cache, an HTTP proxy, a proxy server).
 
   * **[portmap 6.0 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/portmap)<a id='portmap'></a>**<br>
@@ -785,7 +785,7 @@
 
   * **[NFSD CGI 0.1](https://freetz-ng.github.io/freetz-ng/wiki/packages/nfsd)<a id='nfsd'></a>**<br>
 
-  * **[Onlinechanged-CGI](https://freetz-ng.github.io/freetz-ng/wiki/packages/onlinechanged)<a id='onlinechanged'></a>**<br>
+  * **[Onlinechanged-CGI](onlinechanged-cgi/README.md)<a id='onlinechanged'></a>**<br>
     When the online-status changes (e.g. a forced re-connect) this CGI allows you to specify arbitrary commands which are executed at that event. The following different change events are considered: initial start of the box, going online (IPv4), going onlineipv6 (IPv6), going offline (IPv4) and going offlineipv6 (IPv6).
 
   * **[PHPXmail 1.5](https://freetz-ng.github.io/freetz-ng/wiki/packages/phpxmail)<a id='phpxmail'></a>**<br>
