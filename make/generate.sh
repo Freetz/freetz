@@ -19,9 +19,9 @@ dsc="$(sed -rn 's/[ \t]*bool "([^\"]*)"[ \t]*.*/\1/p' "$MYPWD/$pkg/Config.in" 2>
 [ "$pkg" == "mod" ] && dsc="Freetz(-MOD)"
 [ "$pkg" == "avm" ] && dsc="AVM Services"
 [ -z "$dsc" ] && echo "ignored: $pkg" 1>&2 && continue
-[ "${dsc// /-}" != "$(echo "${dsc// /-}" | sed "s/^$pkg//I")" ] && itm="$dsc" || itm="$pkg: $dsc"
+[ "${dsc//[ _]/-}" != "$(echo "${dsc//[ _]/-}" | sed "s/^${pkg//_/-}//I")" ] && itm="$dsc" || itm="$pkg: $dsc"
 
-[ -e "$MYPWD/../docs/wiki/packages/${pkg%-cgi}.html" -o "$pkg" == "avm" ] && lnk="https://freetz-ng.github.io/freetz-ng/wiki/packages/${pkg%-cgi}" || lnk=""
+[ -e "$MYPWD/../docs/wiki/packages/${pkg%-cgi}.html" ] && lnk="https://freetz-ng.github.io/freetz-ng/wiki/packages/${pkg%-cgi}" || lnk=""
 [ -e "$MYPWD/$pkg/README.md" ] && lnk="$pkg/README.md"
 [ -n "$lnk" ] && itm="[$itm]($lnk)" || itm="<u>$itm</u>"
 

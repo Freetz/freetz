@@ -30,7 +30,7 @@
   * **<u>Avahi 0.6.31</u><a id='avahi'></a>**<br>
     An mDNS/DNS-SD (aka RendezVous/Bonjour/ZeroConf) implementation (library).  Avahi is a system which facilitates service discovery on a local network -- this means that you can plug your laptop or computer into a network and instantly be able to view other people who you can chat with, find printers to print to or find files being shared. This kind of technology is already found in MacOS X (branded 'Rendezvous', 'Bonjour' and sometimes 'ZeroConf') and is very convenient.
 
-  * **[AVM Services](https://freetz-ng.github.io/freetz-ng/wiki/packages/avm)<a id='avm'></a>**<br>
+  * **<u>AVM Services</u><a id='avm'></a>**<br>
 
   * **[bash 3.2.57 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/bash)<a id='bash'></a>**<br>
     Bash is an sh-compatible command language interpreter that executes commands read from the standard input or from a file. Bash also incorporates useful features from the Korn and C shells (ksh and csh).(roundabout 540K minimal and 840K full featured)
@@ -763,7 +763,7 @@
   * **[Addhole (for dnsmasq)](addhole/README.md)<a id='addhole'></a>**<br>
     Downloads block lists and adds them to dnsmasq. Warning: If you enable all included lists, dnsmasq will need 25 MB of RAM instead of 1MB without them.
 
-  * **[authorized-keys: authorized_keys: Frontend for SSH keys](https://freetz-ng.github.io/freetz-ng/wiki/packages/authorized-keys)<a id='authorized-keys'></a>**<br>
+  * **[authorized_keys: Frontend for SSH keys](https://freetz-ng.github.io/freetz-ng/wiki/packages/authorized-keys)<a id='authorized-keys'></a>**<br>
     This frontend allows the management of the authorized_keys file used by either Dropbear or OpenSSH to allow a key-based authentication. The key-based authentication is much more secure than password-based
 
   * **[AVM-firewall](https://freetz-ng.github.io/freetz-ng/wiki/packages/avm-firewall)<a id='avm-firewall'></a>**<br>
