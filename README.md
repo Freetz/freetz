@@ -11,6 +11,7 @@
 [Packages](make/README.md)<br>
 [Libraries](make/libs/README.md)<br>
 [Patches](patches/README.md)<br>
+[Themes](README/themes/README.md)<br>
 
 ### Trac (old)
 [Prerequisites](https://freetz-ng.github.io/freetz-ng/wiki/help/howtos/common/install.html#Installationderben%C3%B6tigtenPaketeUbuntu)<br>
