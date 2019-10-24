@@ -349,7 +349,7 @@
   * **<u>Netpbm-tools 10.35.85 (binary only)</u><a id='netpbm'></a>**<br>
     Provides the following tools from netpbm-suite: bmptopnm, giftopnm, jpegtopnm, pngtopnm, pnmtojpeg, pnmtopng
 
-  * **<u>netsnmp: Net-SNMP 5.7.1 snmpd</u><a id='netsnmp'></a>**<br>
+  * **[netsnmp: Net-SNMP 5.7.1 snmpd](netsnmp/README.md)<a id='netsnmp'></a>**<br>
     SNMP (Simple Network Management Protocol) daemon. SNMP is a widely used protocol for monitoring the health and welfare of network equipment (eg. routers), computer equipment and even devices like UPSs. Net-SNMP is a suite of applications used to implement SNMP v1, SNMP v2c and SNMP v3.
 
   * **<u>nfsroot: NFS-root 0.1</u><a id='nfsroot'></a>**<br>
@@ -428,7 +428,7 @@
   * **[pptp 1.7.2](pptp/README.md)<a id='pptp'></a>**<br>
     Linux and FreeBSD client for the proprietary Microsoft Point-to-Point tunneling protocol, PPTP, sponsored by HP.
 
-  * **<u>pptpd 1.4.0</u><a id='pptpd'></a>**<br>
+  * **[pptpd 1.4.0](pptpd/README.md)<a id='pptpd'></a>**<br>
     Poptop is an open source implementation of a PPTP server. Running under x86 or embedded Motorola ColdFire architectures Poptop provides full interoperability with the Microsoft PPTP VPN client.
 
   * **<u>privatekeypassword 0.7-git</u><a id='privatekeypassword'></a>**<br>
