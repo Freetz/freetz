@@ -1,121 +1,51 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+Tinyproxy
+=========
 
-  <head>
-    <title>
-      packages/tinyproxy – Freetz
-    </title>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!--[if IE]><script type="text/javascript">
-      if (/^#__msie303:/.test(window.location.hash))
-        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
-    </script><![endif]-->
-        <link rel="search" href="/search" />
-        <link rel="help" href="../TracGuide.html" />
-        <link rel="alternate" href="tinyproxy%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
-        <link rel="up" href="../packages.html" title="Übergeordnete Wiki-Seite anzeigen" />
-        <link rel="start" href="/wiki" />
-        <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-      <link type="application/opensearchdescription+xml" rel="search" href="/search/opensearch" title="Freetz durchsuchen" />
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/jquery.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/babel.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/messages/de.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/trac.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/search.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/folding.js"></script>
-    <script type="text/javascript">
-      jQuery(document).ready(function($) {
-        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
-        $("#content").find(".wikianchor").each(function() {
-          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
-        });
-        $(".foldable").enableFolding(true, true);
-      });
-    </script>
-  </head>
-  <body>
-    <div id="banner">
-      <div id="header">
-        <a id="logo" href="/wiki"><img src="../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
-      </div>
-      <form id="search" action="https://www.google.com/search" method="get" onsubmit="; this.elements.namedItem('q').value = this.elements.namedItem('oq').value + ' site:freetz.github.io'">
-        <div>
-          <label for="proj-search">Suche:</label>
-          <input type="text" id="proj-search" name="oq" size="18" value="" />
-          <input type="hidden" name="q" value="" />
-          <input type="submit" value="Suche" />
-        </div>
-      </form>
-      <div id="metanav" class="nav">
-    <ul>
-      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
-    </ul>
-  </div>
-    </div>
-    <div id="mainnav" class="nav">
-    <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="https://github.com/Freetz-NG/freetz-ng/commits/master">Quellen durchsehen</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
-    </ul>
-  </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="tinyproxy.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/packages/tinyproxy.en" title="(not available)">English</a></li></ul></div><p /><div id="main">
-      <div id="pagepath" class="noprint">
-  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="tinyproxy.html" title="Zeige packages/tinyproxy an">tinyproxy</a>
-</div>
-    <div id="content" class="wiki">
-      <div class="wikipage searchable">
+Das [tinyproxy](http://tinyproxy.sourceforge.net/)
+Paket stellt einen kleinen HTTP Proxy mit Filterfunktionen bereit.
 
-          <div id="wikipage" class="trac-content"><h1 id="Tinyproxy">Tinyproxy</h1>
-<p>
-Das <a class="ext-link" href="http://tinyproxy.sourceforge.net/"><span class="icon">​</span>tinyproxy</a> Paket stellt einen kleinen HTTP Proxy mit Filterfunktionen bereit.
-</p>
-<h2 id="Proxyauto-configpac">Proxy auto-config (pac)</h2>
-<p>
-The complete URL for the default settings is: <a class="ext-link" href="http://fritz.box:88/cgi-bin/proxy.cgi"><span class="icon">​</span>http://fritz.box:88/cgi-bin/proxy.cgi</a>
-</p>
-<p>
-See also <a class="ext-link" href="http://en.wikipedia.org/wiki/Proxy_auto-config"><span class="icon">​</span>wikipedia</a>.
-</p>
-<h2 id="URLblocking">URL blocking</h2>
-<p>
-<figure><img src="/freetz-ng/screenshots/217.png" alt="tinyproxy filtered" /><figcaption>tinyproxy filtered</figcaption></figure>
-</p>
-<ul><li>Clear option <em>ConnectPort</em>
-</li><li>Check option <em>FilterURLs</em>
-</li><li>Add URL's to text box <em>content of filter file</em>
-</li></ul><pre class="wiki">doubleclick\.net
-googleadservices\.com
-google-analytics\.com
-googlesyndication\.com
-facebook\.com\/plugins
-</pre><p>
+Proxy auto-config (pac)
+-----------------------
+
+The complete URL for the default settings is:
+[http://fritz.box:88/cgi-bin/proxy.cgi](http://fritz.box:88/cgi-bin/proxy.cgi)
+
+See also
+[wikipedia](http://en.wikipedia.org/wiki/Proxy_auto-config).
+
+URL blocking
+------------
+
+[![tinyproxy filtered](../../docs/screenshots/217_md.png)](../../docs/screenshots/217.png)
+
+-   Clear option *ConnectPort*
+-   Check option *FilterURLs*
+-   Add URL's to text box *content of filter file*
+
+```
+doubleclick.net
+googleadservices.com
+google-analytics.com
+googlesyndication.com
+facebook.com/plugins
+```
+
 Setup Firefox:
-</p>
-<ul><li><em>Edit &gt; Preferences &gt; Advanced &gt; Settings</em>
-</li><li>Check <em>Manual proxy configuration</em>
-</li><li><em>HTTP Proxy:</em> fritz.box
-</li><li><em>Port:</em> 3128 (assuming tinyproxy default)
-</li><li>Check <em>Use this proxy for all protocols</em>
-</li><li><em>No proxy for:</em> localhost, 127.0.0.1, fritz.box, 192.168.178.0/24
-</li></ul><h2 id="Memoryusage">Memory usage</h2>
-<p>
+
+-   *Edit > Preferences > Advanced > Settings*
+-   Check *Manual proxy configuration*
+-   *HTTP Proxy:* fritz.box
+-   *Port:* 3128 (assuming tinyproxy default)
+-   Check *Use this proxy for all protocols*
+-   *No proxy for:* localhost, 127.0.0.1, fritz.box, 192.168.178.0/24
+
+Memory usage
+------------
+
 After some use:
-</p>
-<ul><li>VmSize: 1068 kB
-</li><li>VmRSS: 508 kB
-</li></ul><p>
+
+-   VmSize: 1068 kB
+-   VmRSS: 508 kB
+
 Privoxy will use twice as much.
-</p>
-</div>
 
-      </div><ul class="tags"><li class="header">Tags</li><li><a href="/tags/network" rel="tag">network</a> </li><li><a href="../packages.html" rel="tag">packages</a> </li><li><a href="/tags/proxy" rel="tag">proxy</a> </li><li><a href="/tags/web" rel="tag">web</a> </li></ul>
-
-    </div>
-    <script type="text/javascript">
-        jQuery.loadStyleSheet("/chrome/screenshots/css/screenshots.css", "text/css");
-    </script>
-    </div>
-  </body>
-</html>

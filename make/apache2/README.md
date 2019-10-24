@@ -1,228 +1,235 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+Apache Webserver mit PHP CGI
+============================
 
-  <head>
-    <title>
-      packages/apache – Freetz
-    </title>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!--[if IE]><script type="text/javascript">
-      if (/^#__msie303:/.test(window.location.hash))
-        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
-    </script><![endif]-->
-        <link rel="search" href="/search" />
-        <link rel="help" href="../TracGuide.html" />
-        <link rel="alternate" href="apache%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
-        <link rel="up" href="../packages.html" title="Übergeordnete Wiki-Seite anzeigen" />
-        <link rel="start" href="/wiki" />
-        <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-      <link type="application/opensearchdescription+xml" rel="search" href="/search/opensearch" title="Freetz durchsuchen" />
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/jquery.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/babel.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/messages/de.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/trac.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/search.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/folding.js"></script>
-    <script type="text/javascript">
-      jQuery(document).ready(function($) {
-        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
-        $("#content").find(".wikianchor").each(function() {
-          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
-        });
-        $(".foldable").enableFolding(true, true);
-      });
-    </script>
-  </head>
-  <body>
-    <div id="banner">
-      <div id="header">
-        <a id="logo" href="/wiki"><img src="../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
-      </div>
-      <form id="search" action="https://www.google.com/search" method="get" onsubmit="; this.elements.namedItem('q').value = this.elements.namedItem('oq').value + ' site:freetz.github.io'">
-        <div>
-          <label for="proj-search">Suche:</label>
-          <input type="text" id="proj-search" name="oq" size="18" value="" />
-          <input type="hidden" name="q" value="" />
-          <input type="submit" value="Suche" />
-        </div>
-      </form>
-      <div id="metanav" class="nav">
-    <ul>
-      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
-    </ul>
-  </div>
-    </div>
-    <div id="mainnav" class="nav">
-    <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="https://github.com/Freetz-NG/freetz-ng/commits/master">Quellen durchsehen</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
-    </ul>
-  </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="apache.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/packages/apache.en" title="(not available)">English</a></li></ul></div><p /><div id="main">
-      <div id="pagepath" class="noprint">
-  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="apache.html" title="Zeige packages/apache an">apache</a>
-</div>
-    <div id="content" class="wiki">
-      <div class="wikipage searchable">
+*Mit diesem Paket ist es möglich, den Apache Webserver entweder allein
+oder mit zusätzlichem PHP CGI Binary zu erstellen.*
 
-          <div id="wikipage" class="trac-content"><h1 id="ApacheWebservermitPHPCGI">Apache Webserver mit PHP CGI</h1>
-<p>
-<em>Mit diesem Paket ist es möglich, den Apache Webserver entweder allein oder mit zusätzlichem PHP CGI Binary zu erstellen.</em>
-</p>
-<p>
 Apache ist unter Testing zu finden, PHP unter Standard packages.
-</p>
-<p>
-Das Paket enthält die minimale Verzeichnisstruktur für Apache + PHP. Die Konfigurationsdateien bedürfen wahrscheinlich noch  einiger Anpassungen an die jeweiligen Bedürfnisse, bevor das ganze dann  entweder manuell auf ein an die Box angeschlossenes USB-Gerät  (USB-Stick, Festplatte) - oder aber ins Verzeichnis <tt>root</tt> (zur Integration ins Firmware-Image) kopiert werden kann.
-</p>
-<p>
-Man kann PHP auch ohne den Apache erstellen; das CGI Binary (<tt>sapi/cgi/php</tt>) ist anschließend unter packages/php-x.y.z zu finden (php-cgi) Wer hingegen das CLI Binary (<tt>sapi/cli/php</tt>) benötigt, muss es sich leider selbst besorgen.
-</p>
-<p>
-Beide Pakete, Apache sowohl auch PHP werden standardmäßig dynamisch gegen die benötigten Bibliotheken gelinkt. Wer statische Binaries bevorzugt, kann dies jedoch mit entsprechenden Einstellungen anpassen.
-</p>
-<p>
-Werden  spezielle Features (etwa SSL für Apache, XML Handling in PHP, etc.)  benötigt, müssen die Makefiles entsprechend angepasst werden. Entsprechende Tipps und Tricks finden sich im <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=127089"><span class="icon">​</span>Forum</a>.
-</p>
-<p>
-Das Apache Paket befindet sich nach dem Build in <em>packages/apache-x.y.z,</em> ebenso ist dort die Config für PHP zu finden. Das PHP Binary wird automatisch in das Firmware Image gepackt, dies ist auf Grund der Größe nicht zu empfehlen. Besser ist folgende Vorgehensweise:
-</p>
-<ol><li>Freetz Image ohne Apache und Php erstellen und auf die Box spielen
-</li><li>Apache und ev. PHP als <span class="underline">statisch gelinkte</span> binaries auswählen und erneut make ausführen
-</li><li>Die Binaries aus<em> packages/apache-x.y.z</em> und <em>packages/php-x.y.z</em> auf einen externen Stick packen (das php-cgi sollte in den cgi-bin Ordner des apache gelegt werden
-</li><li>apache.conf bzw httpd.conf im apache binary anpassen, ev. ist es nötig, dass zwei symlinks erstellt werden dies kann z.B so gelöst werden<br />
-</li></ol><pre class="wiki">  ln -s /var/media/ftp/uStor01/apache/logs /var/logs
-</pre><p>
-Danach kann man die Apache Befehle direkt verwenden (z.B. apachectl start|stop|restart):
-</p>
-<pre class="wiki">/var/media/ftp/uStor01/apache/bin/apachectl start
-</pre><p>
-<strong>Verwendet man kein selbsterstelltes Binary, so sollte (muss) man Apache mittels folgendem Befehl starten:</strong>
-</p>
-<pre class="wiki">httpd-2.2.4/bin/apachectl -f /Pfad/zur/Apache/Config/httpd.conf -k start
-</pre><ul><li>Sollte die Website nicht direkt erreichbar sein, bitte unter apache/logs nachsehen, welche Fehlermeldungen dort ausgegeben werden
-</li><li>Lässt sich Apache gar nicht erst starten ein chmod -R 777 /var/media/ftp/uStor01/apache durchführen   (evtl. reicht auch nur chmod -R +x /var/media/ftp/uStor01/apache)
-</li><li>Wichtig: damit PHP funktioniert müssen folgende Zeilen in die Apache-Konfiguration eingefügt werden:
-</li></ul><pre class="wiki">Action       php-script /cgi-bin/php-cgi
+
+Das Paket enthält die minimale Verzeichnisstruktur für Apache + PHP. Die
+Konfigurationsdateien bedürfen wahrscheinlich noch einiger Anpassungen
+an die jeweiligen Bedürfnisse, bevor das ganze dann entweder manuell auf
+ein an die Box angeschlossenes USB-Gerät (USB-Stick, Festplatte) - oder
+aber ins Verzeichnis `root` (zur Integration ins Firmware-Image) kopiert
+werden kann.
+
+Man kann PHP auch ohne den Apache erstellen; das CGI Binary
+(`sapi/cgi/php`) ist anschließend unter packages/php-x.y.z zu finden
+(php-cgi) Wer hingegen das CLI Binary (`sapi/cli/php`) benötigt, muss es
+sich leider selbst besorgen.
+
+Beide Pakete, Apache sowohl auch PHP werden standardmäßig dynamisch
+gegen die benötigten Bibliotheken gelinkt. Wer statische Binaries
+bevorzugt, kann dies jedoch mit entsprechenden Einstellungen anpassen.
+
+Werden spezielle Features (etwa SSL für Apache, XML Handling in PHP,
+etc.) benötigt, müssen die Makefiles entsprechend angepasst werden.
+Entsprechende Tipps und Tricks finden sich im
+[Forum](http://www.ip-phone-forum.de/showthread.php?t=127089).
+
+Das Apache Paket befindet sich nach dem Build in
+*packages/apache-x.y.z,* ebenso ist dort die Config für PHP zu finden.
+Das PHP Binary wird automatisch in das Firmware Image gepackt, dies ist
+auf Grund der Größe nicht zu empfehlen. Besser ist folgende
+Vorgehensweise:
+
+1.  Freetz Image ohne Apache und Php erstellen und auf die Box spielen
+2.  Apache und ev. PHP als [statisch gelinkte] binaries
+    auswählen und erneut make ausführen
+3.  Die Binaries aus *packages/apache-x.y.z* und *packages/php-x.y.z*
+    auf einen externen Stick packen (das php-cgi sollte in den cgi-bin
+    Ordner des apache gelegt werden
+4.  apache.conf bzw httpd.conf im apache binary anpassen, ev. ist es
+    nötig, dass zwei symlinks erstellt werden dies kann z.B so gelöst
+    werden
+
+```
+  ln -s /var/media/ftp/uStor01/apache/logs /var/logs
+```
+
+Danach kann man die Apache Befehle direkt verwenden (z.B. apachectl
+start|stop|restart):
+
+```
+/var/media/ftp/uStor01/apache/bin/apachectl start
+```
+
+**Verwendet man kein selbsterstelltes Binary, so sollte (muss) man
+Apache mittels folgendem Befehl starten:**
+
+```
+httpd-2.2.4/bin/apachectl -f /Pfad/zur/Apache/Config/httpd.conf -k start
+```
+
+-   Sollte die Website nicht direkt erreichbar sein, bitte unter
+    apache/logs nachsehen, welche Fehlermeldungen dort ausgegeben werden
+-   Lässt sich Apache gar nicht erst starten ein chmod -R 777
+    /var/media/ftp/uStor01/apache durchführen (evtl. reicht auch nur
+    chmod -R +x /var/media/ftp/uStor01/apache)
+-   Wichtig: damit PHP funktioniert müssen folgende Zeilen in die
+    Apache-Konfiguration eingefügt werden:
+
+```
+Action       php-script /cgi-bin/php-cgi
 AddHandler      php-script .php
-</pre><p>
+```
+
 Für CGI's muss folgende Zeile hinzugefügt/auskommentiert werden:
-</p>
-<pre class="wiki">AddHandler    cgi-script .cgi
-</pre><p>
-Es kann auch eine bereits fertiger Apache2 Binary mit dem oben beschriebenem PHP Binary verwendet werden.
-</p>
-<p>
-Wird z.B. mod_proxy bzw. sogar mod_proxy_html benötigt empfehle ich das fertige Binary aus diesem <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=103110&amp;p=1730858&amp;viewfull=1#post1730858"><span class="icon">​</span>Thread</a>.
-</p>
-<h2 id="apache.conf">apache.conf</h2>
-<p>
-Der User muss auf einen vorhandenen User abgeändert werden (der User root ist nur bei speziellen Binaries möglich).
-</p>
-<p>
+
+```
+AddHandler    cgi-script .cgi
+```
+
+Es kann auch eine bereits fertiger Apache2 Binary mit dem oben
+beschriebenem PHP Binary verwendet werden.
+
+Wird z.B. mod_proxy bzw. sogar mod_proxy_html benötigt empfehle ich
+das fertige Binary aus diesem
+[Thread](http://www.ip-phone-forum.de/showthread.php?t=103110&p=1730858&viewfull=1#post1730858).
+
+apache.conf
+-----------
+
+Der User muss auf einen vorhandenen User abgeändert werden (der User
+root ist nur bei speziellen Binaries möglich).
+
 Derzeit (Stand Juli 2011) kann folgendes verwendet werden:
-</p>
-<pre class="wiki">User boxusr80
+
+```
+User boxusr80
 Group root
-</pre><p>
-Sollen die .htaccess Dateien verwendet werden, so muss für das entsprechende Verzeichnis AllowOverride entsprechend angepasst werden (man kann auch einfach "AllowOverride All" verwenden)
-</p>
-<p>
-Hier eine entsprechende Config für ein Verzeichnis (diese ermöglicht <span class="underline">jedem</span> den Zugriff!):
-</p>
-<pre class="wiki">&lt;Directory "/var/media/ftp/uStor01/apache/htdocs"&gt;
+```
+
+Sollen die .htaccess Dateien verwendet werden, so muss für das
+entsprechende Verzeichnis AllowOverride entsprechend angepasst werden
+(man kann auch einfach "AllowOverride All" verwenden)
+
+Hier eine entsprechende Config für ein Verzeichnis (diese ermöglicht
+[jedem] den Zugriff!):
+
+```
+<Directory "/var/media/ftp/uStor01/apache/htdocs">
 Options All
 AllowOverride    All
 Order allow,deny
 Allowfrom all
-&lt;/Directory&gt;
+</Directory>
 
-&lt;Directory "/var/media/ftp/uStor01/apache/cgi-bin"&gt;
+<Directory "/var/media/ftp/uStor01/apache/cgi-bin">
 AllowOverride    None
 Options ExecCGI
 Order allow,deny
-Allow from all&lt;/Directory&gt;
-</pre><h2 id="Passwortschutzmit.htaccess">Passwortschutz mit .htaccess</h2>
-<blockquote>
-<p>
-Soll ein Verzeichnis mittels <em>   .htaccess</em>    vor autorisiertem Zugriff geschützt werden kann folgendes hinzugefügt werden:
-</p>
-</blockquote>
-<pre class="wiki">
+Allow from all</Directory>
+```
+
+Passwortschutz mit .htaccess
+----------------------------
+
+> Soll ein Verzeichnis mittels *.htaccess* vor autorisiertem Zugriff
+> geschützt werden kann folgendes hinzugefügt werden:
+
+```
 AuthType
 Basic AuthUserFile    /path/to/.ht.password !AuthName    "Die Website erfordert Zugangsdaten" require valid-user
-</pre><blockquote>
-<p>
-<strong>   Wichtig</strong>   : im apache Ordner befindet sich htpasswd, mit dem man die Passwortdatei erstellen kann.
-</p>
-</blockquote>
-<pre class="wiki">htpasswd -c/path/to/.ht.password username
-</pre><p>
-(Dies erstellt eine neue oder <span class="underline">überschreibt</span> die vorhandene Passwortdatei mit dem angegebenem Usernamen)
-</p>
-<p>
+```
+
+> **Wichtig** : im apache Ordner befindet sich htpasswd, mit dem man die
+> Passwortdatei erstellen kann.
+
+```
+htpasswd -c/path/to/.ht.password username
+```
+
+(Dies erstellt eine neue oder [überschreibt] die vorhandene
+Passwortdatei mit dem angegebenem Usernamen)
+
 Um Benutzer zur Passwortdatei hinzuzufügen folgendes benutzen:
-</p>
-<pre class="wiki"> htpasswd/path/to/.ht.password username
-</pre><p>
-Es ist generell empfehlenswert vor zu schützenden Daten das Kürzel .ht anzugeben, dadurch bekommt der Benutzer die Datei nicht zu sehen.
-</p>
-<h2 id="ApachealsProxy">Apache als Proxy</h2>
-<p>
+
+```
+ htpasswd/path/to/.ht.password username
+```
+
+Es ist generell empfehlenswert vor zu schützenden Daten das Kürzel .ht
+anzugeben, dadurch bekommt der Benutzer die Datei nicht zu sehen.
+
+Apache als Proxy
+----------------
+
 Ein guter Einsatzzweck des Apaches ist es, ihn als Proxy zu verwenden.
-</p>
-<p>
-Dies kann wie folgt aussehen: Nach extern ist nur der Port 80 freigegeben. Gibt der user z.B. freetz.meinedomain.at ein, so kommt er auf das Freetz-Interface bei fritzbox.meinedomain.at auf das AVM-Interface usw.
-</p>
-<p>
-Der Vorteil besteht dabei, dass man nur einen Port nach außen freigeben muss, und zusätzlich kann man die einzelnen Seiten auch mit einem Passwort sichern. (Die Fritzbox kann z.B. nicht mehr zurückgesetzt werden, wenn vorher ein Passwort eingegeben werden muss.
-</p>
-<p>
-<strong>Umsetzung:</strong> Nötig ist dafür ein Apache mit dem Modul Proxy. Ich verwende hierfür das von MaxMuster erstellte <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=103110&amp;p=1737217&amp;viewfull=1#post1737217"><span class="icon">​</span>Binary</a>.
-</p>
-<p>
-Die Einrichtung erfolgt wie weiter oben beschrieben. Für jede zusätzliche Website, welche angezeigt werden soll, muss ein VirtualHost erstellt werden. Hier eine Beispielkonfiguration um das Freetz-Interface über freetz.meinedomain.at anzeigen zu lassen:
-</p>
-<pre class="wiki">&lt;VirtualHost *:80&gt;
+
+Dies kann wie folgt aussehen: Nach extern ist nur der Port 80
+freigegeben. Gibt der user z.B. freetz.meinedomain.at ein, so kommt er
+auf das Freetz-Interface bei fritzbox.meinedomain.at auf das
+AVM-Interface usw.
+
+Der Vorteil besteht dabei, dass man nur einen Port nach außen freigeben
+muss, und zusätzlich kann man die einzelnen Seiten auch mit einem
+Passwort sichern. (Die Fritzbox kann z.B. nicht mehr zurückgesetzt
+werden, wenn vorher ein Passwort eingegeben werden muss.
+
+**Umsetzung:** Nötig ist dafür ein Apache mit dem Modul Proxy. Ich
+verwende hierfür das von MaxMuster erstellte
+[Binary](http://www.ip-phone-forum.de/showthread.php?t=103110&p=1737217&viewfull=1#post1737217).
+
+Die Einrichtung erfolgt wie weiter oben beschrieben. Für jede
+zusätzliche Website, welche angezeigt werden soll, muss ein VirtualHost
+erstellt werden. Hier eine Beispielkonfiguration um das Freetz-Interface
+über freetz.meinedomain.at anzeigen zu lassen:
+
+```
+<VirtualHost *:80>
 ProxyPreserveHost On
 ProxyPass / http://localhost:81/
 ProxyPassReverse / http://localhost:81/
 ServerName freetz.meinedomain.at
-	&lt;Proxy *&gt;
-		Order Deny,Allow
-		Allow from all
-	&lt;/Proxy&gt;
-	&lt;Location /&gt;
-		Require valid-user
-		AuthType basic
-		AuthName "Passwortgeschuetzt - Login"
-		AuthUserFile /Pfad/zur/Datei/.htpasswd
-	&lt;/Location&gt;
-&lt;/VirtualHost&gt;
-</pre><p>
-Das Location Element bewirkt, dass der Benutzer sich vor dem Seitenaufbau anmelden muss.
-</p>
-<h2 id="Sonstiges">Sonstiges</h2>
-<p>
-Sollte jemand auf die Idee kommen, ein CMS auf der Fritzbox laufen zu lassen, so empfehle ich <a class="ext-link" href="http://phpsqlitecms.net/"><span class="icon">​</span>phpSqliteCms</a>  dies ist ein sehr smartes und schnelles CMS welches problemlos auf der  Box läuft (nur die Bildkomprimierung sollte man nicht nutzen).Andere CMS  wie Joomla!, Kajona, oder gar Drupal sollte man aufgrund der geringen  Systemleistung der <a href="/search/opensearch?q=wiki%3AFritzBox">FritzBox</a> vergessen. Außer man kann mit Seitenaufbauzeiten von 1-3 Minuten leben (dafür muss die php.ini angepasst werden).
-</p>
-<h2 id="WeiterführendeLinks">Weiterführende Links</h2>
-<ul><li><a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=127089"><span class="icon">​</span>Forumsdiskussion</a> mit Tipps und Tricks zu diesem Paket
-</li><li><a class="ext-link" href="http://httpd.apache.org/"><span class="icon">​</span>Homepage</a> des Apache Webservers
-</li><li><a class="ext-link" href="http://de.wikipedia.org/wiki/Apache_HTTP_Server"><span class="icon">​</span>Wikipedia Artikel</a> zum Apache Webserver
-</li><li><a class="ext-link" href="http://www.apache.org/"><span class="icon">​</span>Homepage</a> der Apache Software Foundation
-</li><li><a class="ext-link" href="http://de.wikipedia.org/wiki/Apache_Software_Foundation"><span class="icon">​</span>Wikipedia Artikel</a> zur Apache Software Foundation
-</li><li><a class="ext-link" href="http://wiki.apache.org/general/"><span class="icon">​</span>Apache Wiki</a>
-</li><li><a class="ext-link" href="http://de.php.net"><span class="icon">​</span>PHP Homepage</a>
-</li><li><a class="ext-link" href="http://de.wikipedia.org/wiki/Php"><span class="icon">​</span>Wikipedia Artikel</a> zu PHP
-</li><li><a class="ext-link" href="http://www.xobztirf.de/selfsite.php?aktion=Apache%20und%20PHP"><span class="icon">​</span>Apache 1.3.37 und PHP 5.2.0 CGI auf der FritzBox</a>
-</li></ul></div>
+    <Proxy *>
+        Order Deny,Allow
+        Allow from all
+    </Proxy>
+    <Location />
+        Require valid-user
+        AuthType basic
+        AuthName "Passwortgeschuetzt - Login"
+        AuthUserFile /Pfad/zur/Datei/.htpasswd
+    </Location>
+</VirtualHost>
+```
 
-      </div><ul class="tags"><li class="header">Tags</li><li><a href="/tags/daemons" rel="tag">daemons</a> </li><li><a href="../packages.html" rel="tag">packages</a> </li><li><a href="/tags/server" rel="tag">server</a> </li><li><a href="/tags/web" rel="tag">web</a> </li></ul>
+Das Location Element bewirkt, dass der Benutzer sich vor dem
+Seitenaufbau anmelden muss.
 
-    </div>
-    </div>
-  </body>
-</html>
+Sonstiges
+---------
+
+Sollte jemand auf die Idee kommen, ein CMS auf der Fritzbox laufen zu
+lassen, so empfehle ich
+[phpSqliteCms](http://phpsqlitecms.net/) dies ist
+ein sehr smartes und schnelles CMS welches problemlos auf der Box läuft
+(nur die Bildkomprimierung sollte man nicht nutzen).Andere CMS wie
+Joomla!, Kajona, oder gar Drupal sollte man aufgrund der geringen
+Systemleistung der [FritzBox](/search/opensearch?q=wiki%3AFritzBox)
+vergessen. Außer man kann mit Seitenaufbauzeiten von 1-3 Minuten leben
+(dafür muss die php.ini angepasst werden).
+
+Weiterführende Links
+--------------------
+
+-   [Forumsdiskussion](http://www.ip-phone-forum.de/showthread.php?t=127089)
+    mit Tipps und Tricks zu diesem Paket
+-   [Homepage](http://httpd.apache.org/) des Apache
+    Webservers
+-   [Wikipedia
+    Artikel](http://de.wikipedia.org/wiki/Apache_HTTP_Server)
+    zum Apache Webserver
+-   [Homepage](http://www.apache.org/) der Apache
+    Software Foundation
+-   [Wikipedia
+    Artikel](http://de.wikipedia.org/wiki/Apache_Software_Foundation)
+    zur Apache Software Foundation
+-   [Apache Wiki](http://wiki.apache.org/general/)
+-   [PHP Homepage](http://de.php.net)
+-   [Wikipedia
+    Artikel](http://de.wikipedia.org/wiki/Php) zu PHP
+-   [Apache 1.3.37 und PHP 5.2.0 CGI auf der
+    FritzBox](http://www.xobztirf.de/selfsite.php?aktion=Apache%20und%20PHP)
+

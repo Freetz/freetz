@@ -1,110 +1,72 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+Stunnel
+=======
 
-  <head>
-    <title>
-      packages/stunnel – Freetz
-    </title>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!--[if IE]><script type="text/javascript">
-      if (/^#__msie303:/.test(window.location.hash))
-        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
-    </script><![endif]-->
-        <link rel="search" href="/search" />
-        <link rel="help" href="../TracGuide.html" />
-        <link rel="alternate" href="stunnel%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
-        <link rel="up" href="../packages.html" title="Übergeordnete Wiki-Seite anzeigen" />
-        <link rel="start" href="/wiki" />
-        <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-      <link type="application/opensearchdescription+xml" rel="search" href="/search/opensearch" title="Freetz durchsuchen" />
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/jquery.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/babel.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/messages/de.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/trac.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/search.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/folding.js"></script>
-    <script type="text/javascript">
-      jQuery(document).ready(function($) {
-        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
-        $("#content").find(".wikianchor").each(function() {
-          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
-        });
-        $(".foldable").enableFolding(true, true);
-      });
-    </script>
-  </head>
-  <body>
-    <div id="banner">
-      <div id="header">
-        <a id="logo" href="/wiki"><img src="../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
-      </div>
-      <form id="search" action="https://www.google.com/search" method="get" onsubmit="; this.elements.namedItem('q').value = this.elements.namedItem('oq').value + ' site:freetz.github.io'">
-        <div>
-          <label for="proj-search">Suche:</label>
-          <input type="text" id="proj-search" name="oq" size="18" value="" />
-          <input type="hidden" name="q" value="" />
-          <input type="submit" value="Suche" />
-        </div>
-      </form>
-      <div id="metanav" class="nav">
-    <ul>
-      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
-    </ul>
-  </div>
-    </div>
-    <div id="mainnav" class="nav">
-    <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="https://github.com/Freetz-NG/freetz-ng/commits/master">Quellen durchsehen</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
-    </ul>
-  </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="stunnel.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/packages/stunnel.en" title="(not available)">English</a></li></ul></div><p /><div id="main">
-      <div id="pagepath" class="noprint">
-  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="stunnel.html" title="Zeige packages/stunnel an">stunnel</a>
-</div>
-    <div id="content" class="wiki">
-      <div class="wikipage searchable">
+[![Stunnel Webinterface](../../docs/screenshots/202_md.png)](../../docs/screenshots/202.png)
 
-          <div id="wikipage" class="trac-content"><h1 id="Stunnel">Stunnel</h1>
-<p>
-<figure><img src="/freetz-ng/screenshots/202.png" alt="Stunnel Webinterface" /><figcaption>Stunnel Webinterface</figcaption></figure>
-</p>
-<p>
-<em>"Stunnel is a program that allows you to encrypt arbitrary TCP connections inside SSL (Secure Sockets Layer) available on both Unix and Windows. Stunnel can allow you to secure non-SSL aware daemons and protocols (like POP, IMAP, LDAP, etc) by having Stunnel provide the encryption, requiring no changes to the daemon's code. "</em> <a class="ext-link" href="http://www.stunnel.org/"><span class="icon">​</span>http://www.stunnel.org/</a>
-</p>
-<p>
-<strong>Stunnel</strong> könnte man auf Deutsch mit "Sicherer Tunnel" wiedergeben. Hinter dem Begriff verbirgt sich die Möglichkeit, beliebige TCP Verbindungen per SSL zu verschlüsseln - auch bzw. gerade wenn die Anwendung selbst dies nicht unterstützt, und somit dem "Man-in-the-Middle" das Schnüffeln zu verderben. Zahlreiche gute Anwendungsbeispiele finden sich auf der <a class="ext-link" href="http://www.stunnel.org/examples/"><span class="icon">​</span>Stunnel Homepage</a>.
-</p>
-<h2 id="Konfiguration">Konfiguration</h2>
-<ol><li>Erzeugen der Keys auf dem PC (unter Linux):
-<pre class="wiki">openssl genrsa 1024 &gt; host.key
-openssl req -new -x509 -nodes -sha1 -days 365 -key host.key &gt; host.cert
-</pre></li><li>Das Zertifikat und den Schlüssel im Webinterface unter Einstellungen &rarr; Stunnel: "Certificate Chain" (host.cert) und "Private Key" (host.key) einfügen.
-</li></ol><ol start="3"><li>Die gewünschten Services hinzufügen. Zum Beispiel:
-<pre class="wiki">[freetz https Web-Interface]
-client = no
-cert = /tmp/flash/stunnel/certs.pem
-key = /tmp/flash/stunnel/key.pem
-accept = 4433
-connect = 81
-</pre>Die Angabe des Pfads zum Zertifikat und zum Schlüssel sind optional. Ohne ausdrückliche Angabe wird das Zertifikat <em>/tmp/flash/stunnel/certs.pem</em> und der Schlüssel <em>/tmp/flash/stunnel/key.pem</em> verwendet, welche vom Webinterface aus verwaltet werden (Punkt 2).
-</li></ol><ol start="4"><li>Zugriff (intern) über <a class="ext-link" href="https://fritz.box:4433"><span class="icon">​</span>https://fritz.box:4433</a>. Für den externen Zugriff muss noch eine Port-Freigabe eingetragen werden.
-</li></ol><h2 id="WeiterführendeLinks">Weiterführende Links</h2>
-<ul><li><a class="ext-link" href="http://en.wikipedia.org/wiki/Stunnel"><span class="icon">​</span>Wikipedia</a> (EN) Article
-</li><li><a class="ext-link" href="http://www.stunnel.org/"><span class="icon">​</span>Stunnel.ORG</a> &mdash; Stunnel Homepage
-</li><li><a class="wiki" href="matrixtunnel.html">matrixtunnel</a> &mdash; kleiner Stunnel Ersatz
-</li><li><a class="wiki" href="xrelayd.html">xrelayd</a> &mdash; Nachfolger von Matrixtunnel
-</li><li><a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=123174"><span class="icon">​</span>Artikel im Forum</a>
-</li></ul></div>
+*"Stunnel is a program that allows you to encrypt arbitrary TCP
+connections inside SSL (Secure Sockets Layer) available on both Unix and
+Windows. Stunnel can allow you to secure non-SSL aware daemons and
+protocols (like POP, IMAP, LDAP, etc) by having Stunnel provide the
+encryption, requiring no changes to the daemon's code. "*
+[http://www.stunnel.org/](http://www.stunnel.org/)
 
-      </div><ul class="tags"><li class="header">Tags</li><li><a href="/tags/network" rel="tag">network</a> </li><li><a href="../packages.html" rel="tag">packages</a> </li><li><a href="/tags/tunnel" rel="tag">tunnel</a> </li></ul>
+**Stunnel** könnte man auf Deutsch mit "Sicherer Tunnel" wiedergeben.
+Hinter dem Begriff verbirgt sich die Möglichkeit, beliebige TCP
+Verbindungen per SSL zu verschlüsseln - auch bzw. gerade wenn die
+Anwendung selbst dies nicht unterstützt, und somit dem
+"Man-in-the-Middle" das Schnüffeln zu verderben. Zahlreiche gute
+Anwendungsbeispiele finden sich auf der [Stunnel
+Homepage](http://www.stunnel.org/examples/).
 
-    </div>
-    <script type="text/javascript">
-        jQuery.loadStyleSheet("/chrome/screenshots/css/screenshots.css", "text/css");
-    </script>
-    </div>
-  </body>
-</html>
+Konfiguration
+-------------
+
+1.  Erzeugen der Keys auf dem PC (unter Linux):
+
+    ``` 
+    openssl genrsa 1024 > host.key
+    openssl req -new -x509 -nodes -sha1 -days 365 -key host.key > host.cert
+    ```
+
+2.  Das Zertifikat und den Schlüssel im Webinterface unter Einstellungen
+    → Stunnel: "Certificate Chain" (host.cert) und "Private Key"
+    (host.key) einfügen.
+
+<!-- -->
+
+3.  Die gewünschten Services hinzufügen. Zum Beispiel:
+
+    ``` 
+    [freetz https Web-Interface]
+    client = no
+    cert = /tmp/flash/stunnel/certs.pem
+    key = /tmp/flash/stunnel/key.pem
+    accept = 4433
+    connect = 81
+    ```
+
+    Die Angabe des Pfads zum Zertifikat und zum Schlüssel sind optional.
+    Ohne ausdrückliche Angabe wird das Zertifikat
+    */tmp/flash/stunnel/certs.pem* und der Schlüssel
+    */tmp/flash/stunnel/key.pem* verwendet, welche vom Webinterface aus
+    verwaltet werden (Punkt 2).
+
+<!-- -->
+
+4.  Zugriff (intern) über
+    [https://fritz.box:4433](https://fritz.box:4433).
+    Für den externen Zugriff muss noch eine Port-Freigabe eingetragen
+    werden.
+
+Weiterführende Links
+--------------------
+
+-   [Wikipedia](http://en.wikipedia.org/wiki/Stunnel)
+    (EN) Article
+-   [Stunnel.ORG](http://www.stunnel.org/) ---
+    Stunnel Homepage
+-   [matrixtunnel](../matrixtunnel/README.md) --- kleiner Stunnel Ersatz
+-   [xrelayd](../xrelayd/README.md) --- Nachfolger von Matrixtunnel
+-   [Artikel im
+    Forum](http://www.ip-phone-forum.de/showthread.php?t=123174)
+

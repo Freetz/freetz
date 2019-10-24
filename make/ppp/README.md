@@ -1,190 +1,145 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+ppp-cgi
+=======
 
-  <head>
-    <title>
-      packages/ppp – Freetz
-    </title>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!--[if IE]><script type="text/javascript">
-      if (/^#__msie303:/.test(window.location.hash))
-        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
-    </script><![endif]-->
-        <link rel="search" href="/search" />
-        <link rel="help" href="../TracGuide.html" />
-        <link rel="alternate" href="ppp%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
-        <link rel="up" href="../packages.html" title="Übergeordnete Wiki-Seite anzeigen" />
-        <link rel="start" href="/wiki" />
-        <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-      <link type="application/opensearchdescription+xml" rel="search" href="/search/opensearch" title="Freetz durchsuchen" />
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/jquery.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/babel.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/messages/de.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/trac.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/search.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/folding.js"></script>
-    <script type="text/javascript">
-      jQuery(document).ready(function($) {
-        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
-        $("#content").find(".wikianchor").each(function() {
-          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
-        });
-        $(".foldable").enableFolding(true, true);
-      });
-    </script>
-  </head>
-  <body>
-    <div id="banner">
-      <div id="header">
-        <a id="logo" href="/wiki"><img src="../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
-      </div>
-      <form id="search" action="https://www.google.com/search" method="get" onsubmit="; this.elements.namedItem('q').value = this.elements.namedItem('oq').value + ' site:freetz.github.io'">
-        <div>
-          <label for="proj-search">Suche:</label>
-          <input type="text" id="proj-search" name="oq" size="18" value="" />
-          <input type="hidden" name="q" value="" />
-          <input type="submit" value="Suche" />
-        </div>
-      </form>
-      <div id="metanav" class="nav">
-    <ul>
-      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
-    </ul>
-  </div>
-    </div>
-    <div id="mainnav" class="nav">
-    <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="https://github.com/Freetz-NG/freetz-ng/commits/master">Quellen durchsehen</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
-    </ul>
-  </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="ppp.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/packages/ppp.en" title="(not available)">English</a></li></ul></div><p /><div id="main">
-      <div id="pagepath" class="noprint">
-  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="ppp.html" title="Zeige packages/ppp an">ppp</a>
-</div>
-    <div id="content" class="wiki">
-      <div class="wikipage searchable">
+[![ppp-cgi](../../docs/screenshots/121_md.jpg)](../../docs/screenshots/121.jpg)
 
-          <div id="wikipage" class="trac-content"><p>
-<figure><img src="/freetz-ng/screenshots/121.jpg" alt="ppp-cgi" /><figcaption>ppp-cgi</figcaption></figure>
-</p>
-<h1 id="ppp-cgi">ppp-cgi</h1>
-<p>
-Entstanden aus diesem Thread im IPPF: <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=201519"><span class="icon">​</span>http://www.ip-phone-forum.de/showthread.php?t=201519</a><br /><br />Mit dem "ppp-cgi" kann man eine dialup-network Verbindung über eine serielle Schnittstelle aufbauen. USB-Modems für UMTS stellen eine solche zur Verfügung.
-</p>
-<p>
-<br />
-</p>
-<h1 id="AllgemeineKonfiguration">Allgemeine Konfiguration</h1>
-<p>
-zu finden im Webinterface unter "Pakete" &gt; "PPP"<br />
-</p>
-<h3 id="Starttyp">Starttyp</h3>
-<p>
-Wenn man "automatisch" wählt wird die Verbindung gleich beim starten der Box aufgebaut, bzw bei Fallback nach Ausfall der DSL/ATA-Internetverbindung.
-</p>
-<h3 id="Logdatei">Logdatei</h3>
-<p>
-Hier kann der Pfad zu Logdatei angegeben werden. Sie kann im Freetz-Webinterface unter "Status" eingesehen werden. Es ist zu empfehlen den Pfad auf einen persistenten Ort zu ändern damit die Datei durch einen Reboot der Fritzbox nicht verloren geht!
-</p>
-<p>
-<br />
-</p>
-<h1 id="KonfigurationfürUMTS">Konfiguration für UMTS</h1>
-<h3 id="PEERS:chat">PEERS: chat</h3>
-<p>
-Hier muss der benötigte Access-Pount-Name (APN) anstelle des "your.personal.apn" eingetragen werden.
-</p>
-<h3 id="PEERS:options">PEERS: options</h3>
-<p>
-Hier kann der Port (Vorgabe: /dev/ttyUSB0) geändert und falls benötigt der Benutzername und das Passwort angegeben werden.
-</p>
-<h3 id="Befehls-TTY">Befehls-TTY</h3>
-<p>
-Optional kann hier der 2. Port des Modem eingetragen werden (meist /dev/ttyUSB1). Über diesen werden Statusinformationen wie verfügbare Netze abgerufen und auf der Statusseite angezeigt. Wenn das Feld leer bleibt wird wie komplette Statusbox nicht angezeigt.
-</p>
-<h3 id="Modus">Modus</h3>
-<p>
+Entstanden aus diesem Thread im IPPF:
+[http://www.ip-phone-forum.de/showthread.php?t=201519](http://www.ip-phone-forum.de/showthread.php?t=201519)
+Mit dem "ppp-cgi" kann man eine dialup-network Verbindung über eine
+serielle Schnittstelle aufbauen. USB-Modems für UMTS stellen eine solche
+zur Verfügung.
+
+
+Allgemeine Konfiguration
+========================
+
+zu finden im Webinterface unter "Pakete" > "PPP"
+
+### Starttyp
+
+Wenn man "automatisch" wählt wird die Verbindung gleich beim starten
+der Box aufgebaut, bzw bei Fallback nach Ausfall der
+DSL/ATA-Internetverbindung.
+
+### Logdatei
+
+Hier kann der Pfad zu Logdatei angegeben werden. Sie kann im
+Freetz-Webinterface unter "Status" eingesehen werden. Es ist zu
+empfehlen den Pfad auf einen persistenten Ort zu ändern damit die Datei
+durch einen Reboot der Fritzbox nicht verloren geht!
+
+
+Konfiguration für UMTS
+======================
+
+### PEERS: chat
+
+Hier muss der benötigte Access-Pount-Name (APN) anstelle des
+"your.personal.apn" eingetragen werden.
+
+### PEERS: options
+
+Hier kann der Port (Vorgabe: /dev/ttyUSB0) geändert und falls benötigt
+der Benutzername und das Passwort angegeben werden.
+
+### Befehls-TTY
+
+Optional kann hier der 2. Port des Modem eingetragen werden (meist
+/dev/ttyUSB1). Über diesen werden Statusinformationen wie verfügbare
+Netze abgerufen und auf der Statusseite angezeigt. Wenn das Feld leer
+bleibt wird wie komplette Statusbox nicht angezeigt.
+
+### Modus
+
 Optional kann hier der gewünschte Verbindungsmodus ausgewählt werden.
-</p>
-<p>
-<br />
-</p>
-<h1 id="Namensauflösung">Namensauflösung</h1>
-<p>
-Für eine dynamisch wechselnde Namensauflösung zwischen Mobilfunk und herkömmlicher Verbindung empfiehlt sich folgendes:
-</p>
-<ul><li>Bei dnsmasq im Feld "Zusätzliche Kommandozeilen-Optionen (für Experten)" dies eintragen:
-<pre class="wiki">-r /var/tmp/avm-resolv.conf -r /etc/ppp/resolv.conf
-</pre></li><li>alternativ falls OpenDNS bevorzugt wird
-<pre class="wiki">-r /etc/ppp/resolv.conf -S 208.67.220.220 -S 208.67.222.222
-</pre></li></ul><p>
-<br />
-</p>
-<h1 id="FirewallRoutingNAT">Firewall, Routing &amp; NAT</h1>
-<p>
+
+
+Namensauflösung
+===============
+
+Für eine dynamisch wechselnde Namensauflösung zwischen Mobilfunk und
+herkömmlicher Verbindung empfiehlt sich folgendes:
+
+-   Bei dnsmasq im Feld "Zusätzliche Kommandozeilen-Optionen (für
+    Experten)" dies eintragen:
+
+    ``` 
+    -r /var/tmp/avm-resolv.conf -r /etc/ppp/resolv.conf
+    ```
+
+-   alternativ falls OpenDNS bevorzugt wird
+
+    ``` 
+    -r /etc/ppp/resolv.conf -S 208.67.220.220 -S 208.67.222.222
+    ```
+
+
+Firewall, Routing & NAT
+=======================
+
 Um Masquerading zu aktivieren sind folgende Befehle nötig:
-</p>
-<pre class="wiki">modprobe ipt_state
+
+```
+modprobe ipt_state
 modprobe ipt_MASQUERADE
 iptables -A INPUT -m state --state ESTABLISHED,RELATED   -i ppp0 -j ACCEPT
 iptables -A INPUT                                        -i ppp0 -j DROP
 iptables -A FORWARD -m state --state ESTABLISHED,RELATED -i ppp0 -j ACCEPT
 iptables -A FORWARD                                      -i ppp0 -j DROP
 iptables -t nat -A POSTROUTING                           -o ppp0 -j MASQUERADE
-</pre><p>
-Hierzu werden die iptables-Module <em>state</em> und <em>MASQUERADE</em> benötigt.
-</p>
-<p>
-<img src="../../chrome/wikiextras-icons-16/exclamation.png" style="vertical-align: text-bottom" alt="/!\" />  Diese lassen (ließen?) Boxen mit altem Kernel 2.6.13.1 wie zB die 7170 nach einer gewissen Zeit rebooten, siehe Ticket <a class="closed ticket" href="/ticket/260" title="defect: ip_conntrack causes reboot (closed: fixed)">#260</a>.
-</p>
-<p>
-Die Befehle können in der debug.cfg oder rc.custum eingetragen werden. Von Vorteil ist es aber sie von den Skripten des ppp-cgi ausfgühren zu lassen und nach Verbindungsabbau wieder aufzuheben und vor allem die Module wieder zu entladen.
-</p>
-<p>
-<br />
-</p>
-<h1 id="Fallback">Fallback</h1>
-<p>
-<img src="../../chrome/wikiextras-icons-16/exclamation.png" style="vertical-align: text-bottom" alt="/!\" /> Dieses Feature ist noch exprimentell. Fehlfunktionen und hohe Kosten können nicht ausgeschlossen werden!
-</p>
-<p>
-Bei Aktivierung von Fallback wird die DSL/ATA-Internetverbindung alle X Sekunden mit den durch Leerzeichen angegebenen Hosts geprüft und nach Y Sekunden ohne Antwort die ppp-Verbindung aufgebaut. Zu dem  Host "prüfen auf Wiederherstellung" wird eine Route eingerichtet um zu erkennen wann die DSL/ATA-Internetverbindung wieder besteht. Durch anlegen dieser Route kann die entsprechende IP nicht per ppp-Verbindung erreicht werden!
-</p>
-<p>
-<br />
-</p>
-<h1 id="Treiberprobleme">Treiberprobleme</h1>
-<p>
-Das Treibermodul <em>option</em> wird beim Start automatisch geladen. Es kann aber nötig sein es mit eigenen Parameter zu laden, zB durch <tt>usbserial vendor=0xYYYY product=0xZZZZ</tt> in der <em>Freetz: modules</em>.
-</p>
-<p>
-<br />
-</p>
-<h1 id="Wasistnochzubeachten2do-Liste">Was ist noch zu beachten? (2do-Liste)</h1>
-<p>
-<img src="../../chrome/wikiextras-icons-16/exclamation.png" style="vertical-align: text-bottom" alt="/!\" /> Es können momentan nur SIMs mit deaktivierter PIN-Abfrage genutzt werden. (dies ist allerdings mit dem Package <em>gcom</em> möglich)
-</p>
-<p>
-<br />
-</p>
-<h1 id="Weiteres">Weiteres</h1>
-<p>
-Deaktivierung des integrierten CD-Roms bei Huawei-Sticks mittels einmaligem <tt>at^u2diag=0</tt> an das 2. virtuelle, serielle Interface (meist /dev/ttyUSB1 unter Linux) des Sticks, bzw <tt>at^u2diag=1</tt> um es wieder einzuschalten.
-</p>
-<p>
-<br />
-</p>
-</div>
+```
 
-      </div><ul class="tags"><li class="header">Tags</li><li><a href="/tags/cgi" rel="tag">cgi</a> </li><li><a href="/tags/network" rel="tag">network</a> </li><li><a href="../packages.html" rel="tag">packages</a> </li></ul>
+Hierzu werden die iptables-Module *state* und *MASQUERADE* benötigt.
 
-    </div>
-    <script type="text/javascript">
-        jQuery.loadStyleSheet("/chrome/screenshots/css/screenshots.css", "text/css");
-    </script>
-    </div>
-  </body>
-</html>
+ * Diese lassen
+(ließen?) Boxen mit altem Kernel 2.6.13.1 wie zB die 7170 nach einer
+gewissen Zeit rebooten, siehe Ticket
+[#260](https://trac.boxmatrix.info/freetz-ng/ticket/260)
+
+Die Befehle können in der debug.cfg oder rc.custum eingetragen werden.
+Von Vorteil ist es aber sie von den Skripten des ppp-cgi ausfgühren zu
+lassen und nach Verbindungsabbau wieder aufzuheben und vor allem die
+Module wieder zu entladen.
+
+
+Fallback
+========
+
+ * Dieses Feature
+ist noch exprimentell. Fehlfunktionen und hohe Kosten können nicht
+ausgeschlossen werden!
+
+Bei Aktivierung von Fallback wird die DSL/ATA-Internetverbindung alle X
+Sekunden mit den durch Leerzeichen angegebenen Hosts geprüft und nach Y
+Sekunden ohne Antwort die ppp-Verbindung aufgebaut. Zu dem Host "prüfen
+auf Wiederherstellung" wird eine Route eingerichtet um zu erkennen wann
+die DSL/ATA-Internetverbindung wieder besteht. Durch anlegen dieser
+Route kann die entsprechende IP nicht per ppp-Verbindung erreicht
+werden!
+
+
+Treiberprobleme
+===============
+
+Das Treibermodul *option* wird beim Start automatisch geladen. Es kann
+aber nötig sein es mit eigenen Parameter zu laden, zB durch
+`usbserial vendor=0xYYYY product=0xZZZZ` in der *Freetz: modules*.
+
+
+Was ist noch zu beachten? (2do-Liste)
+=====================================
+
+ * Es können
+momentan nur SIMs mit deaktivierter PIN-Abfrage genutzt werden. (dies
+ist allerdings mit dem Package *gcom* möglich)
+
+
+Weiteres
+========
+
+Deaktivierung des integrierten CD-Roms bei Huawei-Sticks mittels
+einmaligem `at^u2diag=0` an das 2. virtuelle, serielle Interface (meist
+/dev/ttyUSB1 unter Linux) des Sticks, bzw `at^u2diag=1` um es wieder
+einzuschalten.
+
+

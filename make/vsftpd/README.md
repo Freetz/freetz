@@ -1,117 +1,68 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+VSFTPd
+======
 
-  <head>
-    <title>
-      packages/vsftpd – Freetz
-    </title>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!--[if IE]><script type="text/javascript">
-      if (/^#__msie303:/.test(window.location.hash))
-        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
-    </script><![endif]-->
-        <link rel="search" href="/search" />
-        <link rel="help" href="../TracGuide.html" />
-        <link rel="alternate" href="vsftpd%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
-        <link rel="up" href="../packages.html" title="Übergeordnete Wiki-Seite anzeigen" />
-        <link rel="start" href="/wiki" />
-        <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-      <link type="application/opensearchdescription+xml" rel="search" href="/search/opensearch" title="Freetz durchsuchen" />
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/jquery.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/babel.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/messages/de.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/trac.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/search.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/folding.js"></script>
-    <script type="text/javascript">
-      jQuery(document).ready(function($) {
-        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
-        $("#content").find(".wikianchor").each(function() {
-          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
-        });
-        $(".foldable").enableFolding(true, true);
-      });
-    </script>
-  </head>
-  <body>
-    <div id="banner">
-      <div id="header">
-        <a id="logo" href="/wiki"><img src="../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
-      </div>
-      <form id="search" action="https://www.google.com/search" method="get" onsubmit="; this.elements.namedItem('q').value = this.elements.namedItem('oq').value + ' site:freetz.github.io'">
-        <div>
-          <label for="proj-search">Suche:</label>
-          <input type="text" id="proj-search" name="oq" size="18" value="" />
-          <input type="hidden" name="q" value="" />
-          <input type="submit" value="Suche" />
-        </div>
-      </form>
-      <div id="metanav" class="nav">
-    <ul>
-      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
-    </ul>
-  </div>
-    </div>
-    <div id="mainnav" class="nav">
-    <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="https://github.com/Freetz-NG/freetz-ng/commits/master">Quellen durchsehen</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
-    </ul>
-  </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="vsftpd.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/packages/vsftpd.en" title="(not available)">English</a></li></ul></div><p /><div id="main">
-      <div id="pagepath" class="noprint">
-  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="vsftpd.html" title="Zeige packages/vsftpd an">vsftpd</a>
-</div>
-    <div id="content" class="wiki">
-      <div class="wikipage searchable">
+**vsFTP** steht für **v**ery **s**ecure **F**ile **T**ransfer
+**P**rotocol. Der
+[vsftpd](http://vsftpd.beasts.org/) bietet z.B.
+folgende Features:
 
-          <div id="wikipage" class="trac-content"><p>
-<em>TODO: Paket überarbeiten, so dass die Optionen vom AVM ftpd übernommen werden, falls gewünscht. Dann kann hier auch was dokumentiert werden.</em>
-</p>
-<h1 id="VSFTPd">VSFTPd</h1>
-<p>
-<strong>vsFTP</strong> steht für <strong>v</strong>ery <strong>s</strong>ecure <strong>F</strong>ile <strong>T</strong>ransfer <strong>P</strong>rotocol. Der <a class="ext-link" href="http://vsftpd.beasts.org/"><span class="icon">​</span>vsftpd</a> bietet z.B. folgende Features:
-</p>
-<ul><li>virtuelle IPs
-</li><li>virtuelle User
-</li><li>Konfiguration pro User, pro Source-IP
-</li><li>Limits pro Source-IP
-</li><li>Bandweitenbeschränkung (<a class="ext-link" href="http://en.wikipedia.org/wiki/Bandwidth_throttling"><span class="icon">​</span>Bandwidth throttling</a>)
-</li><li>IPv6
-</li><li>SSL Verschlüsselung
-</li></ul><h2 id="PackageinsImageeinbinden">Package ins Image einbinden</h2>
-<p>
-Im menuconfig unter <tt>Package selection ---&gt; Standard packages ---&gt;</tt> findet sich
-</p>
-<ul><li><em>Vsftpd 2.x.y</em> <br /> Damit wird der FTP-Zugriff über vsFTP möglich.
-</li></ul><h2 id="VerwandteThemen">Verwandte Themen</h2>
-<p>
-Unter <tt>Patches ---&gt;</tt> findet sich
-</p>
-<ul><li><em>Patch USB storage names</em> &hellip; mit zusätzlichen Unterpunkten. <br /> Hierdurch wird dem USB-Speicher ein einheitlicher Name gegeben.
-</li><li><em>Execute autorun.sh/autoend.sh script on (un)mount</em> <br /> Führt die entsprechenden Skripte beim An- und Abstecken des USB-Speichers aus.
-</li></ul><h2 id="FreigabenundBenutzerfürvsFTPinFreetzeinrichten">Freigaben und Benutzer für vsFTP in Freetz einrichten</h2>
-<p>
-Es folgt eine ausführliche Anleitung für das Erstellen von FTP-Freigaben und Nutzern mit verschiedenen Lese/Schreib-Rechten, die unabhängig von Linux-Zugriffsrechten funktioniert und somit auch für FAT- und NTFS-Platten eingesetzt werden kann. Hierbei können mit dem aktuellen Linux Kernel jedoch nur Lese/Schreib-Rechte auf Benutzer- und nicht auf Ordnerebene gesetzt werden.
-</p>
-<p>
-Hier eine Übersicht über die in dieser Anleitung erstellten Ordner mit Zugangsbeschränkungen für zwei reguläre Nutzer (user1, user2) und einen Gast-Account (gast).
-</p>
-<ul><li><strong>Ordner &rarr; Zugangsberechtigte Benutzer</strong>
-</li><li>user1 &rarr; user1
-</li><li>user2 &rarr; user2
-</li><li>shared &rarr; user1, user2
-</li><li>public &rarr; user1, user2, gast
-</li></ul><p>
+-   virtuelle IPs
+-   virtuelle User
+-   Konfiguration pro User, pro Source-IP
+-   Limits pro Source-IP
+-   Bandweitenbeschränkung ([Bandwidth
+    throttling](http://en.wikipedia.org/wiki/Bandwidth_throttling))
+-   IPv6
+-   SSL Verschlüsselung
+
+Package ins Image einbinden
+---------------------------
+
+Im menuconfig unter `Package selection ---> Standard packages --->`
+findet sich
+
+-   *Vsftpd 2.x.y*
+    Damit wird der FTP-Zugriff über vsFTP möglich.
+
+Verwandte Themen
+----------------
+
+Unter `Patches --->` findet sich
+
+-   *Patch USB storage names* ... mit zusätzlichen Unterpunkten.
+    Hierdurch wird dem USB-Speicher ein einheitlicher Name gegeben.
+-   *Execute autorun.sh/autoend.sh script on (un)mount*
+    Führt die entsprechenden Skripte beim An- und Abstecken des
+    USB-Speichers aus.
+
+Freigaben und Benutzer für vsFTP in Freetz einrichten
+-----------------------------------------------------
+
+Es folgt eine ausführliche Anleitung für das Erstellen von FTP-Freigaben
+und Nutzern mit verschiedenen Lese/Schreib-Rechten, die unabhängig von
+Linux-Zugriffsrechten funktioniert und somit auch für FAT- und
+NTFS-Platten eingesetzt werden kann. Hierbei können mit dem aktuellen
+Linux Kernel jedoch nur Lese/Schreib-Rechte auf Benutzer- und nicht auf
+Ordnerebene gesetzt werden.
+
+Hier eine Übersicht über die in dieser Anleitung erstellten Ordner mit
+Zugangsbeschränkungen für zwei reguläre Nutzer (user1, user2) und einen
+Gast-Account (gast).
+
+-   **Ordner → Zugangsberechtigte Benutzer**
+-   user1 → user1
+-   user2 → user2
+-   shared → user1, user2
+-   public → user1, user2, gast
+
 Diese können leicht an den eigenen Bedarf angepasst werden.
-</p>
-<h4 id="Order-StrukturaufderUSB-Plattewirdvorbereitet.">Order-Struktur auf der USB-Platte wird vorbereitet.</h4>
-<p>
+
+#### Order-Struktur auf der USB-Platte wird vorbereitet.
+
 Dazu die folgenden Ordner im Hauptverzeichnis der Platte erstellen:
-</p>
-<pre class="wiki">user1        #Heimverzeichnis user1
+
+```
+user1        #Heimverzeichnis user1
 user1/shared
 user1/public
 user2        #Heimverzeichnis user2
@@ -119,60 +70,74 @@ user2/shared
 user2/public
 shared       #gemeinsamer Ornder user1, user2
 public       #Heimverzeichnis gast
-</pre><h4 id="DieAVM-LösungenvonFTPwirdabgeschaltet.">Die AVM-Lösungen von FTP wird abgeschaltet.</h4>
-<p>
-<em>fritz.box</em> &rarr; <em>Einstellungen</em> &rarr; <em>Erweiterte Einstellungen</em> &rarr; <em>USB-Geräte</em> &rarr; <em>USB-Speicher</em>
-<em>USB-Speicher FTP-Zugriff aktivieren</em> &rarr; Häkchen weg.<br />
-Dies ist nicht zwingend notwendig, sofern der vsftpd auf einem anderen als Port 21 läuft.
-</p>
-<h4 id="DiensteinstellungenwerdenimFreetz-Menüeingestellt.">Diensteinstellungen werden im Freetz-Menü eingestellt.</h4>
-<p>
-<em>Pakete </em>&rarr; <em>vsftpd</em>
-</p>
-<p>
-<em>Starttyp</em> &rarr; automatisch
-</p>
-<p>
-&rarr; <em>Zugriff</em>
-</p>
-<pre class="wiki">[ ]Anonymes FTP
+```
+
+#### Die AVM-Lösungen von FTP wird abgeschaltet.
+
+*fritz.box* → *Einstellungen* → *Erweiterte Einstellungen* →
+*USB-Geräte* → *USB-Speicher* *USB-Speicher FTP-Zugriff aktivieren* →
+Häkchen weg.
+Dies ist nicht zwingend notwendig, sofern der vsftpd auf einem anderen
+als Port 21 läuft.
+
+#### Diensteinstellungen werden im Freetz-Menü eingestellt.
+
+*Pakete* → *vsftpd*
+
+*Starttyp* → automatisch
+
+→ *Zugriff*
+
+```
+[ ]Anonymes FTP
 [X]Lokale Benutzer
 [X]chroot jail
 [ ]Erlaube root login
 [ ]Erlaube ftpuser login
-</pre><p>
-So ist sichergestellt, dass nur die genannten Nutzer und diese nur auf ihr Verzeichnis zugreifen können.<br />Wenn der AVM FTP-Server parallel genutzt wird, <strong>muss</strong> hier auch der Haken bei <strong>Erlaube ftpuser login</strong> gesetzt werden.
-</p>
-<p>
-&rarr; <em>Zusätzliche Konfigurationsoptionen (für Experten)</em>
-</p>
-<pre class="wiki">user_config_dir=/var/media/ftp/uStor01/vsftp_user_conf
-</pre><p>
+```
+
+So ist sichergestellt, dass nur die genannten Nutzer und diese nur auf
+ihr Verzeichnis zugreifen können.
+Wenn der AVM FTP-Server parallel genutzt wird, **muss** hier auch der
+Haken bei **Erlaube ftpuser login** gesetzt werden.
+
+→ *Zusätzliche Konfigurationsoptionen (für Experten)*
+
+```
+user_config_dir=/var/media/ftp/uStor01/vsftp_user_conf
+```
+
 Später werden wir die Schreibrechte für die Benutzer getrennt festlegen.
-</p>
-<p>
-&rarr;<em>Übernehmen</em>&larr;
-</p>
-<pre class="wiki">Saving settings...done.
+
+→*Übernehmen*←
+
+```
+Saving settings...done.
 Saving vsftpd.cfg...done.
 
 Writing /var/flash/freetz...done.
 10752 bytes written.
-</pre><h4 id="TelNet-Zugangwirdgestartet.">TelNet-Zugang wird gestartet.</h4>
-<p>
-<em>Dienste</em> &rarr; <em>telnetd</em> &rarr; <em>start</em>
-</p>
-<p>
+```
+
+#### TelNet-Zugang wird gestartet.
+
+*Dienste* → *telnetd* → *start*
+
 Nun geht es auf der Kommandozeile weiter.
-</p>
-<h4 id="DielokalenBenutzerwerdeneingerichtet.">Die lokalen Benutzer werden eingerichtet.</h4>
-<p>
-Jeder Benutzer erhält dabei ein explizites Heim-Verzeichnis welches von vsFTP automatisch übernommen wird.
-</p>
-<pre class="wiki">adduser -h /var/media/ftp/uStor01/user1 user1
+
+#### Die lokalen Benutzer werden eingerichtet.
+
+Jeder Benutzer erhält dabei ein explizites Heim-Verzeichnis welches von
+vsFTP automatisch übernommen wird.
+
+```
+adduser -h /var/media/ftp/uStor01/user1 user1
 adduser -h /var/media/ftp/uStor01/user2 user2
 adduser -h /var/media/ftp/uStor01/public gast
-</pre><pre class="wiki">/var/media/ftp/uStor01/ # adduser -h /var/media/ftp/uStor01/user1/ user1
+```
+
+```
+/var/media/ftp/uStor01/ # adduser -h /var/media/ftp/uStor01/user1/ user1
 adduser: /var/media/ftp/uStor01/user1/: File exists
 Changing password for user1
 New password:
@@ -190,144 +155,177 @@ Changing password for gast
 New password:
 Retype password:
 Password for gast changed by root
-</pre><p>
+```
+
 Die neuen Zugangsdaten werden erstmal gespeichert.
-</p>
-<pre class="wiki">modsave all
-</pre><pre class="wiki">/var/media/ftp/uStor01/technik # modsave all
+
+```
+modsave all
+```
+
+```
+/var/media/ftp/uStor01/technik # modsave all
 Saving users, groups and passwords...done.
 Saving config...done.
 Writing /var/flash/freetz...done.
 10752 bytes written.
-</pre><h4 id="DieVerzeichnissesharedundpublicwerdenindiejeweiligenHeim-VerzeichnissederBenutzereingebunden.">Die Verzeichnisse <em>shared</em> und <em>public</em> werden in die jeweiligen Heim-Verzeichnisse der Benutzer eingebunden.</h4>
-<p>
-Dies soll immer sichergestellt werden, wenn die USB-Platte an die FritzBox angeschlossen wird. Dazu wird die Datei <em>autorun.sh</em> im Hauptverzeichnis der USB-Platte erstellt. Dass nach ordnungsgemäßem Abhängen der Platte die mounts auch wieder entfernt werden schreiben wir unmount-Befehle in die <em>autoend.sh</em>.
-</p>
-<p>
-<em>/var/media/ftp/uStor01/autorun.sh</em>
-</p>
-<pre class="wiki">mount -o bind /var/media/ftp/uStor01/shared /var/media/ftp/uStor01/user1/shared
+```
+
+#### Die Verzeichnisse *shared* und *public* werden in die jeweiligen Heim-Verzeichnisse der Benutzer eingebunden.
+
+Dies soll immer sichergestellt werden, wenn die USB-Platte an die
+FritzBox angeschlossen wird. Dazu wird die Datei *autorun.sh* im
+Hauptverzeichnis der USB-Platte erstellt. Dass nach ordnungsgemäßem
+Abhängen der Platte die mounts auch wieder entfernt werden schreiben wir
+unmount-Befehle in die *autoend.sh*.
+
+*/var/media/ftp/uStor01/autorun.sh*
+
+```
+mount -o bind /var/media/ftp/uStor01/shared /var/media/ftp/uStor01/user1/shared
 mount -o bind /var/media/ftp/uStor01/shared /var/media/ftp/uStor01/user2/shared
 
 mount -o bind /var/media/ftp/uStor01/public /var/media/ftp/uStor01/user1/public
 mount -o bind /var/media/ftp/uStor01/public /var/media/ftp/uStor01/user2/public
-</pre><p>
-<em>/var/media/ftp/uStor01/autoend.sh</em>
-</p>
-<pre class="wiki">umount /var/media/ftp/uStor01/user1/shared
+```
+
+*/var/media/ftp/uStor01/autoend.sh*
+
+```
+umount /var/media/ftp/uStor01/user1/shared
 umount /var/media/ftp/uStor01/user2/shared
 
 umount /var/media/ftp/uStor01/user1/public
 umount /var/media/ftp/uStor01/user2/public
-</pre><h4 id="FTP-SchreibrechtefürdieBenutzerwerdengesetzt.">FTP-Schreibrechte für die Benutzer werden gesetzt.</h4>
-<p>
-Dazu erhält jeder Benutzer eine Datei mit seinem Dateinamen im Ordner <em>/var/media/ftp/uStor01/vsftp_user_conf/</em>, die festlegt, ob er Schreibrechte hat oder nicht.
-</p>
-<p>
-<em>/var/media/ftp/uStor01/vsftp_user_conf/user1</em>
-</p>
-<pre class="wiki">write_enable=yes
-</pre><p>
-<em>/var/media/ftp/uStor01/vsftp_user_conf/user2</em>
-</p>
-<pre class="wiki">write_enable=yes
-</pre><p>
-<em>/var/media/ftp/uStor01/vsftp_user_conf/gast</em>
-</p>
-<pre class="wiki">write_enable=no
-</pre><p>
-Über diese Benutzerdateien ist es auch möglich einzelne FTP-Befehle (<a class="ext-link" href="http://en.wikipedia.org/wiki/List_of_FTP_commands"><span class="icon">​</span>Liste</a>) für Benutzer zu verbieten. Hierzu fügt man folgende Zeile in die Datei ein und entfernt die nicht gewünschten Befehle:
-</p>
-<pre class="wiki">cmds_allowed=ABOR,ACCT,ALLO,APPE,AUTH,CDUP,CWD,DELE,EPRT,EPSV,FEAT,HELP,LIST,MDTM,MKD,MODE,NLST,NOOP,OPTS,PASS,PASV,PBSZ,PORT,PROT,PWD,QUIT,REIN,REST,RETR,RMD,RNFR,RNTO,SITE,SMNT,STAT,STOR,STOU,STRU,SYST,TYPE,USER
-</pre><p>
-Alternativ kann man auch einzelne FTP-Befehle verbieten (ab vsftpd Version 2.1.0):
-</p>
-<pre class="wiki">cmds_denied=DELE,RMD
-</pre><p>
-<strong>Hinweiß:</strong> Wenn wie Oben beschrieben das verbieten von Befehlen über <strong>cmds_denied=</strong> nicht Funktioniert hat, gibt es noch einen zweiten Weg das Ausführen von Befehle für einige User zu verbieten.
-</p>
-<p>
-Gelöst wird das ganze ebenfalls über die Benutzerdateien. Hierzu fügt man folgende Zeile in die Datei ein und <strong>entfernt</strong> die Befehle die der User nicht ausführen darf:
-</p>
-<pre class="wiki">
+```
+
+#### FTP-Schreibrechte für die Benutzer werden gesetzt.
+
+Dazu erhält jeder Benutzer eine Datei mit seinem Dateinamen im Ordner
+*/var/media/ftp/uStor01/vsftp_user_conf/*, die festlegt, ob er
+Schreibrechte hat oder nicht.
+
+*/var/media/ftp/uStor01/vsftp_user_conf/user1*
+
+```
+write_enable=yes
+```
+
+*/var/media/ftp/uStor01/vsftp_user_conf/user2*
+
+```
+write_enable=yes
+```
+
+*/var/media/ftp/uStor01/vsftp_user_conf/gast*
+
+```
+write_enable=no
+```
+
+Über diese Benutzerdateien ist es auch möglich einzelne FTP-Befehle
+([Liste](http://en.wikipedia.org/wiki/List_of_FTP_commands))
+für Benutzer zu verbieten. Hierzu fügt man folgende Zeile in die Datei
+ein und entfernt die nicht gewünschten Befehle:
+
+```
 cmds_allowed=ABOR,ACCT,ALLO,APPE,AUTH,CDUP,CWD,DELE,EPRT,EPSV,FEAT,HELP,LIST,MDTM,MKD,MODE,NLST,NOOP,OPTS,PASS,PASV,PBSZ,PORT,PROT,PWD,QUIT,REIN,REST,RETR,RMD,RNFR,RNTO,SITE,SMNT,STAT,STOR,STOU,STRU,SYST,TYPE,USER
+```
 
-</pre><p>
-<strong>Beispiel:</strong> user1 darf Dateien auf den FTP kopieren und Verzeichnisse anlegen, jedoch diese nicht wieder löschen. Also muß folgendes in der Datei stehen:
-</p>
-<pre class="wiki">
+Alternativ kann man auch einzelne FTP-Befehle verbieten (ab vsftpd
+Version 2.1.0):
+
+```
+cmds_denied=DELE,RMD
+```
+
+**Hinweiß:** Wenn wie Oben beschrieben das verbieten von Befehlen über
+**cmds_denied=** nicht Funktioniert hat, gibt es noch einen zweiten Weg
+das Ausführen von Befehle für einige User zu verbieten.
+
+Gelöst wird das ganze ebenfalls über die Benutzerdateien. Hierzu fügt
+man folgende Zeile in die Datei ein und **entfernt** die Befehle die der
+User nicht ausführen darf:
+
+```
+cmds_allowed=ABOR,ACCT,ALLO,APPE,AUTH,CDUP,CWD,DELE,EPRT,EPSV,FEAT,HELP,LIST,MDTM,MKD,MODE,NLST,NOOP,OPTS,PASS,PASV,PBSZ,PORT,PROT,PWD,QUIT,REIN,REST,RETR,RMD,RNFR,RNTO,SITE,SMNT,STAT,STOR,STOU,STRU,SYST,TYPE,USER
+```
+
+**Beispiel:** user1 darf Dateien auf den FTP kopieren und Verzeichnisse
+anlegen, jedoch diese nicht wieder löschen. Also muß folgendes in der
+Datei stehen:
+
+```
 cmds_allowed=ABOR,ACCT,ALLO,APPE,AUTH,CDUP,CWD,EPRT,EPSV,FEAT,HELP,LIST,MDTM,MKD,MODE,NLST,NOOP,OPTS,PASS,PASV,PBSZ,PORT,PROT,PWD,QUIT,REIN,REST,RETR,RNFR,RNTO,SITE,SMNT,STAT,STOR,STOU,STRU,SYST,TYPE,USER
+```
 
-</pre><blockquote>
-<p>
-<strong>DELE</strong> (Delete file), <strong>RMD</strong> (Remove a directory) wurden aus dem oben angegebenen String gelöscht. <br /> <br /> <br /> Sollte etwas immer noch nicht gehen, dann einfach mal den Router neu starten.( Reboot der FritzBox )
-</p>
-</blockquote>
-<p>
-<br />
-Eine Liste aller FTP-Befehle und ihre Bedeutung findet ihr hier: <a class="ext-link" href="http://en.wikipedia.org/wiki/List_of_FTP_commands"><span class="icon">​</span>Liste</a>
-<br />
-</p>
-<h4 id="Daswars">Das wars!</h4>
-<p>
-Die Ordner sind nun per FTP (<a class="ext-link" href="ftp://fritz.box"><span class="icon">​</span>ftp://fritz.box</a>) mit den gegebenen Zugangsdaten erreichbar.
-</p>
-<h2 id="Anmeldebildschirmbeivsftpdändern">Anmeldebildschirm bei vsftpd ändern</h2>
-<p>
-<br />
-Hier wird nun kurz beschrieben wie ihr den Anmeldebildschirm von VSFTP ändern bzw. anpassen könnt.<br />
-<br />
-1.) Folgende Datei erzeugen:<br />
-<br />
-Name: <strong>ftp-startbild</strong><br />
-Inhalt:<br />
-</p>
-<pre class="wiki">Herzlich Willkommen bei
+> **DELE** (Delete file), **RMD** (Remove a directory) wurden aus dem
+> oben angegebenen String gelöscht.
+> 
+> 
+> Sollte etwas immer noch nicht gehen, dann einfach mal den Router neu
+> starten.( Reboot der FritzBox )
+
+Eine Liste aller FTP-Befehle und ihre Bedeutung findet ihr hier:
+[Liste](http://en.wikipedia.org/wiki/List_of_FTP_commands)
+
+#### Das wars!
+
+Die Ordner sind nun per FTP
+([ftp://fritz.box](ftp://fritz.box)) mit den
+gegebenen Zugangsdaten erreichbar.
+
+Anmeldebildschirm bei vsftpd ändern
+-----------------------------------
+
+Hier wird nun kurz beschrieben wie ihr den Anmeldebildschirm von VSFTP
+ändern bzw. anpassen könnt.
+1.) Folgende Datei erzeugen:
+Name: **ftp-startbild**
+Inhalt:
+
+```
+Herzlich Willkommen bei
   _   _   _   _   _   _   _   _   _
- / \ / \ / \ / \ / \ / \ / \ / \ / \ / \
+ /  /  /  /  /  /  /  /  /  / 
 ( M ) u ) s ) t ) e ) r ) m ) a ) n ) n )
- \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/
+ _/ _/ _/ _/ _/ _/ _/ _/ _/ _/
+```
 
-</pre><p>
-Sehr hilfreich bei der Erzeugung des Schriftzuges ist diese Seite: <a class="ext-link" href="http://www.ihr-freelancer.de/asciiart"><span class="icon">​</span>AsciiArt Generator</a> (Schriftart:Bubble)
-<br />
-<br />
-2.) Diese Datei wird dann einfach auf Eurer Festplatte abgelegt.<br />
-Ort: <strong>/var/media/ftp/uStor01/</strong><br />
-<br />
-3.) Nun muß diese Datei nur noch über das WebIF ins Freetz eingebunden werden.<br />
-hierzu wird nun im Freetz-WebIF das VSFTP-Menue aufgerufen und folgender Eintrag unter <strong>Zusätzliche Konfigurationsoptionen (für Experten)</strong> eingetragen.
-</p>
-<pre class="wiki">banner_file=/var/media/ftp/uStor01/ftp-startbild
-</pre>
-<p>
-<figure><img src="/freetz-ng/screenshots/126.jpg" alt="" /><figcaption></figcaption></figure>
-</p>
-<p>
-4.) Nun nur noch Übernehmen und schon sollte sich Eure Box / der FTP mit dem neuen Anmeldebildschirm melden.
-</p>
-<p>
-<figure><img src="/freetz-ng/screenshots/127.jpg" alt="" /><figcaption></figcaption></figure>
- 
-</p>
-<p>
-<figure><img src="/freetz-ng/screenshots/128.jpg" alt="" /><figcaption></figcaption></figure>
-</p>
-<p>
-<br />
-</p>
-<h2 id="WeiterführendeLinks">Weiterführende Links</h2>
-<ul><li><a class="ext-link" href="http://vsftpd.beasts.org/"><span class="icon">​</span>Project Homepage</a>
-</li><li><a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=176105"><span class="icon">​</span>IPPF Thread</a>: Aktives/passives FTP auf die Box von außen mit <em>vsftpd</em> auf der Box
-</li><li><a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=187488"><span class="icon">​</span>IPPF Thread</a>: vsFTP und Samba mit Benutzerrechten für FAT32-USB-Platte
-</li></ul></div>
+Sehr hilfreich bei der Erzeugung des Schriftzuges ist diese Seite:
+[AsciiArt
+Generator](http://www.ihr-freelancer.de/asciiart)
+(Schriftart:Bubble)
+2.) Diese Datei wird dann einfach auf Eurer Festplatte abgelegt.
+Ort: **/var/media/ftp/uStor01/**
+3.) Nun muß diese Datei nur noch über das WebIF ins Freetz eingebunden
+werden.
+hierzu wird nun im Freetz-WebIF das VSFTP-Menue aufgerufen und folgender
+Eintrag unter **Zusätzliche Konfigurationsoptionen (für Experten)**
+eingetragen.
 
-      </div><ul class="tags"><li class="header">Tags</li><li><a href="/tags/filetransfer" rel="tag">filetransfer</a> </li><li><a href="/tags/ftp" rel="tag">ftp</a> </li><li><a href="/tags/network" rel="tag">network</a> </li><li><a href="../packages.html" rel="tag">packages</a> </li><li><a href="/tags/server" rel="tag">server</a> </li><li><a href="/tags/%C3%BCberarbeiten" rel="tag">überarbeiten</a> </li></ul>
+```
+banner_file=/var/media/ftp/uStor01/ftp-startbild
+```
 
-    </div>
-    <script type="text/javascript">
-        jQuery.loadStyleSheet("/chrome/screenshots/css/screenshots.css", "text/css");
-    </script>
-    </div>
-  </body>
-</html>
+[![](../../docs/screenshots/126_md.jpg)](../../docs/screenshots/126.jpg)
+
+4.) Nun nur noch Übernehmen und schon sollte sich Eure Box / der FTP mit
+dem neuen Anmeldebildschirm melden.
+
+[![](../../docs/screenshots/127_md.jpg)](../../docs/screenshots/127.jpg)
+
+[![](../../docs/screenshots/128_md.jpg)](../../docs/screenshots/128.jpg)
+
+
+Weiterführende Links
+--------------------
+
+-   [Project Homepage](http://vsftpd.beasts.org/)
+-   [IPPF
+    Thread](http://www.ip-phone-forum.de/showthread.php?t=176105):
+    Aktives/passives FTP auf die Box von außen mit *vsftpd* auf der Box
+-   [IPPF
+    Thread](http://www.ip-phone-forum.de/showthread.php?t=187488):
+    vsFTP und Samba mit Benutzerrechten für FAT32-USB-Platte
+

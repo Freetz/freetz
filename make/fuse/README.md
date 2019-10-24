@@ -1,93 +1,41 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+FUSE
+====
 
-  <head>
-    <title>
-      packages/fuse – Freetz
-    </title>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!--[if IE]><script type="text/javascript">
-      if (/^#__msie303:/.test(window.location.hash))
-        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
-    </script><![endif]-->
-        <link rel="search" href="/search" />
-        <link rel="help" href="../TracGuide.html" />
-        <link rel="alternate" href="fuse%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
-        <link rel="up" href="../packages.html" title="Übergeordnete Wiki-Seite anzeigen" />
-        <link rel="start" href="/wiki" />
-        <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-      <link type="application/opensearchdescription+xml" rel="search" href="/search/opensearch" title="Freetz durchsuchen" />
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/jquery.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/babel.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/messages/de.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/trac.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/search.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/folding.js"></script>
-    <script type="text/javascript">
-      jQuery(document).ready(function($) {
-        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
-        $("#content").find(".wikianchor").each(function() {
-          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
-        });
-        $(".foldable").enableFolding(true, true);
-      });
-    </script>
-  </head>
-  <body>
-    <div id="banner">
-      <div id="header">
-        <a id="logo" href="/wiki"><img src="../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
-      </div>
-      <form id="search" action="https://www.google.com/search" method="get" onsubmit="; this.elements.namedItem('q').value = this.elements.namedItem('oq').value + ' site:freetz.github.io'">
-        <div>
-          <label for="proj-search">Suche:</label>
-          <input type="text" id="proj-search" name="oq" size="18" value="" />
-          <input type="hidden" name="q" value="" />
-          <input type="submit" value="Suche" />
-        </div>
-      </form>
-      <div id="metanav" class="nav">
-    <ul>
-      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
-    </ul>
-  </div>
-    </div>
-    <div id="mainnav" class="nav">
-    <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="https://github.com/Freetz-NG/freetz-ng/commits/master">Quellen durchsehen</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
-    </ul>
-  </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="fuse.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/packages/fuse.en" title="(not available)">English</a></li></ul></div><p /><div id="main">
-      <div id="pagepath" class="noprint">
-  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="fuse.html" title="Zeige packages/fuse an">fuse</a>
-</div>
-    <div id="content" class="wiki">
-      <div class="wikipage searchable">
+**[FUSE](http://de.wikipedia.org/wiki/Filesystem_in_Userspace)**
+([Filesystem](http://de.wikipedia.org/wiki/Dateisystem)
+in
+[Userspace](http://de.wikipedia.org/wiki/Userspace))
+ist ein
+[Kernel-Modul](http://de.wikipedia.org/wiki/Kernel-Modul),
+das es ermöglicht, Dateisystem-Treiber aus dem
+[Kernel-Mode](http://de.wikipedia.org/wiki/Betriebssystemkern)
+in den
+[User-Mode](http://de.wikipedia.org/wiki/Ring_(CPU))
+zu verlagern. Auf diese Weise können auch nicht-priviligierte Benutzer
+(also jene, die nicht *root* heißen) Dateisysteme einbinden bzw.
+erstellen. Die *FUSE* Module agieren quasi als "Bridge" zu den
+Kernel-Schnittstellen.
 
-          <div id="wikipage" class="trac-content"><h1 id="FUSE">FUSE</h1>
-<p>
-<strong><a class="ext-link" href="http://de.wikipedia.org/wiki/Filesystem_in_Userspace"><span class="icon">​</span>FUSE</a></strong> (<a class="ext-link" href="http://de.wikipedia.org/wiki/Dateisystem"><span class="icon">​</span>Filesystem</a> in <a class="ext-link" href="http://de.wikipedia.org/wiki/Userspace"><span class="icon">​</span>Userspace</a>) ist ein <a class="ext-link" href="http://de.wikipedia.org/wiki/Kernel-Modul"><span class="icon">​</span>Kernel-Modul</a>, das es ermöglicht, Dateisystem-Treiber aus dem <a class="ext-link" href="http://de.wikipedia.org/wiki/Betriebssystemkern"><span class="icon">​</span>Kernel-Mode</a> in den <a class="ext-link" href="http://de.wikipedia.org/wiki/Ring_(CPU)"><span class="icon">​</span>User-Mode</a> zu verlagern. Auf diese Weise können auch nicht-priviligierte Benutzer (also jene, die nicht <em>root</em> heißen) Dateisysteme einbinden bzw. erstellen. Die <em>FUSE</em> Module agieren quasi als "Bridge" zu den Kernel-Schnittstellen.
-</p>
-<p>
-<em>FUSE</em> lässt sich besonders gut einsetzen, um virtuelle Dateisysteme zu verwirklichen. Anders als bei traditionellen Dateisystemen, die sich um das Speichern und Laden von Daten auf der Disk zu kümmern haben, speichern virtuelle Dateisysteme selbst keine Daten. Sie sind vielmehr eine "View" oder "Übersetzung" eines bereits existierenden Datei- oder Speichersystems. Im Prinzip kann jede für <em>FUSE</em> verfügbare Resource als Dateisystem exportiert werden.
-</p>
-<p>
-In Freetz basiert z.B. das <a class="wiki" href="ntfs-3g.html">NTFS</a> Paket auf <em>FUSE</em>.
-</p>
-<h2 id="WeiterführendeLinks">Weiterführende Links</h2>
-<ul><li><a class="ext-link" href="http://de.wikipedia.org/wiki/Filesystem_in_Userspace"><span class="icon">​</span>Wikipedia: FUSE</a>
-</li><li><a class="ext-link" href="http://fuse.sourceforge.net/"><span class="icon">​</span>FUSE Project Homepage</a> (Sourceforge)
-</li><li><a class="ext-link" href="http://fuse.sourceforge.net/wiki/index.php/FileSystems"><span class="icon">​</span>Official list of FUSE filesystems</a>
-</li><li><a class="ext-link" href="http://www.ibm.com/developerworks/linux/library/l-fuse/"><span class="icon">​</span>Develop your own filesystem with FUSE</a>
-</li><li>s3fslite für Freetz: <a class="new ticket" href="/ticket/796" title="addition: New package 's3fs' (almost) (new)">#796</a>
-</li></ul></div>
+*FUSE* lässt sich besonders gut einsetzen, um virtuelle Dateisysteme zu
+verwirklichen. Anders als bei traditionellen Dateisystemen, die sich um
+das Speichern und Laden von Daten auf der Disk zu kümmern haben,
+speichern virtuelle Dateisysteme selbst keine Daten. Sie sind vielmehr
+eine "View" oder "Übersetzung" eines bereits existierenden Datei-
+oder Speichersystems. Im Prinzip kann jede für *FUSE* verfügbare
+Resource als Dateisystem exportiert werden.
 
-      </div><ul class="tags"><li class="header">Tags</li><li><a href="/tags/filesystem" rel="tag">filesystem</a> </li><li><a href="../packages.html" rel="tag">packages</a> </li></ul>
+In Freetz basiert z.B. das [NTFS](ntfs-3g.html) Paket auf *FUSE*.
 
-    </div>
-    </div>
-  </body>
-</html>
+Weiterführende Links
+--------------------
+
+-   [Wikipedia:
+    FUSE](http://de.wikipedia.org/wiki/Filesystem_in_Userspace)
+-   [FUSE Project
+    Homepage](http://fuse.sourceforge.net/) (Sourceforge)
+-   [Official list of FUSE
+    filesystems](http://fuse.sourceforge.net/wiki/index.php/FileSystems)
+-   [Develop your own filesystem with
+    FUSE](http://www.ibm.com/developerworks/linux/library/l-fuse/)
+-   s3fslite für Freetz:
+    [#796](https://trac.boxmatrix.info/freetz-ng/ticket/796)

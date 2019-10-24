@@ -1,132 +1,92 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+pingtunnel
+==========
 
-  <head>
-    <title>
-      packages/pingtunnel – Freetz
-    </title>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!--[if IE]><script type="text/javascript">
-      if (/^#__msie303:/.test(window.location.hash))
-        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
-    </script><![endif]-->
-        <link rel="search" href="/search" />
-        <link rel="help" href="../TracGuide.html" />
-        <link rel="alternate" href="pingtunnel%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
-        <link rel="up" href="../packages.html" title="Übergeordnete Wiki-Seite anzeigen" />
-        <link rel="start" href="/wiki" />
-        <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-      <link type="application/opensearchdescription+xml" rel="search" href="/search/opensearch" title="Freetz durchsuchen" />
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/jquery.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/babel.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/messages/de.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/trac.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/search.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/folding.js"></script>
-    <script type="text/javascript">
-      jQuery(document).ready(function($) {
-        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
-        $("#content").find(".wikianchor").each(function() {
-          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
-        });
-        $(".foldable").enableFolding(true, true);
-      });
-    </script>
-  </head>
-  <body>
-    <div id="banner">
-      <div id="header">
-        <a id="logo" href="/wiki"><img src="../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
-      </div>
-      <form id="search" action="https://www.google.com/search" method="get" onsubmit="; this.elements.namedItem('q').value = this.elements.namedItem('oq').value + ' site:freetz.github.io'">
-        <div>
-          <label for="proj-search">Suche:</label>
-          <input type="text" id="proj-search" name="oq" size="18" value="" />
-          <input type="hidden" name="q" value="" />
-          <input type="submit" value="Suche" />
-        </div>
-      </form>
-      <div id="metanav" class="nav">
-    <ul>
-      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
-    </ul>
-  </div>
-    </div>
-    <div id="mainnav" class="nav">
-    <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="https://github.com/Freetz-NG/freetz-ng/commits/master">Quellen durchsehen</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
-    </ul>
-  </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="pingtunnel.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/packages/pingtunnel.en" title="(not available)">English</a></li></ul></div><p /><div id="main">
-      <div id="pagepath" class="noprint">
-  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="pingtunnel.html" title="Zeige packages/pingtunnel an">pingtunnel</a>
-</div>
-    <div id="content" class="wiki">
-      <div class="wikipage searchable">
+**PTunnel** erlaubt das verlässliche Tunneln von TCP Verbindungen über
+[ICMP](http://de.wikipedia.org/wiki/Internet_Control_Message_Protocol)
+Echo-Requests, was auch als [ICMP
+Tunnel](http://en.wikipedia.org/wiki/Pingtunnel) bekannt ist.
+Das mag zwar auf den ersten Blick recht nutzlos aussehen - dafür erweist
+es sich in manchen Situationen als recht hilfreich. Wenn nämlich nichts
+anderes weiterhilft, weil eine restriktive Firewall im Wege steht...
 
-          <div id="wikipage" class="trac-content"><h1 id="pingtunnel">pingtunnel</h1>
-<p>
-<strong>PTunnel</strong> erlaubt das verlässliche Tunneln von TCP Verbindungen über <a class="ext-link" href="http://de.wikipedia.org/wiki/Internet_Control_Message_Protocol"><span class="icon">​</span>ICMP</a> Echo-Requests, was auch als <a class="ext-link" href="http://en.wikipedia.org/wiki/Pingtunnel"><span class="icon">​</span>ICMP Tunnel</a> bekannt ist. Das mag zwar auf den ersten Blick recht nutzlos aussehen - dafür erweist es sich in manchen Situationen als recht hilfreich. Wenn nämlich nichts anderes weiterhilft, weil eine restriktive Firewall im Wege steht&hellip;
-</p>
-<h2 id="Setup">Setup</h2>
-<p>
-Folgendes bei <tt>forwardrules</tt> der ar7.cfg eintragen um Pings aus dem Internet zuzulassen:
-</p>
-<pre class="wiki">"icmp 0.0.0.0 0.0.0.0 0 # PTunnel"
-</pre><p>
-Or use <a class="wiki" href="avm-firewall.html">AVM-Firewall</a> from revision 6794 to do the same from a web interface.
-</p>
-<p>
-Capturing packets (<a class="ext-link" href="http://www.tcpdump.org/pcap3_man.html"><span class="icon">​</span>libpcap</a>) from interface <em>dsl</em> doesn't work (packets are fragmented), but from interface <em>lan</em> does:
-</p>
-<pre class="wiki">ptunnel -c lan
-</pre><p>
-(Error message if using dsl: "<em>Received fragmented packet - unable to reconstruct! This error usually occurs because pcap is used on devices that are not wlan or ethernet.</em>")
-</p>
-<p>
-The web interface of pingtunnel (from revision 6792) uses the following options if you don't specify extra options:
-</p>
-<pre class="wiki">-c lan -syslog -x &lt;password&gt;
-</pre><p>
-For maximum flexibility <tt>-c lan -syslog</tt> is omitted if you specify extra options.
-</p>
-<p>
-Be sure to specify enough tunnels when tunneling <tt>http</tt> traffic with the <tt>-m</tt> option.
-</p>
-<h2 id="Security">Security</h2>
-<p>
-Pingtunnel is not very secure, because it possible to choose random tunnel endpoints from the client. The best thing that can be done, is using a strong password.
-</p>
-<p>
-Be sure to use client version 0.71 or higher and the patched 0.71 server version when using passwords!
-</p>
-<p>
-Also realize that ICMP traffic makes it to the internal net of the box if you configure ICMP forwarding.
-</p>
-<p>
+Setup
+-----
+
+Folgendes bei `forwardrules` der ar7.cfg eintragen um Pings aus dem
+Internet zuzulassen:
+
+```
+"icmp 0.0.0.0 0.0.0.0 0 # PTunnel"
+```
+
+Or use [AVM-Firewall](../avm-firewall/README.md) from revision 6794 to do
+the same from a web interface.
+
+Capturing packets
+([libpcap](http://www.tcpdump.org/pcap3_man.html))
+from interface *dsl* doesn't work (packets are fragmented), but from
+interface *lan* does:
+
+```
+ptunnel -c lan
+```
+
+(Error message if using dsl: "*Received fragmented packet - unable to
+reconstruct! This error usually occurs because pcap is used on devices
+that are not wlan or ethernet.*")
+
+The web interface of pingtunnel (from revision 6792) uses the following
+options if you don't specify extra options:
+
+```
+-c lan -syslog -x <password>
+```
+
+For maximum flexibility `-c lan -syslog` is omitted if you specify extra
+options.
+
+Be sure to specify enough tunnels when tunneling `http` traffic with the
+`-m` option.
+
+Security
+--------
+
+Pingtunnel is not very secure, because it possible to choose random
+tunnel endpoints from the client. The best thing that can be done, is
+using a strong password.
+
+Be sure to use client version 0.71 or higher and the patched 0.71 server
+version when using passwords!
+
+Also realize that ICMP traffic makes it to the internal net of the box
+if you configure ICMP forwarding.
+
 It is easily overlooked, but you can tighten security with these option:
-</p>
-<pre class="wiki">    -da: Set remote proxy destination address if client
+
+```
+    -da: Set remote proxy destination address if client
          Restrict to only this destination address if server
     -dp: Set remote proxy destionation port if client
          Restrict to only this destination port if server
-</pre><p>
-You can restrict access to for example <a class="missing wiki">Polipo?</a> like this:
-</p>
-<pre class="wiki">-da localhost -dp 8123
-</pre><h2 id="WeiterführendeLinks">Weiterführende Links</h2>
-<ul><li><a class="ext-link" href="http://www.cs.uit.no/~daniels/PingTunnel/"><span class="icon">​</span>Homepage</a> (Englisch)
-</li><li><a class="ext-link" href="http://freshmeat.net/projects/ptunnel/"><span class="icon">​</span>Freshmeat Projektseite</a>
-</li><li><a class="ext-link" href="http://psung.blogspot.com/2008/05/breaking-through-firewalls-with-ping.html"><span class="icon">​</span>Breaking through firewalls with a ping tunnel</a> (Blog Artikel)
-</li></ul><hr />
-</div>
+```
 
-      </div><ul class="tags"><li class="header">Tags</li><li><a href="/tags/network" rel="tag">network</a> </li><li><a href="../packages.html" rel="tag">packages</a> </li><li><a href="/tags/tunnel" rel="tag">tunnel</a> </li></ul>
+You can restrict access to for example [Polipo?] like
+this:
 
-    </div>
-    </div>
-  </body>
-</html>
+```
+-da localhost -dp 8123
+```
+
+Weiterführende Links
+--------------------
+
+-   [Homepage](http://www.cs.uit.no/~daniels/PingTunnel/)
+    (Englisch)
+-   [Freshmeat
+    Projektseite](http://freshmeat.net/projects/ptunnel/)
+-   [Breaking through firewalls with a ping
+    tunnel](http://psung.blogspot.com/2008/05/breaking-through-firewalls-with-ping.html)
+    (Blog Artikel)
+
+------------------------------------------------------------------------
+

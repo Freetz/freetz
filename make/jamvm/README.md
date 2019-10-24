@@ -1,97 +1,48 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+JamVM
+=====
 
-  <head>
-    <title>
-      packages/jamvm – Freetz
-    </title>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!--[if IE]><script type="text/javascript">
-      if (/^#__msie303:/.test(window.location.hash))
-        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
-    </script><![endif]-->
-        <link rel="search" href="/search" />
-        <link rel="help" href="../TracGuide.html" />
-        <link rel="alternate" href="jamvm%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
-        <link rel="up" href="../packages.html" title="Übergeordnete Wiki-Seite anzeigen" />
-        <link rel="start" href="/wiki" />
-        <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-      <link type="application/opensearchdescription+xml" rel="search" href="/search/opensearch" title="Freetz durchsuchen" />
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/jquery.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/babel.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/messages/de.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/trac.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/search.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/folding.js"></script>
-    <script type="text/javascript">
-      jQuery(document).ready(function($) {
-        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
-        $("#content").find(".wikianchor").each(function() {
-          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
-        });
-        $(".foldable").enableFolding(true, true);
-      });
-    </script>
-  </head>
-  <body>
-    <div id="banner">
-      <div id="header">
-        <a id="logo" href="/wiki"><img src="../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
-      </div>
-      <form id="search" action="https://www.google.com/search" method="get" onsubmit="; this.elements.namedItem('q').value = this.elements.namedItem('oq').value + ' site:freetz.github.io'">
-        <div>
-          <label for="proj-search">Suche:</label>
-          <input type="text" id="proj-search" name="oq" size="18" value="" />
-          <input type="hidden" name="q" value="" />
-          <input type="submit" value="Suche" />
-        </div>
-      </form>
-      <div id="metanav" class="nav">
-    <ul>
-      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
-    </ul>
-  </div>
-    </div>
-    <div id="mainnav" class="nav">
-    <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="https://github.com/Freetz-NG/freetz-ng/commits/master">Quellen durchsehen</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
-    </ul>
-  </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="jamvm.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/packages/jamvm.en" title="(not available)">English</a></li></ul></div><p /><div id="main">
-      <div id="pagepath" class="noprint">
-  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="jamvm.html" title="Zeige packages/jamvm an">jamvm</a>
-</div>
-    <div id="content" class="wiki">
-      <div class="wikipage searchable">
+**[JamVM](http://jamvm.sourceforge.net/)** ist eine
+neue [Java Virtual
+Machine](http://en.wikipedia.org/wiki/Java_Virtual_Machine),
+die der JVM Spezifikation Version 2 (blue book) entspricht. Im
+[Vergleich mit den meisten anderen
+VM's](http://bugblogger.com/java-vms-compared-160/) (frei
+und kommerziell) ist *JamVM* extrem klein ("stripped executables" für
+PowerPC nur ~160K, und für Intel 140K). Dennoch unterstützt es, anders
+als andere "kleine" VMs (z.B. KVM) die vollständige Spezifikation, und
+enthält Support für "object finalisation", Soft/Weak/Phantom
+Referenzen, class-unloading, das [Java Native
+Interface](http://de.wikipedia.org/wiki/Java_Native_Interface)
+(JNI) und die Reflection API.
 
-          <div id="wikipage" class="trac-content"><h1 id="JamVM">JamVM</h1>
-<p>
-<strong><a class="ext-link" href="http://jamvm.sourceforge.net/"><span class="icon">​</span>JamVM</a></strong> ist eine neue <a class="ext-link" href="http://en.wikipedia.org/wiki/Java_Virtual_Machine"><span class="icon">​</span>Java Virtual Machine</a>, die der JVM Spezifikation Version 2 (blue book) entspricht. Im <a class="ext-link" href="http://bugblogger.com/java-vms-compared-160/"><span class="icon">​</span>Vergleich mit den meisten anderen VM's</a> (frei und kommerziell) ist <em>JamVM</em> extrem klein ("stripped executables" für PowerPC nur ~160K, und für Intel 140K). Dennoch unterstützt es, anders als andere "kleine" VMs (z.B. KVM) die vollständige Spezifikation, und enthält Support für "object finalisation", Soft/Weak/Phantom Referenzen, class-unloading, das <a class="ext-link" href="http://de.wikipedia.org/wiki/Java_Native_Interface"><span class="icon">​</span>Java Native Interface</a> (JNI) und die Reflection API.
-</p>
-<p>
-JamVM nutzt die <a class="ext-link" href="http://de.wikipedia.org/wiki/GNU_Classpath"><span class="icon">​</span>GNU Classpath</a> Java Class Library. Eine Reihe von Klassen sind Referenz-Klassen, die für eine spezielle VM angepasst werden müssen. Diese werden zusammen mit <em>JamVM</em> gebündelt.
-</p>
-<p>
-<img src="../../chrome/wikiextras-icons-16/exclamation.png" style="vertical-align: text-bottom" alt="/!\" /> <strong>Anmerkung:</strong> <em>JamVM</em> wird nicht mit der Class Library von Suns oder IBMs JVMs funktionieren.
-</p>
-<p>
-Da die normale Klassenbiliothek (glibj.zip) über 9 MB groß ist wird standardmäßig nur eine reduzierte Version (mini.jar) installiert. Deshalb muss jamvm folgendermaßen aufgerufen werden um z.B. die Datei Hello.class im aktuellen Verzeichnis aufzurufen:
-</p>
-<pre class="wiki">
+JamVM nutzt die [GNU
+Classpath](http://de.wikipedia.org/wiki/GNU_Classpath) Java
+Class Library. Eine Reihe von Klassen sind Referenz-Klassen, die für
+eine spezielle VM angepasst werden müssen. Diese werden zusammen mit
+*JamVM* gebündelt.
+
+ * **Anmerkung:**
+*JamVM* wird nicht mit der Class Library von Suns oder IBMs JVMs
+funktionieren.
+
+Da die normale Klassenbiliothek (glibj.zip) über 9 MB groß ist wird
+standardmäßig nur eine reduzierte Version (mini.jar) installiert.
+Deshalb muss jamvm folgendermaßen aufgerufen werden um z.B. die Datei
+Hello.class im aktuellen Verzeichnis aufzurufen:
+
+```
 jamvm -Xbootclasspath/a:/usr/share/classpath/mini.jar Hello
-</pre><h2 id="WeiterführendeLinks">Weiterführende Links</h2>
-<ul><li><a class="ext-link" href="http://jamvm.sourceforge.net/"><span class="icon">​</span>JavaVM Homepage</a>
-</li><li><a class="ext-link" href="http://bugblogger.com/java-vms-compared-160/"><span class="icon">​</span>Vergleich verschiedener JVMs</a>
-</li><li><a class="ext-link" href="http://en.wikipedia.org/wiki/List_of_Java_virtual_machines"><span class="icon">​</span>List of JVMs</a>
-</li><li><a class="ext-link" href="http://en.wikipedia.org/wiki/Free_Java_implementations"><span class="icon">​</span>freie Java Implementierungen</a>
-</li></ul></div>
+```
 
-      </div><ul class="tags"><li class="header">Tags</li><li><a href="../packages.html" rel="tag">packages</a> </li></ul>
+Weiterführende Links
+--------------------
 
-    </div>
-    </div>
-  </body>
-</html>
+-   [JavaVM
+    Homepage](http://jamvm.sourceforge.net/)
+-   [Vergleich verschiedener
+    JVMs](http://bugblogger.com/java-vms-compared-160/)
+-   [List of
+    JVMs](http://en.wikipedia.org/wiki/List_of_Java_virtual_machines)
+-   [freie Java
+    Implementierungen](http://en.wikipedia.org/wiki/Free_Java_implementations)
+

@@ -1,108 +1,67 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+xrelayd
+=======
 
-  <head>
-    <title>
-      packages/xrelayd – Freetz
-    </title>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!--[if IE]><script type="text/javascript">
-      if (/^#__msie303:/.test(window.location.hash))
-        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
-    </script><![endif]-->
-        <link rel="search" href="/search" />
-        <link rel="help" href="../TracGuide.html" />
-        <link rel="alternate" href="xrelayd%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
-        <link rel="up" href="../packages.html" title="Übergeordnete Wiki-Seite anzeigen" />
-        <link rel="start" href="/wiki" />
-        <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-      <link type="application/opensearchdescription+xml" rel="search" href="/search/opensearch" title="Freetz durchsuchen" />
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/jquery.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/babel.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/messages/de.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/trac.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/search.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/folding.js"></script>
-    <script type="text/javascript">
-      jQuery(document).ready(function($) {
-        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
-        $("#content").find(".wikianchor").each(function() {
-          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
-        });
-        $(".foldable").enableFolding(true, true);
-      });
-    </script>
-  </head>
-  <body>
-    <div id="banner">
-      <div id="header">
-        <a id="logo" href="/wiki"><img src="../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
-      </div>
-      <form id="search" action="https://www.google.com/search" method="get" onsubmit="; this.elements.namedItem('q').value = this.elements.namedItem('oq').value + ' site:freetz.github.io'">
-        <div>
-          <label for="proj-search">Suche:</label>
-          <input type="text" id="proj-search" name="oq" size="18" value="" />
-          <input type="hidden" name="q" value="" />
-          <input type="submit" value="Suche" />
-        </div>
-      </form>
-      <div id="metanav" class="nav">
-    <ul>
-      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
-    </ul>
-  </div>
-    </div>
-    <div id="mainnav" class="nav">
-    <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="https://github.com/Freetz-NG/freetz-ng/commits/master">Quellen durchsehen</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
-    </ul>
-  </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="xrelayd.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/packages/xrelayd.en" title="(not available)">English</a></li></ul></div><p /><div id="main">
-      <div id="pagepath" class="noprint">
-  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="xrelayd.html" title="Zeige packages/xrelayd an">xrelayd</a>
-</div>
-    <div id="content" class="wiki">
-      <div class="wikipage searchable">
+[![Xrelayd Webinterface](../../docs/screenshots/203_md.png)](../../docs/screenshots/203.png)
 
-          <div id="wikipage" class="trac-content"><p>
-</p><div class="wiki-toc"><h4>Inhaltsverzeichnis</h4><ol><li><a href="xrelayd.html#Konfiguration">Konfiguration</a></li><li><a href="xrelayd.html#ZertifikateaufderBoxerzeugen">Zertifikate auf der Box erzeugen</a></li></ol></div><p>
-</p>
-<h1 id="xrelayd">xrelayd</h1>
-<p>
-<figure><img src="/freetz-ng/screenshots/203.png" alt="Xrelayd Webinterface" /><figcaption>Xrelayd Webinterface</figcaption></figure>
-<em>"xrelayd is the successor to matrixtunnel, a lightweight stunnel replacement. Xrelayd is a basic tcp proxy server which enables you to encrypt arbitrary protocols without changing ssl unaware deamons and client software."</em> <a class="ext-link" href="http://forum.openwrt.org/viewtopic.php?id=12338"><span class="icon">​</span>xrelayd Thread im OpenWRT-Forum</a>
-</p>
-<p>
-Obwohl es als Nachfolger von matrixtunnel betrachtet wird, ist auch dieses Projekt ähnlich wie <em>matrixtunnel</em> seit Ende 2007 etwas eingeschlafen. <em>xrelayd</em> benutzt eine andere SSL-Bibliothek als <em>matrixtunnel</em> und ist auch nicht so kompakt wie dieses. Die Handhabung und Syntax von <em>xrelayd</em> ist ähnlich dem <em>matrixtunnel</em>. <em>xrelayd</em> kann im Unterschied zu <em>matrixtunnel</em> auch noch <a class="ext-link" href="http://en.wikipedia.org/wiki/Self-signed_certificate"><span class="icon">​</span>selbstsignierte Zertifikate</a> erstellen, sodass dies auf der Box selbst geschehen kann. Solche Zertifikate werden allerdings von den Browsern wie Firefox 3 als korrupt angesehen, weil sie "nicht vertrauenswürdig" sind (bei "vertrauenswürdigen Zertifikaten" bürgt dafür eine "<a class="ext-link" href="http://de.wikipedia.org/wiki/Zertifizierungsstelle"><span class="icon">​</span>Certificate Authority</a>" wie z.B. Thawte oder VeriSign). AVM scheint für ihren HTTPS-Server eine xrelayd-ähnliche-Lösung zu benutzen. Dafür sprechen bei jedem Reboot neu erstellte selbst signierte Zertifikate des HTTPS-Servers von AVM.
-</p>
-<p>
-Seit Freetz-trunk-<a class="changeset" href="/changeset/3571" title="xrelayd: add web interface (by wonderdoc, refs #509)
-">r3571</a> gibt es dazu auch ein WebGUI.
-</p>
-<h2 id="Konfiguration">Konfiguration</h2>
-<ol><li>Erzeugen der Keys auf dem PC (unter Linux):
-<pre class="wiki">openssl genrsa 1024 &gt; host.key
-openssl req -new -x509 -nodes -sha1 -days 365 -key host.key &gt; host.cert
-</pre></li><li>Die Keys im Webinterface unter Einstellungen&rarr;XRelayd: Certificate/Private Key einfügen.
-</li></ol><ol start="3"><li>Die gewünschten Services hinzufügen. Zum Beispiel:
-<pre class="wiki">0.0.0.0:4433 127.0.0.1:81 Freetz-Webinterface
-</pre></li><li>Zugriff (intern) über <a class="ext-link" href="https://fritz.box:4433"><span class="icon">​</span>https://fritz.box:4433</a>. Für den externen Zugriff muss noch eine Port-Freigabe eingetragen werden.
-</li></ol><h2 id="ZertifikateaufderBoxerzeugen">Zertifikate auf der Box erzeugen</h2>
-<pre class="wiki">xrelayd -f -K 1024 -p host.key -U "CN=localhost" -p host.key -A host.cert
-cat host.key &gt; /tmp/flash/.xrelayd/key.pem
-cat host.cert &gt; /tmp/flash/.xrelayd/certs.pem
+*"xrelayd is the successor to matrixtunnel, a lightweight stunnel
+replacement. Xrelayd is a basic tcp proxy server which enables you to
+encrypt arbitrary protocols without changing ssl unaware deamons and
+client software."* [xrelayd Thread im
+OpenWRT-Forum](http://forum.openwrt.org/viewtopic.php?id=12338)
+
+Obwohl es als Nachfolger von matrixtunnel betrachtet wird, ist auch
+dieses Projekt ähnlich wie *matrixtunnel* seit Ende 2007 etwas
+eingeschlafen. *xrelayd* benutzt eine andere SSL-Bibliothek als
+*matrixtunnel* und ist auch nicht so kompakt wie dieses. Die Handhabung
+und Syntax von *xrelayd* ist ähnlich dem *matrixtunnel*. *xrelayd* kann
+im Unterschied zu *matrixtunnel* auch noch [selbstsignierte
+Zertifikate](http://en.wikipedia.org/wiki/Self-signed_certificate)
+erstellen, sodass dies auf der Box selbst geschehen kann. Solche
+Zertifikate werden allerdings von den Browsern wie Firefox 3 als korrupt
+angesehen, weil sie "nicht vertrauenswürdig" sind (bei
+"vertrauenswürdigen Zertifikaten" bürgt dafür eine
+"[Certificate
+Authority](http://de.wikipedia.org/wiki/Zertifizierungsstelle)"
+wie z.B. Thawte oder VeriSign). AVM scheint für ihren HTTPS-Server eine
+xrelayd-ähnliche-Lösung zu benutzen. Dafür sprechen bei jedem Reboot neu
+erstellte selbst signierte Zertifikate des HTTPS-Servers von AVM.
+
+Seit
+Freetz-trunk-[r3571](https://trac.boxmatrix.info/freetz-ng/changeset/3571) gibt es dazu auch ein WebGUI.
+
+Konfiguration
+-------------
+
+1.  Erzeugen der Keys auf dem PC (unter Linux):
+
+    ``` 
+    openssl genrsa 1024 > host.key
+    openssl req -new -x509 -nodes -sha1 -days 365 -key host.key > host.cert
+    ```
+
+2.  Die Keys im Webinterface unter Einstellungen→XRelayd:
+    Certificate/Private Key einfügen.
+
+<!-- -->
+
+3.  Die gewünschten Services hinzufügen. Zum Beispiel:
+
+    ``` 
+    0.0.0.0:4433 127.0.0.1:81 Freetz-Webinterface
+    ```
+
+4.  Zugriff (intern) über
+    [https://fritz.box:4433](https://fritz.box:4433).
+    Für den externen Zugriff muss noch eine Port-Freigabe eingetragen
+    werden.
+
+Zertifikate auf der Box erzeugen
+--------------------------------
+
+```
+xrelayd -f -K 1024 -p host.key -U "CN=localhost" -p host.key -A host.cert
+cat host.key > /tmp/flash/.xrelayd/key.pem
+cat host.cert > /tmp/flash/.xrelayd/certs.pem
 modsave flash
-</pre></div>
+```
 
-      </div><ul class="tags"><li class="header">Tags</li><li><a href="/tags/network" rel="tag">network</a> </li><li><a href="../packages.html" rel="tag">packages</a> </li><li><a href="/tags/tunnel" rel="tag">tunnel</a> </li></ul>
-
-    </div>
-    <script type="text/javascript">
-        jQuery.loadStyleSheet("/chrome/screenshots/css/screenshots.css", "text/css");
-    </script>
-    </div>
-  </body>
-</html>

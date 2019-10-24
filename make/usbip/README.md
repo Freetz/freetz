@@ -1,102 +1,51 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+USB/IP
+======
 
-  <head>
-    <title>
-      packages/usbip – Freetz
-    </title>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!--[if IE]><script type="text/javascript">
-      if (/^#__msie303:/.test(window.location.hash))
-        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
-    </script><![endif]-->
-        <link rel="search" href="/search" />
-        <link rel="help" href="../TracGuide.html" />
-        <link rel="alternate" href="usbip%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
-        <link rel="up" href="../packages.html" title="Übergeordnete Wiki-Seite anzeigen" />
-        <link rel="start" href="/wiki" />
-        <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-      <link type="application/opensearchdescription+xml" rel="search" href="/search/opensearch" title="Freetz durchsuchen" />
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/jquery.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/babel.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/messages/de.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/trac.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/search.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/folding.js"></script>
-    <script type="text/javascript">
-      jQuery(document).ready(function($) {
-        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
-        $("#content").find(".wikianchor").each(function() {
-          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
-        });
-        $(".foldable").enableFolding(true, true);
-      });
-    </script>
-  </head>
-  <body>
-    <div id="banner">
-      <div id="header">
-        <a id="logo" href="/wiki"><img src="../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
-      </div>
-      <form id="search" action="https://www.google.com/search" method="get" onsubmit="; this.elements.namedItem('q').value = this.elements.namedItem('oq').value + ' site:freetz.github.io'">
-        <div>
-          <label for="proj-search">Suche:</label>
-          <input type="text" id="proj-search" name="oq" size="18" value="" />
-          <input type="hidden" name="q" value="" />
-          <input type="submit" value="Suche" />
-        </div>
-      </form>
-      <div id="metanav" class="nav">
-    <ul>
-      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
-    </ul>
-  </div>
-    </div>
-    <div id="mainnav" class="nav">
-    <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="https://github.com/Freetz-NG/freetz-ng/commits/master">Quellen durchsehen</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
-    </ul>
-  </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="usbip.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/packages/usbip.en" title="(not available)">English</a></li></ul></div><p /><div id="main">
-      <div id="pagepath" class="noprint">
-  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="usbip.html" title="Zeige packages/usbip an">usbip</a>
-</div>
-    <div id="content" class="wiki">
-      <div class="wikipage searchable">
+Das Ziel von
+**[USB/IP](http://usbip.sourceforge.net/)** ist es,
+die an einem Rechner angeschlossenen USB-Geräte von anderen Rechnern
+benutzbar zu machen - und zwar im vollen Funktionsumfang. Dazu werden
+"USB I/O messages" in IP-Pakete gepackt, um über das Netzwerk
+übertragen zu werden. Jeder einzelne Rechner kann die betreffenden
+USB-Geräte nun so benutzen, als seien sie direkt bei ihm angeschlossen.
+Damit lassen sich folgende Dinge tun:
 
-          <div id="wikipage" class="trac-content"><h1 id="USBIP">USB/IP</h1>
-<p>
-Das Ziel von <strong><a class="ext-link" href="http://usbip.sourceforge.net/"><span class="icon">​</span>USB/IP</a></strong> ist es, die an einem Rechner angeschlossenen USB-Geräte von anderen Rechnern benutzbar zu machen - und zwar im vollen Funktionsumfang. Dazu werden "USB I/O messages" in IP-Pakete gepackt, um über das Netzwerk übertragen zu werden. Jeder einzelne Rechner kann die betreffenden USB-Geräte nun so benutzen, als seien sie direkt bei ihm angeschlossen. Damit lassen sich folgende Dinge tun:
-</p>
-<ul><li><strong>USB Storage Devices</strong>: <tt>fdisk</tt>, <tt>mkfs</tt>, <tt>mount</tt>/<tt>umount</tt>, diverse Dateioperationen, Filme von einer DVD abspielen, eine DVD brennen&hellip;
-</li><li><strong>USB Tastaturen und USB Mäuse</strong>: Benutzung selbiger sowohl von der Konsole als auch aus dem X Window System.
-</li><li><strong>USB Webcams und USB Lautsprecher</strong>: Durch die Webcam schauen, Bilddaten "capturen" (aufzeichnen), Musik abspielen.
-</li><li><strong>USB Drucker</strong>: Wie die AVM-Druckerfreigabe, zusätzlich kann zB der Füllstand ermittelt werden.
-</li><li><strong>USB Scanner, USB Serial Converter und USB Netzwerk Interfaces</strong>: Naja - halt benutzen eben.
-</li></ul><p>
-In Hardware gegossen, findet man über Google auch schon etliche sogenannte "USB Extender" (und zwar stellen diese bei weitem die größte Treffermenge dar) - mit diesem Paket bringen wir das jedoch einfach vorhandener Hardware, nämlich unserer Freetz-Box, bei.
-</p>
-<p>
-Im IPPF ist beschrieben wie man es nutzt:
-<a class="ext-link" href="http://www.ip-phone-forum.de/showpost.php?p=1392146&amp;postcount=45"><span class="icon">​</span>Teil 1</a>
-<a class="ext-link" href="http://www.ip-phone-forum.de/showpost.php?p=1609255&amp;postcount=50"><span class="icon">​</span>Teil 2</a>
-</p>
-<h2 id="VerwendeteBibliotheken">Verwendete Bibliotheken</h2>
-<ul><li>libglib2
-</li><li>libsysfs
-</li></ul><h2 id="WeiterführendeLinks">Weiterführende Links</h2>
-<ul><li><a class="ext-link" href="http://usbip.sourceforge.net/"><span class="icon">​</span>USB/IP Projektseite</a>
-</li><li><a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=131278"><span class="icon">​</span>IPPF Thread: Wie kam USB/IP auf die Freetz-Box</a>
-</li><li>Windows-Client: <a class="ext-link" href="https://sourceforge.net/projects/usbip/files/usbip_windows/"><span class="icon">​</span>usbip_windows_v0.1.0.0_signed.zip</a>
-</li></ul><hr />
-</div>
+-   **USB Storage Devices**: `fdisk`, `mkfs`, `mount`/`umount`, diverse
+    Dateioperationen, Filme von einer DVD abspielen, eine DVD brennen...
+-   **USB Tastaturen und USB Mäuse**: Benutzung selbiger sowohl von der
+    Konsole als auch aus dem X Window System.
+-   **USB Webcams und USB Lautsprecher**: Durch die Webcam schauen,
+    Bilddaten "capturen" (aufzeichnen), Musik abspielen.
+-   **USB Drucker**: Wie die AVM-Druckerfreigabe, zusätzlich kann zB der
+    Füllstand ermittelt werden.
+-   **USB Scanner, USB Serial Converter und USB Netzwerk Interfaces**:
+    Naja - halt benutzen eben.
 
-      </div><ul class="tags"><li class="header">Tags</li><li><a href="/tags/hardware" rel="tag">hardware</a> </li><li><a href="../packages.html" rel="tag">packages</a> </li><li><a href="/tags/usb" rel="tag">usb</a> </li></ul>
+In Hardware gegossen, findet man über Google auch schon etliche
+sogenannte "USB Extender" (und zwar stellen diese bei weitem die
+größte Treffermenge dar) - mit diesem Paket bringen wir das jedoch
+einfach vorhandener Hardware, nämlich unserer Freetz-Box, bei.
 
-    </div>
-    </div>
-  </body>
-</html>
+Im IPPF ist beschrieben wie man es nutzt: [Teil
+1](http://www.ip-phone-forum.de/showpost.php?p=1392146&postcount=45)
+[Teil
+2](http://www.ip-phone-forum.de/showpost.php?p=1609255&postcount=50)
+
+Verwendete Bibliotheken
+-----------------------
+
+-   libglib2
+-   libsysfs
+
+Weiterführende Links
+--------------------
+
+-   [USB/IP
+    Projektseite](http://usbip.sourceforge.net/)
+-   [IPPF Thread: Wie kam USB/IP auf die
+    Freetz-Box](http://www.ip-phone-forum.de/showthread.php?t=131278)
+-   Windows-Client:
+    [usbip_windows_v0.1.0.0_signed.zip](https://sourceforge.net/projects/usbip/files/usbip_windows/)
+
+------------------------------------------------------------------------
+

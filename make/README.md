@@ -5,7 +5,7 @@
   * **[ACME.sh 2.83 (letsencrypt)](acme/README.md)<a id='acme'></a>**<br>
     A pure Unix shell script implementing ACME client protocol.
 
-  * **<u>apache2: Apache HTTP Server 2.4.41 (binary only)</u><a id='apache2'></a>**<br>
+  * **[apache2: Apache HTTP Server 2.4.41 (binary only)](apache2/README.md)<a id='apache2'></a>**<br>
     The Apache httpd server
 
   * **<u>asterisk-chan-capi: chan_capi: ISDN API 2.0 module for asterisk</u><a id='asterisk-chan-capi'></a>**<br>
@@ -21,7 +21,7 @@
   * **<u>atop 2.2.3 (binary only)</u><a id='atop'></a>**<br>
     The program atop is an interactive monitor to view the load on a Linux system. It shows the occupation of the most critical hardware resources
 
-  * **[autofs 5.0.5](https://freetz-ng.github.io/freetz-ng/wiki/packages/autofs)<a id='autofs'></a>**<br>
+  * **[autofs 5.0.5](autofs/README.md)<a id='autofs'></a>**<br>
     autofs is a kernel-based automounter for Linux.  It performs a job similar to amd(8) but relies on a small stub of kernel code instead of pretending to be an NFS server.  The result is simpler code, better reliability, and much faster operation in the common case (everything already mounted.)
 
   * **<u>autossh 1.4g (binary only)</u><a id='autossh'></a>**<br>
@@ -32,33 +32,33 @@
 
   * **<u>AVM Services</u><a id='avm'></a>**<br>
 
-  * **[bash 3.2.57 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/bash)<a id='bash'></a>**<br>
+  * **[bash 3.2.57 (binary only)](bash/README.md)<a id='bash'></a>**<br>
     Bash is an sh-compatible command language interpreter that executes commands read from the standard input or from a file. Bash also incorporates useful features from the Korn and C shells (ksh and csh).(roundabout 540K minimal and 840K full featured)
 
-  * **[Bftpd 3.3](https://freetz-ng.github.io/freetz-ng/wiki/packages/bftpd)<a id='bftpd'></a>**<br>
+  * **[Bftpd 3.3](bftpd/README.md)<a id='bftpd'></a>**<br>
     Small FTP Server
 
   * **<u>bfusb: AVM BlueFRITZ! USB stick support (binary only)</u><a id='bfusb'></a>**<br>
     This package adds support for the
 
-  * **[BIND 9.11.9](https://freetz-ng.github.io/freetz-ng/wiki/packages/bind)<a id='bind'></a>**<br>
+  * **[BIND 9.11.9](bind/README.md)<a id='bind'></a>**<br>
     BIND is an implementation of the Domain Name System (DNS) protocols. The name BIND stands for "Berkeley Internet Name Daemon". You have to provide the config and needed zone files yourself.
 
-  * **[Bip](https://freetz-ng.github.io/freetz-ng/wiki/packages/bip)<a id='bip'></a>**<br>
+  * **[Bip](bip/README.md)<a id='bip'></a>**<br>
     Bip is an IRC proxy, which means it keeps connected to your preferred IRC servers, can store the logs for you, and even send them back to your IRC client(s) upon connection. You may want to use bip to keep your logfiles (in a unique format and on a unique computer) whatever your client is, when you connect from multiple workstations, or when you simply want to have a playback of what was said while you were away.
 
-  * **[Bird 1.6.4](https://freetz-ng.github.io/freetz-ng/wiki/packages/bird)<a id='bird'></a>**<br>
+  * **[Bird 1.6.4](bird/README.md)<a id='bird'></a>**<br>
     The BIRD Internet Routing Daemon
 
   * **<u>bittwist 1.1 (binary only)</u><a id='bittwist'></a>**<br>
     bittwist is designed to complement tcpdump, which by itself has done a great job in capturing network traffic. bittwist can regenerate the captured traffic onto a live network (the packets are generated from tcpdump trace file, generating a .pcap file). bittwist also comes with a comprehensive trace file editor to allow to change the contents of a trace file on the fly. Generally, a packet generator is useful in simulating networking traffic or scenario, testing firewall, IDS, and IPS, and troubleshooting various network problems.
 
-  * **[bluez-utils 2.25 (binary only, incl. Pin-Change and NAP)](https://freetz-ng.github.io/freetz-ng/wiki/packages/bluez-utils)<a id='bluez-utils'></a>**<br>
+  * **[bluez-utils 2.25 (binary only, incl. Pin-Change and NAP)](bluez-utils/README.md)<a id='bluez-utils'></a>**<br>
     This package contains utilities for configuring bluetooth
 
-  * **[br2684ctl (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/br2684ctl)<a id='br2684ctl'></a>**<br>
+  * **[br2684ctl (binary only)](br2684ctl/README.md)<a id='br2684ctl'></a>**<br>
 
-  * **[bridge-utils 1.4 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/bridge-utils)<a id='bridge-utils'></a>**<br>
+  * **[bridge-utils 1.4 (binary only)](bridge-utils/README.md)<a id='bridge-utils'></a>**<br>
     This package contains utilities for configuring the Linux ethernet bridge. The Linux ethernet bridge can be used for connecting multiple ethernet devices together. The connection is fully transparent: hosts connected to one ethernet device see hosts connected to the other ethernet devices directly.
 
   * **<u>bvi/bmore 1.4.0 (binary only) </u><a id='bvi'></a>**<br>
@@ -67,16 +67,16 @@
   * **[CA-bundle 2019-10-16](ca-bundle/README.md)<a id='ca-bundle'></a>**<br>
     The Mozilla CA certificate store in PEM format, see http://curl.haxx.se/docs/caextract.html Size of uncompressed file is about 250 KB.
 
-  * **[Callmonitor 1.20.9-git](https://freetz-ng.github.io/freetz-ng/wiki/packages/callmonitor)<a id='callmonitor'></a>**<br>
+  * **<u>Callmonitor 1.20.9-git</u><a id='callmonitor'></a>**<br>
     Callmonitor enables you to perform arbitrary actions upon incoming calls on your AVM Fritz!Box (e.g., to send notifications to your favorite set-top box, to wake up your PC, or to send you a mail when you have missed a call).
 
   * **<u>CCID driver 1.4.30</u><a id='ccid'></a>**<br>
     ccid provides the source code for a generic USB CCID (Chip/Smart Card Interface Devices) driver and
 
-  * **[Checkmaild 0.4.7](https://freetz-ng.github.io/freetz-ng/wiki/packages/checkmaild)<a id='checkmaild'></a>**<br>
+  * **[Checkmaild 0.4.7](checkmaild/README.md)<a id='checkmaild'></a>**<br>
     Checkmaild checks pop3/smtp mail accounts for new mails on a given interval.
 
-  * **[Cifsmount 6.6](https://freetz-ng.github.io/freetz-ng/wiki/packages/cifsmount)<a id='cifsmount'></a>**<br>
+  * **[Cifsmount 6.6](cifsmount/README.md)<a id='cifsmount'></a>**<br>
     User space helper for mounting remote CIFS shares + CGI web interface for easy configuration of up to three mounts incl. (auto-) start/stop. CIFS is an extended version of SMB, the well-known protocol used by MS Windows and Samba for sharing folders, files and printers. Thus, cifsmount is a replacement for smbmount, having the advantage of being significantly smaller than smbmount. So if you want to mount Windows or Samba shares from your router box, this package is for you.
 
   * **<u>classpath GNU 0.98 (binary only)</u><a id='classpath'></a>**<br>
@@ -87,30 +87,30 @@
   * **<u>comgt 0.32 (binary only)</u><a id='comgt'></a>**<br>
     Option GlobeTrotter GPRS/EDGE/3G/HSDPA and Vodafone 3G/GPRS datacard control tool. comgt is a scripting language interpreter useful for establishing communications
 
-  * **[Cpmaccfg 0.6 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/cpmaccfg)<a id='cpmaccfg'></a>**<br>
+  * **[Cpmaccfg 0.6 (binary only)](cpmaccfg/README.md)<a id='cpmaccfg'></a>**<br>
     With a patched kernel and this tool it is possible to
 
   * **<u>cryptsetup 1.7.0 (binary only)</u><a id='cryptsetup'></a>**<br>
     cryptsetup is used to conveniently setup dm-crypt managed block devices under Linux. Hint: Don't forget to insmod all selected modules.
 
-  * **[Ctorrent dnh3.3.2 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/ctorrent)<a id='ctorrent'></a>**<br>
+  * **[Ctorrent dnh3.3.2 (binary only)](ctorrent/README.md)<a id='ctorrent'></a>**<br>
     CTorrent is a BitTorrent client written in the C programming language, known to be a very robust and mature programming language, which produces fast and optimized application.
 
-  * **[Curl 7.66.0 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/curl)<a id='curl'></a>**<br>
+  * **[Curl 7.66.0 (binary only)](curl/README.md)<a id='curl'></a>**<br>
     Curl is a command line tool for transferring files with URL syntax, supporting FTP, FTPS, HTTP, HTTPS, GOPHER, TELNET, DICT, FILE and LDAP. Curl supports HTTPS certificates, HTTP POST, HTTP PUT, FTP uploading, kerberos, HTTP form based upload, proxies, cookies, user+password authentication, file transfer resume, http proxy tunneling and a busload of other useful tricks.
 
   * **<u>dante 1.2.2 (binary only)</u><a id='dante'></a>**<br>
 
-  * **[davfs2: davfs 1.5.2](https://freetz-ng.github.io/freetz-ng/wiki/packages/davfs2)<a id='davfs2'></a>**<br>
+  * **[davfs2: davfs 1.5.2](davfs2/README.md)<a id='davfs2'></a>**<br>
     davfs is a Linux file system driver that allows you to mount a WebDAV server as a disk drive. WebDAV is an extension to HTTP/1.1 that allows remote collaborative authoring of Web resources, defined in RFC 4918.
 
   * **<u>dbus: D-Bus 1.8.20</u><a id='dbus'></a>**<br>
     D-Bus is a message bus system, a simple way for applications to talk to one another. In addition to interprocess communication, D-Bus helps coordinate process lifecycle; it makes it simple and reliable to code a "single instance" application or daemon, and to launch applications and daemons on demand when their services are needed.
 
-  * **[Debootstrap (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/debootstrap)<a id='debootstrap'></a>**<br>
+  * **[Debootstrap (binary only)](debootstrap/README.md)<a id='debootstrap'></a>**<br>
     debootstrap is used to create a Debian base system from scratch, without requiring the availability of dpkg or apt. It does this by downloading .deb files from a mirror site, and carefully unpacking
 
-  * **[Deco 1.3.9 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/deco)<a id='deco'></a>**<br>
+  * **[Deco 1.3.9 (binary only)](deco/README.md)<a id='deco'></a>**<br>
     Norton commander clone. Compared with Midnight Commander (mc) it is considerably smaller, but also significantly less powerful and less fancy-looking. Use it if you want to trade power for file and memory footprint, but still feel like requiring a file manager instead of a plain UNIX shell. Uses about 149K uncompressed space.
 
   * **<u>decrypt-fritzos-cfg: decrypt FRITZ!OS configs 0.4-git</u><a id='decrypt-fritzos-cfg'></a>**<br>
@@ -119,22 +119,22 @@
   * **[dehydrated 0.6.5 (letsencrypt)](dehydrated/README.md)<a id='dehydrated'></a>**<br>
     Dehydrated is a client for signing certificates with an ACME-server (e.g. Let's Encrypt) implemented as a relatively simple (zsh-compatible) bash-script. This client supports both ACME v1 and the new ACME v2 including support for wildcard certificates!
 
-  * **[DigiTemp 3.7.2 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/digitemp)<a id='digitemp'></a>**<br>
+  * **[DigiTemp 3.7.2 (binary only)](digitemp/README.md)<a id='digitemp'></a>**<br>
     digitemp for 1-wire modules You could use RRDstats for data collection and visualisation
 
-  * **[dns2tcp 0.5.2](https://freetz-ng.github.io/freetz-ng/wiki/packages/dns2tcp)<a id='dns2tcp'></a>**<br>
+  * **[dns2tcp 0.5.2](dns2tcp/README.md)<a id='dns2tcp'></a>**<br>
     Dns2tcp is a network tool designed to relay TCP connections through DNS traffic. Encapsulation is done on the TCP level,
 
-  * **[Dnsmasq 2.80](https://freetz-ng.github.io/freetz-ng/wiki/packages/dnsmasq)<a id='dnsmasq'></a>**<br>
+  * **[Dnsmasq 2.80](dnsmasq/README.md)<a id='dnsmasq'></a>**<br>
     Combined DHCP, DNS and TFTP server.
 
   * **<u>dosfstools 3.0.28 (binary only)</u><a id='dosfstools'></a>**<br>
     utilities to create, check and label MS-DOS FAT filesystems
 
-  * **[Dropbear 2019.78](https://freetz-ng.github.io/freetz-ng/wiki/packages/dropbear)<a id='dropbear'></a>**<br>
+  * **[Dropbear 2019.78](dropbear/README.md)<a id='dropbear'></a>**<br>
     Dropbear SSH server and client Dropbear is a relatively small SSH 2 server and client. It runs on a variety of POSIX-based platforms. Dropbear is open source software, distributed under a MIT-style license. Dropbear is particularly useful for "embedded"-type Linux (or other Unix) systems, such as wireless routers. Features - A small memory footprint suitable for memory-constrained environments - Dropbear can compile to a 110kB statically linked binary with uClibc on x86 (only minimal options selected) - Dropbear server implements X11 forwarding, and authentication-agent forwarding for OpenSSH clients - Can run from inetd or standalone - Compatible with OpenSSH ~/.ssh/authorized_keys public key authentication - The server, client, keygen, and key converter can be compiled into a single binary (a la busybox) - Features can easily be disabled when compiling to save space TCP forwarding support
 
-  * **[dtach 0.8 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/dtach)<a id='dtach'></a>**<br>
+  * **[dtach 0.8 (binary only)](dtach/README.md)<a id='dtach'></a>**<br>
     dtach is a tiny program that emulates the detach feature of screen, allowing you to run a program in an environment that is protected from the controlling terminal and attach to it later.
 
   * **<u>dvbsnoop 1.4.50 (binary only)</u><a id='dvbsnoop'></a>**<br>
@@ -146,31 +146,31 @@
   * **<u>dvbtune 0.5 (binary only)</u><a id='dvbtune'></a>**<br>
     DVB tools is a set of command-line tools for DVB cards such as the Hauppauge DVB-S and Nova-t. Includes RTP multicast streaming server.
 
-  * **[e2fsprogs 1.42.13 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/e2fsprogs)<a id='e2fsprogs'></a>**<br>
+  * **[e2fsprogs 1.42.13 (binary only)](e2fsprogs/README.md)<a id='e2fsprogs'></a>**<br>
     This package contains essential ext2, ext3 and ext4 filesystem utilities which consists of e2fsck, mke2fs, debugfs, dumpe2fs, tune2fs, and most of the other core ext2 filesystem utilities. Homepage: http://e2fsprogs.sourceforge.net/
 
-  * **[emailrelay: E-MailRelay 1.9](https://freetz-ng.github.io/freetz-ng/wiki/packages/emailrelay)<a id='emailrelay'></a>**<br>
+  * **[emailrelay: E-MailRelay 1.9](emailrelay/README.md)<a id='emailrelay'></a>**<br>
     E-MailRelay is a simple store-and-forward message transfer agent and proxy server. It runs on Unix-like operating systems (including Linux), and on Windows. When used as proxy server the E-MailRelay program (emailrelay) runs in the background and accepts e-mail from local e-mail client programs (KMail, Outlook etc.) or from the outside world, using the SMTP protocol. As soon as an e-mail message is received it is forwarded on to the next SMTP server for onward delivery. This becomes more useful when you add in your own message processing: as each message is received it can be passed one of your programs for editing, filtering, encrypting etc. When used as a store-and-forward transfer agent E-Mail- Relay runs in two modes: the storage daemon part, and the forwarding agent. The storage daemon waits for incoming mail and stores anything it receives in a spool directory. As a forwarding agent E-MailRelay pulls messages out of the	spool directory and passes them on to a remote server -- perhaps your ISP mail server. E-MailRelay can also run as a POP3 server so that e-mail
 
-  * **[Empty 0.6.15b (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/empty)<a id='empty'></a>**<br>
+  * **[Empty 0.6.15b (binary only)](empty/README.md)<a id='empty'></a>**<br>
     empty is an utility that provides an interface to execute and/or
 
-  * **[eSpeak 1.48.04 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/espeak)<a id='espeak'></a>**<br>
+  * **[eSpeak 1.48.04 (binary only)](espeak/README.md)<a id='espeak'></a>**<br>
     eSpeak is a compact open source software speech synthesizer for English and other languages.
 
   * **<u>FFmpeg 1.2.12</u><a id='ffmpeg'></a>**<br>
     FFmpeg is a complete, cross-platform solution to record, convert and stream audio and video.
 
-  * **[fortune 1.2](https://freetz-ng.github.io/freetz-ng/wiki/packages/fortune)<a id='fortune'></a>**<br>
+  * **[fortune 1.2](fortune/README.md)<a id='fortune'></a>**<br>
     Fortune is a small game that is meant to lighten up your life. It can be used to display a random entry from a cookie file. After having installed the package, just put some fortune- files into a directory and create a symbolic link to /var/media/fortunes like this: ln -s /var/media/ftp/ExternalDisk/fortunes/ /var/media/fortunes For your convenience I have packed some fortune-files up and uploaded them here: http://homepages.tu-darmstadt.de/~pkrueger/fortunes.7z If you'd rather get your own files, you could start looking here:
 
   * **<u>fowsr 1.0-20110904 (binary only)</u><a id='fowsr'></a>**<br>
     fowsr is a USB Data Collector application for WH1080 compatible weather stations. Output formats includes XML, Wunderground.com and pywws.
 
-  * **[fstyp 0.1 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/fstyp)<a id='fstyp'></a>**<br>
+  * **[fstyp 0.1 (binary only)](fstyp/README.md)<a id='fstyp'></a>**<br>
     fstyp can be used to heuristically detect which filesystem type a block
 
-  * **[FUSE 2.9.7 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/fuse)<a id='fuse'></a>**<br>
+  * **[FUSE 2.9.7 (binary only)](fuse/README.md)<a id='fuse'></a>**<br>
     Filesystem in Userspace (FUSE) is a free Unix kernel module that allows non-privileged users to create their own file systems without the need to write any kernel code. This is achieved by running the file systemcode in user space, while the FUSE module only provides a "bridge" to the actual kernel interfaces. FUSE was officially merged into the mainstream Linux kernel tree in kernel version 2.6.14. FUSE is particularly useful for writing virtual file systems. Unlike traditional filesystems which essentially save data to and retrieve data from disk, virtual filesystems do not actually store data themselves. They act as a view or translation of an existing filesystem or storage device. In principle, any resource available to FUSE implementation can be exported as a file system.
 
   * **[getdns 1.5.2](getdns/README.md)<a id='getdns'></a>**<br>
@@ -193,19 +193,19 @@
   * **<u>gocr 0.49 (binary only)</u><a id='gocr'></a>**<br>
     GOCR is an optical character recognition program, released under the GNU General Public License. It reads images in many formats
 
-  * **[gw6: Gateway6 client](https://freetz-ng.github.io/freetz-ng/wiki/packages/gw6)<a id='gw6'></a>**<br>
+  * **[gw6: Gateway6 client](gw6/README.md)<a id='gw6'></a>**<br>
     Client to build a tunnel to the ipv6 network (see http://go6.net). The binary will be installed as /usr/sbin/gw6c and CGI frontend will be provided for a simple configuration. A sample can be
 
   * **<u>HAProxy 1.8.21</u><a id='haproxy'></a>**<br>
     haproxy is a loadbalancer.
 
-  * **[haserl 0.9.35 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/haserl)<a id='haserl'></a>**<br>
+  * **[haserl 0.9.35 (binary only)](haserl/README.md)<a id='haserl'></a>**<br>
     Haserl is a small program that uses shell or Lua script to create cgi web scripts. It is intended for environments where PHP or ruby are too big. A typical use is to run cgi scripts in an embedded environment, using a small web server, such as mini-httpd, lighty, or the server built into busybox. This package is mandatory
 
-  * **[hd-idle](https://freetz-ng.github.io/freetz-ng/wiki/packages/hd-idle)<a id='hd-idle'></a>**<br>
+  * **[hd-idle](hd-idle/README.md)<a id='hd-idle'></a>**<br>
     Another idle-daemon for attached hard drives if sg3utils doesn't
 
-  * **[hol: Halt-On-Lan](https://freetz-ng.github.io/freetz-ng/wiki/packages/hol)<a id='hol'></a>**<br>
+  * **[hol: Halt-On-Lan](hol/README.md)<a id='hol'></a>**<br>
     Halt-On-Lan is a package to run predefined actions on a remote host: shutdown, reboot, logoff, lock For successfull action poweroff.exe from http://users.telenet.be/jbosman/poweroff/poweroff.htm or similar compatible script or binary must be installed and run as service on the remote host. Moreover, in case of requested interaction this service should understand
 
   * **<u>html2text 1.3.2a (binary only)</u><a id='html2text'></a>**<br>
@@ -213,13 +213,13 @@
 
   * **<u>htop 1.0.3 (binary only)</u><a id='htop'></a>**<br>
 
-  * **[htpdate 1.0.4](https://freetz-ng.github.io/freetz-ng/wiki/packages/htpdate)<a id='htpdate'></a>**<br>
+  * **[htpdate 1.0.4](htpdate/README.md)<a id='htpdate'></a>**<br>
     The HTTP Time Protocol (HTP) is used to synchronize a computer's time with web servers as reference time source. Htpdate will synchronize your computer's time by extracting timestamps from HTTP headers found in web server responses. Htpdate can be used as a daemon, to keep your computer synchronized. WWW: http://www.clevervest.com/htp/ Manpage: http://linux.die.net/man/8/htpdate This package automatically removes AVM'S chronyd if necessary.
 
   * **<u>httpry 0.1.8</u><a id='httpry'></a>**<br>
     httpry is a specialized packet sniffer designed for displaying and logging HTTP traffic. It is not intended to perform analysis itself, but to capture, parse, and log the traffic for later analysis. It can be run in real-time displaying the traffic as it is parsed, or as a daemon process that logs to an output file. It is written to be as lightweight and flexible as possible, so that it can be easily adaptable to different applications. http://dumpsterventures.com/jason/httpry/
 
-  * **[httptunnel 3.3 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/httptunnel)<a id='httptunnel'></a>**<br>
+  * **[httptunnel 3.3 (binary only)](httptunnel/README.md)<a id='httptunnel'></a>**<br>
 
   * **<u>iconv 1.13.1 (binary only)</u><a id='iconv'></a>**<br>
 
@@ -227,22 +227,22 @@
 
   * **<u>iftop 0.17 (binary only)</u><a id='iftop'></a>**<br>
 
-  * **[igmpproxy 0.1](https://freetz-ng.github.io/freetz-ng/wiki/packages/igmpproxy)<a id='igmpproxy'></a>**<br>
+  * **[igmpproxy 0.1](igmpproxy/README.md)<a id='igmpproxy'></a>**<br>
     IGMPproxy is a simple dynamic Multicast Routing Daemon using only IGMP signalling. It's intended for simple forwarding of Multicast traffic between networks.
 
   * **<u>ImageMagick 7.0.8-45 (binary only)</u><a id='imagemagick'></a>**<br>
     ImageMagick is a robust collection of tools and libraries to read, write, and manipulate an image in many image formats, including popular formats like TIFF, JPEG, PNG, PDF, PhotoCD, and GIF. With ImageMagick, you can create images dynamically, making it suitable for Web applications. You can also resize, rotate, sharpen, color-reduce, or add special effects to an image and save your completed work in many different image formats. Image processing operations are available from the command line as well as through C, C++, and PERL-based programming
 
-  * **[Inadyn-mt 02.28.10](https://freetz-ng.github.io/freetz-ng/wiki/packages/inadyn-mt)<a id='inadyn-mt'></a>**<br>
+  * **[Inadyn-mt 02.28.10](inadyn-mt/README.md)<a id='inadyn-mt'></a>**<br>
     INADYN-MT - Simple Dynamic DNS client. INADYN-MT is a free DynDNS client. It gives the possibility to have your own fixed hostname registered on the internet, although your IP might be changing. It checks periodically whether the IP address stored by the DNS server is the real current IP address of the machine that is
 
   * **<u>Inadyn-OpenDNS 1.99</u><a id='inadyn-opendns'></a>**<br>
     INADYN - Simple Dynamic DNS client. INADYN is a free DynDNS client. It gives the possibility to have your own fixed hostname registered on the internet, although your IP might be changing. It checks periodically whether the IP address stored by the DNS server is the real current IP address of the machine that is running INADYN.
 
-  * **[Inetd](https://freetz-ng.github.io/freetz-ng/wiki/packages/inetd)<a id='inetd'></a>**<br>
+  * **[Inetd](inetd/README.md)<a id='inetd'></a>**<br>
     'Virtual' inetd package. Provides configuration framework for inetd. Requires a compatible inetd binary. (at the moment, only busybox inetd is supported)
 
-  * **[iodine 0.7.0](https://freetz-ng.github.io/freetz-ng/wiki/packages/iodine)<a id='iodine'></a>**<br>
+  * **[iodine 0.7.0](iodine/README.md)<a id='iodine'></a>**<br>
     iodine lets you tunnel IPv4 data through a DNS server. This can be usable in different situations where internet access is
 
   * **<u>iperf 3.7 (binary only)</u><a id='iperf'></a>**<br>
@@ -251,20 +251,20 @@
   * **<u>IPsec-tools 0.7.2</u><a id='ipsec-tools'></a>**<br>
     IPsec-tools (plainrsa-gen racoon racoonctl setkey)
 
-  * **[Iptables-CGI 1.1](https://freetz-ng.github.io/freetz-ng/wiki/packages/iptables)<a id='iptables'></a>**<br>
+  * **[Iptables-CGI 1.1](iptables-cgi/README.md)<a id='iptables'></a>**<br>
 
   * **<u>Iptraf 3.0.1 (binary only)</u><a id='iptraf'></a>**<br>
     IPTraf is a console-based network monitoring program for Linux that displays information about IP traffic. It returns such information as: Current TCP connections UDP, ICMP, OSPF, and other types of IP packets Packet and byte counts on TCP connections IP, TCP, UDP, ICMP, non-IP, and other packet and byte counts TCP/UDP counts by ports Packet counts by packet sizes Packet and byte counts by IP address Interface activity Flag statuses on TCP packets LAN station statistics
 
   * **<u>iputils' traceroute6 (binary only)</u><a id='iputils'></a>**<br>
 
-  * **[Irssi 0.8.15](https://freetz-ng.github.io/freetz-ng/wiki/packages/irssi)<a id='irssi'></a>**<br>
+  * **[Irssi 0.8.15](irssi/README.md)<a id='irssi'></a>**<br>
     Irssi - the client of the future - is a terminal based IRC client for UNIX systems. It also supports SILC and ICB protocols via plugins. Features: * Autologging: Irssi will automatically log any channels, queries or special windows that you want. * Formats and Themes: irssi has an easy yet powerful way to customize your client's look and feel. * Configurable keybindings: Irssi allows you to modify the default keybindings and create your own so you can customize your client. * Paste detection: Irssi tries to detect when you are pasting large amounts of text, by looking at the speed that characters are entered; if such pasting is detected [TAB]-characters are sent as-is instead of being tab-completed and eventually ending up in a wrong destination window.
 
   * **<u>ISC dhcp 4.3.6-P1 (binary only)</u><a id='isc-dhcp'></a>**<br>
     ISC DHCP is open source software that implements the Dynamic Host Configuration Protocol for connection to an IP network. It is production-grade software that offers a complete solution for implementing DHCP servers, relay agents, and clients for small local networks to large enterprises. ISC DHCP solution supports both IPv4 and IPv6, and is suitable
 
-  * **[JamVM 1.5.4 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/jamvm)<a id='jamvm'></a>**<br>
+  * **[JamVM 1.5.4 (binary only)](jamvm/README.md)<a id='jamvm'></a>**<br>
     JamVM - extremely small Java VM JamVM is a new Java Virtual Machine which conforms to the JVM specification version 2 (blue book). In comparison to most other VM's (free and commercial) it is extremely small, with a stripped executable on PowerPC of only ~160K, and Intel 140K. However, unlike other small VMs (e.g. KVM) it is designed to support the full specification, and includes support for object finalisation, Soft/Weak/Phantom References, class-unloading, the Java Native Interface (JNI) and the Reflection API. Class Libraries: JamVM is designed to use the GNU Classpath Java class library. A number of classes are reference classes which must be modified for a particular VM. These are provided along with JamVM (see INSTALL). JamVM should always work with the latest development snapshot of Classpath (currently 0.93). It should also work with the latest version direct from CVS, and the upcoming 0.94 snapshot (but check the Classpath mailing lists for possible patches). Later snapshots of Classpath may also work, if no modifications have been made to the VM
 
   * **<u>jq 1.6 (binary only)</u><a id='jq'></a>**<br>
@@ -273,7 +273,7 @@
   * **<u>js OSSP 1.6.20070208 (binary only)</u><a id='js'></a>**<br>
     OSSP js is a stand-alone distribution of the JavaScript (JS)
 
-  * **[Knockd 0.7](https://freetz-ng.github.io/freetz-ng/wiki/packages/knock)<a id='knock'></a>**<br>
+  * **[Knockd 0.7](knock/README.md)<a id='knock'></a>**<br>
     Knockd is a port-knock server. It listens to all traffic on an ethernet
 
   * **[LCD4linux ca13a1d-git](lcd4linux/README.md)<a id='lcd4linux'></a>**<br>
@@ -282,34 +282,34 @@
   * **<u>lftp 4.8.4 (binary only)</u><a id='lftp'></a>**<br>
     LFTP is sophisticated file transfer program with command line interface. It supports FTP, HTTP, FISH, SFTP, HTTPS and FTPS protocols. GNU Readline library is used for input.
 
-  * **[lighttpd 1.4.54](https://freetz-ng.github.io/freetz-ng/wiki/packages/lighttpd)<a id='lighttpd'></a>**<br>
+  * **[lighttpd 1.4.54](lighttpd/README.md)<a id='lighttpd'></a>**<br>
     Security, speed, compliance, and flexibility -- all of these describe lighttpd (pron. lighty) which is rapidly redefining efficiency of a webserver; as it is designed and optimized for high performance environments. With a small memory footprint compared to other web-servers, effective management of the cpu-load, and advanced feature set (FastCGI, SCGI, Auth, Output-Compression, URL-Rewriting and many more) lighttpd is the perfect solution for every server that is suffering load problems. In case you want to configure virtual hosts, you may want to consider the package onlinechanged-cgi which allows you to
 
-  * **[Lua 5.1.5 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/lua)<a id='lua'></a>**<br>
+  * **[Lua 5.1.5 (binary only)](lua/README.md)<a id='lua'></a>**<br>
     Lua Scripting Language. Lua is a powerful light-weight programming language designed for extending applications. Lua is also frequently used as a general-purpose, stand-alone language. Lua is free software. Lua combines simple procedural syntax with powerful data description constructs based on associative arrays and extensible semantics. Lua is dynamically typed, runs by interpreting bytecode for a register-based virtual machine, and has automatic memory management with incremental garbage collection, making it ideal for configuration, scripting, and rapid prototyping. A fundamental concept in the design of Lua is to provide meta-mechanisms for implementing features, instead of providing a host of features directly in the language. For example, although Lua is not a pure object-oriented language, it does provide meta-mechanisms for implementing classes and inheritance. Lua's meta-mechanisms bring an economy of concepts and keep the language small, while allowing the semantics to be extended in unconventional ways. Extensible semantics is a distinguishing feature of Lua. Lua is a language engine that you can embed into your application. This means that, besides syntax and semantics, Lua has an API that allows the application to exchange data with Lua programs and also to extend Lua with C functions. In this sense, Lua can be regarded as a language framework for building domain-specific languages. Lua is implemented as a small library of C functions, written in ANSI C, and compiles unmodified in all known platforms. The implementation goals are simplicity, efficiency, portability, and low embedding cost. The result is a fast language engine with small footprint, making it ideal in embedded systems too.
 
-  * **[Lynx 2.8.8 web browser](https://freetz-ng.github.io/freetz-ng/wiki/packages/lynx)<a id='lynx'></a>**<br>
+  * **[Lynx 2.8.8 web browser](lynx/README.md)<a id='lynx'></a>**<br>
     Lynx text mode web browser Lynx is a fully-featured World Wide Web (WWW) client for users running cursor-addressable, character-cell display devices (e.g., vt100 terminals, vt100 emulators running on PCs or Macs, or any other character-cell display). It will display HTML documents containing links to files on the local system, as well as files on remote systems running http, gopher, ftp, wais, nntp, finger, or cso/ph/qi servers, and
 
-  * **[madplay 0.15.2b (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/madplay)<a id='madplay'></a>**<br>
+  * **[madplay 0.15.2b (binary only)](madplay/README.md)<a id='madplay'></a>**<br>
     MAD is a high-quality fixed-point MPEG audio decoder with 24-bit output. The implementation is entirely new, based on the ISO/IEC standards, and performs especially well on
 
-  * **[mc (Midnight Commander) 4.8.23 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/mc)<a id='mc'></a>**<br>
+  * **[mc (Midnight Commander) 4.8.23 (binary only)](mc/README.md)<a id='mc'></a>**<br>
     Subshell support means you can press Ctrl-O to hide the mc panels and have a real subshell. Both Bash (if package is installed) and BusyBox Ash can be used, depending which one is defined as your login shell. ATTENTION: You should *not* use CONFIG_FEATURE_BASH_IS_ASH in BusyBox or otherwise symlink /bin/bash to /bin/busybox because MC must differentiate handling between Ash and real Bash. This feature adds about 8 KB (uncompressed) to the mc binary.
 
-  * **[mcabber 0.9.9](https://freetz-ng.github.io/freetz-ng/wiki/packages/mcabber)<a id='mcabber'></a>**<br>
+  * **[mcabber 0.9.9](mcabber/README.md)<a id='mcabber'></a>**<br>
     mcabber is a small Jabber console client. http://www.lilotux.net/~mikael/mcabber/
 
-  * **[mediatomb 0.12.1 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/mediatomb)<a id='mediatomb'></a>**<br>
+  * **[mediatomb 0.12.1 (binary only)](mediatomb/README.md)<a id='mediatomb'></a>**<br>
     MediaTomb is an open source (GPL) UPnP MediaServer with a nice web user interface, it allows you to stream your digital media through your home network and listen to/watch it on a variety of UPnP compatible devices.
 
-  * **[microperl 5.10.1 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/microperl)<a id='microperl'></a>**<br>
+  * **[microperl 5.10.1 (binary only)](microperl/README.md)<a id='microperl'></a>**<br>
     Perl without operating-specific functions such as readdir.
 
   * **<u>minicom 2.5 (binary only)</u><a id='minicom'></a>**<br>
     Minicom is a menu driven communications program. It emulates ANSI and VT102 terminals. It has a dialing directory and auto zmodem download. NOTE: Minicom will expect its configurations in "/var/tmp/flash/minicom/" which has to be created before the first run of the binary by "mkdir -p  /var/tmp/flash/minicom/". To save this and after any change of minicom's configurations you will have to write it to flash with "modsave".
 
-  * **[minidlna 1.2.1](https://freetz-ng.github.io/freetz-ng/wiki/packages/minidlna)<a id='minidlna'></a>**<br>
+  * **[minidlna 1.2.1](minidlna/README.md)<a id='minidlna'></a>**<br>
     The MiniDLNA daemon is an UPnP-A/V and DLNA service which serves multimedia content to compatible clients on the network.
 
   * **[minisatip 1.0.2 (binary only)](minisatip/README.md)<a id='minisatip'></a>**<br>
@@ -318,64 +318,64 @@
   * **<u>mini-snmpd 1.2b (binary only)</u><a id='mini-snmpd'></a>**<br>
     This program is an SNMP server for "embedded systems". The advantage in comparison to other products is the
 
-  * **[mod: Freetz(-MOD)](https://freetz-ng.github.io/freetz-ng/wiki/packages/mod)<a id='mod'></a>**<br>
+  * **[mod: Freetz(-MOD)](mod/README.md)<a id='mod'></a>**<br>
     This package is mandatory
 
-  * **<u>module-init-tools 3.12 (binary only)</u><a id='module-init-tools'></a>**<br>
+  * **[module-init-tools 3.12 (binary only)](module-init-tools/README.md)<a id='module-init-tools'></a>**<br>
     The module-init-tools (m-i-t) package provides many of the utilities needed by Linux systems for managing loadable Linux Kernel Modules. This includes depmod, insmod, rmmod, modprobe and tools like modinfo.
 
-  * **[mtr 0.80 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/mtr)<a id='mtr'></a>**<br>
+  * **[mtr 0.80 (binary only)](mtr/README.md)<a id='mtr'></a>**<br>
     mtr combines the functionality of the 'traceroute' and 'ping' programs
 
-  * **[nagios 2.11 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/nagios)<a id='nagios'></a>**<br>
+  * **[nagios 2.11 (binary only)](nagios/README.md)<a id='nagios'></a>**<br>
     Nagios is an Open Source host, service and network monitoring program.
 
-  * **[Nano 2.4.3 text editor (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/nano)<a id='nano'></a>**<br>
+  * **[Nano 2.4.3 text editor (binary only)](nano/README.md)<a id='nano'></a>**<br>
     GNU GPL'd Pico clone with more functionality. GNU nano is a small and friendly text editor. Besides basic text editing, nano offers many extra features like an interactive search and replace, go to line and column number, auto-indentation, feature toggles and filename tab completion. The original goal for nano was a complete bug-for-bug compatible emulation of Pico, but nano's current goal is to be as compatible as possible while offering a superset of Pico's functionality. IMPORTANT NOTES: 1.) Selecting any option besides "Tiny binary" will make the nano binary bigger. The range is somewhere between 142 KB and 249 KB, depending on the options chosen. 2.) Please also be aware of the fact that changing any feature options results in an automatic rebuild of the package - just in case you were wondering. 3.) Note that UTF8 support and spell checking is disabled by default.
 
   * **<u>nc6 1.0 (binary only)</u><a id='nc6'></a>**<br>
 
-  * **[ncftp 3.2.6 (binaries only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/ncftp)<a id='ncftp'></a>**<br>
+  * **[ncftp 3.2.6 (binaries only)](ncftp/README.md)<a id='ncftp'></a>**<br>
     NcFTP is a free program that use the File Transfer Protocol. The purpose of ncftp is to provide a powerful and flexible
 
-  * **[ndas](https://freetz-ng.github.io/freetz-ng/wiki/packages/ndas)<a id='ndas'></a>**<br>
+  * **[ndas](ndas/README.md)<a id='ndas'></a>**<br>
     Network Direct Attached Storage (NDAS)
 
-  * **[Netatalk 2.2.5](https://freetz-ng.github.io/freetz-ng/wiki/packages/netatalk)<a id='netatalk'></a>**<br>
+  * **<u>Netatalk 2.2.5</u><a id='netatalk'></a>**<br>
     Netatalk is a kernel level implementation of the AppleTalk Protocol Suite which contains the AppleShare file server (AFP).
 
-  * **[netcat 0.7.1 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/netcat)<a id='netcat'></a>**<br>
+  * **[netcat 0.7.1 (binary only)](netcat/README.md)<a id='netcat'></a>**<br>
 
   * **<u>Netpbm-tools 10.35.85 (binary only)</u><a id='netpbm'></a>**<br>
     Provides the following tools from netpbm-suite: bmptopnm, giftopnm, jpegtopnm, pngtopnm, pnmtojpeg, pnmtopng
 
-  * **[netsnmp: Net-SNMP 5.7.1 snmpd](https://freetz-ng.github.io/freetz-ng/wiki/packages/netsnmp)<a id='netsnmp'></a>**<br>
+  * **<u>netsnmp: Net-SNMP 5.7.1 snmpd</u><a id='netsnmp'></a>**<br>
     SNMP (Simple Network Management Protocol) daemon. SNMP is a widely used protocol for monitoring the health and welfare of network equipment (eg. routers), computer equipment and even devices like UPSs. Net-SNMP is a suite of applications used to implement SNMP v1, SNMP v2c and SNMP v3.
 
   * **<u>nfsroot: NFS-root 0.1</u><a id='nfsroot'></a>**<br>
     Mount a remote filesystem (fs) from an NFS server and use it as a root fs which is fully writable and basically unlimited in size. The Linux kernel will still be loaded from your box and during the first phase of the init process the SquashFS on the box is still used, but after the NFS-root is mounted, we pivot_root into it and it becomes the new root fs. The read-only fs on the box can still be accessed under /oldroot, but is absolutely not necessary anymore after pivot_root. Having said that, it should be clear that the remote folder to be mounted should contain everything necessary to run the box. Usually you just create a full copy of a target fs (e.g. from build/modified/filesystem or from an unpacked firmware image) and start modifying it as needed. The binaries (kernel modules, executables, shared libraries) used therein just have to fit the kernel installed on the box. Note: The mini_fo overlay filesystem will not be used if an NFS-root was mounted first (see mini_fo package). Still, both packages can be installed at the same time, because mini_fo is still useful if NFS-root is decativated. Note: This package needs "replace kernel" because a kernel patch is necessary to make the 'nfsroot' bootloader environment variable usable for our purpose. So, if if "replace kernel" is inactive, you will not see this package in
 
-  * **[nfs-utils 1.3.4 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/nfs-utils)<a id='nfs-utils'></a>**<br>
+  * **[nfs-utils 1.3.4 (binary only)](nfs-utils/README.md)<a id='nfs-utils'></a>**<br>
     Linux NFS utility package
 
   * **<u>ngircd 22</u><a id='ngircd'></a>**<br>
     ngIRCd is an Open Source server for the Internet Relay Chat (IRC), which is developed and published under the terms of the GNU General Public Licence (URL: http://www.gnu.org/licenses/gpl.html). ngIRCd means "next generation IRC daemon", it's written from scratch and not deduced from the "grandfather of IRC daemons", the daemon of the IRCNet. For documentation see: http://ngircd.barton.de/documentation.php.de
 
-  * **[NHIPT Iptables CGI 0.8.3a - EXPERIMENTAL](https://freetz-ng.github.io/freetz-ng/wiki/packages/nhipt)<a id='nhipt'></a>**<br>
+  * **[NHIPT Iptables CGI 0.8.3a - EXPERIMENTAL](nhipt/README.md)<a id='nhipt'></a>**<br>
 
-  * **[Nmap (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/nmap)<a id='nmap'></a>**<br>
+  * **[Nmap (binary only)](nmap/README.md)<a id='nmap'></a>**<br>
     Nmap ("Network Mapper") is a free and open source (license) utility for network exploration or security auditing. Many systems and network administrators also find it useful for tasks such as network inventory, managing service upgrade schedules, and monitoring host or service uptime. Nmap uses raw IP packets in novel ways to determine what hosts are available on the network, what services (application name and version) those hosts are offering, what operating systems (and OS versions) they are running, what type of packet filters/firewalls are in use, and dozens of other characteristics. It was designed to rapidly scan large networks, but works fine against single hosts. Nmap runs on all major computer operating systems, and both console and graphical versions are available.
 
   * **<u>noip 2.1.9-1 (binary only)</u><a id='noip'></a>**<br>
     This is No-IP.com's dynamic DNS update client. When configured correctly, the client will check the local IP address at a given time interval for any changes. If the local IP address has changed it will notify the DNS servers at No-IP.com and update the IP corresponding to your No-IP/No-IP+
 
-  * **<u>NTFS-3G 2017.3.23 (binary only)</u><a id='ntfs'></a>**<br>
+  * **[NTFS-3G 2017.3.23 (binary only)](ntfs/README.md)<a id='ntfs'></a>**<br>
     The NTFS-3G driver is an open source, freely available read/write NTFS driver for Linux, FreeBSD, OS X, and NetBSD. It provides safe and fast handling of the Windows XP, Windows Server 2003, Windows 2000 and Windows Vista file systems. Most POSIX file system operations are supported, with the exception of full file ownership and access right support. This binary is needed for ntfs automount feature thus there is no webinterface.
 
   * **<u>NZBGet 14.1</u><a id='nzbget'></a>**<br>
     NZBGet is a command-line based binary news grabber for nzb files, written in C++. It supports client/server mode, automatic par-check/-repair and web-interface (via additional package). NZBGet requires low system resources and runs great on routers, NAS-devices and media players.
 
-  * **[ObexFTP 0.23 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/obexftp)<a id='obexftp'></a>**<br>
+  * **[ObexFTP 0.23 (binary only)](obexftp/README.md)<a id='obexftp'></a>**<br>
     This package contains an ObexFTP server.
 
   * **<u>oidentd 2.0.8</u><a id='oidentd'></a>**<br>
@@ -384,10 +384,10 @@
   * **<u>OpenConnect 7.04 (binary only)</u><a id='openconnect'></a>**<br>
     Cisco AnyConnect VPN Client
 
-  * **[OpenDD 0.7.9](https://freetz-ng.github.io/freetz-ng/wiki/packages/opendd)<a id='opendd'></a>**<br>
+  * **[OpenDD 0.7.9](opendd/README.md)<a id='opendd'></a>**<br>
     opendd is a DynDNS client, written in C, and especially designed for small gateway machines, like a Soekris box. Its main feature is that it does not require any Perl or Python interpreter. It supports HTTPS, can send a mail report, and can run as daemon. It is also very easy to deploy. WWW: http://www.bsdmon.com/wakka/OpenDD
 
-  * **[Openntpd 3.9p1](https://freetz-ng.github.io/freetz-ng/wiki/packages/openntpd)<a id='openntpd'></a>**<br>
+  * **[Openntpd 3.9p1](openntpd/README.md)<a id='openntpd'></a>**<br>
     OpenNTPD is a FREE, easy to use implementation of the Network Time Protocol.
 
   * **<u>OpenSSH 8.1p1</u><a id='openssh'></a>**<br>
@@ -396,10 +396,10 @@
   * **<u>OpenSSL (binary only)</u><a id='openssl'></a>**<br>
     This package contains the OpenSSL command-line utility.
 
-  * **[OpenVPN 2.4.7](https://freetz-ng.github.io/freetz-ng/wiki/packages/openvpn)<a id='openvpn'></a>**<br>
+  * **[OpenVPN 2.4.7](openvpn/README.md)<a id='openvpn'></a>**<br>
     VPN Server
 
-  * **[owfs 2.7p32 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/owfs)<a id='owfs'></a>**<br>
+  * **[owfs 2.7p32 (binary only)](owfs/README.md)<a id='owfs'></a>**<br>
     OWFS - 1-Wire Filesystem This package includes: - owserver for easy, world wide access to serial and USB 1-wire bus masters and attached devices - httpd and ftpd to control owserver over http or ftp - shellprograms like owdir, owwrite, owread, owpresent
 
   * **<u>PCSC-lite (pcscd) 1.8.24 (binary only)</u><a id='pcsc-lite'></a>**<br>
@@ -408,33 +408,33 @@
   * **<u>phonebook-tools: Phone book tools</u><a id='phonebook-tools'></a>**<br>
     A set of tools for reading and converting Fritz!Box phone book to such (easy parseable) formats like: - .csv (comma-separated values), or
 
-  * **[PHP (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/php)<a id='php'></a>**<br>
+  * **[PHP (binary only)](php/README.md)<a id='php'></a>**<br>
     PHP: Hypertext Preprocessor PHP is a widely-used general-purpose scripting language that is especially suited for Web development and can be embedded into HTML. Much of its syntax is borrowed from C, Java and Perl with a couple of unique PHP-specific features thrown in. The goal of the language is to allow web developers to write dynamically generated pages quickly.
 
-  * **[Pingtunnel 0.72](https://freetz-ng.github.io/freetz-ng/wiki/packages/pingtunnel)<a id='pingtunnel'></a>**<br>
+  * **[Pingtunnel 0.72](pingtunnel/README.md)<a id='pingtunnel'></a>**<br>
     Ptunnel is an application that allows you to reliably tunnel TCP connections to a remote host using ICMP echo request and reply packets, commonly known as ping requests and replies. At first glance, this might seem like a rather useless thing to do, but it can actually come in
 
-  * **[Polipo 1.1.1](https://freetz-ng.github.io/freetz-ng/wiki/packages/polipo)<a id='polipo'></a>**<br>
+  * **[Polipo 1.1.1](polipo/README.md)<a id='polipo'></a>**<br>
     Polipo is a small and fast caching web proxy (a web cache, an HTTP proxy, a proxy server).
 
-  * **[portmap 6.0 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/portmap)<a id='portmap'></a>**<br>
+  * **[portmap 6.0 (binary only)](portmap/README.md)<a id='portmap'></a>**<br>
     portmap is a part of the ONCRPC collection of software for implementing remote procedure calls between computer programs.
 
-  * **[ppp: Point-to-Point](https://freetz-ng.github.io/freetz-ng/wiki/packages/ppp)<a id='ppp'></a>**<br>
+  * **[ppp: Point-to-Point](ppp/README.md)<a id='ppp'></a>**<br>
 
   * **<u>pppd 2.4.7</u><a id='pppd'></a>**<br>
     An implementation of the Point-to-point protocol. http://www.samba.org/ppp/
 
-  * **[pptp 1.7.2](https://freetz-ng.github.io/freetz-ng/wiki/packages/pptp)<a id='pptp'></a>**<br>
+  * **[pptp 1.7.2](pptp/README.md)<a id='pptp'></a>**<br>
     Linux and FreeBSD client for the proprietary Microsoft Point-to-Point tunneling protocol, PPTP, sponsored by HP.
 
-  * **[pptpd 1.4.0](https://freetz-ng.github.io/freetz-ng/wiki/packages/pptpd)<a id='pptpd'></a>**<br>
+  * **<u>pptpd 1.4.0</u><a id='pptpd'></a>**<br>
     Poptop is an open source implementation of a PPTP server. Running under x86 or embedded Motorola ColdFire architectures Poptop provides full interoperability with the Microsoft PPTP VPN client.
 
   * **<u>privatekeypassword 0.7-git</u><a id='privatekeypassword'></a>**<br>
     Reveals the password for AVM's private key file (/var/flash/websrv_ssl_key.pem),
 
-  * **[Privoxy 3.0.28](https://freetz-ng.github.io/freetz-ng/wiki/packages/privoxy)<a id='privoxy'></a>**<br>
+  * **[Privoxy 3.0.28](privoxy/README.md)<a id='privoxy'></a>**<br>
     Privoxy is a web proxy with advanced filtering capabilities for protecting privacy, modifying web page data, managing cookies, controlling access, and removing ads, banners, pop-ups and other obnoxious Internet junk. It can also be used together with Tor Proxy to forward HTTP traffic to Tor as described in the Tor documentation.
 
   * **[ProxyChains-NG](proxychains-ng/README.md)<a id='proxychains-ng'></a>**<br>
@@ -469,17 +469,17 @@
 
   * **<u>python-yenc: yEnc 0.4.0</u><a id='python-yenc'></a>**<br>
 
-  * **[quagga 0.99.17](https://freetz-ng.github.io/freetz-ng/wiki/packages/quagga)<a id='quagga'></a>**<br>
+  * **[quagga 0.99.17](quagga/README.md)<a id='quagga'></a>**<br>
     The Quagga Software Routing Suite A routing software package that provides TCP/IP based routing services with routing protocols support such as RIPv1, RIPv2, RIPng, OSPFv2, OSPFv3, BGP-4, and BGP-4+. This package does not provide any configuration help yet, though you can edit the configuration file(s) via the web interface. You can find the documentation at http://www.quagga.net/. YOU SHOULD NOT SELECT THIS PACKAGE (I.E. YOU DO NOT NEED IT) IF YOU DON'T KNOW HOW TO CONFIGURE THE ROUTING DAEMONS! (However: a guided/safe config interface is on the todo list ;-)
 
-  * **[radvd 1.9.3](https://freetz-ng.github.io/freetz-ng/wiki/packages/radvd)<a id='radvd'></a>**<br>
+  * **[radvd 1.9.3](radvd/README.md)<a id='radvd'></a>**<br>
 
   * **<u>Rcapid</u><a id='rcapid'></a>**<br>
 
   * **<u>ripmime 1.2.16.21 (binary only)</u><a id='ripmime'></a>**<br>
     ripmime is an utility to decode and extract the parts of
 
-  * **[RRDtool 1.2.30 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/rrdtool)<a id='rrdtool'></a>**<br>
+  * **[RRDtool 1.2.30 (binary only)](rrdtool/README.md)<a id='rrdtool'></a>**<br>
     RRDtool is the OpenSource industry standard, high performance data logging and graphing system for time series data. Use it to write your custom monitoring shell scripts or create whole applications
 
   * **<u>rsync 3.1.2</u><a id='rsync'></a>**<br>
@@ -494,13 +494,13 @@
   * **<u>sablevm-sdk: sablevm 1.13 (binary only)</u><a id='sablevm-sdk'></a>**<br>
     SableVM is a robust, extremely portable, efficient, and specifications-compliant Java virtual machine that aims to be easy to maintain and to extend. It features a state-of-the-art and efficient interpreter engine. Its source code is very accessible and easy to understand. It also has many robustness features that have been the object of careful design.
 
-  * **[Samba suite](https://freetz-ng.github.io/freetz-ng/wiki/packages/samba)<a id='samba'></a>**<br>
+  * **[Samba suite](samba/README.md)<a id='samba'></a>**<br>
     The binary with smbd and nmbd needs about 1033 kB (uncompressed).
 
-  * **[Screen 4.6.2](https://freetz-ng.github.io/freetz-ng/wiki/packages/screen)<a id='screen'></a>**<br>
+  * **[Screen 4.6.2](screen/README.md)<a id='screen'></a>**<br>
     Screen is a full-screen window manager that multiplexes a physical terminal between several processes, typically interactive shells. Each virtual terminal provides the functions of the DEC VT100 terminal and, in addition, several control functions from the ANSI X3.64 (ISO 6429) and ISO 2022 standards (e.g., insert/delete line and support for multiple character sets). There is a scrollback history buffer for each virtual terminal and a copy-and-paste mechanism that allows the user to move text regions between windows. When screen is called, it creates a single window with a shell in it (or the specified command) and then gets out of your way so that you can use the program as you normally would. Then, at any time, you can create new (full-screen) windows with other programs in them (including more shells), kill the current window, view a list of the active windows, turn output logging on and off, copy text between windows, view the scrollback history, switch between windows, etc. All windows run their programs completely independent of each other. Programs continue to run when their window is currently not visible and
 
-  * **[ser2net 2.7](https://freetz-ng.github.io/freetz-ng/wiki/packages/ser2net)<a id='ser2net'></a>**<br>
+  * **[ser2net 2.7](ser2net/README.md)<a id='ser2net'></a>**<br>
     Ser2net is a program for allowing network connections to serial ports. It supports RFC 2217 (remote control of serial port
 
   * **<u>sfk: Swiss File Knife 1.9.5.0</u><a id='sfk'></a>**<br>
@@ -512,10 +512,10 @@
   * **<u>shellinabox 2.14</u><a id='shellinabox'></a>**<br>
     Shell In A Box implements a web server that can export arbitrary command line tools to a web based terminal emulator. This emulator is accessible to any JavaScript and CSS enabled web browser and does not require any additional browser plugins.
 
-  * **[siproxd 0.8.1](https://freetz-ng.github.io/freetz-ng/wiki/packages/siproxd)<a id='siproxd'></a>**<br>
+  * **[siproxd 0.8.1](siproxd/README.md)<a id='siproxd'></a>**<br>
     Siproxd is a proxy/masquerading daemon for the SIP protocol. See http://siproxd.sourceforge.net for more information.
 
-  * **[sispmctl 3.1](https://freetz-ng.github.io/freetz-ng/wiki/packages/sispmctl)<a id='sispmctl'></a>**<br>
+  * **[sispmctl 3.1](sispmctl/README.md)<a id='sispmctl'></a>**<br>
     sispmctl is an application enabling the use of the GEMBIRD SiS-PM (sispm) USB-controlled power-outlet device under Linux. Note that the device is also sold under different names, i.e. as "IntelliPlug" in Germany.
 
   * **<u>slang: S-Lang (binary only)</u><a id='slang'></a>**<br>
@@ -524,16 +524,16 @@
   * **<u>Slurm 0.3.3 (binary only)</u><a id='slurm'></a>**<br>
     slurm - yet another network load monitor slurm started as a FreeBSD port of the Linux ppp link monitor called pppstatus by Gabriel Montenegro. features: - "realtime" traffic statistics - three graph modes: combined RX and TX and two split views - can monitor any network device
 
-  * **[smartmontools 7.0](https://freetz-ng.github.io/freetz-ng/wiki/packages/smartmontools)<a id='smartmontools'></a>**<br>
+  * **[smartmontools 7.0](smartmontools/README.md)<a id='smartmontools'></a>**<br>
     smartmontools contains utility programs (smartctl, smartd) to control/monitor storage systems using the Self-Monitoring, Analysis and Reporting Technology System (S.M.A.R.T.) built into most modern
 
-  * **[smstools3 3.1.14](https://freetz-ng.github.io/freetz-ng/wiki/packages/smstools3)<a id='smstools3'></a>**<br>
+  * **[smstools3 3.1.14](smstools3/README.md)<a id='smstools3'></a>**<br>
     The SMS Server Tools 3 is a SMS Gateway software which can send and receive short messages through GSM modems and mobile phones. This is the enhanced version 3.x maintained by Mr. Keijo "Keke" Kasvi.
 
   * **<u>smusbutil 1.1 (binary only)</u><a id='smusbutil'></a>**<br>
     Linux software for setting up the frequency and resetpolarity on WB Electronics ftdi devices. This utility is written and maintained by Carsten Sprung. WB Electronics does not currently provide official support for Linux, please contact the author directly for any support issues.
 
-  * **[socat 1.7.3.3 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/socat)<a id='socat'></a>**<br>
+  * **[socat 1.7.3.3 (binary only)](socat/README.md)<a id='socat'></a>**<br>
     socat is an extended netcat-like utility
 
   * **<u>spawn-fcgi 1.6.3 (binary only)</u><a id='spawn-fcgi'></a>**<br>
@@ -556,19 +556,19 @@
   * **<u>sslh 1.19c</u><a id='sslh'></a>**<br>
     sslh accepts HTTPS, SSH and OpenVPN connections on the same port. This makes it possible to connect to an SSH server or an OpenVPN on port 443 (e.g. from inside a corporate firewall, which almost never block port 443) while still serving HTTPS on that port.
 
-  * **[Streamripper 1.64.6](https://freetz-ng.github.io/freetz-ng/wiki/packages/streamripper)<a id='streamripper'></a>**<br>
+  * **[Streamripper 1.64.6](streamripper/README.md)<a id='streamripper'></a>**<br>
     Streamripper records mp3 and ogg streams. For shoutcast style streams it finds the "meta data" or track separation data, and uses that as a marker for where the track should be separated.
 
-  * **[Stunnel 5.55](https://freetz-ng.github.io/freetz-ng/wiki/packages/stunnel)<a id='stunnel'></a>**<br>
+  * **[Stunnel 5.55](stunnel/README.md)<a id='stunnel'></a>**<br>
     Stunnel universal SSL proxy
 
-  * **[Subversion](https://freetz-ng.github.io/freetz-ng/wiki/packages/subversion)<a id='subversion'></a>**<br>
+  * **[Subversion](subversion/README.md)<a id='subversion'></a>**<br>
     Subversion, also known as svn, is a version control system much like the Concurrent Versions System (CVS). Version control systems allow many individuals (who may be distributed geographically) to collaborate on a set of files (typically source code). Subversion has all the major features of CVS, plus certain new features that CVS users often wish they had.
 
   * **<u>sudo 1.7.10 (binary only)</u><a id='sudo'></a>**<br>
     Sudo (su "do") allows a system administrator to delegate authority to give certain users (or groups of users) the ability to run some (or all) commands as root or another user while providing an audit trail of the commands and their arguments.
 
-  * **[Sundtek DVB-C/T/T2 driver](https://freetz-ng.github.io/freetz-ng/wiki/packages/sundtek)<a id='sundtek'></a>**<br>
+  * **[Sundtek DVB-C/T/T2 driver](sundtek/README.md)<a id='sundtek'></a>**<br>
     Sundtek closed-source linux driver daemon & client. To use this driver you have to run: export LD_PRELOAD=/usr/lib/libsundtekmediaclient.so
 
   * **<u>sundtek-rtspd: Include Sundtek Streaming Server (rtspd)</u><a id='sundtek-rtspd'></a>**<br>
@@ -577,13 +577,13 @@
 
   * **<u>SynCE serial 0.10.0 (binary only)</u><a id='synce-serial'></a>**<br>
 
-  * **[Tcpdump 4.1.1 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/tcpdump)<a id='tcpdump'></a>**<br>
+  * **[Tcpdump 4.1.1 (binary only)](tcpdump/README.md)<a id='tcpdump'></a>**<br>
     Network monitoring and data acquisition tool
 
   * **<u>tcpproxy 2.0.0-beta15 (binary only)</u><a id='tcpproxy'></a>**<br>
     tcpproxy is a proxy (or tunnel or redirector) for TCP/IP protocols. In standalone mode it waits for incoming connections forwarding
 
-  * **[tcp_wrappers 7.6 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/tcp_wrappers)<a id='tcp_wrappers'></a>**<br>
+  * **[tcp_wrappers 7.6 (binary only)](tcp_wrappers/README.md)<a id='tcp_wrappers'></a>**<br>
     TCP Wrapper is a host-based Networking ACL system, used to filter network access to Internet Protocol servers on (Unix-like) operating systems such as Linux or BSD. It allows host or subnetwork IP addresses, names and/or ident query replies, to be
 
   * **<u>Tesseract OCR 3.02.02 (binary only)</u><a id='tesseract'></a>**<br>
@@ -594,25 +594,25 @@
   * **<u>TIFF utils 4.0.7 (binary only)</u><a id='tiff'></a>**<br>
     Various utilities to manupulate/convert images to/from TIFF format.
 
-  * **[Tinc](https://freetz-ng.github.io/freetz-ng/wiki/packages/tinc)<a id='tinc'></a>**<br>
+  * **[Tinc](tinc/README.md)<a id='tinc'></a>**<br>
     Tinc is a Virtual Private Network (VPN) daemon that uses tunneling and encryption to create a secure private network between hosts on the Internet.
 
-  * **[Tinyproxy 1.8.4](https://freetz-ng.github.io/freetz-ng/wiki/packages/tinyproxy)<a id='tinyproxy'></a>**<br>
+  * **[Tinyproxy 1.8.4](tinyproxy/README.md)<a id='tinyproxy'></a>**<br>
     Tinyproxy is a lightweight HTTP and HTTPS proxy. http://tinyproxy.sourceforge.net
 
   * **<u>tmux 2.5 (binary only)</u><a id='tmux'></a>**<br>
     tmux, a BSD-licensed alternative to GNU screen. Uses ncurses.
 
-  * **[Tor 0.4.1.6](https://freetz-ng.github.io/freetz-ng/wiki/packages/tor)<a id='tor'></a>**<br>
+  * **[Tor 0.4.1.6](tor/README.md)<a id='tor'></a>**<br>
     The Onion Router Anonymous Internet communication system.
 
-  * **[Transmission 2.94 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/transmission)<a id='transmission'></a>**<br>
+  * **[Transmission 2.94 (binary only)](transmission/README.md)<a id='transmission'></a>**<br>
     If needed, remember to change the base directory as well as the installation directory on the webif.
 
   * **<u>tree 1.8.0 (binary only)</u><a id='tree'></a>**<br>
     Tree is a recursive directory listing program that produces a depth indented listing of files, which is colorized ala dircolors if the LS_COLORS environment variable is set and output is to tty.
 
-  * **[trickle 1.07 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/trickle)<a id='trickle'></a>**<br>
+  * **[trickle 1.07 (binary only)](trickle/README.md)<a id='trickle'></a>**<br>
     trickle is a simple and portable lightweight userspace bandwidth shaper, to rate limit the TCP connections of a given process or group of processes. It can run in collaborative mode (together with trickled) or in stand alone mode. trickle works by taking advantage of the unix loader preloading. Essentially it provides to the application, a new version of the functionality that is required to send and receive data through sockets. It then limits traffic based on delaying the sending and receiving of data over a socket. trickle runs entirely in userspace and does not require root privileges. *** Does NOT support statically linked executables!!
 
   * **<u>udpxy 1.0.23-9 (binary only)</u><a id='udpxy'></a>**<br>
@@ -631,39 +631,39 @@
 
   * **<u>util-linux (binary only)</u><a id='util-linux'></a>**<br>
 
-  * **[Vim 8.1.1365 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/vim)<a id='vim'></a>**<br>
+  * **[Vim 8.1.1365 (binary only)](vim/README.md)<a id='vim'></a>**<br>
     An improved version of VI
 
   * **<u>vnstat 1.17 (binary only)</u><a id='vnstat'></a>**<br>
     vnStat is a console-based network traffic monitor. It keeps a log of hourly, daily and monthly network traffic for the selected interface(s). However, it isn't a packet sniffer. The traffic information is analyzed from the proc(5) filesystem. That way vnStat can be used even without root permissions. WWW: http://humdi.net/vnstat/
 
-  * **[Vpnc 0.5.3](https://freetz-ng.github.io/freetz-ng/wiki/packages/vpnc)<a id='vpnc'></a>**<br>
+  * **[Vpnc 0.5.3](vpnc/README.md)<a id='vpnc'></a>**<br>
     Cisco IPSec VPN Client
 
-  * **[vsftpd 3.0.3](https://freetz-ng.github.io/freetz-ng/wiki/packages/vsftpd)<a id='vsftpd'></a>**<br>
+  * **[vsftpd 3.0.3](vsftpd/README.md)<a id='vsftpd'></a>**<br>
     A fast and secure FTP server
 
-  * **<u>VTun 3.0.4</u><a id='vtun'></a>**<br>
+  * **[VTun 3.0.4](vtun/README.md)<a id='vtun'></a>**<br>
     Virtual tunnel client and server
 
-  * **[Wget GNU 1.20.3 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/wget)<a id='wget'></a>**<br>
+  * **[Wget GNU 1.20.3 (binary only)](wget/README.md)<a id='wget'></a>**<br>
     GNU Wget is a free software package for retrieving files using HTTP, HTTPS and FTP, the most widely-used Internet protocols. It is a non-interactive commandline tool, so it may easily be called from scripts, cron jobs, terminals, etc.
 
   * **<u>WireGuard 0.0.20190913</u><a id='wireguard'></a>**<br>
     WireGuard is an extremely simple yet fast and modern VPN that utilizes state-of-the-art cryptography. It aims to be faster, simpler, leaner, and more useful than IPSec, while avoiding the massive headache. It intends to be considerably more performant than OpenVPN. WireGuard is designed as a general purpose VPN for running on embedded interfaces and super computers alike, fit for many different circumstances. Initially released for the Linux kernel, it plans to be cross-platform and widely deployable. It is currently under heavy development, but already it might be regarded as the most secure, easiest to use, and simplest VPN solution in
 
-  * **[WOL 0.7.1 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/wol)<a id='wol'></a>**<br>
+  * **[WOL 0.7.1 (binary only)](wol/README.md)<a id='wol'></a>**<br>
 
-  * **[wput 0.6.1 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/wput)<a id='wput'></a>**<br>
+  * **[wput 0.6.1 (binary only)](wput/README.md)<a id='wput'></a>**<br>
     Wput is a command-line ftp-client that looks like wget but instead of
 
-  * **[XMail 1.27](https://freetz-ng.github.io/freetz-ng/wiki/packages/xmail)<a id='xmail'></a>**<br>
+  * **[XMail 1.27](xmail/README.md)<a id='xmail'></a>**<br>
     XMail is an Internet and Intranet mail server featuring an SMTP server, POP3 server, finger server, multiple domains, no need for users to have a real system account, SMTP relay checking, RBL/RSS/ORBS/DUL and custom (IP based and address based) spam protection, SMTP authentication (PLAIN LOGIN CRAM-MD5 POP3-before-SMTP and custom), a POP3 account synchronizer with external POP3 accounts, account aliases, domain aliases, custom mail processing, direct mail files delivery, custom mail filters, mailing lists, remote administration, custom mail exchangers, logging, and multi-platform code.
 
   * **<u>Xpdf 3.04 (binary only)</u><a id='xpdf'></a>**<br>
     Xpdf is an open source viewer for Portable Document Format (PDF) files. (These are also sometimes also called 'Acrobat' files, from the name of Adobe's PDF software.) The Xpdf project also includes a PDF text extractor, PDF-to-PostScript converter, and various other utilities. This packages includes only the non-X utilities.
 
-  * **[Xrelayd 0.2.1pre2](https://freetz-ng.github.io/freetz-ng/wiki/packages/xrelayd)<a id='xrelayd'></a>**<br>
+  * **[Xrelayd 0.2.1pre2](xrelayd/README.md)<a id='xrelayd'></a>**<br>
     SSL tunnel based on PolarSSL. Xrelayd is a stripped down version of stunnel based on PolarSSL library. Essentially, this package makes your router's websrv or httpd SSL-enabled, offering you the option of remote
 
   * **<u>xsltproc 1.1.33 (binary only)</u><a id='xsltproc'></a>**<br>
@@ -677,31 +677,31 @@
   * **<u>gdb GNU debugger</u><a id='gdb'></a>**<br>
     Build the full gdb debugger to run on the target.
 
-  * **[inotify-tools 3.14](https://freetz-ng.github.io/freetz-ng/wiki/packages/inotify-tools)<a id='inotify-tools'></a>**<br>
+  * **[inotify-tools 3.14](inotify-tools/README.md)<a id='inotify-tools'></a>**<br>
     inotify-tools - watch file and directory access inotify-tools is a C library and a set of command-line programs for Linux providing a simple interface to inotify. These programs can be used to monitor and act upon filesystem events. The programs are written in C and have no dependencies other than a Linux kernel supporting inotify. inotifywait This command simply blocks for inotify events, making it appropriate for use in shell scripts. It can watch any set of files and directories, and can recursively watch entire directory trees. inotifywatch inotifywatch collects filesystem usage statistics and outputs counts of each inotify event. Please read https://freetz.github.io/wiki/packages/inotify_tools for further
 
-  * **[ldd](https://freetz-ng.github.io/freetz-ng/wiki/packages/ldd)<a id='ldd'></a>**<br>
+  * **[ldd](ldd/README.md)<a id='ldd'></a>**<br>
     ldd prints the shared libraries required by each program or shared
 
-  * **[lsof 4.89](https://freetz-ng.github.io/freetz-ng/wiki/packages/lsof)<a id='lsof'></a>**<br>
+  * **[lsof 4.89](lsof/README.md)<a id='lsof'></a>**<br>
     lsof (LiSt Open Files) The lsof tool lists information about files opened by
 
-  * **[ltrace 0.7.91-git (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/ltrace)<a id='ltrace'></a>**<br>
+  * **[ltrace 0.7.91-git (binary only)](ltrace/README.md)<a id='ltrace'></a>**<br>
     ltrace - library call tracer ltrace is a debugging tool, similar to strace, but it traces library
 
-  * **[Nano Shell](https://freetz-ng.github.io/freetz-ng/wiki/packages/nano-shell)<a id='nano-shell'></a>**<br>
+  * **[Nano Shell](nano-shell/README.md)<a id='nano-shell'></a>**<br>
     Remotely execute arbitrary shell commands via URLs This tiny package enables both the AVM and Freetz web interfaces to execute user-specified commands and display their results and/or errors,
 
-  * **[pciutils 3.1.7 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/pciutils)<a id='pciutils'></a>**<br>
+  * **[pciutils 3.1.7 (binary only)](pciutils/README.md)<a id='pciutils'></a>**<br>
     The PCI Utilities are a collection of programs for inspecting and manipulating configuration of PCI devices, all based on a common portable library libpci which offers access to the PCI
 
-  * **[strace 4.9/5.0 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/strace)<a id='strace'></a>**<br>
+  * **[strace 4.9/5.0 (binary only)](strace/README.md)<a id='strace'></a>**<br>
     strace - trace system calls and signals strace is a system call tracer, i.e. a debugging tool which prints out
 
   * **<u>target-tester: #target-tester</u><a id='target-tester'></a>**<br>
     This package is intended to be used by freetz' developers only. It allows to compile and run configure-tests which need to be run on target in a less complicated way (compared to completely manual one). Note: Simply modify target-tester.c or replace it with code
 
-  * **[usbutils 007 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/usbutils)<a id='usbutils'></a>**<br>
+  * **[usbutils 007 (binary only)](usbutils/README.md)<a id='usbutils'></a>**<br>
     USB devices listing utilities
 
   * **<u>vermagic 1ac45e08d4-git (binary only)</u><a id='vermagic'></a>**<br>
@@ -709,7 +709,7 @@
 
 ### Unstable
 
-  * **[Asterisk 11.25.3 - EXPERIMENTAL](https://freetz-ng.github.io/freetz-ng/wiki/packages/asterisk)<a id='asterisk'></a>**<br>
+  * **<u>Asterisk 11.25.3 - EXPERIMENTAL</u><a id='asterisk'></a>**<br>
     Asterisk is an open source framework for building communications applications.
 
   * **<u>axtlswrap: axTLS wrapper 2.1.3 (binary only)</u><a id='axtlswrap'></a>**<br>
@@ -719,16 +719,16 @@
 
   * **<u>gptfdisk 1.0.1</u><a id='gptfdisk'></a>**<br>
 
-  * **[HPLIP 3.14.6 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/hplip)<a id='hplip'></a>**<br>
+  * **[HPLIP 3.14.6 (binary only)](hplip/README.md)<a id='hplip'></a>**<br>
     HPLIP - HP Linux Imaging and Printing
 
-  * **[hp-utils 0.3.2](https://freetz-ng.github.io/freetz-ng/wiki/packages/hp-utils)<a id='hp-utils'></a>**<br>
+  * **[hp-utils 0.3.2](hp-utils/README.md)<a id='hp-utils'></a>**<br>
     hp-utils is a collection of utility programs for HP printers. It's meant to be used on systems, which are unable to run the corresponding programs provided by HPLIP, e.g. because they only have limited memory and/or cpu power. hp-utils is primarily focused towards embedded systems, particularly towards the FRITZ!Box, a family of DSL routers produced by AVM.
 
-  * **[Iptables 1.4.11.1 (binary only)](https://freetz-ng.github.io/freetz-ng/wiki/packages/iptables)<a id='iptables'></a>**<br>
+  * **[Iptables 1.4.11.1 (binary only)](iptables/README.md)<a id='iptables'></a>**<br>
     Select this if you are sure that Iptables should work on your box
 
-  * **[mini_fo 0.3](https://freetz-ng.github.io/freetz-ng/wiki/packages/mini_fo)<a id='mini_fo'></a>**<br>
+  * **[mini_fo 0.3](mini_fo/README.md)<a id='mini_fo'></a>**<br>
     Makes the filesystem writeable. Changes are not reboot-persistent, unless stored on a hard disk or on flash storage media. The way mini_fo is configured here creates the overlay filesystem in the router's RAM disk, so they definitely are *not* reboot-persistent. Nonetheless, mini_fo is tremendously helpful, eliminating the need for tricks like 'mount -o bind' etc. Note: The mini_fo root filesystem will not be used if an NFS-root was mounted first (see NFS-root package). Still, both packages can be installed at the same time, because mini_fo is still useful if NFS-root is decativated. This package does not work with (at least) 7390 at the moment.
 
   * **<u>Mosquitto 1.4.15</u><a id='mosquitto'></a>**<br>
@@ -737,7 +737,7 @@
   * **[MySQL 6.0.11-alpha](mysql/README.md)<a id='mysql'></a>**<br>
     MySQL is a very fast, multi-threaded, multi-user and robust SQL (Structured Query Language) database server. Unstable, as this version is quite old, but runs well on Fritzbox. Do not expose this daemon to the internet!
 
-  * **[sane-backends: SANE 1.0.27](https://freetz-ng.github.io/freetz-ng/wiki/packages/sane-backends)<a id='sane-backends'></a>**<br>
+  * **[sane-backends: SANE 1.0.27](sane-backends/README.md)<a id='sane-backends'></a>**<br>
     SANE - Scanner support (initial Freetz package by Michael Denk, tehron @ http://www.ip-phone-forum.de/)
 
   * **<u>scanbuttond cvs</u><a id='scanbuttond'></a>**<br>
@@ -746,13 +746,13 @@
   * **<u>Squid 3.0.STABLE26</u><a id='squid'></a>**<br>
     Squid is a caching proxy for the Web supporting HTTP, HTTPS, FTP, and more. It reduces bandwidth and improves response times by caching and reusing frequently-requested web pages. Squid has extensive access controls and makes a great server accelerator.
 
-  * **[usbip: USB/IP 0.1.8](https://freetz-ng.github.io/freetz-ng/wiki/packages/usbip)<a id='usbip'></a>**<br>
+  * **[usbip: USB/IP 0.1.8](usbip/README.md)<a id='usbip'></a>**<br>
     USB/IP Project aims to develop a general USB device sharing system over IP network. To share USB devices between computers with their full functionality, USB/IP encapsulates "USB I/O messages"
 
-  * **[usbroot: USB root 0.2](https://freetz-ng.github.io/freetz-ng/wiki/packages/usbroot)<a id='usbroot'></a>**<br>
+  * **[usbroot: USB root 0.2](usbroot/README.md)<a id='usbroot'></a>**<br>
     Mount an ext{2,3} filesystem (fs) from an USB stick and use it as root fs which may be fully writable and basically unlimited in size. The Linux kernel will still be loaded from your box and during the first phase of the init process the SquashFS on the box is still used, but after the USB root is mounted, we pivot_root into it and it becomes the new root fs. The default is to unmount the read-only fs on the box to conserve memory, but if desired, it can be still be accessed under /oldroot (though this is absolutely not necessary anymore after pivot_root). Having said that, it should be clear that the usb stick should contain everything necessary to run the box. Usually you just create a full copy of a target filesystem (e.g. from build/modified/filesystem or from an unpacked firmware image) and start modifying it as needed. The binaries (kernel modules, executables, shared libraries) used therein just have to fit the kernel installed on the box. Note: The webinterface makes it pretty easy to (de-)activate and
 
-  * **[virtualip-cgi: Virtual IP CGI 0.4.2 (deprecated)](https://freetz-ng.github.io/freetz-ng/wiki/packages/virtualip)<a id='virtualip'></a>**<br>
+  * **[virtualip-cgi: Virtual IP CGI 0.4.2 (deprecated)](virtualip-cgi/README.md)<a id='virtualip'></a>**<br>
     Creates a virtual network interface. In former times this was used to comfortably open server ports on the Fritz!Box itself via AVM web interface. Nowadays the avm-firewall package is used for this task. The package is also equipped with a configuration interface for the Freetz web configurator which lets you choose the IP address and
 
   * **<u>Zabbix 2.4.6 (binary only)</u><a id='zabbix'></a>**<br>
@@ -763,10 +763,10 @@
   * **[Addhole (for dnsmasq)](addhole/README.md)<a id='addhole'></a>**<br>
     Downloads block lists and adds them to dnsmasq. Warning: If you enable all included lists, dnsmasq will need 25 MB of RAM instead of 1MB without them.
 
-  * **[authorized_keys: Frontend for SSH keys](https://freetz-ng.github.io/freetz-ng/wiki/packages/authorized-keys)<a id='authorized-keys'></a>**<br>
+  * **[authorized_keys: Frontend for SSH keys](authorized-keys/README.md)<a id='authorized-keys'></a>**<br>
     This frontend allows the management of the authorized_keys file used by either Dropbear or OpenSSH to allow a key-based authentication. The key-based authentication is much more secure than password-based
 
-  * **[AVM-firewall](https://freetz-ng.github.io/freetz-ng/wiki/packages/avm-firewall)<a id='avm-firewall'></a>**<br>
+  * **[AVM-firewall](avm-firewall/README.md)<a id='avm-firewall'></a>**<br>
     Configuration front-end for AVM-firewall. This front-end is used for managing firewall rules for the AVM standard firewall.
 
   * **<u>AVM-forwarding</u><a id='avm-forwarding'></a>**<br>
@@ -775,38 +775,38 @@
   * **[AVM-rules - EXPERMENTAL](avm-rules/README.md)<a id='avm-rules'></a>**<br>
     Configuration of port forwardings to the FritzBox itself by using voip_forwardrules. Warning: This package changes the ar7.cfg. On syntax errors AVM will reset the whole file to default, including default
 
-  * **[Cpmaccfg CGI 1.0](https://freetz-ng.github.io/freetz-ng/wiki/packages/cpmaccfg)<a id='cpmaccfg'></a>**<br>
+  * **<u>Cpmaccfg CGI 1.0</u><a id='cpmaccfg'></a>**<br>
     Configuration front-end to cpmaccfg This frontend shows the current settings of the LAN ports and gives a very simple way to set VLAN, portmode and WLAN assigment. Additional to this, you can set IP addresses for the VLAN
 
-  * **[dnsd-cgi](https://freetz-ng.github.io/freetz-ng/wiki/packages/dnsd)<a id='dnsd'></a>**<br>
+  * **[dnsd-cgi](dnsd-cgi/README.md)<a id='dnsd'></a>**<br>
 
-  * **[Downloader CGI](https://freetz-ng.github.io/freetz-ng/wiki/packages/downloader)<a id='downloader'></a>**<br>
+  * **[Downloader CGI](downloader/README.md)<a id='downloader'></a>**<br>
     Download files from HTTP or FTP server during the boot process. This is particularly useful for binary packages which do not fit into the firmware image, but should be used on the box anyway. As long as they fit into the RAM disk this solution helps to automate the downloads and keeps them out of debug.cfg. by hermann72pb (ip-phone-forum.de)
 
-  * **[NFSD CGI 0.1](https://freetz-ng.github.io/freetz-ng/wiki/packages/nfsd)<a id='nfsd'></a>**<br>
+  * **[NFSD CGI 0.1](nfsd-cgi/README.md)<a id='nfsd'></a>**<br>
 
   * **[Onlinechanged-CGI](onlinechanged-cgi/README.md)<a id='onlinechanged'></a>**<br>
     When the online-status changes (e.g. a forced re-connect) this CGI allows you to specify arbitrary commands which are executed at that event. The following different change events are considered: initial start of the box, going online (IPv4), going onlineipv6 (IPv6), going offline (IPv4) and going offlineipv6 (IPv6).
 
-  * **[PHPXmail 1.5](https://freetz-ng.github.io/freetz-ng/wiki/packages/phpxmail)<a id='phpxmail'></a>**<br>
+  * **[PHPXmail 1.5](phpxmail/README.md)<a id='phpxmail'></a>**<br>
     Web configuration interface for XMail from the phpxmail team. Accessible via the URL http://fritz.box:81/phpxmail, it enables you to configure your XMail server locally on the fritz.box or any other remote host. This GUI
 
-  * **[ppp-cgi: ppp dial-up-network](https://freetz-ng.github.io/freetz-ng/wiki/packages/ppp)<a id='ppp'></a>**<br>
+  * **<u>ppp-cgi: ppp dial-up-network</u><a id='ppp'></a>**<br>
     Use this package to establish a dun connection
 
-  * **[RRDstats for RRDtool](https://freetz-ng.github.io/freetz-ng/wiki/packages/rrdstats)<a id='rrdstats'></a>**<br>
+  * **[RRDstats for RRDtool](rrdstats/README.md)<a id='rrdstats'></a>**<br>
     Lets you view graphically various stats of your Freetz Box. Selects BusyBox's 'nice' to save spare resources.
 
-  * **[spindown-cgi 0.2](https://freetz-ng.github.io/freetz-ng/wiki/packages/spindown)<a id='spindown'></a>**<br>
+  * **[spindown-cgi 0.2](spindown-cgi/README.md)<a id='spindown'></a>**<br>
     Choose this package if you want to spin down your attached USB disk after a configurable idle time period. However, it is not guaranteed to work with all disks.
 
-  * **[Syslogd CGI 0.2.3](https://freetz-ng.github.io/freetz-ng/wiki/packages/syslogd)<a id='syslogd'></a>**<br>
+  * **[Syslogd CGI 0.2.3](syslogd-cgi/README.md)<a id='syslogd'></a>**<br>
 
-  * **[Transmission CGI 0.0.4](https://freetz-ng.github.io/freetz-ng/wiki/packages/transmission)<a id='transmission'></a>**<br>
+  * **<u>Transmission CGI 0.0.4</u><a id='transmission'></a>**<br>
     Provides a simple configuration interface
 
   * **<u>vnstat-cgi: vnstat Webinterface</u><a id='vnstat'></a>**<br>
     Lets you view graphically the output of vnstat.
 
-  * **[wol-cgi: Wake-on-LAN (WoL) CGI 0.6](https://freetz-ng.github.io/freetz-ng/wiki/packages/wol)<a id='wol'></a>**<br>
+  * **<u>wol-cgi: Wake-on-LAN (WoL) CGI 0.6</u><a id='wol'></a>**<br>
     Web configuration interface for Etherwake wake-on-LAN. Accessible via the URL http://fritz.box:84, it enables you to interactively wake up sleeping or switched off computers in the LAN reachable from you router box. Which machines can be woken up can be configured using the regular

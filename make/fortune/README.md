@@ -1,103 +1,51 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+fortune
+=======
 
-  <head>
-    <title>
-      packages/fortune – Freetz
-    </title>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!--[if IE]><script type="text/javascript">
-      if (/^#__msie303:/.test(window.location.hash))
-        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
-    </script><![endif]-->
-        <link rel="search" href="/search" />
-        <link rel="help" href="../TracGuide.html" />
-        <link rel="alternate" href="fortune%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
-        <link rel="up" href="../packages.html" title="Übergeordnete Wiki-Seite anzeigen" />
-        <link rel="start" href="/wiki" />
-        <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-      <link type="application/opensearchdescription+xml" rel="search" href="/search/opensearch" title="Freetz durchsuchen" />
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/jquery.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/babel.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/messages/de.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/trac.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/search.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/folding.js"></script>
-    <script type="text/javascript">
-      jQuery(document).ready(function($) {
-        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
-        $("#content").find(".wikianchor").each(function() {
-          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
-        });
-        $(".foldable").enableFolding(true, true);
-      });
-    </script>
-  </head>
-  <body>
-    <div id="banner">
-      <div id="header">
-        <a id="logo" href="/wiki"><img src="../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
-      </div>
-      <form id="search" action="https://www.google.com/search" method="get" onsubmit="; this.elements.namedItem('q').value = this.elements.namedItem('oq').value + ' site:freetz.github.io'">
-        <div>
-          <label for="proj-search">Suche:</label>
-          <input type="text" id="proj-search" name="oq" size="18" value="" />
-          <input type="hidden" name="q" value="" />
-          <input type="submit" value="Suche" />
-        </div>
-      </form>
-      <div id="metanav" class="nav">
-    <ul>
-      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
-    </ul>
-  </div>
-    </div>
-    <div id="mainnav" class="nav">
-    <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="https://github.com/Freetz-NG/freetz-ng/commits/master">Quellen durchsehen</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
-    </ul>
-  </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="fortune.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/packages/fortune.en" title="(not available)">English</a></li></ul></div><p /><div id="main">
-      <div id="pagepath" class="noprint">
-  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="fortune.html" title="Zeige packages/fortune an">fortune</a>
-</div>
-    <div id="content" class="wiki">
-      <div class="wikipage searchable">
+Das Computerprogramm Fortune ist traditionell auf Computern mit Unix
+oder Linux als Betriebssystem zu finden. Es existieren aber auch für
+Windows entsprechende Programme.
+Seine Funktion besteht darin, "fortune cookies" (Glückskekse) und
+andere humorvolle Aphorismen anzuzeigen.
+Dank an
+[zyrill](http://www.ip-phone-forum.de/member.php?u=234921)
+für dieses sinnfreie aber äußerst lustige Paket. So macht Konsole wieder
+Spaß.
 
-          <div id="wikipage" class="trac-content"><h1 id="fortune">fortune</h1>
-<p>
-Das Computerprogramm Fortune ist traditionell auf Computern mit Unix oder Linux als Betriebssystem zu finden. Es existieren aber auch für Windows entsprechende Programme. <br />
-Seine Funktion besteht darin, "fortune cookies" (Glückskekse) und andere humorvolle Aphorismen anzuzeigen.<br /><br />
-Dank an <a class="ext-link" href="http://www.ip-phone-forum.de/member.php?u=234921"><span class="icon">​</span>zyrill</a> für dieses sinnfreie aber äußerst lustige Paket. So macht Konsole wieder Spaß.
-<br />
-</p>
-<h2 id="Paketkonfigurieren">Paket konfigurieren</h2>
-<p>
-<figure><img src="/freetz-ng/screenshots/220.png" alt="Fortune Einstellungen" /><figcaption>Fortune Einstellungen</figcaption></figure>
-Falls man das Paket fortune im menuconfig ausgewählt hat kann man es über das Webinterface konfigurieren. Dazu ist nur der Pfad mit den Keksen anzugeben und nach dem Speichern kann man sich sofort an den Sprüchen erfreuen.
-Solche fortune-Dateien findet man zum Beispiel <a class="ext-link" href="http://www.freebsd.org/cgi/cvsweb.cgi/src/games/fortune/datfiles/"><span class="icon">​</span>hier</a>.<br />
-</p>
-<h2 id="AnzeigenvonfortunesbeimKonsolen-Login">Anzeigen von fortunes beim Konsolen-Login</h2>
-<p>
-Meist werden fortunes automatisch beim Systemstart oder Einloggen gestartet. Das Unix-Shell-Kommando für Fortune ist <strong><em>fortune</em></strong><br />
-Um dies zu bewerkstelligen, müssen die entsprechenden Befehle in die <em>.profile</em> im HOME-Directory des users eingefügt werden.<br />
-Dies kann zum einen über das Freetz-Webinterface unter <em>Freetz:.profile</em> geschehen, oder über die Konsole in der <em>/var/mod/root/.profile</em><br />
+Paket konfigurieren
+-------------------
+
+[![Fortune Einstellungen](../../docs/screenshots/220_md.png)](../../docs/screenshots/220.png)
+
+Falls man das Paket fortune im menuconfig ausgewählt hat kann man es
+über das Webinterface konfigurieren. Dazu ist nur der Pfad mit den
+Keksen anzugeben und nach dem Speichern kann man sich sofort an den
+Sprüchen erfreuen. Solche fortune-Dateien findet man zum Beispiel
+[hier](http://www.freebsd.org/cgi/cvsweb.cgi/src/games/fortune/datfiles/).
+
+Anzeigen von fortunes beim Konsolen-Login
+-----------------------------------------
+
+Meist werden fortunes automatisch beim Systemstart oder Einloggen
+gestartet. Das Unix-Shell-Kommando für Fortune ist ***fortune***
+Um dies zu bewerkstelligen, müssen die entsprechenden Befehle in die
+*.profile* im HOME-Directory des users eingefügt werden.
+Dies kann zum einen über das Freetz-Webinterface unter *Freetz:.profile*
+geschehen, oder über die Konsole in der */var/mod/root/.profile*
 Folgendes reicht dafür aus:
-</p>
-<pre class="wiki">echo
+
+```
+echo
 /usr/bin/fortune
 echo
-</pre><p>
-<br />
-<br />
-Nach erfolgtem Login auf der Box per telnet bzw. ssh begrüßt die Box euch mit einem zufällig gewählten Glückskeks:
-</p>
-<pre class="wiki">   __  _   __  __ ___ __
+```
+
+Nach erfolgtem Login auf der Box per telnet bzw. ssh begrüßt die Box
+euch mit einem zufällig gewählten Glückskeks:
+
+```
+   __  _   __  __ ___ __
   |__ |_) |__ |__  |   /
-  |   |\  |__ |__  |  /_
+  |   |  |__ |__  |  /_
 
    The fun has just begun...
 
@@ -116,18 +64,14 @@ GRAMMAR IS NOT A TIME OF WASTE
         Bart Simpson on chalkboard in episode AABF10
 
 /var/mod/root #
-</pre><h2 id="WeiterführendeLinks">Weiterführende Links</h2>
-<ul><li><a class="ext-link" href="http://en.wikipedia.org/wiki/Fortune_%28Unix%29"><span class="icon">​</span>fortune auf Wikipedia</a><br />
-</li><li><a class="ext-link" href="http://linux.die.net/man/6/fortune"><span class="icon">​</span>fortune man page</a><br />
-</li><li><a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=196686"><span class="icon">​</span>IPPF-Thread</a>
-</li></ul></div>
+```
 
-      </div><ul class="tags"><li class="header">Tags</li><li><a href="../packages.html" rel="tag">packages</a> </li></ul>
+Weiterführende Links
+--------------------
 
-    </div>
-    <script type="text/javascript">
-        jQuery.loadStyleSheet("/chrome/screenshots/css/screenshots.css", "text/css");
-    </script>
-    </div>
-  </body>
-</html>
+-   [fortune auf
+    Wikipedia](http://en.wikipedia.org/wiki/Fortune_%28Unix%29)
+-   [fortune man
+    page](http://linux.die.net/man/6/fortune)
+-   [IPPF-Thread](http://www.ip-phone-forum.de/showthread.php?t=196686)
+

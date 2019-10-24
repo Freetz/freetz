@@ -1,175 +1,149 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+NFSD_CGI
+=========
 
-  <head>
-    <title>
-      packages/nfsd.en – Freetz
-    </title>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!--[if IE]><script type="text/javascript">
-      if (/^#__msie303:/.test(window.location.hash))
-        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
-    </script><![endif]-->
-        <link rel="search" href="/search" />
-        <link rel="help" href="../TracGuide.html" />
-        <link rel="alternate" href="nfsd.en%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
-        <link rel="up" href="../packages.html" title="Übergeordnete Wiki-Seite anzeigen" />
-        <link rel="start" href="/wiki" />
-        <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-      <link type="application/opensearchdescription+xml" rel="search" href="/search/opensearch" title="Freetz durchsuchen" />
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/jquery.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/babel.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/messages/de.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/trac.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/search.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/folding.js"></script>
-    <script type="text/javascript">
-      jQuery(document).ready(function($) {
-        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
-        $("#content").find(".wikianchor").each(function() {
-          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
-        });
-        $(".foldable").enableFolding(true, true);
-      });
-    </script>
-  </head>
-  <body>
-    <div id="banner">
-      <div id="header">
-        <a id="logo" href="/wiki"><img src="../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
-      </div>
-      <form id="search" action="https://www.google.com/search" method="get" onsubmit="; this.elements.namedItem('q').value = this.elements.namedItem('oq').value + ' site:freetz.github.io'">
-        <div>
-          <label for="proj-search">Suche:</label>
-          <input type="text" id="proj-search" name="oq" size="18" value="" />
-          <input type="hidden" name="q" value="" />
-          <input type="submit" value="Suche" />
-        </div>
-      </form>
-      <div id="metanav" class="nav">
-    <ul>
-      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
-    </ul>
-  </div>
-    </div>
-    <div id="mainnav" class="nav">
-    <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="https://github.com/Freetz-NG/freetz-ng/commits/master">Quellen durchsehen</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
-    </ul>
-  </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=""><a class="" href="nfsd.html" title="">German</a></li><li class=" active last"><a class="selected" href="nfsd.en.html" title="selected and displaying language">English</a></li></ul></div><p /><div id="main">
-      <div id="pagepath" class="noprint">
-  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="nfsd.en.html" title="Zeige packages/nfsd.en an">nfsd.en</a>
-</div>
-    <div id="content" class="wiki">
-      <div class="wikipage searchable">
+NFSD_CGI is the web-interface for the NFSD (Server) on Freetz.
 
-          <div id="wikipage" class="trac-content"><h2 id="NFSD_CGI">NFSD_CGI</h2>
-<p>
-NFSD_CGI is the web-interface for the NFSD (Server) on Freetz.<br />
-</p>
-<p>
-Some observations:<br />
-Currently using NFS with a 7390 using Freetz-trunk revision 11466.<br />
-Using this revision I didn't observe permission issues like with Freetz-1.2 for my 7270v3.<br />
-As mount I'm using a <a href="ndas.html">NDAS-NetDisk</a> which is Ext3 formatted.<br />
-</p>
-<p>
+Some observations:
+Currently using NFS with a 7390 using Freetz-trunk revision 11466.
+Using this revision I didn't observe permission issues like with
+Freetz-1.2 for my 7270v3.
+As mount I'm using a [NDAS-NetDisk](../ndas/README.md) which is Ext3
+formatted.
 
-</p>
-<h3 id="etcexportsexportsinGUI">/etc/exports (exports in GUI)</h3>
-<p>
-My currect config allows 192.168.178.0/24 and localhost (for the local NFS Client).<br />
-</p>
-<pre class="wiki">/var/media/ndas/ext3 192.168.178.0/255.255.250.0(rw,no_subtree_check) localhost(rw)
-</pre><h3 id="etchosts.allow">/etc/hosts.allow</h3>
-<p>
-Looks only the first two lines are needed, but the others should not harm.<br />
-</p>
-<pre class="wiki">mountd,nfsd,portmap: 192.168.178.0/255.255.255.0 , localhost
+### /etc/exports (exports in GUI)
+
+My currect config allows 192.168.178.0/24 and localhost (for the local
+NFS Client).
+
+```
+/var/media/ndas/ext3 192.168.178.0/255.255.250.0(rw,no_subtree_check) localhost(rw)
+```
+
+### /etc/hosts.allow
+
+Looks only the first two lines are needed, but the others should not
+harm.
+
+```
+mountd,nfsd,portmap: 192.168.178.0/255.255.255.0 , localhost
 lockd: 192.168.178.0/255.255.255.0 , localhost
 rquotad: 192.168.178.0/255.255.255.0 , localhost
 statd: 192.168.178.0/255.255.255.0 , localhost
-</pre><h3 id="etchosts.deny">/etc/hosts.deny</h3>
-<p>
-Only deny the NFS related services<br />
-</p>
-<pre class="wiki">mountd,nfsd,portmap:ALL
+```
+
+### /etc/hosts.deny
+
+Only deny the NFS related services
+
+```
+mountd,nfsd,portmap:ALL
 lockd:ALL
 rquotad:ALL
 statd:ALL
-</pre><h3 id="VerificationonServer:">Verification on Server:</h3>
-<p>
-Below some helpfull commands for trouble-shooting on the server.<br />
-Unfortunately <tt>rpcinfo</tt> and <tt>nfsstat</tt> where not available on my FB. Maybe <tt>rpcinfo</tt> is available if 'replace kernel' is used.<br />
-</p>
-<p>
+```
+
+### Verification on Server:
+
+Below some helpfull commands for trouble-shooting on the server.
+Unfortunately `rpcinfo` and `nfsstat` where not available on my FB.
+Maybe `rpcinfo` is available if 'replace kernel' is used.
+
 List of kernel supported filesystems by the FB:
-</p>
-<pre class="wiki">cat /proc/filesystems
-</pre><p>
-Just look if the filesystems you are planning to use are listed.<br />
-</p>
-<pre class="wiki">/etc/init.d/rc.nfsd status
-</pre><p>
-Status should be <tt>running</tt>. Use the following <tt>ps</tt> command first to see which processes are actually running before restarting the nfs server.<br />
-</p>
-<pre class="wiki">ps -wl | grep 'nfs\|portmap\|lockd\|statd\|mountd\|quota'
-</pre><p>
-portmap, lockd, mountd, and nfsd should be all listed as a process.<br />
-You can use <tt>/etc/init.d/rc.nfsd stop</tt> and <tt>/etc/init.d/rc.nfsd start</tt> to stop and start the nfs server.<br />
-</p>
-<pre class="wiki">exportfs
-</pre><p>
-Should show the hosts or subnets (incl. localhost if configured) configured in /etc/exports<br />
-</p>
-<pre class="wiki">mount
-</pre><p>
-Look that the mounted disk allows rw (if intended)<br />
-</p>
-<p>
-If you also have the <a href="/wiki/packages/nfs.en">NFS Client</a> installed on the FB, the following verification is available:
-</p>
-<pre class="wiki">mount -t nfs localhost:/&lt;share-path&gt; /&lt;mount-point&gt;
-</pre><p>
+
+```
+cat /proc/filesystems
+```
+
+Just look if the filesystems you are planning to use are listed.
+
+```
+/etc/init.d/rc.nfsd status
+```
+
+Status should be `running`. Use the following `ps` command first to see
+which processes are actually running before restarting the nfs server.
+
+```
+ps -wl | grep 'nfs|portmap|lockd|statd|mountd|quota'
+```
+
+portmap, lockd, mountd, and nfsd should be all listed as a process.
+You can use `/etc/init.d/rc.nfsd stop` and `/etc/init.d/rc.nfsd start`
+to stop and start the nfs server.
+
+```
+exportfs
+```
+
+Should show the hosts or subnets (incl. localhost if configured)
+configured in /etc/exports
+
+```
+mount
+```
+
+Look that the mounted disk allows rw (if intended)
+
+If you also have the [NFS Client](/wiki/packages/nfs.en) installed on
+the FB, the following verification is available:
+
+```
+mount -t nfs localhost:/<share-path> /<mount-point>
+```
+
 To show from the server which nfs exports are in use:
-</p>
-<pre class="wiki">showmount --all
+
+```
+showmount --all
 showmount --exports
-</pre><p>
+```
+
 To verify layer-4 network information (e.g. used ports):
-</p>
-<pre class="wiki">netstat -anp
-</pre><p>
-<br />
-</p>
-<pre class="wiki">logread
-</pre><h3 id="rsizeandwsizebuffers">rsize and wsize buffers</h3>
-<p>
-The read and write buffers are assigned during the <tt>mount</tt> on the client.<br />
-The server supports a buffer size that range from 4kbytes to 1024kbytes (RPCSVC_MAXPAYLOAD (1*1024*1024u)) in steps of 1kbyte.<br />
-Finding the optimal buffer size is normally the best option to get a better performance.<br />
-I only have a ndas Net-Disk mounted, and found that all rsize values had a similar variation in the results.<br />
-The FB CPU is the bottleneck.<br />
-It might be interesting to retest this with a USB-stick to see if than varying the buffersizes would show a difference.<br />
-</p>
-<p>
-I tested the performance with <a class="ext-link" href="http://www.coker.com.au/bonnie++"><span class="icon">​</span>Bonnie++</a> using one of the <a class="ext-link" href="http://www.coker.com.au/bonnie++/experimental/"><span class="icon">​</span>experimental versions</a><br />
-</p>
-<h4 id="Bonnie">Bonnie++</h4>
-<p>
-For this I used two scripts to: run the test, unmount/mount both client and server mounts, restart nfsd, and mounted the client with a different rsize parameter.<br />
-During the tests I only varied the rsize parameter, because I'm only interested in the read optimalisation now, but changing both wsize and rsize is also possible.<br />
-Each test takes about 35 minutes (with 1gigbyte transfers), so you can do about 16 overnight.<br />
+
+```
+netstat -anp
+```
+
+
+```
+logread
+```
+
+### rsize and wsize buffers
+
+The read and write buffers are assigned during the `mount` on the
+client.
+The server supports a buffer size that range from 4kbytes to 1024kbytes
+(RPCSVC_MAXPAYLOAD (1*1024*1024u)) in steps of 1kbyte.
+Finding the optimal buffer size is normally the best option to get a
+better performance.
+I only have a ndas Net-Disk mounted, and found that all rsize values had
+a similar variation in the results.
+The FB CPU is the bottleneck.
+It might be interesting to retest this with a USB-stick to see if than
+varying the buffersizes would show a difference.
+
+I tested the performance with
+[Bonnie++](http://www.coker.com.au/bonnie++) using
+one of the [experimental
+versions](http://www.coker.com.au/bonnie++/experimental/)
+
+#### Bonnie++
+
+For this I used two scripts to: run the test, unmount/mount both client
+and server mounts, restart nfsd, and mounted the client with a different
+rsize parameter.
+During the tests I only varied the rsize parameter, because I'm only
+interested in the read optimalisation now, but changing both wsize and
+rsize is also possible.
+Each test takes about 35 minutes (with 1gigbyte transfers), so you can
+do about 16 overnight.
 Here the scripts I used:
-</p>
-<p>
+
 main script:
-</p>
-<pre class="wiki">#!/bin/sh
+
+```
+#!/bin/sh
 
 # the initial test with a rsize of 32768 (=32k) and increased with steps of 32k to 1024k
 # rsize=32768
@@ -177,98 +151,74 @@ main script:
 # rsize to test is rsize=294912. Start rsize is
 rsize=(294912-16384)
 i=1
-date &gt; results.txt
-date +%s &gt;&gt; results.txt
+date > results.txt
+date +%s >> results.txt
 while [ $i -le 32 ]; do
-        echo ======================================================= &gt;&gt; results.txt
+        echo ======================================================= >> results.txt
         echo =======================================================
         echo setup bonny++ test with rsize of $(($rsize+1024*$i))
-        echo setup bonny++ test with rsize of $(($rsize+1024*$i)) &gt;&gt; results.txt
-        mount -o hard,intr,rsize=$(($rsize+1024*$i)) 192.168.178.1:&lt;full_share_path&gt; &lt;local_mount_point&gt;
-        bonnie++ -d &lt;local_mount_point&gt; -s 1g -n 0 -m nfs_client_$rsize -f -b -u root &gt;&gt; results.txt 2&gt;&gt; results.txt
-        echo ======================================================= &gt;&gt; results.txt
-        umount &lt;local_mount_point&gt;
+        echo setup bonny++ test with rsize of $(($rsize+1024*$i)) >> results.txt
+        mount -o hard,intr,rsize=$(($rsize+1024*$i)) 192.168.178.1:<full_share_path> <local_mount_point>
+        bonnie++ -d <local_mount_point> -s 1g -n 0 -m nfs_client_$rsize -f -b -u root >> results.txt 2>> results.txt
+        echo ======================================================= >> results.txt
+        umount <local_mount_point>
         expect autologin.sh
         i=$(($i + 1))
 done
-date &gt;&gt; results.txt
-date +%s &gt;&gt; results.txt
-</pre><p>
+date >> results.txt
+date +%s >> results.txt
+```
+
 expect script:
-</p>
-<pre class="wiki">#!/usr/bin/expect
+
+```
+#!/usr/bin/expect
 
 spawn ssh root@192.168.178.1
 # expect "connecting (yes/no)?"
-# send "yes\r"
+# send "yes"
 expect "assword:"
-send "&lt;your_passwd&gt;\r"
+send "<your_passwd>"
 expect "#"
-send "/etc/init.d/rc.nfsd stop\r"
+send "/etc/init.d/rc.nfsd stop"
 expect "done."
-send "umount /dev/nda2\r"
+send "umount /dev/nda2"
 expect "#"
-send "mount /dev/nda2 &lt;mount-point&gt;\r"
+send "mount /dev/nda2 <mount-point>"
 expect "#"
-send "/etc/init.d/rc.nfsd start\r"
+send "/etc/init.d/rc.nfsd start"
 expect "done."
-</pre><p>
+```
+
 You can obtain a nice html page of your results with:
-</p>
-<pre class="wiki">cat results.txt | grep ,,, | bon_csv2html &gt; /tmp/nfs_client_test.html
-</pre><p>
-But you can also use the csv format output in an Excel sheet.
-I attached 3 html files showing my results.
-</p>
-<h4 id="MRTGCPUUtil">MRTG CPU Util</h4>
-<p>
-<figure><img src="/freetz-ng/screenshots/276.png" alt="CPU Util 7390 bonnie++ test script" /><figcaption>CPU Util 7390 bonnie++ test script</figcaption></figure>
-In the <a href="netsnmp.en.html">MRTG</a> graph of the CPU Utilization you can clearly see that the CPU Utilization is the bottleneck in my setup using a <a href="ndas.html">NDAS NetDisk</a>.<br />
-The picture shows I started the test at about 7:20am which took until 1:10am the next day.<br /> Than I did two manual bonny++ tests at 1:15am and 2am. Than started a new batch test using the scripts at about 2:45am.<br /><br /><br /><br /><br />
-</p>
-<h3 id="References">References</h3>
-<p>
-<a class="ext-link" href="http://nfs.sourceforge.net/nfs-howto/index.html"><span class="icon">​</span>NFS howto</a><br />
-<a class="ext-link" href="http://www.coker.com.au/bonnie++/"><span class="icon">​</span>bonnie++</a> and the <a class="ext-link" href="http://www.coker.com.au/bonnie++/experimental/"><span class="icon">​</span>experimental</a> page<br />
-<a class="ext-link" href="http://www.googlux.com/bonnie.html"><span class="icon">​</span>bonnie++ examples</a><br />
-</p>
-</div>
 
-      </div>
+```
+cat results.txt | grep ,,, | bon_csv2html > /tmp/nfs_client_test.html
+```
 
-    <div id="attachments">
-        <h3 class="foldable">Anhänge <span class="trac-count">(3)</span></h3>
-        <div>
-          <ul>
-              <li>
-    <a href="/attachment/wiki/packages/nfsd.en/ndas_nfs_client_32k_1024k.html" title="Anhang ansehen">ndas_nfs_client_32k_1024k.html</a><a href="/raw-attachment/wiki/packages/nfsd.en/ndas_nfs_client_32k_1024k.html" class="trac-rawlink" title="Download">​</a>
-       (<span title="34141 Byte">33.3 KB</span>) -
-      hinzugefügt von <em>RomMon</em> <a class="timeline" href="/timeline?from=2014-01-04T16%3A27%3A55Z&amp;precision=second" title="Siehe Journal am 04.01.2014 16:27:55">vor 4 Jahren</a>.
-                <q>Bonnie++ test results 7390 rsize from 32kbytes to 1024kbytes with 32kbytes steps</q>
-              </li>
-              <li>
-    <a href="/attachment/wiki/packages/nfsd.en/ndas_nfs_client_288k_test.html" title="Anhang ansehen">ndas_nfs_client_288k_test.html</a><a href="/raw-attachment/wiki/packages/nfsd.en/ndas_nfs_client_288k_test.html" class="trac-rawlink" title="Download">​</a>
-       (<span title="34137 Byte">33.3 KB</span>) -
-      hinzugefügt von <em>RomMon</em> <a class="timeline" href="/timeline?from=2014-01-04T16%3A30%3A22Z&amp;precision=second" title="Siehe Journal am 04.01.2014 16:30:22">vor 4 Jahren</a>.
-                <q>„Bonnie++ test results 7390 rsize 288k plus/minus 16k in steps of 1k</q>
-              </li>
-              <li>
-    <a href="/attachment/wiki/packages/nfsd.en/ndas_nfs_client_287k_test.html" title="Anhang ansehen">ndas_nfs_client_287k_test.html</a><a href="/raw-attachment/wiki/packages/nfsd.en/ndas_nfs_client_287k_test.html" class="trac-rawlink" title="Download">​</a>
-       (<span title="10553 Byte">10.3 KB</span>) -
-      hinzugefügt von <em>RomMon</em> <a class="timeline" href="/timeline?from=2014-01-04T16%3A31%3A17Z&amp;precision=second" title="Siehe Journal am 04.01.2014 16:31:17">vor 4 Jahren</a>.
-                <q>Bonnie++ test results 7390 rsize is 287k 8 repeates</q>
-              </li>
-          </ul>
-          <p>
-            Alle Anhänge herunterladen als: <a rel="nofollow" href="/zip-attachment/wiki/packages/nfsd.en/">.zip</a>
-          </p>
-        </div>
-    </div>
+But you can also use the csv format output in an Excel sheet. I attached
+3 html files showing my results.
 
-    </div>
-    <script type="text/javascript">
-        jQuery.loadStyleSheet("/chrome/screenshots/css/screenshots.css", "text/css");
-    </script>
-    </div>
-  </body>
-</html>
+#### MRTG CPU Util
+
+[![CPU Util 7390 bonnie++ test script](../../docs/screenshots/276_md.png)](../../docs/screenshots/276.png)
+
+In the [MRTG](netsnmp.en.html) graph of the CPU Utilization you can
+clearly see that the CPU Utilization is the bottleneck in my setup using
+a [NDAS NetDisk](../ndas/README.md).
+The picture shows I started the test at about 7:20am which took until
+1:10am the next day.
+Than I did two manual bonny++ tests at 1:15am and 2am. Than started a
+new batch test using the scripts at about 2:45am.
+
+### References
+
+[NFS
+howto](http://nfs.sourceforge.net/nfs-howto/index.html)
+[bonnie++](http://www.coker.com.au/bonnie++/) and
+the
+[experimental](http://www.coker.com.au/bonnie++/experimental/)
+page
+[bonnie++
+examples](http://www.googlux.com/bonnie.html)
+

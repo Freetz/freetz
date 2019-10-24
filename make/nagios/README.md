@@ -1,100 +1,41 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+Nagios
+======
 
-  <head>
-    <title>
-      packages/nagios – Freetz
-    </title>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!--[if IE]><script type="text/javascript">
-      if (/^#__msie303:/.test(window.location.hash))
-        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
-    </script><![endif]-->
-        <link rel="search" href="/search" />
-        <link rel="help" href="../TracGuide.html" />
-        <link rel="alternate" href="nagios%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
-        <link rel="up" href="../packages.html" title="Übergeordnete Wiki-Seite anzeigen" />
-        <link rel="start" href="/wiki" />
-        <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-      <link type="application/opensearchdescription+xml" rel="search" href="/search/opensearch" title="Freetz durchsuchen" />
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/jquery.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/babel.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/messages/de.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/trac.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/search.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/folding.js"></script>
-    <script type="text/javascript">
-      jQuery(document).ready(function($) {
-        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
-        $("#content").find(".wikianchor").each(function() {
-          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
-        });
-        $(".foldable").enableFolding(true, true);
-      });
-    </script>
-  </head>
-  <body>
-    <div id="banner">
-      <div id="header">
-        <a id="logo" href="/wiki"><img src="../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
-      </div>
-      <form id="search" action="https://www.google.com/search" method="get" onsubmit="; this.elements.namedItem('q').value = this.elements.namedItem('oq').value + ' site:freetz.github.io'">
-        <div>
-          <label for="proj-search">Suche:</label>
-          <input type="text" id="proj-search" name="oq" size="18" value="" />
-          <input type="hidden" name="q" value="" />
-          <input type="submit" value="Suche" />
-        </div>
-      </form>
-      <div id="metanav" class="nav">
-    <ul>
-      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
-    </ul>
-  </div>
-    </div>
-    <div id="mainnav" class="nav">
-    <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="https://github.com/Freetz-NG/freetz-ng/commits/master">Quellen durchsehen</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
-    </ul>
-  </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="nagios.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/packages/nagios.en" title="(not available)">English</a></li></ul></div><p /><div id="main">
-      <div id="pagepath" class="noprint">
-  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="nagios.html" title="Zeige packages/nagios an">nagios</a>
-</div>
-    <div id="content" class="wiki">
-      <div class="wikipage searchable">
+Die Software **[Nagios](http://www.nagios.org/)**
+(Network + Hagios, früher NetSaint) dient der Überwachung komplexer
+IT-Infrastrukturen.
 
-          <div id="wikipage" class="trac-content"><h1 id="Nagios">Nagios</h1>
-<p>
-Die Software <strong><a class="ext-link" href="http://www.nagios.org/"><span class="icon">​</span>Nagios</a></strong> (Network + Hagios, früher NetSaint) dient der Überwachung komplexer IT-Infrastrukturen.
-</p>
-<p>
-Nagios bietet dazu eine Sammlung von Modulen zur Überwachung von Netzwerken, Hosts und speziell Diensten sowie einer Web-Schnittstelle zum Abfragen der gesammelten Daten. Nagios steht unter der GPL, ist also Freie Software, und läuft unter zahlreichen Unix-ähnlichen Betriebssystemen.
-</p>
-<p>
-Nagios kann mit Modulen erweitert werden. Zahlreiche fertige Module sind bereits verfügbar, und auch die Entwicklung eigener Module ist oft nicht unbedingt kompliziert.
-</p>
-<p>
-In <em>Freetz</em> baut <em>Nagios</em> auf das Paket <a class="wiki" href="microperl.html">microperl</a> auf.
-</p>
-<p>
-<img src="../../chrome/wikiextras-icons-16/exclamation.png" style="vertical-align: text-bottom" alt="/!\" /> Das Paket hat momentan keine Weboberfläche. Die Konfigurationsdateien sind nicht auf die Box angepasst und sowohl die html- als auch die cgi-Dateien werden nicht ins Image kopiert. Hier ist also einiges an Handarbeit nötig.
-</p>
-<h2 id="WeiterführendeInformationen">Weiterführende Informationen</h2>
-<ul><li><a class="ext-link" href="http://www.nagios.org/"><span class="icon">​</span>offizielle Homepage</a>
-</li><li><a class="ext-link" href="http://nagiosexchange.org/"><span class="icon">​</span>Übersicht über Plug-ins, Artikel etc. zu Nagios</a>
-</li><li><a class="ext-link" href="http://www.nagiosforge.org/"><span class="icon">​</span>Übersicht über Add-ons</a> inkl. Versionsverwaltung, Snippets und Mailinglisten etc. zu Nagios
-</li><li><a class="ext-link" href="http://nagioswiki.org/"><span class="icon">​</span>Wiki für Nagios-relevante Themen</a>, z.B. HowTos, Addons, &hellip;
-</li><li><a class="ext-link" href="http://de.wikipedia.org/wiki/Nagios"><span class="icon">​</span>Wikipedia Artikel</a>
-</li></ul><hr />
-</div>
+Nagios bietet dazu eine Sammlung von Modulen zur Überwachung von
+Netzwerken, Hosts und speziell Diensten sowie einer Web-Schnittstelle
+zum Abfragen der gesammelten Daten. Nagios steht unter der GPL, ist also
+Freie Software, und läuft unter zahlreichen Unix-ähnlichen
+Betriebssystemen.
 
-      </div><ul class="tags"><li class="header">Tags</li><li><a href="/tags/monitoring" rel="tag">monitoring</a> </li><li><a href="/tags/network" rel="tag">network</a> </li><li><a href="../packages.html" rel="tag">packages</a> </li><li><a href="/tags/tools" rel="tag">tools</a> </li></ul>
+Nagios kann mit Modulen erweitert werden. Zahlreiche fertige Module sind
+bereits verfügbar, und auch die Entwicklung eigener Module ist oft nicht
+unbedingt kompliziert.
 
-    </div>
-    </div>
-  </body>
-</html>
+In *Freetz* baut *Nagios* auf das Paket
+[microperl](../microperl/README.md) auf.
+
+ * Das Paket hat
+momentan keine Weboberfläche. Die Konfigurationsdateien sind nicht auf
+die Box angepasst und sowohl die html- als auch die cgi-Dateien werden
+nicht ins Image kopiert. Hier ist also einiges an Handarbeit nötig.
+
+Weiterführende Informationen
+----------------------------
+
+-   [offizielle Homepage](http://www.nagios.org/)
+-   [Übersicht über Plug-ins, Artikel etc. zu
+    Nagios](http://nagiosexchange.org/)
+-   [Übersicht über
+    Add-ons](http://www.nagiosforge.org/) inkl.
+    Versionsverwaltung, Snippets und Mailinglisten etc. zu Nagios
+-   [Wiki für Nagios-relevante
+    Themen](http://nagioswiki.org/), z.B. HowTos, Addons, ...
+-   [Wikipedia
+    Artikel](http://de.wikipedia.org/wiki/Nagios)
+
+------------------------------------------------------------------------
+

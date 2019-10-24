@@ -1,155 +1,171 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+Inotify-Tools
+=============
 
-  <head>
-    <title>
-      packages/inotify-tools – Freetz
-    </title>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!--[if IE]><script type="text/javascript">
-      if (/^#__msie303:/.test(window.location.hash))
-        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
-    </script><![endif]-->
-        <link rel="search" href="/search" />
-        <link rel="help" href="../TracGuide.html" />
-        <link rel="alternate" href="inotify-tools%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
-        <link rel="up" href="../packages.html" title="Übergeordnete Wiki-Seite anzeigen" />
-        <link rel="start" href="/wiki" />
-        <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-      <link type="application/opensearchdescription+xml" rel="search" href="/search/opensearch" title="Freetz durchsuchen" />
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/jquery.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/babel.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/messages/de.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/trac.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/search.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/folding.js"></script>
-    <script type="text/javascript">
-      jQuery(document).ready(function($) {
-        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
-        $("#content").find(".wikianchor").each(function() {
-          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
-        });
-        $(".foldable").enableFolding(true, true);
-      });
-    </script>
-  </head>
-  <body>
-    <div id="banner">
-      <div id="header">
-        <a id="logo" href="/wiki"><img src="../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
-      </div>
-      <form id="search" action="https://www.google.com/search" method="get" onsubmit="; this.elements.namedItem('q').value = this.elements.namedItem('oq').value + ' site:freetz.github.io'">
-        <div>
-          <label for="proj-search">Suche:</label>
-          <input type="text" id="proj-search" name="oq" size="18" value="" />
-          <input type="hidden" name="q" value="" />
-          <input type="submit" value="Suche" />
-        </div>
-      </form>
-      <div id="metanav" class="nav">
-    <ul>
-      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
-    </ul>
-  </div>
-    </div>
-    <div id="mainnav" class="nav">
-    <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="https://github.com/Freetz-NG/freetz-ng/commits/master">Quellen durchsehen</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
-    </ul>
-  </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="inotify-tools.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/packages/inotify-tools.en" title="(not available)">English</a></li></ul></div><p /><div id="main">
-      <div id="pagepath" class="noprint">
-  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="inotify-tools.html" title="Zeige packages/inotify-tools an">inotify-tools</a>
-</div>
-    <div id="content" class="wiki">
-      <div class="wikipage searchable">
+**Inotify** ist eine Kernel-Schnittstelle zur Überwachung von
+Dateizugriffen, verbunden mit einem Event-Mechanismus, von dem man sich
+über bestimmte Ereignisse benachrichtigen lassen kann. Siehe dazu den
+[deutschen
+(kurz)](http://de.wikipedia.org/wiki/Linux_%28Kernel%29#Inotify)
+und [englischen
+(ausführlich)](http://en.wikipedia.org/wiki/Inotify)
+Wikipedia-Artikel.
 
-          <div id="wikipage" class="trac-content"><p>
-</p><div class="wiki-toc"><h4>Inhaltsverzeichnis</h4><ol><li><a href="inotify-tools.html#InotifyundInotify-Toolsallgemein">Inotify und Inotify-Tools allgemein</a></li><li><a href="inotify-tools.html#DateizugriffederFritzBoxabdemStartbeobachten">Dateizugriffe der FritzBox ab dem Start beobachten</a></li><li><a href="inotify-tools.html#Waswirdvonrc.inotify_toolsprotokolliert">Was wird von rc.inotify_tools protokolliert?</a></li><li><a href="inotify-tools.html#Ausgabeformat">Ausgabeformat</a></li><li><a href="inotify-tools.html#Log-DateiregelmäßigkonsolidierenumPlatzzusparen">Log-Datei regelmäßig konsolidieren, um Platz zu sparen</a></li><li><a href="inotify-tools.html#Schlußwort">Schlußwort</a></li></ol></div><p>
-</p>
-<h1 id="Inotify-Tools">Inotify-Tools</h1>
-<p>
-<strong>Inotify</strong> ist eine Kernel-Schnittstelle zur Überwachung von Dateizugriffen, verbunden mit einem Event-Mechanismus, von dem man sich über bestimmte Ereignisse benachrichtigen lassen kann. Siehe dazu den <a class="ext-link" href="http://de.wikipedia.org/wiki/Linux_%28Kernel%29#Inotify"><span class="icon">​</span>deutschen (kurz)</a> und <a class="ext-link" href="http://en.wikipedia.org/wiki/Inotify"><span class="icon">​</span>englischen (ausführlich)</a> Wikipedia-Artikel.
-</p>
-<h2 id="InotifyundInotify-Toolsallgemein">Inotify und Inotify-Tools allgemein</h2>
-<p>
-Die <strong><a class="ext-link" href="http://inotify-tools.sourceforge.net"><span class="icon">​</span>Inotify-Tools</a></strong> sind eine kleine Sammlung von Werkzeugen bzw. Programmierschnittstellen, um bequemer diesen mächtigen Mechanismus nutzen zu können. Wir stellen als Freetz-Paket zwei ausführbare Werkzeuge und eine Bibliothek zur Verfügung, und zwar
-</p>
-<ul><li>inotifywait,
-</li><li>inotifywatch und
-</li><li>libinotifytools
-</li></ul><p>
-Verwendungsbeispiele gibt es ebenfalls auf der <a class="ext-link" href="http://inotify-tools.sourceforge.net/#info"><span class="icon">​</span>Sourceforge-Projektseite</a>. <strong>Inotifywait</strong> wartet auf ein Ereignis, für das man sich vorher registriert hat und kehrt dann zurück, wenn es eintritt. Das Ganze geht auch im Hintergrundbetrieb, wenn man Ereignisse nicht nur einmalig, sondern dauerhaft beobachten möchte. <strong>Inotifywatch</strong> hingegen sammelt und summiert statistische Daten zu Dateisystem-Ereignissen und stellt sie in tabellarischer Textdarstellung zur Verfügung.
-</p>
-<h2 id="DateizugriffederFritzBoxabdemStartbeobachten">Dateizugriffe der FritzBox ab dem Start beobachten</h2>
-<p>
-Eine besondere Anwendung, für die das Startskript <tt>rc.S</tt> durch einen speziellen, immer eingebauten Patch vorbereitet wird, ist das Protokollieren sämtlicher Dateisystemzugriffe beim Starten der Box. <tt>rc.S</tt> ist das erste Skript, welches von <tt>init</tt> ausgeführt wird, d.h. die Protokollierung beginnt wirklich sehr früh (direkt nach dem Start des Watchdogs), man verpaßt nichts Wichtiges. Da es keinen Sinn macht, diese Protokollierung immer durchzuführen, kann man sie ein- und ausschalten. Dafür verwendet man das <a class="missing wiki">kernel_args-API?</a>. Vor dem zu protokollierenden Startvorgang, also vor dem Reboot, aktiviert man die Protokollierung:
-</p>
-<div class="code"><pre><span class="c"># API laden
-</span>. /usr/bin/kernel_args
-<span class="c"># Aktivieren (Achtung, kein "=", zwei Parameter!)
-</span>ka_setValue InotifyBootAnalysis y
-<span class="c"># Prüfen, ob Variable gesetzt
-</span>ka_getArgs
-<span class="c"># Ergebnis z.B. idle=4 foo=bar InotifyBootAnalysis=y
-</span></pre></div><p>
-Anstatt den Wert "y" kann man auch einen positiven Ganzzahlwert zuordnen, der automatisch bei jedem Start um 1 vermindert wird, bis er schließlich 0 werden würden, was zum Folgewert "n" und zur automatischen Deaktivierung der Funktion führt. So kann man erstens das Deaktivieren nicht auf Dauer vergessen und zweitens mögliche Probleme beim Hochfahren der Box durch das Logging eliminieren, indem man sie einfach oft genug neu startet, bis die Funktion wieder inaktiv ist.
-</p>
-<p>
-Deaktivieren kann man die Funktion auch manuell, indem man in obiger Code-Sequenz eine Zeile austauscht:
-</p>
-<div class="code"><pre><span class="c"># Deaktivieren
-</span>ka_setValue InotifyBootAnalysis n
-</pre></div><p>
+Inotify und Inotify-Tools allgemein
+-----------------------------------
+
+Die
+**[Inotify-Tools](http://inotify-tools.sourceforge.net)**
+sind eine kleine Sammlung von Werkzeugen bzw. Programmierschnittstellen,
+um bequemer diesen mächtigen Mechanismus nutzen zu können. Wir stellen
+als Freetz-Paket zwei ausführbare Werkzeuge und eine Bibliothek zur
+Verfügung, und zwar
+
+-   inotifywait,
+-   inotifywatch und
+-   libinotifytools
+
+Verwendungsbeispiele gibt es ebenfalls auf der
+[Sourceforge-Projektseite](http://inotify-tools.sourceforge.net/#info).
+**Inotifywait** wartet auf ein Ereignis, für das man sich vorher
+registriert hat und kehrt dann zurück, wenn es eintritt. Das Ganze geht
+auch im Hintergrundbetrieb, wenn man Ereignisse nicht nur einmalig,
+sondern dauerhaft beobachten möchte. **Inotifywatch** hingegen sammelt
+und summiert statistische Daten zu Dateisystem-Ereignissen und stellt
+sie in tabellarischer Textdarstellung zur Verfügung.
+
+Dateizugriffe der FritzBox ab dem Start beobachten
+--------------------------------------------------
+
+Eine besondere Anwendung, für die das Startskript `rc.S` durch einen
+speziellen, immer eingebauten Patch vorbereitet wird, ist das
+Protokollieren sämtlicher Dateisystemzugriffe beim Starten der Box.
+`rc.S` ist das erste Skript, welches von `init` ausgeführt wird, d.h.
+die Protokollierung beginnt wirklich sehr früh (direkt nach dem Start
+des Watchdogs), man verpaßt nichts Wichtiges. Da es keinen Sinn macht,
+diese Protokollierung immer durchzuführen, kann man sie ein- und
+ausschalten. Dafür verwendet man das [kernel_args-API?]. Vor dem zu protokollierenden Startvorgang, also vor dem Reboot,
+aktiviert man die Protokollierung:
+
+```
+# API laden
+. /usr/bin/kernel_args
+# Aktivieren (Achtung, kein "=", zwei Parameter!)
+ka_setValue InotifyBootAnalysis y
+# Prüfen, ob Variable gesetzt
+ka_getArgs
+# Ergebnis z.B. idle=4 foo=bar InotifyBootAnalysis=y
+```
+
+Anstatt den Wert "y" kann man auch einen positiven Ganzzahlwert
+zuordnen, der automatisch bei jedem Start um 1 vermindert wird, bis er
+schließlich 0 werden würden, was zum Folgewert "n" und zur
+automatischen Deaktivierung der Funktion führt. So kann man erstens das
+Deaktivieren nicht auf Dauer vergessen und zweitens mögliche Probleme
+beim Hochfahren der Box durch das Logging eliminieren, indem man sie
+einfach oft genug neu startet, bis die Funktion wieder inaktiv ist.
+
+Deaktivieren kann man die Funktion auch manuell, indem man in obiger
+Code-Sequenz eine Zeile austauscht:
+
+```
+# Deaktivieren
+ka_setValue InotifyBootAnalysis n
+```
+
 Auch ganz löschen kann man die Variable aus dem Bootloader Environment:
-</p>
-<div class="code"><pre><span class="c"># Variable ganz löschen
-</span>ka_removeVariable InotifyBootAnalysis
-</pre></div><p>
-Wenn das Logging erst einmal gestartet wurde, läuft es immer weiter, bis man es manuell stoppt, nachdem der Startvorgang abgeschlossen ist bzw. auch danach noch man so viel protokolliert hat, wie man möchte. Es könnte ja sein, daß man außer dem Startvorgang noch einige Stunden oder Tage die Box weiter beobachten möchte, um festzustellen, welche Dateien überhaupt benutzt werden oder nicht, um sie dann in Verbindung mit dem <a class="wiki" href="downloader.html">Downloader-CGI</a> auszulagern und nachzuladen oder ganz aus der Firmware zu entfernen, um Platz zu schaffen für mehr oder größere Pakete, was gerade bei Boxen mit nur 4 MB Flash-Größe eine Kunst für sich ist. Die 8-MB-Boxen sind da weniger eingeengt, aber auch dort kann es interessant sein, falls man unter "Featuritis" leidet.
-</p>
-<p>
-Wie also stoppt man die Protokollierung, bevor einem der Speicher volläuft?
-</p>
-<div class="code"><pre><span class="c"># Protokollierung anhalten
-</span>/etc/init.d/rc.inotify_tools stop
-</pre></div><p>
+
+```
+# Variable ganz löschen
+ka_removeVariable InotifyBootAnalysis
+```
+
+Wenn das Logging erst einmal gestartet wurde, läuft es immer weiter, bis
+man es manuell stoppt, nachdem der Startvorgang abgeschlossen ist bzw.
+auch danach noch man so viel protokolliert hat, wie man möchte. Es
+könnte ja sein, daß man außer dem Startvorgang noch einige Stunden oder
+Tage die Box weiter beobachten möchte, um festzustellen, welche Dateien
+überhaupt benutzt werden oder nicht, um sie dann in Verbindung mit dem
+[Downloader-CGI](../downloader/README.md) auszulagern und nachzuladen
+oder ganz aus der Firmware zu entfernen, um Platz zu schaffen für mehr
+oder größere Pakete, was gerade bei Boxen mit nur 4 MB Flash-Größe eine
+Kunst für sich ist. Die 8-MB-Boxen sind da weniger eingeengt, aber auch
+dort kann es interessant sein, falls man unter "Featuritis" leidet.
+
+Wie also stoppt man die Protokollierung, bevor einem der Speicher
+volläuft?
+
+```
+# Protokollierung anhalten
+/etc/init.d/rc.inotify_tools stop
+```
+
 Ob die Protokollierung gerade läuft, kann man so feststellen:
-</p>
-<div class="code"><pre><span class="c"># Status prüfen ("running" oder "stopped")
-</span>/etc/init.d/rc.inotify_tools status
-</pre></div><p>
-Es ist auch jederzeit im laufenden Betrieb möglich, die Protokollierung einzuschalten, um bei Bedarf zur Laufzeit alle Dateizugriffe zu beobachten:
-</p>
-<div class="code"><pre><span class="c"># Protokollierung (neu) starten
-</span>/etc/init.d/rc.inotify_tools start
-</pre></div><p>
-Achtung, ein kleiner Ausflug ins noch Technischere: Man sollte wissen, daß <tt>rc.inotify_tools start</tt> eine evtl. bereits laufende Protokollierung kurzzeitig stoppt und sie dann sofort neu startet. Das ist etwas ungewohnt, kann aber nützlich sein in Situationen, wo Init von einem Skript aufgrund z.B. <tt>kill -1 1</tt>, wie <tt>rc.mini_fo</tt> es verwendet, um in mehreren Durchgängen sein Overlay-Dateisystem aufzuziehen, beendet wird, um dann neu gestartet zu werden und nochmals die Startskripten aufzurufen. Dazwischen kann die Protokollierung entweder noch laufen oder abgebrochen worden sein. Jedenfalls startet Inotify-Tools in diesem Fall neu, ggf. jetzt mit Ausgabe auf das frisch gemountete <em>mini_fo</em> (vorher auf das nun überdeckte, darunter liegende Dateisystem).
-</p>
-<h2 id="Waswirdvonrc.inotify_toolsprotokolliert">Was wird von rc.inotify_tools protokolliert?</h2>
-<p>
-Wir könnten alles protokollieren, aber das wäre eine große Datenmenge, weil bestimmte Zugriffe, z.B. auf häufig verwendete Dateien wie <tt>busybox</tt>, <tt>uClibc</tt> oder <tt>libcrypt</tt> das Log zumüllen. Daß sie verwendet werden, sollte sowieso selbstverständlich sein, und wir werden sie auch ganz bestimmt nicht aus der Firmware auslagern. Also werden sie bei der Protokollierung nicht berücksichtigt. So sieht in <tt>rc.S</tt> die Passage aus, wo die Protokollierung gestartet wird:
-</p>
-<div class="code"><pre><span class="nb">echo</span> <span class="s2">"starting inotifywait"</span>
-inotifywait -c -r -m / <span class="se">\
-</span>    @/dev @/proc @/var @/rom @/sto <span class="se">\
-</span>    --exclude <span class="s1">'busybox|uClibc|libcrypt-0'</span> <span class="se">\
-</span>    &gt;&gt; /var/iw.log 2&gt; /dev/null &amp;
+
+```
+# Status prüfen ("running" oder "stopped")
+/etc/init.d/rc.inotify_tools status
+```
+
+Es ist auch jederzeit im laufenden Betrieb möglich, die Protokollierung
+einzuschalten, um bei Bedarf zur Laufzeit alle Dateizugriffe zu
+beobachten:
+
+```
+# Protokollierung (neu) starten
+/etc/init.d/rc.inotify_tools start
+```
+
+Achtung, ein kleiner Ausflug ins noch Technischere: Man sollte wissen,
+daß `rc.inotify_tools start` eine evtl. bereits laufende Protokollierung
+kurzzeitig stoppt und sie dann sofort neu startet. Das ist etwas
+ungewohnt, kann aber nützlich sein in Situationen, wo Init von einem
+Skript aufgrund z.B. `kill -1 1`, wie `rc.mini_fo` es verwendet, um in
+mehreren Durchgängen sein Overlay-Dateisystem aufzuziehen, beendet wird,
+um dann neu gestartet zu werden und nochmals die Startskripten
+aufzurufen. Dazwischen kann die Protokollierung entweder noch laufen
+oder abgebrochen worden sein. Jedenfalls startet Inotify-Tools in diesem
+Fall neu, ggf. jetzt mit Ausgabe auf das frisch gemountete *mini_fo*
+(vorher auf das nun überdeckte, darunter liegende Dateisystem).
+
+Was wird von rc.inotify_tools protokolliert?
+---------------------------------------------
+
+Wir könnten alles protokollieren, aber das wäre eine große Datenmenge,
+weil bestimmte Zugriffe, z.B. auf häufig verwendete Dateien wie
+`busybox`, `uClibc` oder `libcrypt` das Log zumüllen. Daß sie verwendet
+werden, sollte sowieso selbstverständlich sein, und wir werden sie auch
+ganz bestimmt nicht aus der Firmware auslagern. Also werden sie bei der
+Protokollierung nicht berücksichtigt. So sieht in `rc.S` die Passage
+aus, wo die Protokollierung gestartet wird:
+
+```
+echo "starting inotifywait"
+inotifywait -c -r -m / 
+@/dev @/proc @/var @/rom @/sto 
+--exclude 'busybox|uClibc|libcrypt-0' 
+>> /var/iw.log 2> /dev/null &
 sleep 3
-</pre></div><p>
-Es wird also kontinuierlich geloggt, und zwar rekursiv alles ab dem Wurzel-Verzeichnis ("/" als Parameter am Ende der ersten Aufruf-Zeile). Ausgeschlossen sind die virtuellen oder für interne <em>Mini_fo</em>-Zwecke verwandten Verzeichnisse <tt>/dev</tt>, <tt>/proc</tt>, <tt>/rom</tt>, <tt>/sto</tt> sowie die RAM-Disk <tt>/var</tt>, desweiteren Dateien, welche die Zeichenketten "busybox", "uClibc" oder "libcrypt-0" enthalten - die "-0" am Ende grenzt übrigens <tt>libcrypt</tt> von <tt>libcrypto</tt> ab.
-</p>
-<p>
-Das Log wird geschrieben in die RAM-Disk nach <tt>/var/iw.log</tt> - "iw" wie "inotifywait".
-</p>
-<h2 id="Ausgabeformat">Ausgabeformat</h2>
-<p>
-Was steht nun drin in <tt>/var/iw.log</tt> bzw. wie sieht es aus? Ein kleiner Ausschnitt:
-</p>
-<pre class="wiki">/etc/,"CLOSE_NOWRITE,CLOSE",.subversion
+```
+
+Es wird also kontinuierlich geloggt, und zwar rekursiv alles ab dem
+Wurzel-Verzeichnis ("/" als Parameter am Ende der ersten
+Aufruf-Zeile). Ausgeschlossen sind die virtuellen oder für interne
+*Mini_fo*-Zwecke verwandten Verzeichnisse `/dev`, `/proc`, `/rom`,
+`/sto` sowie die RAM-Disk `/var`, desweiteren Dateien, welche die
+Zeichenketten "busybox", "uClibc" oder "libcrypt-0" enthalten -
+die "-0" am Ende grenzt übrigens `libcrypt` von `libcrypto` ab.
+
+Das Log wird geschrieben in die RAM-Disk nach `/var/iw.log` - "iw" wie
+"inotifywait".
+
+Ausgabeformat
+-------------
+
+Was steht nun drin in `/var/iw.log` bzw. wie sieht es aus? Ein kleiner
+Ausschnitt:
+
+```
+/etc/,"CLOSE_NOWRITE,CLOSE",.subversion
 /lib/,"CLOSE_NOWRITE,CLOSE",libgcc_s.so.1
 /lib/,"CLOSE_NOWRITE,CLOSE",libgcc_s.so.1
 /lib/,OPEN,libgcc_s.so.1
@@ -164,59 +180,87 @@ Was steht nun drin in <tt>/var/iw.log</tt> bzw. wie sieht es aus? Ein kleiner Au
 /usr/share/images/,OPEN,edge_lt.png
 /usr/share/images/,ACCESS,edge_lt.png
 /usr/share/images/,"CLOSE_NOWRITE,CLOSE",edge_lt.png
-</pre><p>
-Mit dem Aufruf aus <tt>rc.S</tt> heraus wurde dafür gesorgt, daß in einem leicht woanders (Tabellenkalkulation, Datenbank) importierbaren, kommagetrennten CSV-Format protokolliert wird. Wie die einzelnen Daten zu interpretieren sind, entnimmt man der Dokumentation der Inotify-Tools, das ist nicht Freetz-spezifisch.
-</p>
-<p>
-Falls man andere Daten sammeln möchte, z.B. Zugriffe auf die RAM-Disk mit protokolliert haben möchte, nur ein bestimmtes Verzeichnis beobachten möchte, nur Schreibvorgänge beobachten möchte usw., kann man <tt>inotifywait</tt> immer noch manuell starten oder für vorgefertigte Statistiken auch mal <tt>inotifywatch</tt> bemühen.
-</p>
-<h2 id="Log-DateiregelmäßigkonsolidierenumPlatzzusparen">Log-Datei regelmäßig konsolidieren, um Platz zu sparen</h2>
-<p>
-Zum Zweck des Platzsparens in Firmware-Images interessiert uns vermutlich weniger, auf welche Dateien in welcher Reihenfolge, wie oft, auf welche Weise (lesen, schreiben, anlegen, löschen etc.) zugegriffen wurde, sondern lediglich, auf welche Dateien <em>überhaupt</em> zugegriffen wurde - bzw. auf welche nicht, denn die würden dann im Log fehlen. Dafür wäre eine kumulierte Ausgabe praktisch, welche
-</p>
-<ul><li>das Log bei Überschreiten einer bestimmten Größe kondensiert auf eine Liste reiner Pfad- und Dateinamen, alphabetisch nach Pfad sortiert,
-</li><li>diese kondensierte Liste mit einer evtl. vorhandenen vorherigen Version vereinigt und Dubletten entfernt,
-</li><li>das große Log löscht und zu diesem Zweck kurz zwischendurch die Protokollierung anhält,
-</li><li>die Protokollierung ins große Log neu startet, bis die Maximalgröße wieder erreicht wird
-</li></ul><p>
-usw. immer im Kreis. Folgendes Skript habe ich in meiner <tt>/var/tmp/flash/rc.custom</tt>, sie wird also nach dem Ende des Freetz-Startvorgangs ausgeführt:
-</p>
-<div class="code"><pre><span class="c"># Create script for continuous file access logging and log file consolidation
-</span>cat <span class="s">&lt;&lt; 'EOF' &gt; /var/tmp/iw_continuous
+```
+
+Mit dem Aufruf aus `rc.S` heraus wurde dafür gesorgt, daß in einem
+leicht woanders (Tabellenkalkulation, Datenbank) importierbaren,
+kommagetrennten CSV-Format protokolliert wird. Wie die einzelnen Daten
+zu interpretieren sind, entnimmt man der Dokumentation der
+Inotify-Tools, das ist nicht Freetz-spezifisch.
+
+Falls man andere Daten sammeln möchte, z.B. Zugriffe auf die RAM-Disk
+mit protokolliert haben möchte, nur ein bestimmtes Verzeichnis
+beobachten möchte, nur Schreibvorgänge beobachten möchte usw., kann man
+`inotifywait` immer noch manuell starten oder für vorgefertigte
+Statistiken auch mal `inotifywatch` bemühen.
+
+Log-Datei regelmäßig konsolidieren, um Platz zu sparen
+------------------------------------------------------
+
+Zum Zweck des Platzsparens in Firmware-Images interessiert uns
+vermutlich weniger, auf welche Dateien in welcher Reihenfolge, wie oft,
+auf welche Weise (lesen, schreiben, anlegen, löschen etc.) zugegriffen
+wurde, sondern lediglich, auf welche Dateien *überhaupt* zugegriffen
+wurde - bzw. auf welche nicht, denn die würden dann im Log fehlen. Dafür
+wäre eine kumulierte Ausgabe praktisch, welche
+
+-   das Log bei Überschreiten einer bestimmten Größe kondensiert auf
+    eine Liste reiner Pfad- und Dateinamen, alphabetisch nach Pfad
+    sortiert,
+-   diese kondensierte Liste mit einer evtl. vorhandenen vorherigen
+    Version vereinigt und Dubletten entfernt,
+-   das große Log löscht und zu diesem Zweck kurz zwischendurch die
+    Protokollierung anhält,
+-   die Protokollierung ins große Log neu startet, bis die Maximalgröße
+    wieder erreicht wird
+
+usw. immer im Kreis. Folgendes Skript habe ich in meiner
+`/var/tmp/flash/rc.custom`, sie wird also nach dem Ende des
+Freetz-Startvorgangs ausgeführt:
+
+```
+# Create script for continuous file access logging and log file consolidation
+cat << 'EOF' > /var/tmp/iw_continuous
 #!/bin/sh
 
 # If inotify logging is inactive, start it
 if [ "$(/etc/init.d/rc.inotify_tools status)" != "running" ]; then
-    /etc/init.d/rc.inotify_tools start
+/etc/init.d/rc.inotify_tools start
 fi
 
 MAX_LOG_SIZE=$(( 10 * 1024 ))
 while true; do
-    sleep 60
-    if [[ $(( $MAX_LOG_SIZE - $(cat /var/iw.log | wc -c) )) -gt 0 ]]; then
-        #echo "current size of iw.log &lt; $MAX_LOG_SIZE - continue logging"
-        continue;
-    fi
-    #echo "current size of iw.log &gt;= $MAX_LOG_SIZE - consolidate file list and restart logging"
-    cat /var/iw.log | grep '^/' | sed 's/,.*,//' | sort | uniq | sed 's/\/\//\//' &gt; /var/iw-unique.tmp
-    touch /var/iw-unique.log
-    cat /var/iw-unique.log &gt;&gt; /var/iw-unique.tmp
-    cat /var/iw-unique.tmp | sort | uniq &gt; /var/iw-unique.log
-    rm -f /var/iw-unique.tmp /var/iw.log
-    /etc/init.d/rc.inotify_tools start
+sleep 60
+if [[ $(( $MAX_LOG_SIZE - $(cat /var/iw.log | wc -c) )) -gt 0 ]]; then
+    #echo "current size of iw.log < $MAX_LOG_SIZE - continue logging"
+    continue;
+fi
+#echo "current size of iw.log >= $MAX_LOG_SIZE - consolidate file list and restart logging"
+cat /var/iw.log | grep '^/' | sed 's/,.*,//' | sort | uniq | sed 's//////' > /var/iw-unique.tmp
+touch /var/iw-unique.log
+cat /var/iw-unique.log >> /var/iw-unique.tmp
+cat /var/iw-unique.tmp | sort | uniq > /var/iw-unique.log
+rm -f /var/iw-unique.tmp /var/iw.log
+/etc/init.d/rc.inotify_tools start
 done
-EOF</span>
+EOF
 
 chmod +x /var/tmp/iw_continuous
 
-<span class="c"># If inotifywait is already running, start continuous logging script
-</span><span class="k">if</span> <span class="o">[</span> <span class="s2">"$(/etc/init.d/rc.inotify_tools status)"</span> <span class="o">==</span> <span class="s2">"running"</span> <span class="o">]</span>; <span class="k">then</span>
-    /var/tmp/iw_continuous &gt; /dev/null 2&gt;&amp;1 &amp;
-<span class="k">fi</span>
-</pre></div><p>
-Das Skript erzeugt ein weiteres, ausführbares Skript, welches im Hintergrund gestartet wird und die eigentliche kontinuierliche Konsolidierung des großen Logs übernimmt. Die konsolidierte Liste der Dateien wird regelmäßig aktualisiert in <tt>/var/iw-unique.log</tt>, wo man sie jederzeit einsehen kann. Sie sieht in etwa so aus (Ausschnitt):
-</p>
-<pre class="wiki">/
+# If inotifywait is already running, start continuous logging script
+if [ "$(/etc/init.d/rc.inotify_tools status)" == "running" ]; then
+/var/tmp/iw_continuous > /dev/null 2>&1 &
+fi
+```
+
+Das Skript erzeugt ein weiteres, ausführbares Skript, welches im
+Hintergrund gestartet wird und die eigentliche kontinuierliche
+Konsolidierung des großen Logs übernimmt. Die konsolidierte Liste der
+Dateien wird regelmäßig aktualisiert in `/var/iw-unique.log`, wo man sie
+jederzeit einsehen kann. Sie sieht in etwa so aus (Ausschnitt):
+
+```
+/
 /etc/.subversion
 /etc/default.callmonitor/system.cfg
 /etc/init.d/rc.bftpd
@@ -240,24 +284,24 @@ Das Skript erzeugt ein weiteres, ausführbares Skript, welches im Hintergrund ge
 /usr
 /usr/
 /usr/lib/callmonitor/applets/rc.callmonitor.sh
-</pre><h2 id="Schlußwort">Schlußwort</h2>
-<p>
-Damit steht ein mächtiges und nun im nachhinein auch dokumentiertes Analyse-Werkzeug zur Verfügung, mit dem die Möglichkeiten der "Platzspar-Jünger" sich hoffentlich etwas erweitern werden. Viel Spaß beim Ausprobieren. Geduld, Ihr kommt dahinter, bei mir hat es auch gedauert - leider hatte ich diese Doku aus naheliegenden Gründen nicht. <img src="../../chrome/wikiextras-icons-16/smiley-wink.png" style="vertical-align: text-bottom" alt=";-)" />
-</p>
-<p>
-Im Forum war der Ursprung dieses Pakets meine Idee und Anfrage <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=134151"><span class="icon">​</span>dort</a>, aktuell kann über das Paket und diesen Artikel diskutiert werden im neuen Thema <a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=150597"><span class="icon">​</span>Paket Inotify-Tools + Anwendungen</a>
-</p>
-<p>
-<a class="ext-link" href="http://www.ip-phone-forum.de/member.php?u=117253"><span class="icon">​</span>Alexander Kriegisch (kriegaex)</a>
-</p>
-</div>
+```
 
-      </div><ul class="tags"><li class="header">Tags</li><li><a href="/tags/init" rel="tag">init</a> </li><li><a href="/tags/monitoring" rel="tag">monitoring</a> </li><li><a href="../packages.html" rel="tag">packages</a> </li><li><a href="/tags/tools" rel="tag">tools</a> </li></ul>
+Schlußwort
+----------
 
-    </div>
-    <script type="text/javascript">
-        jQuery.loadStyleSheet("/pygments/trac.css", "text/css");
-    </script>
-    </div>
-  </body>
-</html>
+Damit steht ein mächtiges und nun im nachhinein auch dokumentiertes
+Analyse-Werkzeug zur Verfügung, mit dem die Möglichkeiten der
+"Platzspar-Jünger" sich hoffentlich etwas erweitern werden. Viel Spaß
+beim Ausprobieren. Geduld, Ihr kommt dahinter, bei mir hat es auch
+gedauert - leider hatte ich diese Doku aus naheliegenden Gründen nicht.
+;-)
+
+Im Forum war der Ursprung dieses Pakets meine Idee und Anfrage
+[dort](http://www.ip-phone-forum.de/showthread.php?t=134151),
+aktuell kann über das Paket und diesen Artikel diskutiert werden im
+neuen Thema [Paket Inotify-Tools +
+Anwendungen](http://www.ip-phone-forum.de/showthread.php?t=150597)
+
+[Alexander Kriegisch
+(kriegaex)](http://www.ip-phone-forum.de/member.php?u=117253)
+

@@ -1,135 +1,88 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+iodine
+======
 
-  <head>
-    <title>
-      packages/iodine – Freetz
-    </title>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!--[if IE]><script type="text/javascript">
-      if (/^#__msie303:/.test(window.location.hash))
-        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
-    </script><![endif]-->
-        <link rel="search" href="/search" />
-        <link rel="help" href="../TracGuide.html" />
-        <link rel="alternate" href="iodine%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
-        <link rel="up" href="../packages.html" title="Übergeordnete Wiki-Seite anzeigen" />
-        <link rel="start" href="/wiki" />
-        <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-      <link type="application/opensearchdescription+xml" rel="search" href="/search/opensearch" title="Freetz durchsuchen" />
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/jquery.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/babel.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/messages/de.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/trac.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/search.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/folding.js"></script>
-    <script type="text/javascript">
-      jQuery(document).ready(function($) {
-        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
-        $("#content").find(".wikianchor").each(function() {
-          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
-        });
-        $(".foldable").enableFolding(true, true);
-      });
-    </script>
-  </head>
-  <body>
-    <div id="banner">
-      <div id="header">
-        <a id="logo" href="/wiki"><img src="../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
-      </div>
-      <form id="search" action="https://www.google.com/search" method="get" onsubmit="; this.elements.namedItem('q').value = this.elements.namedItem('oq').value + ' site:freetz.github.io'">
-        <div>
-          <label for="proj-search">Suche:</label>
-          <input type="text" id="proj-search" name="oq" size="18" value="" />
-          <input type="hidden" name="q" value="" />
-          <input type="submit" value="Suche" />
-        </div>
-      </form>
-      <div id="metanav" class="nav">
-    <ul>
-      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
-    </ul>
-  </div>
-    </div>
-    <div id="mainnav" class="nav">
-    <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="https://github.com/Freetz-NG/freetz-ng/commits/master">Quellen durchsehen</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
-    </ul>
-  </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="iodine.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/packages/iodine.en" title="(not available)">English</a></li></ul></div><p /><div id="main">
-      <div id="pagepath" class="noprint">
-  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="iodine.html" title="Zeige packages/iodine an">iodine</a>
-</div>
-    <div id="content" class="wiki">
-      <div class="wikipage searchable">
+**[iodine](http://code.kryo.se/iodine/)** erlaubt
+es, IPv4 Daten über DNS zu tunneln. Eine hilfreiche Sache, wenn man z.B.
+hinter einer restriktiven Firewall sitzt - da DNS Traffic in den
+seltensten Fällen geblockt wird
+;)
 
-          <div id="wikipage" class="trac-content"><h1 id="iodine">iodine</h1>
-<p>
-<strong><a class="ext-link" href="http://code.kryo.se/iodine/"><span class="icon">​</span>iodine</a></strong> erlaubt es, IPv4 Daten über DNS zu tunneln. Eine hilfreiche Sache, wenn man z.B. hinter einer restriktiven Firewall sitzt - da DNS Traffic in den seltensten Fällen geblockt wird <img src="../../chrome/wikiextras-icons-16/smiley-wink.png" style="vertical-align: text-bottom" alt=";)" />
-</p>
-<h2 id="WeiterführendeLinks">Weiterführende Links</h2>
-<ul><li><a class="ext-link" href="http://code.kryo.se/iodine/"><span class="icon">​</span>iodine Homepage</a>
-</li><li><a class="ext-link" href="http://linux.die.net/man/8/iodine"><span class="icon">​</span>iodine Man page</a>
-</li><li><a class="ext-link" href="http://code.kryo.se/iodine/README.html"><span class="icon">​</span>iodine documentation</a>
-</li></ul><h2 id="UsingwithFreeDNS">Using with FreeDNS</h2>
-<p>
-See package <a class="wiki" href="dns2tcp.html">dns2tcp</a> for signing up with FreeDNS and some other details.
-</p>
-<p>
-Put this in your <em>rc.custom</em> (there is no WebIF):
-</p>
-<pre class="wiki">mkdir /tmp/iodine
+Weiterführende Links
+--------------------
+
+-   [iodine Homepage](http://code.kryo.se/iodine/)
+-   [iodine Man
+    page](http://linux.die.net/man/8/iodine)
+-   [iodine
+    documentation](http://code.kryo.se/iodine/README.html)
+
+Using with FreeDNS
+------------------
+
+See package [dns2tcp](dns2tcp.html) for signing up with FreeDNS
+and some other details.
+
+Put this in your *rc.custom* (there is no WebIF):
+
+```
+mkdir /tmp/iodine
 chown nobody /tmp/iodine
-iodined -c -P &lt;password&gt; -u nobody -t /tmp/iodine 10.0.0.1 -p 10053 dns2tcp.strangled.net
-</pre><p>
-(assuming user <em>nobody</em> exists)
-</p>
-<p>
-The trunk version of Freetz has an iodine WebIF now (changeset <a class="missing ticket">#6657</a>; thanks oliver!)
-</p>
-<p>
+iodined -c -P <password> -u nobody -t /tmp/iodine 10.0.0.1 -p 10053 dns2tcp.strangled.net
+```
+
+(assuming user *nobody* exists)
+
+The trunk version of Freetz has an iodine WebIF now
+([r6657](https://trac.boxmatrix.info/freetz-ng/changeset/6657); thanks oliver!)
+
 Create a tunnel from the client like this:
-</p>
-<pre class="wiki">sudo ./bin/iodine -f -P &lt;password&gt; dns2tcp.strangled.net
-</pre><p>
-To connect to <a class="missing wiki">Polipo?</a>:
-</p>
-<pre class="wiki">ssh root@10.0.0.1 -L 8123:localhost:8123
-</pre><p>
-The advantages over <a class="wiki" href="dns2tcp.html">dns2tcp</a> are:
-</p>
-<ul><li>There is an iodine Windows client available
-</li><li>It is possible to run iodine on Android
-</li><li>Traffic can easily be route through the tunnel
-</li></ul><p>
-Building <a class="ext-link" href="http://blog.bokhorst.biz/5123/computers-en-internet/iodine-for-android/"><span class="icon">​</span>iodine for Android</a>.
-</p>
-<h2 id="Security">Security</h2>
-<p>
-Install <a class="wiki" href="iptables.html">iptables</a> and add these rules to allow only traffic to the internet and not your local net:
-</p>
-<pre class="wiki">iptables -I OUTPUT -o dns0 -s 192.168.178.0/24 -j DROP
+
+```
+sudo ./bin/iodine -f -P <password> dns2tcp.strangled.net
+```
+
+To connect to [Polipo?]:
+
+```
+ssh root@10.0.0.1 -L 8123:localhost:8123
+```
+
+The advantages over [dns2tcp](dns2tcp.html) are:
+
+-   There is an iodine Windows client available
+-   It is possible to run iodine on Android
+-   Traffic can easily be route through the tunnel
+
+Building [iodine for
+Android](http://blog.bokhorst.biz/5123/computers-en-internet/iodine-for-android/).
+
+Security
+--------
+
+Install [iptables](../iptables/README.md) and add these rules to allow
+only traffic to the internet and not your local net:
+
+```
+iptables -I OUTPUT -o dns0 -s 192.168.178.0/24 -j DROP
 iptables -I INPUT -i dns0 -d 192.168.178.0/24 -j DROP
 iptables -A FORWARD -i dns0 -o dsl -j ACCEPT
 iptables -A FORWARD -i dns0 -j DROP
-</pre><p>
-Of course you can always allow specific traffic from tunnel to your local net, for example to a SSH server by using something like:
-</p>
-<pre class="wiki">iptables -I INPUT -i dns0 -p tcp --dport 22 -j ACCEPT
-</pre><h2 id="Forwarding">Forwarding</h2>
-<p>
-iodine can forward DNS requests for unknown (sub)domains to a real DNS-server on another port with this switch:
-</p>
-<pre class="wiki">-b 5353
-</pre></div>
+```
 
-      </div><ul class="tags"><li class="header">Tags</li><li><a href="/tags/network" rel="tag">network</a> </li><li><a href="../packages.html" rel="tag">packages</a> </li><li><a href="/tags/tunnel" rel="tag">tunnel</a> </li></ul>
+Of course you can always allow specific traffic from tunnel to your
+local net, for example to a SSH server by using something like:
 
-    </div>
-    </div>
-  </body>
-</html>
+```
+iptables -I INPUT -i dns0 -p tcp --dport 22 -j ACCEPT
+```
+
+Forwarding
+----------
+
+iodine can forward DNS requests for unknown (sub)domains to a real
+DNS-server on another port with this switch:
+
+```
+-b 5353
+```
+

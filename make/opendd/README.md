@@ -1,162 +1,70 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+OpenDD
+======
 
-  <head>
-    <title>
-      packages/opendd – Freetz
-    </title>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!--[if IE]><script type="text/javascript">
-      if (/^#__msie303:/.test(window.location.hash))
-        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
-    </script><![endif]-->
-        <link rel="search" href="/search" />
-        <link rel="help" href="../TracGuide.html" />
-        <link rel="alternate" href="opendd%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
-        <link rel="up" href="../packages.html" title="Übergeordnete Wiki-Seite anzeigen" />
-        <link rel="start" href="/wiki" />
-        <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-      <link type="application/opensearchdescription+xml" rel="search" href="/search/opensearch" title="Freetz durchsuchen" />
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/jquery.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/babel.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/messages/de.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/trac.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/search.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/folding.js"></script>
-    <script type="text/javascript">
-      jQuery(document).ready(function($) {
-        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
-        $("#content").find(".wikianchor").each(function() {
-          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
-        });
-        $(".foldable").enableFolding(true, true);
-      });
-    </script>
-  </head>
-  <body>
-    <div id="banner">
-      <div id="header">
-        <a id="logo" href="/wiki"><img src="../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
-      </div>
-      <form id="search" action="https://www.google.com/search" method="get" onsubmit="; this.elements.namedItem('q').value = this.elements.namedItem('oq').value + ' site:freetz.github.io'">
-        <div>
-          <label for="proj-search">Suche:</label>
-          <input type="text" id="proj-search" name="oq" size="18" value="" />
-          <input type="hidden" name="q" value="" />
-          <input type="submit" value="Suche" />
-        </div>
-      </form>
-      <div id="metanav" class="nav">
-    <ul>
-      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
-    </ul>
-  </div>
-    </div>
-    <div id="mainnav" class="nav">
-    <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="https://github.com/Freetz-NG/freetz-ng/commits/master">Quellen durchsehen</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
-    </ul>
-  </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="opendd.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/packages/opendd.en" title="(not available)">English</a></li></ul></div><p /><div id="main">
-      <div id="pagepath" class="noprint">
-  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="opendd.html" title="Zeige packages/opendd an">opendd</a>
-</div>
-    <div id="content" class="wiki">
-      <div class="wikipage searchable">
+[![Konfigurationsseite OpenDD](../../docs/screenshots/177_md.jpg)](../../docs/screenshots/177.jpg)
 
-          <div id="wikipage" class="trac-content"><h1 id="OpenDD">OpenDD</h1>
-<p>
-<figure><img src="/freetz-ng/screenshots/177.jpg" alt="Konfigurationsseite OpenDD" /><figcaption>Konfigurationsseite OpenDD</figcaption></figure>
- OpenDD ist ein Client um dynamische DNS Einträge zu aktualisieren. Vorteil gegenüber <a class="wiki" href="inadyn-mt.html">inadyn</a> ist, dass sich OpenDD nicht ständig im Arbeitsspeicher befindet sondern nur nach einem Reconnect gestartet wird. Es kann eine eMail bei IP-Wechsel versendet werden. Ausgaben werden über Syslog ausgegeben
-</p>
-<h2 id="nach25TagenUpdaten">nach 25 Tagen Updaten</h2>
-<p>
-Diese Option sollte man wählen, wenn sich die IP längere Zeit nicht ändert, wie es bei Kabelinternet Anbietern üblich ist. Dadurch wird vermieden, dass nach 1 Monat der Hostname deaktiviert wird. Sollte die Box länger nicht neu gestartet werden bitte noch "cron" einschalten, damit die Überprüfung erfolgt. Der Eintrag für cron wird von OpenDD automatisch erstellt.<br />
-Nach solch einem erzwungenen Update wird die Datei <tt>/tmp/flash/opendd/opendd.onforcedupdate</tt> ausgeführt. Damit kann zB ein Skript zum Einloggen auf der DynDns-Webseite ausgeführt werden, um eine Sperre des Domainnamens zu verhindern. Dies Skript muss aber zusätzlich von <a class="wiki" href="onlinechanged.html">onlinechanged</a> ausgeführt werden! Beispielskripte: <a class="ext-link" href="http://forum.mbremer.de/viewtopic.php?f=62&amp;t=1756&amp;p=24340#p24340"><span class="icon">​</span>http://forum.mbremer.de/viewtopic.php?f=62&amp;t=1756&amp;p=24340#p24340</a>
-</p>
-<h2 id="get_ipParameter">get_ip Parameter</h2>
-<p>
-Hiermit wird konfiguriert wie die externe IP ermittelt wird. Ab Trunk-Version <a class="changeset" href="/changeset/7376" title="get_ip: default method could be set via webif
-opendd, vsftpd &amp; box_info: ...">r7376</a> wird get_ip an <a class="wiki" href="mod.html#get_ip">zentraler Stelle</a> konfiguriert, wodurch diese Option bei opendd entfällt.
-</p>
-<h2 id="Account">Account</h2>
-<p>
+OpenDD ist ein Client um dynamische DNS Einträge zu aktualisieren.
+Vorteil gegenüber [inadyn](../inadyn-mt/README.md) ist, dass sich OpenDD
+nicht ständig im Arbeitsspeicher befindet sondern nur nach einem
+Reconnect gestartet wird. Es kann eine eMail bei IP-Wechsel versendet
+werden. Ausgaben werden über Syslog ausgegeben
+
+nach 25 Tagen Updaten
+---------------------
+
+Diese Option sollte man wählen, wenn sich die IP längere Zeit nicht
+ändert, wie es bei Kabelinternet Anbietern üblich ist. Dadurch wird
+vermieden, dass nach 1 Monat der Hostname deaktiviert wird. Sollte die
+Box länger nicht neu gestartet werden bitte noch "cron" einschalten,
+damit die Überprüfung erfolgt. Der Eintrag für cron wird von OpenDD
+automatisch erstellt.
+Nach solch einem erzwungenen Update wird die Datei
+`/tmp/flash/opendd/opendd.onforcedupdate` ausgeführt. Damit kann zB ein
+Skript zum Einloggen auf der DynDns-Webseite ausgeführt werden, um eine
+Sperre des Domainnamens zu verhindern. Dies Skript muss aber zusätzlich
+von [onlinechanged](../onlinechanged/README.md) ausgeführt werden!
+Beispielskripte:
+[http://forum.mbremer.de/viewtopic.php?f=62&t=1756&p=24340#p24340](http://forum.mbremer.de/viewtopic.php?f=62&t=1756&p=24340#p24340)
+
+get_ip Parameter
+-----------------
+
+Hiermit wird konfiguriert wie die externe IP ermittelt wird. Ab
+Trunk-Version
+[r7376](https://trac.boxmatrix.info/freetz-ng/changeset/7376) wird get_ip an [zentraler
+Stelle](mod.html#get_ip) konfiguriert, wodurch diese Option bei
+opendd entfällt.
+
+Account
+-------
+
 Hier werden die Daten des DNS-Kontos eingetragen:
-</p>
-<table class="table">
 
-<tr>
-<td> Server
-</td><td> Angabe des genutzten DNS-Providers (z.B. Dyndns: members.dyndns.org)
-</td></tr>
-<tr>
-<td> Hostname
-</td><td> Der DNS-Name, für den man sich registriert hat (z.B. Musterman.heimnetz.org)
-</td></tr>
-<tr>
-<td> Benutzername
-</td><td> Der Benutzername des Accounts
-</td></tr>
-<tr>
-<td> Passwort
-</td><td> Das Passwort des Accounts
-</td></tr>
-<tr>
-<td> SSL nutzen
-</td><td> Wenn der Account verschlüsselt aktualisiert werden soll (Port 443)
-</td></tr></table>
-<p>
-Das SSL-Zertifikat findet sich in der Buildumgebung unter:<br /> <tt>.../freetz-trunk/packages/target-mipsel_uClibc-0.9.29/opendd-0.7.9/root/etc/default.opendd/opendd.pem</tt>
-</p>
-<h2 id="E-Mail">E-Mail</h2>
-<p>
-In diesem Abschnitt kann eine E-Mail-Benachrichtigung eingerichtet werden:
-</p>
-<table class="table">
+  -------------- ------------------------------------------------------------------------------
+  Server         Angabe des genutzten DNS-Providers (z.B. Dyndns: members.dyndns.org)
+  Hostname       Der DNS-Name, für den man sich registriert hat (z.B. Musterman.heimnetz.org)
+  Benutzername   Der Benutzername des Accounts
+  Passwort       Das Passwort des Accounts
+  SSL nutzen     Wenn der Account verschlüsselt aktualisiert werden soll (Port 443)
+  -------------- ------------------------------------------------------------------------------
 
-<tr>
-<td> eMail verschicken
-</td><td> Mit dieser Option wird das Versenden des Statusreports aktiviert/ deaktiviert
-</td></tr>
-<tr>
-<td> Absender
-</td><td> E-Mail-Adresse, mit welcher der Report versendet werden soll (z.B. Musterman@internet.de)
-</td></tr>
-<tr>
-<td> Empfänger
-</td><td> E-Mail-Adresse, an die der Report gesendet werden soll (kann die gleiche wie Absender sein)
-</td></tr>
-<tr>
-<td> E-Mail-Server
-</td><td> Postausgangs-Server des Absender-Accounts (z.B. für Freenet: mx.freenet.de)
-</td></tr>
-<tr>
-<td> Benutzername
-</td><td> Benutzername des Absender-Accounts
-</td></tr>
-<tr>
-<td> Passwort
-</td><td> Passwort des Absender-Accounts
-</td></tr>
-<tr>
-<td> Timeout
-</td><td> Wie lange auf eine Antwort des E-Mail Servers gewartet wird (nur Freetz, <a href="/ticket/2132">#2132</a>)
-</td></tr>
-<tr>
-<td> max. Versuche
-</td><td> Maximale Anzahl an Versuchen den E-Mail Server zu erreichen (nur Freetz, <a href="/ticket/2132">#2132</a>)
-</td></tr></table>
-</div>
+Das SSL-Zertifikat findet sich in der Buildumgebung unter:
+`.../freetz-trunk/packages/target-mipsel_uClibc-0.9.29/opendd-0.7.9/root/etc/default.opendd/opendd.pem`
 
-      </div><ul class="tags"><li class="header">Tags</li><li><a href="/tags/dyndns" rel="tag">dyndns</a> </li><li><a href="/tags/network" rel="tag">network</a> </li><li><a href="../packages.html" rel="tag">packages</a> </li></ul>
+E-Mail
+------
 
-    </div>
-    <script type="text/javascript">
-        jQuery.loadStyleSheet("/chrome/screenshots/css/screenshots.css", "text/css");
-    </script>
-    </div>
-  </body>
-</html>
+In diesem Abschnitt kann eine E-Mail-Benachrichtigung eingerichtet
+werden:
+
+  ------------------- --------------------------------------------------------------------------------------------------
+  eMail verschicken   Mit dieser Option wird das Versenden des Statusreports aktiviert/ deaktiviert
+  Absender            E-Mail-Adresse, mit welcher der Report versendet werden soll (z.B. Musterman@internet.de)
+  Empfänger           E-Mail-Adresse, an die der Report gesendet werden soll (kann die gleiche wie Absender sein)
+  E-Mail-Server       Postausgangs-Server des Absender-Accounts (z.B. für Freenet: mx.freenet.de)
+  Benutzername        Benutzername des Absender-Accounts
+  Passwort            Passwort des Absender-Accounts
+  Timeout             Wie lange auf eine Antwort des E-Mail Servers gewartet wird (nur Freetz, [#2132](https://trac.boxmatrix.info/freetz-ng/ticket/2132))
+  max. Versuche       Maximale Anzahl an Versuchen den E-Mail Server zu erreichen (nur Freetz, [#2132](https://trac.boxmatrix.info/freetz-ng/ticket/2132))
+  ------------------- --------------------------------------------------------------------------------------------------
+

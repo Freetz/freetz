@@ -1,121 +1,54 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+Wake on LAN (WoL)
+=================
 
-  <head>
-    <title>
-      packages/wol – Freetz
-    </title>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!--[if IE]><script type="text/javascript">
-      if (/^#__msie303:/.test(window.location.hash))
-        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
-    </script><![endif]-->
-        <link rel="search" href="/search" />
-        <link rel="help" href="../TracGuide.html" />
-        <link rel="alternate" href="wol%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
-        <link rel="up" href="../packages.html" title="Übergeordnete Wiki-Seite anzeigen" />
-        <link rel="start" href="/wiki" />
-        <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-      <link type="application/opensearchdescription+xml" rel="search" href="/search/opensearch" title="Freetz durchsuchen" />
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/jquery.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/babel.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/messages/de.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/trac.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/search.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/folding.js"></script>
-    <script type="text/javascript">
-      jQuery(document).ready(function($) {
-        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
-        $("#content").find(".wikianchor").each(function() {
-          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
-        });
-        $(".foldable").enableFolding(true, true);
-      });
-    </script>
-  </head>
-  <body>
-    <div id="banner">
-      <div id="header">
-        <a id="logo" href="/wiki"><img src="../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
-      </div>
-      <form id="search" action="https://www.google.com/search" method="get" onsubmit="; this.elements.namedItem('q').value = this.elements.namedItem('oq').value + ' site:freetz.github.io'">
-        <div>
-          <label for="proj-search">Suche:</label>
-          <input type="text" id="proj-search" name="oq" size="18" value="" />
-          <input type="hidden" name="q" value="" />
-          <input type="submit" value="Suche" />
-        </div>
-      </form>
-      <div id="metanav" class="nav">
-    <ul>
-      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
-    </ul>
-  </div>
-    </div>
-    <div id="mainnav" class="nav">
-    <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="https://github.com/Freetz-NG/freetz-ng/commits/master">Quellen durchsehen</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
-    </ul>
-  </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="wol.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/packages/wol.en" title="(not available)">English</a></li></ul></div><p /><div id="main">
-      <div id="pagepath" class="noprint">
-  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="wol.html" title="Zeige packages/wol an">wol</a>
-</div>
-    <div id="content" class="wiki">
-      <div class="wikipage searchable">
+Es gibt zwei Programme, die WoL unterstützen:
+1. *ether-wake*, das in der busybox integriert ist und
+2. *wol*, das genutzt werden kann, wenn es mit *ether-wake* Probleme
+gibt.
 
-          <div id="wikipage" class="trac-content"><p>
-</p><div class="wiki-toc"><h4>Inhaltsverzeichnis</h4><ol><li><a href="wol.html#WakeonLANWebInterfacewol-cgi">Wake on LAN WebInterface(wol-cgi)</a><ol><li><a href="wol.html#KonfigurationaufderFritzbox">Konfiguration auf der Fritzbox</a></li></ol></li></ol></div><p>
-</p>
-<h1 id="WakeonLANWoL">Wake on LAN (WoL)</h1>
-<p>
-Es gibt zwei Programme, die WoL unterstützen:<br />1. <em>ether-wake</em>, das in der busybox integriert ist und<br />2. <em>wol</em>, das genutzt werden kann, wenn es mit <em>ether-wake</em> Probleme gibt.
-</p>
-<p>
-Das <tt>wol</tt> Paket ist "binary only", kann aber seit einiger Zeit auch über wol-cgi bedient werden.
-</p>
-<h2 id="WakeonLANWebInterfacewol-cgi">Wake on LAN WebInterface(wol-cgi)</h2>
-<p>
-Mit Hilfe des wol-cgi Paketes lässt sich das Busybox Applet <tt>ether-wake</tt> steuern. Hiermit lassen sich PCs über das lokale Netzwerk (LAN) oder über das Internet (WAN) aufwecken.
-</p>
-<h3 id="KonfigurationaufderFritzbox">Konfiguration auf der Fritzbox</h3>
-<p>
-Ein PC, der aufgeweckt werden soll, muss in die Hostliste aufgenommen werden. Die Hostliste lässt sich auf folgende Weisen bearbeiten:
-</p>
-<ul><li><em>Pakete &rarr; Wake on LAN &rarr; Hosts bearbeiten</em>
-</li><li><em>Einstellungen &rarr; Hosts</em>
-</li></ul><p>
-Um Wake on LAN zu nutzen, muss wenigstens die Mac-Adresse und der Hostname eingegeben werden, am Besten einfach gleich noch die IP-Adresse und das Interface (meist eth0). Beispiele:
-</p>
-<pre class="wiki">#&lt;ip&gt;           &lt;mac&gt;              &lt;interface&gt; &lt;host&gt;  [&lt;description&gt;]  (*... nicht definiert)
+Das `wol` Paket ist "binary only", kann aber seit einiger Zeit auch
+über wol-cgi bedient werden.
+
+Wake on LAN WebInterface(wol-cgi)
+---------------------------------
+
+Mit Hilfe des wol-cgi Paketes lässt sich das Busybox Applet `ether-wake`
+steuern. Hiermit lassen sich PCs über das lokale Netzwerk (LAN) oder
+über das Internet (WAN) aufwecken.
+
+### Konfiguration auf der Fritzbox
+
+Ein PC, der aufgeweckt werden soll, muss in die Hostliste aufgenommen
+werden. Die Hostliste lässt sich auf folgende Weisen bearbeiten:
+
+-   *Pakete → Wake on LAN → Hosts bearbeiten*
+-   *Einstellungen → Hosts*
+
+Um Wake on LAN zu nutzen, muss wenigstens die Mac-Adresse und der
+Hostname eingegeben werden, am Besten einfach gleich noch die IP-Adresse
+und das Interface (meist eth0). Beispiele:
+
+```
+#<ip>           <mac>              <interface> <host>  [<description>]  (*... nicht definiert)
 *              0A:B1:2C:D3:4E:F5  *           server
 192.168.178.2  0A:B1:2C:D3:4E:F5  eth0        server  Das ist mein Server
-</pre><p>
-Im Menü <em>Pakete &rarr; Wake on LAN</em> können noch weitere Einstellungen vorgenommen werden:
-</p>
-<p>
-<figure><img src="/freetz-ng/screenshots/16.png" alt="Wake on LAN  Configuration" /><figcaption>Wake on LAN  Configuration</figcaption></figure>
-</p>
-<p>
-Anschließen ist das WoL-WebInterface über <tt>fritz.box:82</tt> oder den Menüpunkt "<em>Freetz WOL</em>" des AVM-WebInterfaces zu erreichen. Darin dann den PC in der Liste "Bekannte Hosts" auswählen. Die Einträge MAC und Interface werden automatisch eingetragen und ein Klick auf "WakeUp" startet den gewählten PC.
-</p>
-<p>
-<figure><img src="/freetz-ng/screenshots/14.png" alt="Wake on LAN WebInterface" /><figcaption>Wake on LAN WebInterface</figcaption></figure>
-</p>
-<p>
-Bei Problemen bitte zuerst versuchen, ob der PC sich anderweitig (von anderen PCs) aufwecken lässt. Hierdurch ist sichergestellt, dass der PC richtig konfiguriert ist. Weiterhin kann man statt dem Busybox <tt>ether-wake</tt> Applet das <a class="wiki" href="wol.html">wol</a> Binary probieren.
-</p>
-</div>
+```
 
-      </div><ul class="tags"><li class="header">Tags</li><li><a href="/tags/cgi" rel="tag">cgi</a> </li><li><a href="/tags/network" rel="tag">network</a> </li><li><a href="/tags/wol" rel="tag">wol</a> </li></ul>
+Im Menü *Pakete → Wake on LAN* können noch weitere Einstellungen
+vorgenommen werden:
 
-    </div>
-    <script type="text/javascript">
-        jQuery.loadStyleSheet("/chrome/screenshots/css/screenshots.css", "text/css");
-    </script>
-    </div>
-  </body>
-</html>
+[![Wake on LAN Configuration](../../docs/screenshots/16_md.png)](../../docs/screenshots/16.png)
+
+Anschließen ist das WoL-WebInterface über `fritz.box:82` oder den
+Menüpunkt "*Freetz WOL*" des AVM-WebInterfaces zu erreichen. Darin
+dann den PC in der Liste "Bekannte Hosts" auswählen. Die Einträge MAC
+und Interface werden automatisch eingetragen und ein Klick auf
+"WakeUp" startet den gewählten PC.
+
+[![Wake on LAN WebInterface](../../docs/screenshots/14_md.png)](../../docs/screenshots/14.png)
+
+Bei Problemen bitte zuerst versuchen, ob der PC sich anderweitig (von
+anderen PCs) aufwecken lässt. Hierdurch ist sichergestellt, dass der PC
+richtig konfiguriert ist. Weiterhin kann man statt dem Busybox
+`ether-wake` Applet das [wol](../wol/README.md) Binary probieren.
+

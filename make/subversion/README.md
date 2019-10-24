@@ -1,128 +1,75 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+Subversion
+==========
 
-  <head>
-    <title>
-      packages/subversion – Freetz
-    </title>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!--[if IE]><script type="text/javascript">
-      if (/^#__msie303:/.test(window.location.hash))
-        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
-    </script><![endif]-->
-        <link rel="search" href="/search" />
-        <link rel="help" href="../TracGuide.html" />
-        <link rel="alternate" href="subversion%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
-        <link rel="up" href="../packages.html" title="Übergeordnete Wiki-Seite anzeigen" />
-        <link rel="start" href="/wiki" />
-        <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-      <link type="application/opensearchdescription+xml" rel="search" href="/search/opensearch" title="Freetz durchsuchen" />
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/jquery.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/babel.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/messages/de.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/trac.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/search.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/folding.js"></script>
-    <script type="text/javascript">
-      jQuery(document).ready(function($) {
-        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
-        $("#content").find(".wikianchor").each(function() {
-          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
-        });
-        $(".foldable").enableFolding(true, true);
-      });
-    </script>
-  </head>
-  <body>
-    <div id="banner">
-      <div id="header">
-        <a id="logo" href="/wiki"><img src="../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
-      </div>
-      <form id="search" action="https://www.google.com/search" method="get" onsubmit="; this.elements.namedItem('q').value = this.elements.namedItem('oq').value + ' site:freetz.github.io'">
-        <div>
-          <label for="proj-search">Suche:</label>
-          <input type="text" id="proj-search" name="oq" size="18" value="" />
-          <input type="hidden" name="q" value="" />
-          <input type="submit" value="Suche" />
-        </div>
-      </form>
-      <div id="metanav" class="nav">
-    <ul>
-      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
-    </ul>
-  </div>
-    </div>
-    <div id="mainnav" class="nav">
-    <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="https://github.com/Freetz-NG/freetz-ng/commits/master">Quellen durchsehen</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
-    </ul>
-  </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="subversion.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/packages/subversion.en" title="(not available)">English</a></li></ul></div><p /><div id="main">
-      <div id="pagepath" class="noprint">
-  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="subversion.html" title="Zeige packages/subversion an">subversion</a>
-</div>
-    <div id="content" class="wiki">
-      <div class="wikipage searchable">
+[Subversion](http://subversion.tigris.org/) (SVN)
+ist eine Freie Software zur Versionsverwaltung von Dateien und
+Verzeichnissen.
 
-          <div id="wikipage" class="trac-content"><h1 id="Subversion">Subversion</h1>
-<p>
-<a class="ext-link" href="http://subversion.tigris.org/"><span class="icon">​</span>Subversion</a> (SVN) ist eine Freie Software zur Versionsverwaltung von Dateien und Verzeichnissen.
-</p>
-<p>
-Die Versionierung erfolgt in einem zentralen Projektarchiv (engl. repository) in Form einer einfachen Revisionszählung. Wenn Änderungen an Inhalten verteilt auf den Computern der Bearbeiter ausgeführt werden, werden zwischen dem Projektarchiv und einem Arbeitsplatz jeweils nur die Unterschiede zu bereits vorhandenen Ständen übertragen.
-</p>
-<h2 id="EnthalteneProgrammteile">Enthaltene Programmteile</h2>
-<table class="wiki">
-<tr><td> svn </td><td> Das Kommandozeilenprogramm
-</td></tr><tr><td> svnadmin </td><td> Ein Werkzeug zum Erstellen, Verändern oder Reparieren eines Repositorys
-</td></tr><tr><td> svndumpfilter </td><td> Ein Programm zum Filtern von Subversion-Repository-Dump-Streams
-</td></tr><tr><td> svnlook </td><td> Ein Werkzeug zur direkten Untersuchung eines Subversion-Repositorys
-</td></tr><tr><td> svnserve </td><td> Ein spezielles Server-Programm, dass als Hintergrundprozess laufen oder von SSH aufgerufen werden kann; eine weitere Möglichkeit, das Repository über ein Netzwerk verfügbar zu machen
-</td></tr><tr><td> svnsync </td><td> Ein Programm zum inkrementellen Spiegeln eines Repositorys über ein Netzwerk
-</td></tr><tr><td> svnversion </td><td> Ein Programm, das den Zustand einer Arbeitskopie (durch Revisionen der vorliegenden Objekte) berichtet
-</td></tr></table>
-<h2 id="WebIF">WebIF</h2>
-<p>
-<figure><img src="/freetz-ng/screenshots/117.png" alt="Subversion" /><figcaption>Subversion</figcaption></figure>
-</p>
-<br clear="all" />
-<h2 id="Konfiguration">Konfiguration</h2>
-<p>
+Die Versionierung erfolgt in einem zentralen Projektarchiv (engl.
+repository) in Form einer einfachen Revisionszählung. Wenn Änderungen an
+Inhalten verteilt auf den Computern der Bearbeiter ausgeführt werden,
+werden zwischen dem Projektarchiv und einem Arbeitsplatz jeweils nur die
+Unterschiede zu bereits vorhandenen Ständen übertragen.
+
+Enthaltene Programmteile
+------------------------
+
+```
+  --------------- --------------------------------------------------------------------------------------------------------
+  svn             Das Kommandozeilenprogramm
+  svnadmin        Ein Werkzeug zum Erstellen, Verändern oder Reparieren eines Repositorys
+  svndumpfilter   Ein Programm zum Filtern von Subversion-Repository-Dump-Streams
+  svnlook         Ein Werkzeug zur direkten Untersuchung eines Subversion-Repositorys
+  svnserve        Ein spezielles Server-Programm, dass als Hintergrundprozess laufen oder von SSH aufgerufen
+                  werden kann; eine weitere Möglichkeit, das Repository über ein Netzwerk verfügbar zu machen
+  svnsync         Ein Programm zum inkrementellen Spiegeln eines Repositorys über ein Netzwerk
+  svnversion      Ein Programm, das den Zustand einer Arbeitskopie (durch Revisionen der vorliegenden Objekte) berichtet
+  --------------- --------------------------------------------------------------------------------------------------------
+```
+
+WebIF
+-----
+
+[![Subversion](../../docs/screenshots/117_md.png)](../../docs/screenshots/117.png)
+
+
+Konfiguration
+-------------
+
 Ein Repository wird mit folgendem Befehl angelegt
-</p>
-<pre class="wiki">svnadmin create --fs-type fsfs /PFAD_ZU_DEM_EXT2_TRAEGER/REPOSITORY_NAME
-</pre><p>
-REPOSITORY_NAME ist ein Platzhalter und darf beliebig gewählt werden. Der Datenträger muss mit ext2 bzw. ext3 formatiert werden, Repositories auf FAT- bzw. NTFS-Trägern werden von Freetz (derzeit noch) nicht unterstützt.
-</p>
-<p>
-Nachdem das Repository angelegt ist, sind in dem Verzeichnis REPOSITORY_NAME/<strong>conf</strong> folgende Dateien zu finden bzw. neu anzulegen. Welche Einträge in diesen gemacht werden können und was sie bedeuten, kann <a class="ext-link" href="http://svnbook.red-bean.com/nightly/en/svn.serverconfig.svnserve.html"><span class="icon">​</span>hier</a> nachgelesen werden. Die allereinfachte Konfiguration könnte z.B. so aussehen:
-</p>
-<p>
-<strong>authz</strong> einfach leer
-</p>
-<p>
-<strong>passwd</strong>
-</p>
-<pre class="wiki">[users]
+
+```
+svnadmin create --fs-type fsfs /PFAD_ZU_DEM_EXT2_TRAEGER/REPOSITORY_NAME
+```
+
+REPOSITORY_NAME ist ein Platzhalter und darf beliebig gewählt werden.
+Der Datenträger muss mit ext2 bzw. ext3 formatiert werden, Repositories
+auf FAT- bzw. NTFS-Trägern werden von Freetz (derzeit noch) nicht
+unterstützt.
+
+Nachdem das Repository angelegt ist, sind in dem Verzeichnis
+REPOSITORY_NAME/**conf** folgende Dateien zu finden bzw. neu anzulegen.
+Welche Einträge in diesen gemacht werden können und was sie bedeuten,
+kann
+[hier](http://svnbook.red-bean.com/nightly/en/svn.serverconfig.svnserve.html)
+nachgelesen werden. Die allereinfachte Konfiguration könnte z.B. so
+aussehen:
+
+**authz** einfach leer
+
+**passwd**
+
+```
+[users]
 DeinName = DeinPasswort
-</pre><p>
-<strong>svnserve.conf</strong>
-</p>
-<pre class="wiki">[general]
+```
+
+**svnserve.conf**
+
+```
+[general]
 anon-access = none
 auth-access = write
 password-db = passwd
-</pre></div>
+```
 
-      </div><ul class="tags"><li class="header">Tags</li><li><a href="/tags/inetd" rel="tag">inetd</a> </li><li><a href="/tags/network" rel="tag">network</a> </li><li><a href="../packages.html" rel="tag">packages</a> </li><li><a href="/tags/programming" rel="tag">programming</a> </li><li><a href="/tags/server" rel="tag">server</a> </li></ul>
-
-    </div>
-    <script type="text/javascript">
-        jQuery.loadStyleSheet("/chrome/screenshots/css/screenshots.css", "text/css");
-    </script>
-    </div>
-  </body>
-</html>

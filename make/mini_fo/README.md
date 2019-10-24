@@ -1,137 +1,114 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+mini_fo
+========
 
-  <head>
-    <title>
-      packages/mini_fo – Freetz
-    </title>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!--[if IE]><script type="text/javascript">
-      if (/^#__msie303:/.test(window.location.hash))
-        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
-    </script><![endif]-->
-        <link rel="search" href="/search" />
-        <link rel="help" href="../TracGuide.html" />
-        <link rel="alternate" href="mini_fo%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
-        <link rel="up" href="../packages.html" title="Übergeordnete Wiki-Seite anzeigen" />
-        <link rel="start" href="/wiki" />
-        <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-      <link type="application/opensearchdescription+xml" rel="search" href="/search/opensearch" title="Freetz durchsuchen" />
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/jquery.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/babel.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/messages/de.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/trac.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/search.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/folding.js"></script>
-    <script type="text/javascript">
-      jQuery(document).ready(function($) {
-        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
-        $("#content").find(".wikianchor").each(function() {
-          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
-        });
-        $(".foldable").enableFolding(true, true);
-      });
-    </script>
-  </head>
-  <body>
-    <div id="banner">
-      <div id="header">
-        <a id="logo" href="/wiki"><img src="../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
-      </div>
-      <form id="search" action="https://www.google.com/search" method="get" onsubmit="; this.elements.namedItem('q').value = this.elements.namedItem('oq').value + ' site:freetz.github.io'">
-        <div>
-          <label for="proj-search">Suche:</label>
-          <input type="text" id="proj-search" name="oq" size="18" value="" />
-          <input type="hidden" name="q" value="" />
-          <input type="submit" value="Suche" />
-        </div>
-      </form>
-      <div id="metanav" class="nav">
-    <ul>
-      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
-    </ul>
-  </div>
-    </div>
-    <div id="mainnav" class="nav">
-    <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="https://github.com/Freetz-NG/freetz-ng/commits/master">Quellen durchsehen</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
-    </ul>
-  </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="mini_fo.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/packages/mini_fo.en" title="(not available)">English</a></li></ul></div><p /><div id="main">
-      <div id="pagepath" class="noprint">
-  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="mini_fo.html" title="Zeige packages/mini_fo an">mini_fo</a>
-</div>
-    <div id="content" class="wiki">
-      <div class="wikipage searchable">
+[![Mini_fo Webinterface](../../docs/screenshots/205_md.png)](../../docs/screenshots/205.png)
 
-          <div id="wikipage" class="trac-content"><h1 id="mini_fo">mini_fo</h1>
-<p>
-<figure><img src="/freetz-ng/screenshots/205.png" alt="Mini_fo Webinterface" /><figcaption>Mini_fo Webinterface</figcaption></figure>
-   <strong>mini_fo</strong> ist ein Overlay-Dateisystem vergleichbar mit <a class="ext-link" href="http://de.wikipedia.org/wiki/UnionFS"><span class="icon">​</span>UnionFS</a>, welches von diversen Live-Distributionen (z.B. Knoppix) bekannt ist. Vereinfacht ausgedrückt, lässt sich damit ein schreibgeschütztes Dateisystem beschreibbar machen. Natürlich kann man auf dem schreibgeschützten Medium nicht wirklich (physisch) schreiben: Änderungen werden an anderer Stelle gespeichert, was aber für den Anwender derart transparent geschieht, dass er davon eigentlich nichts merkt - sondern wirklich den Eindruck eines einzelnen, beschreibbaren Mediums hat.
-</p>
-<h1 id="KonfigurationWebinterface">Konfiguration (Webinterface)</h1>
-<p>
-Das Paket wird über das Webinterface konfiguriert. Hierbei kann der Speicherort für die Änderungen ausgewählt werden. Entweder RAM (flüchtig) oder JFFS2 (reboot resistent). Bei Auswahl der Option JFFS2 muss genügend freier Speicherplatz verfügbar sein (die Daten werden gzip komprimiert abgespeichert):
-</p>
-<pre class="wiki">root@fritz:/var/mod/root# df /dev/mtdblock5
+**mini_fo** ist ein Overlay-Dateisystem vergleichbar mit
+[UnionFS](http://de.wikipedia.org/wiki/UnionFS),
+welches von diversen Live-Distributionen (z.B. Knoppix) bekannt ist.
+Vereinfacht ausgedrückt, lässt sich damit ein schreibgeschütztes
+Dateisystem beschreibbar machen. Natürlich kann man auf dem
+schreibgeschützten Medium nicht wirklich (physisch) schreiben:
+Änderungen werden an anderer Stelle gespeichert, was aber für den
+Anwender derart transparent geschieht, dass er davon eigentlich nichts
+merkt - sondern wirklich den Eindruck eines einzelnen, beschreibbaren
+Mediums hat.
+
+Konfiguration (Webinterface)
+============================
+
+Das Paket wird über das Webinterface konfiguriert. Hierbei kann der
+Speicherort für die Änderungen ausgewählt werden. Entweder RAM
+(flüchtig) oder JFFS2 (reboot resistent). Bei Auswahl der Option JFFS2
+muss genügend freier Speicherplatz verfügbar sein (die Daten werden gzip
+komprimiert abgespeichert):
+
+```
+root@fritz:/var/mod/root# df /dev/mtdblock5
 Filesystem           1K-blocks      Used Available Use% Mounted on
 /dev/mtdblock5            3200      2612       588  82% /sto
-</pre><p>
+```
+
 Das Paket kann nur durch einen Reboot de-/aktiviert werden.
-</p>
-<h1 id="KonfigurationperHand">Konfiguration (per Hand)</h1>
-<p>
-<strong>mini_fo</strong> ist ein Kernel-Modul, das man entweder ohne Argumente mit insmod lädt&hellip;
-</p>
-<pre class="wiki"> insmod mini_fo
-</pre><p>
-&hellip;oder in der Freetz-Oberfläche in Modules einträgt, damit es beim Start geladen wird:
-</p>
-<pre class="wiki"> mini_fo
-</pre><p>
-Ist es aktiv steht der mount-type 'mini_fo' zur Verfügung. Um /usr/www beschreibbar zu machen genügt diese Zeile in rc.custom:
-</p>
-<pre class="wiki">mkdir -p /tmp/usrwww /tmp/usrwww-sto &amp;&amp; \
- mount -o bind /usr/www /tmp/usrwww &amp;&amp; \
+
+Konfiguration (per Hand)
+========================
+
+**mini_fo** ist ein Kernel-Modul, das man entweder ohne Argumente mit
+insmod lädt...
+
+```
+ insmod mini_fo
+```
+
+...oder in der Freetz-Oberfläche in Modules einträgt, damit es beim
+Start geladen wird:
+
+```
+ mini_fo
+```
+
+Ist es aktiv steht der mount-type 'mini_fo' zur Verfügung. Um
+/usr/www beschreibbar zu machen genügt diese Zeile in rc.custom:
+
+```
+mkdir -p /tmp/usrwww /tmp/usrwww-sto && 
+ mount -o bind /usr/www /tmp/usrwww && 
  mount -t mini_fo -o base=/tmp/usrwww,sto=/tmp/usrwww-sto minifo /usr/www
-</pre><p>
+```
+
 Im Pfad /tmp/usrwww-sto befinden sich dann jegliche Änderungen.
-</p>
-<h1 id="MöglicheNebeneffekte">Mögliche Nebeneffekte</h1>
-<p>
-Ein Firmware-Update kann evtl. mit geladenem mini_fo Modul scheitern (getestet mit 7170 4.8x). Es gibt dann keine Fehlermeldung aber die Box hängt vor dem Herunterfahren und der Flash-Vorgang kommt nie zustande. Wenn dies passiert sollte man vor einer Firmware-Aktualisierung ohne mini_fo booten. Aktueller Trunk zeigt das Phenomen nicht.
-</p>
-<p>
-Wird mini_fo auf einer Box ohne JFFS2-Partition betrieben fängt es auch Schreibzugriffe auf /data ab, zumindest bis ein USB-Stick gemountet ist. In /sto/mini_fo taucht dann data/tam/config und data/tam/rec/ mit dem Datum 2000 (also vor Zeitsync) auf. Dieser Nebeneffekt ermöglicht es Anrufbeantworter ohne JFFS2-Partition und ohne USB-Stick zu testen, z.B. zur Weiterleitung per Email mit anschließender Löschung. Dabei sollte man die Aufnahmelänge begrenzen damit der RAM-Speicher nicht versehentlich aufgebraucht werden kann. Speichert mini_fo im RAM gehen allerdings bei einem Neustart alle derart definierten Anrufbeantworter verloren.
-</p>
-<p>
-Bei Modellen der Generation 7170 zeigten sich Watchdog initiierte Rebootschleifen (ca. 2-4min) bei aktiviertem WLAN mit Verschlüsselung im DSL-Modem Modus (also Default nach Werksreset). Rebootgrund in crash.log ist dann ein dsld Watchdog Timeout. Ohne WPA Verschlüsselung oder im IP-Client Modus zeigt sich das Phenomen nicht. Offensichtlich werden Semaphoren die dsld zur Verwaltung von Shared Memory in /var/tmp/csem ablegt teilweise in /sto abgefragt und der Mechanismus empfindlich gestört.
-</p>
-<h1 id="Restoreoriginalfile">Restore original file</h1>
-<p>
+
+Mögliche Nebeneffekte
+=====================
+
+Ein Firmware-Update kann evtl. mit geladenem mini_fo Modul scheitern
+(getestet mit 7170 4.8x). Es gibt dann keine Fehlermeldung aber die Box
+hängt vor dem Herunterfahren und der Flash-Vorgang kommt nie zustande.
+Wenn dies passiert sollte man vor einer Firmware-Aktualisierung ohne
+mini_fo booten. Aktueller Trunk zeigt das Phenomen nicht.
+
+Wird mini_fo auf einer Box ohne JFFS2-Partition betrieben fängt es auch
+Schreibzugriffe auf /data ab, zumindest bis ein USB-Stick gemountet ist.
+In /sto/mini_fo taucht dann data/tam/config und data/tam/rec/ mit dem
+Datum 2000 (also vor Zeitsync) auf. Dieser Nebeneffekt ermöglicht es
+Anrufbeantworter ohne JFFS2-Partition und ohne USB-Stick zu testen, z.B.
+zur Weiterleitung per Email mit anschließender Löschung. Dabei sollte
+man die Aufnahmelänge begrenzen damit der RAM-Speicher nicht
+versehentlich aufgebraucht werden kann. Speichert mini_fo im RAM gehen
+allerdings bei einem Neustart alle derart definierten Anrufbeantworter
+verloren.
+
+Bei Modellen der Generation 7170 zeigten sich Watchdog initiierte
+Rebootschleifen (ca. 2-4min) bei aktiviertem WLAN mit Verschlüsselung im
+DSL-Modem Modus (also Default nach Werksreset). Rebootgrund in crash.log
+ist dann ein dsld Watchdog Timeout. Ohne WPA Verschlüsselung oder im
+IP-Client Modus zeigt sich das Phenomen nicht. Offensichtlich werden
+Semaphoren die dsld zur Verwaltung von Shared Memory in /var/tmp/csem
+ablegt teilweise in /sto abgefragt und der Mechanismus empfindlich
+gestört.
+
+Restore original file
+=====================
+
 The modified files are stored here (trunk version):
-</p>
-<pre class="wiki">/sto/mini_fo/...
-</pre><p>
-So for example a modified <em>/usr/sbin/blkid</em> is stored as <em>/sto/mini_fo/usr/sbin/blkid</em>.
-</p>
-<p>
-If you remove the latter one, the original one will reappear in your file system.
-</p>
-<h1 id="Sieheauch">Siehe auch</h1>
-<ul><li><a class="ext-link" href="http://www.ip-phone-forum.de/showthread.php?t=111226"><span class="icon">​</span>diesen Thread</a> im Forum.
-</li><li><a class="ext-link" href="http://www.denx.de/twiki/bin/view/Know/MiniFOHome"><span class="icon">​</span>mini_fo project page</a>.
-</li></ul></div>
 
-      </div><ul class="tags"><li class="header">Tags</li><li><a href="/tags/filesystem" rel="tag">filesystem</a> </li><li><a href="../packages.html" rel="tag">packages</a> </li><li><a href="/tags/%C3%BCberarbeiten" rel="tag">überarbeiten</a> </li></ul>
+```
+/sto/mini_fo/...
+```
 
-    </div>
-    <script type="text/javascript">
-        jQuery.loadStyleSheet("/chrome/screenshots/css/screenshots.css", "text/css");
-    </script>
-    </div>
-  </body>
-</html>
+So for example a modified */usr/sbin/blkid* is stored as
+*/sto/mini_fo/usr/sbin/blkid*.
+
+If you remove the latter one, the original one will reappear in your
+file system.
+
+Siehe auch
+==========
+
+-   [diesen
+    Thread](http://www.ip-phone-forum.de/showthread.php?t=111226)
+    im Forum.
+-   [mini_fo project
+    page](http://www.denx.de/twiki/bin/view/Know/MiniFOHome).
+

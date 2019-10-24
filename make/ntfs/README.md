@@ -1,91 +1,30 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+NTFS-3G
+=======
 
-  <head>
-    <title>
-      packages/ntfs-3g – Freetz
-    </title>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!--[if IE]><script type="text/javascript">
-      if (/^#__msie303:/.test(window.location.hash))
-        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
-    </script><![endif]-->
-        <link rel="search" href="/search" />
-        <link rel="help" href="../TracGuide.html" />
-        <link rel="alternate" href="ntfs-3g%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
-        <link rel="up" href="../packages.html" title="Übergeordnete Wiki-Seite anzeigen" />
-        <link rel="start" href="/wiki" />
-        <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-      <link type="application/opensearchdescription+xml" rel="search" href="/search/opensearch" title="Freetz durchsuchen" />
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/jquery.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/babel.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/messages/de.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/trac.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/search.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/folding.js"></script>
-    <script type="text/javascript">
-      jQuery(document).ready(function($) {
-        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
-        $("#content").find(".wikianchor").each(function() {
-          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
-        });
-        $(".foldable").enableFolding(true, true);
-      });
-    </script>
-  </head>
-  <body>
-    <div id="banner">
-      <div id="header">
-        <a id="logo" href="/wiki"><img src="../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
-      </div>
-      <form id="search" action="https://www.google.com/search" method="get" onsubmit="; this.elements.namedItem('q').value = this.elements.namedItem('oq').value + ' site:freetz.github.io'">
-        <div>
-          <label for="proj-search">Suche:</label>
-          <input type="text" id="proj-search" name="oq" size="18" value="" />
-          <input type="hidden" name="q" value="" />
-          <input type="submit" value="Suche" />
-        </div>
-      </form>
-      <div id="metanav" class="nav">
-    <ul>
-      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
-    </ul>
-  </div>
-    </div>
-    <div id="mainnav" class="nav">
-    <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="https://github.com/Freetz-NG/freetz-ng/commits/master">Quellen durchsehen</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
-    </ul>
-  </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="ntfs-3g.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/packages/ntfs-3g.en" title="(not available)">English</a></li></ul></div><p /><div id="main">
-      <div id="pagepath" class="noprint">
-  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="ntfs-3g.html" title="Zeige packages/ntfs-3g an">ntfs-3g</a>
-</div>
-    <div id="content" class="wiki">
-      <div class="wikipage searchable">
+**[NTFS-3G](http://www.ntfs-3g.com/)** ist ein
+Treiber für das
+[NTFS-Dateisystem](http://de.wikipedia.org/wiki/Dateisystem)
+unter Linux, Solaris, FreeBSD, Mac OS X und NetBSD mit umfassender
+Schreibunterstützung.
 
-          <div id="wikipage" class="trac-content"><h1 id="NTFS-3G">NTFS-3G</h1>
-<p>
-<strong><a class="ext-link" href="http://www.ntfs-3g.com/"><span class="icon">​</span>NTFS-3G</a></strong> ist ein Treiber für das <a class="ext-link" href="http://de.wikipedia.org/wiki/Dateisystem"><span class="icon">​</span>NTFS-Dateisystem</a> unter Linux, Solaris, FreeBSD, Mac OS X und NetBSD mit umfassender Schreibunterstützung.
-</p>
-<p>
-Im Gegensatz zum Kernel-NTFS Treiber unterstützt <em>NTFS-3G</em> die meisten Dateisystem-Operationen: Dateien jeder Größe können auf NTFS Dateisystemen erstellt, modifiziert, umbenannt, verschoben oder gelöscht werden (ausgenommen komprimierte und verschlüsselte Dateien). Es ist auch experimentelle Unterstützung zur Modifikation von <a class="ext-link" href="http://de.wikipedia.org/wiki/Access_Control_List"><span class="icon">​</span>ACLs</a> und <a class="ext-link" href="http://de.wikipedia.org/wiki/Dateiberechtigung"><span class="icon">​</span>Dateisystem-Berechtigungen</a> vorhanden.
-</p>
-<p>
-<em>NTFS-3G</em> basiert auf dem <em><a class="wiki" href="fuse.html">FUSE</a></em> Paket.
-</p>
-<h2 id="WeiterführendeLinks">Weiterführende Links</h2>
-<ul><li><a class="ext-link" href="http://www.ntfs-3g.com/"><span class="icon">​</span>NTFS-3G Homepage</a>
-</li><li><a class="ext-link" href="http://en.wikipedia.org/wiki/NTFS3G"><span class="icon">​</span>Wikipedia Artikel</a> (englisch)
-</li><li><a class="ext-link" href="http://www.csamuel.org/2007/04/25/comparing-ntfs-3g-to-zfs-fuse-for-fuse-performance/"><span class="icon">​</span>Comparing JFS, XFS, NTFS-3G and ZFS-FUSE performance</a>
-</li></ul></div>
+Im Gegensatz zum Kernel-NTFS Treiber unterstützt *NTFS-3G* die meisten
+Dateisystem-Operationen: Dateien jeder Größe können auf NTFS
+Dateisystemen erstellt, modifiziert, umbenannt, verschoben oder gelöscht
+werden (ausgenommen komprimierte und verschlüsselte Dateien). Es ist
+auch experimentelle Unterstützung zur Modifikation von
+[ACLs](http://de.wikipedia.org/wiki/Access_Control_List)
+und
+[Dateisystem-Berechtigungen](http://de.wikipedia.org/wiki/Dateiberechtigung)
+vorhanden.
 
-      </div><ul class="tags"><li class="header">Tags</li><li><a href="/tags/filesystem" rel="tag">filesystem</a> </li><li><a href="../packages.html" rel="tag">packages</a> </li></ul>
+*NTFS-3G* basiert auf dem *[FUSE](../fuse/README.md)* Paket.
 
-    </div>
-    </div>
-  </body>
-</html>
+Weiterführende Links
+--------------------
+
+-   [NTFS-3G Homepage](http://www.ntfs-3g.com/)
+-   [Wikipedia
+    Artikel](http://en.wikipedia.org/wiki/NTFS3G) (englisch)
+-   [Comparing JFS, XFS, NTFS-3G and ZFS-FUSE
+    performance](http://www.csamuel.org/2007/04/25/comparing-ntfs-3g-to-zfs-fuse-for-fuse-performance/)
+

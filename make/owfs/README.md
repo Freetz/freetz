@@ -1,106 +1,42 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+owfs
+====
 
-  <head>
-    <title>
-      packages/owfs – Freetz
-    </title>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!--[if IE]><script type="text/javascript">
-      if (/^#__msie303:/.test(window.location.hash))
-        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
-    </script><![endif]-->
-        <link rel="search" href="/search" />
-        <link rel="help" href="../TracGuide.html" />
-        <link rel="alternate" href="owfs%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
-        <link rel="up" href="../packages.html" title="Übergeordnete Wiki-Seite anzeigen" />
-        <link rel="start" href="/wiki" />
-        <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-      <link type="application/opensearchdescription+xml" rel="search" href="/search/opensearch" title="Freetz durchsuchen" />
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/jquery.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/babel.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/messages/de.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/trac.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/search.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/folding.js"></script>
-    <script type="text/javascript">
-      jQuery(document).ready(function($) {
-        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
-        $("#content").find(".wikianchor").each(function() {
-          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
-        });
-        $(".foldable").enableFolding(true, true);
-      });
-    </script>
-  </head>
-  <body>
-    <div id="banner">
-      <div id="header">
-        <a id="logo" href="/wiki"><img src="../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
-      </div>
-      <form id="search" action="https://www.google.com/search" method="get" onsubmit="; this.elements.namedItem('q').value = this.elements.namedItem('oq').value + ' site:freetz.github.io'">
-        <div>
-          <label for="proj-search">Suche:</label>
-          <input type="text" id="proj-search" name="oq" size="18" value="" />
-          <input type="hidden" name="q" value="" />
-          <input type="submit" value="Suche" />
-        </div>
-      </form>
-      <div id="metanav" class="nav">
-    <ul>
-      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
-    </ul>
-  </div>
-    </div>
-    <div id="mainnav" class="nav">
-    <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="https://github.com/Freetz-NG/freetz-ng/commits/master">Quellen durchsehen</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
-    </ul>
-  </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="owfs.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/packages/owfs.en" title="(not available)">English</a></li></ul></div><p /><div id="main">
-      <div id="pagepath" class="noprint">
-  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="owfs.html" title="Zeige packages/owfs an">owfs</a>
-</div>
-    <div id="content" class="wiki">
-      <div class="wikipage searchable">
+Dieses Paket bietet ähnliche Funktionen wie das digitemp Paket, mit dem
+Vorteil, dass eine größere Auswahl an Chips unterstützt wird. Eine
+Integration in die Freetz Oberfläche ist jedoch noch nicht vorhanden.
 
-          <div id="wikipage" class="trac-content"><h1 id="owfs">owfs</h1>
-<p>
-Dieses Paket bietet ähnliche Funktionen wie das digitemp Paket, mit dem Vorteil, dass eine größere Auswahl an Chips unterstützt wird. Eine Integration in die Freetz Oberfläche ist jedoch noch nicht vorhanden.
-</p>
-<p>
-Der 1-Wire-Bus sollte für längere Distanzen (x00m) mindestens mit Shielded/TwistedPair Kabeln aufgebaut werden. Wie bei jedem Bus dürfen die Zweige nicht zu lang werden, dh. &lt; 1m, damit die Reflexionen das Datensignal nicht überlagern.<br />
-Als Busmaster wurde derzeit der USB-1.1 Adapter DS9490R an einer Fritzbox getestet.
-</p>
-<p>
-Das Paket wird ohne Fuse-Support gebaut, die Shelltools erlauben jedoch gleichwertige Funktionen.
-Grundsätzlich muss ein owserver gestartet werden, er serialisiert/managed die Anfragen an den Bus.<br />
-Verbindungen laufen standardmäßig über Port 4304.<br />
-<tt> owserver --usb=ALL </tt><br />
-</p>
-<p>
-owhttpd ist ein mini Webserver und erlaubt komfortables BUS-Debugging per Webbrowser (<a class="ext-link" href="http://fritz.box:99"><span class="icon">​</span>http://fritz.box:99</a>) <br />
-<tt> owhttpd -s 127.0.0.1:4304 -p 99 </tt><br />
-Dieser muss natürlich nicht zwingend auf der fritzbox laufen, denn die option -s bestimmt die tcp/ip Verbindungsparameter zu  irgendeinem <tt>owserver</tt>.
-</p>
-<p>
-owdir owread owwrite: erlaubt das einfache Auslesen und Beschreiben von 1-Wire Devices in der Shell bzw. in Shell-Skripten.
-</p>
-<p>
+Der 1-Wire-Bus sollte für längere Distanzen (x00m) mindestens mit
+Shielded/TwistedPair Kabeln aufgebaut werden. Wie bei jedem Bus dürfen
+die Zweige nicht zu lang werden, dh. < 1m, damit die Reflexionen das
+Datensignal nicht überlagern.
+Als Busmaster wurde derzeit der USB-1.1 Adapter DS9490R an einer
+Fritzbox getestet.
+
+Das Paket wird ohne Fuse-Support gebaut, die Shelltools erlauben jedoch
+gleichwertige Funktionen. Grundsätzlich muss ein owserver gestartet
+werden, er serialisiert/managed die Anfragen an den Bus.
+Verbindungen laufen standardmäßig über Port 4304.
+` owserver --usb=ALL `
+
+owhttpd ist ein mini Webserver und erlaubt komfortables BUS-Debugging
+per Webbrowser
+([http://fritz.box:99](http://fritz.box:99))
+` owhttpd -s 127.0.0.1:4304 -p 99 `
+Dieser muss natürlich nicht zwingend auf der fritzbox laufen, denn die
+option -s bestimmt die tcp/ip Verbindungsparameter zu irgendeinem
+`owserver`.
+
+owdir owread owwrite: erlaubt das einfache Auslesen und Beschreiben von
+1-Wire Devices in der Shell bzw. in Shell-Skripten.
+
 Mehr Infos gibts in den manpages unter "weiterführende Links".
-</p>
-<h2 id="WeiterführendeLinks">Weiterführende Links</h2>
-<ul><li><a class="ext-link" href="http://owfs.org/"><span class="icon">​</span>http://owfs.org/</a>
-</li><li><a class="ext-link" href="http://1wire.org/index.html?target=p_2.html&amp;lang=en-us"><span class="icon">​</span>A Guide to the 1WRJ45 Standard</a>
-</li></ul><hr />
-</div>
 
-      </div><ul class="tags"><li class="header">Tags</li><li><a href="/tags/homeautomation" rel="tag">homeautomation</a> </li><li><a href="../packages.html" rel="tag">packages</a> </li></ul>
+Weiterführende Links
+--------------------
 
-    </div>
-    </div>
-  </body>
-</html>
+-   [http://owfs.org/](http://owfs.org/)
+-   [A Guide to the 1WRJ45
+    Standard](http://1wire.org/index.html?target=p_2.html&lang=en-us)
+
+------------------------------------------------------------------------
+

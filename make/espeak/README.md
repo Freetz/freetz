@@ -1,107 +1,58 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+eSpeak
+======
 
-  <head>
-    <title>
-      packages/espeak – Freetz
-    </title>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!--[if IE]><script type="text/javascript">
-      if (/^#__msie303:/.test(window.location.hash))
-        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
-    </script><![endif]-->
-        <link rel="search" href="/search" />
-        <link rel="help" href="../TracGuide.html" />
-        <link rel="alternate" href="espeak%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
-        <link rel="up" href="../packages.html" title="Übergeordnete Wiki-Seite anzeigen" />
-        <link rel="start" href="/wiki" />
-        <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-      <link type="application/opensearchdescription+xml" rel="search" href="/search/opensearch" title="Freetz durchsuchen" />
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/jquery.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/babel.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/messages/de.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/trac.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/search.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/folding.js"></script>
-    <script type="text/javascript">
-      jQuery(document).ready(function($) {
-        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
-        $("#content").find(".wikianchor").each(function() {
-          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
-        });
-        $(".foldable").enableFolding(true, true);
-      });
-    </script>
-  </head>
-  <body>
-    <div id="banner">
-      <div id="header">
-        <a id="logo" href="/wiki"><img src="../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
-      </div>
-      <form id="search" action="https://www.google.com/search" method="get" onsubmit="; this.elements.namedItem('q').value = this.elements.namedItem('oq').value + ' site:freetz.github.io'">
-        <div>
-          <label for="proj-search">Suche:</label>
-          <input type="text" id="proj-search" name="oq" size="18" value="" />
-          <input type="hidden" name="q" value="" />
-          <input type="submit" value="Suche" />
-        </div>
-      </form>
-      <div id="metanav" class="nav">
-    <ul>
-      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
-    </ul>
-  </div>
-    </div>
-    <div id="mainnav" class="nav">
-    <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="https://github.com/Freetz-NG/freetz-ng/commits/master">Quellen durchsehen</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
-    </ul>
-  </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="espeak.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/packages/espeak.en" title="(not available)">English</a></li></ul></div><p /><div id="main">
-      <div id="pagepath" class="noprint">
-  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="espeak.html" title="Zeige packages/espeak an">espeak</a>
-</div>
-    <div id="content" class="wiki">
-      <div class="wikipage searchable">
+eSpeak ist ein "Text to Speech" Generator - oder, anders ausgedrückt,
+ein "Vorlese-Programm", welches ASCII Texte mit synthetischer Stimme
+wiedergeben ("vorlesen") kann. Bei Freetz wird es u.a. von
+[DTMFBox](../dtmfbox/README.md) genutzt.
 
-          <div id="wikipage" class="trac-content"><p>
-</p><div class="wiki-toc"><h4>Inhaltsverzeichnis</h4><ol><li><a href="espeak.html#Installation">Installation</a></li><li><a href="espeak.html#Aufruf">Aufruf</a></li><li><a href="espeak.html#Hinweis">Hinweis</a></li><li><a href="espeak.html#WeiterführendeLinks">Weiterführende Links</a></li></ol></div><p>
-</p>
-<h1 id="eSpeak">eSpeak</h1>
-<p>
-eSpeak ist ein "Text to Speech" Generator - oder, anders ausgedrückt, ein "Vorlese-Programm", welches ASCII Texte mit synthetischer Stimme wiedergeben ("vorlesen") kann. Bei Freetz wird es u.a. von <a class="wiki" href="dtmfbox.html">DTMFBox</a> genutzt.
-</p>
-<h2 id="Installation">Installation</h2>
-<p>
-Zur Installation ist das Paket einfach im Paket-Menü von <tt>make menuconfig</tt> auszuwählen. Unterstützung für zahlreiche zusätzliche Sprachen lassen sich nochmals (als "Bundle") auswählen, sobald das Paket selbst ausgewählt wird. Dies macht spätestens dann Sinn, wenn man auch mehrere Sprachen benötigt.
-</p>
-<p>
-Wer die Sprachausgabe lediglich für DTMFBox benötigt, muss das eSpeak-Paket nicht zwangsweise installieren: DTMFBox unterstützt auch sogenanntes "WebStreaming" (die Audio-Daten werden dann auf einem anderen Server generiert) - was allerdings eine bestehende Internet-Verbindung voraussetzt.
-</p>
-<h2 id="Aufruf">Aufruf</h2>
-<p>
-An dieser Stelle nur ein paar <strong>kurze</strong> Tipps zum Aufruf von eSpeak - Details finden sich auf der <a class="ext-link" href="http://espeak.sourceforge.net/commands.html"><span class="icon">​</span>Projektseite</a>:
-</p>
-<p>
-<tt>espeak "Hallo Welt"</tt> sagt einfach "Hallo Welt" mit den Default-Einstellungen. Das kann recht komisch klingen, wenn z.B. Englisch als Default-Sprache eingestellt ist. Daher kann man sowohl Sprache als auch Sprecher per Parameter übergeben: <tt>espeak -vde+f3 "Hallo Welt"</tt> lässt den gleichen Text von einer deutschen Frauenstimme säuseln - richtig geraten: "-vde" wählt Deutsch ("-ven" Englisch), das "+f" steht für "feminin" (wovon es mindestens +f1, +f2, +f3 verschiedene "Modelle" gibt), und es gibt auch (+m1, +m2, +m3) "maskuline" Stimmen. Den "+XX" Teil kann man ebenfalls weglassen, wenn nur die Sprache festgelegt werden soll.
-</p>
-<p>
-Sollte sich die Stimme überschlagen, so kann man mit dem Parameter <tt>-s</tt> am "Speed" drehen (<tt>-s 170</tt> ist ein guter Ausgangswert). Auch die Stimmhöhe lässt sich beeinflussen: <tt>-p 50</tt> setzt den "Pitch" auf 50 (guter Ausgangswert). Höhere Werte machen männliche Stimmen zu Eunuchen - niedrigere transformieren "anwesendes Weibsvolk" zu "bärtigen Ladies".
-</p>
-<h2 id="Hinweis">Hinweis</h2>
-<p>
-Das Executeable findet sich auf der Box unter <tt>/usr/bin/speak</tt>.
-</p>
-<h2 id="WeiterführendeLinks">Weiterführende Links</h2>
-<ul><li><a class="ext-link" href="http://espeak.sourceforge.net"><span class="icon">​</span>http://espeak.sourceforge.net</a>
-</li></ul></div>
+Installation
+------------
 
-      </div><ul class="tags"><li class="header">Tags</li><li><a href="/tags/audio" rel="tag">audio</a> </li><li><a href="../packages.html" rel="tag">packages</a> </li><li><a href="/tags/phone" rel="tag">phone</a> </li></ul>
+Zur Installation ist das Paket einfach im Paket-Menü von
+`make menuconfig` auszuwählen. Unterstützung für zahlreiche zusätzliche
+Sprachen lassen sich nochmals (als "Bundle") auswählen, sobald das
+Paket selbst ausgewählt wird. Dies macht spätestens dann Sinn, wenn man
+auch mehrere Sprachen benötigt.
 
-    </div>
-    </div>
-  </body>
-</html>
+Wer die Sprachausgabe lediglich für DTMFBox benötigt, muss das
+eSpeak-Paket nicht zwangsweise installieren: DTMFBox unterstützt auch
+sogenanntes "WebStreaming" (die Audio-Daten werden dann auf einem
+anderen Server generiert) - was allerdings eine bestehende
+Internet-Verbindung voraussetzt.
+
+Aufruf
+------
+
+An dieser Stelle nur ein paar **kurze** Tipps zum Aufruf von eSpeak -
+Details finden sich auf der
+[Projektseite](http://espeak.sourceforge.net/commands.html):
+
+`espeak "Hallo Welt"` sagt einfach "Hallo Welt" mit den
+Default-Einstellungen. Das kann recht komisch klingen, wenn z.B.
+Englisch als Default-Sprache eingestellt ist. Daher kann man sowohl
+Sprache als auch Sprecher per Parameter übergeben:
+`espeak -vde+f3 "Hallo Welt"` lässt den gleichen Text von einer
+deutschen Frauenstimme säuseln - richtig geraten: "-vde" wählt Deutsch
+("-ven" Englisch), das "+f" steht für "feminin" (wovon es
+mindestens +f1, +f2, +f3 verschiedene "Modelle" gibt), und es gibt
+auch (+m1, +m2, +m3) "maskuline" Stimmen. Den "+XX" Teil kann man
+ebenfalls weglassen, wenn nur die Sprache festgelegt werden soll.
+
+Sollte sich die Stimme überschlagen, so kann man mit dem Parameter `-s`
+am "Speed" drehen (`-s 170` ist ein guter Ausgangswert). Auch die
+Stimmhöhe lässt sich beeinflussen: `-p 50` setzt den "Pitch" auf 50
+(guter Ausgangswert). Höhere Werte machen männliche Stimmen zu Eunuchen
+- niedrigere transformieren "anwesendes Weibsvolk" zu "bärtigen
+Ladies".
+
+Hinweis
+-------
+
+Das Executeable findet sich auf der Box unter `/usr/bin/speak`.
+
+Weiterführende Links
+--------------------
+
+-   [http://espeak.sourceforge.net](http://espeak.sourceforge.net)
+

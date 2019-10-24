@@ -1,266 +1,210 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+NHIPT - iptables firewall GUI
+=============================
 
-  <head>
-    <title>
-      packages/nhipt – Freetz
-    </title>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!--[if IE]><script type="text/javascript">
-      if (/^#__msie303:/.test(window.location.hash))
-        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
-    </script><![endif]-->
-        <link rel="search" href="/search" />
-        <link rel="help" href="../TracGuide.html" />
-        <link rel="alternate" href="nhipt%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
-        <link rel="up" href="../packages.html" title="Übergeordnete Wiki-Seite anzeigen" />
-        <link rel="start" href="/wiki" />
-        <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-      <link type="application/opensearchdescription+xml" rel="search" href="/search/opensearch" title="Freetz durchsuchen" />
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/jquery.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/babel.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/messages/de.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/trac.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/search.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/folding.js"></script>
-    <script type="text/javascript">
-      jQuery(document).ready(function($) {
-        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
-        $("#content").find(".wikianchor").each(function() {
-          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
-        });
-        $(".foldable").enableFolding(true, true);
-      });
-    </script>
-  </head>
-  <body>
-    <div id="banner">
-      <div id="header">
-        <a id="logo" href="/wiki"><img src="../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
-      </div>
-      <form id="search" action="https://www.google.com/search" method="get" onsubmit="; this.elements.namedItem('q').value = this.elements.namedItem('oq').value + ' site:freetz.github.io'">
-        <div>
-          <label for="proj-search">Suche:</label>
-          <input type="text" id="proj-search" name="oq" size="18" value="" />
-          <input type="hidden" name="q" value="" />
-          <input type="submit" value="Suche" />
-        </div>
-      </form>
-      <div id="metanav" class="nav">
-    <ul>
-      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
-    </ul>
-  </div>
-    </div>
-    <div id="mainnav" class="nav">
-    <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="https://github.com/Freetz-NG/freetz-ng/commits/master">Quellen durchsehen</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
-    </ul>
-  </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="nhipt.html" title="displaying language (default)">German</a></li><li class=" last"><a class="" href="nhipt.en.html" title="">English</a></li></ul></div><p /><div id="main">
-      <div id="pagepath" class="noprint">
-  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="nhipt.html" title="Zeige packages/nhipt an">nhipt</a>
-</div>
-    <div id="content" class="wiki">
-      <div class="wikipage searchable">
+[![nhipt Seite im Freetz Webinterface](../../docs/screenshots/178_md.jpg)](../../docs/screenshots/178.jpg)
 
-          <div id="wikipage" class="trac-content"><p>
-</p><div class="wiki-toc"><h4>Inhaltsverzeichnis</h4><ol><li><a href="nhipt.html#MOTIVATION">MOTIVATION</a></li><li><a href="nhipt.html#VORAUSSETZUNGEN:">VORAUSSETZUNGEN:</a></li><li><a href="nhipt.html#ESSTEHEN3PAKETEZURAUSWAHL:">ES STEHEN 3 PAKETE ZUR AUSWAHL:</a><ol><li><a href="nhipt.html#nhipt.cgi.version.tar.gz">nhipt.cgi.(version).tar.gz</a></li><li><a href="nhipt.html#ipt.version.tar.gz">ipt.(version).tar.gz</a></li><li><a href="nhipt.html#Übermakemenuconfig">Über <em>make menuconfig</em></a></li></ol></li><li><a href="nhipt.html#ARBEITSWEISE:">ARBEITSWEISE:</a><ol><li><a href="nhipt.html#TippsLiteratur:">Tipps &amp; Literatur:</a></li><li><a href="nhipt.html#Bootprozess">Bootprozess</a></li><li><a href="nhipt.html#Konfigurationsdatei">Konfigurationsdatei</a></li><li><a href="nhipt.html#DateienimfreetzPaket">Dateien im freetz Paket</a></li></ol></li><li><a href="nhipt.html#GUTGEMEINTERATSCHLÄGE:">GUT GEMEINTE RATSCHLÄGE:</a></li><li><a href="nhipt.html#DOWNLOAD">DOWNLOAD</a></li><li><a href="nhipt.html#BEKANNTEPROBLEME">BEKANNTE PROBLEME</a></li><li><a href="nhipt.html#SCREENSHOTS">SCREENSHOTS</a></li></ol></div><p>
-</p>
-<h1 id="NHIPT-iptablesfirewallGUI">NHIPT - iptables firewall GUI</h1>
-<p>
-<figure><img src="/freetz-ng/screenshots/178.jpg" alt="nhipt Seite im Freetz Webinterface" /><figcaption>nhipt Seite im Freetz Webinterface</figcaption></figure>
-</p>
-<h2 id="MOTIVATION">MOTIVATION</h2>
-<blockquote>
-<p>
-iptables ist ein Kommandozeilen User Interface zur Konfiguration / Verwaltung der im jeweiligen Linux Kernel eingebauten sehr mächtigen <a class="ext-link" href="http://de.wikipedia.org/wiki/Netfilter/iptables"><span class="icon">​</span>netfilter</a>    - Firewall Funktionen. Mit dem nhipt - Web Interface kann man das gesamte Spektrum von iptables über eine benutzerfreundliche Oberfläche an der Fritz-Box nutzen. Das cgi kann als Paket sowohl in die Firmware integriert, als auch stand-alone als externes Paket genutzt werden.
-</p>
-</blockquote>
-<h2 id="VORAUSSETZUNGEN:">VORAUSSETZUNGEN:</h2>
-<ul><li>nhipt wurde für die 7270 erstellt und läuft auf alle 72xx Boxen mit dem neuen Kernel problemlos, 71xx / 70xx Boxen mit dem alten Kernel können mit Einschränkungen ebenfalls genutzt werden
-</li><li>Einschränkungen bei Verwendung von Boxen mit älterem Kernel (71xx/70xx):
-<ul><li>Systemwarnungen beim Versuch (nichtexistierender) Kernelmodule zu laden
-</li><li>Conntrack Regeln können Probleme bereiten
-</li></ul></li><li>nhipt läuft auch auf der 7390 sehr gut, Voraussetzung ist allerdings das Einspielen des unten angehängten Patches, sonst sieht man nur einen weißen Bildschirm.
-</li><li>iptables müssen <strong><em>vorhanden sein und laufen</em></strong>. <br /> Mindestens folgende Module sollten im Freetz-Image sein (wer Platz hat, lieber alle, dann kann das Interface sein Potential voll entfalten):
-</li></ul><blockquote>
-<blockquote>
-<table class="wiki">
-<tr><td> * ip_tables <br /> * x_tables<br /> * iptable_filter <br /> <br /> </td><td> * ip_conntrack <br /> * ip_conntrack_ftp <br /> * ip_conntrack_tftp <br /> <br /> </td><td> * ipt_log <br /> * ipt_REJECT <br /> * ipt_iprange <br /> <br /> </td><td> * xt_state <br /> * xt_conntrack <br /> * xt_multiport <br /> * xt_tcpudp <br />
-</td></tr></table>
-</blockquote>
-</blockquote>
-<blockquote>
-<blockquote>
-<p>
-<strong>    !!! Bitte nicht vergessen, auch die zugehörigen shared libraries in die Firmware zu integrieren !!! </strong>
-</p>
-</blockquote>
-</blockquote>
-<blockquote>
-<blockquote>
-<p>
-Ideal ist ein Build mit Replaced Kernel und eingeschalteter Autoload modules Funktion des Kernels:
-</p>
-<pre class="wiki">user@Linux: make kernel-menuconfig
-(L)oadable modules support
-(A)utomatic kernel module loading
-</pre><p>
-Vor dem ersten Start <strong>   iptables -S</strong>    eingeben, um iptables zu laden <em>   (bei Built mit replaced kernel und automatic kernel module loading)</em>    <br />   Alternativ (ohne autoload Option) mit <strong>   modprobe &lt;modulname&gt;</strong>    die oben genannten iptables Module einzeln laden.  <br />
-</p>
-</blockquote>
-</blockquote>
-<h2 id="ESSTEHEN3PAKETEZURAUSWAHL:">ES STEHEN 3 PAKETE ZUR AUSWAHL:</h2>
-<h3 id="nhipt.cgi.version.tar.gz">nhipt.cgi.(version).tar.gz</h3>
-<blockquote>
-<p>
-Das ist das reine GUI, es läuft direkt vom Stick ohne Integration in freetz.
-</p>
-</blockquote>
-<p>
-<strong>Installation:</strong>
-</p>
-<ul><li>Datei <strong>nhipt.cgi</strong> z.B. im Verzeichnis (z.B.: /var/media/ftp/uStor01/<strong>ipt/cgi-bin</strong> auf dem stick auspacken <br />
-</li><li>execute Rechte darauf setzen. <br />
-</li><li>einen httpd-Dienst auf das übergeordnete Verzeichnis <strong>/ipt</strong> und einem freien port (z.B. 83) einrichten.<br />
-</li></ul><pre class="wiki">chmod +x /var/media/ftp/uStor01/ipt/cgi-bin/nhipt.cgi
+MOTIVATION
+----------
+
+> iptables ist ein Kommandozeilen User Interface zur Konfiguration /
+> Verwaltung der im jeweiligen Linux Kernel eingebauten sehr mächtigen
+> [netfilter](http://de.wikipedia.org/wiki/Netfilter/iptables)
+> - Firewall Funktionen. Mit dem nhipt - Web Interface kann man das
+> gesamte Spektrum von iptables über eine benutzerfreundliche Oberfläche
+> an der Fritz-Box nutzen. Das cgi kann als Paket sowohl in die Firmware
+> integriert, als auch stand-alone als externes Paket genutzt werden.
+
+VORAUSSETZUNGEN:
+----------------
+
+-   nhipt wurde für die 7270 erstellt und läuft auf alle 72xx Boxen mit
+    dem neuen Kernel problemlos, 71xx / 70xx Boxen mit dem alten Kernel
+    können mit Einschränkungen ebenfalls genutzt werden
+-   Einschränkungen bei Verwendung von Boxen mit älterem Kernel
+    (71xx/70xx):
+    -   Systemwarnungen beim Versuch (nichtexistierender) Kernelmodule
+        zu laden
+    -   Conntrack Regeln können Probleme bereiten
+-   nhipt läuft auch auf der 7390 sehr gut, Voraussetzung ist allerdings
+    das Einspielen des unten angehängten Patches, sonst sieht man nur
+    einen weißen Bildschirm.
+-   iptables müssen ***vorhanden sein und laufen***.
+    Mindestens folgende Module sollten im Freetz-Image sein (wer Platz
+    hat, lieber alle, dann kann das Interface sein Potential voll
+    entfalten):
+
+> >   --------------------- ------------------------- ------------------ -------------------
+> >   * ip_tables        * ip_conntrack         * ipt_log       * xt_state
+> >   * x_tables         * ip_conntrack_ftp    * ipt_REJECT    * xt_conntrack
+> >   * iptable_filter   * ip_conntrack_tftp   * ipt_iprange   * xt_multiport
+> >                                                                   * xt_tcpudp
+> >
+> >   --------------------- ------------------------- ------------------ -------------------
+> >
+> > **!!! Bitte nicht vergessen, auch die zugehörigen shared libraries
+> > in die Firmware zu integrieren !!!**
+
+> > Ideal ist ein Build mit Replaced Kernel und eingeschalteter Autoload
+> > modules Funktion des Kernels:
+> >
+> > ``` 
+> > user@Linux: make kernel-menuconfig
+> > (L)oadable modules support
+> > (A)utomatic kernel module loading
+> > ```
+> >
+> > Vor dem ersten Start **iptables -S** eingeben, um iptables zu laden
+> > *(bei Built mit replaced kernel und automatic kernel module
+> > loading)*
+> > Alternativ (ohne autoload Option) mit **modprobe <modulname>** die
+> > oben genannten iptables Module einzeln laden.
+
+ES STEHEN 3 PAKETE ZUR AUSWAHL:
+-------------------------------
+
+### nhipt.cgi.(version).tar.gz
+
+> Das ist das reine GUI, es läuft direkt vom Stick ohne Integration in
+> freetz.
+
+**Installation:**
+
+-   Datei **nhipt.cgi** z.B. im Verzeichnis (z.B.:
+    /var/media/ftp/uStor01/**ipt/cgi-bin** auf dem stick auspacken
+-   execute Rechte darauf setzen.
+-   einen httpd-Dienst auf das übergeordnete Verzeichnis **/ipt** und
+    einem freien port (z.B. 83) einrichten.
+
+```
+chmod +x /var/media/ftp/uStor01/ipt/cgi-bin/nhipt.cgi
 httpd -P /var/run/nhipt.pid -p 83 -h /var/media/ftp/uStor01/ipt
-</pre><blockquote>
-<blockquote>
-<p>
-Aufgerufen wird das Interface mit <a class="ext-link" href="http://fritz.box:83/cgi-bin/nhipt.cgi"><span class="icon">​</span>http://fritz.box:83/cgi-bin/nhipt.cgi</a>
-</p>
-</blockquote>
-</blockquote>
-<h3 id="ipt.version.tar.gz">ipt.(version).tar.gz</h3>
-<blockquote>
-<p>
-Das ist das Advanced-Comfort Paket mit dynamischer Freetz Integration.
-</p>
-</blockquote>
-<p>
-<strong>Installation: </strong>
-</p>
-<ul><li>auf <strong>/var/media/ftp/uStor01/</strong> entpacken.<br />
-</li><li>Datei <strong>register.sh</strong> mit execute rechten versehen<br />
-</li><li>Das Script <strong>register.sh</strong> ausführen <br />
-</li></ul><pre class="wiki">chmod +x /var/media/ftp/uStor01/ipt/register.sh
+```
+
+> > Aufgerufen wird das Interface mit
+> > [http://fritz.box:83/cgi-bin/nhipt.cgi](http://fritz.box:83/cgi-bin/nhipt.cgi)
+
+### ipt.(version).tar.gz
+
+> Das ist das Advanced-Comfort Paket mit dynamischer Freetz Integration.
+
+**Installation:**
+
+-   auf **/var/media/ftp/uStor01/** entpacken.
+-   Datei **register.sh** mit execute rechten versehen
+-   Das Script **register.sh** ausführen
+
+```
+chmod +x /var/media/ftp/uStor01/ipt/register.sh
 . /var/media/ftp/uStor01/ipt/register.sh
-</pre><blockquote>
-<blockquote>
-<p>
-Im Freetz ist nun ein neues Paket zu sehen. Dort kann man den Rest konfigurieren und das Interface starten.
-</p>
-</blockquote>
-</blockquote>
-<h3 id="Übermakemenuconfig">Über <em>make menuconfig</em></h3>
-<blockquote>
-<p>
-Das GUI wird in den ROM der FritzBox über den Firmware build integriert, (z.Zt. nur im aktuellen trunk oder als patch)<br />
-</p>
-</blockquote>
-<p>
-<strong>Installation: </strong>
-</p>
-<blockquote>
-<p>
-<em>   Bei Verwendung des Patches</em>    nhipt.patch(ver).tar.gz<br />
-</p>
-<blockquote>
-<p>
-in den freetz ordner wechseln, patch hineinkopieren und anwenden: <em>   patch -p0 &lt; nhipt.patch</em>   <br />    in den Ordner <em>   make/nhipt/files/root/&hellip;</em>    wechseln und die execute Rechte auf alle Dateien setzen (Siehe DATEIEN IM FREETZ PAKET weiter unten)<br />
-</p>
-</blockquote>
-</blockquote>
-<blockquote>
-<p>
-<strong>   make menuconfig</strong>    aufrufen, im Bereich  <strong>   P</strong>   ackage Selection &mdash;&rarr; <strong>   W</strong>   eb Interface &mdash;&rarr; die Option <strong>   NHIPT Iptables CGI</strong>    anwählen.<br />     Nun werden alle iptables Module als Untermenu sichtbar und können zusammengestellt werden. Danach die übliche Vorgehensweise zum Firmware Bauen&hellip;.
-</p>
-</blockquote>
-<h2 id="ARBEITSWEISE:">ARBEITSWEISE:</h2>
-<h3 id="TippsLiteratur:">Tipps &amp; Literatur:</h3>
-<ul><li><a class="wiki" href="iptables.html">Wiki zu iptables für Einsteiger</a><br />
-</li><li><a class="ext-link" href="http://technet.microsoft.com/en-us/library/cc959833%28printer%29.aspx"><span class="icon">​</span>Von Windows verwendete Ports &amp; Services</a><br />
-</li></ul><blockquote>
-<blockquote>
-<p>
-Es werden alle aktiven Regeln aufgelistet und können wie üblich sofort bearbeitet werden. Reboot-Fest werden die Regeln durch die Speicherfunktion <strong>   [Persist rules]</strong>   . Das erzeugte Start-Script kann entweder im Flash der Box oder extern abgelegt werden <strong>   [BOOT FROM FLASH / USB] + [SET BOOT DIRECTORY]</strong>   . Beim Start wird es von der debug.cfg automatisch zum Leben erweckt. Die Regeln können sowohl per Masken-Auswahl (die passenden Module werden für die meisten Regeln an Hand der Parameter automatisch ermittelt), als auch im Expert Mode (Kommandozeile mit iptables syntax) eingegeben werden, sie wirken stets sofort.
-</p>
-</blockquote>
-</blockquote>
-<blockquote>
-<blockquote>
-<p>
-Alle Tabellen, sowie die wichtigsten Erweiterungen von <strong>   conntrack</strong>    und <strong>   nat</strong>    kann man im User Interface anwählen, sie werden automatisch geladen oder beim Abwählen - wenn möglich - entladen, das Interface unterstützt sowohl IPv4 als auch IPv6 Regelwerke (bei eingeschaltetem ipv6 auf der Box).
-</p>
-</blockquote>
-</blockquote>
-<blockquote>
-<blockquote>
-<p>
-Wenn man eine Admin Adresse oder Subnetz im Feld <strong>   [CHANGE ADMIN IP]</strong>    einträgt, kann man die Konfiguration nur noch von dieser IP aus ausführen, die Sperre bleibt auch über eine Reboot hinaus wirksam.
-</p>
-</blockquote>
-</blockquote>
-<blockquote>
-<blockquote>
-<p>
-Zusätzlich besitzt das CGI eine eigene Log-Funktion für die DECT Boxen. Das cgi übernimmt auf Wunsch hierfür alle nötigen Einstellungen, das Log-Verzeichnis ist frei wählbar.
-</p>
-</blockquote>
-</blockquote>
-<blockquote>
-<blockquote>
-<p>
-Die Fehlermeldungen, Systemmeldungen etc. von iptables und dem UI werden in die Status - Zeilen unterhalb des Regelwerkes ausgegeben, Status 0 ist immer OK.
-</p>
-</blockquote>
-</blockquote>
-<h3 id="Bootprozess">Bootprozess</h3>
-<ul><li><strong>debug.cfg</strong> kann die Einstellungen in die RAM-Disk kopieren und die Initialisierung starten.<br />
-</li><li><strong>rc.nhipt load</strong> wird von <strong>rc.mod</strong> / <strong>run level 20</strong> aufgerufen und prüft, ob die Settings bereits in der RAM Disk sind (durch vorherigen boot mit <strong>debug.cfg</strong>). Sind sie es nicht, wird <em>/tmp/flash/nhiptboot.cfg</em> aufgerufen (die an Stelle der <em>debug.cfg</em> die Initialisierung übernimmt) <br />
-</li><li><strong>debug.cfg</strong> und <strong>nhiptboot.cfg</strong> sind inhaltlich identisch aufgebaut
-<ul><li>sie warten bei Bedarf auf USB Stick<br />
-</li><li>kopieren von bekannter Stelle (flash / USB) die Settings <strong>nhipt.par</strong> in die RAM Disk<br />
-</li><li>kopieren Start Script <strong>nhipt.cfg</strong> in die RAM Disk<br />
-</li><li>starten Firewall Start Script <strong>nhipt.cfg</strong> und schicken es in den Hintergrund.<br />
-</li></ul></li><li><strong>nhipt.cfg</strong>:
-<ul><li>dsld (wenn eingestellt) stoppen<br />
-</li><li>Verzögeriungstimer (wenn eingestellt) abwarten<br />
-</li><li>dsld (wenn eingestellt) starten<br />
-</li><li>Web-Server für UI starten, <br />
-</li><li>Interner Log Service (wenn eingestellt) starten, <br />
-</li><li>Firewall Rules laden<br />
-</li></ul></li></ul><blockquote>
-<blockquote>
-<p>
-<strong>   Szenario 1:</strong>    Standalone CGI - bootet immer von <em>   debug.cfg</em>   , Regeln im flash / stick
-</p>
-</blockquote>
-</blockquote>
-<blockquote>
-<blockquote>
-<p>
-<strong>   Szenario 2:</strong>    dynamisches freetz - bootet entweder von der <em>   debug.cfg</em>    oder verspätet über <em>   freetz rc.custom</em>    beim Integrieren der cgi in freetz (install script für freetz Integration trägt sich in die rc.custom automatisch ein für reboot Fähigkeit)
-</p>
-</blockquote>
-</blockquote>
-<blockquote>
-<blockquote>
-<p>
-<strong>   Szenario 3:</strong>    Integration in die <em>   Runlevel von Freetz</em>   , optional weiterhin über <em>   debug.cfg</em>   .
-</p>
-</blockquote>
-</blockquote>
-<h3 id="Konfigurationsdatei">Konfigurationsdatei</h3>
-<p>
-Die Konfigurationsdatei ist zur Laufzeit unter <em>/var/tmp/nhipt.par</em> zu finden, reboot-fest wird sie in BOOTDIR zusammen mit der <em>nhipt.cfg</em> abgelegt<br />
-</p>
-<pre class="wiki">BACK=/var/media/ftp/uStor01/save
+```
+
+> > Im Freetz ist nun ein neues Paket zu sehen. Dort kann man den Rest
+> > konfigurieren und das Interface starten.
+
+### Über *make menuconfig*
+
+> Das GUI wird in den ROM der FritzBox über den Firmware build
+> integriert, (z.Zt. nur im aktuellen trunk oder als patch)
+
+**Installation:**
+
+> *Bei Verwendung des Patches* nhipt.patch(ver).tar.gz
+>
+> > in den freetz ordner wechseln, patch hineinkopieren und anwenden:
+> > *patch -p0 < nhipt.patch*
+> > in den Ordner *make/nhipt/files/root/...* wechseln und die execute
+> > Rechte auf alle Dateien setzen (Siehe DATEIEN IM FREETZ PAKET weiter
+> > unten)
+
+> **make menuconfig** aufrufen, im Bereich **P** ackage Selection ---→
+> **W** eb Interface ---→ die Option **NHIPT Iptables CGI** anwählen.
+> Nun werden alle iptables Module als Untermenu sichtbar und können
+> zusammengestellt werden. Danach die übliche Vorgehensweise zum
+> Firmware Bauen....
+
+ARBEITSWEISE:
+-------------
+
+### Tipps & Literatur:
+
+-   [Wiki zu iptables für Einsteiger](../iptables/README.md)
+-   [Von Windows verwendete Ports &
+    Services](http://technet.microsoft.com/en-us/library/cc959833%28printer%29.aspx)
+
+> > Es werden alle aktiven Regeln aufgelistet und können wie üblich
+> > sofort bearbeitet werden. Reboot-Fest werden die Regeln durch die
+> > Speicherfunktion **[Persist rules]** . Das erzeugte Start-Script
+> > kann entweder im Flash der Box oder extern abgelegt werden **[BOOT
+> > FROM FLASH / USB] + [SET BOOT DIRECTORY]** . Beim Start wird es
+> > von der debug.cfg automatisch zum Leben erweckt. Die Regeln können
+> > sowohl per Masken-Auswahl (die passenden Module werden für die
+> > meisten Regeln an Hand der Parameter automatisch ermittelt), als
+> > auch im Expert Mode (Kommandozeile mit iptables syntax) eingegeben
+> > werden, sie wirken stets sofort.
+
+> > Alle Tabellen, sowie die wichtigsten Erweiterungen von **conntrack**
+> > und **nat** kann man im User Interface anwählen, sie werden
+> > automatisch geladen oder beim Abwählen - wenn möglich - entladen,
+> > das Interface unterstützt sowohl IPv4 als auch IPv6 Regelwerke (bei
+> > eingeschaltetem ipv6 auf der Box).
+
+> > Wenn man eine Admin Adresse oder Subnetz im Feld **[CHANGE ADMIN
+> > IP]** einträgt, kann man die Konfiguration nur noch von dieser IP
+> > aus ausführen, die Sperre bleibt auch über eine Reboot hinaus
+> > wirksam.
+
+> > Zusätzlich besitzt das CGI eine eigene Log-Funktion für die DECT
+> > Boxen. Das cgi übernimmt auf Wunsch hierfür alle nötigen
+> > Einstellungen, das Log-Verzeichnis ist frei wählbar.
+
+> > Die Fehlermeldungen, Systemmeldungen etc. von iptables und dem UI
+> > werden in die Status - Zeilen unterhalb des Regelwerkes ausgegeben,
+> > Status 0 ist immer OK.
+
+### Bootprozess
+
+-   **debug.cfg** kann die Einstellungen in die RAM-Disk kopieren und
+    die Initialisierung starten.
+-   **rc.nhipt load** wird von **rc.mod** / **run level 20** aufgerufen
+    und prüft, ob die Settings bereits in der RAM Disk sind (durch
+    vorherigen boot mit **debug.cfg**). Sind sie es nicht, wird
+    */tmp/flash/nhiptboot.cfg* aufgerufen (die an Stelle der *debug.cfg*
+    die Initialisierung übernimmt)
+-   **debug.cfg** und **nhiptboot.cfg** sind inhaltlich identisch
+    aufgebaut
+    -   sie warten bei Bedarf auf USB Stick
+    -   kopieren von bekannter Stelle (flash / USB) die Settings
+        **nhipt.par** in die RAM Disk
+    -   kopieren Start Script **nhipt.cfg** in die RAM Disk
+    -   starten Firewall Start Script **nhipt.cfg** und schicken es in
+        den Hintergrund.
+-   **nhipt.cfg**:
+    -   dsld (wenn eingestellt) stoppen
+    -   Verzögeriungstimer (wenn eingestellt) abwarten
+    -   dsld (wenn eingestellt) starten
+    -   Web-Server für UI starten,
+    -   Interner Log Service (wenn eingestellt) starten,
+    -   Firewall Rules laden
+
+> > **Szenario 1:** Standalone CGI - bootet immer von *debug.cfg* ,
+> > Regeln im flash / stick
+
+> > **Szenario 2:** dynamisches freetz - bootet entweder von der
+> > *debug.cfg* oder verspätet über *freetz rc.custom* beim Integrieren
+> > der cgi in freetz (install script für freetz Integration trägt sich
+> > in die rc.custom automatisch ein für reboot Fähigkeit)
+
+> > **Szenario 3:** Integration in die *Runlevel von Freetz* , optional
+> > weiterhin über *debug.cfg* .
+
+### Konfigurationsdatei
+
+Die Konfigurationsdatei ist zur Laufzeit unter */var/tmp/nhipt.par* zu
+finden, reboot-fest wird sie in BOOTDIR zusammen mit der *nhipt.cfg*
+abgelegt
+
+```
+BACK=/var/media/ftp/uStor01/save
 CHANGED=0
 DELAY=0
 LOGTARGET=internal
@@ -274,105 +218,91 @@ PORT=83
 BOOT=flash
 BOOTDIR=/tmp/flash
 ROOT=/usr/ipt
-</pre><h3 id="DateienimfreetzPaket">Dateien im freetz Paket</h3>
-<pre class="wiki">/etc/default.nhipt/nhipt.cfg       rwxrwxrwx    # config für freetz maske
+```
+
+### Dateien im freetz Paket
+
+```
+/etc/default.nhipt/nhipt.cfg       rwxrwxrwx    # config für freetz maske
 /etc/init.d/rc.nhipt               r-xr-xr-x    # call-back für freetz maske, boot loader
 /usr/ipt/index.html                r--r--r--    # frameset für UI
 /usr/ipt/cgi-bin/nhipt.cgi         r-xr-xr-x    # das CGI für iptables
 /lib/cgi-bin/nhipt.cgi             r-xr-xr-x    # das CGI für freetz Einstellungen
-</pre><h2 id="GUTGEMEINTERATSCHLÄGE:">GUT GEMEINTE RATSCHLÄGE:</h2>
-<blockquote>
-<p>
-Noch eins zum Thema Aussperren, für alle, die noch nie eine Firewall installiert haben.
-</p>
-</blockquote>
-<blockquote>
-<p>
-Firewalls schützen Systeme vor unbefugtem Zugriff auf der Basis von Regeln, diese werden stur und kosequent ausgeführt.  Das kann dazu führen, dass jemand, der sich vorher nicht ausreichend Gedanken über seine Regeln gemacht hat, sich vom System selbst aussperrt. Das passiert Laien oft, und auch Profis sind nicht immer davor sicher.
-</p>
-</blockquote>
-<blockquote>
-<p>
-Damit die Konsequenzen nicht zu drastisch sind, hier ein paar Empfehlungen / Regeln für den Anfänger:
-</p>
-</blockquote>
-<ul><li>Schauen ist OK, manuelles Ändern an Scripten ist tabu , wenn man nicht vorzeitig graue Haare bekommen will.<br />
-</li><li>Regelwerke erst dauerhaft speichern <strong>[Persist rules]</strong>, wenn alles funktioniert, wie es soll. Ein Reboot lädt das letzte gespeicherte Regelwerk, und alles ist wieder OK, ältere Versionen werden als Backup mit Zeitstempel im <strong>[SET BACKUP DIRECTORY]</strong> Verzeichnis abgelegt.<br />
-</li><li>Am Anfang lieber den Stick zum Speichern verwenden. Im Notfall kann man den vor dem Booten abziehen und die Box startet ohne iptables Firewall.<br />
-</li><li>Das UI hat eine Anfänger <strong>[safe]</strong> und eine Profi-Betriebsart <strong>[advanced]</strong>, Umschaltbar über <strong>[Admin Level]</strong>.  Im Safe - Modus wehrt sich die Firewall sehr erfolgreich gegen alle Aussperrversuche des Administrators. Er bewirkt, dass in allen für den Adminzugang wichtigen Chains eine ACCEPT Regel für diese spezielle IP Adresse eingetragen wird. Nach Umschalten in <strong>[advanced]</strong> kann man wie gewohnt alle Regeln editieren oder Löschen.<br />
-</li><li>Ein <strong>[Boot-Delay]</strong> , (wählbar von <strong>[Aus]</strong> bis <strong>[10 Min]</strong>) kann auch gegen Aussperren eingestellt werden. Während dieser Zeit ist nach einem Kaltstart der Box ungehinderter Zugriff möglich. Zur Sicherheit kann der Internetzugang während dieser Zeit automatisch verhindert werden <strong>[stop dsld on delay]</strong><br />
-</li><li>Ausgesperrt aus der Admin Oberfläche durch Eingabe einer falschen IP Adresse: Datei: <strong>/var/tmp/nhipt.par</strong> enthällt die falsche Eingabe. Zeile ADMINIP=&hellip; löschen und GUI neu aufrufen. <em>Tipp: Man kann auch ein Subnetz für die AdminIP eintragen - z.B. 192.168.0.10/30 - das erlaubt den Zugriff von den Adressen 192.168.0.8..192.168.0.11 <a class="ext-link" href="http://www.csgnetwork.com/ipinfocalc.html"><span class="icon">​</span>Online IP Rechner</a></em>.<br />
-</li><li>Wenn man das alles ignoriert und wider besseren Wissens sich trotzdem aussperrt, hilft nur noch ein erneutes Flashen der Firmware.<br />
-</li></ul><h2 id="DOWNLOAD">DOWNLOAD</h2>
-<blockquote>
-<p>
-Die aktuelle Version, sowie Anmerkungen, Tipps &amp; Tricks und weiterführende Links finden sich hier: <a class="ext-link" href="http://www.ip-phone-forum.de/showpost.php?p=1420252&amp;postcount=1"><span class="icon">​</span>IPPF Forum</a>
-</p>
-</blockquote>
-<h2 id="BEKANNTEPROBLEME">BEKANNTE PROBLEME</h2>
-<blockquote>
-<p>
-<em>   Bei der 7390 wird nur eine leere Seite angezeigt, Regeln lassen sich nicht anzeigen / hinzufügen.</em>
-</p>
-</blockquote>
-<blockquote>
-<p>
-Der angefügte Patch beseitigt dieses Problem und ähnliche bei anderen Boxen. Außerdem erweitert der Patch die Möglichkeiten des UI, auch Log Informationen zur Firewall und zum System aus dem Syslog der Box auszugeben, wenn in einer Datei gelogt wird (ausgewertet werden die letzten 50 Einträge aus bis zu 4 Logfiles <em>   filename</em>   , <em>   filename</em>   .0, <em>   filename</em>   .1, <em>   filename</em>   .2, der Pfad und Dateiname werden automatisch anhand der Parameter des laufenden syslogd Prozesses ermittelt).
-</p>
-</blockquote>
-<h2 id="SCREENSHOTS">SCREENSHOTS</h2>
-<p>
-<figure><img src="/freetz-ng/screenshots/179.jpg" alt="nhipt Webinterface" /><figcaption>nhipt Webinterface</figcaption></figure>
-</p>
-</div>
+```
 
-      </div><ul class="tags"><li class="header">Tags</li><li><a href="/tags/cgi" rel="tag">cgi</a> </li><li><a href="/tags/firewall" rel="tag">firewall</a> </li><li><a href="/tags/network" rel="tag">network</a> </li><li><a href="../packages.html" rel="tag">packages</a> </li><li><a href="/tags/routing" rel="tag">routing</a> </li><li><a href="/tags/security" rel="tag">security</a> </li></ul>
+GUT GEMEINTE RATSCHLÄGE:
+------------------------
 
-    <div id="attachments">
-        <h3 class="foldable">Anhänge <span class="trac-count">(5)</span></h3>
-        <div>
-          <ul>
-              <li>
-    <a href="/attachment/wiki/packages/nhipt/nhipt.cgi(0.8.2).tar.gz" title="Anhang ansehen">nhipt.cgi(0.8.2).tar.gz</a><a href="/raw-attachment/wiki/packages/nhipt/nhipt.cgi(0.8.2).tar.gz" class="trac-rawlink" title="Download">​</a>
-       (<span title="14000 Byte">13.7 KB</span>) -
-      hinzugefügt von <em>cando</em> <a class="timeline" href="/timeline?from=2009-11-19T10%3A27%3A09Z&amp;precision=second" title="Siehe Journal am 19.11.2009 10:27:09">vor 8 Jahren</a>.
-                <q>Stand-Alone Web GUI</q>
-              </li>
-              <li>
-    <a href="/attachment/wiki/packages/nhipt/ipt(0.8.2).tar.gz" title="Anhang ansehen">ipt(0.8.2).tar.gz</a><a href="/raw-attachment/wiki/packages/nhipt/ipt(0.8.2).tar.gz" class="trac-rawlink" title="Download">​</a>
-       (<span title="17544 Byte">17.1 KB</span>) -
-      hinzugefügt von <em>cando</em> <a class="timeline" href="/timeline?from=2009-11-19T10%3A28%3A16Z&amp;precision=second" title="Siehe Journal am 19.11.2009 10:28:16">vor 8 Jahren</a>.
-                <q>Dynamic freetz integration Package (for external USB device)</q>
-              </li>
-              <li>
-    <a href="/attachment/wiki/packages/nhipt/Iptables_Tutorial_1.2.pdf" title="Anhang ansehen">Iptables_Tutorial_1.2.pdf</a><a href="/raw-attachment/wiki/packages/nhipt/Iptables_Tutorial_1.2.pdf" class="trac-rawlink" title="Download">​</a>
-       (<span title="1995453 Byte">1.9 MB</span>) -
-      hinzugefügt von <em>cando</em> <a class="timeline" href="/timeline?from=2009-11-19T10%3A34%3A57Z&amp;precision=second" title="Siehe Journal am 19.11.2009 10:34:57">vor 8 Jahren</a>.
-                <q>extended iptables tutorial v1.2.2  Copyright © 2001-2006 Oskar Andreasson</q>
-              </li>
-              <li>
-    <a href="/attachment/wiki/packages/nhipt/nhipt.patch(0.8.2).tar.gz" title="Anhang ansehen">nhipt.patch(0.8.2).tar.gz</a><a href="/raw-attachment/wiki/packages/nhipt/nhipt.patch(0.8.2).tar.gz" class="trac-rawlink" title="Download">​</a>
-       (<span title="27763 Byte">27.1 KB</span>) -
-      hinzugefügt von <em>cando</em> <a class="timeline" href="/timeline?from=2009-11-19T11%3A48%3A04Z&amp;precision=second" title="Siehe Journal am 19.11.2009 11:48:04">vor 8 Jahren</a>.
-                <q>Patch zur manuellen Integration in die Firmware (ROM)</q>
-              </li>
-              <li>
-    <a href="/attachment/wiki/packages/nhipt/nhipt.patch.tar.gz" title="Anhang ansehen">nhipt.patch.tar.gz</a><a href="/raw-attachment/wiki/packages/nhipt/nhipt.patch.tar.gz" class="trac-rawlink" title="Download">​</a>
-       (<span title="3523 Byte">3.4 KB</span>) -
-      hinzugefügt von <em>cando</em> <a class="timeline" href="/timeline?from=2010-08-19T09%3A52%3A31Z&amp;precision=second" title="Siehe Journal am 19.08.2010 09:52:31">vor 8 Jahren</a>.
-                <q>Patch nhipt für andere Boxen (7390, 71xx), funktioniert auch mit der 7270</q>
-              </li>
-          </ul>
-          <p>
-            Alle Anhänge herunterladen als: <a rel="nofollow" href="/zip-attachment/wiki/packages/nhipt/">.zip</a>
-          </p>
-        </div>
-    </div>
+> Noch eins zum Thema Aussperren, für alle, die noch nie eine Firewall
+> installiert haben.
 
-    </div>
-    <script type="text/javascript">
-        jQuery.loadStyleSheet("/chrome/screenshots/css/screenshots.css", "text/css");
-    </script>
-    </div>
-  </body>
-</html>
+> Firewalls schützen Systeme vor unbefugtem Zugriff auf der Basis von
+> Regeln, diese werden stur und kosequent ausgeführt. Das kann dazu
+> führen, dass jemand, der sich vorher nicht ausreichend Gedanken über
+> seine Regeln gemacht hat, sich vom System selbst aussperrt. Das
+> passiert Laien oft, und auch Profis sind nicht immer davor sicher.
+
+> Damit die Konsequenzen nicht zu drastisch sind, hier ein paar
+> Empfehlungen / Regeln für den Anfänger:
+
+-   Schauen ist OK, manuelles Ändern an Scripten ist tabu , wenn man
+    nicht vorzeitig graue Haare bekommen will.
+-   Regelwerke erst dauerhaft speichern **[Persist rules]**, wenn
+    alles funktioniert, wie es soll. Ein Reboot lädt das letzte
+    gespeicherte Regelwerk, und alles ist wieder OK, ältere Versionen
+    werden als Backup mit Zeitstempel im **[SET BACKUP DIRECTORY]**
+    Verzeichnis abgelegt.
+-   Am Anfang lieber den Stick zum Speichern verwenden. Im Notfall kann
+    man den vor dem Booten abziehen und die Box startet ohne iptables
+    Firewall.
+-   Das UI hat eine Anfänger **[safe]** und eine Profi-Betriebsart
+    **[advanced]**, Umschaltbar über **[Admin Level]**. Im Safe -
+    Modus wehrt sich die Firewall sehr erfolgreich gegen alle
+    Aussperrversuche des Administrators. Er bewirkt, dass in allen für
+    den Adminzugang wichtigen Chains eine ACCEPT Regel für diese
+    spezielle IP Adresse eingetragen wird. Nach Umschalten in
+    **[advanced]** kann man wie gewohnt alle Regeln editieren oder
+    Löschen.
+-   Ein **[Boot-Delay]** , (wählbar von **[Aus]** bis **[10
+    Min]**) kann auch gegen Aussperren eingestellt werden. Während
+    dieser Zeit ist nach einem Kaltstart der Box ungehinderter Zugriff
+    möglich. Zur Sicherheit kann der Internetzugang während dieser Zeit
+    automatisch verhindert werden **[stop dsld on delay]**
+-   Ausgesperrt aus der Admin Oberfläche durch Eingabe einer falschen IP
+    Adresse: Datei: **/var/tmp/nhipt.par** enthällt die falsche Eingabe.
+    Zeile ADMINIP=... löschen und GUI neu aufrufen. *Tipp: Man kann auch
+    ein Subnetz für die AdminIP eintragen - z.B. 192.168.0.10/30 - das
+    erlaubt den Zugriff von den Adressen 192.168.0.8..192.168.0.11
+    [Online IP
+    Rechner](http://www.csgnetwork.com/ipinfocalc.html)*.
+-   Wenn man das alles ignoriert und wider besseren Wissens sich
+    trotzdem aussperrt, hilft nur noch ein erneutes Flashen der
+    Firmware.
+
+DOWNLOAD
+--------
+
+> Die aktuelle Version, sowie Anmerkungen, Tipps & Tricks und
+> weiterführende Links finden sich hier: [IPPF
+> Forum](http://www.ip-phone-forum.de/showpost.php?p=1420252&postcount=1)
+
+BEKANNTE PROBLEME
+-----------------
+
+> *Bei der 7390 wird nur eine leere Seite angezeigt, Regeln lassen sich
+> nicht anzeigen / hinzufügen.*
+
+> Der angefügte Patch beseitigt dieses Problem und ähnliche bei anderen
+> Boxen. Außerdem erweitert der Patch die Möglichkeiten des UI, auch Log
+> Informationen zur Firewall und zum System aus dem Syslog der Box
+> auszugeben, wenn in einer Datei gelogt wird (ausgewertet werden die
+> letzten 50 Einträge aus bis zu 4 Logfiles *filename* , *filename* .0,
+> *filename* .1, *filename* .2, der Pfad und Dateiname werden
+> automatisch anhand der Parameter des laufenden syslogd Prozesses
+> ermittelt).
+
+SCREENSHOTS
+-----------
+
+[![nhipt Webinterface](../../docs/screenshots/179_md.jpg)](../../docs/screenshots/179.jpg)
+

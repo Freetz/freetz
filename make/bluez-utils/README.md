@@ -1,130 +1,86 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+BlueZ 4.x
+=========
 
-  <head>
-    <title>
-      packages/bluez – Freetz
-    </title>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!--[if IE]><script type="text/javascript">
-      if (/^#__msie303:/.test(window.location.hash))
-        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
-    </script><![endif]-->
-        <link rel="search" href="/search" />
-        <link rel="help" href="../TracGuide.html" />
-        <link rel="alternate" href="bluez%3Fformat=txt" type="text/x-trac-wiki" title="Reiner Text" />
-        <link rel="up" href="../packages.html" title="Übergeordnete Wiki-Seite anzeigen" />
-        <link rel="start" href="/wiki" />
-        <link rel="stylesheet" href="../../chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="../../chrome/common/css/wiki.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/phrases.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-300.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikiextras/css/boxes-narrow-toc.css" type="text/css" /><link rel="stylesheet" href="../../wikicss.css" type="text/css" /><link rel="stylesheet" href="../../chrome/tags/css/tractags.css" type="text/css" /><link rel="stylesheet" href="../../chrome/wikinegotiator/css/langmenu-ctxnav.css" type="text/css" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-      <link type="application/opensearchdescription+xml" rel="search" href="/search/opensearch" title="Freetz durchsuchen" />
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/jquery.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/babel.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/messages/de.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/trac.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/search.js"></script>
-      <script type="text/javascript" charset="utf-8" src="../../chrome/common/js/folding.js"></script>
-    <script type="text/javascript">
-      jQuery(document).ready(function($) {
-        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
-        $("#content").find(".wikianchor").each(function() {
-          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
-        });
-        $(".foldable").enableFolding(true, true);
-      });
-    </script>
-  </head>
-  <body>
-    <div id="banner">
-      <div id="header">
-        <a id="logo" href="/wiki"><img src="../../chrome/common/freetz_motd.png" alt="Freetz" /></a>
-      </div>
-      <form id="search" action="https://www.google.com/search" method="get" onsubmit="; this.elements.namedItem('q').value = this.elements.namedItem('oq').value + ' site:freetz.github.io'">
-        <div>
-          <label for="proj-search">Suche:</label>
-          <input type="text" id="proj-search" name="oq" size="18" value="" />
-          <input type="hidden" name="q" value="" />
-          <input type="submit" value="Suche" />
-        </div>
-      </form>
-      <div id="metanav" class="nav">
-    <ul>
-      <li class="first"><li class="last"><a href="../Impressum.html">Impressum</a></li>
-    </ul>
-  </div>
-    </div>
-    <div id="mainnav" class="nav">
-    <ul>
-      <li class="first active"><a href="/wiki">Wiki</a></li><li><a href="https://github.com/Freetz-NG/freetz-ng/commits/master">Quellen durchsehen</a></li><li class="last"><a href="/screenshots">Bildschirmfotos</a></li>
-    </ul>
-  </div>
-    <div id="langmenu"><ul><li class="first"><span title="Select a language of wiki content">Language:</span></li><li class=" active"><a class="" href="bluez.html" title="displaying language (default)">German</a></li><li class=" last"><a class=" notexist" href="/wiki/packages/bluez.en" title="(not available)">English</a></li></ul></div><p /><div id="main">
-      <div id="pagepath" class="noprint">
-  <a class="pathentry first" title="Zeige WikiStart an" href="/wiki">Wiki:</a><a class="pathentry" href="../packages.html" title="Zeige packages an">packages</a><span class="pathentry sep">/</span><a class="pathentry" href="bluez.html" title="Zeige packages/bluez an">bluez</a>
-</div>
-    <div id="content" class="wiki">
-      <div class="wikipage searchable">
-
-          <div id="wikipage" class="trac-content"><h1 id="BlueZ4.x">BlueZ 4.x</h1>
-<p>
 Official Linux Bluetooth protocol stack
-</p>
-<h2 id="General">General</h2>
-<p>
-It was quite an adventure to get this working, without any BlueZ documentation, but here we go <img src="../../chrome/wikiextras-icons-16/smiley.png" style="vertical-align: text-bottom" alt=":-)" />
-</p>
-<h2 id="PAN">PAN</h2>
-<p>
+
+General
+-------
+
+It was quite an adventure to get this working, without any BlueZ
+documentation, but here we go
+:-)
+
+PAN
+---
+
 Freetz PAN Server:
-</p>
-<ul><li>Use provided default config
-</li><li>Start/enable DBUS &amp; BlueZ
-</li></ul><p>
+
+-   Use provided default config
+-   Start/enable DBUS & BlueZ
+
 (Android) PANU Client:
-</p>
-<ul><li>Pair your device with <em>fritz.fonwlan.box-0</em>
-</li><li>Make your device discoverable
-</li></ul><p>
+
+-   Pair your device with *fritz.fonwlan.box-0*
+-   Make your device discoverable
+
 Freetz PAN Server:
-</p>
-<ul><li>Find your device
-<pre class="wiki">hcitool scan
-</pre></li><li>Trust your device:
-<pre class="wiki">dbus-send --system --type=method_call --dest=org.bluez --print-reply /org/bluez/$(pidof bluetoothd)/hci0/dev_YY_YY_YY_YY_YY_YY org.bluez.Device.SetProperty string:Trusted variant:boolean:true
-</pre></li><li>Restart BlueZ to persist data
-</li></ul><p>
+
+-   Find your device
+
+    ``` 
+    hcitool scan
+    ```
+
+-   Trust your device:
+
+    ``` 
+    dbus-send --system --type=method_call --dest=org.bluez --print-reply /org/bluez/$(pidof bluetoothd)/hci0/dev_YY_YY_YY_YY_YY_YY org.bluez.Device.SetProperty string:Trusted variant:boolean:true
+    ```
+
+-   Restart BlueZ to persist data
+
 Android PANU Client:
-</p>
-<ul><li>Make the connection (Android: root required!):
-<pre class="wiki">hcitool scan
-pand --connect xx:xx:xx:xx:xx:xx
-sleep 7
-netcfg bnep0 dhcp
-setprop net.dns1 8.8.8.8
-ifconfig rmnet0 up # trick to make apps think there is an internet connection
-</pre></li></ul><p>
-Ignore any message from the Android browser that there is no connection <img src="../../chrome/wikiextras-icons-16/smiley.png" style="vertical-align: text-bottom" alt=":-)" />
-</p>
-<p>
-Automation: use <a class="ext-link" href="https://market.android.com/details?id=os.tools.scriptmanager"><span class="icon">​</span>Script Manager</a> or use <a class="ext-link" href="https://market.android.com/details?id=earlmagnus.nctether"><span class="icon">​</span>NC Bluetooth Tether</a>.
-</p>
-<p>
+
+-   Make the connection (Android: root required!):
+
+    ``` 
+    hcitool scan
+    pand --connect xx:xx:xx:xx:xx:xx
+    sleep 7
+    netcfg bnep0 dhcp
+    setprop net.dns1 8.8.8.8
+    ifconfig rmnet0 up # trick to make apps think there is an internet connection
+    ```
+
+Ignore any message from the Android browser that there is no connection
+:-)
+
+Automation: use [Script
+Manager](https://market.android.com/details?id=os.tools.scriptmanager) or
+use [NC Bluetooth
+Tether](https://market.android.com/details?id=earlmagnus.nctether).
+
 Ubuntu client:
-</p>
-<ul><li>Make the connection:
-<pre class="wiki">hcitool scan
-sudo pand --connect xx:xx:xx:xx:xx:xx
-sudo ifconfig bnep0 up
-sudo dhclient bnep0
-</pre></li></ul><p>
-<em>Tested with a Sitecom CN-517 USB dongle (pretty generic) through a USB-hub on a 7270v2 international with the (patched) btusb module and an Android device with a <a class="ext-link" href="http://www.cyanogenmod.com/"><span class="icon">​</span>CyanogenMod 7</a> ROM and with a Ubuntu Lucid Lynx client.</em>
-</p>
-<p>
+
+-   Make the connection:
+
+    ``` 
+    hcitool scan
+    sudo pand --connect xx:xx:xx:xx:xx:xx
+    sudo ifconfig bnep0 up
+    sudo dhclient bnep0
+    ```
+
+*Tested with a Sitecom CN-517 USB dongle (pretty generic) through a
+USB-hub on a 7270v2 international with the (patched) btusb module and an
+Android device with a [CyanogenMod
+7](http://www.cyanogenmod.com/) ROM and with a Ubuntu Lucid
+Lynx client.*
+
 lsusb:
-</p>
-<pre class="wiki">VID=0a12
+
+```
+VID=0a12
 PID=0001
 CLS=224
 SCL=01
@@ -136,28 +92,46 @@ ICLS1=224
 ISCL1=01
 ICLS2=224
 ISCL2=01
-</pre><p>
-<em>Not tested with hci_usb (earlier kernels; will probably work) and bfusb (AVM - BlueFRITZ! USB).</em>
-</p>
-<h2 id="DUN">DUN</h2>
-<ul><li>Select 'Replace kernel'
-</li><li>Select package pppd (Standard packages, Point-to-Point)
-</li><li>I have no idea how DUN works, so maybe someone else can write the rest of the guide <img src="../../chrome/wikiextras-icons-16/smiley.png" style="vertical-align: text-bottom" alt=":-)" />
-</li></ul><h2 id="DBUS">DBUS</h2>
-<p>
+```
+
+*Not tested with hci_usb (earlier kernels; will probably work) and
+bfusb (AVM - BlueFRITZ! USB).*
+
+DUN
+---
+
+-   Select 'Replace kernel'
+-   Select package pppd (Standard packages, Point-to-Point)
+-   I have no idea how DUN works, so maybe someone else can write the
+    rest of the guide
+    :-)
+
+DBUS
+----
+
 See all interface methods:
-</p>
-<pre class="wiki">dbus-send --system --dest=org.bluez --print-reply /org/bluez/$(pidof bluetoothd)/hci0 org.freedesktop.DBus.Introspectable.Introspect
-</pre><p>
+
+```
+dbus-send --system --dest=org.bluez --print-reply /org/bluez/$(pidof bluetoothd)/hci0 org.freedesktop.DBus.Introspectable.Introspect
+```
+
 See the properties of your adapter:
-</p>
-<pre class="wiki">dbus-send --system --type=method_call --dest=org.bluez --print-reply /org/bluez/$(pidof bluetoothd)/hci0 org.bluez.Adapter.GetProperties
-</pre><p>
+
+```
+dbus-send --system --type=method_call --dest=org.bluez --print-reply /org/bluez/$(pidof bluetoothd)/hci0 org.bluez.Adapter.GetProperties
+```
+
 See the properties of your device:
-</p>
-<pre class="wiki">dbus-send --system --type=method_call --dest=org.bluez --print-reply /org/bluez/$(pidof bluetoothd)/hci0/dev_YY_YY_YY_YY_YY_YY org.bluez.Device.GetProperties
-</pre><h2 id="Sizes">Sizes</h2>
-<pre class="wiki">  libbluetooth .................   55.07 Kb
+
+```
+dbus-send --system --type=method_call --dest=org.bluez --print-reply /org/bluez/$(pidof bluetoothd)/hci0/dev_YY_YY_YY_YY_YY_YY org.bluez.Device.GetProperties
+```
+
+Sizes
+-----
+
+```
+  libbluetooth .................   55.07 Kb
   libdbus ......................   86.59 Kb
   libexpat .....................   43.79 Kb
   libglib_2 ....................  237.86 Kb
@@ -172,14 +146,11 @@ See the properties of your device:
 
   dbus-1.5.8 ...................  143.21 Kb
   bluez-4.101 ..................  285.39 Kb
-</pre><h2 id="Links">Links</h2>
-<ul><li><a class="ext-link" href="http://www.bluez.org/"><span class="icon">​</span>BlueZ</a>
-</li><li><a href="/attachment/ticket/602/">Bluez 4.98 patch</a>
-</li></ul></div>
+```
 
-      </div>
+Links
+-----
 
-    </div>
-    </div>
-  </body>
-</html>
+-   [BlueZ](http://www.bluez.org/)
+-   Bluez 4.98 patch: [#602](https://trac.boxmatrix.info/freetz-ng/ticket/602)
+
