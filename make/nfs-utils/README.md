@@ -1,5 +1,4 @@
-NFS-Utils / NFS-Server
-======================
+# nfs-utils 1.3.4 (binary only)
 
 Die NFS-Utils erweitern Freetz um einen NFS Server inklusive
 Administrationswebinterface (siehe [nfsd-cgi](../nfsd/README.md)) für die

@@ -1,5 +1,4 @@
-HPLIP
-=====
+# HPLIP 3.14.6 (binary only)
 
 [HP Linux Imaging and
 Printing](http://hplipopensource.com/) (HPLIP) ermöglicht das

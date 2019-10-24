@@ -1,5 +1,4 @@
-vim
-===
+# Vim 8.1.1365 (binary only)
 
 **[vim](http://www.vim.org/)** (**vi i**mproved)
 ist eine Variante des bekannten Unix-Editors *vi*. Wie sein "Parent",

@@ -1,5 +1,4 @@
-socat
-=====
+# socat 1.7.3.3 (binary only)
 
 **[socat](http://www.dest-unreach.org/socat/)** ist
 eine Alternative zum [netcat Paket](../netcat/README.md), welches mit

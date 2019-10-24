@@ -1,5 +1,4 @@
-MiniDLNA
-========
+# minidlna 1.2.1
 
 [![minidlna](../../docs/screenshots/243_md.jpg)](../../docs/screenshots/243.jpg)
 

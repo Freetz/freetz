@@ -1,5 +1,4 @@
-USB-Root
-========
+# USB root 0.2
 
 Mit **USB-Root** lässt sich das Root-Verzeichnis (`/`) auf ein an die
 Fritz!Box angeschlossenes USB-Gerät auslagern - was zusätzlichen Platz

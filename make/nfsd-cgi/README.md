@@ -1,5 +1,4 @@
-NFSD_CGI
-=========
+# NFSD CGI 0.1
 
 NFSD_CGI is the web-interface for the NFSD (Server) on Freetz.
 

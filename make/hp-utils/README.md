@@ -1,5 +1,4 @@
-hp-utils
-========
+# hp-utils 0.3.2
 
 [hp-utils](http://www.michaeldenk.de/projects/hp-utils/)
 ist eine Portierung einiger Tools von

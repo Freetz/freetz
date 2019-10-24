@@ -1,5 +1,4 @@
-checkmaild 0.4.7
-================
+# Checkmaild 0.4.7
 
 checkmaild ermöglicht es bis zu 3 Email-Konten (POP oder IMAP) in
 festgelegten Intervallen auf neue Mails zu überprüfen. Bei Erhalt einer

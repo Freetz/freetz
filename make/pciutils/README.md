@@ -1,5 +1,4 @@
-pciutils
-========
+# pciutils 3.1.7 (binary only)
 
 Die **PCI Utilities** sind eine Tool-Sammlung zur Untersuchung und
 Manipulation von

@@ -1,5 +1,4 @@
-Tinc
-====
+# Tinc
 
 **[tinc](http://www.tinc-vpn.org/)** ist ein
 Virtual Privat Network

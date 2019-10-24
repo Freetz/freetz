@@ -1,5 +1,4 @@
-irssi
-=====
+# Irssi 0.8.15
 
 **[irssi](http://www.irssi.org/)** ist ein
 Konsolen-[IRC-Client](http://de.wikipedia.org/wiki/IRC-Client)

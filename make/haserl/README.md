@@ -1,5 +1,4 @@
-Haserl
-======
+# haserl 0.9.35 (binary only)
 
 "*Haserl is a small program that uses shell or Lua script to create cgi
 web scripts. It is intended for environments where PHP or ruby are too

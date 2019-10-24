@@ -1,5 +1,4 @@
-Lynx
-====
+# Lynx 2.8.8 web browser
 
 **[Lynx](http://lynx.isc.org/)** ist ein
 Web-Browser, der ohne grafische Oberfläche daherkommt - also von der

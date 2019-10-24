@@ -1,5 +1,4 @@
-Apache Webserver mit PHP CGI
-============================
+# Apache HTTP Server 2.4.41 (binary only)
 
 *Mit diesem Paket ist es möglich, den Apache Webserver entweder allein
 oder mit zusätzlichem PHP CGI Binary zu erstellen.*

@@ -1,5 +1,4 @@
-SANE
-====
+# SANE 1.0.27
 
 Beschreibung
 ------------

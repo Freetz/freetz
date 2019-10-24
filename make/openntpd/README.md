@@ -1,5 +1,4 @@
-OpenNTPD
-========
+# Openntpd 3.9p1
 
 *"OpenNTPD ist eine FREIE und einfach zu benutzende Implementierung des
 Network Time Protocol. OpenNTPD kann die lokale Uhr mit NTP-Servern

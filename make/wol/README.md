@@ -1,5 +1,4 @@
-Wake on LAN (WoL)
-=================
+# WOL 0.7.1 (binary only)
 
 Es gibt zwei Programme, die WoL unterstützen:
 1. *ether-wake*, das in der busybox integriert ist und

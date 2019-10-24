@@ -1,5 +1,4 @@
-inetd
-=====
+# Inetd
 
 [![Inetd Webinterface](../../docs/screenshots/206_md.png)](../../docs/screenshots/206.png)
 

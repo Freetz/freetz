@@ -1,5 +1,4 @@
-ObexFTP
-=======
+# ObexFTP 0.23 (binary only)
 
 **ObexFTP** ist ein Protokoll zum Austausch von Dateien mit Obex-fähigen
 Geräten, wobei es sich bei letzteren meist um Mobiltelefone handelt.

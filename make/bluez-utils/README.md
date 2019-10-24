@@ -1,5 +1,4 @@
-BlueZ 4.x
-=========
+# bluez-utils 2.25 (binary only, incl. Pin-Change and NAP)
 
 Official Linux Bluetooth protocol stack
 

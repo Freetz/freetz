@@ -1,5 +1,4 @@
-ncftp
-=====
+# ncftp 3.2.6 (binaries only)
 
 *"NcFTP Client (also known as just NcFTP) is a set of FREE application
 programs implementing the File Transfer Protocol (FTP)."*

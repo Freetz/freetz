@@ -1,5 +1,4 @@
-madplay
-=======
+# madplay 0.15.2b (binary only)
 
 **[MAD](http://www.underbit.com/products/mad/)**
 ist ein qualitativ hochwertiger

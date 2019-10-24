@@ -1,5 +1,4 @@
-WebDAV mit davfs2
-=================
+# davfs 1.5.2
 
 [![WebDAV: Konfiguration](../../docs/screenshots/62_md.jpg)](../../docs/screenshots/62.jpg)
 

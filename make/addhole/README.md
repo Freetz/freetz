@@ -1,4 +1,5 @@
-# Addhole
+# Addhole (for dnsmasq)
+
 Addhole ist eine Erweiterung für Dnsmasq.<br>
 <br>
 <a href='../../docs/screenshots/000-PKG_addhole.png'><img src='../../docs/screenshots/999-PKG_addhole.png'></a>

@@ -1,5 +1,4 @@
-vpnc
-====
+# Vpnc 0.5.3
 
 Der **[VPNC-Client](http://www.vpnc.org/)** ist
 eine quelloffene Alternative zum Cisco-VPN-Client und dient zum

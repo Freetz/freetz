@@ -1,5 +1,4 @@
-trickle
-=======
+# trickle 1.07 (binary only)
 
 **trickle** (Tröpfeln) ist ein leichtgewichtiger bandwidth shaper, der
 mit trickled oder im stand alone mode verwendet werden kann. Mit trickle

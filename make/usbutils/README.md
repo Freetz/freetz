@@ -1,5 +1,4 @@
-usbutils
-========
+# usbutils 007 (binary only)
 
 Das Paket **usbutils** enthält, was man zur Anzeige von USB
 Geräteinformationen benötigt: `lsusb-freetz` listet diese Informationen

@@ -1,5 +1,4 @@
-polipo
-======
+# Polipo 1.1.1
 
 Using with Tor
 --------------

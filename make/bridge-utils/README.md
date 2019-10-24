@@ -1,5 +1,4 @@
-bridge-utils
-============
+# bridge-utils 1.4 (binary only)
 
 Dieses Paket beinhaltet Utilities für die Konfiguration des
 [IEEE

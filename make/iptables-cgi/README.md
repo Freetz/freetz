@@ -1,5 +1,4 @@
-iptables-cgi
-============
+# Iptables-CGI 1.1
 
 **iptables-CGI** ist ein Web-Frontend für
 [iptables](http://de.wikipedia.org/wiki/Iptables).

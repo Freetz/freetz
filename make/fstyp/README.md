@@ -1,5 +1,4 @@
-fstyp
-=====
+# fstyp 0.1 (binary only)
 
 **fstyp** erlaubt es einem Anwender, den Dateisystem-Typ eines
 eingebundenen oder auch nicht eingebundenen Dateisystems zu ermitteln.

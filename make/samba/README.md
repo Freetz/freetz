@@ -1,5 +1,4 @@
-Samba
-=====
+# Samba suite
 
 [![Samba Webinterface](../../docs/screenshots/204_md.png)](../../docs/screenshots/204.png)
 

@@ -1,5 +1,4 @@
-ldd
-===
+# ldd
 
 **ldd** steht für **L**ist **D**ynamic **D**ependencies. Es handelt sich
 hier um ein kleines Konsolen-Tool, mit dem sich herausfinden lässt, ob

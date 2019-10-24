@@ -1,5 +1,4 @@
-Bird
-====
+# Bird 1.6.4
 
 **Bird** ist die OpenSource Implementierung eines TCP/IP Routing Daemons
 für Unix/Linux Systeme. Es unterstützt sowohl IPv4 als auch IPv6,

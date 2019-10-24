@@ -1,5 +1,4 @@
-authorized_keys
-================
+# authorized_keys: Frontend for SSH keys
 
 Mit dem authorized_keys Package können diese für SSH benötigte Dateien
 bearbeitet werden. Es ist im Webinterface unter "SSH" zu finden

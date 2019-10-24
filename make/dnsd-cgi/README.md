@@ -1,5 +1,4 @@
-dnsd
-====
+# dnsd-cgi
 
 Schlanker DNS-Server für statische Namensauflösung (BusyBox Applet)
 

@@ -1,5 +1,4 @@
-Nmap
-====
+# Nmap (binary only)
 
 "*Nmap ("Network Mapper") is a free and open source (license) utility
 for network exploration or security auditing. Many systems and network

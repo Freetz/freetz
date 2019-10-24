@@ -1,5 +1,4 @@
-phpxmail
-========
+# PHPXmail 1.5
 
 The mail to/from my hosting provider got interrupted now and then and
 the support wasn't that good. Setting up a mail server using Freetz and

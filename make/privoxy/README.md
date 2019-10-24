@@ -1,5 +1,4 @@
-Privoxy
-=======
+# Privoxy 3.0.28
 
 [Privoxy](http://www.privoxy.org) ist ein HTTP
 Proxy mit umfangreichen Filtermöglichkeiten zum **Schutz der

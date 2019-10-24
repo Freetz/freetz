@@ -1,5 +1,4 @@
-ppp-cgi
-=======
+# Point-to-Point
 
 [![ppp-cgi](../../docs/screenshots/121_md.jpg)](../../docs/screenshots/121.jpg)
 

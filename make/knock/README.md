@@ -1,5 +1,4 @@
-knockd
-======
+# Knockd 0.7
 
 *"Wer klopfet, dem wird aufgetan"* - so könnte man dieses Paket
 überschreiben. *knockd* bietet eine gute Möglichkeit, Dienste von Remote

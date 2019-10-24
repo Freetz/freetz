@@ -1,5 +1,4 @@
-MediaTomb
-=========
+# mediatomb 0.12.1 (binary only)
 
 **MediaTomb** ist ein OpenSource (GPL) UPnP MediaServer mit einer
 schönen Web-Oberfläche, der das Streamen digitaler Medien im Heimnetz

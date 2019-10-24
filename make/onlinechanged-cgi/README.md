@@ -1,5 +1,4 @@
 # Onlinechanged-CGI
-Ermöglicht das Ausführen von Skripten bei einer Änderung des Online-Statuses der Box.<br>
 <br>
 
 AVM-Firmwares beinhalten einen Mechanismus, welcher dafür sorgt, daß

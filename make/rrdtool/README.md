@@ -1,5 +1,4 @@
-RRDTool
-=======
+# RRDtool 1.2.30 (binary only)
 
 Einleitung
 ----------

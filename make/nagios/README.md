@@ -1,5 +1,4 @@
-Nagios
-======
+# nagios 2.11 (binary only)
 
 Die Software **[Nagios](http://www.nagios.org/)**
 (Network + Hagios, früher NetSaint) dient der Überwachung komplexer

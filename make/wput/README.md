@@ -1,5 +1,4 @@
-wput
-====
+# wput 0.6.1 (binary only)
 
 **wput** ist ein command-line ftp client, der Dateien oder auch ganze
 Verzeichnisse auf einen remote Server hochlädt. Dabei unterstützt er

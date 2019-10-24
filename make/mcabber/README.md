@@ -1,5 +1,4 @@
-mcabber
-=======
+# mcabber 0.9.9
 
 **[mcabber](http://mcabber.com/)** ist ein
 textbasierter

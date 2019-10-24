@@ -1,5 +1,4 @@
-br2684ctl
-=========
+# br2684ctl (binary only)
 
 This package allows you to connect to your ISP via additional virtual
 circuits (ATM PVC's).

@@ -1,5 +1,4 @@
-Bftpd
-=====
+# Bftpd 3.3
 
 > "The bftpd program is a small, easy-to-configure FTP server. It
 > strives to be fast, secure and quick to install/configure."

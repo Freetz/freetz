@@ -1,5 +1,4 @@
-(Freetz-) MOD
-=============
+# Freetz(-MOD)
 
 "mod" ist das sogenannte Base-Package. Es wird immer automatisch
 installiert.

@@ -1,5 +1,4 @@
-transmission
-============
+# Transmission 2.94 (binary only)
 
 Blocklist
 ---------

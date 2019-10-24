@@ -1,5 +1,4 @@
-E-MailRelay
-===========
+# E-MailRelay 1.9
 
 [![E-MailRelay](../../docs/screenshots/274_md.jpg)](../../docs/screenshots/274.jpg)
 

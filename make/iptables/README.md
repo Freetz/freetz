@@ -1,5 +1,4 @@
-iptables
-========
+# Iptables 1.4.11.1 (binary only)
 
 Current state (largely broken)
 ------------------------------

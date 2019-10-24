@@ -1,5 +1,4 @@
-dtach
-=====
+# dtach 0.8 (binary only)
 
 *"dtach is a free (GPL'ed) program for POSIX-compliant OSs intended to
 provide similar functionality to that of the GNU Project's Screen, but

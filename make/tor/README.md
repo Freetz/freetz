@@ -1,5 +1,4 @@
-Tor Proxy
-=========
+# Tor 0.4.1.6
 
 Tor ist ein **anonymes Kommunikationssystem** für das Internet, mit dem
 man **verschlüsselt** und **sicher surfen** kann. Die Installation eines

@@ -1,5 +1,4 @@
-Virtual IP
-==========
+# Virtual IP CGI 0.4.2 (deprecated)
 
 [![VirtualIP: Einstellungen](../../docs/screenshots/61_md.png)](../../docs/screenshots/61.png)
 

@@ -1,5 +1,4 @@
-Spindown
-========
+# spindown-cgi 0.2
 
 Mit **Spindown** können kompatible *"mechanische"* Festplatten in den
 Schlafmodus versetzt werden.

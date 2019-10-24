@@ -1,5 +1,4 @@
-igmpproxy
-=========
+# igmpproxy 0.1
 
 **[igmpproxy](http://sourceforge.net/projects/igmpproxy/)**
 ist ein einfacher multicast routing Daemon der für multicast forwarding

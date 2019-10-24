@@ -1,5 +1,4 @@
-sispmctl
-========
+# sispmctl 3.1
 
 **[sispmctl](http://sispmctl.sourceforge.net/)**
 ermöglicht das Schalten von 230V-Steckdosen über den USB-Anschluss der

@@ -1,5 +1,4 @@
-htpdate
-=======
+# htpdate 1.0.4
 
 Dieses Paket kann dazu genutzt werden die Uhrzeit der Fritzbox zu
 synchronisieren. Dazu wird das HTTP Protokoll genutzt und dessen Header

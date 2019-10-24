@@ -1,5 +1,4 @@
-Inadyn
-======
+# Inadyn-mt 02.28.10
 
 Inadyn is an update client that keeps your IP address up to date at your
 DNS name provider.

@@ -1,5 +1,4 @@
-BIP
-===
+# Bip
 
 Der Bip
 [IRC](http://de.wikipedia.org/wiki/Internet_Relay_Chat)

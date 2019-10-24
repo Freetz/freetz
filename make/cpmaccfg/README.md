@@ -1,5 +1,4 @@
-cpmaccfg
-========
+# Cpmaccfg 0.6 (binary only)
 
 Hier handelt es sich um ein Tool zur Konfiguration des eingebauten
 Switches. Eine genauere Anleitung findet sich [in diesem

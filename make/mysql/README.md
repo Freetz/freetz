@@ -1,4 +1,5 @@
-# MySQL
+# MySQL 6.0.11-alpha
+
 MySQL ist ein Datenbankserver
 <br>
 <a href='../../docs/screenshots/000-PKG_mysql.png'><img src='../../docs/screenshots/999-PKG_mysql.png'></a>

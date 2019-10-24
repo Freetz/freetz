@@ -1,5 +1,4 @@
-portmap
-=======
+# portmap 6.0 (binary only)
 
 Der **portmap**-Dienst ist ein dynamischer Port-Zuweisungs-Daemon für
 [RPC](http://de.wikipedia.org/wiki/Remote_Procedure_Call)-Dienste

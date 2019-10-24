@@ -1,5 +1,4 @@
-httptunnel
-==========
+# httptunnel 3.3 (binary only)
 
 **[httptunnel](http://www.nocrew.org/software/httptunnel.html)**
 erstellt eine virtuell, bi-direktionale Datenverbindung, welche über das

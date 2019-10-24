@@ -1,5 +1,4 @@
-gw6
-===
+# Gateway6 client
 
 gw6 ist ein IPv6 Client für
 [gogo6/freenet6](http://gogonet.gogo6.com/page/freenet6-services)

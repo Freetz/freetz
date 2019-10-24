@@ -1,5 +1,4 @@
-Syslog
-======
+# Syslogd CGI 0.2.3
 
 The syslog package enables to log messages local to memory, to a local
 disk (e.g. USB), or remote to another server.

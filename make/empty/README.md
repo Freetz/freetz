@@ -1,5 +1,4 @@
-Empty
-=====
+# Empty 0.6.15b (binary only)
 
 **Empty** stellt eine Schnittstelle bereit, um mit Programmen in
 Pseudo-Terminal Sessions

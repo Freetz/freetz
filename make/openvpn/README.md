@@ -1,5 +1,4 @@
-OpenVPN freetz Package
-======================
+# OpenVPN 2.4.7
 
 OpenVPN ist ein Programm zur Herstellung eines Virtuellen Privaten
 Netzwerkes (VPN) über eine verschlüsselte TLS-Verbindung.

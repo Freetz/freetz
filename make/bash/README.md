@@ -1,5 +1,4 @@
-Bash
-====
+# bash 3.2.57 (binary only)
 
 Bei der **B**ourne **A**gain **Sh**ell handelt es sich um eine
 [Unix

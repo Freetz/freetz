@@ -1,5 +1,4 @@
-pptpd
-=====
+# pptpd 1.4.0
 
 Das Interface an sich ist leicht überschaubar ;-).
 

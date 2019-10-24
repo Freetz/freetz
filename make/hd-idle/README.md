@@ -1,5 +1,4 @@
-hd-idle
-=======
+# hd-idle
 
 **[hd-idle](http://hd-idle.sourceforge.net/)** ist
 ein Tool, um externe Festplatten nach einer festgelegten "Idle-Zeit"

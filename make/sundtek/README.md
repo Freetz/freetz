@@ -1,5 +1,4 @@
-Sundtek DVB Treiber
-===================
+# Sundtek DVB-C/T/T2 driver
 
 [![Sundtek DVB driver](../../docs/screenshots/256_md.jpg)](../../docs/screenshots/256.jpg)
 

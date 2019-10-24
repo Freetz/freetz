@@ -1,5 +1,4 @@
-RADVD
-=====
+# radvd 1.9.3
 
 The router advertisement daemon (RADVD) allows to both Linux and
 Windonws clients to obtain an IPv6 IP address, without any changes on

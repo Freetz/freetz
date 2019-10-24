@@ -1,5 +1,4 @@
-Lua
-===
+# Lua 5.1.5 (binary only)
 
 **[Lua](http://www.lua.org/)** ist eine
 [Skriptsprache](http://de.wikipedia.org/wiki/Skriptsprache)

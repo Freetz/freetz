@@ -1,5 +1,4 @@
-ser2net
-======
+# ser2net 2.7
 
 Homepage:
 [http://ser2net.sourceforge.net/](http://ser2net.sourceforge.net/)

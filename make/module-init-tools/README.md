@@ -1,5 +1,4 @@
-module-init-tools
-=================
+# module-init-tools 3.12 (binary only)
 
 Das Paket **module-init-tools** (oder kurz: *m-i-t*) enthält diverse
 Programme zur Verwaltung von Kernel-Modulen - also quasi die Programme

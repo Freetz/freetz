@@ -1,5 +1,4 @@
-NHIPT - iptables firewall GUI
-=============================
+# NHIPT Iptables CGI 0.8.3a - EXPERIMENTAL
 
 [![nhipt Seite im Freetz Webinterface](../../docs/screenshots/178_md.jpg)](../../docs/screenshots/178.jpg)
 

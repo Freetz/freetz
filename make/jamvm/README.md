@@ -1,5 +1,4 @@
-JamVM
-=====
+# JamVM 1.5.4 (binary only)
 
 **[JamVM](http://jamvm.sourceforge.net/)** ist eine
 neue [Java Virtual

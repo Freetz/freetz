@@ -1,4 +1,5 @@
-# Getdns (Stubby)
+# getdns 1.5.2
+
 Mit Getdns  kann die Namensauflösung via DNS-over-TLS erfolgen.<br>
 <br>
 <a href='../../docs/screenshots/000-PKG_getdns.png'><img src='../../docs/screenshots/999-PKG_getdns.png'></a>

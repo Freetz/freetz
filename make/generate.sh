@@ -22,7 +22,7 @@ dsc="$(sed -rn 's/[ \t]*bool "([^\"]*)"[ \t]*.*/\1/p' "$MYPWD/$pkg/Config.in" 2>
 [ "${dsc//[ _]/-}" != "$(echo "${dsc//[ _]/-}" | sed "s/^${pkg//_/-}//I")" ] && itm="$dsc" || itm="$pkg: $dsc"
 
 [ -e "$MYPWD/../docs/wiki/packages/${pkg%-cgi}.html" ] && lnk="https://freetz-ng.github.io/freetz-ng/wiki/packages/${pkg%-cgi}" || lnk=""
-[ -e "$MYPWD/$pkg/README.md" ] && lnk="$pkg/README.md"
+[ -e "$MYPWD/$pkg/README.md" ] && lnk="$pkg/README.md" && sed "1c# $dsc" -i "$MYPWD/$lnk"
 [ -n "$lnk" ] && itm="[$itm]($lnk)" || itm="<u>$itm</u>"
 
 echo -e "\n  * **$itm<a id='${pkg%-cgi}'></a>**<br>"

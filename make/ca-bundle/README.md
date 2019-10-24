@@ -1,4 +1,5 @@
-# CA-bundle
+# CA-bundle 2019-10-16
+
 Das CA-bundle ist ein Paket von root CA (Certificate Authority) Zertifikaten.
 <br>
  * Damit kann die Glaubwürdigkeiten von HTTPS Zertifikaten gebpüft werden.

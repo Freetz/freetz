@@ -1,5 +1,4 @@
-PPTP Client
-===========
+# pptp 1.7.2
 
 `"PPTP Client is a Linux, FreeBSD, NetBSD and OpenBSD client for the proprietary Microsoft Point-to-Point Tunneling Protocol, PPTP. Allows connection to a PPTP based Virtual Private Network (VPN)."`
 

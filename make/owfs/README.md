@@ -1,5 +1,4 @@
-owfs
-====
+# owfs 2.7p32 (binary only)
 
 Dieses Paket bietet ähnliche Funktionen wie das digitemp Paket, mit dem
 Vorteil, dass eine größere Auswahl an Chips unterstützt wird. Eine

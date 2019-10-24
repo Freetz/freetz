@@ -1,5 +1,4 @@
-xmail
-=====
+# XMail 1.27
 
 Links
 =====

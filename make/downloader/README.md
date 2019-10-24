@@ -1,5 +1,4 @@
-Downloader-CGI
-==============
+# Downloader CGI
 
 Das **Downloader-CGI** ist ausführlich in [diesem
 Forumsthread](http://www.ip-phone-forum.de/showthread.php?t=134934)

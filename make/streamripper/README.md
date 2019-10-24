@@ -1,5 +1,4 @@
-Streamripper
-============
+# Streamripper 1.64.6
 
 **[Streamripper](http://streamripper.sourceforge.net/)**
 ist eine freie, plattformunabhängige Software zum

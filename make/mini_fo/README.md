@@ -1,5 +1,4 @@
-mini_fo
-========
+# mini_fo 0.3
 
 [![Mini_fo Webinterface](../../docs/screenshots/205_md.png)](../../docs/screenshots/205.png)
 

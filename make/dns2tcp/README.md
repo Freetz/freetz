@@ -1,5 +1,4 @@
-Dns2Tcp
-=======
+# dns2tcp 0.5.2
 
 **Dns2tcp** wurde entwickelt, um TCP Connections über DNS Traffic zu
 "tunneln". Die Datenkapselung erfolgt bereits auf dem TCP Level,

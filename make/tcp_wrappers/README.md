@@ -1,5 +1,4 @@
-TCP Wrapper
-===========
+# tcp_wrappers 7.6 (binary only)
 
 TCP-Wrapper stellen eine Sicherheitsmaßnahme für
 Service-[Daemons](http://de.wikipedia.org/wiki/Daemon)

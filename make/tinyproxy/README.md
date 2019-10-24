@@ -1,5 +1,4 @@
-Tinyproxy
-=========
+# Tinyproxy 1.8.4
 
 Das [tinyproxy](http://tinyproxy.sourceforge.net/)
 Paket stellt einen kleinen HTTP Proxy mit Filterfunktionen bereit.

@@ -1,5 +1,4 @@
-Inotify-Tools
-=============
+# inotify-tools 3.14
 
 **Inotify** ist eine Kernel-Schnittstelle zur Überwachung von
 Dateizugriffen, verbunden mit einem Event-Mechanismus, von dem man sich

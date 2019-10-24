@@ -1,5 +1,4 @@
-fortune
-=======
+# fortune 1.2
 
 Das Computerprogramm Fortune ist traditionell auf Computern mit Unix
 oder Linux als Betriebssystem zu finden. Es existieren aber auch für

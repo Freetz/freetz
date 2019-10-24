@@ -1,5 +1,4 @@
-DigiTemp
-========
+# DigiTemp 3.7.2 (binary only)
 
 ### **Was ist digitemp?**
 

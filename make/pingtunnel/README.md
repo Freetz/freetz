@@ -1,5 +1,4 @@
-pingtunnel
-==========
+# Pingtunnel 0.72
 
 **PTunnel** erlaubt das verlässliche Tunneln von TCP Verbindungen über
 [ICMP](http://de.wikipedia.org/wiki/Internet_Control_Message_Protocol)

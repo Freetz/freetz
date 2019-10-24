@@ -1,5 +1,4 @@
-Subversion
-==========
+# Subversion
 
 [Subversion](http://subversion.tigris.org/) (SVN)
 ist eine Freie Software zur Versionsverwaltung von Dateien und

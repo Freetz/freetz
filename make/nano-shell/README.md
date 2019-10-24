@@ -1,5 +1,4 @@
-Nano-Shell
-==========
+# Nano Shell
 
 Die **Nano-Shell** führt beliebige Shell-Komandos via URL aus, d.h. an
 eine Webadresse angehängte Parameter werden von einem kleinen CGI-Skript

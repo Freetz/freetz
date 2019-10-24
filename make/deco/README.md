@@ -1,5 +1,4 @@
-Demos Commander
-===============
+# Deco 1.3.9 (binary only)
 
 DECO ist ein Dateimanager für das Betriebssystem UNIX, das zu den
 Motiven des weit bekannten Norton Commander entwickelt wurde. Der

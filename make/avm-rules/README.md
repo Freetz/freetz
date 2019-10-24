@@ -1,4 +1,5 @@
-# AVM-Rules
+# AVM-rules - EXPERMENTAL
+
 Mit AVM-Rules können (ausschliesslich) Ports der Fritz!Box selbst für Zugriff aus dem Internet freigegeben werden.<br>
 <br>
 <a href='../../docs/screenshots/000-PKG_avm-rules.png'><img src='../../docs/screenshots/999-PKG_avm-rules.png'></a>

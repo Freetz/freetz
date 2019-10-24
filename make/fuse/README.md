@@ -1,5 +1,4 @@
-FUSE
-====
+# FUSE 2.9.7 (binary only)
 
 **[FUSE](http://de.wikipedia.org/wiki/Filesystem_in_Userspace)**
 ([Filesystem](http://de.wikipedia.org/wiki/Dateisystem)

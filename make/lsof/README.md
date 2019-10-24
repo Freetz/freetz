@@ -1,5 +1,4 @@
-lsof
-====
+# lsof 4.89
 
 Mit `lsof` lässt sich feststellen, welche Dateien wo und von wem gerade
 geöffnet sind. Dies kann sehr hilfreich sein, wenn man z.B. ein

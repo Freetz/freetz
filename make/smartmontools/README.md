@@ -1,5 +1,4 @@
-Smartmontools (smartctl)
-========================
+# smartmontools 7.0
 
 Mit den Smartmontools (bzw. mit smartctl) können die
 "Gesundheitswerte" von Festplatten (auch

@@ -1,5 +1,4 @@
-OpenDD
-======
+# OpenDD 0.7.9
 
 [![Konfigurationsseite OpenDD](../../docs/screenshots/177_md.jpg)](../../docs/screenshots/177.jpg)
 

@@ -1,5 +1,4 @@
-halt-on-lan
-=======
+# Halt-On-Lan
 
 Halt-on-Lan ist ein Paket zum Steuern vom Rechner im lokalen Netz von
 der FritzBox heraus. Es basiert auf

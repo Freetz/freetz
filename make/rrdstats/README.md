@@ -1,5 +1,4 @@
-RRDstats
-========
+# RRDstats for RRDtool
 
 [![RRDstats screenshot](../../docs/screenshots/229_md.jpg)](../../docs/screenshots/229.jpg)
 
