@@ -2,7 +2,7 @@
 
 Mit Dehydrated (und LigHTTPd) können Let's Encrypt Zertifikate erstellt und automatisch aktualisiert werden.
 <br>
-<a href='../../docs/screenshots/000-PKG_letsencrypt.png'><img src='../../docs/screenshots/999-PKG_letsencrypt.png'></a>
+<a href='../../README/screenshots/000-PKG_letsencrypt.png'><img src='../../README/screenshots/000-PKG_letsencrypt_md.png'></a>
 <br>
 
 ### Zertifikat erstellen

@@ -1,6 +1,6 @@
 # NHIPT Iptables CGI 0.8.3a - EXPERIMENTAL
 
-[![nhipt Seite im Freetz Webinterface](../../docs/screenshots/178_md.jpg)](../../docs/screenshots/178.jpg)
+[![nhipt Seite im Freetz Webinterface](../../README/screenshots/178_md.jpg)](../../README/screenshots/178.jpg)
 
 MOTIVATION
 ----------
@@ -303,5 +303,5 @@ BEKANNTE PROBLEME
 SCREENSHOTS
 -----------
 
-[![nhipt Webinterface](../../docs/screenshots/179_md.jpg)](../../docs/screenshots/179.jpg)
+[![nhipt Webinterface](../../README/screenshots/179_md.jpg)](../../README/screenshots/179.jpg)
 

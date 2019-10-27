@@ -1,6 +1,6 @@
 # smstools3 3.1.14
 
-[![SMStools3](../../docs/screenshots/251_md.jpg)](../../docs/screenshots/251.jpg)
+[![SMStools3](../../README/screenshots/251_md.jpg)](../../README/screenshots/251.jpg)
 
 Package um SMS mit einem UMTS-Stick zu versenden und zu empfangen.
 

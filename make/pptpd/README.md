@@ -28,7 +28,7 @@ Poptop auf deren
     [chap-secrets](http://poptop.sourceforge.net/dox/chap-secrets.txt)
     -   verwaltet berechtigte Benutzer sowie deren Passwörter
 
-[![pptpd Einstellungen](../../docs/screenshots/38_md.png)](../../docs/screenshots/38.png)
+[![pptpd Einstellungen](../../README/screenshots/38_md.png)](../../README/screenshots/38.png)
 
 Portweiterleitung
 -----------------

@@ -9,7 +9,7 @@
 
 ```
 
-This is a fork of Freetz.
+Freetz-NG is a fork of Freetz.
 All commits not by administrator (svn),
 cuma (trac) or fda77 (git) are merged.
 
@@ -85,6 +85,6 @@ cuma (trac) or fda77 (git) are merged.
     regularly, run ```/mod/etc/init.d/rc.mod motd``` eg by cron.
   * Old packages structure in menuconfig?<br>
     To use old packages structure, run ```make menuconfig-single```.
-  * I am a git lover, how to handle it?<br>
-    Git quick start guide for begitners: https://xkcd.com/1597/
+  * How to handle Git?<br>
+    Quick start guide for begitners: https://xkcd.com/1597/
 

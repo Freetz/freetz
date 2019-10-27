@@ -7,7 +7,7 @@ For the local memory a FIFO buffer is used, with a default size of
 
 ### Setup in Freetz web-interface
 
-[![Howto Syslog Setup](../../docs/screenshots/239_md.jpg)](../../docs/screenshots/239.jpg)
+[![Howto Syslog Setup](../../README/screenshots/239_md.jpg)](../../README/screenshots/239.jpg)
 
 ### Usage of syslog
 

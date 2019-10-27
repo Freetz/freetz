@@ -29,7 +29,7 @@ Enthaltene Programmteile
 WebIF
 -----
 
-[![Subversion](../../docs/screenshots/117_md.png)](../../docs/screenshots/117.png)
+[![Subversion](../../README/screenshots/117_md.png)](../../README/screenshots/117.png)
 
 
 Konfiguration

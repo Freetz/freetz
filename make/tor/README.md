@@ -12,7 +12,7 @@ außerdem eine einfache Clientkonfiguration sowie ein kleines Webfrontend
 zur Konfiguration der wichtigsten Parameter und zur Einrichtung eines
 Tor-Servers.
 
-[![Tor: Einstellungen](../../docs/screenshots/59_md.png)](../../docs/screenshots/59.png)
+[![Tor: Einstellungen](../../README/screenshots/59_md.png)](../../README/screenshots/59.png)
 
 Tor als Proxy benutzen
 ----------------------
@@ -69,7 +69,7 @@ findet außerdem
 [hier](https://torstat.xenobite.eu/) Listen mit
 aktiven Tor Servern und deren Standorten.
 
-[![Tor: Server](../../docs/screenshots/60_md.png)](../../docs/screenshots/60.png)
+[![Tor: Server](../../README/screenshots/60_md.png)](../../README/screenshots/60.png)
 
 Die Entry- und Exit-Nodes müssen hierbei mit deren TOR-Alias angegeben
 werden also z.B. "blutmagie" und "chaoscomputerclub23". Andere
@@ -94,7 +94,7 @@ einrichten](../help/howtos/common/create_swap.html)). Die
 wichtigsten Optionen für den Server-Betrieb sind über das Web-Interface
 konfigurierbar:
 
-[![](../../docs/screenshots/3_md.png)](../../docs/screenshots/3.png)
+[![](../../README/screenshots/3_md.png)](../../README/screenshots/3.png)
 
 Die Optionen entsprechen denjenigen in der Konfigurationsdatei torrc.
 Der Nickname des eigenen Servers ist frei wählbar. Wenn keine IP oder

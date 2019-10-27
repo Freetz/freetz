@@ -1,6 +1,6 @@
 # davfs 1.5.2
 
-[![WebDAV: Konfiguration](../../docs/screenshots/62_md.jpg)](../../docs/screenshots/62.jpg)
+[![WebDAV: Konfiguration](../../README/screenshots/62_md.jpg)](../../README/screenshots/62.jpg)
 
 Paket aus dem Thread: [WebDAV-zu-Mountpoint für die
 Fritz!Box](http://www.ip-phone-forum.de/showthread.php?t=115302)

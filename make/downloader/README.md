@@ -35,9 +35,9 @@ allerdings seit dieser Zeit nicht viel geändert.
 
 **Hauptseite:**
 
-[![Downloader: Hauptseite](../../docs/screenshots/18_md.jpg)](../../docs/screenshots/18.jpg)
+[![Downloader: Hauptseite](../../README/screenshots/18_md.jpg)](../../README/screenshots/18.jpg)
 
 **Downloader-Logs beim Hochfahren der Box:**
 
-[![Downloader: Startlog](../../docs/screenshots/19_md.jpg)](../../docs/screenshots/19.jpg)
+[![Downloader: Startlog](../../README/screenshots/19_md.jpg)](../../README/screenshots/19.jpg)
 

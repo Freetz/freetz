@@ -1,6 +1,6 @@
 # RRDstats for RRDtool
 
-[![RRDstats screenshot](../../docs/screenshots/229_md.jpg)](../../docs/screenshots/229.jpg)
+[![RRDstats screenshot](../../README/screenshots/229_md.jpg)](../../README/screenshots/229.jpg)
 
 Einleitung
 ----------
@@ -104,9 +104,9 @@ Danach muss der Dienst "RRDstats" manuell wieder im Freetz-Webif unter
 Kabelmodem
 ----------
 
-[![RRDstats Cisco EPC (S-N Ratio)](../../docs/screenshots/253_md.jpg)](../../docs/screenshots/253.jpg)
+[![RRDstats Cisco EPC (S-N Ratio)](../../README/screenshots/253_md.jpg)](../../README/screenshots/253.jpg)
 
-[![RRDstats Cisco EPC (Signal)](../../docs/screenshots/252_md.jpg)](../../docs/screenshots/252.jpg)
+[![RRDstats Cisco EPC (Signal)](../../README/screenshots/252_md.jpg)](../../README/screenshots/252.jpg)
 
 Es werden die Kabelmodems Thomson THG 520 und 540, Cisco EPC 3212 und
 Arris Touchstone TM sowie baugleiche unterstützt.
@@ -192,7 +192,7 @@ Viel Spass und Erfolg beim nachmachen
 Kabelsegment
 ------------
 
-[![RRDstats Kabelsegment](../../docs/screenshots/257_md.jpg)](../../docs/screenshots/257.jpg)
+[![RRDstats Kabelsegment](../../README/screenshots/257_md.jpg)](../../README/screenshots/257.jpg)
 
 Hiermit kann die Auslastung des Segmentes von Kabelinternet aufzeichnet
 werden. Es wird zusätzlich noch ein Treiber benötigt. Momentan gibt es

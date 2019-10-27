@@ -502,7 +502,7 @@ check-dot-config-uptodateness: $(CONFIG_IN_CACHE)
 	fi
 
 help:
-	@cat howtos/make_targets.txt
+	@sed 's/^# /\n/;/```/d' README/wiki/20_Advanced/make_targets.md
 
 .PHONY: all world step $(KCONFIG_TARGETS) config-cache tools recover \
 	config-clean-deps-modules config-clean-deps-libs config-clean-deps-busybox config-clean-deps-terminfo config-clean-deps config-clean-deps-keep-busybox \

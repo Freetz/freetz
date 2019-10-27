@@ -1,6 +1,6 @@
 # minidlna 1.2.1
 
-[![minidlna](../../docs/screenshots/243_md.jpg)](../../docs/screenshots/243.jpg)
+[![minidlna](../../README/screenshots/243_md.jpg)](../../README/screenshots/243.jpg)
 
 MiniDLNA ist ein DLNA Server der darauf abzielt vollständig kompatibel
 mit DLNA/UPnp-AV Clients zu sein.

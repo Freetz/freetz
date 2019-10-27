@@ -13,7 +13,7 @@ Spaß.
 Paket konfigurieren
 -------------------
 
-[![Fortune Einstellungen](../../docs/screenshots/220_md.png)](../../docs/screenshots/220.png)
+[![Fortune Einstellungen](../../README/screenshots/220_md.png)](../../README/screenshots/220.png)
 
 Falls man das Paket fortune im menuconfig ausgewählt hat kann man es
 über das Webinterface konfigurieren. Dazu ist nur der Pfad mit den

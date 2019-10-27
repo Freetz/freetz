@@ -61,7 +61,7 @@ wird sie oft auch durch andere Pakete in Freetz realisiert:
 Freetz Webinterface
 -------------------
 
-[![CGI zur Einrichtung von sispmctl](../../docs/screenshots/207_md.jpg)](../../docs/screenshots/207.jpg)
+[![CGI zur Einrichtung von sispmctl](../../README/screenshots/207_md.jpg)](../../README/screenshots/207.jpg)
 
 Seit Mitte März 2011 wurden die ersten Versuche unternommen, eine
 Konfigurationsseite für FREETZ und einen rc-Startskript zu entwickeln.
@@ -93,7 +93,7 @@ und verwalten muss. Für das in sispmctl integrierte Webinterface stehen
 jetzt zusätzliche Skins zur Verfügung, die ebenfalls über menuconfig
 ausgewählt werden können.
 
-[![sispmctl in menuconfig](../../docs/screenshots/210_md.jpg)](../../docs/screenshots/210.jpg)
+[![sispmctl in menuconfig](../../README/screenshots/210_md.jpg)](../../README/screenshots/210.jpg)
 
 Platzbedarf
 -----------
@@ -183,8 +183,8 @@ Weiterführende Links
 Weitere Screenshots
 -------------------
 
-[![Hauptskin von sispmctl](../../docs/screenshots/208_md.jpg)](../../docs/screenshots/208.jpg)
+[![Hauptskin von sispmctl](../../README/screenshots/208_md.jpg)](../../README/screenshots/208.jpg)
 
-[![Smartphone-Skin von sispmctl](../../docs/screenshots/211_md.jpg)](../../docs/screenshots/211.jpg)
+[![Smartphone-Skin von sispmctl](../../README/screenshots/211_md.jpg)](../../README/screenshots/211.jpg)
 
 

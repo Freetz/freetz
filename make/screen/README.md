@@ -46,7 +46,7 @@ wovon ich aber nicht genug verstehe, oder man kann durch eine
 - siehe Bild. Trotzdem kann man noch clientseitig die Fenstergröße
 verändern.
 
-[![PuTTY Terminal Konfiguration](../../docs/screenshots/35_md.gif)](../../docs/screenshots/35.gif)
+[![PuTTY Terminal Konfiguration](../../README/screenshots/35_md.gif)](../../README/screenshots/35.gif)
 
 Weiterführende Links
 --------------------

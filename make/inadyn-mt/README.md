@@ -70,7 +70,7 @@ parameter forced_update_period followed by the update period in
 seconds.
 E.g. for one day you can use 86400 or for 10 days 864000.
 
-[![Howto Inadyn Setup](../../docs/screenshots/238_md.jpg)](../../docs/screenshots/238.jpg)
+[![Howto Inadyn Setup](../../README/screenshots/238_md.jpg)](../../README/screenshots/238.jpg)
 
 If you have enabled the syslog you can verify the syslog messages. E.g.
 via a telnet or ssh connection you can using the following command:

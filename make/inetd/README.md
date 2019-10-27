@@ -1,6 +1,6 @@
 # Inetd
 
-[![Inetd Webinterface](../../docs/screenshots/206_md.png)](../../docs/screenshots/206.png)
+[![Inetd Webinterface](../../README/screenshots/206_md.png)](../../README/screenshots/206.png)
 
 Hier handelt es sich nur um ein [virtuelles] **inetd**
 Paket, welches das benötigte Konfigurations-Framework bereitstellt. Ein

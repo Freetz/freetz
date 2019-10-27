@@ -1,6 +1,6 @@
 # Dnsmasq 2.80
 
-[![Konfiguration](../../docs/screenshots/200_md.png)](../../docs/screenshots/200.png)
+[![Konfiguration](../../README/screenshots/200_md.png)](../../README/screenshots/200.png)
 
 Dnsmasq ermöglicht es, auf der FRITZBox
 

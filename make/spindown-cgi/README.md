@@ -3,7 +3,7 @@
 Mit **Spindown** können kompatible *"mechanische"* Festplatten in den
 Schlafmodus versetzt werden.
 
-[![spindown-cgi](../../docs/screenshots/69_md.png)](../../docs/screenshots/69.png)
+[![spindown-cgi](../../README/screenshots/69_md.png)](../../README/screenshots/69.png)
 
 **Starttyp**: Automatisch (mit dem Starten der Box), oder Manuell
 (starten des Dienstes von Hand)

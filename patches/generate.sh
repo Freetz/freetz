@@ -18,7 +18,7 @@ dsc="$(echo "$TMP" | grep -P '^[ \t]*$' -m1 -B80 | sed -rn 's/[ \t]*(bool|string
 [ -z "$dsc" ] && echo "ignored: $sym" 1>&2 && continue
 [ "${dsc// /_}" != "$(echo ${dsc// /_} | sed "s/^$sym//I")" ] && itm="$dsc" || itm="$sym: $dsc"
 
-[ -e "$MYPWD/../docs/wiki/patches/${sym,,}.html" ] && lnk="https://freetz-ng.github.io/freetz-ng/wiki/patches/${sym,,}" || lnk=""
+lnk=""
 [ -e "$MYPWD/README/$sym.md" ] && lnk="README/$sym.md" && sed "1c# $dsc" -i "$MYPWD/$lnk"
 [ -n "$lnk" ] && itm="[$itm]($lnk)" || itm="<u>$itm</u>"
 
