@@ -199,6 +199,25 @@ werden. Es wird zusätzlich noch ein Treiber benötigt. Momentan gibt es
 nur ein Package für DVB-Sticks von [Sundtek](../sundtek/README.md).
 Vorteil dieser ist, dass man kein v4l im Kernel benötigt.
 
+SmartHome
+------------
+
+Hiermit können viele Daten von AVM SmartHome Geräten aufgezeichnet werden.
+Welche Daten genau hängt vom Gerät ab, zB ein Heizkostenregler hat keine Spannung.\
+Es wird ein Passwort für die AVM-Weboberfläche (API) benötigt, dies kann auch ein zusätzlicher Benutzer sein.
+
+ * Temperatur [Grad Celsius]<br>
+   [![RRDstats SmartHome](../../README/screenshots/000-PKG_rrdstats-Temperatur_md.png)](../../README/screenshots/000-PKG_rrdstats-Temperatur.png)
+ * Spannung [Volt]<br>
+   [![RRDstats SmartHome](../../README/screenshots/000-PKG_rrdstats-Spannung_md.png)](../../README/screenshots/000-PKG_rrdstats-Spannung.png)
+ * Leistung [Wirkleistung, Blindleistung, Scheinleistung]<br>
+   [![RRDstats SmartHome](../../README/screenshots/000-PKG_rrdstats-Leistung_md.png)](../../README/screenshots/000-PKG_rrdstats-Leistung.png)
+ * Stromstärke [Ampere]<br>
+   [![RRDstats SmartHome](../../README/screenshots/000-PKG_rrdstats-Stromstaerke_md.png)](../../README/screenshots/000-PKG_rrdstats-Stromstaerke.png)
+ * Wirk-/Leistungsfaktor [Prozent/100]<br>
+   [![RRDstats SmartHome](../../README/screenshots/000-PKG_rrdstats-Leistungsfaktor_md.png)](../../README/screenshots/000-PKG_rrdstats-Leistungsfaktor.png)
+
+
 ### Datenbanken
 
 Bis zu [r11010](https://trac.boxmatrix.info/freetz-ng/changeset/11010)
