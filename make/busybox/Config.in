@@ -1,5 +1,5 @@
 
-# FREETZ_BUSYBOX___V4556_  symbols of menuconfig of busybox version 4.55.6
+# FREETZ_BUSYBOX___Vxyz_   symbols of menuconfig of busybox version x.yz.*
 # FREETZ_BUSYBOX___        symbols of menuconfig of all busybox versions
 # FREETZ_BUSYBOX__         symbols to select by user outside of busybox, eg additional patches
 # FREETZ_BUSYBOX_          symbols (bool only) to select by other packages, selecing symbools of current active version
@@ -7,11 +7,11 @@
 choice
 	prompt "BusyBox version"
 
-	config FREETZ_BUSYBOX__VERSION_1_27_2
+	config FREETZ_BUSYBOX__VERSION_V127
 		bool "1.27.2"
 
-	config FREETZ_BUSYBOX__VERSION_1_31_0
-		bool "1.31.0 - EXPERIMENTAL"
+	config FREETZ_BUSYBOX__VERSION_V131
+		bool "1.31.1 - EXPERIMENTAL"
 		depends on FREETZ_KERNEL_VERSION_3_MIN
 		depends on FREETZ_SHOW_EXPERT
 		help
@@ -529,11 +529,11 @@ comment ""
 
 source "make/busybox/Config.in.symbools"
 
-if FREETZ_BUSYBOX__VERSION_1_27_2
-source "make/busybox/Config.in.busybox.1_27_2"
-endif # FREETZ_BUSYBOX__VERSION_1_27_2 #
+if FREETZ_BUSYBOX__VERSION_V127
+source "make/busybox/Config.in.busybox.1_27"
+endif # FREETZ_BUSYBOX__VERSION_V127 #
 
-if FREETZ_BUSYBOX__VERSION_1_31_0
-source "make/busybox/Config.in.busybox.1_31_0"
-endif # FREETZ_BUSYBOX__VERSION_1_31_0 #
+if FREETZ_BUSYBOX__VERSION_V131
+source "make/busybox/Config.in.busybox.1_31"
+endif # FREETZ_BUSYBOX__VERSION_V131 #
 
