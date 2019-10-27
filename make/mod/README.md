@@ -2,12 +2,9 @@
 
 "mod" ist das sogenannte Base-Package. Es wird immer automatisch
 installiert.
-Hiermit können grundlegende Dienste von Freetz wie Swap,
-[FREETZ-MOUNT](../patches/freetzmount.html),
-[external](../help/howtos/common/external.html) und das
-Freetz-Webinterface konfiguriert werden.
- * Abhängig von
-der Konfiguration sind nur bestimmte zu sehen.
+Hiermit können grundlegende Dienste von Freetz wie Swap, FREETZMOUNT,
+external und das Freetz-Webinterface konfiguriert werden.<br>
+ * Abhängig von der Konfiguration sind nur bestimmte zu sehen!
 
 ### swap
 
@@ -24,6 +21,32 @@ Vor allem beim Betrieb speicher hungriger Pakete wie z.B.
 [PHP](../php/README.md), Tor [packages/tor](../tor/README.md) oder
 [Transmission](../transmission/README.md) ist die Nutzung von Swap zu
 empfehlen.
+
+### Udevmount
+
+ * Methode zur Ermittlung des Mountpoints:<br>
+   Der Name des Mountpoints kann durch AVM vom Gerätenamen oder
+   Partitionsnamen abgeleitet werden. Die aktive Methode wird hier
+   angezeigt.<br>
+   Um die Methode auf LABEL zu ändern:
+   ```
+	ctlmgr -s
+	sleep 1
+	cat /var/flash/usb.cfg > /tmp/usb.cfg.tmp
+	sed 's/volume_labels = .*/volume_labels = yes;/' /tmp/usb.cfg.tmp > /var/flash/usb.cfg
+	ctlmgr
+	sleep 30
+	reboot
+   ```
+   Zum aktivieren der DEVICE-Methode das ```yes``` oben auf ```no``` ändern.
+ * Alle Programme beenden die das Aushängen verhindern:<br>
+   Beim unmounten oder reboot werden alle programme ermittelt die ein
+   sauberer Aushängen verhindern und versucht zu beenden.
+ * Automatisch autorun.sh und autoend.sh ausführen<br>
+   Beim mounten wird autorun.sh und beim unmounten autoend.sh
+   ausgeführt, falls sie sich auf dem Datenträger befinden.
+   Dies sollte nur aktiviert werden wenn man es benötig da es
+   ein Sicherheitsrisiko darstellt!
 
 ### get_ip
 
