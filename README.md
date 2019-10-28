@@ -13,7 +13,7 @@
 [Github](https://github.com/Freetz-NG/freetz-ng/commits/master)<br>
 
 ### Listings
-[Packages](make/README.md)<br>
+[Packages](make/README_short.md)<br>
 [Libraries](make/libs/README.md)<br>
 [Patches](patches/README.md)<br>
 [Themes](README/themes/README.md)<br>

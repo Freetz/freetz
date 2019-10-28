@@ -24,10 +24,10 @@ dsc="$(sed -rn 's/[ \t]*bool "([^\"]*)"[ \t]*.*/\1/p' "$MYPWD/$pkg/Config.in" 2>
 if [ -e "$MYPWD/$pkg/README.md" ]; then
 	sed "1c# $dsc" -i "$MYPWD/$pkg/README.md"
 	itm="[$itm]($pkg/README.md)"
-#	lst="$(sed -n 's/^### //p' "$MYPWD/$pkg/README.md" | grep -v ' Links$')"
+	lst="$(sed -n 's/^### //p' "$MYPWD/$pkg/README.md" | grep -v ' Links$')"
 else
 	itm="<u>$itm</u>"
-#	lst=''
+	lst=''
 fi
 echo -e "\n  * **$itm<a id='${pkg%-cgi}'></a>**<br>"
 
@@ -39,8 +39,8 @@ N="$(tail -n "$T" "$MYPWD/$pkg/Config.in" | grep -P "^[ \t]*(#|(end)*if|config|b
 help="$(tail -n "$T" "$MYPWD/$pkg/Config.in" | head -n "$(( $N - 1 ))" | grep -vP '^[ \t]*$' | sed 's/[ \t]*$//g;s/^[ \t]*//g;s/$/ /g' | tr -d '\n' | sed 's/ $//')"
 [ -z "$help" ] && echo "nohelp2: $pkg" 1>&2 || echo "    $help"
 
-#[ -n "$lst" ] && echo "$lst" | while read line; do echo "     - [$line]($pkg/README.md#$(echo "$line" | sed -re 's/(.*)/\L\1/;s/[ _]/-/g;s/[^-0-9a-z]//g;s/--/-/g'))"; done
+[ -n "$lst" ] && echo "$lst" | while read line; do echo "     - [$line]($pkg/README.md#$(echo "$line" | sed -re 's/(.*)/\L\1/;s/[ _]/-/g;s/[^-0-9a-z]//g;s/--/-/g'))"; done
 
 done
 done >> "$MYPWD/README.md"
-
+grep -v '^     - ' "$MYPWD/README.md" > "$MYPWD/README_short.md"
