@@ -22,7 +22,6 @@
     * [Beispiel](switch_config.md#beispiel)
     * [Sicherheits-Warnung](switch_config.md#sicherheits-warnung)
     * [Kompatibilität](switch_config.md#kompatibilität)
-    * [](switch_config.md#)
     * [Änderungen 7270v2 vs. 7270v3](switch_config.md#änderungen-7270v2-vs-7270v3)
  - [Benutzerverwaltung](user_management.md)
     * [Benutzer anlegen](user_management.md#benutzer-anlegen)

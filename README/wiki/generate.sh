@@ -8,7 +8,8 @@ for dir in $(find "$MYPWD" -mindepth 1 -type d | sed "s,^$MYPWD/,,g" | sort); do
 	echo -e "\n### [${dir#*_}]($dir/README.md)" >> "$MYPWD/README.md"
 	for file in $(find "$MYPWD/$dir/" -name '*.md' | sed "s,.*/,,g" | sort | grep -v '^README.md$'); do
 		dsc="$(sed -n '1 s/^# //p' "$MYPWD/$dir/$file")"
-		[ "$file" != "${file%.en.md}" ] && dsc="$dsc [EN]"
+		lng="$(echo "$file" | sed -nr 's/.*\.([a-z]{2})\.md$/\1/p')"
+		[ -n "$lng" ] && dsc="$dsc [${lng^^}]"
 		echo " - [$dsc]($dir/$file)" >> "$MYPWD/README.md"
 		echo " - [$dsc]($file)" >> "$MYPWD/$dir/README.md"
 		sed -n 's/^### //p' "$MYPWD/$dir/$file" | while read sub; do

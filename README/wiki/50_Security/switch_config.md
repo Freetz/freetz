@@ -368,8 +368,6 @@ Anpassung schwierig.
     welche auch getrennt koniguriert werden können (und das sogar
     permanent in der ar7.cfg im Bridgemode).
 
-### 
-
 ### Änderungen 7270v2 vs. 7270v3
 
 Bei der 7270v3/3270v3 hat sich der CPU Port von Bit5 auf Bit0 verschoben
