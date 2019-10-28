@@ -21,10 +21,14 @@ dsc="$(sed -rn 's/[ \t]*bool "([^\"]*)"[ \t]*.*/\1/p' "$MYPWD/$pkg/Config.in" 2>
 [ -z "$dsc" ] && echo "ignored: $pkg" 1>&2 && continue
 [ "${dsc//[ _]/-}" != "$(echo "${dsc//[ _]/-}" | sed "s/^${pkg//_/-}//I")" ] && itm="$dsc" || itm="$pkg: $dsc"
 
-lnk=""
-[ -e "$MYPWD/$pkg/README.md" ] && lnk="$pkg/README.md" && sed "1c# $dsc" -i "$MYPWD/$lnk"
-[ -n "$lnk" ] && itm="[$itm]($lnk)" || itm="<u>$itm</u>"
-
+if [ -e "$MYPWD/$pkg/README.md" ]; then
+	sed "1c# $dsc" -i "$MYPWD/$pkg/README.md"
+	itm="[$itm]($pkg/README.md)"
+#	lst="$(sed -n 's/^### //p' "$MYPWD/$pkg/README.md" | grep -v ' Links$')"
+else
+	itm="<u>$itm</u>"
+#	lst=''
+fi
 echo -e "\n  * **$itm<a id='${pkg%-cgi}'></a>**<br>"
 
 L="$(grep -P '^[ \t]*help[ \t]*$' -nm1 "$MYPWD/$pkg/Config.in" 2>/dev/null | sed 's/:.*//')"
@@ -33,8 +37,9 @@ C="$(wc -l "$MYPWD/$pkg/Config.in" 2>/dev/null | sed 's/ .*//')"
 T=$(( $C - $L))
 N="$(tail -n "$T" "$MYPWD/$pkg/Config.in" | grep -P "^[ \t]*(#|(end)*if|config|bool|string|int|depends on|(end)*menu|comment|menuconfig|(end)*choice|prompt|select|default|source|help)" -n | head -n1 | sed 's/:.*//')"
 help="$(tail -n "$T" "$MYPWD/$pkg/Config.in" | head -n "$(( $N - 1 ))" | grep -vP '^[ \t]*$' | sed 's/[ \t]*$//g;s/^[ \t]*//g;s/$/ /g' | tr -d '\n' | sed 's/ $//')"
-[ -z "$help" ] && echo "nohelp2: $pkg" 1>&2 && continue
-echo "    $help"
+[ -z "$help" ] && echo "nohelp2: $pkg" 1>&2 || echo "    $help"
+
+#[ -n "$lst" ] && echo "$lst" | while read line; do echo "     - [$line]($pkg/README.md#$(echo "$line" | sed -re 's/(.*)/\L\1/;s/[ _]/-/g;s/[^-0-9a-z]//g;s/--/-/g'))"; done
 
 done
 done >> "$MYPWD/README.md"

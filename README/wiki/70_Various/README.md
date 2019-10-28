@@ -54,7 +54,7 @@
     * [Ich habe eine alte Freetz-Firmware auf der Box](origin_and_history.md#ich-habe-eine-alte-freetz-firmware-auf-der-box)
     * [Konfiguration](origin_and_history.md#konfiguration)
     * [Wo landen die diversen Konfigurationen auf der Fritzbox?](origin_and_history.md#wo-landen-die-diversen-konfigurationen-auf-der-fritzbox)
-    * [Konfiguration in der aktuellen Sicherheitsstufe nicht verfügbar!](origin_and_history.md#konfiguration-in-der-aktuellen-sicherheitsstufe-nicht-verfügbar!)
+    * [Konfiguration in der aktuellen Sicherheitsstufe nicht verfügbar!](origin_and_history.md#konfiguration-in-der-aktuellen-sicherheitsstufe-nicht-verfügbar)
     * [Wie deaktiviere ich das Passwort für die Freetz-Webseite?](origin_and_history.md#wie-deaktiviere-ich-das-passwort-für-die-freetz-webseite)
     * [Wie ändere ich das Passwort für die Freetz-Webseite?](origin_and_history.md#wie-ändere-ich-das-passwort-für-die-freetz-webseite)
     * [Wie ändere ich das Passwort für die Freetz-Webseite sofern ich es vergessen und Telnet/SSH-Zugang habe?](origin_and_history.md#wie-ändere-ich-das-passwort-für-die-freetz-webseite-sofern-ich-es-vergessen-und-telnetssh-zugang-habe)
