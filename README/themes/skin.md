@@ -8,14 +8,14 @@ zwischen den Skins umgeschaltet werden.<br>
 Zur Auswahl stehen:
 
  * **cuma (dark)**<br>
-   [![Skin cuma](../../docs/screenshots/999-MOD_dark-skin.png)](../../docs/screenshots/000-MOD_dark-skin.png)<br><br>
+   [![Skin cuma](../screenshots/000-MOD_dark-skin_md.png)](../screenshots/000-MOD_dark-skin.png)<br><br>
 
  * **Legacy (blue)**<br>
-   [![Skin legacy](../../docs/screenshots/240_md.jpg)](../../docs/screenshots/240.jpg)<br><br>
+   [![Skin legacy](../screenshots/240_md.jpg)](../screenshots/240.jpg)<br><br>
 
  * **Phoenix (red)**<br>
-   [![Skin phoenix](../../docs/screenshots/241_md.jpg)](../../docs/screenshots/241.jpg)<br><br>
+   [![Skin phoenix](../screenshots/241_md.jpg)](../screenshots/241.jpg)<br><br>
 
  * **Newfreetz (green)**<br>
-   [![Skin Legacynewfreetz](../../docs/screenshots/242_md.jpg)](../../docs/screenshots/242.jpg)<br><br>
+   [![Skin Legacynewfreetz](../screenshots/242_md.jpg)](../screenshots/242.jpg)<br><br>
    

@@ -1,7 +1,7 @@
 # Extend DSL settings
 Mit diesem Patch wird die DSL Störsicherheit erweitert.<br>
 <br>
-<a href='../../docs/screenshots/000-OTH_MODIFY_DSL_SETTINGS.png'><img src='../../docs/screenshots/999-OTH_MODIFY_DSL_SETTINGS.png'></a>
+<a href='../screenshots/000-OTH_MODIFY_DSL_SETTINGS.png'><img src='../screenshots/000-OTH_MODIFY_DSL_SETTINGS_md.png'></a>
 <br>
 
 Zu den 4 Stufen "Stabilität" werden 4 "Performance" hinzugefügt
