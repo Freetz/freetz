@@ -14,8 +14,7 @@ Tor-Servers.
 
 [![Tor: Einstellungen](../../README/screenshots/59_md.png)](../../README/screenshots/59.png)
 
-Tor als Proxy benutzen
-----------------------
+### Tor als Proxy benutzen
 
 Tor ist ein [SOCKS
 Proxy](http://de.wikipedia.org/wiki/SOCKS). Jede Anwendung,
@@ -41,8 +40,7 @@ Ob die Verbindung tatsächlich über das Tor Netzwerk läuft, kann man am
 einfachsten mit dem [Tor
 Detector](http://torcheck.xenobite.eu/) überprüfen.
 
-Tor und Privoxy
----------------
+### Tor und Privoxy
 
 Für die Verwendung mit Privoxy muss sicher gestellt sein, dass der Tor
 Proxy entweder auf der lokalen Adresse (Einstellung *127.0.0.1*) oder
@@ -50,15 +48,13 @@ auf allen Adressen (Einstellung *0.0.0.0*) gebunden ist. Außerdem muss
 der Zugriff von der lokalen Adresse *127.0.0.1* auf jeden Fall erlaubt
 sein.
 
-Installation
-------------
+### Installation
 
 Einfach beim Erstellen in
 [menuconfig](../help/howtos/common/install/menuconfig.html) Tor
 mit auswählen.
 
-Geschwindigkeit optimieren
---------------------------
+### Geschwindigkeit optimieren
 
 Ab der Version 0.5 ist die "Optimierung der Tor-Geschwindigkeit"
 möglich, so wie es ursprünglich
@@ -75,8 +71,7 @@ Die Entry- und Exit-Nodes müssen hierbei mit deren TOR-Alias angegeben
 werden also z.B. "blutmagie" und "chaoscomputerclub23". Andere
 Versuche wie IP oder DNS-Namen fruchten hier nicht.
 
-Tor als Server einrichten
--------------------------
+### Tor als Server einrichten
 
 Wenn Tor als Server betrieben wird, beteiligt sich die FritzBox am
 Routing des Datenverkehrs im Tor-Netzwerk und trägt dazu bei, dass das
@@ -138,8 +133,7 @@ Tor-Knoten), werden hier abgespeichert. Man kann z.B. ein Verzeichnis
 auf einem USB-Speicher angegeben (sofern das Verzeichnis nicht vorhanden
 ist, wird es erstellt).
 
-Remote Control
---------------
+### Remote Control
 
 For remote controlling Tor you can use
 [Vidalia](http://www.torproject.org/projects/vidalia.html.en).
@@ -158,14 +152,12 @@ Vidalia configuration:
     of the server)
 -   Tor Password: plain, un-hashed password
 
-obfsproxy
----------
+### obfsproxy
 
 -   [Information](https://www.torproject.org/projects/obfsproxy)
 -   Patch in ticket [#1712](https://trac.boxmatrix.info/freetz-ng/ticket/1712)
 
-Memory Usage
-------------
+### Memory Usage
 
 Huge.
 
@@ -176,16 +168,14 @@ After ten minutes:
   17284 kB   8660 kB
   ---------- ---------
 
-Abhängigkeiten
---------------
+### Abhängigkeiten
 
 Tor benötigt die Bibliotheken zlib, openssl und libevent. Diese sind
 ebenfalls in den aktuellen Freetz-Versionen enthalten und werden
 automatisch mit installiert, sobald man im menuconfig das TOR Package
 auswählt.
 
-Diskussion
-----------
+### Diskussion
 
 Fragen und Anmerkungen zu diesem Package werden vorzugsweise in diesem
 [Thread](http://www.ip-phone-forum.de/showthread.php?p=693909#post693909)

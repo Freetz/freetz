@@ -30,14 +30,12 @@ Im IPPF ist beschrieben wie man es nutzt: [Teil
 [Teil
 2](http://www.ip-phone-forum.de/showpost.php?p=1609255&postcount=50)
 
-Verwendete Bibliotheken
------------------------
+### Verwendete Bibliotheken
 
 -   libglib2
 -   libsysfs
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [USB/IP
     Projektseite](http://usbip.sourceforge.net/)
@@ -46,5 +44,4 @@ Weiterführende Links
 -   Windows-Client:
     [usbip_windows_v0.1.0.0_signed.zip](https://sourceforge.net/projects/usbip/files/usbip_windows/)
 
-------------------------------------------------------------------------
 

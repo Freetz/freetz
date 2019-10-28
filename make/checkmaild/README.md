@@ -19,8 +19,7 @@ ungelesen angezeigt.
 Der Source von checkmaild stammt vom
 [Tuxbox-Projekt](http://cvs.tuxbox.org/cgi-bin/viewcvs.cgi/tuxbox/apps/tuxbox/plugins/tuxmail/daemon/).
 
-Konfiguration
--------------
+### Konfiguration
 
 [![Checkmaild Webinterface](../../README/screenshots/219_md.png)](../../README/screenshots/219.png)
 
@@ -32,8 +31,7 @@ Weiterhin kann das Überprüfungsintervall sowie das Skript-Verhalten
 festgelegt werden. Die Konfigurationsdatei kann unter
 /mod/etc/checkmaild.conf eingesehen werden.
 
-Skript-Funktion
----------------
+### Skript-Funktion
 
 Ab Version 0.4 gibt es zusätzlich die Möglichkeit einer Skript-Funktion.
 Diese ist wie folgt zu benutzen (GMX als Beispiel):
@@ -99,8 +97,7 @@ callaction auf einem VDR ausgeben will, sieht das Beispiel so aus:
 Hintergrundinfos zum callmonitor kann man auch hier im Wiki unter
 [callmonitor](../callmonitor/README.md) nachlesen.
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [IPPF
     Thread](http://www.ip-phone-forum.de/showthread.php?t=176375):

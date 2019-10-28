@@ -21,8 +21,7 @@ weniger CPU-Leitung beansprucht. D. h. man kann das Neustarten
 Netzwerkverkehr so gesteuert werden, dass sowohl die Leitung als auch
 die Box optimal genutzt werden.
 
-Syntax
-------
+### Syntax
 
 ```
 Usage: trickle [-hvVs] [-d <rate>] [-u <rate>] [-w <length>] [-t <seconds>]
@@ -61,8 +60,7 @@ Usage: trickled [-hvVfs] [-d <rate>] [-u <rate>] [-t <seconds>] [-l <length>]
         -w <length>   Set window size to <length> s
 ```
 
-Beispiele für die Benutzung von trickle
----------------------------------------
+### Beispiele für die Benutzung von trickle
 
 **1. Über einen Proxy:**
 
@@ -107,8 +105,7 @@ Saving to: `test_10mb.bin.1'
 limiter, throttling, bandbreitenbegrenzung, bandbreite, drosseln,
 begrenzen
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 [trickle](http://monkey.org/~marius/pages/?page=trickle)
 

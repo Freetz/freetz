@@ -67,8 +67,7 @@ Beispiel wird das von [br2684ctrl](br2684ctl.html) erzeugte
 Derzeit ist igmpproxy nur als Binary (0.1) für Freetz verfügbar, d.h. es
 gibt noch kein WebGUI für grafische Einstellungen.
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [igmpproxy
     SourceForge](http://sourceforge.net/projects/igmpproxy/)

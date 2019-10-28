@@ -27,19 +27,16 @@ Metadaten (ID3 Tags etc.) gespeichert werden. Es kann den Stream nicht
 selbst wiedergeben, ihn aber durchaus direkt zu einem Streaming-fähigen
 "Player" weiterleiten.
 
-Verwendete Bibliotheken
------------------------
+### Verwendete Bibliotheken
 
 -   libmad
 -   libglib2
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [Streamripper
     Homepage](http://streamripper.sourceforge.net/)
 -   [Wikipedia
     Artikel](http://de.wikipedia.org/wiki/Streamripper)
 
-------------------------------------------------------------------------
 

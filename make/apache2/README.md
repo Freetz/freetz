@@ -86,8 +86,7 @@ Wird z.B. mod_proxy bzw. sogar mod_proxy_html benötigt empfehle ich
 das fertige Binary aus diesem
 [Thread](http://www.ip-phone-forum.de/showthread.php?t=103110&p=1730858&viewfull=1#post1730858).
 
-apache.conf
------------
+### apache.conf
 
 Der User muss auf einen vorhandenen User abgeändert werden (der User
 root ist nur bei speziellen Binaries möglich).
@@ -121,8 +120,7 @@ Order allow,deny
 Allow from all</Directory>
 ```
 
-Passwortschutz mit .htaccess
-----------------------------
+### Passwortschutz mit .htaccess
 
 > Soll ein Verzeichnis mittels *.htaccess* vor autorisiertem Zugriff
 > geschützt werden kann folgendes hinzugefügt werden:
@@ -151,8 +149,7 @@ Um Benutzer zur Passwortdatei hinzuzufügen folgendes benutzen:
 Es ist generell empfehlenswert vor zu schützenden Daten das Kürzel .ht
 anzugeben, dadurch bekommt der Benutzer die Datei nicht zu sehen.
 
-Apache als Proxy
-----------------
+### Apache als Proxy
 
 Ein guter Einsatzzweck des Apaches ist es, ihn als Proxy zu verwenden.
 
@@ -197,8 +194,7 @@ ServerName freetz.meinedomain.at
 Das Location Element bewirkt, dass der Benutzer sich vor dem
 Seitenaufbau anmelden muss.
 
-Sonstiges
----------
+### Sonstiges
 
 Sollte jemand auf die Idee kommen, ein CMS auf der Fritzbox laufen zu
 lassen, so empfehle ich
@@ -210,8 +206,7 @@ Systemleistung der [FritzBox](/search/opensearch?q=wiki%3AFritzBox)
 vergessen. Außer man kann mit Seitenaufbauzeiten von 1-3 Minuten leben
 (dafür muss die php.ini angepasst werden).
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [Forumsdiskussion](http://www.ip-phone-forum.de/showthread.php?t=127089)
     mit Tipps und Tricks zu diesem Paket

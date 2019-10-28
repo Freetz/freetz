@@ -3,15 +3,13 @@
 OpenVPN ist ein Programm zur Herstellung eines Virtuellen Privaten
 Netzwerkes (VPN) über eine verschlüsselte TLS-Verbindung.
 
-Version
--------
+### Version
 
 In der aktuellen Version von Freetz ist OpenVPN 2.3.2 enthalten (aktuell
 kann auch noch die alte Version 2.2.1 gewählt werden). Es kann im
 menuconfig wahlweise mit und ohne LZO2 Komprimierung ausgewählt werden.
 
-Häufige Fragen / Howto
-----------------------
+### Häufige Fragen / Howto
 
 Die Dokumentation auf der OpenVPN Webseite ist sehr gut und ausführlich.
 Dort findet man wohl auf die meisten Fragen die passende Antwort.
@@ -24,8 +22,7 @@ Viele hilfreiche Informationen zu OpenVPN findet man auch
 [hier im
 ippf-Wiki](http://wiki.ip-phone-forum.de/gateways:avm:howtos:mods:openvpn).
 
-Konfigurationsanleitung
------------------------
+### Konfigurationsanleitung
 
 Dies ist eine (sicher nicht ganz vollständige) Anleitung zur
 Konfiguration des OpenVPN Pakets. Sie soll aufzeigen, wie man eine
@@ -256,8 +253,7 @@ hierbei auch die **"Schlüsselrichtung"** bei der
 TLS-Authentifizierung. Da freetz hierfür augenscheinlich den Wert "0"
 nutzt, muss im Client entsprechend der Wert "1" gesetzt werden.
 
-Routing vs. Bridging
---------------------
+### Routing vs. Bridging
 
 Für die meisten Anwendungsfälle ist Routing (TUN) die beste Wahl, doch
 in einigen Fällen kann es auch sinnvoll sein, das VPN Netzwerk mit einer
@@ -363,8 +359,7 @@ oder TinyCA (Linux /
 GUI-basierte Zertifikatmanager, die das Erstellen einer CRL
 unterstützen.
 
-Fehlersuche: Ein paar Tips wenn es nicht gleich so klappt
----------------------------------------------------------
+### Fehlersuche: Ein paar Tips wenn es nicht gleich so klappt
 
 Meist versucht man gleich den schwierigsten Fall, über das Internet mit
 Zertifikaten und TLS-Authentifizierung zwei Netze zu verbinden und
@@ -441,8 +436,7 @@ Daher der Apell, tastet euch langsam an das ganze heran!
         die man Rechnername und IP einträgt. Dann kann die Freigabe
         weiterhin über den Namen genutzt werden
 
-Verschlüsselung: Welcher "Cipher" ?
--------------------------------------
+### Verschlüsselung: Welcher "Cipher" ?
 
 Der Verkehr zwischen Client und Server wird normalerweise verschlüsselt
 übertragen, um die Inhalte vor dem Ausspähen zu schützen. Die Wahl des
@@ -503,8 +497,7 @@ aes-192 cbc       4932.01k     5308.92k     5450.89k     5446.16k     5429.97k
 aes-256 cbc       4388.37k     4711.52k     4812.80k     4817.99k     4798.96k
 ```
 
-DNS & Redirect all clients' traffic
-------------------------------------
+### DNS & Redirect all clients' traffic
 
 I wanted to monitor all traffic coming from my Android device, so I
 route all my traffic through openVPN and am using tcpdump to see the
@@ -521,15 +514,13 @@ iptables -A PREROUTING -i tun0 -p udp -m udp --dport 53 -j DNAT --to-destination
 
 It is interesting to see what Android is doing ...
 
-Diskussion
-----------
+### Diskussion
 
 Fragen und Anmerkungen zu diesem Paket werden in [diesem
 Thread](http://www.ip-phone-forum.de/showthread.php?t=101980)
 diskutiert.
 
-Neue, simple GUI (GUI2)
------------------------
+### Neue, simple GUI (GUI2)
 
 [![neue OpenVPN GUI](../../README/screenshots/273_md.png)](../../README/screenshots/273.png)
 

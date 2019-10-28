@@ -10,8 +10,7 @@ Dank an
 für dieses sinnfreie aber äußerst lustige Paket. So macht Konsole wieder
 Spaß.
 
-Paket konfigurieren
--------------------
+### Paket konfigurieren
 
 [![Fortune Einstellungen](../../README/screenshots/220_md.png)](../../README/screenshots/220.png)
 
@@ -21,8 +20,7 @@ Keksen anzugeben und nach dem Speichern kann man sich sofort an den
 Sprüchen erfreuen. Solche fortune-Dateien findet man zum Beispiel
 [hier](http://www.freebsd.org/cgi/cvsweb.cgi/src/games/fortune/datfiles/).
 
-Anzeigen von fortunes beim Konsolen-Login
------------------------------------------
+### Anzeigen von fortunes beim Konsolen-Login
 
 Meist werden fortunes automatisch beim Systemstart oder Einloggen
 gestartet. Das Unix-Shell-Kommando für Fortune ist ***fortune***
@@ -65,8 +63,7 @@ GRAMMAR IS NOT A TIME OF WASTE
 /var/mod/root #
 ```
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [fortune auf
     Wikipedia](http://en.wikipedia.org/wiki/Fortune_%28Unix%29)

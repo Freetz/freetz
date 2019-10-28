@@ -1,7 +1,6 @@
 # XMail 1.27
 
-Links
-=====
+### Links
 
 -   Package [PHPXMail](../phpxmail/README.md)
 -   [Setting up a virtual Mail server with

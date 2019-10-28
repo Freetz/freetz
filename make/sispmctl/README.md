@@ -8,8 +8,7 @@ USB-Steckdosen sind deutlich günstiger zu bekommen als Steckdosen, die
 übers Netzwerk geschaltet werden. Dank der Fähigkeiten von Freetz können
 diese Steckdosen auch per Internet und per Telefon geschaltet werden.
 
-Einschränkung
--------------
+### Einschränkung
 
 sispmctl läuft leider nicht auf Boxen, die den USB-Low-Speed-Modus nicht
 unterstützen. Zu diesen Boxen gehört z.B. die alt bekannte 7170. Der
@@ -27,8 +26,7 @@ Liste der Boxen, mit denen sispmctl funktioniert: **3370**, **7270**,
 **W920V**
 ([Speedport2Fritz](http://www.ip-phone-forum.de/showthread.php?t=172137))
 
-Benutzung
----------
+### Benutzung
 
 **sispmctl** kann einerseits per Kommandozeile benutzt werden
 (telnet/ssh), andererseits enthält es einen kleinen Webserver, der das
@@ -58,8 +56,7 @@ wird sie oft auch durch andere Pakete in Freetz realisiert:
 -   **apache/lighthttpd/busybox-httpd, haserl/php und
     xrelayd/matrixtunnel**: Schalten per Web-Interface.
 
-Freetz Webinterface
--------------------
+### Freetz Webinterface
 
 [![CGI zur Einrichtung von sispmctl](../../README/screenshots/207_md.jpg)](../../README/screenshots/207.jpg)
 
@@ -95,16 +92,14 @@ ausgewählt werden können.
 
 [![sispmctl in menuconfig](../../README/screenshots/210_md.jpg)](../../README/screenshots/210.jpg)
 
-Platzbedarf
------------
+### Platzbedarf
 
 Cgi und rc-Skript beanspruchen im Flash circa 4kB. Der Unterschied im
 Binary mit und ohne Webserver ist 6kB. Die Skins beinhalten jeweils ein
 Bildchen und einige html-Dateien, was pro Skin etwa 10...16kB an
 Zusatzplatz kostet.
 
-manpage
--------
+### manpage
 
 Auf der Kommandozeile gibt `sispmctl -h` eine kurze Übersicht über die
 Optionen. Die
@@ -157,8 +152,7 @@ sispmctl [-q] [-i <ip>] [-p <#port>] [-u <path>] -l
    'u'   - repository for web pages (default=/usr/share/sispmctl)
 ```
 
-Bekannte Bugs
--------------
+### Bekannte Bugs
 
 Das integrierte Web-Interface ist sehr empfindlich gegenüber Störungen
 auf dem USB-Bus bzw. gegenüber falscher Byte-Sequenzen auf dem
@@ -168,8 +162,7 @@ besagten Port eine Zeitüberschreitung meldet bzw. sispmctl-Dienst in
 FREETZ als "stopped" vermeldet wird. Ein manueller Wiederstart des
 intgrierten Web-Interfaces ist nach einem solchen Absturz möglich.
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [Homepage von
     sispmctl](http://sispmctl.sourceforge.net/) (Englisch)
@@ -180,8 +173,7 @@ Weiterführende Links
 -   [Ticket #1264 im trac](https://trac.boxmatrix.info/freetz-ng/ticket/1264)
 -   [Ticket #1677 im trac](https://trac.boxmatrix.info/freetz-ng/ticket/1677)
 
-Weitere Screenshots
--------------------
+### Weitere Screenshots
 
 [![Hauptskin von sispmctl](../../README/screenshots/208_md.jpg)](../../README/screenshots/208.jpg)
 

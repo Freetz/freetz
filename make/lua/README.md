@@ -6,8 +6,7 @@ zum Einbinden in Programme, um diese leichter weiterentwickeln und
 warten zu können. Eine der besonderen Eigenschaften von Lua ist die
 geringe Größe des kompilierten Skript-Interpreters.
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [Lua Homepage](http://www.lua.org/)
 -   [Wikipedia
@@ -20,5 +19,4 @@ Weiterführende Links
 -   [Ticket with patch for common libraries](https://trac.boxmatrix.info/freetz-ng/ticket/1325)
 -   [LUA for Haserl](https://trac.boxmatrix.info/freetz-ng/ticket/1326)
 
-------------------------------------------------------------------------
 

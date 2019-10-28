@@ -4,8 +4,7 @@ Mit **USB-Root** lässt sich das Root-Verzeichnis (`/`) auf ein an die
 Fritz!Box angeschlossenes USB-Gerät auslagern - was zusätzlichen Platz
 nicht nur für weitere Software schafft.
 
-Vorteile
---------
+### Vorteile
 
 -   Immer noch ein lauffähiges System im Flash-Speicher der Fritz!Box
     als Notfall-System vorhanden
@@ -23,8 +22,7 @@ funktionierenden System im Flash würde da gar nichts mehr gehen. Strom
 aus, USB-Stick ab und Strom wieder an, bekommt er aber hin um damit das
 Notfallsystem im Flash nutzen zu können.
 
-Konfiguration und Kompilierung
-------------------------------
+### Konfiguration und Kompilierung
 
 USB-Root muss einfach bei Erstellung des Images mit `make menuconfig`
 (siehe [Freetz Installation?]) mit ausgewählt werden. Um
@@ -47,8 +45,7 @@ Kernel im Flashspeicher zum Kernel des USB-Sticks passen.
 Als Dateisystem ist eine Partition mit ext2 oder ext3 zu verwenden. Das
 passende Kernel-Modul muss bei der Imageerstellung ausgewählt werden!
 
-Packen, kopieren auf die Fritz!Box und entpacken
-------------------------------------------------
+### Packen, kopieren auf die Fritz!Box und entpacken
 
 ```
 # 1. Dateisystem packen, dabei Besitzer auf root:root ändern
@@ -87,8 +84,7 @@ erreichbar ist. Erstere Variante ist vermutlich die häufigere und sieht
 so aus:
 
 ```
-Freetz Configuration
-====================
+### Freetz Configuration
 
 [*] Show advanced options
 --> Advanced options
@@ -98,8 +94,7 @@ Freetz Configuration
             [*] Pack file system into archive (USB root mode)
 ```
 
-Einbinden von Partitionen
--------------------------
+### Einbinden von Partitionen
 
 Das Einbinden von weiteren Partitionen funktionierte in frühen
 Freetz-Versionen nicht, somit mussten diese Partitionen manuell
@@ -112,8 +107,7 @@ die verwendete Root-Partition: da diese bereits gemountet ist, schlägt
 ein weiterer Mount-Versuch (der "normale" von AVM) natürlich fehl.
 Dies kann mit ruhigem Gewissen ignoriert werden.
 
-Mögliche Nebenwirkungen
------------------------
+### Mögliche Nebenwirkungen
 
 Das Freetz usbroot Paket verändert die Environment-Variable kernel_args
 und startet dort einen alternativen init Prozess
@@ -143,8 +137,7 @@ Box und setzt die beiden Variablen (mittels Telnet) wieder auf ihren
 normalwert, danach kann man wieder problemlos seine gewünschte
 modifizierte Firmware auf die Box bringen!
 
-Verbesserungsmöglichkeiten
---------------------------
+### Verbesserungsmöglichkeiten
 
 1.  Direkt per SCP oder rsync aus der Stinky-VM auf die Fritz!Box
     kopieren.

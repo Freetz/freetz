@@ -2,8 +2,7 @@
 
 Official Linux Bluetooth protocol stack
 
-General
--------
+### General
 
 It was quite an adventure to get this working, without any BlueZ
 documentation, but here we go
@@ -105,8 +104,7 @@ DUN
     rest of the guide
     :-)
 
-DBUS
-----
+### DBUS
 
 See all interface methods:
 
@@ -126,8 +124,7 @@ See the properties of your device:
 dbus-send --system --type=method_call --dest=org.bluez --print-reply /org/bluez/$(pidof bluetoothd)/hci0/dev_YY_YY_YY_YY_YY_YY org.bluez.Device.GetProperties
 ```
 
-Sizes
------
+### Sizes
 
 ```
   libbluetooth .................   55.07 Kb
@@ -147,8 +144,7 @@ Sizes
   bluez-4.101 ..................  285.39 Kb
 ```
 
-Links
------
+### Links
 
 -   [BlueZ](http://www.bluez.org/)
 -   Bluez 4.98 patch: [#602](https://trac.boxmatrix.info/freetz-ng/ticket/602)

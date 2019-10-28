@@ -8,5 +8,4 @@ der Installation über
 [menuconfig](../help/howtos/common/install/menuconfig.html)
 automatisch mit ausgewählt werden.
 
-------------------------------------------------------------------------
 

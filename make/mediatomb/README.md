@@ -21,8 +21,7 @@ Web-Interface finden sich u. a. in
 
 ^(vielleicht mag noch jemand, der *MediaTomb* erfolgreich auf seine Box bekommen hat, Hinweise zum "wie" ergänzen -- insbesondere hinsichtlich des Platzbedarfs?)^
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [MediaTomb Homepage](http://mediatomb.cc/)
 -   [UbuntuWiki MediaTomb

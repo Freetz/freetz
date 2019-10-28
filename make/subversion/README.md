@@ -10,8 +10,7 @@ Inhalten verteilt auf den Computern der Bearbeiter ausgeführt werden,
 werden zwischen dem Projektarchiv und einem Arbeitsplatz jeweils nur die
 Unterschiede zu bereits vorhandenen Ständen übertragen.
 
-Enthaltene Programmteile
-------------------------
+### Enthaltene Programmteile
 
 ```
   --------------- --------------------------------------------------------------------------------------------------------
@@ -26,14 +25,12 @@ Enthaltene Programmteile
   --------------- --------------------------------------------------------------------------------------------------------
 ```
 
-WebIF
------
+### WebIF
 
 [![Subversion](../../README/screenshots/117_md.png)](../../README/screenshots/117.png)
 
 
-Konfiguration
--------------
+### Konfiguration
 
 Ein Repository wird mit folgendem Befehl angelegt
 

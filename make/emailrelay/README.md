@@ -15,8 +15,7 @@ Von der Webseite des Herstellers:
 > E-MailRelay can also run as a POP3 server. Messages received over SMTP
 > can be automatically dropped into several independent POP3 mailboxes.
 
-Hilfe für die Konfiguration
----------------------------
+### Hilfe für die Konfiguration
 
 [User
 guide](http://emailrelay.sourceforge.net/userguide.html)

@@ -33,8 +33,7 @@ Hello.class im aktuellen Verzeichnis aufzurufen:
 jamvm -Xbootclasspath/a:/usr/share/classpath/mini.jar Hello
 ```
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [JavaVM
     Homepage](http://jamvm.sourceforge.net/)

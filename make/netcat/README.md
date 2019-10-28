@@ -14,8 +14,7 @@ Armeemesser für
 Eine Alternative zu *netcat* bietet das Paket
 [socat](../socat/README.md).
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [netcat
     Homepage](http://netcat.sourceforge.net/)
@@ -28,5 +27,4 @@ Weiterführende Links
 -   [Deutschsprachige Anleitung zu Netcat und
     Cryptcat](http://www.highgames.com/?set=hardwareview&view=2)
 
-------------------------------------------------------------------------
 

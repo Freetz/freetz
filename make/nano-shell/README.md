@@ -12,8 +12,7 @@ Dieses kleine Paket ermöglicht es sowohl der AVM- als auch der
 Freetz-Weboberfläche, benutzerdefinierte Shell-Kommandos auszuführen und
 ihre Befehls- bzw. Fehlerausgaben anzuzeigen, falls vorhanden.
 
-Sicherheitshinweis
-------------------
+### Sicherheitshinweis
 
  * **ACHTUNG!**
 Die Nano-Shell sollte nur für Debugging-Zwecke (Entwicklung,
@@ -34,8 +33,7 @@ Router-Box aus dem LAN/WAN für Fremde zugreifbar ist. Das Freetz-Paßwort
 wird allerdings abgefragt, da es bereits auf Webserver-Ebene greift und
 nicht wie bei AVM in der Web-Applikationslogik implementiert ist.
 
-Benutzung
----------
+### Benutzung
 
 Schicken Sie einfach ein URL-kodiertes Kommando an das Nano-CGI, welches
 z.B. folgende Basisadressen haben kann:

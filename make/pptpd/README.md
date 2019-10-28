@@ -30,8 +30,7 @@ Poptop auf deren
 
 [![pptpd Einstellungen](../../README/screenshots/38_md.png)](../../README/screenshots/38.png)
 
-Portweiterleitung
------------------
+### Portweiterleitung
 
 Um sich schließlich von außen auf den PPTP-Server verbinden zu können,
 muss natürlich eine Portweiterleitung auf die IP der FRITZBox
@@ -47,15 +46,13 @@ Siehe dazu auch folgende Paketen:
 -   [Virtual IP](../virtualip-cgi/README.md)
 -   [AVM Firewall CGI](../avm-firewall/README.md)
 
-Konfiguration
-=============
+### Konfiguration
 
 Die drei für Poptop relevanten Dateien können entweder über das
 Webinterface oder auf der Shell per vi editiert
 werden. Sie liegen im Verzeichnis `/tmp/flash/ppp`.
 
-pptpd.conf
-----------
+### pptpd.conf
 
 In der mitgelieferten Konfiguration ist logwtmp standardmäßig aktiviert
 (bezieht sich auf Version 1.1.2-stable. Ist im 'trunk' schon
@@ -73,8 +70,7 @@ Falls die Datenrate vom Wlan ins Internet mit pptpd sehr langsam ist,
 sollte die Zeile `bcrelay` auskommentiert werden (siehe
 [IPPF](http://www.ip-phone-forum.de/showthread.php?t=201539))
 
-options.pptpd
--------------
+### options.pptpd
 
 In der Datei options.pptpd ist gegebenenfalls `require-mppe-128`
 eingetragen (bezieht sich auf Version 1.1.2-stable. Ist im 'trunk'
@@ -97,8 +93,7 @@ iPhone VPN-Client geklappt:
 	mppe required,no40,no56,stateless
 ```
 
-chap-secrets
-------------
+### chap-secrets
 
 In der `options.pptpd` ist der Name auf `fritzbox` eingestellt. Dies
 sollte sich dann in einem Benutzereintrag in der `chap-secrets`
@@ -114,8 +109,7 @@ In vielen Beispielen im Netz steht in der zweiten Spalte `pptpd`. Möchte
 man das so haben, dann sollte man einfach den `name` Eintrag in
 `options.pptpd` entsprechend anpassen.
 
-Troubleshooting
----------------
+### Troubleshooting
 
 Um die pptpd Meldungen zu sehen, muss man zunächst einen syslogd
 starten:
@@ -151,8 +145,7 @@ pptpd.conf:
 	debug
 ```
 
-Troubleshooting keine Fehlermeldung
------------------------------------
+### Troubleshooting keine Fehlermeldung
 
 Bei mir tauchte im log keine Fehlermeldung auf. Da hilft debuggen auf
 der Box mit:

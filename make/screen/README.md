@@ -9,8 +9,7 @@ bleibt und die man aushängen (detach) und sich auch beliebig wieder
 einhängen (attach) kann, jedesmal wird dabei der Bildschirm
 wiederhergestellt, auch wenn er sich verändert haben sollte.
 
-Bedienung
----------
+### Bedienung
 
 *screen* kann ohne alles aufgerufen werden und bietet dann eine ganz
 normale Shell an. *screen* kann aber auch mit einem Befehl als Argument
@@ -33,8 +32,7 @@ Hintergrund laufen. Die Namen (die man mit `screen -t <neuerName>`
 ändern kann) werden dazu benutzt mit `screen -r <Name>` ausgewählt zu
 werden.
 
-PuTTY-Tip: Änderung der Fensterbreite beim Screen-Start verhindern
-------------------------------------------------------------------
+### PuTTY-Tip: Änderung der Fensterbreite beim Screen-Start verhindern
 
 Kleiner Tip für *PuTTY*-Benutzer: Beim Starten von *screen* verändert
 das Programm gern mal eigenmächtig die Fensterbreite auf 80 Zeichen. Man
@@ -48,8 +46,7 @@ verändern.
 
 [![PuTTY Terminal Konfiguration](../../README/screenshots/35_md.gif)](../../README/screenshots/35.gif)
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [Screen](http://de.wikipedia.org/wiki/Screen)
     bei Wikipedia

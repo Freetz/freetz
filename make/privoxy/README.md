@@ -15,8 +15,7 @@ enable-remote-toggle und enforce-blocks)
 
 [![Privoxy Configuration since Rev. 2938](../../README/screenshots/11_md.png)](../../README/screenshots/11.png)
 
-Filter und Aktionen
--------------------
+### Filter und Aktionen
 
 Eine detailierte Beschreibung der mächtigen und umfangreichen
 Filter-Funktionen liefert das [Privoxy
@@ -27,8 +26,7 @@ und [Actions
 Files](http://www.privoxy.org/user-manual/actions-file.html)
 (englisch).
 
-Zugriffskontrolle
------------------
+### Zugriffskontrolle
 
 Die Privoxy Zugriffskontrolle ist über das Freetz Webinterface
 steuerbar. Eine detailierte Beschreibung dazu findet man ebenfalls im
@@ -38,8 +36,7 @@ Kapitel
 [Zugriffskontrolle](http://www.privoxy.org/user-manual/config.html#ACCESS-CONTROL)
 (englisch).
 
-Privoxy und Tor
----------------
+### Privoxy und Tor
 
 Privoxy ist auch ideal für die Verwendung zusammen mit
 [Tor](../tor/README.md), um anonym und sicher im Internet surfen zu
@@ -49,8 +46,7 @@ Dazu muss in der Privoxy Konfiguration der Port und der IP-Adresse des
 Tor Proxy Servers angeben werden. Wenn der Tor Proxy auf der selben
 Fritzbox läuft, so kann man z.B. *127.0.0.1:9050* eintragen.
 
-Transparenter Proxy
--------------------
+### Transparenter Proxy
 
 In manchen Fällen ist es gewünscht, dass jeglicher Webtraffic durch den
 Proxy geleitet wird und so ohne Konfiguration auf dem Client-PC zu
@@ -74,8 +70,7 @@ iptables -t nat -A PREROUTING -p tcp -i lan --dport 80 -j REDIRECT --to 8118
 [ -z "$(grep accept-intercepted-requests /var/mod/etc/privoxy/config)" ] && echo "accept-intercepted-requests 1" >> /var/mod/etc/privoxy/config
 ```
 
-Werbefilter
------------
+### Werbefilter
 
 Um den Privoxy als Werbefilter zu nutzen ist es notwendig eine aktuelle
 und gute Filterliste zu haben. Um die Daten nicht selbst pflegen zu
@@ -123,16 +118,14 @@ ln -s /var/media/ftp/uFlash/privoxy/user.action /tmp/flash/privoxy/user.action
 modsave
 ```
 
-Installation
-------------
+### Installation
 
 Das Paket kann während der
 [Freetz-Installation](../help/howtos/common/install.html) einfach
 mit ausgewählt werden, und wird somit Bestandteil der selbstgebauten
 Firmware.
 
-Diskussion
-----------
+### Diskussion
 
 Fragen und Anmerkungen zu diesem Paket werden in [diesem
 Thread](http://www.ip-phone-forum.de/showthread.php?t=115778)

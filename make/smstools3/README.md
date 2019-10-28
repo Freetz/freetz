@@ -10,15 +10,13 @@ FritzBox UMTS-Unterstützung hat, am besten den umtsd herauspatchen.
 SMStools3 kann komplett per Webif bedient werden oder alternativ per
 Terminal.
 
-Datenverzeichnis
-----------------
+### Datenverzeichnis
 
 Das "Datenverzeichnis" legt man am besten auf einen USB-Stick, damit
 keine SMS verloren gehen. Dennoch wird ein `modsave` beim Beenden des
 Packages ausgeführt, falls der Pfad mit `/tmp/flash` beginnt.
 
-Senden und Empfangen mit dem Terminal
--------------------------------------
+### Senden und Empfangen mit dem Terminal
 
 Eine SMS kann man diesem Befehl versendet werden, der Parameter `flash`
 ist optional:
@@ -33,8 +31,7 @@ Empfangene SMS können so aufgelistet angezeigt:
 rc.smstools3 listsms
 ```
 
-Weiteres
-========
+### Weiteres
 
 -   Komplette Dokumentation:
     [http://smstools3.kekekasvi.com/](http://smstools3.kekekasvi.com/)

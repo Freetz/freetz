@@ -66,8 +66,7 @@ A few notes:
 6.  There is no Windows client available (you could try
     [iodine](../iodine/README.md))
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [Dns2Tcp
     Homepage](http://www.hsc.fr/ressources/outils/dns2tcp/)

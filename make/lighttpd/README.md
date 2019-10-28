@@ -2,14 +2,12 @@
 
 Mit diesem Paket ist es möglich, den lighttpd Webserver zu erstellen.
 
-Einrichtung
------------
+### Einrichtung
 
 Um den Webserver nutzen zu können, muss ein Verzeichnis erstellt werden,
 in dem der lighttpd agieren kann. Dieses muss unbedingt erstellt und mit
 den nötigen Rechten versehen werden.
 
-------------------------------------------------------------------------
 
 **Unbedingt beachten:** In dieser Anleitung wird angenommen, dass
 [USB-root](../usbroot/README.md) genutzt wird. Sollte USB-root nicht
@@ -17,7 +15,6 @@ verwendet werden, muss auf die folgenden Verzeichnisstrukturen noch
 größeres Augenmerk gelegt werden. In solch einem Fall **könnte**
 `/var/media/ftp/uStor01/rootfs/www` eine Analogie für `/www` sein.
 
-------------------------------------------------------------------------
 
 Zunächst muss eine Konsolensitzung mit dem Router bestehen, es spielt
 keine Rolle, ob dafür Telnet oder [SSH](../dropbear/README.md) genutzt
@@ -36,8 +33,7 @@ Dokumente müssen im Verzeichnis `/www/websites` liegen. Je nach
 Einstellung ist der Server nun bspw. über `http://fritz.box:8008`
 verfügbar.
 
-Perl
-----
+### Perl
 
 Will man Perl-Skripte mit dem Webserver benutzen und den `chroot`-Modus
 benutzen, muss man sich darum kümmern, dass das Paket
@@ -112,8 +108,7 @@ Links:
 Advantage over PHP: small, fast, low memory usage, feature rich
 programming language.
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [Wikipedia
     Artikel](http://de.wikipedia.org/wiki/Lighttpd) zu

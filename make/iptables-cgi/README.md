@@ -6,14 +6,12 @@ Mittels iptables lassen sich Firewallregeln umsetzen, indem einzelne
 Portregeln erstellt bzw. gelöscht werden. Genutzt wird iptables u.a. von
 [knockd](../knock/README.md).
 
-Installation
-------------
+### Installation
 
 iptables-cgi kann in `make menuconfig` angewählt werden, wenn man
 iptables markiert.
 
-Häufige Fragen / Howto
-----------------------
+### Häufige Fragen / Howto
 
 Die Funktionen und die Geschichte von iptables wird hier nicht
 wiederholt bzw. erzählt, denn dazu gibt es schon genug Dokumentation in
@@ -74,8 +72,7 @@ Regeln können entweder über den *Remove* Link rechts neben der
 entsprechenden Regel gelöscht werden, oder manuell unter *Einstellungen
 → Iptables: Rules*
 
-Zu Beachten
------------
+### Zu Beachten
 
 In diversen Foren kursiert die Halbwahrheit, dass IPTables instabil sei
 und die Box zu unprovozierten Reboots verleitet. Dies ist so nicht ganz

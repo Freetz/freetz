@@ -30,8 +30,7 @@ Patches, Pakete etc. gibt. Danach müsste man ggf. also noch einmal
 
 
 
-Benutzerdefiniert
------------------
+### Benutzerdefiniert
 
 Es können eigene Daemons eingetragen werden die inetd anbieten soll.
 Auch können auch in inetd integrierte Services angegeben werden.
@@ -61,8 +60,7 @@ hinterlegt sind
 
 
 
-Konfiguration
--------------
+### Konfiguration
 
 Hier wird der Inhalt der /etc/inetd.conf angezeigt wie sie von Freetz
 generiert wurde. Sie kann hier nicht geändert werden.

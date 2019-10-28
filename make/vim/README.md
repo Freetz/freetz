@@ -20,8 +20,7 @@ Auch [reguläre
 Ausdrücke](http://de.wikipedia.org/wiki/Reguläre_Ausdrücke)
 sind für *vim* eine Selbstverständlichkeit.
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [vim Homepage](http://www.vim.org/)
 -   [Wikipedia
@@ -38,5 +37,4 @@ Weiterführende Links
 -   [vim
     Videotutorials](http://www.learn2use.de/tag/Vim)
 
-------------------------------------------------------------------------
 

@@ -2,8 +2,7 @@
 
 [![nhipt Seite im Freetz Webinterface](../../README/screenshots/178_md.jpg)](../../README/screenshots/178.jpg)
 
-MOTIVATION
-----------
+### MOTIVATION
 
 > iptables ist ein Kommandozeilen User Interface zur Konfiguration /
 > Verwaltung der im jeweiligen Linux Kernel eingebauten sehr mächtigen
@@ -13,8 +12,7 @@ MOTIVATION
 > an der Fritz-Box nutzen. Das cgi kann als Paket sowohl in die Firmware
 > integriert, als auch stand-alone als externes Paket genutzt werden.
 
-VORAUSSETZUNGEN:
-----------------
+### VORAUSSETZUNGEN:
 
 -   nhipt wurde für die 7270 erstellt und läuft auf alle 72xx Boxen mit
     dem neuen Kernel problemlos, 71xx / 70xx Boxen mit dem alten Kernel
@@ -58,8 +56,7 @@ VORAUSSETZUNGEN:
 > > Alternativ (ohne autoload Option) mit **modprobe <modulname>** die
 > > oben genannten iptables Module einzeln laden.
 
-ES STEHEN 3 PAKETE ZUR AUSWAHL:
--------------------------------
+### ES STEHEN 3 PAKETE ZUR AUSWAHL:
 
 ### nhipt.cgi.(version).tar.gz
 
@@ -121,8 +118,7 @@ chmod +x /var/media/ftp/uStor01/ipt/register.sh
 > zusammengestellt werden. Danach die übliche Vorgehensweise zum
 > Firmware Bauen....
 
-ARBEITSWEISE:
--------------
+### ARBEITSWEISE:
 
 ### Tipps & Literatur:
 
@@ -229,8 +225,7 @@ ROOT=/usr/ipt
 /lib/cgi-bin/nhipt.cgi             r-xr-xr-x    # das CGI für freetz Einstellungen
 ```
 
-GUT GEMEINTE RATSCHLÄGE:
-------------------------
+### GUT GEMEINTE RATSCHLÄGE:
 
 > Noch eins zum Thema Aussperren, für alle, die noch nie eine Firewall
 > installiert haben.
@@ -278,15 +273,13 @@ GUT GEMEINTE RATSCHLÄGE:
     trotzdem aussperrt, hilft nur noch ein erneutes Flashen der
     Firmware.
 
-DOWNLOAD
---------
+### DOWNLOAD
 
 > Die aktuelle Version, sowie Anmerkungen, Tipps & Tricks und
 > weiterführende Links finden sich hier: [IPPF
 > Forum](http://www.ip-phone-forum.de/showpost.php?p=1420252&postcount=1)
 
-BEKANNTE PROBLEME
------------------
+### BEKANNTE PROBLEME
 
 > *Bei der 7390 wird nur eine leere Seite angezeigt, Regeln lassen sich
 > nicht anzeigen / hinzufügen.*
@@ -300,8 +293,7 @@ BEKANNTE PROBLEME
 > automatisch anhand der Parameter des laufenden syslogd Prozesses
 > ermittelt).
 
-SCREENSHOTS
------------
+### SCREENSHOTS
 
 [![nhipt Webinterface](../../README/screenshots/179_md.jpg)](../../README/screenshots/179.jpg)
 

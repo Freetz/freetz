@@ -17,5 +17,4 @@ Enthalten sind folgende Programme:
 Für weitere Informationen siehe auch
 [http://mj.ucw.cz/pciutils.shtml](http://mj.ucw.cz/pciutils.shtml)
 
-------------------------------------------------------------------------
 

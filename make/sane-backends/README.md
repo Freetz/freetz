@@ -1,15 +1,13 @@
 # SANE 1.0.27
 
-Beschreibung
-------------
+### Beschreibung
 
 Dieses Paket ermöglicht den Betrieb von Scannern an der Fritz!Box. Diese
 können dann wie Drucker von allen Rechnern im lokalen Netzwerk genutzt
 werden. Ebenso ist es damit möglich, Scanner direkt von der Fritz!Box
 aus zu nutzen (z.B. in Scripts).
 
-Schnellstart
-------------
+### Schnellstart
 
 ### Installation und Konfiguration
 
@@ -94,8 +92,7 @@ funktioniert:
     bei [Probleme und
     Lösungen](sane-backends.html#ProblemeundLösungen) weiterlesen
 
-Probleme und Lösungen
----------------------
+### Probleme und Lösungen
 
 -   *Problem*: Es wird kein Scanner gefunden
     *Lösung*: Netzwerkeinstellungen prüfen (ping fritz.box
@@ -110,8 +107,7 @@ Probleme und Lösungen
     ist (in kommenden Versionen ist kein anderer Starttyp mehr
     auswählbar und dieses Problem tritt nicht mehr auf).
 
-Einschränkungen und Hinweise
-----------------------------
+### Einschränkungen und Hinweise
 
 -   Dieses Paket erlaubt standardmäßig den Zugriff für alle Rechner im
     LAN (192.168.178.0/24)
@@ -192,8 +188,7 @@ als Scanner an der Fritz!Box betrieben werden (s.a.
 Generell betroffen sind alle Geräte, bei denen in der models.dat aus
 HPLIP als scan-type 3, 4 oder 5 steht.
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [IPPF-Thread](http://www.ip-phone-forum.de/showthread.php?t=108479)
     zur Entstehung dieses Freetz-Paketes, mit entsprechenden Hinweisen

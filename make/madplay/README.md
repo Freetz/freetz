@@ -11,8 +11,7 @@ Systems" sowie "schwachbrüstige Systeme".
 
 *Freetz* verwendet *MAD' z.B. im Paket [DTMFBox](../dtmfbox/README.md).*
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [MAD
     Homepage](http://www.underbit.com/products/mad/)
@@ -20,5 +19,4 @@ Weiterführende Links
     Projektseite](http://sourceforge.net/projects/mad/)
     (Sourceforge)
 
-------------------------------------------------------------------------
 

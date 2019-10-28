@@ -2,8 +2,7 @@
 
 [![RRDstats screenshot](../../README/screenshots/229_md.jpg)](../../README/screenshots/229.jpg)
 
-Einleitung
-----------
+### Einleitung
 
 RRD steht für Round Robin Database und wurde für Linux und Windows unter
 der GNU-Lizenz von Tobias Oetiker entwickelt. Es ist ein sehr
@@ -16,8 +15,7 @@ verwendet, worum es hier im Detail geht. Das Package
 [DigiTemp](../digitemp/README.md) wird zum Aufzeichen von
 Temperaturwerten benötigt.
 
-Voraussetzungen und Einbau von RRDstats beim Firmware-Bau
----------------------------------------------------------
+### Voraussetzungen und Einbau von RRDstats beim Firmware-Bau
 
 Im `menuconfig`:
 
@@ -48,8 +46,7 @@ Auf der Box:
 
 -   im Freetz-Webif unter "RRDstats" weitere Einstellungen vornehmen
 
-Backup
-------
+### Backup
 
 Sinnvoll ist die Anpassung der Pfade, falls man regelmäßige Backups der
 Messdaten machen möchte, z.B.:
@@ -74,8 +71,7 @@ dazu unter "Einstellungen / Freetz: crontab" z.B. folgendes ein:
 
 Näheres zu crontab bitte im Internet nachlesen.
 
-Einstellungen WebGUI
---------------------
+### Einstellungen WebGUI
 
 "Not lazy" bedeutet, dass die Graphen immer neu generiert werden,
 hingegen bedeutet "lazy", dass sie nur neu generiert werden, wenn sie
@@ -92,8 +88,7 @@ aus, nicht auf die .cvs.
 *Die anderen Einstellungen dürften selbsterklärend sein. Falls nicht,
 bitte im Forum nachfragen und bei neuen Erkenntnissen hier ergänzen.*
 
-DigiTemp
---------
+### DigiTemp
 
 Die Initialisierung ist nur 1x pro Messfühler nötig.
 Danach muss der Dienst "RRDstats" manuell wieder im Freetz-Webif unter
@@ -101,8 +96,7 @@ Danach muss der Dienst "RRDstats" manuell wieder im Freetz-Webif unter
 
 
 
-Kabelmodem
-----------
+### Kabelmodem
 
 [![RRDstats Cisco EPC (S-N Ratio)](../../README/screenshots/253_md.jpg)](../../README/screenshots/253.jpg)
 
@@ -189,8 +183,7 @@ Viel Spass und Erfolg beim nachmachen
 
 
 
-Kabelsegment
-------------
+### Kabelsegment
 
 [![RRDstats Kabelsegment](../../README/screenshots/257_md.jpg)](../../README/screenshots/257.jpg)
 
@@ -199,8 +192,7 @@ werden. Es wird zusätzlich noch ein Treiber benötigt. Momentan gibt es
 nur ein Package für DVB-Sticks von [Sundtek](../sundtek/README.md).
 Vorteil dieser ist, dass man kein v4l im Kernel benötigt.
 
-SmartHome
-------------
+### SmartHome
 
 Hiermit können viele Daten von AVM SmartHome Geräten aufgezeichnet werden.
 Welche Daten genau hängt vom Gerät ab, zB ein Heizkostenregler hat keine Spannung.\
@@ -228,8 +220,7 @@ Sekunden *erstellt*. Damit wachsen die einzelnen Dateien von ~85kB
 auf ~150kB. Existierende rrd-Datenbanken kann man so neue RRAs
 hinzufügen: [DigiTemp#Datenbank](digitemp.html#Datenbank)
 
-Dateiübersicht (unvollständig)
-------------------------------
+### Dateiübersicht (unvollständig)
 
 Folgende Dateien/Pfade sind an der Erstellung der Graphischen Auswertung
 beteiligt:
@@ -248,8 +239,7 @@ beteiligt:
     anzuzeigenden Werte, erstellt csv Dateien und pflegt die neuen Werte
     in die Round Robin Database über [RRDtool](../rrdtool/README.md) ein.
 
-BUGS
-----
+### BUGS
 
 Manchmal kann es vorkommen, dass die Zähler / Graphiken für CPU, Memory
 etc. nicht mehr verfügbar sind. Im Persistenten Verzeichnis (Dienste -
@@ -262,8 +252,7 @@ eine fehlerhaftes Datum auf der Fritzbox (Jahr 2017-Problem).
 Die Dateien können auf ihre Konsistenz mit `rrdtool dump dateiname.rrd`
 überprüft werden.
 
-Links
------
+### Links
 
 Entstanden aus diesem Thread im IPPF:
 [http://www.ip-phone-forum.de/showthread.php?t=183491](http://www.ip-phone-forum.de/showthread.php?t=183491)

@@ -13,8 +13,7 @@ Daemons wie z. B. SSH, Telnet und FTP.
 
 In Freetz wir dieses Paket zur Zeit vom NFS-Server benötigt.
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [Freshmeat
     Projektseite](http://freshmeat.net/projects/tcp_wrappers/)
@@ -29,5 +28,4 @@ Weiterführende Links
 -   [Sun Dokumentation: Überwachen und Modifizieren der
     Transportschichtservices](http://docs.sun.com/app/docs/doc/820-2980/ipconfig-111?l=de&a=view)
 
-------------------------------------------------------------------------
 

@@ -14,8 +14,7 @@ Chatten benutzt).
 Mehr Informationen gibt es auf der [BIP
 Homepage](http://bip.milkypond.org/).
 
-Auswahl
--------
+### Auswahl
 
 [![Menuconfig](../../README/screenshots/212_md.png)](../../README/screenshots/212.png)
 
@@ -26,8 +25,7 @@ Zu finden ist dieser im **menuconfig** unter : **Package selection** =⇒
 **Testing** =⇒ Bip 0.8.x
 
 
-Konfiguration
--------------
+### Konfiguration
 
 [![Menu in der Fritzbox](../../README/screenshots/213_md.png)](../../README/screenshots/213.png)
 
@@ -80,8 +78,7 @@ network {
 drücken des Button **Übernehmen** muss man ca. 5 Minuten warten bis sich
 der User wieder am IRC-Chanel anmelden kann.
 
-Links
------
+### Links
 
 Hier findet man noch weitere Erläuterungen zu BIP und welche
 Einstellungen man beim IRC-Client vornehmen muss:

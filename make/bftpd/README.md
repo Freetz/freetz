@@ -18,8 +18,7 @@ einem Passwort zu schützen, kann man wie folgt vorgehen:
 Nun ist der Zugriff auf den FTP Server nur noch als Benutzer ftp mit dem
 vergebenen Passwort möglich.
 
-Zusätzliche Benutzer einrichten
--------------------------------
+### Zusätzliche Benutzer einrichten
 
  * Achtung: Der
 AVM-Dämon `ctlmgr` überschreibt die `/etc/passwd` bei Änderungen im
@@ -72,8 +71,7 @@ Lesen und Schreiben ohne Passwörter eingestellt sein. Der bftpd sollte
 mit den Optionen "Automatisch starten lassen" und "nicht anonym"
 gestartet werden.
 
-Bestehende (persistente) Benutzer modifizieren
-----------------------------------------------
+### Bestehende (persistente) Benutzer modifizieren
 
 Ergänzung von [Alexander Kriegisch
 (kriegaex)](http://www.ip-phone-forum.de/member.php?u=117253)

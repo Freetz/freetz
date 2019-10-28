@@ -1,7 +1,6 @@
 # Transmission 2.94 (binary only)
 
-Blocklist
----------
+### Blocklist
 
 If you want to use a peer-blocklist (you can enable this in the web
 interface if you are using the trunk version of Freetz), you have to
@@ -24,8 +23,7 @@ fi
 
 This can be done from the transmission web interface too now.
 
-Number of peers
----------------
+### Number of peers
 
 It is probably a good idea to reduce the number of peers by editing the
 *.../bittorrent/config/settings.json* file:
@@ -44,8 +42,7 @@ killall -HUP transmission-daemon
 
 This can be done from the transmission web interface too now.
 
-Memory usage
-------------
+### Memory usage
 
 Huge, relatively.
 
@@ -66,8 +63,7 @@ or something (in Freetz WebIF since
 You can monitor these values easily with the patch from ticket
 [#1308](https://trac.boxmatrix.info/freetz-ng/ticket/1308)
 
-Limit memory usage
-------------------
+### Limit memory usage
 
 To prevent memory shortage (could cause reboots and crashing processes):
 
@@ -82,8 +78,7 @@ The cache size is by default 2 MiB and the open file limit is by default
 To minimize the number of connections you could decide to forward TCP
 traffic only and not UDP traffic.
 
-Watchdog
---------
+### Watchdog
 
 It may be necessary to disable the watchdog by adding this line to for
 example *rc.custom*:
@@ -92,8 +87,7 @@ example *rc.custom*:
     echo "disable">/dev/watchdog
 ```
 
-Links
------
+### Links
 
 -   [Transmission](http://transmissionbt.com/)
     (external)

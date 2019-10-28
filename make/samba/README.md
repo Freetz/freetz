@@ -39,8 +39,7 @@ das Freetz-Paket erweitert die Möglichkeiten:
 ^3 Freetz mit "eigenem" Samba
 ^4 NTFS/EXT2 bei Modellen ab Generation x2xx (EXT2 nicht bei 7270v1), EXT3/4 bei Modellen ab Firmware 5.x
 
-Package ins Image einbinden
----------------------------
+### Package ins Image einbinden
 
 Im menuconfig unter `Package selection -> Standard packages` befindet
 sich
@@ -51,8 +50,7 @@ sich
     Dies macht die FritzBox in der Netzwerkumgebung sichtbar. `nmbd`
     kann nur gewählt werden, wenn `smbd` ausgewählt ist.
 
-Verwandte Themen
-----------------
+### Verwandte Themen
 
 Unter `Patches` befindet sich
 
@@ -63,8 +61,7 @@ Unter `Patches` befindet sich
     Option sollte deselektiert sein und wird bei der Auswahl des
     Samba-Packages aus menuconfig entfernt.
 
-Konfigurieren des Pakets
-------------------------
+### Konfigurieren des Pakets
 
 ### AVM Konfiguration
 

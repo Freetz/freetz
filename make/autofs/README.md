@@ -10,8 +10,7 @@ praktisch bei Netzwerk-Freigaben (NFS, CIFS, DAVFS etc.), da der Server,
 auf den man zugreifen möchte, nicht bei Start des Freetz-Packages, das
 diesen mountet, erreichbar sein muss, sondern nur bei Zugriff.
 
-Optionale Aufrufparameter
--------------------------
+### Optionale Aufrufparameter
 
 Zur Fehlersuche empfiehlt sich der Parameter `-v` und zusätzlich evtl
 `-d`. Die Meldungen werden per [syslogd-cgi](../syslogd/README.md)
@@ -19,8 +18,7 @@ ausgegeben.
 
 
 
-Beispielkonfigurationen der auto.conf
--------------------------------------
+### Beispielkonfigurationen der auto.conf
 
 ### NFS
 

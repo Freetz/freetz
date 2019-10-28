@@ -9,8 +9,7 @@ und [englischen
 (ausführlich)](http://en.wikipedia.org/wiki/Inotify)
 Wikipedia-Artikel.
 
-Inotify und Inotify-Tools allgemein
------------------------------------
+### Inotify und Inotify-Tools allgemein
 
 Die
 **[Inotify-Tools](http://inotify-tools.sourceforge.net)**
@@ -32,8 +31,7 @@ sondern dauerhaft beobachten möchte. **Inotifywatch** hingegen sammelt
 und summiert statistische Daten zu Dateisystem-Ereignissen und stellt
 sie in tabellarischer Textdarstellung zur Verfügung.
 
-Dateizugriffe der FritzBox ab dem Start beobachten
---------------------------------------------------
+### Dateizugriffe der FritzBox ab dem Start beobachten
 
 Eine besondere Anwendung, für die das Startskript `rc.S` durch einen
 speziellen, immer eingebauten Patch vorbereitet wird, ist das
@@ -126,8 +124,7 @@ oder abgebrochen worden sein. Jedenfalls startet Inotify-Tools in diesem
 Fall neu, ggf. jetzt mit Ausgabe auf das frisch gemountete *mini_fo*
 (vorher auf das nun überdeckte, darunter liegende Dateisystem).
 
-Was wird von rc.inotify_tools protokolliert?
----------------------------------------------
+### Was wird von rc.inotify_tools protokolliert?
 
 Wir könnten alles protokollieren, aber das wäre eine große Datenmenge,
 weil bestimmte Zugriffe, z.B. auf häufig verwendete Dateien wie
@@ -157,8 +154,7 @@ die "-0" am Ende grenzt übrigens `libcrypt` von `libcrypto` ab.
 Das Log wird geschrieben in die RAM-Disk nach `/var/iw.log` - "iw" wie
 "inotifywait".
 
-Ausgabeformat
--------------
+### Ausgabeformat
 
 Was steht nun drin in `/var/iw.log` bzw. wie sieht es aus? Ein kleiner
 Ausschnitt:
@@ -193,8 +189,7 @@ beobachten möchte, nur Schreibvorgänge beobachten möchte usw., kann man
 `inotifywait` immer noch manuell starten oder für vorgefertigte
 Statistiken auch mal `inotifywatch` bemühen.
 
-Log-Datei regelmäßig konsolidieren, um Platz zu sparen
-------------------------------------------------------
+### Log-Datei regelmäßig konsolidieren, um Platz zu sparen
 
 Zum Zweck des Platzsparens in Firmware-Images interessiert uns
 vermutlich weniger, auf welche Dateien in welcher Reihenfolge, wie oft,
@@ -285,8 +280,7 @@ jederzeit einsehen kann. Sie sieht in etwa so aus (Ausschnitt):
 /usr/lib/callmonitor/applets/rc.callmonitor.sh
 ```
 
-Schlußwort
-----------
+### Schlußwort
 
 Damit steht ein mächtiges und nun im nachhinein auch dokumentiertes
 Analyse-Werkzeug zur Verfügung, mit dem die Möglichkeiten der

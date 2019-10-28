@@ -5,8 +5,7 @@ ein "Vorlese-Programm", welches ASCII Texte mit synthetischer Stimme
 wiedergeben ("vorlesen") kann. Bei Freetz wird es u.a. von
 [DTMFBox](../dtmfbox/README.md) genutzt.
 
-Installation
-------------
+### Installation
 
 Zur Installation ist das Paket einfach im Paket-Menü von
 `make menuconfig` auszuwählen. Unterstützung für zahlreiche zusätzliche
@@ -20,8 +19,7 @@ sogenanntes "WebStreaming" (die Audio-Daten werden dann auf einem
 anderen Server generiert) - was allerdings eine bestehende
 Internet-Verbindung voraussetzt.
 
-Aufruf
-------
+### Aufruf
 
 An dieser Stelle nur ein paar **kurze** Tipps zum Aufruf von eSpeak -
 Details finden sich auf der
@@ -45,13 +43,11 @@ Stimmhöhe lässt sich beeinflussen: `-p 50` setzt den "Pitch" auf 50
 - niedrigere transformieren "anwesendes Weibsvolk" zu "bärtigen
 Ladies".
 
-Hinweis
--------
+### Hinweis
 
 Das Executeable findet sich auf der Box unter `/usr/bin/speak`.
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [http://espeak.sourceforge.net](http://espeak.sourceforge.net)
 

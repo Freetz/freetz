@@ -14,14 +14,12 @@ Nachteil, da auf der Box kein X installiert ist (oder war etwa jemand so
 wahnsinnig, und hat das gemacht?).
 :o
 
-Warning
--------
+### Warning
 
 A lot of traffic will use a lot of CPU, even if that traffic isn't
 monitored. However, filtering by network adapter helps.
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [tcpdump Homepage](http://www.tcpdump.org/)
 -   [tcpdump Man
@@ -35,5 +33,4 @@ Weiterführende Links
 -   [noch ein kleiner
     Workshop](http://www.tippscout.de/tcpdump-unter-linux-netzwerk-verkehr-aufzeichnen-mit-tcpdump_tipp_2180.html)
 
-------------------------------------------------------------------------
 

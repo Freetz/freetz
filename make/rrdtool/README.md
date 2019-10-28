@@ -1,7 +1,6 @@
 # RRDtool 1.2.30 (binary only)
 
-Einleitung
-----------
+### Einleitung
 
 RRD steht für Round Robin Database und wurde für Linux und Windows unter
 der GNU-Lizenz von Tobias Oetiker entwickelt. Es ist ein sehr
@@ -15,14 +14,12 @@ aufbereitet und dem
 **[RRDtool](http://www.rrdtool.org/)** übergeben
 werden." (Wikipedia)
 
-RRDstats
---------
+### RRDstats
 
 Mit [RRDstats](../rrdstats/README.md) lassen sich die Statistiken auch
 auf der FritzBox grafisch anzeigen. Details dazu bitte dort nachlesen.
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [RRDTool Homepage](http://www.rrdtool.org/)
 -   [RRDTool IrcNet

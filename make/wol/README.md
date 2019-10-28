@@ -8,8 +8,7 @@ gibt.
 Das `wol` Paket ist "binary only", kann aber seit einiger Zeit auch
 über wol-cgi bedient werden.
 
-Wake on LAN WebInterface(wol-cgi)
----------------------------------
+### Wake on LAN WebInterface(wol-cgi)
 
 Mit Hilfe des wol-cgi Paketes lässt sich das Busybox Applet `ether-wake`
 steuern. Hiermit lassen sich PCs über das lokale Netzwerk (LAN) oder

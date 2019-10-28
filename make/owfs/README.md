@@ -30,12 +30,10 @@ owdir owread owwrite: erlaubt das einfache Auslesen und Beschreiben von
 
 Mehr Infos gibts in den manpages unter "weiterführende Links".
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [http://owfs.org/](http://owfs.org/)
 -   [A Guide to the 1WRJ45
     Standard](http://1wire.org/index.html?target=p_2.html&lang=en-us)
 
-------------------------------------------------------------------------
 

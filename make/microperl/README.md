@@ -8,8 +8,7 @@ Name täuscht leicht: Das Binary hat noch satte 2 MB, dazu kommen 11 MB
 and Libraries (die zum Glück nicht zwingend notwendig sind) - so Micro
 ist es also dann doch nicht...
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [bootstrapping with
     microperl](http://www.perlmonks.org/?node_id=228040)
@@ -20,5 +19,4 @@ Weiterführende Links
     von
     [bodega](http://www.ip-phone-forum.de/member.php?u=101616)
 
-------------------------------------------------------------------------
 

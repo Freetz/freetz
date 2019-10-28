@@ -11,8 +11,7 @@ kann einen abgebrochenen [Download](../Download.html) wieder
 aufnehmen, komplette Webseiten mit Bildern sowie vollständige Websites
 herunterladen, z. B. zum Offline-Lesen oder zur Archivierung.
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [wget
     Homepage](http://www.gnu.org/software/wget/)
@@ -23,5 +22,4 @@ Weiterführende Links
 -   [Herunterladen von Webseiten mit
     Wget](http://www.pro-linux.de/berichte/wget-doku.html)
 
-------------------------------------------------------------------------
 

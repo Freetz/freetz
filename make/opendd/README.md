@@ -8,8 +8,7 @@ nicht ständig im Arbeitsspeicher befindet sondern nur nach einem
 Reconnect gestartet wird. Es kann eine eMail bei IP-Wechsel versendet
 werden. Ausgaben werden über Syslog ausgegeben
 
-nach 25 Tagen Updaten
----------------------
+### nach 25 Tagen Updaten
 
 Diese Option sollte man wählen, wenn sich die IP längere Zeit nicht
 ändert, wie es bei Kabelinternet Anbietern üblich ist. Dadurch wird
@@ -25,8 +24,7 @@ von [onlinechanged](../onlinechanged/README.md) ausgeführt werden!
 Beispielskripte:
 [http://forum.mbremer.de/viewtopic.php?f=62&t=1756&p=24340#p24340](http://forum.mbremer.de/viewtopic.php?f=62&t=1756&p=24340#p24340)
 
-get_ip Parameter
------------------
+### get_ip Parameter
 
 Hiermit wird konfiguriert wie die externe IP ermittelt wird. Ab
 Trunk-Version
@@ -34,8 +32,7 @@ Trunk-Version
 Stelle](mod.html#get_ip) konfiguriert, wodurch diese Option bei
 opendd entfällt.
 
-Account
--------
+### Account
 
 Hier werden die Daten des DNS-Kontos eingetragen:
 
@@ -50,8 +47,7 @@ Hier werden die Daten des DNS-Kontos eingetragen:
 Das SSL-Zertifikat findet sich in der Buildumgebung unter:
 `.../freetz-trunk/packages/target-mipsel_uClibc-0.9.29/opendd-0.7.9/root/etc/default.opendd/opendd.pem`
 
-E-Mail
-------
+### E-Mail
 
 In diesem Abschnitt kann eine E-Mail-Benachrichtigung eingerichtet
 werden:

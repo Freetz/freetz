@@ -9,16 +9,14 @@ Tunneling Protocol** (**PPTP**) aufbauen
  * Das
 PPTP-Package benötigt "replace kernel".
 
-PPTP Konfiguration
-------------------
+### PPTP Konfiguration
 
 **Hostname**: `VPN-Server `(Beispiel vpn.tolledomain.de)
 **Benutzername**: `VPN-Benutzername `(Bei Windows bitte Domäne so
 schreiben → DOMÄNE/user oder DOMÄNEuser, nicht DOMÄNEuser)
 **Servername**: `PPTP`
 
-IP Routing
-----------
+### IP Routing
 
 Aktivieren und in das Textfeld das Firmennetz samt Subnetzmaske
 reinschreiben (z.B. 10.0.0.0 255.255.255.0)

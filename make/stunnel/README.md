@@ -17,8 +17,7 @@ Anwendung selbst dies nicht unterstützt, und somit dem
 Anwendungsbeispiele finden sich auf der [Stunnel
 Homepage](http://www.stunnel.org/examples/).
 
-Konfiguration
--------------
+### Konfiguration
 
 1.  Erzeugen der Keys auf dem PC (unter Linux):
 
@@ -57,8 +56,7 @@ Konfiguration
     Für den externen Zugriff muss noch eine Port-Freigabe eingetragen
     werden.
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [Wikipedia](http://en.wikipedia.org/wiki/Stunnel)
     (EN) Article

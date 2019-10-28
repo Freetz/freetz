@@ -14,8 +14,7 @@ to it later. It was introduced in Freetz trunk
 [2636](https://trac.boxmatrix.info/freetz-ng/changeset/2636)
 by whoopie. It is smaller than the aforementioned *screen*.
 
-Bedienung
----------
+### Bedienung
 
 Erstellen einer neuen dtach-Session am Beispiel von
 [mcabber](../mcabber/README.md):
@@ -39,8 +38,7 @@ Wieder in die Session "einklinken":
 dtach -a /tmp/mcabber.dtach
 ```
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [Sourceforge-Projektseite
     (Englisch)](http://dtach.sourceforge.net)

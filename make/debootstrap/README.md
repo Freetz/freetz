@@ -27,8 +27,7 @@ sudo apt-get install -y debootstrap
 
 nachgeholt werden.
 
-Debian in wenigen Schritten nutzen
-----------------------------------
+### Debian in wenigen Schritten nutzen
 
 Zuerst mit Debootstrap das Debian-System herunterladen. Dies kann von
 jedem anderen System aus gemacht werden, welches das
@@ -118,8 +117,7 @@ root@fritz
 Ab jetzt kann man sich wie gewohnt nach einem apt-get update mit apt-get
 install zusätzliche Pakete installieren.
 
-Erfahrungswerte
----------------
+### Erfahrungswerte
 
 Die Erst-Installation auf einer 7170 dauert etwa 2 Stunden, die sich mit
 ca. 45/75 Minuten auf die ersten 2 Schritte verteilen. Der belegte
@@ -128,8 +126,7 @@ MB (März 2011). Im Gegensatz zur späteren Nutzung (speziell von
 Aptitude) benötigt die Installation noch keinen Swap, steigert
 allerdings den CPU-Verbrauch während dieser Zeit auf 100%.
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [Linux-Wiki:
     Debootstrap](http://www.linuxwiki.de/debootstrap)

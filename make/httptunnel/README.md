@@ -29,8 +29,7 @@ PC in der Firma          Proxy in der Firma         Fritzbox
 Derzeit ist httptunnel nur als Binary (3.3) für Freetz verfügbar, d.h.
 es gibt noch kein WebGUI für grafische Einstellungen.
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [httptunnel
     Homepage](http://www.nocrew.org/software/httptunnel.html)

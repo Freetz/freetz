@@ -11,8 +11,7 @@ versions) they are running, what type of packet filters/firewalls are in
 use, and dozens of other characteristics. It was designed to rapidly
 scan large networks, but works fine against single hosts.*"
 
-Example
--------
+### Example
 
 ```
 root@fritz:/var/media/ftp/uData# nmap localhost
@@ -41,8 +40,7 @@ PORT     STATE SERVICE
 Nmap done: 1 IP address (1 host up) scanned in 4.598 seconds
 ```
 
-Known open ports
-----------------
+### Known open ports
 
   ---------- ------------------------ --------------------- -------------------------------------
   **Port**   **Function**             **Program/process**   **Anmerkung**
@@ -63,8 +61,7 @@ Useful command:
 netstat -anp
 ```
 
-Links
------
+### Links
 
 -   [home page](http://nmap.org/)
 -   [IPPF: Port

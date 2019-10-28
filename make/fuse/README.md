@@ -25,8 +25,7 @@ Resource als Dateisystem exportiert werden.
 
 In Freetz basiert z.B. das [NTFS](ntfs-3g.html) Paket auf *FUSE*.
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [Wikipedia:
     FUSE](http://de.wikipedia.org/wiki/Filesystem_in_Userspace)

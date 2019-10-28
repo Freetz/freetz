@@ -28,8 +28,7 @@ erstellte selbst signierte Zertifikate des HTTPS-Servers von AVM.
 Seit
 Freetz-trunk-[r3571](https://trac.boxmatrix.info/freetz-ng/changeset/3571) gibt es dazu auch ein WebGUI.
 
-Konfiguration
--------------
+### Konfiguration
 
 1.  Erzeugen der Keys auf dem PC (unter Linux):
 
@@ -54,8 +53,7 @@ Konfiguration
     Für den externen Zugriff muss noch eine Port-Freigabe eingetragen
     werden.
 
-Zertifikate auf der Box erzeugen
---------------------------------
+### Zertifikate auf der Box erzeugen
 
 ```
 xrelayd -f -K 1024 -p host.key -U "CN=localhost" -p host.key -A host.cert

@@ -22,14 +22,12 @@ die FRITZBox ohne Freetz nur eingeschränkt kann. So ist es jetzt möglich
 einem Client eine selbst definierte feste IP zu geben und nicht nur eine
 bereits durch den DHCP vergebene IP fest mit dem Client zu verbinden.
 
-Installation
-------------
+### Installation
 
 Dnsmasq ist als Paket im Rahmen von Freetz realisiert und kann bei
 dessen Erzeugung einfach ausgewählt werden.
 
-Konfiguration
--------------
+### Konfiguration
 
 Zur Konfiguration gibt es im Web-Interface von Freetz die Seiten:
 
@@ -44,8 +42,7 @@ DHCP-Server von dnsmasq genutzt werden soll, dann ist der
 FRITZBox-interne DHCP-Server aus der Original-Firmware unter *System* →
 *Netzwerkeinstellungen* → *IP-Adressen* zu [deaktivieren]
 
-DNS Server
-----------
+### DNS Server
 
 Im Abschnitt *Der DNS Server ist gebunden an: Port:* trägt man den Port
 ein, an den der DNS-Server gebunden ist. Der Default-Wert ist hier Port
@@ -143,8 +140,7 @@ So kann der multid Port 53 belegen, aber es wird trotzdem dnsmasq zur
 Namensauflösung genutzt. Außerdem sind so Restarts von multid nicht mehr
 nötig.
 
-Kommandozeilen-Optionen
------------------------
+### Kommandozeilen-Optionen
 
 Unter *Zusätzliche Kommandozeilen-Optionen (für Experten)* lassen sich
 weitere dnsmasq-Optionen eintragen. Einige dieser Optionen sind in den
@@ -214,8 +210,7 @@ nutzt den DNS mit der angegebenen IP-Adresse. Dieser Schalter
 unterdrückt nicht das Lesen der Datei `resolv.conf`, das muss zusätzlich
 mit *-R* erledigt werden.
 
-DHCP Server
------------
+### DHCP Server
 
 Im Bereich *DHCP Range (eine pro Zeile)* werden die Bereiche in
 folgender Form eingetragen:
@@ -274,8 +269,7 @@ Mit dem Eintrag
 werden Adressen von IP 192.168.178.20 bis IP 192.168.178.200 mit einer
 Lease-Time von 12 Stunden vergeben.
 
-Einträge in der Hosts-Liste
----------------------------
+### Einträge in der Hosts-Liste
 
 ```
 <ipaddr>|* <hwaddr>|[id:]<client_id>|* [net:]<netid>|* <hostname>|* [ignore]
@@ -349,8 +343,7 @@ Token-Ring-Hardware-Adresse, da die ARP-Adresse für Token Ring 6 ist.
 Diese wiederum wird aus `hosts` mit den MAC-Adressen etc. beim Start von
 dnsmasq generiert.
 
-DHCP Boot
----------
+### DHCP Boot
 
 Der DHCP-Boot-Eintrag wird für Optionen des
 [BOOTP](http://de.wikipedia.org/wiki/Bootstrap_Protocol)-Protokolls
@@ -361,8 +354,7 @@ Arbeitsstationen konfiguriert werden.
 Direktive](http://www.thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html)
 dazu lautet: `dhcp-boot`. )
 
-TFTP Server
------------
+### TFTP Server
 
 Für einen TFTP-Server lauten die [dnsmask
 Direktiven](http://www.thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html):
@@ -424,8 +416,7 @@ Wenn der TFTP-Server auf einem anderen Rechner läuft, z. B. hier auf
 -M pxelinux.0,192.168.178.10,192.168.178.10
 ```
 
-Komplett eigene Konfiguration
------------------------------
+### Komplett eigene Konfiguration
 
 Es lassen sich auch komplett eigene Konfigurationen nutzen. Dazu
 erstellt man eine leere, ausführbare Datei mit dem Namen
@@ -434,8 +425,7 @@ erstellt man eine leere, ausführbare Datei mit dem Namen
 Informationen zur Syntax finden sich unter
 [Beispiel-Konfiguration](http://www.thekelleys.org.uk/dnsmasq/docs/dnsmasq.conf.example).
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [Website von
     dnsmasq](http://www.thekelleys.org.uk/dnsmasq/doc.html)

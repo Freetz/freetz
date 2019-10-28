@@ -3,8 +3,7 @@
 Das [tinyproxy](http://tinyproxy.sourceforge.net/)
 Paket stellt einen kleinen HTTP Proxy mit Filterfunktionen bereit.
 
-Proxy auto-config (pac)
------------------------
+### Proxy auto-config (pac)
 
 The complete URL for the default settings is:
 [http://fritz.box:88/cgi-bin/proxy.cgi](http://fritz.box:88/cgi-bin/proxy.cgi)
@@ -12,8 +11,7 @@ The complete URL for the default settings is:
 See also
 [wikipedia](http://en.wikipedia.org/wiki/Proxy_auto-config).
 
-URL blocking
-------------
+### URL blocking
 
 [![tinyproxy filtered](../../README/screenshots/217_md.png)](../../README/screenshots/217.png)
 
@@ -38,8 +36,7 @@ Setup Firefox:
 -   Check *Use this proxy for all protocols*
 -   *No proxy for:* localhost, 127.0.0.1, fritz.box, 192.168.178.0/24
 
-Memory usage
-------------
+### Memory usage
 
 After some use:
 

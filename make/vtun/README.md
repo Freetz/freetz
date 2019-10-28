@@ -4,8 +4,7 @@
 einfache Möglichkeit, einen Tunnel von der oder auf die Fritzbox
 aufzubauen. Mit maximal 75k ist es zudem auch nicht allzu groß.
 
-Version
--------
+### Version
 
 [![vtun configuration GUI](../../README/screenshots/125_md.png)](../../README/screenshots/125.png)
 
@@ -18,8 +17,7 @@ Momentan ist die Version 3.0.2 enthalten. Es kann im menuconfig
     ^Es besteht die Möglichkeit, VTUN statisch zu bauen, um mögliche Probleme damit zu vermeiden^
 -   Flusssteuerung ("Traffic-Shaping")
 
-Konfigurationsanleitung
------------------------
+### Konfigurationsanleitung
 
 Die GUI für das Programm ist momentan sehr einfach aufgebaut:
 

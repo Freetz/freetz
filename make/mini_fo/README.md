@@ -13,8 +13,7 @@ Anwender derart transparent geschieht, dass er davon eigentlich nichts
 merkt - sondern wirklich den Eindruck eines einzelnen, beschreibbaren
 Mediums hat.
 
-Konfiguration (Webinterface)
-============================
+### Konfiguration (Webinterface)
 
 Das Paket wird über das Webinterface konfiguriert. Hierbei kann der
 Speicherort für die Änderungen ausgewählt werden. Entweder RAM
@@ -30,8 +29,7 @@ Filesystem           1K-blocks      Used Available Use% Mounted on
 
 Das Paket kann nur durch einen Reboot de-/aktiviert werden.
 
-Konfiguration (per Hand)
-========================
+### Konfiguration (per Hand)
 
 **mini_fo** ist ein Kernel-Modul, das man entweder ohne Argumente mit
 insmod lädt...
@@ -58,8 +56,7 @@ mkdir -p /tmp/usrwww /tmp/usrwww-sto &&
 
 Im Pfad /tmp/usrwww-sto befinden sich dann jegliche Änderungen.
 
-Mögliche Nebeneffekte
-=====================
+### Mögliche Nebeneffekte
 
 Ein Firmware-Update kann evtl. mit geladenem mini_fo Modul scheitern
 (getestet mit 7170 4.8x). Es gibt dann keine Fehlermeldung aber die Box
@@ -87,8 +84,7 @@ Semaphoren die dsld zur Verwaltung von Shared Memory in /var/tmp/csem
 ablegt teilweise in /sto abgefragt und der Mechanismus empfindlich
 gestört.
 
-Restore original file
-=====================
+### Restore original file
 
 The modified files are stored here (trunk version):
 
@@ -102,8 +98,7 @@ So for example a modified */usr/sbin/blkid* is stored as
 If you remove the latter one, the original one will reappear in your
 file system.
 
-Siehe auch
-==========
+### Siehe auch
 
 -   [diesen
     Thread](http://www.ip-phone-forum.de/showthread.php?t=111226)

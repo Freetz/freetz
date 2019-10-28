@@ -8,8 +8,7 @@ big.*
 is to run cgi scripts in an embedded environment, using a small web
 server, such as mini-httpd, lighty, or the server built into busybox.*"
 
-Using busybox httpd / inet
---------------------------
+### Using busybox httpd / inet
 
 Inetd custom config:
 
@@ -68,8 +67,7 @@ chmod +x info.cgi
 Test:
 [http://fritz.box:8088/cgi-bin/info.cgi](http://fritz.box:8088/cgi-bin/info.cgi)
 
-Links
------
+### Links
 
 -   [Homepage](http://haserl.sourceforge.net/)
 -   [Patch for LUA support](https://trac.boxmatrix.info/freetz-ng/ticket/1326)

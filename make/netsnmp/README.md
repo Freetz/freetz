@@ -122,8 +122,7 @@ To get a list of all available objects:
 
 > snmpwalk -v 2c -c <community string> 192.168.178.1 .1
 
-MRTG
-====
+### MRTG
 
 The Multi Router Traffic Grapher will allow you to generate nice graphs
 of the data available via SNMP.

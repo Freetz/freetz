@@ -1,7 +1,6 @@
 # Polipo 1.1.1
 
-Using with Tor
---------------
+### Using with Tor
 
 1.  Add *socksParentProxy=localhost:9050* to *Additional options*
 2.  Point your browser http proxy to 192.168.178.1:8123
@@ -14,8 +13,7 @@ Button](https://addons.mozilla.org/nl/firefox/addon/2275/) to
 prevent DNS leakage (and other privacy problems with cookies, plugins,
 etc).
 
-Using at your office
---------------------
+### Using at your office
 
 Maybe your internet access at your office (school, internet café, etc)
 is restricted, filtered and/or monitored and you don't want that. In my
@@ -42,8 +40,7 @@ following additional option:
 chunkHighMark=1048576
 ```
 
-Security
---------
+### Security
 
 Unless you restrict the IP addresses that can access dropbear, my advice
 is to disable password login and to use [host-based
@@ -66,8 +63,7 @@ tunnelAllowedPorts=443;allowedPorts=80,443
 This prevent tunneling through the proxy and access to the freetz web
 interface.
 
-Blocking domains
-----------------
+### Blocking domains
 
 Using the extra options it is possible to specify a file with forbidden
 domains, like this:
@@ -86,14 +82,12 @@ googlesyndication.com
 facebook.com/plugins
 ```
 
-Issues
-------
+### Issues
 
 -   Download of large files is broken and wont be fixed:
     [ticket](https://trac.torproject.org/projects/tor/ticket/1149)
 
-Links
------
+### Links
 
 -   [Polipo
     home](http://www.pps.jussieu.fr/~jch/software/polipo/)

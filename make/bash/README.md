@@ -78,13 +78,11 @@ w : Working directory, aktuelles Arbeitsverzeichnis
 # : Eingabezeilennummer
 ```
 
-Bash als Loginshell
-===================
+### Bash als Loginshell
 
 TODO
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [Wikipedia
     Artikel](http://de.wikipedia.org/wiki/Unix-Shell#Die_Bourne-Again-Shell)

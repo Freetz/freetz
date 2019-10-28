@@ -18,8 +18,7 @@ vorhanden.
 
 *NTFS-3G* basiert auf dem *[FUSE](../fuse/README.md)* Paket.
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [NTFS-3G Homepage](http://www.ntfs-3g.com/)
 -   [Wikipedia

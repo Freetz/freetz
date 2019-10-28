@@ -10,8 +10,7 @@ dropbear Server, Client und scp - sowie ein auf den dropbear Server
 beschränktes Paket. Dropbear wurde so modifiziert, dass nur root Logins
 erlaubt sind.
 
-Grundbegriffe
--------------
+### Grundbegriffe
 
 -   **SSH** (Secure Shell): ermöglicht eine Verbindung zwischen zwei
     Rechnern (als sichere Alternative zu z.B. telnet). Dabei baut ein
@@ -61,8 +60,7 @@ Grundbegriffe
     Host-basierte Authentifizierung. Diese wird jedoch selten verwendet
     und von dropbear nicht unterstützt.
 
-Web-Config
-----------
+### Web-Config
 
 [![Dropbear Konfiguration](../../README/screenshots/201_md.png)](../../README/screenshots/201.png)
 
@@ -93,8 +91,7 @@ Web-Config
     Optionen gestartet. Übersicht über Optionen mit
     `dropbear -?`
 
-SSH-Zugang mit Passwort (Password-based Authentication)
--------------------------------------------------------
+### SSH-Zugang mit Passwort (Password-based Authentication)
 
 Das ist die Standardeinstellung im Dropbear. Ohne weitere Einstellungen
 kann die Fritzbox folgendermaßen über SSH erreicht werden:
@@ -126,8 +123,7 @@ root@fritz.box's password: freetz
 nicht mehr fritzbox, sondern freetz und muss nach dem ersten Einloggen
 geändert werden.
 
-SSH-Zugang ohne Passwort (Public Key Authentication)
-----------------------------------------------------
+### SSH-Zugang ohne Passwort (Public Key Authentication)
 
 ### Zugang mit OpenSSH
 
@@ -192,8 +188,7 @@ SSH-Zugang ohne Passwort (Public Key Authentication)
     Einstellungen mit *Load* geladen werden)
 11. *Open*
 
-Zugang zur Fritzbox von außerhalb
----------------------------------
+### Zugang zur Fritzbox von außerhalb
 
 Um den SSH-Port von außen zu erreichen muß "lediglich" eine
 Portweiterleitung eingerichtet werden. Leider verbietet mittlerweile das
@@ -216,8 +211,7 @@ alternativ oder zusätzlich zur obrigen Regel noch weitere für andere
 Ports hinzugefügt werden. Hierzu den gewünschten Port in die obere,
 etwas unglücklich, mit "(Start-)Port" Beschriftete Box eintragen.
 
-Zugang zum Webinterface der Fritzbox oder anderen Diensten im Heimnetz von außerhalb (z.B. hinter einem Proxy)
---------------------------------------------------------------------------------------------------------------
+### Zugang zum Webinterface der Fritzbox oder anderen Diensten im Heimnetz von außerhalb (z.B. hinter einem Proxy)
 
 ***Achtung, das Tunneln durch Proxies in Firmennetzen kann u.a. zur
 Abmahnung oder sogar zur Kündigung führen. Entsprechende
@@ -297,8 +291,7 @@ geringen Upstream üblicher DSL-Anschlüsse zwar etwas langsam, führt den
 Netzverkehr aber sicher aus einem unsicheren Netz wie z.B. einem freien
 WLAN heraus.
 
-Zugang zu anderen Rechnern mit der Fritzbox
--------------------------------------------
+### Zugang zu anderen Rechnern mit der Fritzbox
 
 **Anmerkung**: In der folgenden Beschreibung wird der Host-Key, der für
 den Server benötigt wird, gleichzeitig als Benutzer-Key (für den
@@ -332,8 +325,7 @@ als Parameter angegeben werden.
 Dies liefert dann einen passwortlosen Login auf 'machine' wenn dort
 vorher der public key hin kopiert wurde.
 
-mögliche Anwendung von ssh
---------------------------
+### mögliche Anwendung von ssh
 
 -   Ausführen eines auf der Fritzbox abgelegten Skriptes
     `ssh root@fritz.box [command]` bzw.
@@ -341,8 +333,7 @@ mögliche Anwendung von ssh
     `ssh root@fritz.box '/var/tmp/flash/testscript.sh'` zum Ausführen
     von `/var/tmp/flash/testscript.sh`)
 
-mögliche Probleme
------------------
+### mögliche Probleme
 
 -   Sollte die Verbindung nach korrekter Passwortangabe auf Modellen mit
     4MB Flash Speicher abbrechen und auch Telnet Login scheitern ist es
@@ -385,8 +376,7 @@ mögliche Probleme
     Unsicherheit über die Authentizität des Hosts, einfach mit *yes*
     bestätigen.
 
-Verbindungsaufbau beschleunigen
--------------------------------
+### Verbindungsaufbau beschleunigen
 
 Wem der Aufbau einer Verbindung zu Dropbear nicht schnell genug geht,
 hier ein paar Tipps: (Bei meiner Fritzbox 7050 hat es in letzter Zeit 5

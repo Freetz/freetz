@@ -11,8 +11,7 @@ beendet ihn dann später wieder. Dieses Vorgehen bietet zusätzliche
 Sicherheit, da Ports nur dann offen sind, wenn man sie auch wirklich
 braucht - der Portscan eines Hackers läuft also damit meist ins Leere.
 
-Weiterführende Links:
----------------------
+### Weiterführende Links:
 
 -   [Ein kurzer Workshop zu
     knockd](http://wiki.hetzner.de/index.php/Knockd)

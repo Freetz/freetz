@@ -10,8 +10,7 @@ Wie die Beschreibung richtig vermuten lässt, wird *ldd* in der Regel von
 Entwicklern benutzt - wohingegen der "normale Anwender" sie eher
 selten bis gar nicht benötigt.
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [ldd Man
     page](http://www.gsp.com/cgi-bin/man.cgi?section=1&topic=ldd)
@@ -20,5 +19,4 @@ Weiterführende Links
 -   [Linker and Libraries
     guide](http://docsun.cites.uiuc.edu/sun_docs/C/solaris_9/SUNWdev/LLM/p14.html)
 
-------------------------------------------------------------------------
 

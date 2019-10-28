@@ -16,8 +16,7 @@ sowie
 [JavaScript](http://de.wikipedia.org/wiki/Javascript)
 überhaupt nicht.
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [Lynx Homepage](http://lynx.isc.org/)
 -   [The History of

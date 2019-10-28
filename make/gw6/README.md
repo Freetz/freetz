@@ -8,8 +8,7 @@ hingegen bekommt man ein ganzes Subnetz zugeteilt.
 Falls es Probleme beim Einloggen gibt kann man einen eigenen
 Broker-Server einstellen, z.B. amsterdam.freenet6.net
 
-Alternativen
-------------
+### Alternativen
 
 -   [Aiccu](../aiccu/README.md) für SixXS
 

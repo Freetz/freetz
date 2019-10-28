@@ -22,8 +22,7 @@ weiß, wie die Routing-Daemons zu konfigurieren sind, sollte dieses Paket
 
 Ein sicheres Konfigurations-Interface ist allerdings in Arbeit...
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [Quagga Homepage](http://www.quagga.net/)
 -   [Quagga
@@ -35,5 +34,4 @@ Weiterführende Links
 -   [Quagga auf
     OpenWRT](http://martybugs.net/wireless/openwrt/quagga.cgi)
 
-------------------------------------------------------------------------
 

@@ -19,8 +19,7 @@ Das "Geschwisterchen" [ltrace](../ltrace/README.md) kann dabei auch
 hilfreich zur Seite stehen: Anstelle der System-Calls protokolliert
 *ltrace* Bibliotheks-Aufrufe (aka "Library Calls").
 
-Tip: Vermeiden von "unfinished" und "resumed" in strace-Logs
-----------------------------------------------------------------
+### Tip: Vermeiden von "unfinished" und "resumed" in strace-Logs
 
 Wenn man strace mit "-f" aufruft, um Unterprozesse bzw. Threads
 mitzuverfolgen, sieht man oft unterbrochene Systemaufrufe im Log, weil
@@ -71,8 +70,7 @@ done
 rm "$logfile".*
 ```
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [strace
     Projektseite](http://sourceforge.net/projects/strace/)
@@ -82,5 +80,4 @@ Weiterführende Links
 -   [strace Man
     page](http://linux.die.net/man/1/strace)
 
-------------------------------------------------------------------------
 

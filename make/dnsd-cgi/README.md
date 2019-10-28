@@ -2,14 +2,12 @@
 
 Schlanker DNS-Server für statische Namensauflösung (BusyBox Applet)
 
-Links
------
+### Links
 
 -   [Man
     page](http://www.busybox.net/downloads/BusyBox.html#dnsd)
 
-Beispielkonfiguration
----------------------
+### Beispielkonfiguration
 
 Port 53 mit [AVM firewall CGI](../avm-firewall/README.md) nach 10053
 mappen wo [iodine](../iodine/README.md) läuft. Dieses leitet Anfragen

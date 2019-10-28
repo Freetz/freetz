@@ -13,8 +13,7 @@ transparent verbinden, sodass Hosts, die mit einem Netzwerk-Gerät
 verbunden sind, Hosts des anderen Netzwerk-Gerätes direkt sehen können
 (als wären sie im eigenen Netz).
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [Sourceforge
     Projekt-Seite](http://sourceforge.net/projects/bridge/)

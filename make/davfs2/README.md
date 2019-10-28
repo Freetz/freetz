@@ -5,8 +5,7 @@
 Paket aus dem Thread: [WebDAV-zu-Mountpoint für die
 Fritz!Box](http://www.ip-phone-forum.de/showthread.php?t=115302)
 
-Einführung
-----------
+### Einführung
 
 ### Was ist WebDAV?
 
@@ -35,8 +34,7 @@ lokalen Datenträger zu mounten.
 -   Bereitstellung des WebDAV-Speicherplatzes im LAN mit Hilfe von
     [Samba](../samba/README.md)
 
-Paket in die Firmware einbauen
-------------------------------
+### Paket in die Firmware einbauen
 
 Das davfs2 Paket unter *menuconfig* auswählen:
 
@@ -103,8 +101,7 @@ Hier kann man noch Optionen (de)aktivieren:
     aktivierte Option veranlasst mount.davfs, stattdessen HEAD zu
     benutzen.
 
-Weiterführende Threads im IPPF
-------------------------------
+### Weiterführende Threads im IPPF
 
 [Zweiten OnlineSpeicher einbinden Webdav davfs2.conf,
 davfs2.secrets und

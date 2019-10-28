@@ -3,8 +3,7 @@
 "*PHP is a widely-used general-purpose scripting language that is
 especially suited for Web development and can be embedded into HTML.*"
 
-Memory usage
-------------
+### Memory usage
 
 It works, but it needs a lot of memory, so a swap file is advisable
 (about 32 MB will do in most cases).
@@ -35,8 +34,7 @@ ln -s /var/media/ftp/uFlash/hiawatha/php.ini /tmp/flash/php.ini
 modsave
 ```
 
-Links
------
+### Links
 
 -   [Home page](http://www.php.net/)
 -   [PHP Tutorial](http://www.w3schools.com/php/)

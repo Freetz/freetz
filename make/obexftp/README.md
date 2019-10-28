@@ -5,8 +5,7 @@ Geräten, wobei es sich bei letzteren meist um Mobiltelefone handelt.
 Dieses Paket hängt von weiteren Paketen und Libraries ab, u.a. von
 *[Bluez-Utils](../bluez-utils/README.md)* sowie *libopenobex*.
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [OpenObex
     Projekt](http://dev.zuckschwerdt.org/openobex/)
@@ -18,5 +17,4 @@ Weiterführende Links
     Obex](http://de.wikipedia.org/wiki/OBEX) (Englisch -
     ausführlich)
 
-------------------------------------------------------------------------
 

@@ -63,8 +63,7 @@ ermittelt wurde. Wer ca. 0,4 s pro Abfrage (also 90%) sparen möchte,
 kann hier in diesem Fall aber die Methode von `-all` auf `--extquery`
 ändern.
 
-Konfigurationsdateien
----------------------
+### Konfigurationsdateien
 
 
 

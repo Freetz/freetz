@@ -16,8 +16,7 @@ CTorrent](http://www.rahul.net/dholmes/ctorrent/) weiter. Das
 Freetz Paket basiert auf dieser "erweiterten Version" (also auf dem
 *enhanced CTorrent*).
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [CTorrent
     Homepage](http://ctorrent.sourceforge.net/)

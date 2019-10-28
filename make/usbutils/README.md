@@ -7,8 +7,7 @@ auf.
 Zur Vermeidung einer Namenskollision, mit einem gleichnamigen Tool von
 AVM, wurde das Binary in `lsusb-freetz` umbenannt.
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [Linux USB Homepage](http://www.linux-usb.org/)
 -   [lsusb Man
@@ -17,5 +16,4 @@ Weiterführende Links
     USB-Geräte](http://wiki.marcelwinkel.de/index.php/Main/FesteDevicesF%FCrUsb-Ger%E4te)
     bei Linux-Wiki
 
-------------------------------------------------------------------------
 

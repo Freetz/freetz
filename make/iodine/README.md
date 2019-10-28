@@ -6,8 +6,7 @@ hinter einer restriktiven Firewall sitzt - da DNS Traffic in den
 seltensten Fällen geblockt wird
 ;)
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [iodine Homepage](http://code.kryo.se/iodine/)
 -   [iodine Man
@@ -15,8 +14,7 @@ Weiterführende Links
 -   [iodine
     documentation](http://code.kryo.se/iodine/README.html)
 
-Using with FreeDNS
-------------------
+### Using with FreeDNS
 
 See package [dns2tcp](dns2tcp.html) for signing up with FreeDNS
 and some other details.
@@ -55,8 +53,7 @@ The advantages over [dns2tcp](dns2tcp.html) are:
 Building [iodine for
 Android](http://blog.bokhorst.biz/5123/computers-en-internet/iodine-for-android/).
 
-Security
---------
+### Security
 
 Install [iptables](../iptables/README.md) and add these rules to allow
 only traffic to the internet and not your local net:
@@ -75,8 +72,7 @@ local net, for example to a SSH server by using something like:
 iptables -I INPUT -i dns0 -p tcp --dport 22 -j ACCEPT
 ```
 
-Forwarding
-----------
+### Forwarding
 
 iodine can forward DNS requests for unknown (sub)domains to a real
 DNS-server on another port with this switch:

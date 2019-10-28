@@ -4,8 +4,7 @@ Die NFS-Utils erweitern Freetz um einen NFS Server inklusive
 Administrationswebinterface (siehe [nfsd-cgi](../nfsd/README.md)) für die
 Konfigdateien `Exports`, `allow_hosts` und `deny_hosts`.
 
-Hinweise
---------
+### Hinweise
 
 -   Exports funktionieren nur richtig mit ext2, ext3 oder ReiserFS
     Dateisystemen.
@@ -15,8 +14,7 @@ Hinweise
     Version des Clients liegen. Beheben kann man das mit dem
     zusätzlichen mount Parameter `-o nfsvers=3`.
 
-Referenzen
-----------
+### Referenzen
 
 -   [http://www.ip-phone-forum.de/showthread.php?p=1609992](http://www.ip-phone-forum.de/showthread.php?p=1609992)
 -   [http://de.wikipedia.org/wiki/Network_File_System](http://de.wikipedia.org/wiki/Network_File_System)

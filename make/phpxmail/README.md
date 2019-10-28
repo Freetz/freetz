@@ -5,8 +5,7 @@ the support wasn't that good. Setting up a mail server using Freetz and
 PHPXMail was very simple. Now I can select my own blocklists and see in
 the logs what is (not) happening.
 
-Basic setup guide
-=================
+### Basic setup guide
 
 1.  To prevent disappointment: check if your internet provider allows
     SMTP (port 25) traffic
@@ -87,8 +86,7 @@ If you want to forward e-mail:
 It is not a bad idea to backup your XMail settings and storage
 directory!
 
-Setup SSL
-=========
+### Setup SSL
 
 1.  Build XMail with SSL support
 2.  Login using telnet (or better SSH)
@@ -111,8 +109,7 @@ Setup SSL
     [r4760](https://trac.boxmatrix.info/freetz-ng/changeset/4760))
 10. Test by checking your e-mail with SSL (port 995) enabled
 
-Useful links
-============
+### Useful links
 
 -   [XMail Home Page](http://www.xmailserver.org/)
 -   [PHPXmail source

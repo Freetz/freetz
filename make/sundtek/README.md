@@ -12,16 +12,14 @@ sollte mindestens USB 2.0 haben, 11 MBit/s reichen nicht aus.
 siehe
 [#472](https://trac.boxmatrix.info/freetz-ng/ticket/472)
 
-Parameter für 'mediaclient'
------------------------------
+### Parameter für 'mediaclient'
 
 In dieses Textfeld können Parameter zum initialisieren für den
 `mediaclient` eingetragen werden. Wenn dies genutzt wird, wird die
 Hardwareerkennung vom `mediasrv` abgewartet was etwa 10 Sekunden
 benötigt
 
-Treiber verwenden
------------------
+### Treiber verwenden
 
 Um den Treiber benutzen zu können muss vorher dieser Befehl ausgeführt
 werden:
@@ -30,8 +28,7 @@ werden:
 export LD_PRELOAD=/usr/lib/libmediaclient.so
 ```
 
-USB-Stick initialisieren
-------------------------
+### USB-Stick initialisieren
 
 Der USB-Stick muss für die Fritzbox in den Übertrangungsmodus "bulk"
 versetzt werden:
@@ -43,8 +40,7 @@ mediaclient --dtvtransfermode=bulk
 Dies ist nur einmalig nötig und der Stick muss danach neu angesteckt
 werden.
 
-Weiteres
---------
+### Weiteres
 
 Nutzbar z.B. zur Aufzeichnung der Auslastung des Segmentes von
 Kabelinternet mit [RRDstats](rrdstats.html#segment). Es soll

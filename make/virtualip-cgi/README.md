@@ -26,8 +26,7 @@ Weitereführende Links dazu:
     Virtual-IP
     überflüssig?!?](http://www.ip-phone-forum.de/showthread.php?t=159266)
 
-Einrichtung
------------
+### Einrichtung
 
 -   **Starttyp**: "Automatisch", wenn *VirtualIP* nach einem Reboot
     auch automatisch aktiv werden soll.
@@ -48,8 +47,7 @@ Fragen und Diskussionen zu diesem Package kann man auch
 [hier](http://www.ip-phone-forum.de/showthread.php?t=111623)
 stellen/führen.
 
-Bekannte Probleme und Bugs
---------------------------
+### Bekannte Probleme und Bugs
 
 ### dsld-Syslogmeldung
 
@@ -82,5 +80,4 @@ virtuellen IP - vergebens. Deaktiviert man virtual-ip und ruft
 'voipcfgchanged' auf funktioniert alles korrekt. Getestet mit Firmware
 4.80 und Freetz 1.1.3.
 
-------------------------------------------------------------------------
 

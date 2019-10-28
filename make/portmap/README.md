@@ -12,8 +12,7 @@ zuzuweisen.
 
 *Portmap* wird u.a. vom [NFS](../nfs/README.md) Paket benötigt.
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [Portmap Man
     page](http://www.manpagez.com/man/8/portmap/)
@@ -23,5 +22,4 @@ Weiterführende Links
 -   [Wikipedia
     Artikel](http://en.wikipedia.org/wiki/Portmap) (Englisch)
 
-------------------------------------------------------------------------
 

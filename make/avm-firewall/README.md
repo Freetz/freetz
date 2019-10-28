@@ -39,8 +39,7 @@ Ich persönlich (ich hoffe, auch als "Autor" darf ich das sagen) würde
 für tiefergehende Eingriffe eher auf [iptables](../iptables/README.md)
 zurückgreifen...
 
-Feature-Übersicht
------------------
+### Feature-Übersicht
 
 [![AVM Firewall cgi](../../README/screenshots/100_md.jpg)](../../README/screenshots/100.jpg)
 
@@ -56,8 +55,7 @@ tun:
 Die Syntax sollte nicht weiter schwer sein, dafür gibt es ja die
 Dropdown-Felder.
 
-Anwendung der geänderten Regeln
--------------------------------
+### Anwendung der geänderten Regeln
 
 Die Tatsache, dass AVM entweder keine Änderungen am Regelwerk vorsieht
 (bei der Firewall) oder selbst die Änderungen verwaltet (Forwarding),
@@ -94,8 +92,7 @@ eigene Regelverwaltung macht.
 
 [![AVM firewall - Übernehmen Parameter (Trunk Version)](../../README/screenshots/145_md.png)](../../README/screenshots/145.png)
 
-Die Gefahr von Reboot-Schleifen und wie man da wieder herauskommt
------------------------------------------------------------------
+### Die Gefahr von Reboot-Schleifen und wie man da wieder herauskommt
 
 Bei zahlreichen Versuchen mit der Einrichtung von Firewallregeln mit
 Hilfe dieses CGI-Paketes hat sich gezeigt, daß man die Box bei
@@ -187,8 +184,7 @@ Internet-Verbindung aufgebaut wird, dabei stürzt der Kernel dann ab.
 [Christoph
 Franzen](http://www.ip-phone-forum.de/member.php?u=121255)
 
-Verweise
---------
+### Verweise
 
 Im [IP-Phone-Forum](http://www.ip-phone-forum.de)
 gibt es zur AVM Firewall einige Threads, z.B.:

@@ -16,8 +16,7 @@ aufbaut.
 -   [ASpell](http://en.wikipedia.org/wiki/Aspell)
 -   External action triggers
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [mcabber Homepage](http://mcabber.com/)
 -   [mcabber
@@ -28,5 +27,4 @@ Weiterführende Links
 -   [Anleitung aus dem Forum um die Fritzbox über Jabber zu
     steuern](http://www.ip-phone-forum.de/showthread.php?p=1552715)
 
-------------------------------------------------------------------------
 

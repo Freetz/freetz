@@ -14,8 +14,7 @@ folgende Features:
 -   IPv6
 -   SSL Verschlüsselung
 
-Package ins Image einbinden
----------------------------
+### Package ins Image einbinden
 
 Im menuconfig unter `Package selection ---> Standard packages --->`
 findet sich
@@ -23,8 +22,7 @@ findet sich
 -   *Vsftpd 2.x.y*
     Damit wird der FTP-Zugriff über vsFTP möglich.
 
-Verwandte Themen
-----------------
+### Verwandte Themen
 
 Unter `Patches --->` findet sich
 
@@ -34,8 +32,7 @@ Unter `Patches --->` findet sich
     Führt die entsprechenden Skripte beim An- und Abstecken des
     USB-Speichers aus.
 
-Freigaben und Benutzer für vsFTP in Freetz einrichten
------------------------------------------------------
+### Freigaben und Benutzer für vsFTP in Freetz einrichten
 
 Es folgt eine ausführliche Anleitung für das Erstellen von FTP-Freigaben
 und Nutzern mit verschiedenen Lese/Schreib-Rechten, die unabhängig von
@@ -274,8 +271,7 @@ Die Ordner sind nun per FTP
 ([ftp://fritz.box](ftp://fritz.box)) mit den
 gegebenen Zugangsdaten erreichbar.
 
-Anmeldebildschirm bei vsftpd ändern
------------------------------------
+### Anmeldebildschirm bei vsftpd ändern
 
 Hier wird nun kurz beschrieben wie ihr den Anmeldebildschirm von VSFTP
 ändern bzw. anpassen könnt.
@@ -317,8 +313,7 @@ dem neuen Anmeldebildschirm melden.
 [![](../../README/screenshots/128_md.jpg)](../../README/screenshots/128.jpg)
 
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [Project Homepage](http://vsftpd.beasts.org/)
 -   [IPPF

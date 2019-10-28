@@ -10,8 +10,7 @@ basierende "Scripting Engine" verfügt, lässt sich die
 Kernfunktionalität über Perl-Skripte erweitern - sofern man auf der Box
 auch Perl (z.B. [packages/microperl microperl]) installiert hat.
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [irssi Homepage](http://www.irssi.org/)
 -   [Wikipedia-Artikel zu

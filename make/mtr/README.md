@@ -10,8 +10,7 @@ limitiert, die ein Paket durchlaufen darf, und wertet die Responses
 ihres "Verfallsdatums" aus. Diesen Prozess wiederholt *mtr*
 regelmäßig, gewöhnlich einmal pro Sekunde.
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [Wikipedia
     Artikel](http://en.wikipedia.org/wiki/Mtr_(My_traceroute))

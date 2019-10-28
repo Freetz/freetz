@@ -22,8 +22,7 @@ momentan keine Weboberfläche. Die Konfigurationsdateien sind nicht auf
 die Box angepasst und sowohl die html- als auch die cgi-Dateien werden
 nicht ins Image kopiert. Hier ist also einiges an Handarbeit nötig.
 
-Weiterführende Informationen
-----------------------------
+### Weiterführende Informationen
 
 -   [offizielle Homepage](http://www.nagios.org/)
 -   [Übersicht über Plug-ins, Artikel etc. zu
@@ -36,5 +35,4 @@ Weiterführende Informationen
 -   [Wikipedia
     Artikel](http://de.wikipedia.org/wiki/Nagios)
 
-------------------------------------------------------------------------
 

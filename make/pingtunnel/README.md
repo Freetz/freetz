@@ -8,8 +8,7 @@ Das mag zwar auf den ersten Blick recht nutzlos aussehen - dafür erweist
 es sich in manchen Situationen als recht hilfreich. Wenn nämlich nichts
 anderes weiterhilft, weil eine restriktive Firewall im Wege steht...
 
-Setup
------
+### Setup
 
 Folgendes bei `forwardrules` der ar7.cfg eintragen um Pings aus dem
 Internet zuzulassen:
@@ -47,8 +46,7 @@ options.
 Be sure to specify enough tunnels when tunneling `http` traffic with the
 `-m` option.
 
-Security
---------
+### Security
 
 Pingtunnel is not very secure, because it possible to choose random
 tunnel endpoints from the client. The best thing that can be done, is
@@ -76,8 +74,7 @@ this:
 -da localhost -dp 8123
 ```
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [Homepage](http://www.cs.uit.no/~daniels/PingTunnel/)
     (Englisch)
@@ -87,5 +84,4 @@ Weiterführende Links
     tunnel](http://psung.blogspot.com/2008/05/breaking-through-firewalls-with-ping.html)
     (Blog Artikel)
 
-------------------------------------------------------------------------
 

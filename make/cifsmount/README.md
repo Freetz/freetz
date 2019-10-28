@@ -18,8 +18,7 @@ wir an unsere FritzBox denken: cifsmount benötigt wesentlich weniger
 Speicherplatz - und ist damit die "Erste Wahl" für diejenigen, die
 Windows- oder Samba-Shares auf der FritzBox mounten möchten.
 
-Konfiguration cifsmount
------------------------
+### Konfiguration cifsmount
 
 **Starttyp:** Automatisch (mit dem Starten der Box), oder Manuell
 (starten des Dienstes von Hand).
@@ -34,8 +33,7 @@ soll.
 **Mountoptions:** Zusätzliche Option die dem Mountbefehl angehängt wird,
 zB `noserverino` bei sehr großen Festplatten.
 
-Fehlersuche
------------
+### Fehlersuche
 
 Mit `echo 1 > /proc/fs/cifs/cifsFYI` kann man cifs etwas gesprächiger
 machen. Anschauen kann man sich die Meldungen mit `dmesg | tail`. Bei
@@ -54,8 +52,7 @@ Status code returned 0xc000006d NT_STATUS_LOGON_FAILURE
 ```
 
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [Wikipedia
     Artikel](http://de.wikipedia.org/wiki/Server_Message_Block)

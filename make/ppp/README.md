@@ -9,8 +9,7 @@ serielle Schnittstelle aufbauen. USB-Modems für UMTS stellen eine solche
 zur Verfügung.
 
 
-Allgemeine Konfiguration
-========================
+### Allgemeine Konfiguration
 
 zu finden im Webinterface unter "Pakete" > "PPP"
 
@@ -28,8 +27,7 @@ empfehlen den Pfad auf einen persistenten Ort zu ändern damit die Datei
 durch einen Reboot der Fritzbox nicht verloren geht!
 
 
-Konfiguration für UMTS
-======================
+### Konfiguration für UMTS
 
 ### PEERS: chat
 
@@ -53,8 +51,7 @@ bleibt wird wie komplette Statusbox nicht angezeigt.
 Optional kann hier der gewünschte Verbindungsmodus ausgewählt werden.
 
 
-Namensauflösung
-===============
+### Namensauflösung
 
 Für eine dynamisch wechselnde Namensauflösung zwischen Mobilfunk und
 herkömmlicher Verbindung empfiehlt sich folgendes:
@@ -73,8 +70,7 @@ herkömmlicher Verbindung empfiehlt sich folgendes:
     ```
 
 
-Firewall, Routing & NAT
-=======================
+### Firewall, Routing & NAT
 
 Um Masquerading zu aktivieren sind folgende Befehle nötig:
 
@@ -101,8 +97,7 @@ lassen und nach Verbindungsabbau wieder aufzuheben und vor allem die
 Module wieder zu entladen.
 
 
-Fallback
-========
+### Fallback
 
  * Dieses Feature
 ist noch exprimentell. Fehlfunktionen und hohe Kosten können nicht
@@ -117,24 +112,21 @@ Route kann die entsprechende IP nicht per ppp-Verbindung erreicht
 werden!
 
 
-Treiberprobleme
-===============
+### Treiberprobleme
 
 Das Treibermodul *option* wird beim Start automatisch geladen. Es kann
 aber nötig sein es mit eigenen Parameter zu laden, zB durch
 `usbserial vendor=0xYYYY product=0xZZZZ` in der *Freetz: modules*.
 
 
-Was ist noch zu beachten? (2do-Liste)
-=====================================
+### Was ist noch zu beachten? (2do-Liste)
 
  * Es können
 momentan nur SIMs mit deaktivierter PIN-Abfrage genutzt werden. (dies
 ist allerdings mit dem Package *gcom* möglich)
 
 
-Weiteres
-========
+### Weiteres
 
 Deaktivierung des integrierten CD-Roms bei Huawei-Sticks mittels
 einmaligem `at^u2diag=0` an das 2. virtuelle, serielle Interface (meist

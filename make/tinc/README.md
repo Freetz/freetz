@@ -6,8 +6,7 @@ Virtual Privat Network
 Dienst der Tunnels und Verschlüsselung verwendet, um sichere
 Verbindungen zwischen zwei Hosts herzustellen.
 
-Features
---------
+### Features
 
 -   Verschlüsselung, Authentifizierung und Daten-Kompression
 -   Automatisches mesh-routing
@@ -17,15 +16,13 @@ Features
     NetBSD, MacOS/X, Solaris, Windows 2000 und XP)
 -   Unterstützung von IPv6
 
-Verwendete Bibliotheken
------------------------
+### Verwendete Bibliotheken
 
 -   liblzo2
 -   libssl
 -   libz
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [tinc Homepage](http://www.tinc-vpn.org/)
 -   [Linux.COM Artikel: Creating a VPN with
@@ -35,5 +32,4 @@ Weiterführende Links
 -   [Heise.DE Netze: Dezentrales VPN mit
     Tinc](http://www.heise.de/netze/artikel/Dezentrales-VPN-mit-Tinc-785436.html)
 
-------------------------------------------------------------------------
 

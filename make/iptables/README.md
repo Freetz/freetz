@@ -1,7 +1,6 @@
 # Iptables 1.4.11.1 (binary only)
 
-Current state (largely broken)
-------------------------------
+### Current state (largely broken)
 
 For the 7390 and later, but also for the 7270 with releases from the
 last years, iptables doesn't work with 'connection tracking' and
@@ -29,8 +28,7 @@ significant vulnerability that was publically misused around February
 info](https://www.heise.de/newsticker/meldung/Angriffe-auf-Fritzboxen-AVM-empfiehlt-Abschaltung-der-Fernkonfiguration-2106542.html)).
 AVM released firmware fixes for most boxes.
 
-What is iptables and who needs it?
-----------------------------------
+### What is iptables and who needs it?
 
 **iptables** is a command line user interface for managing and
 configuring the built-in Linux kernel netfilter firewall.
@@ -66,8 +64,7 @@ features of iptables are only available in the newer 7270.
     modular system!), some error messages result from missing / not yet
     loaded modules.
 
-What is the difference between AVM Firewall and iptables, can they co-exist on the same system?
------------------------------------------------------------------------------------------------
+### What is the difference between AVM Firewall and iptables, can they co-exist on the same system?
 
 -   The [AVM Firewall](../avm-firewall/README.md) is an integrated part
     of the **dsld** from AVM (dsl daemon). It "sits" on the DSL
@@ -143,8 +140,7 @@ What is the difference between AVM Firewall and iptables, can they co-exist on t
     achieved by applying rigorous traffic rules on both firewalls and
     allowing only necessary traffic.
 
-How to build iptables for Freetz?
----------------------------------
+### How to build iptables for Freetz?
 
 -   select iptables **and** all needed modules using **[make
     menuconfig](../help/howtos/common/install/menuconfig.html)**
@@ -336,8 +332,7 @@ iptables -A OUTPUT -s 192.168.178.0/24 -o guest -j DROP
 The guest network can only use the internet. Assuming the default subnet
 (192.168.178.0/24).
 
-More Links
-----------
+### More Links
 
 -   [cpmaccfg](../help/howtos/security/switch_config.html) - How
     to build a DMZ
@@ -356,8 +351,7 @@ More Links
     Forum](http://www.ip-phone-forum.de/forumdisplay.php?f=525) -
     Best place for questions regarding Freetz!
 
-Questions
----------
+### Questions
 
 -   Should UDP 80 not be blocked?
 -   Should 224.0.0.1/24 and 239.255.255.250 not be blocked on the WAN

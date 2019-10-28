@@ -15,8 +15,7 @@ Das OpenNTPD Paket stellt nicht nur einen Client, sondern auch einen
 Server zur Verfügung. Somit kann sich die FritzBox die Zeit aus dem
 Internet "downloaden" - und stellt sie dann im lokalen Netz bereit.
 
-Vorteile:
----------
+### Vorteile:
 
 -   Nur die FritzBox muss die Zeit "Remote" abgleichen
 -   Da die FritzBox sicher rund um die Uhr läuft, kann dies jederzeit
@@ -29,8 +28,7 @@ Vorteile:
 -   Auch Rechner, die nicht ins Internet dürfen, haben die Chance auf
     einen Zeitabgleich.
 
-Ubuntu client setup
--------------------
+### Ubuntu client setup
 
 -   Install: *sudo apt-get install ntp*
 -   Configure: *add server fritz.box* as first server to */etc/ntp.conf*
@@ -39,8 +37,7 @@ Ubuntu client setup
 -   More info:
     [here](https://help.ubuntu.com/community/UbuntuTime)
 
-Multid NTP client deaktivieren
-------------------------------
+### Multid NTP client deaktivieren
 
 Durch diese Option wird AVM's multid durch einen zusätzlichen Parameter
 angewiesen die Zeit nicht zu synchronisieren (erfordert Restarts von
@@ -55,14 +52,12 @@ SNTP = Simple Network Time Protocol
 
 openntpd automatically selects Remove chronyd.
 
-Fehlerbehebung
---------------
+### Fehlerbehebung
 
 -   `dispatch_imsg in main: pipe closed`: In der `openntpd.conf` wird
     `listen on` falsch benutzt.
 
-Alternative
------------
+### Alternative
 
 Man kann auch den in [inetd](inetd.html#user) integrierten
 ["time"
@@ -70,8 +65,7 @@ Service](http://en.wikipedia.org/wiki/Time_Protocol)
 aktivieren. Diese kann z.B. mit "rdate" genutzt werden, welches
 bereits in Freetz enthalten ist oder auch auf der Dbox2
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [http://www.openntpd.org/](http://www.openntpd.org/)
 -   [Artikel zu

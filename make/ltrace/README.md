@@ -6,8 +6,7 @@ Calls" (Bibliotheks-Aufrufe) sowie alle empfangenen Signale monitoren
 lassen. Ein vergleichbares Tool findet sich im Paket
 [strace](../strace/README.md).
 
-Weiterführende Links
---------------------
+### Weiterführende Links
 
 -   [ltrace
     Homepage](http://ltrace.alioth.debian.org/)
@@ -16,5 +15,4 @@ Weiterführende Links
 -   [PDF paper about ''ltrace''
     internals](http://ols.108.redhat.com/2007/Reprints/branco-Reprint.pdf)
 
-------------------------------------------------------------------------
 
