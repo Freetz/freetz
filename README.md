@@ -15,7 +15,7 @@
 ### Listings
 [Packages](make/README_short.md)<br>
 [Libraries](README/libs/README.md)<br>
-[Patches](patches/README.md)<br>
+[Patches](README/patches/README.md)<br>
 [Themes](README/themes/README.md)<br>
 
 ### [Wiki](README/wiki/README.md)
