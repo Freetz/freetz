@@ -67,7 +67,7 @@ chmod +x info.cgi
 Test:
 [http://fritz.box:8088/cgi-bin/info.cgi](http://fritz.box:8088/cgi-bin/info.cgi)
 
-### Links
+### Weiterführende Links
 
 -   [Homepage](http://haserl.sourceforge.net/)
 -   [Patch for LUA support](https://trac.boxmatrix.info/freetz-ng/ticket/1326)

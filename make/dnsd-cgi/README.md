@@ -2,7 +2,7 @@
 
 Schlanker DNS-Server für statische Namensauflösung (BusyBox Applet)
 
-### Links
+### Weiterführende Links
 
 -   [Man
     page](http://www.busybox.net/downloads/BusyBox.html#dnsd)

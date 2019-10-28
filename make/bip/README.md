@@ -78,7 +78,7 @@ network {
 drücken des Button **Übernehmen** muss man ca. 5 Minuten warten bis sich
 der User wieder am IRC-Chanel anmelden kann.
 
-### Links
+### Weiterführende Links
 
 Hier findet man noch weitere Erläuterungen zu BIP und welche
 Einstellungen man beim IRC-Client vornehmen muss:

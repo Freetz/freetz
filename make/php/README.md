@@ -34,7 +34,7 @@ ln -s /var/media/ftp/uFlash/hiawatha/php.ini /tmp/flash/php.ini
 modsave
 ```
 
-### Links
+### Weiterführende Links
 
 -   [Home page](http://www.php.net/)
 -   [PHP Tutorial](http://www.w3schools.com/php/)

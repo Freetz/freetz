@@ -10,7 +10,7 @@ mit DLNA/UPnp-AV Clients zu sein.
 Das `Datenbankverzeichnis` sollte auf einen USB-Stick gelegt werden,
 damit die Datenbank nicht bei jedem Reboot neu aufgebaut werden muss.
 
-### Links
+### Weiterführende Links
 
 Projektseite:
 [http://sourceforge.net/projects/minidlna/](http://sourceforge.net/projects/minidlna/)

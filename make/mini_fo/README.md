@@ -98,7 +98,7 @@ So for example a modified */usr/sbin/blkid* is stored as
 If you remove the latter one, the original one will reappear in your
 file system.
 
-### Siehe auch
+### Weiterführende Links
 
 -   [diesen
     Thread](http://www.ip-phone-forum.de/showthread.php?t=111226)

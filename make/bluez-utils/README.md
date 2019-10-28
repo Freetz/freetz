@@ -144,7 +144,7 @@ dbus-send --system --type=method_call --dest=org.bluez --print-reply /org/bluez/
   bluez-4.101 ..................  285.39 Kb
 ```
 
-### Links
+### Weiterführende Links
 
 -   [BlueZ](http://www.bluez.org/)
 -   Bluez 4.98 patch: [#602](https://trac.boxmatrix.info/freetz-ng/ticket/602)
