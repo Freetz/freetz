@@ -1,0 +1,1 @@
+/usr/mww/cgi-bin/logout.cgi
