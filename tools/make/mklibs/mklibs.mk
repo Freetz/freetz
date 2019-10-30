@@ -1,7 +1,7 @@
 MKLIBS_VERSION:=0.1.34
 MKLIBS_SOURCE:=mklibs_$(MKLIBS_VERSION).tar.gz
 MKLIBS_SOURCE_MD5:=afe0ed527ba96b8a882b5de350603007
-MKLIBS_SITE:=http://ftp.de.debian.org/debian/pool/main/m/mklibs
+MKLIBS_SITE:=http://archive.debian.org/debian/pool/main/m/mklibs
 MKLIBS_DIR:=$(TOOLS_SOURCE_DIR)/mklibs-$(MKLIBS_VERSION)
 MKLIBS_MAKE_DIR:=$(TOOLS_DIR)/make/mklibs
 MKLIBS_DESTDIR:=$(FREETZ_BASE_DIR)/$(TOOLS_DIR)/build/bin
