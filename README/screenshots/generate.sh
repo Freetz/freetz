@@ -9,5 +9,6 @@ dst="${src%.*}_md.${src##*.}"
 [ -e "$MYPWD/$dst" ] && continue
 echo "$src -> $dst"
 convert "$MYPWD/$src" -resize x333 "$MYPWD/$dst"
+chmod -x "$MYPWD/$src" "$MYPWD/$dst"
 done
 

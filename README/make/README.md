@@ -772,6 +772,9 @@
   * **<u>AVM-forwarding</u><a id='avm-forwarding'></a>**<br>
     Configuration of forwardings to FB itself (open ports). Requires an existing forwarding in the configuration,
 
+  * **[AVM-portfw](../../make/avm-portfw/README.md)<a id='avm-portfw'></a>**<br>
+    Configuration of port forwardings to the FritzBox itself by using internet_forwardrules. Warning: This package changes the ar7.cfg. On syntax errors AVM will reset the whole file to default, including default
+
   * **[AVM-rules (deprecated)](../../make/avm-rules/README.md)<a id='avm-rules'></a>**<br>
     Configuration of port forwardings to the FritzBox itself by using voip_forwardrules. Please don't use this package, but AVM-portfw! Warning: This package changes the ar7.cfg. On syntax errors AVM will reset the whole file to default, including default
 

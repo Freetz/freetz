@@ -1,0 +1,75 @@
+#!/bin/sh
+
+DAEMON=avm-portfw
+DAEMON_LONG_NAME=AVM-portfw
+. /etc/init.d/modlibrc
+
+
+apply() {
+	[ "$1" == "default" ] && AVM_PORTFW_TCP= && AVM_PORTFW_UDP=
+	local L H C=0 T F P TMP="/tmp/avm-portfw.tmp.$(date +%s)"
+	cat /var/flash/ar7.cfg > $TMP
+	L="$(cat $TMP | wc -l)"
+	H="$(( $(grep -n internet_forwardrules $TMP | sed 's/:.*//') - 1))"
+	[ "$H" == "-1" ] && H="$(grep -n internet_out_nat_rules_enabled $TMP | sed 's/:.*//')" || C="$(tail -n $(( $L - $H )) $TMP | grep -m1 -n ';' | sed 's/:.*//')"
+	T="$(( $L - $H - $C ))"
+
+	[ $L -gt 0 -a $H -gt 0 -a $T -gt 0 -a $C -ge 0 2>/dev/null ] || F='1'
+	[ -z "$(echo "$AVM_PORTFW_TCP$AVM_PORTFW_UDP" | sed 's/[+: 0-9]//g')" ] || F='2'
+	if [ -n "$F" ]; then
+		rm $TMP
+		echo "Applying $DAEMON_LONG_NAME ... failed."
+		exit $F
+	fi
+
+	echo -n "Stopping ctlmgr ... "
+	while true; do
+		ctlmgr -s
+		pidof ctlmgr >/dev/null && sleep 1 || break
+	done
+	echo "done."
+
+	echo -n "Writing rules ... "
+	(
+		head -n $H $TMP
+		if [ -n "${AVM_PORTFW_TCP/ /}${AVM_PORTFW_UDP/ /}" ]; then
+			P="$(for x in $AVM_PORTFW_TCP; do echo -n "${x%:*}_tcp:${x#*:} "; done) $(for x in $AVM_PORTFW_UDP; do echo -n "${x%:*}_udp:${x#*:} "; done)"
+			for x in $(echo "$P" | sed 's/  */\n/g' | sort -n | sort -u); do
+				echo -n "$x" | sed -rn 's/^([0-9]*)(.*)_(.*):([^+]*).*/"\3 0.0.0.0:\1\2 0.0.0.0:\4",/p'
+			done | sed 's/,$/;\n/;s/,/,\n                                /g;s/^/        internet_forwardrules = /'
+		fi
+		tail -n $T $TMP
+	) > /var/flash/ar7.cfg
+	rm $TMP
+	echo "done."
+
+	echo -n "Starting ctlmgr ... "
+	( . /var/env.cache ; ctlmgr 2>&1 )
+	echo "done."
+
+	/mod/etc/init.d/rc.dsld reload
+
+	echo "Applying $DAEMON_LONG_NAME ... done."
+}
+
+case $1 in
+	""|load)
+		modreg cgi $DAEMON $DAEMON_LONG_NAME
+		modreg daemon --hide $DAEMON
+
+		echo "Setting up $DAEMON_LONG_NAME ... done."
+		;;
+	unload)
+		modunreg cgi $DAEMON
+		modunreg daemon $DAEMON
+		;;
+	apply)
+		apply $2
+		;;
+	*)
+		echo "Usage: $0 [load|unload|apply]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0

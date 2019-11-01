@@ -1,14 +1,12 @@
-config FREETZ_PACKAGE_AVM_RULES
-	bool "AVM-rules (deprecated)"
+config FREETZ_PACKAGE_AVM_PORTFW
+	bool "AVM-portfw"
 	depends on FREETZ_AVM_HAS_DSLD
 	depends on !FREETZ_REMOVE_DSLD
 	depends on FREETZ_AVM_VERSION_06_8X_MIN
-	select FREETZ_PACKAGE_AVM_PORTFW
 	default n
 	help
 		Configuration of port forwardings to the FritzBox itself
-		by using voip_forwardrules.
-		Please don't use this package, but AVM-portfw!
+		by using internet_forwardrules.
 		Warning:
 		This package changes the ar7.cfg. On syntax errors AVM
 		will reset the whole file to default, including default
