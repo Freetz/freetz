@@ -1087,8 +1087,8 @@
   * **<u>AVM-forwarding</u><a id='avm-forwarding'></a>**<br>
     Configuration of forwardings to FB itself (open ports). Requires an existing forwarding in the configuration,
 
-  * **[AVM-rules - EXPERMENTAL](avm-rules/README.md)<a id='avm-rules'></a>**<br>
-    Configuration of port forwardings to the FritzBox itself by using voip_forwardrules. Warning: This package changes the ar7.cfg. On syntax errors AVM will reset the whole file to default, including default
+  * **[AVM-rules (deprecated)](avm-rules/README.md)<a id='avm-rules'></a>**<br>
+    Configuration of port forwardings to the FritzBox itself by using voip_forwardrules. Please don't use this package, but AVM-portfw! Warning: This package changes the ar7.cfg. On syntax errors AVM will reset the whole file to default, including default
 
   * **<u>Cpmaccfg CGI 1.0</u><a id='cpmaccfg'></a>**<br>
     Configuration front-end to cpmaccfg This frontend shows the current settings of the LAN ports and gives a very simple way to set VLAN, portmode and WLAN assigment. Additional to this, you can set IP addresses for the VLAN

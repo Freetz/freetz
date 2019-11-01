@@ -1,11 +1,11 @@
-# AVM-rules - EXPERMENTAL
+# AVM-rules (deprecated)
 
-Mit AVM-Rules können (ausschliesslich) Ports der Fritz!Box selbst für Zugriff aus dem Internet freigegeben werden.<br>
+Mit AVM-rules können (ausschliesslich) Ports der Fritz!Box selbst für Zugriff aus dem Internet freigegeben werden.<br>
 <br>
 <a href='../../README/screenshots/000-PKG_avm-rules.png'><img src='../../README/screenshots/000-PKG_avm-rules_md.png'></a>
 <br>
 
-Dazu wird ```voip_forwardrules``` verwendet, nur für IPv4-Freigaben. Zu finden im menuconfig unter ```packages >webif```.
+Dazu wird ```voip_forwardrules``` verwendet, nur für IPv4-Freigaben. Zu finden im menuconfig unter ```packages > webif```.
 Da die ```ar7.cfg``` bearbeitet wird, sollte man vorher ein komplettes Backup anlegen - EXPERIMENTAL!
 Die VoIP Ports sollte man nicht deaktivieren, ausser man weiss was man macht.
 
