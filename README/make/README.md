@@ -396,7 +396,7 @@
   * **<u>OpenSSL (binary only)</u><a id='openssl'></a>**<br>
     This package contains the OpenSSL command-line utility.
 
-  * **[OpenVPN 2.4.7](../../make/openvpn/README.md)<a id='openvpn'></a>**<br>
+  * **[OpenVPN 2.4.8](../../make/openvpn/README.md)<a id='openvpn'></a>**<br>
     VPN Server
 
   * **[owfs 2.7p32 (binary only)](../../make/owfs/README.md)<a id='owfs'></a>**<br>

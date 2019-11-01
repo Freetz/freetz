@@ -1,4 +1,4 @@
-# OpenVPN 2.4.7
+# OpenVPN 2.4.8
 
 OpenVPN ist ein Programm zur Herstellung eines Virtuellen Privaten
 Netzwerkes (VPN) über eine verschlüsselte TLS-Verbindung.

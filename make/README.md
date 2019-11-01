@@ -553,7 +553,7 @@
   * **<u>OpenSSL (binary only)</u><a id='openssl'></a>**<br>
     This package contains the OpenSSL command-line utility.
 
-  * **[OpenVPN 2.4.7](openvpn/README.md)<a id='openvpn'></a>**<br>
+  * **[OpenVPN 2.4.8](openvpn/README.md)<a id='openvpn'></a>**<br>
     VPN Server
      - [Version](openvpn/README.md#version)
      - [Häufige Fragen / Howto](openvpn/README.md#häufige-fragen-howto)
