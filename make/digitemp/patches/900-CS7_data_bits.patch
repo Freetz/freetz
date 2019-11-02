@@ -1,0 +1,26 @@
+--- userial/ds9097/linuxlnk.c
++++ userial/ds9097/linuxlnk.c
+@@ -185,8 +185,8 @@
+    cfsetispeed(&term[portnum], B115200);
+    cfsetospeed(&term[portnum], B115200);
+    
+-   /* set to 6 data bits */
+-   term[portnum].c_cflag |= CS6; 
++   /* set to 7 data bits */
++   term[portnum].c_cflag |= CS7; 
+ 
+    if (tcsetattr(fd[portnum], TCSANOW, &term[portnum] ) < 0 )
+      {
+--- userial/ds9097/linuxses.c
++++ userial/ds9097/linuxses.c
+@@ -93,8 +93,8 @@
+    term[portnum].c_cc[VMIN] = 1;  
+    term[portnum].c_cc[VTIME] = 0;
+       
+-   /* 6 data bits, Receiver enabled, Hangup, Dont change "owner" */
+-   term[portnum].c_cflag |= CS6 | CREAD | HUPCL | CLOCAL;
++   /* 7 data bits, Receiver enabled, Hangup, Dont change "owner" */
++   term[portnum].c_cflag |= CS7 | CREAD | HUPCL | CLOCAL;
+    
+    /* Set input and output speed to 115.2k */
+    cfsetispeed(&term[portnum], B115200);
