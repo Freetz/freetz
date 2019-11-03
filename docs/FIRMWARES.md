@@ -1,4 +1,4 @@
-$Id$
+$Id: 9949659abba35661c1e04a61ba775c21f94829c5 $
 
 Currently supported boxes and firmwares
 =======================================
