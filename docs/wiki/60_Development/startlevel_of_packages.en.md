@@ -1,63 +1,64 @@
-$Id$
+# STARTLEVEL of packages
+List of packages which do not use the default STARTLEVEL 99.
 
-current STARTLEVEL of packages:
+ * Hardcoded
+    - 00: crond
+    - 00: telnetd
+    - 00: webcfg
 
-#Hardcoded
-crond
-telnetd
-webcfg
+ * Basics
+    - 10: inotify-tools
+    - 11: usbroot
+    - 12: syslogd-cgi
+    - 13: downloader
+    - 14: inetd
 
-#Basics
-inotify-tools		STARTLEVEL=10
-usbroot			STARTLEVEL=11
-syslogd-cgi		STARTLEVEL=12
-downloader		STARTLEVEL=13
-inetd			STARTLEVEL=14
+ * Interfaces
+    - 20: cpmaccfg-cgi
+    - 20: virtualip-cgi
+ * Firewall
+    - 25: iptables-cgi
+    - 25: nhipt
 
-#Interfaces
-cpmaccfg-cgi		STARTLEVEL=20
-virtualip-cgi		STARTLEVEL=20
-#Firewall
-iptables-cgi		STARTLEVEL=25
-nhipt			STARTLEVEL=25
+ * SSH
+    - 30: authorized-keys
+    - 30: ca-bundle
+    - 30: dropbear
 
-#SSH
-authorized-keys		STARTLEVEL=30
-ca-bundle		STARTLEVEL=30
-dropbear		STARTLEVEL=30
+ * DNS
+    - 40: bind           (multid-wrapper may start it earlier!)
+    - 40: dnsmasq        (multid-wrapper may start it earlier!)
 
-#DNS
-bind			STARTLEVEL=40	# multid-wrapper may start it earlier!
-dnsmasq			STARTLEVEL=40	# multid-wrapper may start it earlier!
+ * Mounting
+    - 50: autofs
+    - 50: cifsmount
+    - 50: davfs2
 
-#Mounting
-autofs			STARTLEVEL=50
-cifsmount		STARTLEVEL=50
-davfs2			STARTLEVEL=50
+ * Various
+    - 60: oidentd        (before bip, before ngircd)
+    - 60: openntpd
 
-#various
-openntpd		STARTLEVEL=60	# before aiccu
-oidentd			STARTLEVEL=60	# before bip, before ngircd
-aiccu			STARTLEVEL=61	# before RRDstats, before vnstat-cgi, after opnenntp
+ * Telefon
+    - 71: callmonitor
+ * Tunnel
+    - 81: openconnect
+    - 81: openvpn
+    - 81: ppp-cgi
+    - 81: pppd
+    - 81: stunnel
+    - 81: vpnc
+    - 81: vtun
+ * Routing
+    - 82: bird
+    - 82: quagga
 
-#Telefon
-callmonitor		STARTLEVEL=71
-#Tunnel
-openconnect		STARTLEVEL=81
-openvpn			STARTLEVEL=81
-ppp-cgi			STARTLEVEL=81
-pppd			STARTLEVEL=81
-stunnel			STARTLEVEL=81
-vpnc			STARTLEVEL=81
-vtun			STARTLEVEL=81
-#Routing
-bird			STARTLEVEL=82
-quagga			STARTLEVEL=82
+ * Misc
+    - 90: dbus           (before avahi)
+    - 90: php            (before lighttpd)
+    - 90: sundtek        (before rrdstats)
 
-#Misc
-dbus			STARTLEVEL=90	# before avahi
-php			STARTLEVEL=90	# before lighttpd
-sundtek			STARTLEVEL=90	# before rrdstats
+<br>To generate this:<br>
+```
+grep STARTLEVEL make/*/*.mk | sed -rn 's/.*\/(.*)\.mk:\$\(PKG\)_STARTLEVEL=([0-9]*) *(.*)/    - \2: \1\3/p' | sort | sed -r 's/# (.*)/\t\t (\1)/g'
+```
 
-
-# grep STARTLEVEL `find . -name *.mk` |sed 's/ #/\t#/g;s/.*\///g;s/.mk:\$(PKG)_/\t/g' |sort -k2
