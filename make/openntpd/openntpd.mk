@@ -6,7 +6,7 @@ $(PKG)_SITE:=ftp://ftp.openbsd.org/pub/OpenBSD/OpenNTPD
 $(PKG)_BINARY:=$($(PKG)_DIR)/ntpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/ntpd
 
-$(PKG)_STARTLEVEL=60 # before aiccu
+$(PKG)_STARTLEVEL=60
 
 $(PKG)_CONFIGURE_ENV += ac_cv_have_decl_asprintf=yes
 $(PKG)_CONFIGURE_ENV += ac_cv_func_setresuid=yes
