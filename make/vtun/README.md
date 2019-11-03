@@ -6,7 +6,7 @@ aufzubauen. Mit maximal 75k ist es zudem auch nicht allzu groß.
 
 ### Version
 
-[![vtun configuration GUI](../../README/screenshots/125_md.png)](../../README/screenshots/125.png)
+[![vtun configuration GUI](../../docs/screenshots/125_md.png)](../../docs/screenshots/125.png)
 
 Momentan ist die Version 3.0.2 enthalten. Es kann im menuconfig
 (momentan im Bereich "Testing") mit folgenden Optionen gebaut werden:

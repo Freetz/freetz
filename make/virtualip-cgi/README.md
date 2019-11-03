@@ -1,6 +1,6 @@
 # Virtual IP CGI 0.4.2 (deprecated)
 
-[![VirtualIP: Einstellungen](../../README/screenshots/61_md.png)](../../README/screenshots/61.png)
+[![VirtualIP: Einstellungen](../../docs/screenshots/61_md.png)](../../docs/screenshots/61.png)
 
 **Virtual IP** ist eine Erweiterung für Freetz, die es ermöglicht, eine
 virtuelle IP auf der Box anzulegen. Das Paket ist über das Freetz

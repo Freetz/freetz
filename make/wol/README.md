@@ -35,7 +35,7 @@ und das Interface (meist eth0). Beispiele:
 Im Menü *Pakete → Wake on LAN* können noch weitere Einstellungen
 vorgenommen werden:
 
-[![Wake on LAN Configuration](../../README/screenshots/16_md.png)](../../README/screenshots/16.png)
+[![Wake on LAN Configuration](../../docs/screenshots/16_md.png)](../../docs/screenshots/16.png)
 
 Anschließen ist das WoL-WebInterface über `fritz.box:82` oder den
 Menüpunkt "*Freetz WOL*" des AVM-WebInterfaces zu erreichen. Darin
@@ -43,7 +43,7 @@ dann den PC in der Liste "Bekannte Hosts" auswählen. Die Einträge MAC
 und Interface werden automatisch eingetragen und ein Klick auf
 "WakeUp" startet den gewählten PC.
 
-[![Wake on LAN WebInterface](../../README/screenshots/14_md.png)](../../README/screenshots/14.png)
+[![Wake on LAN WebInterface](../../docs/screenshots/14_md.png)](../../docs/screenshots/14.png)
 
 Bei Problemen bitte zuerst versuchen, ob der PC sich anderweitig (von
 anderen PCs) aufwecken lässt. Hierdurch ist sichergestellt, dass der PC

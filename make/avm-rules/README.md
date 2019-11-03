@@ -2,7 +2,7 @@
 
 Mit AVM-rules können (ausschliesslich) Ports der Fritz!Box selbst für Zugriff aus dem Internet freigegeben werden.<br>
 <br>
-<a href='../../README/screenshots/000-PKG_avm-rules.png'><img src='../../README/screenshots/000-PKG_avm-rules_md.png'></a>
+<a href='../../docs/screenshots/000-PKG_avm-rules.png'><img src='../../docs/screenshots/000-PKG_avm-rules_md.png'></a>
 <br>
 
 Dazu wird ```voip_forwardrules``` verwendet, nur für IPv4-Freigaben. Zu finden im menuconfig unter ```packages > webif```.

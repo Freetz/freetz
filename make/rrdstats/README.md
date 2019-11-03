@@ -1,6 +1,6 @@
 # RRDstats for RRDtool
 
-[![RRDstats screenshot](../../README/screenshots/229_md.jpg)](../../README/screenshots/229.jpg)
+[![RRDstats screenshot](../../docs/screenshots/229_md.jpg)](../../docs/screenshots/229.jpg)
 
 ### Einleitung
 
@@ -98,9 +98,9 @@ Danach muss der Dienst "RRDstats" manuell wieder im Freetz-Webif unter
 
 ### Kabelmodem
 
-[![RRDstats Cisco EPC (S-N Ratio)](../../README/screenshots/253_md.jpg)](../../README/screenshots/253.jpg)
+[![RRDstats Cisco EPC (S-N Ratio)](../../docs/screenshots/253_md.jpg)](../../docs/screenshots/253.jpg)
 
-[![RRDstats Cisco EPC (Signal)](../../README/screenshots/252_md.jpg)](../../README/screenshots/252.jpg)
+[![RRDstats Cisco EPC (Signal)](../../docs/screenshots/252_md.jpg)](../../docs/screenshots/252.jpg)
 
 Es werden die Kabelmodems Thomson THG 520 und 540, Cisco EPC 3212 und
 Arris Touchstone TM sowie baugleiche unterstützt.
@@ -185,7 +185,7 @@ Viel Spass und Erfolg beim nachmachen
 
 ### Kabelsegment
 
-[![RRDstats Kabelsegment](../../README/screenshots/257_md.jpg)](../../README/screenshots/257.jpg)
+[![RRDstats Kabelsegment](../../docs/screenshots/257_md.jpg)](../../docs/screenshots/257.jpg)
 
 Hiermit kann die Auslastung des Segmentes von Kabelinternet aufzeichnet
 werden. Es wird zusätzlich noch ein Treiber benötigt. Momentan gibt es
@@ -199,15 +199,15 @@ Welche Daten genau hängt vom Gerät ab, zB ein Heizkostenregler hat keine Spann
 Es wird ein Passwort für die AVM-Weboberfläche (API) benötigt, dies kann auch ein zusätzlicher Benutzer sein.
 
  * Temperatur [Grad Celsius]<br>
-   [![RRDstats SmartHome](../../README/screenshots/000-PKG_rrdstats-Temperatur_md.png)](../../README/screenshots/000-PKG_rrdstats-Temperatur.png)
+   [![RRDstats SmartHome](../../docs/screenshots/000-PKG_rrdstats-Temperatur_md.png)](../../docs/screenshots/000-PKG_rrdstats-Temperatur.png)
  * Spannung [Volt]<br>
-   [![RRDstats SmartHome](../../README/screenshots/000-PKG_rrdstats-Spannung_md.png)](../../README/screenshots/000-PKG_rrdstats-Spannung.png)
+   [![RRDstats SmartHome](../../docs/screenshots/000-PKG_rrdstats-Spannung_md.png)](../../docs/screenshots/000-PKG_rrdstats-Spannung.png)
  * Leistung [Wirkleistung, Blindleistung, Scheinleistung]<br>
-   [![RRDstats SmartHome](../../README/screenshots/000-PKG_rrdstats-Leistung_md.png)](../../README/screenshots/000-PKG_rrdstats-Leistung.png)
+   [![RRDstats SmartHome](../../docs/screenshots/000-PKG_rrdstats-Leistung_md.png)](../../docs/screenshots/000-PKG_rrdstats-Leistung.png)
  * Stromstärke [Ampere]<br>
-   [![RRDstats SmartHome](../../README/screenshots/000-PKG_rrdstats-Stromstaerke_md.png)](../../README/screenshots/000-PKG_rrdstats-Stromstaerke.png)
+   [![RRDstats SmartHome](../../docs/screenshots/000-PKG_rrdstats-Stromstaerke_md.png)](../../docs/screenshots/000-PKG_rrdstats-Stromstaerke.png)
  * Wirk-/Leistungsfaktor [Prozent/100]<br>
-   [![RRDstats SmartHome](../../README/screenshots/000-PKG_rrdstats-Leistungsfaktor_md.png)](../../README/screenshots/000-PKG_rrdstats-Leistungsfaktor.png)
+   [![RRDstats SmartHome](../../docs/screenshots/000-PKG_rrdstats-Leistungsfaktor_md.png)](../../docs/screenshots/000-PKG_rrdstats-Leistungsfaktor.png)
 
 
 ### Datenbanken

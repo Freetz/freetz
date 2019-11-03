@@ -93,14 +93,14 @@ More information on the View-Based Access Control Model (VACM) can be
 found on the [Net-SNMP
 Wiki](http://www.net-snmp.org/wiki/index.php/Vacm)
 
-[![Net-SNMP snmpd.conf](../../README/screenshots/247_md.jpg)](../../README/screenshots/247.jpg)
+[![Net-SNMP snmpd.conf](../../docs/screenshots/247_md.jpg)](../../docs/screenshots/247.jpg)
 
 #### setup
 
 After saving a snmpd.conf file using the Net-SNMP > snmpd.conf setup
 page you can enable Net-SNMP to start automatically at bootup.
 
-[![Net-SNMP Setup](../../README/screenshots/246_md.jpg)](../../README/screenshots/246.jpg)
+[![Net-SNMP Setup](../../docs/screenshots/246_md.jpg)](../../docs/screenshots/246.jpg)
 
 #### verify
 
@@ -136,7 +136,7 @@ site](http://oss.oetiker.ch/mrtg/).
 
 Here an example on the graph you can generate:
 
-[![MRTG lan interface daily graph](../../README/screenshots/248_md.jpg)](../../README/screenshots/248.jpg)
+[![MRTG lan interface daily graph](../../docs/screenshots/248_md.jpg)](../../docs/screenshots/248.jpg)
 
 # Installing MRTG
 
@@ -1702,7 +1702,7 @@ Add the entries in the in the registry using the following command:
 
 > regedit /s mrtg_7390.reg
 
-[![MRTG as a Service Registry entry](../../README/screenshots/279.png)](../../README/screenshots/279.png)
+[![MRTG as a Service Registry entry](../../docs/screenshots/279.png)](../../docs/screenshots/279.png)
 
-[![MRTG as a Service Registry entry parameters](../../README/screenshots/280.png)](../../README/screenshots/280.png)
+[![MRTG as a Service Registry entry parameters](../../docs/screenshots/280.png)](../../docs/screenshots/280.png)
 

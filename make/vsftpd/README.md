@@ -303,14 +303,14 @@ eingetragen.
 banner_file=/var/media/ftp/uStor01/ftp-startbild
 ```
 
-[![](../../README/screenshots/126_md.jpg)](../../README/screenshots/126.jpg)
+[![](../../docs/screenshots/126_md.jpg)](../../docs/screenshots/126.jpg)
 
 4.) Nun nur noch Übernehmen und schon sollte sich Eure Box / der FTP mit
 dem neuen Anmeldebildschirm melden.
 
-[![](../../README/screenshots/127_md.jpg)](../../README/screenshots/127.jpg)
+[![](../../docs/screenshots/127_md.jpg)](../../docs/screenshots/127.jpg)
 
-[![](../../README/screenshots/128_md.jpg)](../../README/screenshots/128.jpg)
+[![](../../docs/screenshots/128_md.jpg)](../../docs/screenshots/128.jpg)
 
 
 ### Weiterführende Links

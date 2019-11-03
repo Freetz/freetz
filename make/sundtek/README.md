@@ -1,6 +1,6 @@
 # Sundtek DVB-C/T/T2 driver
 
-[![Sundtek DVB driver](../../README/screenshots/256_md.jpg)](../../README/screenshots/256.jpg)
+[![Sundtek DVB driver](../../docs/screenshots/256_md.jpg)](../../docs/screenshots/256.jpg)
 
 Dieses Package stellt den Treiber für USB-Sticks von Sundtek bereit, mit
 denen DVB (c/s/t) empfangen werden kann.

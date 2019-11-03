@@ -29,7 +29,7 @@ gestartet sein muß.
 Das NcFTP-Package ist beim Bauen eines neuen Freetz-Images auszuwählen.
 Im Trunk ist NcFTP unter Packages→Testing zu finden.
 
-[![Ort im Trunk](../../README/screenshots/214_md.png)](../../README/screenshots/214.png)
+[![Ort im Trunk](../../docs/screenshots/214_md.png)](../../docs/screenshots/214.png)
 
 ### Wie starte ich NcFTP?
 

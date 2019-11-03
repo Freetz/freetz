@@ -2,7 +2,7 @@
 
 ### **Was ist digitemp?**
 
-[![DigiTemp screenshot](../../README/screenshots/120_md.jpg)](../../README/screenshots/120.jpg)
+[![DigiTemp screenshot](../../docs/screenshots/120_md.jpg)](../../docs/screenshots/120.jpg)
 
 Digitemp ist eine Software zum Auslesen von 1-Wire Temperatursensoren
 als auch anderen von Dallas zur Verfügung gestellten 1-Wire Komponenten,

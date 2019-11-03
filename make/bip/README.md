@@ -16,7 +16,7 @@ Homepage](http://bip.milkypond.org/).
 
 ### Auswahl
 
-[![Menuconfig](../../README/screenshots/212_md.png)](../../README/screenshots/212.png)
+[![Menuconfig](../../docs/screenshots/212_md.png)](../../docs/screenshots/212.png)
 
 Wenn man einen Bip-Proxy auf seiner Fritzbox betreiben möchte muss
 dieser beim Bau eines Freetz-Image im Menuconfig ausgewählt werden:
@@ -27,7 +27,7 @@ Zu finden ist dieser im **menuconfig** unter : **Package selection** =⇒
 
 ### Konfiguration
 
-[![Menu in der Fritzbox](../../README/screenshots/213_md.png)](../../README/screenshots/213.png)
+[![Menu in der Fritzbox](../../docs/screenshots/213_md.png)](../../docs/screenshots/213.png)
 
 Im Main-Menu des Bip-Proxy müssen dann noch ein beliebiger Port (im
 Beispiel haben wir die 2222 gewählt) und der Speicherort des Log-Files

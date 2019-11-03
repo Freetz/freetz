@@ -1,6 +1,6 @@
 # Stunnel 5.55
 
-[![Stunnel Webinterface](../../README/screenshots/202_md.png)](../../README/screenshots/202.png)
+[![Stunnel Webinterface](../../docs/screenshots/202_md.png)](../../docs/screenshots/202.png)
 
 *"Stunnel is a program that allows you to encrypt arbitrary TCP
 connections inside SSL (Secure Sockets Layer) available on both Unix and

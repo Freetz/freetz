@@ -150,7 +150,7 @@ Hier mal ein Beispiel mit folgenden Daten:
 
 In der GUI wäre der Server dann so zu konfigurieren:
 
-[![OpenVPN Webinterface: static server](../../README/screenshots/27_md.png)](../../README/screenshots/27.png)
+[![OpenVPN Webinterface: static server](../../docs/screenshots/27_md.png)](../../docs/screenshots/27.png)
 
 Eine passende Windows-Client-Konfiguration dazu, die sich auf die Box
 verbinden kann:
@@ -221,7 +221,7 @@ Der Server vergibt an die Clients IP-Adressen ab der 192.168.200.100 bis
 dem Netz 192.168.178.0. Für das "Abholen" dieser Parameter sorgt das
 ***pull*** in der Client-Konfiguration.
 
-[![OpenVPN Webinterface: certificate server](../../README/screenshots/28_md.png)](../../README/screenshots/28.png)
+[![OpenVPN Webinterface: certificate server](../../docs/screenshots/28_md.png)](../../docs/screenshots/28.png)
 
 Ebenfalls wieder eine Client-Konfiguration dazu, die sich mit diesem
 Server verbinden könnte:
@@ -316,7 +316,7 @@ Zum Abschluß noch mal
 Die Konfiguration in der OpenVPN-Gui könnte für den FritzBox Standard
 dann folgendermaßen aussehen:
 
-[![OpenVPN Webinterface: bridged server](../../README/screenshots/29_md.png)](../../README/screenshots/29.png)
+[![OpenVPN Webinterface: bridged server](../../docs/screenshots/29_md.png)](../../docs/screenshots/29.png)
 
 Die Windows-Client-Konfiguration dazu sieht so aus:
 
@@ -522,7 +522,7 @@ diskutiert.
 
 ### Neue, simple GUI (GUI2)
 
-[![neue OpenVPN GUI](../../README/screenshots/273_md.png)](../../README/screenshots/273.png)
+[![neue OpenVPN GUI](../../docs/screenshots/273_md.png)](../../docs/screenshots/273.png)
 
 Aktuell ist im "trunk" (der Freetz Entwicklerversion) eine weitere GUI
 zum Paket hinzugekommen, die deutlich "schlanker" ist als die

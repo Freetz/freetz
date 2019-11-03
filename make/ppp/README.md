@@ -1,6 +1,6 @@
 # Point-to-Point
 
-[![ppp-cgi](../../README/screenshots/121_md.jpg)](../../README/screenshots/121.jpg)
+[![ppp-cgi](../../docs/screenshots/121_md.jpg)](../../docs/screenshots/121.jpg)
 
 Entstanden aus diesem Thread im IPPF:
 [http://www.ip-phone-forum.de/showthread.php?t=201519](http://www.ip-phone-forum.de/showthread.php?t=201519)

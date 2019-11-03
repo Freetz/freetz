@@ -200,7 +200,7 @@ But you can also use the csv format output in an Excel sheet. I attached
 
 #### MRTG CPU Util
 
-[![CPU Util 7390 bonnie++ test script](../../README/screenshots/276_md.png)](../../README/screenshots/276.png)
+[![CPU Util 7390 bonnie++ test script](../../docs/screenshots/276_md.png)](../../docs/screenshots/276.png)
 
 In the [MRTG](netsnmp.en.html) graph of the CPU Utilization you can
 clearly see that the CPU Utilization is the bottleneck in my setup using
