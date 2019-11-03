@@ -5,7 +5,7 @@
 <br>
 [Quickstart](docs/README.md)<br>
 [Firmwares](docs/FIRMWARES.md)<br>
-[Changelog](CHANGELOG)<br>
+[Changelog](docs/CHANGELOG.md)<br>
 
 ### Timeline
 [Boxmatrix](https://trac.boxmatrix.info/freetz-ng/timeline)<br>
