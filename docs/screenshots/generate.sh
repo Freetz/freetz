@@ -1,5 +1,5 @@
 #!/bin/bash
-# generates thumbnails of README/screenshots/* to docs/README/*_md.*
+# generates thumbnails of docs/screenshots/* to docs/README/*_md.*
 MYPWD="$(dirname $(realpath $0))"
 
 for file in $MYPWD/*.???; do

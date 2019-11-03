@@ -1,5 +1,5 @@
 #!/bin/bash
-# generates README/make/README.md and make/README.md (subs)
+# generates docs/make/README.md and make/README.md (subs)
 MDPWD="$(dirname $(realpath $0))"
 INPWD="$MDPWD/../../make"
 

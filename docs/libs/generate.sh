@@ -1,5 +1,5 @@
 #!/bin/bash
-# generates README/libs/README.md
+# generates docs/libs/README.md
 MDPWD="$(dirname $(realpath $0))"
 INPWD="$MDPWD/../../make/libs"
 

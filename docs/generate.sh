@@ -1,5 +1,5 @@
 #!/bin/bash
-# generates everything with README/*/generate.sh
+# generates everything with docs/*/generate.sh
 MYPWD="$(dirname $(realpath $0))"
 
 generate_info() {

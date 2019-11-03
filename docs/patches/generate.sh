@@ -1,5 +1,5 @@
 #!/bin/bash
-# generates README/patches/README.md
+# generates docs/patches/README.md
 MDPWD="$(dirname $(realpath $0))"
 INPWD="$MDPWD/../../config/ui"
 
