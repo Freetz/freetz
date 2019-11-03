@@ -4,7 +4,7 @@
 [![Freetz-NG](docs/screenshots/000-XXX_Freetz-NG_trans.png "Freetz-NG")](#)<br>
 <br>
 [Quickstart](docs/README.md)<br>
-[Firmwares](FIRMWARES)<br>
+[Firmwares](docs/FIRMWARES.md)<br>
 [Changelog](CHANGELOG)<br>
 
 ### Timeline
