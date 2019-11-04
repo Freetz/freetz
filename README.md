@@ -3,6 +3,7 @@
 ## Welcome to Freetz-NG
 [![Freetz-NG](docs/screenshots/000-XXX_Freetz-NG_trans.png "Freetz-NG")](#)<br>
 <br>
+[News](docs/NEWS.md)<br>
 [Quickstart](docs/README.md)<br>
 [Firmwares](docs/FIRMWARES.md)<br>
 [Changelog](docs/CHANGELOG.md)<br>
