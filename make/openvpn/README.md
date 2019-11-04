@@ -3,12 +3,6 @@
 OpenVPN ist ein Programm zur Herstellung eines Virtuellen Privaten
 Netzwerkes (VPN) über eine verschlüsselte TLS-Verbindung.
 
-### Version
-
-In der aktuellen Version von Freetz ist OpenVPN 2.3.2 enthalten (aktuell
-kann auch noch die alte Version 2.2.1 gewählt werden). Es kann im
-menuconfig wahlweise mit und ohne LZO2 Komprimierung ausgewählt werden.
-
 ### Häufige Fragen / Howto
 
 Die Dokumentation auf der OpenVPN Webseite ist sehr gut und ausführlich.
@@ -202,15 +196,17 @@ z.B. mit
 
 Zuordnung der Schlüssel und Zertifikate auf der Box:
 
+```
   ------------- ----------------- ----------------------------------------
   GUI-Name      Datei-Name        Beispiel / Bemerkung
-  Box Cert      <Name>.crt      server.crt od. client01.crt
-  Private Key   <Name>.key      server.key oder client01.key
+  Box Cert      <Name>.crt        server.crt od. client01.crt
+  Private Key   <Name>.key        server.key oder client01.key
   CA Cert       ca.crt            Zertifikat der CA
-  DH Param      dh<Länge>.pem   dh1024.pem od. dh2048.pem
+  DH Param      dh<Länge>.pem     dh1024.pem od. dh2048.pem
   Static Key    wird generiert    muss auf Server und Client gleich sein
   CRL           leer lassen       Liste zurückgezogener Zertifikate
   ------------- ----------------- ----------------------------------------
+```
 
 In der folgenden Beispiel-Konfiguration soll der Server auf der Box mit
 mehreren Clients genutzt werden können und im TAP-Modus laufen. Die
