@@ -140,7 +140,7 @@ Latest changes
     * squashfs-tools 3.4
     * squashfs-tools 4.3 (modified to support AVM-BE format)
     * vermagic 1ac45e08d4-git
-    * WireGuard 0.0.20190913
+    * WireGuard 0.0.20191012
     * xz 5.2.4
 
 - Documentation/Wiki:
