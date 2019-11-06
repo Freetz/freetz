@@ -65,6 +65,7 @@
  - [Package Development [EN]](60_Development/package_development_basics.en.md)
  - [Package development config [EN]](60_Development/package_development_config.en.md)
  - [libmodcgi.sh](60_Development/package_development_libmodcgi.md)
+ - [Makefiles [EN]](60_Development/package_development_makefiles.en.md)
  - [Example 1: Httptunnel [EN]](60_Development/package_development_pkgexample1.en.md)
  - [Example 2: par2cmdline [EN]](60_Development/package_development_pkgexample2.en.md)
  - [Example 3: NZBGet [EN]](60_Development/package_development_pkgexample3.en.md)

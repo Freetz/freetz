@@ -1,18 +1,20 @@
+# Makefiles
 
 By convention, each package has two package names. In this text we
-will refer to them as $pkg and $PKG.  The name
-$pkg usually consists of lower case letters, digits, underlines
-and hyphens. $PKG consists of uppercase letters, digits and
-underlines, but no hyphens.  Normally $PKG is the name
-$pkg with letters converted to upper case and hyphens
+will refer to them as ```$pkg``` and ```$PKG```.  The name
+```$pkg``` usually consists of lower case letters, digits, underlines
+and hyphens. ```$PKG``` consists of uppercase letters, digits and
+underlines, but no hyphens.  Normally ```$PKG``` is the name
+```$pkg``` with letters converted to upper case and hyphens
 converted to underlines. Version numbers are not part of a package
 name, so most package names don't contain digits.
 
 Packages may be either library packages or binary packages.  Library
-packages are in make/libs/*, while binary packages are in make/*.
+packages are in [make/libs/*](../../../make/libs/), while binary packages are in [make/*](../../../make/).
 
 Each package must define the following targets:
 
+```
 $(pkg)-download
 	Download source for the package
 
@@ -33,8 +35,11 @@ ${pkg}-list
 ${pkg}-uninstall
 	remove binary files from package or library files from root/${FREETZ_LIBRARY_DIR}
 
+```
+
 
 To use the convenience macros, you need some more defines:
+```
 # initialize package macros, ether BINary or LIBrary.
 #   $(1) = version (mandatory)
 #   $(2) = lower-case package name (optional, default name of makefile)
@@ -114,3 +119,5 @@ $(PKG_CONFIGURED_NOP)
 # defines ${pkg}-list for binary packages
 # defines $(pkg)-dirclean
 $(PKG_FINISH)
+
+```
