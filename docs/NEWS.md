@@ -1,5 +1,8 @@
 # NEWS
 
+ * __2019-11-06__\
+   Das Trac auf boxmatrix funktioniert aktuell nicht richtig.
+   Bitte stattdessen das [DEB](https://www.digital-eliteboard.com/forums/2045/) oder [Github](https://github.com/Freetz-NG/freetz-ng/issues) verwenden.
  * __2019-11-03__\
    In [./docs](./) liegt nun ein grossteil der Dokumentation und des alten Wikis, abgesehen von den Dateien der Packages.\
    Darauf kann über die [./README.md](../README.md) im Hauptverzeichnis oder https://freetz-ng.github.io/ zugegriffen werden.\
