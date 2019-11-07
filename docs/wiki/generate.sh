@@ -22,8 +22,8 @@ done
 echo >> "$MYPWD/README.md"
 
 (
-grep WikiDYN "$MYPWD/../../README.md" -B99 -A1
-sed -rn 's/^### (\[.*\]\()(.*)/\1docs\/wiki\/\2<br>/p' "$MYPWD/README.md"
-grep WikiEND "$MYPWD/../../README.md" -A99 -B1
-) > "$MYPWD/../../README_md"
-mv "$MYPWD/../../README_md" "$MYPWD/../../README.md"
+grep WikiDYN "$MYPWD/../README.md" -B99 -A1
+sed -rn 's/^### (\[.*\]\()(.*)/\1wiki\/\2<br>/p' "$MYPWD/README.md"
+grep WikiEND "$MYPWD/../README.md" -A99 -B1
+) > "$MYPWD/../README_md"
+mv "$MYPWD/../README_md" "$MYPWD/../README.md"

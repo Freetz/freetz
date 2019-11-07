@@ -1,33 +1,37 @@
-# Welcome to Freetz-NG
+<div align="center">
 
-```
- _____              _            _   _  ____
-|  ___| __ ___  ___| |_ ____    | \ | |/ ___|
-| |_ | '__/ _ \/ _ \ __|_  /____|  \| | |  _
-|  _|| | |  __/  __/ |_ / /_____| |\  | |_| |
-|_|  |_|  \___|\___|\__/___|    |_| \_|\____|
+## Welcome to Freetz-NG
+[![Freetz-NG](screenshots/000-XXX_Freetz-NG_trans.png "Freetz-NG")](#)<br>
+<br>
+[News](NEWS.md)<br>
+[Firmwares](FIRMWARES.md)<br>
+[Changelog](CHANGELOG.md)<br>
 
-```
+### Timeline
+[Boxmatrix](https://trac.boxmatrix.info/freetz-ng/timeline)<br>
+[Gitlab](https://gitlab.com/Freetz-NG/freetz-ng/commits/master)<br>
+[Github](https://github.com/Freetz-NG/freetz-ng/commits/master)<br>
 
-Freetz-NG is a fork of Freetz.
-All commits not by administrator (svn),
-cuma (trac) or fda77 (git) are merged.
+### Listings
+[Packages](make/README.md)<br>
+[Libraries](libs/README.md)<br>
+[Patches](patches/README.md)<br>
+[Themes](themes/README.md)<br>
 
-### Download:
-```
-  svn co https://svn.boxmatrix.info/freetz-ng/trunk ~/freetz-ng
-  or
-  git clone https://gitlab.com/Freetz-NG/freetz-ng ~/freetz-ng
-  or
-  git clone https://github.com/Freetz-NG/freetz-ng ~/freetz-ng
-```
+### [Wiki](wiki/README.md)
 
-### Quickstart:
-```
-  cd ~/freetz-ng
-  make help
-  make menuconfig
-  make
-  make push-firmware
-```
+[//]: # ( WikiDYN )
+
+[FAQ](wiki/00_FAQ/README.md)<br>
+[Beginner](wiki/10_Beginner/README.md)<br>
+[Advanced](wiki/20_Advanced/README.md)<br>
+[Expert](wiki/30_Expert/README.md)<br>
+[Troubleshooting](wiki/40_Troubleshooting/README.md)<br>
+[Security](wiki/50_Security/README.md)<br>
+[Development](wiki/60_Development/README.md)<br>
+[Various](wiki/70_Various/README.md)<br>
+
+[//]: # ( WikiEND )
+
+</div>
 
