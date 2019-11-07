@@ -1,39 +1,39 @@
 # FIRMWARES
 Currently supported devices and firmwares
 
- * [Not supported devices](#unsupported)
- * [Fritz!Box (2xxx)](#box)
- * [Fritz!Box WLAN (3xxx)](#wlan)
- * [Fritz!Box WAN (4xxx)](#wan)
- * [Fritz!Box Fon (50xx/51xx)](#fon)
- * [Fritz!Box Fiber (54xx)](#fiber)
- * [Fritz!Box Cable (64xx/65xx)](#cable)
- * [Fritz!Box LTE (68xx)](#lte)
- * [Fritz!Box Fon WLAN (70xx)](#dsl70)
- * [Fritz!Box Fon WLAN (71xx)](#dsl71)
- * [Fritz!Box Fon WLAN (72xx)](#dsl72)
- * [Fritz!Box Fon WLAN (73xx)](#dsl73)
- * [Fritz!Box Fon WLAN (74xx)](#dsl74)
- * [Fritz!Box Fon WLAN (75xx)](#dsl75)
- * [Fritz!Powerline](#pl)
- * [Fritz!WLAN Repeater](#wr)
- * [T-Com derivatives](#t-com)
- * [Alice derivatives](#alice)
+ * [Not supported devices](#not-supported-devices)
+ * [Fritz!Box (2xxx)](#fritzbox-2xxx)
+ * [Fritz!Box WLAN (3xxx)](#fritzbox-wlan-3xxx)
+ * [Fritz!Box WAN (4xxx)](#fritzbox-wan-4xxx)
+ * [Fritz!Box Fon (50xx/51xx)](#fritzbox-fon-50xx51xx)
+ * [Fritz!Box Fiber (54xx)](#fritzbox-fiber-54xx)
+ * [Fritz!Box Cable (64xx/65xx)](#fritzbox-cable-64xx65xx)
+ * [Fritz!Box LTE (68xx)](#fritzbox-lte-68xx)
+ * [Fritz!Box Fon WLAN (70xx)](#fritzbox-fon-wlan-70xx)
+ * [Fritz!Box Fon WLAN (71xx)](#fritzbox-fon-wlan-71xx)
+ * [Fritz!Box Fon WLAN (72xx)](#fritzbox-fon-wlan-72xx)
+ * [Fritz!Box Fon WLAN (73xx)](#fritzbox-fon-wlan-73xx)
+ * [Fritz!Box Fon WLAN (74xx)](#fritzbox-fon-wlan-74xx)
+ * [Fritz!Box Fon WLAN (75xx)](#fritzbox-fon-wlan-75xx)
+ * [Fritz!Powerline](#fritzpowerline)
+ * [Fritz!WLAN Repeater](#fritzwlan-repeater)
+ * [T-Com derivatives](#t-com-derivatives)
+ * [Alice derivatives](#alice-derivatives)
 
 <br>
 
-### Not supported devices <a id=unsupported></a>
+### Not supported devices
 
   * Repeater 310, 600 & 1160: No LAN ports, so a recovery is not possible.
   * Fritz!Box 6591: Firmware image is in Intel Unified Image v3 format.
   * Fritz!Box 6591, 7581 & 7582, Inhaus: These don't use supported uClib or glibc.
 
-### Fritz!Box (2xxx) <a id=box></a>
+### Fritz!Box (2xxx)
 
 * __Fritz!Box 2170__
   - 51.04.57 rev11451 {GER}
 
-### Fritz!Box WLAN (3xxx) <a id=wlan></a>
+### Fritz!Box WLAN (3xxx)
 
 * __Fritz!Box WLAN 3020/SL WLAN__
   - 09.04.34 rev7804 {GER}
@@ -85,7 +85,7 @@ Currently supported devices and firmwares
   - 140.07.01 rev61726 {INT}
   - 140.07.12 rev70430 {INT} [MESH18 NL2]
 
-### Fritz!Box WAN (4xxx) <a id=wan></a>
+### Fritz!Box WAN (4xxx)
 
 * __Fritz!Box 4020__
   - 147.06.83 rev43440 {GER}
@@ -94,7 +94,7 @@ Currently supported devices and firmwares
   - 155.07.01 rev61489 {ALL}
   - 155.07.12 rev70330 {ALL} [MESH18 NL2]
 
-### Fritz!Box Fon (50xx/51xx) <a id=fon></a>
+### Fritz!Box Fon (50xx/51xx)
 
 * __Fritz!Box Fon__
   - 06.04.33 rev7703 {GER}
@@ -111,7 +111,7 @@ Currently supported devices and firmwares
 * __Fritz!Box Fon 5140__
   - 43.04.67 rev13928 {GER}
 
-### Fritz!Box Fiber (54xx) <a id=fiber></a>
+### Fritz!Box Fiber (54xx)
 
 * __Fritz!Box 5490 Fiber__
   - 151.07.01 rev63544 {ALL}
@@ -121,7 +121,7 @@ Currently supported devices and firmwares
   - 171.07.01 rev64362 {ALL}
   - 171.07.12 rev71193 {ALL} [MESH18 NL2]
 
-### Fritz!Box Cable (64xx/65xx) <a id=cable></a>
+### Fritz!Box Cable (64xx/65xx)
 
 * __Fritz!Box 6430 Cable (UNTESTED)__
   - 159.07.12 rev72224 {GER} [MESH18 NL2]
@@ -135,7 +135,7 @@ Currently supported devices and firmwares
   - 148.07.02 rev65392 {GER}
   - 148.07.12 rev72225 {GER} [MESH18 NL2]
 
-### Fritz!Box LTE (68xx) <a id=lte></a>
+### Fritz!Box LTE (68xx)
 
 * __Fritz!Box 6810 LTE (UNTESTED)__
   - 108.06.34 rev36874 {GER}
@@ -162,7 +162,7 @@ Currently supported devices and firmwares
   - 162.07.03 rev68723 {ALL}
   - 162.07.12 rev71363 {ALL} [MESH18 NL2]
 
-### Fritz!Box Fon WLAN (70xx) <a id=dsl70></a>
+### Fritz!Box Fon WLAN (70xx)
 
 * __Fritz!Box Fon WLAN__
   - 08.04.34 rev7804 {GER}
@@ -172,7 +172,7 @@ Currently supported devices and firmwares
 * __Fritz!Box Fon WLAN 7050__
   - 14.04.33 rev7238
 
-### Fritz!Box Fon WLAN (71xx) <a id=dsl71></a>
+### Fritz!Box Fon WLAN (71xx)
 
 * __Fritz!Box Fon WLAN 7112__
   - 87.04.88 rev27403 {GER}
@@ -200,7 +200,7 @@ Currently supported devices and firmwares
   - 58.04.85 rev27409 {INT} (Annex A)
   - 58.04.77 rev27483 (ACH) (Annex A)
 
-### Fritz!Box Fon WLAN (72xx) <a id=dsl72></a>
+### Fritz!Box Fon WLAN (72xx)
 
 * __Fritz!Box Fon WLAN 7240__
   - 73.05.54 rev27373 {GER}
@@ -225,7 +225,7 @@ Currently supported devices and firmwares
   - 120.06.52 rev33403 {INT}
   - 120.06.86 rev70993 {INT}
 
-### Fritz!Box Fon WLAN (73xx) <a id=dsl73></a>
+### Fritz!Box Fon WLAN (73xx)
 
 * __Fritz!Box Fon WLAN 7312__
   - 117.06.30 rev30889 {GER}
@@ -281,7 +281,7 @@ Currently supported devices and firmwares
   - 84.06.53 rev34469 {INT}
   - 84.06.86 rev70976 {INT}
 
-### Fritz!Box Fon WLAN (74xx) <a id=dsl74></a>
+### Fritz!Box Fon WLAN (74xx)
 
 * __Fritz!Box Fon WLAN 7412__
   - 137.06.30 rev31572 {GER}
@@ -313,7 +313,7 @@ Currently supported devices and firmwares
   - 113.07.01 rev61484 {INT}
   - 113.07.12 rev70401 {INT} [MESH18 NL2]
 
-### Fritz!Box Fon WLAN (75xx) <a id=dsl75></a>
+### Fritz!Box Fon WLAN (75xx)
 
 * __Fritz!Box Fon WLAN 7570__
   - 75.04.92 rev27423 {INT} (Annex A/B)
@@ -355,7 +355,7 @@ Currently supported devices and firmwares
   - 154.07.01 rev61989 {INT}
   - 154.07.12 rev70402 {INT} [MESH18 NL2]
 
-### Fritz!Powerline <a id=pl></a>
+### Fritz!Powerline
 
 * __Fritz!Powerline 540E__
   - 129.06.32 rev31507 {GER}
@@ -378,7 +378,7 @@ Currently supported devices and firmwares
   - 157.07.01 rev63181 {ALL}
   - 157.07.12 rev70670 {ALL} [MESH18 NL2]
 
-### Fritz!WLAN Repeater <a id=wr></a>
+### Fritz!WLAN Repeater
 
 * __Fritz!WLAN Repeater 300E (UNTESTED)__
   - 101.06.33 rev38569 {GER}
@@ -408,7 +408,7 @@ Currently supported devices and firmwares
   - 174.07.04 rev66458 {ALL}
   - 174.07.12 rev70612 {GER} [MESH18 NL2]
 
-### T-Com derivatives <a id=t-com></a>
+### T-Com derivatives
 
 * __Eumex 300IP__
   - Alien Fritz!Box Fon {GER}
@@ -423,7 +423,7 @@ Currently supported devices and firmwares
   - Alien 7270 v2 {GER+INT}
   - Alien 7570 & T-Com 65.04.79 rev27472 {GER}
 
-### Alice derivatives <a id=alice></a>
+### Alice derivatives
 
 * __Alice IAD WLAN 3331__
   - Alien 7170 {GER}

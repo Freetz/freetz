@@ -1,6 +1,4 @@
-<div align="center">
-
-## Welcome to Freetz-NG
+# Welcome to Freetz-NG
 [![Freetz-NG](screenshots/000-XXX_Freetz-NG_trans.png "Freetz-NG")](#)<br>
 <br>
 [News](NEWS.md)<br>
@@ -33,5 +31,4 @@
 
 [//]: # ( WikiEND )
 
-</div>
 

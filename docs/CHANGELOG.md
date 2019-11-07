@@ -3,34 +3,34 @@ Latest changes
 
 - Freetz
   * [devel](#devel)
-  * [Freetz-2.0](#20)
-  * [Freetz-1.2](#12)
-  * [Freetz-1.1](#11)
-  * [Freetz-1.1.4](#114)
-  * [Freetz-1.1.3](#113)
-  * [Freetz-1.1.2](#112)
-  * [Freetz-1.1.1](#111)
-  * [Freetz-1.1.0](#110)
-  * [Freetz-1.0.1](#101)
-  * [Freetz-1.0](#100)
+  * [Freetz-2.0](#freetz-20)
+  * [Freetz-1.2](#freetz-12)
+  * [Freetz-1.1](#freetz-11)
+  * [Freetz-1.1.4](#freetz-114)
+  * [Freetz-1.1.3](#freetz-113)
+  * [Freetz-1.1.2](#freetz-112)
+  * [Freetz-1.1.1](#freetz-111)
+  * [Freetz-1.1.0](#freetz-110)
+  * [Freetz-1.0.1](#freetz-101)
+  * [Freetz-1.0](#freetz-10)
 
 - DS 2.6
-  * [ds26-15.2](#152)
-  * [ds26-15.1](#151)
-  * [ds26-15.0](#150)
-  * [ds26-14.4](#144)
-  * [ds26-14.3](#143)
+  * [ds26-15.2](#ds26-152)
+  * [ds26-15.1](#ds26-151)
+  * [ds26-15.0](#ds26-150)
+  * [ds26-14.4](#ds26-144)
+  * [ds26-14.3](#ds26-143)
 
 - DS 2.4
-  * [ds-0.2.9_26-14.2](#1420)
-  * [ds-0.2.9_26-14.1-p2](#1412)
-  * [ds-0.2.9_26-14.1-p1](#1411)
-  * [ds-0.2.9_26-14.1](#1410)
-  * [ds-0.2.9_26-14.0](#1400)
+  * [ds-0.2.9_26-14.2](#ds-029_26-142)
+  * [ds-0.2.9_26-14.1-p2](#ds-029_26-141-p2)
+  * [ds-0.2.9_26-14.1-p1](#ds-029_26-141-p1)
+  * [ds-0.2.9_26-14.1](#ds-029_26-141)
+  * [ds-0.2.9_26-14.0](#ds-029_26-140)
 
 <br>
 
-### devel <a id=devel></a>
+### devel
 
 - Known problems:
   * Replace kernel does not work for most latest firmware versions.
@@ -354,7 +354,7 @@ Latest changes
     * motd: It could be changed and also be dynamic. You could put your own content into /tmp/flash/mod/motd. It will be
       generated 1 time at boot, to update it more often, run "/mod/etc/init.d/rc.mod motd", eg by cron .
 
-### Freetz-2.0 <a id=20></a>
+### Freetz-2.0
 
 - Build system:
   * binutils:
@@ -610,7 +610,7 @@ Latest changes
 
 - Other stuff:
 
-### Freetz-1.2 <a id=12></a>
+### Freetz-1.2
 
 - Build system:
   * fakeroot: bump version to 1.15.1
@@ -918,14 +918,14 @@ Latest changes
       + compressed size of freetz config file must not be greater than 32 KB
       + this is a tffs2 restriction
 
-### Freetz-1.1 <a id=11></a>
+### Freetz-1.1
 
 - Build system::
  * Fix buffer overflow in tar
 
 See svn log for more details.
 
-### Freetz-1.1.4 <a id=114></a>
+### Freetz-1.1.4
 
 - Updated packages and libs:
     * callmonitor 1.15.2 (Adds features up to 1.18.5)
@@ -937,7 +937,7 @@ See svn log for more details.
 
 See svn log for more details.
 
-### Freetz-1.1.3 <a id=113></a>
+### Freetz-1.1.3
 
 - Web interface:
     * added favicon by atomphil (Freetz-Webinterface only)
@@ -958,7 +958,7 @@ See svn log for more details.
 - Firmware updates
     * Please see FIRMWARES for the list of currently supported boxes and firmwares.
 
-### Freetz-1.1.2 <a id=112></a>
+### Freetz-1.1.2
 
 - Updated packages and libs:
     * microperl 5.10.1
@@ -966,7 +966,7 @@ See svn log for more details.
 - Firmware updates
     * Please see FIRMWARES for the list of currently supported boxes and firmwares.
 
-### Freetz-1.1.1 <a id=111></a>
+### Freetz-1.1.1
 
 - Build system:
   * patch-system: use shell-fuction isFreetzType (by kriegaex)
@@ -982,7 +982,7 @@ See svn log for more details.
 - Firmware updates
     * Please see FIRMWARES for the list of currently supported boxes and firmwares.
 
-### Freetz-1.1.0 <a id=110></a>
+### Freetz-1.1.0
 
 - Build system:
     * fakeroot: bump version to 1.12.2
@@ -1125,7 +1125,7 @@ See svn log for more details.
       * show it only with security level 0
       * don't allow to execute any code by clicking on a wrong url
 
-### Freetz-1.0.1 <a id=101></a>
+### Freetz-1.0.1
 
 - Build system:
 
@@ -1224,7 +1224,7 @@ See svn log for more details.
     * fix wrong PID in /var/run/httpd.pid after webcfg restart
     * fwmod_list: ignore case when searching for new firmwares
 
-### Freetz-1.0 <a id=100></a>
+### Freetz-1.0
 
 - Build system:
     * adapted all packages to new macro style
@@ -1435,7 +1435,7 @@ See svn log for more details.
       either.
     * add 64-bit fix for TI-chksum
 
-### ds26-15.2 <a id=152></a>
+### ds26-15.2
 
 - Build system:
     * Makefile: be more tolerant towards users of SUSE oder Mandriva
@@ -1594,7 +1594,7 @@ See svn log for more details.
     * tools/depmod.pl: dos2unix line feeds
 
 
-### ds26-15.1 <a id=151></a>
+### ds26-15.1
 
 - Build system:
     * Add "SHELL:=/bin/bash" to Makefile because of this:
@@ -1750,7 +1750,7 @@ See svn log for more details.
       problems. This fixes recently reported Tor segfaults.
 
 
-### ds26-15.0 <a id=150></a>
+### ds26-15.0
 
 - Many makefile changes, some big, some small, some cosmetic, to
     * make default target indirectly dependent on 'precompiled':
@@ -2065,7 +2065,7 @@ See svn log for more details.
       cosmetics. (kriegaex: And Daniel deserves credits anyway, anywhere.)
 
 
-### ds26-14.4 <a id=144></a>
+### ds26-14.4
 
 - Busybox patch for 'ash' shell: When a remote client (e.g. ssh) was killed,
   the remaining shell process would get into an endless loop stressing the CPU
@@ -2115,7 +2115,7 @@ See svn log for more details.
 - tools/ds_download: changed 'od -D' to 'od -d' to make it compatible with
   old versions of GNU coreutils (e.g. od 5.2.1)
 
-### ds26-14.3 <a id=143></a>
+### ds26-14.3
 
 - Cross-cutting changes in ds-mod-specific package download:
   * New shell script tools/ds_download provides a uniform way to download
@@ -2172,7 +2172,7 @@ See svn log for more details.
 - Suppress tar "lone zero block" warning when unpacking certain firmware images
 - Don't be so restrictive on addon-names (e.g. openvpn-2.1.offline)
 
-### ds-0.2.9_26-14.2 <a id=1420></a>
+### ds-0.2.9_26-14.2
 
 - Fix fakeroot problems with chown (operation not permitted) on systems with
   newer glibc + coreutils combinations using *at(). The version has been
@@ -2210,12 +2210,12 @@ See svn log for more details.
 - Delete some unnecessary files
 - Forgot to add patches for gdb 6.3 and 6.4
 
-### ds-0.2.9_26-14.1-p2 <a id=1412></a>
+### ds-0.2.9_26-14.1-p2
 
 - add ubik2_boot_0, ubik2_boot_last to device.table (should fix 7050 Image)
 - chmod +x for 250-orangebox.sh
 
-### ds-0.2.9_26-14.1-p1 <a id=1411></a>
+### ds-0.2.9_26-14.1-p1
 
 - hide depmod output
 - fixed gdb-dirclean target
@@ -2229,7 +2229,7 @@ See svn log for more details.
 - add printk.patch for labors
 - libraries are also having dependencies...
 
-### ds-0.2.9_26-14.1 <a id=1410></a>
+### ds-0.2.9_26-14.1
 
 - fixed jamvm patch (100-fix-trace.patch)
 - fixed typo in deco.mk
@@ -2246,7 +2246,7 @@ See svn log for more details.
 - add/remove patches for (non-working) uClibc-0.9.28.3/1
 - fix 7170 Labor patches
 
-### ds-0.2.9_26-14.0 <a id=1400></a>
+### ds-0.2.9_26-14.0
 
 - fix precompiled toolchain download URL in toolchain/make/download-toolchain.mk
 - add forgotten cpmaccfg in make/Config.in
