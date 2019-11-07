@@ -20,16 +20,16 @@ Zur Zeit können folgende Einstellungen für Favicons im menuconfig unter "Web i
    Keine Favicons. Dies ist die Default-Einstellung.
 
  * **atomphil**<br>
-   [![Favicon atomphil](../../graphics/favicon/atomphil/freetz.ico)](../screenshots/138.jpg)
+   [![Favicon atomphil](../screenshots/000-FAV_mod-atomphil_md.jpg)](../screenshots/000-FAV_mod-atomphil.jpg)
 
  * **cuma**<br>
-   [![Favicon cuma](../../graphics/favicon/cuma/freetz.ico)](../screenshots/132.png)
+   [![Favicon cuma](../screenshots/000-FAV_mod-cuma_md.png)](../screenshots/000-FAV_mod-cuma.png)
 
  * **dsl123**<br>
-   [![Favicon dsl123](../../graphics/favicon/dsl123/freetz.ico)](../screenshots/133.png)
+   [![Favicon dsl123](../screenshots/000-FAV_mod-dsl123_md.png)](../screenshots/000-FAV_mod-dsl123.png)
 
  * **hansolo**<br>
-   [![Favicon hansolo](../../graphics/favicon/hansolo/freetz.ico)](../screenshots/134.png)
+   [![Favicon hansolo](../screenshots/000-FAV_mod-hansolo_md.png)](../screenshots/000-FAV_mod-hansolo.png)
 
 ### AVM Webinterface
 
@@ -40,12 +40,12 @@ Zur Zeit können folgende Einstellungen für Favicons im menuconfig unter "Web i
    Es wird das original AVM-Favicon genutzt.
 
  * **cuma**<br>
-   [![AVMicon cuma](../../graphics/favicon/cuma/box.ico)](../screenshots/140.jpg)
+   [![AVMicon cuma](../screenshots/000-FAV_avm-cuma_md.jpg)](../screenshots/000-FAV_avm-cuma.jpg)
 
  * **dsl123**<br>
-   [![AVMicon dsl123](../../graphics/favicon/dsl123/box.ico)](../screenshots/139.jpg)
+   [![AVMicon dsl123](../screenshots/000-FAV_avm-dsl123_md.jpg)](../screenshots/000-FAV_avm-dsl123.jpg)
 
  * **hansolo**<br>
-   [![AVMicon hansolo](../../graphics/favicon/hansolo/box.ico)](../screenshots/141.jpg)
+   [![AVMicon hansolo](../screenshots/000-FAV_avm-hansolo_md.jpg)](../screenshots/000-FAV_avm-hansolo.jpg)
 
 <br>
