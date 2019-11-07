@@ -7,7 +7,7 @@ genannt) ausgelesen, und im Freetz-Webinterface unter Status angezeigt
 werden. Dies funktioniert allerdings nur dann, wenn die Festplatte und
 dessen USB-Festplattengehäuse das Auslesen dieser Werte auch zuläßt.
 
-[![Statusseite von SMART im WebIf](../../docs/screenshots/244_md.png)](../../docs/screenshots/244.png)
+[![Statusseite von SMART im WebIf](../screenshots/244_md.png)](../screenshots/244.png)
 
 **Folgende Werte werden im Webinterface angezeigt:**
 

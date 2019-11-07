@@ -1,6 +1,6 @@
 # Cifsmount 6.6
 
-[![](../../docs/screenshots/146_md.jpg)](../../docs/screenshots/146.jpg)
+[![](../screenshots/146_md.jpg)](../screenshots/146.jpg)
 
 In diesem Paket kommen die Helferlein für das Einbinden von CIFS
 Netzwerkfreigaben - inklusive eines Web-Interfaces für die einfache

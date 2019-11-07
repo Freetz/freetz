@@ -1,6 +1,6 @@
 # OpenDD 0.7.9
 
-[![Konfigurationsseite OpenDD](../../docs/screenshots/177_md.jpg)](../../docs/screenshots/177.jpg)
+[![Konfigurationsseite OpenDD](../screenshots/177_md.jpg)](../screenshots/177.jpg)
 
 OpenDD ist ein Client um dynamische DNS Einträge zu aktualisieren.
 Vorteil gegenüber [inadyn](../inadyn-mt/README.md) ist, dass sich OpenDD

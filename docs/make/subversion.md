@@ -27,7 +27,7 @@ Unterschiede zu bereits vorhandenen Ständen übertragen.
 
 ### WebIF
 
-[![Subversion](../../docs/screenshots/117_md.png)](../../docs/screenshots/117.png)
+[![Subversion](../screenshots/117_md.png)](../screenshots/117.png)
 
 
 ### Konfiguration

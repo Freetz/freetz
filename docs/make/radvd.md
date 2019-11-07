@@ -79,7 +79,7 @@ Network range - 2001:aaaa:bbbb:0000:0000:0000:0000:0000 -
 **Note** In below screenshot enhancement [1921](https://trac.boxmatrix.info/freetz-ng/ticket/1921) is
 included.
 
-[![Howto setup radvd](../../docs/screenshots/236_md.jpg)](../../docs/screenshots/236.jpg)
+[![Howto setup radvd](../screenshots/236_md.jpg)](../screenshots/236.jpg)
 
 To prevent unexpected reboots I had to unselect the 'Activate on start
 resp. deactivate on stop the IPv6 forwarding' on my FB-7270v3.

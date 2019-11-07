@@ -22,10 +22,10 @@ dsc="$(sed -rn 's/[ \t]*bool "([^\"]*)"[ \t]*.*/\1/p' "$INPWD/$pkg/Config.in" 2>
 [ -z "$dsc" ] && echo "ignored: $pkg" 1>&2 && continue
 [ "${dsc//[ _]/-}" != "$(echo "${dsc//[ _]/-}" | sed "s/^${pkg//_/-}//I")" ] && itm="$dsc" || itm="$pkg: $dsc"
 
-if [ -e "$INPWD/$pkg/README.md" ]; then
-	sed "1c# $dsc" -i "$INPWD/$pkg/README.md"
-	itm="[$itm](../../make/$pkg/README.md)"
-	lst="$(sed -n 's/^### //p' "$INPWD/$pkg/README.md" | grep -v ' Links$')"
+if [ -e "$MDPWD/$pkg.md" ]; then
+	sed "1c# $dsc" -i "$MDPWD/$pkg.md"
+	itm="[$itm](../docs/make/$pkg.md)"
+	lst="$(sed -n 's/^### //p' "$MDPWD/$pkg.md" | grep -v ' Links$')"
 else
 	itm="<u>$itm</u>"
 	lst=''
@@ -40,9 +40,9 @@ N="$(tail -n "$T" "$INPWD/$pkg/Config.in" | grep -P "^[ \t]*(#|(end)*if|config|b
 help="$(tail -n "$T" "$INPWD/$pkg/Config.in" | head -n "$(( $N - 1 ))" | grep -vP '^[ \t]*$' | sed 's/[ \t]*$//g;s/^[ \t]*//g;s/$/ /g' | tr -d '\n' | sed 's/ $//')"
 [ -z "$help" ] && echo "nohelp2: $pkg" 1>&2 || echo "    $help"
 
-[ -n "$lst" ] && echo "$lst" | while read line; do echo "     - [$line]($pkg/README.md#$(echo "$line" | sed -re 's/(.*)/\L\1/;s/[ _]/-/g;s/[^-0-9a-z]//g;s/--/-/g'))"; done
+[ -n "$lst" ] && echo "$lst" | while read line; do echo "     - [$line](../docs/make/$pkg.md#$(echo "$line" | sed -re 's/(.*)/\L\1/;s/[ _]/-/g;s/[^-0-9a-z]//g;s/--/-/g'))"; done
 
 done
 done >> "$INPWD/README.md"
 grep -v '^     - ' "$INPWD/README.md" > "$MDPWD/README.md"
-sed 's,](../../make/,](,g' -i "$INPWD/README.md"
+sed 's,](../docs/make/,](,g' -i "$MDPWD/README.md"

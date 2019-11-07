@@ -1,6 +1,6 @@
 # NHIPT Iptables CGI 0.8.3a - EXPERIMENTAL
 
-[![nhipt Seite im Freetz Webinterface](../../docs/screenshots/178_md.jpg)](../../docs/screenshots/178.jpg)
+[![nhipt Seite im Freetz Webinterface](../screenshots/178_md.jpg)](../screenshots/178.jpg)
 
 ### MOTIVATION
 
@@ -295,5 +295,5 @@ ROOT=/usr/ipt
 
 ### SCREENSHOTS
 
-[![nhipt Webinterface](../../docs/screenshots/179_md.jpg)](../../docs/screenshots/179.jpg)
+[![nhipt Webinterface](../screenshots/179_md.jpg)](../screenshots/179.jpg)
 

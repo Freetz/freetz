@@ -1,6 +1,6 @@
 # Xrelayd 0.2.1pre2
 
-[![Xrelayd Webinterface](../../docs/screenshots/203_md.png)](../../docs/screenshots/203.png)
+[![Xrelayd Webinterface](../screenshots/203_md.png)](../screenshots/203.png)
 
 *"xrelayd is the successor to matrixtunnel, a lightweight stunnel
 replacement. Xrelayd is a basic tcp proxy server which enables you to

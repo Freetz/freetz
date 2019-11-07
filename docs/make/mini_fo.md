@@ -1,6 +1,6 @@
 # mini_fo 0.3
 
-[![Mini_fo Webinterface](../../docs/screenshots/205_md.png)](../../docs/screenshots/205.png)
+[![Mini_fo Webinterface](../screenshots/205_md.png)](../screenshots/205.png)
 
 **mini_fo** ist ein Overlay-Dateisystem vergleichbar mit
 [UnionFS](http://de.wikipedia.org/wiki/UnionFS),

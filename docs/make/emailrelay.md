@@ -1,6 +1,6 @@
 # E-MailRelay 1.9
 
-[![E-MailRelay](../../docs/screenshots/274_md.jpg)](../../docs/screenshots/274.jpg)
+[![E-MailRelay](../screenshots/274_md.jpg)](../screenshots/274.jpg)
 
 Von der Webseite des Herstellers:
 

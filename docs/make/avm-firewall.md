@@ -6,7 +6,7 @@ Die Firewall ist ein Bestandteil des "dsld" von AVM, deshalb kann man
 diese Firewall nicht wirklich starten oder stoppen, sie läuft eigentlich
 immer (solange dsld auf der Box ist).
 
-[![AVM firewall forward rule example](../../docs/screenshots/10_md.jpg)](../../docs/screenshots/10.jpg)
+[![AVM firewall forward rule example](../screenshots/10_md.jpg)](../screenshots/10.jpg)
 
 Ein paar Worte zu den "Grundlagen" und der Philosophie, die AVM damit
 umsetzt:
@@ -41,7 +41,7 @@ zurückgreifen...
 
 ### Feature-Übersicht
 
-[![AVM Firewall cgi](../../docs/screenshots/100_md.jpg)](../../docs/screenshots/100.jpg)
+[![AVM Firewall cgi](../screenshots/100_md.jpg)](../screenshots/100.jpg)
 
 Mit AVM-FIREWALL-CGI kann man direkt über eine Weboberfläche Folgendes
 tun:
@@ -90,7 +90,7 @@ eigene Regelverwaltung macht.
     komplett neu gestartet werden, es reicht, ihn über ein Signal (HUP)
     "anzuweisen", die Regeln neu zu laden und anzuwenden.
 
-[![AVM firewall - Übernehmen Parameter (Trunk Version)](../../docs/screenshots/145_md.png)](../../docs/screenshots/145.png)
+[![AVM firewall - Übernehmen Parameter (Trunk Version)](../screenshots/145_md.png)](../screenshots/145.png)
 
 ### Die Gefahr von Reboot-Schleifen und wie man da wieder herauskommt
 

@@ -62,7 +62,7 @@ erlaubt sind.
 
 ### Web-Config
 
-[![Dropbear Konfiguration](../../docs/screenshots/201_md.png)](../../docs/screenshots/201.png)
+[![Dropbear Konfiguration](../screenshots/201_md.png)](../screenshots/201.png)
 
 -   *Starttyp*: wahlweise bei Systemstart (**automatisch**) oder
     **manuell**

@@ -13,7 +13,7 @@ Webfrontend zur Konfiguration. Das nachstehende Bild zeigt die Version
 ab Revision 2938 (neu hinzugekommen sind die Optionen
 enable-remote-toggle und enforce-blocks)
 
-[![Privoxy Configuration since Rev. 2938](../../docs/screenshots/11_md.png)](../../docs/screenshots/11.png)
+[![Privoxy Configuration since Rev. 2938](../screenshots/11_md.png)](../screenshots/11.png)
 
 ### Filter und Aktionen
 

@@ -13,7 +13,7 @@ See also
 
 ### URL blocking
 
-[![tinyproxy filtered](../../docs/screenshots/217_md.png)](../../docs/screenshots/217.png)
+[![tinyproxy filtered](../screenshots/217_md.png)](../screenshots/217.png)
 
 -   Clear option *ConnectPort*
 -   Check option *FilterURLs*

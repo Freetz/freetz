@@ -1,6 +1,6 @@
 # Samba suite
 
-[![Samba Webinterface](../../docs/screenshots/204_md.png)](../../docs/screenshots/204.png)
+[![Samba Webinterface](../screenshots/204_md.png)](../screenshots/204.png)
 
 Dieses Paket macht angeschlossen USB-Speicher oder das Dateisystem der
 FritzBox für Windows als Dateifreigabe verfügbar (die Beschreibung

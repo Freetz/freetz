@@ -21,7 +21,7 @@ Der Source von checkmaild stammt vom
 
 ### Konfiguration
 
-[![Checkmaild Webinterface](../../docs/screenshots/219_md.png)](../../docs/screenshots/219.png)
+[![Checkmaild Webinterface](../screenshots/219_md.png)](../screenshots/219.png)
 
 Es können 3 verschiedene Mail-Accounts konfiguriert werden. Einzugeben
 sind ein Kontoname, Benutzername, Kennwort und dann noch der POP- oder
