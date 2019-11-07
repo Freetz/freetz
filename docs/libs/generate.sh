@@ -19,7 +19,7 @@ C="$(wc -l "$INPWD/$lib/Config.in" 2>/dev/null  | sed 's/ .*//')"
 [ -z "$L" -o -z "$C" ] && echo "nohelp1: $lib" 1>&2 && continue
 T=$(( $C - $L))
 N="$(tail -n "$T" "$INPWD/$lib/Config.in" | grep -P "^[ \t]*(#|(end)*if|config|bool|string|int|depends on|(end)*menu|comment|menuconfig|(end)*choice|prompt|select|default|source|help)" -n | head -n1 | sed 's/:.*//')"
-help="$(tail -n "$T" "$INPWD/$lib/Config.in" | head -n "$(( $N - 1 ))" | grep -vP '^[ \t]*$' | sed 's/[ \t]*$//g;s/^[ \t]*//g;s/$/ /g' | tr -d '\n' | sed 's/ $//')"
+help="$(tail -n "$T" "$INPWD/$lib/Config.in" | head -n "$(( ${N:-99} - 1 ))" | grep -vP '^[ \t]*$' | sed 's/[ \t]*$//g;s/^[ \t]*//g;s/$/ /g' | tr -d '\n' | sed 's/ $//')"
 [ -z "$help" ] && echo "nohelp2: $lib" 1>&2 && continue
 echo "    $help"
 

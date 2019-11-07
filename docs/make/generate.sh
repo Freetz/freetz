@@ -37,7 +37,7 @@ C="$(wc -l "$INPWD/$pkg/Config.in" 2>/dev/null | sed 's/ .*//')"
 [ -z "$L" -o -z "$C" ] && echo "nohelp1: $pkg" 1>&2 && continue
 T=$(( $C - $L))
 N="$(tail -n "$T" "$INPWD/$pkg/Config.in" | grep -P "^[ \t]*(#|(end)*if|config|bool|string|int|depends on|(end)*menu|comment|menuconfig|(end)*choice|prompt|select|default|source|help)" -n | head -n1 | sed 's/:.*//')"
-help="$(tail -n "$T" "$INPWD/$pkg/Config.in" | head -n "$(( $N - 1 ))" | grep -vP '^[ \t]*$' | sed 's/[ \t]*$//g;s/^[ \t]*//g;s/$/ /g' | tr -d '\n' | sed 's/ $//')"
+help="$(tail -n "$T" "$INPWD/$pkg/Config.in" | head -n "$(( ${N:-99} - 1 ))" | grep -vP '^[ \t]*$' | sed 's/[ \t]*$//g;s/^[ \t]*//g;s/$/ /g' | tr -d '\n' | sed 's/ $//')"
 [ -z "$help" ] && echo "nohelp2: $pkg" 1>&2 || echo "    $help"
 
 [ -n "$lst" ] && echo "$lst" | while read line; do echo "     - [$line](../docs/make/$pkg.md#$(echo "$line" | sed -re 's/(.*)/\L\1/;s/[ _]/-/g;s/[^-0-9a-z]//g;s/--/-/g'))"; done
