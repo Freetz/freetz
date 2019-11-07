@@ -8,6 +8,7 @@
 
 ### [Beginner](10_Beginner/README.md)
  - [Addon Paket installieren](10_Beginner/addon.md)
+ - [Basic questions [EN]](10_Beginner/basic_questions.en.md)
  - [Wie baue ich meinen ersten trunk?](10_Beginner/first_trunk.md)
  - [Freetz Linux](10_Beginner/freetz_linux.md)
  - [Freetz macht mehr aus der Box!](10_Beginner/freetz.md)

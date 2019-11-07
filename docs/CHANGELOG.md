@@ -32,6 +32,11 @@ Latest changes
 
 ### devel <a id=devel></a>
 
+- Known problems:
+  * Replace kernel does not work for most latest firmware versions.
+  * Loading build kernel modules may work or do not. You'll notice.
+  * No download toolchains for firmware versions since FritzOS 7.0.
+
 - Build system:
   * addons: additional to addon/static.pkg, addon/*.pkg could be used to enable addons, since r15856/3dda64565e
   * binutils:

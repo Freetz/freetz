@@ -1,6 +1,7 @@
 # FIRMWARES
-Currently supported boxes and firmwares
+Currently supported devices and firmwares
 
+ * [Not supported devices](#unsupported)
  * [Fritz!Box (2xxx)](#box)
  * [Fritz!Box WLAN (3xxx)](#wlan)
  * [Fritz!Box WAN (4xxx)](#wan)
@@ -20,6 +21,12 @@ Currently supported boxes and firmwares
  * [Alice derivatives](#alice)
 
 <br>
+
+### Not supported devices <a id=unsupported></a>
+
+  * Repeater 310, 600 & 1160: No LAN ports, so a recovery is not possible.
+  * Fritz!Box 6591: Firmware image is in Intel Unified Image v3 format.
+  * Fritz!Box 6591, 7581 & 7582, Inhaus: These don't use supported uClib or glibc.
 
 ### Fritz!Box (2xxx) <a id=box></a>
 
