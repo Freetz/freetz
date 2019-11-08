@@ -426,7 +426,7 @@ $(1):
 	@{ \
 	cp .config .config_tmp; \
 	echo -n "Step 1: temporarily deactivate all $(2) ... "; \
-	$$(SED) -i -r 's/^(FREETZ_($(3))_)/# \1/' .config; \
+	$$(SED) -i -r '/^FREETZ_BUSYBOX__VERSION_V/n;s/^(FREETZ_($(3))_)/# \1/' .config; \
 	echo "DONE"; \
 	echo -n "Step 2: reactivate only elements required by selected packages or active by default ... "; \
 	make olddefconfig > /dev/null; \
