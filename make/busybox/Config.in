@@ -19,6 +19,11 @@ choice
 
 endchoice # "BusyBox version" #
 
+config FREETZ_BUSYBOX__VERSION_STRING
+	string
+	default "1.27.2" if FREETZ_BUSYBOX__VERSION_V127
+	default "1.31.1" if FREETZ_BUSYBOX__VERSION_V131
+
 config FREETZ_BUSYBOX__RECOMMENDED
 	bool "recommended"
 	default y
