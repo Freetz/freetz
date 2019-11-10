@@ -948,6 +948,17 @@ config FREETZ_PATCH_ATA
 		ATA will not work with some 7170/7140 due to limited hardware,
 		see http://wiki.ip-phone-forum.de/gateways:avm:fbf:kabel
 
+config FREETZ_PATCH_GUEST
+	bool "Patch GUEST"
+	depends on !FREETZ_TYPE_EXTENDER
+	depends on FREETZ_AVM_VERSION_06_0X_MIN
+	depends on FREETZ_AVM_VERSION_06_2X_MAX
+	default n
+	help
+		Enables the GUEST configuration options in ip-client mode.
+		DHCP may not work on the guest network interface, and need to
+		be set up manually.
+
 config FREETZ_PATCH_ENUM
 	bool "Patch enum"
 	depends on \

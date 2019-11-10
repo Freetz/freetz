@@ -392,6 +392,9 @@
   * **<u>PATCH_GSMVOICE: Patch GSM voice</u><a id='patch_gsmvoice'></a>**<br>
     Patches the WebUI to allow voice-over-GSM. Highly experimental! Your UMTS stick has to support it. Webif: Internet > Mobilfunk > Telefonie ueber Mobilfunk
 
+  * **[Patch GUEST](PATCH_GUEST.md)<a id='patch_guest'></a>**<br>
+    Enables the GUEST configuration options in ip-client mode. DHCP may not work on the guest network interface, and need to be set up manually.
+
   * **[PATCH_MAXDEVCOUNT: Raise the count of connectable usb device to 9](PATCH_MAXDEVCOUNT.md)<a id='patch_maxdevcount'></a>**<br>
     Use this patch if you would connect more than 3 device to the box
 
