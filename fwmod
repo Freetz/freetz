@@ -1290,6 +1290,18 @@ if [ "$DO_MOD" -gt 0 ]; then
 		sizeinfo dir "${ADDON_DIR}/${pkg}"
 	done
 
+	if [ "$FREETZ_AVM_HAS_USB_HOST" == "y" ]; then
+		echo1 "checking blkid tools"
+		blkids=0
+		[ "$FREETZ_AVM_HAS_E2FSPROGS" == "y" -a "$FREETZ_REMOVE_AVM_E2FSPROGS" != "y" ]                               && blkids=$((blkids+1)) && echo2 "... binary by avm"
+		[ "$FREETZ_PACKAGE_FSTYP" == "y" ]                                                                            && blkids=$((blkids+1)) && echo2 "... package fstype"
+		[ "$FREETZ_PACKAGE_E2FSPROGS" == "y" -a "$FREETZ_PACKAGE_E2FSPROGS_BLKID" == "y" ]                            && blkids=$((blkids+1)) && echo2 "... package e2fsprogs"
+		[ "$FREETZ_PACKAGE_UTIL_LINUX" == "y" ]                                                                       && blkids=$((blkids+1)) && echo2 "... package util-linux"
+		[ "$(eval echo "\$FREETZ_BUSYBOX___V$(echo ${FREETZ_BUSYBOX__VERSION_STRING/.} | head -c3)_BLKID")" == "y" ]  && blkids=$((blkids+1)) && echo2 "... busybox applet"
+		[ "$blkids" -gt 1 ] && echo1 " there are $blkids blkid tools installed"
+		[ "$blkids" -eq 0 ] && warn1 "no blkid tool installed, automatic mounting may not work"
+	fi
+
 	KERNEL_ID="${FREETZ_SYSTEM_TYPE}${FREETZ_SYSTEM_TYPE_CORE_SUFFIX}-${FREETZ_AVM_SOURCE_ID}"
 	if [ "$NOCOMPILE" != "1" -a "$FREETZ_REPLACE_KERNEL" == "y" ]; then
 		echo0 "replacing kernel"

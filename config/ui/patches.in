@@ -849,12 +849,11 @@ config FREETZ_REMOVE_QOS
 config FREETZ_REMOVE_AVM_E2FSPROGS
 	bool "Remove e2fsprogs"
 	depends on FREETZ_AVM_HAS_E2FSPROGS
-	select FREETZ_PACKAGE_UTIL_LINUX if FREETZ_AVM_VERSION_05_2X_MIN && !FREETZ_PATCH_FREETZMOUNT
-	default y if FREETZ_PATCH_FREETZMOUNT
 	default n
 	help
 		Removes the e2fsprogs files (blkid, fsck, mkfs) and
 		libraries. Saves about 220KB of compressed space.
+		Warning: Without blkid the AVM scripts could not mount!
 
 config FREETZ_REMOVE_VOIPD
 	bool "Remove VoIP"
@@ -1149,9 +1148,10 @@ config FREETZ_PATCH_UDEVMOUNT
 config FREETZ_PATCH_FREETZMOUNT
 	bool "Add FREETZMOUNT"
 	depends on FREETZ_AVM_VERSION_06_5X_MAX
+	select FREETZ_REMOVE_AVM_E2FSPROGS if FREETZ_AVM_HAS_E2FSPROGS
 	select FREETZ_USBSTORAGE_AUTOMOUNT
-	select FREETZ_BUSYBOX_BLKID              if FREETZ_REMOVE_AVM_E2FSPROGS || !FREETZ_AVM_HAS_E2FSPROGS
-	select FREETZ_BUSYBOX_FEATURE_BLKID_TYPE if FREETZ_REMOVE_AVM_E2FSPROGS || !FREETZ_AVM_HAS_E2FSPROGS
+	select FREETZ_BUSYBOX_BLKID
+	select FREETZ_BUSYBOX_FEATURE_BLKID_TYPE
 	select FREETZ_BUSYBOX_VOLUMEID
 	default y
 	help
@@ -1176,7 +1176,7 @@ config FREETZ_USBSTORAGE_AUTOMOUNT
 	default y
 	help
 		The filesystems ext2, ext3, ext4, fat, hfs, hfs+, ntfs and reiserfs and swap are mounted
-		automatically. Detection is done by blkid utility . It depends on the original firmware
+		automatically. Detection is done by blkid applet . It depends on the original firmware
 		which of the following points you have to select.
 
 if FREETZ_USBSTORAGE_AUTOMOUNT

@@ -149,6 +149,9 @@ depends_on FEDORA_COMPAT "FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTI
 depends_on MKE2FS "!FREETZ_PACKAGE_E2FSPROGS_E2MAKING"
 depends_on MKFS_EXT2 "!FREETZ_PACKAGE_E2FSPROGS_E2MAKING"
 
+# used only by freetzmount
+depends_on BLKID "FREETZ_PATCH_FREETZMOUNT"
+
 # mdev requires kernel >= 2.6.27 since busybox 1.27.x, see the corresponding note on https://busybox.net/
 # and this thread http://lists.busybox.net/pipermail/busybox/2017-March/085362.html for more details
 # alternatively we might apply this patch http://busybox.net/0001-mdev-create-devices-from-sys-dev.patch

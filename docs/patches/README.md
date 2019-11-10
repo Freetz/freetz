@@ -18,7 +18,7 @@
     Remove the aura-usb-daemon (remote USB connection, USB-Fernanschluss) and some related files. This patch only removes the files, not the settings in AVM's web interface.
 
   * **[REMOVE_AVM_E2FSPROGS: Remove e2fsprogs](REMOVE_AVM_E2FSPROGS.md)<a id='remove_avm_e2fsprogs'></a>**<br>
-    Removes the e2fsprogs files (blkid, fsck, mkfs) and libraries. Saves about 220KB of compressed space.
+    Removes the e2fsprogs files (blkid, fsck, mkfs) and libraries. Saves about 220KB of compressed space. Warning: Without blkid the AVM scripts could not mount!
 
   * **[REMOVE_AVM_VPN: Remove VPN](REMOVE_AVM_VPN.md)<a id='remove_avm_vpn'></a>**<br>
     Remove AVM's vpn and some other related files This patch removes the files and related Web UI entrys, but not the vpn settings. This will save about 120kB compressed size.
@@ -444,4 +444,4 @@
     Running telefon daemon in "inhaus mode" restores: - Processing of /var/flash/calllog on incoming calls. In case you added telnetd, this patch also restores: - Support for telnetd on/off by phone (#96*7* / #96*8*). - Processing of /var/flash/fx_conf attributes responsible for automatic start of telnetd.
 
   * **<u>USBSTORAGE_AUTOMOUNT: Automount filesystems</u><a id='usbstorage_automount'></a>**<br>
-    The filesystems ext2, ext3, ext4, fat, hfs, hfs+, ntfs and reiserfs and swap are mounted automatically. Detection is done by blkid utility . It depends on the original firmware which of the following points you have to select.
+    The filesystems ext2, ext3, ext4, fat, hfs, hfs+, ntfs and reiserfs and swap are mounted automatically. Detection is done by blkid applet . It depends on the original firmware which of the following points you have to select.

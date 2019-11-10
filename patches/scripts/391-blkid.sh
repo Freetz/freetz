@@ -11,22 +11,18 @@ if [ -x "${FILESYSTEM_MOD_DIR}/sbin/blkid" ]; then
 fi
 
 get_preferred_blkid_version() {
-	if [ "$FREETZ_PACKAGE_UTIL_LINUX" == "y" -a "$EXTERNAL_FREETZ_PACKAGE_UTIL_LINUX" != "y" ]; then
+	if [ "$FREETZ_PATCH_FREETZMOUNT" == "y" ]; then
+		echo "blkid-busybox"
+	elif [ "$FREETZ_AVM_HAS_E2FSPROGS" == "y" -a "$FREETZ_REMOVE_AVM_E2FSPROGS" != "y" ]; then
+		echo "blkid-avm"
+	elif [ "$FREETZ_PACKAGE_E2FSPROGS_BLKID" == "y" -a "$EXTERNAL_FREETZ_PACKAGE_E2FSPROGS_blkid" != "y" ]; then
+		echo ""  # binary not renamed
+	elif [ "$FREETZ_PACKAGE_UTIL_LINUX" == "y" -a "$EXTERNAL_FREETZ_PACKAGE_UTIL_LINUX" != "y" ]; then
 		echo "blkid-util-linux"
+	elif [ "$(eval echo "\$FREETZ_BUSYBOX___V$(echo ${FREETZ_BUSYBOX__VERSION_STRING/.} | head -c3)_BLKID")" == "y" ]; then
+		echo "blkid-busybox"
 	else
-		if [ "$FREETZ_PATCH_FREETZMOUNT" != "y" ]; then
-			if [ -x "${FILESYSTEM_MOD_DIR}/sbin/blkid-avm" ]; then
-				echo "blkid-avm"
-			elif [ "$FREETZ_BUSYBOX_BLKID" == "y" ]; then
-				echo "blkid-busybox"
-			fi
-		else
-			if [ "$FREETZ_BUSYBOX_BLKID" == "y" ]; then
-				echo "blkid-busybox"
-			elif [ -x "${FILESYSTEM_MOD_DIR}/sbin/blkid-avm" ]; then
-				echo "blkid-avm"
-			fi
-		fi
+		echo ""  # no blkid installed
 	fi
 }
 
