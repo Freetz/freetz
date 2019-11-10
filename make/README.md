@@ -735,7 +735,7 @@
   * **<u>sfk: Swiss File Knife 1.9.5.0</u><a id='sfk'></a>**<br>
     Swiss File Knife - A Command Line Tools Collection This packages provides the freeware version of SFK, see http://stahlworks.com/dev/swiss-file-knife.html for further information
 
-  * **<u>sg3_utils (binary only)</u><a id='sg3_utils'></a>**<br>
+  * **<u>sg3_utils (binary only)</u><a id='sg3-utils'></a>**<br>
     The sg3_utils package contains utilities that send SCSI commands to devices. As well as devices on transports traditionally associated with SCSI (e.g. Fibre Channel (FCP), Serial Attached SCSI (SAS) and the SCSI Parallel Interface(SPI)) many other devices use SCSI command sets. ATAPI cd/dvd drives and SATA disks that connect via a translation layer or a bridge device are examples of devices that use SCSI command sets. This package is primarly used by the spindown cgi package. Note also that currently only sg_start is built and used, other tools may follow as needed.
 
   * **<u>shellinabox 2.14</u><a id='shellinabox'></a>**<br>
@@ -836,7 +836,7 @@
   * **<u>tcpproxy 2.0.0-beta15 (binary only)</u><a id='tcpproxy'></a>**<br>
     tcpproxy is a proxy (or tunnel or redirector) for TCP/IP protocols. In standalone mode it waits for incoming connections forwarding them to another machine or starting a local server program.
 
-  * **[tcp_wrappers 7.6 (binary only)](../docs/make/tcp_wrappers.md)<a id='tcp_wrappers'></a>**<br>
+  * **[tcp_wrappers 7.6 (binary only)](../docs/make/tcp_wrappers.md)<a id='tcp-wrappers'></a>**<br>
     TCP Wrapper is a host-based Networking ACL system, used to filter network access to Internet Protocol servers on (Unix-like) operating systems such as Linux or BSD. It allows host or subnetwork IP addresses, names and/or ident query replies, to be used as tokens on which to filter for access control purposes.
 
   * **<u>Tesseract OCR 3.02.02 (binary only)</u><a id='tesseract'></a>**<br>
@@ -1037,7 +1037,7 @@
      - [Isolate guest network from LAN](../docs/make/iptables.md#isolate-guest-network-from-lan)
      - [Questions](../docs/make/iptables.md#questions)
 
-  * **[mini_fo 0.3](../docs/make/mini_fo.md)<a id='mini_fo'></a>**<br>
+  * **[mini_fo 0.3](../docs/make/mini_fo.md)<a id='mini-fo'></a>**<br>
     Makes the filesystem writeable. Changes are not reboot-persistent, unless stored on a hard disk or on flash storage media. The way mini_fo is configured here creates the overlay filesystem in the router's RAM disk, so they definitely are *not* reboot-persistent. Nonetheless, mini_fo is tremendously helpful, eliminating the need for tricks like 'mount -o bind' etc. Note: The mini_fo root filesystem will not be used if an NFS-root was mounted first (see NFS-root package). Still, both packages can be installed at the same time, because mini_fo is still useful if NFS-root is decativated. This package does not work with (at least) 7390 at the moment.
      - [Konfiguration (Webinterface)](../docs/make/mini_fo.md#konfiguration-webinterface)
      - [Konfiguration (per Hand)](../docs/make/mini_fo.md#konfiguration-per-hand)

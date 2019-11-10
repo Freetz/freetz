@@ -12,7 +12,8 @@ lib="${dir##*/}"
 dsc="$(sed -rn 's/[ \t]*bool "(.*)"[ \t]*/\1/p' "$INPWD/$lib/Config.in" 2>/dev/null | head -n1)"
 [ -z "$dsc" ] && dsc="$lib" && echo "ignored: $lib" 1>&2
 [ "$dsc" != "$(echo "$dsc" | sed "s/^$lib//I")" ] && itm="$dsc" || itm="$lib: $dsc"
-echo -e "\n  * **<u>$itm</u><a id='${lib%-cgi}'></a>**<br>"
+anc="${lib//_/-}"
+echo -e "\n  * **<u>$itm</u><a id='${anc%-cgi}'></a>**<br>"
 
 L="$(grep -P '^[ \t]*help[ \t]*$' -nm1 "$INPWD/$lib/Config.in" 2>/dev/null | sed 's/:.*//')"
 C="$(wc -l "$INPWD/$lib/Config.in" 2>/dev/null  | sed 's/ .*//')"

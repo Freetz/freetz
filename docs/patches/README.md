@@ -2,446 +2,446 @@
 
 # Removal patches
 
-  * **<u>Remove AHA (AVM Home Automation)</u><a id='remove_aha'></a>**<br>
+  * **<u>Remove AHA (AVM Home Automation)</u><a id='remove-aha'></a>**<br>
     Remove the aha daemon and some related files. Used for "Smart Home". This patch only removes the files, not the settings in AVM's web interface.
 
-  * **<u>Remove Annex B firmware</u><a id='remove_annex_b_firmware'></a>**<br>
+  * **<u>Remove Annex B firmware</u><a id='remove-annex-b-firmware'></a>**<br>
     Remove lib/modules/dsp_*/*-B-dsl.bin. This saves about 330-400 KB of uncompressed data size.
 
-  * **[Remove assistant (wizard)](REMOVE_ASSISTANT.md)<a id='remove_assistant'></a>**<br>
+  * **[Remove assistant (wizard)](REMOVE_ASSISTANT.md)<a id='remove-assistant'></a>**<br>
     Removes the installation assistant from the web menu.
 
-  * **<u>REMOVE_ASSISTANT_SIP: Remove SIP assistant</u><a id='remove_assistant_sip'></a>**<br>
+  * **<u>REMOVE_ASSISTANT_SIP: Remove SIP assistant</u><a id='remove-assistant-sip'></a>**<br>
     Removes the SIP configuration assistant (about 155kB uncompressed) from the web menu. With this patch you can't create new phones, but change and use existing ones.
 
-  * **[REMOVE_AURA_USB: Remove AURA (AVM USB Remote-Architecture)](REMOVE_AURA_USB.md)<a id='remove_aura_usb'></a>**<br>
+  * **[REMOVE_AURA_USB: Remove AURA (AVM USB Remote-Architecture)](REMOVE_AURA_USB.md)<a id='remove-aura-usb'></a>**<br>
     Remove the aura-usb-daemon (remote USB connection, USB-Fernanschluss) and some related files. This patch only removes the files, not the settings in AVM's web interface.
 
-  * **[REMOVE_AVM_E2FSPROGS: Remove e2fsprogs](REMOVE_AVM_E2FSPROGS.md)<a id='remove_avm_e2fsprogs'></a>**<br>
+  * **[REMOVE_AVM_E2FSPROGS: Remove e2fsprogs](REMOVE_AVM_E2FSPROGS.md)<a id='remove-avm-e2fsprogs'></a>**<br>
     Removes the e2fsprogs files (blkid, fsck, mkfs) and libraries. Saves about 220KB of compressed space. Warning: Without blkid the AVM scripts could not mount!
 
-  * **[REMOVE_AVM_VPN: Remove VPN](REMOVE_AVM_VPN.md)<a id='remove_avm_vpn'></a>**<br>
+  * **[REMOVE_AVM_VPN: Remove VPN](REMOVE_AVM_VPN.md)<a id='remove-avm-vpn'></a>**<br>
     Remove AVM's vpn and some other related files This patch removes the files and related Web UI entrys, but not the vpn settings. This will save about 120kB compressed size.
 
-  * **<u>REMOVE_BRANDING_1und1: 1und1</u><a id='remove_branding_1und1'></a>**<br>
+  * **<u>REMOVE_BRANDING_1und1: 1und1</u><a id='remove-branding-1und1'></a>**<br>
     1&1 branding
 
-  * **<u>REMOVE_BRANDING_aol: aol</u><a id='remove_branding_aol'></a>**<br>
+  * **<u>REMOVE_BRANDING_aol: aol</u><a id='remove-branding-aol'></a>**<br>
     AOL branding
 
-  * **<u>REMOVE_BRANDING_avm: avm</u><a id='remove_branding_avm'></a>**<br>
+  * **<u>REMOVE_BRANDING_avm: avm</u><a id='remove-branding-avm'></a>**<br>
     AVM (german) branding
 
-  * **<u>REMOVE_BRANDING_avme: avme</u><a id='remove_branding_avme'></a>**<br>
+  * **<u>REMOVE_BRANDING_avme: avme</u><a id='remove-branding-avme'></a>**<br>
     AVME (international) branding
 
-  * **<u>REMOVE_BRANDING_ewetel: ewetel</u><a id='remove_branding_ewetel'></a>**<br>
+  * **<u>REMOVE_BRANDING_ewetel: ewetel</u><a id='remove-branding-ewetel'></a>**<br>
     EWE TEL branding
 
-  * **<u>REMOVE_BRANDING_freenet: freenet</u><a id='remove_branding_freenet'></a>**<br>
+  * **<u>REMOVE_BRANDING_freenet: freenet</u><a id='remove-branding-freenet'></a>**<br>
     Freenet branding
 
-  * **<u>REMOVE_BRANDING_otwo: otwo</u><a id='remove_branding_otwo'></a>**<br>
+  * **<u>REMOVE_BRANDING_otwo: otwo</u><a id='remove-branding-otwo'></a>**<br>
     O2 branding
 
-  * **[Remove brandings](REMOVE_BRANDINGS.md)<a id='remove_brandings'></a>**<br>
+  * **[Remove brandings](REMOVE_BRANDINGS.md)<a id='remove-brandings'></a>**<br>
     Each branding provides the web UI templates for a certain manufacturer or OEM. NOTE: Make sure not to remove the branding corresponding to the one defined in your box's boot loader environment. It can be determined by calling the following command from the box's shell prompt: echo $(cat /proc/sys/urlader/firmware_version)
 
-  * **<u>REMOVE_BRANDING_versatel: versatel</u><a id='remove_branding_versatel'></a>**<br>
+  * **<u>REMOVE_BRANDING_versatel: versatel</u><a id='remove-branding-versatel'></a>**<br>
     Versatel branding
 
-  * **[Remove CAPIoverTCP](REMOVE_CAPIOVERTCP.md)<a id='remove_capiovertcp'></a>**<br>
+  * **[Remove CAPIoverTCP](REMOVE_CAPIOVERTCP.md)<a id='remove-capiovertcp'></a>**<br>
     Remove CAPIoverTCP (capiotcp_server). Use this if you don't want to use Fritz!Fax or any other program that uses AVM's CAPIoverTCP. This is similar to rcapid, but independant. This will save about 15kB uncompressed size.
 
-  * **[REMOVE_CDROM_ISO: Remove cdrom.iso](REMOVE_CDROM_ISO.md)<a id='remove_cdrom_iso'></a>**<br>
+  * **[REMOVE_CDROM_ISO: Remove cdrom.iso](REMOVE_CDROM_ISO.md)<a id='remove-cdrom-iso'></a>**<br>
     Removes the file /lib/modules/cdrom.iso to save 270kB uncompressed space.
 
-  * **[Remove chronyd](REMOVE_CHRONYD.md)<a id='remove_chronyd'></a>**<br>
+  * **[Remove chronyd](REMOVE_CHRONYD.md)<a id='remove-chronyd'></a>**<br>
     Removes AVM's time synchronization tool (chrony) and related files. This will save about 220kB uncompressed size.
 
-  * **<u>Remove DDNSD</u><a id='remove_ddnsd'></a>**<br>
+  * **<u>Remove DDNSD</u><a id='remove-ddnsd'></a>**<br>
     Removes the Dynamic DNS daemon (saves about 70 KB in compressed image)
 
-  * **[Remove DECT](REMOVE_DECT.md)<a id='remove_dect'></a>**<br>
+  * **[Remove DECT](REMOVE_DECT.md)<a id='remove-dect'></a>**<br>
     Remove dect files (modules, dect_manager and dect related Web UI). This saves 20K compressed size on W900V and 360k on 7240/7270. WARNING: While *configuring* telephony ctlmgr may crash and corrupt you settings!
 
-  * **<u>Remove dect_update</u><a id='remove_dect_update'></a>**<br>
+  * **<u>Remove dect_update</u><a id='remove-dect-update'></a>**<br>
     Remove /usr/bin/dect_update. This utility is only needed to update the dect firmware. This will save about 32kB uncompressed size.
 
-  * **<u>Remove dsl_control</u><a id='remove_dsl_control'></a>**<br>
+  * **<u>Remove dsl_control</u><a id='remove-dsl-control'></a>**<br>
     Removes /usr/sbin/dsl_control. This saves about 540-669 KB of uncompressed data size. Select this only if you don't use the the DSL modem. See http://wehavemorefun.de/fritzbox/Dsl_control
 
-  * **[Remove dsld](REMOVE_DSLD.md)<a id='remove_dsld'></a>**<br>
+  * **[Remove dsld](REMOVE_DSLD.md)<a id='remove-dsld'></a>**<br>
     Remove DSL daemon (dsld), if you are planning to use your box as a simple IP client in ATA mode. ATTENTION: You won't be able to use your box as a modem nor a router anymore. As well do *not* use this option if your ATA mode box uses PPoE passthrough, because in this case dsld is still needed! Furthermore, selecting this patch also selects the UPnP patch, because UPnP must be deactivated anyway for IP clients, otherwise dsld will be used again. You can find the UPnP settings in the German web UI under Einstellungen System Netzwerkeinstellungen Statusinformationen ueber UPnP uebertragen (empfohlen) Thirdly, the usermand patch will also be selected if you activate this option, because kernel module userman.ko always depends on kdsldmod.ko which is stripped by this patch.
 
-  * **<u>Remove dtrace</u><a id='remove_dtrace'></a>**<br>
+  * **<u>Remove dtrace</u><a id='remove-dtrace'></a>**<br>
     Remove /usr/bin/dtrace. This utility is only needed to trace ISDN D-channel. This will save about 87kB uncompressed size.
 
-  * **[REMOVE_ETHERNET_OVER_USB: Remove ethernet-over-usb](REMOVE_ETHERNET_OVER_USB.md)<a id='remove_ethernet_over_usb'></a>**<br>
+  * **[REMOVE_ETHERNET_OVER_USB: Remove ethernet-over-usb](REMOVE_ETHERNET_OVER_USB.md)<a id='remove-ethernet-over-usb'></a>**<br>
     Removes avalanche_usb.ko to save 60kB uncompressed space. This is the Ethernet-over-USB driver which provides also CDROM emulation.
 
-  * **<u>Remove ext2.ko</u><a id='remove_ext2'></a>**<br>
+  * **<u>Remove ext2.ko</u><a id='remove-ext2'></a>**<br>
     Remove ext2.ko (about 81 kB uncompressed / 24 kB compressed).
 
-  * **<u>Remove FAT</u><a id='remove_fat'></a>**<br>
+  * **<u>Remove FAT</u><a id='remove-fat'></a>**<br>
     Remove FAT modules This patch will remove fat.ko, vfat.ko and msdos.ko. Be careful, mounting volumes with this filesystem will not work. It saves about 80-135K compressed space in kernel.image.
 
-  * **<u>Remove FHEM</u><a id='remove_fhem'></a>**<br>
+  * **<u>Remove FHEM</u><a id='remove-fhem'></a>**<br>
     Removes the FHEM scripts and kernel modules (cdc_acm & ftdi_sio). This saves about 100 KB, uncompressed.
 
-  * **[Remove ftpd](REMOVE_FTPD.md)<a id='remove_ftpd'></a>**<br>
+  * **[Remove ftpd](REMOVE_FTPD.md)<a id='remove-ftpd'></a>**<br>
     Remove FTP daemon (ftpd) This patch removes AVM's ftp daemon. The regular options in AVM's Webinterface are still present. If you select this item your USB drives won't be accessible through ftp anymore. But you can use Freetz bftpd/vsftpd package to grant ftp access to the devices.
 
-  * **[Remove help](REMOVE_HELP.md)<a id='remove_help'></a>**<br>
+  * **[Remove help](REMOVE_HELP.md)<a id='remove-help'></a>**<br>
     Removes the (offline) help pages from the web menu.
 
-  * **<u>Remove isofs.ko</u><a id='remove_isofs'></a>**<br>
+  * **<u>Remove isofs.ko</u><a id='remove-isofs'></a>**<br>
     Remove isofs.ko (about 35 kB uncompressed).
 
-  * **[Remove jffs2.ko](REMOVE_JFFS2.md)<a id='remove_jffs2'></a>**<br>
+  * **[Remove jffs2.ko](REMOVE_JFFS2.md)<a id='remove-jffs2'></a>**<br>
     If your AVM firmware contains the JFFS2 kernel module (jffs2.ko), this patch removes it, saving 144-192 kB of uncompressed firmware space. Use this patch
 
-  * **[Remove kids (usermand/contfiltd)](REMOVE_KIDS.md)<a id='remove_kids'></a>**<br>
+  * **[Remove kids (usermand/contfiltd)](REMOVE_KIDS.md)<a id='remove-kids'></a>**<br>
     Remove userman/contfiltd files (Kindersicherung)
 
-  * **<u>REMOVE_LANGUAGE_de: de</u><a id='remove_language_de'></a>**<br>
+  * **<u>REMOVE_LANGUAGE_de: de</u><a id='remove-language-de'></a>**<br>
 
-  * **<u>REMOVE_LANGUAGE_en: en</u><a id='remove_language_en'></a>**<br>
+  * **<u>REMOVE_LANGUAGE_en: en</u><a id='remove-language-en'></a>**<br>
 
-  * **<u>REMOVE_LANGUAGE_es: es</u><a id='remove_language_es'></a>**<br>
+  * **<u>REMOVE_LANGUAGE_es: es</u><a id='remove-language-es'></a>**<br>
 
-  * **<u>REMOVE_LANGUAGE_fr: fr</u><a id='remove_language_fr'></a>**<br>
+  * **<u>REMOVE_LANGUAGE_fr: fr</u><a id='remove-language-fr'></a>**<br>
 
-  * **<u>REMOVE_LANGUAGE_it: it</u><a id='remove_language_it'></a>**<br>
+  * **<u>REMOVE_LANGUAGE_it: it</u><a id='remove-language-it'></a>**<br>
 
-  * **<u>REMOVE_LANGUAGE_nl: nl</u><a id='remove_language_nl'></a>**<br>
+  * **<u>REMOVE_LANGUAGE_nl: nl</u><a id='remove-language-nl'></a>**<br>
 
-  * **<u>REMOVE_LANGUAGE_pl: pl</u><a id='remove_language_pl'></a>**<br>
+  * **<u>REMOVE_LANGUAGE_pl: pl</u><a id='remove-language-pl'></a>**<br>
 
-  * **<u>Remove languages</u><a id='remove_languages'></a>**<br>
+  * **<u>Remove languages</u><a id='remove-languages'></a>**<br>
     This removes the selected language db /etc/htmltext_??.db files. Make sure you don't remove the active language! A single db file is 40-950 KB big.
 
-  * **<u>Remove libfuse.so</u><a id='remove_libfuse'></a>**<br>
+  * **<u>Remove libfuse.so</u><a id='remove-libfuse'></a>**<br>
     This removes libfuse.so and saves about 132 KB (uncompressed). NTFS and Webdav are also removed.
 
-  * **[Remove lsof](REMOVE_LSOF.md)<a id='remove_lsof'></a>**<br>
+  * **[Remove lsof](REMOVE_LSOF.md)<a id='remove-lsof'></a>**<br>
     Remove /bin/lsof binary. This saves about 48 KB compressed space in kernel.image.
 
-  * **[Remove mediasrv](REMOVE_MEDIASRV.md)<a id='remove_mediasrv'></a>**<br>
+  * **[Remove mediasrv](REMOVE_MEDIASRV.md)<a id='remove-mediasrv'></a>**<br>
     Remove the MediaServer-daemon (mediasrv) and some other related files. This patch hides also the MediaServer options in the Web UI, so you must disable it before flashing the new image. Saves compressed 230 KB on a 7270_V2 and 40 KB on a 7170.
 
-  * **<u>REMOVE_MICROVOIP_DSL: Remove microvoip-dsl.bin</u><a id='remove_microvoip_dsl'></a>**<br>
+  * **<u>REMOVE_MICROVOIP_DSL: Remove microvoip-dsl.bin</u><a id='remove-microvoip-dsl'></a>**<br>
     Remove the files lib/modules/microvoip-dsl.bin and lib/modules/2.6.13.1-*/kernel/drivers/atm/avm_atm/tiatm.ko This saves about 590-700 KB of uncompressed data size.
 
-  * **[Remove minid (Fritz!Mini and MT-D/F)](REMOVE_MINID.md)<a id='remove_minid'></a>**<br>
+  * **[Remove minid (Fritz!Mini and MT-D/F)](REMOVE_MINID.md)<a id='remove-minid'></a>**<br>
     Remove the mini-daemon (minid) and some other related files. This patch removes Fritz!Mini and MT-D/F support and all Web UI entrys. Saves compressed 660 KB on a 7270_V3 and 460 KB on a 7170. ATTENTION: You must remove all Fritz!Mini's from your Fritz!Box configuration and delete all Mini users with the Gini! software to avoid complications.
 
-  * **<u>REMOVE_MULTI_ANNEX_FIRMWARE_DIFFS: Remove 2nd Annex firmware</u><a id='remove_multi_annex_firmware_diffs'></a>**<br>
+  * **<u>REMOVE_MULTI_ANNEX_FIRMWARE_DIFFS: Remove 2nd Annex firmware</u><a id='remove-multi-annex-firmware-diffs'></a>**<br>
     Remove the diffs to the prime firmware. This saves about 120-230 KB of uncompressed data size and 67 KB of bspatch. Select this only if you don't want to switch the firmware. See http://www.wehavemorefun.de/fritzbox/Multi-DSL-Firmware
 
-  * **<u>REMOVE_MULTI_ANNEX_FIRMWARE_PRIME: Remove 1st Annex firmware</u><a id='remove_multi_annex_firmware_prime'></a>**<br>
+  * **<u>REMOVE_MULTI_ANNEX_FIRMWARE_PRIME: Remove 1st Annex firmware</u><a id='remove-multi-annex-firmware-prime'></a>**<br>
     This saves about 340-790 KB of uncompressed data size. Removes lib/modules/dsp_*/*-?-dsl.bin or lib/modules/*Vx180Code.bin.gz. Select this only if you don't use the the DSL modem. See http://www.wehavemorefun.de/fritzbox/Multi-DSL-Firmware
 
-  * **[Remove MyFritz](REMOVE_MYFRITZ.md)<a id='remove_myfritz'></a>**<br>
+  * **[Remove MyFritz](REMOVE_MYFRITZ.md)<a id='remove-myfritz'></a>**<br>
     Removes the AVM MyFritz Webinterface. Saves about 1.1 MB uncompressed data size.
 
-  * **[Remove NAS](REMOVE_NAS.md)<a id='remove_nas'></a>**<br>
+  * **[Remove NAS](REMOVE_NAS.md)<a id='remove-nas'></a>**<br>
     Removes the AVM NAS Webinterface and internal memory file (saves about 390 KB in compressed image).
 
-  * **<u>Remove NEXUS (AVM mesh)</u><a id='remove_nexus'></a>**<br>
+  * **<u>Remove NEXUS (AVM mesh)</u><a id='remove-nexus'></a>**<br>
     Removes "mesh" related files like the nexus daemon and some scripts.
 
-  * **<u>Remove NLS</u><a id='remove_nls'></a>**<br>
+  * **<u>Remove NLS</u><a id='remove-nls'></a>**<br>
     Remove NLS support This patch will remove all the nls_*.ko kernel module from the firmware. This may affect mounting FAT, NTFS and other filesystems. You can add some of the Freetz kernel nls modules if you need them.
 
-  * **[Remove NTFS](REMOVE_NTFS.md)<a id='remove_ntfs'></a>**<br>
+  * **[Remove NTFS](REMOVE_NTFS.md)<a id='remove-ntfs'></a>**<br>
     Remove NTFS support This patch will remove ntfs-3g dependent files from the firmware. Be careful, mounting volumes with this filesystem will not work. It saves about 118K compressed space in kernel.image.
 
-  * **<u>REMOVE_PIGLET_ISDN: Remove ISDN piglet file(s)</u><a id='remove_piglet_isdn'></a>**<br>
+  * **<u>REMOVE_PIGLET_ISDN: Remove ISDN piglet file(s)</u><a id='remove-piglet-isdn'></a>**<br>
     The firmware of this model contains separate piglet files for ISDN and POTS. Depending on your type of fixed line usage you can safely remove the unneeded bitfile(s). Hint: If you are using POTS fixed line you can try to select this patch. Be careful! Sometimes even POTS models are using the ISDN files and not the POTS ones. If your box ends up in a reboot cycle, you should deselect this patch and maybe want to try the other one, even
 
-  * **<u>REMOVE_PIGLET_POTS: Remove POTS piglet file(s)</u><a id='remove_piglet_pots'></a>**<br>
+  * **<u>REMOVE_PIGLET_POTS: Remove POTS piglet file(s)</u><a id='remove-piglet-pots'></a>**<br>
     The firmware of this model contains separate piglet files for ISDN and POTS. Depending on your type of fixed line usage you can safely remove the unneeded bitfile(s). Hint: If you are using ISDN fixed line you could select this patch.
 
-  * **[REMOVE_PIGLET_V1: Remove v1 piglet file(s)](REMOVE_PIGLET_V1.md)<a id='remove_piglet_v1'></a>**<br>
+  * **[REMOVE_PIGLET_V1: Remove v1 piglet file(s)](REMOVE_PIGLET_V1.md)<a id='remove-piglet-v1'></a>**<br>
     The firmware of this model contains double piglet files. Which instance is needed depends on the hardware version (v1 or v2) of your box. You can safely remove the unneeded instance. Hint: If "echo $HWRevision_BitFileCount" returns "1" you could select this patch.
 
-  * **[REMOVE_PIGLET_V2: Remove v2 piglet file(s)](REMOVE_PIGLET_V2.md)<a id='remove_piglet_v2'></a>**<br>
+  * **[REMOVE_PIGLET_V2: Remove v2 piglet file(s)](REMOVE_PIGLET_V2.md)<a id='remove-piglet-v2'></a>**<br>
     The firmware of this model contains double piglet files. Which instance is needed depends on the hardware version (v1 or v2) of your box. You can safely remove the unneeded instance. Hint: If "echo $HWRevision_BitFileCount" returns "" (nothing) you could select this patch.
 
-  * **<u>Remove PLCD (powerline)</u><a id='remove_plcd'></a>**<br>
+  * **<u>Remove PLCD (powerline)</u><a id='remove-plcd'></a>**<br>
     This removes the plcd daemon (44-76kB uncompressed) and related start script. Known so far: It is used to scan the network for PLC devices and show them on the webinterface in mesh/network.
 
-  * **[Remove printserv](REMOVE_PRINTSERV.md)<a id='remove_printserv'></a>**<br>
+  * **[Remove printserv](REMOVE_PRINTSERV.md)<a id='remove-printserv'></a>**<br>
     Remove /sbin/printserv daemon. Select this patch if you don't want to connect a printer to your box or if you plan to use usb/ip package. Saves about 8 KB of compressed space.
 
-  * **<u>REMOVE_PRINTSERV_MODULE: Remove usblp.ko</u><a id='remove_printserv_module'></a>**<br>
+  * **<u>REMOVE_PRINTSERV_MODULE: Remove usblp.ko</u><a id='remove-printserv-module'></a>**<br>
     Remove usblp kernel module. Without this module it's not possible to run a printer on your box. Saves about 12 KB of compressed space.
 
-  * **<u>REMOVE_PUBKEY: Remove public firmware key</u><a id='remove_pubkey'></a>**<br>
+  * **<u>REMOVE_PUBKEY: Remove public firmware key</u><a id='remove-pubkey'></a>**<br>
     Removes /etc/avm_firmware_public_key1, just 266 bytes. Because the signature validation will fail on update: - You can't flash firmware from AVM with the AVM Webinterface anymore. - Online-Update can't install updates automatically anymore, but is still able to detect and inform you about new firmware versions. - Most important: No more "spontaneous self updates". There are several reports on the web, that AVM is sometimes disrespecting your update settings to not automatically install new versions. Such a spontaneous self update would remove Freetz. Inhaus firmwares uses another key, *key4 for router and *key3 for powerline & repeater devices, which are not handled by this patch. Beside that, it's still possible to flash any firmware by bootloader or Freetz. Updates for Dect devices are not affected by this patch.
 
-  * **<u>Remove QoS (tc)</u><a id='remove_qos'></a>**<br>
+  * **<u>Remove QoS (tc)</u><a id='remove-qos'></a>**<br>
     Removes tc and some kernel modules. The command tc is used by dsld.
 
-  * **<u>Remove ramzswap.ko</u><a id='remove_ramzswap'></a>**<br>
+  * **<u>Remove ramzswap.ko</u><a id='remove-ramzswap'></a>**<br>
     Remove ramzswap.ko (about 35 kB uncompressed).
 
-  * **[REMOVE_RUNCLOCK: Remove run_clock](REMOVE_RUNCLOCK.md)<a id='remove_runclock'></a>**<br>
+  * **[REMOVE_RUNCLOCK: Remove run_clock](REMOVE_RUNCLOCK.md)<a id='remove-runclock'></a>**<br>
     Remove /bin/run_clock (operating hours meter) daemon. This saves about 5K compressed space in kernel.image.
 
-  * **[Remove Samba/NQCS](REMOVE_SAMBA.md)<a id='remove_samba'></a>**<br>
+  * **[Remove Samba/NQCS](REMOVE_SAMBA.md)<a id='remove-samba'></a>**<br>
     Removes Samba daemons (smbd, and nmbd if available) or NQCS. This patch removes only the daemons. The regular options in AVM's webinterface are still present.
 
-  * **[Remove showdsldstat](REMOVE_SHOWDSLDSTAT.md)<a id='remove_showdsldstat'></a>**<br>
+  * **[Remove showdsldstat](REMOVE_SHOWDSLDSTAT.md)<a id='remove-showdsldstat'></a>**<br>
     Removes the showdsldstat utility which shows you the cpmac mode, connect time, external ip, route and dns servers. Also the state of IPv6, voip and tr069. Unsure a.t.m. if this tool is required by other AVM programs! AVM-WebDAV will be patched to not depend on showdsldstat (hopefully).
 
-  * **<u>Remove socat</u><a id='remove_socat'></a>**<br>
+  * **<u>Remove socat</u><a id='remove-socat'></a>**<br>
     Remove /sbin/socat binary. This saves about 247 KB compressed space in kernel.image.
 
-  * **[Remove support-files](REMOVE_SUPPORT.md)<a id='remove_support'></a>**<br>
+  * **[Remove support-files](REMOVE_SUPPORT.md)<a id='remove-support'></a>**<br>
     Remove the support-files which can be taken by http://fritz.box/html/support.html or http://fritz.box/support.lua
 
-  * **<u>REMOVE_SUPPORT_EVENTSDUMP: Remove eventsdump</u><a id='remove_support_eventsdump'></a>**<br>
+  * **<u>REMOVE_SUPPORT_EVENTSDUMP: Remove eventsdump</u><a id='remove-support-eventsdump'></a>**<br>
     Remove the eventsdump binary, saves about 6kB (uncompressed). With the file you could dump AVM's "Ereignisse" to the console. Seem to be use only by AVM's support-files.
 
-  * **[Remove telephony](REMOVE_TELEPHONY.md)<a id='remove_telephony'></a>**<br>
+  * **[Remove telephony](REMOVE_TELEPHONY.md)<a id='remove-telephony'></a>**<br>
     Radically remove a lot of telephony-related files. This patch saves about 2370 KB or 2.3 MB of uncompressed data size in the firmware image. This means savings of about 700 KB of compressed firmware size. ATTENTION: Currently there have not been a whole lot of tests concerning side effects. The patch was successfully tested on a W701V IP client with removed UPnP/dsld/userman. If it still works for boxes including those functionalities, is unknown. Feel free to test it.
 
-  * **<u>Remove telnetd</u><a id='remove_telnetd'></a>**<br>
+  * **<u>Remove telnetd</u><a id='remove-telnetd'></a>**<br>
     This disables the busybox applet for telnetd and removes the link to it.
 
-  * **<u>Remove tr064</u><a id='remove_tr064'></a>**<br>
+  * **<u>Remove tr064</u><a id='remove-tr064'></a>**<br>
     Removes libtr064 to save space. WARNING Access by AVM apps is no longer possible!
 
-  * **[Remove tr069](REMOVE_TR069.md)<a id='remove_tr069'></a>**<br>
+  * **[Remove tr069](REMOVE_TR069.md)<a id='remove-tr069'></a>**<br>
     Removes libtr069 to save space.
 
-  * **<u>REMOVE_TR069_FWUPDATE: Remove fwupdate</u><a id='remove_tr069_fwupdate'></a>**<br>
+  * **<u>REMOVE_TR069_FWUPDATE: Remove fwupdate</u><a id='remove-tr069-fwupdate'></a>**<br>
     Removes the file /usr/bin/tr069fwupdate, needed for updating the firmware in MT-D devices.
 
-  * **<u>REMOVE_TR069_HTTPSDL: Remove httpsdl</u><a id='remove_tr069_httpsdl'></a>**<br>
+  * **<u>REMOVE_TR069_HTTPSDL: Remove httpsdl</u><a id='remove-tr069-httpsdl'></a>**<br>
     Removes the file /usr/bin/httpsdl, used by: * tr069/fwupdate, you have removed it * firmware updater, with Freetz you don't want it * some more ? This saves 15-45 KB of uncompressed data size.
 
-  * **<u>REMOVE_TR069_PROVIDERS: Remove ISP db</u><a id='remove_tr069_providers'></a>**<br>
+  * **<u>REMOVE_TR069_PROVIDERS: Remove ISP db</u><a id='remove-tr069-providers'></a>**<br>
     Removes /etc/default.${BOX}/${OEM}/providers-${ALC}.tar  files containing the defaults for many ISPs. Every branding has such a file with up to 310 KB of uncompressed data size for each. WARNING: Enable this patch only if - you already have configured your internet connection, and - don't use any predefined ISP.
 
-  * **<u>REMOVE_TR069_VOIPPROVIDERS: Remove VOIP db</u><a id='remove_tr069_voipproviders'></a>**<br>
+  * **<u>REMOVE_TR069_VOIPPROVIDERS: Remove VOIP db</u><a id='remove-tr069-voipproviders'></a>**<br>
     Removes /etc/default.${BOX}/${OEM}/voip_providers-${ALC}.tar files containing the defaults for many VOIP providers. Every branding has such a file with more than 90 KB of uncompressed data size for each.
 
-  * **[REMOVE_UMTSD: Remove UMTS (USB GSM)](REMOVE_UMTSD.md)<a id='remove_umtsd'></a>**<br>
+  * **[REMOVE_UMTSD: Remove UMTS (USB GSM)](REMOVE_UMTSD.md)<a id='remove-umtsd'></a>**<br>
     Remove UMTS support This patch will remove UMTS-dependent files from firmware. It saves about 12K compressed space in kernel.image.
 
-  * **[Remove UPnP (igdd/upnpd)](REMOVE_UPNP.md)<a id='remove_upnp'></a>**<br>
+  * **[Remove UPnP (igdd/upnpd)](REMOVE_UPNP.md)<a id='remove-upnp'></a>**<br>
     Remove Universal Plug'n'Play daemon 'igdd/upnpd' and some more files used by it from firmware. Patch init scripts so they can cope with the non-existent binary. WARNING: Don't select this if you are using an AVM Repeater with Guest-Wlan! ATTENTION: Fritz!Fax relies on UPnP. Make sure you deactivate all UPnP features in the web menu before updating the firmware with this option. It may not be harmful not to deactivate it, but there is no guarantee. You can find the settings in the German web UI under Einstellungen System Netzwerkeinstellungen Statusinformationen ueber UPnP uebertragen (empfohlen)
 
-  * **<u>REMOVE_USBHOST: Remove USB Host</u><a id='remove_usbhost'></a>**<br>
+  * **<u>REMOVE_USBHOST: Remove USB Host</u><a id='remove-usbhost'></a>**<br>
     Remove USB Host This patch will remove all the kernel modules needed for the USB Host from the firmware. You will not be able to use USB storage or USB printers unless you provide a way to download and install these modules at runtime. Selecting this patch does not automatically select the patches to remove the kernel modules for the file systems (EXT2, FAT, NTFS, ...)
 
-  * **[REMOVE_VOIPD: Remove VoIP](REMOVE_VOIPD.md)<a id='remove_voipd'></a>**<br>
+  * **[REMOVE_VOIPD: Remove VoIP](REMOVE_VOIPD.md)<a id='remove-voipd'></a>**<br>
     This removes the integrated sip-client and -server and the releated Web menu, normal telefon use (ISDN, POTS and DECT) is not affected. This saves 250 KB on a 7170/7270 of compressed firmware size. Do not select this option if you want to use the answering machine. ATTENTION: You must remove all sip phone numbers and all sip clients before flashing this image. Afterward there is no possibility to remove these numbers because the Web UI is also removed.
 
-  * **[Remove WebDAV (AVM Online-Speicher)](REMOVE_WEBDAV.md)<a id='remove_webdav'></a>**<br>
+  * **[Remove WebDAV (AVM Online-Speicher)](REMOVE_WEBDAV.md)<a id='remove-webdav'></a>**<br>
     Remove WebDAV (Online-Speicher) feature. Saves about 510 KB of uncompressed data size. On 7270v1 only scripts, links and a 10KB library.
 
-  * **[Remove websrv](REMOVE_WEBSRV.md)<a id='remove_websrv'></a>**<br>
+  * **[Remove websrv](REMOVE_WEBSRV.md)<a id='remove-websrv'></a>**<br>
     Patch init scripts so BusyBox's httpd is used instead of AVM's websrv. The websrv binary will be removed from the firmware image. If "Remove UPnP daemon (igdd/upnpd)" patch is also selected, 'libwebsrv.so' will be removed too, because only those two binaries use it.
 
-  * **[Remove WLAN](REMOVE_WLAN.md)<a id='remove_wlan'></a>**<br>
+  * **[Remove WLAN](REMOVE_WLAN.md)<a id='remove-wlan'></a>**<br>
     Radically remove a lot of wlan-related files. This patch saves about 700 kb of uncomrpessed data size in the firmware image. WARNING: Do not enable Wlan, you will get a reboot loop!
 
 # Other patches
 
-  * **[Add Annex A firmware file](ADD_ANNEX_A_FIRMWARE.md)<a id='add_annex_a_firmware'></a>**<br>
+  * **[Add Annex A firmware file](ADD_ANNEX_A_FIRMWARE.md)<a id='add-annex-a-firmware'></a>**<br>
     Add lib/modules/dsp_ur8/ur8-A-dsl.bin. This costs about 400 KB of uncompressed data size. But you can remove Annex B file if you plan to use Annex A.
 
-  * **<u>ADD_ETCSERVICES: Add /etc/services</u><a id='add_etcservices'></a>**<br>
+  * **<u>ADD_ETCSERVICES: Add /etc/services</u><a id='add-etcservices'></a>**<br>
     Adds /etc/services file. Used eg by netstat to display names of IP-ports.
 
-  * **[ADD_REGEXT_GUI: Patch GUI to enable external SIP connections](ADD_REGEXT_GUI.md)<a id='add_regext_gui'></a>**<br>
+  * **[ADD_REGEXT_GUI: Patch GUI to enable external SIP connections](ADD_REGEXT_GUI.md)<a id='add-regext-gui'></a>**<br>
     Patches the WebUI and add a checkbox to enable setting "reg_from_outside" in the voip.conf.
 
-  * **<u>ADD_SWAPOPTIONS: Add swap options</u><a id='add_swapoptions'></a>**<br>
+  * **<u>ADD_SWAPOPTIONS: Add swap options</u><a id='add-swapoptions'></a>**<br>
     Add swap configuration options.
 
-  * **<u>Add telnetd</u><a id='add_telnetd'></a>**<br>
+  * **<u>Add telnetd</u><a id='add-telnetd'></a>**<br>
     Adds the busybox applet for telnetd, its link and the configuration webif.
 
-  * **<u>ASYNCHRONOUS_DEBUG_CFG: Process /var/flash/debug.cfg asynchronously</u><a id='asynchronous_debug_cfg'></a>**<br>
+  * **<u>ASYNCHRONOUS_DEBUG_CFG: Process /var/flash/debug.cfg asynchronously</u><a id='asynchronous-debug-cfg'></a>**<br>
     Enables asynchronous processing of /var/flash/debug.cfg. Requires AVM's /sbin/delay binary in order to work.
 
-  * **<u>AUTOMOUNT_EXT2: ext2</u><a id='automount_ext2'></a>**<br>
+  * **<u>AUTOMOUNT_EXT2: ext2</u><a id='automount-ext2'></a>**<br>
     This adds support for ext2 filesystem to your firmware.
 
-  * **<u>AUTOMOUNT_EXT3: ext3</u><a id='automount_ext3'></a>**<br>
+  * **<u>AUTOMOUNT_EXT3: ext3</u><a id='automount-ext3'></a>**<br>
     This adds support for ext3 filesystem to your firmware.
 
-  * **<u>AUTOMOUNT_EXT4: ext4</u><a id='automount_ext4'></a>**<br>
+  * **<u>AUTOMOUNT_EXT4: ext4</u><a id='automount-ext4'></a>**<br>
     This adds support for ext4 filesystem to your firmware.
 
-  * **<u>AUTOMOUNT_FAT: fat</u><a id='automount_fat'></a>**<br>
+  * **<u>AUTOMOUNT_FAT: fat</u><a id='automount-fat'></a>**<br>
     This enables detection of fat partitions.
 
-  * **<u>AUTOMOUNT_HFS: HFS</u><a id='automount_hfs'></a>**<br>
+  * **<u>AUTOMOUNT_HFS: HFS</u><a id='automount-hfs'></a>**<br>
     This adds hfs module to your firmware.
 
-  * **<u>AUTOMOUNT_HFS_PLUS: HFS+</u><a id='automount_hfs_plus'></a>**<br>
+  * **<u>AUTOMOUNT_HFS_PLUS: HFS+</u><a id='automount-hfs-plus'></a>**<br>
     This adds hfs+ module to your firmware.
 
-  * **<u>AUTOMOUNT_LINUXSWAP: swap</u><a id='automount_linuxswap'></a>**<br>
+  * **<u>AUTOMOUNT_LINUXSWAP: swap</u><a id='automount-linuxswap'></a>**<br>
     This enables detection of linux-swap partitions.
 
-  * **<u>AUTOMOUNT_LUKS: luks</u><a id='automount_luks'></a>**<br>
+  * **<u>AUTOMOUNT_LUKS: luks</u><a id='automount-luks'></a>**<br>
     This enables detection (not mounting) of luks partitions.
 
-  * **<u>AUTOMOUNT_NTFS: NTFS</u><a id='automount_ntfs'></a>**<br>
+  * **<u>AUTOMOUNT_NTFS: NTFS</u><a id='automount-ntfs'></a>**<br>
     This adds ntfs-3g mount helper to your firmware.
 
-  * **<u>AUTOMOUNT_REISER_FS: ReiserFS</u><a id='automount_reiser_fs'></a>**<br>
+  * **<u>AUTOMOUNT_REISER_FS: ReiserFS</u><a id='automount-reiser-fs'></a>**<br>
     This adds reiserfs module to your firmware.
 
-  * **[AVMDAEMON_DISABLE_DHCP: Disable DHCP](AVMDAEMON_DISABLE_DHCP.md)<a id='avmdaemon_disable_dhcp'></a>**<br>
+  * **[AVMDAEMON_DISABLE_DHCP: Disable DHCP](AVMDAEMON_DISABLE_DHCP.md)<a id='avmdaemon-disable-dhcp'></a>**<br>
     Remaps multid's binding of the DHCP port. Don't forget to set up a server for the guest-wlan too.
 
-  * **[AVMDAEMON_DISABLE_DNS: Disable DNS](AVMDAEMON_DISABLE_DNS.md)<a id='avmdaemon_disable_dns'></a>**<br>
+  * **[AVMDAEMON_DISABLE_DNS: Disable DNS](AVMDAEMON_DISABLE_DNS.md)<a id='avmdaemon-disable-dns'></a>**<br>
     Remaps multid's binding of the DNS ports, so another dns-server could be used, avm's dynamic-dns updater and timesync works correct.
 
-  * **[AVMDAEMON_DISABLE_IGD: Disable igd/upnp](AVMDAEMON_DISABLE_IGD.md)<a id='avmdaemon_disable_igd'></a>**<br>
+  * **[AVMDAEMON_DISABLE_IGD: Disable igd/upnp](AVMDAEMON_DISABLE_IGD.md)<a id='avmdaemon-disable-igd'></a>**<br>
     Disables dsld's IGD & multid's UPNP-device
 
-  * **[AVMDAEMON_DISABLE_IGM: Disable IGMP](AVMDAEMON_DISABLE_IGM.md)<a id='avmdaemon_disable_igm'></a>**<br>
+  * **[AVMDAEMON_DISABLE_IGM: Disable IGMP](AVMDAEMON_DISABLE_IGM.md)<a id='avmdaemon-disable-igm'></a>**<br>
     Disables multid's IGMP proxy
 
-  * **<u>AVMDAEMON_DISABLE_LLMNR: Disable LLMNR</u><a id='avmdaemon_disable_llmnr'></a>**<br>
+  * **<u>AVMDAEMON_DISABLE_LLMNR: Disable LLMNR</u><a id='avmdaemon-disable-llmnr'></a>**<br>
     Remaps multid's binding of both LLMNR ("Link- local Multicast Name Resolution) ports.
 
-  * **<u>AVMDAEMON_DISABLE_MULTIDPORTS: Disable services by preload</u><a id='avmdaemon_disable_multidports'></a>**<br>
+  * **<u>AVMDAEMON_DISABLE_MULTIDPORTS: Disable services by preload</u><a id='avmdaemon-disable-multidports'></a>**<br>
     This disables some ports bindings of multid by remapping them to higher ones.
 
-  * **[AVMDAEMON_DISABLE_NTP: Disable ntp client](AVMDAEMON_DISABLE_NTP.md)<a id='avmdaemon_disable_ntp'></a>**<br>
+  * **[AVMDAEMON_DISABLE_NTP: Disable ntp client](AVMDAEMON_DISABLE_NTP.md)<a id='avmdaemon-disable-ntp'></a>**<br>
     Disables multid's basic NTP client
 
-  * **[AVMDAEMON_DISABLE_TR069: Disable tr069](AVMDAEMON_DISABLE_TR069.md)<a id='avmdaemon_disable_tr069'></a>**<br>
+  * **[AVMDAEMON_DISABLE_TR069: Disable tr069](AVMDAEMON_DISABLE_TR069.md)<a id='avmdaemon-disable-tr069'></a>**<br>
     Disables multid's tr069discover
 
-  * **[CUSTOM_UDEV_RULES: Enable custom UDEV rules](CUSTOM_UDEV_RULES.md)<a id='custom_udev_rules'></a>**<br>
+  * **[CUSTOM_UDEV_RULES: Enable custom UDEV rules](CUSTOM_UDEV_RULES.md)<a id='custom-udev-rules'></a>**<br>
     You could use own rules for UDEV.
 
-  * **<u>DISABLE_DEBUG_CFG_SUPPORT: Disable processing of /var/flash/debug.cfg</u><a id='disable_debug_cfg_support'></a>**<br>
+  * **<u>DISABLE_DEBUG_CFG_SUPPORT: Disable processing of /var/flash/debug.cfg</u><a id='disable-debug-cfg-support'></a>**<br>
     Disables processing of /var/flash/debug.cfg while booting. Note: /var/flash/debug.cfg is still available, it's however not processed while booting. Warning: if selected you won't be able to install/start such 3rd-party extensions like FHEM, LCR Updater, etc.
 
-  * **[DISABLE_SERIAL_CONSOLE: Disable console on serial port](DISABLE_SERIAL_CONSOLE.md)<a id='disable_serial_console'></a>**<br>
+  * **[DISABLE_SERIAL_CONSOLE: Disable console on serial port](DISABLE_SERIAL_CONSOLE.md)<a id='disable-serial-console'></a>**<br>
     Choose this if you do not want your Box to start a console/shell on its serial port (/dev/ttyS0). This is particularly helpful if you want to use the serial port exclusively with another application, e.g. minicom.
 
-  * **<u>DROP_NOEXEC_EXTERNAL: Drop noexec for (external) storages</u><a id='drop_noexec_external'></a>**<br>
+  * **<u>DROP_NOEXEC_EXTERNAL: Drop noexec for (external) storages</u><a id='drop-noexec-external'></a>**<br>
     Allows to execute files on external storages like USB sticks and HDDs.
 
-  * **<u>Enable LED deactivation page</u><a id='enable_led_deactivation'></a>**<br>
+  * **<u>Enable LED deactivation page</u><a id='enable-led-deactivation'></a>**<br>
     Re-enables access to the LED deactivation page in expert mode.
 
-  * **<u>ENFORCE_FIRMWARE_VERSION_VIA_RCCONF: Enforce firmware_version via rc.conf</u><a id='enforce_firmware_version_via_rcconf'></a>**<br>
+  * **<u>ENFORCE_FIRMWARE_VERSION_VIA_RCCONF: Enforce firmware_version via rc.conf</u><a id='enforce-firmware-version-via-rcconf'></a>**<br>
     This option enforces branding by hardcoding it in /etc/init.d/rc.conf This method is useful on some recently produced boxes (since 2017), which do not allow to change the value of the urlader variable 'firmware_version' in a non-volatile way. Affected boxes (known so far): all boxes with the following bootloaderVersion - 1.3179 - 1.3229 use "cat /proc/sys/urlader/environment | grep bootloaderVersion" or EVA to check the value Choose the value wisely. Your image must support it.
 
-  * **<u>ENFORCE_URLADER_SETTING_FIRMWARE_VERSION: Enforce firmware_version variable</u><a id='enforce_urlader_setting_firmware_version'></a>**<br>
+  * **<u>ENFORCE_URLADER_SETTING_FIRMWARE_VERSION: Enforce firmware_version variable</u><a id='enforce-urlader-setting-firmware-version'></a>**<br>
     Choose wisely. Your image beeing built must support this. Typical settings are eg.: avm, avme, tcom, 1und1, ... If this is empty the urlader setting won't be touched.
 
-  * **<u>ENFORCE_URLADER_SETTING_MY_IPADDRESS: Enforce my_ipaddress variable</u><a id='enforce_urlader_setting_my_ipaddress'></a>**<br>
+  * **<u>ENFORCE_URLADER_SETTING_MY_IPADDRESS: Enforce my_ipaddress variable</u><a id='enforce-urlader-setting-my-ipaddress'></a>**<br>
     This is the AVM default, enforce to also to reseller boxes, eg. from T-Com If this is empty the urlader setting won't be touched.
 
-  * **<u>ENFORCE_URLADER_SETTING_PRODUCTID: Enforce ProductID variable</u><a id='enforce_urlader_setting_productid'></a>**<br>
+  * **<u>ENFORCE_URLADER_SETTING_PRODUCTID: Enforce ProductID variable</u><a id='enforce-urlader-setting-productid'></a>**<br>
     Choose wisely. Your image beeing built must support this. Typical settings are eg.: Fritz_Box_DECT_7270, Fritz_Box_DECT_W920V If this is empty the urlader setting won't be touched.
 
-  * **[ENFORCE_URLADER_SETTINGS: Enforce urlader environment](ENFORCE_URLADER_SETTINGS.md)<a id='enforce_urlader_settings'></a>**<br>
+  * **[ENFORCE_URLADER_SETTINGS: Enforce urlader environment](ENFORCE_URLADER_SETTINGS.md)<a id='enforce-urlader-settings'></a>**<br>
     Enforce some urlader (Adam2/EVA) environment variables. * useful for tcom boxes having non-AVM standard settings in bootloader (my_ipaddress, firmware_version, ProductID) * useful for people that do clear mtd3/mtd4 often. This settings are enforced at the beginnig of the boot process.
 
-  * **<u>Keep AVM uClibc - FOR TESTING PURPOSES ONLY</u><a id='keep_avm_uclibc'></a>**<br>
+  * **<u>Keep AVM uClibc - FOR TESTING PURPOSES ONLY</u><a id='keep-avm-uclibc'></a>**<br>
 
-  * **[MODIFY_COUNTER: Extend online counter](MODIFY_COUNTER.md)<a id='modify_counter'></a>**<br>
+  * **[MODIFY_COUNTER: Extend online counter](MODIFY_COUNTER.md)<a id='modify-counter'></a>**<br>
     Converts counter hours to days and traffic MB to GB.
 
-  * **[MODIFY_DSL_SETTINGS: Extend DSL settings](MODIFY_DSL_SETTINGS.md)<a id='modify_dsl_settings'></a>**<br>
+  * **[MODIFY_DSL_SETTINGS: Extend DSL settings](MODIFY_DSL_SETTINGS.md)<a id='modify-dsl-settings'></a>**<br>
     Extends the DSL settings page with "speed" settings.
 
-  * **<u>MODIFY_DSL_SPECTRUM: Extend DSL spectrum</u><a id='modify_dsl_spectrum'></a>**<br>
+  * **<u>MODIFY_DSL_SPECTRUM: Extend DSL spectrum</u><a id='modify-dsl-spectrum'></a>**<br>
     Shows DSL spectrum page with min/man visible initialy.
 
-  * **<u>MODIFY_DSL_WARNING: Patch DSL modified message</u><a id='modify_dsl_warning'></a>**<br>
+  * **<u>MODIFY_DSL_WARNING: Patch DSL modified message</u><a id='modify-dsl-warning'></a>**<br>
     Hides the "modified" message from the DSL page.
 
-  * **[Modify umtsd: only for known modems](MODIFY_UMTSD.md)<a id='modify_umtsd'></a>**<br>
+  * **[Modify umtsd: only for known modems](MODIFY_UMTSD.md)<a id='modify-umtsd'></a>**<br>
     AVM's umtsd will only be started if a *known* umts modem is detected. So your /dev/ttyUSB? could be used by other programs.
 
-  * **[PATCH_ALARMCLOCK: Patch third alarm-clock](PATCH_ALARMCLOCK.md)<a id='patch_alarmclock'></a>**<br>
+  * **[PATCH_ALARMCLOCK: Patch third alarm-clock](PATCH_ALARMCLOCK.md)<a id='patch-alarmclock'></a>**<br>
     Adds a third alarm-clock to AVM-Webinterface
 
-  * **[Patch ATA](PATCH_ATA.md)<a id='patch_ata'></a>**<br>
+  * **[Patch ATA](PATCH_ATA.md)<a id='patch-ata'></a>**<br>
     Patches the ATA mode configuration pages into the web menu. The ATA-Mode (better: IP-Client Mode) disables the DSL modem and routing and reduces the power consumption of a box. Some models disable this feature, most models have brandings or environment configuration which disable the IP-Client Mode. This patch forces the ATA-Mode to be enabled. ATA will not work with some 7170/7140 due to limited hardware, see http://wiki.ip-phone-forum.de/gateways:avm:fbf:kabel
 
-  * **<u>PATCH_BETA_ATTRIBUTES: Patch Beta/Labor attributes</u><a id='patch_beta_attributes'></a>**<br>
+  * **<u>PATCH_BETA_ATTRIBUTES: Patch Beta/Labor attributes</u><a id='patch-beta-attributes'></a>**<br>
     This patch removes Beta/Labor attributes from some (older) firmwares AVM released only as Betas so far.
 
-  * **[PATCH_DSL_EXPERT: Patch extended DSL settings](PATCH_DSL_EXPERT.md)<a id='patch_dsl_expert'></a>**<br>
+  * **[PATCH_DSL_EXPERT: Patch extended DSL settings](PATCH_DSL_EXPERT.md)<a id='patch-dsl-expert'></a>**<br>
     Patches the extended dsl-settings from labor-dsl into all-in-one-firmwares.
 
-  * **<u>Patch enum</u><a id='patch_enum'></a>**<br>
+  * **<u>Patch enum</u><a id='patch-enum'></a>**<br>
     Patches the enum configuration pages into the web menu.
 
-  * **[PATCH_FREETZMOUNT: Add FREETZMOUNT](PATCH_FREETZMOUNT.md)<a id='patch_freetzmount'></a>**<br>
+  * **[PATCH_FREETZMOUNT: Add FREETZMOUNT](PATCH_FREETZMOUNT.md)<a id='patch-freetzmount'></a>**<br>
     1. Replaces and deselects usb-storage patch. - The names of USB storage directories can be defined by WebIF (default uStorXY) (or by volume LABEL). 2. Replaces and deselects autorun.sh/autoend.sh patch. - autorun/autoend behaviour can be activated/deactivated via WebIF. - autorun/autoend are useful to start/terminate applications located on USB devices, eg apache, samba or even swapfiles, after connecting or before disconnecting of USB devices. 3. Auto-mounted USB storage devices will be fully accessible, eg it is now possible to put user home directories for (e.g. for FTP) on a FAT32-formatted partition and permit shell and FTP users to actually write to their own home directories. 4. Avoid deleting whole filesystems on USB devices. 5. Enhanced behaviour during mounting and unmounting. 6. Provides mount-by-label feature. It is highly recommended to select this patch.
 
-  * **<u>PATCH_GSMVOICE: Patch GSM voice</u><a id='patch_gsmvoice'></a>**<br>
+  * **<u>PATCH_GSMVOICE: Patch GSM voice</u><a id='patch-gsmvoice'></a>**<br>
     Patches the WebUI to allow voice-over-GSM. Highly experimental! Your UMTS stick has to support it. Webif: Internet > Mobilfunk > Telefonie ueber Mobilfunk
 
-  * **[Patch GUEST](PATCH_GUEST.md)<a id='patch_guest'></a>**<br>
+  * **[Patch GUEST](PATCH_GUEST.md)<a id='patch-guest'></a>**<br>
     Enables the GUEST configuration options in ip-client mode. DHCP may not work on the guest network interface, and need to be set up manually.
 
-  * **[PATCH_MAXDEVCOUNT: Raise the count of connectable usb device to 9](PATCH_MAXDEVCOUNT.md)<a id='patch_maxdevcount'></a>**<br>
+  * **[PATCH_MAXDEVCOUNT: Raise the count of connectable usb device to 9](PATCH_MAXDEVCOUNT.md)<a id='patch-maxdevcount'></a>**<br>
     Use this patch if you would connect more than 3 device to the box
 
-  * **<u>PATCH_MODFS_ANNEX_SELECTION: Unhide Annex selection</u><a id='patch_modfs_annex_selection'></a>**<br>
+  * **<u>PATCH_MODFS_ANNEX_SELECTION: Unhide Annex selection</u><a id='patch-modfs-annex-selection'></a>**<br>
     Unhides Annex selection in Fritz!OS web interface.
 
-  * **<u>PATCH_MODFS_BOOT_MANAGER: Add boot manager</u><a id='patch_modfs_boot_manager'></a>**<br>
+  * **<u>PATCH_MODFS_BOOT_MANAGER: Add boot manager</u><a id='patch-modfs-boot-manager'></a>**<br>
     Extends the "reboot" page of FRITZ!OS to select system version and branding.
 
-  * **[PATCH_MULTIPLE_PRINTERS: Add support for multiple printers](PATCH_MULTIPLE_PRINTERS.md)<a id='patch_multiple_printers'></a>**<br>
+  * **[PATCH_MULTIPLE_PRINTERS: Add support for multiple printers](PATCH_MULTIPLE_PRINTERS.md)<a id='patch-multiple-printers'></a>**<br>
     Use this patch if you want to use more than one printer.
 
-  * **[PATCH_SIGNED: Patch web menu signed message](PATCH_SIGNED.md)<a id='patch_signed'></a>**<br>
+  * **[PATCH_SIGNED: Patch web menu signed message](PATCH_SIGNED.md)<a id='patch-signed'></a>**<br>
     Hides the "unsupported changes" message from the web interface.
 
-  * **<u>PATCH_START_WLAN_IF_ON_BOOT: Start wlan interface on boot</u><a id='patch_start_wlan_if_on_boot'></a>**<br>
+  * **<u>PATCH_START_WLAN_IF_ON_BOOT: Start wlan interface on boot</u><a id='patch-start-wlan-if-on-boot'></a>**<br>
     Runs "ifconfig wlan up" on system start to enable ip assignment etc, which fails on some devices with installed Freetz. This is a workaround! The cause of this problem is still unknown.
 
-  * **<u>PATCH_UDEVMOUNT: Add udevmount</u><a id='patch_udevmount'></a>**<br>
+  * **<u>PATCH_UDEVMOUNT: Add udevmount</u><a id='patch-udevmount'></a>**<br>
     Adds a mount/unmount hook to: - Automatically start/stop external. - Execute autorun.sh/autoend.sh. - Terminate programs blocking unmount. - Logging of (un)mount events.
 
-  * **[PATCH_VCC: Patch 2nd VCC](PATCH_VCC.md)<a id='patch_vcc'></a>**<br>
+  * **[PATCH_VCC: Patch 2nd VCC](PATCH_VCC.md)<a id='patch-vcc'></a>**<br>
     Patches the setting for 2nd VCC into web menu. It also adds two additional settings (PCR & SCR) not available in the original AVM firmware. Please also note that it is not possible to change the value of traffic_class setting via the web-interface. You have to do it some other way (e.g. using FBEditor or nvi ar7.cfg). Warning: Please read up on what each VCC setting means before setting/changing it. Besides not working wrong values may cause additional costs for you as your provider may treat it as simultaneous dial-in attempts (Doppeleinwahl). The correct values for an 1&1-Komplettanschluss are: VPI = 1; VCI = 35; traffic_class = atm_traffic_class_CBR; pcr = 603; scr = 0;
 
-  * **<u>PATCH_VOL_COUNTER: Restore volume counter support</u><a id='patch_vol_counter'></a>**<br>
+  * **<u>PATCH_VOL_COUNTER: Restore volume counter support</u><a id='patch-vol-counter'></a>**<br>
     Adds volume counter support removed by AVM for some (probably marketing) reasons.
 
-  * **[PATCH_W920V_LED_MODULE: Change LED semantics to W920V](PATCH_W920V_LED_MODULE.md)<a id='patch_w920v_led_module'></a>**<br>
+  * **[PATCH_W920V_LED_MODULE: Change LED semantics to W920V](PATCH_W920V_LED_MODULE.md)<a id='patch-w920v-led-module'></a>**<br>
     If Y is choosen, this changes the semantics of the LEDs on the front panel of your 7570/W920V box fitting the descriptions of the W920V.
 
-  * **[Replace dtrace](REPLACE_DTRACE.md)<a id='replace_dtrace'></a>**<br>
+  * **[Replace dtrace](REPLACE_DTRACE.md)<a id='replace-dtrace'></a>**<br>
     Dtrace will be replaced by a symlink to /tmp/flash/mod/dtrace. Activating this option lets you execute a custom action via phone using #97*3* keycode sequence.
 
-  * **[Replace onlinechanged - EXPERIMENTAL](REPLACE_ONLINECHANGED.md)<a id='replace_onlinechanged'></a>**<br>
+  * **[Replace onlinechanged - EXPERIMENTAL](REPLACE_ONLINECHANGED.md)<a id='replace-onlinechanged'></a>**<br>
     AVM's built-in onlinechanged is not reliably called on some DSL boxes for unknown reasons (see http://www.ip-phone-forum.de/showthread.php?t=231873). On boxes behind a NAT, e.g. on many IP clients, behind cable routers etc., onlinechanged is not triggered either because dsld is not responsible for the connection. Thus, services on such boxes cannot be reinitialised automatically after the external IP address has changed. This is where this patch can be useful: It starts a shell script /sbin/ip_watchdog via /etc/inittab and makes sure the script is automatically restarted (via "respawn") in case it is terminated accidentally. The script periodically (60 s) checks the external IP via /usr/bin/get_ip and calls AVM's and Freetz's onlinechanged scripts via /bin/onlinechanged.sh if the IP has changed. At the same time the patch ensures that AVM's master script /bin/onlinechanged is empty, so the scripts are not called twice. Who should use this patch? First of all users with boxes configured for NAT who cannot profit from AVM onlinechanged at all. Secondly users having problems with AVM onlinechanged being called unreliably on their DSL boxes. Limitations: Environment variable IPADDR is set as usual, but no other variables set by AVM multid in original onlinechanged such as NETMASK, GATEWAY, DNS1, DNS2. They are currently not used by AVM or Freetz scripts anyway, so this limitation should not be a problem. Another difference to AVM onlinechanged is that this solution only calls "onlinechanged online", never "onlinechanged offline". This also should not be a problem, but you should be aware of it.
 
-  * **[Replace OpenSSL libraries](REPLACE_OPENSSL.md)<a id='replace_openssl'></a>**<br>
+  * **[Replace OpenSSL libraries](REPLACE_OPENSSL.md)<a id='replace-openssl'></a>**<br>
     Use this option only if you are running out of space and if you really know, what you are doing. Activating this option may cause an unstable system, uncontrolled reboots and other side effects. Activating this option saves about 400KB in the image.
 
-  * **<u>REPLACE_OUTER_UCLIBC_AND_BUSYBOX: Replace uClibc and BusyBox in outer image</u><a id='replace_outer_uclibc_and_busybox'></a>**<br>
+  * **<u>REPLACE_OUTER_UCLIBC_AND_BUSYBOX: Replace uClibc and BusyBox in outer image</u><a id='replace-outer-uclibc-and-busybox'></a>**<br>
     This replaces uClibc and BusyBox in the outer image by a self built version. This could cause a bad configurstion like missing applets. The worst case is a not booting image.
 
-  * **<u>RESTORE_DEBUG_CFG_SUPPORT: Restore support for /var/flash/debug.cfg</u><a id='restore_debug_cfg_support'></a>**<br>
+  * **<u>RESTORE_DEBUG_CFG_SUPPORT: Restore support for /var/flash/debug.cfg</u><a id='restore-debug-cfg-support'></a>**<br>
     Restores support for /var/flash/debug.cfg removed by AVM for security reasons in Fritz!OS 6.20 (6.0x on some boxes).
 
-  * **<u>RUN_TELEFON_IN_INHOUSE_MODE: Run telefon daemon in inhaus mode</u><a id='run_telefon_in_inhouse_mode'></a>**<br>
+  * **<u>RUN_TELEFON_IN_INHOUSE_MODE: Run telefon daemon in inhaus mode</u><a id='run-telefon-in-inhouse-mode'></a>**<br>
     Running telefon daemon in "inhaus mode" restores: - Processing of /var/flash/calllog on incoming calls. In case you added telnetd, this patch also restores: - Support for telnetd on/off by phone (#96*7* / #96*8*). - Processing of /var/flash/fx_conf attributes responsible for automatic start of telnetd.
 
-  * **<u>USBSTORAGE_AUTOMOUNT: Automount filesystems</u><a id='usbstorage_automount'></a>**<br>
+  * **<u>USBSTORAGE_AUTOMOUNT: Automount filesystems</u><a id='usbstorage-automount'></a>**<br>
     The filesystems ext2, ext3, ext4, fat, hfs, hfs+, ntfs and reiserfs and swap are mounted automatically. Detection is done by blkid applet . It depends on the original firmware which of the following points you have to select.

@@ -30,7 +30,8 @@ else
 	itm="<u>$itm</u>"
 	lst=''
 fi
-echo -e "\n  * **$itm<a id='${pkg%-cgi}'></a>**<br>"
+anc="${pkg//_/-}"
+echo -e "\n  * **$itm<a id='${anc%-cgi}'></a>**<br>"
 
 L="$(grep -P '^[ \t]*help[ \t]*$' -nm1 "$INPWD/$pkg/Config.in" 2>/dev/null | sed 's/:.*//')"
 C="$(wc -l "$INPWD/$pkg/Config.in" 2>/dev/null | sed 's/ .*//')"

@@ -25,7 +25,8 @@ itm="[$itm]($sym.md)"
 else
 itm="<u>$itm</u>"
 fi
-echo -e "\n  * **$itm<a id='${sym,,}'></a>**<br>"
+anc="${sym//_/-}"
+echo -e "\n  * **$itm<a id='${anc,,}'></a>**<br>"
 
 L="$(echo "$TMP" | grep -P '^[ \t]*$' -m1 -B80 | grep -P '^[ \t]*help[ \t]*$' -nm1 | sed 's/:.*//')"
 C="$(echo "$TMP" | wc -l | sed 's/ .*//')"

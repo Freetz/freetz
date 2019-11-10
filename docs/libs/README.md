@@ -49,7 +49,7 @@
   * **<u>leptonica (liblept.so)</u><a id='leptonica'></a>**<br>
     A library for efficient image processing and image analysis operations.
 
-  * **<u>libart_lgpl: Libart 2D graphics (libart.so)</u><a id='libart_lgpl'></a>**<br>
+  * **<u>libart_lgpl: Libart 2D graphics (libart.so)</u><a id='libart-lgpl'></a>**<br>
     Libart is a library for high-performance 2D graphics. It supports a very powerful imaging model, basically the same as SVG and the Java 2D API. It includes all PostScript imaging operations, and adds antialiasing and alpha-transparency. It is also highly tuned for incremental rendering. It contains data structures and algorithms suited to rapid, precise computation of Region of Interest, and a two-phase rendering pipeline optimized for interactive display.
 
   * **<u>libavmacl2</u><a id='libavmacl2'></a>**<br>
@@ -96,7 +96,7 @@
   * **<u>libftdi (libftdi.so)</u><a id='libftdi'></a>**<br>
     A library (using libusb) to talk to FTDI's FT232BM/245BM, FT2232C/D and FT232/245R type chips including the popular bitbang mode.
 
-  * **<u>libgcc_s: GCC low-level runtime library (libgcc_s.so)</u><a id='libgcc_s'></a>**<br>
+  * **<u>libgcc_s: GCC low-level runtime library (libgcc_s.so)</u><a id='libgcc-s'></a>**<br>
     GCC low-level runtime library GCC provides a low-level runtime library, `libgcc.a' or `libgcc_s.so.1' on some platforms. GCC generates calls to routines in this library automatically, whenever it needs to perform some operation that is too complicated to emit inline code for. Most of the routines in libgcc handle arithmetic operations that the target processor cannot perform directly. This includes integer multiply and divide on some machines, and all floating-point operations on other machines. libgcc also includes routines for exception handling, and a handful of miscellaneous operations.
 
   * **<u>libgcrypt: GnuPG crypto library (libgcrypt.so)</u><a id='libgcrypt'></a>**<br>
