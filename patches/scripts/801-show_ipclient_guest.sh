@@ -17,3 +17,10 @@ if [ -e "$file" ]; then
 	  "s/opmode_eth_ipclient/opmode_eth_ipclient_freetz/g" \
 	  "$file"
 fi
+#To make the greyed out LAN4 item on the page become accessible
+file="$HTML_LANG_MOD_DIR/net/network_settings.lua"
+if [ -e "$file" ]; then
+	modsed \
+	  "s/bGuestDisabled = true/bGuestDisabled = false/g" \
+	  "$file"
+fi
