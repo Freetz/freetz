@@ -4,8 +4,9 @@ $(PKG_UNPACKED)
 
 $(PKG)_EXCLUDED += $(if $(FREETZ_SKIN_cuma),,usr/share/*/cuma)
 $(PKG)_EXCLUDED += $(if $(FREETZ_SKIN_legacy),,usr/share/*/legacy)
-$(PKG)_EXCLUDED += $(if $(FREETZ_SKIN_phoenix),,usr/share/*/phoenix)
 $(PKG)_EXCLUDED += $(if $(FREETZ_SKIN_newfreetz),,usr/share/*/newfreetz)
+$(PKG)_EXCLUDED += $(if $(FREETZ_SKIN_phoenix),,usr/share/*/phoenix)
+$(PKG)_EXCLUDED += $(if $(FREETZ_SKIN_prisrak),,usr/share/*/prisrak)
 $(PKG)_EXCLUDED += $(if $(FREETZ_STYLE_COLORED),usr/share/style/colorscheme-grey.css,usr/share/style/colorscheme-colored.css)
 
 $(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_MOD_SWAPOPTIONS),,etc/init.d/rc.swap usr/mww/cgi-bin/exec.d/create-swap.sh usr/lib/cgi-bin/mod/conf/20-swap.sh)

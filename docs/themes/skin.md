@@ -1,21 +1,24 @@
 # Skins
 
-Momentan stehen 4 Skins zu Auswahl. Im Menuconfig unter "Web Interface"
-können die zu installierenden Skins ausgewählt werden. Falls mehrere 
-installiert wurden, kann im Webinterface unter "Freetz > Aussehen"
-zwischen den Skins umgeschaltet werden.<br>
+Im Menuconfig unter "Web Interface" können die zu installierenden
+Skins ausgewählt werden. Falls mehrere installiert wurden, kann im
+Webinterface unter "Freetz > Weboberfläche > Skinauswahl" zwischen den
+Skins umgeschaltet werden.<br>
 
 Zur Auswahl stehen:
 
- * **cuma (dark)**<br>
-   [![Skin cuma](../screenshots/000-MOD_dark-skin_md.png)](../screenshots/000-MOD_dark-skin.png)<br><br>
+ * **cuma**<br>
+   [![Skin cuma](../screenshots/000-MOD_skin-cuma_md.png)](../screenshots/000-MOD_skin-cuma.png)<br><br>
 
- * **Legacy (blue)**<br>
-   [![Skin legacy](../screenshots/240_md.jpg)](../screenshots/240.jpg)<br><br>
+ * **legacy**<br>
+   [![Skin legacy](../screenshots/000-MOD_skin-legacy_md.jpg)](../screenshots/000-MOD_skin-legacy.jpg)<br><br>
 
- * **Phoenix (red)**<br>
-   [![Skin phoenix](../screenshots/241_md.jpg)](../screenshots/241.jpg)<br><br>
+ * **newfreetz**<br>
+   [![Skin newfreetz](../screenshots/000-MOD_skin-newfreetz_md.jpg)](../screenshots/000-MOD_skin-newfreetz.jpg)<br><br>
 
- * **Newfreetz (green)**<br>
-   [![Skin Legacynewfreetz](../screenshots/242_md.jpg)](../screenshots/242.jpg)<br><br>
+ * **phoenix**<br>
+   [![Skin phoenix](../screenshots/000-MOD_skin-phoenix_md.jpg)](../screenshots/000-MOD_skin-phoenix.jpg)<br><br>
+
+ * **prisrak**<br>
+   [![Skin prisrak](../screenshots/000-MOD_skin-prisrak_md.png)](../screenshots/000-MOD_skin-prisrak.png)<br><br>
    

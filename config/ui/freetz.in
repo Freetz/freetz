@@ -39,6 +39,7 @@ menu "Web Interface"
 		config FREETZ_STYLE_COLORED
 			bool "green status-bars"
 			depends on !FREETZ_SKIN_cuma
+			depends on !FREETZ_SKIN_prisrak
 
 		config FREETZ_STYLE_GREY
 			bool "grey status-bars"
@@ -56,8 +57,9 @@ menu "Web Interface"
 	depends on \
 		!FREETZ_SKIN_cuma && \
 		!FREETZ_SKIN_legacy && \
+		!FREETZ_SKIN_newfreetz && \
 		!FREETZ_SKIN_phoenix && \
-		!FREETZ_SKIN_newfreetz
+		!FREETZ_SKIN_prisrak
 
 	config FREETZ_SKIN_cuma
 		bool "cuma"
@@ -86,6 +88,13 @@ menu "Web Interface"
 		help
 			Main color red, menu at top.
 			Size: about 15 kB (uncompressed)
+
+	config FREETZ_SKIN_prisrak
+		bool "prisrak"
+		default n
+		help
+			Main theme violet, menu at right.
+			Size: about 12 kB (uncompressed)
 
 	endmenu # "Freetz skins" #
 
