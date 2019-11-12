@@ -14,8 +14,8 @@ echo "User tor"
 
 [ "$TOR_SOCKS_PORT" ] && echo "SocksPort ${TOR_SOCKS_ADDRESS}${TOR_SOCKS_ADDRESS:+:}${TOR_SOCKS_PORT}"
 
-[ "$TOR_CONTROL_PORT" ] && echo "ControlPort $TOR_CONTROL_PORT"
-[ "$TOR_CONTROL_ADDRESS" ] && echo "ControlListenAddress $TOR_CONTROL_ADDRESS"
+[ "$TOR_CONTROL_PORT" ] && echo "ControlPort ${TOR_CONTROL_ADDRESS}${TOR_CONTROL_ADDRESS:+:}${TOR_CONTROL_PORT}"
+
 [ "$TOR_CONTROL_HASHED_PASS" ] && echo "HashedControlPassword $TOR_CONTROL_HASHED_PASS"
 
 [ "$TOR_CIRCUITS_AVAILABLE_TIMEOUT" ] && echo "CircuitsAvailableTimeout $TOR_CIRCUITS_AVAILABLE_TIMEOUT"
@@ -37,7 +37,6 @@ if [ "$TOR_RELAY_ENABLED" == "yes" ]; then
 	[ "$TOR_BANDWIDTHBURST" ] && echo "BandwidthBurst $TOR_BANDWIDTHBURST"
 	[ "$TOR_ORPORT" ] && echo "ORPort $TOR_ORPORT"
 	[ "$TOR_DIRPORT" ] && echo "DirPort $TOR_DIRPORT"
-	[ "$TOR_MAXONIONSPENDING" ] && echo "MaxOnionsPending $TOR_MAXONIONSPENDING"
 	[ "$TOR_EXITPOLICY" ] && echo "ExitPolicy $TOR_EXITPOLICY"
 	[ "$TOR_BRIDGERELAY" == "yes" ] && echo "BridgeRelay 1"
 fi
