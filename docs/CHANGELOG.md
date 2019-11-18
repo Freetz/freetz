@@ -220,7 +220,7 @@ Latest changes
     * jpeg 9c
     * knock 0.7
     * lftp 4.8.4
-    * libcapi avm-(7390|7270).05.50
+    * libcapi avm-(7390/7270).05.50
     * libconfig 1.5
     * libctlmgr 0.6.9
     * libevent 2.1.11
@@ -336,8 +336,8 @@ Latest changes
     * The default button on package pages asks before applying.
     * Automatic refresh of wev pages added, just add a "refresh" parameter with the count of seconds, like ​http://fritz:81/?refresh=3
     * It could be set that the device reboots automatically after successfully flash.
-    * New, dark skin called 'cuma' added. If you have selected (menuconfig > Web Interface Freetz skins) multiple, you could switch
-      them (Webif > System > Weboberfläche).
+    * New, dark skins called 'cuma' and 'prisrak' added. If you have selected (menuconfig > Web Interface Freetz skins) multiple, you
+      could switch them (Webif > System > Weboberfläche).
     * On supported devices, the system page shows the 2 partition sets and the containing FritzOS versions.
     * A stop/start/restart action of a package redirects no longer to the services page.
 
