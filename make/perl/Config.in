@@ -73,10 +73,12 @@ config FREETZ_PACKAGE_PERL_MAILDKIM
         depends on FREETZ_PACKAGE_PERL
         select FREETZ_PACKAGE_OPENSSL
 	select FREETZ_PACKAGE_OPENSSLRSA
+	select FREETZ_PACKAGE_CRYPTOPENSSLGUESS
 	select FREETZ_PACKAGE_DIGESTSHA
 	select FREETZ_PACKAGE_MAILADDRESS
 	select FREETZ_PACKAGE_MIMEBASE64
 	select FREETZ_PACKAGE_NETDNS
+	select FREETZ_PACKAGE_IOSOCKETINET
         default y
         help
                 Add Mail:DKIM - Signs/verifies Internet mail with DKIM/DomainKey signatures
@@ -87,6 +89,13 @@ config FREETZ_PACKAGE_PERL_OPENSSLRSA
         default y
         help
                 Add Crypt::OpenSSL::RSA
+
+config FREETZ_PACKAGE_PERL_CRYPTOPENSSLGUESS
+	bool "add module Crypt::OpenSSL::Guess"
+	depends on FREETZ_PACKAGE_PERL
+	default y
+	help
+		Add Crypt::OpenSSL::Guess
 
 config FREETZ_PACKAGE_PERL_DIGESTSHA
         bool "add module Digest::SHA"
@@ -112,6 +121,7 @@ config FREETZ_PACKAGE_PERL_MIMEBASE64
 config FREETZ_PACKAGE_PERL_NETDNS
         bool "add module Net::DNS"
         depends on FREETZ_PACKAGE_PERL
+	depends on FREETZ_PACKAGE_IOSOCKETINET
         default y
         help
                 Add Net::DNS
@@ -124,6 +134,13 @@ config FREETZ_PACKAGE_PERL_IOSOCKETSSL
 	default y
 	help
 		Add IO::Socket::SSL -- Nearly transparent SSL encapsulation for IO::Socket::INET.
+
+config FREETZ_PACKAGE_PERL_IOSOCKETINET
+	bool "add module IO::Socket::INET"
+	depends on FREETZ_PACKAGE_PERL
+	default y
+	help
+		Add IO::Socket::INET
 
 config FREETZ_PACKAGE_PERL_DBI
 	bool "add module DBI"
