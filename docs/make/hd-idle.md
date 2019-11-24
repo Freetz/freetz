@@ -5,7 +5,7 @@ ein Tool, um externe Festplatten nach einer festgelegten "Idle-Zeit"
 (also "Nix-Tun") herunterzufahren ("Spin-Down"). Da die meisten
 externen IDE-Festplatten-Gehäuse das Setzen eines "Idle-Timers" nicht
 erlauben, wird ein Utility wie *hd-idle* (oder das mit Freetz ebenfalls
-verfügbare *[spindown-CGI](../spindown/README.md)*) benötigt, um den Job
+verfügbare *[spindown-CGI](spindown.md)*) benötigt, um den Job
 zu erledigen.
 
 Es gibt, herstellerabhängig 3 verschiedene Powermodes:

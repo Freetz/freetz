@@ -36,7 +36,7 @@ Arbeit macht" und alle benötigten Verbindungen erlaubt und dann die
 Default-Regel auf "Deny" stellt.
 
 Ich persönlich (ich hoffe, auch als "Autor" darf ich das sagen) würde
-für tiefergehende Eingriffe eher auf [iptables](../iptables/README.md)
+für tiefergehende Eingriffe eher auf [iptables](iptables.md)
 zurückgreifen...
 
 ### Feature-Übersicht

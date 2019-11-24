@@ -9,10 +9,10 @@ der GNU-Lizenz von Tobias Oetiker entwickelt. Es ist ein sehr
 leistungsfähiges Werkzeug, um zeitbezogene Messdaten wie Temperatur,
 Festplattenauslastung, Netzwerkverkehr auf kompakte Art und Weise in
 einer Datenbank zu speichern und ansprechend zu visualisieren. Weitere
-Details sind hier im Wiki beim Paket [RRDtool](../rrdtool/README.md)
+Details sind hier im Wiki beim Paket [RRDtool](rrdtool.md)
 nachzulesen. Um die Daten nachher graphisch darzustellen, wird rrdstats
 verwendet, worum es hier im Detail geht. Das Package
-[DigiTemp](../digitemp/README.md) wird zum Aufzeichen von
+[DigiTemp](digitemp.md) wird zum Aufzeichen von
 Temperaturwerten benötigt.
 
 ### Voraussetzungen und Einbau von RRDstats beim Firmware-Bau
@@ -189,7 +189,7 @@ Viel Spass und Erfolg beim nachmachen
 
 Hiermit kann die Auslastung des Segmentes von Kabelinternet aufzeichnet
 werden. Es wird zusätzlich noch ein Treiber benötigt. Momentan gibt es
-nur ein Package für DVB-Sticks von [Sundtek](../sundtek/README.md).
+nur ein Package für DVB-Sticks von [Sundtek](sundtek.md).
 Vorteil dieser ist, dass man kein v4l im Kernel benötigt.
 
 ### SmartHome
@@ -237,7 +237,7 @@ beteiligt:
 
 -   `/usr/bin/rrdstats`: Dieses Shellskript dient dem einsammeln der
     anzuzeigenden Werte, erstellt csv Dateien und pflegt die neuen Werte
-    in die Round Robin Database über [RRDtool](../rrdtool/README.md) ein.
+    in die Round Robin Database über [RRDtool](rrdtool.md) ein.
 
 ### BUGS
 

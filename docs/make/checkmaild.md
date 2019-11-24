@@ -95,7 +95,7 @@ callaction auf einem VDR ausgeben will, sieht das Beispiel so aus:
 ```
 
 Hintergrundinfos zum callmonitor kann man auch hier im Wiki unter
-[callmonitor](../callmonitor/README.md) nachlesen.
+[callmonitor](callmonitor.md) nachlesen.
 
 ### Weiterführende Links
 

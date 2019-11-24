@@ -55,7 +55,7 @@ Android](http://blog.bokhorst.biz/5123/computers-en-internet/iodine-for-android/
 
 ### Security
 
-Install [iptables](../iptables/README.md) and add these rules to allow
+Install [iptables](iptables.md) and add these rules to allow
 only traffic to the internet and not your local net:
 
 ```

@@ -3,11 +3,11 @@
 DECO ist ein Dateimanager für das Betriebssystem UNIX, das zu den
 Motiven des weit bekannten Norton Commander entwickelt wurde. Der
 "Demos Commander" ist dabei weit resourcensparender als etwa der
-[Midnight Commander](../mc/README.md) und bietet sich daher insbesondere
+[Midnight Commander](mc.md) und bietet sich daher insbesondere
 an, wenn im Image nur noch wenig Platz verfügbar ist, der für den
-[Midnight Commander](../mc/README.md) ("mc") nicht mehr reicht.
+[Midnight Commander](mc.md) ("mc") nicht mehr reicht.
 Natürlich reicht der DeCo damit auch nicht an die Funktionalitäten des
-[Midnight Commanders](../mc/README.md) heran.
+[Midnight Commanders](mc.md) heran.
 
 Anzumerken wäre ferner, dass (laut
 [Projektseite](http://deco.sourceforge.net/)) die

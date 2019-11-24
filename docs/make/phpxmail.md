@@ -10,7 +10,7 @@ the logs what is (not) happening.
 1.  To prevent disappointment: check if your internet provider allows
     SMTP (port 25) traffic
 2.  Build and install Freetz with PHPXMail and
-    [AVM-firewall-cgi](../avm-firewall/README.md)
+    [AVM-firewall-cgi](avm-firewall.md)
     1.  PHPXMail selects XMail and PHP
     2.  Be prepared for the space requirements ...
 3.  Setup Firewall (Freetz menu Packages > AVM-Firewall)

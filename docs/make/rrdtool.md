@@ -8,7 +8,7 @@ leistungsfähiges Werkzeug, um zeitbezogene Messdaten wie Temperatur,
 Festplattenauslastung, Netzwerkverkehr auf kompakte Art und Weise in
 einer Datenbank zu speichern und ansprechend zu visualisieren. Die
 Messdaten können beispielsweise über einfache Skriptsprachen wie
-[Bash](../bash/README.md) oder auch mit Hilfe komplexer Webanwendungen
+[Bash](bash.md) oder auch mit Hilfe komplexer Webanwendungen
 wie [Cacti](http://de.wikipedia.org/wiki/Cacti)
 aufbereitet und dem
 **[RRDtool](http://www.rrdtool.org/)** übergeben
@@ -16,7 +16,7 @@ werden." (Wikipedia)
 
 ### RRDstats
 
-Mit [RRDstats](../rrdstats/README.md) lassen sich die Statistiken auch
+Mit [RRDstats](rrdstats.md) lassen sich die Statistiken auch
 auf der FritzBox grafisch anzeigen. Details dazu bitte dort nachlesen.
 
 ### Weiterführende Links

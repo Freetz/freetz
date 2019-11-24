@@ -10,7 +10,7 @@ Es besitzt schwache Authentifizierungsmechanismen und hat die Fähigkeit,
 eine große Bandbreite an Ports für die von ihm kontrollierten Dienste
 zuzuweisen.
 
-*Portmap* wird u.a. vom [NFS](../nfs/README.md) Paket benötigt.
+*Portmap* wird u.a. vom [NFS](nfs.md) Paket benötigt.
 
 ### Weiterführende Links
 

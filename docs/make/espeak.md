@@ -3,7 +3,7 @@
 eSpeak ist ein "Text to Speech" Generator - oder, anders ausgedrückt,
 ein "Vorlese-Programm", welches ASCII Texte mit synthetischer Stimme
 wiedergeben ("vorlesen") kann. Bei Freetz wird es u.a. von
-[DTMFBox](../dtmfbox/README.md) genutzt.
+[DTMFBox](dtmfbox.md) genutzt.
 
 ### Installation
 

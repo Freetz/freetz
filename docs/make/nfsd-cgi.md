@@ -6,7 +6,7 @@ Some observations:
 Currently using NFS with a 7390 using Freetz-trunk revision 11466.
 Using this revision I didn't observe permission issues like with
 Freetz-1.2 for my 7270v3.
-As mount I'm using a [NDAS-NetDisk](../ndas/README.md) which is Ext3
+As mount I'm using a [NDAS-NetDisk](ndas.md) which is Ext3
 formatted.
 
 ### /etc/exports (exports in GUI)
@@ -204,7 +204,7 @@ But you can also use the csv format output in an Excel sheet. I attached
 
 In the [MRTG](netsnmp.en.html) graph of the CPU Utilization you can
 clearly see that the CPU Utilization is the bottleneck in my setup using
-a [NDAS NetDisk](../ndas/README.md).
+a [NDAS NetDisk](ndas.md).
 The picture shows I started the test at about 7:20am which took until
 1:10am the next day.
 Than I did two manual bonny++ tests at 1:15am and 2am. Than started a

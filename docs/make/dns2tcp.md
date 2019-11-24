@@ -55,16 +55,16 @@ this:
 A few notes:
 
 1.  Don't forget to forward port UDP 53 to *dns2tcpd*, for example
-    using [AVM-Firewall](../avm-firewall/README.md)
-2.  *dns2tcp* works with [dnsmasq](../dnsmasq/README.md), if you forward
+    using [AVM-Firewall](avm-firewall.md)
+2.  *dns2tcp* works with [dnsmasq](dnsmasq.md), if you forward
     to a port other than 53
-3.  Use [dropbear](../dropbear/README.md) or *OpenSSH* as SSH server
+3.  Use [dropbear](dropbear.md) or *OpenSSH* as SSH server
 4.  Security advice: disable SSH password login and use a certificate to
     login
 5.  You can setup dynamic DNS using the regular Fritz!Box interface:
     -   Advanced settings | Internet | Permit Access | Dynamic DNS
 6.  There is no Windows client available (you could try
-    [iodine](../iodine/README.md))
+    [iodine](iodine.md))
 
 ### Weiterführende Links
 

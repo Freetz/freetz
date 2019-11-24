@@ -30,7 +30,7 @@ Auswahl, mit denen man die Verbindung über den Tor Proxy mit wenigen
 Klicks konfigurieren kann.
 
 Zum Surfen mit einem Web Browser kann man auch Tor zusammen mit
-[Privoxy](../privoxy/README.md) zu betreiben, damit eine vollständige
+[Privoxy](privoxy.md) zu betreiben, damit eine vollständige
 Anonymität beim Surfen gewährleistet ist. Privoxy ist ebenfalls als
 Freetz Paket verfügbar. Alternativ zu Privoxy kann man auch
 [Switchproxy](http://tor.eff.org/docs/tor-switchproxy.html)
@@ -96,7 +96,7 @@ Der Nickname des eigenen Servers ist frei wählbar. Wenn keine IP oder
 FQDN angegeben wird, versucht Tor, die eigene IP-Adresse selbst
 herauszufinden. Zuverlässiger ist aber die Angabe eines FQDN der
 FritzBox, der z.B. über DynDNS eingerichtet und per
-[inadyn](../inadyn-mt/README.md) automatisch aktualisiert werden kann.
+[inadyn](inadyn-mt.md) automatisch aktualisiert werden kann.
 
 Wichtig für den Betrieb des Tor-Servers sind die Optionen BandwidthRate
 und BandwidthBurst, über man die Bandbreite einstellt, die dem
@@ -110,7 +110,7 @@ Wert eingestellt, kann es zu Reboots der FritzBox kommen. Ein Wert unter
 Der ORPort ist der Port, über den der Tor-Server von außen erreichbar
 sein muss. Daher muss für den ORPort eine lokale Portfreigabe auf
 0.0.0.0 eingerichtet werden. Das geht am einfachsten über das
-Freetz-Paket [avm-firewall](../avm-firewall/README.md). Ein DirPort muss
+Freetz-Paket [avm-firewall](avm-firewall.md). Ein DirPort muss
 nicht angegeben werden (dann wird kein DirectoryService bereitgestellt,
 was für den Betrieb des Tor-Servers auch nicht erforderlich ist und
 Ressourcen spart).

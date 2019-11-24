@@ -82,7 +82,7 @@ auch danach noch man so viel protokolliert hat, wie man möchte. Es
 könnte ja sein, daß man außer dem Startvorgang noch einige Stunden oder
 Tage die Box weiter beobachten möchte, um festzustellen, welche Dateien
 überhaupt benutzt werden oder nicht, um sie dann in Verbindung mit dem
-[Downloader-CGI](../downloader/README.md) auszulagern und nachzuladen
+[Downloader-CGI](downloader.md) auszulagern und nachzuladen
 oder ganz aus der Firmware zu entfernen, um Platz zu schaffen für mehr
 oder größere Pakete, was gerade bei Boxen mit nur 4 MB Flash-Größe eine
 Kunst für sich ist. Die 8-MB-Boxen sind da weniger eingeengt, aber auch

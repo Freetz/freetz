@@ -4,7 +4,7 @@
 ist eine Portierung einiger Tools von
 [HPLIP](http://hplipopensource.com/) von Python
 nach C. hp-utils greift dabei auf die Bibliothek libhpmud zurück und
-setzt das Paket [HPLIP](../hplip/README.md) voraus.
+setzt das Paket [HPLIP](hplip.md) voraus.
 
 hp-utils stellt Commandline-Tools zur Verfügung und bietet auch ein
 Web-Interface (standardmäßig unter

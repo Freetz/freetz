@@ -122,7 +122,7 @@ chmod +x /var/media/ftp/uStor01/ipt/register.sh
 
 ### Tipps & Literatur:
 
--   [Wiki zu iptables für Einsteiger](../iptables/README.md)
+-   [Wiki zu iptables für Einsteiger](iptables.md)
 -   [Von Windows verwendete Ports &
     Services](http://technet.microsoft.com/en-us/library/cc959833%28printer%29.aspx)
 

@@ -17,7 +17,7 @@ Internet zuzulassen:
 "icmp 0.0.0.0 0.0.0.0 0 # PTunnel"
 ```
 
-Or use [AVM-Firewall](../avm-firewall/README.md) from revision 6794 to do
+Or use [AVM-Firewall](avm-firewall.md) from revision 6794 to do
 the same from a web interface.
 
 Capturing packets

@@ -43,8 +43,8 @@ eingerichtet werden.
 
 Siehe dazu auch folgende Paketen:
 
--   [Virtual IP](../virtualip-cgi/README.md)
--   [AVM Firewall CGI](../avm-firewall/README.md)
+-   [Virtual IP](virtualip-cgi.md)
+-   [AVM Firewall CGI](avm-firewall.md)
 
 ### Konfiguration
 

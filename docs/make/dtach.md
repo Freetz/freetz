@@ -8,7 +8,7 @@ intended to interfere less with key bindings than Screen does."*
 (source: Wikipedia - see below)
 
 *Dtach* is a tiny program that emulates the detach feature of
-*[screen](../screen/README.md)*, allowing you to run a program in an
+*[screen](screen.md)*, allowing you to run a program in an
 environment that is protected from the controlling terminal and attach
 to it later. It was introduced in Freetz trunk
 [2636](https://trac.boxmatrix.info/freetz-ng/changeset/2636)
@@ -17,7 +17,7 @@ by whoopie. It is smaller than the aforementioned *screen*.
 ### Bedienung
 
 Erstellen einer neuen dtach-Session am Beispiel von
-[mcabber](../mcabber/README.md):
+[mcabber](mcabber.md):
 
 ```
 dtach -c /tmp/mcabber.dtach mcabber

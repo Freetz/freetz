@@ -34,5 +34,5 @@ Internet aufgebaut werden, so muss dafür eine "Portweiterleitung"
 eingerichet werden. Ausführlich wird das Thema z.B. beim Paket
 [OpenVPN](openvpn.html#Portweiterleitung) behandelt, als Freetz
 Nutzer bietet sich dafür das Paket [AVM
-Firewall](../avm-firewall/README.md) an
+Firewall](avm-firewall.md) an
 

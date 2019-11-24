@@ -40,7 +40,7 @@ Just give it a try.
 
 Dyn users should have a look at the following (german):
 [http://www.ip-phone-forum.de/showthread.php?t=260356](http://www.ip-phone-forum.de/showthread.php?t=260356)
-and [OpenDD](../opendd/README.md)
+and [OpenDD](opendd.md)
 
 ### Creating a Feetz Image with Inadyn
 

@@ -1,6 +1,6 @@
 # WireGuard 0.0.20191012
 
-Mit Wireguard kann ein VPN aufgebaut werden. Es ist schneller als [OpenVPN](../openvpn/README.md) und einfach zu konfugurieren als IPsec.<br>
+Mit Wireguard kann ein VPN aufgebaut werden. Es ist schneller als [OpenVPN](openvpn.md) und einfach zu konfugurieren als IPsec.<br>
 <br>
 <a href='../screenshots/000-PKG_wireguard.png'><img src='../screenshots/000-PKG_wireguard_md.png'></a>
 <br>

@@ -48,5 +48,5 @@ und Interface werden automatisch eingetragen und ein Klick auf
 Bei Problemen bitte zuerst versuchen, ob der PC sich anderweitig (von
 anderen PCs) aufwecken lässt. Hierdurch ist sichergestellt, dass der PC
 richtig konfiguriert ist. Weiterhin kann man statt dem Busybox
-`ether-wake` Applet das [wol](../wol/README.md) Binary probieren.
+`ether-wake` Applet das [wol](wol.md) Binary probieren.
 

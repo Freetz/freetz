@@ -10,5 +10,5 @@ Broker-Server einstellen, z.B. amsterdam.freenet6.net
 
 ### Alternativen
 
--   [Aiccu](../aiccu/README.md) für SixXS
+-   [Aiccu](aiccu.md) für SixXS
 

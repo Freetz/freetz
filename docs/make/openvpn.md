@@ -37,7 +37,7 @@ es drei Möglichkeiten, das zu "umgehen":
 
 1.  Indem die Box eine zusätzliche IP-Adresse bekommt, von der die GUI
     "nichts weiss" und damit die Einrichtung über die GUI vornehmen.
-    Dafür kann das Paket [Virtual IP](../virtualip/README.md) genutzt
+    Dafür kann das Paket [Virtual IP](virtualip.md) genutzt
     werden und dann in der GUI eine Weiterleitung auf diese IP
     eingerichtet werden. Mittlerweile gibt es einige User, die damit
     Probleme gemeldet haben (vermutlich wegen der "Startreihenfolge"
@@ -46,7 +46,7 @@ es drei Möglichkeiten, das zu "umgehen":
     eine weitere IP anzulegen (zum Beispiel mittels des Eintrags
     "ifconfig lan:1 192.168.178.253" in dieser Datei).
 2.  Man verwendet das Freetz-Paket
-    [avm-firewall](../avm-firewall/README.md). Hierdurch kann man einfach
+    [avm-firewall](avm-firewall.md). Hierdurch kann man einfach
     im Freetz-GUI eine Portweiterleitung auf die IP-Adresse 0.0.0.0
     eintragen. Anschließend ist der Port vom Internet aus offen
     (Achtung: UDP als Protokoll auswählen!).
@@ -386,14 +386,14 @@ Daher der Apell, tastet euch langsam an das ganze heran!
         die Server- / Client-Parameter wie "tls-server/tls-client",
         push und pull.
 -   Die Config auf der Box kann man am einfachsten in der
-    [Rudi-Shell](../rudi-shell/README.md) ausgeben lasssen, indem man
+    [Rudi-Shell](rudi-shell.md) ausgeben lasssen, indem man
     dort
     *cat /mod/etc/openvpn*.conf*
     ausführt. Diese Config kann man dann gut mit der Config der
     "Gegenseite" vergleichen.
 -   Erste Hilfe für mehr Infos, z.B. wenn die Ausgabe nur lautet
     *Starting OpenVPN ...failed.*
-    In der [Rudi-Shell](../rudi-shell/README.md) (wenn openvpn nicht mehr
+    In der [Rudi-Shell](rudi-shell.md) (wenn openvpn nicht mehr
     läuft) sollten so (spätestens nach zehn Sekunden) die Startmeldungen
     Hinweise auf den Fehler bringen.:
 

@@ -4,7 +4,7 @@
 ein Debug-Tool, mit dem sich von einem Programm ausgelöste "Library
 Calls" (Bibliotheks-Aufrufe) sowie alle empfangenen Signale monitoren
 lassen. Ein vergleichbares Tool findet sich im Paket
-[strace](../strace/README.md).
+[strace](strace.md).
 
 ### Weiterführende Links
 

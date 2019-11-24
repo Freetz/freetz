@@ -12,7 +12,7 @@ Armeemesser für
 [TCP/IP](http://de.wikipedia.org/wiki/TCP/IP)).
 
 Eine Alternative zu *netcat* bietet das Paket
-[socat](../socat/README.md).
+[socat](socat.md).
 
 ### Weiterführende Links
 

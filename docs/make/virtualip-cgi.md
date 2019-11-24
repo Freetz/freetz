@@ -10,7 +10,7 @@ Portfreigaben auf die Box im AVM Webinterface anlegen zu können.
  * **VORSICHT**
 
 Dieses Package wird nicht mehr supported und es sollte stattdessen
-"[AVM-Firewall](../avm-firewall/README.md)" verwendet werden.
+"[AVM-Firewall](avm-firewall.md)" verwendet werden.
 
 Portfreigaben auf virtuelle IPs mit Firmwares (> 04.57) funktinieren
 nicht mehr zuverlässig. Bei manchen Firmwares (> 04.80) ist die Box

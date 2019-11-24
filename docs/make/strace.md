@@ -15,7 +15,7 @@ funktioniert, und keiner weiß warum". Sprich: Ein Programm stürzt ab,
 ein Prozess hängt - und man möchte herausfinden, bei welcher Aktion dies
 passiert.
 
-Das "Geschwisterchen" [ltrace](../ltrace/README.md) kann dabei auch
+Das "Geschwisterchen" [ltrace](ltrace.md) kann dabei auch
 hilfreich zur Seite stehen: Anstelle der System-Calls protokolliert
 *ltrace* Bibliotheks-Aufrufe (aka "Library Calls").
 

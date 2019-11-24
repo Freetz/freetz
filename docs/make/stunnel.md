@@ -62,8 +62,8 @@ Homepage](http://www.stunnel.org/examples/).
     (EN) Article
 -   [Stunnel.ORG](http://www.stunnel.org/) ---
     Stunnel Homepage
--   [matrixtunnel](../matrixtunnel/README.md) --- kleiner Stunnel Ersatz
--   [xrelayd](../xrelayd/README.md) --- Nachfolger von Matrixtunnel
+-   [matrixtunnel](matrixtunnel.md) --- kleiner Stunnel Ersatz
+-   [xrelayd](xrelayd.md) --- Nachfolger von Matrixtunnel
 -   [Artikel im
     Forum](http://www.ip-phone-forum.de/showthread.php?t=123174)
 

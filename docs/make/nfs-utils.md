@@ -1,7 +1,7 @@
 # nfs-utils 1.3.4 (binary only)
 
 Die NFS-Utils erweitern Freetz um einen NFS Server inklusive
-Administrationswebinterface (siehe [nfsd-cgi](../nfsd/README.md)) für die
+Administrationswebinterface (siehe [nfsd-cgi](nfsd.md)) für die
 Konfigdateien `Exports`, `allow_hosts` und `deny_hosts`.
 
 ### Hinweise

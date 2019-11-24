@@ -11,7 +11,7 @@ CIFS (**C**ommon **I**nternet **F**ile **S**ystem) ist eine erweiterte
 Version von
 [SMB](http://de.wikipedia.org/wiki/Server_Message_Block)
 - dem Protokoll, welches bei MS Windows und auch
-[Samba](../samba/README.md) zum Einsatz kommt, um sowohl Ordner und
+[Samba](samba.md) zum Einsatz kommt, um sowohl Ordner und
 Dateien als auch Drucker im Netz bereitzustellen. Somit kann cifsmount
 einen Samba-Client ersetzen - mit einem weiteren großen Vorteil, wenn
 wir an unsere FritzBox denken: cifsmount benötigt wesentlich weniger

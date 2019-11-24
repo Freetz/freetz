@@ -39,7 +39,7 @@ Kapitel
 ### Privoxy und Tor
 
 Privoxy ist auch ideal für die Verwendung zusammen mit
-[Tor](../tor/README.md), um anonym und sicher im Internet surfen zu
+[Tor](tor.md), um anonym und sicher im Internet surfen zu
 können.
 
 Dazu muss in der Privoxy Konfiguration der Port und der IP-Adresse des
@@ -50,7 +50,7 @@ Fritzbox läuft, so kann man z.B. *127.0.0.1:9050* eintragen.
 
 In manchen Fällen ist es gewünscht, dass jeglicher Webtraffic durch den
 Proxy geleitet wird und so ohne Konfiguration auf dem Client-PC zu
-filtern. Dazu wird zusätzlich [Iptables](../iptables/README.md) mit den
+filtern. Dazu wird zusätzlich [Iptables](iptables.md) mit den
 Modulen **ip_tables**, **iptable_filter**, **x_tables**,
 **xt_tcpudp**, **ipt_REDIRECT**, **ip_nat** und **iptable_nat**
 benötigt.

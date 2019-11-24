@@ -9,7 +9,7 @@ raus, und zwar in 24-Bit. Da *MAD* bei sämtlichen Berechnungen auf
 Gleitkomma-Zahlen verzichtet, eignet es sich besonders für "Embedded
 Systems" sowie "schwachbrüstige Systeme".
 
-*Freetz* verwendet *MAD' z.B. im Paket [DTMFBox](../dtmfbox/README.md).*
+*Freetz* verwendet *MAD' z.B. im Paket [DTMFBox](dtmfbox.md).*
 
 ### Weiterführende Links
 

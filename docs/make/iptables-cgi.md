@@ -4,7 +4,7 @@
 [iptables](http://de.wikipedia.org/wiki/Iptables).
 Mittels iptables lassen sich Firewallregeln umsetzen, indem einzelne
 Portregeln erstellt bzw. gelöscht werden. Genutzt wird iptables u.a. von
-[knockd](../knock/README.md).
+[knockd](knock.md).
 
 ### Installation
 

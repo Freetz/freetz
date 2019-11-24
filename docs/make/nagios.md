@@ -15,7 +15,7 @@ bereits verfügbar, und auch die Entwicklung eigener Module ist oft nicht
 unbedingt kompliziert.
 
 In *Freetz* baut *Nagios* auf das Paket
-[microperl](../microperl/README.md) auf.
+[microperl](microperl.md) auf.
 
  * Das Paket hat
 momentan keine Weboberfläche. Die Konfigurationsdateien sind nicht auf

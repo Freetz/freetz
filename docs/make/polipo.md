@@ -22,10 +22,10 @@ case Trend Micro OfficeScan blocks a lot of web-sites as false positives
 [www.ip-phone-forum.de](http://www.ip-phone-forum.de/)).
 A solution is this:
 
-1.  Install Polipo and [dropbear](../dropbear/README.md) (or another
+1.  Install Polipo and [dropbear](dropbear.md) (or another
     tunnel package)
 2.  Forward port 22 (and/or 80 if port 22 is blocked) to localhost:22
-    using [AVM-firewall](../avm-firewall/README.md)
+    using [AVM-firewall](avm-firewall.md)
 3.  Create an [SSH
     tunnel](http://oldsite.precedence.co.uk/nc/putty.html)
     from your office to your FritzBox, for example using
@@ -47,7 +47,7 @@ is to disable password login and to use [host-based
 authentication](dropbear.html#ZugangmitPutty1).
 
 It is also possible to encapsulate SSH traffic using
-[STunnel](../stunnel/README.md), for cases where only http/https traffic
+[STunnel](stunnel.md), for cases where only http/https traffic
 is allowed.
 
 Beware that DNS requests could still be monitored, see the section about
@@ -95,5 +95,5 @@ facebook.com/plugins
     status](http://192.168.178.1:8123/polipo/status?)
 -   [Polipo
     configuration](http://192.168.178.1:8123/polipo/config?)
--   [Package Tor](../tor/README.md)
+-   [Package Tor](tor.md)
 

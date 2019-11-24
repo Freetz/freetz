@@ -16,7 +16,7 @@ und
 [Dateisystem-Berechtigungen](http://de.wikipedia.org/wiki/Dateiberechtigung)
 vorhanden.
 
-*NTFS-3G* basiert auf dem *[FUSE](../fuse/README.md)* Paket.
+*NTFS-3G* basiert auf dem *[FUSE](fuse.md)* Paket.
 
 ### Weiterführende Links
 

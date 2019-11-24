@@ -71,12 +71,12 @@ ausreichen (*ohne* DS-Mod/Freetz):
 ### Was NICHT gebraucht wird
 
 -   Auf dem Server sind grundsätzlich weder Telnet noch
-    [SSH](../dropbear/README.md) noch [OpenVPN](..openvpn/README.md)
+    [SSH](../../make/dropbear.md) noch [OpenVPN](../../make/openvpn.md)
     notwendig, d.h. Rudi sollte auch (und gerade) für
     "schwachbrüstige" Boxen mit wenig Speicher interessant sein.
 -   Eine Dateisystem-Verbindung, gleich in welche Richtung, ist auch
-    nicht notwendig. D.h., wir brauchen weder [Samba](../samba/README.md)
-    noch smbmount noch [NFS](../nfs/README.md).
+    nicht notwendig. D.h., wir brauchen weder [Samba](../../make/samba.md)
+    noch smbmount noch [NFS](../../make/nfs.md).
 -   Es ist keine Filetransfer-Verbindung via FTP notwendig, alles läuft
     mittels HTTP, auch Up- und Downloads.
 -   Zum Datenaustausch wird auch kein externes Speichermedium
@@ -90,9 +90,9 @@ ausreichen (*ohne* DS-Mod/Freetz):
     Freetz.
 -   Hinzu kommt Haserl. Das Binary meiner Version 0.9.16 für Kernel 2.6
     ist knapp 24 KB groß. Im Vergleich dazu ist bereits
-    [bftpd](../bftpd/README.md) 67 KB groß (und man kann weniger damit
-    tun!) und [Dropbear](../dropbear/README.md) mit 179 KB riesig. Ein
-    [Samba-Server](../samba/README.md) schlägt gar mit knapp 900 KB zu
+    [bftpd](../../make/bftpd.md) 67 KB groß (und man kann weniger damit
+    tun!) und [Dropbear](../../make/dropbear.md) mit 179 KB riesig. Ein
+    [Samba-Server](../../make/samba.md) schlägt gar mit knapp 900 KB zu
     Buche.
 -   Rudi verwendet von sich aus keine temporären Dateien für die
     auszuführenden Skripten oder die Befehlsausgaben. Alles läuft direkt
@@ -283,7 +283,7 @@ ausgeführte Skript B und nicht nur innerhalb von A. auch würden in A
 geänderte oder gesetzte Umgebungsvariablen noch in B gelten etc. Das zu
 erreichen, wäre nicht besonders schwierig. Alles, was man dazu bräuchte,
 wäre ein virtuelles Terminal. Ich habe beispielsweise
-[Screen](../screen/README.md) installiert. Das Schöne an diesem
+[Screen](../../make/screen.md) installiert. Das Schöne an diesem
 Werkzeug ist, daß man es nicht nur interaktiv an der Konsole benutzen
 kann, sondern auch einer *Detached Session*, also einer vom Terminal
 abgetrennten Benutzersitzung, per Fernsteuerung Befehle schicken kann,
@@ -305,7 +305,7 @@ gut.
 
 Was geht noch alles nicht? Na ja, es macht kaum Sinn, Programme
 aufzurufen, die ohne Benutzerinteraktion keinen Sinn ergeben, also z.B.
-den [Midnight Commander (mc)](../mc/README.md), `tail -f`, seitenweise
+den [Midnight Commander (mc)](../../make/mc.md), `tail -f`, seitenweise
 Ausgaben mit `more` oder `top` in der nicht automatisch terminierenden
 Variante. Von interaktiven Editoren wie `vi` rede ich jetzt mal gar
 nicht - es gibt ja `sed` und `awk` für kommandozeilenbasiertes
@@ -321,7 +321,7 @@ Diese Anleitung wurde geschrieben bevor AVM eine eigene Fernzugrifffunktion
 integriert hat, weshalb die hier auch nicht erwähnt wird.
 
 Jetzt haben wir endlich eine Shell, die über ein reines Web-Interface
-läuft, sind also unabhängig von *Telnet, [SSH](../dropbear/README.md)*
+läuft, sind also unabhängig von *Telnet, [SSH](../../make/dropbear.md)*
 & Co. Was jetzt noch schön wäre: sicherer Zugriff auf die Rudi-Shell
 oder am besten gleich die ganze Freetz-Konfiguration von außen über eine
 [SSL](http://de.wikipedia.org/wiki/Transport_Layer_Security)-gesicherte
@@ -334,7 +334,7 @@ SSH-Client und hätten trotzdem eine sicher verschlüsselte Verbindung vom
 Browser zum Router.
 
 Genau das konfigurieren wir uns jetzt! Zunächst brauchen wir eine
-Firmware mit dem Paket **[stunnel](../stunnel/README.md)**. Das Paket
+Firmware mit dem Paket **[stunnel](../../make/stunnel.md)**. Das Paket
 aktiviert übrigens automatisch die beiden Shared Libraries für
 [OpenSSL](http://de.wikipedia.org/wiki/OpenSSL),
 nämlich `libcrypto.so` und `libssl.so`. Außerdem wird die
@@ -343,7 +343,7 @@ nämlich `libcrypto.so` und `libssl.so`. Außerdem wird die
 
 -   Der Platzbedarf dieser Pakete ist nicht zu unterschätzen, somit
     nichts für kleine Boxen: 90 KB für
-    [stunnel](../stunnel/README.md), 70 KB für die *zlib* und sage und
+    [stunnel](../../make/stunnel.md), 70 KB für die *zlib* und sage und
     schreibe 1.150 KB für *OpenSSL*. Das sind fast 1,3 MB und somit eine
     Menge. Aber wenn die Box es verkraftet (meine 7170 tut es), werden
     wir gleich noch viel Spaß haben.
@@ -508,7 +508,7 @@ sollten zunächst der Passwort-Dialog von Freetz und anschließend die
 Web-Oberfläche erscheinen.
 
 Wenn wir jetzt noch Services für Port 80 (AVM-Oberfläche) und/oder Port
-82 ([WOL](../wol/README.md)-Oberfläche) haben wollen, fügen wir einfach
+82 ([WOL](../../make/wol.md)-Oberfläche) haben wollen, fügen wir einfach
 entsprechende Abschnitte in die Konfiguration ein nach obigem Muster.
 
 **Achtung:** Um den oder die HTTPS-Ports nach außen verfügbar zu machen,
@@ -549,7 +549,7 @@ Außerdem hat jemand für
 [OpenWRT](http://openwrt.org) den kleinen Wrapper
 [matrixtunnel](http://znerol.ch/svn/matrixtunnel/trunk)
 geschrieben, welcher unsere Alternative zu
-[stunnel](../stunnel/README.md) sein wird. Und es gab das Ganze auch
+[stunnel](../../make/stunnel.md) sein wird. Und es gab das Ganze auch
 bereits als Paket für Freetz. Es handelt
 sich um ein Paket und eine Bibliothek mit der Gesamtgröße von 110 KB(!).
 Das entspricht einer Platzersparnis von ca. 92% gegenüber der ersten
@@ -557,7 +557,7 @@ Lösung und funktioniert genauso gut nach meinen bisherigen Erfahrungen.
 So schnell wie ohne Verschlüsselung ist das Browsen subjektiv mit beiden
 HTTPS-Varianten nicht, aber absolut in Ordnung zum Arbeiten.
 
-*Inzwischen wurde auch [xrelayd](../xrelayd/README.md) der Nachfolger
+*Inzwischen wurde auch [xrelayd](../../make/xrelayd.md) der Nachfolger
 von matrixtunnel} in Freetz aufgenommen.
 Hier wird xyssl} (inzwischen polarssl) als
 Crypt-Lib eingesetzt.*

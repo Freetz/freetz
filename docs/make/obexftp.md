@@ -3,7 +3,7 @@
 **ObexFTP** ist ein Protokoll zum Austausch von Dateien mit Obex-fähigen
 Geräten, wobei es sich bei letzteren meist um Mobiltelefone handelt.
 Dieses Paket hängt von weiteren Paketen und Libraries ab, u.a. von
-*[Bluez-Utils](../bluez-utils/README.md)* sowie *libopenobex*.
+*[Bluez-Utils](bluez-utils.md)* sowie *libopenobex*.
 
 ### Weiterführende Links
 

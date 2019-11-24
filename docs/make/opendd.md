@@ -3,7 +3,7 @@
 [![Konfigurationsseite OpenDD](../screenshots/177_md.jpg)](../screenshots/177.jpg)
 
 OpenDD ist ein Client um dynamische DNS Einträge zu aktualisieren.
-Vorteil gegenüber [inadyn](../inadyn-mt/README.md) ist, dass sich OpenDD
+Vorteil gegenüber [inadyn](inadyn-mt.md) ist, dass sich OpenDD
 nicht ständig im Arbeitsspeicher befindet sondern nur nach einem
 Reconnect gestartet wird. Es kann eine eMail bei IP-Wechsel versendet
 werden. Ausgaben werden über Syslog ausgegeben
@@ -20,7 +20,7 @@ Nach solch einem erzwungenen Update wird die Datei
 `/tmp/flash/opendd/opendd.onforcedupdate` ausgeführt. Damit kann zB ein
 Skript zum Einloggen auf der DynDns-Webseite ausgeführt werden, um eine
 Sperre des Domainnamens zu verhindern. Dies Skript muss aber zusätzlich
-von [onlinechanged](../onlinechanged/README.md) ausgeführt werden!
+von [onlinechanged](onlinechanged.md) ausgeführt werden!
 Beispielskripte:
 [http://forum.mbremer.de/viewtopic.php?f=62&t=1756&p=24340#p24340](http://forum.mbremer.de/viewtopic.php?f=62&t=1756&p=24340#p24340)
 

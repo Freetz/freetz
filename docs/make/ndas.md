@@ -34,11 +34,11 @@ Package selection  ---> Packages  ---> [*] (binary only)
 Recommended optional additional packages:
 
 > [NTFS-3G](ntfs-3g.html)
-> [Samba](../samba/README.md)
+> [Samba](samba.md)
 
 or(/and)
 
-> [NFS Server](../nfsd/README.md) (no ntfs support, but a faster)
+> [NFS Server](nfsd.md) (no ntfs support, but a faster)
 > with optionally some additional patches for ext3 or/and ReiserFS (see
 > Patches ---→ ... in menuconfig)
 

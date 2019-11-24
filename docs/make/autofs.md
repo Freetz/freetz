@@ -13,7 +13,7 @@ diesen mountet, erreichbar sein muss, sondern nur bei Zugriff.
 ### Optionale Aufrufparameter
 
 Zur Fehlersuche empfiehlt sich der Parameter `-v` und zusätzlich evtl
-`-d`. Die Meldungen werden per [syslogd-cgi](../syslogd/README.md)
+`-d`. Die Meldungen werden per [syslogd-cgi](syslogd.md)
 ausgegeben.
 
 
@@ -30,7 +30,7 @@ NFS-SHARE -rw,soft,intr,rsize=8192,wsize=8192         SERVER:/SHARE
 
 ### Samba
 
-Hierfür wird das Paket [cifsmount](../cifsmount/README.md) benötigt,
+Hierfür wird das Paket [cifsmount](cifsmount.md) benötigt,
 dessen Webinterface nicht.
 
 ```
@@ -73,7 +73,7 @@ SSH-SHARE -fstype=fuse,rw,allow_other             :sshfs#USER@SERVER:/
 
 Außerdem muss der Server in der known_hosts bekannt sein und in id_rsa
 oder id_dsa muss der private Schlüssel hinterlegt sein. Diese Dateien
-können mit dem SSH/[authorized_keys](../authorized-keys/README.md)
+können mit dem SSH/[authorized_keys](authorized-keys.md)
 Package bearbeitet werden
 
 ### HTTP(s), FTP(s), LDAP

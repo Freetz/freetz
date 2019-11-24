@@ -32,7 +32,7 @@ lokalen Datenträger zu mounten.
 -   Direktes Starten von Software vom WebDAV-Server aus ohne aufwendiges
     Nachladen per wget
 -   Bereitstellung des WebDAV-Speicherplatzes im LAN mit Hilfe von
-    [Samba](../samba/README.md)
+    [Samba](samba.md)
 
 ### Paket in die Firmware einbauen
 

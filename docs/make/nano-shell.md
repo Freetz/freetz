@@ -3,7 +3,7 @@
 Die **Nano-Shell** führt beliebige Shell-Komandos via URL aus, d.h. an
 eine Webadresse angehängte Parameter werden von einem kleinen CGI-Skript
 ausgewertet. Die Nano-Shell ist noch kleiner und leichtgewichtiger als
-die [Rudi-Shell](../rudi-shell/README.md), denn sie kommt ohne
+die [Rudi-Shell](rudi-shell.md), denn sie kommt ohne
 Einstiegs-Oberfläche aus. Im Folgenden wird der ins Deutsche übersetzte
 Hilfetext aus `make menuconfig` zitiert, ergänzt um einige zusätzliche
 Informationen:

@@ -9,8 +9,8 @@ Schlanker DNS-Server für statische Namensauflösung (BusyBox Applet)
 
 ### Beispielkonfiguration
 
-Port 53 mit [AVM firewall CGI](../avm-firewall/README.md) nach 10053
-mappen wo [iodine](../iodine/README.md) läuft. Dieses leitet Anfragen
+Port 53 mit [AVM firewall CGI](avm-firewall.md) nach 10053
+mappen wo [iodine](iodine.md) läuft. Dieses leitet Anfragen
 unbekannter Domains auf Port 5353 weiter wo *dnsd* läuft. *dnsd*
 beantwortet für ein paar Subdomains diese Anfragen.
 

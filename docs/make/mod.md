@@ -18,8 +18,8 @@ den Auslagerungsspeicher zu nutzen
 ([Weiterlesen](http://lwn.net/Articles/83588/)).
 
 Vor allem beim Betrieb speicher hungriger Pakete wie z.B.
-[PHP](../php/README.md), Tor [packages/tor](../tor/README.md) oder
-[Transmission](../transmission/README.md) ist die Nutzung von Swap zu
+[PHP](php.md), Tor [packages/tor](tor.md) oder
+[Transmission](transmission.md) ist die Nutzung von Swap zu
 empfehlen.
 
 ### Udevmount

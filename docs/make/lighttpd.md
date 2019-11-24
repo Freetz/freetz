@@ -10,14 +10,14 @@ den nötigen Rechten versehen werden.
 
 
 **Unbedingt beachten:** In dieser Anleitung wird angenommen, dass
-[USB-root](../usbroot/README.md) genutzt wird. Sollte USB-root nicht
+[USB-root](usbroot.md) genutzt wird. Sollte USB-root nicht
 verwendet werden, muss auf die folgenden Verzeichnisstrukturen noch
 größeres Augenmerk gelegt werden. In solch einem Fall **könnte**
 `/var/media/ftp/uStor01/rootfs/www` eine Analogie für `/www` sein.
 
 
 Zunächst muss eine Konsolensitzung mit dem Router bestehen, es spielt
-keine Rolle, ob dafür Telnet oder [SSH](../dropbear/README.md) genutzt
+keine Rolle, ob dafür Telnet oder [SSH](dropbear.md) genutzt
 wird.
 
 ```
@@ -37,7 +37,7 @@ verfügbar.
 
 Will man Perl-Skripte mit dem Webserver benutzen und den `chroot`-Modus
 benutzen, muss man sich darum kümmern, dass das Paket
-[microperl](../microperl/README.md) sowie dessen Bibliotheken in die
+[microperl](microperl.md) sowie dessen Bibliotheken in die
 Verzeichnisstruktur des lighttpd kopiert wird.
 
 ```

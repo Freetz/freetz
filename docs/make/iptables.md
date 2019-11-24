@@ -66,7 +66,7 @@ features of iptables are only available in the newer 7270.
 
 ### What is the difference between AVM Firewall and iptables, can they co-exist on the same system?
 
--   The [AVM Firewall](../avm-firewall/README.md) is an integrated part
+-   The [AVM Firewall](avm-firewall.md) is an integrated part
     of the **dsld** from AVM (dsl daemon). It "sits" on the DSL
     interface and controls exclusively the traffic trough this
     interface. The abilities include connection tracking (stateful),
@@ -336,8 +336,8 @@ The guest network can only use the internet. Assuming the default subnet
 
 -   [cpmaccfg](../help/howtos/security/switch_config.html) - How
     to build a DMZ
--   [OpenVPN](../openvpn/README.md) - VPN Tunnel on the FritzBox
--   [AVM Firewall](../avm-firewall/README.md) - The little Brother of
+-   [OpenVPN](openvpn.md) - VPN Tunnel on the FritzBox
+-   [AVM Firewall](avm-firewall.md) - The little Brother of
     iptables
 -   [Freetz as interner Router /
     Firewall](../help/howtos/security/router_and_firewall.html)
