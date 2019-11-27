@@ -102,7 +102,7 @@ Latest changes
     * AVM-rules 0.9 (deprecated)
     * axTLS wrapper 1.4.9
     * bvi 1.4.0
-    * CA-bundle 2019-10-16
+    * CA-bundle 2019-11-27
     * cntlm 0.93beta5
     * decrypt FRITZ!OS configs v0.2 (renamed version of PeterPawn's script decode_passwords)
     * dehydrated 0.6.5 (letsencrypt)
