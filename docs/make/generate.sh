@@ -45,5 +45,5 @@ help="$(tail -n "$T" "$INPWD/$pkg/Config.in" | head -n "$(( ${N:-99} - 1 ))" | g
 
 done
 done >> "$INPWD/README.md"
-grep -v '^     - ' "$INPWD/README.md" > "$MDPWD/README.md"
-sed 's,](docs/make/,](,g' -i "$MDPWD.md"
+grep -v '^     - ' "$INPWD/README.md" | sed 's,](../docs/make/,](,g' > "$MDPWD/README.md"
+

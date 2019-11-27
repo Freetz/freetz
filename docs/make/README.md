@@ -67,7 +67,7 @@
   * **<u>bvi/bmore 1.4.0 (binary only) </u><a id='bvi'></a>**<br>
     A hex editor/viewer for binary files
 
-  * **[CA-bundle 2019-10-16](ca-bundle.md)<a id='ca-bundle'></a>**<br>
+  * **[CA-bundle 2019-11-27](ca-bundle.md)<a id='ca-bundle'></a>**<br>
     The Mozilla CA certificate store in PEM format, see http://curl.haxx.se/docs/caextract.html Size of uncompressed file is about 250 KB.
 
   * **<u>Callmonitor 1.20.9-git</u><a id='callmonitor'></a>**<br>
@@ -674,7 +674,7 @@
   * **[Wget GNU 1.20.3 (binary only)](wget.md)<a id='wget'></a>**<br>
     GNU Wget is a free software package for retrieving files using HTTP, HTTPS and FTP, the most widely-used Internet protocols. It is a non-interactive commandline tool, so it may easily be called from scripts, cron jobs, terminals, etc.
 
-  * **[WireGuard 0.0.20191012](wireguard.md)<a id='wireguard'></a>**<br>
+  * **[WireGuard 0.0.20191127](wireguard.md)<a id='wireguard'></a>**<br>
     WireGuard is an extremely simple yet fast and modern VPN that utilizes state-of-the-art cryptography. It aims to be faster, simpler, leaner, and more useful than IPSec, while avoiding the massive headache. It intends to be considerably more performant than OpenVPN. WireGuard is designed as a general purpose VPN for running on embedded interfaces and super computers alike, fit for many different circumstances. Initially released for the Linux kernel, it plans to be cross-platform and widely deployable. It is currently under heavy development, but already it might be regarded as the most secure, easiest to use, and simplest VPN solution in the industry.
 
   * **[WOL 0.7.1 (binary only)](wol.md)<a id='wol'></a>**<br>
