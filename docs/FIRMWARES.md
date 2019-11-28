@@ -320,11 +320,11 @@ Currently supported devices and firmwares
   - Alien 7270 v2 {GER+INT}
 
 * __Fritz!Box Fon WLAN 7520__
-  - 175.07.13 rev71751 {GER} [MESH18 NL3]
+  - 175.07.14 rev73182 {GER} [MESH18 NL4]
   - Alien 7530 {GER}
 * __Fritz!Box Fon WLAN 7530__
   - 164.07.02 rev62311 {GER}
-  - 164.07.13 rev71752 {GER} [MESH18 NL3]
+  - 164.07.14 rev73183 {GER} [MESH18 NL4]
   - 164.07.02 rev62314 {INT}
   - 164.07.12 rev70717 {INT} [MESH18 NL2]
 * __Fritz!Box Fon WLAN 7560__
