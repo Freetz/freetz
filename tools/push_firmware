@@ -325,21 +325,22 @@ trap cleanup EXIT SIGTERM SIGINT
 usage()
 {
 	echo
-	echo "Usage: $0 [image] [ -m<s|r|d|u> ] [ -f ] [ -ip <ip> ] [ -ram <mb> ] [ -lfs <0|1|9> ] [ -hn ]"
+	echo "Usage: $0 [image] [ -m<s|r|d|u> ] [ -f ] [ -ip <ip> ] [ -ram <mb> ] [ -lfs <0|1|9> ] [ -cmd <ftp|ncftp> ] [ -hn ]"
 	echo
-	echo "[image]       When no 'image' file is given, images/latest.image will be tried."
-	echo "-ms           Force mode single-boot (classic devices, like 7270 & 7390)"
-	echo "-mr           Force mode ram-boot (newer devices, like 7490 & 7590)"
-	echo "-md           Force mode dual-boot (docsis devices, like 6490 & 6590)"
-	echo "-mu           Force mode uimg-boot (not supported yet, only 6591)"
-	echo "-f            Disable safety prompt."
-	echo "-ip <ip>      Bootloader IP address or hostname, default 192.168.178.1"
-	echo "-ram <mb>     Only ram-boot mode: Usable ram size in MB of your device."
-	echo "                Without this parameter, the default of 128 MB will be used."
-	echo "-lfs <0|1|9>  Not single-boot mode: Set linux_fs_start to 0 or 1 and flash into this."
-	echo "                Without this parameter, the inactive linux_fs_start will be used."
-	echo "                Use '9' for the currently active linux_fs_start."
-	echo "-hn           Only single-boot mode: Flash to an 'Alice/HanseNet' version of 7570."
+	echo "[image]           When no 'image' file is given, images/latest.image will be tried."
+	echo "-ms               Force mode single-boot (classic devices, like 7270 & 7390)"
+	echo "-mr               Force mode ram-boot (newer devices, like 7490 & 7590)"
+	echo "-md               Force mode dual-boot (docsis devices, like 6490 & 6590)"
+	echo "-mu               Force mode uimg-boot (not supported yet, only 6591)"
+	echo "-f                Disable safety prompt."
+	echo "-ip <ip>          Bootloader IP address or hostname, default 192.168.178.1"
+	echo "-ram <mb>         Only ram-boot mode: Usable ram size in MB of your device."
+	echo "                    Without this parameter, the default of 128 MB will be used."
+	echo "-lfs <0|1|9>      Not single-boot mode: Set linux_fs_start to 0 or 1 and flash into this."
+	echo "                    Without this parameter, the inactive linux_fs_start will be used."
+	echo "                    Use '9' for the currently active linux_fs_start."
+	echo "-cmd <ftp|ncftp>  Force the prefered usage of ftp or ncftp command for upload."
+	echo "-hn               Only single-boot mode: Flash to an 'Alice/HanseNet' version of 7570."
 	echo
 	exit 1
 }
@@ -375,6 +376,11 @@ while [ $# -ge 1 ]; do
 		(-lfs)
 			[ "$2" != "0" -a "$2" != "1" -a "$2" != "9" ] && echo "Invalid linux_fs_start value" && usage
 			LFS=$2
+			shift
+			;;
+		(-cmd)
+			[ "$2" != "ftp" -a "$2" != "ncftp" ] && echo "Invalid command value" && usage
+			CMD=$2
 			shift
 			;;
 		(-hn)
@@ -472,6 +478,8 @@ if [ -n "$FOUND_NCFTP" -a -n "$FOUND_FTP" ]; then
 	[ $ISDUAL ]   && FOUND_NCFTP=""
 	[ $ISSINGLE ] && FOUND_FTP=""
 	[ $ISALICE ]  && FOUND_NCFTP=""
+	[ "$CMD" == "ftp" ]   && FOUND_FTP="true" || FOUND_NCFTP=""
+	[ "$CMD" == "ncftp" ] && FOUND_NCFTP="true" || FOUND_FTP=""
 fi
 [ -n "$FOUND_NCFTP" ] && UCMD="ncftpput" || UCMD="ftp"
 
