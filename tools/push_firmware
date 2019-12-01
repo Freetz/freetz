@@ -468,7 +468,7 @@ if [ -z "$FOUND_FTP" ]; then
 	[ $ISDUAL ]      && [ "$LFS" == "9" ]  && echo "Parameter '-lfs' with 0 or 1 is mandatory if you have no 'ftp' installed." && exit 1
 fi
 if [ -n "$FOUND_NCFTP" -a -n "$FOUND_FTP" ]; then
-	[ $ISRAM ]    && FOUND_FTP=""
+	[ $ISRAM ]    && FOUND_NCFTP=""
 	[ $ISDUAL ]   && FOUND_NCFTP=""
 	[ $ISSINGLE ] && FOUND_FTP=""
 	[ $ISALICE ]  && FOUND_NCFTP=""
