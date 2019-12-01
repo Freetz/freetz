@@ -104,8 +104,6 @@
   * **[Remove kids (usermand/contfiltd)](REMOVE_KIDS.md)<a id='remove-kids'></a>**<br>
     Remove userman/contfiltd files (Kindersicherung)
 
-  * **<u>REMOVE_LANGUAGE_de: de</u><a id='remove-language-de'></a>**<br>
-
   * **<u>REMOVE_LANGUAGE_en: en</u><a id='remove-language-en'></a>**<br>
 
   * **<u>REMOVE_LANGUAGE_es: es</u><a id='remove-language-es'></a>**<br>
