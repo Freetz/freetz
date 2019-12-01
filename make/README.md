@@ -270,7 +270,7 @@
   * **<u>Ghostscript fonts 8.11 (binary only)</u><a id='ghostscript-fonts'></a>**<br>
     This package provides the Ghostscript fonts.
 
-  * **<u>git 2.23.0</u><a id='git'></a>**<br>
+  * **<u>git 2.24.0</u><a id='git'></a>**<br>
     Git is a fast, scalable, distributed revision control system with an unusually rich command set that provides both high-level operations and full access to internals.
 
   * **<u>gntpsend 0.3.2-git (binary only)</u><a id='gntpsend'></a>**<br>
@@ -800,7 +800,7 @@
     Streamripper records mp3 and ogg streams. For shoutcast style streams it finds the "meta data" or track separation data, and uses that as a marker for where the track should be separated.
      - [Verwendete Bibliotheken](../docs/make/streamripper.md#verwendete-bibliotheken)
 
-  * **[Stunnel 5.55](../docs/make/stunnel.md)<a id='stunnel'></a>**<br>
+  * **[Stunnel 5.56](../docs/make/stunnel.md)<a id='stunnel'></a>**<br>
     Stunnel universal SSL proxy
      - [Konfiguration](../docs/make/stunnel.md#konfiguration)
 
