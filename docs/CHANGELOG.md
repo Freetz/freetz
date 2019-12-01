@@ -205,7 +205,7 @@ Latest changes
     * freetype 2.10.1
     * fuse 2.9.7
     * gdb 7.9.1
-    * git 2.23.0
+    * git 2.24.0
     * gmp 6.1.2
     * gnu-make 4.2.1
     * gnutls 3.5.19
@@ -283,10 +283,10 @@ Latest changes
     * screen 4.6.2
     * slang 2.3.1a
     * smartmontools 7.0
-    * sqlite 3.29.0
+    * sqlite 3.30.1
     * sslh 1.19c
     * strace 4.9 (kernel-2.6.13) / 5.0 (all other kernel versions)
-    * stunnel 5.55
+    * stunnel 5.56
     * subversion 1.8.19/1.9.12
     * tinc 1.0.35/1.1pre17
     * tinyproxy 1.8.4
