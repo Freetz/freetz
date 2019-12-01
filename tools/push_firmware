@@ -70,7 +70,7 @@ function push_fw() {
 	echo
 
 	if [ $ISRAM ]; then
-		if [ ! $FULLSIZE ]; then
+		if [ "${FULLSIZE//0/}" == "x" ]; then
 			wait_loader
 			enval="$(read_enval memsize)"
 			[ "$enval" != "${enval#0x}" ] && FULLSIZE="$enval"
@@ -80,16 +80,16 @@ function push_fw() {
 		fi
 
 		MAPSTART=0x80000000  # start mapped memory
-		MAPLIMIT="0x$(printf '%x' $(( $MAPSTART + $FULLSIZE )))"
-		FILESIZE="0x$(printf '%x' $(stat --printf='%s' "$mtdram1"))"
-		FREESIZE="0x$(printf '%x' $(( $FULLSIZE - $FILESIZE )))"
-		MTDSTART="0x$(printf '%x' $(( $MAPSTART + $FULLSIZE - $FILESIZE )))"
+		MAPLIMIT="0x$(printf '%.8x' $(( $MAPSTART + $FULLSIZE )))"
+		FILESIZE="0x$(printf '%.8x' $(stat --printf='%s' "$mtdram1"))"
+		FREESIZE="0x$(printf '%.8x' $(( $FULLSIZE - $FILESIZE )))"
+		MTDSTART="0x$(printf '%.8x' $(( $MAPSTART + $FULLSIZE - $FILESIZE )))"
 
 		echo -e " * MAPSTART=$MAPSTART"
 		echo -e " * FULLSIZE=$FULLSIZE\t ($(($FULLSIZE/1024/1024)) MB)"
 		echo -e " * MAPLIMIT=$MAPLIMIT"
-		echo -e " * FILESIZE=$FILESIZE\t ($(($FILESIZE/1024/1024)) MB)"
-		echo -e " * FREESIZE=$FREESIZE\t ($(($FREESIZE/1024/1024)) MB)"
+		echo -e " * FILESIZE=$FILESIZE\t (~$(($FILESIZE/1024/1024)) MB)"
+		echo -e " * FREESIZE=$FREESIZE\t (~$(($FREESIZE/1024/1024)) MB)"
 		echo -e " * MTDSTART=$MTDSTART"
 		echo -e
 	fi
@@ -334,8 +334,8 @@ usage()
 	echo "-mu           Force mode uimg-boot (not supported yet, only 6591)"
 	echo "-f            Disable safety prompt."
 	echo "-ip <ip>      Bootloader IP address or hostname, default 192.168.178.1"
-	echo "-ram <mb>     Only ram-boot mode: Ram size in MB of your device."
-	echo "                Without this parameter, the correct value will be detected."
+	echo "-ram <mb>     Only ram-boot mode: Usable ram size in MB of your device."
+	echo "                Without this parameter, the default of 128 MB will be used."
 	echo "-lfs <0|1|9>  Not single-boot mode: Set linux_fs_start to 0 or 1 and flash into this."
 	echo "                Without this parameter, the inactive linux_fs_start will be used."
 	echo "                Use '9' for the currently active linux_fs_start."
@@ -368,7 +368,7 @@ while [ $# -ge 1 ]; do
 			;;
 		(-ram)
 			[ -z "$2" -o "$2" != "${2#\-}" ] && usage
-			[ "$2" -gt 0 2>/dev/null ] && FULLSIZE="0x$(printf '%x' "$(( $2 * 1048576 ))")"
+			[ "$2" -ge 0 2>/dev/null ] && FULLSIZE="0x$(printf '%.8x' "$(( $2 * 1048576 ))")"
 			[ -z "$FULLSIZE" ] && echo "Invalid value for ram size" && usage
 			shift
 			;;
@@ -463,9 +463,9 @@ if [ -z "$FOUND_NCFTP" -a -z "$FOUND_FTP" ]; then
 	exit 1
 fi
 if [ -z "$FOUND_FTP" ]; then
-	[ $ISRAM ]       && [ -z "$FULLSIZE" ] && echo "Parameter '-ram' is mandatory if you have no 'ftp' installed."             && exit 1
-	[ ! $ISSINGLE ]  && [ -z "$LFS" ]      && echo "Parameter '-lfs' is mandatory if you have no 'ftp' installed."             && exit 1
-	[ $ISDUAL ]      && [ "$LFS" == "9" ]  && echo "Parameter '-lfs' with 0 or 1 is mandatory if you have no 'ftp' installed." && exit 1
+	[ $ISRAM ]       && [ "${FULLSIZE//0/}" == "x" ] && echo "Parameter '-ram' has to be bigger than 0 if you have no 'ftp' installed."  && exit 1
+	[ ! $ISSINGLE ]  && [ -z "$LFS" ]                && echo "Parameter '-lfs' is mandatory if you have no 'ftp' installed."             && exit 1
+	[ $ISDUAL ]      && [ "$LFS" == "9" ]            && echo "Parameter '-lfs' with 0 or 1 is mandatory if you have no 'ftp' installed." && exit 1
 fi
 if [ -n "$FOUND_NCFTP" -a -n "$FOUND_FTP" ]; then
 	[ $ISRAM ]    && FOUND_NCFTP=""
@@ -493,8 +493,8 @@ fi
 echo " * Flash mode: $OUTVAL-boot"
 
 if [ $ISRAM ]; then
-	[ -z "$FULLSIZE" ] && OUTVAL="<detect>"
-	[ -n "$FULLSIZE" ] && OUTVAL="$(( $FULLSIZE /1024/1024 )) MB"
+	[ -z "$FULLSIZE" ] && FULLSIZE="0x08000000"
+	[ "${FULLSIZE//0/}" == "x" ] && OUTVAL="<detect>" || OUTVAL="$(( $FULLSIZE /1024/1024 )) MB"
 	echo " * Allowed memory size: $OUTVAL"
 fi
 
