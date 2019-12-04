@@ -1,0 +1,264 @@
+--- linux-3.10/Documentation/networking/ip-sysctl.txt	
++++ linux-3.10/Documentation/networking/ip-sysctl.txt	
+@@ -166,6 +166,14 @@
+ 	Path MTU discovery (MTU probing).  If MTU probing is enabled,
+ 	this is the initial MSS used by the connection.
+ 
++tcp_min_snd_mss - INTEGER
++	TCP SYN and SYNACK messages usually advertise an ADVMSS option,
++	as described in RFC 1122 and RFC 6691.
++	If this ADVMSS option is smaller than tcp_min_snd_mss,
++	it is silently capped to tcp_min_snd_mss.
++
++	Default : 48 (at least 8 bytes of payload per segment)
++
+ tcp_congestion_control - STRING
+ 	Set the congestion control algorithm to be used for new
+ 	connections. The algorithm "reno" is always available, but
+--- linux-3.10/drivers/isdn/capi_codec/Makefile	
++++ linux-3.10/drivers/isdn/capi_codec/Makefile	
+@@ -1,5 +1,5 @@
+ # auto generated file ./Makefile
+ 
+-CAPI_CODEC_TOP=/home/mchrobok/build/gu/7490-07.11-68718-gu_Version_68392_MESH18_NL1_7490meshd-vr9/GPL/RELEASE_KERNEL_vr9_build/linux/drivers/isdn/capi_codec
++CAPI_CODEC_TOP=/home/mchrobok/build/gu/5491-07.12-71193-gu_Version_69675_MESH18_NL2-vr9/GPL/RELEASE_KERNEL_vr9_build/linux/drivers/isdn/capi_codec
+ 
+ #
+--- linux-3.10/include/linux/tcp.h	
++++ linux-3.10/include/linux/tcp.h	
+@@ -389,4 +389,7 @@
+ 	return 0;
+ }
+ 
++int tcp_skb_shift(struct sk_buff *to, struct sk_buff *from, int pcount,
++		  int shiftlen);
++
+ #endif	/* _LINUX_TCP_H */
+--- linux-3.10/include/net/netns/ipv4.h	
++++ linux-3.10/include/net/netns/ipv4.h	
+@@ -68,6 +68,8 @@
+ 	kgid_t sysctl_ping_group_range[2];
+ 	long sysctl_tcp_mem[3];
+ 
++	int sysctl_tcp_min_snd_mss;
++
+ 	atomic_t dev_addr_genid;
+ 
+ #ifdef CONFIG_IP_MROUTE
+--- linux-3.10/include/net/tcp.h	
++++ linux-3.10/include/net/tcp.h	
+@@ -54,6 +54,8 @@
+ 
+ #define MAX_TCP_HEADER	(128 + MAX_HEADER)
+ #define MAX_TCP_OPTION_SPACE 40
++#define TCP_MIN_SND_MSS		48
++#define TCP_MIN_GSO_SIZE	(TCP_MIN_SND_MSS - MAX_TCP_OPTION_SPACE)
+ 
+ /* 
+  * Never offer a window over 32767 without using window scaling. Some
+--- linux-3.10/include/uapi/linux/snmp.h	
++++ linux-3.10/include/uapi/linux/snmp.h	
+@@ -253,6 +253,7 @@
+ 	LINUX_MIB_TCPFASTOPENLISTENOVERFLOW,	/* TCPFastOpenListenOverflow */
+ 	LINUX_MIB_TCPFASTOPENCOOKIEREQD,	/* TCPFastOpenCookieReqd */
+ 	LINUX_MIB_TCPSPURIOUS_RTX_HOSTQUEUES, /* TCPSpuriousRtxHostQueues */
++	LINUX_MIB_TCPWQUEUETOOBIG,		/* TCPWqueueTooBig */
+ 	__LINUX_MIB_MAX
+ };
+ 
+--- linux-3.10/.kernelvariables	
++++ linux-3.10/.kernelvariables	
+@@ -1,12 +1,12 @@
+ # vim: set autoread filetype=make:
+ #
+-# Auto-generated at build-68591-dirty
+-# while generating for Fritz_Box_HW185
++# Auto-generated at build-70864-dirty
++# while generating for Fritz_Box_HW243
+ #
+ ARCH = mips
+ export ARCH
+ 
+-ADD_FILE_PID = Fritz_Box_HW185
++ADD_FILE_PID = Fritz_Box_HW243
+ export ADD_FILE_PID
+ 
+ CROSS_COMPILE = mips-buildroot-linux-uclibc-
+--- linux-3.10/net/avm_pa/avm_pa.c	
++++ linux-3.10/net/avm_pa/avm_pa.c	
+@@ -1657,8 +1657,9 @@
+       return 0;
+ 
+    /* Different VLANs is OK, even the VID may differ. So just skip the VLAN match */
+-   if ((++p1)->type == AVM_PA_VLAN) ++p1;
+-   if ((++p2)->type == AVM_PA_VLAN) ++p2;
++   /* JZ-63724: ...but only if there's no in-band VLAN header stored in skb->data */
++   if ((++p1)->type == AVM_PA_VLAN && p1->offset == AVM_PA_OFFSET_NOT_SET) ++p1;
++   if ((++p2)->type == AVM_PA_VLAN && p2->offset == AVM_PA_OFFSET_NOT_SET) ++p2;
+ 
+    /* Compare the remainder for equality which ensures that modifications
+     * to the packet data are not permitted. */
+--- linux-3.10/net/ipv4/proc.c	
++++ linux-3.10/net/ipv4/proc.c	
+@@ -273,6 +273,7 @@
+ 	SNMP_MIB_ITEM("TCPFastOpenListenOverflow", LINUX_MIB_TCPFASTOPENLISTENOVERFLOW),
+ 	SNMP_MIB_ITEM("TCPFastOpenCookieReqd", LINUX_MIB_TCPFASTOPENCOOKIEREQD),
+ 	SNMP_MIB_ITEM("TCPSpuriousRtxHostQueues", LINUX_MIB_TCPSPURIOUS_RTX_HOSTQUEUES),
++	SNMP_MIB_ITEM("TCPWqueueTooBig", LINUX_MIB_TCPWQUEUETOOBIG),
+ 	SNMP_MIB_SENTINEL
+ };
+ 
+--- linux-3.10/net/ipv4/sysctl_net_ipv4.c	
++++ linux-3.10/net/ipv4/sysctl_net_ipv4.c	
+@@ -35,6 +35,8 @@
+ static int ip_local_port_range_max[] = { 65535, 65535 };
+ static int tcp_adv_win_scale_min = -31;
+ static int tcp_adv_win_scale_max = 31;
++static int tcp_min_snd_mss_min = TCP_MIN_SND_MSS;
++static int tcp_min_snd_mss_max = 65535;
+ static int ip_ttl_min = 1;
+ static int ip_ttl_max = 255;
+ static int tcp_syn_retries_min = 1;
+@@ -846,6 +848,15 @@
+ 		.proc_handler	= proc_dointvec
+ 	},
+ 	{
++		.procname	= "tcp_min_snd_mss",
++		.data		= &init_net.ipv4.sysctl_tcp_min_snd_mss,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec_minmax,
++		.extra1		= &tcp_min_snd_mss_min,
++		.extra2		= &tcp_min_snd_mss_max,
++	},
++	{
+ 		.procname	= "tcp_mem",
+ 		.maxlen		= sizeof(init_net.ipv4.sysctl_tcp_mem),
+ 		.mode		= 0644,
+--- linux-3.10/net/ipv4/tcp.c	
++++ linux-3.10/net/ipv4/tcp.c	
+@@ -3412,6 +3412,7 @@
+ 	int max_rshare, max_wshare, cnt;
+ 	unsigned int i;
+ 
++	BUILD_BUG_ON(TCP_MIN_SND_MSS <= MAX_TCP_OPTION_SPACE);
+ 	BUILD_BUG_ON(sizeof(struct tcp_skb_cb) > sizeof(skb->cb));
+ 
+ 	percpu_counter_init(&tcp_sockets_allocated, 0);
+--- linux-3.10/net/ipv4/tcp_input.c	
++++ linux-3.10/net/ipv4/tcp_input.c	
+@@ -1254,7 +1254,7 @@
+ 	TCP_SKB_CB(skb)->seq += shifted;
+ 
+ 	skb_shinfo(prev)->gso_segs += pcount;
+-	BUG_ON(skb_shinfo(skb)->gso_segs < pcount);
++	WARN_ON_ONCE(skb_shinfo(skb)->gso_segs < pcount);
+ 	skb_shinfo(skb)->gso_segs -= pcount;
+ 
+ 	/* When we're adding to gso_segs == 1, gso_size will be zero,
+@@ -1322,6 +1322,21 @@
+ 	return !skb_headlen(skb) && skb_is_nonlinear(skb);
+ }
+ 
++int tcp_skb_shift(struct sk_buff *to, struct sk_buff *from,
++		  int pcount, int shiftlen)
++{
++	/* TCP min gso_size is 8 bytes (TCP_MIN_GSO_SIZE)
++	 * Since TCP_SKB_CB(skb)->tcp_gso_segs is 16 bits, we need
++	 * to make sure not storing more than 65535 * 8 bytes per skb,
++	 * even if current MSS is bigger.
++	 */
++	if (unlikely(to->len + shiftlen >= 65535 * TCP_MIN_GSO_SIZE))
++		return 0;
++	if (unlikely(tcp_skb_pcount(to) + pcount > 65535))
++		return 0;
++	return skb_shift(to, from, shiftlen);
++}
++
+ /* Try collapsing SACK blocks spanning across multiple skbs to a single
+  * skb.
+  */
+@@ -1333,6 +1348,7 @@
+ 	struct tcp_sock *tp = tcp_sk(sk);
+ 	struct sk_buff *prev;
+ 	int mss;
++	int next_pcount;
+ 	int pcount = 0;
+ 	int len;
+ 	int in_sack;
+@@ -1427,7 +1443,7 @@
+ 	if (!after(TCP_SKB_CB(skb)->seq + len, tp->snd_una))
+ 		goto fallback;
+ 
+-	if (!skb_shift(prev, skb, len))
++	if (!tcp_skb_shift(prev, skb, pcount, len))
+ 		goto fallback;
+ 	if (!tcp_shifted_skb(sk, skb, state, pcount, len, mss, dup_sack))
+ 		goto out;
+@@ -1446,11 +1462,11 @@
+ 		goto out;
+ 
+ 	len = skb->len;
+-	if (skb_shift(prev, skb, len)) {
+-		pcount += tcp_skb_pcount(skb);
+-		tcp_shifted_skb(sk, skb, state, tcp_skb_pcount(skb), len, mss, 0);
++	next_pcount = tcp_skb_pcount(skb);
++	if (tcp_skb_shift(prev, skb, next_pcount, len)) {
++		pcount += next_pcount;
++		tcp_shifted_skb(sk, skb, state, next_pcount, len, mss, 0);
+ 	}
+-
+ out:
+ 	state->fack_count += pcount;
+ 	return prev;
+--- linux-3.10/net/ipv4/tcp_ipv4.c	
++++ linux-3.10/net/ipv4/tcp_ipv4.c	
+@@ -2951,6 +2951,7 @@
+ 		*per_cpu_ptr(net->ipv4.tcp_sk, cpu) = sk;
+ 	}
+ 	net->ipv4.sysctl_tcp_ecn = 2;
++	net->ipv4.sysctl_tcp_min_snd_mss = TCP_MIN_SND_MSS;
+ 	return 0;
+ 
+ fail:
+--- linux-3.10/net/ipv4/tcp_output.c	
++++ linux-3.10/net/ipv4/tcp_output.c	
+@@ -1076,6 +1076,11 @@
+ 	if (nsize < 0)
+ 		nsize = 0;
+ 
++	if (unlikely((sk->sk_wmem_queued >> 1) > sk->sk_sndbuf)) {
++		NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPWQUEUETOOBIG);
++		return -ENOMEM;
++	}
++
+ 	if (skb_unclone(skb, GFP_ATOMIC))
+ 		return -ENOMEM;
+ 
+@@ -1241,8 +1246,7 @@
+ 	mss_now -= icsk->icsk_ext_hdr_len;
+ 
+ 	/* Then reserve room for full set of TCP options and 8 bytes of data */
+-	if (mss_now < 48)
+-		mss_now = 48;
++	mss_now = max(mss_now, sock_net(sk)->ipv4.sysctl_tcp_min_snd_mss);
+ 	return mss_now;
+ }
+ 
+--- linux-3.10/net/ipv4/tcp_timer.c	
++++ linux-3.10/net/ipv4/tcp_timer.c	
+@@ -107,12 +107,14 @@
+ 			icsk->icsk_mtup.enabled = 1;
+ 			tcp_sync_mss(sk, icsk->icsk_pmtu_cookie);
+ 		} else {
++			struct net *net = sock_net(sk);
+ 			struct tcp_sock *tp = tcp_sk(sk);
+ 			int mss;
+ 
+ 			mss = tcp_mtu_to_mss(sk, icsk->icsk_mtup.search_low) >> 1;
+ 			mss = min(sysctl_tcp_base_mss, mss);
+ 			mss = max(mss, 68 - tp->tcp_header_len);
++			mss = max(mss, net->ipv4.sysctl_tcp_min_snd_mss);
+ 			icsk->icsk_mtup.search_low = tcp_mss_to_mtu(sk, mss);
+ 			tcp_sync_mss(sk, icsk->icsk_pmtu_cookie);
+ 		}
