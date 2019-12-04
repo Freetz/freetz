@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 1.7.11)
+$(call PKG_INIT_BIN, 1.8.22)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=25be5ad717a71da89a65c3c24250e2eb
-$(PKG)_SITE:=http://www.haproxy.org/download/1.7/src
+$(PKG)_SOURCE_SHA256:=7be245cdbc3fff9365af1df1c13fdff768fb7f9c4363e7daa52c315ec20dc1f8
+$(PKG)_SITE:=http://www.haproxy.org/download/1.8/src
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/haproxy
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/haproxy
@@ -21,7 +21,8 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		USE_OPENSSL=$(if $(FREETZ_PACKAGE_HAPROXY_WITH_OPENSSL),1) \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS) -ffunction-sections -fdata-sections" \
-		LDFLAGS="-Wl,--gc-sections"
+		LDFLAGS="-Wl,--gc-sections" \
+		USE_THREAD=
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)

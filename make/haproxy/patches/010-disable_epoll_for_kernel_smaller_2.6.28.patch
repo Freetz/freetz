@@ -1,12 +1,11 @@
 --- Makefile
 +++ Makefile
-@@ -260,11 +260,10 @@
+@@ -288,10 +288,9 @@
    USE_DL          = implicit
  else
  ifeq ($(TARGET),linux26)
 -  # This is for standard Linux 2.6 with netfilter and standard epoll()
 +  # This is for standard Linux 2.6 with netfilter and without epoll()
-   USE_GETSOCKNAME = implicit
    USE_NETFILTER   = implicit
    USE_POLL        = implicit
 -  USE_EPOLL       = implicit

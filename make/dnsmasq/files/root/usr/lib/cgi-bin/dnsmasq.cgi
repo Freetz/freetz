@@ -62,6 +62,9 @@ EOF
 fi
 
 cat << EOF
+<br>
+$(lang de:"Puffer f&uuml;r asynchrones Logging (Zeilen)" en:"Buffer for ansynchronous logging (lines)") (max 100): <input type="text" name="log_async" size="5" maxlength="3" value="$(html "$DNSMASQ_LOG_ASYNC")">
+<br>
 <input type="hidden" name="log_queries" value="no">
 <input id="logq1" type="checkbox" name="log_queries" value="yes"$log_queries_chk><label for="logq1"> $(lang de:"Namensaufl&ouml;sung loggen." en:"Log name resolution.")</label><br>
 </p>

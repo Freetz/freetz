@@ -1,8 +1,8 @@
-$(call PKG_INIT_LIB, 2.2.6)
-$(PKG)_LIB_VERSION:=1.6.8
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=ca047ae951b40020ac831c28859161b2
-$(PKG)_SITE:=@SF/expat
+$(call PKG_INIT_LIB, 2.2.9)
+$(PKG)_LIB_VERSION:=1.6.11
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE_MD5:=d2384fa607223447e713e1b9bd272376
+$(PKG)_SITE:=@SF/expat,https://github.com/libexpat/libexpat/releases/download/R_$(subst .,_,$($(PKG)_VERSION))
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/lib/.libs/libexpat.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libexpat.so.$($(PKG)_LIB_VERSION)
@@ -11,6 +11,8 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libexpat.so.$($(PKG)_LIB_VERSION)
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --without-xmlwf
+$(PKG)_CONFIGURE_OPTIONS += --without-examples
+$(PKG)_CONFIGURE_OPTIONS += --without-tests
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

@@ -13,6 +13,7 @@ config FREETZ_TYPE_FIBER
 	bool
 	default y
 	depends on \
+		FREETZ_TYPE_5490 || \
 		FREETZ_TYPE_5491
 
 config FREETZ_TYPE_DSL
@@ -36,7 +37,8 @@ config FREETZ_TYPE_WLAN_REPEATER
 	bool
 	default y
 	depends on \
-		FREETZ_TYPE_1750
+		FREETZ_TYPE_1750 || \
+		FREETZ_TYPE_3000
 
 # CONFIG_HOME_AUTO=y
 config FREETZ_AVM_HAS_AHA
@@ -46,6 +48,7 @@ config FREETZ_AVM_HAS_AHA
 		FREETZ_AVM_VERSION_05_5X_MIN && \
 		( \
 			!FREETZ_TYPE_1750 && \
+			!FREETZ_TYPE_3000 && \
 			!FREETZ_TYPE_3270 && \
 			!FREETZ_TYPE_3272 && \
 			!FREETZ_TYPE_3370 && \
@@ -69,6 +72,7 @@ config FREETZ_AVM_HAS_DECT
 		( \
 			FREETZ_AVM_VERSION_05_2X_MIN && \
 			!FREETZ_TYPE_1750 && \
+			!FREETZ_TYPE_3000 && \
 			!FREETZ_TYPE_3270 && \
 			!FREETZ_TYPE_3272 && \
 			!FREETZ_TYPE_3370 && \
@@ -88,6 +92,7 @@ config FREETZ_AVM_HAS_FHEM
 			FREETZ_TYPE_3370    || \
 			FREETZ_TYPE_3390    || \
 			FREETZ_TYPE_3490    || \
+			FREETZ_TYPE_5490    || \
 			FREETZ_TYPE_5491    || \
 			FREETZ_TYPE_6840    || \
 			FREETZ_TYPE_7240    || \
@@ -116,6 +121,19 @@ config FREETZ_AVM_HAS_MULTI_ANNEX
 	depends on FREETZ_TYPE_DSL
 	depends on FREETZ_AVM_VERSION_05_2X_MIN
 
+config FREETZ_AVM_HAS_ANNEX_SELECTION
+	bool
+	default y
+	depends on FREETZ_AVM_HAS_MULTI_ANNEX
+	depends on \
+		(FREETZ_SYSTEM_TYPE_AR9     && !FREETZ_TYPE_7312 && !FREETZ_TYPE_7320) || \
+		(FREETZ_SYSTEM_TYPE_AR10                                             ) || \
+		(FREETZ_SYSTEM_TYPE_IKS                                              ) || \
+		(FREETZ_SYSTEM_TYPE_IPQ40xx && !FREETZ_TYPE_4040                     ) || \
+		(FREETZ_SYSTEM_TYPE_GRX5                                             ) || \
+		(FREETZ_SYSTEM_TYPE_UR8     && !FREETZ_TYPE_7240                     ) || \
+		(FREETZ_SYSTEM_TYPE_VR9)
+
 # two different firmware images are available, one supporting Annex A and another one supporting Annex B
 config FREETZ_AVM_HAS_ANNEX_A_AND_B
 	bool
@@ -138,6 +156,7 @@ config FREETZ_AVM_HAS_NAS
 	depends on \
 			FREETZ_AVM_VERSION_05_2X_MIN && \
 			!FREETZ_TYPE_1750 && \
+			!FREETZ_TYPE_3000 && \
 			!FREETZ_TYPE_6810 && \
 			!FREETZ_TYPE_6820 && \
 			!FREETZ_TYPE_7312 && \
@@ -152,6 +171,7 @@ config FREETZ_AVM_HAS_NTFS
 		( \
 			FREETZ_AVM_VERSION_05_2X_MIN && \
 			!FREETZ_TYPE_1750 && \
+			!FREETZ_TYPE_3000 && \
 			!FREETZ_TYPE_6810 && \
 			!FREETZ_TYPE_6820 && \
 			!FREETZ_TYPE_7312 && \
@@ -164,6 +184,7 @@ config FREETZ_AVM_HAS_PHONE
 	depends on \
 		!FREETZ_TYPE_1750 && \
 		!FREETZ_TYPE_2170 && \
+		!FREETZ_TYPE_3000 && \
 		!FREETZ_TYPE_3020 && \
 		!FREETZ_TYPE_3030 && \
 		!FREETZ_TYPE_3130 && \
@@ -220,7 +241,7 @@ config FREETZ_AVM_HAS_PLUGIN_TAM
 	default y
 	depends on \
 		(FREETZ_TYPE_7270_V1                        && FREETZ_AVM_VERSION_04_XX_MAX) || \
-		(FREETZ_TYPE_7390    && FREETZ_TYPE_LANG_DE && FREETZ_AVM_VERSION_06_8X_MIN)
+		(FREETZ_TYPE_7390                           && FREETZ_AVM_VERSION_06_8X_MIN)
 
 config FREETZ_AVM_HAS_PLUGIN_WEBCM_INTERPRETER
 	depends on FREETZ_AVM_HAS_PLUGINS_UPDATE
@@ -403,6 +424,7 @@ config FREETZ_AVM_HAS_WEBDAV
 		( \
 			FREETZ_AVM_VERSION_05_2X_MIN && \
 			!FREETZ_TYPE_1750 && \
+			!FREETZ_TYPE_3000 && \
 			!FREETZ_TYPE_6810 && \
 			!FREETZ_TYPE_6820 && \
 			!FREETZ_TYPE_7312 && \

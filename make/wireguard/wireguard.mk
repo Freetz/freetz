@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 0.0.20190601)
+$(call PKG_INIT_BIN, 0.0.20191127)
 $(PKG)_SOURCE:=WireGuard-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=eeeabbbd5592987b5308d1cc495f756f
+$(PKG)_SOURCE_SHA256:=7d4e80a6f84564d4826dd05da2b59e8d17645072c0345d0fc0d197be176c3d06
 $(PKG)_SITE:=https://git.zx2c4.com/WireGuard/snapshot
 
 $(PKG)_BINARIES            := wg
