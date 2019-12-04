@@ -54,7 +54,7 @@ Currently supported devices and firmwares
 * __Fritz!Box WLAN 3270 v3__
   - 96.05.54 rev27373 {GER}
   - 96.05.52 rev27362 {INT}
-  - 125.05.52 rev27361 (ITA)
+  - 125.05.52 rev27361 {ITA}
 * __Fritz!Box Fon WLAN 3272__
   - 126.06.30 rev30889 {GER}
   - 126.06.50 rev33089 {GER}
@@ -102,7 +102,7 @@ Currently supported devices and firmwares
   - 06.04.49 rev10836 {INT} (Annex A)
   - 06.04.49 rev10836 {INT} (Annex B)
 * __Fritz!Box 5010__
-  - 48.04.43 rev8953 (ACH) (Annex A)
+  - 48.04.43 rev8953 {ACH} (Annex A)
 * __Fritz!Box Fon 5050__
   - 12.04.31 rev6432 {GER}
 
@@ -187,7 +187,7 @@ Currently supported devices and firmwares
   - Alien 7170 {GER}
   - 39.04.77 rev27510 {INT} (Annex A)
   - 30.04.77 rev27510 {INT} (Annex B)
-  - 39.04.77 rev27483 (ACH) (Annex A)
+  - 39.04.77 rev27483 {ACH} (Annex A)
 * __Fritz!Box Fon WLAN 7141__
   - 40.04.77 rev27431 {GER}
   - Alien 7170 {GER}
@@ -199,7 +199,7 @@ Currently supported devices and firmwares
   - 29.04.88 rev27403 {GER}
   - 29.04.83 rev27485 {INT} (Annex B)
   - 58.04.85 rev27409 {INT} (Annex A)
-  - 58.04.77 rev27483 (ACH) (Annex A)
+  - 58.04.77 rev27483 {ACH} (Annex A)
 
 ### Fritz!Box Fon WLAN (72xx)
 
