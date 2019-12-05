@@ -209,7 +209,7 @@ Latest changes
     * gmp 6.1.2
     * gnu-make 4.2.1
     * gnutls 3.5.19
-    * HAProxy 1.8.22
+    * haproxy 1.8.23
     * haserl 0.9.35
     * hplip 3.14.6
     * htop 1.0.3
