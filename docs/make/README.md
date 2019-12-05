@@ -202,7 +202,7 @@
   * **[gw6: Gateway6 client](gw6.md)<a id='gw6'></a>**<br>
     Client to build a tunnel to the ipv6 network (see http://go6.net). The binary will be installed as /usr/sbin/gw6c and CGI frontend will be provided for a simple configuration. A sample can be found in /usr/share/gw6/.
 
-  * **<u>HAProxy 1.8.22</u><a id='haproxy'></a>**<br>
+  * **<u>HAProxy 1.8.23</u><a id='haproxy'></a>**<br>
     haproxy is a loadbalancer.
 
   * **[haserl 0.9.35 (binary only)](haserl.md)<a id='haserl'></a>**<br>
