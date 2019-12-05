@@ -93,7 +93,7 @@ Currently supported devices and firmwares
   - 147.07.01 rev64348 {GER}
 * __Fritz!Box 4040__
   - 155.07.01 rev61489 {ALL}
-  - 155.07.12 rev70330 {ALL} [MESH18 NL2]
+  - 155.07.14 rev73181 {ALL} [MESH18 NL4]
 
 ### Fritz!Box Fon (50xx/51xx)
 
