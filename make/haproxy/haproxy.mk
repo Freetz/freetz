@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.8.22)
+$(call PKG_INIT_BIN, 1.8.23)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=7be245cdbc3fff9365af1df1c13fdff768fb7f9c4363e7daa52c315ec20dc1f8
+$(PKG)_SOURCE_SHA256:=de919164876ee0501e1ef01ca5ccc0d3bda2b96003f9d240f7b856010ccbf7eb
 $(PKG)_SITE:=http://www.haproxy.org/download/1.8/src
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/haproxy
