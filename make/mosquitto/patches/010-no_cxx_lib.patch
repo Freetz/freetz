@@ -1,29 +1,29 @@
 --- lib/Makefile
 +++ lib/Makefile
-@@ -21,7 +21,7 @@
- 		  will_mosq.o
+@@ -56,7 +56,7 @@ endif
  
- all : libmosquitto.so.${SOVERSION} libmosquitto.a
+ all : ${ALL_DEPS}
+ ifeq ($(WITH_SHARED_LIBRARIES),yes)
 -	$(MAKE) -C cpp
 +#	$(MAKE) -C cpp
+ endif
  
  install : all
- 	$(INSTALL) -d ${DESTDIR}$(prefix)/lib${LIB_SUFFIX}/
-@@ -29,7 +29,7 @@
- 	ln -sf libmosquitto.so.${SOVERSION} ${DESTDIR}${prefix}/lib${LIB_SUFFIX}/libmosquitto.so
- 	$(INSTALL) -d ${DESTDIR}${prefix}/include/
- 	$(INSTALL) mosquitto.h ${DESTDIR}${prefix}/include/mosquitto.h
+@@ -75,7 +75,7 @@ endif
+ 	$(INSTALL) -m644 ../libmosquitto.pc.in "${DESTDIR}${libdir}/pkgconfig/libmosquitto.pc"
+ 	sed -i -e "s#@CMAKE_INSTALL_PREFIX@#${prefix}#" -e "s#@VERSION@#${VERSION}#" "${DESTDIR}${libdir}/pkgconfig/libmosquitto.pc"
+ ifeq ($(WITH_SHARED_LIBRARIES),yes)
 -	$(MAKE) -C cpp install
 +#	$(MAKE) -C cpp install
+ endif
  
  uninstall :
- 	-rm -f ${DESTDIR}${prefix}/lib${LIB_SUFFIX}/libmosquitto.so.${SOVERSION}
-@@ -40,7 +40,7 @@
+@@ -88,7 +88,7 @@ reallyclean : clean
  
  clean :
- 	-rm -f *.o libmosquitto.so.${SOVERSION} libmosquitto.so libmosquitto.a
+ 	-rm -f *.o libmosquitto.so.${SOVERSION} libmosquitto.so libmosquitto.a *.gcno *.gcda
 -	$(MAKE) -C cpp clean
 +#	$(MAKE) -C cpp clean
  
  libmosquitto.so.${SOVERSION} : ${MOSQ_OBJS}
- 	${CROSS_COMPILE}$(CC) -shared $(LIB_LDFLAGS) $^ -o $@ ${LIB_LIBS}
+ 	${CROSS_COMPILE}$(CC) -shared $(LIB_LDFLAGS) $^ -o $@ ${LIB_LIBADD}
