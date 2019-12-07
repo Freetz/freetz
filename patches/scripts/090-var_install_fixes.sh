@@ -22,3 +22,10 @@ modsed '/mount -t ext2 \/var\/tmp\/fsimage.ext2/ a\
 echo '"'"'    fi'"'"' >> /var/post_install' "${var_install_file}"
 
 fi
+
+if [ "$FREETZ_FORCE_SKIP_URLADERUPDATE" == "y" ]; then
+	if [ -f "${FIRMWARE_MOD_DIR}/var/urladerupdate" ]; then
+		rm "${FIRMWARE_MOD_DIR}/var/urladerupdate"
+		echo1 "removing urladerupdate from firmware .image"
+	fi
+fi

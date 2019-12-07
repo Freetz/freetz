@@ -1527,6 +1527,19 @@ config FREETZ_RUN_TELEFON_IN_INHOUSE_MODE
 		- processing of /var/flash/fx_conf attributes responsible
 		  for automatic start of the telnet daemon
 
+config FREETZ_FORCE_SKIP_URLADERUPDATE
+	bool "Enforce skipping of urlader update contained in original image"
+	depends on FREETZ_SHOW_EXPERT
+	depends on FREETZ_SYSTEM_TYPE_GRX5
+	default n
+	help
+		Removes file "urladerupdate" in firmware package.
+		New bootloaders often lock down hardware even more. Therefore it might
+		be desirable to stay on the bootloader, that was delivered with the box.
+		Be aware, that the new firmware might depend on features in the updated
+		bootloader and not behave as expected if staying on the old one!
+		This option is experimental!
+
 comment "AVM daemons ----------------------------"
 
 config FREETZ_AVMDAEMON_DISABLE_IGD
