@@ -1,4 +1,4 @@
-# WireGuard 0.0.20191205
+# WireGuard 0.0.20191206
 
 Mit Wireguard kann ein VPN aufgebaut werden. Es ist schneller als [OpenVPN](openvpn.md) und einfach zu konfugurieren als IPsec.<br>
 <br>
