@@ -48,6 +48,7 @@ config FREETZ_WGET
 config FREETZ_BUSYBOX__MANDATORY
 	bool # mandatory
 	select FREETZ_BUSYBOX__MANDATORY_05_2X if FREETZ_AVM_VERSION_05_2X_MIN
+	select FREETZ_BUSYBOX__MANDATORY_06_5X if FREETZ_AVM_VERSION_06_5X_MIN
 	select FREETZ_BUSYBOX__MANDATORY_07_0X if FREETZ_AVM_VERSION_07_0X_MIN
 	select FREETZ_BUSYBOX_ADDGROUP
 	select FREETZ_BUSYBOX_ADDUSER
@@ -402,6 +403,11 @@ config FREETZ_BUSYBOX__MANDATORY_05_2X
 	select FREETZ_BUSYBOX_XZ if !FREETZ_PACKAGE_XZ
 	help
 		Selects everything Freetz needs to run properly (with Fritz!OS 5.2 and up)
+
+config FREETZ_BUSYBOX__MANDATORY_06_5X
+	bool # mandatory (since Fritz!OS 6.5)"
+	depends on FREETZ_AVM_VERSION_06_5X_MIN
+	select FREETZ_BUSYBOX_BASE64 # used for extended support data in supportdata.tffs
 
 config FREETZ_BUSYBOX__MANDATORY_07_0X
 	bool # mandatory (since Fritz!OS 7.0)"
