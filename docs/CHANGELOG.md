@@ -42,7 +42,7 @@ Latest changes
   * binutils:
     + add support for binutils-2.24.x/2.25.x/2.26.x
   * ccache 3.7.6
-  * kconfig 5.2
+  * kconfig 5.4
     + added olddefconfig target
     + removed oldnoconfig target
   * kernel-/target-toolchain:
