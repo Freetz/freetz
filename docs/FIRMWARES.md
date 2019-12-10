@@ -407,7 +407,7 @@ Currently supported devices and firmwares
   - 169.07.08 rev70235 {ALL} [MESH18 NL2] (Inhaus)
 * __Fritz!WLAN Repeater 3000 (UNTESTED)__
   - 174.07.04 rev66458 {ALL}
-  - 174.07.12 rev70612 {GER} [MESH18 NL2]
+  - 174.07.14 rev73940 {ALL} [MESH18 NL4]
 
 ### T-Com derivatives
 
