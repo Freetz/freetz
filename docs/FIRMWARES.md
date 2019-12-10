@@ -402,7 +402,7 @@ Currently supported devices and firmwares
   - 134.07.12 rev70775 {ALL} [MESH18 NL2]
 
 * __Fritz!WLAN Repeater 1200__
-  - 172.07.12 rev70614 {ALL} [MESH18 NL2]
+  - 172.07.14 rev73941 {ALL} [MESH18 NL4]
 * __Fritz!WLAN Repeater 2400 (UNTESTED)__
   - 169.07.08 rev70235 {ALL} [MESH18 NL2] (Inhaus)
 * __Fritz!WLAN Repeater 3000 (UNTESTED)__
