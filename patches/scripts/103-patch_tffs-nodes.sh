@@ -2,7 +2,7 @@
 echo1 "applying tffs_nodes patch"
 # This creates the char device for saving Freetz "flash"
 
-for f in S08-tffs S01-head; do
+for f in S08-tffs S01-head rc.tffs.sh; do
 	grep -q '^tffs_nodes_list=""$' "${FILESYSTEM_MOD_DIR}/etc/init.d/$f" && break
 	f=""
 done
