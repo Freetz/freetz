@@ -531,6 +531,13 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		done
 		rm -r "$(dirname "$exe_image")"
 	fi
+	if [ -e "$FIRMWARE_DIR/var/firmware-update.uimg" ]; then
+		"${TOOLS_DIR}/uimg" -u "$FIRMWARE_DIR/var/firmware-update.uimg" >/dev/null
+		chmod +w $FIRMWARE_DIR/var/*.bin
+		mkdir -p "$FIRMWARE_DIR/var/remote/var/tmp/x86"
+		ln $FIRMWARE_DIR/var/*_ATOM_ROOTFS.bin "$FIRMWARE_DIR/var/remote/var/tmp/x86/filesystem.image"
+		ln $FIRMWARE_DIR/var/*_ATOM_KERNEL.bin "$FIRMWARE_DIR/var/remote/var/tmp/x86/kernel.image"
+	fi
 
 	# Do the images exist ?
 	[ ! -r "${KERNEL}" ] && error 1 "cannot find kernel.image (${KERNEL})"
@@ -1841,7 +1848,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 		KERNEL_LIMIT="$(sed -nr 's/^kernel_size=(.*)/\1/p' ${FIRMWARE_DIR}/var/install)"
 		[ -z "$KERNEL_LIMIT" ] && error 1 "Can't find kernel_size in var/install"
 	fi
-	let KERNEL_SIZE="$(wc -c < "$KERNEL_MOD")"
+	[ -e "$FIRMWARE_MOD_DIR/var/firmware-update.uimg" ] && KERNEL_SIZE="$(gzip "$KERNEL_MOD" -c | wc -c)" || KERNEL_SIZE="$(wc -c < "$KERNEL_MOD")"
 	let KERNEL_DIFF="KERNEL_SIZE-KERNEL_LIMIT"
 
 	echo1 "kernel image size: $(byte_to_mb $KERNEL_SIZE), max $(byte_to_mb $KERNEL_LIMIT), free $(byte_to_mb $((-KERNEL_DIFF))) ($((-KERNEL_DIFF)) bytes)"
@@ -1973,6 +1980,13 @@ if [ "$DO_PACK" -gt 0 ]; then
 
 	# Pack firmware image
 	echo0 "packing ${img_name}"
+	if [ -e "$FIRMWARE_MOD_DIR/var/firmware-update.uimg" ]; then
+		mv "$FIRMWARE_MOD_DIR/var/remote/var/tmp/x86/filesystem.image" $FIRMWARE_MOD_DIR/var/*_ATOM_ROOTFS.bin
+		mv "$FIRMWARE_MOD_DIR/var/remote/var/tmp/x86/kernel.image" $FIRMWARE_MOD_DIR/var/*_ATOM_KERNEL.bin
+		rm "$FIRMWARE_MOD_DIR/var/remote" "$FIRMWARE_MOD_DIR/var/firmware-update.uimg" -r
+		"${TOOLS_DIR}/uimg" -p "$FIRMWARE_MOD_DIR/var/firmware-update.uimg" >/dev/null
+		rm $FIRMWARE_MOD_DIR/var/firmware-update_*.bin
+	fi
 	"$TAR_GNU"  -f "${img_name}"  --owner=0 --group=0 --mode=0755 --format=oldgnu  -C "$FIRMWARE_MOD_DIR"  --create ./var
 	if [ $? -ne 0 ] || ! is_valid_tarball "${img_name}"; then
 		mv "${img_name}" "${img_name}.packed.corrupted" 2>/dev/null
