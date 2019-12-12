@@ -83,7 +83,7 @@ skin_body_end() {
 
 	<div style>
 		<div id="edge-bot-left"></div>
-		<div id="edge-bot"style="width:${_cgi_border_width}px"></div>
+		<div id="edge-bot" style="width:${_cgi_border_width}px"></div>
 		<div id="edge-bot-right"></div>
 	</div>
 
