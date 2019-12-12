@@ -22,10 +22,35 @@ ar7hostname () {
 }
 
 isip () {
-	echo $1 | egrep '^[[:digit:]]{1,3}(\.[[:digit:]]{1,3}){3}$' >/dev/null
+	echo $1 | egrep -q '^[[:digit:]]{1,3}(\.[[:digit:]]{1,3}){3}$' && return 0
 }
 ismac () {
-	echo $1 | egrep '^[[:xdigit:]]{2}(:[[:xdigit:]]{2}){5}$' >/dev/null
+	echo $1 | egrep -q '^[[:xdigit:]]{2}(:[[:xdigit:]]{2}){5}$' && return 0
+}
+isip6 () {
+	## example 111a:222b:333c:444d:555e:666f:77a7:88b8
+	echo $1 | egrep -q '^(([[:xdigit:]]{1,4}):){7}(([[:xdigit:]]{1,4}))$' && return 0
+
+	## example ::333c:444d:555e:666f:77a7:88b8 | ::88b8
+	echo $1 | egrep -q '^(:(:([[:xdigit:]]{1,4})){1,6})$' && return 0
+
+	## example 111a:222b:333c:444d:555e:666f:: | 111a::
+	echo $1 | egrep -q '^((([[:xdigit:]]{1,4}):){1,6}:)$' && return 0
+
+	## example 111a::333c:444d:555e:666f:77a7:88b8 | 111a::88b8
+	echo $1 | egrep -q '^((([[:xdigit:]]{1,4}):)(:([[:xdigit:]]{1,4})){1,6})$' && return 0
+
+	## example 111a:222b::444d:555e:666f:77a7:88b8 | 111a:222b::88b8
+	echo $1 | egrep -q '^((([[:xdigit:]]{1,4}):){2}(:([[:xdigit:]]{1,4})){1,5})$' && return 0
+
+	## example 111a:222b:333c::555e:666f:77a7:88b8
+	echo $1 | egrep -q '^((([[:xdigit:]]{1,4}):){3}(:([[:xdigit:]]{1,4})){1,4})$' && return 0
+
+	## example 111a:222b:333c:444d::666f:77a7:88b8
+	echo $1 | egrep -q '^((([[:xdigit:]]{1,4}):){4}(:([[:xdigit:]]{1,4})){1,3})$' && return 0
+
+	## example 111a:222b:333c:444d:555e::77a7:88b8
+	echo $1 | egrep -q '^((([[:xdigit:]]{1,4}):){5}(:([[:xdigit:]]{1,4})){1,2})$' && return 0
 }
 
 create_resolv_conf () {
@@ -71,6 +96,7 @@ case $1 in
 					fi
 
 					isip $ip && echo -e "${ip}\t${host} $desc" >> /var/tmp/hosts
+					isip6 $ip && echo -e "${ip}\t${host} $desc" >> /var/tmp/hosts
 					ismac $mac && echo -e "${mac}\t${host}" >> /var/tmp/ethers
 				done
 		fi
