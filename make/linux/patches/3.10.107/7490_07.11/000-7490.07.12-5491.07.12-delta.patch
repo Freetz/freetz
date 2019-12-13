@@ -1,0 +1,41 @@
+--- linux-3.10/drivers/isdn/capi_codec/Makefile	2019-07-08 14:33:09.000000000 +0200
++++ linux-3.10/drivers/isdn/capi_codec/Makefile	2019-08-30 21:04:01.000000000 +0200
+@@ -1,5 +1,5 @@
+ # auto generated file ./Makefile
+ 
+-CAPI_CODEC_TOP=/home/mchrobok/build/gu/7490-07.12-69996-gu_Version_69675_MESH18_NL2-vr9/GPL/RELEASE_KERNEL_vr9_build/linux/drivers/isdn/capi_codec
++CAPI_CODEC_TOP=/home/mchrobok/build/gu/5491-07.12-71193-gu_Version_69675_MESH18_NL2-vr9/GPL/RELEASE_KERNEL_vr9_build/linux/drivers/isdn/capi_codec
+ 
+ #
+--- linux-3.10/.kernelvariables	2019-07-08 14:33:23.000000000 +0200
++++ linux-3.10/.kernelvariables	2019-08-30 21:04:13.000000000 +0200
+@@ -1,12 +1,12 @@
+ # vim: set autoread filetype=make:
+ #
+-# Auto-generated at build-69920-dirty
+-# while generating for Fritz_Box_HW185
++# Auto-generated at build-70864-dirty
++# while generating for Fritz_Box_HW243
+ #
+ ARCH = mips
+ export ARCH
+ 
+-ADD_FILE_PID = Fritz_Box_HW185
++ADD_FILE_PID = Fritz_Box_HW243
+ export ADD_FILE_PID
+ 
+ CROSS_COMPILE = mips-buildroot-linux-uclibc-
+--- linux-3.10/net/avm_pa/avm_pa.c	2019-03-12 21:15:48.000000000 +0100
++++ linux-3.10/net/avm_pa/avm_pa.c	2019-07-04 15:34:04.000000000 +0200
+@@ -1657,8 +1657,9 @@
+       return 0;
+ 
+    /* Different VLANs is OK, even the VID may differ. So just skip the VLAN match */
+-   if ((++p1)->type == AVM_PA_VLAN) ++p1;
+-   if ((++p2)->type == AVM_PA_VLAN) ++p2;
++   /* JZ-63724: ...but only if there's no in-band VLAN header stored in skb->data */
++   if ((++p1)->type == AVM_PA_VLAN && p1->offset == AVM_PA_OFFSET_NOT_SET) ++p1;
++   if ((++p2)->type == AVM_PA_VLAN && p2->offset == AVM_PA_OFFSET_NOT_SET) ++p2;
+ 
+    /* Compare the remainder for equality which ensures that modifications
+     * to the packet data are not permitted. */
