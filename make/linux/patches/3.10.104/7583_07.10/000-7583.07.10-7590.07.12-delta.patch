@@ -1,0 +1,547 @@
+--- linux-3.10/Documentation/networking/ip-sysctl.txt	2019-04-03 16:26:44.000000000 +0200
++++ linux-3.10/Documentation/networking/ip-sysctl.txt	2019-06-21 13:41:06.000000000 +0200
+@@ -166,6 +166,14 @@
+ 	Path MTU discovery (MTU probing).  If MTU probing is enabled,
+ 	this is the initial MSS used by the connection.
+ 
++tcp_min_snd_mss - INTEGER
++	TCP SYN and SYNACK messages usually advertise an ADVMSS option,
++	as described in RFC 1122 and RFC 6691.
++	If this ADVMSS option is smaller than tcp_min_snd_mss,
++	it is silently capped to tcp_min_snd_mss.
++
++	Default : 48 (at least 8 bytes of payload per segment)
++
+ tcp_congestion_control - STRING
+ 	Set the congestion control algorithm to be used for new
+ 	connections. The algorithm "reno" is always available, but
+--- linux-3.10/drivers/isdn/capi_codec/Makefile	2019-04-04 21:04:04.000000000 +0200
++++ linux-3.10/drivers/isdn/capi_codec/Makefile	2019-09-20 21:39:37.000000000 +0200
+@@ -1,5 +1,5 @@
+ # auto generated file ./Makefile
+ 
+-CAPI_CODEC_TOP=/home/mchrobok/build/gu/7583-07.10-67491-gu_Version_61482_MESH18-grx5/GPL/RELEASE_KERNEL_grx5_build/linux/drivers/isdn/capi_codec
++CAPI_CODEC_TOP=/home/mchrobok/build/gu/7590-07.12-71797-gu_Version_69995_MESH18NL2_7590zzr-grx5/GPL/RELEASE_KERNEL_grx5_build/linux/drivers/isdn/capi_codec
+ 
+ #
+--- linux-3.10/fs/antfs/file.c	2019-03-28 13:49:46.000000000 +0100
++++ linux-3.10/fs/antfs/file.c	2019-04-04 15:01:20.000000000 +0200
+@@ -32,6 +32,11 @@
+ #include <linux/aio.h>
+ #include <linux/falloc.h>
+ #include <linux/mpage.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 10, 0)
++#include <linux/uio.h>
++#else
++#include <linux/socket.h> //memcpy_fromiovec
++#endif
+ 
+ #include "dir.h"
+ #include "lcnalloc.h"
+@@ -1026,9 +1031,17 @@
+ 			     void **fsdata)
+ #endif
+ {
+-	int err;
++	struct inode *inode = file_inode(filp);
++	struct ntfs_inode *ni = ANTFS_NI(inode);
++	int err = 0;
+ 
+ 	antfs_log_enter("inode %ld", file_inode(filp)->i_ino);
++
++	if (NInoTestAndSetWritePending(ni)) {
++		err = -EAGAIN;
++		goto out;
++	}
++
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 36)
+ 	err = block_write_begin(mapping, pos, len, flags, pagep,
+ 				antfs_get_block);
+@@ -1041,8 +1054,10 @@
+ 		if (err != -ENOSPC)
+ 			antfs_log_error("Write_begin failed: %d", err);
+ 		antfs_write_failed(mapping, pos + len);
++		NInoClearWritePending(ni);
+ 	}
+ 
++out:
+ 	antfs_log_leave("err: %d", err);
+ 	return err;
+ }
+@@ -1103,7 +1118,7 @@
+ 	if (err < 0 || (unsigned int)err < len) {
+ 		antfs_write_failed(mapping, pos + len);
+ 		antfs_log_error("Write end failed!");
+-		return err;
++		goto out_unlocked;
+ 	}
+ 
+ 	/* Test if we have BUFFER_ZERONEW flags here. This is a strong hint that
+@@ -1111,7 +1126,7 @@
+ 	 */
+ 	if (mutex_lock_interruptible_nested(&ni->ni_lock, NI_MUTEX_NORMAL)) {
+ 		err = -ERESTARTSYS;
+-		return err;
++		goto out_unlocked;
+ 	}
+ 
+ 	bh = head;
+@@ -1184,13 +1199,16 @@
+ 					(long long)ni->mft_no);
+ 		}
+ 	}
++
+ 	mutex_unlock(&ni->ni_lock);
++out_unlocked:
++	NInoClearWritePending(ni);
+ 	/* Done! */
+ 	return err;
+ }
+ 
+ #if LINUX_VERSION_CODE < KERNEL_VERSION(3, 17, 0)
+-static ssize_t antfs_aio_write(struct kiocb *iocb, const struct iovec *iov,
++static ssize_t antfs_aio_write(struct kiocb *iocb, const struct iovec *_iov,
+ 			       unsigned long nr_segs, loff_t pos)
+ #else
+ static ssize_t antfs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
+@@ -1199,6 +1217,9 @@
+ 	struct inode *inode = file_inode(iocb->ki_filp);
+ 	struct ntfs_inode *ni = ANTFS_NI(inode);
+ 	struct ntfs_attr *na = ANTFS_NA(ni);
++#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 17, 0)
++	struct iovec *iov = (struct iovec *)_iov;
++#endif
+ 	int err = 0;
+ #ifdef ANTFS_EARLY_BLALLOC
+ 	struct ntfs_volume *vol = ni->vol;
+@@ -1225,34 +1246,109 @@
+ 		goto out;
+ 	}
+ 
+-	/* TODO: Add write support for compressed and resident files */
++	/* TODO: Add write support for compressed files */
+ 	if (unlikely(!NAttrNonResident(na))) {
+-		struct ntfs_attr_search_ctx *ctx = NULL;
++		struct file *file = iocb->ki_filp;
++		struct ntfs_attr_search_ctx *ctx;
++		size_t count;
++		s64 rpos = (s64) iocb->ki_pos;
++		char *val;
++
++#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 17, 0)
++		generic_segment_checks(iov, &nr_segs, &count, VERIFY_READ);
++		if (file->f_flags & O_APPEND) {
++#else
++		count = iov_iter_count(from);
++		if (iocb->ki_flags & IOCB_APPEND) {
++#endif
++		/* case appending: we wanna start copying from the end of the
++		 * file -> rpos = file size
++		 */
++			rpos = (loff_t)na->data_size;
++		}
++
++		err = ntfs_attr_truncate(na, rpos + count);
++		if (err) {
++			antfs_log_error("Failed to extend data attribute!");
++			mutex_unlock(&ni->ni_lock);
++			goto out;
++		}
++		if (NAttrNonResident(na)) {
++			/* Truncate already fixed the attribute and made it
++			 * nonresident. We only have to continue like we were a
++			 * nonresident attribute all along.
++			 */
++			goto unlock_mutex;
++		}
+ 
++		/* write content directly into the data attribute */
+ 		ctx = ntfs_attr_get_search_ctx(na->ni, NULL);
+ 		if (IS_ERR(ctx)) {
+ 			mutex_unlock(&ni->ni_lock);
+-			return PTR_ERR(ctx);
++			err = PTR_ERR(ctx);
++			goto out;
+ 		}
+-		err = ntfs_attr_lookup(na->type, na->name, na->name_len, 0, 0,
+-				       NULL, 0, ctx);
++
++		err = ntfs_attr_lookup(na->type, na->name, na->name_len, 0,
++				       0, NULL, 0, ctx);
+ 		if (err) {
+ 			ntfs_attr_put_search_ctx(ctx);
+-			antfs_log_debug("ntfs_attr_lookup failed %d", err);
+-			err = -ENOENT;
++			mutex_unlock(&ni->ni_lock);
+ 			goto out;
+ 		}
+-		err = ntfs_attr_make_non_resident(na, ctx);
+-		mutex_unlock(&ni->ni_lock);
+-		if (err) {
+-			ntfs_attr_put_search_ctx(ctx);
+-			antfs_log_debug
+-			    ("<ERROR> could not make non resident! %d", err);
+-			err = -ENOMEM;
++		val = (char *)ctx->attr + le16_to_cpu(ctx->attr->value_offset);
++		if (val < (char *)ctx->attr || val +
++		    le32_to_cpu(ctx->attr->value_length) >
++		    (char *)ctx->mrec + na->ni->vol->mft_record_size) {
++			err = -ERANGE;
++			/* log? sanity check failed! */
++			antfs_log_error("Data attribute outside of mft record");
++			mutex_unlock(&ni->ni_lock);
++			goto out;
++		}
++#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 17, 0)
++		err = memcpy_fromiovec(val + rpos, iov, count);
++		if (err < 0) {
++			antfs_log_error("Failed to copy data to buffer!");
++			if (file->f_flags & O_APPEND) {
++#else
++		err = copy_from_iter(val + rpos, count, from);
++		if (err != count) {
++			antfs_log_error("Failed to copy data to buffer!");
++			if (iocb->ki_flags & IOCB_APPEND) {
++#endif
++				/* shrink back to original size, this should not
++				 * fail if nothing really bad happens!
++				 */
++				err = ntfs_attr_truncate(na, inode->i_size);
++			} else {
++				/* file is filled with carbage now! vfs sets
++				 * file size to 0, so we should do the same!
++				 */
++				err = ntfs_attr_truncate(na, 0);
++			}
++			if (err)
++				antfs_log_critical("Corrupted file");
++			mutex_unlock(&ni->ni_lock);
++			err = -EFAULT;
+ 			goto out;
+ 		}
+ 		ntfs_attr_put_search_ctx(ctx);
++		mutex_unlock(&ni->ni_lock);
++
++		/* make sure no bullshit might be synced back with a possible
++		 * page that still contains old data
++		 */
++		truncate_inode_pages(file->f_mapping, 0);
++		i_size_write(inode, na->data_size);
++
++		/* we wrote count bytes */
++		err = count;
++		if (likely(count > 0))
++			iocb->ki_pos += count;
++		goto out;
+ 	} else {
++unlock_mutex:
+ 		mutex_unlock(&ni->ni_lock);
+ 	}
+ #ifdef ANTFS_EARLY_BLALLOC
+@@ -1313,33 +1409,6 @@
+ 		goto out_locked;
+ 	}
+ 
+-	/* TODO: Add write support for compressed and resident files */
+-	if (unlikely(!NAttrNonResident(na))) {
+-		struct ntfs_attr_search_ctx *ctx = NULL;
+-
+-		ctx = ntfs_attr_get_search_ctx(na->ni, NULL);
+-		if (IS_ERR(ctx)) {
+-			err = PTR_ERR(ctx);
+-			goto out_locked;
+-		}
+-		err = ntfs_attr_lookup(na->type, na->name, na->name_len, 0, 0,
+-				       NULL, 0, ctx);
+-		if (err) {
+-			ntfs_attr_put_search_ctx(ctx);
+-			antfs_log_debug("ntfs_attr_lookup failed %d", err);
+-			err = -ENOENT;
+-			goto out_locked;
+-		}
+-		err = ntfs_attr_make_non_resident(na, ctx);
+-		if (err) {
+-			ntfs_attr_put_search_ctx(ctx);
+-			antfs_log_debug
+-			    ("<ERROR> could not make non resident! %d", err);
+-			err = -ENOMEM;
+-			goto out_locked;
+-		}
+-		ntfs_attr_put_search_ctx(ctx);
+-	}
+ #ifdef ANTFS_EARLY_BLALLOC
+ 	/* early alloc clusters: For transfers > 2 clusters, allocate stuff here
+ 	 * This should reduce fragmentation and speed things up a bit. */
+--- linux-3.10/fs/antfs/include/inode.h	2019-03-28 13:49:46.000000000 +0100
++++ linux-3.10/fs/antfs/include/inode.h	2019-04-04 15:01:20.000000000 +0200
+@@ -53,6 +53,12 @@
+ 	NI_Collided,		/* 1: We collided with another ino. Use extra
+ 				 *    care with cleanup.
+ 				 */
++	NI_WritePending,        /* 1: We are currently writing to the inode
++				 * set in antfs_write_begin
++				 * unset in antfs_write_end
++				 * antfs_write_inode will look at this flag
++				 * to see if it can write back the inode
++				 */
+ };
+ 
+ #define  test_nino_flag(ni, flag)	   test_bit(NI_##flag, (&(ni)->state))
+@@ -111,6 +117,13 @@
+ #define NInoTestAndClearCollided(ni) \
+ test_and_clear_nino_flag(ni, Collided)
+ 
++#define NInoWritePending(ni)                    test_nino_flag(ni, WritePending)
++#define NInoSetWritePending(ni)                  set_nino_flag(ni, WritePending)
++#define NInoClearWritePending(ni)              clear_nino_flag(ni, WritePending)
++#define NInoTestAndSetWritePending(ni) \
++	test_and_set_nino_flag(ni, WritePending)
++#define NInoTestAndClearWritePending(ni) \
++	test_and_clear_nino_flag(ni, WritePending)
+ /**
+ * struct _ntfs_inode - The NTFS in-memory inode structure.
+ *
+--- linux-3.10/fs/antfs/inode.c	2019-03-28 13:49:46.000000000 +0100
++++ linux-3.10/fs/antfs/inode.c	2019-04-04 15:01:20.000000000 +0200
+@@ -754,10 +754,17 @@
+ 	antfs_log_enter();
+ 	if (is_bad_inode(inode))
+ 		goto out_unlocked;
++
++	if (NInoWritePending(ni)) {
++		err = -EAGAIN;
++		goto out_unlocked;
++	}
++
+ 	if (mutex_lock_interruptible_nested(&ni->ni_lock, NI_MUTEX_NORMAL)) {
+ 		err = -ERESTARTSYS;
+ 		goto out_unlocked;
+ 	}
++
+ 	if (!IS_ERR_OR_NULL(na)
+ 		&& NAttrNonResident(na)) {
+ 		err = ntfs_attr_truncate(na, inode->i_size);
+--- linux-3.10/include/linux/tcp.h	2019-04-03 16:26:44.000000000 +0200
++++ linux-3.10/include/linux/tcp.h	2019-06-21 13:41:06.000000000 +0200
+@@ -464,4 +464,7 @@
+ 	return 0;
+ }
+ 
++int tcp_skb_shift(struct sk_buff *to, struct sk_buff *from, int pcount,
++		  int shiftlen);
++
+ #endif	/* _LINUX_TCP_H */
+--- linux-3.10/include/net/netns/ipv4.h	2019-04-03 16:26:44.000000000 +0200
++++ linux-3.10/include/net/netns/ipv4.h	2019-06-21 13:41:06.000000000 +0200
+@@ -68,6 +68,8 @@
+ 	kgid_t sysctl_ping_group_range[2];
+ 	long sysctl_tcp_mem[3];
+ 
++	int sysctl_tcp_min_snd_mss;
++
+ 	atomic_t dev_addr_genid;
+ 
+ #ifdef CONFIG_IP_MROUTE
+--- linux-3.10/include/net/tcp.h	2019-04-03 16:26:44.000000000 +0200
++++ linux-3.10/include/net/tcp.h	2019-06-21 13:41:06.000000000 +0200
+@@ -54,6 +54,8 @@
+ 
+ #define MAX_TCP_HEADER	(128 + MAX_HEADER)
+ #define MAX_TCP_OPTION_SPACE 40
++#define TCP_MIN_SND_MSS		48
++#define TCP_MIN_GSO_SIZE	(TCP_MIN_SND_MSS - MAX_TCP_OPTION_SPACE)
+ 
+ /* 
+  * Never offer a window over 32767 without using window scaling. Some
+--- linux-3.10/include/uapi/linux/snmp.h	2019-04-03 16:26:44.000000000 +0200
++++ linux-3.10/include/uapi/linux/snmp.h	2019-06-21 13:41:06.000000000 +0200
+@@ -259,6 +259,7 @@
+ 	LINUX_MIB_TCPWANTZEROWINDOWADV,		/* TCPWantZeroWindowAdv */
+ 	LINUX_MIB_TCPSYNRETRANS,		/* TCPSynRetrans */
+ 	LINUX_MIB_TCPORIGDATASENT,		/* TCPOrigDataSent */
++	LINUX_MIB_TCPWQUEUETOOBIG,		/* TCPWqueueTooBig */
+ 	__LINUX_MIB_MAX
+ };
+ 
+--- linux-3.10/.kernelvariables	2019-04-04 21:04:17.000000000 +0200
++++ linux-3.10/.kernelvariables	2019-09-20 21:39:50.000000000 +0200
+@@ -1,12 +1,12 @@
+ # vim: set autoread filetype=make:
+ #
+-# Auto-generated at build-67448-dirty
+-# while generating for Fritz_Box_HW239
++# Auto-generated at build-71797-dirty
++# while generating for Fritz_Box_HW226
+ #
+ ARCH = mips
+ export ARCH
+ 
+-ADD_FILE_PID = Fritz_Box_HW239
++ADD_FILE_PID = Fritz_Box_HW226
+ export ADD_FILE_PID
+ 
+ CROSS_COMPILE = mips-buildroot-linux-uclibc-
+--- linux-3.10/net/ipv4/proc.c	2019-04-03 16:26:44.000000000 +0200
++++ linux-3.10/net/ipv4/proc.c	2019-06-21 13:41:06.000000000 +0200
+@@ -279,6 +279,7 @@
+ 	SNMP_MIB_ITEM("TCPWantZeroWindowAdv", LINUX_MIB_TCPWANTZEROWINDOWADV),
+ 	SNMP_MIB_ITEM("TCPSynRetrans", LINUX_MIB_TCPSYNRETRANS),
+ 	SNMP_MIB_ITEM("TCPOrigDataSent", LINUX_MIB_TCPORIGDATASENT),
++	SNMP_MIB_ITEM("TCPWqueueTooBig", LINUX_MIB_TCPWQUEUETOOBIG),
+ 	SNMP_MIB_SENTINEL
+ };
+ 
+--- linux-3.10/net/ipv4/sysctl_net_ipv4.c	2019-04-03 16:26:44.000000000 +0200
++++ linux-3.10/net/ipv4/sysctl_net_ipv4.c	2019-06-21 13:41:06.000000000 +0200
+@@ -35,6 +35,8 @@
+ static int ip_local_port_range_max[] = { 65535, 65535 };
+ static int tcp_adv_win_scale_min = -31;
+ static int tcp_adv_win_scale_max = 31;
++static int tcp_min_snd_mss_min = TCP_MIN_SND_MSS;
++static int tcp_min_snd_mss_max = 65535;
+ static int ip_ttl_min = 1;
+ static int ip_ttl_max = 255;
+ static int tcp_syn_retries_min = 1;
+@@ -846,6 +848,15 @@
+ 		.proc_handler	= proc_dointvec
+ 	},
+ 	{
++		.procname	= "tcp_min_snd_mss",
++		.data		= &init_net.ipv4.sysctl_tcp_min_snd_mss,
++		.maxlen		= sizeof(int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec_minmax,
++		.extra1		= &tcp_min_snd_mss_min,
++		.extra2		= &tcp_min_snd_mss_max,
++	},
++	{
+ 		.procname	= "tcp_mem",
+ 		.maxlen		= sizeof(init_net.ipv4.sysctl_tcp_mem),
+ 		.mode		= 0644,
+--- linux-3.10/net/ipv4/tcp.c	2019-04-03 16:26:44.000000000 +0200
++++ linux-3.10/net/ipv4/tcp.c	2019-06-21 13:41:06.000000000 +0200
+@@ -3523,6 +3523,7 @@
+ 	int max_rshare, max_wshare, cnt;
+ 	unsigned int i;
+ 
++	BUILD_BUG_ON(TCP_MIN_SND_MSS <= MAX_TCP_OPTION_SPACE);
+ 	BUILD_BUG_ON(sizeof(struct tcp_skb_cb) > sizeof(skb->cb));
+ 
+ 	percpu_counter_init(&tcp_sockets_allocated, 0);
+--- linux-3.10/net/ipv4/tcp_input.c	2019-04-03 16:26:44.000000000 +0200
++++ linux-3.10/net/ipv4/tcp_input.c	2019-06-21 13:41:06.000000000 +0200
+@@ -1277,7 +1277,7 @@
+ 	TCP_SKB_CB(skb)->seq += shifted;
+ 
+ 	skb_shinfo(prev)->gso_segs += pcount;
+-	BUG_ON(skb_shinfo(skb)->gso_segs < pcount);
++	WARN_ON_ONCE(skb_shinfo(skb)->gso_segs < pcount);
+ 	skb_shinfo(skb)->gso_segs -= pcount;
+ 
+ 	/* When we're adding to gso_segs == 1, gso_size will be zero,
+@@ -1345,6 +1345,21 @@
+ 	return !skb_headlen(skb) && skb_is_nonlinear(skb);
+ }
+ 
++int tcp_skb_shift(struct sk_buff *to, struct sk_buff *from,
++		  int pcount, int shiftlen)
++{
++	/* TCP min gso_size is 8 bytes (TCP_MIN_GSO_SIZE)
++	 * Since TCP_SKB_CB(skb)->tcp_gso_segs is 16 bits, we need
++	 * to make sure not storing more than 65535 * 8 bytes per skb,
++	 * even if current MSS is bigger.
++	 */
++	if (unlikely(to->len + shiftlen >= 65535 * TCP_MIN_GSO_SIZE))
++		return 0;
++	if (unlikely(tcp_skb_pcount(to) + pcount > 65535))
++		return 0;
++	return skb_shift(to, from, shiftlen);
++}
++
+ /* Try collapsing SACK blocks spanning across multiple skbs to a single
+  * skb.
+  */
+@@ -1356,6 +1371,7 @@
+ 	struct tcp_sock *tp = tcp_sk(sk);
+ 	struct sk_buff *prev;
+ 	int mss;
++	int next_pcount;
+ 	int pcount = 0;
+ 	int len;
+ 	int in_sack;
+@@ -1454,7 +1470,7 @@
+ 	if (!after(TCP_SKB_CB(skb)->seq + len, tp->snd_una))
+ 		goto fallback;
+ 
+-	if (!skb_shift(prev, skb, len))
++	if (!tcp_skb_shift(prev, skb, pcount, len))
+ 		goto fallback;
+ 	if (!tcp_shifted_skb(sk, skb, state, pcount, len, mss, dup_sack))
+ 		goto out;
+@@ -1473,11 +1489,11 @@
+ 		goto out;
+ 
+ 	len = skb->len;
+-	if (skb_shift(prev, skb, len)) {
+-		pcount += tcp_skb_pcount(skb);
+-		tcp_shifted_skb(sk, skb, state, tcp_skb_pcount(skb), len, mss, 0);
++	next_pcount = tcp_skb_pcount(skb);
++	if (tcp_skb_shift(prev, skb, next_pcount, len)) {
++		pcount += next_pcount;
++		tcp_shifted_skb(sk, skb, state, next_pcount, len, mss, 0);
+ 	}
+-
+ out:
+ 	state->fack_count += pcount;
+ 	return prev;
+--- linux-3.10/net/ipv4/tcp_ipv4.c	2019-04-03 16:26:44.000000000 +0200
++++ linux-3.10/net/ipv4/tcp_ipv4.c	2019-06-21 13:41:06.000000000 +0200
+@@ -2721,6 +2721,7 @@
+ 		*per_cpu_ptr(net->ipv4.tcp_sk, cpu) = sk;
+ 	}
+ 	net->ipv4.sysctl_tcp_ecn = 2;
++	net->ipv4.sysctl_tcp_min_snd_mss = TCP_MIN_SND_MSS;
+ 	return 0;
+ 
+ fail:
+--- linux-3.10/net/ipv4/tcp_output.c	2019-04-03 16:26:44.000000000 +0200
++++ linux-3.10/net/ipv4/tcp_output.c	2019-06-21 13:41:06.000000000 +0200
+@@ -1132,6 +1132,11 @@
+ 	if (nsize < 0)
+ 		nsize = 0;
+ 
++	if (unlikely((sk->sk_wmem_queued >> 1) > sk->sk_sndbuf)) {
++		NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPWQUEUETOOBIG);
++		return -ENOMEM;
++	}
++
+ 	if (skb_unclone(skb, GFP_ATOMIC))
+ 		return -ENOMEM;
+ 
+@@ -1309,8 +1314,7 @@
+ 	mss_now -= icsk->icsk_ext_hdr_len;
+ 
+ 	/* Then reserve room for full set of TCP options and 8 bytes of data */
+-	if (mss_now < 48)
+-		mss_now = 48;
++	mss_now = max(mss_now, sock_net(sk)->ipv4.sysctl_tcp_min_snd_mss);
+ 	return mss_now;
+ }
+ 
+--- linux-3.10/net/ipv4/tcp_timer.c	2019-04-03 16:26:44.000000000 +0200
++++ linux-3.10/net/ipv4/tcp_timer.c	2019-06-21 13:41:06.000000000 +0200
+@@ -108,12 +108,14 @@
+ 			icsk->icsk_mtup.enabled = 1;
+ 			tcp_sync_mss(sk, icsk->icsk_pmtu_cookie);
+ 		} else {
++			struct net *net = sock_net(sk);
+ 			struct tcp_sock *tp = tcp_sk(sk);
+ 			int mss;
+ 
+ 			mss = tcp_mtu_to_mss(sk, icsk->icsk_mtup.search_low) >> 1;
+ 			mss = min(sysctl_tcp_base_mss, mss);
+ 			mss = max(mss, 68 - tp->tcp_header_len);
++			mss = max(mss, net->ipv4.sysctl_tcp_min_snd_mss);
+ 			icsk->icsk_mtup.search_low = tcp_mss_to_mtu(sk, mss);
+ 			tcp_sync_mss(sk, icsk->icsk_pmtu_cookie);
+ 		}
