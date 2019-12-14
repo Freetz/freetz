@@ -70,6 +70,7 @@ Latest changes
   * squashfs-tools-4.3: a special version of squashfs-tools modified to support AVM-BE format
   * bzimage2eva / eva2bzimage: conversion tools for PUMA6 kernels
   * patchelf: small utility to modify the dynamic linker and RPATH of ELF executables
+  * uimg: tool to pack/unpack PUMA7 .uimg files (Intel Unified Image v3)
 
 - New patches (read online help for more info):
     * udevmount: extends storage mounting of udev
