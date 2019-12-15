@@ -3,6 +3,7 @@
 show_log() {
 	local log=$1 title
 	case $log in
+		/proc/avm/log_sd/*) title=${log#/proc/avm/log_sd/} ;;
 		/var/log/*) title=${log#/var/log/} ;;
 		/var/tmp/*) title=${log#/var/tmp/} ;;
 		/var/flash/*) title=${log#/var/flash/} ;;
@@ -34,6 +35,11 @@ fi
 case "$3" in
 	logs_avm*)
 		logg=false
+
+		do_log /proc/avm/log_sd/crash
+		do_log /proc/avm/log_sd/crash2
+		do_log /proc/avm/log_sd/panic
+		do_log /proc/avm/log_sd/panic2
 
 		do_log /var/flash/crash.log
 		do_log /var/flash/panic
