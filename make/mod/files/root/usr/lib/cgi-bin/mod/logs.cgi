@@ -1,19 +1,10 @@
 . /usr/lib/cgi-bin/mod/modlibcgi
 
 show_log() {
-	local log=$1 title
-	case $log in
-		/proc/avm/log_sd/*) title=${log#/proc/avm/log_sd/} ;;
-		/var/log/*) title=${log#/var/log/} ;;
-		/var/tmp/*) title=${log#/var/tmp/} ;;
-		/var/flash/*) title=${log#/var/flash/} ;;
-		*) title=$log ;;
-	esac
-
-	/usr/bin/checkempty "$log" 2>/dev/null
-	if [ $? -ne 0 ]; then
+	local log="$1"
+	if ! /usr/bin/checkempty "$log" 2>/dev/null; then
 		logg=true
-		echo "<h1><a href='$SCRIPT_NAME$log'>$title</a></h1>"
+		echo "<h1><a href='$SCRIPT_NAME$log'>${log##*/}</a></h1>"
 		echo "<pre class='log ${class:-small}'>"
 		html < "$log" | highlight
 		echo '</pre>'
@@ -71,3 +62,4 @@ case "$3" in
 		do_log /var/log/mod_mount.log
 		;;
 esac
+
