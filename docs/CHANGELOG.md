@@ -130,7 +130,7 @@ Latest changes
     * lzma1 4.65
     * mbed TLS 2.7.12
     * minisatip 1.0.2
-    * Mosquitto 1.4.15
+    * Mosquitto 1.6.8
     * MySQL 6.0.11-alpha
     * nzbget 14.1
     * PJProject 2.2.1
