@@ -57,7 +57,7 @@
   * **<u>bfusb: AVM BlueFRITZ! USB stick support (binary only)</u><a id='bfusb'></a>**<br>
     This package adds support for the AVM BlueFRITZ! USB stick.
 
-  * **[BIND 9.11.9](../docs/make/bind.md)<a id='bind'></a>**<br>
+  * **[BIND 9.11.13](../docs/make/bind.md)<a id='bind'></a>**<br>
     BIND is an implementation of the Domain Name System (DNS) protocols. The name BIND stands for "Berkeley Internet Name Daemon". You have to provide the config and needed zone files yourself.
      - [named.conf](../docs/make/bind.md#namedconf)
 
@@ -1044,8 +1044,8 @@
      - [Mögliche Nebeneffekte](../docs/make/mini_fo.md#mögliche-nebeneffekte)
      - [Restore original file](../docs/make/mini_fo.md#restore-original-file)
 
-  * **<u>Mosquitto 1.4.15</u><a id='mosquitto'></a>**<br>
-    Eclipse Mosquitto™ is an open source (EPL/EDL licensed) message broker that implements the MQTT protocol versions 3.1 and 3.1.1. MQTT provides a lightweight method of carrying out messaging using a publish/subscribe model. This makes it suitable for "Internet of Things" messaging such as with low power sensors or mobile devices such as phones, embedded computers or microcontrollers like the Arduino.
+  * **<u>Mosquitto 1.6.8</u><a id='mosquitto'></a>**<br>
+    Eclipse Mosquitto™ is an open source (EPL/EDL licensed) message broker that implements the MQTT protocol versions 5.0, 3.1.1 and 3.1. MQTT provides a lightweight method of carrying out messaging using a publish/subscribe model. This makes it suitable for "Internet of Things" messaging such as with low power sensors or mobile devices such as phones, embedded computers or microcontrollers like the Arduino.
 
   * **[MySQL 6.0.11-alpha](../docs/make/mysql.md)<a id='mysql'></a>**<br>
     MySQL is a very fast, multi-threaded, multi-user and robust SQL (Structured Query Language) database server. Unstable, as this version is quite old, but runs well on Fritzbox. Do not expose this daemon to the internet!

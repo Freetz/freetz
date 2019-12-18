@@ -43,7 +43,7 @@
   * **<u>bfusb: AVM BlueFRITZ! USB stick support (binary only)</u><a id='bfusb'></a>**<br>
     This package adds support for the AVM BlueFRITZ! USB stick.
 
-  * **[BIND 9.11.9](bind.md)<a id='bind'></a>**<br>
+  * **[BIND 9.11.13](bind.md)<a id='bind'></a>**<br>
     BIND is an implementation of the Domain Name System (DNS) protocols. The name BIND stands for "Berkeley Internet Name Daemon". You have to provide the config and needed zone files yourself.
 
   * **[Bip](bip.md)<a id='bip'></a>**<br>
@@ -758,8 +758,8 @@
   * **[mini_fo 0.3](mini_fo.md)<a id='mini-fo'></a>**<br>
     Makes the filesystem writeable. Changes are not reboot-persistent, unless stored on a hard disk or on flash storage media. The way mini_fo is configured here creates the overlay filesystem in the router's RAM disk, so they definitely are *not* reboot-persistent. Nonetheless, mini_fo is tremendously helpful, eliminating the need for tricks like 'mount -o bind' etc. Note: The mini_fo root filesystem will not be used if an NFS-root was mounted first (see NFS-root package). Still, both packages can be installed at the same time, because mini_fo is still useful if NFS-root is decativated. This package does not work with (at least) 7390 at the moment.
 
-  * **<u>Mosquitto 1.4.15</u><a id='mosquitto'></a>**<br>
-    Eclipse Mosquitto™ is an open source (EPL/EDL licensed) message broker that implements the MQTT protocol versions 3.1 and 3.1.1. MQTT provides a lightweight method of carrying out messaging using a publish/subscribe model. This makes it suitable for "Internet of Things" messaging such as with low power sensors or mobile devices such as phones, embedded computers or microcontrollers like the Arduino.
+  * **<u>Mosquitto 1.6.8</u><a id='mosquitto'></a>**<br>
+    Eclipse Mosquitto™ is an open source (EPL/EDL licensed) message broker that implements the MQTT protocol versions 5.0, 3.1.1 and 3.1. MQTT provides a lightweight method of carrying out messaging using a publish/subscribe model. This makes it suitable for "Internet of Things" messaging such as with low power sensors or mobile devices such as phones, embedded computers or microcontrollers like the Arduino.
 
   * **[MySQL 6.0.11-alpha](mysql.md)<a id='mysql'></a>**<br>
     MySQL is a very fast, multi-threaded, multi-user and robust SQL (Structured Query Language) database server. Unstable, as this version is quite old, but runs well on Fritzbox. Do not expose this daemon to the internet!
