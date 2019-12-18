@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.4.15)
+$(call PKG_INIT_BIN, 1.6.8)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=546cb1ce35cc3f7d23e6d2f1f9a962e7
+$(PKG)_SOURCE_MD5:=24a0e567c845b3e41b75e237d200edf8
 $(PKG)_SITE:=http://mosquitto.org/files/source
 
 $(PKG)_CATEGORY:=Unstable
@@ -28,6 +28,7 @@ $(PKG)_MAKE_OPTIONS += WITH_DOCS=no
 $(PKG)_MAKE_OPTIONS += WITH_SRV=no
 $(PKG)_MAKE_OPTIONS += WITH_UUID=$(if $(FREETZ_PACKAGE_MOSQUITTO_WITH_UUID),yes,no)
 $(PKG)_MAKE_OPTIONS += WITH_TLS=$(if $(FREETZ_PACKAGE_MOSQUITTO_WITH_SSL),yes,no)
+$(PKG)_MAKE_OPTIONS += WITH_MEMORY_TRACKING=no  # Note: Setting this to "yes" requires uClibc >= 1.0.29
 
 $(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_MOSQUITTO_WITH_UUID),e2fsprogs)
 $(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_MOSQUITTO_WITH_SSL),openssl)

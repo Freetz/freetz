@@ -130,7 +130,7 @@ Latest changes
     * lzma1 4.65
     * mbed TLS 2.7.12
     * minisatip 1.0.2
-    * Mosquitto 1.4.15
+    * Mosquitto 1.6.8
     * MySQL 6.0.11-alpha
     * nzbget 14.1
     * PJProject 2.2.1
@@ -186,7 +186,7 @@ Latest changes
     * apr 1.7.0
     * apr-util 1.6.1
     * bash 3.2.57
-    * BIND 9.11.9
+    * BIND 9.11.13
     * Bip 0.8.9/0.9.0-rc3
     * bird 1.6.4
     * CCID driver 1.4.30
