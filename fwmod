@@ -418,6 +418,7 @@ function image_details() {
 	#AVM_FW_REVISION
 	local AVM_FW_DATE
 	local AVM_FW_CYCLE
+	local AVM_FM_REGION
 	#SOURCE_IMAGE_DETAILS
 	#
 	AVM_FW_PRODUCT="$(sed -rn 's/Annex./Annex/;s/export CONFIG_PRODUKT_NAME=".*([0-9]{3}[0-9V].*)"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | head -n1)" # 4-digits in /etc/init.d/rc.conf
@@ -445,8 +446,13 @@ function image_details() {
 	[ -z "$AVM_FW_DATE" ] && AVM_FW_DATE="$(date -d"$(stat -c '%y' ${FILESYSTEM_DIR}/etc/version)" "+%d.%m.%Y %H:%M:%S")" # newer firmware
 	AVM_FW_CYCLE="$(sed -rn 's/^Releasecycle=//p' "${FIRMWARE_DIR}/var/content" 2>/dev/null)"
 	[ -n "$AVM_FW_CYCLE" ] && AVM_FW_CYCLE=" [$AVM_FW_CYCLE]"
+	[ "$FREETZ_AVM_HAS_BRANDING_avm" == "y" ]                                            && AVM_FM_REGION='GER'
+	[ "$FREETZ_AVM_HAS_BRANDING_avme" == "y" ]                                           && AVM_FM_REGION='INT'
+	[ "$FREETZ_AVM_HAS_BRANDING_avme" == "y" -a "$FREETZ_AVM_HAS_BRANDING_avm" == "y" ]  && AVM_FM_REGION='ALL'
+	[ "$FREETZ_TYPE_LANG_IT" == "y" ]                                                    && AVM_FM_REGION='ITA'
+	[ "$FREETZ_TYPE_LANG_A_CH" == "y" ]                                                  && AVM_FM_REGION='ACH'
 	#
-	SOURCE_IMAGE_DETAILS="${AVM_FW_PRODUCT/ /-}${AVM_FW_LANGUAGE} ${AVM_FW_MAJOR}.${AVM_FW_VERSION}${AVM_FW_LABOR} rev${AVM_FW_REVISION}${AVM_FW_CYCLE} (${AVM_FW_DATE})"
+	SOURCE_IMAGE_DETAILS="${AVM_FW_PRODUCT/ /-}${AVM_FW_LANGUAGE} ${AVM_FW_MAJOR}.${AVM_FW_VERSION}${AVM_FW_LABOR} rev${AVM_FW_REVISION} {${AVM_FM_REGION}}${AVM_FW_CYCLE} (${AVM_FW_DATE})"
 }
 
 echo
@@ -2007,7 +2013,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 		echo1 "signed image file size: $(byte_to_mb $(wc -c < "${img_name}")) ($(wc -c < "${img_name}") bytes)"
 	fi
 
-	echo0 "source firmware details: ${SOURCE_IMAGE_DETAILS} ${SOURCE_IMAGE_SIZE}"
+	echo0 "source firmware: ${SOURCE_IMAGE_DETAILS} ${SOURCE_IMAGE_SIZE}"
 	echo1 "source image file size: $(byte_to_mb $(wc -c < "${FIRMWARE}")) ($(wc -c < "${FIRMWARE}") bytes)"
 
 	# create the link images/latest.image to the just created .image
