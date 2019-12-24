@@ -446,11 +446,11 @@ function image_details() {
 	[ -z "$AVM_FW_DATE" ] && AVM_FW_DATE="$(date -d"$(stat -c '%y' ${FILESYSTEM_DIR}/etc/version)" "+%d.%m.%Y %H:%M:%S")" # newer firmware
 	AVM_FW_CYCLE="$(sed -rn 's/^Releasecycle=//p' "${FIRMWARE_DIR}/var/content" 2>/dev/null)"
 	[ -n "$AVM_FW_CYCLE" ] && AVM_FW_CYCLE=" [$AVM_FW_CYCLE]"
-	[ "$FREETZ_AVM_HAS_BRANDING_avm" == "y" ]                                            && AVM_FM_REGION='GER'
-	[ "$FREETZ_AVM_HAS_BRANDING_avme" == "y" ]                                           && AVM_FM_REGION='INT'
-	[ "$FREETZ_AVM_HAS_BRANDING_avme" == "y" -a "$FREETZ_AVM_HAS_BRANDING_avm" == "y" ]  && AVM_FM_REGION='ALL'
-	[ "$FREETZ_TYPE_LANG_IT" == "y" ]                                                    && AVM_FM_REGION='ITA'
-	[ "$FREETZ_TYPE_LANG_A_CH" == "y" ]                                                  && AVM_FM_REGION='ACH'
+	[ -d ${FILESYSTEM_DIR}/etc/default.*/avm/ ]                                              && AVM_FM_REGION='GER'
+	[ -d ${FILESYSTEM_DIR}/etc/default.*/avme/ ]                                             && AVM_FM_REGION='INT'
+	[ -d ${FILESYSTEM_DIR}/etc/default.*/avme/ -a -d ${FILESYSTEM_DIR}/etc/default.*/avm/ ]  && AVM_FM_REGION='ALL'
+	[ "$FREETZ_TYPE_LANG_IT" == "y" ]                                                        && AVM_FM_REGION='ITA'
+	[ "$FREETZ_TYPE_LANG_A_CH" == "y" ]                                                      && AVM_FM_REGION='ACH'
 	#
 	SOURCE_IMAGE_DETAILS="${AVM_FW_PRODUCT/ /-}${AVM_FW_LANGUAGE} ${AVM_FW_MAJOR}.${AVM_FW_VERSION}${AVM_FW_LABOR} rev${AVM_FW_REVISION} {${AVM_FM_REGION}}${AVM_FW_CYCLE} (${AVM_FW_DATE})"
 }
