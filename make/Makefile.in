@@ -621,7 +621,7 @@ define PKG_SOURCE_DOWNLOAD__INT
 NON_LOCALSOURCE_PACKAGES+=$(pkg)
 $(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
 	$(call _ECHO,downloading)
-	@if [ -e $(MIRROR_DIR)/$($(PKG)_SOURCE) ]; then \
+	@if [ -e $(MIRROR_DIR)/$($(PKG)_SOURCE) -a ! -e $(DL_DIR)/$($(PKG)_SOURCE) ]; then \
 		$(call MESSAGE, Found $($(PKG)_SOURCE) in $(MIRROR_DIR), creating hard link); \
 		ln $(MIRROR_DIR)/$($(PKG)_SOURCE) $(DL_DIR); \
 	else \
