@@ -1,6 +1,6 @@
 #!/bin/sh
 
-VALS="$(echo ar7cfg.internet_forwardrules | ar7cfgctl -s | grep -v '^ar7cfg$' | sed 's/, /\n/g' | sed -rn 's/^\"([ut][dc]p) 0.0.0.0:([^ ]*) [^:]*:([^\"]*).*/\2_\1:\3/p' | sort -n)"
+VALS="$(echo ar7cfg.internet_forwardrules | ar7cfgctl -s | grep -v '^ar7cfg$' | sed 's/ 0 mark 1//g;s/, /\n/g' | sed -rn 's/^\"([ut][dc]p) 0.0.0.0:([^ ]*) [^:]*:([^\"]*).*/\2_\1:\3/p' | sort -n)"
 AVM_PORTFW_TCP="$(for x in $(echo "$VALS" | sed -rn 's/_tcp//p'); do [ "$(echo $x | sed 's/[+:_].*//')" == "${x#*:}" ] && x="${x%:*}"; echo -n "$x "; done | sed 's/ $//')"
 AVM_PORTFW_UDP="$(for x in $(echo "$VALS" | sed -rn 's/_udp//p'); do [ "$(echo $x | sed 's/[+:_].*//')" == "${x#*:}" ] && x="${x%:*}"; echo -n "$x "; done | sed 's/ $//')"
 echo -e "export AVM_PORTFW_TCP='$AVM_PORTFW_TCP'\nexport AVM_PORTFW_UDP='$AVM_PORTFW_UDP'" > /mod/etc/conf/avm-portfw.cfg
