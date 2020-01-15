@@ -20,7 +20,8 @@ config FREETZ_TYPE_DSL
 			!FREETZ_TYPE_CABLE && \
 			!FREETZ_TYPE_EXTENDER && \
 			!FREETZ_TYPE_FIBER && \
-			!FREETZ_TYPE_LTE \
+			!FREETZ_TYPE_LTE && \
+			!FREETZ_TYPE_WAN \
 		)
 
 config FREETZ_TYPE_EXTENDER
@@ -55,6 +56,13 @@ config FREETZ_TYPE_LTE
 		FREETZ_TYPE_6840 || \
 		FREETZ_TYPE_6842 || \
 		FREETZ_TYPE_6890
+
+config FREETZ_TYPE_WAN
+	bool
+	default y
+	depends on \
+		FREETZ_TYPE_4020 || \
+		FREETZ_TYPE_4040
 
 
 # Multi-Annex support, i.e. the same firmware image can be used both for Annex A and B
