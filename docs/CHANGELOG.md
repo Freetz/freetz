@@ -89,7 +89,7 @@ Latest changes
       traffic MB in GB.
 
 - New packages, libs, modules:
-    * ACME.sh 2.83 (letsencrypt)
+    * ACME.sh 2.85 (letsencrypt)
     * Addhole (for dnsmasq) 1.0
     * asterisk 11.25.3
     * asterisk-chan-capi post-1.1.6 with asterisk11 adjustments by Mihai Moldovan

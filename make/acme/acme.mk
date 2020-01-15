@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, b8cc10ab5dd7925b022ecf32ab0650b5c784cc86)
+$(call PKG_INIT_BIN, d4dad58b0da9cc70a9665e1f44643c980e9c64ea)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SOURCE_CHECKSUM:=X
 $(PKG)_SITE:=git@https://github.com/Neilpang/acme.sh.git
