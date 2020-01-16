@@ -1,6 +1,6 @@
 --- lib/libcryptsetup.h
 +++ lib/libcryptsetup.h
-@@ -1225,6 +1225,8 @@
+@@ -1231,6 +1231,8 @@
  
  /** @} */
  
@@ -52,7 +52,7 @@
  	ms_enc = 0.0;
 --- src/cryptsetup_reencrypt.c
 +++ src/cryptsetup_reencrypt.c
-@@ -157,7 +157,7 @@
+@@ -160,7 +160,7 @@
  		goto out;
  	}
  
@@ -61,7 +61,7 @@
  		log_err(_("Allocation of aligned memory failed.\n"));
  		r = -ENOMEM;
  		goto out;
-@@ -910,7 +910,7 @@
+@@ -916,7 +916,7 @@
  	else
  		rc->device_size = rc->device_size_new_real;
  

@@ -94,7 +94,7 @@
   * **[Cpmaccfg 0.6 (binary only)](cpmaccfg.md)<a id='cpmaccfg'></a>**<br>
     With a patched kernel and this tool it is possible to
 
-  * **<u>cryptsetup 1.7.0 (binary only)</u><a id='cryptsetup'></a>**<br>
+  * **<u>cryptsetup 1.7.5 (binary only)</u><a id='cryptsetup'></a>**<br>
     cryptsetup is used to conveniently setup dm-crypt managed block devices under Linux. Hint: Don't forget to insmod all selected modules.
 
   * **[Ctorrent dnh3.3.2 (binary only)](ctorrent.md)<a id='ctorrent'></a>**<br>
