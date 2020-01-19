@@ -1,4 +1,4 @@
-# mc (Midnight Commander) 4.8.23 (binary only)
+# mc (Midnight Commander) 4.8.24 (binary only)
 
 Der Midnight Commander ist ein OpenSource-Klon des Norton Commander -
 und wesentlich umfangreicher als z.B. der [DECO](deco.md), was
