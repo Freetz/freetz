@@ -318,6 +318,13 @@ config FREETZ_MODULE_ftdi_sio
 	select FREETZ_MODULE_usbserial if FREETZ_KERNEL_VERSION_2_6_19_MAX
 	default n
 
+config FREETZ_MODULE_ch341
+	bool "ch341.ko"
+	depends on FREETZ_AVM_HAS_USB_HOST
+	depends on FREETZ_KERNEL_VERSION_2_6_13
+	select FREETZ_MODULE_usbserial
+	default n
+
 config FREETZ_MODULE_hci_usb
 	bool "hci_usb.ko"
 	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
