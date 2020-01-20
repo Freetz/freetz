@@ -153,14 +153,14 @@ Currently supported devices and firmwares
 * __Fritz!Box 6820 v1 LTE__
   - 142.06.83 rev43648 {ALL}
   - 142.07.01 rev63482 {GER}
-  - 142.07.12 rev71361 {GER} [MESH18 NL2]
+  - 142.07.13 rev73673 {GER} [MESH18 NL3]
 * __Fritz!Box 6820 v2 LTE__
   - 142.06.83 rev43648 {ALL}
-  - 142.07.12 rev71362 {INT} [MESH18 NL2]
+  - 142.07.13 rev73674 {INT} [MESH18 NL3]
 * __Fritz!Box 6890 LTE__
   - 162.06.87 rev59283 {ALL}
   - 162.07.03 rev68723 {ALL}
-  - 162.07.12 rev71363 {ALL} [MESH18 NL2]
+  - 162.07.13 rev73668 {ALL} [MESH18 NL3]
 
 ### Fritz!Box Fon WLAN (70xx)
 
