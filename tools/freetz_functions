@@ -198,7 +198,7 @@ mod_del_area() {
 
 	# check file exists
 	if [ ! -f "$file" ]; then
-		warn3 "mod_del_area: file '$file' does not exist"
+		[ "${file/\/doesnotexist\//}" == "$file" ] && warn3 "mod_del_area: file '$file' does not exist"
 		return
 	fi
 
