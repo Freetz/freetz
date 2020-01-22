@@ -1,5 +1,19 @@
 # NEWS
 
+ * __2020-01-19__<br>
+   Compilierfehler beim Kernel für 7490 etc.<br>
+   Dies kann durch einen nicht angewendeten Patch auftreten.<br>
+   Zum beheben reicht ```make kernel-dirclean``` aus.<br>
+   Siehe [r16472](https://trac.boxmatrix.info/freetz-ng/changeset/16472/freetz-ng) / 4421b48d92022fa9e15d50edd3384dbe6089111b<br>
+   Siehe [r16464](https://trac.boxmatrix.info/freetz-ng/changeset/16464/freetz-ng) / 66c33a0a9e2c945a9ff70a7f527819402b6073e7<br>
+   Siehe [r16459](https://trac.boxmatrix.info/freetz-ng/changeset/16459/freetz-ng) / fcf48be8ff4385f5bfb264b96ee61c3d903d28ef<br>
+
+ * __2019-12-11__<br>
+   FRITZ!Box 6591 Cable Support.<br>
+   Images für dieses Gerät können nun gebaut werden, sind aber noch nicht lauffähig.<br>
+   Den aktuellen Status kann man [FIRMWARES](FIRMWARES.md#not-supported-devices) entnehmen.<br>
+   Siehe [r16424](https://trac.boxmatrix.info/freetz-ng/changeset/16424/freetz-ng) / 2c56b5354f0e2aa06d87ab7c6aedd70b639be08e <br>
+
  * __2019-11-06__<br>
    Das Trac auf boxmatrix funktioniert aktuell nicht richtig.<br>
    Bitte stattdessen das [DEB](https://www.digital-eliteboard.com/forums/2045/) oder [Github](https://github.com/Freetz-NG/freetz-ng/issues) verwenden.<br>
@@ -91,10 +105,31 @@
    Siehe [r15530](https://trac.boxmatrix.info/freetz-ng/changeset/15530/freetz-ng) / dcbd4885dea3ee8ef7a15a54ecd852ce913a0492<br>
    Siehe [r15505](https://trac.boxmatrix.info/freetz-ng/changeset/15505/freetz-ng) / 8f3314576395b855356a7515ce86e4ceb13414a9<br>
 
+ * __2019-04-15__<br>
+   Das Downloadverzeichnis ```./dl``` ist nun ein Link.<br>
+   Dieser verweiset auf ```~/.freetz-dl``` wodurch mehrere Checkouts sich das gleiche Verzeichis teilen.<br>
+   Wem dies nicht gefällt kann den Link durch ein Verzeichnis ersetzen.<br>
+   Siehe [r15411](https://trac.boxmatrix.info/freetz-ng/changeset/15411/freetz-ng) / 0c7fafc8ee4b980c89aece585a196b38cff579c6<br>
+
  * __2019-04-02__<br>
    Package [ProxyChains-NG](make/proxychains-ng.md) hinzugefügt.<br>
    Damit kann jedes Programm einen Proxy verwenden.<br>
    Siehe [r15112](https://trac.boxmatrix.info/freetz-ng/changeset/15112/freetz-ng) / d8f65059f28ff8f22332efb73059e6ae7d21f04c<br>
+
+ * __2019-03-12__<br>
+   Änderung bei der Signierung von Images.<br>
+   Der private Schlüssel wird in ```./.signature``` abgelegt. Dies ist ein Link auf ```~/.freetz-signature```.<br>
+   Damit nutzt jeder Checkout den gleichen Schlüssel und benötigt das gleiche Passwort.<br>
+   Wem dies nicht gefällt kann den Link durch ein Verzeichnis ersetzen.<br>
+   Siehe [r15300](https://trac.boxmatrix.info/freetz-ng/changeset/15300/freetz-ng) / c3437a4eb47bcefa209aefa67d77b9de606c4676<br>
+
+ * __2019-03-08__<br>
+   Signaturprüfung von AVM-Images beim _Entpacken_.<br>
+   Bislang wurde die Firmware nach dem _Download_ mittel MD5 geprüft.<br>
+   Dies hatte den Nachteil dass eine Dateien die manuell nach dl/fw/ kopiert wurden nicht geprüft wurden.<br>
+   Man kann die Signatur auch manuell mit ```fwmod -v $key $img``` prüfen.<br>
+   Hinweis: Die allerersten AVM Geräte nutzten noch keine Signatur und werden weiterhin via MD5 geprüft.<br>
+   Siehe [r15284](https://trac.boxmatrix.info/freetz-ng/changeset/15284/freetz-ng) / be2994f7e61c3168617905e665462569d9110b71<br>
 
  * __2019-02-04__<br>
    Package [CA-bundle](make/ca-bundle.md) (ursprünglich CAbundle) hinzugefügt.<br>
@@ -105,6 +140,25 @@
    Freetz-Webui: Option "Downgrade" des Firmware-Updates repariert.<br>
    Nach einem Downgrade sollte man die Einstellungen zurücksetzen oder ein Backup einspielen.<br>
    Siehe [r15190](https://trac.boxmatrix.info/freetz-ng/changeset/15190/freetz-ng) / f300b9a71754d98a56e6794770269cb63142fc60<br>
+
+ * __2019-02-04__<br>
+   Patch [modify-dsl-dettings](patches/MODIFY_DSL_SETTINGS.md) hinzugefügt.<br>
+   Mit diesem Patch wird die DSL Störsicherheit um 4 Performance-Stufen erweitert.<br>
+   Siehe [r15100](https://trac.boxmatrix.info/freetz-ng/changeset/15100/freetz-ng) / 09aae63ee888ea4d3cbe38d0ef9990a73e04bf31<br>
+   Siehe [r15119](https://trac.boxmatrix.info/freetz-ng/changeset/15119/freetz-ng) / 262d8a9ee9dc8c05dda60974b93ce531c91194f2<br>
+
+ * __2019-02-04__<br>
+   Patch [modify-counter](patches/MODIFY_COUNTER.md) hinzugefügt.<br>
+   Mit diesem Patch wird der Online-Zähler von AVM verändert, es werden Gigabyte und Tage engezeigt.<br>
+   Siehe [r15099](https://trac.boxmatrix.info/freetz-ng/changeset/15099/freetz-ng) / e6d16b75436fdb8322434b5e380ae5e05d9ec604<br>
+   Siehe [r15119](https://trac.boxmatrix.info/freetz-ng/changeset/15119/freetz-ng) / 262d8a9ee9dc8c05dda60974b93ce531c91194f2<br>
+
+ * __2019-02-01__<br>
+   Freetz-Webui: Hostname im Seitentitel.<br>
+   Es wird der Hostname ohne Domain angezeigt, falls er verändert wurde.<br>
+   Diesen kann man in der ar7.cfg mit Domain oder im AVM-Webui unter "Fritz!Box-Name" setzen.<br>
+   Siehe [r15073](https://trac.boxmatrix.info/freetz-ng/changeset/15073/freetz-ng) / f97f66795b1a4de2e67ec8f92d646c820674ff1b<br>
+   Siehe [r15743](https://trac.boxmatrix.info/freetz-ng/changeset/15743/freetz-ng) / 9bf028d7425c18fabe689b3ae27658718169c892<br>
 
  * __2019-02-01__<br>
    Skin [cuma](themes/skin.md#cuma) (dark) hinzugefügt.<br>
