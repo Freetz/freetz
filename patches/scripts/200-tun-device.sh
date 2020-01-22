@@ -7,6 +7,12 @@ if [ "$FREETZ_KERNEL_VERSION_2_6_28" == "y" ]; then
 	modsed 's#^\(KERNEL=="tun".*\)#\1, SYMLINK+="net/tun"#' \
 	  "${FILESYSTEM_MOD_DIR}/etc/udev/rules.d/50-udev-default.rules"
 else
-	modsed 's#^\(KERNEL=="tun".*\)#\1, SYMLINK+="tun"#' \
-	  "${FILESYSTEM_MOD_DIR}/etc/udev/rules.d/50-udev-default.rules"
+	for file in \
+	  etc/udev/rules.d/50-udev-default.rules \
+	  lib/udev/rules.d/50-udev-default.rules \
+	  ; do
+		[ -e "${FILESYSTEM_MOD_DIR}/$file" ] || continue
+		modsed 's#^\(KERNEL=="tun".*\)#\1, SYMLINK+="tun"#' \
+		  "${FILESYSTEM_MOD_DIR}/$file"
+	done
 fi
