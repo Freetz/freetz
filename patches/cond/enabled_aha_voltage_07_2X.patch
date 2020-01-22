@@ -1,0 +1,35 @@
+--- usr/www/avm/webservices/homeautoswitch.lua
++++ usr/www/all/webservices/homeautoswitch.lua
+@@ -470,6 +470,8 @@
+ local power = ""
+ local voltage = ""
+ local energy = ""
++local current = ""
++local factor = ""
+ --Energy, Power und Voltage
+ if (is_device_present(device)) then
+ if(multimeterdevice.Power == -9999) then
+@@ -480,15 +482,23 @@
+ end
+ if(multimeterdevice.Voltage == -9999) then
+ voltage = ""
++current = ""
++factor = ""
+ else
+ voltage = tostring(multimeterdevice.Voltage)
++current = tostring(multimeterdevice.Current)
++factor = tostring(multimeterdevice.PowerFactor)
+ end
+ else
+ power = ""
+ energy = ""
+ voltage = ""
++current = ""
++factor = ""
+ end
+ box.out([[<voltage>]] .. voltage .. [[</voltage>]])
++box.out([[<current>]] .. current .. [[</current>]])
++box.out([[<factor>]] .. factor .. [[</factor>]])
+ --power
+ box.out([[<power>]] .. power .. [[</power>]])
+ --energy
