@@ -81,7 +81,7 @@
    Siehe [r15768](https://trac.boxmatrix.info/freetz-ng/changeset/15768/freetz-ng) / a59ff246fc55a1c438723a404bf73afda8a6e7a1<br>
 
  * __2019-06-12__<br>
-   Patch [add-swapoptions](patches/README.md#add-swapoptions) hinzugefügt.
+   Patch [add-swapoptions](patches/README.md#add-swapoptions) hinzugefügt.<br>
    Die Swap-Optionen sind nun optional und standardmässig deaktiviert.<br>
    Siehe [r15727](https://trac.boxmatrix.info/freetz-ng/changeset/15727/freetz-ng) / fcca7109eaae438d88e519bd63232d8e203b3d64<br>
 
@@ -100,6 +100,11 @@
    Package [CA-bundle](make/ca-bundle.md) (ursprünglich CAbundle) hinzugefügt.<br>
    Damit können wget, curl usw HTTPS-Zertifikate prüfen.<br>
    Siehe [r15109](https://trac.boxmatrix.info/freetz-ng/changeset/15109/freetz-ng) / 3b38f82c7b5beebe35696c7c3de9aad1d8296e8d<br>
+
+ * __2019-02-19__<br>
+   Freetz-Webui: Option "Downgrade" des Firmware-Updates repariert.<br>
+   Nach einem Downgrade sollte man die Einstellungen zurücksetzen oder ein Backup einspielen.<br>
+   Siehe [r15190](https://trac.boxmatrix.info/freetz-ng/changeset/15190/freetz-ng) / f300b9a71754d98a56e6794770269cb63142fc60<br>
 
  * __2019-02-01__<br>
    Skin [cuma](themes/skin.md#cuma) (dark) hinzugefügt.<br>
