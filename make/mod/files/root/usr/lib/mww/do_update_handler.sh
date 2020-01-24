@@ -1,6 +1,7 @@
 #!/bin/sh
 
 . /usr/lib/libmodcgi.sh
+[ -r /etc/options.cfg ] && . /etc/options.cfg
 
 # link FIFO to stdin
 exec < $1
@@ -231,7 +232,7 @@ pre_begin
 html < /var/post_install
 pre_end
 
-cat << EOF
+[ "$FREETZ_TYPE_CABLE" != "y" ] && cat << EOF
 <p>
 $(lang
 	de:"Das Nach-Installationsskript l&auml;uft beim Neustart (reboot) und f&uuml;hrt
