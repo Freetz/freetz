@@ -62,6 +62,7 @@ for X in /tmp/.lfs.wrapper /tmp/.lfs.reserve; do
 		rmdir $X
 	done
 done
+rm -f /tmp/.lfs.caching
 
 if [ "${FILENAME##*.}" != "image" ]; then
 	"<h1>$(lang de:"Update vorbereiten" en:"Prepare update")</h1>"
