@@ -1514,6 +1514,7 @@ config FREETZ_DISABLE_SERIAL_CONSOLE
 
 config FREETZ_RESTORE_DEBUG_CFG_SUPPORT
 	bool "Restore support for /var/flash/debug.cfg"
+	depends on FREETZ_AVM_VERSION_07_1X_MAX
 	depends on !FREETZ_AVM_HAS_DEBUG_CFG_SUPPORT
 	default y
 	help
