@@ -27,9 +27,9 @@ original firmware settings as well as Freetz and other installed extensions
 
 <p>$(lang
 	de:"Wiederherstellen eines zuvor gesicherten Archivs mit Einstellungen.
-Damit wird die Fritz!Box wieder in den Zustand zum Zeitpunkt der entsprechenden
+Damit wird das Ger&auml;t wieder in den Zustand zum Zeitpunkt der entsprechenden
 Sicherung versetzt."
-	en:"Restore previously saved configuration archive.  This way the Fritz!Box
+	en:"Restore previously saved configuration archive.  This way the device
 will be restored to the state it was in when you created the corresponding
 backup."
 )</p>
