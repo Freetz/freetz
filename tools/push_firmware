@@ -473,13 +473,15 @@ if [ -z "$FOUND_FTP" ]; then
 	[ ! $ISSINGLE ]  && [ -z "$LFS" ]                && echo "Parameter '-lfs' is mandatory if you have no 'ftp' installed."             && exit 1
 	[ $ISDUAL ]      && [ "$LFS" == "9" ]            && echo "Parameter '-lfs' with 0 or 1 is mandatory if you have no 'ftp' installed." && exit 1
 fi
+if [ -n "$CMD" ]; then
+	[ "$CMD" == "ftp" ] && FOUND_NCFTP=""
+	[ "$CMD" == "ncftp" ] && FOUND_FTP=""
+fi
 if [ -n "$FOUND_NCFTP" -a -n "$FOUND_FTP" ]; then
 	[ $ISRAM ]    && FOUND_NCFTP=""
 	[ $ISDUAL ]   && FOUND_NCFTP=""
 	[ $ISSINGLE ] && FOUND_FTP=""
 	[ $ISALICE ]  && FOUND_NCFTP=""
-	[ "$CMD" == "ftp" ]   && FOUND_FTP="true" || FOUND_NCFTP=""
-	[ "$CMD" == "ncftp" ] && FOUND_NCFTP="true" || FOUND_FTP=""
 fi
 [ -n "$FOUND_NCFTP" ] && UCMD="ncftpput" || UCMD="ftp"
 
