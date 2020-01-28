@@ -104,6 +104,9 @@ TOOLS_DIR="${ABS_BASE_DIR}/tools"
 source "${TOOLS_DIR}/freetz_functions" ||
 	(echo "cannot find script freetz_functions" >&2; exit 1)
 
+[ ! -x "${TOOLS_DIR}/busybox" ] && \
+	error 1 "Can not find host tools, please run 'make tools' first."
+
 [ "$DO_SIGN" -gt 0 -a $(($DO_PACK + $DO_ZIP)) -eq 0 ] && \
 	error 1 "Firmware signing without packing is not supported. Please use PeterPawn's sign_image tool to sign an already existing .image file."
 
