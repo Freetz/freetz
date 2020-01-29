@@ -11,6 +11,7 @@ else
 fi
 
 # Emergency stop switch for execution of Freetz as a whole
+[ ! -e "$dsfile" ] && echo '#!/bin/sh' > "$dsfile"
 echo '[ "$ds_off" == "y" ] || . /etc/init.d/rc.mod 2>&1 | tee /var/log/mod.log' >> "$dsfile"
 chmod +x "$dsfile"
 
