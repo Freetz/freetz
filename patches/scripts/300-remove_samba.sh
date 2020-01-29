@@ -20,6 +20,13 @@ if [ "$FREETZ_PACKAGE_SAMBA_SMBD" == "y" -o "$FREETZ_REMOVE_SAMBA" == "y" ]; the
 		  "${FILESYSTEM_MOD_DIR}/lib/libsamba.so"
 	fi
 
+	if [ -n "$SYSTEMD_CORE_MOD_DIR" ]; then
+		echo1 "remove AVM systemd files"
+		rm_files \
+		  "${FILESYSTEM_MOD_DIR}/lib/systemd/system/smb2.service" \
+		  "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.smb2"
+	fi
+
 	echo1 "patching rc.net: renaming sambastart()"
 	modsed 's/^\(sambastart *()\)/\1{ return; }\n_\1/' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.net"
 
