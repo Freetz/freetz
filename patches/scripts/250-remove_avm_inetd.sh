@@ -5,8 +5,10 @@ echo1 "removing AVM inetd"
 rm_files "${FILESYSTEM_MOD_DIR}/bin/inetdctl" # AVM wrapper / starter script for ftpd, samba and webdav
 rm_files "${FILESYSTEM_MOD_DIR}/etc/inetd.conf" # AVM Symlink to /var/tmp/inetd.conf
 
-# don't start inetd in rc.S
-if [ -e "${FILESYSTEM_MOD_DIR}/etc/init.d/S75-inetd" ]; then
+# don't start inetd
+if [ -e "${FILESYSTEM_MOD_DIR}/lib/systemd/system/inetd.service" ]; then
+	rm_files "${FILESYSTEM_MOD_DIR}/lib/systemd/system/inetd.service"
+elif [ -e "${FILESYSTEM_MOD_DIR}/etc/init.d/S75-inetd" ]; then
 	rm_files "${FILESYSTEM_MOD_DIR}/etc/init.d/S75-inetd"
 else
 	count=$(grep -a "usr/sbin/inetd" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S" | wc -l)
