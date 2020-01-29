@@ -1,4 +1,4 @@
-[ -n "$SYSTEMD_CORE_MOD_DIR" ] || return 0
+[ -z "$SYSTEMD_CORE_MOD_DIR" ] || return 0
 
 if [ -e "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.tail.sh" ]; then
 	rcfile="${FILESYSTEM_MOD_DIR}/etc/init.d/rc.tail.sh"
