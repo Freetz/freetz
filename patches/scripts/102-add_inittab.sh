@@ -7,9 +7,12 @@
 ::respawn:/sbin/ip_watchdog
 "
 
+# Script for sysinit
+[ -n "$SYSTEMD_CORE_MOD_DIR" ] && sysinit="/etc/boot.d/1" || sysinit="/etc/init.d/rc.S"
+
 # actual filesystem
 cat << EOF > "${FILESYSTEM_MOD_DIR}/etc/inittab"
-::sysinit:/etc/init.d/rc.S
+::sysinit:$sysinit
 
 # Start an "askfirst" shell on the console (whatever that may be)
 ${FREETZ_AVM_SERIAL_CONSOLE_DEVICE}::askfirst:$shell
