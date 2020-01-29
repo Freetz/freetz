@@ -17,6 +17,16 @@ config FREETZ_PACKAGE_OPENSSH_sshd
 	bool "SSH server (sshd)"
 	default n
 
+	config FREETZ_PACKAGE_OPENSSH_AUTHORIZED_KEYS
+		bool "Select authorized_keys"
+		default y
+		depends on FREETZ_PACKAGE_OPENSSH_sshd
+		select FREETZ_PACKAGE_AUTHORIZED_KEYS
+		help
+			Selects the "authorized_keys: Frontend for SSH keys" web
+			interface package to manage the authorized_keys file for
+			key-based authentication.
+
 comment "SSH client (ssh) (not available, provided by dropbear)"
 	depends on FREETZ_PACKAGE_DROPBEAR && !FREETZ_PACKAGE_DROPBEAR_SERVER_ONLY
 config FREETZ_PACKAGE_OPENSSH_ssh

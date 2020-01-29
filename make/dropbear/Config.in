@@ -96,6 +96,15 @@ config FREETZ_PACKAGE_DROPBEAR_STATIC
 		Newer firmwares (using uClibc >= 0.9.30) should work with dynamically linked
 		binary, if "non-freetz" is selected.
 
+config FREETZ_PACKAGE_DROPBEAR_AUTHORIZED_KEYS
+	bool "Select authorized_keys"
+	default y
+	select FREETZ_PACKAGE_AUTHORIZED_KEYS
+	help
+		Selects the "authorized_keys: Frontend for SSH keys" web
+		interface package to manage the authorized_keys file for
+		key-based authentication.
+
 config FREETZ_PACKAGE_DROPBEAR_NONFREETZ
 	bool "Build for non-freetz box"
 	select FREETZ_PACKAGE_DROPBEAR_STATIC if FREETZ_AVM_UCLIBC_0_9_28 || FREETZ_AVM_UCLIBC_0_9_29
