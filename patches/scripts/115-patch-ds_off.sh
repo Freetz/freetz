@@ -1,6 +1,6 @@
 
-if [ -e "${FILESYSTEM_MOD_DIR}/etc/boot.d/core/99-tail" ]; then
-	dsfile="${FILESYSTEM_MOD_DIR}/etc/boot.d/core/99-zzz-rcmod"
+if [ -n "$SYSTEMD_CORE_MOD_DIR" ]; then
+	dsfile="$SYSTEMD_CORE_MOD_DIR/99-zzz-rcmod"
 	rcfile=""
 elif [ -e "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.tail.sh" ]; then
 	dsfile="${FILESYSTEM_MOD_DIR}/etc/init.d/E99-zzz-rcmod"

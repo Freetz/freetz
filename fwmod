@@ -706,6 +706,8 @@ HTML_MOD_DIR="${FILESYSTEM_MOD_DIR}/${HTML_SUBDIR}"
 # $LUA_MOD_DIR can't be defined here. eg: ${FILESYSTEM_MOD_DIR}/usr/www/all/lua
 # $HTML_LANG_MOD_DIR can't be defined here. eg: ${FILESYSTEM_MOD_DIR}/usr/www/all
 # $HTML_SPEC_MOD_DIR can't be defined here. eg: ${FILESYSTEM_MOD_DIR}/usr/www/all/html/de
+# $MENU_DATA_LUA will be set below to ${FILESYSTEM_MOD_DIR}/usr/lua/menu_data.lua or ${HTML_LANG_MOD_DIR}/menus/menu_data.lua or filenotavailable
+# $SYSTEMD_CORE_MOD_DIR will be set below to ${FILESYSTEM_MOD_DIR}/etc/boot.d/core if it exists
 
 
 if [ -z "$FREETZ_SQUASHFS_BLOCKSIZE" ]; then # expected to be empty only if FREETZ_SQUASHFS_BLOCKSIZE_ORIG is set
@@ -899,6 +901,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 	for dir in "${FILESYSTEM_MOD_DIR}/usr/lua" "${HTML_LANG_MOD_DIR}/menus"; do
 		[ -f "$dir/menu_data.lua" ] && MENU_DATA_LUA="$dir/menu_data.lua" && break
 	done
+
+	# Check systemd direcotry
+	[ -d "${FILESYSTEM_MOD_DIR}/etc/boot.d/core" ] && SYSTEMD_CORE_MOD_DIR="${FILESYSTEM_MOD_DIR}/etc/boot.d/core" || SYSTEMD_CORE_MOD_DIR=""
 
 	# Now check language specific html directory (if there is any)
 	for i in de en; do
