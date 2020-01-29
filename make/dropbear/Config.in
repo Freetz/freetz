@@ -29,12 +29,13 @@ config FREETZ_PACKAGE_DROPBEAR
 		  - Features can easily be disabled when compiling to save space
 		    TCP forwarding support
 
+if FREETZ_PACKAGE_DROPBEAR
+
 comment "Hint: Select replace kernel if need pty-support"
-	depends on !FREETZ_REPLACE_KERNEL && !FREETZ_AVM_HAS_PTY_SUPPORT && FREETZ_SHOW_ADVANCED && FREETZ_PACKAGE_DROPBEAR
+	depends on !FREETZ_REPLACE_KERNEL && !FREETZ_AVM_HAS_PTY_SUPPORT && FREETZ_SHOW_ADVANCED
 
 config FREETZ_PACKAGE_DROPBEAR_SFTP_SERVER
 	bool "Add SFTP support"
-	depends on FREETZ_PACKAGE_DROPBEAR
 	select FREETZ_PACKAGE_OPENSSH
 	select FREETZ_PACKAGE_OPENSSH_sftp_server
 	default n
@@ -44,12 +45,10 @@ config FREETZ_PACKAGE_DROPBEAR_SFTP_SERVER
 
 config FREETZ_PACKAGE_DROPBEAR_SERVER_ONLY
 	bool "Without scp & ssh client"
-	depends on FREETZ_PACKAGE_DROPBEAR
 	default n
 
 config FREETZ_PACKAGE_DROPBEAR_WITH_ZLIB
 	bool "With zlib Compression"
-	depends on FREETZ_PACKAGE_DROPBEAR
 	select FREETZ_LIB_libz
 	default n
 	help
@@ -57,7 +56,6 @@ config FREETZ_PACKAGE_DROPBEAR_WITH_ZLIB
 
 config FREETZ_PACKAGE_DROPBEAR_DISABLE_HOST_LOOKUP
 	bool "Disable DNS reverse-lookup of the client"
-	depends on FREETZ_PACKAGE_DROPBEAR
 	default y
 	help
 		With this option, a connection between the client and
@@ -68,14 +66,12 @@ config FREETZ_PACKAGE_DROPBEAR_DISABLE_HOST_LOOKUP
 
 config FREETZ_PACKAGE_DROPBEAR_ENABLE_MOTD
 	bool "Enable MOTD"
-	depends on FREETZ_PACKAGE_DROPBEAR
 	default y
 	help
 		This enables printing of MOTD on login.
 
 config FREETZ_PACKAGE_DROPBEAR_UTMP
 	bool "Enable utmp support"
-	depends on FREETZ_PACKAGE_DROPBEAR
 	select FREETZ_BUSYBOX_FEATURE_UTMP
 	select FREETZ_BUSYBOX_WHO
 	default n
@@ -84,7 +80,6 @@ config FREETZ_PACKAGE_DROPBEAR_UTMP
 
 config FREETZ_PACKAGE_DROPBEAR_WTMP
 	bool "Enable wtmp support"
-	depends on FREETZ_PACKAGE_DROPBEAR
 	select FREETZ_BUSYBOX_FEATURE_UTMP
 	select FREETZ_BUSYBOX_FEATURE_WTMP
 	select FREETZ_BUSYBOX_LAST
@@ -94,7 +89,6 @@ config FREETZ_PACKAGE_DROPBEAR_WTMP
 
 config FREETZ_PACKAGE_DROPBEAR_STATIC
 	bool "Link statically"
-	depends on FREETZ_PACKAGE_DROPBEAR
 	default n
 	help
 		With this option enabled, the resulting binary will be independ from libraries.
@@ -104,7 +98,6 @@ config FREETZ_PACKAGE_DROPBEAR_STATIC
 
 config FREETZ_PACKAGE_DROPBEAR_NONFREETZ
 	bool "Build for non-freetz box"
-	depends on FREETZ_PACKAGE_DROPBEAR
 	select FREETZ_PACKAGE_DROPBEAR_STATIC if FREETZ_AVM_UCLIBC_0_9_28 || FREETZ_AVM_UCLIBC_0_9_29
 	default n
 	help
@@ -112,3 +105,5 @@ config FREETZ_PACKAGE_DROPBEAR_NONFREETZ
 		on non freetz boxes.
 		(Fix for missing devfs and changes to default paths)
 		Will select "static" on firmwares not supporting dynamically linked freetz binaries.
+
+endif # FREETZ_PACKAGE_DROPBEAR
