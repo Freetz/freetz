@@ -1,5 +1,11 @@
 # NEWS
 
+ * __2020-01-30__<br>
+   Freetz-NG hat Geburtstag!<br>
+   Ein erfolgreiches Jahr unter dem Motto: Mehr Features - weniger Bugs.<br>
+   Siehe [r15015](https://trac.boxmatrix.info/freetz-ng/changeset/15015/freetz-ng)
+   / [eaf06dbb](https://github.com/Freetz-NG/freetz-ng/commit/eaf06dbb153d8ee2eabeedb827f1c8d80e409744)<br>
+
  * __2020-01-19__<br>
    Compilierfehler beim Kernel für 7490 etc.<br>
    Dies kann durch einen nicht angewendeten Patch auftreten.<br>
