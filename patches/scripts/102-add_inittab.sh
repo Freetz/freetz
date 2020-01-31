@@ -25,7 +25,8 @@ EOF
 
 # wrapper filesystem
 if [ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" ]; then
-	# keep all AVM sysinit lines except for that containing /etc/init.d/rc.S (we provide our own)
-	sed -i -n -e '/::sysinit:/ { /\/etc\/init\.d\/rc\.S/ !p }' "${FILESYSTEM_OUTER_MOD_DIR}/etc/inittab"
+	# keep all AVM sysinit lines except for that containing boot.d/1 or init.d/rc.S (we provide our own line)
+	grep '::sysinit:' "${FILESYSTEM_OUTER_DIR}/etc/inittab" | grep -vE ":/etc/(init.d/rc.S|boot.d/1)$" > "${FILESYSTEM_OUTER_MOD_DIR}/etc/inittab"
 	cat "${FILESYSTEM_MOD_DIR}/etc/inittab" >> "${FILESYSTEM_OUTER_MOD_DIR}/etc/inittab"
 fi
+
