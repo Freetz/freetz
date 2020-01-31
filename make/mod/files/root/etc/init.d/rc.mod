@@ -51,6 +51,8 @@ utmp_wtmp() {
 wlan_up() {
 	[ "$FREETZ_PATCH_START_WLAN_IF_ON_BOOT" != "y" ] && return
 	echo -n "Starting wlan interface ... "
+	if [ ! -e /sys/class/net/wlan/operstate ]; then
+		echo "unavailable."
 	if grep "^up$" /sys/class/net/wlan/operstate; then
 		echo "skipped."
 	else
