@@ -53,7 +53,7 @@ wlan_up() {
 	echo -n "Starting wlan interface ... "
 	if [ ! -e /sys/class/net/wlan/operstate ]; then
 		echo "unavailable."
-	if grep "^up$" /sys/class/net/wlan/operstate; then
+	elif grep "^up$" /sys/class/net/wlan/operstate; then
 		echo "skipped."
 	else
 		ifconfig wlan up && echo "done." || echo "failed."
