@@ -23,6 +23,10 @@ load() {
 			grep -vE '^(app|boxusr|ftpuser)[0-9]*(int|-internet)*:' "$SAVE_DIR/$f" | sort -u > "/tmp/${f/passwd/passwd.mod}" 2>/dev/null
 		fi
 	done
+	# read updated defaults from var.tar
+	for f in passwd.mod group; do
+		tar xOf /var.tar ./var/tmp/${f%.mod} | while read l; do grep -q "^${l%%:*}:" /tmp/$f || echo "$l" >> /tmp/$f; done
+	done
 	# /var/tmp/passwd.tmp is created by ctlmgr, do NOT MoVe due to libctlmgr
 	cp /var/tmp/passwd.tmp /var/tmp/passwd.avm 2>/dev/null && rm -rf /var/tmp/passwd.tmp
 	# load AVM's app-users, boxusrs (and ftpusers) which were created by ctlmgr
