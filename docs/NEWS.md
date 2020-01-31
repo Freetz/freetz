@@ -1,5 +1,12 @@
 # NEWS
 
+ * __2020-01-31__<br>
+   Standard GID der ```users``` zu ```80``` geändert.<br>
+   Dies sollte keine Auswirkungen auf bestehende Konfigurationen haben.<br>
+   Die vorherige GID ```1``` wird von AVM für ```watchdog``` verwendet.<br>
+   Siehe [r16534](https://trac.boxmatrix.info/freetz-ng/changeset/16534/freetz-ng)
+   / [78a39a9d](https://github.com/Freetz-NG/freetz-ng/commit/78a39a9d9067ccf79c19e44c54a9b7a890d155cd)<br>
+
  * __2020-01-30__<br>
    Freetz-NG hat Geburtstag!<br>
    Ein erfolgreiches Jahr unter dem Motto: Mehr Features - weniger Bugs.<br>
