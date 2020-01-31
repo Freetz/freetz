@@ -560,7 +560,7 @@
      - [Alternative](../docs/make/openntpd.md#alternative)
 
   * **<u>OpenSSH 8.1p1</u><a id='openssh'></a>**<br>
-    Disable use of OpenSSL and use internal crypto algorithms only. Note: enabling this option - eliminates OpenSSL as OpenSSH runtime dependency on the one hand - limits the available KEy eXchange algorithms to ed25519 only on the other one (your client must support it)
+    OpenSSH is the premier connectivity tool for remote login with the SSH protocol. It encrypts all traffic to eliminate eavesdropping, connection hijacking, and other attacks. In addition, OpenSSH provides a large suite of secure tunneling capabilities, several authentication methods, and sophisticated configuration options.
 
   * **<u>OpenSSL (binary only)</u><a id='openssl'></a>**<br>
     This package contains the OpenSSL command-line utility.
