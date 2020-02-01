@@ -958,10 +958,11 @@ if [ "$DO_MOD" -gt 0 ]; then
 	done
 	shopt -u nullglob
 
-	echo1 "creating symlinks /tmp, /mod and /home"
+	echo1 "creating symlinks /tmp, /mod, /home and /ftp"
 	rm -rf "$FILESYSTEM_MOD_DIR"/tmp
 	ln -s var/{tmp,mod} "$FILESYSTEM_MOD_DIR"/
 	ln -s var/mod/home "$FILESYSTEM_MOD_DIR"/
+	ln -s var/media/ftp "$FILESYSTEM_MOD_DIR"/
 
 	echo1 "creating /mnt and /opt"
 	mkdir -p "$FILESYSTEM_MOD_DIR"/mnt
