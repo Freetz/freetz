@@ -1,6 +1,7 @@
 [ "$FREETZ_REMOVE_QOS" == "y" ] || return 0
 
 echo1 "removing qos files"
+[ -e "${HTML_LANG_MOD_DIR}/internet/trafapp.lua" ] && traf='trafapp' || traf='trafficappl'
 rm_files \
   "${MODULES_DIR}/kernel/net/sched/" \
   "${FILESYSTEM_MOD_DIR}/sbin/qos" \
@@ -8,7 +9,7 @@ rm_files \
   "${HTML_SPEC_MOD_DIR}/internet/trafficappl*" \
   "${HTML_SPEC_MOD_DIR}/internet/trafficprio*" \
   "${HTML_SPEC_MOD_DIR}/internet/trafficprotocol*" \
-  "${HTML_LANG_MOD_DIR}/internet/traffic*.lua"
+  "${HTML_LANG_MOD_DIR}/internet/traf*.lua"
 
 # entfernet Internet > Filter (von 'Kindersicherung' mitgenutzt)
 if [ "$FREETZ_REMOVE_KIDS" == "y" ]; then
@@ -25,7 +26,7 @@ fi
 # patcht Internet > Filter > Priorisierung
 menulua_remove trafficprio
 # patcht Internet > Filter > Listen
-menulua_remove trafficappl
+menulua_remove "$traf"
 
 echo1 "patching rc.conf"
 modsed "s/CONFIG_NQOS=y/CONFIG_NQOS=n/g" "$FILESYSTEM_MOD_DIR/etc/init.d/rc.conf"
