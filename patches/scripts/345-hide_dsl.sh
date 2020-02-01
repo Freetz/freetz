@@ -19,9 +19,12 @@ if [ -e "${HTML_LANG_MOD_DIR}/home/home.lua" ]; then
 	  '/^box.out(connection.create_connection_row("inetmon"))$/d' \
 	  "${HTML_LANG_MOD_DIR}/internet/inetstat_monitor.lua"
 	# patcht Internet > DSL-Informationen (lua)
-	modsed \
-	  's!not config.ATA or box.query("box:settings/ata_mode") ~= "1"!false!'\
-	  "${HTML_LANG_MOD_DIR}/menus/menu_show.lua"
+	sedfile="${HTML_LANG_MOD_DIR}/menus/menu_show.lua"
+	if [ -e "$sedfile" ]; then
+		modsed 's!not config.ATA or box.query("box:settings/ata_mode") ~= "1"!false!' "$sedfile"
+	else
+		modsed 's!\["dslInfo"\]!["dslInfoDISABLED"]!' "$MENU_DATA_LUA"
+	fi
 fi
 
 # patcht Internet > DSL-Informationen (html)
