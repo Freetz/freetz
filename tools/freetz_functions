@@ -87,6 +87,16 @@ enable_page() {
 	  "${HTML_LANG_MOD_DIR}/menus/menu_show.lua"
 }
 
+#decrip_file <file>
+#decripples css/html/lua text file
+decrip_file() {
+	[ -e "$1" ] || return 1
+	local l="$(wc -l "$1" | sed 's/ .*//')"
+	[ "$l" -gt 1 ] && return 1
+	echo2 "decrippling file $1"
+	modsed 's/{/ {\n/g;s/}/\n}\n/g;s/;/;\n/g' "$1"
+}
+
 # -------------------------------------------------------------------
 # isFreetzType
 # -------------------------------------------------------------------
