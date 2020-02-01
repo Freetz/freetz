@@ -22,7 +22,12 @@ fi
 
 [ "$FREETZ_REMOVE_TELEPHONY" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/dectfw_*"
 
-[ "$FREETZ_PACKAGE_RRDSTATS_TEMPERATURE_SENSOR" == "y" -a "$FREETZ_AVM_VERSION_05_2X_MIN" != "y" ] || rm_files $(find ${FILESYSTEM_MOD_DIR}/lib/modules -name "*dect*.ko")
+if [ "$FREETZ_PACKAGE_RRDSTATS_TEMPERATURE_SENSOR" != "y" -o "$FREETZ_AVM_VERSION_04_XX_MAX" == "y" ]; then
+	rm_files $(find ${FILESYSTEM_MOD_DIR}/lib/modules -name "*dect*.ko")
+	for file in S17-isdn S17-capi E41-capi; do
+		[ -e "${FILESYSTEM_MOD_DIR}/etc/init.d/$file" ] && modsed '/dect_io/d' "${FILESYSTEM_MOD_DIR}/etc/init.d/$file"
+	done
+fi
 
 [ "$FREETZ_REMOVE_MINID" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/lib/libfoncclient.so*"
 
