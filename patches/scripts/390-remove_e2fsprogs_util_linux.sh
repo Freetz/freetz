@@ -27,14 +27,15 @@ for files in \
 	done
 done
 
+[ "$FREETZ_AVM_HAS_UDEV" != "y" ] && _LIBBLKID='libblkid*' && _LIBUUID='libuuid*'
 echo1 "remove AVM's e2fsprogs/util-linux libraries"
 for files in \
-  libblkid* \
+  $_LIBBLKID \
   libcom_err* \
   libe2p* \
   libext2fs* \
   libmount* \
-  libuuid* \
+  $_LIBUUID \
   ; do
 	for filenpath in $(find ${FILESYSTEM_MOD_DIR}/{lib,usr/lib}/ -name $files); do
 		rm_files "$filenpath"
