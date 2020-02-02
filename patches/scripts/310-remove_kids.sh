@@ -31,7 +31,7 @@ fi
 [ "$FREETZ_AVM_VERSION_06_5X_MIN" != "y" ] && menulua_remove kids
 
 # patcht Heimnetz > Netzwerk > Bearbeiten > Kindersicherung
-modsed '/<.lua show_kisi_content() .>/d' "${HTML_LANG_MOD_DIR}/net/edit_device.lua"
+[ -e "${HTML_LANG_MOD_DIR}/net/edit_device.lua" ] && modsed '/<.lua show_kisi_content() .>/d' "${HTML_LANG_MOD_DIR}/net/edit_device.lua"
 
 # patcht Uebersicht > Komfortfunktionen
 modsed '/ id="trKids" /{N;N;N;N;//d}' "${HTML_SPEC_MOD_DIR}/home/home.html"
