@@ -80,7 +80,7 @@ $(PKG)_CONFIGURE_OPTIONS += --without-krb5
 $(PKG)_CONFIGURE_OPTIONS += --without-ldap
 $(PKG)_CONFIGURE_OPTIONS += --without-libev
 $(PKG)_CONFIGURE_OPTIONS += --without-maxminddb
-$(PKG)_CONFIGURE_OPTIONS += --without-memcache
+$(PKG)_CONFIGURE_OPTIONS += --without-memcached
 $(PKG)_CONFIGURE_OPTIONS += --with-pcre="yes"
 $(PKG)_CONFIGURE_OPTIONS += --without-valgrind
 $(PKG)_CONFIGURE_OPTIONS += --without-mysql
