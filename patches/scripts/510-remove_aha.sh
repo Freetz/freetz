@@ -31,7 +31,9 @@ modsed '/^<?include "net\/home_auto_func_lib.lua" ?>/d' $sedfile
 modsed '/^require ("ha_func_lib")/d' $sedfile
 modsed 's/ha_func_lib.get_device_counts.*/0/' $sedfile
 
-for sedfile in ${HTML_LANG_MOD_DIR}/home/home.lua ${HTML_LANG_MOD_DIR}/mobile/home.lua; do
+file="${HTML_LANG_MOD_DIR}/mobile/home.lua"
+[ -e "$file" ] || file=""
+for sedfile in ${HTML_LANG_MOD_DIR}/home/home.lua $file; do
 	modsed '/^require("libaha")/d' $sedfile
 	modsed '/aha.GetDeviceList()/d' $sedfile
 done
