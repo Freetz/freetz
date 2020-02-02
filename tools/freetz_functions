@@ -95,7 +95,7 @@ decrip_file() {
 	local l="$(wc -l "$1" | sed 's/ .*//')"
 	[ "$l" -gt 1 ] && return 1
 	echo2 "decrippling file $1"
-	modsed 's/{/ {\n/g;s/}/\n}\n/g;s/;/;\n/g' "$1"
+	modsed 's/></>\n</g;s/{/ {\n/g;s/}/\n}\n/g;s/;/;\n/g' "$1"
 }
 
 # -------------------------------------------------------------------
