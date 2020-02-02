@@ -43,16 +43,18 @@ modsed 's/^\(var ulepresent = \).*/\10;/' $sedfile
 modsed '/^devicelist = aha.GetDeviceList()/d' $sedfile
 
 # patcht Heimnetz -> Netzwerk -> Netzwerkeinstellungen
-sedfile="${HTML_LANG_MOD_DIR}/net/network_settings.lua"
-echo1 "patching ${sedfile##*/}"
-# modify show_smarthome_broadcast so that it always returns false
-mod_del_area \
-	'function show_smarthome_broadcast' \
-	1 \
-	'^function ' \
-	-1 \
-	$sedfile
-modsed -r 's,(function show_smarthome_broadcast.*),\1\nreturn false\nend,' $sedfile
+if [ "$FREETZ_AVM_VERSION_07_1X_MAX" == "y" ]; then
+	sedfile="${HTML_LANG_MOD_DIR}/net/network_settings.lua"
+	echo1 "patching ${sedfile##*/}"
+	# modify show_smarthome_broadcast so that it always returns false
+	mod_del_area \
+	  'function show_smarthome_broadcast' \
+	  1 \
+	  '^function ' \
+	  -1 \
+	  $sedfile
+	modsed -r 's,(function show_smarthome_broadcast.*),\1\nreturn false\nend,' $sedfile
+fi
 
 
 sedfile="${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
