@@ -1,4 +1,4 @@
-# Remove mediasrv
+# Remove mediasrv (UPnP/DLNA)
 Entfernt den AVM-Media-Server.<br>
 <br>
 
