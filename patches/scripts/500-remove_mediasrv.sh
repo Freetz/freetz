@@ -8,17 +8,18 @@ remove_plugin || [ "$FREETZ_REMOVE_MEDIASRV" == "y" ] || return 0
 
 # if nas, mediaserv und samba are removed -> remove_nas deletes menu item Heimnetz > Speicher (NAS)
 
+sedfile="${HTML_LANG_MOD_DIR}/storage/settings.lua"
 if [ -e "${HTML_LANG_MOD_DIR}/storage/media_settings.lua" ]; then
 	# entfernt Heimnetz > Mediaserver (06.xx)
 	menulua_remove storage.media_settings
 	menulua_remove dect.internetradio
 	menulua_remove dect.podcast
 	# Heimnetz > Speicher (NAS) > Speicher an der FRITZ!Box > Speicher (NAS) aktiv > Datei-Index
-	sedfile="${HTML_LANG_MOD_DIR}/storage/settings.lua"
-	modsed 's!function get_scan_state.*!&\nif true then return "" end!g' $sedfile
-	modsed 's/{?80:755?}//'  $sedfile
+	if [ -e $sedfile ]; then
+		modsed 's!function get_scan_state.*!&\nif true then return "" end!g' $sedfile
+		modsed 's/{?80:755?}//'  $sedfile
+	fi
 else
-	sedfile="${HTML_LANG_MOD_DIR}/storage/settings.lua"
 	if [ -e $sedfile ]; then
 		echo1 "patching ${sedfile##*/}"
 		if grep -q uiViewUseMusikBox $sedfile; then
@@ -42,7 +43,7 @@ else
 fi
 
 # see https://trac.boxmatrix.info/freetz-ng/ticket/1391 for details
-modsed "s/call_webusb.call_webusb_func(\"scan_info\".*)/\"\" -- &/g" "${HTML_LANG_MOD_DIR}/storage/settings.lua"
+[ -e $sedfile ] && modsed "s/call_webusb.call_webusb_func(\"scan_info\".*)/\"\" -- &/g" "$sedfile"
 
 
 echo1 "patching rc.conf"
