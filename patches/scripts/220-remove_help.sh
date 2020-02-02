@@ -7,7 +7,8 @@ HELP_DIR="${HTML_LANG_MOD_DIR}/help"
 if [ -e "${HELP_DIR}" ]; then
 	# remove new lua help
 	rm_files "${HELP_DIR}/hilfe*" "${HELP_DIR}/recht*"
-	modsed 's/local g_txt/local g_txt_removed/' "${HELP_DIR}/home.html"
+	sedfile="${HELP_DIR}/home.html"
+	[ -e "$sedfile" ] && modsed 's/local g_txt/local g_txt_removed/' "$sedfile"
 else
 	echo1 "${HTML_SPEC_MOD_DIR}"
 	rm_files "${HTML_SPEC_MOD_DIR}/help"
