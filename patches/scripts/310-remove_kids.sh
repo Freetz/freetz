@@ -38,14 +38,19 @@ modsed '/ id="trKids" /{N;N;N;N;//d}' "${HTML_SPEC_MOD_DIR}/home/home.html"
 
 # patcht Internet > Filter > Listen > Filterlisten
 #lua
-modsed '/^<hr>$/{N;N;N;N;N;N;N;/^<hr>\n.*385:981.*/d}' "${HTML_LANG_MOD_DIR}/internet/trafficappl.lua"
-modsed '/^<p>$/{N;N;N;N;N;/^<p>\n.*385:767.*/d}' "${HTML_LANG_MOD_DIR}/internet/trafficappl.lua"
-modsed '/^<p>$/{N;N;N;N;N;/^<p>\n.*385:122.*/d}' "${HTML_LANG_MOD_DIR}/internet/trafficappl.lua"
-modsed '/^<p>$/{N;N;N;N;N;/^<p>\n.*385:925.*/d}' "${HTML_LANG_MOD_DIR}/internet/trafficappl.lua"
+[ -e "${HTML_LANG_MOD_DIR}/internet/trafapp.lua" ] && file="trafapp.lua" || file="trafficappl.lua"
+if [ -e "${HTML_LANG_MOD_DIR}/internet/$file" ]; then
+	modsed '/^<hr>$/{N;N;N;N;N;N;N;/^<hr>\n.*385:981.*/d}' "${HTML_LANG_MOD_DIR}/internet/$file"
+	modsed '/^<p>$/{N;N;N;N;N;/^<p>\n.*385:767.*/d}' "${HTML_LANG_MOD_DIR}/internet/$file"
+	modsed '/^<p>$/{N;N;N;N;N;/^<p>\n.*385:122.*/d}' "${HTML_LANG_MOD_DIR}/internet/$file"
+	modsed '/^<p>$/{N;N;N;N;N;/^<p>\n.*385:925.*/d}' "${HTML_LANG_MOD_DIR}/internet/$file"
+fi
 #html
-modsed '/^<hr>$/{N;N;N;N;/^.*\n.*55:721.*/d}' "${HTML_SPEC_MOD_DIR}/internet/trafficappl.html"
-modsed '/^<div class="ml25">$/{N;N;N;N;N;/.*\n.*55:566.*/d}' "${HTML_SPEC_MOD_DIR}/internet/trafficappl.html"
-modsed '/^<div class="ml25 mb10">$/{N;N;N;N;N;/.*\n.*55:421.*/d}' "${HTML_SPEC_MOD_DIR}/internet/trafficappl.html"
+if [ -e "${HTML_SPEC_MOD_DIR}/internet/trafficappl.html" ]; then
+	modsed '/^<hr>$/{N;N;N;N;/^.*\n.*55:721.*/d}' "${HTML_SPEC_MOD_DIR}/internet/trafficappl.html"
+	modsed '/^<div class="ml25">$/{N;N;N;N;N;/.*\n.*55:566.*/d}' "${HTML_SPEC_MOD_DIR}/internet/trafficappl.html"
+	modsed '/^<div class="ml25 mb10">$/{N;N;N;N;N;/.*\n.*55:421.*/d}' "${HTML_SPEC_MOD_DIR}/internet/trafficappl.html"
+fi
 
 # patcht WLAN > Gastzugang > Gastzugang (privater Hotspot) aktivieren
 modsed '/^<div>$/{N;N;N;/^.*\n.*2031:1282.*/d}' "${HTML_LANG_MOD_DIR}/wlan/guest_access.lua"
