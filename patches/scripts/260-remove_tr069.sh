@@ -1,5 +1,5 @@
 if [ "$FREETZ_REMOVE_TR069" == "y" -o "$FREETZ_REMOVE_ASSISTANT" == "y" ]; then
-	modsed \
+	[ -e "${HTML_LANG_MOD_DIR}/html/logincheck.html" ] && modsed \
 	  's/\(^var doTr069 = \).*/\1false;/g' \
 	  "${HTML_LANG_MOD_DIR}/html/logincheck.html"
 	modsed \

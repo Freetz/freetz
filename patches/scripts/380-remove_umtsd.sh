@@ -1,5 +1,5 @@
 if [ "$FREETZ_REMOVE_UMTSD" == "y" -o "$FREETZ_REMOVE_ASSISTANT" == "y" ]; then
-	modsed \
+	[ -e "${HTML_LANG_MOD_DIR}/html/logincheck.html" ] && modsed \
 	  's/\(^var umts = \).*/\10;/g' \
 	  "${HTML_LANG_MOD_DIR}/html/logincheck.html"
 	modsed \
@@ -33,3 +33,4 @@ fi
 echo1 "patching rc.conf"
 modsed "s/CONFIG_USB_GSM=.*$/CONFIG_USB_GSM=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 modsed "s/CONFIG_USB_GSM_VOICE=.*$/CONFIG_USB_GSM_VOICE=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+

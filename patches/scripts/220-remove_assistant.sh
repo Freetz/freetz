@@ -55,7 +55,7 @@ else
 fi
 
 # even if box is unconfigured do not try to address assistant-pages but home
-modsed \
+[ -e "${HTML_LANG_MOD_DIR}/html/logincheck.html" ] && modsed \
   '/uiPostPageName", "first_/{N;s/.*\n.*$/jslSetValue("uiPostPageName", "home");\njslSetValue("uiPostMenu", "home");/g}' \
   "${HTML_LANG_MOD_DIR}/html/logincheck.html"
 # for all 'jslSetValue("uiPostPageName"' (Annex/Country/Language) use this:
@@ -63,3 +63,4 @@ modsed \
 modsed \
   's/^http.redirect(get_goto_oldassi_href.*/go_home()/' \
   "${LUA_MOD_DIR}/first.lua"
+
