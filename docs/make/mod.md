@@ -40,10 +40,10 @@ empfehlen.
    ```
    Zum aktivieren der DEVICE-Methode das ```yes``` oben auf ```no``` ändern.
  * Alle Programme beenden die das Aushängen verhindern:<br>
-   Beim unmounten oder reboot werden alle programme ermittelt die ein
-   sauberer Aushängen verhindern und versucht zu beenden.
+   Beim Unmounten oder Rebooten werden alle Programme ermittelt die ein
+   sauberes Aushängen verhindern und versucht sie zu beenden.
  * Automatisch autorun.sh und autoend.sh ausführen<br>
-   Beim mounten wird autorun.sh und beim unmounten autoend.sh
+   Beim Mounten wird autorun.sh und beim Unmounten autoend.sh
    ausgeführt, falls sie sich auf dem Datenträger befinden.
    Dies sollte nur aktiviert werden wenn man es benötig da es
    ein Sicherheitsrisiko darstellt!
