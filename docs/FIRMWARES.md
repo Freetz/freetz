@@ -16,7 +16,7 @@ Currently supported devices and firmwares
  * [Fritz!Box Fon WLAN (74xx)](#fritzbox-fon-wlan-74xx)
  * [Fritz!Box Fon WLAN (75xx)](#fritzbox-fon-wlan-75xx)
  * [Fritz!Powerline](#fritzpowerline)
- * [Fritz!WLAN Repeater](#fritzwlan-repeater)
+ * [Fritz!Repeater](#fritzrepeater)
  * [T-Com derivatives](#t-com-derivatives)
  * [Alice derivatives](#alice-derivatives)
 
@@ -378,7 +378,7 @@ Currently supported devices and firmwares
   - 157.07.01 rev63181 {ALL}
   - 157.07.12 rev70670 {ALL} [MESH18 NL2]
 
-### Fritz!WLAN Repeater
+### Fritz!Repeater
 
 * __Fritz!WLAN Repeater 300E (UNTESTED)__
   - 101.06.33 rev38569 {GER}
@@ -400,11 +400,11 @@ Currently supported devices and firmwares
   - 134.07.01 rev63070 {ALL}
   - 134.07.12 rev70775 {ALL} [MESH18 NL2]
 
-* __Fritz!WLAN Repeater 1200__
+* __Fritz!Repeater 1200__
   - 172.07.14 rev73941 {ALL} [MESH18 NL4]
-* __Fritz!WLAN Repeater 2400 (UNTESTED)__
+* __Fritz!Repeater 2400 (UNTESTED)__
   - 169.07.12 rev71975 {ALL} [MESH18 NL2]
-* __Fritz!WLAN Repeater 3000 (UNTESTED)__
+* __Fritz!Repeater 3000 (UNTESTED)__
   - 174.07.04 rev66458 {ALL}
   - 174.07.14 rev73940 {ALL} [MESH18 NL4]
 
