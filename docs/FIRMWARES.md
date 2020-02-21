@@ -25,8 +25,8 @@ Currently supported devices and firmwares
 ### Not supported devices
 
   * Repeater 310, 600 & 1160: No LAN ports, so a recovery is not possible.
-  * Fritz!Box 6591, 7581 & 7582: These use glibc.
-  * Fritz!OS (some) 7.19 Labor & Inhaus use musl libc or unsupported uClib.
+  * Fritz!Box 6591, 6660, 7581 & 7582: These use glibc.
+  * Fritz!OS 7.19 Labor: These use musl libc or unsupported uClibc versions.
 
 ### Fritz!Box (2xxx)
 
