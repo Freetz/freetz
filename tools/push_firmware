@@ -35,6 +35,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+UIMG_TOOL="${0%/*}/uimg"
+
 function wait_loader() {
 	echo -en " * No reply from box, assuming switch-off or restart. Trying to re-detect box.\n   Waiting "
 	[ -z "$SLEEP1" ] && SLEEP1=do || sleep 1
@@ -95,7 +97,7 @@ function push_fw() {
 	fi
 
 	if [ ! $ISSINGLE ]; then
-		if [ ! $LFS ] || [ -n "$ISDUAL" -a "$LFS" == "9" ]; then
+		if [ ! $LFS ] || [ $ISDUAL$ISUIMG -a "$LFS" == "9" ]; then
 			wait_loader
 			enval="$(read_enval linux_fs_start)"
 			[ "$enval" != "0" -a "$enval" != "1" -a "$enval" != "" ] && echo "Invalid value for linux_fs_start." && exit 1
@@ -109,8 +111,15 @@ function push_fw() {
 		[ $ISRAM ] && [ "$LFS" == "9" ] && LFS=
 
 		if [ $ISDUAL ]; then
-			[ $LFS -ne 1 ] && ARMsysMTD=0  && ARMkrnMTD=1  && X86sysMTD=6  && X86krnMTD=7
-			[ $LFS -eq 1 ] && ARMsysMTD=11 && ARMkrnMTD=12 && X86sysMTD=13 && X86krnMTD=14
+			[ $LFS -ne 1 ] && ARMsysMTD='0'  && ARMkrnMTD='1'  && X86sysMTD='6'  && X86krnMTD='7'
+			[ $LFS -eq 1 ] && ARMsysMTD='11' && ARMkrnMTD='12' && X86sysMTD='13' && X86krnMTD='14'
+		fi
+		if [ $ISUIMG ]; then
+			[ $LFS -ne 1 ] && ARMsysMTD='0'  && ARMkrnMTD='1'  && X86sysMTD='6'  && X86krnMTD='7'  && ALLgwtMTD='?'  # TODO
+			[ $LFS -eq 1 ] && ARMsysMTD=';'  && ARMkrnMTD='<'  && X86sysMTD='='  && X86krnMTD='>'  && ALLgwtMTD=':'  # TODO
+			[ -e $ALLgwt ] && echo " * GWFS (tar) mtd: $ALLgwtMTD"
+		fi
+		if [ $ISDUAL$ISUIMG ]; then
 			echo " * Arm-System mtd: $ARMsysMTD"
 			echo " * Arm-Kernel mtd: $ARMkrnMTD"
 			echo " * x86-System mtd: $X86sysMTD"
@@ -185,6 +194,34 @@ function push_fw() {
 				-X "quote SETENV linux_fs_start $LFS" \
 				-Y "quote REBOOT" \
 				$ip $X86krn mtd$X86krnMTD || exit $?
+		elif [ $ISUIMG ]; then
+			[ -e $ALLgwt ] && ncftpput \
+				-C -d stdout -u adam2 -p adam2 \
+				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
+				-W "quote MEDIA FLSH" \
+				$ip $ALLgwt mtd$ALLgwtMTD || exit $?
+			ncftpput \
+				-C -d stdout -u adam2 -p adam2 \
+				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
+				-W "quote MEDIA FLSH" \
+				$ip $ARMsys mtd$ARMsysMTD || exit $?
+			ncftpput \
+				-C -d stdout -u adam2 -p adam2 \
+				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
+				-W "quote MEDIA FLSH" \
+				$ip $ARMkrn mtd$ARMkrnMTD || exit $?
+			ncftpput \
+				-C -d stdout -u adam2 -p adam2 \
+				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
+				-W "quote MEDIA FLSH" \
+				$ip $X86sys mtd$X86sysMTD || exit $?
+			ncftpput \
+				-C -d stdout -u adam2 -p adam2 \
+				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
+				-W "quote MEDIA FLSH" \
+				-Y "quote REBOOT" \
+				$ip $X86krn mtd$X86krnMTD || exit $?
+#				-X "quote SETENV subsys_id $LFS" \  # TODO
 		elif [ $ISSINGLE ]; then
 			[ $ISALICE ] && ( ncftpput \
 				-C -d stdout -u adam2 -p adam2 \
@@ -227,6 +264,22 @@ quote SETENV linux_fs_start $LFS
 quote REBOOT
 quit
 EOT
+		elif [ $ISUIMG ]; then
+			ftp -n -p <<EOT
+open $ip
+user adam2 adam2
+debug
+bin
+quote MEDIA FLSH
+put $ARMsys mtd$ARMsysMTD
+put $ARMkrn mtd$ARMkrnMTD
+put $X86sys mtd$X86sysMTD
+put $X86krn mtd$X86krnMTD
+$([ -e $ALLgwt ] && echo put $ALLgwt mtd$ALLgwtMTD)
+quote REBOOT
+quit
+EOT
+#quote SETENV subsys_id $LFS  # TODO
 		elif [ $ISSINGLE ]; then
 		ftp -n -p <<EOT
 open $ip
@@ -292,6 +345,26 @@ prepare_image() {
 			echo -e "\nError: file is not a valid dual-boot image to be written to the device.\n" >&2
 			exit 1
 		fi
+	elif [ $ISUIMG ]; then
+		tmpdir=$(mktemp -td freetz_XXX) || { echo "Error creating temporary directory."; exit 1; }
+		ARMsys="$tmpdir/ARM-system.image"
+		ARMkrn="$tmpdir/ARM-kernel.image"
+		X86sys="$tmpdir/X86-system.image"
+		X86krn="$tmpdir/X86-kernel.image"
+		ALLgwt="$tmpdir/ALL-gw_fs.image"
+		if tar -C $tmpdir/ -xf $file ./var/firmware-update.uimg >/dev/null 2>&1; then
+			$UIMG_TOOL -u "$tmpdir/var/firmware-update.uimg" >/dev/null
+			chmod +w $tmpdir/var/*.bin
+			mv $tmpdir/var/*_ARM_ROOTFS.bin  "$ARMsys" 2>/dev/null
+			mv $tmpdir/var/*_ARM_KERNEL.bin  "$ARMkrn" 2>/dev/null
+			mv $tmpdir/var/*_ATOM_ROOTFS.bin "$X86sys" 2>/dev/null
+			mv $tmpdir/var/*_ATOM_KERNEL.bin "$X86krn" 2>/dev/null
+#			mv $tmpdir/var/*_GWFS.bin        "$ALLgwt" 2>/dev/null  # TODO
+		fi
+		if [ ! -s "$ARMsys" -o ! -s "$ARMkrn" -o ! -s "$X86sys" -o ! -s "$X86krn" -o ]; then
+			echo -e "\nError: file is not a valid uimg-boot image to be written to the device.\n" >&2
+			exit 1
+		fi
 	elif [ $ISSINGLE ]; then
 		work=$file
 		img=""
@@ -330,8 +403,8 @@ usage()
 	echo "[image]           When no 'image' file is given, images/latest.image will be tried."
 	echo "-ms               Force mode single-boot (classic devices, like 7270 & 7390)"
 	echo "-mr               Force mode ram-boot (newer devices, like 7490 & 7590)"
-	echo "-md               Force mode dual-boot (docsis devices, like 6490 & 6590)"
-	echo "-mu               Force mode uimg-boot (not supported yet, only 6591)"
+	echo "-md               Force mode dual-boot (classic docsis devices, like 6490 & 6590)"
+	echo "-mu               Force mode uimg-boot (newer docsis devices, like 6591 & 6660)"
 	echo "-f                Disable safety prompt."
 	echo "-ip <ip>          Bootloader IP address or hostname, default 192.168.178.1"
 	echo "-ram <mb>         Only ram-boot mode: Usable ram size in MB of your device."
@@ -428,8 +501,9 @@ fi
 [ ! $ISSINGLE ] && [ $ISALICE ]        && echo "Parameter '-hn' is only allowed for single-boot mode." && exit 1
 [ $ISSINGLE ]   && [ $LFS ]            && echo "Parameter '-lfs' is not allowed for single-boot mode." && exit 1
 [ $ISDUAL ]     && [ ! $LFS ]          && LFS="1"
+[ $ISUIMG ]     && [ ! $LFS ]          && LFS="1"
+[ $ISUIMG ]     && [ ! -e $UIMG_TOOL ] && echo "File $UIMG_TOOL missing. Run 'make tools' first."      && exit 1
 [ ! $ISRAM ]    && [ $FULLSIZE ]       && echo "Parameter '-ram' is only allowed for ram-boot mode."   && exit 1
-[ $ISUIMG ]                            && echo 'The mode uimg-boot is not yet supported!'              && exit 1
 
 prepare_image
 
@@ -472,6 +546,7 @@ if [ -z "$FOUND_FTP" ]; then
 	[ $ISRAM ]       && [ "${FULLSIZE//0/}" == "x" ] && echo "Parameter '-ram' has to be bigger than 0 if you have no 'ftp' installed."  && exit 1
 	[ ! $ISSINGLE ]  && [ -z "$LFS" ]                && echo "Parameter '-lfs' is mandatory if you have no 'ftp' installed."             && exit 1
 	[ $ISDUAL ]      && [ "$LFS" == "9" ]            && echo "Parameter '-lfs' with 0 or 1 is mandatory if you have no 'ftp' installed." && exit 1
+	[ $ISUIMG ]      && [ "$LFS" == "9" ]            && echo "Parameter '-lfs' with 0 or 1 is mandatory if you have no 'ftp' installed." && exit 1
 fi
 if [ -n "$CMD" ]; then
 	[ "$CMD" == "ftp" ] && FOUND_NCFTP=""
@@ -480,6 +555,7 @@ fi
 if [ -n "$FOUND_NCFTP" -a -n "$FOUND_FTP" ]; then
 	[ $ISRAM ]    && FOUND_NCFTP=""
 	[ $ISDUAL ]   && FOUND_NCFTP=""
+	[ $ISUIMG ]   && FOUND_NCFTP=""
 	[ $ISSINGLE ] && FOUND_FTP=""
 	[ $ISALICE ]  && FOUND_NCFTP=""
 fi
