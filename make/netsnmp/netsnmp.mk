@@ -54,7 +54,6 @@ NETSNMP_MIB_MODULES_INCLUDED:=\
 	snmpv3/usmUser \
 	tunnel \
 	ucd-snmp/disk \
-	ucd-snmp/dlmod \
 	ucd-snmp/extensible \
 	ucd-snmp/loadave \
 	ucd-snmp/memory \
@@ -78,6 +77,7 @@ NETSNMP_MIB_MODULES_EXCLUDED:=\
 	target \
 	tcp-mib \
 	ucd_snmp \
+	ucd-snmp/dlmod \
 	udp-mib \
 	utilities
 
