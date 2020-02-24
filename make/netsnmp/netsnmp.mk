@@ -49,8 +49,6 @@ NETSNMP_MIB_MODULES_INCLUDED:=\
 	mibII/vacm_vars \
 	snmpv3mibs \
 	snmpv3/snmpEngine \
-	snmpv3/snmpMPDStats \
-	snmpv3/usmStats \
 	snmpv3/usmUser \
 	tunnel \
 	ucd-snmp/disk \
@@ -77,7 +75,6 @@ NETSNMP_MIB_MODULES_EXCLUDED:=\
 	target \
 	tcp-mib \
 	ucd_snmp \
-	ucd-snmp/dlmod \
 	udp-mib \
 	utilities
 
