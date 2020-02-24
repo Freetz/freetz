@@ -108,7 +108,7 @@ $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
-$(PKG)_CONFIGURE_OPTIONS += --with-endianness=little
+$(PKG)_CONFIGURE_OPTIONS += --with-endianness=$(if $(FREETZ_TARGET_ARCH_BE),big,little)
 $(PKG)_CONFIGURE_OPTIONS += --with-logfile=/var/log/snmpd.log
 $(PKG)_CONFIGURE_OPTIONS += --with-persistent-directory=/var/lib/snmp
 $(PKG)_CONFIGURE_OPTIONS += --with-default-snmp-version=1
