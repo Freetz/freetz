@@ -234,6 +234,8 @@ function push_fw() {
 				-W "quote MEDIA FLSH" \
 				-Y "quote REBOOT" \
 				$ip ${kernel_mtd1} mtd1 || exit $?
+		else
+			echo "miserable failure" && exit 1
 		fi
 	elif [ $FOUND_FTP ]; then
 		if [ $ISRAM ]; then
@@ -292,6 +294,8 @@ $([ $ISALICE ] && echo put ${kernel_mtd5} mtd5 )
 quote REBOOT
 quit
 EOT
+		else
+			echo "miserable failure" && exit 1
 		fi
 	fi
 }
@@ -382,6 +386,8 @@ prepare_image() {
 				fi
 			fi
 		done
+	else
+		echo "miserable failure" && exit 1
 	fi
 }
 
