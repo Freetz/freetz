@@ -553,7 +553,7 @@ Latest changes
     * ncurses 5.9
     * netatalk 2.2.4
     * netpbm 10.35.85
-    * netsnmp 5.7.1
+    * Net-SNMP 5.8
     * ngircd 19.2
     * ntfs-3g 2013.1.13
     * openssh 6.2p1
