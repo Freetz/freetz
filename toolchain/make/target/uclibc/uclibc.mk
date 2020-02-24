@@ -20,7 +20,7 @@ UCLIBC_DEVEL_SUBDIR:=uClibc_dev
 UCLIBC_CONFIG_FILE:=$(UCLIBC_MAKE_DIR)/configs/freetz/config-$(FREETZ_TARGET_ARCH)-$(UCLIBC_VERSION)
 
 # uClibc >= 0.9.31 supports parallel building
-# TODO 1.0.14: reenable parallel building for 1.0.14
+# TODO 1.0.14: reenable parallel building for 1.0.x
 UCLIBC_MAKE:=$(if $(or $(FREETZ_TARGET_UCLIBC_0_9_28),$(FREETZ_TARGET_UCLIBC_0_9_29),$(FREETZ_TARGET_UCLIBC_1_0_14)),$(MAKE1),$(MAKE))
 
 UCLIBC_COMMON_BUILD_FLAGS:=
@@ -102,7 +102,7 @@ $(UCLIBC_DIR)/.config: $(UCLIBC_DIR)/.unpacked | $(UCLIBC_PREREQ_GCC_INITIAL)
 		UCLIBC_HAS_WCHAR=y \
 		UCLIBC_HAS_XLOCALE=$(if $(FREETZ_AVM_UCLIBC_XLOCALE_ENABLED),y,n) \
 		\
-		$(if $(or $(FREETZ_TARGET_UCLIBC_0_9_32),$(FREETZ_TARGET_UCLIBC_0_9_33),$(FREETZ_TARGET_UCLIBC_1_0_14)), \
+		$(if $(or $(FREETZ_TARGET_UCLIBC_0_9_28),$(FREETZ_TARGET_UCLIBC_0_9_29)),, \
 			LINUXTHREADS_OLD=$(if $(FREETZ_AVM_UCLIBC_NPTL_ENABLED),n,y) \
 			UCLIBC_HAS_THREADS_NATIVE=$(if $(FREETZ_AVM_UCLIBC_NPTL_ENABLED),y,n) \
 			UCLIBC_HAS_BACKTRACE=$(if $(FREETZ_TARGET_UCLIBC_SUPPORTS_libubacktrace),y,n) \
@@ -152,7 +152,7 @@ $(UCLIBC_DIR)/lib/libc.a: $(UCLIBC_DIR)/.configured | $(UCLIBC_PREREQ_GCC_INITIA
 		RUNTIME_PREFIX=/ \
 		HOSTCC="$(TOOLCHAIN_HOSTCC) $(UCLIBC_HOST_CFLAGS)" \
 		all
-ifeq ($(or $(FREETZ_TARGET_UCLIBC_0_9_32),$(FREETZ_TARGET_UCLIBC_0_9_33),$(FREETZ_TARGET_UCLIBC_1_0_14)),y)
+ifneq ($(or $(FREETZ_TARGET_UCLIBC_0_9_28),$(FREETZ_TARGET_UCLIBC_0_9_29)),y)
 	# At this point uClibc is compiled and there is no reason for us to recompile it.
 	# Remove some FORCE rule dependencies causing parts of uClibc to be recompiled (without a need)
 	# over and over again each time make is invoked within uClibc dir (the actual target doesn't matter).
