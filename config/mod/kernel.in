@@ -20,6 +20,8 @@ config FREETZ_REPLACE_KERNEL_AVAILABLE
 		\
 		! (FREETZ_SYSTEM_TYPE_PUMA6 && FREETZ_TYPE_6430) && \
 		\
+		! (FREETZ_SYSTEM_TYPE_PUMA7) && \
+		\
 		! (FREETZ_SYSTEM_TYPE_QCA955x) && \
 		\
 		! (FREETZ_SYSTEM_TYPE_QCA956x) && \
@@ -61,6 +63,7 @@ config FREETZ_REPLACE_KERNEL_EXPERIMENTAL
 # "kernel version used by Freetz" == "kernel version used by AVM"
 config FREETZ_REPLACE_MODULE_AVAILABLE
 	bool
+	depends on !FREETZ_SYSTEM_TYPE_PUMA7 # no sources available/integrated yet
 	depends on !FREETZ_SYSTEM_TYPE_IPQ40xx # evaloader-related kernel build rules need to be adjusted
 	depends on !FREETZ_SYSTEM_TYPE_QCA955x # no sources at all for this system type
 	depends on !(FREETZ_SYSTEM_TYPE_AR934x && FREETZ_AVM_VERSION_07_0X_MIN) # no kernelV4 sources
