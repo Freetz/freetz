@@ -124,9 +124,13 @@ $(PKG)_CONFIGURE_OPTIONS += --with-transports="$(NETSNMP_TRANSPORTS_INCLUDED)"
 $(PKG)_CONFIGURE_OPTIONS += --without-opaque-special-types
 $(PKG)_CONFIGURE_OPTIONS += --without-elf
 $(PKG)_CONFIGURE_OPTIONS += --without-libwrap
+$(PKG)_CONFIGURE_OPTIONS += --without-mysql
 $(PKG)_CONFIGURE_OPTIONS += --without-rpm
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NETSNMP_WITH_OPENSSL),,--without-openssl)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NETSNMP_WITH_ZLIB),,--without-zlib)
+$(PKG)_CONFIGURE_OPTIONS += --disable-perl-cc-checks
+$(PKG)_CONFIGURE_OPTIONS += --disable-embedded-perl
+$(PKG)_CONFIGURE_OPTIONS += --without-perl-modules
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
