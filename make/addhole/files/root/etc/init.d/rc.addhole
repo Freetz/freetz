@@ -12,7 +12,7 @@ reload() {
 }
 
 download() {
-	local SFT OTH TMP="$HOSTS.tmp"
+	local ACK STF OTH TMP="$HOSTS.tmp"
 	[ "$1" == "quiet" ] && STF="$1"
 	[ "$1" == "other" ] && OTH="$1"
 	[ -z "$STF" ] && echo -e "\n"
@@ -26,9 +26,11 @@ download() {
 		wget -q "$line" -O - | grep -vE "^[ \t]*#|^[ \t]*$" | sed 's/#.*//g' | awk '{print $2}' >> $TMP
 	done
 
+	ACK="$(sed 's/#.*//g;s/[ \t]//g;s/^/|/g' "${DAEMON_CFGFILE%/*}/allow.txt" 2>/dev/null | tr -d '\n' | sed 's/||/|/g;s/^|//;s/|$//')"
+
 	[ -z "$STF" ] && echo
 	[ -z "$STF" ] && echo -n "Old count of blocked domains: " && status
-	cat $TMP | dos2unix | grep -vE "^[ \t]*$|localhost|‐|ק|ɢ|é" | grep "\." | sort -u | sed "s/^/$ADDHOLE_SINK /g" > "$HOSTS"
+	cat $TMP | dos2unix | grep -vE "^[ \t]*$|localhost|‐|ק|ɢ|é" | grep "\." | sort -u | grep -vE "^($ACK)$" | sed "s/^/$ADDHOLE_SINK /g" > "$HOSTS" 
 	[ -s "$ADDHOLE_FILE" ] || echo '#' > "$HOSTS"
 	[ -z "$STF" ] && echo -n "New count of blocked domains: " && status
 	[ -z "$STF" ] && echo
@@ -70,6 +72,7 @@ case $1 in
 	""|load)
 		modlib_defaults
 
+		modreg file $DAEMON addhole_allow '$(lang de:"Ausnahmen" en:"Exceptions")' 1 addhole_allow
 		modreg file $DAEMON addhole_other '$(lang de:"Eigene" en:"Other")' 1 addhole_other
 		modreg file $DAEMON addhole_hosts '$(lang de:"Hosts" en:"Hosts")' 2 addhole_hosts
 		modreg cgi $DAEMON $DAEMON_LONG_NAME
