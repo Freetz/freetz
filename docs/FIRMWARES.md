@@ -344,7 +344,7 @@ Currently supported devices and firmwares
   - 153.07.12 rev70352 {GER} [MESH18 NL2]
 * __Fritz!Box Fon WLAN 7583__
   - 167.07.12 rev70707 {GER} [MESH18 NL2]
-  - 167.07.14 rev74588 {INT} [MESH18 NL2]
+  - 167.07.15 rev75887 {INT} [MESH18 NL2]
 
 * __Fritz!Box Fon WLAN 7590__
   - 154.06.86 rev45533 {GER}
