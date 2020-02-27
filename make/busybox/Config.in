@@ -7,7 +7,7 @@ config FREETZ_BUSYBOX__RECOMMENDED
 		you to deselect some options that are listed in mandatory, but are not
 		essential.  Deselect this only if space is tight and you want to save
 		a few bytes.
-		
+
 		Note that some features from the AVM firmware or from Freetz may not work.
 
 		Programs you might want to remove include vi, top, stty, wget or mount
@@ -403,6 +403,8 @@ config FREETZ_BUSYBOX__IPV6_UTILS
 	select FREETZ_BUSYBOX_FEATURE_IFUPDOWN_IPV6
 	select FREETZ_BUSYBOX_FEATURE_PREFER_IPV4_ADDRESS
 	select FREETZ_BUSYBOX_PING6
+	select FREETZ_BUSYBOX_FEATURE_IP_NEIGH
+	select FREETZ_BUSYBOX_IPNEIGH
 	help
 		Selects everything Freetz needs to run properly
 
