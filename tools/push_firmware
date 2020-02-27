@@ -97,7 +97,7 @@ function push_fw() {
 	fi
 
 	if [ ! $ISSINGLE ]; then
-		if [ ! $LFS ] || [ $ISDUAL$ISUIMG -a "$LFS" == "9" ]; then
+		if [ ! $LFS ] || [ -n "$ISDUAL$ISUIMG" -a "$LFS" == "9" ]; then
 			wait_loader
 			enval="$(read_enval linux_fs_start)"
 			[ "$enval" != "0" -a "$enval" != "1" -a "$enval" != "" ] && echo "Invalid value for linux_fs_start." && exit 1
@@ -119,7 +119,7 @@ function push_fw() {
 			[ $LFS -eq 1 ] && ARMsysMTD=';'  && ARMkrnMTD='<'  && X86sysMTD='='  && X86krnMTD='>'  && ALLgwtMTD=':'  # TODO
 			[ -e $ALLgwt ] && echo " * GWFS (tar) mtd: $ALLgwtMTD"
 		fi
-		if [ $ISDUAL$ISUIMG ]; then
+		if [ -n "$ISDUAL$ISUIMG" ]; then
 			echo " * Arm-System mtd: $ARMsysMTD"
 			echo " * Arm-Kernel mtd: $ARMkrnMTD"
 			echo " * x86-System mtd: $X86sysMTD"
