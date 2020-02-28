@@ -108,13 +108,12 @@ function push_fw() {
 			echo " * Designated linux_fs_start: $LFS"
 			echo
 		fi
-		[ $ISRAM ] && [ "$LFS" == "9" ] && LFS=
-
-		if [ $ISDUAL ]; then
+		if [ $ISRAM ]; then
+			[ "$LFS" == "9" ] && LFS=
+		elif [ $ISDUAL ]; then
 			[ $LFS -ne 1 ] && ARMsysMTD='0'  && ARMkrnMTD='1'  && X86sysMTD='6'  && X86krnMTD='7'
 			[ $LFS -eq 1 ] && ARMsysMTD='11' && ARMkrnMTD='12' && X86sysMTD='13' && X86krnMTD='14'
-		fi
-		if [ $ISUIMG ]; then
+		elif [ $ISUIMG ]; then
 			[ $LFS -ne 1 ] && ARMsysMTD='0'  && ARMkrnMTD='1'  && X86sysMTD='6'  && X86krnMTD='7'  && ALLgwtMTD='?'  # TODO
 			[ $LFS -eq 1 ] && ARMsysMTD=';'  && ARMkrnMTD='<'  && X86sysMTD='='  && X86krnMTD='>'  && ALLgwtMTD=':'  # TODO
 			[ -e $ALLgwt ] && echo " * GWFS (tar) mtd: $ALLgwtMTD"
@@ -171,30 +170,7 @@ function push_fw() {
 				-X "$([ ! $LFS ] && echo "quote SYST" || echo "quote SETENV linux_fs_start $LFS")" \
 				-Y "quote QUIT" \
 				$ip ${mtdram1} "${MTDSTART} ${MAPLIMIT}" || exit $?
-		elif [ $ISDUAL ]; then
-			ncftpput \
-				-C -d stdout -u adam2 -p adam2 \
-				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
-				-W "quote MEDIA FLSH" \
-				$ip $ARMsys mtd$ARMsysMTD || exit $?
-			ncftpput \
-				-C -d stdout -u adam2 -p adam2 \
-				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
-				-W "quote MEDIA FLSH" \
-				$ip $ARMkrn mtd$ARMkrnMTD || exit $?
-			ncftpput \
-				-C -d stdout -u adam2 -p adam2 \
-				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
-				-W "quote MEDIA FLSH" \
-				$ip $X86sys mtd$X86sysMTD || exit $?
-			ncftpput \
-				-C -d stdout -u adam2 -p adam2 \
-				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
-				-W "quote MEDIA FLSH" \
-				-X "quote SETENV linux_fs_start $LFS" \
-				-Y "quote REBOOT" \
-				$ip $X86krn mtd$X86krnMTD || exit $?
-		elif [ $ISUIMG ]; then
+		elif [ -n "$ISDUAL$ISUIMG" ]; then
 			[ -e $ALLgwt ] && ncftpput \
 				-C -d stdout -u adam2 -p adam2 \
 				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
@@ -219,9 +195,9 @@ function push_fw() {
 				-C -d stdout -u adam2 -p adam2 \
 				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
 				-W "quote MEDIA FLSH" \
+				-X "quote SETENV linux_fs_start $LFS" \
 				-Y "quote REBOOT" \
 				$ip $X86krn mtd$X86krnMTD || exit $?
-#				-X "quote SETENV subsys_id $LFS" \  # TODO
 		elif [ $ISSINGLE ]; then
 			[ $ISALICE ] && ( ncftpput \
 				-C -d stdout -u adam2 -p adam2 \
@@ -251,22 +227,7 @@ put ${mtdram1} "${MTDSTART} ${MAPLIMIT}"
 $([ $LFS ] && echo quote SETENV linux_fs_start $LFS)
 quit
 EOT
-		elif [ $ISDUAL ]; then
-			ftp -n -p <<EOT
-open $ip
-user adam2 adam2
-debug
-bin
-quote MEDIA FLSH
-put $ARMsys mtd$ARMsysMTD
-put $ARMkrn mtd$ARMkrnMTD
-put $X86sys mtd$X86sysMTD
-put $X86krn mtd$X86krnMTD
-quote SETENV linux_fs_start $LFS
-quote REBOOT
-quit
-EOT
-		elif [ $ISUIMG ]; then
+		elif [ -n "$ISDUAL$ISUIMG" ]; then
 			ftp -n -p <<EOT
 open $ip
 user adam2 adam2
@@ -278,12 +239,12 @@ put $ARMkrn mtd$ARMkrnMTD
 put $X86sys mtd$X86sysMTD
 put $X86krn mtd$X86krnMTD
 $([ -e $ALLgwt ] && echo put $ALLgwt mtd$ALLgwtMTD)
+quote SETENV linux_fs_start $LFS
 quote REBOOT
 quit
 EOT
-#quote SETENV subsys_id $LFS  # TODO
 		elif [ $ISSINGLE ]; then
-		ftp -n -p <<EOT
+			ftp -n -p <<EOT
 open $ip
 user adam2 adam2
 debug
