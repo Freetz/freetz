@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 0.0.1)
+$(call PKG_INIT_BIN, 0.0.2)
 $(PKG)_SOURCE:=shadowsocksr-native-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=f3adf5417504e27f3ac84a2d1fba921b
 $(PKG)_SITE:=https://github.com/ShadowsocksR-Live/shadowsocksr-native/archive/
