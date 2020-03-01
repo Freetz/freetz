@@ -1,0 +1,56 @@
+From e3d6c8bffe79b2c070bc7a3aabc9d9c65f6b099e Mon Sep 17 00:00:00 2001
+From: Waldemar Brodkorb <wbx@uclibc-ng.org>
+Date: Fri, 3 Nov 2017 20:15:44 +0100
+Subject: [PATCH] Only emulate statfs64 if __NR_statfs64 is not defined
+
+After discussions on the busybox mailinglist.
+
+Reported-by: Ralf Friedl <Ralf.Friedl@online.de>
+Signed-off-by: Waldemar Brodkorb <wbx@uclibc-ng.org>
+
+--
+
+From 40308d7d3b61f83bb5cc3cb406dac5dd318a48cd Mon Sep 17 00:00:00 2001
+From: Eugene Rudoy <gene.devel@gmail.com>
+Date: Sat, 4 Nov 2017 22:26:21 +0100
+Subject: [PATCH] Only emulate fstatfs64 if __NR_fstatfs64 is not defined
+
+Follow-up of e3d6c8bffe79b2c070bc7a3aabc9d9c65f6b099e
+
+Signed-off-by: Eugene Rudoy <gene.devel@gmail.com>
+Signed-off-by: Ralf Friedl <Ralf.Friedl@online.de>
+
+--- libc/misc/statfs/statfs64.c
++++ libc/misc/statfs/statfs64.c
+@@ -25,7 +25,7 @@
+ 
+ extern __typeof(statfs) __libc_statfs;
+ 
+-#if defined __NR_statfs
++#if !defined __NR_statfs64
+ /* Return information about the filesystem on which FILE resides.  */
+ int statfs64 (const char *file, struct statfs64 *buf)
+ {
+--- libc/misc/statfs/fstatfs64.c
++++ libc/misc/statfs/fstatfs64.c
+@@ -25,7 +25,7 @@
+ #include <sys/syscall.h>
+ #include <stddef.h>
+ 
+-#if defined __NR_fstatfs
++#if !defined __NR_fstatfs64
+ extern __typeof(fstatfs) __libc_fstatfs;
+ 
+ /* Return information about the filesystem on which FD resides.  */
+@@ -53,11 +53,6 @@
+     return 0;
+ }
+ #else
+-/*
+- * Use the fstatfs64 system call if fstatfs is not defined
+- * This is for backwards compatibility and it should be
+- * made default in the future
+- */
+ int fstatfs64(int fd, struct statfs64 *buf)
+ {
+ 	/* Signature has 2 arguments but syscalls wants 3 */
