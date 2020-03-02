@@ -1,17 +1,15 @@
-$(call PKG_INIT_BIN, 0.0.20191127)
-$(PKG)_SOURCE:=WireGuard-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=7d4e80a6f84564d4826dd05da2b59e8d17645072c0345d0fc0d197be176c3d06
-$(PKG)_SITE:=https://git.zx2c4.com/WireGuard/snapshot
+$(call PKG_INIT_BIN, 1.0.20200206)
+$(PKG)_SOURCE:=wireguard-tools-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE_SHA256:=f5207248c6a3c3e3bfc9ab30b91c1897b00802ed861e1f9faaed873366078c64
+$(PKG)_SITE:=https://git.zx2c4.com/wireguard-tools/snapshot
 
-$(PKG)_BINARIES            := wg
-$(PKG)_BINARIES_BUILD_DIR  := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/src/tools/%)
-$(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/wg
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/wg
 
-$(PKG)_MODULES            := wireguard.ko
-$(PKG)_MODULES_BUILD_DIR  := $($(PKG)_MODULES:%=$($(PKG)_DIR)/src/%)
-$(PKG)_MODULES_TARGET_DIR := $($(PKG)_MODULES:%=$(KERNEL_MODULES_DIR)/drivers/net/wireguard/%)
+$(PKG)_EXTRA_CFLAGS += --function-section -fdata-sections -fstack-protector-strong
+$(PKG)_EXTRA_LDFLAGS += -Wl,--gc-sections
 
-$(PKG)_DEPENDS_ON += kernel libmnl
+$(PKG)_DEPENDS_ON += kernel 
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_KERNEL_VERSION
 
@@ -19,37 +17,25 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
-$($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(WIREGUARD_DIR)/src tools \
-		CC="$(TARGET_CC)"
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
+	$(SUBMAKE) -C $(WIREGUARD_DIR)/src  \
+		CC="$(TARGET_CC)" \
+                EXTRA_CFLAGS="$(WIREGUARD_EXTRA_CFLAGS)" \
+                EXTRA_LDFLAGS="$(WIREGUARD_EXTRA_LDFLAGS)"
 
-$($(PKG)_MODULES_BUILD_DIR): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(WIREGUARD_DIR)/src module \
-		SUBDIRS="$(FREETZ_BASE_DIR)/$(WIREGUARD_DIR)/src" \
-		KERNELDIR="$(FREETZ_BASE_DIR)/$(KERNEL_SOURCE_DIR)" \
-		ARCH="$(KERNEL_ARCH)" \
-		CROSS_COMPILE="$(KERNEL_CROSS)"
 
-$($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/bin/%: $($(PKG)_DIR)/src/tools/%
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
-$($(PKG)_MODULES_TARGET_DIR): $(KERNEL_MODULES_DIR)/drivers/net/wireguard/%: $($(PKG)_DIR)/src/%
-	$(INSTALL_FILE)
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR) $($(PKG)_MODULES_TARGET_DIR)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(SUBMAKE) -C $(WIREGUARD_DIR)/src clean \
-		SUBDIRS="$(FREETZ_BASE_DIR)/$(WIREGUARD_DIR)/src" \
-		KERNELDIR="$(FREETZ_BASE_DIR)/$(KERNEL_SOURCE_DIR)" \
-		ARCH="$(KERNEL_ARCH)" \
-		CROSS_COMPILE="$(KERNEL_CROSS)"
+	-$(SUBMAKE) -C $(WIREGUARD_DIR)/src clean 
 
 $(pkg)-uninstall:
-	$(RM) \
-		$(WIREGUARD_BINARIES_TARGET_DIR) \
-		$(WIREGUARD_MODULES_TARGET_DIR)
+	$(RM)  $(WIREGUARD_TARGET_BINARY) 
 
 $(PKG_FINISH)
