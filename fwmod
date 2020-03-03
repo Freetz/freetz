@@ -1175,10 +1175,12 @@ if [ "$DO_MOD" -gt 0 ]; then
 		unset DETECTED_OPENSSL_VER_AVM
 		unset DETECTED_OPENSSL_VER_MOD
 
-		echo1 "checking uClibc version"
-		DETECTED_UCLIBC_VER="$(readlink ${FILESYSTEM_DIR}/lib/libc.so.? | sed 's/\.so$//;s/^libuClibc-//;s/-.*//' | head -n1)"
+		echo1 "checking libc version"
+		DETECTED_UCLIBC_VER="$(readlink ${FILESYSTEM_DIR}/lib/libc.so.? | sed 's/\.so$//;s/^libc/g&/;s/^lib//;s/-/ /' | head -n1)"
+		[ -z "$DETECTED_UCLIBC_VER" ] && [ -n "$(strings ${FILESYSTEM_DIR}/lib/libc.so | grep '^musl libc')" ] && \
+		  DETECTED_UCLIBC_VER="musl $(strings ${FILESYSTEM_DIR}/lib/libc.so | grep '^[0-1]\.[0-9]\.[0-9][0-9]*$')"
 		echo2 "... used by AVM ...... $DETECTED_UCLIBC_VER"
-		echo2 "... used by Freetz ... ${FREETZ_TARGET_UCLIBC_VERSION}"
+		echo2 "... used by Freetz ... uClibc ${FREETZ_TARGET_UCLIBC_VERSION}"
 		if [ "${FREETZ_TARGET_UCLIBC_VERSION#$DETECTED_UCLIBC_VER}" == "$FREETZ_TARGET_UCLIBC_VERSION" \
 		  -a "${FREETZ_SEPARATE_AVM_UCLIBC}" != "y" \
 		  -a "${FREETZ_TARGET_UCLIBC_VERSION}" != "$DETECTED_UCLIBC_VER" ]; then
