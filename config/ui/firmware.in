@@ -623,7 +623,7 @@ endchoice # "Firmware version" #
 
 config FREETZ_TYPE_FIRMWARE_LABOR_LATEST
 	bool "Detect the latest firmware version"
-	default y
+	default n
 	select FREETZ_DL_DETECT_IMAGE_NAME
 	depends on FREETZ_SHOW_ADVANCED && FREETZ_AVM_HAS_FIRMWARE_LABOR && FREETZ_TYPE_FIRMWARE_LABOR
 	help
@@ -684,7 +684,8 @@ config FREETZ_TYPE_FIRMWARE_LABOR
 	default y
 	depends on \
 		FREETZ_TYPE_FIRMWARE_LABOR_BETA || \
-		FREETZ_TYPE_FIRMWARE_LABOR_TEST
+		FREETZ_TYPE_FIRMWARE_LABOR_TEST || \
+		FREETZ_TYPE_FIRMWARE_07_2X_LABOR
 
 config FREETZ_TYPE_LANGUAGE
 	string

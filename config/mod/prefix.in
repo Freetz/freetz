@@ -97,6 +97,7 @@ config FREETZ_TYPE_PREFIX_BOXMATRIX
 	default "fritzbox-5491"               if FREETZ_TYPE_5491
 	default "fritzbox-6490-cable"         if FREETZ_TYPE_6490
 	default "fritzbox-6590-cable"         if FREETZ_TYPE_6590
+	default "fritzbox-6591-cable"         if FREETZ_TYPE_6591
 	default "fritzbox-6820-lte-v1"        if FREETZ_TYPE_6820 && FREETZ_TYPE_LANG_DE
 	default "fritzbox-6820-lte-v2"        if FREETZ_TYPE_6820 && FREETZ_TYPE_LANG_EN
 	default "fritzbox-6890-lte-v2"        if FREETZ_TYPE_6890
@@ -117,7 +118,7 @@ config FREETZ_TYPE_PREFIX_BOXMATRIX
 config FREETZ_TYPE_PREFIX_LABOR_FIRMWARE
 	string
 	default "_beta"             if FREETZ_TYPE_FIRMWARE_LABOR_BETA
-	default "_labor"            if FREETZ_TYPE_FIRMWARE_LABOR_TEST
+	default "_labor"            if FREETZ_TYPE_FIRMWARE_LABOR_TEST || FREETZ_TYPE_FIRMWARE_07_2X_LABOR
 	default "_inhaus"           if FREETZ_TYPE_FIRMWARE_INHAUS
 
 config FREETZ_TYPE_PREFIX_SERIES_SUBDIR
