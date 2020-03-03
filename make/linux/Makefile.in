@@ -69,8 +69,10 @@ KERNEL_LINKING_FILES += drivers/isdn/capi_oslib/linux_capi_oslib.h,include/linux
 KERNEL_LINKING_FILES += drivers/isdn/capi_oslib/linux_capi_oslib.h,include/uapi/linux/capi_oslib.h
 KERNEL_LINKING_FILES += drivers/isdn/capi_oslib/linux_new_capi.h,include/linux/new_capi.h
 KERNEL_LINKING_FILES += drivers/isdn/capi_oslib/linux_new_capi.h,include/uapi/linux/new_capi.h
+ifeq ($(strip $(FREETZ_KERNEL_VERSION_4_4_MAX)),y)
 KERNEL_LINKING_FILES += drivers/isdn/capi_oslib/linux_new_capi_debug.h,include/linux/new_capi_debug.h
 KERNEL_LINKING_FILES += drivers/isdn/capi_oslib/linux_new_capi_debug.h,include/uapi/linux/new_capi_debug.h
+endif
 KERNEL_LINKING_FILES += drivers/isdn/capi_oslib/linux_zugriff.h,include/linux/zugriff.h
 KERNEL_LINKING_FILES += drivers/isdn/capi_oslib/linux_zugriff.h,include/uapi/linux/zugriff.h
 
@@ -83,9 +85,11 @@ KERNEL_LINKING_FILES += drivers/net/avm_cpmac/include/linux_ifx_ppa_ppe_hal.h,in
 KERNEL_LINKING_FILES += drivers/net/avm_cpmac/include/linux_ifx_ppa_stack_al.h,include/net/ifx_ppa_stack_al.h
 KERNEL_LINKING_FILES += drivers/net/avm_cpmac/include/linux_ltq_eth_oam_handler.h,include/net/ltq_eth_oam_handler.h
 
+ifeq ($(strip $(FREETZ_KERNEL_VERSION_4_4_MAX)),y)
 KERNEL_LINKING_FILES += net/avm_pa/avm_pa.h,include/linux/avm_pa.h
 KERNEL_LINKING_FILES += net/avm_pa/avm_pa_hw.h,include/linux/avm_pa_hw.h
 KERNEL_LINKING_FILES += net/avm_pa/avm_pa_ifx_multiplexer.h,include/linux/avm_pa_ifx_multiplexer.h
+endif
 
 # 2.6.13, 2.6.19, 2.6.28
 KERNEL_LINKING_FILES += drivers/char/avm_new/linux_avm_led.h,include/linux/avm_led.h
