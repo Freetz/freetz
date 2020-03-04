@@ -7,6 +7,7 @@ for f in \
   etc/init.d/S01-head \
   etc/init.d/rc.tffs.sh \
   etc/boot.d/rc.conf \
+  etc/boot.d/core/tffs \
   ; do
 	grep -q '^tffs_nodes_list=""$' "${FILESYSTEM_MOD_DIR}/$f" 2>/dev/null && break
 	f=""
