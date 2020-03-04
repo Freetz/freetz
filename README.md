@@ -26,7 +26,6 @@ cuma (trac) or fda77 (git) are merged.
 ### Mirrors:
 ```
   svn co https://github.com/Freetz-NG/freetz-ng/trunk ~/freetz-ng
-  svn co https://svn.boxmatrix.info/freetz-ng/trunk ~/freetz-ng
   git clone https://gitlab.com/Freetz-NG/freetz-ng ~/freetz-ng
   git clone https://bitbucket.org/Freetz-NG/freetz-ng ~/freetz-ng
 ```
