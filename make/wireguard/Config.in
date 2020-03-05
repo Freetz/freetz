@@ -1,13 +1,12 @@
-comment "WireGuard (not available, needs replace kernel)"
+comment "wireguard-tools (not available, needs replace kernel)"
 	depends on FREETZ_KERNEL_VERSION_3_10_MIN && !FREETZ_REPLACE_KERNEL && !FREETZ_AVM_HAS_CRYPTO_BLKCIPHER_BUILTIN
 
 config FREETZ_PACKAGE_WIREGUARD
-	bool "WireGuard 0.0.20191127"
+	bool "wireguard-tools 1.0.20200206"
 	depends on FREETZ_KERNEL_VERSION_3_10_MIN && (FREETZ_AVM_HAS_CRYPTO_BLKCIPHER_BUILTIN || FREETZ_REPLACE_KERNEL) && FREETZ_REPLACE_MODULE_AVAILABLE
 	default n
 	select FREETZ_BUSYBOX_IP
-	select FREETZ_LIB_libmnl
-	select FREETZ_MODULE_wireguard
+	select FREETZ_PACKAGE_WIREGUARD_LINUX_COMPAT
 	help
 		WireGuard is an extremely simple yet fast and modern VPN
 		that utilizes state-of-the-art cryptography. It aims to be
