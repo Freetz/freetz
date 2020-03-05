@@ -933,8 +933,11 @@
   * **[Wget GNU 1.20.3 (binary only)](../docs/make/wget.md)<a id='wget'></a>**<br>
     GNU Wget is a free software package for retrieving files using HTTP, HTTPS and FTP, the most widely-used Internet protocols. It is a non-interactive commandline tool, so it may easily be called from scripts, cron jobs, terminals, etc.
 
-  * **[WireGuard 0.0.20191219](../docs/make/wireguard.md)<a id='wireguard'></a>**<br>
+  * **[wireguard-tools 1.0.20200206](../docs/make/wireguard.md)<a id='wireguard'></a>**<br>
     WireGuard is an extremely simple yet fast and modern VPN that utilizes state-of-the-art cryptography. It aims to be faster, simpler, leaner, and more useful than IPSec, while avoiding the massive headache. It intends to be considerably more performant than OpenVPN. WireGuard is designed as a general purpose VPN for running on embedded interfaces and super computers alike, fit for many different circumstances. Initially released for the Linux kernel, it plans to be cross-platform and widely deployable. It is currently under heavy development, but already it might be regarded as the most secure, easiest to use, and simplest VPN solution in the industry.
+
+  * **<u>wireguard-linux-compat 0.0.20200215</u><a id='wireguard-linux-compat'></a>**<br>
+    This package provides the kernel module required for Wireguard
 
   * **[WOL 0.7.1 (binary only)](../docs/make/wol.md)<a id='wol'></a>**<br>
     Simple Wake-On-Lan utility to wake up Magic-Packet-compliant hardware.
