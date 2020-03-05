@@ -1,0 +1,18 @@
+--- src/Makefile	
++++ src/Makefile
+@@ -22,13 +22,13 @@
+ WIREGUARD_VERSION = $(patsubst v%,%,$(shell GIT_CEILING_DIRECTORIES="$(PWD)/../.." git describe --dirty 2>/dev/null))
+ 
+ module:
+-	@$(MAKE) -C $(KERNELDIR) M=$(PWD) WIREGUARD_VERSION="$(WIREGUARD_VERSION)" modules
++	@$(MAKE) -C "$(KERNELDIR)" SUBDIRS="$(SUBDIRS)" ARCH="$(ARCH)" CROSS_COMPILE="$(CROSS_COMPILE)" modules
+ 
+ module-debug:
+ 	@$(MAKE) -C $(KERNELDIR) M=$(PWD) V=1 CONFIG_WIREGUARD_DEBUG=y WIREGUARD_VERSION="$(WIREGUARD_VERSION)" modules
+ 
+ clean:
+-	@$(MAKE) -C $(KERNELDIR) M=$(PWD) clean
++	@$(MAKE) -C "$(KERNELDIR)" SUBDIRS="$(SUBDIRS)" ARCH="$(ARCH)" CROSS_COMPILE="$(CROSS_COMPILE)" clean
+ 
+ module-install:
+ 	@$(MAKE) -C $(KERNELDIR) M=$(PWD) WIREGUARD_VERSION="$(WIREGUARD_VERSION)" modules_install
