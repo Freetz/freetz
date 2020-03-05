@@ -1,5 +1,24 @@
 # NEWS
 
+ * __2020-03-05__<br>
+   Neuer Branch [libctest](https://github.com/Freetz-NG/freetz-ng/tree/libctest).<br>
+   In diesem Branch können verschieden Geräte und Firmware getestet werden, die diese<br>
+   libc nutzen: uclibc 1.0.30, uclibc 1.0.31, glib 2.23, glibc 2.28 und musl libc 1.1.24<br>
+   Bekannte Probleme in der [README](https://github.com/Freetz-NG/freetz-ng/blob/libctest/README.md) beachten!<br>
+   Siehe [4b64a268](https://github.com/Freetz-NG/freetz-ng/commit/4b64a268c688875dacf0c9089ff89299277d6b55)<br>
+
+ * __2020-03-03__<br>
+   Patch [web menu secure message](patches/README.md#patch-secure) hinzugefügt.<br>
+   Der Patch entfernt dein Hinweis auf der Hauptseite bei unsicheren Einstellungen.<br>
+   Dies betrifft aktuell ```IP-Phone von Aussen``` und ```2-Faktor deaktiviert```.<br>
+   Siehe [r16610](https://trac.boxmatrix.info/freetz-ng/changeset/16610/freetz-ng)
+   / [a7a60102](https://github.com/Freetz-NG/freetz-ng/commit/a7a60102d4a6fbb2739f9c5d09d9ab87bb1615c6)<br>
+
+ * __2020-02-02__<br>
+   Der neue Link ```/ftp``` zeigt immer auf das Verzeichnis ```/var/media/ftp/```.<br>
+   Siehe [r16542](https://trac.boxmatrix.info/freetz-ng/changeset/16542/freetz-ng)
+   / [dfeeec6d](https://github.com/Freetz-NG/freetz-ng/commit/dfeeec6d00066b5877c71a8d7ecabc9b3586e863)<br>
+
  * __2020-01-31__<br>
    Standard GID der ```users``` zu ```80``` geändert.<br>
    Dies sollte keine Auswirkungen auf bestehende Konfigurationen haben.<br>
