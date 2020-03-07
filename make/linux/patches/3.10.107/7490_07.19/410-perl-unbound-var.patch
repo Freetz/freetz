@@ -1,0 +1,11 @@
+--- linux-3.10/drivers/char/avm_new/generate-event-types
++++ linux-3.10/drivers/char/avm_new/generate-event-types
+@@ -4,7 +4,7 @@
+ 
+ cd "$1/avm_dist_event/"
+ 
+-export PERL5LIB="$PERL5LIB:."
++export PERL5LIB="${PERL5LIB:-}:."
+ 
+ perl avm_event_generate.pl 1>/dev/null 2>&1
+ cat avm_event_gen_types.h
