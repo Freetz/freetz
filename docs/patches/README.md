@@ -405,7 +405,7 @@
   * **[PATCH_MULTIPLE_PRINTERS: Add support for multiple printers](PATCH_MULTIPLE_PRINTERS.md)<a id='patch-multiple-printers'></a>**<br>
     Use this patch if you want to use more than one printer.
 
-  * **<u>PATCH_SECURE: Patch web menu secure message</u><a id='patch-secure'></a>**<br>
+  * **[PATCH_SECURE: Patch web menu secure message](PATCH_SECURE.md)<a id='patch-secure'></a>**<br>
     Hides the "unsecure settings" message from the web interface.
 
   * **[PATCH_SIGNED: Patch web menu signed message](PATCH_SIGNED.md)<a id='patch-signed'></a>**<br>
