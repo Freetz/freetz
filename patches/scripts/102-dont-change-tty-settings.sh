@@ -8,6 +8,6 @@ for file in \
   etc/boot.d/core/head \
   etc/init.d/S01-head \
   ; do
-[ -e "${FILESYSTEM_MOD_DIR}/$file" ] && modsed -r 's,^([ \t]*stty .*),## disabled by freetz: \1,' "${FILESYSTEM_MOD_DIR}/$file" 'disabled by freetz'
+	[ -e "${FILESYSTEM_MOD_DIR}/$file" ] && modsed -r 's,^([ \t]*stty .*),## disabled by freetz: \1,' "${FILESYSTEM_MOD_DIR}/$file"
 done
 
