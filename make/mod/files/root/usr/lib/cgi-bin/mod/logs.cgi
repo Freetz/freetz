@@ -32,6 +32,10 @@ case "$3" in
 		do_log /proc/avm/log_sd/panic
 		do_log /proc/avm/log_sd/panic2
 
+		do_log /var/log/crash2
+		do_log /var/log/debug2
+		do_log /var/log/panic2
+
 		do_log /var/flash/crash.log
 		do_log /var/flash/panic
 		do_log /var/log/messages
