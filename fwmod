@@ -1181,9 +1181,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		  DETECTED_UCLIBC_VER="musl $(strings ${FILESYSTEM_DIR}/lib/libc.so | grep '^[0-1]\.[0-9]\.[0-9][0-9]*$')"
 		echo2 "... used by AVM ...... $DETECTED_UCLIBC_VER"
 		echo2 "... used by Freetz ... uClibc ${FREETZ_TARGET_UCLIBC_VERSION}"
-		if [ "${FREETZ_TARGET_UCLIBC_VERSION#$DETECTED_UCLIBC_VER}" == "$FREETZ_TARGET_UCLIBC_VERSION" \
-		  -a "${FREETZ_SEPARATE_AVM_UCLIBC}" != "y" \
-		  -a "${FREETZ_TARGET_UCLIBC_VERSION}" != "$DETECTED_UCLIBC_VER" ]; then
+		if [ "${FREETZ_TARGET_UCLIBC_VERSION#${DETECTED_UCLIBC_VER#uClibc }}" == "$FREETZ_TARGET_UCLIBC_VERSION" -a "${FREETZ_SEPARATE_AVM_UCLIBC}" != "y" ]; then
 			warn2 "Freetz and AVM uClibc versions do not match"
 		fi
 		unset DETECTED_UCLIBC_VER
