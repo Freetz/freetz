@@ -6,7 +6,7 @@ cat << 'EOF' > "${FILESYSTEM_MOD_DIR}/lib/systemd/system/modload.service"
 ExecStart=/etc/boot.d/core/20-modload
 Type=oneshot
 DefaultDependencies=no
-After=environment.service
+After=tffs.service environment.service
 [Install]
 WantedBy=environment.target
 EOF
