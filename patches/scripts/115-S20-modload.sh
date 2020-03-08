@@ -4,6 +4,6 @@
 echo1 "adding /$file"
 
 [ ! -e "${FILESYSTEM_MOD_DIR}/$file" ] && echo '#!/bin/sh' > "${FILESYSTEM_MOD_DIR}/$file"
-echo '/usr/bin/modload 2>&1 | tee /var/log/mod_load.log' >> "${FILESYSTEM_MOD_DIR}/$file"
+echo '/usr/bin/modload 2>&1 | tee /var/log/mod_load.log | sed "s/^/[FREETZ] MODLOAD: /g"' >> "${FILESYSTEM_MOD_DIR}/$file"
 chmod +x "${FILESYSTEM_MOD_DIR}/$file"
 

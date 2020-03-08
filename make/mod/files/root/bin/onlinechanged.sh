@@ -13,7 +13,7 @@ log() {
 		shift
 	done
 	echo -e "$(date '+%Y-%m-%d %H:%M:%S') [$$]: [$OC_STATE] $*$addline" >>/var/log/onlinechanged.log
-	echo "ONLINECHANGED[$$]: [$OC_STATE] $*" >/dev/console
+	echo "[FREETZ] ONLINECHANGED[$$]: [$OC_STATE] $*" > /dev/console
 	logger -t ONLINECHANGED[$$] "[$OC_STATE] $*"
 }
 

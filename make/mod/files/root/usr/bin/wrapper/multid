@@ -3,9 +3,9 @@
 log() {
 	local _log="$(cat)" # save stdin to _log
 	[ -z "$_log" ] && return
-	echo "AVMMULTID: $_log" > /dev/console
+	echo "[FREETZ] AVM-MULTID: $_log" > /dev/console
 	echo "$_log" >> /var/log/mod_net.log
-	logger -t AVMMULTID "$_log"
+	logger -t AVM-MULTID "$_log"
 }
 
 multid_mode=start

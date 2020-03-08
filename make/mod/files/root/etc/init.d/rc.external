@@ -23,7 +23,7 @@ log() {
 	echo $newl -e "$addl$*" | tee -a $LOG_FILE
 	[ "$*" == "." -o "$*" == " ." ] && return
 	IFS='\n' echo "$*" | while read -r line; do
-		echo "EXTERNAL: $line" > /dev/console
+		echo "[FREETZ] EXTERNAL: $line" > /dev/console
 		logger -t EXTERNAL "$line"
 	done
 }

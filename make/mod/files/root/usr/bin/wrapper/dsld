@@ -3,9 +3,9 @@
 log() {
 	local _log="$(cat)" # save stdin to _log
 	[ -z "$_log" ] && return
-	echo "AVMDSLD: $_log" > /dev/console
+	echo "[FREETZ] AVM-DSLD: $_log" > /dev/console
 	echo "$_log" >> /var/log/mod_net.log
-	logger -t AVMDSLD "$_log"
+	logger -t AVM-DSLD "$_log"
 }
 
 dsld_mode=start

@@ -5,6 +5,7 @@ udev_log() {
 	[ "$1" != '0' ] && prio='user.err' && pfix='[FAIL]'
 	[ "$1" == '0' ] && prio='user.notice' && pfix='[INFO]'
 	[ "$1" == 'X' ] && prio='user.info'
+	echo "[FREETZ] UDEVMOUNT: $2" > /dev/console
 	logger -p $prio -t UDEVMOUNT "$2"
 	[ "$1" != 'X' ] && echo "$pfix $2" >> /var/log/mod_mount.log
 }
