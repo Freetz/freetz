@@ -1,5 +1,12 @@
 # NEWS
 
+ * __2020-03-09__<br>
+   Auf der Hauptseite des Webinterfaces werden nun zusätzlich der ```Temporäre```<br>
+   ```Speicher``` und die ```Konfigurationspartition``` (falls verfügbar) angezeigt.<br>
+   Dies kann im Webinterface unter ```Freetz > Weboberfläche``` konfiguriert werden.<br>
+   Siehe [r16637](https://trac.boxmatrix.info/freetz-ng/changeset/16637/freetz-ng)
+   / [76b57af6](https://github.com/Freetz-NG/freetz-ng/commit/76b57af63447928e84b5fe11adc0e1e5c854bad8)<br>
+
  * __2020-03-05__<br>
    Neuer Branch [libctest](https://github.com/Freetz-NG/freetz-ng/tree/libctest).<br>
    In diesem Branch können verschieden Geräte und Firmware getestet werden, die diese<br>
