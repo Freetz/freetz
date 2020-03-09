@@ -23,32 +23,6 @@ do_unmount() {
 	sec_end
 }
 
-errpath=""
-if [ "$sec_level" -eq 0 -a -n "$MOUNTED_CMD" ]; then
-	case $MOUNTED_CMD in
-		R)       do_remount -r "$MOUNTED_PATH" ;;
-		W)       do_remount -w "$MOUNTED_PATH" ;;
-		*U*)     do_unmount    "$MOUNTED_PATH" ;;
-	esac
-	if [ -r "$ERRORFILE" ]; then
-		errpath=$MOUNTED_PATH
-	fi
-fi
-
-# actions=true if action buttons are to be displayed
-if [ "$sec_level" -eq 0 ]; then
-	actions=true
-else
-	actions=false
-fi
-# The status page is called both as /cgi-bin/status.cgi and /cgi-bin/index.cgi
-if [ "$SCRIPT_NAME" != /cgi-bin/pkgstatus.cgi ]; then
-	[ "$MOD_MOUNTED_UMOUNT" != "yes" ] && actions=false
-fi
-formact=$(html "$SCRIPT_NAME${QUERY_STRING:+?$QUERY_STRING}")
-
-sec_begin '$(lang de:"Eingeh&auml;ngte Partitionen" en:"Mounted partitions")'
-
 decim="$(lang de:"," en:".")"
 format_size() {
 	echo "$1B" | sed -e "s/[KMGT]\?B/ &/;s/KB$/kB/;s/\./$decim/g"
@@ -93,22 +67,24 @@ print_mp() {
 		$actions && wdisabled=''
 	fi
 	echo "<tbody class='$barstyle'>"
-	echo -n "<tr>"
-	echo -n "<td class='path'>$showpath</td><td class='device'>$showdev</td>"
-	echo -n "<td class='fstype'>$fstyp</td>"
-	echo -n '<td class='actions'>'
-	$actions && echo -n '<small>$(lang de:"Mountoptionen" en:"Mount options"):</small>'
-	echo '</td></tr>'
+	if [ "$outsize" != "small" ]; then
+		echo -n "<tr>"
+		echo -n "<td class='path'>$showpath</td><td class='device'>$showdev</td>"
+		echo -n "<td class='fstype'>$fstyp</td>"
+		echo -n '<td class='actions'>'
+		$actions && echo -n '<small>$(lang de:"Mountoptionen" en:"Mount options"):</small>'
+		echo '</td></tr>'
+	fi
 	echo -n "<tr><td colspan='3' class='free'>${used} $(lang de:"von" en:"of") ${total} $(lang de:"belegt" en:"used"), ${free} $(lang de:"frei" en:"free")</td>"
 	echo '<td colspan="1" class="actions">'
-	echo "<form class='btn' action='$formact' method='post' onsubmit='return confirm(\"$(lang de:"Ausf&uuml;hren" en:"Execute")?\")' >"
-	echo "<input type='hidden' name='path' value='$(html "$path")'>"
-	echo "<input class='button' type='submit' name='cmd' value='R' $rdisabled>"
-	echo "<input class='button' type='submit' name='cmd' value='W' $wdisabled>"
-	if $actions; then
-		echo "<input type='submit' name='cmd' value='&nbsp;U&nbsp;'>"
+	if [ "$outsize" != "small" ]; then
+		echo "<form class='btn' action='$formact' method='post' onsubmit='return confirm(\"$(lang de:"Ausf&uuml;hren" en:"Execute")?\")' >"
+		echo "<input type='hidden' name='path' value='$(html "$path")'>"
+		echo "<input class='button' type='submit' name='cmd' value='R' $rdisabled>"
+		echo "<input class='button' type='submit' name='cmd' value='W' $wdisabled>"
+		$actions && echo "<input type='submit' name='cmd' value='&nbsp;U&nbsp;'>"
+		echo '</form>'
 	fi
-	echo '</form>'
 	echo '</td></tr>'
 	if [ "$errpath" = "$path" -a -r "$ERRORFILE" ]; then
 		echo "<tr><td colspan='4'>"
@@ -123,25 +99,84 @@ print_mp() {
 	echo "</tbody>"
 }
 
+
+errpath=""
+if [ "$sec_level" -eq 0 -a -n "$MOUNTED_CMD" ]; then
+	case $MOUNTED_CMD in
+		R)       do_remount -r "$MOUNTED_PATH" ;;
+		W)       do_remount -w "$MOUNTED_PATH" ;;
+		*U*)     do_unmount    "$MOUNTED_PATH" ;;
+	esac
+	if [ -r "$ERRORFILE" ]; then
+		errpath=$MOUNTED_PATH
+	fi
+fi
+
+# The status page is called both as /cgi-bin/status.cgi and /cgi-bin/status/mod/mounted(/index.html)
+[ "$SCRIPT_NAME" != /cgi-bin/status.cgi ] && onmain=false || onmain=true
+
+# actions=true if action buttons are to be displayed
+if [ "$sec_level" -eq 0 ]; then
+	actions=true
+else
+	actions=false
+fi
+[ "$onmain" == "true" -a "$MOD_MOUNTED_UMOUNT" != "yes" ] && actions=false
+
+outsize=small
+formact=$(html "$SCRIPT_NAME${QUERY_STRING:+?$QUERY_STRING}")
 disabledbtn="disabled='disabled' "
 DFOUT=$(df -hP)
-mfilt=$(mount |
-	sed -rn '
-		\#^/dev/(sd|mapper/)|^https?://|^.* on .* type (cifs|fuse|jffs|ubifs|yaffs)|^.*:/.* on .* type nfs# {
-			\# on /wrapper | on /var/flash #! {
-				s/^([^ ]+) on (.*) type ([^ ]*) \(([^)]*)\)$/\3 \4 \1 \2/; p
-			}
-		}
-	'
-)
-if [ -z "$mfilt" ]; then
-	echo "<p>$(lang de:"Keine gefunden" en:"none found")</p>"
-else
-	echo '<table class="mounted">'
-	echo "$mfilt" | print_mountpoints
-	echo "</table>"
+MOUNT=$(mount)
+
+
+# /var/flash
+if [ "$MOD_MOUNTED_CONF" == "yes" -a "$onmain" == "true" ]; then
+	mfilt=$(echo "$MOUNT" | sed -rn 's/^([^ ]+) on (\/var\/flash) type ([^ ]*) \(([^)]*)\)$/\3 \4 \1 \2/p')
+	if [ -n "$mfilt" ]; then
+		sec_begin '$(lang de:"Konfigurationspartition" en:"Config partition") (/var/flash)'
+		echo '<table class="mounted">'
+		echo "$mfilt" | print_mountpoints
+		echo "</table>"
+		sec_end
+	fi
 fi
-sec_end
+
+# /var
+if [ "$MOD_MOUNTED_TEMP" == "yes" -a "$onmain" == "true" ]; then
+	mfilt=$(echo "$MOUNT" | sed -rn 's/^([^ ]+) on (\/var) type ([^ ]*) \(([^)]*)\)$/\3 \4 \1 \2/p')
+	if [ -n "$mfilt" ]; then
+		sec_begin '$(lang de:"Tempor&auml;rer Speicher" en:"Temporary storage") (/var)'
+		echo '<table class="mounted">'
+		echo "$mfilt" | print_mountpoints
+		echo "</table>"
+		sec_end
+	fi
+fi
+
+# storages
+if [ "$MOD_MOUNTED_MAIN" = yes -o "$onmain" == "true" ]; then
+	mfilt=$(echo "$MOUNT" |
+		sed -rn '
+			\#^/dev/(sd|mapper/)|^https?://|^.* on .* type (cifs|fuse|jffs|ubifs|yaffs)|^.*:/.* on .* type nfs# {
+				\# on /wrapper | on /var/flash #! {
+					s/^([^ ]+) on (.*) type ([^ ]*) \(([^)]*)\)$/\3 \4 \1 \2/; p
+				}
+			}
+		'
+	)
+	outsize=large
+	sec_begin '$(lang de:"Datenspeicher" en:"Storages")'
+	if [ -n "$mfilt" ]; then
+		echo '<table class="mounted">'
+		echo "$mfilt" | print_mountpoints
+		echo "</table>"
+	else
+		echo "<p>$(lang de:"Keine gefunden" en:"None found")</p>"
+	fi
+	sec_end
+fi
+
 
 rm -f "$ERRORFILE"
 

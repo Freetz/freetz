@@ -38,6 +38,17 @@ cgi_print_checkbox "mounted_umount" "$MOD_MOUNTED_UMOUNT" "$(lang de:"mit Kn&oum
 
 cat << EOF
 </p>
+<p>
+$(lang de:"Zus&auml;tzliche Partitionen" en:"Additional partitions"):
+EOF
+
+cgi_print_checkbox "mounted_tffs" "$MOD_MOUNTED_TFFS" "$(lang de:"TFFS" en:"TFFS")"
+df /var/flash/ 2>/dev/null | grep -q ' /var/flash$' && \
+  cgi_print_checkbox "mounted_conf" "$MOD_MOUNTED_CONF" "$(lang de:"Konfiguration" en:"Configuartion")"
+cgi_print_checkbox "mounted_temp" "$MOD_MOUNTED_TEMP" "$(lang de:"Tempor&auml;r" en:"Temporary")"
+
+cat << EOF
+</p>
 EOF
 if [ -r "/usr/lib/cgi-bin/mod/box_info.cgi" -o -r "/usr/lib/cgi-bin/mod/info.cgi" ]; then
 	echo '<p> $(lang de:"Zus&auml;tzliche Status-Seiten" en:"Additional status pages"):'
