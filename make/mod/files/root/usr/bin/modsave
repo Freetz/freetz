@@ -70,8 +70,24 @@ case $1 in
 	flash)
 		save
 		;;
+	char|file)
+		echo -n "Creating $FLASHFILE ($1) ... "
+		if [ "$1" == "file" ] && ! df ${FLASHFILE%/*} | grep -q "${FLASHFILE%/*}$"; then
+			echo 'not supported, aborted.'
+			exit 1
+		fi
+		rm -f "$FLASHFILE"
+		[ "$1" == "char" ] && mknod "$FLASHFILE" c "$(sed -n 's/ tffs$//p' /proc/devices)" "$((0x3C))"
+		[ "$1" == "file" ] && touch "$FLASHFILE" && chmod 600 "$FLASHFILE"
+		if [ ! -e "$FLASHFILE" ]; then
+			echo 'failed.'
+			exit 1
+		fi
+		echo 'done.'
+		$0 all
+		;;
 	*)
-		echo "Usage: $0 [flash|all]" 1>&2
+		echo "Usage: $0 [flash|all|char|file]" 1>&2
 		exit 1
 		;;
 esac
