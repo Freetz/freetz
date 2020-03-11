@@ -34,7 +34,6 @@ save() {
 		rc=$?
 		if [ $rc -ne 0 ]; then
 			echo "write failed: $MSG"
-			rc=1
 		elif ! cmp -s $FLASHFILE $TMPFILE; then
 			echo "verify failed."
 			rc=1
@@ -56,7 +55,6 @@ case $1 in
 		echo 'done.'
 
 		echo -n 'Saving config ... '
-		/usr/bin/modconf save mod
 		for pkg in $(cat /mod/etc/static.pkg 2>/dev/null); do
 			if [ -r "/mod/etc/default.$pkg/$pkg.cfg" ]; then
 				/usr/bin/modconf save "$pkg"
