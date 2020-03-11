@@ -1,13 +1,12 @@
 #!/bin/sh
-#
-# Usage: modsave [flash|all]
+
+FLASHFILE=/var/flash/freetz
 
 save() {
 	local TMPFILE=/tmp/.save.tmp
-	local FLASHFILE=/var/flash/freetz
 	local rc=0
 	local MSG
-
+	local size
 	local MOD_LIMIT=$((32*1024))
 
 	# not really a lock
@@ -15,15 +14,20 @@ save() {
 		echo "$TMPFILE exists! Concurrent update?" 1>&2
 		exit 1
 	fi
+	trap "rm -f $TMPFILE" EXIT
 
-	tar -cf $TMPFILE flash -C /tmp/
-
-	# compressed config size must be less than 32 KB (~32330Bytes)
-	size=$(gzip -c $TMPFILE | wc -c)
-	if [ "$size" -gt "$MOD_LIMIT" ]; then
-		rm -f $TMPFILE
-		echo "ERROR: $FLASHFILE too big: compressed size: $size, limit: $MOD_LIMIT" 1>&2
-		exit 1
+	if [ -c $FLASHFILE ]; then
+		tar -cf $TMPFILE flash -C /tmp/
+		# compressed config size must be less than 32 KB (~32330Bytes)
+		size=$(gzip -c $TMPFILE | wc -c)
+		if [ "$size" -gt "$MOD_LIMIT" ]; then
+			echo "ERROR: $FLASHFILE too big: compressed size: $size, limit: $MOD_LIMIT" 1>&2
+			exit 1
+		fi
+	else
+		tar -c flash -C /tmp/ | gzip -c > $TMPFILE
+		# *file* size is limited by config-partition
+		size=$(stat -c %s $TMPFILE)
 	fi
 
 	if cmp -s $FLASHFILE $TMPFILE; then
@@ -44,7 +48,6 @@ save() {
 	if [ $rc -ne 0 ]; then
 		mv -f $TMPFILE $TMPFILE.sav
 	fi
-	rm -f $TMPFILE
 	exit $rc
 }
 
