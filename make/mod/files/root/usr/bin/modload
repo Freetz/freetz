@@ -2,30 +2,29 @@
 
 # Usage: modload [force]
 
-TMPFILE=/tmp/.load.tmp.$$
-MODFILE=/var/flash/freetz
-
-trap "rm -f $TMPFILE" EXIT
-
 [ -d "/tmp/flash" -a "$1" != "force" ] && exit 0
 
-echo -n "Loading $MODFILE ... "
-if cat $MODFILE > $TMPFILE 2> /dev/null; then
-	if tar -xf $TMPFILE -C /tmp/ 2> /dev/null; then
-		echo 'done.'
-	else
-		echo 'failed.'
-		echo -n "Creating $MODFILE ... "
-		mkdir -p /tmp/flash
-		tar -cf $MODFILE -C /tmp flash
-		echo 'done.'
-	fi
-else
-	echo 'does not exist.'
+MODFILE=/var/flash/freetz
+newmod() {
 	echo -n "Creating $MODFILE ... "
 	mkdir -p /tmp/flash
 	tar -cf $MODFILE -C /tmp flash
 	echo 'done.'
+}
+
+echo -n "Loading $MODFILE ... "
+HEAD="$(head -c2 $MODFILE 2>/dev/null)"
+if [ -n "$HEAD" ]; then
+	[ "$HEAD" == "$(echo -ne '\x1F\x8B')" ] && COMP='z'
+	if cat $MODFILE | tar -x$COMP -C /tmp/ 2>/dev/null; then
+		echo "done."
+	else
+		echo "failed."
+		newmod
+	fi
+else
+	echo 'does not exist.'
+	newmod
 fi
 [ -d /tmp/flash/mod ] || mkdir -p /tmp/flash/mod
 
