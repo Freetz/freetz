@@ -3,6 +3,11 @@ mainmenu "Freetz Configuration"
 config FREETZ_HAVE_DOT_CONFIG
 	bool
 	default y
+	select FREETZ_REAL_DEVELOPER_ONLY_TLOB if FREETZ_REAL_DEVELOPER_ONLY
+
+config FREETZ_REAL_DEVELOPER_ONLY_TLOB
+	bool
+	depends on BRAIN
 
 comment "Freetz revision  -----------------------"
 	depends on FREETZ_MENUCONFIG_REVISION
