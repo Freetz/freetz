@@ -41,7 +41,7 @@ Latest changes
   * addons: additional to addon/static.pkg, addon/*.pkg could be used to enable addons, since r15856/3dda64565e
   * binutils:
     + add support for binutils-2.24.x/2.25.x/2.26.x
-  * ccache 3.7.7
+  * ccache 3.7.8
   * kconfig 5.5
     + added olddefconfig target
     + removed oldnoconfig target
