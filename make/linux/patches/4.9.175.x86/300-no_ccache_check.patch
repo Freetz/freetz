@@ -1,0 +1,15 @@
+--- linux-4.9/GNUmakefile
++++ linux-4.9/GNUmakefile
+@@ -16,12 +16,6 @@
+ $(if $(kernelvariables),$(info linux/GNUmakefile: including $(kernelvariables)))
+ export _kernelvariables_read := 1
+ -include $(kernelvariables)
+-
+-# Iff /GU/tmp/ is not available and CCACHE_DISABLE is not set, disable ccache
+-ifeq ($(wildcard /GU/tmp/)$(CCACHE_DISABLE),)
+-$(info /GU/tmp is not available, disabling ccache)
+-export CCACHE_DISABLE = true
+-endif
+ endif
+ 
+ # ACHTUNG: Make wird hier neugestartet um die Übernahme der
