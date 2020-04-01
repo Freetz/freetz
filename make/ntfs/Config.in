@@ -15,8 +15,8 @@ config FREETZ_PACKAGE_NTFS
 		This binary is needed for ntfs automount feature thus there is no
 		webinterface.
 
-menu ntfsprogs
-	depends on FREETZ_PACKAGE_NTFS
+menu "ntfsprogs"
+	visible if FREETZ_PACKAGE_NTFS
 
 config FREETZ_PACKAGE_NTFS_mkntfs
 	bool "mkntfs"
