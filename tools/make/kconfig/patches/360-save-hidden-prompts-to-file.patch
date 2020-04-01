@@ -31,19 +31,19 @@ diff --git scripts/kconfig/menu.c scripts/kconfig/menu.c
 index b9d9aa1..5f77dcb 100644
 --- scripts/kconfig/menu.c
 +++ scripts/kconfig/menu.c
-@@ -141,6 +141,7 @@
- 		if (current_entry->prompt && current_entry != &rootmenu)
- 			prop_warn(prop, "prompt redefined");
+@@ -165,6 +165,7 @@
+ 	if (current_entry->prompt)
+ 		prop_warn(prop, "prompt redefined");
  
 +#if 0
- 		/* Apply all upper menus' visibilities to actual prompts. */
- 		if(type == P_PROMPT) {
- 			struct menu *menu = current_entry;
-@@ -166,6 +167,7 @@
- 							 dup_expr);
- 			}
+ 	/* Apply all upper menus' visibilities to actual prompts. */
+ 	if (type == P_PROMPT) {
+ 		struct menu *menu = current_entry;
+@@ -187,6 +188,7 @@
+ 							    dup_expr);
  		}
+ 	}
 +#endif
  
- 		current_entry->prompt = prop;
- 	}
+ 	current_entry->prompt = prop;
+ 	prop->text = prompt;
