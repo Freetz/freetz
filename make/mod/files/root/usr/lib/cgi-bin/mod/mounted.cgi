@@ -155,7 +155,7 @@ if [ "$MOD_MOUNTED_TEMP" == "yes" -a "$onmain" == "true" ]; then
 fi
 
 # storages
-if [ "$MOD_MOUNTED_MAIN" = yes -o "$onmain" == "true" ]; then
+if [ "$MOD_MOUNTED_MAIN" == "yes" -o "$onmain" == "false" ]; then
 	mfilt=$(echo "$MOUNT" |
 		sed -rn '
 			\#^/dev/(sd|mapper/)|^https?://|^.* on .* type (cifs|fuse|jffs|ubifs|yaffs)|^.*:/.* on .* type nfs# {
