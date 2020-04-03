@@ -112,8 +112,8 @@ if [ "$sec_level" -eq 0 -a -n "$MOUNTED_CMD" ]; then
 	fi
 fi
 
-# The status page is called both as /cgi-bin/status.cgi and /cgi-bin/status/mod/mounted(/index.html)
-[ "$SCRIPT_NAME" != /cgi-bin/status.cgi ] && onmain=false || onmain=true
+# The status page is called both as /cgi-bin/(index|status).cgi and /cgi-bin/status/mod/mounted(/index.html)
+[ "$SCRIPT_NAME" != "/cgi-bin/index.cgi" -a "$SCRIPT_NAME" != "/cgi-bin/status.cgi" ] && onmain=false || onmain=true
 
 # actions=true if action buttons are to be displayed
 if [ "$sec_level" -eq 0 ]; then
