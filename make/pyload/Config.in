@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_PYLOAD
-	bool "pyLoad 0.4.9-git-stable-branch"
+	bool "pyLoad 0.4.20"
 	select FREETZ_BUSYBOX_START_STOP_DAEMON
 	select FREETZ_PACKAGE_PYTHON
 	select FREETZ_PACKAGE_PYTHON_MOD_CTYPES
@@ -27,10 +27,10 @@ choice
 	default FREETZ_PACKAGE_PYLOAD_VERSION_LATEST_TESTED
 
 	config FREETZ_PACKAGE_PYLOAD_VERSION_LATEST_TESTED
-		bool "latest tested by freetz developers"
+		bool "stable"
 
 	config FREETZ_PACKAGE_PYLOAD_VERSION_LATEST_GIT
-		bool "latest git revision"
+		bool "latest"
 		help
 			Note this increases build time by about 2 seconds
 			since the latest git-revision is determined anew

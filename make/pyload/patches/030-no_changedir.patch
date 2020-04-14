@@ -16,7 +16,7 @@
          print _("Do you want to configure login data and basic settings?")
          print _("This is recommend for first run.")
          con = self.ask(_("Make basic setup?"), self.yes, bool=True)
-@@ -397,29 +388,6 @@
+@@ -397,33 +388,6 @@
              if not noaction:
                  db.shutdown()
  
@@ -28,7 +28,11 @@
 -            translation.install(True)
 -
 -        print _("Setting new configpath, current configuration will not be transfered!")
--        path = self.ask(_("Configpath"), os.path.abspath(""))
+-        current_path = os.path.abspath("")
+-        path = self.ask(_("Configpath"), current_path)
+-        if path == current_path:
+-            print _("\nConfigpath not changed, continuing with setup.")
+-            return
 -        try:
 -            path = os.path.join(pypath, path)
 -            if not os.path.exists(path):
@@ -39,7 +43,7 @@
 -            print _("Configpath changed, setup will now close, please restart to go on.")
 -            print _("Press Enter to exit.")
 -            raw_input()
--            exit()
+-            exit(1)
 -        except Exception, e:
 -            print _("Setting config path failed: %s") % str(e)
 -
@@ -48,7 +52,7 @@
          if value:
 --- pyLoadCore.py
 +++ pyLoadCore.py
-@@ -91,7 +91,7 @@
+@@ -92,7 +92,7 @@
              try:
                  options, args = getopt(argv[1:], 'vchdusqp:',
                      ["version", "clear", "clean", "help", "debug", "user",
@@ -57,7 +61,7 @@
                       "quit", "status", "no-remote","pidfile="])
  
                  for option, argument in options:
-@@ -123,13 +123,6 @@
+@@ -124,13 +124,6 @@
                          s = Setup(pypath, self.config)
                          s.start()
                          exit()
@@ -71,7 +75,7 @@
                      elif option in ("-q", "--quit"):
                          self.quitInstance()
                          exit()
-@@ -170,7 +163,6 @@
+@@ -171,7 +164,6 @@
          print "  -s, --setup", " " * 12, "Run Setup Assistent"
          print "  --configdir=<dir>", " " * 6, "Run with <dir> as config directory"
          print "  -p, --pidfile=<file>", " " * 3, "Set pidfile to <file>"

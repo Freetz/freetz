@@ -645,7 +645,7 @@
   * **[ProxyChains-NG](../docs/make/proxychains-ng.md)<a id='proxychains-ng'></a>**<br>
     A preloader which hooks calls to sockets in dynamically linked programs and redirects it through one or more socks/http proxies, tor is also supported. Usage: proxychains4 telnet mail.example.com 25
 
-  * **<u>pyLoad 0.4.9-git-stable-branch</u><a id='pyload'></a>**<br>
+  * **<u>pyLoad 0.4.20</u><a id='pyload'></a>**<br>
     pyLoad is a fast, lightweight and full featured download manager for many One-Click-Hoster, container formats like DLC, video sites or just plain http/ftp links.
 
   * **<u>Python 2.7.16</u><a id='python'></a>**<br>

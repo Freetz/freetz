@@ -466,7 +466,7 @@ Latest changes
     * openssl 1.0.1e (as an alternative to the also available openssl 0.9.8)
     * pcscd 1.8.8
     * protobuf-c 0.15
-    * pyLoad 0.4.9-git
+    * pyLoad 0.4.20
     * Python 2.7.4
     * python-bjoern 1.3-git
     * pycrypto 2.6
