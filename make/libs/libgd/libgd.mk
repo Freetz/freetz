@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 2.2.5)
-$(PKG)_LIB_VERSION:=3.0.5
+$(call PKG_INIT_LIB, 2.3.0)
+$(PKG)_LIB_VERSION:=3.0.8
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=8c302ccbf467faec732f0741a859eef4ecae22fea2d2ab87467be940842bde51
+$(PKG)_SOURCE_SHA256:=ecd9155b9a417fb3f837f29e5966323796de247789163761dd72dbf83bfcac58
 $(PKG)_SITE:=https://bitbucket.org/libgd/gd-libgd/downloads,https://github.com/libgd/libgd/releases/download/gd-$($(PKG)_VERSION)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libgd.so.$($(PKG)_LIB_VERSION)
@@ -43,8 +43,7 @@ $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgd.la \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/gdlib.pc \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/gdlib-config
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/gdlib.pc
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	$(INSTALL_LIBRARY_STRIP)
@@ -58,8 +57,7 @@ $(pkg)-clean:
 	$(RM) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libgd.* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/gdlib.pc \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/{entities,gdcache,gd_color_map,gd_errors,gdfontg,gdfontl,gdfontmb,gdfonts,gdfontt,gdfx,gd,gd_io,gdpp}.h \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/gdlib-config
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/{entities,gdcache,gd_color_map,gd_errors,gdfontg,gdfontl,gdfontmb,gdfonts,gdfontt,gdfx,gd,gd_io,gdpp}.h
 
 $(pkg)-uninstall:
 	$(RM) $(LIBGD_TARGET_DIR)/libgd*.so*
