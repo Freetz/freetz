@@ -130,7 +130,7 @@
   * **[dns2tcp 0.5.2](dns2tcp.md)<a id='dns2tcp'></a>**<br>
     Dns2tcp is a network tool designed to relay TCP connections through DNS traffic. Encapsulation is done on the TCP level, thus no specific driver is needed (i.e: TUN/TAP).
 
-  * **[Dnsmasq 2.80](dnsmasq.md)<a id='dnsmasq'></a>**<br>
+  * **[Dnsmasq 2.81](dnsmasq.md)<a id='dnsmasq'></a>**<br>
     Combined DHCP, DNS and TFTP server.
 
   * **<u>dosfstools 3.0.28 (binary only)</u><a id='dosfstools'></a>**<br>
