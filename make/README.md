@@ -270,7 +270,7 @@
   * **<u>Ghostscript fonts 8.11 (binary only)</u><a id='ghostscript-fonts'></a>**<br>
     This package provides the Ghostscript fonts.
 
-  * **<u>git 2.24.0</u><a id='git'></a>**<br>
+  * **<u>git 2.26.1</u><a id='git'></a>**<br>
     Git is a fast, scalable, distributed revision control system with an unusually rich command set that provides both high-level operations and full access to internals.
 
   * **<u>gntpsend 0.3.2-git (binary only)</u><a id='gntpsend'></a>**<br>
