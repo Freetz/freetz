@@ -20,7 +20,7 @@ Die VoIP Ports sollte man nicht deaktivieren, ausser man weiss was man macht.
 
 Dieses Package sollte nicht mehr verwendet werden. Hiermit freigegeben Ports hängen von VoIP ab und
 werden auch als solche markiert, was je nach Internetzugang Nachteile mit sich bringen kann.<br>
-Diese Nachteile hat das Package ```AVM-portfw``` nicht.<br>
+Diese Nachteile hat das Package [AVM-portfw](avm-portfw.md) nicht.<br>
 Da ein Port nur einmal (entweder in AVM-rules oder AVM-portfw) freigegeben werden kann,
 vor Deinstallation von AVM-rules dessen Konfiguration auf Standard zurücksetzen!
 
