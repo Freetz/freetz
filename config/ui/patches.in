@@ -1039,6 +1039,16 @@ config FREETZ_ADD_REGEXT_GUI
 	help
 		Patches the WebUI and add a checkbox to enable setting "reg_from_outside" in the voip.conf.
 
+config FREETZ_PATCH_FAXPAGES
+	bool "Patch FAX pages"
+	depends on \
+		FREETZ_AVM_HAS_FAX && \
+		! FREETZ_REMOVE_TELEPHONY
+	default n
+	help
+		Patches the WebUI to allow sending multiple fax pages.
+		Just select multiple picture files in the upload dialog.
+
 config FREETZ_PATCH_GSMVOICE
 	bool "Patch GSM voice"
 	depends on \

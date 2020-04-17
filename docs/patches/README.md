@@ -384,6 +384,9 @@
   * **<u>Patch enum</u><a id='patch-enum'></a>**<br>
     Patches the enum configuration pages into the web menu.
 
+  * **[PATCH_FAXPAGES: Patch FAX pages](PATCH_FAXPAGES.md)<a id='patch-faxpages'></a>**<br>
+    Patches the WebUI to allow sending multiple fax pages. Just select multiple picture files in the upload dialog.
+
   * **[PATCH_FREETZMOUNT: Add FREETZMOUNT](PATCH_FREETZMOUNT.md)<a id='patch-freetzmount'></a>**<br>
     1. Replaces and deselects usb-storage patch. - The names of USB storage directories can be defined by WebIF (default uStorXY) (or by volume LABEL). 2. Replaces and deselects autorun.sh/autoend.sh patch. - autorun/autoend behaviour can be activated/deactivated via WebIF. - autorun/autoend are useful to start/terminate applications located on USB devices, eg apache, samba or even swapfiles, after connecting or before disconnecting of USB devices. 3. Auto-mounted USB storage devices will be fully accessible, eg it is now possible to put user home directories for (e.g. for FTP) on a FAT32-formatted partition and permit shell and FTP users to actually write to their own home directories. 4. Avoid deleting whole filesystems on USB devices. 5. Enhanced behaviour during mounting and unmounting. 6. Provides mount-by-label feature. It is highly recommended to select this patch.
 
