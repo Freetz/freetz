@@ -261,7 +261,7 @@ Latest changes
     * openconnect 7.04
     * OpenSSH 8.1p1
     * openssl 0.9.8zh/1.0.2u
-    * OpenVPN 2.4.8
+    * OpenVPN 2.4.9
     * pcre 8.43
     * PCSC-lite (pcscd) 1.8.24
     * php 5.6.40
