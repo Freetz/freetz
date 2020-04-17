@@ -1,5 +1,11 @@
 # NEWS
 
+ * __2020-04-17__<br>
+   Patch [multiple fax pages](patches/README.md#patch-faxpages) hinzugefügt.<br>
+   Mit diesem Patch können mehrere Seiten in einem Fax verschickt werden.<br>
+   Siehe [r16674](https://trac.boxmatrix.info/freetz-ng/changeset/16674/freetz-ng)
+   / [44ab5583](https://github.com/Freetz-NG/freetz-ng/commit/44ab55837827ac991284708ed34fafa2b8e84783)<br>
+
  * __2020-03-09__<br>
    Auf der Hauptseite des Webinterfaces werden nun zusätzlich der ```Temporäre```<br>
    ```Speicher``` und die ```Konfigurationspartition``` (falls verfügbar) angezeigt.<br>
