@@ -2,6 +2,7 @@
 Currently supported devices and firmwares
 
  * [Not supported devices](#not-supported-devices)
+ * [LIBCTEST branch](#libctest-branch)
  * [Fritz!Box (2xxx)](#fritzbox-2xxx)
  * [Fritz!Box WLAN (3xxx)](#fritzbox-wlan-3xxx)
  * [Fritz!Box WAN (4xxx)](#fritzbox-wan-4xxx)
@@ -25,6 +26,10 @@ Currently supported devices and firmwares
 ### Not supported devices
 
   * Repeater 310, 600 & 1160: No LAN ports, so a recovery is not possible.
+
+### LIBCTEST branch
+
+  * EXPERIMENTAL! See [README](https://github.com/Freetz-NG/freetz-ng/blob/libctest/README.md)<br>
   * Fritz!Box 6591, 6660, 7581 & 7582: These use glibc.
   * Fritz!OS 7.19 Labor: These use musl libc or unsupported uClibc versions.
 
