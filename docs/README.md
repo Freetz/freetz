@@ -4,6 +4,7 @@
 [News](NEWS.md)<br>
 [Firmwares](FIRMWARES.md)<br>
 [Changelog](CHANGELOG.md)<br>
+[Readme](https://github.com/Freetz-NG/freetz-ng/blob/master/README.md)<br>
 
 ### Timeline
 [Github](https://github.com/Freetz-NG/freetz-ng/commits/master)<br>
