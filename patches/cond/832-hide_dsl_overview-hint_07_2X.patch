@@ -1,12 +1,13 @@
 --- usr/www/all/internet/dsl_overview.lua
 +++ usr/www/all/internet/dsl_overview.lua
-@@ -276,9 +276,6 @@
- local marge_send = tonumber(box.query("sar:settings/UsNoiseBits")) or -1
- local rfi = tonumber(box.query("sar:settings/RFI_mode")) or -1
- local inp = tonumber(box.query("sar:settings/DsINP")) or -1
+@@ -187,9 +187,7 @@
+ local marge_send=tonumber(box.query("sar:settings/UsNoiseBits"))or-1
+ local rfi=tonumber(box.query("sar:settings/RFI_mode"))or-1
+ local inp=tonumber(box.query("sar:settings/DsINP"))or-1
 -if marge_receive>0 or marge_send>0 or rfi>0 or inp>0 then
--box.out([[<p>[]]..box.tohtml([[{?9855:570?}]])..[[]</p>]])
+-return true
 -end
- box.out([[</div>]])
++return false
  end
- function write_umts_block()
+ local function write_umts_block()
+ if config.USB_GSM then
