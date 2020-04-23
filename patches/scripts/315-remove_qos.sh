@@ -23,10 +23,12 @@ if [ -e $sedfile ]; then
 	modsed "/.*('internet','qos_meter').*/d" $sedfile
 fi
 
-# patcht Internet > Filter > Priorisierung
-menulua_remove trafficprio
-# patcht Internet > Filter > Listen
-menulua_remove "$traf"
+if [ "$FREETZ_TYPE_EXTENDER" != "y" ]; then
+	# patcht Internet > Filter > Priorisierung
+	menulua_remove trafficprio
+	# patcht Internet > Filter > Listen
+	menulua_remove "$traf"
+fi
 
 echo1 "patching rc.conf"
 modsed "s/CONFIG_NQOS=y/CONFIG_NQOS=n/g" "$FILESYSTEM_MOD_DIR/etc/init.d/rc.conf"
