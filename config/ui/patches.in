@@ -1622,6 +1622,7 @@ config FREETZ_AVMDAEMON_DISABLE_TR069
 
 config FREETZ_AVMDAEMON_DISABLE_MULTIDPORTS
 	bool "Disable services by preload"
+	depends on FREETZ_AVM_HAS_AVMDAEMON_PRELOAD
 	select FREETZ_LIB_libmultid
 	default n
 	help
