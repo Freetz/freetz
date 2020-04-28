@@ -1,0 +1,20 @@
+--- ftpfs-ls.c	2013-06-08 13:48:31.202886364 +0200
++++ ftpfs-ls.c	2013-06-08 13:49:20.150887306 +0200
+@@ -58,7 +58,7 @@
+                "%5s"  "%*c"
+                "%1023c",
+                mode, &nlink, user, group, &size, month, day, year, file);
+-  if (res < 9) {
++  if (res < 8) {
+     res = sscanf(line,
+                  "%11s"
+                  "%32s" SPACES
+@@ -69,7 +69,7 @@
+                  "%5s"  "%*c"
+                  "%1023c",
+                  mode, user, group, &size, month, day, year, file);
+-    if (res < 8) {
++    if (res < 7) {
+       return 0;
+     }
+   }

@@ -105,6 +105,7 @@ Latest changes
     * bvi 1.4.0
     * CA-bundle 2020-01-01
     * cntlm 0.93beta5
+    * CurlFtpFS 0.9.2
     * decrypt FRITZ!OS configs v0.2 (renamed version of PeterPawn's script decode_passwords)
     * dehydrated 0.6.5 (letsencrypt)
     * ISC dhcp 4.3.6-P1

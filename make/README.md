@@ -137,6 +137,9 @@
   * **[Curl 7.69.1 (binary only)](../docs/make/curl.md)<a id='curl'></a>**<br>
     Curl is a command line tool for transferring files with URL syntax, supporting FTP, FTPS, HTTP, HTTPS, GOPHER, TELNET, DICT, FILE and LDAP. Curl supports HTTPS certificates, HTTP POST, HTTP PUT, FTP uploading, kerberos, HTTP form based upload, proxies, cookies, user+password authentication, file transfer resume, http proxy tunneling and a busload of other useful tricks.
 
+  * **<u>CurlFtpFS 0.9.2 (binary only)</u><a id='curlftpfs'></a>**<br>
+    CurlFtpFS is a filesystem for accessing FTP hosts based on FUSE and libcurl. Website: http://curlftpfs.sourceforge.net/ Features: - SSLv3 and TLSv1 support - connecting through tunneling HTTP proxies - automatically reconnection if the server times out - transform absolute symlinks to point back into the ftp file system
+
   * **<u>dante 1.2.2 (binary only)</u><a id='dante'></a>**<br>
     socks proxy daemon
 
