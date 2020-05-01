@@ -286,7 +286,7 @@ Latest changes
     * screen 4.6.2
     * slang 2.3.1a
     * smartmontools 7.0
-    * sqlite 3.30.1
+    * sqlite 3.31.1
     * sslh 1.19c
     * strace 4.9 (kernel-2.6.13) / 5.0 (all other kernel versions)
     * stunnel 5.56
