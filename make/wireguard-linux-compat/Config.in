@@ -2,7 +2,7 @@ comment "WireGuard module (not available, needs replace kernel)"
 	depends on FREETZ_KERNEL_VERSION_3_10_MIN && !FREETZ_REPLACE_KERNEL && !FREETZ_AVM_HAS_CRYPTO_BLKCIPHER_BUILTIN
 
 config FREETZ_PACKAGE_WIREGUARD_LINUX_COMPAT
-	bool "wireguard-linux-compat 0.0.20200215"
+	bool "wireguard-linux-compat 1.0.20200429"
 	depends on FREETZ_KERNEL_VERSION_3_10_MIN && (FREETZ_AVM_HAS_CRYPTO_BLKCIPHER_BUILTIN || FREETZ_REPLACE_KERNEL) && FREETZ_REPLACE_MODULE_AVAILABLE
 	default n
 	select FREETZ_BUSYBOX_IP

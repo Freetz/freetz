@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.0.20200206)
+$(call PKG_INIT_BIN, 1.0.20200319)
 $(PKG)_SOURCE:=wireguard-tools-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=f5207248c6a3c3e3bfc9ab30b91c1897b00802ed861e1f9faaed873366078c64
+$(PKG)_SOURCE_SHA256:=d1ab35a93507321c5db885e02d41ce1414f0507c
 $(PKG)_SITE:=https://git.zx2c4.com/wireguard-tools/snapshot
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/wg
