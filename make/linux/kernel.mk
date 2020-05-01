@@ -69,7 +69,7 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(DL_KERNEL_SOURCE) | $(UNPACK_TARBALL_PRE
 		fi; \
 	done;
 	@for i in $$( \
-		find $(KERNEL_SOURCE_DIR) -name Makefile -exec \
+		find $(KERNEL_SOURCE_DIR) -name Makefile -xtype f -exec \
 		awk '/^[ \t]*(obj|subdir)-.*=/ && !/(obj|subdir)-ccflags.*=/ { \
 			while (match ($$0,/\\/)) {sub(/\\/," "); getline l;$$0=$$0""l} \
 			sub(/\r/,""); \
