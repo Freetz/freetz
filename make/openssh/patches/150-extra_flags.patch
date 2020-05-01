@@ -1,38 +1,47 @@
 --- Makefile.in
 +++ Makefile.in
-@@ -40,7 +40,7 @@
+@@ -42,8 +42,8 @@
  
  CC=@CC@
  LD=@LD@
 -CFLAGS=@CFLAGS@
+-CFLAGS_NOPIE=@CFLAGS_NOPIE@
 +CFLAGS=@CFLAGS@ $(EXTRA_CFLAGS)
++CFLAGS_NOPIE=@CFLAGS_NOPIE@ $(EXTRA_CFLAGS)
  CPPFLAGS=-I. -I$(srcdir) @CPPFLAGS@ $(PATHS) @DEFS@
+ PICFLAG=@PICFLAG@
  LIBS=@LIBS@
- K5LIBS=@K5LIBS@
-@@ -55,7 +55,7 @@
+@@ -60,8 +60,8 @@
  SED=@SED@
  ENT=@ENT@
  XAUTH_PATH=@XAUTH_PATH@
 -LDFLAGS=-L. -Lopenbsd-compat/ @LDFLAGS@
+-LDFLAGS_NOPIE=-L. -Lopenbsd-compat/ @LDFLAGS_NOPIE@
 +LDFLAGS=-L. -Lopenbsd-compat/ @LDFLAGS@ $(EXTRA_LDFLAGS)
++LDFLAGS_NOPIE=-L. -Lopenbsd-compat/ @LDFLAGS_NOPIE@ $(EXTRA_LDFLAGS)
  EXEEXT=@EXEEXT@
  MANFMT=@MANFMT@
  MKDIR_P=@MKDIR_P@
 --- openbsd-compat/Makefile.in
 +++ openbsd-compat/Makefile.in
-@@ -6,13 +6,13 @@
+@@ -6,16 +6,16 @@
  VPATH=@srcdir@
  CC=@CC@
  LD=@LD@
 -CFLAGS=@CFLAGS@
+-CFLAGS_NOPIE=@CFLAGS_NOPIE@
 +CFLAGS=@CFLAGS@ $(EXTRA_CFLAGS)
++CFLAGS_NOPIE=@CFLAGS_NOPIE@ $(EXTRA_CFLAGS)
  CPPFLAGS=-I. -I.. -I$(srcdir) -I$(srcdir)/.. @CPPFLAGS@ @DEFS@
+ PICFLAG=@PICFLAG@
  LIBS=@LIBS@
  AR=@AR@
  RANLIB=@RANLIB@
  INSTALL=@INSTALL@
 -LDFLAGS=-L. @LDFLAGS@
+-LDFLAGS_NOPIE=-L. -Lopenbsd-compat/ @LDFLAGS_NOPIE@
 +LDFLAGS=-L. @LDFLAGS@ $(EXTRA_LDFLAGS)
++LDFLAGS_NOPIE=-L. -Lopenbsd-compat/ @LDFLAGS_NOPIE@ $(EXTRA_LDFLAGS)
  
  OPENBSD=base64.o \
  	basename.o \
