@@ -260,7 +260,7 @@ Latest changes
     * ntfs-3g 2017.3.23
     * obexftp 0.23
     * openconnect 7.04
-    * OpenSSH 8.1p1
+    * OpenSSH 8.2p1
     * openssl 0.9.8zh/1.0.2u
     * OpenVPN 2.4.9
     * pcre 8.43
