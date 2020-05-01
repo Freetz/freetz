@@ -1,0 +1,33 @@
+Kconfig entries for CONFIG_FUSIV_USB_OPTIMIZATION and CONFIG_FUSIV_KERNEL_APSTATISTICS_PER_INTERFACE are missing
+
+--- linux-2.6.28/fusiv_src/kernel/Kconfig
++++ linux-2.6.28/fusiv_src/kernel/Kconfig
+@@ -333,5 +333,28 @@
+ 
+ endchoice
+ 
++config FUSIV_USB_OPTIMIZATION
++	depends on MIPS_FUSIV
++	bool "FUSIV USB optimization"
++	default y
++	help
++	FUSIV USB optimization
++
++config FUSIV_KERNEL_APSTATISTICS_PER_INTERFACE
++	bool "FUSIV_KERNEL APSTATISTICS per interface"
++	default y
++
++config CONFIG_FUSIV_VX185_BONDING
++	bool "missing CONFIG_FUSIV_VX185_BONDING"
++	default y
++
++config CONFIG_FUSIV_PCIE_EXTERNAL_CLOCK
++	bool "missing CONFIG_FUSIV_PCIE_EXTERNAL_CLOCK"
++	default y
++
++config CONFIG_FUSIV_SATA_EXTERNAL_CLOCK
++	bool "missing CONFIG_FUSIV_SATA_EXTERNAL_CLOCK"
++	default y
++
+ endmenu
+ 
