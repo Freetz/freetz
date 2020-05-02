@@ -1,4 +1,4 @@
-# Screen 4.6.2
+# Screen 4.8.0
 
 *"Screen is a full-screen window manager that multiplexes a physical
 terminal between several processes, typically interactive shells."*

@@ -405,7 +405,7 @@
   * **[Openntpd 3.9p1](openntpd.md)<a id='openntpd'></a>**<br>
     OpenNTPD is a FREE, easy to use implementation of the Network Time Protocol. This package automatically removes AVM'S chronyd if necessary.
 
-  * **<u>OpenSSH 8.1p1</u><a id='openssh'></a>**<br>
+  * **<u>OpenSSH 8.2p1</u><a id='openssh'></a>**<br>
     OpenSSH is the premier connectivity tool for remote login with the SSH protocol. It encrypts all traffic to eliminate eavesdropping, connection hijacking, and other attacks. In addition, OpenSSH provides a large suite of secure tunneling capabilities, several authentication methods, and sophisticated configuration options.
 
   * **<u>OpenSSL (binary only)</u><a id='openssl'></a>**<br>
@@ -519,7 +519,7 @@
   * **[Samba suite](samba.md)<a id='samba'></a>**<br>
     The binary with smbd and nmbd needs about 1033 kB (uncompressed).
 
-  * **[Screen 4.6.2](screen.md)<a id='screen'></a>**<br>
+  * **[Screen 4.8.0](screen.md)<a id='screen'></a>**<br>
     Screen is a full-screen window manager that multiplexes a physical terminal between several processes, typically interactive shells. Each virtual terminal provides the functions of the DEC VT100 terminal and, in addition, several control functions from the ANSI X3.64 (ISO 6429) and ISO 2022 standards (e.g., insert/delete line and support for multiple character sets). There is a scrollback history buffer for each virtual terminal and a copy-and-paste mechanism that allows the user to move text regions between windows. When screen is called, it creates a single window with a shell in it (or the specified command) and then gets out of your way so that you can use the program as you normally would. Then, at any time, you can create new (full-screen) windows with other programs in them (including more shells), kill the current window, view a list of the active windows, turn output logging on and off, copy text between windows, view the scrollback history, switch between windows, etc. All windows run their programs completely independent of each other. Programs continue to run when their window is currently not visible and even when the whole screen session is detached from the users terminal.
 
   * **[ser2net 2.7](ser2net.md)<a id='ser2net'></a>**<br>
@@ -677,10 +677,10 @@
   * **[Wget GNU 1.20.3 (binary only)](wget.md)<a id='wget'></a>**<br>
     GNU Wget is a free software package for retrieving files using HTTP, HTTPS and FTP, the most widely-used Internet protocols. It is a non-interactive commandline tool, so it may easily be called from scripts, cron jobs, terminals, etc.
 
-  * **[wireguard-tools 1.0.20200206](wireguard.md)<a id='wireguard'></a>**<br>
+  * **[wireguard-tools 1.0.20200319](wireguard.md)<a id='wireguard'></a>**<br>
     WireGuard is an extremely simple yet fast and modern VPN that utilizes state-of-the-art cryptography. It aims to be faster, simpler, leaner, and more useful than IPSec, while avoiding the massive headache. It intends to be considerably more performant than OpenVPN. WireGuard is designed as a general purpose VPN for running on embedded interfaces and super computers alike, fit for many different circumstances. Initially released for the Linux kernel, it plans to be cross-platform and widely deployable. It is currently under heavy development, but already it might be regarded as the most secure, easiest to use, and simplest VPN solution in the industry.
 
-  * **<u>wireguard-linux-compat 0.0.20200215</u><a id='wireguard-linux-compat'></a>**<br>
+  * **<u>wireguard-linux-compat 1.0.20200429</u><a id='wireguard-linux-compat'></a>**<br>
     This package provides the kernel module required for Wireguard
 
   * **[WOL 0.7.1 (binary only)](wol.md)<a id='wol'></a>**<br>
