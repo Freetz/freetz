@@ -388,8 +388,9 @@ config: config-cache $(CONFIG)/conf
 config-compress: .config.compressed
 .config.compressed: .config config-cache $(CONFIG)/conf
 	@$(CONFIG)/conf --savedefconfig $@ $(CONFIG_IN_CACHE)
+	@sed -e "/^FREETZ_FWMOD_SIGN_PASSWORD=/d" -i $@ 2>/dev/null
 #	@echo "Compressed configuration written to $@."; \
-#	echo  "It is equivalent to .config, but contains only non-default user selections."
+#	echo  "It is equivalent to .config, but contains only non-default user selections and no signing key password."
 
 listnewconfig: config-cache $(CONFIG)/conf
 	@$(CONFIG)/conf --listnewconfig $(CONFIG_IN_CACHE)
