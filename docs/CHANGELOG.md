@@ -147,8 +147,8 @@ Latest changes
     * squashfs-tools 3.4
     * squashfs-tools 4.3 (modified to support AVM-BE format)
     * vermagic 1ac45e08d4-git
-    * wireguard-tools 1.0.20200206
-    * wireguard-linux-compat 0.0.20200215
+    * wireguard-tools 1.0.20200319
+    * wireguard-linux-compat 1.0.20200429
     * xz 5.2.4
 
 - Documentation/Wiki:
@@ -260,7 +260,7 @@ Latest changes
     * ntfs-3g 2017.3.23
     * obexftp 0.23
     * openconnect 7.04
-    * OpenSSH 8.1p1
+    * OpenSSH 8.2p1
     * openssl 0.9.8zh/1.0.2u
     * OpenVPN 2.4.9
     * pcre 8.43
@@ -283,10 +283,10 @@ Latest changes
     * rsync 3.1.2
     * samba 3.6.25
     * sane-backends 1.0.27
-    * screen 4.6.2
+    * screen 4.8.0
     * slang 2.3.1a
     * smartmontools 7.0
-    * sqlite 3.30.1
+    * sqlite 3.31.1
     * sslh 1.19c
     * strace 4.9 (kernel-2.6.13) / 5.0 (all other kernel versions)
     * stunnel 5.56

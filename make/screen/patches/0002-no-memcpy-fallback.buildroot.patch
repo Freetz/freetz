@@ -21,8 +21,6 @@ Signed-off-by: Ricardo Martincoski <ricardo.martincoski@gmail.com>
  osdef.h.in   | 10 +---------
  4 files changed, 5 insertions(+), 34 deletions(-)
 
-diff --git acconfig.h acconfig.h
-index 2e46985..9b0b9d4 100644
 --- acconfig.h
 +++ acconfig.h
 @@ -476,7 +476,7 @@
@@ -42,11 +40,9 @@ index 2e46985..9b0b9d4 100644
  #undef USEMEMMOVE
  
  /*
-diff --git configure.ac configure.ac
-index 27690a6..b8e3bec 100644
 --- configure.ac
 +++ configure.ac
-@@ -1119,7 +1119,7 @@
+@@ -1154,7 +1154,7 @@
  AC_CHECKING(fdwalk)
  AC_TRY_LINK([#include <stdlib.h>], [fdwalk(NULL, NULL);],AC_DEFINE(HAVE_FDWALK))
  
@@ -55,9 +51,9 @@ index 27690a6..b8e3bec 100644
  AC_TRY_RUN([
  main() {
    char buf[10];
-@@ -1149,22 +1149,6 @@
-   exit(0); /* libc version works properly.  */
- }], AC_DEFINE(USEMEMMOVE))
+@@ -1185,22 +1185,6 @@
+ }], AC_DEFINE(USEMEMMOVE),,
+   AC_NOTE(- skipping check because we are cross compiling; use memmove) AC_DEFINE(USEMEMMOVE))
  
 -
 -AC_TRY_RUN([
@@ -73,13 +69,11 @@ index 27690a6..b8e3bec 100644
 -  if (strncmp(buf, "cdedef", 6))
 -    exit(1);
 -  exit(0); /* libc version works properly.  */
--}], AC_DEFINE(USEMEMCPY))
+-}], AC_DEFINE(USEMEMCPY),,:)
 -
  AC_SYS_LONG_FILE_NAMES
  
  AC_MSG_CHECKING(for vsprintf)
-diff --git os.h os.h
-index e827ac9..0b41fb9 100644
 --- os.h
 +++ os.h
 @@ -142,12 +142,8 @@
@@ -97,8 +91,6 @@ index e827ac9..0b41fb9 100644
  # endif
  #endif
  
-diff --git osdef.h.in osdef.h.in
-index 8687b60..e4057a0 100644
 --- osdef.h.in
 +++ osdef.h.in
 @@ -58,16 +58,8 @@
