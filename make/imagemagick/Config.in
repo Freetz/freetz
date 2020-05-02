@@ -1,5 +1,5 @@
 menuconfig FREETZ_PACKAGE_IMAGEMAGICK
-	bool "ImageMagick 7.0.8-45 (binary only)"
+	bool "ImageMagick 7.0.10-10 (binary only)"
 	select FREETZ_LIB_libpthread
 	select FREETZ_LIB_libm
 	default n
@@ -18,44 +18,37 @@ if FREETZ_PACKAGE_IMAGEMAGICK
 
 config FREETZ_PACKAGE_IMAGEMAGICK_ghostscript_fonts
 	bool "Ghostscript fonts"
-	depends on FREETZ_PACKAGE_IMAGEMAGICK
 	default n
 	select FREETZ_PACKAGE_GHOSTSCRIPT_FONTS
 
 config FREETZ_PACKAGE_IMAGEMAGICK_freetype
 	bool "Support freetype"
-	depends on FREETZ_PACKAGE_IMAGEMAGICK
 	default y
 	select FREETZ_LIB_libfreetype
 
 config FREETZ_PACKAGE_IMAGEMAGICK_jpeg
 	bool "Support jpeg"
-	depends on FREETZ_PACKAGE_IMAGEMAGICK
 	default y
 	select FREETZ_LIB_libjpeg
 
 config FREETZ_PACKAGE_IMAGEMAGICK_libz
 	bool "Support libz"
-	depends on FREETZ_PACKAGE_IMAGEMAGICK
 	default y
 	select FREETZ_LIB_libz
 
 config FREETZ_PACKAGE_IMAGEMAGICK_png
 	bool "Support png"
-	depends on FREETZ_PACKAGE_IMAGEMAGICK
 	default y
 	select FREETZ_LIB_libpng12
 
 config FREETZ_PACKAGE_IMAGEMAGICK_xml
 	bool "Support xml"
-	depends on FREETZ_PACKAGE_IMAGEMAGICK
 	default y
 	select FREETZ_LIB_libxml2
 
 
 config FREETZ_PACKAGE_IMAGEMAGICK_STATIC
 	bool "Link statically"
-	depends on FREETZ_PACKAGE_IMAGEMAGICK
 	default n
 	help
 		Causes all dependent libraries to be linked in statically.

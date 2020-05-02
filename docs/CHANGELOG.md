@@ -217,7 +217,7 @@ Latest changes
     * hplip 3.14.6
     * htop 1.0.3
     * httpry 0.1.8
-    * ImageMagick 7.0.8-45
+    * ImageMagick 7.0.10-10
     * inadyn-mt 02.28.10
     * iodine 0.7.0
     * jpeg 9c
