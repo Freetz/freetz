@@ -1,5 +1,11 @@
 # NEWS
 
+ * __2020-05-04__<br>
+   BusyBox 1.31 ist nun die Standardversion.<br>
+   Diese Version ist für Firmware mit Kernel 2.6 nicht verfügbar.<br>
+   Siehe [r16708](https://trac.boxmatrix.info/freetz-ng/changeset/16708/freetz-ng)
+   / [8ebedc0c](https://github.com/Freetz-NG/freetz-ng/commit/8ebedc0c292f23889b487cbcedc074c791253944)<br>
+
  * __2020-04-17__<br>
    Patch [multiple fax pages](patches/README.md#patch-faxpages) hinzugefügt.<br>
    Mit diesem Patch können mehrere Seiten in einem Fax verschickt werden.<br>
