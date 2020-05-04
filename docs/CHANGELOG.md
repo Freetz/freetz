@@ -285,7 +285,7 @@ Latest changes
     * sane-backends 1.0.27
     * screen 4.8.0
     * slang 2.3.1a
-    * smartmontools 7.0
+    * smartmontools 7.1
     * sqlite 3.31.1
     * sslh 1.19c
     * strace 4.9 (kernel-2.6.13) / 5.0 (all other kernel versions)
