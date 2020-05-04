@@ -2,6 +2,8 @@
 ### uClibc version used by AVM in the original firmware
 ###
 
+if !FREETZ_SEPARATE_AVM_UCLIBC
+
 config FREETZ_AVM_UCLIBC_0_9_28
 	bool
 	default y
@@ -27,6 +29,8 @@ config FREETZ_AVM_UCLIBC_1_0_14
 	default y
 	depends on FREETZ_AVM_PROP_UCLIBC_1_0_14
 
+endif # FREETZ_SEPARATE_AVM_UCLIBC
+
 config FREETZ_AVM_UCLIBC_1_0_15
 	bool
 	default y
@@ -35,11 +39,11 @@ config FREETZ_AVM_UCLIBC_1_0_15
 config FREETZ_AVM_UCLIBC_NPTL_ENABLED
 	bool
 	default y
-	depends on \
+	depends on FREETZ_SEPARATE_AVM_UCLIBC || \
 		FREETZ_AVM_UCLIBC_0_9_33 || FREETZ_AVM_UCLIBC_1_0_14
 
 config FREETZ_AVM_UCLIBC_XLOCALE_ENABLED
 	bool
 	default y
-	depends on FREETZ_AVM_PROP_UCLIBC_XLOCALE
+	depends on FREETZ_SEPARATE_AVM_UCLIBC || FREETZ_AVM_PROP_UCLIBC_XLOCALE
 

@@ -61,12 +61,18 @@ TARGET_CFLAGS_mips:=-Wa,--trap
 # LFS flags
 TARGET_CFLAGS_LFS:=-D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 
+# Loader
+ifeq ($(strip $(FREETZ_SEPARATE_AVM_UCLIBC)),y)
+#TARGET_CFLAGS_LD:=-Xlinker -I/usr/lib/freetz/ld-uClibc.so.1
+TARGET_CFLAGS_LD:=-Wl,-I/usr/lib/freetz/ld-uClibc.so.1
+endif
+
 ifneq ($(filter -march=% -mcpu=% -mtune=% -mfpu=% -mfloat-abi=% -m%-float -Wa$(_comma)--trap,$(call qstrip,$(FREETZ_TARGET_CFLAGS))),)
 $(error Please remove any ARCH/CPU/FPU/FLOAT-ABI/MODE related flags (-march/-mcpu/-mtune/-mfpu/-mfloat-abi/-m*-float/-Wa$(_comma)--trap) \
 	from target compiler flags (FREETZ_TARGET_CFLAGS variable in your .config). \
 	These flags are automatically set by Freetz build environment now)
 endif
-TARGET_CFLAGS:=$(strip $(TARGET_CFLAGS_HW_CAPABILITIES) $(call qstrip,$(FREETZ_TARGET_CFLAGS)) $(TARGET_CFLAGS_$(call qstrip,$(FREETZ_TARGET_ARCH))) $(TARGET_CFLAGS_LFS))
+TARGET_CFLAGS:=$(strip $(TARGET_CFLAGS_HW_CAPABILITIES) $(call qstrip,$(FREETZ_TARGET_CFLAGS)) $(TARGET_CFLAGS_$(call qstrip,$(FREETZ_TARGET_ARCH))) $(TARGET_CFLAGS_LFS) $(TARGET_CFLAGS_LD))
 
 FPIC:=-fPIC
 
@@ -304,6 +310,7 @@ endef
 
 define INSTALL_BINARY_STRIP
 $(INSTALL_FILE) \
+[ "$(FREETZ_SEPARATE_AVM_UCLIBC)" == "y" ] && $(TOOLS_DIR)/patchelf --set-interpreter /usr/lib/freetz/ld-uClibc.so.1 $@ || true; \
 $(TARGET_STRIP) $@;
 endef
 define INSTALL_LIBRARY__INT

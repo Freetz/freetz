@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 1)
 
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg).so.$($(PKG)_VERSION)
-$(PKG)_TARGET_BINARY:=$(TARGET_SPECIFIC_ROOT_DIR)/lib/$(pkg).so.$($(PKG)_VERSION)
+$(PKG)_TARGET_BINARY:=$(if $(FREETZ_SEPARATE_AVM_UCLIBC),$($(PKG)_TARGET_DIR),$(TARGET_SPECIFIC_ROOT_DIR)/lib)/$(pkg).so.$($(PKG)_VERSION)
 
 $($(PKG)_STAGING_BINARY): gcc
 
@@ -16,5 +16,6 @@ $(pkg)-clean:
 
 $(pkg)-uninstall:
 	$(RM) $(TARGET_SPECIFIC_ROOT_DIR)/lib/libgcc_s.so*
+	$(RM) $(LIBGCC_S_TARGET_DIR)/libgcc_s.so*
 
 $(PKG_FINISH)

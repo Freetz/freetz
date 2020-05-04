@@ -1,4 +1,5 @@
 [ "$FREETZ_KEEP_AVM_UCLIBC" == "y" ] && return 0
+[ "$FREETZ_SEPARATE_AVM_UCLIBC" == "y" ] && return 0
 
 [ "$FREETZ_AVM_UCLIBC_0_9_28" == "y" ] && version="0.9.28"
 [ "$FREETZ_AVM_UCLIBC_0_9_29" == "y" ] && version="0.9.29"

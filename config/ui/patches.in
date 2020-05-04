@@ -1344,6 +1344,7 @@ comment "Replacement patches --------------------"
 
 config FREETZ_KEEP_AVM_UCLIBC
 	bool "Keep AVM uClibc - FOR TESTING PURPOSES ONLY"
+	depends on !FREETZ_SEPARATE_AVM_UCLIBC
 	depends on FREETZ_SHOW_EXPERT && \
 		( \
 		(FREETZ_AVM_UCLIBC_0_9_28 && FREETZ_TARGET_UCLIBC_0_9_28) || \
@@ -1376,6 +1377,7 @@ config FREETZ_REPLACE_OPENSSL
 config FREETZ_REPLACE_OUTER_UCLIBC_AND_BUSYBOX
 	bool "Replace uClibc and BusyBox in outer image"
 	depends on FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM
+	depends on !FREETZ_SEPARATE_AVM_UCLIBC
 	default n
 	help
 		This replaces uClibc and BusyBox in the outer image by
@@ -1425,6 +1427,19 @@ config FREETZ_REPLACE_ONLINECHANGED
 		should be aware of it.
 
 comment "Additional patches ---------------------"
+
+config FREETZ_SEPARATE_AVM_UCLIBC_FORCE
+	bool
+	depends on FREETZ_AVM_PROP_UCLIBC_SEPARATE
+	select FREETZ_SEPARATE_AVM_UCLIBC
+	default y
+
+config FREETZ_SEPARATE_AVM_UCLIBC
+	bool "Separate uClibc"
+	default n
+	help
+		Puts uClibc of Freetz into /usr/lib/freetz/.
+		Needs about 1 MB (uncompressed).
 
 config FREETZ_ADD_TELNETD
 	bool "Add telnetd"

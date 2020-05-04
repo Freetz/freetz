@@ -1129,7 +1129,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 			fn=${bn//_/[-+._]}
 			sizeinfo "$bn"
-			for dn in lib usr/lib ${FREETZ_LIBRARY_DIR#/} usr/lib/xtables; do
+			[ "$FREETZ_SEPARATE_AVM_UCLIBC" == "y" ] \
+			  && LIBPATHS="${FREETZ_LIBRARY_DIR#/} lib usr/lib usr/lib/xtables" \
+			  || LIBPATHS="lib usr/lib ${FREETZ_LIBRARY_DIR#/} usr/lib/xtables"
+			for dn in $LIBPATHS; do
 				files=$(shopt -s nullglob; echo ${TARGET_SPECIFIC_ROOT_DIR}/$dn/$fn[-.]*so*)
 				if [ -z "$files" ]; then
 					continue;
@@ -1159,7 +1162,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 			fi
 		done
 		if [ "$FREETZ_KEEP_AVM_UCLIBC" != "y" -a "$FREETZ_LIB_libuClibc" == "y" ]; then
-			cp -a "${TARGET_SPECIFIC_ROOT_DIR}/lib/libc.so.${FREETZ_TARGET_UCLIBC_MAJOR_VERSION}" "${FILESYSTEM_MOD_DIR}/lib/"
+			[ "$FREETZ_SEPARATE_AVM_UCLIBC" == "y" ] && \
+			  cp -a "${TARGET_SPECIFIC_ROOT_DIR}/${FREETZ_LIBRARY_DIR}/libc.so.${FREETZ_TARGET_UCLIBC_MAJOR_VERSION}" "${FILESYSTEM_MOD_DIR}/${FREETZ_LIBRARY_DIR}/" || \
+			  cp -a "${TARGET_SPECIFIC_ROOT_DIR}/lib/libc.so.${FREETZ_TARGET_UCLIBC_MAJOR_VERSION}" "${FILESYSTEM_MOD_DIR}/lib/"
 			[ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" -a "$FREETZ_REPLACE_OUTER_UCLIBC_AND_BUSYBOX" == "y" ] && \
 			  cp -a "${TARGET_SPECIFIC_ROOT_DIR}/lib/libc.so.${FREETZ_TARGET_UCLIBC_MAJOR_VERSION}" "${FILESYSTEM_OUTER_MOD_DIR}/lib/"
 		fi
