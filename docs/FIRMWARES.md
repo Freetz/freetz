@@ -2,7 +2,6 @@
 Currently supported devices and firmwares
 
  * [Not supported devices](#not-supported-devices)
- * [LIBCTEST branch](#libctest-branch)
  * [Fritz!Box (2xxx)](#fritzbox-2xxx)
  * [Fritz!Box WLAN (3xxx)](#fritzbox-wlan-3xxx)
  * [Fritz!Box WAN (4xxx)](#fritzbox-wan-4xxx)
@@ -26,12 +25,6 @@ Currently supported devices and firmwares
 ### Not supported devices
 
   * Repeater 310, 600 & 1160: No LAN ports, so a recovery is not possible.
-
-### LIBCTEST branch
-
-  * EXPERIMENTAL! See [README](https://github.com/Freetz-NG/freetz-ng/blob/libctest/README.md)<br>
-  * Fritz!Box 6591, 6660, 7581 & 7582: These use glibc.
-  * Fritz!OS 7.19 Labor: These use musl libc or unsupported uClibc versions.
 
 ### Fritz!Box (2xxx)
 
@@ -134,11 +127,18 @@ Currently supported devices and firmwares
   - 141.06.87 rev48327 {GER}
   - 141.07.02 rev65390 {GER}
   - 141.07.12 rev71697 {GER} [MESH18 NL2]
+  - 141.07.19 revLabor {ALL} (LIBCTEST)
 
 * __Fritz!Box 6590 Cable__
   - 148.06.87 rev48411 {GER}
   - 148.07.02 rev65392 {GER}
   - 148.07.12 rev72225 {GER} [MESH18 NL2]
+  - 148.07.19 revLabor {ALL} (LIBCTEST)
+* __Fritz!Box 6591 Cable (LIBCTEST)__
+  - 161.07.13 rev75441 {GER} [MESH18 NL3]
+  - 161.07.19 revLabor {GER} (LIBCTEST)
+* __Fritz!Box 6660 Cable (LIBCTEST)__
+  - 252.07.14 rev75950 {GER} [6660 FCS]
 
 ### Fritz!Box LTE (68xx)
 
@@ -317,6 +317,7 @@ Currently supported devices and firmwares
   - 113.06.84 rev48533 {INT}
   - 113.07.01 rev61484 {INT}
   - 113.07.12 rev70401 {INT} [MESH18 NL2]
+  - 113.07.19 revLabor {ALL} (LIBCTEST)
 
 ### Fritz!Box Fon WLAN (75xx)
 
@@ -332,6 +333,7 @@ Currently supported devices and firmwares
   - 164.07.14 rev73183 {GER} [MESH18 NL4]
   - 164.07.02 rev62314 {INT}
   - 164.07.13 rev75481 {INT} [MESH18 NL3]
+  - 164.07.19 revLabor {ALL} (LIBCTEST)
 * __Fritz!Box Fon WLAN 7560__
   - 149.06.53 rev41227 {GER}
   - 149.06.83 rev43670 {GER}
@@ -347,6 +349,10 @@ Currently supported devices and firmwares
   - 153.06.92 rev47571 {GER}
   - 153.07.01 rev61517 {GER}
   - 153.07.12 rev70352 {GER} [MESH18 NL2]
+* __Fritz!Box Fon WLAN 7581 (LIBCTEST)__
+  - 152.07.13 rev76288 {ALL} [MESH18 NL2]
+* __Fritz!Box Fon WLAN 7582 (LIBCTEST)__
+  - 156.07.13 rev76289 {ALL} [MESH18 NL2]
 * __Fritz!Box Fon WLAN 7583__
   - 167.07.12 rev70707 {GER} [MESH18 NL2]
   - 167.07.15 rev75887 {INT} [MESH18 NL2]
@@ -359,6 +365,7 @@ Currently supported devices and firmwares
   - 154.06.84 rev57902 {INT}
   - 154.07.01 rev61989 {INT}
   - 154.07.13 rev74390 {INT} [MESH18 NL3]
+  - 154.07.19 revLabor {ALL} (LIBCTEST)
 
 ### Fritz!Powerline
 
@@ -404,14 +411,18 @@ Currently supported devices and firmwares
   - 134.06.50 rev33858 {ALL}
   - 134.07.01 rev63070 {ALL}
   - 134.07.12 rev70775 {ALL} [MESH18 NL2]
+  - 134.07.19 revLabor {ALL} (LIBCTEST)
 
 * __Fritz!Repeater 1200__
   - 172.07.14 rev73941 {ALL} [MESH18 NL4]
+  - 172.07.19 revLabor {ALL} (LIBCTEST)
 * __Fritz!Repeater 2400 (UNTESTED)__
   - 169.07.12 rev71975 {ALL} [MESH18 NL2]
+  - 169.07.19 revLabor {ALL} (LIBCTEST)
 * __Fritz!Repeater 3000 (UNTESTED)__
   - 174.07.04 rev66458 {ALL}
   - 174.07.14 rev73940 {ALL} [MESH18 NL4]
+  - 174.07.19 revLabor {ALL} (LIBCTEST)
 
 ### T-Com derivatives
 
