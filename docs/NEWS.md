@@ -1,5 +1,14 @@
 # NEWS
 
+ * __2020-05-05__<br>
+   Mit ```LIBCTEST``` gekennzeichnete Geräte und/oder Firmware ist EXPERIMENTAL!<br>
+   Es können zB Problemen mit der Benutzerverwaltung in ```/etc/passwd``` auftreten.<br>
+   In diesem Fall lädt ```modusers load``` die Freetz-Konfiguration wieder.<br>
+   Es gibt 4 neue Geräte: 6591 6660 7581 7582<br>
+   Und 10 Laborversionen: 1200 1750 2400 3000 6490 6590 6591 7490 7530 7590<br>
+   Siehe [r16706](https://trac.boxmatrix.info/freetz-ng/changeset/16706/freetz-ng)
+   / [6607e747](https://github.com/Freetz-NG/freetz-ng/commit/6607e747bf9214db24a417aafd8a962f360d8ffc)<br>
+
  * __2020-05-04__<br>
    BusyBox 1.31 ist nun die Standardversion.<br>
    Diese Version ist für Firmware mit Kernel 2.6 nicht verfügbar.<br>
