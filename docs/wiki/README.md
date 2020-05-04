@@ -59,6 +59,7 @@
 ### [Development](60_Development/README.md)
  - [Eigene Programme kompilieren](60_Development/compile_own_progs.md)
  - [Cross-Compiler / Toolchain erstellen](60_Development/create_cross-compiler_toolchain.md)
+ - [Device Table](60_Development/device_table.md)
  - [Freetz Build-Prozeß](60_Development/freetz_make.md)
  - [List of kernel sources [EN]](60_Development/kernel_sources.en.md)
  - [Menükonfiguration pflegen](60_Development/menuconfig.md)
