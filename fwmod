@@ -1496,9 +1496,13 @@ if [ "$DO_MOD" -gt 0 ]; then
 						echo2 "${tagging_file}"
 						[ "${tagging_file}" != "${tagging_file%svg}" ] && tagging_temp="${tagging_file%svg}png" || tagging_temp=""
 						if [ -n "$tagging_temp" ]; then
-							#convert -compress NONE -background NONE -resize 100x80 "$tagging_file" "$tagging_temp"
-							inkscape --without-gui "$tagging_file" --export-png="$tagging_temp" -w 98 -h 77 -y 0 &>/dev/null
-							[ $? -ne 0 ] && error 1 "tagging failed on converting, is inkscape installed?"
+							if ! inkscape "$tagging_file" --export-type=png --export-filename="$tagging_temp" -w 98 -h 77 -y 0 &>/dev/null; then
+							if ! inkscape --without-gui "$tagging_file" --export-png="$tagging_temp" -w 98 -h 77 -y 0 &>/dev/null; then
+							if ! convert -compress NONE -background NONE -resize 98x77 "$tagging_file" "$tagging_temp"; then
+								error 1 "tagging failed on converting, is inkscape installed?"
+							fi
+							fi
+							fi
 						fi
 						composite -dissolve 100% -gravity $tagging_pos -geometry $tagging_geo -quality 100 \
 						  "${TAGGING_DIR}/${FREETZ_TAGGING_STRING}.png" ${tagging_temp:-$tagging_file} ${tagging_temp:-$tagging_file}
