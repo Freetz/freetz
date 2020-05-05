@@ -3,7 +3,7 @@
 
 # AVM scripts should not kill Freetz Samba
 if [ "$FREETZ_AVM_HAS_USB_HOST" == "y" -a "$FREETZ_PACKAGE_SAMBA_SMBD" == "y" ]; then
-	sed -i -e "/killall smbd*$/d" -e "s/pidof smbd/pidof/g" "${FILESYSTEM_MOD_DIR}/etc/hotplug/storage"
+	$SED -i -e "/killall smbd*$/d" -e "s/pidof smbd/pidof/g" "${FILESYSTEM_MOD_DIR}/etc/hotplug/storage"
 fi
 
 # remove AVM's specific samba files

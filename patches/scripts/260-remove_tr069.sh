@@ -81,7 +81,7 @@ if [ "$FREETZ_REMOVE_TR064" == "y" -a -e $sedfile ]; then
 fi
 
 echo1 "patching default tr069.cfg"
-find ${FILESYSTEM_MOD_DIR}/etc -name tr069.cfg -exec sed -e 's/enabled = yes/enabled = no/' -i '{}' \;
+find ${FILESYSTEM_MOD_DIR}/etc -name tr069.cfg -exec $SED -e 's/enabled = yes/enabled = no/' -i '{}' \;
 
 if [ -e "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.init" ]; then
 	echo1 "patching /etc/init.d/rc.init"

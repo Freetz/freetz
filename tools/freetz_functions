@@ -92,7 +92,7 @@ enable_page() {
 #decripples css/html/lua text file
 decrip_file() {
 	[ -e "$1" ] || return 1
-	local l="$(wc -l "$1" | sed 's/ .*//')"
+	local l="$(wc -l "$1" | $SED 's/ .*//')"
 	[ "$l" -gt 1 ] && return 1
 	echo2 "decrippling file $1"
 	modsed 's/></>\n</g;s/{/ {\n/g;s/}/\n}\n/g;s/;/;\n/g' "$1"
@@ -161,7 +161,7 @@ modsed()
 	esac
 	if [ -f "$2" ]; then
 		echo2 "patching $2"
-		sed -i $extended_regexp -e "$1" "$2" || error 1 "modsed failed editing $2 (bad sed syntax?)"
+		$SED -i $extended_regexp -e "$1" "$2" || error 1 "modsed failed editing $2 (bad sed syntax?)"
 		if [ $# -ge 3 ]; then
 			grep -q "$3" "$2" || error 1 "modsed failed editing $2"
 		fi
@@ -181,7 +181,7 @@ modsed()
 # Output:
 #  returns line number of the 1st pattern match or empty if the pattern doesn't match any line
 get_line_number_of_1st_match() {
-	sed -n -e "${2:+${2},$}"'{ /'"$1"'/ {=;q} }'
+	$SED -n -e "${2:+${2},$}"'{ /'"$1"'/ {=;q} }'
 }
 
 # Usage:
@@ -237,7 +237,7 @@ mod_del_area() {
 
 	# remove lines
 	echo1 "patching ${file##*/}: removing lines ${startLine} - ${endLine}"
-	sed -i -e "${startLine},${endLine}d" "$file"
+	$SED -i -e "${startLine},${endLine}d" "$file"
 	[ $? -ne 0 ] && error 1 "mod_del_area: error in sed expression"
 }
 
@@ -326,7 +326,7 @@ modunsqfs()
 {
 	local STATUS
 	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ]; then
-		"$UNSQUASHFS" $UNSQUASHFS_OPTIONS -dest "$1" "$2" 2>&1 | grep -v "^$" | sed -e "s/^/${L2}/g"
+		"$UNSQUASHFS" $UNSQUASHFS_OPTIONS -dest "$1" "$2" 2>&1 | grep -v "^$" | $SED -e "s/^/${L2}/g"
 		STATUS=${PIPESTATUS[0]}
 	else
 		"$UNSQUASHFS" $UNSQUASHFS_OPTIONS -dest "$1" "$2" > /dev/null
@@ -358,7 +358,7 @@ modlangsubst()
 	val='\(\([^"\\]*\(\\.\)*\)*\)'
 	entry="\w\+:\"${val}\""
 
-	LC_ALL="" LC_CTYPE=C sed -i -e "
+	LC_ALL="" LC_CTYPE=C $SED -i -e "
 		:a
 		s/\$(lang\(${s}\+${entry}\)*${s}\+${1}:\"${val}\"\(${s}\+${entry}\)*${s}*)/\$(lang:\"\5\")/g
 		s/\$(lang\(${s}\+${entry}\)*${s}*)/*** error: language[${1}] not available ***/g
@@ -377,7 +377,7 @@ modlangconf()
 
 	s='[\t\r\n ]'
 
-	sed -n -e ":n;N;\$!bn;s/^.*${1}${s}\+{${s}*\([^}]*\)${s}*}.*$/\1/p" "$2"
+	$SED -n -e ":n;N;\$!bn;s/^.*${1}${s}\+{${s}*\([^}]*\)${s}*}.*$/\1/p" "$2"
 }
 
 modlang()
@@ -413,7 +413,7 @@ modlang()
 		    	warn "modlang: $2 does not exist"
 			return
 		fi
-		local dot_exclude="$(echo $FREETZ_BASE_DIR/$1 | sed 's/language$/exclude/')"
+		local dot_exclude="$(echo $FREETZ_BASE_DIR/$1 | $SED 's/language$/exclude/')"
 		for i in $(modlangconf "files" "$conffile"); do
 			if [ -e "${i}" ]; then
 				modlangsubst "$lang" "${i}"
@@ -434,14 +434,14 @@ modlang()
 static_packages()
 {
 	sort $STATIC_PACKAGES_FILE 2>/dev/null \
-	  | sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' -e 's/^S[0-9]*//' \
+	  | $SED -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' -e 's/^S[0-9]*//' \
 	  | grep -v '^#' | grep -v '^$'
 }
 
 static_addons()
 {
 	cat $STATIC_ADDON_FILES 2>/dev/null \
-	  | sed -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' \
+	  | $SED -e 's/^[\ \t]*//' -e 's/[\ \t]*$//' \
 	  | grep -v '^#' | grep -v '^$'
 }
 
@@ -450,7 +450,7 @@ static_addons()
 #
 real_pkg_name()
 {
-	echo "$1" | sed -r -e 's/-(alpha|beta|rc|(un)?stable|.)[0-9]*$//i' -e 's/-[0-9a-f]{7}([0-9a-f]{3}([0-9a-f]{30})?)?$//' -e 's/-v?[0-9][^-]*$//' -e 's/-v?[0-9][^-]*$//'
+	echo "$1" | $SED -r -e 's/-(alpha|beta|rc|(un)?stable|.)[0-9]*$//i' -e 's/-[0-9a-f]{7}([0-9a-f]{3}([0-9a-f]{30})?)?$//' -e 's/-v?[0-9][^-]*$//' -e 's/-v?[0-9][^-]*$//'
 }
 
 #
@@ -458,7 +458,7 @@ real_pkg_name()
 #
 pkg_name()
 {
-	real_pkg_name "$1" | sed -r -e 's/(-v2)?-cgi$//'
+	real_pkg_name "$1" | $SED -r -e 's/(-v2)?-cgi$//'
 }
 
 #
@@ -466,7 +466,7 @@ pkg_name()
 #
 pkg_menuconfig_symbol_name()
 {
-	echo "$@" | sed -r -e 's,-,_,g' -e 's,([^ \t]*),FREETZ_PACKAGE_\U\1,g'
+	echo "$@" | $SED -r -e 's,-,_,g' -e 's,([^ \t]*),FREETZ_PACKAGE_\U\1,g'
 }
 
 #
@@ -500,7 +500,7 @@ collect_pkg_files()
 			cd "${PACKAGES_DIR}/${pkg_dir}/root/"
 			find . -type f -print0 | "$TAR_GNU" -cv $(find "../" -maxdepth 1 -type f -name ".exclude*" -printf '--exclude-from=%p ') --null -T - -f /dev/null
 		)
-	done | sed -r -e 's,^[.],,' -e 's,^([^/]),/\1,'
+	done | $SED -r -e 's,^[.],,' -e 's,^([^/]),/\1,'
 }
 
 #
@@ -537,7 +537,7 @@ invoke_fwmod_custom()
 getNeededEntries()
 {
 	"${FREETZ_BASE_DIR}"/toolchain/target/bin/${FREETZ_TARGET_CROSS}readelf -d "$@" 2>/dev/null \
-	| grep "(NEEDED)" | sed -r -e 's,^[^[]* [[]([^]]*)[]].*$,\1,' | sort -u
+	| grep "(NEEDED)" | $SED -r -e 's,^[^[]* [[]([^]]*)[]].*$,\1,' | sort -u
 }
 
 #
@@ -701,7 +701,7 @@ function is_valid_tarball() {
 #
 function supported_brandings() {
 	local etc_default_PRODUKT_path brandings
-	etc_default_PRODUKT_path=$(find "${FILESYSTEM_MOD_DIR}/etc" -type d -name "default.*" | sed -e "\|${FILESYSTEM_MOD_DIR}/etc/default.[0-9]*$|d")
-	brandings=$(find "${etc_default_PRODUKT_path}" -maxdepth 1 -type d | sed -n -e "s|${etc_default_PRODUKT_path}[/]*||p" | sed -e "/^$/d" | sort -u)
+	etc_default_PRODUKT_path=$(find "${FILESYSTEM_MOD_DIR}/etc" -type d -name "default.*" | $SED -e "\|${FILESYSTEM_MOD_DIR}/etc/default.[0-9]*$|d")
+	brandings=$(find "${etc_default_PRODUKT_path}" -maxdepth 1 -type d | $SED -n -e "s|${etc_default_PRODUKT_path}[/]*||p" | $SED -e "/^$/d" | sort -u)
 	echo $brandings
 }

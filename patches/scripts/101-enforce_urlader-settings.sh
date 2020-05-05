@@ -52,7 +52,7 @@ echo1 "enforce urlader settings"
 
 	{
 		# copy the 1st line (according to the standard must be a shebang line)
-		sed -n -e '1p' "${rc_S}"
+		$SED -n -e '1p' "${rc_S}"
 
 		# add the definitions of the urlader getter/setter funcs
 		echo
@@ -67,10 +67,10 @@ echo1 "enforce urlader settings"
 		fi
 
 		# copy all lines starting from the 2nd one, i.e. except for the 1st one
-		sed -e '1d' "${rc_S}"
+		$SED -e '1d' "${rc_S}"
 	} | {
 		# append "set_urlader_var"-calls after the "mount -t proc ..." line
-		sed -e '\#'^"$(mount_proc)"'$# r '"${rc_S}.urlader_vars"
+		$SED -e '\#'^"$(mount_proc)"'$# r '"${rc_S}.urlader_vars"
 	} > "${rc_S}.modified"
 
 	rm -f "${rc_S}.urlader_vars"

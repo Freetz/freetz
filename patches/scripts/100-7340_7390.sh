@@ -79,7 +79,7 @@ mod_file="${FILESYSTEM_MOD_DIR}/${ar7path}"
 tk_file="${FILESYSTEM_TK_DIR}/${ar7path}"
 echo2 "applying ar7.cfg patch"
 modsed '/interfaces =/ s/"eth0"/"eth0", "eth1"/' "${mod_file}"
-awk -v eth1="$(sed -n '/name = "eth[1]"/,/} {/ p' "${tk_file}")" \
+awk -v eth1="$($SED -n '/name = "eth[1]"/,/} {/ p' "${tk_file}")" \
 	'{if (/name = "wlan/){print eth1; print$0}else{print $0}}' \
 	"${mod_file}" > "${mod_file}.tmp"
 mv  "${mod_file}.tmp"	"${mod_file}"
