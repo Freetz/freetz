@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2.26.1)
+$(call PKG_INIT_BIN, 2.26.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=888228408f254634330234df3cece734d190ef6381063821f31ec020538f0368
+$(PKG)_SOURCE_SHA256:=6d65132471df9e531807cb2746f8be317e22a343b9385bbe11c9ce7f0d2fc848
 $(PKG)_SITE:=@KERNEL/software/scm/git
 
 # files to be moved from /usr/lib/git-core to /usr/bin
@@ -25,6 +25,8 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_GIT_WITH_PCRE
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 $(PKG)_REBUILD_SUBOPTS += $(filter FREETZ_LIB_libcurl_%,$(CURL_REBUILD_SUBOPTS))
 
+# https://gitlab.com/gitlab-org/gitlab-git/-/commit/79444c92943048f9ac62e9311038ebe43f5f0982
+$(PKG)_CONFIGURE_ENV += ac_cv_iconv_omits_bom=no
 $(PKG)_CONFIGURE_ENV += ac_cv_c_c99_format=yes
 $(PKG)_CONFIGURE_ENV += ac_cv_fread_reads_directories=no
 $(PKG)_CONFIGURE_ENV += ac_cv_snprintf_returns_bogus=no

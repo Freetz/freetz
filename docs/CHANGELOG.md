@@ -209,7 +209,7 @@ Latest changes
     * freetype 2.10.1
     * fuse 2.9.7
     * gdb 7.9.1
-    * git 2.26.1
+    * git 2.26.2
     * gmp 6.1.2
     * gnu-make 4.2.1
     * gnutls 3.5.19
