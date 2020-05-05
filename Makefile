@@ -460,13 +460,14 @@ common-dirclean: common-clean $(if $(FREETZ_HAVE_DOT_CONFIG),kernel-dirclean)
 	$(RM) -r $(if $(FREETZ_HAVE_DOT_CONFIG),$(PACKAGES_DIR) $(SOURCE_DIR) $(TARGET_TOOLCHAIN_DIR),$(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT))
 
 common-distclean: common-dirclean
-	$(RM) -r .config.compressed .config.old .config.cmd .tmpconfig.h include/config
-	$(RM)    $(DL_DIR)
+	$(RM)    .config.compressed .config.old .config.cmd .tmpconfig.h *.log
+	$(RM) -r include/config
 	$(RM) -r $(FW_IMAGES_DIR)
 	$(RM) -r $(KERNEL_TARGET_DIR)
 	$(RM) -r $(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT)
 	$(RM) -r $(TOOLCHAIN_BUILD_DIR)
 	$(RM) -r $(TOOLS_BUILD_DIR)
+	$(RM)    $(DL_DIR)
 	@echo "The files ./.config ./config/custom.in ./.fwmod_custom and the directories ~/.freetz-ccache/ ~/.freetz-dl/ ~/.freetz-signature/ were not removed."
 
 release: distclean
