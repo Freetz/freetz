@@ -1,3 +1,5 @@
+[ "$FREETZ_ENFORCE_URLADER_SETTINGS" = y ] || return 0
+
 define_urlader_funcs() {
 cat <<- 'EOF'
 	# urlader functions
@@ -34,7 +36,7 @@ cat <<- 'EOF'
 EOF
 }
 
-[ "$FREETZ_ENFORCE_URLADER_SETTINGS" = y -a -n "$(set_desired_urlader_vars)" ] || return 0
+[ -n "$(set_desired_urlader_vars)" ] || return 0
 
 echo1 "enforce urlader settings"
 
