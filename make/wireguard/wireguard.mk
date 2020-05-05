@@ -9,7 +9,7 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/wg
 $(PKG)_EXTRA_CFLAGS += --function-section -fdata-sections -fstack-protector-strong
 $(PKG)_EXTRA_LDFLAGS += -Wl,--gc-sections
 
-$(PKG)_DEPENDS_ON += kernel 
+$(PKG)_DEPENDS_ON += kernel
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_KERNEL_VERSION
 
@@ -33,9 +33,9 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
-	-$(SUBMAKE) -C $(WIREGUARD_DIR)/src clean 
+	-$(SUBMAKE) -C $(WIREGUARD_DIR)/src clean
 
 $(pkg)-uninstall:
-	$(RM)  $(WIREGUARD_TARGET_BINARY) 
+	$(RM)  $(WIREGUARD_TARGET_BINARY)
 
 $(PKG_FINISH)
