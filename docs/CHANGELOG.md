@@ -58,6 +58,7 @@ Latest changes
     + switch to using a C only version of liblzma instead of the C++ version used so far
   * squashfs3 tools: revise LZMA related patches so that the resulting binaries support
                      both ZLIB and LZMA compression methods at the same time
+  * sed: added version 4.8
   * tar: bump version to 1.32
 
 - New tools and hooks:
