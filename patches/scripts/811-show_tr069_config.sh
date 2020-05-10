@@ -5,16 +5,14 @@ echo1 "enabling tr069 config"
 
 
 # patcht Internet > Zugangsdaten > Andere-Dienste (Seitendaten)
-
 always_value() {
 	modsed -r \
 	  "s/^(${1} = ).*/\1$2/g" \
 	  "${HTML_LANG_MOD_DIR}/internet/providerservices.lua"
 }
-always_value "show true"
+always_value "show" "true"
 always_value "show_disabled" "false"
 
 # patcht Internet > Zugangsdaten > Andere-Dienste (Menupunkt)
-
 enable_page providerservices
-	
+
