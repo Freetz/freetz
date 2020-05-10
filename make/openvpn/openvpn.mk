@@ -1,5 +1,5 @@
-$(call PKG_INIT_BIN, 2.4.8)
-$(PKG)_SOURCE_SHA256:= fb8ca66bb7807fff595fbdf2a0afd085c02a6aa47715c9aa3171002f9f1a3f91
+$(call PKG_INIT_BIN, 2.4.9)
+$(PKG)_SOURCE_SHA256:= 641f3add8694b2ccc39fd4fd92554e4f089ad16a8db6d2b473ec284839a5ebe2
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SITE:=https://swupdate.openvpn.net/community/releases,http://build.openvpn.net/downloads/releases
 
