@@ -13,6 +13,10 @@ Freetz-NG is a fork of Freetz.
 All commits not by administrator (svn),
 cuma (trac) or fda77 (git) are merged.
 
+### Requirements:
+ * You need an up to date Linux System with some [prerequisites](docs/wiki/10_Beginner/install.de.md#installation-der-ben%C3%B6tigten-pakete-ubuntu).
+ * Or download a ready-to-use VM like Gismotro's [Freetz-Linux](https://freetz.digital-eliteboard.com/?dir=Teamserver/Freetz/Freetz-VM/VirtualBox/).
+
 ### Quickstart:
 ```
   git clone https://github.com/Freetz-NG/freetz-ng ~/freetz-ng
