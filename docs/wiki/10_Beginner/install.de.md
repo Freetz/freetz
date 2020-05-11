@@ -108,18 +108,12 @@ Installation](http://wiki.ip-phone-forum.de/skript:freetz_und_speed-to-fritz)
 5.  Je nachdem, für welche Methode man sich entschieden hat, macht man
     folgendes:
     -   Mit **SSH/TELNET** oder **Freetz-Linux Konsole** (bevorzugt)
-        folgendes eingeben: (Anstatt freetz-2.0.x kann auch eine andere,
-        z.B. Entwicklerversion genommen werden.)
+        folgendes eingeben:
 
         ```
-			svn co https://svn.boxmatrix.info/freetz-ng/branches/freetz-stable-2.0.x freetz-2.0.x
+			git clone https://github.com/Freetz-NG/freetz-ng ~/freetz-ng
         ```
 
-Aktuell:
-
-```
-	svn co https://svn.boxmatrix.info/freetz-ng/branches/freetz-stable-2.0 freetz-2.0
-```
 
 > **Achtung:** Kleiner Tip für Vista und Windows 7 User:\
 > Solltet Ihr eine IP-Adresse in der VM-Ware erhalten (ifconfig), aber

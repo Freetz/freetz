@@ -164,29 +164,11 @@ German.
 > time (e.g. [r2759](https://trac.boxmatrix.info/freetz-ng/changeset/2759)).
 > All release versions are tagged
 
-> To check out a stable version:
+> To check out current development version:
 >
 > ```
-> svn co https://svn.boxmatrix.info/freetz-ng/branches/freetz-stable-1.1 freetz-stable-1.1
+> git clone https://github.com/Freetz-NG/freetz-ng ~/freetz-ng
 > ```
->
-> To check out a tag:
->
-> ```
-> svn co https://svn.boxmatrix.info/freetz-ng/tags/freetz-1.1.4 freetz-1.1.4
-> ```
->
-> To check out the development version (trunk):
->
-> ```
-> svn co https://svn.boxmatrix.info/freetz-ng/trunk freetz-trunk
-> ```
->
-> Attention! The development version (trunk) is only recommended to
-> novice users with basic Linux knowledge who can troubleshoot
-> elementary errors and can give proper feedback to the developers.
-> Because the trunk is an ongoing development version, it won't be as
-> stable as the branched and tagged versions.
 
 ### When feature XY is implemented?
 

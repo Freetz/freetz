@@ -139,45 +139,6 @@
 > Feature-Releases gibt es ggfs. weitere Maintenance-Releases, die nur
 > neue Firmwareversionen von AVM unterstützen und Fehler beheben.
 
-### Trunk, Branches, Tags?
-
-> Der Trunk ist der aktuelle Entwicklungszweig.
-> Unter einem Branch versteht man ein Zweig, der zu einer bestimmten Zeit
-> (z.B. [r10373](https://trac.boxmatrix.info/freetz-ng/changeset/10373))
-> aus dem Trunk abgetrennt wurde. Hier gibt es derzeit den Branch
-> freetz-stable-2.0. Alle Releaseversionen bekommen einen Tag (z.B.
-> freetz-1.2. Zukünftig wird das dann der Tag 2.0 werden.
-> Auschecken einer stabilen Version:
-
-```
-	svn co https://svn.boxmatrix.info/freetz-ng/branches/freetz-stable-2.0 freetz-stable-2.0
-```
-
-> Auschecken eines Tags:
-
-```
-	svn co https://svn.boxmatrix.info/freetz-ng/tags/freetz-1.2 freetz-1.2
-```
-
-> Nach Erscheinen des neuen Tag 2.0 wird dieser dann wie folgt ausgecheckt:
-
-```
-	svn co https://svn.boxmatrix.info/freetz-ng/tags/freetz-2.0 freetz-2.0
-```
-
-> Auschecken einer Entwicklerversion (trunk):
-
-```
-	svn co https://svn.boxmatrix.info/freetz-ng/trunk freetz-trunk
-```
-
-> Achtung! Die Entwicklerversion (trunk) ist nur für fortgeschrittene
-> Benutzer zu empfehlen, die mit Linux-Grundlagen vertraut sind, sich bei
-> elementaren Problemen selbst helfen können und den Entwicklern einen
-> qualitativen Feedback geben können. Da es sich hierbei um eine laufende
-> Entwicklung handelt, ist die Stabilität der Entwicklerversion meist
-> nicht so hoch, wie bei Branches und Tags.
-
 ### Wann ist Feature XY fertig?
 
 > Der schnellste Weg zur Fertigstellung ist die Präsentation einer

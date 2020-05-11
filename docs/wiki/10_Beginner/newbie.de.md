@@ -230,21 +230,8 @@ VirtualBox erneut überprüfen.
 Als nächstes gebt ihr folgenden Befehl ein:\
 
 ```
-svn checkout https://svn.boxmatrix.info/freetz-ng/branches/freetz-stable-2.0
+git clone https://github.com/Freetz-NG/freetz-ng ~/freetz-ng
 ```
-
-Nun wird der aktuelle stabile Freetz Source Code (hier: Version 2.0) aus
-dem Subversion Repository geladen. Unter folgendem Link kann geprüft
-werden, ob es ggf. bereits ein aktuelleres stable Release verfürbar ist:
-[https://svn.boxmatrix.info/freetz-ng/tags/](https://svn.boxmatrix.info/freetz-ng/tags/).
-Wenn der Download beendet ist steht folgende Abschlußmeldung auf dem
-Bildschirm: **Checked out revision xxxx**, z.B. xxxx=10388. Tatsächlich
-trägt freetz-2.0 die Revision 10388 (man beachte "Last Changed Rev:
-10388" bzw. "Letzte geänderte Rev: 10388").
-
-Auch nach dem Erscheinen (Release) von freetz-2.0 (stable) wird Freetz
-ständig verbessert. Danach wechselt man mit **cd freetz-stable-2.0** in
-das Freetz Verzeichnis und gibt **make menuconfig** ein.
 
 ### Einstellungen im menuconfig
 

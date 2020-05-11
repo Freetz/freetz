@@ -18,7 +18,7 @@ Der Befehl zum Auschecken sieht nun etwas anders aus. Folgender Befehl
 ist jetzt einzugeben:
 
 ```
-	svn checkout https://svn.boxmatrix.info/freetz-ng/trunk freetz-trunk
+	git clone https://github.com/Freetz-NG/freetz-ng ~/freetz-ng
 ```
 
 

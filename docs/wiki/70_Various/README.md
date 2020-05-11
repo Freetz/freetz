@@ -18,7 +18,6 @@
     * [Welche Boxen und welche Firmwares werden durch Freetz unterstützt:](origin_and_history.md#welche-boxen-und-welche-firmwares-werden-durch-freetz-unterstützt)
     * [Entwicklung](origin_and_history.md#entwicklung)
     * [Wann kommt Version xy?](origin_and_history.md#wann-kommt-version-xy)
-    * [Trunk, Branches, Tags?](origin_and_history.md#trunk-branches-tags)
     * [Wann ist Feature XY fertig?](origin_and_history.md#wann-ist-feature-xy-fertig)
     * [Freetz gefällt mir und ich möchte die Weiterentwicklung unterstützen.](origin_and_history.md#freetz-gefällt-mir-und-ich-möchte-die-weiterentwicklung-unterstützen)
     * [Vorkonfiguration (menuconfig)](origin_and_history.md#vorkonfiguration-menuconfig)
