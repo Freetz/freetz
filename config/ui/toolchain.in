@@ -158,6 +158,20 @@ config FREETZ_KERNEL_GCC_VERSION
 	default "5.5.0" if FREETZ_KERNEL_GCC_5
 
 comment "Target toolchain options ----------------------------------"
+
+config FREETZ_SEPARATE_AVM_UCLIBC_FORCE
+	bool
+	depends on FREETZ_AVM_PROP_UCLIBC_SEPARATE
+	select FREETZ_SEPARATE_AVM_UCLIBC
+	default y
+
+config FREETZ_SEPARATE_AVM_UCLIBC
+	bool "Separate uClibc"
+	default n
+	help
+		Puts uClibc of Freetz into /usr/lib/freetz/,
+		needs about 1 MB (uncompressed).
+
 choice
 	prompt "Target uClibc version"
 	default FREETZ_TARGET_UCLIBC_0_9_28 if FREETZ_AVM_UCLIBC_0_9_28

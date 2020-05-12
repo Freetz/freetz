@@ -1428,19 +1428,6 @@ config FREETZ_REPLACE_ONLINECHANGED
 
 comment "Additional patches ---------------------"
 
-config FREETZ_SEPARATE_AVM_UCLIBC_FORCE
-	bool
-	depends on FREETZ_AVM_PROP_UCLIBC_SEPARATE
-	select FREETZ_SEPARATE_AVM_UCLIBC
-	default y
-
-config FREETZ_SEPARATE_AVM_UCLIBC
-	bool "Separate uClibc"
-	default n
-	help
-		Puts uClibc of Freetz into /usr/lib/freetz/.
-		Needs about 1 MB (uncompressed).
-
 config FREETZ_ADD_TELNETD
 	bool "Add telnetd"
 	depends on !FREETZ_AVM_HAS_TELNETD
