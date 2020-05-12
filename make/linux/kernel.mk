@@ -49,8 +49,15 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(DL_KERNEL_SOURCE) | $(UNPACK_TARBALL_PRE
 					[ "$$(readlink -f "$(KERNEL_SOURCE_DIR)/$${symlink_location}")" != "$(abspath $(KERNEL_SOURCE_DIR))/$${f}" ] \
 				; then \
 					$(call nMESSAGE, Warning: Symlink \"$(KERNEL_SOURCE_DIR)/$${symlink_location}\" doesn't point to expected \"$${symlink_target}\"); \
+					if [ "$$(readlink "$(KERNEL_SOURCE_DIR)/$${symlink_location}" | sed 's/^\/.*/X/')" == "X" ]; then \
+						$(call nMESSAGE, Deleting \"$(KERNEL_SOURCE_DIR)/$${symlink_location}\" --> $$(readlink "$(KERNEL_SOURCE_DIR)/$${symlink_location}")); \
+						$(RM) "$(KERNEL_SOURCE_DIR)/$${symlink_location}"; \
+					else \
+						continue; \
+					fi; \
+				else \
+					continue; \
 				fi; \
-				continue; \
 			fi; \
 			\
 			if [ -e "$(KERNEL_SOURCE_DIR)/$${symlink_location}" ]; then \
