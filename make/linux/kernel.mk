@@ -232,6 +232,8 @@ kernel-dirclean:
 	$(RM) $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY)
 	$(RM) -r $(KERNEL_TARGET_DIR)/modules-$(KERNEL_ID)
 
+kernel-distclean: kernel-dirclean
+
 pkg-echo-start:
 	@$(RM) $(ECHO_ITEM_START) $(ECHO_ITEM_BUILD)
 
