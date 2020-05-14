@@ -1,10 +1,10 @@
 # Welcome to Freetz-NG
 [![Freetz-NG](screenshots/000-XXX_Freetz-NG_trans.png "Freetz-NG")](#)<br>
 <br>
-[News](NEWS.md)<br>
-[Firmwares](FIRMWARES.md)<br>
-[Changelog](CHANGELOG.md)<br>
-[Readme](https://github.com/Freetz-NG/freetz-ng/blob/master/README.md)<br>
+Watch important changes and [NEWS](NEWS.md) about Freetz-NG.<br>
+Check list of supported devices and [FIRMWARES](FIRMWARES.md).<br>
+Read [CHANGELOG](CHANGELOG.md) for all improvements and additions.<br>
+For download and quickstart instructions go to [README](https://github.com/Freetz-NG/freetz-ng/blob/master/README.md#readme).<br>
 
 ### Timeline
 [Github](https://github.com/Freetz-NG/freetz-ng/commits/master)<br>
