@@ -87,7 +87,7 @@ endef
 
 # check for very old linux with kernel v3 or less
 ifeq ($(shell uname -r | sed 's/\..*//;s/^[1-3]//'),)
-$(error Your Linux System is too old. Please upgrade it or use Freetz-Linux: https://freetz.digital-eliteboard.com/?dir=Teamserver/Freetz/Freetz-VM/VirtualBox ..)
+$(error Your Linux System is too old. Please upgrade it or use Freetz-Linux: https://github.com/Freetz-NG/freetz-ng/blob/master/README.md ..)
 endif
 
 # check for proper make version
