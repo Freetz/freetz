@@ -364,7 +364,7 @@ for i in ${sites[@]}; do
 				calculate_full_checksum
 				echo -e "\033[1;35mERROR: Unknown checksum algorithm for a hash length of ${#CHECKSUM}$FULL_CHECKSUM\033[0m"
 				rm -f "$DL_DNF"
-				exit 1
+				break
 			fi
 
 			if [ -x "$CHECKSUM_PROG" ]; then
