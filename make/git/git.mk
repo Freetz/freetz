@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2.24.0)
+$(call PKG_INIT_BIN, 2.26.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=9f71d61973626d8b28c4cdf8e2484b4bf13870ed643fed982d68b2cfd754371b
+$(PKG)_SOURCE_SHA256:=6d65132471df9e531807cb2746f8be317e22a343b9385bbe11c9ce7f0d2fc848
 $(PKG)_SITE:=@KERNEL/software/scm/git
 
 # files to be moved from /usr/lib/git-core to /usr/bin
@@ -28,6 +28,16 @@ $(PKG)_REBUILD_SUBOPTS += $(filter FREETZ_LIB_libcurl_%,$(CURL_REBUILD_SUBOPTS))
 $(PKG)_CONFIGURE_ENV += ac_cv_c_c99_format=yes
 $(PKG)_CONFIGURE_ENV += ac_cv_fread_reads_directories=no
 $(PKG)_CONFIGURE_ENV += ac_cv_snprintf_returns_bogus=no
+
+# Makefile option ICONV_OMITS_BOM exists since years but gets tested/set by configure only since 2.25.0
+# Note the proper semantic of the option is:
+#  iconv implementation does not write a byte-order mark (BOM)
+#  when writing UTF-16 or UTF-32 and always writes in big-endian format.
+#
+# This is true for big-endian uClibc (tested with ac_cv_iconv_omits_bom.c from target-tester).
+# The value is unknown for little endian boxes and for libiconv (used by uClibc-0.9.28 based boxes),
+# set it to "no" for these boxes as this is what we "did" so far by not setting ICONV_OMITS_BOM.
+$(PKG)_CONFIGURE_ENV += ac_cv_iconv_omits_bom=$(if $(FREETZ_TARGET_ARCH_BE),yes,no)
 
 $(PKG)_CONFIGURE_OPTIONS += --with-gitconfig=/tmp/flash/gitconfig
 $(PKG)_CONFIGURE_OPTIONS += --enable-pthreads
