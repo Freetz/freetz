@@ -1,6 +1,7 @@
 $(call PKG_INIT_BIN, 959)
 $(PKG)_NAME_NO_HYPHEN:=$(subst -,,$(pkg))
 $(PKG)_SOURCE:=$($(PKG)_NAME_NO_HYPHEN)-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE_MD5:=1476d3d7bd2d85b66957cd5b0557cdfd
 $(PKG)_SITE:=svn://svn.chan-capi.org/chan-capi/trunk
 
 $(PKG)_DEPENDS_ON += libcapi asterisk
