@@ -305,7 +305,7 @@ Latest changes
     * unrar 5.5.8 (=rar 5.50)
     * usbip 0.1.8
     * util-linux-ng 2.27.1
-    * Vim 8.1.1365
+    * Vim 8.2.0769
     * vnstat 1.17
     * vsftpd 3.0.3
     * vtun 3.0.4

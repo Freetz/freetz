@@ -659,7 +659,7 @@
   * **<u>util-linux (binary only)</u><a id='util-linux'></a>**<br>
     Provides blkid util from util-linux project
 
-  * **[Vim 8.1.1365 (binary only)](vim.md)<a id='vim'></a>**<br>
+  * **[Vim 8.2.0769 (binary only)](vim.md)<a id='vim'></a>**<br>
     An improved version of VI
 
   * **<u>vnstat 1.17 (binary only)</u><a id='vnstat'></a>**<br>
