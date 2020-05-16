@@ -1,5 +1,6 @@
 $(call PKG_INIT_BIN, 182)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_CHECKSUM:=X
 $(PKG)_SITE:=svn://svn.code.sf.net/p/usbip/code/obsolete/linux/tags/usbip-0.1.8
 
 $(PKG)_CATEGORY:=Unstable
