@@ -447,8 +447,5 @@
   * **<u>RUN_TELEFON_IN_INHOUSE_MODE: Run telefon daemon in inhaus mode</u><a id='run-telefon-in-inhouse-mode'></a>**<br>
     Running telefon daemon in "inhaus mode" restores: - Processing of /var/flash/calllog on incoming calls. In case you added telnetd, this patch also restores: - Support for telnetd on/off by phone (#96*7* / #96*8*). - Processing of /var/flash/fx_conf attributes responsible for automatic start of telnetd.
 
-  * **<u>SEPARATE_AVM_UCLIBC: Separate uClibc</u><a id='separate-avm-uclibc'></a>**<br>
-    Puts uClibc of Freetz into /usr/lib/freetz/. Needs about 1 MB (uncompressed).
-
   * **<u>USBSTORAGE_AUTOMOUNT: Automount filesystems</u><a id='usbstorage-automount'></a>**<br>
     The filesystems ext2, ext3, ext4, fat, hfs, hfs+, ntfs and reiserfs and swap are mounted automatically. Detection is done by blkid applet . It depends on the original firmware which of the following points you have to select.
