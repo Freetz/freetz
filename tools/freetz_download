@@ -19,13 +19,15 @@ CHECKSUM_ALGOS[128]="sha512"
 
 FREETZ_BASE_DIR_FOUND="${FREETZ_BASE_DIR:-.}"
 DOT_CONFIG="$FREETZ_BASE_DIR_FOUND/.config"
+FREETZ_DL_SITE_0="https://freetz-ng.dropfiles.net"
 FREETZ_DL_SITE_1="https://freetz.magenbrot.net"
 FREETZ_DL_SITE_2="http://freetz.3dfxatwork.de"
 FREETZ_DL_SITE_3="https://freetz.wirsind.info"
 FREETZ_DL_SITE_4="https://freetz.digital-eliteboard.com/Teamserver/dl"
 FREETZ_DL_SITE_5="https://media.githubusercontent.com/media/freetz-ng/dl-mirror/master"
-FREETZ_DL_SITES_COUNT=5
-FREETZ_DL_SITES_NORND=2
+FREETZ_DL_SITES_COUNT=6
+FREETZ_DL_SITES_NORND_FIRST=1
+FREETZ_DL_SITES_NORND_LAST=2
 
 helpmsg()
 {
@@ -305,7 +307,7 @@ fi
 
 # Get Freetz mirror sites in an array
 FREETZ_SITES=( $(
-	for (( i=1; i <= $FREETZ_DL_SITES_COUNT ; i++ )); do
+	for (( i=0; i < $FREETZ_DL_SITES_COUNT ; i++ )); do
 		eval "echo \$FREETZ_DL_SITE_$i"
 	done
 	) )
@@ -319,14 +321,18 @@ if [ -n "$FREETZ_DL_SITE_USER" -o -n "$FREETZ_DL_SITE_CUSTOM" ]; then
 fi
 
 # Array 'sites' contains download server URL(s), add all mirrors in random order.
-# The FREETZ_DL_SITES_NORND count of mirrors always as last
+# The FREETZ_DL_SITES_NORND_FIRST count of mirrors always as first
+# The FREETZ_DL_SITES_NORND_LAST count of mirrors always as last
 if [ "$opt_append_servers" != n ]; then
-	for (( n=$(( ${#FREETZ_SITES[@]} - ${FREETZ_DL_SITES_NORND} )); n > 0; n-- )); do
-		p=$(( RANDOM % n ))
-		sites[(( num_sites++ ))]="${FREETZ_SITES[$p]}"
-		FREETZ_SITES[$p]="${FREETZ_SITES[$((n-1))]}"
+	for (( n=0; n < ${FREETZ_DL_SITES_NORND_FIRST}; n++ )); do
+		sites[(( num_sites++ ))]="${FREETZ_SITES[$n]}"
 	done
-	for (( n=${#FREETZ_SITES[@]}; n >= $(( ${#FREETZ_SITES[@]} - ${FREETZ_DL_SITES_NORND} )); n-- )); do
+	for (( n=$(( ${FREETZ_DL_SITES_COUNT} - ${FREETZ_DL_SITES_NORND_LAST} - ${FREETZ_DL_SITES_NORND_FIRST} )); n > 0; n-- )); do
+		p=$(( ${FREETZ_DL_SITES_NORND_FIRST} + RANDOM % $n ))
+		sites[(( num_sites++ ))]="${FREETZ_SITES[$p]}"
+		FREETZ_SITES[$p]="${FREETZ_SITES[$(( ${FREETZ_DL_SITES_NORND_FIRST} + ${n} - 1 ))]}"
+	done
+	for (( n=$(( ${FREETZ_DL_SITES_COUNT} - ${FREETZ_DL_SITES_NORND_LAST} )); n < ${FREETZ_DL_SITES_COUNT}; n++ )); do
 		sites[(( num_sites++ ))]="${FREETZ_SITES[$n]}"
 	done
 fi
