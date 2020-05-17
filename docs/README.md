@@ -5,6 +5,7 @@ Watch important changes and [NEWS](NEWS.md) about Freetz-NG.<br>
 Check list of supported devices and [FIRMWARES](FIRMWARES.md).<br>
 Read [CHANGELOG](CHANGELOG.md) for all improvements and additions.<br>
 For download and quickstart instructions go to [README](https://github.com/Freetz-NG/freetz-ng/blob/master/README.md#readme).<br>
+Things you could do to [SUPPORT](SUPPORT.md) Freetz-NG.<br>
 
 ### Timeline
 [Github](https://github.com/Freetz-NG/freetz-ng/commits/master)<br>
