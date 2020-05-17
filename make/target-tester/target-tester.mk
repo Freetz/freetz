@@ -9,6 +9,7 @@ $(PKG)_BINARIES:= \
 	ac_cv_func_mmap_fixed_mapped \
 	ac_cv_func_printf_unix98 \
 	ac_cv_func_vsnprintf_c99 \
+	ac_cv_iconv_omits_bom \
 	ac_cv_lbl_unaligned_fail \
 	ac_cv_libnet_endianess \
 	bash_cv_dup2_broken \

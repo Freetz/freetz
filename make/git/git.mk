@@ -25,11 +25,21 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_GIT_WITH_PCRE
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 $(PKG)_REBUILD_SUBOPTS += $(filter FREETZ_LIB_libcurl_%,$(CURL_REBUILD_SUBOPTS))
 
-# https://gitlab.com/gitlab-org/gitlab-git/-/commit/79444c92943048f9ac62e9311038ebe43f5f0982
-$(PKG)_CONFIGURE_ENV += ac_cv_iconv_omits_bom=no
 $(PKG)_CONFIGURE_ENV += ac_cv_c_c99_format=yes
 $(PKG)_CONFIGURE_ENV += ac_cv_fread_reads_directories=no
 $(PKG)_CONFIGURE_ENV += ac_cv_snprintf_returns_bogus=no
+
+# https://gitlab.com/gitlab-org/gitlab-git/-/commit/79444c92943048f9ac62e9311038ebe43f5f0982
+#
+# Makefile option ICONV_OMITS_BOM exists since years but gets tested/set by configure only since 2.25.0
+# Note the proper semantic of the option is:
+#  iconv implementation does not write a byte-order mark (BOM)
+#  when writing UTF-16 or UTF-32 and always writes in big-endian format.
+#
+# This is true for big-endian uClibc (tested with ac_cv_iconv_omits_bom.c from target-tester).
+# The value is unknown for little endian boxes and for libiconv (used by uClibc-0.9.28 based boxes),
+# set it to "no" for these boxes as this is what we "did" so far by not setting ICONV_OMITS_BOM.
+$(PKG)_CONFIGURE_ENV += ac_cv_iconv_omits_bom=$(if $(FREETZ_TARGET_ARCH_BE),yes,no)
 
 $(PKG)_CONFIGURE_OPTIONS += --with-gitconfig=/tmp/flash/gitconfig
 $(PKG)_CONFIGURE_OPTIONS += --enable-pthreads
