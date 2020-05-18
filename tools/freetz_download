@@ -230,8 +230,17 @@ if [ "$DEBUG" == "1" ]; then
 	echo "    CHECKSUM=$CHECKSUM"
 fi
 
-# fill array 'sites' with download server URLs, first primary site and package specific mirrors (if specified)
+# Array 'sites' will be filled with all download server URLs
 num_sites=0
+
+# User defined mirror(s) always and at very first (if any)
+if [ -n "$FREETZ_DL_SITE_USER" -o -n "$FREETZ_DL_SITE_CUSTOM" ]; then
+	for user_site in $FREETZ_DL_SITE_USER $FREETZ_DL_SITE_CUSTOM; do
+		sites[(( num_sites++ ))]="$user_site"
+	done
+fi
+
+# Primary site and package specific mirrors (if specified)
 if [ -n "$URLs" ]; then
 	# check if URLs contains magic sequence corresponding to one of the supported VCSs
 	supportedVCSs="cvs|svn|git|git_no_submodules|git_archive|bzr|hg|darcs|mirror"
@@ -305,33 +314,25 @@ if [ -n "$URLs" ]; then
 	fi
 fi
 
-# Get Freetz mirror sites in an array
-FREETZ_SITES=( $(
-	for (( i=0; i < $FREETZ_DL_SITES_COUNT ; i++ )); do
-		eval "echo \$FREETZ_DL_SITE_$i"
-	done
-	) )
-
-
-# Use the user defined mirror(s) always and at first (if any)
-if [ -n "$FREETZ_DL_SITE_USER" -o -n "$FREETZ_DL_SITE_CUSTOM" ]; then
-	for user_site in $FREETZ_DL_SITE_USER $FREETZ_DL_SITE_CUSTOM; do
-		sites[(( num_sites++ ))]="$user_site"
-	done
-fi
-
-# Array 'sites' contains download server URL(s), add all mirrors in random order.
-# The FREETZ_DL_SITES_NORND_FIRST count of mirrors always as first
-# The FREETZ_DL_SITES_NORND_LAST count of mirrors always as last
+# Add all mirrors to 'sites' array (if not an image))
 if [ "$opt_append_servers" != n ]; then
+	# Get Freetz mirror sites in an array
+	FREETZ_SITES=( $(
+		for (( i=0; i < $FREETZ_DL_SITES_COUNT ; i++ )); do
+			eval "echo \$FREETZ_DL_SITE_$i"
+		done
+		) )
+	# The FREETZ_DL_SITES_NORND_FIRST count of mirrors always as first
 	for (( n=0; n < ${FREETZ_DL_SITES_NORND_FIRST}; n++ )); do
 		sites[(( num_sites++ ))]="${FREETZ_SITES[$n]}"
 	done
+	# Add mirrors in random order
 	for (( n=$(( ${FREETZ_DL_SITES_COUNT} - ${FREETZ_DL_SITES_NORND_LAST} - ${FREETZ_DL_SITES_NORND_FIRST} )); n > 0; n-- )); do
 		p=$(( ${FREETZ_DL_SITES_NORND_FIRST} + RANDOM % $n ))
 		sites[(( num_sites++ ))]="${FREETZ_SITES[$p]}"
 		FREETZ_SITES[$p]="${FREETZ_SITES[$(( ${FREETZ_DL_SITES_NORND_FIRST} + ${n} - 1 ))]}"
 	done
+	# The FREETZ_DL_SITES_NORND_LAST count of mirrors always as last
 	for (( n=$(( ${FREETZ_DL_SITES_COUNT} - ${FREETZ_DL_SITES_NORND_LAST} )); n < ${FREETZ_DL_SITES_COUNT}; n++ )); do
 		sites[(( num_sites++ ))]="${FREETZ_SITES[$n]}"
 	done
