@@ -243,7 +243,7 @@ fi
 # Primary site and package specific mirrors (if specified)
 if [ -n "$URLs" ]; then
 	# check if URLs contains magic sequence corresponding to one of the supported VCSs
-	supportedVCSs="cvs|svn|git|git_no_submodules|git_archive|bzr|hg|darcs|mirror"
+	supportedVCSs="cvs|svn|git|git_no_submodules|git_archive|bzr|hg|darcs"
 	VCS="$(echo "${URLs}" | sed -nr -e "s,^(${supportedVCSs})(@|://).*,\1,p")"
 	if [ -n "${VCS}" ]; then
 		URLs="$(echo "${URLs}" | sed -r -e "s,^(${supportedVCSs})@(.*),\2,")"
@@ -258,7 +258,9 @@ if [ -n "$URLs" ]; then
 		URLs="${URLs//\&/%26}"
 
 		for url in $(eval echo "{${URLs},}"); do # wrap URLs with curly-braces to apply brace-expansion
-			if [ ${url:0:3} == "@SF" ]; then
+			if [ ${url:0:7} == "@MIRROR" ]; then
+				: # file is only on mirrors available
+			elif [ ${url:0:3} == "@SF" ]; then
 				# give sourceforge a few more tries, because it redirects to different mirrors
 				subpath=${url/@SF\//}
 				for (( n=0; n < 5; n++ )); do

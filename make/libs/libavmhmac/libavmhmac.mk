@@ -2,7 +2,7 @@ $(call PKG_INIT_LIB, 0.2)
 $(PKG)_LIB_VERSION:=2.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5:=b7dba580f887d3d10c2df808eed00e69
-$(PKG)_SITE:=mirror@
+$(PKG)_SITE:=@MIRROR/
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/$(pkg).so.$($(PKG)_LIB_VERSION)

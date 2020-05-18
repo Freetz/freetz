@@ -2,7 +2,7 @@ $(call PKG_INIT_LIB, 7490.06.30)
 $(PKG)_LIB_VERSION:=0.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SOURCE_MD5:=1130eaa9a0d0f7d7c5de87657aa98bb1
-$(PKG)_SITE:=mirror@
+$(PKG)_SITE:=@MIRROR/
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libavmacl2.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libavmacl2.so.$($(PKG)_LIB_VERSION)

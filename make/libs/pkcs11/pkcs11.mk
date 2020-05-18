@@ -7,7 +7,7 @@
 $(call PKG_INIT_LIB, 2.20)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5:=232bde228c7af1960f8ef5df6ff19fbb
-$(PKG)_SITE:=mirror@
+$(PKG)_SITE:=@MIRROR/
 
 $(PKG)_HEADER:=$($(PKG)_DIR)/$(pkg).h
 $(PKG)_STAGING_HEADER:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/$(pkg)/$(pkg).h
