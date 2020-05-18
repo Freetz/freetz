@@ -14,6 +14,7 @@ kconfig-unpacked: $(KCONFIG_DIR)/.unpacked
 $(KCONFIG_DIR)/.unpacked: $(DL_DIR)/$(KCONFIG_SOURCE) | $(TOOLS_SOURCE_DIR)
 	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xf $(DL_DIR)/$(KCONFIG_SOURCE)
 	$(call APPLY_PATCHES,$(KCONFIG_MAKE_DIR)/patches,$(KCONFIG_DIR))
+	$(if $(FREETZ_REAL_DEVELOPER_ONLY__BUTTONS),$(call APPLY_PATCHES,$(KCONFIG_MAKE_DIR)/patches/buttons,$(KCONFIG_DIR)))
 	touch $@
 
 $(KCONFIG_DIR)/scripts/kconfig/conf: $(KCONFIG_DIR)/.unpacked
