@@ -268,14 +268,15 @@ if [ -n "$URLs" ]; then
 				done
 			elif [ ${url:0:4} == "@AVM" ]; then
 				subpath=${url/@AVM\//}
-				sites[(( num_sites++ ))]=http://download.avm.de/fritzbox/$subpath
-				sites[(( num_sites++ ))]=http://download.avm.de/archive/fritz.box/$subpath
-				sites[(( num_sites++ ))]=http://download.avm.de/$subpath
+				sites[(( num_sites++ ))]=https://download.avm.de/fritzbox/$subpath
+				sites[(( num_sites++ ))]=https://download.avm.de/archive/fritz.box/$subpath
+				sites[(( num_sites++ ))]=https://download.avm.de/$subpath
+				sites[(( num_sites++ ))]=https://avm.de/$subpath
+				sites[(( num_sites++ ))]=https://service.avm.de/downloads/$subpath
+				sites[(( num_sites++ ))]=https://www.avm.de/de/Service/Service-Portale/$subpath
 				sites[(( num_sites++ ))]=ftp://ftp.avm.de/fritzbox/$subpath
 				sites[(( num_sites++ ))]=ftp://ftp.avm.de/archive/fritz.box/$subpath
-				sites[(( num_sites++ ))]=https://service.avm.de/downloads/$subpath
-				sites[(( num_sites++ ))]=http://avm.de/$subpath
-				sites[(( num_sites++ ))]=http://www.avm.de/de/Service/Service-Portale/$subpath
+				sites[(( num_sites++ ))]=ftp://ftp.avm.de/$subpath
 			elif [ ${url:0:4} == "@GNU" ]; then
 				subpath=${url/@GNU\//}
 				sites[(( num_sites++ ))]=http://ftpmirror.gnu.org/$subpath # automatically chooses a nearby and up-to-date mirror
