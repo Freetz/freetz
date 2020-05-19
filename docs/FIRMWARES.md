@@ -127,13 +127,13 @@ Currently supported devices and firmwares
   - 141.06.87 rev48327 {GER}
   - 141.07.02 rev65390 {GER}
   - 141.07.12 rev71697 {GER} [MESH18 NL2]
-  - 141.07.19 revLabor {ALL} (LIBCTEST)
+  - 141.07.19 revLabor {GER} (LIBCTEST)
 
 * __Fritz!Box 6590 Cable__
   - 148.06.87 rev48411 {GER}
   - 148.07.02 rev65392 {GER}
   - 148.07.12 rev72225 {GER} [MESH18 NL2]
-  - 148.07.19 revLabor {ALL} (LIBCTEST)
+  - 148.07.19 revLabor {GER} (LIBCTEST)
 * __Fritz!Box 6591 Cable (LIBCTEST)__
   - 161.07.13 rev75441 {GER} [MESH18 NL3]
   - 161.07.19 revLabor {GER} (LIBCTEST)
