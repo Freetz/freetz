@@ -1,12 +1,12 @@
 # NEWS
 
  * __2020-05-12__<br>
-   Wer kann Freetz-NG einen Mirror-Server zur Verfügung stellen?<br>
+   ~~Wer kann Freetz-NG einen Mirror-Server zur Verfügung stellen?<br>
    Zugriff: Download via http, am besten https<br>
    Speicherplatz: Maximal 10GB notwendig<br>
    Traffic: Unbekannt, am besten unbegrenzt<br>
    Upload: Entweder mittels FTP oder GIT vom [dl-mirror](https://github.com/Freetz-NG/dl-mirror)<br>
-   Kontakt: Hier ein Issue öffnen oder PM im Forum<br>
+   Kontakt: Hier ein Issue öffnen oder PM im Forum~~<br>
 
  * __2020-05-05__<br>
    Mit ```LIBCTEST``` gekennzeichnete Geräte und/oder Firmware ist EXPERIMENTAL!<br>
