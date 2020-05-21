@@ -190,7 +190,7 @@ Latest changes
     * apr-util 1.6.1
     * bash 3.2.57
     * BIND 9.11.13
-    * Bip 0.8.9/0.9.0-rc3
+    * Bip 0.8.9/0.9.0-rc4
     * bird 1.6.4
     * CCID driver 1.4.30
     * cifs-utils 6.6
