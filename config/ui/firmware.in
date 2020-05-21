@@ -1,3 +1,8 @@
+
+###
+### Hardware series
+###
+
 choice
 	prompt "Hardware series"
 		depends on !FREETZ_USER_LEVEL_BEGINNER
@@ -39,6 +44,10 @@ config FREETZ_SERIES_ALL
 	bool
 	default y
 	depends on FREETZ_SERIES_ALL_CONFIG || FREETZ_SERIES_ALL_CHOICE
+
+###
+### Hardware type
+###
 
 choice
 	prompt "Hardware type"
@@ -496,6 +505,10 @@ choice
 
 endchoice # "Hardware type" #
 
+###
+### Target region
+###
+
 choice
 	prompt "Target region"
 		default FREETZ_TYPE_LANG_DE
@@ -521,6 +534,18 @@ choice
 		depends on FREETZ_AVM_HAS_LANG_IT
 
 endchoice # "Firmware language" #
+
+config FREETZ_TYPE_LANGUAGE
+	string
+	default "xx"        if FREETZ_TYPE_LANG_XX
+	default "de"        if FREETZ_TYPE_LANG_DE
+	default "a-ch"      if FREETZ_TYPE_LANG_A_CH
+	default "en"        if FREETZ_TYPE_LANG_EN
+	default "it"        if FREETZ_TYPE_LANG_IT
+
+###
+### Firmware version
+###
 
 choice
 	prompt "Firmware version"
@@ -593,27 +618,10 @@ choice
 	config FREETZ_TYPE_FIRMWARE_07_2X_LABOR
 		bool "FRITZ!OS 07.19 Labor - LIBCTEST"
 		select FREETZ_AVM_VERSION_07_2X
-		depends on FREETZ_AVM_HAS_FIRMWARE_07_2X_LABOR
+		depends on FREETZ_AVM_HAS_FIRMWARE_07_2X_LABOR && FREETZ_SHOW_ADVANCED
 		help
 			Enable this to use an AVM Labor firmware as base for modding.
 			For more details see <http://www.avm.de/Labor/>.
-
-#	config FREETZ_TYPE_FIRMWARE_LABOR_BETA
-#		bool "FRITZ!OS 07.11 Beta"
-#		select FREETZ_AVM_VERSION_07_1X
-#		select FREETZ_TYPE_FIRMWARE_LABOR_LATEST
-#		depends on FREETZ_AVM_HAS_FIRMWARE_LABOR_BETA && FREETZ_SHOW_ADVANCED
-#		help
-#			Enable this to use an AVM Beta firmware as base for modding.
-
-#	config FREETZ_TYPE_FIRMWARE_LABOR_TEST
-#		bool "FRITZ!OS 07.08 Labor - EXPERIMENTAL"
-#		select FREETZ_AVM_VERSION_07_0X
-#		select FREETZ_TYPE_FIRMWARE_LABOR_LATEST
-#		depends on FREETZ_AVM_HAS_FIRMWARE_LABOR_TEST && FREETZ_SHOW_ADVANCED
-#		help
-#			Enable this to use an AVM Labor firmware as base for modding.
-#			For more details see <http://www.avm.de/Labor/>.
 
 endchoice # "Firmware version" #
 
@@ -621,12 +629,39 @@ config FREETZ_TYPE_FIRMWARE_LABOR_LATEST
 	bool "Detect the latest firmware version"
 	default n
 	select FREETZ_DL_DETECT_IMAGE_NAME
-	depends on FREETZ_SHOW_ADVANCED && FREETZ_AVM_HAS_FIRMWARE_LABOR && FREETZ_TYPE_FIRMWARE_LABOR
+	depends on FREETZ_SHOW_ADVANCED && FREETZ_TYPE_FIRMWARE_LABOR
 	help
 		Automatically detect the latest labor firmware
 		version by using https://www.boxmatrix.info
 		It will be refreshed every 6 hours.
 		See https://boxmatrix.info/wiki/Labor-Files
+
+###
+### Release aliases
+###
+
+config FREETZ_TYPE_FIRMWARE_FINAL
+	bool
+	default y
+	depends on \
+		!FREETZ_TYPE_FIRMWARE_LABOR && \
+		!FREETZ_TYPE_FIRMWARE_INHAUS
+
+config FREETZ_TYPE_FIRMWARE_INHAUS
+	bool
+	default y
+	depends on \
+		FREETZ_TYPE_FIRMWARE_07_1X_INHAUS
+
+config FREETZ_TYPE_FIRMWARE_LABOR
+	bool
+	default y
+	depends on \
+		FREETZ_TYPE_FIRMWARE_07_2X_LABOR
+
+###
+### Warning messages
+###
 
 if FREETZ_AVM_VERSION_06_5X_MIN && !FREETZ_REAL_DEVELOPER_ONLY__KCONF
 	comment "WARNINGS -------------------------------"
@@ -665,35 +700,9 @@ if !FREETZ_SYSTEM_TYPE_GRX5
 endif
 endif
 
-config FREETZ_TYPE_FIRMWARE_FINAL
-	bool
-	default y
-	depends on \
-		!FREETZ_TYPE_FIRMWARE_LABOR && \
-		!FREETZ_TYPE_FIRMWARE_INHAUS
-
-config FREETZ_TYPE_FIRMWARE_INHAUS
-	bool
-	default y
-	depends on \
-		FREETZ_TYPE_FIRMWARE_07_1X_INHAUS || \
-		FREETZ_TYPE_FIRMWARE_07_2X_INHAUS
-
-config FREETZ_TYPE_FIRMWARE_LABOR
-	bool
-	default y
-	depends on \
-		FREETZ_TYPE_FIRMWARE_LABOR_BETA || \
-		FREETZ_TYPE_FIRMWARE_LABOR_TEST || \
-		FREETZ_TYPE_FIRMWARE_07_2X_LABOR
-
-config FREETZ_TYPE_LANGUAGE
-	string
-	default "xx"        if FREETZ_TYPE_LANG_XX
-	default "de"        if FREETZ_TYPE_LANG_DE
-	default "a-ch"      if FREETZ_TYPE_LANG_A_CH
-	default "en"        if FREETZ_TYPE_LANG_EN
-	default "it"        if FREETZ_TYPE_LANG_IT
+###
+### Alien firmware
+###
 
 config FREETZ_TYPE_ALIEN_HARDWARE
 	bool "Compile image for 'alien' hardware"
@@ -926,6 +935,10 @@ endchoice # "Alien hardware type" #
 			(FREETZ_TYPE_W920V_7570 && FREETZ_TYPE_7270) || \
 			(FREETZ_TYPE_7570_IAD && FREETZ_TYPE_7270)
 
+###
+### Annex selection
+###
+
 choice
 	prompt "Annex"
 		depends on FREETZ_AVM_HAS_ANNEX_A_AND_B
@@ -939,9 +952,9 @@ choice
 
 endchoice # prompt "Annex" #
 
-#
-# FREETZ_TYPE - device aliases
-#
+###
+### Device aliases
+###
 
 config FREETZ_TYPE_3270
 	bool
@@ -973,9 +986,9 @@ config FREETZ_TYPE_7360
 	depends on FREETZ_TYPE_7360_V1 || FREETZ_TYPE_7360_V2 || FREETZ_TYPE_7360_SL
 	default y
 
-#
-# FREETZ_TYPE - alien aliases
-#
+###
+### Alien aliases
+###
 
 config FREETZ_TYPE_7320_7330
 	bool
@@ -987,4 +1000,8 @@ config FREETZ_TYPE_7570_7270
 	depends on FREETZ_TYPE_7570_IAD || FREETZ_TYPE_W920V_7570 || FREETZ_TYPE_7570_7270_MENUITEM
 	depends on FREETZ_AVM_VERSION_05_2X_MIN
 	default y
+
+###
+###
+###
 

@@ -1,5 +1,6 @@
+
 ###
-### firmware versions available (and supported by Freetz)
+### Versions
 ###
 
 config FREETZ_AVM_HAS_FIRMWARE_04_XX
@@ -322,12 +323,6 @@ config FREETZ_AVM_HAS_FIRMWARE_07_1X_INHAUS
 			FREETZ_TYPE_1759 \
 		))
 
-config FREETZ_AVM_HAS_FIRMWARE_INHAUS
-	bool
-	default y
-	depends on \
-		FREETZ_AVM_HAS_FIRMWARE_07_1X_INHAUS
-
 config FREETZ_AVM_HAS_FIRMWARE_07_2X_LABOR
 	bool
 	default y
@@ -348,33 +343,24 @@ config FREETZ_AVM_HAS_FIRMWARE_07_2X_LABOR
 			FREETZ_TYPE_6591 \
 		))
 
-#config FREETZ_AVM_HAS_FIRMWARE_LABOR_BETA
-#	bool
-#	default y
-#	depends on \
+###
+### Aliases
+###
 
-#config FREETZ_AVM_HAS_FIRMWARE_LABOR_TEST
-#	bool
-#	default y
-#	depends on \
-#		( FREETZ_TYPE_LANG_DE && ( \
-#			FREETZ_TYPE_6820 \
-#		)) \
-#		|| \
-#		( FREETZ_TYPE_LANG_EN && ( \
-#			FREETZ_TYPE_6820 \
-#		)) \
-#		|| \
-#		( FREETZ_TYPE_LANG_XX && ( \
-#			FREETZ_TYPE_6890 \
-#		))
+config FREETZ_AVM_HAS_FIRMWARE_INHAUS
+	bool
+	default y
+	depends on \
+		FREETZ_AVM_HAS_FIRMWARE_07_1X_INHAUS
 
 config FREETZ_AVM_HAS_FIRMWARE_LABOR
 	bool
 	default y
 	depends on FREETZ_AVM_HAS_FIRMWARE_07_2X_LABOR
-#	depends on FREETZ_AVM_HAS_FIRMWARE_LABOR_TEST || FREETZ_AVM_HAS_FIRMWARE_LABOR_BETA
 
+###
+### Languages
+###
 
 config FREETZ_AVM_HAS_LANG_XX
 	bool
@@ -477,4 +463,8 @@ config FREETZ_AVM_HAS_LANG_IT
 	default y
 	depends on \
 		FREETZ_TYPE_3270_V3
+
+###
+###
+###
 
