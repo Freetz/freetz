@@ -632,7 +632,7 @@
   * **[Tor 0.4.2.7](tor.md)<a id='tor'></a>**<br>
     The Onion Router Anonymous Internet communication system.
 
-  * **[Transmission 2.94 (binary only)](transmission.md)<a id='transmission'></a>**<br>
+  * **[Transmission 3.00 (binary only)](transmission.md)<a id='transmission'></a>**<br>
     If needed, remember to change the base directory as well as the installation directory on the webif.
 
   * **<u>tree 1.8.0 (binary only)</u><a id='tree'></a>**<br>

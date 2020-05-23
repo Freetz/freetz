@@ -877,7 +877,7 @@
      - [Abhängigkeiten](../docs/make/tor.md#abhängigkeiten)
      - [Diskussion](../docs/make/tor.md#diskussion)
 
-  * **[Transmission 2.94 (binary only)](../docs/make/transmission.md)<a id='transmission'></a>**<br>
+  * **[Transmission 3.00 (binary only)](../docs/make/transmission.md)<a id='transmission'></a>**<br>
     If needed, remember to change the base directory as well as the installation directory on the webif.
      - [Blocklist](../docs/make/transmission.md#blocklist)
      - [Number of peers](../docs/make/transmission.md#number-of-peers)

@@ -296,7 +296,7 @@ Latest changes
     * tinyproxy 1.8.4
     * tmux 2.5
     * tor 0.4.2.7
-    * transmission 2.94
+    * transmission 3.00
     * tree 1.8.0
     * uClibc++ 0.2.5-git
     * udpxy 1.0.23-9

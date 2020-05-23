@@ -1,4 +1,4 @@
-# Transmission 2.94 (binary only)
+# Transmission 3.00 (binary only)
 
 ### Blocklist
 

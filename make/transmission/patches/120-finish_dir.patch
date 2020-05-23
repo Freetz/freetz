@@ -1,58 +1,64 @@
 --- daemon/daemon.c
 +++ daemon/daemon.c
-@@ -100,6 +100,8 @@
-     { 'C', "no-watch-dir", "Disable the watch-dir", "C", 0, NULL },
-     { 941, "incomplete-dir", "Where to store new torrents until they're complete", NULL, 1, "<directory>" },
-     { 942, "no-incomplete-dir", "Don't store incomplete torrents in a different location", NULL, 0, NULL },
+@@ -105,6 +105,8 @@
+     { 'C', "no-watch-dir", "Disable the watch-dir", "C", false, NULL },
+     { 941, "incomplete-dir", "Where to store new torrents until they're complete", NULL, true, "<directory>" },
+     { 942, "no-incomplete-dir", "Don't store incomplete torrents in a different location", NULL, false, NULL },
 +    {1043, "finish-dir", "Where to move torrents after they reached a specific ratio", NULL, 1, "<directory>" },
 +    {1044, "no-finish-dir", "Don't move torrents to a different location after they reached a specific ratio", NULL, 0, NULL },
-     { 'd', "dump-settings", "Dump the settings and exit", "d", 0, NULL },
-     { 'e', "logfile", "Dump the log messages to this filename", "e", 1, "<filename>" },
-     { 'f', "foreground", "Run in the foreground instead of daemonizing", "f", 0, NULL },
-@@ -361,6 +363,11 @@
-                       break;
-             case 942: tr_variantDictAddBool (settings, TR_KEY_incomplete_dir_enabled, false);
-                       break;
-+            case 1043:tr_variantDictAddStr (settings, TR_KEY_finish_dir, optarg);
-+                      tr_variantDictAddBool (settings, TR_KEY_finish_dir_enabled, true);
-+                      break;
-+            case 1044:tr_variantDictAddBool (settings, TR_KEY_finish_dir_enabled, false);
-+                      break;
-             case 'd': *dump_settings = true;
-                       break;
-             case 'e': if (reopen_log_file (optarg))
---- daemon/remote.c
-+++ daemon/remote.c
-@@ -233,6 +233,8 @@
-     { 963, "blocklist-update",       "Blocklist update", NULL, 0, NULL },
-     { 'c', "incomplete-dir",         "Where to store new torrents until they're complete", "c", 1, "<dir>" },
-     { 'C', "no-incomplete-dir",      "Don't store incomplete torrents in a different location", "C", 0, NULL },
-+    {1043, "finish-dir",             "Where to move torrents after they reached a specific ratio", NULL, 1, "<directory>" },
-+    {1044, "no-finish-dir",          "Don't move torrents to a different location after they reached a specific ratio", NULL, 0, NULL },
-     { 'b', "debug",                  "Print debugging information", "b",  0, NULL },
-     { 'd', "downlimit",              "Set the max download speed in "SPEED_K_STR" for the current torrent(s) or globally", "d", 1, "<speed>" },
-     { 'D', "no-downlimit",           "Disable max download speed for the current torrent(s) or globally", "D", 0, NULL },
-@@ -401,6 +403,8 @@
-       case 991: /* no-start-paused */
-       case 992: /* trash-torrent */
-       case 993: /* no-trash-torrent */
-+      case 1043:/* finish-dir */
-+      case 1044:/* no-finish-dir */
+     { 'd', "dump-settings", "Dump the settings and exit", "d", false, NULL },
+     { 'e', "logfile", "Dump the log messages to this filename", "e", true, "<filename>" },
+     { 'f', "foreground", "Run in the foreground instead of daemonizing", "f", false, NULL },
+@@ -408,6 +410,14 @@
+             tr_variantDictAddBool(settings, TR_KEY_incomplete_dir_enabled, false);
+             break;
+ 
++        case 1043:
++            tr_variantDictAddStr(settings, TR_KEY_finish_dir, optarg);
++            tr_variantDictAddBool(settings, TR_KEY_finish_dir_enabled, true);
++            break;
++        case 1044:
++            tr_variantDictAddBool(settings, TR_KEY_finish_dir_enabled, false);
++            break;
++
+         case 'd':
+             *dump_settings = true;
+             break;
+--- utils/remote.c
++++ utils/remote.c
+@@ -271,6 +271,8 @@
+     { 963, "blocklist-update", "Blocklist update", NULL, false, NULL },
+     { 'c', "incomplete-dir", "Where to store new torrents until they're complete", "c", true, "<dir>" },
+     { 'C', "no-incomplete-dir", "Don't store incomplete torrents in a different location", "C", false, NULL },
++    {1043, "finish-dir", "Where to move torrents after they reached a specific ratio", NULL, 1, "<directory>" },
++    {1044, "no-finish-dir", "Don't move torrents to a different location after they reached a specific ratio", NULL, 0, NULL },
+     { 'b', "debug", "Print debugging information", "b", false, NULL },
+     { 'd', "downlimit", "Set the max download speed in "SPEED_K_STR " for the current torrent(s) or globally", "d", true,
+         "<speed>" },
+@@ -442,6 +444,8 @@
+     case 991: /* no-start-paused */
+     case 992: /* trash-torrent */
+     case 993: /* no-trash-torrent */
++    case 1043:/* finish-dir */
++    case 1044:/* no-finish-dir */
          return MODE_SESSION_SET;
  
-       case 712: /* tracker-remove */
-@@ -2006,6 +2010,11 @@
-                           break;
-                 case 'e': tr_variantDictAddInt (args, TR_KEY_cache_size_mb, atoi (optarg));
-                           break;
-+                case 1043:tr_variantDictAddStr (args, TR_KEY_finish_dir, optarg);
-+                          tr_variantDictAddBool (args, TR_KEY_finish_dir_enabled, true);
-+                          break;
-+                case 1044:tr_variantDictAddBool (args, TR_KEY_finish_dir_enabled, false);
-+                          break;
-                 case 910: tr_variantDictAddStr (args, TR_KEY_encryption, "required");
-                           break;
-                 case 911: tr_variantDictAddStr (args, TR_KEY_encryption, "preferred");
+     case 'L': /* labels */
+@@ -2515,6 +2519,14 @@
+                 tr_variantDictAddInt(args, TR_KEY_cache_size_mb, atoi(optarg));
+                 break;
+ 
++            case 1043:
++                tr_variantDictAddStr(args, TR_KEY_finish_dir, optarg);
++                tr_variantDictAddBool(args, TR_KEY_finish_dir_enabled, true);
++                break;
++            case 1044:
++                tr_variantDictAddBool(args, TR_KEY_finish_dir_enabled, false);
++                break;
++
+             case 910:
+                 tr_variantDictAddStr(args, TR_KEY_encryption, "required");
+                 break;
 --- daemon/transmission-daemon.1
 +++ daemon/transmission-daemon.1
 @@ -53,6 +53,11 @@
@@ -67,8 +73,8 @@
  .It Fl d
  Dump transmission-daemon's settings to stderr.
  .It Fl f Fl -foreground
---- daemon/transmission-remote.1
-+++ daemon/transmission-remote.1
+--- utils/transmission-remote.1
++++ utils/transmission-remote.1
 @@ -155,6 +155,11 @@
  such as "\-g1,3-5" to add files #1, #3, #4, and #5 to the download list.
  .It Fl G Fl -no-get Ar all | file-index | files
@@ -83,7 +89,7 @@
  .Ar ratio
 --- extras/rpc-spec.txt
 +++ extras/rpc-spec.txt
-@@ -479,6 +479,8 @@
+@@ -500,6 +500,8 @@
     "download-queue-enabled"         | boolean    | if true, limit how many torrents can be downloaded at once
     "dht-enabled"                    | boolean    | true means allow dht in public torrents
     "encryption"                     | string     | "required", "preferred", "tolerated"
@@ -92,133 +98,143 @@
     "idle-seeding-limit"             | number     | torrents we're seeding will be stopped if they're idle for this long
     "idle-seeding-limit-enabled"     | boolean    | true if the seeding inactivity limit is honored by default
     "incomplete-dir"                 | string     | path for incomplete torrents, when enabled
-@@ -780,6 +782,8 @@
-          |         | yes       | torrent-rename-path  | new method
-          |         | yes       | free-space           | new method
-          |         | yes       | torrent-add          | new return return arg "torrent-duplicate"
+@@ -809,6 +811,8 @@
+          |         | yes       | torrent-set          | new arg "labels"
+          |         | yes       | torrent-set          | new arg "editDate"
+          |         | yes       | torrent-get          | new arg "format"
 +         |         | yes       | session-set          | new arg "finish-dir"
 +         |         | yes       | session-set          | new arg "finish-dir-enabled"
  
- 5.1.  Upcoming Breakage
  
+ 5.1.  Upcoming Breakage
 --- libtransmission/quark.c
 +++ libtransmission/quark.c
-@@ -401,7 +401,9 @@
-   { "watch-dir", 9 },
-   { "watch-dir-enabled", 17 },
-   { "webseeds", 8 },
--  { "webseedsSendingToUs", 19 }
-+  { "webseedsSendingToUs", 19 },
-+  { "finish-dir", 10 },
-+  { "finish-dir-enabled", 18 }
+@@ -408,7 +408,9 @@
+     Q("watch-dir"),
+     Q("watch-dir-enabled"),
+     Q("webseeds"),
+-    Q("webseedsSendingToUs")
++    Q("webseedsSendingToUs"),
++    Q("finish-dir"),
++    Q("finish-dir-enabled"),
  };
  
- static int
+ #undef Q
 --- libtransmission/quark.h
 +++ libtransmission/quark.h
-@@ -404,6 +404,8 @@
-   TR_KEY_watch_dir_enabled,
-   TR_KEY_webseeds,
-   TR_KEY_webseedsSendingToUs,
-+  TR_KEY_finish_dir,
-+  TR_KEY_finish_dir_enabled,
-   TR_N_KEYS
+@@ -409,6 +409,8 @@
+     TR_KEY_watch_dir_enabled,
+     TR_KEY_webseeds,
+     TR_KEY_webseedsSendingToUs,
++    TR_KEY_finish_dir,
++    TR_KEY_finish_dir_enabled,
+     TR_N_KEYS
  };
  
 --- libtransmission/rpcimpl.c
 +++ libtransmission/rpcimpl.c
-@@ -1904,6 +1904,12 @@
-   if (tr_variantDictFindBool (args_in, TR_KEY_incomplete_dir_enabled, &boolVal))
-     tr_sessionSetIncompleteDirEnabled (session, boolVal);
+@@ -2085,6 +2085,16 @@
+         tr_sessionSetIncompleteDirEnabled(session, boolVal);
+     }
  
-+  if (tr_variantDictFindStr (args_in, TR_KEY_finish_dir, &str, NULL))
-+      tr_sessionSetFinishDir (session, str);
++    if (tr_variantDictFindStr(args_in, TR_KEY_finish_dir, &str, NULL))
++    {
++      tr_sessionSetFinishDir(session, str);
++    }
 +
-+  if (tr_variantDictFindBool (args_in, TR_KEY_finish_dir_enabled, &boolVal))
-+      tr_sessionSetFinishDirEnabled( session, boolVal );
++    if (tr_variantDictFindBool(args_in, TR_KEY_finish_dir_enabled, &boolVal))
++    {
++      tr_sessionSetFinishDirEnabled(session, boolVal);
++    }
 +
-   if (tr_variantDictFindInt (args_in, TR_KEY_peer_limit_global, &i))
-     tr_sessionSetPeerLimit (session, i);
+     if (tr_variantDictFindInt(args_in, TR_KEY_peer_limit_global, &i))
+     {
+         tr_sessionSetPeerLimit(session, i);
+@@ -2358,6 +2368,13 @@
+         tr_variantDictAddBool(d, key, tr_sessionIsIncompleteDirEnabled(s));
+         break;
  
-@@ -2070,6 +2076,8 @@
-   tr_variantDictAddInt  (d, TR_KEY_peer_limit_per_torrent, tr_sessionGetPeerLimitPerTorrent (s));
-   tr_variantDictAddStr  (d, TR_KEY_incomplete_dir, tr_sessionGetIncompleteDir (s));
-   tr_variantDictAddBool (d, TR_KEY_incomplete_dir_enabled, tr_sessionIsIncompleteDirEnabled (s));
-+  tr_variantDictAddStr  (d, TR_KEY_finish_dir, tr_sessionGetFinishDir (s));
-+  tr_variantDictAddBool (d, TR_KEY_finish_dir_enabled, tr_sessionIsFinishDirEnabled (s));
-   tr_variantDictAddBool (d, TR_KEY_pex_enabled, tr_sessionIsPexEnabled (s));
-   tr_variantDictAddBool (d, TR_KEY_utp_enabled, tr_sessionIsUTPEnabled (s));
-   tr_variantDictAddBool (d, TR_KEY_dht_enabled, tr_sessionIsDHTEnabled (s));
++    case TR_KEY_finish_dir:
++        tr_variantDictAddStr(d, key, tr_sessionGetFinishDir(s));
++        break;
++    case TR_KEY_finish_dir_enabled:
++        tr_variantDictAddBool(d, key, tr_sessionIsFinishDirEnabled(s));
++        break;
++
+     case TR_KEY_pex_enabled:
+         tr_variantDictAddBool(d, key, tr_sessionIsPexEnabled(s));
+         break;
 --- libtransmission/session.c
 +++ libtransmission/session.c
-@@ -332,6 +332,8 @@
-   tr_variantDictAddBool (d, TR_KEY_idle_seeding_limit_enabled,      false);
-   tr_variantDictAddStr  (d, TR_KEY_incomplete_dir,                  tr_getDefaultDownloadDir ());
-   tr_variantDictAddBool (d, TR_KEY_incomplete_dir_enabled,          false);
-+  tr_variantDictAddStr  (d, TR_KEY_finish_dir,                      tr_getDefaultDownloadDir());
-+  tr_variantDictAddBool (d, TR_KEY_finish_dir_enabled,              false);
-   tr_variantDictAddInt  (d, TR_KEY_message_level,                   TR_LOG_INFO);
-   tr_variantDictAddInt  (d, TR_KEY_download_queue_size,             5);
-   tr_variantDictAddBool (d, TR_KEY_download_queue_enabled,          true);
-@@ -407,6 +409,8 @@
-   tr_variantDictAddBool (d, TR_KEY_idle_seeding_limit_enabled,   tr_sessionIsIdleLimited (s));
-   tr_variantDictAddStr  (d, TR_KEY_incomplete_dir,               tr_sessionGetIncompleteDir (s));
-   tr_variantDictAddBool (d, TR_KEY_incomplete_dir_enabled,       tr_sessionIsIncompleteDirEnabled (s));
-+  tr_variantDictAddStr  (d, TR_KEY_finish_dir,                   tr_sessionGetFinishDir (s));
-+  tr_variantDictAddBool (d, TR_KEY_finish_dir_enabled,           tr_sessionIsFinishDirEnabled (s));
-   tr_variantDictAddInt  (d, TR_KEY_message_level,                tr_logGetLevel ());
-   tr_variantDictAddInt  (d, TR_KEY_peer_limit_global,            s->peerLimit);
-   tr_variantDictAddInt  (d, TR_KEY_peer_limit_per_torrent,       s->peerLimitPerTorrent);
-@@ -843,6 +847,10 @@
-     tr_sessionSetIncompleteDirEnabled (session, boolVal);
-   if (tr_variantDictFindBool (settings, TR_KEY_rename_partial_files, &boolVal))
-     tr_sessionSetIncompleteFileNamingEnabled (session, boolVal);
-+  if (tr_variantDictFindStr (settings, TR_KEY_finish_dir, &str, NULL))
-+      tr_sessionSetFinishDir (session, str);
-+  if (tr_variantDictFindBool (settings, TR_KEY_finish_dir_enabled, &boolVal))
-+      tr_sessionSetFinishDirEnabled (session, boolVal);
+@@ -344,6 +344,8 @@
+     tr_variantDictAddBool(d, TR_KEY_idle_seeding_limit_enabled, false);
+     tr_variantDictAddStr(d, TR_KEY_incomplete_dir, tr_getDefaultDownloadDir());
+     tr_variantDictAddBool(d, TR_KEY_incomplete_dir_enabled, false);
++    tr_variantDictAddStr(d, TR_KEY_finish_dir, tr_getDefaultDownloadDir());
++    tr_variantDictAddBool(d, TR_KEY_finish_dir_enabled, false);
+     tr_variantDictAddInt(d, TR_KEY_message_level, TR_LOG_INFO);
+     tr_variantDictAddInt(d, TR_KEY_download_queue_size, 5);
+     tr_variantDictAddBool(d, TR_KEY_download_queue_enabled, true);
+@@ -418,6 +420,8 @@
+     tr_variantDictAddBool(d, TR_KEY_idle_seeding_limit_enabled, tr_sessionIsIdleLimited(s));
+     tr_variantDictAddStr(d, TR_KEY_incomplete_dir, tr_sessionGetIncompleteDir(s));
+     tr_variantDictAddBool(d, TR_KEY_incomplete_dir_enabled, tr_sessionIsIncompleteDirEnabled(s));
++    tr_variantDictAddStr(d, TR_KEY_finish_dir, tr_sessionGetFinishDir (s));
++    tr_variantDictAddBool(d, TR_KEY_finish_dir_enabled, tr_sessionIsFinishDirEnabled (s));
+     tr_variantDictAddInt(d, TR_KEY_message_level, tr_logGetLevel());
+     tr_variantDictAddInt(d, TR_KEY_peer_limit_global, s->peerLimit);
+     tr_variantDictAddInt(d, TR_KEY_peer_limit_per_torrent, s->peerLimitPerTorrent);
+@@ -956,6 +960,15 @@
+         tr_sessionSetIncompleteFileNamingEnabled(session, boolVal);
+     }
  
-   /* rpc server */
-   if (session->rpcServer != NULL) /* close the old one */
-@@ -1069,6 +1077,49 @@
++    if (tr_variantDictFindStr(settings, TR_KEY_finish_dir, &str, NULL))
++    {
++      tr_sessionSetFinishDir(session, str);
++    }
++    if (tr_variantDictFindBool(settings, TR_KEY_finish_dir_enabled, &boolVal))
++    {
++      tr_sessionSetFinishDirEnabled(session, boolVal);
++    }
++
+     /* rpc server */
+     if (session->rpcServer != NULL) /* close the old one */
+     {
+@@ -1257,6 +1270,45 @@
  ****
  ***/
  
 +
-+void
-+tr_sessionSetFinishDir( tr_session * session, const char * dir )
++void tr_sessionSetFinishDir(tr_session* session, const char* dir)
 +{
-+    assert( tr_isSession( session ) );
++    TR_ASSERT(tr_isSession(session));
 +
-+    if( session->finishDir != dir )
++    if (session->finishDir != dir)
 +    {
-+        tr_free( session->finishDir );
++        tr_free(session->finishDir);
 +
-+        session->finishDir = tr_strdup( dir );
++        session->finishDir = tr_strdup(dir);
 +    }
 +}
 +
-+const char*
-+tr_sessionGetFinishDir( const tr_session * session )
++const char* tr_sessionGetFinishDir(const tr_session* session)
 +{
-+    assert( tr_isSession( session ) );
++    TR_ASSERT(tr_isSession(session));
 +
 +    return session->finishDir;
 +}
 +
-+void
-+tr_sessionSetFinishDirEnabled( tr_session * session, bool b )
++void tr_sessionSetFinishDirEnabled(tr_session* session, bool b)
 +{
-+    assert( tr_isSession( session ) );
-+    assert( tr_isBool( b ) );
++    TR_ASSERT(tr_isSession(session));
++    TR_ASSERT(tr_isBool(b));
 +
 +    session->isFinishDirEnabled = b;
 +}
 +
-+bool
-+tr_sessionIsFinishDirEnabled( const tr_session * session )
++bool tr_sessionIsFinishDirEnabled(const tr_session* session)
 +{
-+    assert( tr_isSession( session ) );
++    TR_ASSERT(tr_isSession(session));
 +
 +    return session->isFinishDirEnabled;
 +}
@@ -227,54 +243,54 @@
 +****
 +***/
 +
- void
- tr_sessionLock (tr_session * session)
+ void tr_sessionLock(tr_session* session)
  {
-@@ -1970,6 +2021,7 @@
-   tr_free (session->resumeDir);
-   tr_free (session->torrentDir);
-   tr_free (session->incompleteDir);
-+  tr_free (session->finishDir);
-   tr_free (session->blocklist_url);
-   tr_free (session->peer_congestion_algorithm);
-   tr_free (session);
+     TR_ASSERT(tr_isSession(session));
+@@ -2097,6 +2149,7 @@
+     tr_free(session->resumeDir);
+     tr_free(session->torrentDir);
+     tr_free(session->incompleteDir);
++    tr_free(session->finishDir);
+     tr_free(session->blocklist_url);
+     tr_free(session->peer_congestion_algorithm);
+     tr_free(session);
 --- libtransmission/session.h
 +++ libtransmission/session.h
-@@ -112,6 +112,7 @@
-     bool                         isRatioLimited;
-     bool                         isIdleLimited;
-     bool                         isIncompleteDirEnabled;
-+    bool                         isFinishDirEnabled;
-     bool                         pauseAddedTorrent;
-     bool                         deleteSourceTorrent;
-     bool                         scrapePausedTorrents;
+@@ -110,6 +110,7 @@
+     bool isRatioLimited;
+     bool isIdleLimited;
+     bool isIncompleteDirEnabled;
++    bool isFinishDirEnabled;
+     bool pauseAddedTorrent;
+     bool deleteSourceTorrent;
+     bool scrapePausedTorrents;
 @@ -183,6 +184,7 @@
-     char *                       resumeDir;
-     char *                       torrentDir;
-     char *                       incompleteDir;
-+    char *                       finishDir;
+     char* resumeDir;
+     char* torrentDir;
+     char* incompleteDir;
++    char* finishDir;
  
-     char *                       blocklist_url;
+     char* blocklist_url;
  
 --- libtransmission/torrent.c
 +++ libtransmission/torrent.c
-@@ -499,6 +499,12 @@
+@@ -533,6 +533,12 @@
  
-       tor->isStopping = true;
+         tor->isStopping = true;
  
-+      /* move torrent to finish-dir if enabled */
-+      if( tr_sessionIsFinishDirEnabled( tor->session ) ) {
-+          tr_logAddTorInfo( tor, "Seed ratio reached; moving torrent to finish-dir" );
-+          tr_torrentSetLocation(tor, tr_sessionGetFinishDir( tor->session ), true, NULL, NULL);
-+      }
++        /* move torrent to finish-dir if enabled */
++        if(tr_sessionIsFinishDirEnabled(tor->session)) {
++            tr_logAddTorInfo(tor, "Seed ratio reached; moving torrent to finish-dir");
++            tr_torrentSetLocation(tor, tr_sessionGetFinishDir(tor->session), true, NULL, NULL);
++        }
 +
-       /* maybe notify the client */
-       if (tor->ratio_limit_hit_func != NULL)
-         tor->ratio_limit_hit_func (tor, tor->ratio_limit_hit_func_user_data);
+         /* maybe notify the client */
+         if (tor->ratio_limit_hit_func != NULL)
+         {
 --- libtransmission/transmission.h
 +++ libtransmission/transmission.h
-@@ -312,6 +312,27 @@
- 
+@@ -291,6 +291,27 @@
+ bool tr_sessionIsIncompleteDirEnabled(tr_session const* session);
  
  /**
 + * @brief set the per-session finish folder.
@@ -286,16 +302,16 @@
 + * @see tr_sessionSetFinishDirEnabled()
 + * @see tr_sessionGetFinishDirEnabled()
 + */
-+void tr_sessionSetFinishDir( tr_session * session, const char * dir );
++void tr_sessionSetFinishDir(tr_session* session, const char* dir); 
 +
 +/** @brief get the per-session finish folder */
-+const char* tr_sessionGetFinishDir( const tr_session * session );
++const char* tr_sessionGetFinishDir(const tr_session* session); 
 +
 +/** @brief enable or disable use of the finish folder */
-+void tr_sessionSetFinishDirEnabled( tr_session * session, bool );
++void tr_sessionSetFinishDirEnabled(tr_session* session, bool); 
 +
 +/** @brief get whether or not the finish folder is enabled */
-+bool tr_sessionIsFinishDirEnabled( const tr_session * session );
++bool tr_sessionIsFinishDirEnabled(const tr_session* session); 
 +
 +/**
   * @brief When enabled, newly-created files will have ".part" appended
