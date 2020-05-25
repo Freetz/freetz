@@ -1,6 +1,6 @@
 --- src/dnsmasq.c
 +++ src/dnsmasq.c
-@@ -1457,8 +1457,7 @@
+@@ -1548,8 +1548,7 @@
  	/* update timestamp file on TERM if time is considered valid */
  	if (daemon->back_to_the_future)
  	  {
@@ -12,7 +12,7 @@
  
 --- src/dnsmasq.h
 +++ src/dnsmasq.h
-@@ -1060,6 +1060,7 @@
+@@ -1065,6 +1065,7 @@
  #ifdef HAVE_DNSSEC
    struct ds_config *ds;
    char *timestamp_file;
@@ -20,7 +20,7 @@
  #endif
  
    /* globally used stuff for DNS */
-@@ -1230,6 +1231,7 @@
+@@ -1239,6 +1240,7 @@
  size_t filter_rrsigs(struct dns_header *header, size_t plen);
  unsigned char* hash_questions(struct dns_header *header, size_t plen, char *name);
  int setup_timestamp(void);
@@ -67,9 +67,9 @@
 +}
 +
  /* Check whether today/now is between date_start and date_end */
- static int check_date_range(u32 date_start, u32 date_end)
+ static int is_check_date(unsigned long curtime)
  {
-@@ -202,8 +216,7 @@
+@@ -200,8 +214,7 @@
      {
        if (daemon->back_to_the_future == 0 && difftime(timestamp_time, curtime) <= 0)
  	{
