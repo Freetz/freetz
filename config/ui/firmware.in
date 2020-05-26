@@ -621,6 +621,9 @@ choice
 
 endchoice # "Firmware version" #
 
+comment " >> This firmware fits on AVM and AVME devices"
+	depends on FREETZ_AVM_PROP_ALL_REGIONS && !( ( (!FREETZ_AVM_HAS_BRANDING_1und1 || FREETZ_REMOVE_BRANDING_1und1) && FREETZ_REMOVE_BRANDING_avm) || FREETZ_REMOVE_BRANDING_avme)
+
 config FREETZ_TYPE_FIRMWARE_LABOR_LATEST
 	bool "Detect the latest firmware version"
 	default n
