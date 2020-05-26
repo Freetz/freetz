@@ -1,0 +1,15 @@
+--- src/dnsmasq.h
++++ src/dnsmasq.h
+@@ -22,12 +22,6 @@
+ #  error "Header file stdio.h included too early!"
+ #endif 
+ 
+-#ifndef NO_LARGEFILE
+-/* Ensure we can use files >2GB (log files may grow this big) */
+-#  define _LARGEFILE_SOURCE 1
+-#  define _FILE_OFFSET_BITS 64
+-#endif
+-
+ /* Get linux C library versions and define _GNU_SOURCE for kFreeBSD. */
+ #if defined(__linux__) || defined(__GLIBC__)
+ #  ifndef __ANDROID__
