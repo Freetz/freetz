@@ -513,13 +513,9 @@ choice
 	prompt "Target region"
 		default FREETZ_TYPE_LANG_DE
 
-	config FREETZ_TYPE_LANG_XX
-		bool "all - avm+avme"
-		depends on FREETZ_AVM_HAS_LANG_XX
-
 	config FREETZ_TYPE_LANG_DE
 		bool "avm - germany"
-		depends on FREETZ_AVM_HAS_LANG_DE
+		depends on FREETZ_AVM_HAS_LANG_DE || FREETZ_AVM_HAS_LANG_XX
 
 	config FREETZ_TYPE_LANG_A_CH
 		bool "avm - a-ch"
@@ -527,7 +523,7 @@ choice
 
 	config FREETZ_TYPE_LANG_EN
 		bool "avme - international"
-		depends on FREETZ_AVM_HAS_LANG_EN
+		depends on FREETZ_AVM_HAS_LANG_EN || FREETZ_AVM_HAS_LANG_XX
 
 	config FREETZ_TYPE_LANG_IT
 		bool "avme - italia"
@@ -537,7 +533,7 @@ endchoice # "Firmware language" #
 
 config FREETZ_TYPE_LANGUAGE
 	string
-	default "xx"        if FREETZ_TYPE_LANG_XX
+	default "xx"        if FREETZ_AVM_PROP_ALL_REGIONS
 	default "de"        if FREETZ_TYPE_LANG_DE
 	default "a-ch"      if FREETZ_TYPE_LANG_A_CH
 	default "en"        if FREETZ_TYPE_LANG_EN
