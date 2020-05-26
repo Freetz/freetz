@@ -399,6 +399,7 @@ config FREETZ_REMOVE_BRANDINGS
 config FREETZ_REMOVE_BRANDING_1und1
 	bool "1und1"
 	depends on FREETZ_REMOVE_BRANDINGS && FREETZ_AVM_HAS_BRANDING_1und1
+	default y if FREETZ_AVM_PROP_ALL_REGIONS && FREETZ_TYPE_LANG_EN
 	default n
 	help
 		1&1 branding
@@ -413,6 +414,7 @@ config FREETZ_REMOVE_BRANDING_aol
 config FREETZ_REMOVE_BRANDING_avm
 	bool "avm"
 	depends on FREETZ_REMOVE_BRANDINGS && FREETZ_AVM_HAS_BRANDING_avm
+	default y if FREETZ_AVM_PROP_ALL_REGIONS && FREETZ_TYPE_LANG_EN
 	default n
 	help
 		AVM (german) branding
@@ -420,6 +422,7 @@ config FREETZ_REMOVE_BRANDING_avm
 config FREETZ_REMOVE_BRANDING_avme
 	bool "avme"
 	depends on FREETZ_REMOVE_BRANDINGS && FREETZ_AVM_HAS_BRANDING_avme
+	default y if FREETZ_AVM_PROP_ALL_REGIONS && FREETZ_TYPE_LANG_DE
 	default n
 	help
 		AVME (international) branding
