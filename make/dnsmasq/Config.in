@@ -1,31 +1,46 @@
 config FREETZ_PACKAGE_DNSMASQ
-	bool "Dnsmasq 2.81"
+	bool "Dnsmasq 2.80/2.81"
 	default n
 	help
 		Combined DHCP, DNS and TFTP server.
 
+if FREETZ_PACKAGE_DNSMASQ
+
+choice
+	prompt "Version"
+		default FREETZ_PACKAGE_DNSMASQ_VERSION_CURRENT
+
+	config FREETZ_PACKAGE_DNSMASQ_VERSION_ABANDON
+		bool "2.80"
+		depends on !FREETZ_TARGET_IPV6_SUPPORT
+		help
+			Version 2.80 is the last with IPv4-only support. If
+			you want to use a newer version, enable IPv6 support.
+
+	config FREETZ_PACKAGE_DNSMASQ_VERSION_CURRENT
+		bool "2.81"
+		depends on FREETZ_TARGET_IPV6_SUPPORT
+
+endchoice
+
 config FREETZ_PACKAGE_DNSMASQ_WITH_DNSSEC
 	bool "Enable DNSSEC support"
-	depends on FREETZ_PACKAGE_DNSMASQ
 	default n
 	help
 		Build with DNSSEC support enabled.
 
 config FREETZ_PACKAGE_DNSMASQ_ADDHOLE
 	bool "Select Addhole"
-	depends on FREETZ_PACKAGE_DNSMASQ
 	select FREETZ_PACKAGE_ADDHOLE
 	default n
 	help
 		Selects Addhole package.
 
 comment "HINT: Don't forget to enable a dns/dhcp server."
-depends on FREETZ_PACKAGE_DNSMASQ && \
-	( FREETZ_AVMDAEMON_DISABLE_DNS || FREETZ_AVMDAEMON_DISABLE_DHCP )
+	depends on FREETZ_AVMDAEMON_DISABLE_DNS || FREETZ_AVMDAEMON_DISABLE_DHCP
 
 config FREETZ_PACKAGE_DNSMASQ_DISABLE_DNS
 	bool "Disable multid's DNS"
-	depends on FREETZ_PACKAGE_DNSMASQ
 	depends on FREETZ_AVM_HAS_AVMDAEMON_PRELOAD
 	select FREETZ_AVMDAEMON_DISABLE_MULTIDPORTS
 	select FREETZ_AVMDAEMON_DISABLE_DNS
@@ -36,10 +51,12 @@ config FREETZ_PACKAGE_DNSMASQ_DISABLE_DNS
 
 config FREETZ_PACKAGE_DNSMASQ_DISABLE_DHCP
 	bool "Disable multid's DHCP"
-	depends on FREETZ_PACKAGE_DNSMASQ
 	depends on FREETZ_AVM_HAS_AVMDAEMON_PRELOAD
 	select FREETZ_AVMDAEMON_DISABLE_MULTIDPORTS
 	select FREETZ_AVMDAEMON_DISABLE_DHCP
 	default y
 	help
 		This selects the remapping of multid's DHCP port.
+
+endif # FREETZ_PACKAGE_DNSMASQ
+
