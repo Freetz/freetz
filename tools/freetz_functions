@@ -275,6 +275,7 @@ echoX()
 	shift $((OPTIND-1))
 
 	[ $no_indent ] && indent=
+	[ "$FREETZ_VERBOSITY_LEVEL" -ge 2 -a "$STEP" == "2" -a -z "$indent" -a -z "$bold" ] && colour='\033[94m' && uncolour='\033[m' # ANSI blue
 	echo -e $no_newline "${indent}${bold}${colour}${prefix}$*${uncolour}${unbold}"
 }
 
