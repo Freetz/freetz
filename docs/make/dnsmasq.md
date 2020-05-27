@@ -224,8 +224,8 @@ Direktive](http://www.thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html)
 dazu lautet: `dhcp-range`. Man findet findet übrigens fast alle
 gespeicherten Einstellungen im File: `/mod/etc/dnsmasq.conf`)
 
-Dabei werden Adressen aus dem Bereich von <start-addr> bis
-<end-addr> zuzüglich der statisch definierten Adressen aus den
+Dabei werden Adressen aus dem Bereich von `start-addr` bis
+`end-addr` zuzüglich der statisch definierten Adressen aus den
 **Einträgen in der Hosts-Liste** vergeben.
 
 Wenn eine Lease-Time ("Leihzeit") angegeben wird, dann werden Leases
