@@ -1,4 +1,4 @@
-# Bip
+# Bip 0.8.9/0.9.0-rc4
 
 Der Bip
 [IRC](http://de.wikipedia.org/wiki/Internet_Relay_Chat)

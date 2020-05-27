@@ -1,4 +1,4 @@
-# Samba suite
+# Samba 3.0.37/3.6.25
 
 [![Samba Webinterface](../screenshots/204_md.png)](../screenshots/204.png)
 

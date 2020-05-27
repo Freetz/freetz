@@ -1,4 +1,4 @@
-# Tinc
+# Tinc 1.0.35/1.1pre17
 
 **[tinc](http://www.tinc-vpn.org/)** ist ein
 Virtual Privat Network

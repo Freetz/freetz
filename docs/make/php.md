@@ -1,4 +1,4 @@
-# PHP (binary only)
+# PHP 5.6.40 (binary only)
 
 "*PHP is a widely-used general-purpose scripting language that is
 especially suited for Web development and can be embedded into HTML.*"

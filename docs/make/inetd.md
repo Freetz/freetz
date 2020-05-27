@@ -1,4 +1,4 @@
-# Inetd
+# Inetd 0.2
 
 [![Inetd Webinterface](../screenshots/206_md.png)](../screenshots/206.png)
 

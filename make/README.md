@@ -61,7 +61,7 @@
     BIND is an implementation of the Domain Name System (DNS) protocols. The name BIND stands for "Berkeley Internet Name Daemon". You have to provide the config and needed zone files yourself.
      - [named.conf](../docs/make/bind.md#namedconf)
 
-  * **[Bip](../docs/make/bip.md)<a id='bip'></a>**<br>
+  * **[Bip 0.8.9/0.9.0-rc4](../docs/make/bip.md)<a id='bip'></a>**<br>
     Bip is an IRC proxy, which means it keeps connected to your preferred IRC servers, can store the logs for you, and even send them back to your IRC client(s) upon connection. You may want to use bip to keep your logfiles (in a unique format and on a unique computer) whatever your client is, when you connect from multiple workstations, or when you simply want to have a playback of what was said while you were away.
      - [Auswahl](../docs/make/bip.md#auswahl)
      - [Konfiguration](../docs/make/bip.md#konfiguration)
@@ -288,7 +288,7 @@
   * **<u>gocr 0.49 (binary only)</u><a id='gocr'></a>**<br>
     GOCR is an optical character recognition program, released under the GNU General Public License. It reads images in many formats and outputs a text file.
 
-  * **[gw6: Gateway6 client](../docs/make/gw6.md)<a id='gw6'></a>**<br>
+  * **[gw6: Gateway6 client 5.1](../docs/make/gw6.md)<a id='gw6'></a>**<br>
     Client to build a tunnel to the ipv6 network (see http://go6.net). The binary will be installed as /usr/sbin/gw6c and CGI frontend will be provided for a simple configuration. A sample can be found in /usr/share/gw6/.
      - [Alternativen](../docs/make/gw6.md#alternativen)
 
@@ -299,10 +299,10 @@
     Haserl is a small program that uses shell or Lua script to create cgi web scripts. It is intended for environments where PHP or ruby are too big. A typical use is to run cgi scripts in an embedded environment, using a small web server, such as mini-httpd, lighty, or the server built into busybox. This package is mandatory
      - [Using busybox httpd / inet](../docs/make/haserl.md#using-busybox-httpd-inet)
 
-  * **[hd-idle](../docs/make/hd-idle.md)<a id='hd-idle'></a>**<br>
+  * **[hd-idle 0.99](../docs/make/hd-idle.md)<a id='hd-idle'></a>**<br>
     Another idle-daemon for attached hard drives if sg3utils doesn't work as expected. This can happen with most low-cost USB drives.
 
-  * **[hol: Halt-On-Lan](../docs/make/hol.md)<a id='hol'></a>**<br>
+  * **[hol: Halt-On-Lan 0.1](../docs/make/hol.md)<a id='hol'></a>**<br>
     Halt-On-Lan is a package to run predefined actions on a remote host: shutdown, reboot, logoff, lock For successfull action poweroff.exe from http://users.telenet.be/jbosman/poweroff/poweroff.htm or similar compatible script or binary must be installed and run as service on the remote host. Moreover, in case of requested interaction this service should understand the syntax of poweroff.exe
 
   * **<u>html2text 1.3.2a (binary only)</u><a id='html2text'></a>**<br>
@@ -341,7 +341,7 @@
   * **<u>Inadyn-OpenDNS 1.99</u><a id='inadyn-opendns'></a>**<br>
     INADYN - Simple Dynamic DNS client. INADYN is a free DynDNS client. It gives the possibility to have your own fixed hostname registered on the internet, although your IP might be changing. It checks periodically whether the IP address stored by the DNS server is the real current IP address of the machine that is running INADYN. This is the version published by OpenDNS to support SSL.
 
-  * **[Inetd](../docs/make/inetd.md)<a id='inetd'></a>**<br>
+  * **[Inetd 0.2](../docs/make/inetd.md)<a id='inetd'></a>**<br>
     'Virtual' inetd package. Provides configuration framework for inetd. Requires a compatible inetd binary. (at the moment, only busybox inetd is supported)
      - [Benutzerdefiniert](../docs/make/inetd.md#benutzerdefiniert)
      - [Konfiguration](../docs/make/inetd.md#konfiguration)
@@ -364,7 +364,7 @@
   * **<u>Iptraf 3.0.1 (binary only)</u><a id='iptraf'></a>**<br>
     IPTraf is a console-based network monitoring program for Linux that displays information about IP traffic. It returns such information as: Current TCP connections UDP, ICMP, OSPF, and other types of IP packets Packet and byte counts on TCP connections IP, TCP, UDP, ICMP, non-IP, and other packet and byte counts TCP/UDP counts by ports Packet counts by packet sizes Packet and byte counts by IP address Interface activity Flag statuses on TCP packets LAN station statistics
 
-  * **<u>iputils' traceroute6 (binary only)</u><a id='iputils'></a>**<br>
+  * **<u>iputils' traceroute6 s20071127 (binary only)</u><a id='iputils'></a>**<br>
 
   * **[Irssi 0.8.15](../docs/make/irssi.md)<a id='irssi'></a>**<br>
     Irssi - the client of the future - is a terminal based IRC client for UNIX systems. It also supports SILC and ICB protocols via plugins. Features: * Autologging: Irssi will automatically log any channels, queries or special windows that you want. * Formats and Themes: irssi has an easy yet powerful way to customize your client's look and feel. * Configurable keybindings: Irssi allows you to modify the default keybindings and create your own so you can customize your client. * Paste detection: Irssi tries to detect when you are pasting large amounts of text, by looking at the speed that characters are entered; if such pasting is detected [TAB]-characters are sent as-is instead of being tab-completed and eventually ending up in a wrong destination window.
@@ -524,7 +524,7 @@
      - [BEKANNTE PROBLEME](../docs/make/nhipt.md#bekannte-probleme)
      - [SCREENSHOTS](../docs/make/nhipt.md#screenshots)
 
-  * **[Nmap (binary only)](../docs/make/nmap.md)<a id='nmap'></a>**<br>
+  * **[Nmap 4.68/5.51 (binary only)](../docs/make/nmap.md)<a id='nmap'></a>**<br>
     Nmap ("Network Mapper") is a free and open source (license) utility for network exploration or security auditing. Many systems and network administrators also find it useful for tasks such as network inventory, managing service upgrade schedules, and monitoring host or service uptime. Nmap uses raw IP packets in novel ways to determine what hosts are available on the network, what services (application name and version) those hosts are offering, what operating systems (and OS versions) they are running, what type of packet filters/firewalls are in use, and dozens of other characteristics. It was designed to rapidly scan large networks, but works fine against single hosts. Nmap runs on all major computer operating systems, and both console and graphical versions are available.
      - [Example](../docs/make/nmap.md#example)
      - [Known open ports](../docs/make/nmap.md#known-open-ports)
@@ -565,7 +565,7 @@
   * **<u>OpenSSH 8.2p1</u><a id='openssh'></a>**<br>
     OpenSSH is the premier connectivity tool for remote login with the SSH protocol. It encrypts all traffic to eliminate eavesdropping, connection hijacking, and other attacks. In addition, OpenSSH provides a large suite of secure tunneling capabilities, several authentication methods, and sophisticated configuration options.
 
-  * **<u>OpenSSL (binary only)</u><a id='openssl'></a>**<br>
+  * **<u>OpenSSL 0.9.8zh/1.0.2u(binary only)</u><a id='openssl'></a>**<br>
     This package contains the OpenSSL command-line utility.
 
   * **[OpenVPN 2.4.9](../docs/make/openvpn.md)<a id='openvpn'></a>**<br>
@@ -589,10 +589,10 @@
   * **<u>PCSC-lite (pcscd) 1.8.24 (binary only)</u><a id='pcsc-lite'></a>**<br>
     The purpose of PCSC Lite is to provide a Windows(R) SCard interface in a very small form factor for communicating to smart cards and readers.
 
-  * **<u>phonebook-tools: Phone book tools</u><a id='phonebook-tools'></a>**<br>
+  * **<u>phonebook-tools: Phone book tools 0.0</u><a id='phonebook-tools'></a>**<br>
     A set of tools for reading and converting Fritz!Box phone book to such (easy parseable) formats like: - .csv (comma-separated values), or - .tsv (tab-separated values).
 
-  * **[PHP (binary only)](../docs/make/php.md)<a id='php'></a>**<br>
+  * **[PHP 5.6.40 (binary only)](../docs/make/php.md)<a id='php'></a>**<br>
     PHP: Hypertext Preprocessor PHP is a widely-used general-purpose scripting language that is especially suited for Web development and can be embedded into HTML. Much of its syntax is borrowed from C, Java and Perl with a couple of unique PHP-specific features thrown in. The goal of the language is to allow web developers to write dynamically generated pages quickly.
      - [Memory usage](../docs/make/php.md#memory-usage)
 
@@ -645,7 +645,7 @@
      - [Installation](../docs/make/privoxy.md#installation)
      - [Diskussion](../docs/make/privoxy.md#diskussion)
 
-  * **[ProxyChains-NG](../docs/make/proxychains-ng.md)<a id='proxychains-ng'></a>**<br>
+  * **[ProxyChains-NG 4.14](../docs/make/proxychains-ng.md)<a id='proxychains-ng'></a>**<br>
     A preloader which hooks calls to sockets in dynamically linked programs and redirects it through one or more socks/http proxies, tor is also supported. Usage: proxychains4 telnet mail.example.com 25
 
   * **<u>pyLoad 0.4.20</u><a id='pyload'></a>**<br>
@@ -694,7 +694,7 @@
      - [WinXP Clients](../docs/make/radvd.md#winxp-clients)
      - [Win7 Clients](../docs/make/radvd.md#win7-clients)
 
-  * **<u>Rcapid</u><a id='rcapid'></a>**<br>
+  * **<u>Rcapid 0.1</u><a id='rcapid'></a>**<br>
     Remote CAPI daemon from isdn4linux.
 
   * **<u>ripmime 1.2.16.21 (binary only)</u><a id='ripmime'></a>**<br>
@@ -717,7 +717,7 @@
   * **<u>sablevm-sdk: sablevm 1.13 (binary only)</u><a id='sablevm-sdk'></a>**<br>
     SableVM is a robust, extremely portable, efficient, and specifications-compliant Java virtual machine that aims to be easy to maintain and to extend. It features a state-of-the-art and efficient interpreter engine. Its source code is very accessible and easy to understand. It also has many robustness features that have been the object of careful design.
 
-  * **[Samba suite](../docs/make/samba.md)<a id='samba'></a>**<br>
+  * **[Samba 3.0.37/3.6.25](../docs/make/samba.md)<a id='samba'></a>**<br>
     The binary with smbd and nmbd needs about 1033 kB (uncompressed).
      - [Package ins Image einbinden](../docs/make/samba.md#package-ins-image-einbinden)
      - [Verwandte Themen](../docs/make/samba.md#verwandte-themen)
@@ -757,7 +757,7 @@
      - [Bekannte Bugs](../docs/make/sispmctl.md#bekannte-bugs)
      - [Weitere Screenshots](../docs/make/sispmctl.md#weitere-screenshots)
 
-  * **<u>slang: S-Lang (binary only)</u><a id='slang'></a>**<br>
+  * **<u>slang: S-Lang 2.3.1a (binary only)</u><a id='slang'></a>**<br>
     S-Lang is a powerful interpreted language that may be embedded
 
   * **<u>Slurm 0.3.3 (binary only)</u><a id='slurm'></a>**<br>
@@ -781,7 +781,7 @@
   * **<u>spawn-fcgi 1.6.3 (binary only)</u><a id='spawn-fcgi'></a>**<br>
     Spawns FastCGI processes
 
-  * **<u>SQLite (v3.x) database engine (CLI) (binary only)</u><a id='sqlite'></a>**<br>
+  * **<u>SQLite (v3.x) database engine (CLI) 3310100 (binary only)</u><a id='sqlite'></a>**<br>
     SQLite is a small C library that implements a self-contained, embeddable, zero-configuration SQL database engine.
 
   * **<u>squashfs3: squashfs-tools 3.4</u><a id='squashfs3'></a>**<br>
@@ -807,7 +807,7 @@
     Stunnel universal SSL proxy
      - [Konfiguration](../docs/make/stunnel.md#konfiguration)
 
-  * **[Subversion](../docs/make/subversion.md)<a id='subversion'></a>**<br>
+  * **[Subversion 1.8.19/1.9.12](../docs/make/subversion.md)<a id='subversion'></a>**<br>
     Subversion, also known as svn, is a version control system much like the Concurrent Versions System (CVS). Version control systems allow many individuals (who may be distributed geographically) to collaborate on a set of files (typically source code). Subversion has all the major features of CVS, plus certain new features that CVS users often wish they had.
      - [Enthaltene Programmteile](../docs/make/subversion.md#enthaltene-programmteile)
      - [WebIF](../docs/make/subversion.md#webif)
@@ -816,7 +816,7 @@
   * **<u>sudo 1.7.10 (binary only)</u><a id='sudo'></a>**<br>
     Sudo (su "do") allows a system administrator to delegate authority to give certain users (or groups of users) the ability to run some (or all) commands as root or another user while providing an audit trail of the commands and their arguments. WWW: http://www.courtesan.com/sudo/
 
-  * **[Sundtek DVB-C/T/T2 driver](../docs/make/sundtek.md)<a id='sundtek'></a>**<br>
+  * **[Sundtek DVB-C/T/T2 driver 130210.134617/170310.204343](../docs/make/sundtek.md)<a id='sundtek'></a>**<br>
     Sundtek closed-source linux driver daemon & client. To use this driver you have to run: export LD_PRELOAD=/usr/lib/libsundtekmediaclient.so
      - [Parameter für 'mediaclient'](../docs/make/sundtek.md#parameter-für-mediaclient)
      - [Treiber verwenden](../docs/make/sundtek.md#treiber-verwenden)
@@ -845,12 +845,12 @@
   * **<u>Tesseract OCR 3.02.02 (binary only)</u><a id='tesseract'></a>**<br>
     Tesseract is an Open Source OCR engine Note: Tesseract including languages files is a huge package and requires a lot of RAM at run-time. It is NOT recommended to use it on boxes having less than 64MB RAM.
 
-  * **<u>tichksum: TI chksum</u><a id='tichksum'></a>**<br>
+  * **<u>tichksum: TI chksum 0.0</u><a id='tichksum'></a>**<br>
 
   * **<u>TIFF utils 4.0.7 (binary only)</u><a id='tiff'></a>**<br>
     Various utilities to manupulate/convert images to/from TIFF format.
 
-  * **[Tinc](../docs/make/tinc.md)<a id='tinc'></a>**<br>
+  * **[Tinc 1.0.35/1.1pre17](../docs/make/tinc.md)<a id='tinc'></a>**<br>
     Tinc is a Virtual Private Network (VPN) daemon that uses tunneling and encryption to create a secure private network between hosts on the Internet.
      - [Features](../docs/make/tinc.md#features)
      - [Verwendete Bibliotheken](../docs/make/tinc.md#verwendete-bibliotheken)
@@ -905,7 +905,7 @@
   * **<u>unrar 5.4.5 (binary only)</u><a id='unrar'></a>**<br>
     Unarchiver for .rar files
 
-  * **<u>usbids: USB IDs</u><a id='usbids'></a>**<br>
+  * **<u>usbids: USB IDs 0.0</u><a id='usbids'></a>**<br>
     This package provides up-to-date version of the usb.ids file needed by many usb related packages.
 
   * **<u>util-linux (binary only)</u><a id='util-linux'></a>**<br>
@@ -964,7 +964,7 @@
   * **<u>xsltproc 1.1.33 (binary only)</u><a id='xsltproc'></a>**<br>
     xsltproc is a command line tool for applying XSLT stylesheets to XML documents. It is part of libxslt, the XSLT C library for GNOME. While it was developed as part of the GNOME project, it can operate independently of the GNOME desktop.
 
-  * **<u>xz-utils (binary only)</u><a id='xz'></a>**<br>
+  * **<u>xz-utils 5.2.4 (binary only)</u><a id='xz'></a>**<br>
     XZ is the successor to the Lempel-Ziv/Markov-chain Algorithm compression format, which provides memory-hungry but powerful compression (often better than bzip2) and fast, easy decompression. This package provides the command line tools for working with XZ compression. They can also handle the older LZMA format, and if invoked via appropriate symlinks will emulate the behavior of the commands in the lzma package.
 
 # Debug helpers

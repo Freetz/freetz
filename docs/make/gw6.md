@@ -1,4 +1,4 @@
-# Gateway6 client
+# Gateway6 client 5.1
 
 gw6 ist ein IPv6 Client für
 [gogo6/freenet6](http://gogonet.gogo6.com/page/freenet6-services)
