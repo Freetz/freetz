@@ -155,7 +155,7 @@ echo "<dl class='info'>"
 [ -n "$loaderversion" ]  && echo "<dt>$(lang de:"Bootloaderversion" en:"Version of bootloader")</dt><dd>$loaderversion</dd>"
 [ -n "$urladerversion" ] && echo "<dt>$(lang de:"Urladerversion" en:"Version of urlader")</dt><dd>$urladerversion</dd>"
 [ -n "$loaderversion$urladerversion" -a -n "$defaultpass$reboot_status" ] && echo "</dl>"&& echo "<dl class='info'>"
-[ -n "$defaultpass" ]    && echo "<dt>$(lang de:"Standardpasswort" en:"Default password")</dt><dd>" && \
+[ -n "$defaultpass" ]    && echo "<dt>$(lang de:"AVM-Standardpasswort" en:"AVM default password")</dt><dd>" && \
   echo -e "<a title='$defaultpass' style='background-color:#000000;color:#000000;text-decoration:none'>$defaultpass</a>\n</dd>"
 [ -n "$reboot_status" ]  && echo "<dt>$(lang de:"Rebootursache" en:"Reboot cause")</dt><dd>$reboot_status</dd>"
 echo "</dl>"
