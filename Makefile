@@ -40,7 +40,7 @@ MIRROR_DIR:=$(DL_DIR)/mirror
 TOOLCHAIN_BUILD_DIR:=$(TOOLCHAIN_DIR)/$(BUILD_DIR)
 TOOLS_BUILD_DIR:=$(TOOLS_DIR)/$(BUILD_DIR)
 
-SED:=$(TOOLS_DIR)/sed
+SED:=sed
 TAR:=$(TOOLS_DIR)/tar-gnu
 
 # Don't go parallel
