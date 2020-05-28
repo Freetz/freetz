@@ -113,6 +113,28 @@ else
 						echo "Created hardlink for .image file: $$(DL_SOURCE$(1)_LOCAL)" >/dev/null; \
 					fi; \
 					;; \
+				.rar|.RAR) \
+					if ! which unar &>/dev/null; then \
+						$$(call ERROR,3,Prerequisite unar is missing.) \
+					fi; \
+					if [ "$$(FREETZ_DL_DETECT_IMAGE_NAME)" == "y" ]; then \
+						DL_SOURCE_DETECTED=$$$$(unar -D -q $$(DL_FW_DIR)/$$$$DL_SOURCE0_CONTAINER *.image -o /dev/null 2>&1 | sed -rn 's/.*( |\/)(.*\.image).*/\2/p'); \
+						echo "Using detected .image name: $$$$DL_SOURCE_DETECTED" >/dev/null; \
+					else \
+						DL_SOURCE_DETECTED=$$(DL_SOURCE$(1)_LOCAL); \
+						echo "Using hardcoded .image name: $$$$DL_SOURCE_DETECTED" >/dev/null; \
+					fi; \
+					if [ ! -f $$(DL_FW_DIR)/$$$$DL_SOURCE_DETECTED ]; then \
+						echo "Unaring archive file: $$$$DL_SOURCE0_CONTAINER" >/dev/null; \
+						if ! unar -D -q $$(DL_FW_DIR)/$$$$DL_SOURCE0_CONTAINER *$$$$DL_SOURCE_DETECTED -o $$(DL_FW_DIR); then \
+							$$(call ERROR,3,Could not unar firmware image.) \
+						fi; \
+					fi; \
+					if [ "$$(FREETZ_DL_DETECT_IMAGE_NAME)" == "y" ]; then \
+						[ -f $$(DL_FW_DIR)/$$$$DL_SOURCE_DETECTED ] && ln -s $$$$DL_SOURCE_DETECTED $$(IMAGE$(1)); \
+						echo "Created hardlink for .image file: $$(DL_SOURCE$(1)_LOCAL)" >/dev/null; \
+					fi; \
+					;; \
 				*) \
 					$$(call ERROR,3,Not able to extract '$$$$DL_SOURCE0_CONTAINER' archive at all.) \
 					;; \
