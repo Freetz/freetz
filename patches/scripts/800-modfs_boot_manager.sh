@@ -15,6 +15,7 @@ for oem in $(supported_brandings) all; do
 	TARGET_SYSTEM_VERSION_DETECTOR="${TOOLS_DIR}/yf/bootmanager/extract_version_values" \
 	TARGET_DIR="${FILESYSTEM_MOD_DIR}" \
 	TMP="$TEMPDIR" \
+	SED="$SED" \
 	sh "${TOOLS_DIR}/yf/bootmanager/add_to_system_reboot.sh"
 done
 
