@@ -24,4 +24,4 @@ rmdir "$TEMPDIR"
 echo2 "adding boot-manager back end script"
 cp -a "${TOOLS_DIR}/yf/bootmanager/gui_bootmanager" "${FILESYSTEM_MOD_DIR}/usr/bin/"
 chmod 755 "${FILESYSTEM_MOD_DIR}/usr/bin/gui_bootmanager"
-exit 1
+
