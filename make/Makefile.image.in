@@ -93,8 +93,8 @@ else
 					$$(call ERROR,3,Could not download firmware image. See https://freetz-ng.github.io/freetz-ng/wiki/FAQ#Couldnotdownloadfirmwareimage for details.) \
 				fi; \
 			fi; \
-			case ".$$$${DL_SOURCE0_CONTAINER##*\.}" in \
-				.zip|.ZIP) \
+			case "$$$${DL_SOURCE0_CONTAINER^^}" in \
+				*.ZIP) \
 					if [ "$$(FREETZ_DL_DETECT_IMAGE_NAME)" == "y" ]; then \
 						DL_SOURCE_DETECTED=$$$$(unzip -j $$(QUIETSHORT) -l $$(DL_FW_DIR)/$$$$DL_SOURCE0_CONTAINER *.image | sed -rn 's/.*( |\/)(.*\.image)/\2/p'); \
 						echo "Using detected .image name: $$$$DL_SOURCE_DETECTED" >/dev/null; \
@@ -113,7 +113,7 @@ else
 						echo "Created hardlink for .image file: $$(DL_SOURCE$(1)_LOCAL)" >/dev/null; \
 					fi; \
 					;; \
-				.rar|.RAR) \
+				*.RAR) \
 					if ! which unar &>/dev/null; then \
 						$$(call ERROR,3,Prerequisite unar is missing.) \
 					fi; \
