@@ -15,7 +15,7 @@ for oem in $(supported_brandings) all; do
 	TARGET_SYSTEM_VERSION_DETECTOR="${TOOLS_DIR}/yf/bootmanager/extract_version_values" \
 	TARGET_DIR="${FILESYSTEM_MOD_DIR}" \
 	TMP="$TEMPDIR" \
-	SED="$SED" \
+	EDITOR="$SED" \
 	sh "${TOOLS_DIR}/yf/bootmanager/add_to_system_reboot.sh"
 done
 
@@ -24,3 +24,4 @@ rmdir "$TEMPDIR"
 echo2 "adding boot-manager back end script"
 cp -a "${TOOLS_DIR}/yf/bootmanager/gui_bootmanager" "${FILESYSTEM_MOD_DIR}/usr/bin/"
 chmod 755 "${FILESYSTEM_MOD_DIR}/usr/bin/gui_bootmanager"
+exit 1
