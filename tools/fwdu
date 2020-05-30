@@ -91,6 +91,7 @@ image() {
 	local img=$1
 	local dst=$2
 	[ -n "${dst}" ] && dst="${dst%/}/"
+	local data=999999999
 
 	local imgID=$(basename "${img}")
 	imgID=${imgID%.*}
@@ -111,15 +112,15 @@ image() {
 	if [ "$img" != "${img%.cvc}" ]; then
 		local size="0x$(printf "%08X\n" $(stat -L -c %s $img))"
 		local grbg="$($FTOOLS/sfk hexfind $img _./var/_ | sed -n 's/.*hit at offset //p' |head -n1)"
-		[ -n "$grbg" ] && echo -e "\tSkipping $(($grbg)) Bytes garbage"
-		tail -c $(( $size - ${grbg:-0x0} )) $img | tar -x --wildcards './var/tmp/*.image' >/dev/null 2>&1
-	elif [ "$img" != "${img%.exe}" ]; then
+		[ -n "$grbg" ] && echo -e "\tSkipping $(($grbg)) Bytes garbage" && data="$(( $size - ${grbg:-0x0} ))"
+	fi
+	if [ "$img" != "${img%.exe}" ]; then
 		$FTOOLS/extract-images $img >/dev/null
 		mkdir -p var/tmp
 		mv ${img##*/}.unp/*.image var/tmp/
 		rm -rf ${img##*/}.unp
 	else
-		tar -xif $img \
+		tail -c $data $img | tar -xi \
 		  $(printf " --wildcards ./var/content"                              ) \
 		  $(printf " --wildcards ./var/firmware-update.uimg"                 ) \
 		  $(printf " --wildcards ./%s/*.image"        "${probeDirs[@]}"      ) \
