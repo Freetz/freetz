@@ -1,7 +1,8 @@
 UIMG_VERSION:=ffritz_6591_131219
 UIMG_SOURCE:=uimg-$(UIMG_VERSION).tar.xz
 UIMG_SOURCE_SHA256:=7e96a14c73c223188a9007bd0d30f48917e21d9454ab30ae7243251208a8e216
-UIMG_SITE:=git_archive@git@bitbucket.org:fesc2000/ffritz.git,src/uimg
+UIMG_SITE:=@MIRROR/
+#UIMG_SITE:=git_archive@git@bitbucket.org:fesc2000/ffritz.git,src/uimg
 
 UIMG_MAKE_DIR:=$(TOOLS_DIR)/make/uimg
 UIMG_DIR:=$(TOOLS_SOURCE_DIR)/uimg-$(UIMG_VERSION)
