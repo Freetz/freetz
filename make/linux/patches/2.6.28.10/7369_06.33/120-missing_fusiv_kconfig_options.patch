@@ -1,33 +1,36 @@
-Kconfig entries for CONFIG_FUSIV_USB_OPTIMIZATION and CONFIG_FUSIV_KERNEL_APSTATISTICS_PER_INTERFACE are missing
-
 --- linux-2.6.28/fusiv_src/kernel/Kconfig
 +++ linux-2.6.28/fusiv_src/kernel/Kconfig
-@@ -333,5 +333,28 @@
+@@ -333,5 +333,33 @@
  
  endchoice
  
-+config FUSIV_USB_OPTIMIZATION
-+	depends on MIPS_FUSIV
-+	bool "FUSIV USB optimization"
-+	default y
-+	help
-+	FUSIV USB optimization
-+
-+config FUSIV_KERNEL_APSTATISTICS_PER_INTERFACE
-+	bool "FUSIV_KERNEL APSTATISTICS per interface"
-+	default y
-+
-+config CONFIG_FUSIV_VX185_BONDING
-+	bool "missing CONFIG_FUSIV_VX185_BONDING"
++config CONFIG_FUSIV_USB_OPTIMIZATION
++	bool "missing FUSIV_USB_OPTIMIZATION"
 +	default y
 +
 +config CONFIG_FUSIV_PCIE_EXTERNAL_CLOCK
-+	bool "missing CONFIG_FUSIV_PCIE_EXTERNAL_CLOCK"
++	bool "missing FUSIV_PCIE_EXTERNAL_CLOCK"
 +	default y
 +
 +config CONFIG_FUSIV_SATA_EXTERNAL_CLOCK
-+	bool "missing CONFIG_FUSIV_SATA_EXTERNAL_CLOCK"
++	bool "missing FUSIV_SATA_EXTERNAL_CLOCK"
 +	default y
++
++config CONFIG_FUSIV_KERNEL_SPI
++	tristate "missing FUSIV_KERNEL_SPI"
++	default m
++
++config CONFIG_FUSIV_KERNEL_BME_DRIVER_VX180
++	tristate "missing FUSIV_KERNEL_BME_DRIVER_VX180"
++	default m
++
++config CONFIG_FUSIV_KERNEL_VX180_AVDSL
++	tristate "missing FUSIV_KERNEL_VX180_AVDSL"
++	default m
++
++config CONFIG_FUSIV_KERNEL_POWERMGMT
++	tristate "missing FUSIV_KERNEL_POWERMGMT"
++	default m
 +
  endmenu
  
