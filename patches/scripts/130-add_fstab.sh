@@ -13,6 +13,6 @@ devpts            /dev/pts       devpts  mode=0620,gid=5           0       0
 
 EOF
 
-VARFS="$($SED -rn 's,^([^ \t]*)[ \t]*/var[ \t].*,\1,p' ${FILESYSTEM_DIR}/etc/fstab)"
-[ "$VARFS" != "tmpfs" ] && $SED -i "s/tmpfs/$VARFS/g" "${FILESYSTEM_MOD_DIR}/etc/fstab"
+VARFS="$(sed -rn 's,^([^ \t]*)[ \t]*/var[ \t].*,\1,p' ${FILESYSTEM_DIR}/etc/fstab)"
+[ "$VARFS" != "tmpfs" ] && sed -i "s/tmpfs/$VARFS/g" "${FILESYSTEM_MOD_DIR}/etc/fstab"
 

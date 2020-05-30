@@ -2,7 +2,7 @@
 echo1 "applying enum patch"
 
 WS0='[ \t]*'
-for l in $($SED -ne '/ui[a-zA-Z]*Enum/ =' "${HTML_SPEC_MOD_DIR}/fon/sipoptionen.js"); do
+for l in $(sed -ne '/ui[a-zA-Z]*Enum/ =' "${HTML_SPEC_MOD_DIR}/fon/sipoptionen.js"); do
 	modsed "$((l-1)) s,g_Oem${WS0}==${WS0}\"avme\",true,g" "${HTML_SPEC_MOD_DIR}/fon/sipoptionen.js"
 done
 unset WS0

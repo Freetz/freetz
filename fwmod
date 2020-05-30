@@ -174,7 +174,6 @@ TICHKSUM_TOOL="tichksum"
 MAKEDEVS_TOOL="makedevs"
 DEBUGFS_TOOL="debugfs"
 EXTERNAL_TOOL="external"
-SED_TOOL="sed"
 TAR_TOOL="tar"
 MD5SUM_TOOL="md5sum"
 BUSYBOX_TOOL="busybox"
@@ -186,7 +185,6 @@ FINDSQUASHFS="${TOOLS_DIR}/${FINDSQUASHFS_TOOL}"
 TICHKSUM="${TOOLS_DIR}/${TICHKSUM_TOOL}"
 MAKEDEVS="${TOOLS_DIR}/${MAKEDEVS_TOOL}"
 MAKEDEVS_FILE="${TOOLS_DIR}/device_table.txt"
-SED="${TOOLS_DIR}/${SED_TOOL}"
 TAR="${TOOLS_DIR}/${TAR_TOOL}"
 TAR_GNU="${TOOLS_DIR}/tar-gnu"
 MD5SUM="${TOOLS_DIR}/${MD5SUM_TOOL}"
@@ -231,7 +229,7 @@ VARTAR_AUX_DIR="${KERNEL_AUX_DIR}/${VARTAR_SUBDIR}"
 
 # Include config file, but do not override variables which are already defined
 # in the environment, e.g. via "make FREETZ_SOMETHING=y"
-$SED -nr 's/^([^=]+)=(.*)/: ${\1:=\2}/p' "$DOT_CONFIG" > "$DOT_CONFIG.fwmod"
+sed -nr 's/^([^=]+)=(.*)/: ${\1:=\2}/p' "$DOT_CONFIG" > "$DOT_CONFIG.fwmod"
 source "$DOT_CONFIG.fwmod"
 rm "$DOT_CONFIG.fwmod"
 
@@ -338,7 +336,7 @@ fi
 if [ "$FAKEROOTKEY" ] && [ $UID -eq 0 ]; then
 	# Yes -> fakeroot is active
 	# Make sure fakeroot call came from ourselves so we can assume the cache settings to be correct
-	if [ $((FWMOD_RECURSIVE)) -eq 0 ] || [ "$SELF" != "$($SED -nr 's/^Name:[[:blank:]]+(.*)/\1/p' /proc/$FWMOD_RECURSIVE/status)" ]; then
+	if [ $((FWMOD_RECURSIVE)) -eq 0 ] || [ "$SELF" != "$(sed -nr 's/^Name:[[:blank:]]+(.*)/\1/p' /proc/$FWMOD_RECURSIVE/status)" ]; then
 		error 1 "$SELF must not run in a fakeroot environment"
 	fi
 	# Does fakeroot cache (size>0) exist for current combination of firmwares and has this combination already been unpacked?
@@ -430,30 +428,30 @@ function image_details() {
 	local AVM_FM_REGION
 	#SOURCE_IMAGE_DETAILS
 	#
-	AVM_FW_PRODUCT="$($SED -rn 's/Annex./Annex/;s/export CONFIG_PRODUKT_NAME=".*([0-9]{3}[0-9V].*)"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | head -n1)" # 4-digits in /etc/init.d/rc.conf
-	[ -z "${AVM_FW_PRODUCT}" ] && AVM_FW_PRODUCT="$($SED -rn 's/export CONFIG_PRODUKT_NAME="(FRITZ!Box|Speedport|Sinus|Eumex) ([^"]+)"/\2/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | head -n1 | tr ' ' '-')" # symbolic name in /etc/init.d/rc.conf
+	AVM_FW_PRODUCT="$(sed -rn 's/Annex./Annex/;s/export CONFIG_PRODUKT_NAME=".*([0-9]{3}[0-9V].*)"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | head -n1)" # 4-digits in /etc/init.d/rc.conf
+	[ -z "${AVM_FW_PRODUCT}" ] && AVM_FW_PRODUCT="$(sed -rn 's/export CONFIG_PRODUKT_NAME="(FRITZ!Box|Speedport|Sinus|Eumex) ([^"]+)"/\2/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | head -n1 | tr ' ' '-')" # symbolic name in /etc/init.d/rc.conf
 	if [ -e "${FILESYSTEM_DIR}/etc/init.d/rc.init" ]; then
 		# /etc/init.d/rc.init is not available in all firmwares
-		[ -z "${AVM_FW_PRODUCT}" ] && AVM_FW_PRODUCT="$($SED -rn 's/^HW=[0-9]* OEM=all _PRODUKT_NAME=(FRITZ!Box|Speedport|Sinus|Eumex)#//p' ${FILESYSTEM_DIR}/etc/init.d/rc.init | head -n1 | $SED 's/#//g;s/Annex.//;s/WLAN/-&/g;s/^$/FritzBox/g')" # symbolic name in /etc/init.d/rc.init
-		[ -z "${AVM_FW_PRODUCT}" ] && AVM_FW_PRODUCT="$($SED -rn 's/^HW=[0-9]* OEM=all _PRODUKT_NAME=([0-9A-Z\#]{4,6}).*/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.init)" # 4-digits in /etc/init.d/rc.init
+		[ -z "${AVM_FW_PRODUCT}" ] && AVM_FW_PRODUCT="$(sed -rn 's/^HW=[0-9]* OEM=all _PRODUKT_NAME=(FRITZ!Box|Speedport|Sinus|Eumex)#//p' ${FILESYSTEM_DIR}/etc/init.d/rc.init | head -n1 | sed 's/#//g;s/Annex.//;s/WLAN/-&/g;s/^$/FritzBox/g')" # symbolic name in /etc/init.d/rc.init
+		[ -z "${AVM_FW_PRODUCT}" ] && AVM_FW_PRODUCT="$(sed -rn 's/^HW=[0-9]* OEM=all _PRODUKT_NAME=([0-9A-Z\#]{4,6}).*/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.init)" # 4-digits in /etc/init.d/rc.init
 	fi
-	[ -z "${AVM_FW_PRODUCT}" ] && AVM_FW_PRODUCT="$($SED -rn 's/export CONFIG_PRODUKT_NAME=.*(Repeater|Powerline) (.*)"/\2/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf)" # Repeater like 'DVB-C'
+	[ -z "${AVM_FW_PRODUCT}" ] && AVM_FW_PRODUCT="$(sed -rn 's/export CONFIG_PRODUKT_NAME=.*(Repeater|Powerline) (.*)"/\2/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf)" # Repeater like 'DVB-C'
 	[ -z "${AVM_FW_PRODUCT}" ] && warn "Failed to determine AVM_FW_PRODUCT, even though this is a cosmetic bug only please report it to the Freetz developers and provide your .config"
 	AVM_FW_PRODUCT="${AVM_FW_PRODUCT%% Edition*}"
 	AVM_FW_PRODUCT="${AVM_FW_PRODUCT% }"
-	AVM_FW_LANGUAGE="$($SED -n 's/^language /_/p' ${FILESYSTEM_DIR}/etc/default.language)" #primary language
-	AVM_FW_LANGUAGE="${AVM_FW_LANGUAGE}$(for x in $(ls ${FILESYSTEM_DIR}/etc/htmltext_??.db 2>/dev/null| $SED 's/.*_//g;s/\.db//g'); do [ "_$x" != "${AVM_FW_LANGUAGE}" ] && echo -en "-$x"; done; echo)" # other languages
-	AVM_FW_MAJOR="$($SED -rn 's/^export CONFIG_VERSION_MAJOR="(.*)"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | tail -n1)" # newer firmware
-	[ -z "${AVM_FW_MAJOR}" ] && AVM_FW_MAJOR="$($SED -n 's/^HW=[0-9].*VERSION_MAJOR=//p' ${FILESYSTEM_DIR}/etc/init.d/rc.init)" # older firmware
-	AVM_FW_VERSION="$($SED -n 's/^export FIRMWARE_VERSION=.*}[.]//p' ${FILESYSTEM_DIR}/etc/version)" # older firmware
-	[ -z "$AVM_FW_VERSION" ] && AVM_FW_VERSION="$($SED -rn 's/^export CONFIG_VERSION=\"?([^\"]*)\"?/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf)" # newer firmware
-	AVM_FW_LABOR="$($SED -rn 's/^export CONFIG_LABOR_ID_NAME="(.*)"/-\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf)"
-	AVM_FW_REVISION="$($SED -n '/--project)$/{N;s/.*echo //p}' ${FILESYSTEM_DIR}/etc/version)" # older firmware
-	[ -z "$AVM_FW_REVISION" ] && AVM_FW_REVISION="$($SED -rn 's/^export CONFIG_SUBVERSION=\"?-?([^\"]*)\"?/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf)" # newer firmware
-	[ -z "$AVM_FW_REVISION" ] && AVM_FW_REVISION="$($SED -rn 's/^export CONFIG_BUILDNUMBER=\"([^\"]*)\"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf)" # latest firmware
-	AVM_FW_DATE="$($SED -rn 's/^export FIRMWARE_DATE="(.*)"/\1/p' ${FILESYSTEM_DIR}/etc/version)" # older firmware
+	AVM_FW_LANGUAGE="$(sed -n 's/^language /_/p' ${FILESYSTEM_DIR}/etc/default.language)" #primary language
+	AVM_FW_LANGUAGE="${AVM_FW_LANGUAGE}$(for x in $(ls ${FILESYSTEM_DIR}/etc/htmltext_??.db 2>/dev/null| sed 's/.*_//g;s/\.db//g'); do [ "_$x" != "${AVM_FW_LANGUAGE}" ] && echo -en "-$x"; done; echo)" # other languages
+	AVM_FW_MAJOR="$(sed -rn 's/^export CONFIG_VERSION_MAJOR="(.*)"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf | tail -n1)" # newer firmware
+	[ -z "${AVM_FW_MAJOR}" ] && AVM_FW_MAJOR="$(sed -n 's/^HW=[0-9].*VERSION_MAJOR=//p' ${FILESYSTEM_DIR}/etc/init.d/rc.init)" # older firmware
+	AVM_FW_VERSION="$(sed -n 's/^export FIRMWARE_VERSION=.*}[.]//p' ${FILESYSTEM_DIR}/etc/version)" # older firmware
+	[ -z "$AVM_FW_VERSION" ] && AVM_FW_VERSION="$(sed -rn 's/^export CONFIG_VERSION=\"?([^\"]*)\"?/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf)" # newer firmware
+	AVM_FW_LABOR="$(sed -rn 's/^export CONFIG_LABOR_ID_NAME="(.*)"/-\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf)"
+	AVM_FW_REVISION="$(sed -n '/--project)$/{N;s/.*echo //p}' ${FILESYSTEM_DIR}/etc/version)" # older firmware
+	[ -z "$AVM_FW_REVISION" ] && AVM_FW_REVISION="$(sed -rn 's/^export CONFIG_SUBVERSION=\"?-?([^\"]*)\"?/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf)" # newer firmware
+	[ -z "$AVM_FW_REVISION" ] && AVM_FW_REVISION="$(sed -rn 's/^export CONFIG_BUILDNUMBER=\"([^\"]*)\"/\1/p' ${FILESYSTEM_DIR}/etc/init.d/rc.conf)" # latest firmware
+	AVM_FW_DATE="$(sed -rn 's/^export FIRMWARE_DATE="(.*)"/\1/p' ${FILESYSTEM_DIR}/etc/version)" # older firmware
 	[ -z "$AVM_FW_DATE" ] && AVM_FW_DATE="$(date -d"$(stat -c '%y' ${FILESYSTEM_DIR}/etc/version)" "+%d.%m.%Y %H:%M:%S")" # newer firmware
-	AVM_FW_CYCLE="$($SED -rn 's/^Releasecycle=//p' "${FIRMWARE_DIR}/var/content" 2>/dev/null)"
+	AVM_FW_CYCLE="$(sed -rn 's/^Releasecycle=//p' "${FIRMWARE_DIR}/var/content" 2>/dev/null)"
 	[ -n "$AVM_FW_CYCLE" ] && AVM_FW_CYCLE=" [$AVM_FW_CYCLE]"
 	[ -d ${FILESYSTEM_DIR}/etc/default.*/avm/ ]                                              && AVM_FM_REGION='GER'
 	[ -d ${FILESYSTEM_DIR}/etc/default.*/avme/ ]                                             && AVM_FM_REGION='INT'
@@ -495,7 +493,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	if [ "$FIRMWARE_EXTENSION" == "cvc" ]; then
 		# Check and skip garbage (cvc&p7b)
 		image_size="0x$(printf "%08X\n" $(stat -c %s "$FIRMWARE"))"
-		image_grbg="$($TOOLS_DIR/sfk hexfind "$FIRMWARE" _./var/_ | $SED -n 's/.*hit at offset //p' |head -n1)"
+		image_grbg="$($TOOLS_DIR/sfk hexfind "$FIRMWARE" _./var/_ | sed -n 's/.*hit at offset //p' |head -n1)"
 		[ -n "$image_grbg" ] && echo "Skipping $(($image_grbg)) Bytes garbage"
 		# validate_signature
 		if [ $DO_VALIDATE -eq 1 ]; then
@@ -513,7 +511,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	fi
 	if [ "$FIRMWARE_EXTENSION" == "exe" ] || [ "$untar_failed" ]; then
 		# Unpack Windows recover.exe file or mtdblock dump
-		exe_images=($("${TOOLS_DIR}/extract-images" "$ABS_BASE_DIR" "$FIRMWARE" | $SED -nr 's/^ *(.*\.image) - .*/\1/p'))
+		exe_images=($("${TOOLS_DIR}/extract-images" "$ABS_BASE_DIR" "$FIRMWARE" | sed -nr 's/^ *(.*\.image) - .*/\1/p'))
 		[ "$exe_images" ] || exit 1
 		mkdir -p "$FIRMWARE_DIR/${FREETZ_AVM_IMAGES_SUBDIR}"
 		mkdir "$KERNEL_DIR"
@@ -648,7 +646,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		# validate_signature
 		[ $DO_VALIDATE2 -eq 1 ] && UNPACK_VALIDATE2="-v $FIRMWARE2_PUB"
 		( set -o pipefail; "$0" -u $UNPACK_VALIDATE2 -d "${DIR}/.tk" "$FIRMWARE2" |
-			$SED "s/STEP 1: UNPACK/STEP 1B: UNPACK 2ND${FORCE_UNPACK}/" )
+			sed "s/STEP 1: UNPACK/STEP 1B: UNPACK 2ND${FORCE_UNPACK}/" )
 		[ $? -ne 0 ] && exit 1
 	fi
 
@@ -658,7 +656,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		# validate_signature
 		[ $DO_VALIDATE3 -eq 1 ] && UNPACK_VALIDATE3="-v $FIRMWARE3_PUB"
 		( set -o pipefail; "$0" -u $UNPACK_VALIDATE3 -d "${DIR}/.aux" "$FIRMWARE3" |
-			$SED "s/STEP 1: UNPACK/STEP 1C: UNPACK 3RD${FORCE_UNPACK}/" )
+			sed "s/STEP 1: UNPACK/STEP 1C: UNPACK 3RD${FORCE_UNPACK}/" )
 		[ $? -ne 0 ] && exit 1
 	fi
 
@@ -719,7 +717,7 @@ HTML_MOD_DIR="${FILESYSTEM_MOD_DIR}/${HTML_SUBDIR}"
 
 if [ -z "$FREETZ_SQUASHFS_BLOCKSIZE" ]; then # expected to be empty only if FREETZ_SQUASHFS_BLOCKSIZE_ORIG is set
 	echo -n "determining SquashFS block size of the original firmware: "
-	FREETZ_SQUASHFS_BLOCKSIZE=$("$UNSQUASHFS" -s "$FILESYSTEM" 2>/dev/null | $SED -nr 's/Block size ([0-9]+)/\1/p')
+	FREETZ_SQUASHFS_BLOCKSIZE=$("$UNSQUASHFS" -s "$FILESYSTEM" 2>/dev/null | sed -nr 's/Block size ([0-9]+)/\1/p')
 	[ -z "$FREETZ_SQUASHFS_BLOCKSIZE" ] && error 1 "failed" || echo -e "$((FREETZ_SQUASHFS_BLOCKSIZE/1024)) kB\n"
 fi
 MKSQUASHFS_OPTIONS+=" -b $FREETZ_SQUASHFS_BLOCKSIZE"
@@ -740,7 +738,7 @@ function sizeinfo()
 		if [ "$FREETZ_SIZEINFO_COMPRESSED" != "y" ]; then
 			echo1 "$1"
 		else
-			echo1 -n "$(printf "%-34s " "${1:0:31}" | $SED 's/ /\./g;s/\.\./ ./;s/\.(addon)/ (addon)/')"
+			echo1 -n "$(printf "%-34s " "${1:0:31}" | sed 's/ /\./g;s/\.\./ ./;s/\.(addon)/ (addon)/')"
 		fi
 		return
 	fi
@@ -752,7 +750,7 @@ function sizeinfo()
 	case $sizeinfo_mode in
 		lib)	#libraries: multiple files
 			local shash="$(ls -l $@ | sort | $MD5SUM)"
-			local sfile="${SIZEINFO_CACHEDIR}/$(echo $@ | $SED -rn 's!.*/(.*)\.so.*!\1!p').sizeinfo.MD5_${shash/ */}.BS_${FILESYSTEM_BLOCKSIZE_KB}"
+			local sfile="${SIZEINFO_CACHEDIR}/$(echo $@ | sed -rn 's!.*/(.*)\.so.*!\1!p').sizeinfo.MD5_${shash/ */}.BS_${FILESYSTEM_BLOCKSIZE_KB}"
 			;;
 		mod)	#modules: one .ko file
 			local shash="$(ls -l $1 | $MD5SUM)"
@@ -780,7 +778,7 @@ function sizeinfo()
 		else
 			local tempf=/tmp/freetz-sizeinfo-$$.tmp
 			"$MKSQUASHFS" $@ $tempf $MKSQUASHFS_OPTIONS 2>/dev/null | grep -A1 ^Filesystem \
-				| $SED -n 'N;s!Filesystem size \(.*\)ytes (.*\n.*(\(.*\)ytes.*$!\1 \2!p' \
+				| sed -n 'N;s!Filesystem size \(.*\)ytes (.*\n.*(\(.*\)ytes.*$!\1 \2!p' \
 				| awk '{printf "%8s%3s (uncompressed:%8s%3s)",$1,$2,$3,$4}' > ${sfile}
 			rm -rf $tempf 2>/dev/null
 		fi
@@ -790,7 +788,7 @@ function sizeinfo()
 	if [ "$FREETZ_SIZEINFO_UNCOMPRESSED" = "y" ]; then
 		cat ${sfile}
 	else
-		cat ${sfile} | $SED 's/(uncompressed.*//'
+		cat ${sfile} | sed 's/(uncompressed.*//'
 	fi
 	echo
 }
@@ -825,7 +823,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	# determine OEMs supported by the original firmware
 	all_known_oems="1und1 aol avm avme ewetel freenet otwo tcom versatel"
 	iterate_over_oems_pattern='for[ ]+i[ ]+in[ ]+('"${all_known_oems// /|}"')[^;]*;[ ]*do'
-	oems=$($SED -n -r -e '/'"${iterate_over_oems_pattern}"'/ { s/^.*for[ ]+i[ ]+in[ ]+([^;]+);[ ]+do.*$/\1/p; q }' "${FIRMWARE_MOD_DIR}/var/install")
+	oems=$(sed -n -r -e '/'"${iterate_over_oems_pattern}"'/ { s/^.*for[ ]+i[ ]+in[ ]+([^;]+);[ ]+do.*$/\1/p; q }' "${FIRMWARE_MOD_DIR}/var/install")
 	[ -z "$oems" ] && error 1 "failed to determine OEMs supported by the original firmware"
 
 	echo0 -n "applying symlinks, deleting additional webinterfaces"
@@ -1031,7 +1029,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	if isFreetzType W501V; then
 		oem_list="tcom avm"
 	fi
-	$SED -i -r -e 's/'"${iterate_over_oems_pattern}"'/for i in '"$oem_list"' ; do/' "${FIRMWARE_MOD_DIR}/var/install"
+	sed -i -r -e 's/'"${iterate_over_oems_pattern}"'/for i in '"$oem_list"' ; do/' "${FIRMWARE_MOD_DIR}/var/install"
 
 	if [ "$oem_kept" -eq 0 ]; then
 		error 1 "please choose at least one OEM (branding) in menuconfig: AVM, 1&1, Freenet etc."
@@ -1091,16 +1089,16 @@ if [ "$DO_MOD" -gt 0 ]; then
 		ln -s ../sys "${VARTAR_MOD_DIR}/var/sysfs"
 
 		grep -q '^root:' "${VARTAR_MOD_DIR}/var/tmp/passwd" 2>/dev/null && \
-		  $SED 's,^root:.*,root:x:0:0:root:/mod/root:/bin/sh,' -i "${VARTAR_MOD_DIR}/var/tmp/passwd" || \
+		  sed 's,^root:.*,root:x:0:0:root:/mod/root:/bin/sh,' -i "${VARTAR_MOD_DIR}/var/tmp/passwd" || \
 		  echo "root:x:0:0:root:/mod/root:/bin/sh" >> "${VARTAR_MOD_DIR}/var/tmp/passwd"
 		grep -q '^root:' "${VARTAR_MOD_DIR}/var/tmp/shadow" 2>/dev/null && \
-		  $SED 's,^root:.*,root:$1$$zO6d3zi9DefdWLMB.OHaO.:12332:0:99999:7:::,' -i "${VARTAR_MOD_DIR}/var/tmp/shadow" || \
+		  sed 's,^root:.*,root:$1$$zO6d3zi9DefdWLMB.OHaO.:12332:0:99999:7:::,' -i "${VARTAR_MOD_DIR}/var/tmp/shadow" || \
 		  echo 'root:$1$$zO6d3zi9DefdWLMB.OHaO.:12332:0:99999:7:::' >> "${VARTAR_MOD_DIR}/var/tmp/shadow"
 		grep -q '^root:' "${VARTAR_MOD_DIR}/var/tmp/group" 2>/dev/null && \
-		  $SED 's,^root:.*,root:x:0:,' -i "${VARTAR_MOD_DIR}/var/tmp/group" || \
+		  sed 's,^root:.*,root:x:0:,' -i "${VARTAR_MOD_DIR}/var/tmp/group" || \
 		  echo "root:x:0:" >> "${VARTAR_MOD_DIR}/var/tmp/group"
 		grep -q '^users:' "${VARTAR_MOD_DIR}/var/tmp/group" 2>/dev/null && \
-		  $SED 's,^users:.*,root:x:0:,' -i "${VARTAR_MOD_DIR}/var/tmp/group" || \
+		  sed 's,^users:.*,root:x:0:,' -i "${VARTAR_MOD_DIR}/var/tmp/group" || \
 		  echo "users:x:80:" >> "${VARTAR_MOD_DIR}/var/tmp/group"
 		touch "${VARTAR_MOD_DIR}/var/tmp/ethers"
 		touch "${VARTAR_MOD_DIR}/var/tmp/exports"
@@ -1154,7 +1152,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 					# replaced busybox might require some additional libraries not available in AVM's wrapper filesystem
 					[ "$FREETZ_REPLACE_BUSYBOX" == "y" -a -r "${PACKAGES_DIR}/busybox/busybox" ] && \
-					  wrapper_fs_required_libs+=" $(getNeededEntries ${PACKAGES_DIR}/busybox/busybox | $SED -r -e 's,[.]so([.].+)?$,,' | sort | tr $'\n' " ")"
+					  wrapper_fs_required_libs+=" $(getNeededEntries ${PACKAGES_DIR}/busybox/busybox | sed -r -e 's,[.]so([.].+)?$,,' | sort | tr $'\n' " ")"
 
 					if echo "${bn}" | grep -qE "^($(join '|' ${wrapper_fs_required_libs}))$"; then
 						cp -a $files "${FILESYSTEM_OUTER_MOD_DIR}/${dn}/"
@@ -1178,10 +1176,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 		fi
 
 		echo1 "checking OpenSSL version"
-		DETECTED_OPENSSL_VER_AVM="$(find ${FILESYSTEM_DIR}/lib/libcrypto.so.* -type f  -exec strings {} \; 2>/dev/null | $SED -nr 's/^@?OpenSSL ([10]\.[0-9a-z\.]*)[ \t]*/\1\t/p' )"
+		DETECTED_OPENSSL_VER_AVM="$(find ${FILESYSTEM_DIR}/lib/libcrypto.so.* -type f  -exec strings {} \; 2>/dev/null | sed -nr 's/^@?OpenSSL ([10]\.[0-9a-z\.]*)[ \t]*/\1\t/p' )"
 		echo2 "... used by AVM ...... ${DETECTED_OPENSSL_VER_AVM:-none}"
 		if [ "$FREETZ_LIB_libcrypto" == "y" ]; then
-			DETECTED_OPENSSL_VER_MOD="$(find ${FILESYSTEM_MOD_DIR}/usr/lib/freetz/libcrypto.so.* -type f  -exec strings {} \; | $SED -nr 's/^@?OpenSSL ([10]\.[0-9a-z\.]*)[ \t]*/\1\t/p' )"
+			DETECTED_OPENSSL_VER_MOD="$(find ${FILESYSTEM_MOD_DIR}/usr/lib/freetz/libcrypto.so.* -type f  -exec strings {} \; | sed -nr 's/^@?OpenSSL ([10]\.[0-9a-z\.]*)[ \t]*/\1\t/p' )"
 			echo2 "... used by Freetz ... ${DETECTED_OPENSSL_VER_MOD:-none}"
 		#	[ "$DETECTED_OPENSSL_VER_MOD" != "$DETECTED_OPENSSL_VER_AVM" ] & warn2 "Freetz and AVM OpenSSL versions do not match"
 		fi
@@ -1189,7 +1187,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		unset DETECTED_OPENSSL_VER_MOD
 
 		echo1 "checking libc version"
-		DETECTED_UCLIBC_VER="$(readlink ${FILESYSTEM_DIR}/lib/libc.so.? | $SED 's/\.so$//;s/^libc/g&/;s/^lib//;s/-/ /' | head -n1)"
+		DETECTED_UCLIBC_VER="$(readlink ${FILESYSTEM_DIR}/lib/libc.so.? | sed 's/\.so$//;s/^libc/g&/;s/^lib//;s/-/ /' | head -n1)"
 		[ -z "$DETECTED_UCLIBC_VER" ] && [ -n "$(strings ${FILESYSTEM_DIR}/lib/libc.so | grep '^musl libc')" ] && \
 		  DETECTED_UCLIBC_VER="musl $(strings ${FILESYSTEM_DIR}/lib/libc.so | grep '^[0-1]\.[0-9]\.[0-9][0-9]*$')"
 		echo2 "... used by AVM ...... $DETECTED_UCLIBC_VER"
@@ -1205,7 +1203,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 				dn=usr/share/terminfo
 				conf=${i%%=*}
 				bn=${conf#FREETZ_SHARE_terminfo_}
-				fn=$(echo "$bn" | $SED 's/MINUS/-/g;s/PLUS/+/g;s/\DOT/./g')
+				fn=$(echo "$bn" | sed 's/MINUS/-/g;s/PLUS/+/g;s/\DOT/./g')
 				echo2 "$fn"
 				fn="${fn:0:1}/$fn"
 				file="${TARGET_SPECIFIC_ROOT_DIR}/$dn/$fn"
@@ -1271,8 +1269,8 @@ if [ "$DO_MOD" -gt 0 ]; then
 		done || exit 1
 
 		echo1 "checking BusyBox version"
-		echo2 "... used by AVM ...... $(strings ${FILESYSTEM_DIR}/bin/busybox | $SED -n 's/^BusyBox v//p')"
-		echo2 "... used by Freetz ... $(strings ${FILESYSTEM_MOD_DIR}/bin/busybox | $SED -n 's/^BusyBox v//p')"
+		echo2 "... used by AVM ...... $(strings ${FILESYSTEM_DIR}/bin/busybox | sed -n 's/^BusyBox v//p')"
+		echo2 "... used by Freetz ... $(strings ${FILESYSTEM_MOD_DIR}/bin/busybox | sed -n 's/^BusyBox v//p')"
 	fi
 
 	echo0 "installing packages"
@@ -1298,7 +1296,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			echo "$pkg_name" >> "${VARTAR_MOD_DIR}/var/mod/etc/static.pkg"
 		fi
 
-		pkgfiles=$(collect_pkg_files "${pkg}" | $SED -e "s,^,${PACKAGES_DIR}/${pkg}/root,")
+		pkgfiles=$(collect_pkg_files "${pkg}" | sed -e "s,^,${PACKAGES_DIR}/${pkg}/root,")
 		sizeinfo pkg "${PACKAGES_DIR}/${pkg}" $pkgfiles
 	done
 
@@ -1465,7 +1463,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 		# security level
 		echo1 "patching security level ($FREETZ_SECURITY_LEVEL)"
-		$SED -i -e "s/sec_level=1/sec_level=$FREETZ_SECURITY_LEVEL/g" ${FILESYSTEM_MOD_DIR}/usr/lib/libmodcgi.sh
+		sed -i -e "s/sec_level=1/sec_level=$FREETZ_SECURITY_LEVEL/g" ${FILESYSTEM_MOD_DIR}/usr/lib/libmodcgi.sh
 
 		# external
 		[ ! "$EXTERNAL_ENABLED" != "y" ] && echo1 "integrated external"
@@ -1518,9 +1516,9 @@ if [ "$DO_MOD" -gt 0 ]; then
 						[ -n "$tagging_temp" ] && tagging_ren="$tagging_ren ${tagging_file##*/}" && rm -f "${tagging_file}"
 					done
 					[ -z "$tagging_temp" ] && continue
-					for i in $(echo "$tagging_ren" | $SED 's, ,\n,g' | sort -u); do
+					for i in $(echo "$tagging_ren" | sed 's, ,\n,g' | sort -u); do
 						for j in $(grep -l "$i" "$d" -r); do
-							$SED "s,${i},${i%svg}png,g" -i "$j"
+							sed "s,${i},${i%svg}png,g" -i "$j"
 						done
 					done
 				done
@@ -1576,7 +1574,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			if [ "${f: -3:3}" != ".py" ]; then
 				STRIP_SCRIPTS_SED_SCRIPT+='s/^[ \t]*//g;'     # and indentation if it's not a python script
 			fi
-			$SED -i -r "${STRIP_SCRIPTS_SED_SCRIPT}" "$f" &&
+			sed -i -r "${STRIP_SCRIPTS_SED_SCRIPT}" "$f" &&
 			echo2 "${f##${FILESYSTEM_MOD_DIR}}"
 		done
 	fi
@@ -1587,7 +1585,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 				! \( -name '*.ko' -o -path '*/usr/www/*' -o -path '*/etc/default*' -o -path '*/lib/modules*' \) \
 				\( -perm /100 -o -name "*.so*" \) \
 				-type f \
-				-exec file {} '+' | $SED -n 's|^\(.*\):.*MIPS.*not stripped.*|\1|p' \
+				-exec file {} '+' | sed -n 's|^\(.*\):.*MIPS.*not stripped.*|\1|p' \
 		); do
 			echo2 $i
 			chmod u+r $i
@@ -1684,7 +1682,7 @@ if [ "$action_names" ]; then
 		local languages=
 		#PREFIX
 		if [ "$FREETZ_IMAGE_NAME_PREFIX" == "y" ]; then
-			prefix="$(echo $FREETZ_USER_DEFINED_COMMENT | $SED -e "s/ /_/g" | tr -cd 'a-zA-Z0-9_+-.<->')"
+			prefix="$(echo $FREETZ_USER_DEFINED_COMMENT | sed -e "s/ /_/g" | tr -cd 'a-zA-Z0-9_+-.<->')"
 			[ -n "${prefix}" ] && modstring="${prefix%%_}_"
 		fi
 		#DEVICE
@@ -1712,7 +1710,7 @@ if [ "$action_names" ]; then
 		#REGION
 		if [ "$FREETZ_IMAGE_NAME_REGION" == "y" ] \
 		  || [ -z "$FREETZ_IMAGE_NAME_CUSTOM" ]; then
-			modstring+=".$(echo ${FREETZ_TYPE_LANGUAGE} | $SED 's/^de$/ger/;s/^en$/int/;s/^xx$/all/;s/^a-ch$/ach/;s/^it$/ita/')"
+			modstring+=".$(echo ${FREETZ_TYPE_LANGUAGE} | sed 's/^de$/ger/;s/^en$/int/;s/^xx$/all/;s/^a-ch$/ach/;s/^it$/ita/')"
 		fi
 		#CHECKPOINT
 		if [ "$FREETZ_IMAGE_NAME_CHECKPOINT" == "y" ] \
@@ -1721,7 +1719,7 @@ if [ "$action_names" ]; then
 		fi
 		#RELEASECYCLE
 		if [ "$FREETZ_IMAGE_NAME_RELEASECYCLE" == "y" ]; then
-			RELEASECYCLE="$($SED -rn 's/^Releasecycle=//p' "${FIRMWARE_DIR}/var/content" 2>/dev/null)"
+			RELEASECYCLE="$(sed -rn 's/^Releasecycle=//p' "${FIRMWARE_DIR}/var/content" 2>/dev/null)"
 			[ -n "$RELEASECYCLE" ] && modstring+="_${RELEASECYCLE/ /-}"
 		fi
 		#BUILDTYPE
@@ -1731,15 +1729,15 @@ if [ "$action_names" ]; then
 		fi
 		#BRANDINGS
 		if [ "$FREETZ_IMAGE_NAME_BRANDINGS" == "y" ]; then
-			for x in $($SED -rn 's/^FREETZ_AVM_HAS_BRANDING_(.*)=y$/\1/p' "$DOT_CONFIG" | sort); do
+			for x in $(sed -rn 's/^FREETZ_AVM_HAS_BRANDING_(.*)=y$/\1/p' "$DOT_CONFIG" | sort); do
 				[ "$(eval "echo \"\$FREETZ_REMOVE_BRANDING_$x\"")" != "y" ] && brandings+="-$x"
 			done
 			modstring+="_${brandings#-}"
 		fi
 		#LANGUAGES
 		if [ "$FREETZ_IMAGE_NAME_LANGUAGES" == "y" ]; then
-			for x in $(($SED -n 's/^language //p' $FILESYSTEM_DIR/etc/*.language && \
-			  ls $FILESYSTEM_DIR/etc/htmltext_??.db 2>/dev/null | $SED -rn 's/.*_(..)\.db/\1/p') | sort -u); do
+			for x in $((sed -n 's/^language //p' $FILESYSTEM_DIR/etc/*.language && \
+			  ls $FILESYSTEM_DIR/etc/htmltext_??.db 2>/dev/null | sed -rn 's/.*_(..)\.db/\1/p') | sort -u); do
 				[ "$(eval "echo \"\$FREETZ_REMOVE_LANGUAGE_$x\"")" != "y" ] && languages+="-$x"
 			done
 			modstring+="_${languages#-}"
@@ -1761,7 +1759,7 @@ if [ "$action_names" ]; then
 	modstring="$(get_modstring)"
 
 	# collect externalized files
-	externalised_files=$(find "$EXTERNAL_MOD_DIR/" -type f 2>/dev/null | $SED -e "/external[.]pkg/d;/[.]external/d;s,$EXTERNAL_MOD_DIR/,,")
+	externalised_files=$(find "$EXTERNAL_MOD_DIR/" -type f 2>/dev/null | sed -e "/external[.]pkg/d;/[.]external/d;s,$EXTERNAL_MOD_DIR/,,")
 
 	if [ ! "$DO_AVOID_MOD_IN_STEP3" -gt 0 ]; then
 		# Create freetz-info
@@ -1820,8 +1818,8 @@ if [ "$DO_SIGN" -gt 0 ]; then
 	#pub
 	if [ ! -s "${SIGNATURE_SUBDIR}/pub" ]; then
 		echo2 "creating public signature key file"
-		EXP="$(openssl rsa -in "${SIGNATURE_SUBDIR}/prv" -passin "pass:$FREETZ_FWMOD_SIGN_PASSWORD" -noout -text    | $SED -rn 's/^publicExponent:.*\(0x(.*)\).*/\1/p')"
-		MOD="$(openssl rsa -in "${SIGNATURE_SUBDIR}/prv" -passin "pass:$FREETZ_FWMOD_SIGN_PASSWORD" -noout -modulus | $SED -rn 's/^Modulus=(.*)/\1/p')"
+		EXP="$(openssl rsa -in "${SIGNATURE_SUBDIR}/prv" -passin "pass:$FREETZ_FWMOD_SIGN_PASSWORD" -noout -text    | sed -rn 's/^publicExponent:.*\(0x(.*)\).*/\1/p')"
+		MOD="$(openssl rsa -in "${SIGNATURE_SUBDIR}/prv" -passin "pass:$FREETZ_FWMOD_SIGN_PASSWORD" -noout -modulus | sed -rn 's/^Modulus=(.*)/\1/p')"
 		[ $(( ${#EXP} % 2 )) != 0 ] && EXP="0$EXP"
 		[ $(( ${#MOD} % 2 )) != 0 ] && MOD="0$MOD"
 		[ "${MOD:0:2}" != "00" ] && MOD="00$MOD"
@@ -1886,7 +1884,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	if [ -n "$FREETZ_KERNEL_CUSTOM_MTD_SIZE" ]; then
 		let KERNEL_LIMIT="$FREETZ_KERNEL_CUSTOM_MTD_SIZE*64*1024"
 	else
-		KERNEL_LIMIT="$($SED -nr 's/^kernel_size=(.*)/\1/p' ${FIRMWARE_DIR}/var/install)"
+		KERNEL_LIMIT="$(sed -nr 's/^kernel_size=(.*)/\1/p' ${FIRMWARE_DIR}/var/install)"
 		[ -z "$KERNEL_LIMIT" ] && error 1 "Can't find kernel_size in var/install"
 	fi
 	[ -e "$FIRMWARE_MOD_DIR/var/firmware-update.uimg" ] && KERNEL_SIZE="$(gzip "$KERNEL_MOD" -c | wc -c)" || KERNEL_SIZE="$(wc -c < "$KERNEL_MOD")"
@@ -1948,7 +1946,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 		if [ -n "$FREETZ_FILESYSTEM_CUSTOM_MTD_SIZE" ]; then
 			let FILESYSTEM_LIMIT="$FREETZ_FILESYSTEM_CUSTOM_MTD_SIZE*64*1024"
 		else
-			FILESYSTEM_LIMIT="$($SED -nr 's/^filesystem_size=(.*)/\1/p' ${FIRMWARE_DIR}/var/install)"
+			FILESYSTEM_LIMIT="$(sed -nr 's/^filesystem_size=(.*)/\1/p' ${FIRMWARE_DIR}/var/install)"
 			[ -z "$FILESYSTEM_LIMIT" ] && error 1 "Can't find filesystem_size in var/install"
 		fi
 		let FILESYSTEM_SIZE="$(wc -c < "$FILESYSTEM_MOD")"

@@ -10,7 +10,7 @@ vol_counter_patch=$(mktemp -q -t "${FREETZ_TYPE_PREFIX}-${FREETZ_TYPE_PREFIX_SER
 # 2. escape regexp backreference symbol (&) and the separator symbol (#) we use in our sed script
 # 3. convert vol-counter-htmltext_de.db.txt to sed script
 cat "${PATCHES_COND_DIR}/241-vol-counter/${FREETZ_TYPE_PREFIX}-${FREETZ_TYPE_PREFIX_SERIES_SUBDIR}-vol-counter-htmltext_de.db.txt" \
-| $SED -e '
+| sed -e '
 s#'$'\xc3\x84''#\&Auml;#g
 s#'$'\xc3\xa4''#\&auml;#g
 s#'$'\xc3\x96''#\&Ouml;#g
@@ -19,8 +19,8 @@ s#'$'\xc3\x9c''#\&Uuml;#g
 s#'$'\xc3\xbc''#\&uuml;#g
 s#'$'\xc3\x9f''#\&szlig;#g
 ' \
-| $SED -r -e 's,([&#]),\\\1,g' \
-| $SED -r -e 's,^([0-9]+:[0-9]+)\t(.*)$,s#[{][?]\1[?][}]#\2#g,' \
+| sed -r -e 's,([&#]),\\\1,g' \
+| sed -r -e 's,^([0-9]+:[0-9]+)\t(.*)$,s#[{][?]\1[?][}]#\2#g,' \
 > "${vol_counter_sed}"
 
 for oem in $(supported_brandings) all; do
@@ -29,8 +29,8 @@ for oem in $(supported_brandings) all; do
 
 	# replace htmltext_de.db references {?XXX:XXX?} in the patch with their text values
 	cat "${PATCHES_COND_DIR}/241-vol-counter/${FREETZ_TYPE_PREFIX}-${FREETZ_TYPE_PREFIX_SERIES_SUBDIR}-vol-counter.patch" \
-	| $SED -f "${vol_counter_sed}" \
-	| $SED -r -e 's,^(([+]{3}|-{3}) usr/www/)all/,\1'"${oem}"'/,' \
+	| sed -f "${vol_counter_sed}" \
+	| sed -r -e 's,^(([+]{3}|-{3}) usr/www/)all/,\1'"${oem}"'/,' \
 	> "${vol_counter_patch}"
 
 	# apply generated patch

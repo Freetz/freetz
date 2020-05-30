@@ -63,11 +63,11 @@ echo2 "patching webinterface"
 modsed "s/<? setvariable var:showtcom 0 ?>/<? setvariable var:showtcom 1 ?>/g" "${HTML_SPEC_MOD_DIR}/fon/sip1.js"
 modsed "s/<? setvariable var:showtcom 0 ?>/<? setvariable var:showtcom 1 ?>/g" "${HTML_SPEC_MOD_DIR}/fon/siplist.js"
 modsed "s/<? setvariable var:allprovider 0 ?>/<? setvariable var:allprovider 1 ?>/g" "${HTML_SPEC_MOD_DIR}/internet/authform.html"
-#$SED -i - "s/<? setvariable var:TextMenuSoftware \"Programme\" ?>\\n//g" "${HTML_SPEC_MOD_DIR}/menus/menu2.inc"
+#sed -i - "s/<? setvariable var:TextMenuSoftware \"Programme\" ?>\\n//g" "${HTML_SPEC_MOD_DIR}/menus/menu2.inc"
 
 echo2 "swapping info led"
 #swap info led 0,1 with tr69 led
-$SED -i \
+sed -i \
   -e 's|DEF tr69,0 = 2,6,1,tr69|DEF tr69,0 = 99,32,16,tr69|' \
   -e 's|DEF info,0 = 99,32,16,info|DEF info,0 = 2,6,1,info|' \
   -e 's|DEF info,1 = 99,32,16,info|DEF info,1 = 2,6,1,info|' \
