@@ -141,7 +141,7 @@
     This saves about 340-790 KB of uncompressed data size. Removes lib/modules/dsp_*/*-?-dsl.bin or lib/modules/*Vx180Code.bin.gz. Select this only if you don't use the the DSL modem. See http://www.wehavemorefun.de/fritzbox/Multi-DSL-Firmware
 
   * **[Remove MyFritz](REMOVE_MYFRITZ.md)<a id='remove-myfritz'></a>**<br>
-    Removes the AVM MyFritz Webinterface. Saves about 1.1 MB uncompressed data size.
+    Removes the AVM MyFritz Webinterface. Saves about 1.1 MB uncompressed data size. WARNING: Access by some AVM apps is no longer possible!
 
   * **[Remove NAS](REMOVE_NAS.md)<a id='remove-nas'></a>**<br>
     Removes the AVM NAS Webinterface and internal memory file (saves about 390 KB in compressed image).
@@ -210,7 +210,7 @@
     This disables the busybox applet for telnetd and removes the link to it.
 
   * **<u>Remove tr064</u><a id='remove-tr064'></a>**<br>
-    Removes libtr064 to save space. WARNING Access by AVM apps is no longer possible!
+    Removes libtr064 to save space. WARNING: Access by some AVM apps is no longer possible!
 
   * **[Remove tr069](REMOVE_TR069.md)<a id='remove-tr069'></a>**<br>
     Removes libtr069 to save space.
