@@ -88,7 +88,7 @@
 
  * __2019-11-06__<br>
    Das Trac auf boxmatrix funktioniert aktuell nicht richtig.<br>
-   Bitte stattdessen das [DEB](https://www.digital-eliteboard.com/forums/2045/) oder [Github](https://github.com/Freetz-NG/freetz-ng/issues) verwenden.<br>
+   Bitte stattdessen [Github](https://github.com/Freetz-NG/freetz-ng/issues) verwenden.<br>
 
  * __2019-11-03__<br>
    In [./docs](./) liegt nun die gesammte Dokumentation und das alte Wiki.<br>
