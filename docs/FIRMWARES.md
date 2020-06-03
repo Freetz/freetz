@@ -25,7 +25,7 @@ Currently supported devices and firmwares
 ### Not supported devices
 
   * Repeater 310, 600 & 1160: No LAN ports, so a recovery is not possible.
-  * FritzBox 6591: Latest Labor firmware is using a different kernel version<br>
+  * FritzBox 6660 Labor & latest FritzBox 6591 Labor: Are using kernel 4.9.199<br>
     with not available source code as nobody [asked AVM for latest sources](SUPPORT.md).
 
 ### Fritz!Box (2xxx)
