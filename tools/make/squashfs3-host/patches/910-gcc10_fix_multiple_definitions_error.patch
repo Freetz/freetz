@@ -1,0 +1,11 @@
+--- squashfs-tools/read_fs.c
++++ squashfs-tools/read_fs.c
+@@ -73,7 +73,7 @@ extern zlib_uncompress_t uncompress_fct;
+ #define uncompress_fct uncompress
+ #endif
+ 
+-int swap;
++extern int swap;
+ 
+ int read_block(int fd, long long start, long long *next, unsigned char *block, squashfs_super_block *sBlk)
+ {
