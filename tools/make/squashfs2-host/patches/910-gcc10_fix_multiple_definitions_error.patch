@@ -1,0 +1,11 @@
+--- squashfs-tools/read_fs.c
++++ squashfs-tools/read_fs.c
+@@ -62,7 +62,7 @@ extern int add_file(int, int, unsigned i
+ 
+ #define ERROR(s, args...)		fprintf(stderr, s, ## args)
+ 
+-int swap;
++extern int swap;
+ 
+ int read_block(int fd, int start, int *next, unsigned char *block, squashfs_super_block *sBlk)
+ {
