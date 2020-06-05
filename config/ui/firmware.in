@@ -212,12 +212,12 @@ choice
 	config FREETZ_TYPE_6591
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_4N5
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_PUMA7
-		bool "6591 (atom core) - LIBCTEST"
+		bool "6591 (atom core) - UNTESTED"
 
 	config FREETZ_TYPE_6660
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_4N5
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_PUMA7
-		bool "6660 (atom core) - LIBCTEST"
+		bool "6660 (atom core) - UNTESTED"
 
 	comment "LTE"
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_2N3 || FREETZ_SERIES_4N5
@@ -425,12 +425,12 @@ choice
 	config FREETZ_TYPE_7581
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_4N5
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_BCM63138
-		bool "7581 - LIBCTEST"
+		bool "7581 - UNTESTED"
 
 	config FREETZ_TYPE_7582
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_4N5
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_BCM63138
-		bool "7582 - LIBCTEST"
+		bool "7582 - UNTESTED"
 
 	config FREETZ_TYPE_7583
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_4N5
@@ -615,7 +615,7 @@ choice
 			Enable this to use an AVM Inhaus firmware as base for modding.
 
 	config FREETZ_TYPE_FIRMWARE_07_2X_LABOR
-		bool "FRITZ!OS 07.19 Labor - LIBCTEST"
+		bool "FRITZ!OS 07.19 Labor"
 		select FREETZ_AVM_VERSION_07_2X
 		depends on FREETZ_AVM_HAS_FIRMWARE_07_2X_LABOR && FREETZ_SHOW_ADVANCED
 		help
@@ -672,10 +672,6 @@ config FREETZ_TYPE_FIRMWARE_LABOR
 
 if FREETZ_AVM_VERSION_06_5X_MIN && !FREETZ_REAL_DEVELOPER_ONLY__KCONF
 	comment "WARNINGS -------------------------------------------------"
-if FREETZ_SEPARATE_AVM_UCLIBC
-	comment " - LIBCTEST firmwares are EXPERIMENTAL"
-	comment "   problems with /etc/passwd are expected"
-endif
 if FREETZ_TYPE_FIRMWARE_LABOR || FREETZ_TYPE_FIRMWARE_INHAUS || FREETZ_TYPE_FIRMWARE_07_0X_MIN
 	comment " - the box may fail to boot and you need to recover it"
 	comment " - there is a higher probability to face stability issues"
