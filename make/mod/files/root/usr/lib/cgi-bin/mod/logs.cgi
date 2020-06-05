@@ -2,7 +2,7 @@
 
 show_log() {
 	local log="$1"
-	if ! /usr/bin/checkempty "$log" 2>/dev/null; then
+	if [ -s "$log" ]; then
 		logg=true
 		echo "<h1><a href='$SCRIPT_NAME$log'>$log</a></h1>"
 		echo "<pre class='log ${class:-small}'>"
