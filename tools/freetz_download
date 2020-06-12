@@ -316,8 +316,8 @@ if [ -n "$URLs" ]; then
 	fi
 fi
 
-# Add all mirrors to 'sites' array (if not an image))
-if [ "$opt_append_servers" != n ]; then
+# Add all mirrors to 'sites' array (if not invalid checksum (=repo only) and not an image)
+if [ "$CHECKSUM" != "X" -a "$opt_append_servers" != "n" ]; then
 	# Get Freetz mirror sites in an array
 	FREETZ_SITES=( $(
 		for (( i=0; i < $FREETZ_DL_SITES_COUNT ; i++ )); do
