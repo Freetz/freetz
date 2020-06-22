@@ -384,7 +384,7 @@
   * **[Knockd 0.7](../docs/make/knock.md)<a id='knock'></a>**<br>
     Knockd is a port-knock server. It listens to all traffic on an ethernet (or PPP) interface, looking for special "knock" sequences of port-hits.
 
-  * **[LCD4linux ca13a1d-git](../docs/make/lcd4linux.md)<a id='lcd4linux'></a>**<br>
+  * **[LCD4linux 91cfbc2-git](../docs/make/lcd4linux.md)<a id='lcd4linux'></a>**<br>
     LCD4Linux is a small program that grabs information from the kernel and some subsystems and displays it on an external liquid crystal display.
 
   * **<u>lftp 4.8.4 (binary only)</u><a id='lftp'></a>**<br>

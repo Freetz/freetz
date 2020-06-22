@@ -117,7 +117,7 @@ Latest changes
     * iperf 3.7
     * jansson 2.7
     * jq 1.6
-    * LCD4linux ca13a1d-git
+    * LCD4linux 91cfbc2-git
     * libavmacl2 (taken from AVM's 7490.06.30 open-source package)
     * libcap 2.24
     * libdvbcsa 1.1.0
