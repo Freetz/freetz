@@ -125,7 +125,7 @@ endif
 # Simple checking of build prerequisites
 ifneq ($(NO_PREREQ_CHECK),y)
 ifneq (OK,$(shell $(CHECK_PREREQ_TOOL) $$(cat .build-prerequisites) >&2 && echo OK))
-$(error Some build prerequisites are missing! Please install the missing packages before trying again. See http://freetz.org/wiki/help/howtos/common/install#NotwendigePakete for installation hints)
+$(error Some build prerequisites are missing! Please install the missing packages before trying again. See http://freetz.github.io/wiki/help/howtos/common/install#NotwendigePakete for installation hints)
 endif
 endif
 
