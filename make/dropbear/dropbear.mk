@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2020.79)
+$(call PKG_INIT_BIN, 2020.80)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_SHA256:=084f00546b1610a3422a0773e2c04cbe1a220d984209e033b548b49f379cc441
+$(PKG)_SOURCE_SHA256:=d927941b91f2da150b2033f1a88b6a47999bf0afb1493a73e9216cffdb5d7949
 $(PKG)_SITE:=https://matt.ucc.asn.au/dropbear/releases,https://dropbear.nl/mirror/releases
 #$(PKG)_SITE:=hg@https://secure.ucc.asn.au/hg/dropbear
 
@@ -51,8 +51,6 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DROPBEAR_STATIC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DROPBEAR_NONFREETZ
 
 #$(PKG)_CONFIGURE_PRE_CMDS += $(AUTORECONF)
-
-$(PKG)_CONFIGURE_ENV += ac_cv_func_getrandom=no
 
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_DROPBEAR_WITH_ZLIB),,--disable-zlib)
 $(PKG)_CONFIGURE_OPTIONS += --disable-pam

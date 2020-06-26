@@ -1,4 +1,4 @@
-# Dropbear 2020.79
+# Dropbear 2020.80
 
 > "Dropbear is a relatively small SSH 2 server and client. [... ...]
 > Dropbear is particularly useful for "embedded"-type Linux (or other

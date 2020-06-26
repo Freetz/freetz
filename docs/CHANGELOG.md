@@ -201,7 +201,7 @@ Latest changes
     * DigiTemp 3.7.2
     * dnsmasq 2.80/2.81
     * dosfstools 3.0.28
-    * dropbear 2020.79
+    * dropbear 2020.80
     * e2fsprogs 1.42.13
     * espeak 1.48.04
     * expat 2.2.9
