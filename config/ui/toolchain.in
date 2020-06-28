@@ -8,7 +8,7 @@ choice
 		Download Toolchain, build toolchain
 
 	config FREETZ_DOWNLOAD_TOOLCHAIN
-		bool "Download and use precompiled toolchains"
+		bool "Use precompiled toolchains (x86 only)"
 		depends on    FREETZ_REAL_DEVELOPER_ONLY__DLTC || FREETZ_AVM_VERSION_06_9X_MAX
 		depends on !(!FREETZ_REAL_DEVELOPER_ONLY__DLTC && FREETZ_SYSTEM_TYPE_IPQ40xx)
 		depends on !(!FREETZ_REAL_DEVELOPER_ONLY__DLTC && FREETZ_SYSTEM_TYPE_PUMA6)
@@ -17,7 +17,7 @@ choice
 		depends on !FREETZ_SEPARATE_AVM_UCLIBC
 
 	config FREETZ_BUILD_TOOLCHAIN
-		bool "Build own toolchains (requires 4GB diskspace)"
+		bool "Build own toolchains (4GB diskspace)"
 
 endchoice # "Toolchains" #
 
