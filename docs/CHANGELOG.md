@@ -195,7 +195,7 @@ Latest changes
     * CCID driver 1.4.30
     * cifs-utils 6.6
     * cryptsetup 1.7.5
-    * curl 7.71.0
+    * curl 7.71.1
     * davfs2 1.5.2
     * dbus 1.8.20
     * DigiTemp 3.7.2
