@@ -1,5 +1,23 @@
 # NEWS
 
+ * __2020-06-12__<br>
+   AVM verweigert die Herausgabe von Sourcecode aufgrund "Verjährung".<br>
+   Dies betrifft die 7369 für die aktuell es nur ein [unvollständiges Quellpaket](https://web.archive.org/web/20200701201542/http://osp.avm.de/fritzbox/fritzbox-7369/) dem [wichtige Dateien fehlen](https://www.ip-phone-forum.de/threads/306749) gibt.<br>
+
+   AVM schrieb dazu auf eine Anfrage per Mail:<br>
+   ```...```<br>
+   ```Leider sieht es so aus, als könnten wir Ihnen in dieser Angelegenheit keine Lösung anbieten.```<br>
+   ```Intern wurde nämlich nochmal drauf gesehen und festgestellt, dass das vermutlich auch weiterhin```<br>
+   ```ein Problem werden wird zu kompilieren. Ausserdem haben die Kollegen festgestellt und bitten```<br>
+   ```um Verständnis, dass GPL drei Jahre nach Produkteinstellung seine Wirkung verliert.```<br>
+   ```Leider kann ich Ihnen daher keine weiteren Fragen zum Quellpaket der seit 2016 nicht mehr im```<br>
+   ```Verkauf befindlichen 7369 beantworten. Ich wünsche Ihnen dennoch viel Erfolg mit Ihrem Projekt!```<br>
+   ```...```<br>
+   <br>
+   Tatsache dagegen ist, dass die neueste Firmware '119.06.32' vom [11.10.2017](http://web.archive.org/web/20200701223436/https://download.avm.de/fritzbox/fritzbox-7369/other/fritz.os/) stammt und KEINE 3 Jahre alt ist!<br>
+   Desweiteren ist die 7369 [weder als EOM noch als EOS](https://web.archive.org/web/20200624140752/https://avm.de/service/ende-des-produktsupports-und-der-produktweiterentwicklung/fritzbox/) gelistet.<br>
+   Also bitte AVM: Nachbessern!<br>
+
  * __2020-05-12__<br>
    ~~Wer kann Freetz-NG einen Mirror-Server zur Verfügung stellen?<br>
    Zugriff: Download via http, am besten https<br>
