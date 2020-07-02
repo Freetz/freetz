@@ -1,9 +1,28 @@
 # NEWS
 
+ * __2020-07-02__<br>
+   Nun verhindert eine unspezifische höhere Macht die Herausgabe von Sourcecode.<br>
+   Dass die 7369 weder offiziell EOS/EOL ist, noch das Dateidatum der letzt Firmware älter als 3 Jahre ist, konnte<br>
+   AVM nicht abstreiten. Der Sourcecode wird dennoch nicht herausgegeben, weil es schlicht "nicht möglich" ist.<br>
+   <br>
+   AVM schrieb dazu auf eine Anfrage per Mail:<br>
+   ```...```<br>
+   ```Sie haben vollkommen recht, die 7369 taucht nicht in der EOS-Liste auf, warum das so ist,```<br>
+   ```ist mir nicht bekannt. Sie ist bereits seit 2016 EOS. Das letzte Update gab es den mir vorliegen```<br>
+   ```Informationen nach 06/2016.```<br>
+   ```Aber ganz davon abgesehen, würde es keine entscheidende Rolle spielen, ob jetzt drei Jahre```<br>
+   ```überschritten sind oder nicht, wenn wir Ihnen den Quellcode bereit stellen könnten, würden wir```<br>
+   ```es tun. Nun habe ich aber intern die Information bekommen, dass es nicht möglich ist. Etwas```<br>
+   ```anderes kann ich Ihnen dazu leider nicht sagen.```<br>
+   ```...```<br>
+   <br>
+   Dann macht es halt möglich!!1<br>
+   Hiervon unabhängig erfuhr AVM [vs. Cybits](https://www.heise.de/newsticker/meldung/AVM-vs-Cybits-Gericht-staerkt-GPL-1389738.html) bereits leidlich, dass die [Bedingungen der GPL nicht optional](https://gpl-violations.org/news/20110620-avm-cybits/) sind.<br>
+
  * __2020-06-12__<br>
    AVM verweigert die Herausgabe von Sourcecode aufgrund "Verjährung".<br>
    Dies betrifft die 7369 für die aktuell es nur ein [unvollständiges Quellpaket](https://web.archive.org/web/20200701201542/http://osp.avm.de/fritzbox/fritzbox-7369/) dem [wichtige Dateien fehlen](https://www.ip-phone-forum.de/threads/306749) gibt.<br>
-
+   <br>
    AVM schrieb dazu auf eine Anfrage per Mail:<br>
    ```...```<br>
    ```Leider sieht es so aus, als könnten wir Ihnen in dieser Angelegenheit keine Lösung anbieten.```<br>
