@@ -1158,7 +1158,7 @@ config FREETZ_PATCH_MODFS_BOOT_MANAGER
 if FREETZ_AVM_HAS_USB_HOST
 comment "USB patches ----------------------------------------------"
 
-config FREETZ_PATCH_UDEVMOUNT
+menuconfig FREETZ_PATCH_UDEVMOUNT
 	bool "Add udevmount"
 	depends on FREETZ_AVM_HAS_UDEV && FREETZ_AVM_HAS_USB_HOST && !FREETZ_PATCH_FREETZMOUNT
 	default n
@@ -1168,6 +1168,89 @@ config FREETZ_PATCH_UDEVMOUNT
 		 - Execute autorun.sh/autoend.sh.
 		 - Terminate programs blocking unmount.
 		 - Logging of (un)mount events.
+
+if FREETZ_PATCH_UDEVMOUNT
+
+	comment "Intern NTFS"
+		depends on FREETZ_AVM_HAS_NTFS && !FREETZ_REMOVE_NTFS
+	config FREETZ_UDEVMOUNT_NTFS
+		bool "Select NTFS"
+		depends on !FREETZ_AVM_HAS_NTFS || FREETZ_REMOVE_NTFS
+		depends on FREETZ_REPLACE_MODULE_AVAILABLE
+		select FREETZ_PACKAGE_NTFS
+		default n
+		help
+			This adds ntfs-3g mount helper to your firmware.
+
+	comment "Intern Fat"
+		depends on FREETZ_AVM_HAS_FAT_MODULE && !FREETZ_REMOVE_FAT
+	config FREETZ_UDEVMOUNT_FAT
+		bool "Select Fat"
+		depends on !FREETZ_AVM_HAS_FAT_MODULE || FREETZ_REMOVE_FAT
+		depends on FREETZ_REPLACE_MODULE_AVAILABLE
+		select FREETZ_MODULE_fat
+		default n
+		help
+			This adds fat module to your firmware.
+
+	comment "Intern Ext2"
+		depends on FREETZ_AVM_HAS_EXT2_BUILTIN
+	config FREETZ_UDEVMOUNT_EXT2
+		bool "Select Ext2"
+		depends on !FREETZ_AVM_HAS_EXT2_BUILTIN
+		depends on FREETZ_REPLACE_MODULE_AVAILABLE
+		select FREETZ_MODULE_ext2
+		default n
+		help
+			This adds ext2 module to your firmware.
+
+	comment "Intern Ext3"
+		depends on FREETZ_AVM_HAS_EXT3_BUILTIN
+	config FREETZ_UDEVMOUNT_EXT3
+		bool "Select Ext3"
+		depends on !FREETZ_AVM_HAS_EXT3_BUILTIN
+		depends on FREETZ_REPLACE_MODULE_AVAILABLE
+		select FREETZ_MODULE_ext3
+		default y
+		help
+			This adds ext3 module to your firmware.
+
+	comment "Intern Ext4"
+		depends on FREETZ_AVM_HAS_EXT4_BUILTIN && FREETZ_KERNEL_VERSION_2_6_28_MIN
+	config FREETZ_UDEVMOUNT_EXT4
+		bool "Select Ext4"
+		depends on !FREETZ_AVM_HAS_EXT4_BUILTIN && FREETZ_KERNEL_VERSION_2_6_28_MIN
+		depends on FREETZ_REPLACE_MODULE_AVAILABLE
+		select FREETZ_MODULE_ext4
+		default y
+		help
+			This adds ext4 module to your firmware.
+
+	config FREETZ_UDEVMOUNT_HFS
+		bool "Select HFS"
+		depends on FREETZ_REPLACE_MODULE_AVAILABLE
+		select FREETZ_MODULE_hfs
+		default n
+		help
+			This adds hfs module to your firmware.
+
+	config FREETZ_UDEVMOUNT_HFS_PLUS
+		bool "Select HFS+"
+		depends on FREETZ_REPLACE_MODULE_AVAILABLE
+		select FREETZ_MODULE_hfsplus
+		default n
+		help
+			This adds hfs+ module to your firmware.
+
+	config FREETZ_UDEVMOUNT_REISER_FS
+		bool "Select ReiserFS"
+		depends on FREETZ_REPLACE_MODULE_AVAILABLE
+		select FREETZ_MODULE_reiserfs
+		default n
+		help
+			This adds reiserfs module to your firmware.
+
+endif # FREETZ_PATCH_UDEVMOUNT
 
 config FREETZ_PATCH_FREETZMOUNT
 	bool "Add FREETZMOUNT"
