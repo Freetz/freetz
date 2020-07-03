@@ -1103,13 +1103,6 @@ config FREETZ_PATCH_SECURE
 	help
 		Hides the "unsecure settings" message from the web interface.
 
-config FREETZ_ENABLE_LED_DEACTIVATION
-	bool "Enable LED deactivation page"
-	depends on FREETZ_AVM_VERSION_06_0X_MIN && FREETZ_AVM_VERSION_07_0X_MAX
-	default n
-	help
-		Re-enables access to the LED deactivation page in expert mode.
-
 config FREETZ_MODIFY_DSL_WARNING
 	bool "Patch DSL modified message"
 	depends on FREETZ_TYPE_DSL && FREETZ_AVM_VERSION_06_5X_MIN && !FREETZ_REMOVE_DSLD && !FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_PRIME
@@ -1137,6 +1130,13 @@ config FREETZ_MODIFY_COUNTER
 	default n
 	help
 		Converts counter hours to days and traffic MB to GB.
+
+config FREETZ_ENABLE_LED_DEACTIVATION
+	bool "Enable LED deactivation page"
+	depends on FREETZ_AVM_VERSION_06_0X_MIN && FREETZ_AVM_VERSION_07_0X_MAX
+	default n
+	help
+		Re-enables access to the LED deactivation page in expert mode.
 
 config FREETZ_PATCH_MODFS_ANNEX_SELECTION
 	bool "Unhide Annex selection"
