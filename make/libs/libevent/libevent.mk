@@ -1,8 +1,8 @@
-$(call PKG_INIT_LIB, 2.1.11-stable)
+$(call PKG_INIT_LIB, 2.1.12-stable)
 $(PKG)_MAJOR_VERSION:=2.1
-$(PKG)_SHLIB_VERSION:=7.0.0
+$(PKG)_SHLIB_VERSION:=7.0.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=7f35cfe69b82d879111ec0d7b7b1c531
+$(PKG)_SOURCE_MD5:=b5333f021f880fe76490d8a799cd79f4
 $(PKG)_SITE:=https://github.com/libevent/libevent/releases/download/release-$($(PKG)_VERSION)
 
 $(PKG)_LIBNAME=$(pkg)-$($(PKG)_MAJOR_VERSION).so.$($(PKG)_SHLIB_VERSION)
