@@ -145,10 +145,8 @@ rm_files()
 
 #modsed <sed-expression> <file> [grep-expression-to-verify-sed]
 #should be used instead of sed -i -e in patch scripts
-modsed()
-{
+modsed() {
 	local extended_regexp=""
-
 	if [ "$1" == "-r" ]; then
 		extended_regexp="$1"
 		shift
@@ -159,13 +157,18 @@ modsed()
 		#since firmware 05.55 HTML_SPEC_MOD_DIR does not exist anymore
 		*/doesnotexist/*) return ;;
 	esac
-	if [ -f "$2" ]; then
-		echo2 "patching $2"
-		sed -i $extended_regexp -e "$1" "$2" || error 1 "modsed failed editing $2 (bad sed syntax?)"
+
+	local c=0
+	for f in $2; do
+		echo2 "patching $f"
+		[ -f "$f" ] && let c++ || continue
+		sed -i $extended_regexp -e "$1" "$f" || error 1 "modsed failed editing $f (bad sed syntax?)"
 		if [ $# -ge 3 ]; then
-			grep -q "$3" "$2" || error 1 "modsed failed editing $2"
+			grep -q "$3" "$f" || error 1 "modsed failed editing $f"
 		fi
-	else
+	done
+
+	if [ "$c" == "0" ]; then
 		if [ $# -lt 3 ]; then
 			warn2 "$2 not found, skipping."
 		else
