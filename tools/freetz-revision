@@ -23,7 +23,8 @@ elif [ -d $DIR/.git ]; then
 	RH="$(git --git-dir=$GDB rev-parse --verify --short @)"
 	[ "$1" ] && RB="${RB/master/}" || RD="$(git --git-dir=$GDB log --pretty='format:%cd' --date=format:'%Y-%m-%d' -1 @)"
 fi
-R="${RC:+ $RC}${RH:+-$RH}${RB:+ $RB}${RD:+ $RD}"
+RH=
+R="${RC:+ $RC}-${RH:-UNKNOWN}${RB:+ $RB}${RD:+ $RD}"
 [ "$1" ] && R="${R// /-}"
 echo "$(cat $DIR/.version)${R}"
 
