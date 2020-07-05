@@ -12,6 +12,10 @@ rm_files \
   "${FILESYSTEM_MOD_DIR}/lib/systemd/system/printer.service" \
   "${FILESYSTEM_MOD_DIR}/etc/hotplug/udev-printer-lp"
 
+modsed \
+  '/\/etc\/hotplug\/udev-printer-lp/d' \
+  "${FILESYSTEM_MOD_DIR}/etc/udev/rules.d/??-usb*.rules"
+
 [ "$FREETZ_REMOVE_PRINTSERV_MODULE" == "y" ] && \
 	rm_files ${MODULES_DIR}/kernel/drivers/usb/class/usblp.ko
 
