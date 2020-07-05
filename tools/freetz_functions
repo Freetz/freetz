@@ -161,7 +161,7 @@ modsed() {
 	local c=0
 	for f in $2; do
 		echo2 "patching $f"
-		[ -f "$f" ] && let c++ || continue
+		[ ! -f "$f" ] && continue || let c++
 		sed -i $extended_regexp -e "$1" "$f" || error 1 "modsed failed editing $f (bad sed syntax?)"
 		if [ $# -ge 3 ]; then
 			grep -q "$3" "$f" || error 1 "modsed failed editing $f"
