@@ -447,5 +447,29 @@
   * **<u>RUN_TELEFON_IN_INHOUSE_MODE: Run telefon daemon in inhaus mode</u><a id='run-telefon-in-inhouse-mode'></a>**<br>
     Running telefon daemon in "inhaus mode" restores: - Processing of /var/flash/calllog on incoming calls. In case you added telnetd, this patch also restores: - Support for telnetd on/off by phone (#96*7* / #96*8*). - Processing of /var/flash/fx_conf attributes responsible for automatic start of telnetd.
 
+  * **<u>UDEVMOUNT_EXT2: Select Ext2</u><a id='udevmount-ext2'></a>**<br>
+    This adds ext2 module to your firmware.
+
+  * **<u>UDEVMOUNT_EXT3: Select Ext3</u><a id='udevmount-ext3'></a>**<br>
+    This adds ext3 module to your firmware.
+
+  * **<u>UDEVMOUNT_EXT4: Select Ext4</u><a id='udevmount-ext4'></a>**<br>
+    This adds ext4 module to your firmware.
+
+  * **<u>UDEVMOUNT_FAT: Select Fat</u><a id='udevmount-fat'></a>**<br>
+    This adds fat module to your firmware.
+
+  * **<u>UDEVMOUNT_HFS: Select HFS</u><a id='udevmount-hfs'></a>**<br>
+    This adds hfs module to your firmware.
+
+  * **<u>UDEVMOUNT_HFS_PLUS: Select HFS+</u><a id='udevmount-hfs-plus'></a>**<br>
+    This adds hfs+ module to your firmware.
+
+  * **<u>UDEVMOUNT_NTFS: Select NTFS</u><a id='udevmount-ntfs'></a>**<br>
+    This adds ntfs-3g mount helper to your firmware.
+
+  * **<u>UDEVMOUNT_REISER_FS: Select ReiserFS</u><a id='udevmount-reiser-fs'></a>**<br>
+    This adds reiserfs module to your firmware.
+
   * **<u>USBSTORAGE_AUTOMOUNT: Automount filesystems</u><a id='usbstorage-automount'></a>**<br>
     The filesystems ext2, ext3, ext4, fat, hfs, hfs+, ntfs and reiserfs and swap are mounted automatically. Detection is done by blkid applet . It depends on the original firmware which of the following points you have to select.
