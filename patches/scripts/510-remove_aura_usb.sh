@@ -13,6 +13,10 @@ for files in \
 	rm_files "$files"
 done
 
+modsed \
+  '/\/etc\/hotplug\/aura/d' \
+  "${FILESYSTEM_MOD_DIR}/etc/udev/rules.d/??-usb*.rules"
+
 # patcht USB-Geraete > Geraeteuebersicht > USB-Fernanschluss aktivieren
 sedfile="${HTML_SPEC_MOD_DIR}/usb/status.html"
 mod_del_area \
