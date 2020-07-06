@@ -369,7 +369,7 @@ Currently supported devices and firmwares
   - 154.06.84 rev57902 {INT}
   - 154.07.01 rev61989 {INT}
   - 154.07.13 rev74390 {INT} [MESH18 NL3]
-  - 154.07.19 rev00000 {ALL} (Labor)
+  - 154.07.20 rev80072 {ALL} [PSQ19]
 
 ### Fritz!Powerline
 
