@@ -374,7 +374,11 @@ config FREETZ_BUSYBOX__MANDATORY_05_2X
 	# enabled in AVM .config but (it looks like) unused (see sort --help)
 	# select FREETZ_BUSYBOX_FEATURE_SORT_BIG
 	#
+	select FREETZ_BUSYBOX_MKSWAP
+	select FREETZ_BUSYBOX_SWAPOFF
+	select FREETZ_BUSYBOX_SWAPON
 	# also enabled in AVM .config but (it looks like) unused (see swapon --help)
+	select FREETZ_BUSYBOX_FEATURE_SWAPONOFF_LABEL if FREETZ_BUSYBOX__RECOMMENDED && !FREETZ_BUSYBOX__VERSION_V127
 	select FREETZ_BUSYBOX_FEATURE_SWAPON_PRI if FREETZ_BUSYBOX__RECOMMENDED
 	#
 	select FREETZ_BUSYBOX_FEATURE_TFTP_GET
@@ -433,10 +437,6 @@ config FREETZ_BUSYBOX__MANDATORY_06_5X
 	select FREETZ_BUSYBOX_FEATURE_MODUTILS_SYMBOLS
 	select FREETZ_BUSYBOX_FEATURE_RTMINMAX
 	select FREETZ_BUSYBOX_LSOF if !FREETZ_PACKAGE_LSOF
-	#
-	# also enabled in AVM .config but (it looks like) unused (see swapon --help)
-	select FREETZ_BUSYBOX_FEATURE_SWAPONOFF_LABEL if FREETZ_BUSYBOX__RECOMMENDED && !FREETZ_BUSYBOX__VERSION_V127
-	#
 	help
 		Selects everything Freetz needs to run properly (with Fritz!OS 6.5 and up)
 
