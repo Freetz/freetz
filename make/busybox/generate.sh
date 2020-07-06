@@ -117,6 +117,8 @@ depends_on LSMOD    "!FREETZ_PACKAGE_MODULE_INIT_TOOLS_lsmod"
 depends_on MODINFO  "!FREETZ_PACKAGE_MODULE_INIT_TOOLS_modinfo"
 depends_on MODPROBE "!FREETZ_PACKAGE_MODULE_INIT_TOOLS_modprobe"
 depends_on RMMOD    "!FREETZ_PACKAGE_MODULE_INIT_TOOLS_rmmod"
+# FEATURE_LSMOD_PRETTY_2_6_OUTPUT is always selected and so MODPROBE_SMALL would cause unmet dependency
+depends_on MODPROBE_SMALL "FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL"
 
 # AVM never uses applets, but always binaries.
 # Additional tools: ubiblock ubicrc32 ubiformat ubinfo ubinize
