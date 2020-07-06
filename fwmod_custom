@@ -9,6 +9,13 @@
 
 all() {
 	dummy=0
+#	local build_dir="$(dirname "$0")/build"
+#	# Use AVM's BusyBox, many Freetz functions will not work!
+#	cp -p ${build_dir}/original/filesystem/bin/busybox ${build_dir}/modified/filesystem/bin/busybox
+#	# Include AVM's BusyBox and use it only for these specified APPLETS!
+#	cp -p ${build_dir}/original/filesystem/bin/busybox ${build_dir}/modified/filesystem/bin/busybox-AVM
+#	ln -sf ../bin/busybox-AVM ${build_dir}/modified/filesystem/bin/APPLET1
+#	ln -sf ../bin/busybox-AVM ${build_dir}/modified/filesystem/sbin/APPLET2
 }
 
 all_no_freetz() {
