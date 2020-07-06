@@ -1107,7 +1107,7 @@ config FREETZ_BUSYBOX___V131_FEATURE_USE_SENDFILE
 	bool "Use sendfile system call"
 	default n
 	select FREETZ_BUSYBOX___V131_PLATFORM_LINUX
-	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
+	depends on FREETZ_KERNEL_VERSION_3_MIN
 	help
 	When enabled, busybox will use the kernel sendfile() function
 	instead of read/write loops to copy data between file descriptors
