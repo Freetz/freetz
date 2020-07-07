@@ -1,5 +1,14 @@
 # NEWS
 
+ * __2020-07-06__<br>
+   Eigener Kernel und Module für aktuelle FritzOS<br>
+   Für die 7590 (und ähnliche GRX5) gibt es nach wie vor keinen replace-kernel, da noch niemand das neue<br>
+   Format des Bootloaders analysiert und für Freetz angepasst hat. Module für den Kernel sind für viele<br>
+   aktuelle FritzOS auch nicht verfügbar. Dadurch sind Dinge wie Wireguard, OpenVPN, zusätzliche Dateisysteme<br>
+   usw deaktiviert. Ursache hierfür ist dass das Tool ```avm_kernel_config``` bzw ```yourfritz-akc-host``` noch nicht<br>
+   angepasste wurde. Dies wurde ursprünglich von PeterPawn entwickelt und von er13 erweitert.<br>
+   Leider fühlt sich mittlerweile niemand mehr dafür zuständig. Freiwillige vor!<br>
+
  * __2020-07-02__<br>
    Nun verhindert eine unspezifische höhere Macht die Herausgabe von Sourcecode.<br>
    Dass die 7369 weder offiziell EOS/EOL ist, noch das Dateidatum der letzt Firmware älter als 3 Jahre ist, konnte<br>
