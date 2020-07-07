@@ -95,10 +95,10 @@ done >> "$BBDEP"
 echo -n " defaults ..."
 default FEATURE_COPYBUF_KB 64
 default FEATURE_VI_MAX_LEN 1024
-default SUBST_WCHAR 0
-default LAST_SUPPORTED_WCHAR 0
+default SUBST_WCHAR 63
+default LAST_SUPPORTED_WCHAR 767
 default BUSYBOX_EXEC_PATH "/bin/busybox"
-default "Buffer allocation policy" ${BBTAG}_FEATURE_BUFFERS_GO_ON_STACK
+default "Buffer allocation policy" ${BBTAG}_FEATURE_BUFFERS_USE_MALLOC
 depends_on LOCALE_SUPPORT "!FREETZ_TARGET_UCLIBC_0_9_28"
 depends_on FEATURE_IPV6 "FREETZ_TARGET_IPV6_SUPPORT"
 depends_on KLOGD "FREETZ_AVM_HAS_PRINTK"
