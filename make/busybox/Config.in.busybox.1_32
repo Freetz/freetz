@@ -8347,6 +8347,7 @@ config FREETZ_BUSYBOX___V132_SH_IS_HUSH
 	the name 'sh' (and not 'hush').
 
 config FREETZ_BUSYBOX___V132_SH_IS_NONE
+	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	bool "none"
 
 endchoice
@@ -8380,6 +8381,7 @@ config FREETZ_BUSYBOX___V132_BASH_IS_ASH
 	the name 'bash' (and not 'ash').
 
 config FREETZ_BUSYBOX___V132_BASH_IS_HUSH
+	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	bool "hush"
 	select FREETZ_BUSYBOX___V132_SHELL_HUSH
 	help
@@ -8389,6 +8391,7 @@ config FREETZ_BUSYBOX___V132_BASH_IS_HUSH
 	the name 'bash' (and not 'hush').
 
 config FREETZ_BUSYBOX___V132_BASH_IS_NONE
+	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	bool "none"
 
 endchoice
