@@ -18,10 +18,7 @@ default() {
 }
 
 depends_on() {
-	sed -r -i '/^config '${BBTAG}'_'"$1"'$/,/^[ \t]+help$/ {
-		/^[ \t]+help$/ i\
-	depends on '"$2"'
-	}' "$BBOUT"
+	sed -i "s/^config ${BBTAG}_${1}$/&\n\tdepends on ${2}/" "$BBOUT"
 }
 
 select_() {

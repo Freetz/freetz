@@ -16,9 +16,9 @@ config FREETZ_BUSYBOX___V131_HAVE_DOT_CONFIG
 menu "Settings"
 
 config FREETZ_BUSYBOX___V131_DESKTOP
+	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	bool "Enable compatibility for full-blown desktop systems (8kb)"
 	default n
-	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	help
 	Enable applet options and features which are not essential.
 	Many applet options have dedicated config options to (de)select them
@@ -43,9 +43,9 @@ config FREETZ_BUSYBOX___V131_EXTRA_COMPAT
 	if you plan to run busybox on desktop.
 
 config FREETZ_BUSYBOX___V131_FEDORA_COMPAT
+	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	bool "Building for Fedora distribution"
 	default n
-	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	help
 	This option makes some tools behave like they do on Fedora.
 
@@ -290,9 +290,9 @@ config FREETZ_BUSYBOX___V131_FEATURE_SUID_CONFIG_QUIET
 	permissions.
 
 config FREETZ_BUSYBOX___V131_FEATURE_PREFER_APPLETS
+	depends on FREETZ_BUSYBOX__NOEXEC_NOFORK_OPTIMIZATIONS
 	bool "exec prefers applets"
 	default n
-	depends on FREETZ_BUSYBOX__NOEXEC_NOFORK_OPTIMIZATIONS
 	help
 	This is an experimental option which directs applets about to
 	call 'exec' to try and find an applicable busybox applet before
@@ -412,10 +412,10 @@ config FREETZ_BUSYBOX___V131_NOMMU
 # PIE can be made to work with BUILD_LIBBUSYBOX, but currently
 # build system does not support that
 config FREETZ_BUSYBOX___V131_BUILD_LIBBUSYBOX
+	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	bool "Build shared libbusybox"
 	default n
 	depends on !FREETZ_BUSYBOX___V131_FEATURE_PREFER_APPLETS && !FREETZ_BUSYBOX___V131_PIE && !FREETZ_BUSYBOX___V131_STATIC
-	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	help
 	Build a shared library libbusybox.so.N.N.N which contains all
 	busybox code.
@@ -721,9 +721,9 @@ endchoice
 comment "Library Tuning"
 
 config FREETZ_BUSYBOX___V131_FEATURE_USE_BSS_TAIL
+	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	bool "Use the end of BSS page"
 	default n
-	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	help
 	Attempt to reclaim a small unused part of BSS.
 
@@ -950,9 +950,9 @@ config FREETZ_BUSYBOX___V131_FEATURE_EDITING_ASK_TERMINAL
 	then do not turn this option on.
 
 config FREETZ_BUSYBOX___V131_LOCALE_SUPPORT
+	depends on !FREETZ_TARGET_UCLIBC_0_9_28
 	bool "Enable locale support (system needs locale for this to work)"
 	default n
-	depends on !FREETZ_TARGET_UCLIBC_0_9_28
 	help
 	Enable this if your system has locale support and you would like
 	busybox to support locale settings.
@@ -1104,10 +1104,10 @@ config FREETZ_BUSYBOX___V131_FEATURE_VERBOSE_CP_MESSAGE
 	This will cost you ~60 bytes.
 
 config FREETZ_BUSYBOX___V131_FEATURE_USE_SENDFILE
+	depends on FREETZ_KERNEL_VERSION_3_MIN
 	bool "Use sendfile system call"
 	default n
 	select FREETZ_BUSYBOX___V131_PLATFORM_LINUX
-	depends on FREETZ_KERNEL_VERSION_3_MIN
 	help
 	When enabled, busybox will use the kernel sendfile() function
 	instead of read/write loops to copy data between file descriptors
@@ -1326,9 +1326,9 @@ config FREETZ_BUSYBOX___V131_XZCAT
 	Alias to "unxz -c".
 
 config FREETZ_BUSYBOX___V131_XZ
+	depends on !FREETZ_PACKAGE_XZ
 	bool "xz -d"
 	default n
-	depends on !FREETZ_PACKAGE_XZ
 	help
 	Enable this option if you want commands like "xz -d" to work.
 	IOW: you'll get xz applet, but it will always require -d option.
@@ -4000,9 +4000,9 @@ endmenu
 menu "Linux Module Utilities"
 
 config FREETZ_BUSYBOX___V131_MODPROBE_SMALL
+	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	bool "Simplified modutils"
 	default n
-	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	help
 	Build smaller (~1.5 kbytes), simplified module tools.
 
@@ -4029,26 +4029,26 @@ config FREETZ_BUSYBOX___V131_MODPROBE_SMALL
 	/etc/modules/$module_name files.
 
 config FREETZ_BUSYBOX___V131_DEPMOD
+	depends on !FREETZ_PACKAGE_MODULE_INIT_TOOLS_depmod
 	bool "depmod (27 kb)"
 	default n
 	select FREETZ_BUSYBOX___V131_PLATFORM_LINUX
-	depends on !FREETZ_PACKAGE_MODULE_INIT_TOOLS_depmod
 	help
 	depmod generates modules.dep (and potentially modules.alias
 	and modules.symbols) that contain dependency information
 	for modprobe.
 config FREETZ_BUSYBOX___V131_INSMOD
+	depends on !FREETZ_PACKAGE_MODULE_INIT_TOOLS_insmod
 	bool "insmod (22 kb)"
 	default n
 	select FREETZ_BUSYBOX___V131_PLATFORM_LINUX
-	depends on !FREETZ_PACKAGE_MODULE_INIT_TOOLS_insmod
 	help
 	insmod is used to load specified modules in the running kernel.
 config FREETZ_BUSYBOX___V131_LSMOD
+	depends on !FREETZ_PACKAGE_MODULE_INIT_TOOLS_lsmod
 	bool "lsmod (1.9 kb)"
 	default n
 	select FREETZ_BUSYBOX___V131_PLATFORM_LINUX
-	depends on !FREETZ_PACKAGE_MODULE_INIT_TOOLS_lsmod
 	help
 	lsmod is used to display a list of loaded modules.
 
@@ -4061,17 +4061,17 @@ config FREETZ_BUSYBOX___V131_FEATURE_LSMOD_PRETTY_2_6_OUTPUT
 	the format of module-init-tools for Linux kernel 2.6.
 	Increases size somewhat.
 config FREETZ_BUSYBOX___V131_MODINFO
+	depends on !FREETZ_PACKAGE_MODULE_INIT_TOOLS_modinfo
 	bool "modinfo (24 kb)"
 	default n
 	select FREETZ_BUSYBOX___V131_PLATFORM_LINUX
-	depends on !FREETZ_PACKAGE_MODULE_INIT_TOOLS_modinfo
 	help
 	Show information about a Linux Kernel module
 config FREETZ_BUSYBOX___V131_MODPROBE
+	depends on !FREETZ_PACKAGE_MODULE_INIT_TOOLS_modprobe
 	bool "modprobe (28 kb)"
 	default n
 	select FREETZ_BUSYBOX___V131_PLATFORM_LINUX
-	depends on !FREETZ_PACKAGE_MODULE_INIT_TOOLS_modprobe
 	help
 	Handle the loading of modules, and their dependencies on a high
 	level.
@@ -4087,10 +4087,10 @@ config FREETZ_BUSYBOX___V131_FEATURE_MODPROBE_BLACKLIST
 	hardware autodetection scripts to load modules like evdev, frame
 	buffer drivers etc.
 config FREETZ_BUSYBOX___V131_RMMOD
+	depends on !FREETZ_PACKAGE_MODULE_INIT_TOOLS_rmmod
 	bool "rmmod (3.3 kb)"
 	default n
 	select FREETZ_BUSYBOX___V131_PLATFORM_LINUX
-	depends on !FREETZ_PACKAGE_MODULE_INIT_TOOLS_rmmod
 	help
 	rmmod is used to unload specified modules from the kernel.
 
@@ -4284,11 +4284,11 @@ config FREETZ_BUSYBOX___V131_BLKDISCARD
 	help
 	blkdiscard discards sectors on a given device.
 config FREETZ_BUSYBOX___V131_BLKID
+	depends on FREETZ_PATCH_FREETZMOUNT
 	bool "blkid (12 kb)"
 	default n
 	select FREETZ_BUSYBOX___V131_PLATFORM_LINUX
 	select FREETZ_BUSYBOX___V131_VOLUMEID
-	depends on FREETZ_PATCH_FREETZMOUNT
 	help
 	Lists labels and UUIDs of all filesystems.
 
@@ -4362,9 +4362,9 @@ config FREETZ_BUSYBOX___V131_FEATURE_EJECT_SCSI
 	Add the -s option to eject, this allows to eject SCSI-Devices and
 	usb-storage devices.
 config FREETZ_BUSYBOX___V131_FALLOCATE
+	depends on FREETZ_TARGET_UCLIBC_0_9_33
 	bool "fallocate (4.1 kb)"
 	default n
-	depends on FREETZ_TARGET_UCLIBC_0_9_33
 	help
 	Preallocate space for files.
 config FREETZ_BUSYBOX___V131_FATATTR
@@ -4668,10 +4668,10 @@ config FREETZ_BUSYBOX___V131_LSUSB
 
 	This version uses sysfs (/sys/bus/usb/devices) only.
 config FREETZ_BUSYBOX___V131_MDEV
+	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
 	bool "mdev (17 kb)"
 	default n
 	select FREETZ_BUSYBOX___V131_PLATFORM_LINUX
-	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
 	help
 	mdev is a mini-udev implementation for dynamically creating device
 	nodes in the /dev directory.
@@ -4755,18 +4755,18 @@ config FREETZ_BUSYBOX___V131_FEATURE_MESG_ENABLE_ONLY_GROUP
 	If you set this option to N, "mesg y" will enable writing
 	by anybody at all. This is not recommended.
 config FREETZ_BUSYBOX___V131_MKE2FS
+	depends on !FREETZ_PACKAGE_E2FSPROGS_E2MAKING
 	bool "mke2fs (10 kb)"
 	default n
 	select FREETZ_BUSYBOX___V131_PLATFORM_LINUX
-	depends on !FREETZ_PACKAGE_E2FSPROGS_E2MAKING
 	help
 	Utility to create EXT2 filesystems.
 
 config FREETZ_BUSYBOX___V131_MKFS_EXT2
+	depends on !FREETZ_PACKAGE_E2FSPROGS_E2MAKING
 	bool "mkfs.ext2 (10 kb)"
 	default n
 	select FREETZ_BUSYBOX___V131_PLATFORM_LINUX
-	depends on !FREETZ_PACKAGE_E2FSPROGS_E2MAKING
 	help
 	Alias to "mke2fs".
 config FREETZ_BUSYBOX___V131_MKFS_MINIX
@@ -4951,10 +4951,10 @@ config FREETZ_BUSYBOX___V131_NOLOGIN_DEPENDENCIES
 	If you know these will be available externally you can
 	disable this option.
 config FREETZ_BUSYBOX___V131_NSENTER
+	depends on FREETZ_KERNEL_VERSION_3_10_MIN && !FREETZ_AVM_PROP_UCLIBC_0_9_28 && !FREETZ_AVM_PROP_UCLIBC_0_9_29 && !FREETZ_AVM_PROP_UCLIBC_0_9_32
 	bool "nsenter (6.5 kb)"
 	default n
 	select FREETZ_BUSYBOX___V131_PLATFORM_LINUX
-	depends on FREETZ_KERNEL_VERSION_3_10_MIN && !FREETZ_AVM_PROP_UCLIBC_0_9_28 && !FREETZ_AVM_PROP_UCLIBC_0_9_29 && !FREETZ_AVM_PROP_UCLIBC_0_9_32
 	help
 	Run program with namespaces of other processes.
 config FREETZ_BUSYBOX___V131_PIVOT_ROOT
@@ -6110,10 +6110,10 @@ config FREETZ_BUSYBOX___V131_NANDWRITE
 	Write to the specified MTD device, with bad blocks awareness
 
 config FREETZ_BUSYBOX___V131_NANDDUMP
+	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	bool "nanddump (5.2 kb)"
 	default n
 	select FREETZ_BUSYBOX___V131_PLATFORM_LINUX
-	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	help
 	Dump the content of raw NAND chip
 config FREETZ_BUSYBOX___V131_PARTPROBE
@@ -6147,10 +6147,10 @@ config FREETZ_BUSYBOX___V131_READAHEAD
 	As readahead(2) blocks until each file has been read, it is best to
 	run this applet as a background job.
 config FREETZ_BUSYBOX___V131_RFKILL
+	depends on !FREETZ_KERNEL_VERSION_2_6_13
 	bool "rfkill (4.4 kb)"
 	default n # doesn't build on Ubuntu 9.04
 	select FREETZ_BUSYBOX___V131_PLATFORM_LINUX
-	depends on !FREETZ_KERNEL_VERSION_2_6_13
 	help
 	Enable/disable wireless devices.
 
@@ -6210,57 +6210,57 @@ config FREETZ_BUSYBOX___V131_TTYSIZE
 	error, but returns default 80x24.
 	Usage in shell scripts: width=`ttysize w`.
 config FREETZ_BUSYBOX___V131_UBIRENAME
+	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	bool "ubirename (2.4 kb)"
 	default n
 	select FREETZ_BUSYBOX___V131_PLATFORM_LINUX
-	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	help
 	Utility to rename UBI volumes
 config FREETZ_BUSYBOX___V131_UBIATTACH
+	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	bool "ubiattach (4.2 kb)"
 	default n
 	select FREETZ_BUSYBOX___V131_PLATFORM_LINUX
-	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	help
 	Attach MTD device to an UBI device.
 
 config FREETZ_BUSYBOX___V131_UBIDETACH
+	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	bool "ubidetach (4.1 kb)"
 	default n
 	select FREETZ_BUSYBOX___V131_PLATFORM_LINUX
-	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	help
 	Detach MTD device from an UBI device.
 
 config FREETZ_BUSYBOX___V131_UBIMKVOL
+	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	bool "ubimkvol (5.3 kb)"
 	default n
 	select FREETZ_BUSYBOX___V131_PLATFORM_LINUX
-	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	help
 	Create a UBI volume.
 
 config FREETZ_BUSYBOX___V131_UBIRMVOL
+	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	bool "ubirmvol (4.9 kb)"
 	default n
 	select FREETZ_BUSYBOX___V131_PLATFORM_LINUX
-	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	help
 	Delete a UBI volume.
 
 config FREETZ_BUSYBOX___V131_UBIRSVOL
+	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	bool "ubirsvol (4.2 kb)"
 	default n
 	select FREETZ_BUSYBOX___V131_PLATFORM_LINUX
-	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	help
 	Resize a UBI volume.
 
 config FREETZ_BUSYBOX___V131_UBIUPDATEVOL
+	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	bool "ubiupdatevol (5.2 kb)"
 	default n
 	select FREETZ_BUSYBOX___V131_PLATFORM_LINUX
-	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	help
 	Update a UBI volume.
 config FREETZ_BUSYBOX___V131_VOLNAME
@@ -6294,9 +6294,9 @@ endmenu
 menu "Networking Utilities"
 
 config FREETZ_BUSYBOX___V131_FEATURE_IPV6
+	depends on FREETZ_TARGET_IPV6_SUPPORT
 	bool "Enable IPv6 support"
 	default n
-	depends on FREETZ_TARGET_IPV6_SUPPORT
 	help
 	Enable IPv6 support in busybox.
 	This adds IPv6 support in the networking applets.
@@ -7168,10 +7168,10 @@ config FREETZ_BUSYBOX___V131_FEATURE_TELNET_WIDTH
 	default n
 	depends on FREETZ_BUSYBOX___V131_TELNET
 config FREETZ_BUSYBOX___V131_TELNETD
+	depends on FREETZ_ADD_TELNETD || (FREETZ_AVM_HAS_TELNETD && !FREETZ_REMOVE_TELNETD)
 	bool "telnetd (12 kb)"
 	default n
 	select FREETZ_BUSYBOX___V131_FEATURE_SYSLOG
-	depends on FREETZ_ADD_TELNETD || (FREETZ_AVM_HAS_TELNETD && !FREETZ_REMOVE_TELNETD)
 	help
 	A daemon for the TELNET protocol, allowing you to log onto the host
 	running the daemon. Please keep in mind that the TELNET protocol
@@ -7350,9 +7350,9 @@ config FREETZ_BUSYBOX___V131_VCONFIG
 	help
 	Creates, removes, and configures VLAN interfaces
 config FREETZ_BUSYBOX___V131_WGET
+	depends on !FREETZ_PACKAGE_WGET || FREETZ_WGET_ALWAYS_AVAILABLE
 	bool "wget (38 kb)"
 	default n
-	depends on !FREETZ_PACKAGE_WGET || FREETZ_WGET_ALWAYS_AVAILABLE
 	help
 	wget is a utility for non-interactive download of files from HTTP
 	and FTP servers.
@@ -7837,9 +7837,9 @@ config FREETZ_BUSYBOX___V131_KILLALL5
 	in its own session, so it won't kill the shell that is running
 	the script it was called from.
 config FREETZ_BUSYBOX___V131_LSOF
+	depends on !FREETZ_PACKAGE_LSOF
 	bool "lsof (3.4 kb)"
 	default n
-	depends on !FREETZ_PACKAGE_LSOF
 	help
 	Show open files in the format of:
 	PID <TAB> /path/to/executable <TAB> /path/to/opened/file
@@ -8294,8 +8294,8 @@ config FREETZ_BUSYBOX___V131_SH_IS_ASH
 	the name 'sh' (and not 'ash').
 
 config FREETZ_BUSYBOX___V131_SH_IS_HUSH
-	bool "hush"
 	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
+	bool "hush"
 	help
 	Choose hush to be the shell executed by 'sh' name.
 	The hush code will be built into busybox. If you don't select
@@ -8780,10 +8780,10 @@ config FREETZ_BUSYBOX___V131_FEATURE_SH_EXTRA_QUIET
 	Remove the busybox introduction when starting a shell.
 
 config FREETZ_BUSYBOX___V131_FEATURE_SH_STANDALONE
+	depends on FREETZ_BUSYBOX__NOEXEC_NOFORK_OPTIMIZATIONS
 	bool "Standalone shell"
 	default n
 	depends on FREETZ_BUSYBOX___V131_ASH || FREETZ_BUSYBOX___V131_HUSH || FREETZ_BUSYBOX___V131_SH_IS_ASH || FREETZ_BUSYBOX___V131_BASH_IS_ASH || FREETZ_BUSYBOX___V131_SH_IS_HUSH || FREETZ_BUSYBOX___V131_BASH_IS_HUSH
-	depends on FREETZ_BUSYBOX__NOEXEC_NOFORK_OPTIMIZATIONS
 	help
 	This option causes busybox shells to use busybox applets
 	in preference to executables in the PATH whenever possible. For
@@ -8802,10 +8802,10 @@ config FREETZ_BUSYBOX___V131_FEATURE_SH_STANDALONE
 	for applets started this way.
 
 config FREETZ_BUSYBOX___V131_FEATURE_SH_NOFORK
+	depends on FREETZ_BUSYBOX__NOEXEC_NOFORK_OPTIMIZATIONS
 	bool "Run 'nofork' applets directly"
 	default n
 	depends on FREETZ_BUSYBOX___V131_ASH || FREETZ_BUSYBOX___V131_HUSH || FREETZ_BUSYBOX___V131_SH_IS_ASH || FREETZ_BUSYBOX___V131_BASH_IS_ASH || FREETZ_BUSYBOX___V131_SH_IS_HUSH || FREETZ_BUSYBOX___V131_BASH_IS_HUSH
-	depends on FREETZ_BUSYBOX__NOEXEC_NOFORK_OPTIMIZATIONS
 	help
 	This option causes busybox shells to not execute typical
 	fork/exec/wait sequence, but call <applet>_main directly,
@@ -8866,9 +8866,9 @@ endmenu
 menu "System Logging Utilities"
 
 config FREETZ_BUSYBOX___V131_KLOGD
+	depends on FREETZ_AVM_HAS_PRINTK
 	bool "klogd (5.7 kb)"
 	default n
-	depends on FREETZ_AVM_HAS_PRINTK
 	help
 	klogd is a utility which intercepts and logs all
 	messages from the Linux kernel and sends the messages
