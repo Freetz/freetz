@@ -325,7 +325,7 @@ get_avm_firmware_version() {
 }
 
 check_if_fritzbox_uses_xml_based_phonebook() {
-	# source: http://www.wehavemorefun.de/fritzbox/CONFIG_FONBOOK2
+	# source: http://web.archive.org/20200701000000/www.wehavemorefun.de/fritzbox/CONFIG_FONBOOK2
 	[ "$(get_avm_config_variable CONFIG_FONBOOK2)" = "y" ] && return 0
 
 	echo >&2 "Error: this box doesn't seem to use XML-based phonebook"
@@ -349,7 +349,7 @@ retrieve_book_pbd() {
 	local internal_book_id=255
 
 	book_ids="all_user_defined"
-	# source: http://www.wehavemorefun.de/fritzbox/Online-Telefonbuch
+	# source: http://web.archive.org/20200701000000/www.wehavemorefun.de/fritzbox/Online-Telefonbuch
 	[ "$(get_avm_config_variable CONFIG_ONLINEPB)" = "y" ] && book_ids="${book_ids} ${online_book_ids}"
 	[ "${SHOW_INTERNAL}" -ne 0 ]                           && book_ids="${book_ids} ${internal_book_id}"
 
