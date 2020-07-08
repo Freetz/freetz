@@ -18,7 +18,7 @@ Things you could do to [SUPPORT](SUPPORT.md) Freetz-NG.<br>
 [Patches](patches/README.md)<br>
 [Themes](themes/README.md)<br>
 
-### [Wiki](wiki/README.md)
+### [Wiki](wiki/README.md) (abandon)
 
 [//]: # ( WikiDYN )
 
