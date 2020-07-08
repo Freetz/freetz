@@ -1,6 +1,11 @@
+comment "Tinc (not available, needs kernel modules)"
+	depends on \
+		!( FREETZ_REPLACE_MODULE_AVAILABLE || !FREETZ_AVM_HAS_BUGON_IN_NET_CORE )
+
 config FREETZ_PACKAGE_TINC
 	bool "Tinc 1.0.35/1.1pre17"
 	default n
+	depends on FREETZ_REPLACE_MODULE_AVAILABLE || !FREETZ_AVM_HAS_BUGON_IN_NET_CORE
 	select FREETZ_LIB_libm      if !FREETZ_PACKAGE_TINC_STATIC && FREETZ_PACKAGE_TINC_VERSION_1_1
 	select FREETZ_LIB_liblzo2   if !FREETZ_PACKAGE_TINC_STATIC
 	select FREETZ_LIB_libz      if !FREETZ_PACKAGE_TINC_STATIC
