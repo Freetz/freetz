@@ -1,5 +1,16 @@
 # NEWS
 
+ * __2020-07-08__<br>
+   In den letzten Tagen gab es einige Änderungen an der Busybox. So wurde die experimentelle Version<br>
+   1.32 hinzugefügt und kann nach Auswähl im menuconfig getestet werden. Ausserdem wurden viel Optionen<br>
+   aktiviert die in der Busybox von AVM bereits aktviert sind. Diese werden grösstenteils nicht von<br>
+   AVM genutzt, in machen Fällen werden dadurch aber Probleme verursacht wie keine LTE-Funktionalität<br>
+   mit der 6890.<br>
+    - Meistens wurden neue Applets zusätzlich aktiviert<br>
+    - Die meisten Änderungen betreffen FritzOS ab 7.0<br>
+   
+   Ich hab bislang keine Probleme festgestellt...<br>
+ 
  * __2020-07-06__<br>
    Eigener Kernel und Module für aktuelle FritzOS<br>
    Für die 7590 (und ähnliche GRX5) gibt es nach wie vor keinen replace-kernel, da noch niemand das neue<br>
