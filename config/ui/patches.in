@@ -1624,6 +1624,15 @@ config FREETZ_DISABLE_SERIAL_CONSOLE
 		want to use the serial port exclusively with another application,
 		e.g. minicom.
 
+config FREETZ_PATCH_DISABLE_AVM_WATCHDOG
+	bool "Disable AVM watchdog"
+	default n
+	help
+		This disables the AVM watchdog on system start.
+		The AVM watchdog reboots the device if
+		 - system start takes longer than 2-5 minutes
+		 - some defined AVM daemon crashes
+
 config FREETZ_RESTORE_DEBUG_CFG_SUPPORT
 	bool "Restore support for /var/flash/debug.cfg"
 	depends on FREETZ_AVM_VERSION_07_1X_MAX

@@ -80,6 +80,16 @@ start() {
 	# udev: reload rules after link targets are unpacked
 	[ "$FREETZ_CUSTOM_UDEV_RULES" == "y" ] && udevadm control --reload-rules
 
+	# avm watchdog
+	if [ "$FREETZ_PATCH_DISABLE_AVM_WATCHDOG" == "y" ]; then
+		echo -n "Disabling avm watchdog ... "
+		if [ ! -c /dev/watchdog ]; then
+			echo "unavailable."
+		else
+			echo init-done > /dev/watchdog && echo disable > /dev/watchdog && echo "done." || echo "failed."
+		fi
+	fi
+
 	# set ipv6
 	if [ "$FREETZ_TARGET_IPV6_SUPPORT" == "y" -a -d /proc/sys/net/ipv6 ]; then
 		echo "$MOD_IPV6_ASSIGN" | grep -v "^ *#" | while read -r if6 ip6; do
