@@ -1,5 +1,12 @@
 # NEWS
 
+ * __2020-07-11__<br>
+   Aktueller Status der 7590 mit FritzOS 7.20<br>
+    - Bei nicht eingehängten Datenträgern den Patch ```Remove UMTS``` nicht auswählen.<br>
+    - Bei durch den Watchdog ausgelöste Reboots ("Bootloop") den Patch ```Disable AVM watchdog``` auswählen.<br>
+    - Es können noch keine Kernelmodule gebaut werden, Sourcen von AVM gibt es bereits.<br>
+    - Für OpenVPN usw wird vermutlich ```yf_patchkernel``` weiterhin benötigt.<br>
+
  * __2020-07-08__<br>
    In den letzten Tagen gab es einige Änderungen an der Busybox. So wurde die experimentelle Version<br>
    1.32 hinzugefügt und kann nach Auswähl im menuconfig getestet werden. Ausserdem wurden viel Optionen<br>
@@ -38,6 +45,9 @@
    <br>
    Dann macht es halt möglich!!1<br>
    Hiervon unabhängig erfuhr AVM [vs. Cybits](https://www.heise.de/newsticker/meldung/AVM-vs-Cybits-Gericht-staerkt-GPL-1389738.html) bereits leidlich, dass die [Bedingungen der GPL nicht optional](https://gpl-violations.org/news/20110620-avm-cybits/) sind.<br>
+
+ * __2020-06-30__<br>
+   Für den 546E wurden von AVM pünktlich zum erreichen des EOS (End of Support) erstmalig Sourcen veröffentlicht!
 
  * __2020-06-12__<br>
    AVM verweigert die Herausgabe von Sourcecode aufgrund "Verjährung".<br>
@@ -304,7 +314,7 @@
 
  * __2019-02-04__<br>
    Patch [modify-counter](patches/MODIFY_COUNTER.md) hinzugefügt.<br>
-   Mit diesem Patch wird der Online-Zähler von AVM verändert, es werden Gigabyte und Tage engezeigt.<br>
+   Mit diesem Patch wird der Online-Zähler von AVM verändert, es werden Gigabyte und Tage angezeigt.<br>
    Siehe [r15099](https://trac.boxmatrix.info/freetz-ng/changeset/15099/freetz-ng)
    / [e6d16b75](https://github.com/Freetz-NG/freetz-ng/commit/e6d16b75436fdb8322434b5e380ae5e05d9ec604)<br>
    Siehe [r15119](https://trac.boxmatrix.info/freetz-ng/changeset/15119/freetz-ng)
