@@ -57,7 +57,7 @@ config FREETZ_NFS_SUPPORT_AVAILABLE
 	bool
 	default y if \
 		(FREETZ_NFS_SUPPORT_NEEDS_REPLACE_KERNEL && FREETZ_REPLACE_KERNEL)                 || \
-		FREETZ_NFS_SUPPORT_AVAILABLE_AS_MODULE                                             || \
+		(FREETZ_NFS_SUPPORT_AVAILABLE_AS_MODULE && FREETZ_REPLACE_MODULE_AVAILABLE )       || \
 		FREETZ_SYSTEM_TYPE_IKS_VX180                                                       || \
 		(FREETZ_SYSTEM_TYPE_UR8 && FREETZ_KERNEL_VERSION_2_6_32 && !FREETZ_REPLACE_KERNEL)
 	default n
