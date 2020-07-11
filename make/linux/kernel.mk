@@ -145,6 +145,7 @@ $(TARGET_TOOLCHAIN_KERNEL_VERSION_HEADER): $(TOPDIR)/.config $(KERNEL_HEADERS_DE
 	@touch $@
 
 ifeq ($(strip $(FREETZ_KERNEL_VERSION_3_10_MIN)),y)
+ifneq ($(strip $(FREETZ_AVM_PROP_KERNEL_CONFIG_AREA_SIZE_0)),y)
 KERNEL_BUILD_DEPENDENCIES += $(AVM_KERNEL_CONFIG_DIR)/avm_kernel_config_area.S
 
 $(AVM_KERNEL_CONFIG_DIR): | $(KERNEL_DIR)/.unpacked
@@ -167,6 +168,7 @@ $(AVM_KERNEL_CONFIG_DIR)/avm_kernel_config_area.S: $(AVM_KERNEL_CONFIG_DIR)/avm_
 
 .PHONY: avm_kernel_config
 avm_kernel_config: $(AVM_KERNEL_CONFIG_DIR)/avm_kernel_config_area.S
+endif
 endif
 
 $(KERNEL_SOURCE_DIR)$(KERNEL_IMAGE_BUILD_SUBDIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.prepared $(KERNEL_BUILD_DEPENDENCIES) | $(TOOLS_DIR)/lzma $(TOOLS_DIR)/lzma2eva
