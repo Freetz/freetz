@@ -1,0 +1,16 @@
+--- device.c
++++ device.c
+@@ -50,6 +50,13 @@
+ 
+ void device_free(struct device *d)
+ {
++	/*
++		This code causes a segmentation fault.
++		Simply returning causes a memory leak, but at least it works
++		Note: Memory should be returned when process ends
++	*/
++	return;
++
+ 	if (d == NULL) {
+ 		return;
+ 	}
