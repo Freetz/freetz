@@ -39,6 +39,7 @@ $(FAKEROOT_MAINARCH_DIR)/.configured: $(FAKEROOT_DIR)/.unpacked
 		../../configure \
 		--prefix=$(FAKEROOT_DESTDIR) \
 		--enable-shared \
+		$(if $(findstring Microsoft,$(shell uname -r)),--with-ipc=tcp,) \
 		$(DISABLE_NLS) \
 	);
 	touch $@
@@ -54,6 +55,8 @@ $(FAKEROOT_BIARCH_DIR)/.configured: $(FAKEROOT_DIR)/.unpacked
 		../../configure \
 		--prefix=$(FAKEROOT_DESTDIR) \
 		--enable-shared \
+		$(if $(findstring Microsoft,$(shell uname -r)),--with-ipc=tcp,) \
+		$(if $(findstring Microsoft,$(shell uname -r)),--host=$(shell uname -m),) \
 		$(DISABLE_NLS) \
 	);
 	touch $@
