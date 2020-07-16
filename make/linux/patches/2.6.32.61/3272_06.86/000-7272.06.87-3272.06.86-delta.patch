@@ -1,0 +1,320 @@
+This patch has been created from AVM's opensrc packages for 7272.06.87 and 3272.06.86
+by applying to the kernel sources they contain the following command:
+
+    diff -durN --no-dereference -x fusiv_src -x flash_update 7272.06.87 3272.06.86 > this.patch
+
+--- linux-2.6.32/arch/mips/include/asm/mach-infineon/ar10/ar10.h	2018-12-19 16:54:21.000000000 +0100
++++ linux-2.6.32/arch/mips/include/asm/mach-infineon/ar10/ar10.h	2014-03-03 16:17:45.000000000 +0100
+@@ -263,53 +263,6 @@
+ #define IFX_SLAVE_BCU_IRNCR                     ((volatile u32*)(0x00FC + IFX_SLAVE_BCU_BASE_ADDR))
+ 
+ 
+-/***********************************************************************/
+-/*  Module      :  HSNAND register address and bits                    */
+-/***********************************************************************/
+-#define IFX_HSNAND_BASE				(KSEG1 | 0x1E100400)
+-
+-/****** HSNAND REGISTERS *******/
+-#define IFX_NDAC_CTL1				((volatile u32*)(0x0010 + IFX_HSNAND_BASE))
+-#define IFX_NDAC_CTL2				((volatile u32*)(0x0014 + IFX_HSNAND_BASE))
+-#define IFX_BASE_A				((volatile u32*)(0x0018 + IFX_HSNAND_BASE))
+-#define IFX_RX_CNT				((volatile u32*)(0x001C + IFX_HSNAND_BASE))
+-#define IFX_DPLUS_CTRL				((volatile u32*)(0x0020 + IFX_HSNAND_BASE))
+-#define IFX_HSNAND_INTR_MASK_CTRL		((volatile u32*)(0x0024 + IFX_HSNAND_BASE))
+-#define IFX_HSNAND_INTR_STAT			((volatile u32*)(0x0028 + IFX_HSNAND_BASE))
+-#define IFX_HSMD_CTRL				((volatile u32*)(0x0030 + IFX_HSNAND_BASE))
+-#define IFX_CS_BASE_A				((volatile u32*)(0x0034 + IFX_HSNAND_BASE))
+-#define IFX_NAND_INFO				((volatile u32*)(0X0038 + IFX_HSNAND_BASE))
+-
+-#define IFX_HSNAND_CE_SEL			(0xF<<3)
+-#define IFX_HSNAND_CE_SEL_S			3
+-#define IFX_HSNAND_CE_SEL_NONE			0
+-#define IFX_HSNAND_CE_SEL_CS0			1
+-#define IFX_HSNAND_CE_SEL_CS1			2
+-#define IFX_HSNAND_CE_SEL_CS2 			4
+-#define IFX_HSNAND_CE_SEL_CS3  			8
+-
+-#define IFX_HSNAND_FSM				(1<<2)
+-#define IFX_HSNAND_FSM_S			2
+-enum {
+-    IFX_HSNAND_FSM_DISABLED = 0,
+-    IFX_HSNAND_FSM_ENABLED,
+-};
+-
+-#define IFX_HSNAND_ENR				(3<<0)
+-#define IFX_HSNAND_ENR_S			0
+-enum {
+-    IFX_HSNAND_ENR_XIP = 0,
+-    IFX_HSNAND_ENR_HSDMA,
+-    IFX_HSNAND_ENR_IO,
+-    IFX_HSNAND_ENR_NONE
+-};
+-
+-#define IFX_HSNAND_XFER_SEL			(7<<0)
+-#define IFX_HSNAND_XFER_SEL_S			7
+-enum {
+-    IFX_HSNAND_NO_XFER = 0,
+-    IFX_HSNAND_START_XFER
+-};
+ 
+ /***********************************************************************/
+ /*  Module      :  MEI register address and bits                       */
+@@ -887,12 +840,10 @@
+ #define IFX_EBU_PCC_INT_OUT                     ((volatile u32*)(IFX_EBU+ 0x00A8))
+ #define IFX_EBU_PCC_IRS                         ((volatile u32*)(IFX_EBU+ 0x00AC))
+ 
+-#define IFX_EBU_ECC_IEN				((volatile u32*)(IFX_EBU+ 0x00A4))
+ #define IFX_EBU_NAND_CON                        (volatile u32*)(IFX_EBU + 0xB0)
+ #define IFX_EBU_NAND_WAIT                       (volatile u32*)(IFX_EBU + 0xB4)
+ #define IFX_EBU_NAND_ECC0                       (volatile u32*)(IFX_EBU + 0xB8)
+ #define IFX_EBU_NAND_ECC_AC                     (volatile u32*)(IFX_EBU + 0xBC)
+-#define IFX_EBU_NAND_ECC_CR			(volatile u32*)(IFX_EBU + 0xC0)
+ #define IFX_EBU_NAND_CON_NANDM                  (1<<0)
+ #define IFX_EBU_NAND_CON_NANDM_S                 0
+ enum {
+@@ -907,20 +858,6 @@
+     IFX_EBU_NAND_CON_CSMUX_E_ENABLE,
+      };
+ 
+-#define IFX_EBU_NAND_CON_ALE_P			(1<<2)
+-#define IFX_EBU_NAND_CON_ALE_P_S		2
+-enum {
+-    IFX_EBU_NAND_CON_ALE_P_HIGH = 0,
+-    IFX_EBU_NAND_CON_ALE_P_LOW,
+-};
+-
+-#define IFX_EBU_NAND_CON_CLE_P 			(1<<3)
+-#define IFX_EBU_NAND_CON_CLE_P_S		3
+-enum {
+-    IFX_EBU_NAND_CON_CLE_P_HIGH = 0,
+-    IFX_EBU_NAND_CON_CLE_P_LOW,
+-};
+-
+ #define IFX_EBU_NAND_CON_CS_P                   (1<<4)
+ #define IFX_EBU_NAND_CON_CS_P_S                 4
+ enum {
+@@ -962,51 +899,7 @@
+     IFX_EBU_NAND_CON_OUT_CS1,
+      };
+ 
+-#define IFX_EBU_NAND_CON_ECC			(1<<31)
+-#define IFX_EBU_NAND_CON_ECC_S			31
+-enum {
+-    IFX_EBU_NAND_CON_ECC_OFF = 0,
+-    IFX_EBU_NAND_CON_ECC_ON,
+-};
+-
+-#define IFX_EBU_NAND_CON_LAT_EN			(0x3F << 18)
+-#define IFX_EBU_NAND_CON_LAT_EN_S		18
+-enum {
+-    IFX_EBU_NAND_CON_LAT_EN_DEF = 0x3D,
+-};
+-
+-#define IFX_EBU_NAND_ECC_CRM			(1<<31)
+-#define IFX_EBU_NAND_ECC_CRM_S			31
+-enum {
+-    IFX_EBU_NAND_ECC_CRM_DISABLE = 0,
+-    IFX_EBU_NAND_ECC_CRM_ENABLE,
+-};
+-
+-#define IFX_EBU_NAND_ECC_PAGE			(3<<14)
+-#define IFX_EBU_NAND_ECC_PAGE_S			14
+-enum {
+-    IFX_EBU_NAND_ECC_PAGE_256 = 0,
+-    IFX_EBU_NAND_ECC_PAGE_512,
+-    IFX_EBU_NAND_ECC_PAGE_RES,
+-};
+-
+-#define IFX_EBU_ECC_IEN_IR			(1<<5)
+-#define IFX_EBU_ECC_IEN_IR_S			5
+-enum {
+-   IFX_EBU_ECC_IEN_DISABLE = 0,
+-   IFX_EBU_ECC_IEN_ENABLE,
+-};
+-
+-#define IFX_EBU_NAND_ECC_STATE			(3<<0)
+-#define IFX_EBU_NAND_ECC_STATE_S		0
+-
+-#define IFX_EBU_NAND_ECC_ROW_VAL		(0x1FF<<5)
+-#define IFX_EBU_NAND_ECC_ROW_VAL_S		5
+-
+-#define IFX_EBU_NAND_ECC_BIT_POS		(7<<2)
+-#define IFX_EBU_NAND_ECC_BIT_POS_S		2
+-
+-#define IFX_EBU_NAND_WAIT_RD                    (0x1)
++#define IFX_EBU_NAND_WAIT_RD                    (1<<0)
+ #define IFX_EBU_NAND_WAIT_BY_E                  (1<<1)
+ #define IFX_EBU_NAND_WAIT_RD_E                  (1<<2)
+ #define IFX_EBU_NAND_WAIT_WR_C                  (1<<3)
+--- linux-2.6.32/.config	2019-08-22 16:19:14.000000000 +0200
++++ linux-2.6.32/.config	2019-08-22 14:04:09.000000000 +0200
+@@ -1,7 +1,7 @@
+ #
+ # Automatically generated make config: don't edit
+ # Linux kernel version: 2.6.32.61
+-# Tue Apr  4 16:49:06 2017
++# Mon Nov 17 15:23:17 2014
+ #
+ CONFIG_MIPS=y
+ 
+@@ -754,8 +754,9 @@
+ # CONFIG_MTD_ALAUDA is not set
+ # CONFIG_MTD_NAND_COMPLETE_AVM is not set
+ CONFIG_MTD_IFX_NAND_LATCH_ENABLE=y
+-# CONFIG_MTD_IFX_NAND is not set
+-CONFIG_MTD_IFX_HSNAND=y
++CONFIG_MTD_IFX_NAND=y
++CONFIG_MTD_IFX_NAND_FLASH_SIZE=4
++# CONFIG_MTD_IFX_HSNAND is not set
+ # CONFIG_MTD_IFX_MLCNAND is not set
+ # CONFIG_NAND_CS0 is not set
+ CONFIG_NAND_CS1=y
+--- linux-2.6.32/drivers/char/avm_new/Makefile	2019-08-22 16:19:12.000000000 +0200
++++ linux-2.6.32/drivers/char/avm_new/Makefile	2019-08-22 14:04:06.000000000 +0200
+@@ -1,6 +1,6 @@
+ #############################################
+ # Makefile: automaticly generated by ./init_avm
+-#           Do 22. Aug 16:19:12 CEST 2019
++#           Do 22. Aug 14:04:06 CEST 2019
+ #############################################
+ 
+ #############################################
+--- linux-2.6.32/drivers/mtd/nand/ifxmips_mtd_dmanand.c	2018-12-19 16:54:21.000000000 +0100
++++ linux-2.6.32/drivers/mtd/nand/ifxmips_mtd_dmanand.c	2014-12-16 10:31:42.000000000 +0100
+@@ -332,7 +332,7 @@
+             eccstatus = chip->read_byte(mtd);
+             printk(KERN_ERR "{%s} Sector %d ecc 0x%x\n", "tsh_read_ecc", i, eccstatus);
+ 
+-            if ((eccstatus & 0xF) < 8) {
++            if ((eccstatus & 0xFF) < 7) {
+                 chip_ecc_status = correctable;
+             }
+         }
+@@ -444,12 +444,7 @@
+ #else
+             ifx_hsnand_ar10_update_addr(mtd, NAND_CMD_READ0, 0, page);
+             chip->read_buf(mtd, hsnand->hwecc_buffer, mtd->writesize);  
+-            {
+-                int i;
+-                for (i = 0; i < mtd->oobsize; i++) {
+-                    hsnand->hwecc_buffer[mtd->writesize + i] = chip->read_byte(mtd); 
+-                }
+-            }
++            chip->ecc.read_oob(mtd, chip, page, 1);
+ #endif
+ 
+             ifx_hsnand_setup_chipecc(chip_enable_hwecc);
+@@ -594,24 +589,24 @@
+             case no_error:
+                 break;
+             case correctable:
+-                printk(KERN_ERR "VERIFY-ERROR page: 0x%x: readwrite results correctable errors\n", page);
++                printk(KERN_ERR "VERIFY-ERROR page: %d: readwrite results correctable errors\n", page);
+                 chip->ecc.read_page_raw(mtd, chip, hsnand->tmp_buffer, page);   /*--- ifx_hsnand_read_page_hwecc(mtd, chip, hsnand->tmp_buffer, page); ---*/
+                 if(mtd->ecc_stats.failed - stats.failed) {
+-                    printk(KERN_ERR "VERIFY-ERROR on page: 0x%x: too many biterrors\n", page);
++                    printk(KERN_ERR "VERIFY-ERROR on page: %d: too many biterrors\n", page);
+ #if defined(AVM_NAND_STATISTIC)
+ 					hsnand->nandstat.writepages_ecc_uncorrectable++;
+ #endif/*--- #if defined(AVM_NAND_STATISTIC) ---*/
+                     return -EIO;
+                 }
+                 if (mtd->ecc_stats.corrected - stats.corrected) {
+-                    printk(KERN_ERR "VERIFY-ERROR on page: 0x%x: verify OK with %d biterrors\n", page, mtd->ecc_stats.corrected - stats.corrected);
++                    printk(KERN_ERR "VERIFY-ERROR on page: %d: verify OK with %d biterrors\n", page, mtd->ecc_stats.corrected - stats.corrected);
+                 }
+ #if defined(AVM_NAND_STATISTIC)
+ 				hsnand->nandstat.writepages_ecc_corrected++;
+ #endif/*--- #if defined(AVM_NAND_STATISTIC) ---*/
+                 break;
+             case uncorrectable:
+-                printk(KERN_ERR "VERIFY-ERROR on page: 0x%x: non correctable error detected\n", page);
++                printk(KERN_ERR "VERIFY-ERROR on page: %d: non correctable error detected\n", page);
+                 mtd->ecc_stats.failed++;
+ #if defined(AVM_NAND_STATISTIC)
+ 				hsnand->nandstat.writepages_ecc_uncorrectable++;
+@@ -729,13 +724,7 @@
+ {
+     struct dma_device_info *dma_dev = dma_device;
+     struct hsnand_info *hsnand = &hsnand_dev;
+-    u8 *tmp = NULL;
+    
+-    if ((int)buf % (dma_dev->rx_burst_len * 4)) {
+-        printk(KERN_ERR "{%s} mtd %s buf 0x%p\n", __func__, mtd->name, buf);
+-        tmp = buf;
+-        buf = hsnand->tmp_buffer;
+-    }
+     *IFX_RX_CNT = len;
+     dma_device_desc_setup(dma_dev, buf, len, HSNAND_CURRENT_DMA_CH);
+     dma_dev->rx_chan[HSNAND_CURRENT_DMA_CH]->open(dma_dev->rx_chan[HSNAND_CURRENT_DMA_CH]);
+@@ -743,10 +732,6 @@
+     *IFX_DPLUS_CTRL = IFX_START_HSDMA_RX;
+ 
+     wait_event(hsnand->hsnand_wait, test_and_clear_bit(HSNAND_EVENT, &hsnand->wait_flag));
+-    if (tmp) {
+-        buf = tmp;
+-        memcpy(buf, hsnand->tmp_buffer, len);
+-    }
+ 
+     return;
+ }
+@@ -795,13 +780,6 @@
+ {
+     struct dma_device_info *dma_dev = dma_device;
+     struct hsnand_info *hsnand = &hsnand_dev;
+-    u8 *tmp = NULL;
+-
+-    if ((int)buf % (dma_dev->rx_burst_len * 4)) {
+-        printk(KERN_ERR "{%s} mtd %s buf 0x%p\n", __func__, mtd->name, buf);
+-        tmp = buf;
+-        buf = hsnand->tmp_buffer;
+-    }
+ 
+     dma_device_desc_setup(dma_dev, buf, len, HSNAND_CURRENT_DMA_CH);
+     dma_dev->rx_chan[HSNAND_CURRENT_DMA_CH]->open(dma_dev->rx_chan[HSNAND_CURRENT_DMA_CH]);
+@@ -819,10 +797,6 @@
+ 
+     wait_event(hsnand->hsnand_wait, test_and_clear_bit(HSNAND_EVENT, &hsnand->wait_flag));
+ 
+-    if (tmp) {
+-        buf = tmp;
+-        memcpy(buf, hsnand->tmp_buffer, len);
+-    }
+     return;
+ }
+ 
+@@ -2481,8 +2455,6 @@
+     panic_release_device(mtd);
+     return ret;
+ }
+-#endif // defined(CONFIG_TFFS_DEV_MTDNAND)
+-
+ #if defined(AVM_NAND_STATISTIC)
+ #define PROC_NAND_PATH	"avm/nandstat"
+ /*--------------------------------------------------------------------------------*\
+@@ -2530,3 +2502,4 @@
+ }
+ #endif/*--- #if defined(AVM_NAND_STATISTIC) ---*/
+ 
++#endif // defined(CONFIG_TFFS_DEV_MTDNAND)
+--- linux-2.6.32/drivers/mtd/nand/ifxmips_mtd_nand.h	2018-12-19 16:54:21.000000000 +0100
++++ linux-2.6.32/drivers/mtd/nand/ifxmips_mtd_nand.h	2014-07-17 16:52:13.000000000 +0200
+@@ -528,7 +528,6 @@
+ };
+ 
+ struct nand_ecclayout nand_oob_64_NANDwithHWEcc = {
+-    .oobavail = 16,
+     .oobfree = {
+         {.offset = 0x04, .length = 4},
+         {.offset = 0x14, .length = 4},
+--- linux-2.6.32/net/ipv4/ip_output.c	2017-04-18 14:50:00.000000000 +0200
++++ linux-2.6.32/net/ipv4/ip_output.c	2017-01-26 15:43:23.000000000 +0100
+@@ -989,7 +989,7 @@
+ 				else
+ 					/* only the initial fragment is
+ 					   time stamped */
+-					cork->tx_flags = 0;
++					cork->flags = 0;
+ 			}
+ 			if (skb == NULL)
+ 				goto error;
