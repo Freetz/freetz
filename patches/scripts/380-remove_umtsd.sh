@@ -20,16 +20,22 @@ rm_files \
 
 if [ "$FREETZ_AVM_VERSION_07_0X_MIN" == "y" ]; then
 	rm_files \
-	  "${FILESYSTEM_MOD_DIR}/bin/mobiled" \
 	  "${FILESYSTEM_MOD_DIR}/etc/udev/rules.d/??-mobiled.rules" \
-	  "${FILESYSTEM_MOD_DIR}/etc/hotplug/udev-mobiled" \
 	  "${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libmobiled.so" \
 	  "${FILESYSTEM_MOD_DIR}/usr/share/configd/C20_mobiled.so" \
 	  "${FILESYSTEM_MOD_DIR}/usr/lua/mobile_*.lua"
 
-	modsed \
-	  '/\/etc\/hotplug\/udev-mobiled/d' \
-	  "${FILESYSTEM_MOD_DIR}/etc/udev/rules.d/??-usb*.rules"
+	if [ "$FREETZ_AVM_VERSION_07_2X_MIN" == "y" ]; then
+		# configd execs mobiled
+		echo -e '#!/bin/sh\nexit 0' > "${FILESYSTEM_MOD_DIR}/bin/mobiled"
+	else
+		rm_files \
+		  "${FILESYSTEM_MOD_DIR}/bin/mobiled" \
+		  "${FILESYSTEM_MOD_DIR}/etc/hotplug/udev-mobiled"
+		modsed \
+		  '/\/etc\/hotplug\/udev-mobiled/d' \
+		  "${FILESYSTEM_MOD_DIR}/etc/udev/rules.d/??-usb*.rules"
+	fi
 
 	modern_remove mobile
 fi
