@@ -28,10 +28,9 @@ config FREETZ_REPLACE_KERNEL_AVAILABLE
 # "kernel version used by Freetz" == "kernel version used by AVM"
 config FREETZ_REPLACE_MODULE_AVAILABLE
 	bool
-	depends on !FREETZ_SYSTEM_TYPE_IPQ40xx # evaloader-related kernel build rules need to be adjusted
-	depends on !FREETZ_SYSTEM_TYPE_QCA955x # no sources at all for this system type
-	depends on !(FREETZ_SYSTEM_TYPE_AR934x && FREETZ_AVM_VERSION_07_0X_MIN) # no kernelV4 sources
-	depends on !FREETZ_AVM_PROP_KERNEL_CONFIG_AREA_SIZE_0 # need fix for kernel-area size
+	depends on !(FREETZ_SYSTEM_TYPE_QCA955x && FREETZ_AVM_VERSION_06_9X_MAX)  # no kernel 2.6.32.61 sources for 175X
+	depends on !(FREETZ_SYSTEM_TYPE_BCM63138)                                 # no kernel 4.1.38 sources for 7581/7582
+	depends on !(FREETZ_KERNEL_VERSION_4_9_MIN && (FREETZ_SYSTEM_TYPE_PUMA7 || FREETZ_SYSTEM_TYPE_GRX5))   # no kernel 4.9.199 sources for 6591/6660
 	default y
 	help
 		Select this if only source code from a previous firmware version is available for your box.

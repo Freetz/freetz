@@ -1,0 +1,12 @@
+--- linux-4.4/net/sched/Kconfig
++++ linux-4.4/net/sched/Kconfig
+@@ -3,7 +3,8 @@
+ # 
+ 
+ menuconfig NET_SCHED
+-	def_bool y
++	bool NET_SCHED
++	default y
+ 	select NET_SCH_FIFO
+ 	select NET_SCH_FQ_CODEL
+ 	---help---
