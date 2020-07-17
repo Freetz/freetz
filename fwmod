@@ -1389,7 +1389,14 @@ if [ "$DO_MOD" -gt 0 ]; then
 					--remove-section={.comment,.pdr,.mdebug.abi32,.note.gnu.build-id} "$ko_path_dst/$bn"
 			fi
 			sizeinfo mod "$ko_path_dst/$bn"
+			found_kos="$found_kos $bn"
 		done
+		for ko in $(set | sed -rn 's/^FREETZ_MODULE_(.*)=y$/\1/p'); do
+			echo "$found_kos " | grep -q " $ko.ko " && continue
+			warn "File of kernel module not found: $ko.ko"
+			kos_missing=y
+		done
+		[ -n "$kos_missing" ] && error 1 "Enable missing with 'make kernel-menuconfig' as (M)odule (and push a pull request)."
 
 		echo1 "generating modules.dep"
 		DEPMOD_TEMP="$(mktemp)"
