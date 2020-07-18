@@ -1,5 +1,10 @@
 # NEWS
 
+ * __2020-07-18__<br>
+   Mit dem Branch ```kernel49``` können Kernelmodule für die neuesten FritzOS von 7590/7580/6890/7583VDSL<br>
+   gebaut werden. Es ist nicht bekannt ob solche Module geladen werden können, noch ob ein so erstelltes<br>
+   Image überhaupt startet.<br>
+
  * __2020-07-11__<br>
    Aktueller Status der 7590 mit FritzOS 7.20<br>
     - Bei nicht eingehängten Datenträgern den Patch ```Remove UMTS``` nicht auswählen.<br>
