@@ -620,7 +620,7 @@
   * **<u>TIFF utils 4.0.7 (binary only)</u><a id='tiff'></a>**<br>
     Various utilities to manupulate/convert images to/from TIFF format.
 
-  * **[Tinc 1.0.35/1.1pre17](tinc.md)<a id='tinc'></a>**<br>
+  * **[Tinc 1.0.36/1.1pre17](tinc.md)<a id='tinc'></a>**<br>
     Tinc is a Virtual Private Network (VPN) daemon that uses tunneling and encryption to create a secure private network between hosts on the Internet.
 
   * **[Tinyproxy 1.8.4](tinyproxy.md)<a id='tinyproxy'></a>**<br>
