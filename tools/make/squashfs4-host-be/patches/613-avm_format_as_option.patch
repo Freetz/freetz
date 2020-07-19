@@ -1,0 +1,54 @@
+--- squashfs-tools/mksquashfs.c
++++ squashfs-tools/mksquashfs.c
+@@ -109,6 +109,9 @@
+ int use_regex = FALSE;
+ int nopad = FALSE;
+ int exit_on_error = FALSE;
++#ifdef AVM_FORMAT_AS_OPTION
++int use_standard_mkfs_time = TRUE;
++#endif
+ 
+ long long global_uid = -1, global_gid = -1;
+ 
+@@ -4462,6 +4465,9 @@
+ 
+ 	sBlk->bytes_used = bytes;
+ #if (TARGET_FORMAT == AVM_BE || TARGET_FORMAT == AVM_LE)
++#ifdef AVM_FORMAT_AS_OPTION
++	if (!use_standard_mkfs_time)
++#endif
+ 	sBlk->mkfs_time = (int) sBlk->bytes_used;
+ #endif
+ 
+@@ -4971,13 +4977,18 @@
+ 		} else if(strcmp(argv[i], "-no-duplicates") == 0)
+ 			duplicate_checking = FALSE;
+ 
++#ifdef AVM_FORMAT_AS_OPTION		
++		else if(strcmp(argv[i], "-no-mkfs-time") == 0)
++			use_standard_mkfs_time = FALSE;
++#endif
++
+ 		else if(strcmp(argv[i], "-no-fragments") == 0)
+ 			no_fragments = TRUE;
+ 
+-		 else if(strcmp(argv[i], "-always-use-fragments") == 0)
++		else if(strcmp(argv[i], "-always-use-fragments") == 0)
+ 			always_use_fragments = TRUE;
+ 
+-		 else if(strcmp(argv[i], "-sort") == 0) {
++		else if(strcmp(argv[i], "-sort") == 0) {
+ 			if(++i == argc) {
+ 				ERROR("%s: -sort missing filename\n", argv[0]);
+ 				exit(1);
+@@ -5086,6 +5097,10 @@
+ 				"files larger than block size\n");
+ 			ERROR("-no-duplicates\t\tdo not perform duplicate "
+ 				"checking\n");
++#ifdef AVM_FORMAT_AS_OPTION			
++			ERROR("-no-mkfs-time\t\tuse AVM format (length instead "
++				"of timestamp)\n");
++#endif					
+ 			ERROR("-all-root\t\tmake all files owned by root\n");
+ 			ERROR("-force-uid uid\t\tset all file uids to uid\n");
+ 			ERROR("-force-gid gid\t\tset all file gids to gid\n");
