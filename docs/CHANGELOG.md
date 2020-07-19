@@ -2243,7 +2243,7 @@ See svn log for more details.
 - added gdb
 - fixed deco.mk (forgot ncurses dependency, wrong path)
 - removed ar7kernel-loader
-- added evalzmaloader (thanks Enrik) http://web.archive.org/20200701000000/www.wehavemorefun.de/fritzbox/EVA
+- added evalzmaloader (thanks Enrik) https://web.archive.org/20200701000000/www.wehavemorefun.de/fritzbox/EVA
 - fix error with download and external toolchain:
   uClibc-libs are not in /root/lib
 - updated download toolchain to 0.2

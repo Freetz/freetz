@@ -69,7 +69,7 @@
     Remove /usr/bin/dect_update. This utility is only needed to update the dect firmware. This will save about 32kB uncompressed size.
 
   * **<u>Remove dsl_control</u><a id='remove-dsl-control'></a>**<br>
-    Removes /usr/sbin/dsl_control. This saves about 540-669 KB of uncompressed data size. Select this only if you don't use the the DSL modem. See http://web.archive.org/20200701000000/wehavemorefun.de/fritzbox/Dsl_control
+    Removes /usr/sbin/dsl_control. This saves about 540-669 KB of uncompressed data size. Select this only if you don't use the the DSL modem. See https://web.archive.org/20200701000000/wehavemorefun.de/fritzbox/Dsl_control
 
   * **[Remove dsld](REMOVE_DSLD.md)<a id='remove-dsld'></a>**<br>
     Remove DSL daemon (dsld), if you are planning to use your box as a simple IP client ("Internet mitbenuten") without routing. ATA ("via Lan1") and DSL mode will not work anymore. ATTENTION: You won't be able to use your box as a modem nor a router anymore. As well do *not* use this option if your ATA mode box uses PPoE passthrough, because in this case dsld is still needed! Furthermore, selecting this patch also selects the UPnP patch, because UPnP must be deactivated anyway for IP clients, otherwise dsld will be used again. You can find the UPnP settings in the German web UI under Einstellungen System Netzwerkeinstellungen Statusinformationen ueber UPnP uebertragen (empfohlen) Thirdly, the usermand patch will also be selected if you activate this option, because kernel module userman.ko always depends on kdsldmod.ko which is stripped by this patch.
@@ -135,10 +135,10 @@
     Remove the mini-daemon (minid) and some other related files. This patch removes Fritz!Mini and MT-D/F support and all Web UI entrys. Saves compressed 660 KB on a 7270_V3 and 460 KB on a 7170. ATTENTION: You must remove all Fritz!Mini's from your Fritz!Box configuration and delete all Mini users with the Gini! software to avoid complications.
 
   * **<u>REMOVE_MULTI_ANNEX_FIRMWARE_DIFFS: Remove 2nd Annex firmware</u><a id='remove-multi-annex-firmware-diffs'></a>**<br>
-    Remove the diffs to the prime firmware. This saves about 120-230 KB of uncompressed data size and 67 KB of bspatch. Select this only if you don't want to switch the firmware. See http://web.archive.org/20200701000000/www.wehavemorefun.de/fritzbox/Multi-DSL-Firmware
+    Remove the diffs to the prime firmware. This saves about 120-230 KB of uncompressed data size and 67 KB of bspatch. Select this only if you don't want to switch the firmware. See https://web.archive.org/20200701000000/www.wehavemorefun.de/fritzbox/Multi-DSL-Firmware
 
   * **<u>REMOVE_MULTI_ANNEX_FIRMWARE_PRIME: Remove 1st Annex firmware</u><a id='remove-multi-annex-firmware-prime'></a>**<br>
-    This saves about 340-790 KB of uncompressed data size. Removes lib/modules/dsp_*/*-?-dsl.bin or lib/modules/*Vx180Code.bin.gz. Select this only if you don't use the the DSL modem. See http://web.archive.org/20200701000000/www.wehavemorefun.de/fritzbox/Multi-DSL-Firmware
+    This saves about 340-790 KB of uncompressed data size. Removes lib/modules/dsp_*/*-?-dsl.bin or lib/modules/*Vx180Code.bin.gz. Select this only if you don't use the the DSL modem. See https://web.archive.org/20200701000000/www.wehavemorefun.de/fritzbox/Multi-DSL-Firmware
 
   * **[Remove MyFritz](REMOVE_MYFRITZ.md)<a id='remove-myfritz'></a>**<br>
     Removes the AVM MyFritz Webinterface. Saves about 1.1 MB uncompressed data size. WARNING: Access by some AVM apps is no longer possible!
