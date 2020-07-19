@@ -249,7 +249,7 @@ Latest changes
     * lsof 4.89
     * ltrace 0.7.91-git
     * lynx 2.8.8
-    * mc (Midnight Commander) 4.8.24
+    * mc (Midnight Commander) 4.8.25
     * minidlna 1.2.1
     * mpc 1.1.0
     * mpfr 3.1.6
