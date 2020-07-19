@@ -24,6 +24,15 @@ config FREETZ_PACKAGE_SQUASHFS4_BE_LEGACY
 		including a special header-less/LZMA1-compressed format used by AVM
 		on many boxes.
 
+config FREETZ_PACKAGE_SQUASHFS4_BE_AVM
+	depends on FREETZ_PACKAGE_SQUASHFS4_BE
+	bool "use CLI option for strict AVM format"
+	default y
+	help
+		Adds an option (-no-mkfs-time) for support of strict AVM format,
+		where the superblock field with date/time of image creation will
+		be replaced with an additional image size value.
+
 choice
 	depends on FREETZ_PACKAGE_SQUASHFS4_BE
 	prompt "Link"
