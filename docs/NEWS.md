@@ -1,5 +1,14 @@
 # NEWS
 
+ * __2020-07-20__<br>
+   Es kann zu einer ungültigen Kombination aus ```squashfs4``` Binary und Aufrufparametern in der ```fwmod```<br>
+   kommen. Um dies zu verhindern: ```make squashfs4-le-dirclean ; make squashfs4-be-dirclean```<br>
+   Siehe
+   [86c23d96](https://github.com/Freetz-NG/freetz-ng/commit/86c23d96d76585825fa81b5cb29105e9d2ad6654) /
+   [e311bb12](https://github.com/Freetz-NG/freetz-ng/commit/e311bb1257ee180c90579b3947f9200f11d62a1f) /
+   [761e1923](https://github.com/Freetz-NG/freetz-ng/commit/761e1923f9d410b639c1535278f188c698b3653a)
+   <br>
+
  * __2020-07-18__<br>
    Mit dem Branch ```kernel49``` können Kernelmodule für die neuesten FritzOS von 7590/7580/6890/7583VDSL<br>
    gebaut werden. Es ist nicht bekannt ob solche Module geladen werden können, noch ob ein so erstelltes<br>
@@ -7,9 +16,9 @@
 
  * __2020-07-11__<br>
    Aktueller Status der 7590 mit FritzOS 7.20<br>
-    - Bei nicht eingehängten Datenträgern den Patch ```Remove UMTS``` nicht auswählen.<br>
-    - Bei durch den Watchdog ausgelöste Reboots ("Bootloop") den Patch ```Disable AVM watchdog``` auswählen.<br>
-    - Es können noch keine Kernelmodule gebaut werden, Sourcen von AVM gibt es bereits.<br>
+    - ~~Bei nicht eingehängten Datenträgern den Patch ```Remove UMTS``` nicht auswählen.~~<br>
+    - ~~Bei durch den Watchdog ausgelöste Reboots ("Bootloop") den Patch ```Disable AVM watchdog``` auswählen.~~<br>
+    - ~~Es können noch keine Kernelmodule gebaut werden, Sourcen von AVM gibt es bereits.~~<br>
     - Für OpenVPN usw wird vermutlich ```yf_patchkernel``` weiterhin benötigt.<br>
 
  * __2020-07-08__<br>
@@ -26,11 +35,11 @@
  * __2020-07-06__<br>
    Eigener Kernel und Module für aktuelle FritzOS<br>
    Für die 7590 (und ähnliche GRX5) gibt es nach wie vor keinen replace-kernel, da noch niemand das neue<br>
-   Format des Bootloaders analysiert und für Freetz angepasst hat. Module für den Kernel sind für viele<br>
+   Format des Bootloaders analysiert und für Freetz angepasst hat. ~~Module für den Kernel sind für viele<br>
    aktuelle FritzOS auch nicht verfügbar. Dadurch sind Dinge wie Wireguard, OpenVPN, zusätzliche Dateisysteme<br>
    usw deaktiviert. Ursache hierfür ist dass das Tool ```avm_kernel_config``` bzw ```yourfritz-akc-host``` noch nicht<br>
    angepasste wurde. Dies wurde ursprünglich von PeterPawn entwickelt und von er13 erweitert.<br>
-   Leider fühlt sich mittlerweile niemand mehr dafür zuständig. Freiwillige vor!<br>
+   Leider fühlt sich mittlerweile niemand mehr dafür zuständig. Freiwillige vor!~~<br>
 
  * __2020-07-02__<br>
    Nun verhindert eine unspezifische höhere Macht die Herausgabe von Sourcecode.<br>
