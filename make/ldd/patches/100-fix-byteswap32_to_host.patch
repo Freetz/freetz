@@ -1,0 +1,11 @@
+--- ldd.c
++++ ldd.c
+@@ -128,7 +128,7 @@
+ int byteswap;
+ static int interpreter_already_found=0;
+ 
+-inline uint32_t byteswap32_to_host(uint32_t value)
++static inline uint32_t byteswap32_to_host(uint32_t value)
+ {
+ 	if (byteswap==1) {
+ 		return(bswap_32(value));
