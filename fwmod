@@ -1396,7 +1396,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			warn "File of kernel module not found: $ko.ko"
 			kos_missing=y
 		done
-		[ -n "$kos_missing" ] && error 1 "Enable missing with 'make kernel-menuconfig' as (M)odule (and push a pull request)."
+		[ "$FIRMWARE_NOCOMPILE" != "1" -a -n "$kos_missing" ] && error 1 "Enable missing with 'make kernel-menuconfig' as (M)odule (and push a pull request)."
 
 		echo1 "generating modules.dep"
 		DEPMOD_TEMP="$(mktemp)"
