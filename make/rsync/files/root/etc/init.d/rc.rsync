@@ -17,6 +17,9 @@ case "$1" in
 	""|load)
 		modlib_defaults
 
+		modlib_addgroup users
+		modlib_adduser ftpuser -G users -D -S -h "/var/media/ftp" -g "ftpuser"
+
 		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
 		modreg daemon $DAEMON
 		modreg file $DAEMON shares '$(lang de:"Freigaben" en:"Shares")' 1 "shares"
