@@ -104,7 +104,7 @@ Latest changes
     * AVM-rules 0.9 (deprecated)
     * axTLS wrapper 1.4.9
     * bvi 1.4.0
-    * CA-bundle 2020-06-24
+    * CA-bundle 2020-07-22
     * cntlm 0.93beta5
     * CurlFtpFS 0.9.2
     * decrypt FRITZ!OS configs v0.2 (renamed version of PeterPawn's script decode_passwords)
