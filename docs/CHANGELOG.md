@@ -40,14 +40,14 @@ Latest changes
 - Build system:
   * addons: additional to addon/static.pkg, addon/*.pkg could be used to enable addons, since r15856/3dda64565e
   * binutils:
-    + add support for binutils-2.24.x/2.25.x/2.26.x
+    + add support for binutils-2.24.x/2.25.x/2.26.x/2.31.x
   * ccache 3.7.11
   * kconfig 5.7
     + added olddefconfig target
     + removed oldnoconfig target
   * kernel-/target-toolchain:
     + update gcc-4.7.x version to 4.7.4
-    + add support for gcc-4.8.x/4.9.x/5.x
+    + add support for gcc-4.8.x/4.9.x/5.x/8.x
     + add support for x86 target
   * support for a 3rd (auxiliary) firmware
   * fakeroot: bump version to 1.23
