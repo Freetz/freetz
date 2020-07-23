@@ -199,7 +199,7 @@ Latest changes
     * davfs2 1.5.2
     * dbus 1.8.20
     * DigiTemp 3.7.2
-    * dnsmasq 2.80/2.81
+    * dnsmasq 2.80/2.82
     * dosfstools 3.0.28
     * dropbear 2020.80
     * e2fsprogs 1.42.13

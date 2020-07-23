@@ -1,4 +1,4 @@
-# Dnsmasq 2.80/2.81
+# Dnsmasq 2.80/2.82
 
 [![Konfiguration](../screenshots/200_md.png)](../screenshots/200.png)
 
