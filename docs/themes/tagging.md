@@ -2,13 +2,16 @@
 
  * **cuma**<br>
    Im Webinterface wird über AVM's "Fritz" Logo der Schriftzug "FREETZ MOD" gelegt.<br><br>
-   [![Tagging cuma](../screenshots/000-TAG_cuma_md.png)](../screenshots/000-TAG_cuma.png)
+   [![Tagging cuma](../screenshots/000-TAG_cuma.png)](../screenshots/000-TAG_cuma.png)
    
  * **Freetz-NG**<br>
    Im Webinterface wird über AVM's "Fritz" Logo der Schriftzug "FREETZ NG" gelegt.<br><br>
-   [![Tagging Freetz-NG](../screenshots/000-TAG_freetz-ng_md.png)](../screenshots/000-TAG_freetz-ng.png)
+   [![Tagging Freetz-NG](../screenshots/000-TAG_freetz-ng.png)](../screenshots/000-TAG_freetz-ng.png)
 
  * **Prisrak**<br>
    Im Webinterface wird über AVM's "Fritz" Logo der Schriftzug "freetz ng" gelegt.<br><br>
-   [![Tagging Prisrak](../screenshots/000-TAG_prisrak_md.png)](../screenshots/000-TAG_prisrak.png)
+   [![Tagging Prisrak](../screenshots/000-TAG_prisrak.png)](../screenshots/000-TAG_prisrak.png)
 
+ * **Pimped**<br>
+   Im Webinterface wird über AVM's "Fritz" Logo der Schriftzug "Pimped" gelegt.<br><br>
+   [![Tagging Pimped](../screenshots/000-TAG_pimped.png)](../screenshots/000-TAG_pimped.png)
