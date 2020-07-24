@@ -1507,6 +1507,11 @@ if [ "$DO_MOD" -gt 0 ]; then
 					local tagging_ren=""
 					for tagging_file in $(find "$d" -name "$tagging_arg"); do
 						echo2 "${tagging_file}"
+						if [ "${tagging_file##*/}" == "logo_fritzDiamond.svg" ]; then
+							sed 's/>/&<svg>/' -i $tagging_file
+							echo "<svg>$(tail -n+2 ${TAGGING_DIR}/${FREETZ_TAGGING_STRING}.svg)</svg>" >> $tagging_file
+							continue
+						fi
 						[ "${tagging_file}" != "${tagging_file%svg}" ] && tagging_temp="${tagging_file%svg}png" || tagging_temp=""
 						if [ -n "$tagging_temp" ]; then
 							if ! inkscape "$tagging_file" --export-type=png --export-filename="$tagging_temp" -w 98 -h 77 -y 0 &>/dev/null; then
@@ -1531,7 +1536,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 				done
 			}
 			echo1 "tagging avm webif (tag by ${FREETZ_TAGGING_STRING})"
-			tagging  "+0+6" "center" logo_fritzDiamond.svg    # svg since  Fritz!OS 7.1x (eg 7490 07.11)
+			tagging      "" ""       logo_fritzDiamond.svg    # svg since  Fritz!OS 7.1x (eg 7490 07.11)
 			tagging  "+0+6" "center" fritzLogo.svg            # svg since  Fritz!OS 6.5x (eg 7320 06.50)
 			tagging  "+0+6" "center" kopfbalken_links.png     # lua since  Fritz!OS 6.2x (small logo @left, eg 7390 06.23)
 			tagging  "+0+0" "center" kopfbalken_links.gif     # lua before Fritz!OS 6.2x (small logo @left, eg 7270 04.88)
