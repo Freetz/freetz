@@ -61,7 +61,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
 $($(PKG)_TARGET_BINARY).links: $($(PKG)_BINARY).links
-	cat $(BUSYBOX_BINARY).links | sed -r -e 's,($(if $(FREETZ_AVM_HAS_REBOOT_SCRIPT),reboot|)blkid|wget),\1-busybox,g' > $(BUSYBOX_TARGET_BINARY).links
+	cat $(BUSYBOX_BINARY).links | sed -r -e 's,($(if $(FREETZ_AVM_HAS_REBOOT_SCRIPT),reboot|)$(if $(FREETZ_AVM_HAS_IP_BINARY),ip|)blkid|wget),\1-busybox,g' > $(BUSYBOX_TARGET_BINARY).links
 
 $(pkg)-precompiled: uclibc $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_BINARY).links
 
