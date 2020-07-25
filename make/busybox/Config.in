@@ -545,6 +545,12 @@ config FREETZ_BUSYBOX__BUILD_TIMESTAMP
 	help
 		no build timestamp allows reproducible binary
 
+config FREETZ_BUSYBOX__KEEP_BINARIES
+	bool "keep avm binaries"
+	default n
+	help
+		Rename applet links to $NAME-busybox if a file $NAME exists.
+
 config FREETZ_BUSYBOX__IPV6_UTILS
 	bool # IPv6
 	depends on FREETZ_TARGET_IPV6_SUPPORT
