@@ -1,0 +1,18 @@
+Workaround pthread issue with uClibc-0.9.29
+
+From hp-utils-0.3.2/README:
+
+  04  KNOWN PROBLEMS
+  uClibc 0.9.29 has issues with POSIX threads and this breaks hp-utils.
+
+Explicitly linking against pthread makes it work,
+s. https://github.com/Freetz/freetz/commit/458846f1828ad41fe8027666a21ab59a9155eccb
+
+--- Makefile.hp-utils
++++ Makefile.hp-utils
+@@ -1,4 +1,4 @@
+-LDLIBS += -lhp-utils
++LDLIBS += -lhp-utils -lpthread
+ RELEASE = 0.3.2
+ DEFS = -DEXTRA_VERSION="\"\nfrom hp-utils $(RELEASE)\""
+ LIB = libhp-utils.so
