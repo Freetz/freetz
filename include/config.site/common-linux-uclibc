@@ -38,6 +38,10 @@ for name in bcopy bzero rename fchmod fchown index rindex strerror lstat _exit u
 	eval ac_cv_func_$name=yes
 done
 
+# disable dl* functions related stuff, it looks like different autoconf versions have different semantics:
+#  - ac_cv_func_$func might mean "resides in libc" (older versions)
+#  - but might also mean "available in general either in libdl or in libs" (newer versions)
+if false; then
 # dlfcn
 ac_cv_header_dlfcn_h=yes
 for name in dlopen dlclose dlsym dlerror; do
@@ -46,6 +50,7 @@ for name in dlopen dlclose dlsym dlerror; do
 	# function resides in libdl
 	eval ac_cv_lib_dl_$name=yes
 done
+fi
 
 if [ "${FREETZ_KERNEL_VERSION_MAJOR}" = "2.6.13" -o "${FREETZ_KERNEL_VERSION_MAJOR}" = "2.6.19" ]; then
 	# disable all epoll functions as they are known to cause problems on some boxes (probably a kernel bug, affected versions 2.6.13.x/2.6.19.x)
