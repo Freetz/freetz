@@ -116,7 +116,9 @@ case $1 in
 	""|load)
 		mkdir -p $CONF_DIR
 		mkdir -p /tmp/flash/$DAEMON
-		modlib_add_user_and_group $DAEMON
+
+		modlib_addgroup users
+		modlib_adduser ftpuser -G users -D -S -h "/var/media/ftp" -g "ftpuser"
 
 		modreg cgi $DAEMON $DAEMON_LONG_NAME
 		modreg daemon $DAEMON
