@@ -1,8 +1,7 @@
-UIMG_VERSION:=ffritz_6591_131219
+UIMG_VERSION:=871930df297e3a03bc315be75ecfc8c5c7a809ab
 UIMG_SOURCE:=uimg-$(UIMG_VERSION).tar.xz
-UIMG_SOURCE_SHA256:=7e96a14c73c223188a9007bd0d30f48917e21d9454ab30ae7243251208a8e216
-UIMG_SITE:=@MIRROR/
-#UIMG_SITE:=git_archive@git@bitbucket.org:fesc2000/ffritz.git,src/uimg
+UIMG_SOURCE_SHA256:=1f5b3b473f50c6ff79a7859be336245c39fc1d2b6c89baf862de6de1f7caf8e0
+UIMG_SITE:=git@https://bitbucket.org/fesc2000/uimg-tool.git
 
 UIMG_MAKE_DIR:=$(TOOLS_DIR)/make/uimg
 UIMG_DIR:=$(TOOLS_SOURCE_DIR)/uimg-$(UIMG_VERSION)
@@ -28,18 +27,18 @@ $(UIMG_DIR)/.unpacked: $(DL_DIR)/$(UIMG_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_T
 
 
 
-$(UIMG_DIR)/src/uimg/uimg: $(UIMG_DIR)/.unpacked
-	$(MAKE) -C $(UIMG_DIR)/src/uimg all
+$(UIMG_DIR)/uimg: $(UIMG_DIR)/.unpacked
+	$(MAKE) -C $(UIMG_DIR) all
 	touch -c $@
 
-$(TOOLS_DIR)/uimg: $(UIMG_DIR)/src/uimg/uimg
+$(TOOLS_DIR)/uimg: $(UIMG_DIR)/uimg
 	$(INSTALL_FILE)
 	strip $@
 
 uimg: $(TOOLS_DIR)/uimg
 
 uimg-clean:
-	-$(MAKE) -C $(UIMG_DIR)/src/uimg clean
+	-$(MAKE) -C $(UIMG_DIR) clean
 
 uimg-dirclean:
 	$(RM) -r $(UIMG_DIR)
