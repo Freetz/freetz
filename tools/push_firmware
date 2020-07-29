@@ -326,7 +326,7 @@ prepare_image() {
 			mv $tmpdir/var/*_ATOM_KERNEL.bin "$X86krn" 2>/dev/null
 #			mv $tmpdir/var/*_GWFS.bin        "$ALLgwt" 2>/dev/null  # TODO
 		fi
-		if [ ! -s "$ARMsys" -o ! -s "$ARMkrn" -o ! -s "$X86sys" -o ! -s "$X86krn" -o ]; then
+		if [ ! -s "$ARMsys" -o ! -s "$ARMkrn" -o ! -s "$X86sys" -o ! -s "$X86krn" ]; then
 			echo -e "\nError: file is not a valid uimg-boot image to be written to the device.\n" >&2
 			exit 1
 		fi
