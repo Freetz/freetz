@@ -132,8 +132,11 @@ if [ -e /proc/clocks -o -e /proc/sys/urlader/environment ]; then
 		echo "</dl>"
 		echo "<dl class='info'>"
 		echo "<dt>$(lang de:"Prozessor" en:"Processor")</dt><dl>"
-		_CPU_TMP="$(sed -rn 's!^Channel .: ([0-9.]*) .*!\1!p' /proc/chip_temperature | sort -r | head -n1)"
-		[ -n "$_CPU_TMP" ] && _CPU_TMP="$_CPU_TMP $(echo -e '\260')C" && echo "<dt>$(lang de:"Temperatur" en:"Temperature")</dt><dd>$_CPU_TMP</dd>"
+		_CPU_TMP="$(sed -rn 's!^Channel .: ([0-9.]*) .*!\1!p' /proc/chip_temperature 2>/dev/null | sort -r | head -n1)"
+		[ -z "$_CPU_TMP" ] && _CPU_TMP="$(sed 's/^../&./' /sys/devices/virtual/thermal/thermal_zone0/temp 2>/dev/null)"
+		[ -z "$_CPU_TMP" ] && _CPU_TMP="$(sed 's/ .*//g' /proc/avm/powermanagmentressourceinfo/powerdevice_temperature 2>/dev/null)"
+		[ -z "$_CPU_TMP" ] && _CPU_TMP="$(sed -rn 's!^cpu-thermal *: ([0-9.]*) .*!\1!p' /proc/avm/temp_sensors 2>/dev/null)"
+		[ -n "$_CPU_TMP" ] && echo "<dt>$(lang de:"Temperatur" en:"Temperature")</dt><dd>$_CPU_TMP $(echo -e '\260')C</dd>"
 	elif [ -e /proc/clocks ]; then
 			sed 's/ [ ]*/ /g;s/^Clocks: //;s/^[A-Z0-9 ]*Clock: //;s/\([A-Za-z0-9]*\):[ ]*\([0-9,.]*\)[ ]*\([a-zA-Z]*\) */<dt>\1<\/dt><dd>\2 \3<\/dd>/g;' /proc/clocks 2>/dev/null
 	else
