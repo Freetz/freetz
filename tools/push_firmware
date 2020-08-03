@@ -365,7 +365,7 @@ trap cleanup EXIT SIGTERM SIGINT
 usage()
 {
 	echo
-	echo "Usage: $0 [image] [ -m<s|r|d|u> ] [ -f ] [ -ip <ip> ] [ -ram <mb> ] [ -lfs <0|1|9> ] [ -cmd <ftp|ncftp> ] [ -hn ]"
+	echo "Usage: $0 [image] [ -m<s|r|d|u|f> ] [ -f ] [ -ip <ip> ] [ -ram <mb> ] [ -lfs <0|1|9> ] [ -cmd <ftp|ncftp> ] [ -hn ]"
 	echo
 	echo "[image]           When no 'image' file is given, images/latest.image will be tried."
 	echo "-ms               Force mode single-boot (classic devices, like 7270 & 7390)"
@@ -373,6 +373,8 @@ usage()
 	echo "-md               Force mode dual-boot (classic docsis devices, like 6490 & 6590)"
 	echo "-mu               Force mode uimg-boot (newer docsis devices, like 6591 & 6660)"
 	echo "                    See https://bitbucket.org/fesc2000/ffritz/src/6591/README-6591.md"
+	echo "-mf               Force mode fit-boot (newer AX devices, like 7530 AX)"
+	echo "                    Not supported yet!"
 	echo "-f                Disable safety prompt."
 	echo "-ip <ip>          Bootloader IP address or hostname, default 192.168.178.1"
 	echo "-ram <mb>         Only ram-boot mode: Usable ram size in MB of your device."
@@ -401,6 +403,9 @@ while [ $# -ge 1 ]; do
 			;;
 		(-mu|-muimg)
 			ISUIMG=true
+			;;
+		(-mf|-mfit)
+			ISFIT=true
 			;;
 		(-f|-force)
 			ISFORCE=true
@@ -456,17 +461,19 @@ done
 [ -r "$file" ] || { echo "Access denied: $file"             ; exit 1; }
 
 # img detect
-if [ -z "$ISSINGLE$ISDUAL$ISRAM$ISUIMG" ]; then
+if [ -z "$ISSINGLE$ISDUAL$ISRAM$ISUIMG$ISFIT" ]; then
 	echo -e "\n * Analyzing '$file' ... "
+	F="$(tar tf "$file" --wildcards '*/fit-image'            2>/dev/null | wc -l)"
 	U="$(tar tf "$file" --wildcards '*/firmware-update.uimg' 2>/dev/null | wc -l)"
 	N="$(tar tf "$file" --wildcards '*/kernel.image'         2>/dev/null | wc -l)"
 	S="$(tar -Oxf "$file" ./var/tmp/filesystem.image         2>/dev/null | wc -c)"
 fi
+[ "$N" == "0" -a "$F" == "1" ] && ISFIT=true
 [ "$N" == "0" -a "$U" == "1" ] && ISUIMG=true
 [ "$N" == "2" -a "$S" == "0" ] && ISDUAL=true
 [ "$N" == "1" -a "$S" == "0" ] && ISSINGLE=true
 [ "$N" == "1" -a "$S" != "0" ] && ISRAM=true
-[ -z "$ISSINGLE$ISDUAL$ISRAM$ISUIMG" ] && echo "Can not recognize image, please use '-m<s|r|d|u>'."    && exit 1
+[ -z "$ISSINGLE$ISDUAL$ISRAM$ISUIMG$ISFIT" ] && echo "Can not recognize image, please use '-m<s|r|d|u>'." && exit 1
 # arg check
 [ ! $ISSINGLE ] && [ $ISALICE ]        && echo "Parameter '-hn' is only allowed for single-boot mode." && exit 1
 [ $ISSINGLE ]   && [ $LFS ]            && echo "Parameter '-lfs' is not allowed for single-boot mode." && exit 1
@@ -474,6 +481,7 @@ fi
 [ $ISUIMG ]     && [ ! $LFS ]          && LFS="1"
 [ $ISUIMG ]     && [ ! -e $UIMG_TOOL ] && echo "File $UIMG_TOOL missing. Run 'make tools' first."      && exit 1
 [ ! $ISRAM ]    && [ $FULLSIZE ]       && echo "Parameter '-ram' is only allowed for ram-boot mode."   && exit 1
+[ $ISFIT ]                             && echo "FIT is not supported yet!"                             && exit 1
 
 prepare_image
 
