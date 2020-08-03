@@ -1098,7 +1098,7 @@ config FREETZ_PATCH_SIGNED
 
 config FREETZ_PATCH_SECURE
 	bool "Patch web menu secure message"
-	depends on FREETZ_AVM_VERSION_07_2X_MIN
+	depends on !FREETZ_TYPE_EXTENDER && FREETZ_AVM_VERSION_07_2X_MIN
 	default n
 	help
 		Hides the "unsecure settings" message from the web interface.
