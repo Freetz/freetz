@@ -122,6 +122,7 @@ image() {
 	else
 		tail -c $data $img | tar -xi \
 		  $(printf " --wildcards ./var/content"                              ) \
+		  $(printf " --wildcards ./var/tmp/fit-image"                        ) \
 		  $(printf " --wildcards ./var/firmware-update.uimg"                 ) \
 		  $(printf " --wildcards ./%s/*.image"        "${probeDirs[@]}"      ) \
 		  $(printf " --wildcards ./%s/plugins.update" "${probeDirs[default]}") \
@@ -130,6 +131,13 @@ image() {
 	if [ ! -d var ]; then
 		echo -e "NULL\t$img"
 		return 1
+	fi
+
+	if [ -e var/tmp/fit-image ]; then
+		FLV_FIT='1'
+		[ ! -x "$(which binwalt)" ] && "Can not find 'binwalk'" && exit 1
+		soff="$(binwalk var/tmp/fit-image | sed -rn 's/^([^ ]*) .*Squashfs filesystem.*/\1/p')"
+		dd bs=$soff skip=1 if=var/tmp/fit-image of=var/tmp/kernel.image
 	fi
 
 	if [ -e var/firmware-update.uimg ]; then
@@ -219,7 +227,9 @@ image() {
 		# detect firmware layout
 		SIZEKD="$(($SIZE_K1 - $SIZE_K2))"
 		SIZEFD="$(($SIZE_F1 - $SIZE_F2))"
-		if [ "$FLV_IUI" == "1" ]; then
+		if [ "$FLV_FIT" == "1" ]; then
+			FLV=6 # fit
+		elif [ "$FLV_IUI" == "1" ]; then
 			FLV=5 # umig
 		elif [ "$SIZE_F1" == "0" ]; then
 			FLV=2 # most
