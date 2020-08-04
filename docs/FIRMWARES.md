@@ -139,7 +139,7 @@ Currently supported devices and firmwares
 * __Fritz!Box 6591 Cable (UNTESTED)__
   - 161.07.13 rev75441 {GER} [MESH18 NL3]
   - 161.07.19 rev00000 {GER} (Labor)
-* __Fritz!Box 6660 Cable (UNTESTED)__
+* __Fritz!Box 6660 Cable)__
   - 252.07.15 rev78740 {GER} [6660 FCS]
 
 ### Fritz!Box LTE (68xx)
