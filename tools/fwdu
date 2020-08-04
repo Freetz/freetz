@@ -137,7 +137,7 @@ image() {
 		FLV_FIT='1'
 		[ ! -x "$(which binwalk)" ] && "Can not find 'binwalk'" && exit 1
 		soff="$(binwalk var/tmp/fit-image | sed -rn 's/^([^ ]*) .*Squashfs filesystem.*/\1/p')"
-		dd bs=$soff skip=1 if=var/tmp/fit-image of=var/tmp/kernel.image
+		dd bs=$soff skip=1 if=var/tmp/fit-image of=var/tmp/kernel.image 2>/dev/null
 	fi
 
 	if [ -e var/firmware-update.uimg ]; then
