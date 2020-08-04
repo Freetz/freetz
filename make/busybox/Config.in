@@ -524,10 +524,11 @@ config FREETZ_BUSYBOX__MANDATORY_07_0X
 
 config FREETZ_BUSYBOX__NOEXEC_NOFORK_OPTIMIZATIONS
 	bool "enable NOEXEC/NOFORK performance optimizations"
+	depends on !FREETZ_BUSYBOX__KEEP_BINARIES
 	default n
-	select FREETZ_BUSYBOX_FEATURE_PREFER_APPLETS if !FREETZ_BUSYBOX__KEEP_BINARIES
+	select FREETZ_BUSYBOX_FEATURE_PREFER_APPLETS
 	select FREETZ_BUSYBOX_FEATURE_SH_NOFORK
-	select FREETZ_BUSYBOX_FEATURE_SH_STANDALONE if !FREETZ_BUSYBOX__KEEP_BINARIES
+	select FREETZ_BUSYBOX_FEATURE_SH_STANDALONE
 	help
 		This option causes busybox' NOEXEC/NOFORK optimizations to be enabled,
 		see https://git.busybox.net/busybox/plain/docs/nofork_noexec.txt
