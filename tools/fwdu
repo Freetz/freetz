@@ -135,7 +135,7 @@ image() {
 
 	if [ -e var/tmp/fit-image ]; then
 		FLV_FIT='1'
-		[ ! -x "$(which binwalt)" ] && "Can not find 'binwalk'" && exit 1
+		[ ! -x "$(which binwalk)" ] && "Can not find 'binwalk'" && exit 1
 		soff="$(binwalk var/tmp/fit-image | sed -rn 's/^([^ ]*) .*Squashfs filesystem.*/\1/p')"
 		dd bs=$soff skip=1 if=var/tmp/fit-image of=var/tmp/kernel.image
 	fi
