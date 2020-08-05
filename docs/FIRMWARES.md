@@ -433,6 +433,8 @@ Currently supported devices and firmwares
   - 174.07.04 rev66458 {ALL}
   - 174.07.14 rev73940 {ALL} [MESH18 NL4]
   - 174.07.19 rev00000 {ALL} (Labor)
+* __Fritz!Repeater 6000 (UNTESTED)__
+  - 253.07.19 rev80524 {ALL} [PSQ19] (Inhaus)
 
 ### T-Com derivatives
 
