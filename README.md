@@ -28,10 +28,15 @@ More features - less bugs!
 
 ### Mirrors:
 ```
-  svn co https://github.com/Freetz-NG/freetz-ng/trunk ~/freetz-ng
   git clone https://gitlab.com/Freetz-NG/freetz-ng ~/freetz-ng
   git clone https://bitbucket.org/Freetz-NG/freetz-ng ~/freetz-ng
 ```
+
+### Not recommended:
+```
+  svn co https://github.com/Freetz-NG/freetz-ng/trunk ~/freetz-ng
+```
+
 ### Documentation:
 See [https://freetz-ng.github.io/](https://freetz-ng.github.io/) (or [docs/](docs/README.md)).
 
