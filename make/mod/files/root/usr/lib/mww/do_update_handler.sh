@@ -220,17 +220,19 @@ status "done" "$(lang
 	en:"Installation script return code"
 ): <B>$result (<FONT COLOR=$color>$result_txt</FONT>)</B>"
 
-echo "<p>$(lang de:"Von" en:"Generated content of") /var/post_install$(lang de:" generierter Inhalt:" en:":")</p>"
-if [ ! -x /var/post_install ]; then
-	print_error "$(lang
-		de:"Nach-Installationsskript nicht gefunden oder nicht ausf&uuml;hrbar."
-		en:"Post-installation script not found or not executable."
-	)"
-	do_exit 1
+if [ "$FREETZ_TYPE_CABLE" != "y" ]; then
+	echo "<p>$(lang de:"Von" en:"Generated content of") /var/post_install$(lang de:" generierter Inhalt:" en:":")</p>"
+	if [ ! -x /var/post_install ]; then
+		print_error "$(lang
+			de:"Nach-Installationsskript nicht gefunden oder nicht ausf&uuml;hrbar."
+			en:"Post-installation script not found or not executable."
+		)"
+		do_exit 1
+	fi
+	pre_begin
+	html < /var/post_install
+	pre_end
 fi
-pre_begin
-html < /var/post_install
-pre_end
 
 [ "$FREETZ_TYPE_CABLE" != "y" ] && cat << EOF
 <p>
