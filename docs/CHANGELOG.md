@@ -185,7 +185,7 @@ Latest changes
       patch in menuconfig or remove the patches/scripts/*.sh file to build image anyway.
 
 - Updated packages and libs:
-    * apache 2.4.43
+    * apache 2.4.46
     * apr 1.7.0
     * apr-util 1.6.1
     * bash 3.2.57
