@@ -232,7 +232,7 @@ Latest changes
     * libFLAC 1.3.2
     * libgcrypt 1.8.5
     * libgd 2.3.0
-    * libgpg-error 1.36
+    * libgpg-error 1.37
     * liblzo 2.10
     * libneon 0.30.2
     * libogg 1.3.2

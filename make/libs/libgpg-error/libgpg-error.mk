@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 1.36)
-$(PKG)_LIB_VERSION:=0.27.0
+$(call PKG_INIT_LIB, 1.37)
+$(PKG)_LIB_VERSION:=0.28.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=eff437f397e858a9127b76c0d87fa5ed
+$(PKG)_SOURCE_MD5:=729f22d917494fdc4b54fce5aa6547c7
 $(PKG)_SITE:=ftp://ftp.gnupg.org/gcrypt/libgpg-error
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
