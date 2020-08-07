@@ -29,7 +29,9 @@ Wie kann ich Freetz-NG unterstützen?
 	 - Die Prüfsumme in ```make/$PKG/$PKG.mk``` anpassen.
 	 - Vorhandene Patches in ```make/$PKG/patches/``` aktualisieren:<br>
 	    ```AUTO_FIX_PATCHES=y make $PKG-unpacked```
-	 - Compilieren mit ``` make $PKG-precompiled FREETZ_VERBOSITY_LEVEL=2```
+	 - Compilieren mit: ``` make $PKG-precompiled FREETZ_VERBOSITY_LEVEL=2```
+	 - Falls der Dateiname die Version enthält, ```make/$PKG/external.*``` anpassen.
+	 - Libraries befinden sich nicht in ```make/$PKG/``` sondern: ```make/libs/$PKG/```
   * **Wiki**<br>
     Viele Teile des unter [freetz-ng.github.io/](https://freetz-ng.github.io/) zu erreichenden Wikis sind veraltet und bedürfen einer<br>
 	Überarbeitung. Alle Datein des Wikis sind im Checkout unter ```docs/wiki/``` zu finden.<br>
