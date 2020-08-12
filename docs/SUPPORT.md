@@ -22,19 +22,21 @@ Wie kann ich Freetz-NG unterstützen?
     - Auf [github.com/Freetz-NG/freetz-ng/](https://github.com/Freetz-NG/freetz-ng/) mit ```New pull request``` die eigenen Änderungen abschicken.
   * **Package bump**<br>
     Minimale Schritte um die Version eines Packages zu aktualisieren:
+	 - Changelog lesen, es kann sich etwas geändert haben das beachtet werden muss.
+	 - Hinweis: Libraries befinden sich nicht in ```make/$PKG/``` sondern: ```make/libs/$PKG/```
 	 - Die Datei ```docs/CHANGELOG.md``` anpassen.
 	 - Die Version in ```make/$PKG/Config.in``` anpassen.
 	 - Das Wiki aktualisieren durch ausführen von: ```docs/generate.sh```
 	 - Die Version in ```make/$PKG/$PKG.mk``` anpassen.
 	 - Die Prüfsumme in ```make/$PKG/$PKG.mk``` anpassen.
-	 - Vorhandene Patches in ```make/$PKG/patches/``` aktualisieren:<br>
-	    ```AUTO_FIX_PATCHES=y make $PKG-unpacked```
-	 - Compilieren mit: ``` make $PKG-precompiled FREETZ_VERBOSITY_LEVEL=2```
 	 - Falls der Dateiname die Version enthält, ```make/$PKG/external.*``` anpassen.
-	 - Libraries befinden sich nicht in ```make/$PKG/``` sondern: ```make/libs/$PKG/```
+	 - Vorhandene Patches in ```make/$PKG/patches/``` aktualisieren durch<br>
+	    ausführen von: ```AUTO_FIX_PATCHES=y make $PKG-unpacked```
+	 - Compilieren testen mit: ```make $PKG-precompiled FREETZ_VERBOSITY_LEVEL=2```
+	 - Am besten noch auf eine Fritzbox flashen und testen.
   * **Wiki**<br>
     Viele Teile des unter [freetz-ng.github.io/](https://freetz-ng.github.io/) zu erreichenden Wikis sind veraltet und bedürfen einer<br>
 	Überarbeitung. Alle Datein des Wikis sind im Checkout unter ```docs/wiki/``` zu finden.<br>
     Wichtig: Nach Änderungen unter ```docs/``` oder von ```Config.in```-Dateien ```docs/generate.sh``` zum<br>
-	Aktualisieren des Index ausführen.<br>
+	Aktualisieren des Indexes ausführen.<br>
 
