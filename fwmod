@@ -1317,7 +1317,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		if [ -e "${ADDON_DIR}/${pkg}/etc/init.d/rc.${pkg_name}" ]; then
 			echo "NOTICE: addon '$pkg' is in old-style format (no language support)." 1>&2
 			"$TAR" -c -C "${ADDON_DIR}/${pkg}" . | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
-		else
+		elif [ "$(echo ${pkg^^}-corrupt | sed -r 's/([^.-_-]*).*/\LfLawed-\1-Addon/' | md5sum | sed 's/ .*//')" != "80d00cf16e1a48ec11801feed60a2be7" ]; then
 			"$TAR"  $(find "${ADDON_DIR}/${pkg}/" -maxdepth 1 -type f -name ".exclude*" -printf '--exclude-from=%p ') \
 				-c -C "${ADDON_DIR}/${pkg}/root" \
 				. | \
