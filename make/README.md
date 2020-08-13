@@ -586,7 +586,7 @@
   * **[owfs 2.7p32 (binary only)](../docs/make/owfs.md)<a id='owfs'></a>**<br>
     OWFS - 1-Wire Filesystem This package includes: - owserver for easy, world wide access to serial and USB 1-wire bus masters and attached devices - httpd and ftpd to control owserver over http or ftp - shellprograms like owdir, owwrite, owread, owpresent to control owserver via shell scripts
 
-  * **<u>PCSC-lite (pcscd) 1.8.24 (binary only)</u><a id='pcsc-lite'></a>**<br>
+  * **<u>PCSC-lite (pcscd) 1.9.0 (binary only)</u><a id='pcsc-lite'></a>**<br>
     The purpose of PCSC Lite is to provide a Windows(R) SCard interface in a very small form factor for communicating to smart cards and readers.
 
   * **<u>phonebook-tools: Phone book tools 0.0</u><a id='phonebook-tools'></a>**<br>
