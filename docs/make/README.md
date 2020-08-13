@@ -324,7 +324,7 @@
   * **[minidlna 1.2.1](minidlna.md)<a id='minidlna'></a>**<br>
     The MiniDLNA daemon is an UPnP-A/V and DLNA service which serves multimedia content to compatible clients on the network.
 
-  * **[minisatip 1.0.2 (binary only)](minisatip.md)<a id='minisatip'></a>**<br>
+  * **[minisatip 1.0.4 (binary only)](minisatip.md)<a id='minisatip'></a>**<br>
     Minisatip is a multi-threaded satip server version 1.2 that runs under Linux and it was tested with DVB-S, DVB-S2, DVB-T, DVB-T2, DVB-C, DVB-C2, ATSC and ISDB-T cards.
 
   * **<u>mini-snmpd 1.2b (binary only)</u><a id='mini-snmpd'></a>**<br>

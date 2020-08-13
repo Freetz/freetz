@@ -1,0 +1,18 @@
+--- src/socketworks.c
++++ src/socketworks.c
+@@ -1296,7 +1296,6 @@
+ #undef DEFAULT_LOG
+ #define DEFAULT_LOG LOG_SOCKET
+ 
+-#ifdef __APPLE__
+ struct mmsghdr
+ {
+ 	struct msghdr msg_hdr; /* Message header */
+@@ -1310,7 +1310,6 @@
+ 		writev(rsock, msg[i].msg_hdr.msg_iov, msg[i].msg_hdr.msg_iovlen);
+ 	return len;
+ }
+-#endif
+ 
+ int writev_udp(int rsock, struct iovec *iov, int iiov)
+ {

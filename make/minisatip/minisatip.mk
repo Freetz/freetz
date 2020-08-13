@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, de7bf5575e)
+$(call PKG_INIT_BIN, 1.0.4)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SOURCE_CHECKSUM:=X
 $(PKG)_SITE:=git@https://github.com/catalinii/minisatip

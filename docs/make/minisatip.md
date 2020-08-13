@@ -1,4 +1,4 @@
-# minisatip 1.0.2 (binary only)
+# minisatip 1.0.4 (binary only)
 
 Dieses Package stellt einen SAT>IP Server im Netzwerk bereit.<br>
 <br>
