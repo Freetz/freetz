@@ -651,7 +651,7 @@
   * **<u>pyLoad 0.4.20</u><a id='pyload'></a>**<br>
     pyLoad is a fast, lightweight and full featured download manager for many One-Click-Hoster, container formats like DLC, video sites or just plain http/ftp links.
 
-  * **<u>Python 2.7.16</u><a id='python'></a>**<br>
+  * **<u>Python 2.7.18</u><a id='python'></a>**<br>
     Python is a remarkably powerful dynamic programming language that is used in a wide variety of application domains. CAUTION: Python adds roughly 4 MB to 15.5 MB (depending on your choice of modules) of uncompressed data to your image. In most cases, it should therefore be externalized.
 
   * **<u>python-bjoern: bjoern 1.3.4</u><a id='python-bjoern'></a>**<br>

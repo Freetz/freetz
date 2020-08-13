@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 2.7.16)
+$(call PKG_INIT_BIN, 2.7.18)
 $(PKG)_MAJOR_VERSION:=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 $(PKG)_SOURCE:=Python-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=30157d85a2c0479c09ea2cbe61f2aaf5
+$(PKG)_SOURCE_MD5:=fd6cc8ec0a78c44036f825e739f36e5a
 $(PKG)_SITE:=http://www.python.org/ftp/python/$($(PKG)_VERSION)
 
 $(PKG)_LOCAL_INSTALL_DIR:=$($(PKG)_DIR)/_install
