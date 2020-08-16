@@ -35,7 +35,6 @@ include width
 include skin
 
 include_module menu
-include_module help
 if [ "$MOD_HTTPD_NEWLOGIN" = yes ]; then
     include login
     checklogin

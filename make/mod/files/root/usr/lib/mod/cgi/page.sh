@@ -24,7 +24,7 @@ _cgi_option() {
 		width)
 			cgi_width_at_least "$value" ;;
 		help)
-			export _CGI_HELP=$(_cgi_help_url "$value") ;;
+			export _CGI_HELP="https://github.com/Freetz-NG/freetz-ng/blob/master/make/README.md#$(echo $value | sed 's,.*/,,;s,_,-,g;s,#.*,,')" ;;
 		*)
 			cgi_error "cgi: Unknown option '$opt'"
 			exit 1
