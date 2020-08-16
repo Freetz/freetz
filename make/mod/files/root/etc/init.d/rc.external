@@ -32,13 +32,13 @@ check_date() {
 	log -n "Waiting for time-synchronisation:"
 	counter=225
 	spaceit=" "
-	while [ `date +%Y` -lt 2010 -a $counter -ne 0 ]; do
+	while [ `date +%Y` -lt 2020 -a $counter -ne 0 ]; do
 		log -n "$spaceit."
 		spaceit=
 		[ "$MOD_EXTERNAL_WAIT_INFINITE" == "yes" ] || let counter=$counter-1
 		sleep 4
 	done
-	if [ `date +%Y` -lt 2010 ]; then
+	if [ `date +%Y` -lt 2020 ]; then
 		log " timeout, failed."
 		exit 1
 	fi

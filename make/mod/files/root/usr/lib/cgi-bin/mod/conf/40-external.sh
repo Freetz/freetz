@@ -34,7 +34,7 @@ $(lang de:"Dies kann dazu genutzt werden um nicht externalisierte Dienste die ei
 <p>
 EOF
 
-cgi_print_checkbox "external_year_min" "$MOD_EXTERNAL_YEAR_MIN" "$(lang de:"Warte auf Zeitsynchronisation der Box (mindestens Jahr 2010)" en:"Wait for time synchronisation (year must be at least 2010)")"
+cgi_print_checkbox "external_year_min" "$MOD_EXTERNAL_YEAR_MIN" "$(lang de:"Warte auf Zeitsynchronisation der Box (mindestens Jahr 2020)" en:"Wait for time synchronisation (year must be at least 2020)")"
 cat << EOF
 <blockquote>
 <input id="s3" type="radio" name="external_wait_infinite" value="no"$external_wait_infinite_15_chk><label for="s3"> $(lang de:"Warte maximal 15 Minuten." en:"Wait maximum 15 minutes.")</label><br>
