@@ -91,31 +91,6 @@ menu "Firmware packaging (fwmod) options"
 			Freetz-NG for the 1st time.
 			If you plan to flash by the bootloader, this option isn't needed.
 
-	config FREETZ_FWMOD_CREATE_IN_MEMORY_IMAGE
-		bool "Create in-memory image file"
-		depends on ! FREETZ_FWMOD_SKIP_PACK
-		depends on !FREETZ_SYSTEM_TYPE_MULTICORE && FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE
-		default n
-		help
-			Creates a so-called in-memory or ram image suitable to be loaded
-			into the box memory by bootloader and used to boot and flash the
-			box from there.
-
-			On NAND devices this procedure (booting from the in-memory image)
-			corresponds to a regular recovery process. Every image (original
-			and a modified one) automatically detects the location it has been
-			started from: 1) flash memory partitions, or 2) box memory (RAM).
-			In the 2nd case instead of just running the image as in the 1st one
-			it flashes itself into the flash memory partitions marked as being
-			active (linux_fs_start urlader variable).
-
-			Flash by the bootloader does no signature checks and that's why this
-			method should be used for modifying a Fritz!Box for the first time.
-
-			The required flash scripts and a detailled description could be
-			found in the 'eva_tools' directory of the YourFritz repository:
-			 https://github.com/PeterPawn/YourFritz/tree/master/eva_tools
-
 	config FREETZ_FWMOD_USBROOT
 		bool "Pack file system into archive (USB root mode)"
 		default n
