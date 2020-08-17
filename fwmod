@@ -1071,16 +1071,16 @@ if [ "$DO_MOD" -gt 0 ]; then
 	if [ "$FREETZ_INSTALL_BASE" == "y" ]; then
 		echo "installing mod base"
 
-		MOD_CRON="${VARTAR_MOD_DIR}/var/spool/cron/crontabs"
 		MOD_ROOT="${VARTAR_MOD_DIR}/var/mod"
 
 		# Remove symlink before creating directory
 		rm -rf ${VARTAR_MOD_DIR}/var/spool
+		mkdir -p "${VARTAR_MOD_DIR}/var/spool/cron/crontabs" #TODO: may be removed later
 
-		mkdir -p "$MOD_CRON"
 		mkdir -p "${MOD_ROOT}/pkg" "${MOD_ROOT}/home" "${MOD_ROOT}/lib" "${MOD_ROOT}/root"
 		mkdir -p "${MOD_ROOT}/bin" "${MOD_ROOT}/sbin"
 		mkdir -p "${MOD_ROOT}/var/cache"
+		mkdir -p "${MOD_ROOT}/var/spool/cron/crontabs"
 		mkdir -p "${MOD_ROOT}/usr/bin" "${MOD_ROOT}/usr/sbin" "${MOD_ROOT}/usr/share" \
 			"${MOD_ROOT}/usr/lib" "${MOD_ROOT}/usr/lib/cgi-bin" "${MOD_ROOT}${FREETZ_LIBRARY_DIR}"
 		mkdir -p "${MOD_ROOT}/etc/conf" "${MOD_ROOT}/etc/init.d" "${MOD_ROOT}/etc/reg"
