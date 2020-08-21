@@ -1,42 +1,12 @@
 --- linux-3.12/arch/x86/Makefile
 +++ linux-3.12/arch/x86/Makefile
-@@ -302,6 +302,11 @@
- boot-y			+= uImage.gz
- endif
+@@ -208,6 +208,9 @@
+ # KBUILD_IMAGE specify target image being built
+ KBUILD_IMAGE := $(boot)/bzImage
  
-+# Fritz!Box evaloader targets
-+boot-y			+= vmlinux.lzma
-+boot-y			+= vmlinux.eva
-+boot-y			+= vmlinux.eva_pad
++vmlinux.eva_pad: vmlinux FORCE
++	cp $< $(boot)/$@
 +
- # compressed boot image targets (arch/mips/boot/compressed/)
- bootz-y			:= vmlinuz
- bootz-y			+= vmlinuz.bin
---- linux-3.12/arch/x86/boot/Makefile
-+++ linux-3.12/arch/x86/boot/Makefile
-@@ -55,3 +55,5 @@
- $(obj)/uImage: $(obj)/uImage.gz FORCE
- 	@ln -sf $(notdir $<) $@
- 	@echo '  Image $@ is ready'
-+
-+include $(srctree)/arch/x86/boot/Makefile.evaloader
---- /dev/null
-+++ linux-3.12/arch/x86/boot/Makefile.evaloader
-@@ -0,0 +1,17 @@
-+targets += vmlinux.lzma
-+$(obj)/vmlinux.lzma: $(obj)/vmlinux.bin FORCE
-+	$${FREETZ_BASE_DIR}/tools/lzma e -lc1 -lp2 -pb2 $< $@
-+
-+targets += vmlinux.eva
-+$(obj)/vmlinux.eva: $(obj)/vmlinux.lzma FORCE
-+	loadaddr=$$($(AWK) '/[AT] _text/ { print "0x"$$1; }' < System.map); \
-+	entry=$$($(AWK) '/T kernel_entry/ { print "0x"$$1; }' < System.map); \
-+	echo loadaddr=$$loadaddr entry=$$entry; \
-+	$${FREETZ_BASE_DIR}/tools/lzma2eva $$loadaddr $$entry $< $@
-+
-+DD = dd
-+targets += vmlinux.eva_pad
-+$(obj)/vmlinux.eva_pad: $(obj)/vmlinux.eva FORCE
-+	$(DD) if=$< of=$@ bs=256 conv=sync
-+
-+clean-files += $(objtree)/vmlinux.{lzma,eva,eva_pad}
+ bzImage: vmlinux
+ ifeq ($(CONFIG_X86_DECODER_SELFTEST),y)
+ 	$(Q)$(MAKE) $(build)=arch/x86/tools posttest
