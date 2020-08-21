@@ -1,0 +1,12 @@
+--- linux-4.4/arch/arm/Makefile
++++ linux-4.4/arch/arm/Makefile
+@@ -334,6 +334,9 @@
+ 
+ PHONY += bzImage $(BOOT_TARGETS) $(INSTALL_TARGETS)
+ 
++vmlinux.eva_pad: Image FORCE
++	cp $(boot)/$< $(boot)/$@
++
+ bootpImage uImage: zImage
+ zImage: Image
+ 

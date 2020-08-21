@@ -1,16 +1,7 @@
 KERNEL_MAKE_DIR:=$(MAKE_DIR)/linux
 KERNEL_PATCHES_DIR:=$(KERNEL_MAKE_DIR)/patches/$(KERNEL_VERSION)$(SYSTEM_TYPE_CORE_SUFFIX)
 
-ifeq ($(strip $(FREETZ_KERNEL_VERSION_4_MIN)),y)
-ifeq ($(strip $(KERNEL_ARCH)),arm)
-KERNEL_IMAGE:=Image
-else
-KERNEL_IMAGE:=vmlinux.bin
-endif
-else
 KERNEL_IMAGE:=vmlinux.eva_pad
-endif
-
 KERNEL_IMAGE_BUILD_SUBDIR:=$(if $(FREETZ_KERNEL_VERSION_3_10_MIN),/arch/$(KERNEL_ARCH)/boot)
 KERNEL_TARGET_BINARY:=kernel-$(KERNEL_ID).bin
 KERNEL_CONFIG_FILE:=$(KERNEL_MAKE_DIR)/configs/freetz/config-$(KERNEL_ID)

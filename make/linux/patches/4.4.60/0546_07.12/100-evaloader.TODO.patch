@@ -1,0 +1,12 @@
+--- linux-4.4/arch/mips/Makefile
++++ linux-4.4/arch/mips/Makefile
+@@ -357,6 +357,9 @@
+ 
+ all:	$(all-y)
+ 
++vmlinux.eva_pad: vmlinux.bin FORCE
++	cp arch/mips/boot/$< arch/mips/boot/$@
++
+ # boot
+ $(boot-y): $(vmlinux-32) FORCE
+ 	$(Q)$(MAKE) $(build)=arch/mips/boot VMLINUX=$(vmlinux-32) \
