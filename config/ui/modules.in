@@ -455,6 +455,12 @@ config FREETZ_MODULE_nfsd
 	depends on FREETZ_NFS_SUPPORT_AVAILABLE_AS_MODULE
 	select FREETZ_MODULE_lockd
 	select FREETZ_MODULE_exportfs
+	select FREETZ_MODULE_grace if FREETZ_KERNEL_VERSION_4_MIN
+	default n
+
+config FREETZ_MODULE_grace
+	bool "grace.ko"
+	depends on FREETZ_MODULE_nfsd && FREETZ_KERNEL_VERSION_4_MIN
 	default n
 
 config FREETZ_MODULE_exportfs
@@ -467,6 +473,16 @@ config FREETZ_MODULE_nfs
 	depends on FREETZ_NFS_SUPPORT_AVAILABLE_AS_MODULE
 	select FREETZ_MODULE_lockd
 	default n
+
+config FREETZ_MODULE_nfsv2
+	bool "nfsv2.ko"
+	depends on FREETZ_MODULE_nfs && FREETZ_KERNEL_VERSION_4_MIN
+	default y
+
+config FREETZ_MODULE_nfsv3
+	bool "nfsv3.ko"
+	depends on FREETZ_MODULE_nfs && FREETZ_KERNEL_VERSION_4_MIN
+	default y
 
 config FREETZ_MODULE_nls_cp437
 	bool "nls_cp437.ko"
