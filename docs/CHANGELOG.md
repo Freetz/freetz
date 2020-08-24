@@ -148,8 +148,8 @@ Latest changes
     * squashfs-tools 3.4
     * squashfs-tools 4.3 (modified to support AVM-BE format)
     * vermagic 1ac45e08d4-git
-    * wireguard-tools 1.0.20200319
-    * wireguard-linux-compat 1.0.20200429
+    * wireguard-tools 1.0.20200820
+    * wireguard-linux-compat 1.0.20200729
     * xz 5.2.4
 
 - Documentation/Wiki:
