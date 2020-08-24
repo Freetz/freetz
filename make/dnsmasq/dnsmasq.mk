@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2.81)
+$(call PKG_INIT_BIN, 2.82)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=749ca903537c5197c26444ac24b0dce242cf42595fdfe6b9a5b9e4c7ad32f8fb
+$(PKG)_SOURCE_SHA256:=84523646f3116bb5e1151efb66e645030f6e6a8256f29aab444777a343ebc132
 $(PKG)_SITE:=http://thekelleys.org.uk/dnsmasq
 #$(PKG)_SITE:=git://thekelleys.org.uk/dnsmasq.git
 

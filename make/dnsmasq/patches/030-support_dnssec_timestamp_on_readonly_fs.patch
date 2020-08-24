@@ -1,6 +1,6 @@
 --- src/dnsmasq.c
 +++ src/dnsmasq.c
-@@ -1548,8 +1548,7 @@
+@@ -1552,8 +1552,7 @@
  	/* update timestamp file on TERM if time is considered valid */
  	if (daemon->back_to_the_future)
  	  {
@@ -12,7 +12,7 @@
  
 --- src/dnsmasq.h
 +++ src/dnsmasq.h
-@@ -1065,6 +1065,7 @@
+@@ -1067,6 +1067,7 @@
  #ifdef HAVE_DNSSEC
    struct ds_config *ds;
    char *timestamp_file;
@@ -20,7 +20,7 @@
  #endif
  
    /* globally used stuff for DNS */
-@@ -1239,6 +1240,7 @@
+@@ -1241,6 +1242,7 @@
  size_t filter_rrsigs(struct dns_header *header, size_t plen);
  unsigned char* hash_questions(struct dns_header *header, size_t plen, char *name);
  int setup_timestamp(void);
