@@ -148,8 +148,8 @@ Latest changes
     * squashfs-tools 3.4
     * squashfs-tools 4.3 (modified to support AVM-BE format)
     * vermagic 1ac45e08d4-git
-    * wireguard-tools 1.0.20200319
-    * wireguard-linux-compat 1.0.20200429
+    * wireguard-tools 1.0.20200820
+    * wireguard-linux-compat 1.0.20200729
     * xz 5.2.4
 
 - Documentation/Wiki:
@@ -213,7 +213,7 @@ Latest changes
     * gmp 6.1.2
     * gnu-make 4.2.1
     * gnutls 3.5.19
-    * haproxy 1.8.25
+    * haproxy 1.8.26
     * haserl 0.9.35
     * hplip 3.14.6
     * htop 1.0.3
@@ -295,7 +295,7 @@ Latest changes
     * tinc 1.0.36/1.1pre17
     * tinyproxy 1.8.4
     * tmux 2.5
-    * tor 0.4.3.5
+    * tor 0.4.3.6
     * transmission 3.00
     * tree 1.8.0
     * uClibc++ 0.2.5-git
