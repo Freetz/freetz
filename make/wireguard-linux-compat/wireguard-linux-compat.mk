@@ -1,11 +1,12 @@
-$(call PKG_INIT_BIN, 1.0.20200429)
+$(call PKG_INIT_BIN, 1.0.20200729)
 $(PKG)_SOURCE:=wireguard-linux-compat-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE_SHA256:=690c7d9e115e2ff27386811cb495c9784678f717c8d6fc4cc7469dce373f252e
 $(PKG)_SITE:=https://git.zx2c4.com/wireguard-linux-compat/snapshot
 
 $(PKG)_MODULE:=$($(PKG)_DIR)/src/wireguard.ko
 $(PKG)_TARGET_MODULE:=$(KERNEL_MODULES_DIR)/drivers/net/wireguard/wireguard.ko
 
-$(PKG)_DEPENDS_ON += kernel 
+$(PKG)_DEPENDS_ON += kernel
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_KERNEL_VERSION
 
@@ -29,9 +30,9 @@ $(pkg):
 $(pkg)-precompiled: $($(PKG)_TARGET_MODULE)
 
 $(pkg)-clean:
-	-$(SUBMAKE) -C $(WIREGUARD_LINUX_COMPAT_DIR)/src clean 
+	-$(SUBMAKE) -C $(WIREGUARD_LINUX_COMPAT_DIR)/src clean
 
 $(pkg)-uninstall:
-	$(RM)  $(WIREGUARD_TARGET_MODULE) 
+	$(RM)  $(WIREGUARD_TARGET_MODULE)
 
 $(PKG_FINISH)
