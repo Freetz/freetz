@@ -12,7 +12,7 @@
  	int allowblankpass;
 --- svr-runopts.c
 +++ svr-runopts.c
-@@ -70,6 +70,7 @@
+@@ -73,6 +73,7 @@
  					"-m		Don't display the motd on login\n"
  #endif
  					"-w		Disallow root logins\n"
@@ -20,7 +20,7 @@
  #ifdef HAVE_GETGROUPLIST
  					"-G		Restrict logins to members of specified group\n"
  #endif
-@@ -137,6 +138,7 @@
+@@ -150,6 +151,7 @@
  	svr_opts.forced_command = NULL;
  	svr_opts.forkbg = 1;
  	svr_opts.norootlogin = 0;
@@ -28,7 +28,7 @@
  #ifdef HAVE_GETGROUPLIST
  	svr_opts.restrict_group = NULL;
  	svr_opts.restrict_group_gid = 0;
-@@ -239,6 +241,9 @@
+@@ -256,6 +258,9 @@
  				case 'w':
  					svr_opts.norootlogin = 1;
  					break;
@@ -40,7 +40,7 @@
  					next = &svr_opts.restrict_group;
 --- svr-auth.c
 +++ svr-auth.c
-@@ -308,6 +308,14 @@
+@@ -304,6 +304,14 @@
  	}
  #endif /* HAVE_GETGROUPLIST */
  

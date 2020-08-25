@@ -13,11 +13,9 @@ From: Erik Hovland <erik@hovland.org>
  svr-main.c |    1 +
  2 files changed, 3 insertions(+), 1 deletions(-)
 
-diff --git signkey.c signkey.c
-index c1ef5e2..14cd8d8 100644
 --- signkey.c
 +++ signkey.c
-@@ -414,7 +414,8 @@
+@@ -527,7 +527,8 @@
  	/* skip the size int of the string - this is a bit messy */
  	md5_process(&hs, keyblob, keybloblen);
  
@@ -27,11 +25,9 @@ index c1ef5e2..14cd8d8 100644
  
  	/* "md5 hexfingerprinthere\0", each hex digit is "AB:" etc */
  	buflen = 4 + 3*MD5_HASH_SIZE;
-diff --git svr-main.c svr-main.c
-index f7ce221..76ace97 100644
 --- svr-main.c
 +++ svr-main.c
-@@ -126,6 +126,7 @@
+@@ -128,6 +128,7 @@
  	int childsock;
  	int childpipe[2];
  

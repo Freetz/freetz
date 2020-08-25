@@ -9,9 +9,9 @@
  #endif
 --- runopts.h
 +++ runopts.h
-@@ -132,6 +132,7 @@
- 
- 	char * forced_command;
+@@ -137,6 +137,7 @@
+         char *pubkey_plugin_options;
+ #endif
  
 +	char * childProcessPATH;
  } svr_runopts;
@@ -19,7 +19,7 @@
  extern svr_runopts svr_opts;
 --- svr-chansession.c
 +++ svr-chansession.c
-@@ -980,7 +980,7 @@
+@@ -977,7 +977,7 @@
  	addnewvar("LOGNAME", ses.authstate.pw_name);
  	addnewvar("HOME", ses.authstate.pw_dir);
  	addnewvar("SHELL", get_user_shell());
@@ -30,7 +30,7 @@
  	}
 --- svr-runopts.c
 +++ svr-runopts.c
-@@ -98,6 +98,8 @@
+@@ -101,6 +101,8 @@
  					"		(default port is %s if none specified)\n"
  					"-P PidFile	Create pid file PidFile\n"
  					"		(default %s)\n"
@@ -39,7 +39,7 @@
  #if INETD_MODE
  					"-i		Start for inetd\n"
  #endif
-@@ -123,6 +125,7 @@
+@@ -133,6 +135,7 @@
  #endif
  					MAX_AUTH_TRIES,
  					DROPBEAR_MAX_PORTS, DROPBEAR_DEFPORT, DROPBEAR_PIDFILE,
@@ -47,7 +47,7 @@
  					DEFAULT_RECV_WINDOW, DEFAULT_KEEPALIVE, DEFAULT_IDLE_TIMEOUT);
  }
  
-@@ -162,6 +165,7 @@
+@@ -175,6 +178,7 @@
  	svr_opts.hostkey = NULL;
  	svr_opts.delay_hostkey = 0;
  	svr_opts.pidfile = DROPBEAR_PIDFILE;
@@ -55,7 +55,7 @@
  #if DROPBEAR_SVR_LOCALTCPFWD
  	svr_opts.nolocaltcp = 0;
  #endif
-@@ -247,6 +251,9 @@
+@@ -264,6 +268,9 @@
  				case 'P':
  					next = &svr_opts.pidfile;
  					break;
@@ -65,7 +65,7 @@
  #if DO_MOTD
  				/* motd is displayed by default, -m turns it off */
  				case 'm':
-@@ -352,6 +359,10 @@
+@@ -374,6 +381,10 @@
  	}
  #endif
  
