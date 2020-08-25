@@ -292,7 +292,7 @@
     Client to build a tunnel to the ipv6 network (see http://go6.net). The binary will be installed as /usr/sbin/gw6c and CGI frontend will be provided for a simple configuration. A sample can be found in /usr/share/gw6/.
      - [Alternativen](../docs/make/gw6.md#alternativen)
 
-  * **<u>HAProxy 1.8.25</u><a id='haproxy'></a>**<br>
+  * **<u>HAProxy 1.8.26</u><a id='haproxy'></a>**<br>
     haproxy is a loadbalancer.
 
   * **[haserl 0.9.35 (binary only)](../docs/make/haserl.md)<a id='haserl'></a>**<br>
@@ -864,7 +864,7 @@
   * **<u>tmux 2.5 (binary only)</u><a id='tmux'></a>**<br>
     tmux, a BSD-licensed alternative to GNU screen. Uses ncurses.
 
-  * **[Tor 0.4.3.5](../docs/make/tor.md)<a id='tor'></a>**<br>
+  * **[Tor 0.4.3.6](../docs/make/tor.md)<a id='tor'></a>**<br>
     The Onion Router Anonymous Internet communication system.
      - [Tor als Proxy benutzen](../docs/make/tor.md#tor-als-proxy-benutzen)
      - [Tor und Privoxy](../docs/make/tor.md#tor-und-privoxy)
@@ -936,10 +936,10 @@
   * **[Wget GNU 1.20.3 (binary only)](../docs/make/wget.md)<a id='wget'></a>**<br>
     GNU Wget is a free software package for retrieving files using HTTP, HTTPS and FTP, the most widely-used Internet protocols. It is a non-interactive commandline tool, so it may easily be called from scripts, cron jobs, terminals, etc.
 
-  * **[wireguard-tools 1.0.20200319](../docs/make/wireguard.md)<a id='wireguard'></a>**<br>
+  * **[wireguard-tools 1.0.20200820](../docs/make/wireguard.md)<a id='wireguard'></a>**<br>
     WireGuard is an extremely simple yet fast and modern VPN that utilizes state-of-the-art cryptography. It aims to be faster, simpler, leaner, and more useful than IPSec, while avoiding the massive headache. It intends to be considerably more performant than OpenVPN. WireGuard is designed as a general purpose VPN for running on embedded interfaces and super computers alike, fit for many different circumstances. Initially released for the Linux kernel, it plans to be cross-platform and widely deployable. It is currently under heavy development, but already it might be regarded as the most secure, easiest to use, and simplest VPN solution in the industry.
 
-  * **<u>wireguard-linux-compat 1.0.20200429</u><a id='wireguard-linux-compat'></a>**<br>
+  * **<u>wireguard-linux-compat 1.0.20200729</u><a id='wireguard-linux-compat'></a>**<br>
     This package provides the kernel module required for Wireguard
 
   * **[WOL 0.7.1 (binary only)](../docs/make/wol.md)<a id='wol'></a>**<br>

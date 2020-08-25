@@ -1,4 +1,4 @@
-# wireguard-tools 1.0.20200319
+# wireguard-tools 1.0.20200820
 
 Mit Wireguard kann ein VPN aufgebaut werden. Es ist schneller als [OpenVPN](openvpn.md) und einfach zu konfugurieren als IPsec.<br>
 <br>
