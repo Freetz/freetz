@@ -13,6 +13,6 @@
    [![Tagging Pimped](../screenshots/000-TAG_pimped.png)](../screenshots/000-TAG_pimped.png)
    
  * **Prisrak**<br>
-   Im Webinterface wird über AVM's "Fritz" Logo der Schriftzug "freetz ng" gelegt.<br><br>
+   Im Webinterface wird über AVM's "Fritz" Logo der Schriftzug "Freetz mod" gelegt.<br><br>
    [![Tagging Prisrak](../screenshots/000-TAG_prisrak.png)](../screenshots/000-TAG_prisrak.png)
 
