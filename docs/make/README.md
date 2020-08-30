@@ -214,6 +214,9 @@
   * **[hd-idle 0.99](hd-idle.md)<a id='hd-idle'></a>**<br>
     Another idle-daemon for attached hard drives if sg3utils doesn't work as expected. This can happen with most low-cost USB drives.
 
+  * **<u>hdparm 9.58 (binary only)</u><a id='hdparm'></a>**<br>
+    Hdparm can be used to show and set parameters of ATA-drives (e.g. hard disk drives).
+
   * **[hol: Halt-On-Lan 0.1](hol.md)<a id='hol'></a>**<br>
     Halt-On-Lan is a package to run predefined actions on a remote host: shutdown, reboot, logoff, lock For successfull action poweroff.exe from http://users.telenet.be/jbosman/poweroff/poweroff.htm or similar compatible script or binary must be installed and run as service on the remote host. Moreover, in case of requested interaction this service should understand the syntax of poweroff.exe
 

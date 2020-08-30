@@ -113,6 +113,7 @@ Latest changes
     * E-MailRelay 1.9
     * getdns 1.5.2
     * gptfdisk 1.0.1
+    * hdarm 9.58
     * iksemel 1.5-git
     * iperf 3.7
     * jansson 2.7
