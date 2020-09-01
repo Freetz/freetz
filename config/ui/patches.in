@@ -1099,9 +1099,24 @@ config FREETZ_PATCH_SIGNED
 config FREETZ_PATCH_SECURE
 	bool "Patch web menu secure message"
 	depends on !FREETZ_TYPE_EXTENDER && FREETZ_AVM_VERSION_07_2X_MIN
+	select FREETZ_PATCH_SECURE_2fa if !FREETZ_PATCH_SECURE_sip
 	default n
 	help
 		Hides the "unsecure settings" message from the web interface.
+
+config FREETZ_PATCH_SECURE_2fa
+	bool "Caused by twofactor_disabled"
+	depends on FREETZ_PATCH_SECURE
+	default y
+	help
+		twofactor_disabled does not trigger the message.
+
+config FREETZ_PATCH_SECURE_sip
+	bool "Caused by ipphone_from_outside"
+	depends on FREETZ_PATCH_SECURE
+	default n
+	help
+		ipphone_from_outside does not trigger the message.
 
 config FREETZ_MODIFY_DSL_WARNING
 	bool "Patch DSL modified message"

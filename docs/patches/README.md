@@ -414,6 +414,12 @@
   * **[PATCH_SECURE: Patch web menu secure message](PATCH_SECURE.md)<a id='patch-secure'></a>**<br>
     Hides the "unsecure settings" message from the web interface.
 
+  * **<u>PATCH_SECURE_2fa: Caused by twofactor_disabled</u><a id='patch-secure-2fa'></a>**<br>
+    twofactor_disabled does not trigger the message.
+
+  * **<u>PATCH_SECURE_sip: Caused by ipphone_from_outside</u><a id='patch-secure-sip'></a>**<br>
+    ipphone_from_outside does not trigger the message.
+
   * **[PATCH_SIGNED: Patch web menu signed message](PATCH_SIGNED.md)<a id='patch-signed'></a>**<br>
     Hides the "unsupported changes" message from the web interface.
 
