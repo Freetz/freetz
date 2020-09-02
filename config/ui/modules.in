@@ -371,6 +371,24 @@ menu "fs"
 menu "nfs"
 	depends on FREETZ_NFS_SUPPORT_AVAILABLE_AS_MODULE
 
+config FREETZ_MODULE_lockd
+	bool "lockd.ko"
+	depends on FREETZ_MODULE_nfs || FREETZ_MODULE_nfsd
+	depends on FREETZ_KERNEL_VERSION_2_6_13 || FREETZ_KERNEL_VERSION_2_6_28_MIN
+	select FREETZ_MODULE_sunrpc
+	select FREETZ_MODULE_grace if FREETZ_KERNEL_VERSION_4_MIN
+	default n
+
+config FREETZ_MODULE_grace
+	bool "grace.ko"
+	depends on FREETZ_MODULE_lockd && FREETZ_KERNEL_VERSION_4_MIN
+	default n
+
+config FREETZ_MODULE_sunrpc
+	bool "sunrpc.ko"
+	depends on FREETZ_MODULE_lockd
+	default n
+
 config FREETZ_MODULE_nfs
 	bool "nfs.ko"
 	depends on FREETZ_NFS_SUPPORT_AVAILABLE_AS_MODULE
@@ -397,24 +415,6 @@ config FREETZ_MODULE_nfsd
 config FREETZ_MODULE_exportfs
 	bool "exportfs.ko"
 	depends on FREETZ_MODULE_nfsd
-	default n
-
-config FREETZ_MODULE_lockd
-	bool "lockd.ko"
-	depends on FREETZ_MODULE_nfs || FREETZ_MODULE_nfsd
-	depends on FREETZ_KERNEL_VERSION_2_6_13 || FREETZ_KERNEL_VERSION_2_6_28_MIN
-	select FREETZ_MODULE_sunrpc
-	select FREETZ_MODULE_grace if FREETZ_KERNEL_VERSION_4_MIN
-	default n
-
-config FREETZ_MODULE_grace
-	bool "grace.ko"
-	depends on FREETZ_MODULE_lockd && FREETZ_KERNEL_VERSION_4_MIN
-	default n
-
-config FREETZ_MODULE_sunrpc
-	bool "sunrpc.ko"
-	depends on FREETZ_MODULE_lockd
 	default n
 
 endmenu
