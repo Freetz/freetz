@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 6.6)
+$(call PKG_INIT_BIN, 6.10)
 $(PKG)_SOURCE:=cifs-utils-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_SHA256:=d07152a807de6840566bbcc69a97ff6fa17fca4e09ceb4641d74882a83e67125
+$(PKG)_SOURCE_SHA256:=92fc29c8e9039637f3344267500f1fa381e2cccd7d10142f0c1676fa575904a7
 $(PKG)_SITE:=@SAMBA/linux-cifs/cifs-utils
 
 $(PKG)_STARTLEVEL=50
@@ -10,7 +10,6 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/sbin/mount.cifs
 
 $(PKG)_EXCLUDED+=$(if $(FREETZ_PACKAGE_CIFSMOUNT_REMOVE_WEBIF),usr/sbin/cifsmount usr/lib/cgi-bin/cifsmount.cgi etc/default.cifsmount etc/init.d/rc.cifsmount)
 
-$(PKG)_CONFIGURE_OPTIONS += --with-libcap-ng=no
 $(PKG)_CONFIGURE_OPTIONS += --with-libcap=no
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-cifsupcall
@@ -21,6 +20,8 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-systemd
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-pie
 $(PKG)_CONFIGURE_OPTIONS += --disable-relro
+
+$(PKG)_CONFIGURE_PRE_CMDS += autoreconf -i;
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

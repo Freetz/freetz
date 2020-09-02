@@ -1,4 +1,4 @@
-# Cifsmount 6.6
+# Cifsmount 6.10
 
 [![](../screenshots/146_md.jpg)](../screenshots/146.jpg)
 

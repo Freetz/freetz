@@ -194,7 +194,7 @@ Latest changes
     * Bip 0.8.9/0.9.0-rc4
     * bird 1.6.4
     * CCID driver 1.4.33
-    * cifs-utils 6.6
+    * cifs-utils 6.10
     * cryptsetup 1.7.5
     * curl 7.72.0
     * davfs2 1.5.2

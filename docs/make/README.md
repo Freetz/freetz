@@ -79,7 +79,7 @@
   * **[Checkmaild 0.4.7](checkmaild.md)<a id='checkmaild'></a>**<br>
     Checkmaild checks pop3/smtp mail accounts for new mails on a given interval. A configurable shell script starts the desired actions when new mails arrive.
 
-  * **[Cifsmount 6.6](cifsmount.md)<a id='cifsmount'></a>**<br>
+  * **[Cifsmount 6.10](cifsmount.md)<a id='cifsmount'></a>**<br>
     User space helper for mounting remote CIFS shares + CGI web interface for easy configuration of up to three mounts incl. (auto-) start/stop. CIFS is an extended version of SMB, the well-known protocol used by MS Windows and Samba for sharing folders, files and printers. Thus, cifsmount is a replacement for smbmount, having the advantage of being significantly smaller than smbmount. So if you want to mount Windows or Samba shares from your router box, this package is for you.
 
   * **<u>classpath GNU 0.98 (binary only)</u><a id='classpath'></a>**<br>

@@ -110,7 +110,7 @@
      - [Telefon-Benachrichtigung](../docs/make/checkmaild.md#telefon-benachrichtigung)
      - [Beispiel-Skripte](../docs/make/checkmaild.md#beispiel-skripte)
 
-  * **[Cifsmount 6.6](../docs/make/cifsmount.md)<a id='cifsmount'></a>**<br>
+  * **[Cifsmount 6.10](../docs/make/cifsmount.md)<a id='cifsmount'></a>**<br>
     User space helper for mounting remote CIFS shares + CGI web interface for easy configuration of up to three mounts incl. (auto-) start/stop. CIFS is an extended version of SMB, the well-known protocol used by MS Windows and Samba for sharing folders, files and printers. Thus, cifsmount is a replacement for smbmount, having the advantage of being significantly smaller than smbmount. So if you want to mount Windows or Samba shares from your router box, this package is for you.
      - [Konfiguration cifsmount](../docs/make/cifsmount.md#konfiguration-cifsmount)
      - [Fehlersuche](../docs/make/cifsmount.md#fehlersuche)
