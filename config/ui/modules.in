@@ -432,6 +432,7 @@ config FREETZ_MODULE_coda
 	bool "coda.ko"
 	default n
 
+
 config FREETZ_MODULE_ext2
 	bool "ext2.ko"
 	depends on ! FREETZ_AVM_HAS_EXT2_BUILTIN # && any kernel version
@@ -445,6 +446,12 @@ config FREETZ_MODULE_ext3
 	select FREETZ_MODULE_mbcache
 	default n
 
+config FREETZ_MODULE_jbd
+	bool "jbd.ko"
+	depends on FREETZ_MODULE_ext3
+	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
+	default n
+
 config FREETZ_MODULE_ext4
 	bool "ext4.ko"
 	depends on ! FREETZ_AVM_HAS_EXT4_BUILTIN && FREETZ_KERNEL_VERSION_2_6_28_MIN
@@ -452,6 +459,22 @@ config FREETZ_MODULE_ext4
 	select FREETZ_MODULE_jbd2
 	select FREETZ_MODULE_mbcache
 	default n
+
+config FREETZ_MODULE_crc16
+	bool "crc16.ko"
+	depends on FREETZ_MODULE_ext4
+	default n
+
+config FREETZ_MODULE_jbd2
+	bool "jbd2.ko"
+	depends on FREETZ_MODULE_ext4
+	default n
+
+config FREETZ_MODULE_mbcache
+	bool "mbcache.ko"
+	depends on FREETZ_MODULE_ext2 || FREETZ_MODULE_ext3 || FREETZ_MODULE_ext4
+	default n
+
 
 config FREETZ_MODULE_fat
 	bool "fat.ko"
@@ -474,23 +497,9 @@ config FREETZ_MODULE_iso9660
 	bool "iso9660.ko"
 	default n
 
-config FREETZ_MODULE_jbd
-	bool "jbd.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
-	default n
-
-config FREETZ_MODULE_jbd2
-	bool "jbd2.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
-	default n
-
 config FREETZ_MODULE_jffs2
 	bool "jffs2.ko"
 	depends on !FREETZ_REMOVE_JFFS2 && !FREETZ_AVM_HAS_JFFS2_BUILTIN
-	default n
-
-config FREETZ_MODULE_mbcache
-	bool "mbcache.ko"
 	default n
 
 config FREETZ_MODULE_mini_fo
@@ -550,11 +559,6 @@ config FREETZ_MODULE_vfat
 endmenu
 
 menu "lib"
-
-config FREETZ_MODULE_crc16
-	bool "crc16.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
-	default n
 
 config FREETZ_MODULE_crc_ccitt
 	bool "crc_ccitt.ko"
