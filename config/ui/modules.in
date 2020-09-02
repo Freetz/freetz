@@ -5,6 +5,17 @@ menu "Kernel modules"
 	visible if FREETZ_SHOW_ADVANCED
 	depends on FREETZ_REPLACE_MODULE_AVAILABLE
 
+config FREETZ_MODULES_OWN
+	string "Own Modules"
+	default ""
+	help
+		You can list here modules which should be include in
+		the image and are not (yet) in freetz's menuconfig.
+		 - add the names without the .ko extension
+		 - replace "-" by "_"
+		 - replace "+" by "x"
+		 - separate multiple modules by spaces
+
 config FREETZ_MODULES_ALL
 	bool "All Modules"
 	depends on FREETZ_REPLACE_KERNEL
