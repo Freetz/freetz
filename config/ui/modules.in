@@ -368,6 +368,56 @@ endmenu
 
 menu "fs"
 
+menu "nfs"
+
+config FREETZ_MODULE_nfs
+	bool "nfs.ko"
+	depends on FREETZ_NFS_SUPPORT_AVAILABLE_AS_MODULE
+	select FREETZ_MODULE_lockd
+	default n
+
+config FREETZ_MODULE_nfsv2
+	bool "nfsv2.ko"
+	depends on FREETZ_MODULE_nfs && FREETZ_KERNEL_VERSION_4_MIN
+	default y
+
+config FREETZ_MODULE_nfsv3
+	bool "nfsv3.ko"
+	depends on FREETZ_MODULE_nfs && FREETZ_KERNEL_VERSION_4_MIN
+	default y
+
+config FREETZ_MODULE_nfsd
+	bool "nfsd.ko"
+	depends on FREETZ_NFS_SUPPORT_AVAILABLE_AS_MODULE
+	select FREETZ_MODULE_lockd
+	select FREETZ_MODULE_exportfs
+	default n
+
+config FREETZ_MODULE_exportfs
+	bool "exportfs.ko"
+	depends on FREETZ_MODULE_nfsd
+	default n
+
+config FREETZ_MODULE_lockd
+	bool "lockd.ko"
+	depends on FREETZ_MODULE_nfs || FREETZ_MODULE_nfsd
+	depends on FREETZ_KERNEL_VERSION_2_6_13 || FREETZ_KERNEL_VERSION_2_6_28_MIN
+	select FREETZ_MODULE_sunrpc
+	select FREETZ_MODULE_grace if FREETZ_KERNEL_VERSION_4_MIN
+	default n
+
+config FREETZ_MODULE_grace
+	bool "grace.ko"
+	depends on FREETZ_MODULE_lockd && FREETZ_KERNEL_VERSION_4_MIN
+	default n
+
+config FREETZ_MODULE_sunrpc
+	bool "sunrpc.ko"
+	depends on FREETZ_MODULE_lockd
+	default n
+
+endmenu
+
 config FREETZ_MODULE_autofs4
 	bool "autofs4.ko"
 	depends on !FREETZ_AVM_HAS_AUTOFS4_BUILTIN
@@ -434,24 +484,6 @@ config FREETZ_MODULE_jbd2
 	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
 	default n
 
-config FREETZ_MODULE_lockd
-	bool "lockd.ko"
-	depends on FREETZ_MODULE_nfs || FREETZ_MODULE_nfsd
-	depends on FREETZ_KERNEL_VERSION_2_6_13 || FREETZ_KERNEL_VERSION_2_6_28_MIN
-	select FREETZ_MODULE_sunrpc
-	select FREETZ_MODULE_grace if FREETZ_KERNEL_VERSION_4_MIN
-	default n
-
-config FREETZ_MODULE_grace
-	bool "grace.ko"
-	depends on FREETZ_MODULE_lockd && FREETZ_KERNEL_VERSION_4_MIN
-	default n
-
-config FREETZ_MODULE_sunrpc
-	bool "sunrpc.ko"
-	depends on FREETZ_MODULE_lockd
-	default n
-
 config FREETZ_MODULE_mini_fo
 	bool "mini_fo.ko"
 	default n
@@ -459,34 +491,6 @@ config FREETZ_MODULE_mini_fo
 config FREETZ_MODULE_minix
 	bool "minix.ko"
 	default n
-
-config FREETZ_MODULE_nfsd
-	bool "nfsd.ko"
-	depends on FREETZ_NFS_SUPPORT_AVAILABLE_AS_MODULE
-	select FREETZ_MODULE_lockd
-	select FREETZ_MODULE_exportfs
-	default n
-
-config FREETZ_MODULE_exportfs
-	bool "exportfs.ko"
-	depends on FREETZ_MODULE_nfsd
-	default n
-
-config FREETZ_MODULE_nfs
-	bool "nfs.ko"
-	depends on FREETZ_NFS_SUPPORT_AVAILABLE_AS_MODULE
-	select FREETZ_MODULE_lockd
-	default n
-
-config FREETZ_MODULE_nfsv2
-	bool "nfsv2.ko"
-	depends on FREETZ_MODULE_nfs && FREETZ_KERNEL_VERSION_4_MIN
-	default y
-
-config FREETZ_MODULE_nfsv3
-	bool "nfsv3.ko"
-	depends on FREETZ_MODULE_nfs && FREETZ_KERNEL_VERSION_4_MIN
-	default y
 
 config FREETZ_MODULE_nls_cp437
 	bool "nls_cp437.ko"
