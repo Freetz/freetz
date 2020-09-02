@@ -436,9 +436,8 @@ config FREETZ_MODULE_jbd2
 
 config FREETZ_MODULE_lockd
 	bool "lockd.ko"
-	depends on \
-		FREETZ_KERNEL_VERSION_2_6_13 || \
-		FREETZ_KERNEL_VERSION_2_6_28_MIN
+	depends on FREETZ_MODULE_nfs || FREETZ_MODULE_nfsd
+	depends on FREETZ_KERNEL_VERSION_2_6_13 || FREETZ_KERNEL_VERSION_2_6_28_MIN
 	select FREETZ_MODULE_sunrpc
 	select FREETZ_MODULE_grace if FREETZ_KERNEL_VERSION_4_MIN
 	default n
