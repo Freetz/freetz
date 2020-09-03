@@ -83,6 +83,10 @@ preprocess_conf() {
 			$lowercase
 			s/^/50 rem /; p; d
 		}
+		/^MODULES_OWN/ {
+			s/^MODULES_OWN=\" */ /g;s/ *\"$//;s/  */ /g
+			s/ /\n30 mod /g; p; d
+		}
 		/^MODULE_/ {
 			s/^MODULE_//
 			s/^/30 mod /; p; d
@@ -105,7 +109,7 @@ preprocess_conf() {
 			$lowercase
 			s/^/20 pkg /; p; d
 		}
-	" "$file" | sort
+	" "$file" | sort | grep -v '^$'
 }
 #
 # Format output; the order in which read_entries is called must match the sort
