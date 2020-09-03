@@ -1,4 +1,4 @@
-[ "$FREETZ_REMOVE_LANGUAGES" == "y" ] || return 0
+[ "$FREETZ_REMOVE_LANGUAGE" == "y" ] || return 0
 echo1 "removing language files"
 
 for lang in en es fr it nl pl; do
