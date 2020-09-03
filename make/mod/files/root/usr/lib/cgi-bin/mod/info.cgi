@@ -107,6 +107,7 @@ preprocess_conf() {
 			s/^PACKAGE_//
 			s/_/ /
 			$lowercase
+			s/decrypt fritzos_cfg_?/decrypt_fritzos_cfg /
 			s/^/40 pkg /; p; d
 		}
 	" "$file" | sort | grep -v '^$'
