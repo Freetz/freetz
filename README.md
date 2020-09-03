@@ -20,10 +20,34 @@ More features - less bugs!
 ```
   git clone https://github.com/Freetz-NG/freetz-ng ~/freetz-ng
   cd ~/freetz-ng
-  make help
   make menuconfig
   make
-  make push-firmware
+  # make help
+```
+
+### Flash firmware:
+```
+  # make push-firmware
+  tools/push_firmware -h
+```
+
+### Update GIT:
+```
+  git pull
+```
+
+### Show GIT states:
+```
+  git status
+  git diff --no-prefix # --cached
+  git log --graph # --oneline
+```
+
+### Delete local changes:
+```
+  git fetch --all --prune
+  git reset --hard origin/HEAD
+  git clean -fd
 ```
 
 ### Mirrors:
