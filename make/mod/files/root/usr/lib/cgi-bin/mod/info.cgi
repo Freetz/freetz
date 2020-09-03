@@ -96,6 +96,7 @@ preprocess_conf() {
 			s/LIB_//
 			s/_/ /
 			$lowercase
+			s/libusb 0_?/libusb_0 /
 			s/^/60 lib /; p; d
 		}
 		/^PACKAGE_.*_CGI$/ {
@@ -108,6 +109,7 @@ preprocess_conf() {
 			s/^PACKAGE_//
 			s/_/ /
 			$lowercase
+			s/proxychains ng_?/proxychains_ng /
 			s/decrypt fritzos_cfg_?/decrypt_fritzos_cfg /
 			s/^/40 pkg /; p; d
 		}
