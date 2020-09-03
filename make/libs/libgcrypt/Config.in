@@ -19,7 +19,7 @@ config FREETZ_LIB_libgcrypt
 		supporting functions.
 
 menu "Configuration"
-	visible if FREETZ_LIB_libgcrypt
+	depends on FREETZ_LIB_libgcrypt
 comment "Digests ---"
 config FREETZ_LIB_libgcrypt_WITH_DIGEST_blake2
 	bool "BLAKE2"
