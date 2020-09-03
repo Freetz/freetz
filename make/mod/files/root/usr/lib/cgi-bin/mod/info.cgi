@@ -113,7 +113,7 @@ preprocess_conf() {
 			s/decrypt fritzos_cfg_?/decrypt_fritzos_cfg /
 			s/^/40 pkg /; p; d
 		}
-	" "$file" | sort | grep -v '^$'
+	" "$file" | sed 's/ _$//g' | sort -u | grep -v '^$'
 }
 #
 # Format output; the order in which read_entries is called must match the sort
