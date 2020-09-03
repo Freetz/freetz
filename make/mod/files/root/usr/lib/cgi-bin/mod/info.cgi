@@ -80,6 +80,7 @@ preprocess_conf() {
 		}
 		/^REMOVE_/ {
 			s/^REMOVE_//
+			s/_/ /
 			$lowercase
 			s/^/20 rem /; p; d
 		}
