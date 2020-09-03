@@ -81,33 +81,33 @@ preprocess_conf() {
 		/^REMOVE_/ {
 			s/^REMOVE_//
 			$lowercase
-			s/^/50 rem /; p; d
+			s/^/20 rem /; p; d
 		}
 		/^MODULES_OWN/ {
 			s/^MODULES_OWN=\" */ /g;s/ *\"$//;s/  */ /g
-			s/ /\n30 mod /g; p; d
+			s/ /\n50 mod /g; p; d
 		}
 		/^MODULE_/ {
 			s/^MODULE_//
-			s/^/30 mod /; p; d
+			s/^/50 mod /; p; d
 		}
 		/^LIB_/ {
 			s/LIB_//
 			s/_/ /
 			$lowercase
-			s/^/40 lib /; p; d
+			s/^/60 lib /; p; d
 		}
 		/^PACKAGE_.*_CGI$/ {
 			s/^PACKAGE_(.*)_CGI$/\1/
 			/_/ d # why?
 			$lowercase
-			s/^/60 cgi /; p; d
+			s/^/30 cgi /; p; d
 		}
 		/^PACKAGE/ {
 			s/^PACKAGE_//
 			s/_/ /
 			$lowercase
-			s/^/20 pkg /; p; d
+			s/^/40 pkg /; p; d
 		}
 	" "$file" | sort | grep -v '^$'
 }
@@ -119,30 +119,63 @@ format_conf() {
 	type=START
 	sec_begin '$(lang de:"FREETZ-Konfiguration" en:"FREETZ configuration")'
 	cat <<- 'EOF'
-	<table id="freetz-conf">
+	<table id="freetz-conf" style="width:100%">
 	<tr>
-		<th>$(lang de:"Patches" en:"Patches"):</th>
-		<th>$(lang de:"Pakete" en:"Packages"):</th>
-		<th>$(lang de:"Module" en:"Modules"):</th>
-		<th>$(lang de:"Libraries" en:"Libraries"):</th>
-	</tr>
-	<tr>
-	EOF
-	echo '<td>'; read_entries pat; echo '</td>'
-	echo '<td rowspan="3">'; read_entries pkg; echo '</td>'
-	echo '<td>'; read_entries mod; echo '</td>'
-	echo '<td rowspan="3">'; read_entries lib; echo '</td>'
-	cat <<- 'EOF'
-	</tr>
-	<tr>
-		<th>$(lang de:"Entfernt" en:"Removes"):</th>
-		<th>$(lang de:"CGI-Pakete" en:"CGI Packages"):</th>
-	</tr>
-	<tr>
-	EOF
-	echo '<td>'; read_entries rem; echo '</td>'
-	echo '<td>'; read_entries cgi; echo '</td>'
-	cat <<- EOF
+
+	<td>
+	<table>
+		<tr><th>Patches:</th></tr>
+		<tr><td>
+		EOF
+		read_entries pat
+		cat <<- 'EOF'
+		</td></tr>
+		<tr><td>&nbsp;</td></tr>
+		<tr><th>Removes:</th></tr>
+		<tr><td>
+		EOF
+		read_entries rem
+		cat <<- 'EOF'
+		</td></tr>
+	</table>
+	</td>
+
+	<td>
+	<table>
+		<tr><th>CGI-Webifs:</th></tr>
+		<tr><td>
+		EOF
+		read_entries cgi
+		cat <<- 'EOF'
+		</td></tr>
+		<tr><td>&nbsp;</td></tr>
+		<tr><th>Packages:</th></tr>
+		<tr><td>
+		EOF
+		read_entries pkg
+		cat <<- 'EOF'
+		</td></tr>
+	</table>
+	</td>
+
+	<td>
+	<table>
+		<tr><th>Modules:</th></tr>
+		<tr><td>
+		EOF
+		read_entries mod
+		cat <<- 'EOF'
+		</td></tr>
+		<tr><td>&nbsp;</td></tr>
+		<tr><th>Libraries:</th></tr>
+		<tr><td>
+		EOF
+		read_entries lib
+		cat <<- 'EOF'
+		</td></tr>
+	</table>
+	</td>
+
 	</tr>
 	</table>
 	<div $divstyle><br><a href="$(href extra mod do_download_config)"><b>.config:</b></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="$(href extra mod do_download_config)">$(lang de:"Herunterladen als Textdatei" en:"Download as text file")</a></div>
