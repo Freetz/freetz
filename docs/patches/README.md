@@ -23,6 +23,9 @@
   * **[REMOVE_AVM_VPN: Remove VPN](REMOVE_AVM_VPN.md)<a id='remove-avm-vpn'></a>**<br>
     Remove AVM's vpn and some other related files This patch removes the files and related Web UI entrys, but not the vpn settings. This will save about 120kB compressed size.
 
+  * **<u>Remove brandings</u><a id='remove-branding'></a>**<br>
+    Each branding provides the web UI templates for a certain manufacturer or OEM. NOTE: Make sure not to remove the branding corresponding to the one defined in your box's boot loader environment. It can be determined by calling the following command from the box's shell prompt: echo $(cat /proc/sys/urlader/firmware_version)
+
   * **<u>REMOVE_BRANDING_1und1: 1und1</u><a id='remove-branding-1und1'></a>**<br>
     1&1 branding
 
@@ -43,9 +46,6 @@
 
   * **<u>REMOVE_BRANDING_otwo: otwo</u><a id='remove-branding-otwo'></a>**<br>
     O2 branding
-
-  * **[Remove brandings](REMOVE_BRANDINGS.md)<a id='remove-brandings'></a>**<br>
-    Each branding provides the web UI templates for a certain manufacturer or OEM. NOTE: Make sure not to remove the branding corresponding to the one defined in your box's boot loader environment. It can be determined by calling the following command from the box's shell prompt: echo $(cat /proc/sys/urlader/firmware_version)
 
   * **<u>REMOVE_BRANDING_versatel: versatel</u><a id='remove-branding-versatel'></a>**<br>
     Versatel branding
@@ -104,6 +104,9 @@
   * **[Remove kids (usermand/contfiltd)](REMOVE_KIDS.md)<a id='remove-kids'></a>**<br>
     Remove userman/contfiltd files (Kindersicherung)
 
+  * **<u>Remove languages</u><a id='remove-language'></a>**<br>
+    This removes the selected language db /etc/htmltext_??.db files. Make sure you don't remove the active language! A single db file is 40-950 KB big.
+
   * **<u>REMOVE_LANGUAGE_en: en</u><a id='remove-language-en'></a>**<br>
 
   * **<u>REMOVE_LANGUAGE_es: es</u><a id='remove-language-es'></a>**<br>
@@ -115,9 +118,6 @@
   * **<u>REMOVE_LANGUAGE_nl: nl</u><a id='remove-language-nl'></a>**<br>
 
   * **<u>REMOVE_LANGUAGE_pl: pl</u><a id='remove-language-pl'></a>**<br>
-
-  * **<u>Remove languages</u><a id='remove-languages'></a>**<br>
-    This removes the selected language db /etc/htmltext_??.db files. Make sure you don't remove the active language! A single db file is 40-950 KB big.
 
   * **<u>Remove libfuse.so</u><a id='remove-libfuse'></a>**<br>
     This removes libfuse.so and saves about 132 KB (uncompressed). NTFS and Webdav are also removed.
