@@ -696,18 +696,13 @@ config FREETZ_TYPE_FIRMWARE_LABOR
 
 if FREETZ_AVM_VERSION_06_5X_MIN && !FREETZ_REAL_DEVELOPER_ONLY__KCONF
 	comment "WARNINGS -------------------------------------------------"
-if FREETZ_TYPE_FIRMWARE_LABOR || FREETZ_TYPE_FIRMWARE_INHAUS || FREETZ_TYPE_FIRMWARE_07_0X_MIN
+if FREETZ_TYPE_FIRMWARE_LABOR || FREETZ_TYPE_FIRMWARE_INHAUS
 	comment " - the box may fail to boot and you need to recover it"
 	comment " - there is a higher probability to face stability issues"
-endif
-if FREETZ_SYSTEM_TYPE_PUMA6
-	comment " - the box may fail to boot and you need to recover it manually via the bootlader"
-endif
-if FREETZ_TYPE_FIRMWARE_LABOR || FREETZ_TYPE_FIRMWARE_INHAUS
 	comment " - some remove/AVM-web-interface patches are not working"
 	comment "   even if selectable in menuconfig"
 endif
-if FREETZ_KERNEL_VERSION_3_10_MIN
+if FREETZ_KERNEL_VERSION_3_MIN
 	comment " - some kernel-modules are not built/available"
 	comment "   even if selectable in menuconfig"
 	comment " - some packages depending on the kernel version"
@@ -717,11 +712,8 @@ endif
 if FREETZ_SYSTEM_TYPE_GRX5
 	comment " - replace-kernel is not (yet) available"
 	comment "   because of changed bootloader format"
-if FREETZ_TYPE_FIRMWARE_LABOR || FREETZ_TYPE_FIRMWARE_INHAUS || FREETZ_TYPE_FIRMWARE_07_0X_MIN
-	comment "   and/or missing or incomplete kernel sources"
 endif
-endif
-if !FREETZ_SYSTEM_TYPE_GRX5
+if FREETZ_REPLACE_KERNEL
 	comment " - replace-kernel might not work at all"
 	comment "   or cause stability issues"
 endif
