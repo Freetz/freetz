@@ -2,41 +2,34 @@
 
 KERNEL_MAJOR=$(uname -r | sed -n -r -e 's,([0-9]+[.][0-9]+)[.].*,\1,p')
 KERNEL_MINOR=$(uname -r | sed -n -r -e 's,([0-9]+[.][0-9]+)[.]([0-9]+).*,\2,p')
-
-DAEMON=cifsmount
 [ "${KERNEL_MAJOR}" = "2.6" -a "${KERNEL_MINOR}" -le 19 ] \
   && DAEMON_CHECK="cifsoplockd cifsdnotifyd" \
   || DAEMON_CHECK="cifsd"
 
+DAEMON=cifsmount
 . /etc/init.d/modlibrc
 
-# works only with applet seq enabled:
-#CIFSMOUNT_LIST=$(seq 1 $CIFSMOUNT_COUNT)
-CIFSMOUNT_LIST="1"
-i=1
-while [ "$i" -lt "$CIFSMOUNT_COUNT" ]; do
-    let i++
-    CIFSMOUNT_LIST="$CIFSMOUNT_LIST $i"
-done
 
 start() {
 	echo -n 'Starting cifs ... '
 
-	exitval=0
-	CIFSMNT_PATH=/sbin
+	for x in md4 md5 hmac arc4 ecb des_generic sha256_generic; do
+		modprobe $x 2>/dev/null
+	done
 	modprobe cifs
-	[ "$?" -gt 0 ] && exitval=1
 
-	for i in $CIFSMOUNT_LIST; do
+	exitval=0
+	for i in $(seq 1 $CIFSMOUNT_COUNT); do
 		eval CIFSMOUNT_SHARE=\$CIFSMOUNT_SHARE$i
 		eval CIFSMOUNT_MOUNTPOINT=\$CIFSMOUNT_MOUNTPOINT$i
 		eval CIFSMOUNT_USER=\$CIFSMOUNT_USER$i
 		eval CIFSMOUNT_PASS=\$CIFSMOUNT_PASS$i
 		eval CIFSMOUNT_MOUNTOPTIONS=\$CIFSMOUNT_MOUNTOPTIONS$i
+		CIFSOPTS="user=${CIFSMOUNT_USER},pass=${CIFSMOUNT_PASS}${CIFSMOUNT_MOUNTOPTIONS:+,}${CIFSMOUNT_MOUNTOPTIONS}"
 		if [ -n "$CIFSMOUNT_MOUNTPOINT" ]; then
 			echo "mount $CIFSMOUNT_SHARE ..."
 			mkdir -p "$CIFSMOUNT_MOUNTPOINT"
-			$CIFSMNT_PATH/mount.cifs $CIFSMOUNT_SHARE $CIFSMOUNT_MOUNTPOINT -o user="$CIFSMOUNT_USER",pass="$CIFSMOUNT_PASS,$CIFSMOUNT_MOUNTOPTIONS"
+			mount.cifs "$CIFSMOUNT_SHARE" "$CIFSMOUNT_MOUNTPOINT" -o "$CIFSOPTS"
 			[ "$?" -gt 0 ] && exitval=1
 		fi
 	done
@@ -51,11 +44,9 @@ start() {
 
 stop() {
 	exitval=0
-	for i in $CIFSMOUNT_LIST; do
+	for i in $(seq 1 $CIFSMOUNT_COUNT); do
 		eval CIFSMOUNT_SHARE=\$CIFSMOUNT_SHARE$i
 		eval CIFSMOUNT_MOUNTPOINT=\$CIFSMOUNT_MOUNTPOINT$i
-		eval CIFSMOUNT_USER=\$CIFSMOUNT_USER$i
-		eval CIFSMOUNT_PASS=\$CIFSMOUNT_PASS$i
 		if [ -n "$CIFSMOUNT_MOUNTPOINT" ]; then
 			echo "unmount $CIFSMOUNT_SHARE ..."
 			umount $CIFSMOUNT_MOUNTPOINT
