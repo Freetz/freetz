@@ -153,14 +153,14 @@ config FREETZ_AVM_HAS_FUSE_BUILTIN
 		grep "^CONFIG_FUSE_FS=m" make/linux/configs/avm/* | sed 's/.*config-//;s/-.*//'| uniq  # module
 		grep "^CONFIG_FUSE_FS=y" make/linux/configs/avm/* | sed 's/.*config-//;s/-.*//'| uniq  # kernel
 
-
 config FREETZ_AVM_HAS_AUTOFS4_BUILTIN
 	bool
 	default y
-	depends on FREETZ_AVM_VERSION_06_5X_MIN \
-			&& ( \
-			FREETZ_SYSTEM_TYPE_GRX5       \
-			)
+	depends on \
+		FREETZ_SYSTEM_TYPE_GRX5      || \
+		FREETZ_SYSTEM_TYPE_PUMA7_X86
+	help
+		grep "^CONFIG_AUTOFS4_FS=y" make/linux/configs/avm/* | sed 's/.*config-//;s/-.*//' | uniq
 
 config FREETZ_AVM_HAS_EXT2_BUILTIN
 	bool
