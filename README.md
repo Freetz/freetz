@@ -39,15 +39,13 @@ More features - less bugs!
 ### Show GIT states:
 ```
   git status
-  git diff --no-prefix # --cached
+  git diff --no-prefix # --cached # > file.patch
   git log --graph # --oneline
 ```
 
 ### Delete local changes:
 ```
-  git fetch --all --prune
-  git reset --hard origin/HEAD
-  git clean -fd
+  git fetch --all --prune ; git reset --hard origin/HEAD ; git clean -fd
 ```
 
 ### Mirrors:
