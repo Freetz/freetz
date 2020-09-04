@@ -125,6 +125,14 @@ config FREETZ_AVM_HAS_PRINTK
 	depends on \
 		!(FREETZ_TYPE_3170 && !FREETZ_REPLACE_KERNEL)
 
+config FREETZ_AVM_HAS_FUSE_BUILTIN
+        bool
+        default y
+        depends on FREETZ_AVM_VERSION_06_5X_MIN \
+                        && ( \
+                        FREETZ_SYSTEM_TYPE_GRX5       \
+                        )
+
 config FREETZ_AVM_HAS_AUTOFS4_BUILTIN
 	bool
 	default y
