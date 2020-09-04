@@ -87,7 +87,7 @@ case $1 in
 		modunreg daemon $DAEMON
 		modunreg cgi nfsd
 		modlib_stop
-		rmmod nfsv2 nfsv3 nfsd lock lockd grace sunrpc exportfs > /dev/null 2>&1
+		rmmod nfsd lock lockd grace sunrpc exportfs > /dev/null 2>&1
 		;;
 	start)
 		modlib_start
