@@ -126,12 +126,26 @@ config FREETZ_AVM_HAS_PRINTK
 		!(FREETZ_TYPE_3170 && !FREETZ_REPLACE_KERNEL)
 
 config FREETZ_AVM_HAS_FUSE_BUILTIN
-        bool
-        default y
-        depends on FREETZ_AVM_VERSION_06_5X_MIN \
-                        && ( \
-                        FREETZ_SYSTEM_TYPE_GRX5       \
-                        )
+	bool
+	default y
+	depends on \
+		FREETZ_SYSTEM_TYPE_AR10      || \
+		FREETZ_SYSTEM_TYPE_AR934x    || \
+		FREETZ_SYSTEM_TYPE_AR9       || \
+		FREETZ_SYSTEM_TYPE_GRX5      || \
+		FREETZ_SYSTEM_TYPE_IKS       || \
+		FREETZ_SYSTEM_TYPE_IPQ40xx   || \
+		FREETZ_SYSTEM_TYPE_PUMA6_X86 || \
+		FREETZ_SYSTEM_TYPE_PUMA7_X86 || \
+		FREETZ_SYSTEM_TYPE_QCA956x   || \
+		FREETZ_SYSTEM_TYPE_UR8       || \
+		FREETZ_SYSTEM_TYPE_VR9
+	help
+		grep -L "CONFIG_FUSE_FS" make/linux/configs/avm/* | sed 's/.*config-//;s/-.*//'| uniq  # missed
+		grep "CONFIG_FUSE_FS is" make/linux/configs/avm/* | sed 's/.*config-//;s/-.*//'| uniq  # notset
+		grep "^CONFIG_FUSE_FS=m" make/linux/configs/avm/* | sed 's/.*config-//;s/-.*//'| uniq  # module
+		grep "^CONFIG_FUSE_FS=y" make/linux/configs/avm/* | sed 's/.*config-//;s/-.*//'| uniq  # kernel
+
 
 config FREETZ_AVM_HAS_AUTOFS4_BUILTIN
 	bool
