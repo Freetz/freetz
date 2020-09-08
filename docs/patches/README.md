@@ -177,7 +177,10 @@
     Remove usblp kernel module. Without this module it's not possible to run a printer on your box. Saves about 12 KB of compressed space.
 
   * **<u>REMOVE_PUBKEY: Remove public firmware key</u><a id='remove-pubkey'></a>**<br>
-    Removes /etc/avm_firmware_public_key1, just 266 bytes. Because the signature validation will fail on update: - You can't flash firmware from AVM with the AVM Webinterface anymore. - Online-Update can't install updates automatically anymore, but is still able to detect and inform you about new firmware versions. - Most important: No more "spontaneous self updates". There are several reports on the web, that AVM is sometimes disrespecting your update settings to not automatically install new versions. Such a spontaneous self update would remove Freetz. Inhaus firmwares uses another key, *key4 for router and *key3 for powerline & repeater devices, which are not handled by this patch. Beside that, it's still possible to flash any firmware by bootloader or Freetz. Updates for Dect devices are not affected by this patch.
+    Removes /etc/avm_firmware_public_key1, just 266 bytes. Because the signature validation will fail on update: - You can't flash firmware from AVM with the AVM Webinterface anymore. - Online-Update can't install updates automatically anymore, but is still able to detect and inform you about new firmware versions. - Most important: No more "spontaneous self updates". There are several reports on the web, that AVM is sometimes disrespecting your update settings to not automatically install new versions. Such a spontaneous self update would remove Freetz. Beside that, it's still possible to flash any firmware by bootloader or Freetz. Updates for Dect devices are not affected by this patch because they are handled by *key2 on routers.
+
+  * **<u>REMOVE_PUBKEY_INHAUS: Remove inhaus firmware key</u><a id='remove-pubkey-inhaus'></a>**<br>
+    Removes /etc/avm_firmware_public_key4 or /etc/avm_firmware_public_key3, just 266 bytes. Some inhaus firmwares use another file for signature validation, *key4 for router and *key3 for powerline & repeater devices.
 
   * **<u>Remove QoS (tc)</u><a id='remove-qos'></a>**<br>
     Removes tc and some kernel modules. The command tc is used by dsld.
