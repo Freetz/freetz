@@ -1,5 +1,24 @@
 menu "Removal patches"
 
+config FREETZ_SELECT_HARDENING
+	bool "Select hardening"
+	depends on \
+		FREETZ_AVM_HAS_TR069 || \
+		FREETZ_AVM_HAS_MYFRITZ || \
+		FREETZ_AVM_HAS_SIGNATURE
+	default n
+	select FREETZ_REMOVE_TR069 if FREETZ_AVM_HAS_TR069
+	select FREETZ_REMOVE_MYFRITZ if FREETZ_AVM_HAS_MYFRITZ
+	select FREETZ_REMOVE_PUBKEY if FREETZ_AVM_HAS_SIGNATURE
+	help
+		This selects some patches to remove unsecure files/services:
+		 - TR069: Your provider is able to create user accounts
+		   and could then login to your device remotely.
+		 - MYFRITZ: AVM has wildcard certificates for *.myfritz.net
+		   and can attack your HTTPS sessions as man-in-the-middle.
+		 - PUBKEY: Removing the public key of AVM prevents unwanted
+		   firmware updates which could occur spontaneousily.
+
 comment "Removal patches ------------------------------------------"
 
 config FREETZ_REMOVE_MICROVOIP_DSL
