@@ -31,6 +31,9 @@ Zur Zeit können folgende Einstellungen für Favicons im menuconfig unter "Web i
  * **hansolo**<br>
    [![Favicon hansolo](../screenshots/000-FAV_mod-hansolo_md.png)](../screenshots/000-FAV_mod-hansolo.png)
 
+ * **prisrak**<br>
+   [![Favicon prisrak](../screenshots/000-FAV_mod-prisrak_md.png)](../screenshots/000-FAV_mod-prisrak.png)
+
 ### AVM Webinterface
 
  * **none**<br>
@@ -47,5 +50,8 @@ Zur Zeit können folgende Einstellungen für Favicons im menuconfig unter "Web i
 
  * **hansolo**<br>
    [![AVMicon hansolo](../screenshots/000-FAV_avm-hansolo_md.jpg)](../screenshots/000-FAV_avm-hansolo.jpg)
+
+ * **prisrak**<br>
+   Es wird das original AVM-Favicon genutzt.
 
 <br>
