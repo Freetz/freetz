@@ -10,16 +10,18 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/sbin/mount.cifs
 
 $(PKG)_EXCLUDED+=$(if $(FREETZ_PACKAGE_CIFSMOUNT_REMOVE_WEBIF),usr/sbin/cifsmount usr/lib/cgi-bin/cifsmount.cgi etc/default.cifsmount etc/init.d/rc.cifsmount)
 
-$(PKG)_CONFIGURE_OPTIONS += --with-libcap=no
-
+$(PKG)_CONFIGURE_OPTIONS += --disable-pie
+$(PKG)_CONFIGURE_OPTIONS += --disable-relro
 $(PKG)_CONFIGURE_OPTIONS += --disable-cifsupcall
 $(PKG)_CONFIGURE_OPTIONS += --disable-cifscreds
 $(PKG)_CONFIGURE_OPTIONS += --disable-cifsidmap
 $(PKG)_CONFIGURE_OPTIONS += --disable-cifsacl
+$(PKG)_CONFIGURE_OPTIONS += --disable-smbinfo
+$(PKG)_CONFIGURE_OPTIONS += --disable-pythontools
+$(PKG)_CONFIGURE_OPTIONS += --disable-pam
 $(PKG)_CONFIGURE_OPTIONS += --disable-systemd
-
-$(PKG)_CONFIGURE_OPTIONS += --disable-pie
-$(PKG)_CONFIGURE_OPTIONS += --disable-relro
+$(PKG)_CONFIGURE_OPTIONS += --disable-man
+$(PKG)_CONFIGURE_OPTIONS += --without-libcap
 
 $(PKG)_CONFIGURE_PRE_CMDS += autoreconf -i;
 
