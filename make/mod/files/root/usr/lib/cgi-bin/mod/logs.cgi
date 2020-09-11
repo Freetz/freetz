@@ -28,6 +28,10 @@ case "$3" in
 	logs_avm*)
 		logg=false
 
+		msgsend ctlmgr sessions
+		do_log /var/tmp/sessions.txt "WEB-Sessions"
+		rm -f /var/tmp/sessions.txt
+
 		do_log /proc/avm/log_sd/crash
 		do_log /proc/avm/log_sd/crash2
 		do_log /proc/avm/log_sd/panic
