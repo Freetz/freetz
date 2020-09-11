@@ -2,9 +2,10 @@
 
 show_log() {
 	local log="$1"
+	local desc="$2"
 	if [ -s "$log" ]; then
 		logg=true
-		echo "<h1><a href='$SCRIPT_NAME$log'>$log</a></h1>"
+		echo "<h1><a href='$SCRIPT_NAME$log'>${desc:-$log}</a></h1>"
 		echo "<pre class='log ${class:-small}'>"
 		html < "$log" | highlight
 		echo '</pre>'
@@ -13,13 +14,13 @@ show_log() {
 
 unset class
 do_log() {
-	show_log "$1"
+	show_log "$1" "$2"
 }
 
 if [ -n "$PATH_INFO" ]; then
 	class="full"
 	do_log() {
-		[ "$PATH_INFO" = "$1" ] && show_log "$1"
+		[ "$PATH_INFO" = "$1" ] && show_log "$1" "$2"
 	}
 fi
 
