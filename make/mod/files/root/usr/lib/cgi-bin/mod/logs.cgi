@@ -29,6 +29,7 @@ case "$3" in
 		logg=false
 
 		msgsend ctlmgr sessions
+		[ "0$(wc -l /var/tmp/sessions.txt 2>/dev/null | sed 's/ .*//')" -gt 2 ] || rm -f /var/tmp/sessions.txt
 		do_log /var/tmp/sessions.txt "WEB-Sessions"
 		rm -f /var/tmp/sessions.txt
 
