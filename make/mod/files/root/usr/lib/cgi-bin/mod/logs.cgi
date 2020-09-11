@@ -56,6 +56,8 @@ case "$3" in
 		do_log /var/tmp/lgpm.log
 		do_log /var/tmp/tcloud.log
 
+		do_log /proc/kdsld/dsliface/internet/ipmasq/pcp44 "PCP-Sessions"
+
 		$logg || echo "<br><h1>$(lang de:"Keine Logdateien gefunden" en:"No log files found")!</h1>"
 		;;
 	*)
