@@ -3,7 +3,7 @@
 show_log() {
 	local log="$1"
 	local desc="$2"
-	if [ -s "$log" ]; then
+	if [ -e "$log" ] && [ -n "$(head -n1 $log)" ]; then
 		logg=true
 		echo "<h1><a href='$SCRIPT_NAME$log'>${desc:-$log}</a></h1>"
 		echo "<pre class='log ${class:-small}'>"
