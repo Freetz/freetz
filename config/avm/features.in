@@ -162,6 +162,14 @@ config FREETZ_AVM_HAS_AUTOFS4_BUILTIN
 	help
 		grep "^CONFIG_AUTOFS4_FS=y" make/linux/configs/avm/* | sed 's/.*config-//;s/-.*//' | uniq
 
+config FREETZ_AVM_HAS_MD4_BUILTIN
+	bool
+	default y
+	depends on \
+		FREETZ_SYSTEM_TYPE_PUMA7_X86
+	help
+		grep "^CONFIG_CRYPTO_MD4=y" make/linux/configs/avm/* | sed 's/.*config-//;s/-.*//' | uniq
+
 config FREETZ_AVM_HAS_EXT2_BUILTIN
 	bool
 	default y

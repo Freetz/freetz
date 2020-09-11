@@ -438,7 +438,13 @@ config FREETZ_MODULE_autofs4
 config FREETZ_MODULE_cifs
 	bool "cifs.ko"
 	depends on FREETZ_CIFS_SUPPORT_AVAILABLE
+	select FREETZ_MODULE_md4 if !FREETZ_AVM_HAS_MD4_BUILTIN
 	default n
+
+config FREETZ_MODULE_md4
+	bool "md4.ko"
+	depends on FREETZ_MODULE_cifs && !FREETZ_AVM_HAS_MD4_BUILTIN
+	default y
 
 config FREETZ_MODULE_coda
 	bool "coda.ko"
