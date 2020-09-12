@@ -156,9 +156,11 @@ config FREETZ_AVM_HAS_FUSE_BUILTIN
 config FREETZ_AVM_HAS_AUTOFS4_BUILTIN
 	bool
 	default y
-	depends on \
-		FREETZ_SYSTEM_TYPE_GRX5      || \
-		FREETZ_SYSTEM_TYPE_PUMA7_X86
+        depends on \
+                FREETZ_SYSTEM_TYPE_PUMA7_X86 || \
+                ( \
+                FREETZ_SYSTEM_TYPE_GRX5 && FREETZ_AVM_VERSION_07_1X_MAX \
+                )
 	help
 		grep "^CONFIG_AUTOFS4_FS=y" make/linux/configs/avm/* | sed 's/.*config-//;s/-.*//' | uniq
 
