@@ -8,6 +8,7 @@ config FREETZ_PACKAGE_CURLFTPFS
 	select FREETZ_LIB_libglib_2  if !FREETZ_PACKAGE_CURLFTPFS_STATIC
 	select FREETZ_LIB_libcrypto  if !FREETZ_PACKAGE_CURLFTPFS_STATIC
 	select FREETZ_LIB_libssl     if !FREETZ_PACKAGE_CURLFTPFS_STATIC
+	select FREETZ_BUSYBOX_SEQ    if !FREETZ_PACKAGE_CURLFTPFS_REMOVE_WEBIF 
 	select FREETZ_PACKAGE_FUSE
 	help
 		CurlFtpFS is a filesystem for accessing FTP hosts based on FUSE and libcurl.
