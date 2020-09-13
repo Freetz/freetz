@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_CURLFTPFS
-	bool "CurlFtpFS 0.9.2 (binary only)"
+	bool "CurlFtpFS 0.9.2"
 	depends on FREETZ_REPLACE_MODULE_AVAILABLE
 	depends on !FREETZ_TARGET_UCLIBC_0_9_28
 	default n
@@ -30,4 +30,11 @@ config FREETZ_PACKAGE_CURLFTPFS_STATIC
 		 - libcrypto
 		 - libssl
 		 * libiconv
+
+config FREETZ_PACKAGE_CURLFTPFS_REMOVE_WEBIF
+        bool "remove webinterface"
+        depends on FREETZ_PACKAGE_CURLFTPFS
+        default n
+        help
+                This option removes the webinterface
 
