@@ -11,7 +11,7 @@ start() {
 	exitval=0
 	modprobe fuse 2>/dev/null
 
-	for i in $(seq 1 $CURLFTPFS_COUNT); do
+	for i in 1 2 3 4 5; do
 		eval CURLFTPFS_SHARE=\$CURLFTPFS_SHARE$i
 		eval CURLFTPFS_MOUNTPOINT=\$CURLFTPFS_MOUNTPOINT$i
 		eval CURLFTPFS_USER=\$CURLFTPFS_USER$i
@@ -36,7 +36,7 @@ start() {
 
 stop() {
 	exitval=0
-	for i in $(seq 1 $CURLFTPFS_COUNT); do
+	for i in 1 2 3 4 5; do
 		eval CURLFTPFS_SHARE=\$CURLFTPFS_SHARE$i
 		eval CURLFTPFS_MOUNTPOINT=\$CURLFTPFS_MOUNTPOINT$i
 		if [ -n "$CURLFTPFS_MOUNTPOINT" ]; then
