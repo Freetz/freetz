@@ -6,7 +6,7 @@ DAEMON_LONG_NAME="CurlFtpFS"
 . /etc/init.d/modlibrc
 
 start() {
-	echo -n 'Starting $DAEMON_LONG_NAME ... '
+	echo -n "Starting $DAEMON_LONG_NAME ... "
 
 	exitval=0
 	modprobe fuse 2>/dev/null
@@ -19,7 +19,7 @@ start() {
 		eval CURLFTPFS_MOUNTOPTIONS=\$CURLFTPFS_MOUNTOPTIONS$i
 		CURLFTPFSOPTS="user=${CURLFTPFS_USER}${CURLFTPFS_PASS:+:}${CURLFTPFS_PASS}${CURLFTPFS_MOUNTOPTIONS:+,}${CURLFTPFS_MOUNTOPTIONS}"
 		if [ -n "$CURLFTPFS_MOUNTPOINT" ]; then
-			echo "mount $CURLFTPFS_SHARE ..."
+			echo -n "$CURLFTPFS_SHARE ... "
 			mkdir -p "$CURLFTPFS_MOUNTPOINT"
 			curlftpfs "${CURLFTPFS_SHARE}" "$CURLFTPFS_MOUNTPOINT" -o "$CURLFTPFSOPTS"
 			[ "$?" -gt 0 ] && exitval=1
@@ -40,12 +40,13 @@ stop() {
 		eval CURLFTPFS_SHARE=\$CURLFTPFS_SHARE$i
 		eval CURLFTPFS_MOUNTPOINT=\$CURLFTPFS_MOUNTPOINT$i
 		if [ -n "$CURLFTPFS_MOUNTPOINT" ]; then
-			echo "unmount $CURLFTPFS_SHARE ..."
+			echo -n "$CURLFTPFS_SHARE ... "
 			umount $CURLFTPFS_MOUNTPOINT
 			[ "$?" -gt 0 ] && exitval=1
 			#rmdir $CURLFTPFS_MOUNTPOINT
 		fi
 	done
+	sleep 1
 	return $exitval
 }
 
