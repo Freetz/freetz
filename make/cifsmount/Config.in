@@ -5,7 +5,6 @@ config FREETZ_PACKAGE_CIFSMOUNT
 	bool "Cifsmount 6.10"
 	depends on FREETZ_CIFS_SUPPORT_AVAILABLE
 	select FREETZ_MODULE_cifs
-	select FREETZ_BUSYBOX_SEQ if !FREETZ_PACKAGE_CIFSMOUNT_REMOVE_WEBIF
 	default n
 	help
 		User space helper for mounting remote CIFS shares + CGI web interface

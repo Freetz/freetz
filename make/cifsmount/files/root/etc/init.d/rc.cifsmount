@@ -19,7 +19,7 @@ start() {
 	modprobe cifs
 
 	exitval=0
-	for i in $(seq 1 $CIFSMOUNT_COUNT); do
+	for i in 1 2 3 4 5; do
 		eval CIFSMOUNT_SHARE=\$CIFSMOUNT_SHARE$i
 		eval CIFSMOUNT_MOUNTPOINT=\$CIFSMOUNT_MOUNTPOINT$i
 		eval CIFSMOUNT_USER=\$CIFSMOUNT_USER$i
@@ -44,7 +44,7 @@ start() {
 
 stop() {
 	exitval=0
-	for i in $(seq 1 $CIFSMOUNT_COUNT); do
+	for i in 1 2 3 4 5; do
 		eval CIFSMOUNT_SHARE=\$CIFSMOUNT_SHARE$i
 		eval CIFSMOUNT_MOUNTPOINT=\$CIFSMOUNT_MOUNTPOINT$i
 		if [ -n "$CIFSMOUNT_MOUNTPOINT" ]; then
