@@ -4,7 +4,7 @@
 mode=${1:-start}
 
 if [ "$mode" = start ]; then
-	modreg status mod '$(lang de:"Logdateien" en:"Logfiles")' logs
+	modreg status mod '$(lang de:"Mod-Logs" en:"Mod logs")' logs
 	modreg status mod '$(lang de:"AVM-Logs" en:"AVM logs")' logs_avm
 fi
 
@@ -15,10 +15,10 @@ fi
 
 [ "$mode" = reload ] && modunreg status mod box_info
 if [ "$MOD_SHOW_BOX_INFO" = yes -a -r "/usr/lib/cgi-bin/mod/box_info.cgi" ]; then
-	modreg status mod 'Box$(lang de:"-Info" en:" info")' box_info
+	modreg status mod '$(lang de:"AVM-Info" en:"AVM info")' box_info
 fi
 
 [ "$mode" = reload ] && modunreg status mod info
 if [ "$MOD_SHOW_FREETZ_INFO" = yes -a -r "/usr/lib/cgi-bin/mod/info.cgi" ]; then
-	modreg status mod 'Freetz$(lang de:"-Info" en:" info")' info
+	modreg status mod '$(lang de:"Mod-Info" en:"Mod info")' info
 fi
