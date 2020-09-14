@@ -1,26 +1,18 @@
 #!/bin/sh
 
 DAEMON=sshfs-fuse
+DAEMON_LONG_NAME="SSHFS"
 DAEMON_CHECK="sshfs"
 . /etc/init.d/modlibrc
 
-# works only with applet seq enabled:
-#SSHFS_FUSE_LIST=$(seq 1 $SSHFS_FUSE_COUNT)
-SSHFS_FUSE_LIST="1"
-i=1
-while [ "$i" -lt "$SSHFS_FUSE_COUNT" ]; do
-    let i++
-    SSHFS_FUSE_LIST="$SSHFS_FUSE_LIST $i"
-done
 
 start() {
-	echo -n 'Starting SSHFS ... '
+	echo -n 'Starting $DAEMON_LONG_NAME ... '
 
 	exitval=0
-	SSHFSMNT_PATH=/usr/bin
 	modprobe fuse 2>/dev/null
 
-	for i in $SSHFS_FUSE_LIST; do
+	for i in 1 2 3 4 5; do
 		eval SSHFS_FUSE_SHARE=\$SSHFS_FUSE_SHARE$i
 		eval SSHFS_FUSE_MOUNTPOINT=\$SSHFS_FUSE_MOUNTPOINT$i
 		eval SSHFS_FUSE_USER=\$SSHFS_FUSE_USER$i
@@ -30,8 +22,9 @@ start() {
 			echo "mount $SSHFS_FUSE_SHARE ..."
 			mkdir -p "$SSHFS_FUSE_MOUNTPOINT"
 			if [ -n "$SSHFS_FUSE_PASS" ]; then
-				echo $SSHFS_FUSE_PASS | $SSHFSMNT_PATH/sshfs "$SSHFS_FUSE_USER"@$SSHFS_FUSE_SHARE $SSHFS_FUSE_MOUNTPOINT -o password_stdin,reconnect,ServerAliveInterval=15,allow_other,port=$SSHFS_FUSE_PORT,uid=0,gid=0,umask=000
-				else $SSHFSMNT_PATH/sshfs "$SSHFS_FUSE_USER"@$SSHFS_FUSE_SHARE $SSHFS_FUSE_MOUNTPOINT -o reconnect,ServerAliveInterval=15,allow_other,port=$SSHFS_FUSE_PORT,uid=0,gid=0,umask=000
+				echo $SSHFS_FUSE_PASS | sshfs "$SSHFS_FUSE_USER"@$SSHFS_FUSE_SHARE $SSHFS_FUSE_MOUNTPOINT -o password_stdin,reconnect,ServerAliveInterval=15,allow_other,port=$SSHFS_FUSE_PORT,uid=0,gid=0,umask=000
+			else
+				                        sshfs "$SSHFS_FUSE_USER"@$SSHFS_FUSE_SHARE $SSHFS_FUSE_MOUNTPOINT -o                reconnect,ServerAliveInterval=15,allow_other,port=$SSHFS_FUSE_PORT,uid=0,gid=0,umask=000
 			fi
 			[ "$?" -gt 0 ] && exitval=1
 		fi
@@ -47,7 +40,7 @@ start() {
 
 stop() {
 	exitval=0
-	for i in $SSHFS_FUSE_LIST; do
+	for i in 1 2 3 4 5; do
 		eval SSHFS_FUSE_MOUNTPOINT=\$SSHFS_FUSE_MOUNTPOINT$i
 		if [ -n "$SSHFS_FUSE_MOUNTPOINT" ]; then
 			echo "unmount $SSHFS_FUSE_SHARE ..."
@@ -61,7 +54,7 @@ stop() {
 
 case $1 in
 	""|load)
-		modreg cgi $DAEMON 'SSHFS'
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
 		modreg daemon $DAEMON
 
 		modlib_start $SSHFS_FUSE_ENABLED
