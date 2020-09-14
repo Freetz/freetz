@@ -2,6 +2,7 @@
 
 DAEMON=curlftpfs
 DAEMON_CHECK="curlftpfs"
+DAEMON_LONG_NAME="CurlFtpFS"
 . /etc/init.d/modlibrc
 
 start() {
@@ -50,7 +51,7 @@ stop() {
 
 case $1 in
 	""|load)
-		modreg cgi $DAEMON 'curlftpfsd'
+		modreg cgi $DAEMON $DAEMON_LONG_NAME
 		modreg daemon $DAEMON
 
 		modlib_start $CURLFTPFS_ENABLED
