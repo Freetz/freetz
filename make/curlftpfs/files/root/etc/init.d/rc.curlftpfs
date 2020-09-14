@@ -1,0 +1,81 @@
+#!/bin/sh
+
+DAEMON=curlftpfs
+DAEMON_CHECK="curlftpfs"
+. /etc/init.d/modlibrc
+
+start() {
+	echo -n 'Starting curlftpfs ... '
+
+	exitval=0
+	modprobe fuse 2>/dev/null
+
+	for i in $(seq 1 $CURLFTPFS_COUNT); do
+		eval CURLFTPFS_SHARE=\$CURLFTPFS_SHARE$i
+		eval CURLFTPFS_MOUNTPOINT=\$CURLFTPFS_MOUNTPOINT$i
+		eval CURLFTPFS_USER=\$CURLFTPFS_USER$i
+		eval CURLFTPFS_PASS=\$CURLFTPFS_PASS$i
+		eval CURLFTPFS_MOUNTOPTIONS=\$CURLFTPFS_MOUNTOPTIONS$i
+		CURLFTPFSOPTS="user=${CURLFTPFS_USER}${CURLFTPFS_PASS:+:}${CURLFTPFS_PASS}${CURLFTPFS_MOUNTOPTIONS:+,}${CURLFTPFS_MOUNTOPTIONS}"
+		if [ -n "$CURLFTPFS_MOUNTPOINT" ]; then
+			echo "mount $CURLFTPFS_SHARE ..."
+			mkdir -p "$CURLFTPFS_MOUNTPOINT"
+			curlftpfs "${CURLFTPFS_SHARE}" "$CURLFTPFS_MOUNTPOINT" -o "$CURLFTPFSOPTS"
+			[ "$?" -gt 0 ] && exitval=1
+		fi
+	done
+
+	if [ "$exitval" -eq 0 ]; then
+		echo 'done.'
+	else
+		echo 'failed.'
+		exit $exitval
+	fi
+}
+
+stop() {
+	exitval=0
+	for i in $(seq 1 $CURLFTPFS_COUNT); do
+		eval CURLFTPFS_SHARE=\$CURLFTPFS_SHARE$i
+		eval CURLFTPFS_MOUNTPOINT=\$CURLFTPFS_MOUNTPOINT$i
+		if [ -n "$CURLFTPFS_MOUNTPOINT" ]; then
+			echo "unmount $CURLFTPFS_SHARE ..."
+			umount $CURLFTPFS_MOUNTPOINT
+			[ "$?" -gt 0 ] && exitval=1
+			#rmdir $CURLFTPFS_MOUNTPOINT
+		fi
+	done
+	return $exitval
+}
+
+case $1 in
+	""|load)
+		modreg cgi $DAEMON 'curlftpfsd'
+		modreg daemon $DAEMON
+
+		modlib_start $CURLFTPFS_ENABLED
+		;;
+	unload)
+		modunreg daemon $DAEMON
+		modunreg cgi curlftpfsd
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
