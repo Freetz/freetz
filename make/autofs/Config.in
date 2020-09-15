@@ -40,6 +40,7 @@ config FREETZ_PACKAGE_AUTOFS_CIFS
 	bool "select cifs package"
 	depends on  FREETZ_REPLACE_KERNEL || FREETZ_KERNEL_VERSION_2_6_19_MAX ||  FREETZ_KERNEL_VERSION_3_MIN
 	select FREETZ_PACKAGE_CIFSMOUNT
+	select FREETZ_PACKAGE_CIFSMOUNT_REMOVE_WEBIF
 	default n
 	help
 		Select this if you want to mount SMB-shares.
@@ -48,6 +49,7 @@ config FREETZ_PACKAGE_AUTOFS_CURLFTPFS
 	bool "select curlftpfs package"
 	depends on !FREETZ_TARGET_UCLIBC_0_9_28
 	select FREETZ_PACKAGE_CURLFTPFS
+	select FREETZ_PACKAGE_CURLFTPFS_REMOVE_WEBIF
 	default n
 	help
 		Select this if you want to mount FTP-shares.
@@ -55,6 +57,7 @@ config FREETZ_PACKAGE_AUTOFS_CURLFTPFS
 config FREETZ_PACKAGE_AUTOFS_DAVFS2
 	bool "select davfs2 package"
 	select FREETZ_PACKAGE_DAVFS2
+	select FREETZ_PACKAGE_DAVFS2_REMOVE_WEBIF
 	default n
 	help
 		Select this if you want to mount WebDAV-shares.
