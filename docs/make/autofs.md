@@ -46,7 +46,7 @@ Webinterface) benötigt.
 DAV-SHARE -fstype=davfs     :https://SERVER
 ```
 
-Außerdem noch diese 2 Dateien je Mountpoint:
+Außerdem noch diese 2 Dateien:
 
 /tmp/flash/autofs/davfs2.conf
 
@@ -60,6 +60,14 @@ ask_auth 0
 
 ```
 https://SERVER USERNAME    PASSWORT
+```
+
+### CurlFtpFS
+
+Es wird das Package CurlFtpFS (ohne Webinterface) benötigt
+
+```
+FTP-SHARE -fstype=fuse,allow_other       :curlftpfs\#SERVER
 ```
 
 ### SSHfs
