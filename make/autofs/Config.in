@@ -1,5 +1,3 @@
-if !FREETZ_KERNEL_VERSION_3_10_MIN
-
 comment "autofs (not available, needs replace kernel)"
 	depends on !FREETZ_AVM_HAS_AUTOFS4_BUILTIN
 	depends on FREETZ_KERNEL_VERSION_2_6_28_MAX && !FREETZ_REPLACE_KERNEL
@@ -9,7 +7,7 @@ comment "autofs (not available, no kernel sources from AVM)"
 	depends on FREETZ_KERNEL_VERSION_2_6_32_MIN && !FREETZ_REPLACE_MODULE_AVAILABLE
 
 config FREETZ_PACKAGE_AUTOFS
-	bool "autofs 5.0.5"
+	bool "autofs 5.0.5/5.1.6"
 	depends on FREETZ_AVM_HAS_AUTOFS4_BUILTIN \
 		|| (FREETZ_KERNEL_VERSION_2_6_28_MAX && FREETZ_REPLACE_KERNEL) \
 		|| (FREETZ_KERNEL_VERSION_2_6_32_MIN && FREETZ_REPLACE_MODULE_AVAILABLE)
@@ -36,11 +34,11 @@ config FREETZ_PACKAGE_AUTOFS_NFS
 		select this if you want to mount NFS-shares
 
 comment "select cifs package (not available, needs replace kernel)"
-	depends on !FREETZ_REPLACE_KERNEL && FREETZ_KERNEL_VERSION_2_6_28_MIN
+	depends on !FREETZ_REPLACE_KERNEL && FREETZ_KERNEL_VERSION_2_6_28_MIN && !FREETZ_KERNEL_VERSION_3_MIN
 
 config FREETZ_PACKAGE_AUTOFS_CIFS
 	bool "select cifs package"
-	depends on  FREETZ_REPLACE_KERNEL || FREETZ_KERNEL_VERSION_2_6_19_MAX
+	depends on  FREETZ_REPLACE_KERNEL || FREETZ_KERNEL_VERSION_2_6_19_MAX ||  FREETZ_KERNEL_VERSION_3_MIN
 	select FREETZ_PACKAGE_CIFSMOUNT
 	default n
 	help
@@ -62,4 +60,3 @@ config FREETZ_PACKAGE_AUTOFS_SSHFS
 
 endif # FREETZ_PACKAGE_AUTOFS
 
-endif

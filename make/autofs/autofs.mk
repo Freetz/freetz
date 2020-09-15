@@ -1,15 +1,22 @@
-$(call PKG_INIT_BIN, 5.0.5)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=0fe158444818f64da731520e31dc09bd
+$(call PKG_INIT_BIN, $(if $(FREETZ_KERNEL_VERSION_2_MAX),5.0.5,5.1.6))
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE_SHA256_ABANDON:=9cdfb2433524ba798e9aebeb3a613931627aa4ba579466985599295e05c20205
+$(PKG)_SOURCE_SHA256_CURRENT:=dddee3d9b7388ce6cb7432832dfade25b07ef68ad48dcce01cf247b26a10caef
+$(PKG)_SOURCE_SHA256:=$(AUTOFS_SOURCE_SHA256_$(if $(FREETZ_KERNEL_VERSION_2_MAX),ABANDON,CURRENT))
 $(PKG)_SITE:=@KERNEL/linux/daemons/$(pkg)/v5
 
 $(PKG)_BUILD_PREREQ += bison flex
 $(PKG)_STARTLEVEL=50
 
+$(PKG)_CONDITIONAL_PATCHES+=$(if $(FREETZ_KERNEL_VERSION_2_MAX),abandon,current)
+
 $(PKG)_BINARY:=$($(PKG)_DIR)/daemon/automount
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/automount
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_KERNEL_VERSION_2_MAX
+
 $(PKG)_MODULES := \
+	$(if $(FREETZ_KERNEL_VERSION_2_MAX),,lookup_dir.so) \
 	lookup_file.so \
 	lookup_hosts.so \
 	lookup_multi.so \
@@ -21,13 +28,18 @@ $(PKG)_MODULES := \
 	mount_changer.so \
 	mount_generic.so \
 	mount_nfs.so \
+	$(if $(FREETZ_KERNEL_VERSION_2_MAX),,parse_amd.so) \
 	parse_sun.so
 $(PKG)_MODULES_BUILD_DIR := $($(PKG)_MODULES:%=$($(PKG)_DIR)/modules/%)
 $(PKG)_MODULES_TARGET_DIR := $($(PKG)_MODULES:%=$($(PKG)_DEST_LIBDIR)/autofs/%)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
+ifeq ($(FREETZ_KERNEL_VERSION_2_MAX),y)
 $(PKG_CONFIGURED_NOP)
+else
+$(PKG_CONFIGURED_CONFIGURE)
+endif
 
 $($(PKG)_BINARY) $($(PKG)_MODULES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE1) -C $(AUTOFS_DIR) \
