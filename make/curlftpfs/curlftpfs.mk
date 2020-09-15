@@ -6,6 +6,7 @@ $(PKG)_SITE:=@SF/curlftpfs
 $(PKG)_BINARY:=$($(PKG)_DIR)/curlftpfs
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/curlftpfs
 
+$(PKG)_EXCLUDED+=$(if $(FREETZ_PACKAGE_CURLFTPFS_REMOVE_WEBIF),usr/lib/cgi-bin/curlftpfs.cgi etc/default.curlftpfs etc/init.d/rc.curlftpfs)
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_CURLFTPFS_STATIC
 
