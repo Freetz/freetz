@@ -236,7 +236,7 @@ Latest changes
     * libgd 2.3.0
     * libgpg-error 1.37
     * liblzo 2.10
-    * libneon 0.30.2
+    * libneon 0.31.2
     * libogg 1.3.2
     * libopus 1.1.4
     * libpng 1.2.59
