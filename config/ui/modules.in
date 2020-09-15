@@ -400,6 +400,7 @@ config FREETZ_MODULE_sunrpc
 	depends on FREETZ_MODULE_lockd
 	default n
 
+
 config FREETZ_MODULE_nfs
 	bool "nfs.ko"
 	depends on FREETZ_NFS_SUPPORT_AVAILABLE_AS_MODULE
@@ -416,6 +417,7 @@ config FREETZ_MODULE_nfsv3
 	depends on FREETZ_MODULE_nfs && FREETZ_KERNEL_VERSION_3_MIN
 	default y
 
+
 config FREETZ_MODULE_nfsd
 	bool "nfsd.ko"
 	depends on FREETZ_NFS_SUPPORT_AVAILABLE_AS_MODULE
@@ -430,10 +432,13 @@ config FREETZ_MODULE_exportfs
 
 endmenu
 
+menu "network"
+
 config FREETZ_MODULE_autofs4
 	bool "autofs4.ko"
 	depends on !FREETZ_AVM_HAS_AUTOFS4_BUILTIN
 	default n
+
 
 config FREETZ_MODULE_cifs
 	bool "cifs.ko"
@@ -446,9 +451,18 @@ config FREETZ_MODULE_md4
 	depends on FREETZ_MODULE_cifs && !FREETZ_AVM_HAS_MD4_BUILTIN
 	default y
 
+
 config FREETZ_MODULE_coda
 	bool "coda.ko"
+	depends on FREETZ_KERNEL_VERSION_2_MAX
 	default n
+
+config FREETZ_MODULE_fuse
+	bool "fuse.ko"
+	depends on !FREETZ_AVM_HAS_FUSE_BUILTIN
+	default n
+
+endmenu
 
 
 config FREETZ_MODULE_ext2
@@ -496,11 +510,6 @@ config FREETZ_MODULE_mbcache
 
 config FREETZ_MODULE_fat
 	bool "fat.ko"
-	default n
-
-config FREETZ_MODULE_fuse
-	bool "fuse.ko"
-	depends on !FREETZ_AVM_HAS_FUSE_BUILTIN
 	default n
 
 config FREETZ_MODULE_hfs
