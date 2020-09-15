@@ -22,16 +22,7 @@ config() {
 	touch $CONF_DIR/davfs2.conf $CONF_DIR/secrets
 	chmod 600 $CONF_DIR/secrets
 
-	# AVM-account
-	if which webdavcfginfo >/dev/null; then
-		[ "$(webdavcfginfo -p enabled)" == "1" ] && DAVFS2_ENABLED0="yes"
-		DAVFS2_HOST0="$(webdavcfginfo -p host_url)"
-		DAVFS2_USER0="$(webdavcfginfo -p username)"
-		DAVFS2_PASS0="$(webdavcfginfo -p password)"
-		DAVFS2_MOUNTPOINT0="/var/media/ftp/$(webdavcfginfo -p mountpoint)"
-	fi
-
-	for i in 0 1 2 3; do
+	for i in 1 2 3; do
 		modlib_config davfs2_secrets_${i} $CONF_DIR/secrets_${i}
 	done
 
@@ -45,7 +36,7 @@ start() {
 
 	# abort on https if SSL is not enabled on build
 	if [ "$FREETZ_PACKAGE_DAVFS2_WITH_SSL" != "y" ]; then
-		for i in 0 1 2 3; do
+		for i in 1 2 3; do
 			[ "$(eval "echo \$DAVFS2_ENABLED${i}")" != "yes" ] && continue
 			if eval "echo \$DAVFS2_HOST${i}" | grep -q -i "^https://"; then
 				echo "https is not allowed due to missing SSL, failed."
@@ -55,7 +46,7 @@ start() {
 	fi
 
 	local retval=0
-	for i in 0 1 2 3; do
+	for i in 1 2 3; do
 		[ "$(eval "echo \$DAVFS2_ENABLED${i}")" != "yes" ] && continue
 		local cert="$(eval "echo \$DAVFS2_SERVERCERT${i}")"
 		local uselocks="$(eval "echo \$DAVFS2_USELOCKS${i}")"
@@ -123,7 +114,7 @@ case $1 in
 		modreg cgi $DAEMON $DAEMON_LONG_NAME
 		modreg daemon $DAEMON
 
-		for i in 0 1 2 3; do
+		for i in 1 2 3; do
 			modreg file $DAEMON servercrt$i "Server Zertifikat $i" 0 "davfs2_servercrt$i"
 		done
 

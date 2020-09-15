@@ -28,15 +28,11 @@ cat << EOF
 <script>
 
 function change(value) {
-	document.getElementById("Acc0").style.display = "none";
 	document.getElementById("Acc1").style.display = "none";
 	document.getElementById("Acc2").style.display = "none";
 	document.getElementById("Acc3").style.display = "none";
 
 	switch (value) {
-		case "0":
-			document.getElementById("Acc0").style.display = "block";
-			break;
 		case "1":
 			document.getElementById("Acc1").style.display = "block";
 			break;
@@ -50,26 +46,12 @@ function change(value) {
 }
 
 document.write("<p><SELECT NAME='account' onChange='change(value)'>" +
-"<OPTION SELECTED VALUE='0'>$(lang de:"Konto" en:"Account") 0 (AVM)</OPTION>" +
-"<OPTION VALUE='1'>$(lang de:"Konto" en:"Account") 1</OPTION>" +
-"<OPTION VALUE='2'>$(lang de:"Konto" en:"Account") 2</OPTION>" +
-"<OPTION VALUE='3'>$(lang de:"Konto" en:"Account") 3</OPTION>" +
+"<OPTION SELECTED VALUE='1'>$(lang de:"Konto" en:"Account") 1</OPTION>" +
+"<OPTION          VALUE='2'>$(lang de:"Konto" en:"Account") 2</OPTION>" +
+"<OPTION          VALUE='3'>$(lang de:"Konto" en:"Account") 3</OPTION>" +
 "</SELECT></p>");
 
-document.write("<div id='Acc0' style='display:block'>" +
-"<p><input type='hidden' name='enabled0' value=''><input type='checkbox' name='enabled0' value='yes' $([ "$(webdavcfginfo -p enabled 2>/dev/null)" == "1" ] && echo checked) DISABLED>$(lang en:"Account enabled" de:"Konto aktiv")</p>" +
-"<p><label id='acc0' for='r06'>Host: </label><input id='r06' type='text' name='host0' size='50' maxlength='255' value='$(html "$(webdavcfginfo -p host_url 2>/dev/null)")' DISABLED></p>" +
-"<p><input type='hidden' name='servercert0' value=''><input type='checkbox' name='servercert0' value='yes' $([ "$FREETZ_PACKAGE_DAVFS2_WITH_SSL" != "y" ] && echo DISABLED || ([ "$DAVFS2_SERVERCERT0" = yes ] && echo checked))>$(lang en:"Use certificate 0" de:"Zertifikat 0 nutzen")</p>" +
-"<p><label for='r03'>$(lang en:"Username" de:"Benutzername"): </label><input id='r03' type='text' name='user0' size='50' maxlength='255' value='$(html "$(webdavcfginfo -p username 2>/dev/null)")' DISABLED></p>" +
-"<p><label for='r04'>$(lang en:"Password" de:"Passwort"): </label><input id='r04' type='password' name='pass0' size='50' maxlength='255' value='$(html "$(webdavcfginfo -p password 2>/dev/null)")' DISABLED></p>" +
-"<p><input type='hidden' name='uselocks0' value=''><input type='checkbox' name='uselocks0' value='yes' $([ "$DAVFS2_USELOCKS0" = yes ] && echo checked)>$(lang en:"Deactivate use-locks" de:"Deaktiviere use-locks")</p>" +
-"<p><input type='hidden' name='ifmatchbug0' value=''><input type='checkbox' name='ifmatchbug0' value='yes' $([ "$DAVFS2_IFMATCHBUG0" = yes ] && echo checked)>$(lang en:"Activate if_match_bug-option" de:"Aktiviere if_match_bug-Option")</p>" +
-"<p><label for='r05'>$(lang en:"Mountpoint" de:"Einh&auml;ngepunkt"): </label><input id='r05' type='text' name='mountpoint0' size='50' maxlength='255' value='$(html "/var/media/ftp/$(webdavcfginfo -p mountpoint 2>/dev/null)")' DISABLED></p>" +
-"<hr color='silver'>" +
-"<p>$(lang de:"Die Einstellungen dieses Kontos k&ouml;nnen nur mit dem AVM-Webinterface ge&auml;ndert werden" en:"Change the settings of the avm-account via the AVM webinterface.")</p>" +
-"</div>");
-
-document.write("<div id='Acc1' style='display:none'>" +
+document.write("<div id='Acc1' style='display:block'>" +
 "<p><input type='hidden' name='enabled1' value=''><input type='checkbox' name='enabled1' value='yes' $([ "$DAVFS2_ENABLED1" = yes ] && echo checked)>$(lang en:"Account enabled" de:"Konto aktiv")</p>" +
 "<p><label id='acc1' for='r16'>Host: </label><input id='r16' type='text' name='host1' size='50' maxlength='255' value='$(html "$DAVFS2_HOST1")'></p>" +
 "<p><input type='hidden' name='servercert1' value=''><input type='checkbox' name='servercert1' value='yes' $([ "$FREETZ_PACKAGE_DAVFS2_WITH_SSL" != "y" ] && echo DISABLED || ([ "$DAVFS2_SERVERCERT1" = yes ] && echo checked))>$(lang en:"Use certificate 1" de:"Zertifikat 1 nutzen")</p>" +
