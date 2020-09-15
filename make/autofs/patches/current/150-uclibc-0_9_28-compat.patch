@@ -1,0 +1,20 @@
+--- include/automount.h	2012-03-16 12:46:06.960979034 +0100
++++ include/automount.h	2012-03-16 12:51:36.460721698 +0100
+@@ -133,6 +133,17 @@
+ #define UMOUNT_RETRIES		8
+ #define EXPIRE_RETRIES		3
+ 
++/* missing for uClibc 0.9.28 */
++
++#ifndef AI_ADDRCONFIG
++#define AI_ADDRCONFIG 0x0020
++#endif
++
++#ifndef __SWORD_TYPE
++#define __SWORD_TYPE int
++#endif
++
++
+ struct mapent_cache {
+ 	pthread_rwlock_t rwlock;
+ 	unsigned int size;
