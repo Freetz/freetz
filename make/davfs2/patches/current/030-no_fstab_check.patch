@@ -1,0 +1,40 @@
+--- src/mount_davfs.c
++++ src/mount_davfs.c
+@@ -131,8 +131,10 @@
+ static char *
+ check_double_mounts(dav_args *args);
+ 
++#ifdef DO_CHECK_FSTAB
+ static void
+ check_fstab(const dav_args *args);
++#endif
+ 
+ static void
+ check_permissions(dav_args *args);
+@@ -228,8 +230,10 @@
+     if (seteuid(getuid()) != 0)
+         error(EXIT_FAILURE, errno, _("can't change effective user id"));
+ 
++#ifdef DO_CHECK_FSTAB
+     if (getuid() != 0)
+         check_fstab(args);
++#endif
+ 
+     parse_config(args);
+ 
+@@ -655,6 +659,7 @@
+ }
+ 
+ 
++#ifdef DO_CHECK_FSTAB
+ /* Checks fstab whether there is an entry for the mountpoint specified in args
+    and compares the values in args with the values in fstab.
+    If there is no such entry, or this entry does not allow user-mount, or the
+@@ -730,6 +735,7 @@
+ 
+     delete_args(n_args);
+ }
++#endif
+ 
+ 
+ /* The mounting user must be either root or meet the following conditions:
