@@ -471,6 +471,7 @@ config FREETZ_MODULE_ext2
 	select FREETZ_MODULE_mbcache
 	default n
 
+
 config FREETZ_MODULE_ext3
 	bool "ext3.ko"
 	depends on ! FREETZ_AVM_HAS_EXT3_BUILTIN # && any kernel version
@@ -483,6 +484,7 @@ config FREETZ_MODULE_jbd
 	depends on FREETZ_MODULE_ext3
 	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
 	default n
+
 
 config FREETZ_MODULE_ext4
 	bool "ext4.ko"
@@ -511,6 +513,12 @@ config FREETZ_MODULE_mbcache
 config FREETZ_MODULE_fat
 	bool "fat.ko"
 	default n
+
+config FREETZ_MODULE_vfat
+	bool "vfat.ko"
+	depends on FREETZ_MODULE_fat
+	default y
+
 
 config FREETZ_MODULE_hfs
 	bool "hfs.ko"
@@ -577,11 +585,6 @@ config FREETZ_MODULE_udf
 
 config FREETZ_MODULE_unionfs
 	bool "unionfs.ko"
-	default n
-
-config FREETZ_MODULE_vfat
-	bool "vfat.ko"
-	select FREETZ_MODULE_fat
 	default n
 
 endmenu
