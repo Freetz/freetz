@@ -59,11 +59,11 @@ stop() {
 
 case $1 in
 	""|load)
-		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
+		modlib_defaults auto.conf
 		[ ! -d /var/media/autofs ] && mkdir -p /var/media/autofs
 
 		modreg file $DAEMON conf 'auto.conf' 1 "auto_conf"
-		modreg cgi $DAEMON autofs
+		modreg cgi $DAEMON $DAEMON_LONG_NAME
 		modreg daemon $DAEMON
 
 		modlib_start $AUTOFS_ENABLED
