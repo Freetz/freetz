@@ -26,22 +26,21 @@ config FREETZ_PACKAGE_AUTOFS
 		reliability, and much faster operation in the common case (everything
 		already mounted.)
 
+if FREETZ_PACKAGE_AUTOFS
+
 config FREETZ_PACKAGE_AUTOFS_NFS
 	bool "select nfs module"
-	depends on FREETZ_PACKAGE_AUTOFS
 	select FREETZ_MODULE_nfs if FREETZ_NFS_SUPPORT_AVAILABLE_AS_MODULE
 	default n
 	help
 		select this if you want to mount NFS-shares
 
 comment "select cifs package (not available, needs replace kernel)"
-	depends on FREETZ_PACKAGE_AUTOFS && \
-		!FREETZ_REPLACE_KERNEL && FREETZ_KERNEL_VERSION_2_6_28_MIN
+	depends on !FREETZ_REPLACE_KERNEL && FREETZ_KERNEL_VERSION_2_6_28_MIN
 
 config FREETZ_PACKAGE_AUTOFS_CIFS
 	bool "select cifs package"
-	depends on FREETZ_PACKAGE_AUTOFS && \
-		(FREETZ_REPLACE_KERNEL || FREETZ_KERNEL_VERSION_2_6_19_MAX)
+	depends on  FREETZ_REPLACE_KERNEL || FREETZ_KERNEL_VERSION_2_6_19_MAX
 	select FREETZ_PACKAGE_CIFSMOUNT
 	default n
 	help
@@ -49,7 +48,6 @@ config FREETZ_PACKAGE_AUTOFS_CIFS
 
 config FREETZ_PACKAGE_AUTOFS_DAVFS2
 	bool "select davfs2 package"
-	depends on FREETZ_PACKAGE_AUTOFS
 	select FREETZ_PACKAGE_DAVFS2
 	default n
 	help
@@ -57,10 +55,11 @@ config FREETZ_PACKAGE_AUTOFS_DAVFS2
 
 config FREETZ_PACKAGE_AUTOFS_SSHFS
 	bool "select sshfs package"
-	depends on FREETZ_PACKAGE_AUTOFS
 	select FREETZ_PACKAGE_SSHFS_FUSE
 	default n
 	help
 		select this if you want to mount SSHfs-shares
+
+endif # FREETZ_PACKAGE_AUTOFS
 
 endif
