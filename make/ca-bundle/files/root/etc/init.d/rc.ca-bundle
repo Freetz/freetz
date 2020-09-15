@@ -12,6 +12,10 @@ case $1 in
 		mkdir -p /mod/etc/ssl/certs
 		[ ! -e /mod/etc/ssl/certs/ca-bundle.crt ] && ln -s /etc/ssl/certs/ca-bundle.crt /mod/etc/ssl/certs/ca-bundle.crt
 
+		if [ "$FREETZ_PACKAGE_DAVFS2" == "y" ]; then
+			[ ! -e /mod/etc/ssl/cert.pem ] && ln -s certs/ca-bundle.crt /mod/etc/ssl/cert.pem
+		fi
+
 		if [ "$FREETZ_PACKAGE_OPENSSL" == "y" ]; then
 			[ ! -e /mod/etc/ssl/openssl.cnf ] && ln -s /etc/ssl/openssl.cnf /mod/etc/ssl/openssl.cnf
 		fi
