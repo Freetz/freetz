@@ -182,6 +182,8 @@ format_conf() {
 
 	</tr>
 	</table>
+	EOF
+	cat <<- EOF
 	<div $divstyle><br><a href="$(href extra mod do_download_config)"><b>.config:</b></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="$(href extra mod do_download_config)">$(lang de:"Herunterladen als Textdatei" en:"Download as text file")</a></div>
 	EOF
 	let width=_cgi_width-30
