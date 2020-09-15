@@ -10,8 +10,7 @@ config() {
 	#autofs
 	mkdir -p $(dirname $PID_FILE)
 	mkdir -p /var/media/autofs
-	modprobe autofs4
-	modprobe fuse 2>/dev/null
+	modprobe autofs4 2>/dev/null
 
 	#davfs2
 	[ -r /etc/options.cfg ] && . /etc/options.cfg
@@ -26,9 +25,16 @@ config() {
 		ln -s $AUTOFS_DAVFS2_TEMP /var/cache/davfs2
 	fi
 
+	#cifs
+	for x in md4 md5 hmac arc4 ecb des_generic sha256_generic cifs; do
+		modprobe $x 2>/dev/null
+	done
+	#nfs
+	for x in grace sunrpc lockd nfsv3 nfsv2 nfs; do
+		modprobe $x 2>/dev/null
+	done
 	#other
-	modprobe cifs 2>/dev/null
-	modprobe nfs 2>/dev/null
+	modprobe fuse 2>/dev/null
 }
 
 start() {
