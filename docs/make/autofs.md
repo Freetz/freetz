@@ -43,24 +43,23 @@ Für WebDAV wird das [davfs2](davfs2.html)-Paket (ohne
 Webinterface) benötigt.
 
 ```
-DAV-SHARE -fstype=davfs,conf=/tmp/flash/autofs/davfs.conf     :http://SERVER
+DAV-SHARE -fstype=davfs     :https://SERVER
 ```
 
 Außerdem noch diese 2 Dateien je Mountpoint:
 
-/tmp/flash/autofs/davfs.conf
+/tmp/flash/autofs/davfs2.conf
 
 ```
-secrets /tmp/flash/autofs/davfs.secrets
 ask_auth 0
 #falls benötigt:
 #if_match_bug 1
 ```
 
-/tmp/flash/autofs/davfs.secrets (Dateirechte 600!)
+/tmp/flash/autofs/davfs2.secrets (Dateirechte 600!)
 
 ```
-http://SERVER USERNAME    PASSWORT
+https://SERVER USERNAME    PASSWORT
 ```
 
 ### SSHfs

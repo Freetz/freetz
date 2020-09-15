@@ -17,7 +17,10 @@ config() {
 	if [ "$FREETZ_PACKAGE_DAVFS2" == "y" -a "$AUTOFS_DAVFS2_CONF" == "yes" ]; then
 		modlib_add_user_and_group davfs2
 		mkdir -p /var/davfs2
-		touch /var/davfs2/davfs2.conf /var/davfs2/secrets
+		ln -sf /tmp/flash/autofs/davfs2.conf    /var/davfs2/davfs2.conf
+		ln -sf /tmp/flash/autofs/davfs2.secrets /var/davfs2/secrets
+		[ ! -e /var/davfs2/davfs2.conf    ] && echo '# ask_auth 0'               > /var/davfs2/davfs2.conf
+		[ ! -e /var/davfs2/secrets        ] && echo '# https://SERVER USER PASS' > /var/davfs2/secrets
 		chmod 600 /var/davfs2/secrets
 		mkdir -p /var/cache
 		rm /var/cache/davfs2 2>/dev/null
