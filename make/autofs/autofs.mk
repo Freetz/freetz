@@ -13,6 +13,35 @@ $(PKG)_CONDITIONAL_PATCHES+=$(if $(FREETZ_KERNEL_VERSION_2_MAX),abandon,current)
 $(PKG)_BINARY:=$($(PKG)_DIR)/daemon/automount
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/automount
 
+ifneq ($(FREETZ_KERNEL_VERSION_2_MAX),y)
+$(PKG)_CONFIGURE_ENV += ac_cv_path_UMOUNT=/bin/umount
+$(PKG)_CONFIGURE_ENV += ac_cv_path_MOUNT=/bin/mount
+$(PKG)_CONFIGURE_ENV += ac_cv_path_MOUNT_NFS=
+$(PKG)_CONFIGURE_ENV += ac_cv_path_E2FSCK=
+$(PKG)_CONFIGURE_ENV += ac_cv_path_E3FSCK=
+$(PKG)_CONFIGURE_ENV += ac_cv_path_E4FSCK=
+$(PKG)_CONFIGURE_ENV += ac_cv_linux_procfs=yes
+
+$(PKG)_CONFIGURE_ENV += ac_cv_path_KRB5_CONFIG=no
+$(PKG)_CONFIGURE_ENV += ac_cv_path_XML_CONFIG=no
+$(PKG)_CONFIGURE_ENV += ac_cv_header_rpcsvc_nis_h=no
+$(PKG)_CONFIGURE_ENV += ac_cv_header_rpcsvc_ypclnt_h=no
+$(PKG)_CONFIGURE_ENV += ac_cv_lib_nsl_yp_match=no
+
+$(PKG)_CONFIGURE_OPTIONS += --with-mapdir=/etc
+$(PKG)_CONFIGURE_OPTIONS += --with-fifodir=/var/run/automount
+$(PKG)_CONFIGURE_OPTIONS += --with-flagdir=/var/run/automount
+$(PKG)_CONFIGURE_OPTIONS += --without-libtirpc
+$(PKG)_CONFIGURE_OPTIONS += --without-dmalloc
+$(PKG)_CONFIGURE_OPTIONS += --without-systemd
+$(PKG)_CONFIGURE_OPTIONS += --without-hesiod
+$(PKG)_CONFIGURE_OPTIONS += --without-openldap
+$(PKG)_CONFIGURE_OPTIONS += --without-sasl
+$(PKG)_CONFIGURE_OPTIONS += --without-systemd
+$(PKG)_CONFIGURE_OPTIONS += --disable-sloppy-mount
+$(PKG)_CONFIGURE_OPTIONS += --disable-ext-env
+endif
+
 $(PKG)_REBUILD_SUBOPTS += FREETZ_KERNEL_VERSION_2_MAX
 
 $(PKG)_MODULES := \
