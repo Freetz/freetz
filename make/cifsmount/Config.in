@@ -1,9 +1,9 @@
-comment "Cifsmount (not available, needs replace kernel)"
-	depends on !FREETZ_CIFS_SUPPORT_AVAILABLE
+comment "Cifsmount (not available, needs kernel modules)"
+	depends on !(FREETZ_AVM_HAS_CIFS_BUILTIN || FREETZ_REPLACE_MODULE_AVAILABLE)
 
 config FREETZ_PACKAGE_CIFSMOUNT
 	bool "Cifsmount 6.10"
-	depends on FREETZ_CIFS_SUPPORT_AVAILABLE
+	depends on FREETZ_AVM_HAS_CIFS_BUILTIN || FREETZ_REPLACE_MODULE_AVAILABLE
 	select FREETZ_MODULE_cifs
 	default n
 	help
@@ -15,6 +15,8 @@ config FREETZ_PACKAGE_CIFSMOUNT
 		Thus, cifsmount is a replacement for smbmount, having the advantage
 		of being significantly smaller than smbmount. So if you want to mount
 		Windows or Samba shares from your router box, this package is for you.
+
+		If this does not work, enable replace-kernel!
 
 config FREETZ_PACKAGE_CIFSMOUNT_REMOVE_WEBIF
 	bool "remove webinterface"

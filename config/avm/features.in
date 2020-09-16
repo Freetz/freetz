@@ -71,11 +71,13 @@ config FREETZ_TYPE_WAN
 ### hardware/software related properties
 ###
 
-config FREETZ_CIFS_SUPPORT_AVAILABLE
+config FREETZ_AVM_HAS_TEMPERATURE_SENSOR
 	bool
 	default y
-	depends on FREETZ_REPLACE_KERNEL || \
-		(!FREETZ_KERNEL_VERSION_2_6_32_60 && !FREETZ_KERNEL_VERSION_2_6_32_61)
+	depends on \
+		(FREETZ_AVM_VERSION_05_2X_MIN && FREETZ_AVM_VERSION_05_5X_MAX) || \
+		(FREETZ_AVM_VERSION_06_0X_MIN && (FREETZ_TYPE_7490 || FREETZ_TYPE_7590) ) || \
+		FREETZ_SYSTEM_TYPE_UR8
 
 
 # Multi-Annex support, i.e. the same firmware image can be used both for Annex A and B
@@ -99,15 +101,6 @@ config FREETZ_AVM_HAS_ANNEX_A_AND_B
 			FREETZ_TYPE_7140 || \
 			FREETZ_TYPE_7170 \
 		)
-
-
-config FREETZ_AVM_HAS_TEMPERATURE_SENSOR
-	bool
-	default y
-	depends on \
-		(FREETZ_AVM_VERSION_05_2X_MIN && FREETZ_AVM_VERSION_05_5X_MAX) || \
-		(FREETZ_AVM_VERSION_06_0X_MIN && (FREETZ_TYPE_7490 || FREETZ_TYPE_7590) ) || \
-		FREETZ_SYSTEM_TYPE_UR8
 
 
 
