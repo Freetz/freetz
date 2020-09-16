@@ -446,6 +446,7 @@ config FREETZ_MODULE_cifs
 	depends on FREETZ_CIFS_SUPPORT_AVAILABLE
 	select FREETZ_MODULE_crypto_algapi    if !FREETZ_AVM_HAS_CRYPTO_ALGAPI_BUILTIN    && FREETZ_KERNEL_VERSION_2_6_19_MIN
 	select FREETZ_MODULE_arc4             if !FREETZ_AVM_HAS_CRYPTO_ARC4_BUILTIN
+	select FREETZ_MODULE_cmac             if !FREETZ_AVM_HAS_CRYPTO_CMAC_BUILTIN
 	select FREETZ_MODULE_des_generic      if !FREETZ_AVM_HAS_CRYPTO_DES_BUILTIN
 	select FREETZ_MODULE_ecb              if !FREETZ_AVM_HAS_CRYPTO_ECB_BUILTIN
 	select FREETZ_MODULE_hmac             if !FREETZ_AVM_HAS_CRYPTO_HMAC_BUILTIN
@@ -453,6 +454,11 @@ config FREETZ_MODULE_cifs
 	select FREETZ_MODULE_md5              if !FREETZ_AVM_HAS_CRYPTO_MD5_BUILTIN
 	select FREETZ_MODULE_sha256_generic   if !FREETZ_AVM_HAS_CRYPTO_SHA256_BUILTIN
 	default n
+
+config FREETZ_MODULE_cmac
+	bool "cmac.ko"
+	depends on FREETZ_MODULE_cifs && !FREETZ_AVM_HAS_CRYPTO_CMAC_BUILTIN
+	default y
 
 config FREETZ_MODULE_des_generic
 	bool "des_generic.ko"
