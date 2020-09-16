@@ -412,7 +412,7 @@ config FREETZ_MODULE_nfs
 
 config FREETZ_MODULE_nfsv2
 	bool "nfsv2.ko"
-	depends on !FREETZ_AVM_HAS_NFS_V2_BUILTIN
+	depends on !FREETZ_AVM_HAS_NFS_V2_BUILTIN && FREETZ_KERNEL_VERSION_3_MIN
 	depends on FREETZ_MODULE_nfs
 	default y
 
