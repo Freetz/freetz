@@ -29,7 +29,7 @@ config() {
 	fi
 
 	#cifs
-	for x in md4 md5 hmac arc4 ecb des_generic sha256_generic cifs; do
+	for x in md4 md5 hmac cmac arc4 ecb des_generic sha256_generic cifs; do
 		modprobe $x 2>/dev/null
 	done
 	#nfs

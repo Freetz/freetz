@@ -13,7 +13,7 @@ DAEMON=cifsmount
 start() {
 	echo -n 'Starting cifs ... '
 
-	for x in md4 md5 hmac arc4 ecb des_generic sha256_generic; do
+	for x in md4 md5 hmac cmac arc4 ecb des_generic sha256_generic; do
 		modprobe $x 2>/dev/null
 	done
 	modprobe cifs
