@@ -6,6 +6,7 @@ PID_FILE=/var/run/automount/autofs-running
 . /etc/init.d/modlibrc
 
 
+
 config() {
 	#autofs
 	mkdir -p $(dirname $PID_FILE)
@@ -19,9 +20,6 @@ config() {
 		mkdir -p /var/davfs2
 		ln -sf /tmp/flash/autofs/davfs2.conf    /var/davfs2/davfs2.conf
 		ln -sf /tmp/flash/autofs/davfs2.secrets /var/davfs2/secrets
-		[ ! -e /var/davfs2/davfs2.conf    ] && echo '# ask_auth 0'               > /var/davfs2/davfs2.conf
-		[ ! -e /var/davfs2/secrets        ] && echo '# https://SERVER USER PASS' > /var/davfs2/secrets
-		chmod 600 /var/davfs2/secrets
 		mkdir -p /var/cache
 		rm /var/cache/davfs2 2>/dev/null
 		mkdir $AUTOFS_DAVFS2_TEMP 2>/dev/null
@@ -65,6 +63,15 @@ case $1 in
 		modlib_defaults auto.conf
 		[ ! -d /var/media/autofs ] && mkdir -p /var/media/autofs
 
+		[ -r /etc/options.cfg ] && . /etc/options.cfg
+		if [ "$FREETZ_PACKAGE_DAVFS2" == "y" ]; then
+			[ ! -e /tmp/flash/autofs/davfs2.conf    ] && echo '# ask_auth 0' > /tmp/flash/autofs/davfs2.conf
+			[ ! -e /tmp/flash/autofs/davfs2.secrets ] && touch                 /tmp/flash/autofs/davfs2.secrets
+			chmod 600 /var/davfs2/secrets
+
+			modreg file $DAEMON davfs2  'davfs2.conf'    0 davfs2_conf
+			modreg file $DAEMON secrets 'davfs2.secrets' 0 davfs2_secrets
+		fi
 		modreg file $DAEMON conf 'auto.conf' 1 "auto_conf"
 		modreg cgi $DAEMON $DAEMON_LONG_NAME
 		modreg daemon $DAEMON
