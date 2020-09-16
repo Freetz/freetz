@@ -66,6 +66,7 @@ config FREETZ_MODULE_aes_generic
 
 config FREETZ_MODULE_arc4
 	bool "arc4.ko"
+	depends on !FREETZ_AVM_HAS_CRYPTO_ARC4_BUILTIN
 	select FREETZ_MODULE_crypto_algapi    if !FREETZ_AVM_HAS_CRYPTO_ALGAPI_BUILTIN    && FREETZ_KERNEL_VERSION_2_6_19_MIN
 	default n
 
@@ -222,7 +223,7 @@ config FREETZ_MODULE_pppox
 config FREETZ_MODULE_ppp_mppe_mppc
 	bool "ppp_mppe_mppc.ko"
 	select FREETZ_MODULE_ppp_generic if ! FREETZ_KERNEL_VERSION_2_6_28
-	select FREETZ_MODULE_arc4
+	select FREETZ_MODULE_arc4         if !FREETZ_AVM_HAS_CRYPTO_ARC4_BUILTIN
 	select FREETZ_MODULE_sha1         if !FREETZ_AVM_HAS_CRYPTO_SHA1_BUILTIN && FREETZ_KERNEL_VERSION_2_6_19_MAX
 	select FREETZ_MODULE_sha1_generic if !FREETZ_AVM_HAS_CRYPTO_SHA1_BUILTIN && FREETZ_KERNEL_VERSION_2_6_32_MIN
 	default n
@@ -443,12 +444,39 @@ config FREETZ_MODULE_autofs4
 config FREETZ_MODULE_cifs
 	bool "cifs.ko"
 	depends on FREETZ_CIFS_SUPPORT_AVAILABLE
-	select FREETZ_MODULE_md4 if !FREETZ_AVM_HAS_CRYPTO_MD4_BUILTIN
+	select FREETZ_MODULE_crypto_algapi    if !FREETZ_AVM_HAS_CRYPTO_ALGAPI_BUILTIN    && FREETZ_KERNEL_VERSION_2_6_19_MIN
+	select FREETZ_MODULE_arc4             if !FREETZ_AVM_HAS_CRYPTO_ARC4_BUILTIN
+	select FREETZ_MODULE_des_generic      if !FREETZ_AVM_HAS_CRYPTO_DES_BUILTIN
+	select FREETZ_MODULE_ecb              if !FREETZ_AVM_HAS_CRYPTO_ECB_BUILTIN
+	select FREETZ_MODULE_hmac             if !FREETZ_AVM_HAS_CRYPTO_HMAC_BUILTIN
+	select FREETZ_MODULE_md4              if !FREETZ_AVM_HAS_CRYPTO_MD4_BUILTIN
+	select FREETZ_MODULE_md5              if !FREETZ_AVM_HAS_CRYPTO_MD5_BUILTIN
+	select FREETZ_MODULE_sha256_generic   if !FREETZ_AVM_HAS_CRYPTO_SHA256_BUILTIN
 	default n
+
+config FREETZ_MODULE_des_generic
+	bool "des_generic.ko"
+	depends on FREETZ_MODULE_cifs && !FREETZ_AVM_HAS_CRYPTO_DES_BUILTIN
+	default y
+
+config FREETZ_MODULE_ecb
+	bool "ecb.ko"
+	depends on FREETZ_MODULE_cifs && !FREETZ_AVM_HAS_CRYPTO_ECB_BUILTIN
+	default y
+
+config FREETZ_MODULE_hmac
+	bool "hmac.ko"
+	depends on FREETZ_MODULE_cifs && !FREETZ_AVM_HAS_CRYPTO_HMAC_BUILTIN
+	default y
 
 config FREETZ_MODULE_md4
 	bool "md4.ko"
 	depends on FREETZ_MODULE_cifs && !FREETZ_AVM_HAS_CRYPTO_MD4_BUILTIN
+	default y
+
+config FREETZ_MODULE_md5
+	bool "md5.ko"
+	depends on FREETZ_MODULE_cifs && !FREETZ_AVM_HAS_CRYPTO_MD5_BUILTIN
 	default y
 
 
