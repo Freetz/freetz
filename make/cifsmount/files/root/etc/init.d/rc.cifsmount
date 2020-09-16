@@ -27,7 +27,7 @@ start() {
 		eval CIFSMOUNT_MOUNTOPTIONS=\$CIFSMOUNT_MOUNTOPTIONS$i
 		CIFSOPTS="user=${CIFSMOUNT_USER},pass=${CIFSMOUNT_PASS}${CIFSMOUNT_MOUNTOPTIONS:+,}${CIFSMOUNT_MOUNTOPTIONS}"
 		if [ -n "$CIFSMOUNT_MOUNTPOINT" ]; then
-			echo "mount $CIFSMOUNT_SHARE ..."
+			echo -n "$CIFSMOUNT_SHARE ... "
 			mkdir -p "$CIFSMOUNT_MOUNTPOINT"
 			mount.cifs "$CIFSMOUNT_SHARE" "$CIFSMOUNT_MOUNTPOINT" -o "$CIFSOPTS"
 			[ "$?" -gt 0 ] && exitval=1
@@ -48,7 +48,7 @@ stop() {
 		eval CIFSMOUNT_SHARE=\$CIFSMOUNT_SHARE$i
 		eval CIFSMOUNT_MOUNTPOINT=\$CIFSMOUNT_MOUNTPOINT$i
 		if [ -n "$CIFSMOUNT_MOUNTPOINT" ]; then
-			echo "unmount $CIFSMOUNT_SHARE ..."
+			echo -n "$CIFSMOUNT_SHARE ... "
 			umount $CIFSMOUNT_MOUNTPOINT
 			[ "$?" -gt 0 ] && exitval=1
 			#rmdir $CIFSMOUNT_MOUNTPOINT
