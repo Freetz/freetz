@@ -1,5 +1,5 @@
 #!/bin/bash
-#by cuma
+#by cuma, 2020
 
 SCRIPT="$(readlink -f $0)"
 PARENT="$(dirname ${SCRIPT%/*})"
