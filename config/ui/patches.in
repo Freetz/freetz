@@ -1240,10 +1240,10 @@ if FREETZ_PATCH_UDEVMOUNT
 			This adds fat module to your firmware.
 
 	comment "Intern Ext2"
-		depends on FREETZ_AVM_HAS_EXT2_BUILTIN
+		depends on FREETZ_AVM_HAS_EXT2_FS_BUILTIN
 	config FREETZ_UDEVMOUNT_EXT2
 		bool "Select Ext2"
-		depends on !FREETZ_AVM_HAS_EXT2_BUILTIN
+		depends on !FREETZ_AVM_HAS_EXT2_FS_BUILTIN
 		depends on FREETZ_REPLACE_MODULE_AVAILABLE
 		select FREETZ_MODULE_ext2
 		default n
@@ -1251,10 +1251,10 @@ if FREETZ_PATCH_UDEVMOUNT
 			This adds ext2 module to your firmware.
 
 	comment "Intern Ext3"
-		depends on FREETZ_AVM_HAS_EXT3_BUILTIN
+		depends on FREETZ_AVM_HAS_EXT3_FS_BUILTIN
 	config FREETZ_UDEVMOUNT_EXT3
 		bool "Select Ext3"
-		depends on !FREETZ_AVM_HAS_EXT3_BUILTIN
+		depends on !FREETZ_AVM_HAS_EXT3_FS_BUILTIN
 		depends on FREETZ_REPLACE_MODULE_AVAILABLE
 		select FREETZ_MODULE_ext3
 		default y
@@ -1262,10 +1262,10 @@ if FREETZ_PATCH_UDEVMOUNT
 			This adds ext3 module to your firmware.
 
 	comment "Intern Ext4"
-		depends on FREETZ_AVM_HAS_EXT4_BUILTIN && FREETZ_KERNEL_VERSION_2_6_28_MIN
+		depends on FREETZ_AVM_HAS_EXT4_FS_BUILTIN && FREETZ_KERNEL_VERSION_2_6_28_MIN
 	config FREETZ_UDEVMOUNT_EXT4
 		bool "Select Ext4"
-		depends on !FREETZ_AVM_HAS_EXT4_BUILTIN && FREETZ_KERNEL_VERSION_2_6_28_MIN
+		depends on !FREETZ_AVM_HAS_EXT4_FS_BUILTIN && FREETZ_KERNEL_VERSION_2_6_28_MIN
 		depends on FREETZ_REPLACE_MODULE_AVAILABLE
 		select FREETZ_MODULE_ext4
 		default y
@@ -1335,29 +1335,29 @@ config FREETZ_USBSTORAGE_AUTOMOUNT
 if FREETZ_USBSTORAGE_AUTOMOUNT
 config FREETZ_AUTOMOUNT_EXT2
 	bool "ext2"
-	depends on (FREETZ_REPLACE_MODULE_AVAILABLE || FREETZ_AVM_HAS_EXT2_BUILTIN) # && any kernel version
+	depends on (FREETZ_REPLACE_MODULE_AVAILABLE || FREETZ_AVM_HAS_EXT2_FS_BUILTIN) # && any kernel version
 	select FREETZ_BUSYBOX_FEATURE_VOLUMEID_EXT
-	select FREETZ_MODULE_ext2 if ! FREETZ_AVM_HAS_EXT2_BUILTIN
+	select FREETZ_MODULE_ext2 if ! FREETZ_AVM_HAS_EXT2_FS_BUILTIN
 	default n
 	help
 		This adds support for ext2 filesystem to your firmware.
 
 config FREETZ_AUTOMOUNT_EXT3
 	bool "ext3"
-	depends on (FREETZ_REPLACE_MODULE_AVAILABLE || FREETZ_AVM_HAS_EXT3_BUILTIN) # && any kernel version
+	depends on (FREETZ_REPLACE_MODULE_AVAILABLE || FREETZ_AVM_HAS_EXT3_FS_BUILTIN) # && any kernel version
 	select FREETZ_BUSYBOX_FEATURE_VOLUMEID_EXT
-	select FREETZ_MODULE_ext3 if ! FREETZ_AVM_HAS_EXT3_BUILTIN
-	default y if FREETZ_AVM_HAS_EXT3_BUILTIN
+	select FREETZ_MODULE_ext3 if ! FREETZ_AVM_HAS_EXT3_FS_BUILTIN
+	default y if FREETZ_AVM_HAS_EXT3_FS_BUILTIN
 	default n
 	help
 		This adds support for ext3 filesystem to your firmware.
 
 config FREETZ_AUTOMOUNT_EXT4
 	bool "ext4"
-	depends on (FREETZ_REPLACE_MODULE_AVAILABLE || FREETZ_AVM_HAS_EXT4_BUILTIN) && FREETZ_KERNEL_VERSION_2_6_28_MIN
+	depends on (FREETZ_REPLACE_MODULE_AVAILABLE || FREETZ_AVM_HAS_EXT4_FS_BUILTIN) && FREETZ_KERNEL_VERSION_2_6_28_MIN
 	select FREETZ_BUSYBOX_FEATURE_VOLUMEID_EXT
-	select FREETZ_MODULE_ext4 if ! FREETZ_AVM_HAS_EXT4_BUILTIN
-	default y if FREETZ_AVM_HAS_EXT4_BUILTIN
+	select FREETZ_MODULE_ext4 if ! FREETZ_AVM_HAS_EXT4_FS_BUILTIN
+	default y if FREETZ_AVM_HAS_EXT4_FS_BUILTIN
 	default n
 	help
 		This adds support for ext4 filesystem to your firmware.

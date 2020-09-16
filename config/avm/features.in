@@ -132,7 +132,7 @@ config FREETZ_AVM_HAS_PRINTK
 	depends on \
 		!(FREETZ_TYPE_3170 && !FREETZ_REPLACE_KERNEL)
 
-config FREETZ_AVM_HAS_FUSE_BUILTIN
+config FREETZ_AVM_HAS_FUSE_FS_BUILTIN
 	bool
 	default y
 	depends on \
@@ -153,7 +153,7 @@ config FREETZ_AVM_HAS_FUSE_BUILTIN
 		grep "^CONFIG_FUSE_FS=m" make/linux/configs/avm/* | sed 's/.*config-//;s/-.*//'| uniq  # module
 		grep "^CONFIG_FUSE_FS=y" make/linux/configs/avm/* | sed 's/.*config-//;s/-.*//'| uniq  # kernel
 
-config FREETZ_AVM_HAS_AUTOFS4_BUILTIN
+config FREETZ_AVM_HAS_AUTOFS4_FS_BUILTIN
 	bool
 	default y
         depends on \
@@ -164,7 +164,7 @@ config FREETZ_AVM_HAS_AUTOFS4_BUILTIN
 	help
 		grep "^CONFIG_AUTOFS4_FS=y" make/linux/configs/avm/* | sed 's/.*config-//;s/-.*//' | uniq
 
-config FREETZ_AVM_HAS_MD4_BUILTIN
+config FREETZ_AVM_HAS_CRYPTO_MD4_BUILTIN
 	bool
 	default y
 	depends on \
@@ -172,7 +172,7 @@ config FREETZ_AVM_HAS_MD4_BUILTIN
 	help
 		grep "^CONFIG_CRYPTO_MD4=y" make/linux/configs/avm/* | sed 's/.*config-//;s/-.*//' | uniq
 
-config FREETZ_AVM_HAS_EXT2_BUILTIN
+config FREETZ_AVM_HAS_EXT2_FS_BUILTIN
 	bool
 	default y
 	depends on FREETZ_AVM_VERSION_05_2X_MIN \
@@ -189,7 +189,7 @@ config FREETZ_AVM_HAS_EXT2_BUILTIN
 			FREETZ_SYSTEM_TYPE_VR9        \
 			)
 
-config FREETZ_AVM_HAS_EXT3_BUILTIN
+config FREETZ_AVM_HAS_EXT3_FS_BUILTIN
 	bool
 	default y
 	depends on FREETZ_AVM_VERSION_05_2X_MIN \
@@ -206,7 +206,7 @@ config FREETZ_AVM_HAS_EXT3_BUILTIN
 			FREETZ_SYSTEM_TYPE_VR9        \
 			)
 
-config FREETZ_AVM_HAS_EXT4_BUILTIN
+config FREETZ_AVM_HAS_EXT4_FS_BUILTIN
 	bool
 	default y
 	depends on FREETZ_AVM_VERSION_05_2X_MIN \
@@ -221,7 +221,7 @@ config FREETZ_AVM_HAS_EXT4_BUILTIN
 			)
 	# disabled in AVM's kernel .config's for AR934x, IKS, UR8
 
-config FREETZ_AVM_HAS_NLS_CP437_BUILTIN
+config FREETZ_AVM_HAS_NLS_CODEPAGE_437_BUILTIN
 	bool
 	default y
 	depends on FREETZ_AVM_VERSION_05_2X_MIN \
@@ -272,7 +272,7 @@ config FREETZ_AVM_HAS_NLS_UTF8_BUILTIN
 			)
 	# configured as module in AVM's kernel .config's for IKS, GRX5
 
-config FREETZ_AVM_HAS_JFFS2_BUILTIN
+config FREETZ_AVM_HAS_JFFS2_FS_BUILTIN
 	bool
 	default y
 	depends on \
