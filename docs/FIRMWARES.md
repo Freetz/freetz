@@ -320,7 +320,7 @@ Currently supported devices and firmwares
   - 113.06.84 rev48533 {INT}
   - 113.07.01 rev61484 {INT}
   - 113.07.12 rev70401 {INT} [MESH18 NL2]
-  - 113.07.19 rev00000 {ALL} (Labor)
+  - 113.07.21 rev81779 {ALL} [PSQ19]
 
 ### Fritz!Box Fon WLAN (75xx)
 
