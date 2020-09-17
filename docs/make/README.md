@@ -80,7 +80,7 @@
     Checkmaild checks pop3/smtp mail accounts for new mails on a given interval. A configurable shell script starts the desired actions when new mails arrive.
 
   * **[Cifsmount 6.10](cifsmount.md)<a id='cifsmount'></a>**<br>
-    User space helper for mounting remote CIFS shares + CGI web interface for easy configuration of up to three mounts incl. (auto-) start/stop. CIFS is an extended version of SMB, the well-known protocol used by MS Windows and Samba for sharing folders, files and printers. Thus, cifsmount is a replacement for smbmount, having the advantage of being significantly smaller than smbmount. So if you want to mount Windows or Samba shares from your router box, this package is for you.
+    User space helper for mounting remote CIFS shares + CGI web interface for easy configuration of up to three mounts incl. (auto-) start/stop. CIFS is an extended version of SMB, the well-known protocol used by MS Windows and Samba for sharing folders, files and printers. Thus, cifsmount is a replacement for smbmount, having the advantage of being significantly smaller than smbmount. So if you want to mount Windows or Samba shares from your router box, this package is for you. If this does not work, enable replace-kernel!
 
   * **<u>classpath GNU 0.98 (binary only)</u><a id='classpath'></a>**<br>
     GNU Classpath, Essential Libraries for Java, is a GNU project to create free core class libraries for use with virtual machines and compilers for the java programming language.
@@ -373,7 +373,7 @@
     Mount a remote filesystem (fs) from an NFS server and use it as a root fs which is fully writable and basically unlimited in size. The Linux kernel will still be loaded from your box and during the first phase of the init process the SquashFS on the box is still used, but after the NFS-root is mounted, we pivot_root into it and it becomes the new root fs. The read-only fs on the box can still be accessed under /oldroot, but is absolutely not necessary anymore after pivot_root. Having said that, it should be clear that the remote folder to be mounted should contain everything necessary to run the box. Usually you just create a full copy of a target fs (e.g. from build/modified/filesystem or from an unpacked firmware image) and start modifying it as needed. The binaries (kernel modules, executables, shared libraries) used therein just have to fit the kernel installed on the box. Note: The mini_fo overlay filesystem will not be used if an NFS-root was mounted first (see mini_fo package). Still, both packages can be installed at the same time, because mini_fo is still useful if NFS-root is decativated. Note: This package needs "replace kernel" because a kernel patch is necessary to make the 'nfsroot' bootloader environment variable usable for our purpose. So, if if "replace kernel" is inactive, you will not see this package in
 
   * **[nfs-utils 1.3.4 (binary only)](nfs-utils.md)<a id='nfs-utils'></a>**<br>
-    Linux NFS utility package Select nfsd-cgi if you want a configuration web interface.
+    Linux NFS utility package Select nfsd-cgi if you want a configuration web interface. If this does not work, enable replace-kernel!
 
   * **<u>ngircd 22</u><a id='ngircd'></a>**<br>
     ngIRCd is an Open Source server for the Internet Relay Chat (IRC), which is developed and published under the terms of the GNU General Public Licence (URL: http://www.gnu.org/licenses/gpl.html). ngIRCd means "next generation IRC daemon", it's written from scratch and not deduced from the "grandfather of IRC daemons", the daemon of the IRCNet. For documentation see: http://ngircd.barton.de/documentation.php.de
@@ -824,7 +824,7 @@
     Download files from HTTP or FTP server during the boot process. This is particularly useful for binary packages which do not fit into the firmware image, but should be used on the box anyway. As long as they fit into the RAM disk this solution helps to automate the downloads and keeps them out of debug.cfg. by hermann72pb (ip-phone-forum.de) Support thread: http://www.ip-phone-forum.de/showthread.php?t=134934
 
   * **[NFSD CGI 0.1](nfsd-cgi.md)<a id='nfsd'></a>**<br>
-    Configuration frontend to NFS-server
+    Configuration frontend to NFS-server If this does not work, enable replace-kernel!
 
   * **[Onlinechanged-CGI](onlinechanged-cgi.md)<a id='onlinechanged'></a>**<br>
     When the online-status changes (e.g. a forced re-connect) this CGI allows you to specify arbitrary commands which are executed at that event. The following different change events are considered: initial start of the box, going online (IPv4), going onlineipv6 (IPv6), going offline (IPv4) and going offlineipv6 (IPv6).
