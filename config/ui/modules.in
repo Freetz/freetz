@@ -279,9 +279,17 @@ config FREETZ_MODULE_usb_storage
 	select FREETZ_MODULE_scsi_mod if !FREETZ_AVM_HAS_SCSI_MOD_BUILTIN
 	default n
 
+config FREETZ_MODULE_usbip
+	bool "usbip.ko"
+	depends on !FREETZ_AVM_HAS_USB_IP_HOST_BUILTIN
+	depends on FREETZ_KERNEL_VERSION_2_6_32_MAX
+	select FREETZ_MODULE_usbip_common_mod
+	default n
+
 config FREETZ_MODULE_usbip_common_mod
 	bool "usbip_common_mod.ko"
 	depends on !FREETZ_AVM_HAS_USB_IP_COMMON_BUILTIN
+	depends on FREETZ_MODULE_usbip
 	default n
 
 config FREETZ_MODULE_usbmon

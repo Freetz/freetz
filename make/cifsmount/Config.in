@@ -4,7 +4,7 @@ comment "Cifsmount (not available, needs kernel modules)"
 config FREETZ_PACKAGE_CIFSMOUNT
 	bool "Cifsmount 6.10"
 	depends on FREETZ_AVM_HAS_CIFS_BUILTIN || FREETZ_REPLACE_MODULE_AVAILABLE
-	select FREETZ_MODULE_cifs
+	select FREETZ_MODULE_cifs if !FREETZ_AVM_HAS_CIFS_BUILTIN
 	default n
 	help
 		User space helper for mounting remote CIFS shares + CGI web interface

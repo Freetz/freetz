@@ -6,10 +6,10 @@ config FREETZ_PACKAGE_PPPD
 	depends on FREETZ_PACKAGE_PPP
 	select FREETZ_LIB_libcrypt
 	select FREETZ_LIB_libdl
-	select FREETZ_MODULE_ppp_async if ! FREETZ_TYPE_7390
-	select FREETZ_MODULE_ppp_deflate
-	select FREETZ_MODULE_ppp_generic if ! FREETZ_TYPE_7390
-	select FREETZ_MODULE_ppp_mppe_mppc
+	select FREETZ_MODULE_ppp_async      if !FREETZ_AVM_HAS_PPP_ASYNC_BUILTIN
+	select FREETZ_MODULE_ppp_deflate    if !FREETZ_AVM_HAS_PPP_DEFLATE_BUILTIN
+	select FREETZ_MODULE_ppp_generic    if !FREETZ_AVM_HAS_PPP_BUILTIN && !FREETZ_KERNEL_VERSION_2_6_28
+	select FREETZ_MODULE_ppp_mppe_mppc  if !FREETZ_AVM_HAS_PPP_MPPE_MPPC_BUILTIN
 	default n
 	help
 		An implementation of the Point-to-point protocol.

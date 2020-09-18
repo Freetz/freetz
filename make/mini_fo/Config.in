@@ -1,7 +1,7 @@
 config FREETZ_PACKAGE_MINI_FO
 	bool "mini_fo 0.3"
 	depends on FREETZ_REPLACE_MODULE_AVAILABLE
-	select FREETZ_MODULE_mini_fo
+	select FREETZ_MODULE_mini_fo if !FREETZ_AVM_HAS_MINI_FO_BUILTIN
 	default n
 	help
 		Makes the filesystem writeable. Changes are not reboot-persistent,
@@ -21,6 +21,7 @@ config FREETZ_PACKAGE_MINI_FO
 config FREETZ_PACKAGE_MINI_FO_JFFS2
 	bool "Use jffs2 for data storage (persistent) "
 	depends on FREETZ_PACKAGE_MINI_FO && ! FREETZ_REMOVE_JFFS2
+	depends on !FREETZ_REMOVE_JFFS2
 	select FREETZ_MODULE_jffs2 if !FREETZ_AVM_HAS_JFFS2_FS_BUILTIN
 	default n
 	help

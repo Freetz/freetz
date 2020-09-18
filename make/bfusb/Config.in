@@ -1,7 +1,7 @@
 config FREETZ_PACKAGE_BFUSB
 	bool "bfusb: AVM BlueFRITZ! USB stick support (binary only)"
 	depends on FREETZ_REPLACE_MODULE_AVAILABLE
-	select FREETZ_MODULE_bfusb
+	select FREETZ_MODULE_bfusb if !FREETZ_AVM_HAS_BT_HCIBFUSB_BUILTIN
 	default n
 	help
 		This package adds support for the

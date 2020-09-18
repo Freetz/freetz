@@ -14,7 +14,7 @@ config FREETZ_PACKAGE_CRYPTSETUP
 	select FREETZ_LIB_libgcrypt
 	select FREETZ_LIB_libpopt
 	select FREETZ_LIB_libuuid
-	select FREETZ_MODULE_dm_crypt
+	select FREETZ_MODULE_dm_crypt        if !FREETZ_AVM_HAS_DM_CRYPT_BUILTIN
 	select FREETZ_MODULE_aes             if !FREETZ_AVM_HAS_CRYPTO_AES_BUILTIN      &&  FREETZ_KERNEL_VERSION_2_6_13
 	select FREETZ_MODULE_sha256          if !FREETZ_AVM_HAS_CRYPTO_SHA256_BUILTIN   &&  FREETZ_KERNEL_VERSION_2_6_19_MAX
 	select FREETZ_MODULE_sha256_generic  if !FREETZ_AVM_HAS_CRYPTO_SHA256_BUILTIN   &&  FREETZ_KERNEL_VERSION_2_6_28_MIN
@@ -29,7 +29,7 @@ config FREETZ_PACKAGE_CRYPTSETUP
 config FREETZ_CRYPTSETUP_LOOP
 	bool "support for container files"
 	depends on FREETZ_PACKAGE_CRYPTSETUP
-	select FREETZ_MODULE_loop
+	select FREETZ_MODULE_loop if !FREETZ_AVM_HAS_BLK_DEV_LOOP_BUILTIN
 	select FREETZ_BUSYBOX_LOSETUP
 	help
 		This is required to mount container *files*.
