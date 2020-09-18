@@ -1,7 +1,6 @@
-if !FREETZ_KERNEL_VERSION_3_10_MIN
-
 config FREETZ_PACKAGE_NDAS
 	bool "ndas"
+	depends on FREETZ_KERNEL_VERSION_2
 	depends on FREETZ_REPLACE_MODULE_AVAILABLE
 	select FREETZ_MODULE_ndas_block
 	select FREETZ_MODULE_ndas_core
@@ -10,4 +9,3 @@ config FREETZ_PACKAGE_NDAS
 	help
 		Network Direct Attached Storage (NDAS)
 
-endif
