@@ -206,6 +206,7 @@ config FREETZ_KERNEL_VERSION_MODULES_SUBDIR
 	default "2.6.13.1-ohio" if FREETZ_KERNEL_VERSION_2_6_13 && FREETZ_SYSTEM_TYPE_AR7_OHIO
 	default FREETZ_KERNEL_VERSION
 
+
 config FREETZ_KERNEL_VERSION_2_6_13_MIN
 	bool
 	default y
@@ -289,6 +290,7 @@ config FREETZ_KERNEL_VERSION_4_9_MIN
 	depends on \
 		FREETZ_KERNEL_VERSION_4_9
 
+
 config FREETZ_KERNEL_VERSION_2_6_13_MAX
 	bool
 	default y
@@ -371,6 +373,26 @@ config FREETZ_KERNEL_VERSION_4_9_MAX
 	depends on \
 		FREETZ_KERNEL_VERSION_4_4_MAX || \
 		FREETZ_KERNEL_VERSION_4_9
+
+
+config FREETZ_KERNEL_VERSION_2
+	bool
+	default y
+	depends on FREETZ_KERNEL_VERSION_2_MAX
+
+config FREETZ_KERNEL_VERSION_3
+	bool
+	default y
+	depends on \
+		FREETZ_KERNEL_VERSION_3_MIN && \
+		FREETZ_KERNEL_VERSION_3_MAX
+
+config FREETZ_KERNEL_VERSION_4
+	bool
+	default y
+	depends on FREETZ_KERNEL_VERSION_4_MIN
+
+
 
 # AVM kernel config area size in KB
 config FREETZ_AVM_KERNEL_CONFIG_AREA_SIZE
