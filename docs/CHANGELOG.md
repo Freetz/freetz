@@ -189,7 +189,7 @@ Latest changes
     * apache 2.4.46
     * apr 1.7.0
     * apr-util 1.6.1
-    * autofs 5.0.5/5.1.6
+    * AutoFS 5.0.5/5.1.6
     * bash 3.2.57
     * BIND 9.11.13
     * Bip 0.8.9/0.9.0-rc4
