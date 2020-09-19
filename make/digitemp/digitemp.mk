@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, a162e63aad35358aab325388f3d5e88121606419)
+$(call PKG_INIT_BIN, v3.7.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SOURCE_CHECKSUM:=X
 $(PKG)_SITE:=git@https://github.com/bcl/digitemp.git
