@@ -1,8 +1,8 @@
 --- linux-2.6.32/include/linux/skbuff.h
 +++ linux-2.6.32/include/linux/skbuff.h
-@@ -520,10 +520,6 @@
- 	 */
-     unsigned long uniq_id;
+@@ -518,10 +518,6 @@
+ #define AVM_HAVE_SKB_UNIQ_ID
+ #endif
  
 -#if defined(CONFIG_NF_CONNTRACK) || defined(CONFIG_NF_CONNTRACK_MODULE)
 -	struct nf_conntrack	*nfct;
@@ -11,7 +11,7 @@
  #if defined(CONFIG_IMQ) || defined(CONFIG_IMQ_MODULE)
  	struct nf_queue_entry	*nf_queue_entry;
  #endif
-@@ -584,6 +580,10 @@
+@@ -585,6 +581,10 @@
  				*data;
  	unsigned int		truesize;
  	atomic_t		users;
@@ -24,7 +24,7 @@
  #endif
 --- linux-2.6.32/net/core/skbuff.c
 +++ linux-2.6.32/net/core/skbuff.c
-@@ -453,6 +453,11 @@
+@@ -454,6 +454,11 @@
  	 */
  	memset(skb, 0, offsetof(struct sk_buff, tail));
  	skb_track_caller(skb);
