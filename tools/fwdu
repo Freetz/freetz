@@ -195,8 +195,8 @@ image() {
 		# remove TI checksum and concatenate kernel & filesystem images
 		for f in ${d}/kernel.image ${d}/filesystem.image; do
 			if [ -s "$f" ]; then
-				$FTOOLS/tichksum -r "$f" >/dev/null 2>&1
-				cat "$f" | dd bs=256 conv=sync 2>/dev/null;
+				$FTOOLS/tichksum -r "$f" >/dev/null
+				dd if="$f" bs=256 conv=sync 2>/dev/null
 			fi
 		done > kf.image
 		rm -f ${d}/kernel.image ${d}/filesystem.image
