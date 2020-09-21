@@ -36,6 +36,7 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 UIMG_TOOL="${0%/*}/uimg"
+TSUM_TOOL="${0%/*}/tichksum"
 
 function wait_loader() {
 	echo -en " * No reply from box, assuming switch-off or restart. Trying to re-detect box.\n   Waiting "
@@ -284,10 +285,10 @@ prepare_image() {
 		mtdram1="$tmpdir/ramboot.flash"
 		if tar -C $tmpdir/ -xf $file --wildcards '*.image' >/dev/null 2>&1; then
 			if [ -s "$tmpdir/var/tmp/kernel.image" -a -s "$tmpdir/var/tmp/filesystem.image" ]; then
-				{
-					cat "$tmpdir/var/tmp/kernel.image"     | dd bs=256 conv=sync 2>/dev/null;
-					cat "$tmpdir/var/tmp/filesystem.image" | dd bs=256 conv=sync 2>/dev/null;
-				} > "$mtdram1"
+				for f in "$tmpdir/var/tmp/kernel.image" "$tmpdir/var/tmp/filesystem.image"; do
+					$TSUM_TOOL -r "$f" >/dev/null
+					dd if="$f" bs=256 conv=sync 2>/dev/null
+				done  > "$mtdram1"
 			fi
 		fi
 		if [ ! -s "$mtdram1" ]; then
@@ -480,6 +481,7 @@ fi
 [ $ISDUAL ]     && [ ! $LFS ]          && LFS="1"
 [ $ISUIMG ]     && [ ! $LFS ]          && LFS="1"
 [ $ISUIMG ]     && [ ! -x $UIMG_TOOL ] && echo "File $UIMG_TOOL missing. Run 'make uimg' first."       && exit 1
+[ $ISRAM ]      && [ ! -x $TSUM_TOOL ] && echo "File $TSUM_TOOL missing. Run 'make tichksum-host' first." && exit 1
 [ ! $ISRAM ]    && [ $FULLSIZE ]       && echo "Parameter '-ram' is only allowed for ram-boot mode."   && exit 1
 [ $ISFIT ]                             && echo "FIT is not supported yet!"                             && exit 1
 
