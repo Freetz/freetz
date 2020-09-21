@@ -46,7 +46,7 @@ Android PANU Client:
     pand --connect xx:xx:xx:xx:xx:xx
     sleep 7
     netcfg bnep0 dhcp
-    setprop net.dns1 8.8.8.8
+    setprop net.dns1 46.182.19.48
     ifconfig rmnet0 up # trick to make apps think there is an internet connection
     ```
 
