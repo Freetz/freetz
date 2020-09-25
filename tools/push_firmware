@@ -283,7 +283,9 @@ prepare_image() {
 	if [ $ISRAM ]; then
 		tmpdir=$(mktemp -td freetz_XXX) || { echo "Error creating temporary directory."; exit 1; }
 		mtdram1="$tmpdir/ramboot.flash"
-		if tar -C $tmpdir/ -xf $file --wildcards '*.image' >/dev/null 2>&1; then
+		if [ $INMEM ]; then
+			cp -p $file $mtdram1
+		elif tar -C $tmpdir/ -xf $file --wildcards '*.image' >/dev/null 2>&1; then
 			if [ -s "$tmpdir/var/tmp/kernel.image" -a -s "$tmpdir/var/tmp/filesystem.image" ]; then
 				for f in "$tmpdir/var/tmp/kernel.image" "$tmpdir/var/tmp/filesystem.image"; do
 					$TSUM_TOOL -r "$f" >/dev/null
@@ -464,6 +466,7 @@ done
 # img detect
 if [ -z "$ISSINGLE$ISDUAL$ISRAM$ISUIMG$ISFIT" ]; then
 	echo -e "\n * Analyzing '$file' ... "
+	M="$(hexdump -n4 "$file" 2>/dev/null | grep -i 'feed'                | wc -l)"
 	F="$(tar tf "$file" --wildcards '*/fit-image'            2>/dev/null | wc -l)"
 	U="$(tar tf "$file" --wildcards '*/firmware-update.uimg' 2>/dev/null | wc -l)"
 	N="$(tar tf "$file" --wildcards '*/kernel.image'         2>/dev/null | wc -l)"
@@ -474,6 +477,7 @@ fi
 [ "$N" == "2" -a "$S" == "0" ] && ISDUAL=true
 [ "$N" == "1" -a "$S" == "0" ] && ISSINGLE=true
 [ "$N" == "1" -a "$S" != "0" ] && ISRAM=true
+[ "$N" == "0" -a "$M" == "1" ] && ISRAM=true && INMEM=true
 [ -z "$ISSINGLE$ISDUAL$ISRAM$ISUIMG$ISFIT" ] && echo "Can not recognize image, please use '-m<s|r|d|u|f>'."  && exit 1
 # arg check
 [ ! $ISSINGLE ] && [ $ISALICE ]        && echo "Parameter '-hn' is only allowed for single-boot mode."       && exit 1
