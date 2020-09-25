@@ -1,4 +1,4 @@
-# BIND 9.11.13
+# BIND 9.11.22
 
 Mit [bind](http://isc.org/software/bind) (Berkeley
 Internet Name Daemon) kann ein DNS-Server zur IP- und Namensauflösung

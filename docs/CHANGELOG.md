@@ -191,7 +191,7 @@ Latest changes
     * apr-util 1.6.1
     * AutoFS 5.0.5/5.1.6
     * bash 3.2.57
-    * BIND 9.11.13
+    * BIND 9.11.22
     * Bip 0.8.9/0.9.0-rc4
     * bird 1.6.4
     * CCID driver 1.4.33
