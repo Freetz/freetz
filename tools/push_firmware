@@ -466,18 +466,21 @@ done
 # img detect
 if [ -z "$ISSINGLE$ISDUAL$ISRAM$ISUIMG$ISFIT" ]; then
 	echo -e "\n * Analyzing '$file' ... "
-	M="$(hexdump -n4 "$file" 2>/dev/null | grep -i 'feed'                | wc -l)"
-	F="$(tar tf "$file" --wildcards '*/fit-image'            2>/dev/null | wc -l)"
-	U="$(tar tf "$file" --wildcards '*/firmware-update.uimg' 2>/dev/null | wc -l)"
-	N="$(tar tf "$file" --wildcards '*/kernel.image'         2>/dev/null | wc -l)"
-	S="$(tar -Oxf "$file" ./var/tmp/filesystem.image         2>/dev/null | wc -c)"
+	if tar tf "$file" --wildcards '*/fit-image' &>/dev/null; then
+		ISFIT=true
+	elif tar tf "$file" --wildcards '*/firmware-update.uimg' &>/dev/null; then
+		ISUIMG=true
+	elif hexdump -n4 "$file" 2>/dev/null | grep -iq 'feed'; then
+		INMEM=true
+		ISRAM=true
+	else
+		N="$(tar tf "$file" --wildcards '*/kernel.image' 2>/dev/null | wc -l)"
+		S="$(tar -Oxf "$file" ./var/tmp/filesystem.image 2>/dev/null | wc -c)"
+		[ "$N" == "1" -a "$S" != "0" ] && ISRAM=true
+		[ "$N" == "2" -a "$S" == "0" ] && ISDUAL=true
+		[ "$N" == "1" -a "$S" == "0" ] && ISSINGLE=true
+	fi
 fi
-[ "$N" == "0" -a "$F" == "1" ] && ISFIT=true
-[ "$N" == "0" -a "$U" == "1" ] && ISUIMG=true
-[ "$N" == "2" -a "$S" == "0" ] && ISDUAL=true
-[ "$N" == "1" -a "$S" == "0" ] && ISSINGLE=true
-[ "$N" == "1" -a "$S" != "0" ] && ISRAM=true
-[ "$N" == "0" -a "$M" == "1" ] && ISRAM=true && INMEM=true
 [ -z "$ISSINGLE$ISDUAL$ISRAM$ISUIMG$ISFIT" ] && echo "Can not recognize image, please use '-m<s|r|d|u|f>'."  && exit 1
 # arg check
 [ ! $ISSINGLE ] && [ $ISALICE ]        && echo "Parameter '-hn' is only allowed for single-boot mode."       && exit 1
@@ -555,6 +558,8 @@ if [ $ISUIMG ]; then
 	OUTVAL="uimg"
 elif [ $ISDUAL ]; then
 	OUTVAL="dual"
+elif [ $INMEM ]; then
+	OUTVAL="inmemory"
 elif [ $ISRAM ]; then
 	OUTVAL="ram"
 else
