@@ -2006,6 +2006,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	fi
 
 	# Write checksum
+	if [ ! -e "$FIRMWARE_MOD_DIR/var/firmware-update.uimg" ]; then
 	for f in "$KERNEL_MOD" "$FILESYSTEM_MOD"; do
 		[ -s "$f" ] || continue
 
@@ -2013,6 +2014,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 		echo0 "adding checksum to $fbn"
 		"$TICHKSUM" -a "$f" > "${MOD_DIR}/$fbn-chksum.log" || error 1 "adding checksum to $fbn failed"
 	done
+	fi
 
 	# Consistency check
 	if [ -s "${FIRMWARE_DIR}/${KERNEL_IMAGE}" -a ! -s "${FIRMWARE_MOD_DIR}/${KERNEL_IMAGE}" ] || \
