@@ -1,0 +1,35 @@
+#!/bin/bash
+
+function errnex() {
+	echo -e "\nERROR: $1"
+	exit 1
+}
+
+function cleanup() {
+	local val=$?
+	[ -n "$tmp" -a -d "$tmp" ] && rm -rf "$tmp";
+	exit $val
+}
+trap cleanup EXIT SIGTERM SIGINT
+
+dir="$(dirname $(readlink -f $0))"
+[ ! -x "$dir/tichksum" ] && errnex "Tool tichksum missing. Run 'make tichksum-host' first."
+src="$(readlink -f ${1:-$dir/../images/latest.image} 2>/dev/null)"
+[ ! -s "$src" ] && errnex "File '$src' does not exist."
+dst="$(readlink -f ${2:-${src}.inmemory})"
+[ -e "$dst" ] && errnex "File '$dst' does yet exist."
+
+echo "Reading $src"
+tmp=$(mktemp -td inmem_XXX) || errnex "Creating temporary directory failed."
+tar -C $tmp/ -xf $src --wildcards '*.image' &>/dev/null || errnex "Unpacking '$src' failed."
+[ -s "$tmp/var/tmp/kernel.image" -a -s "$tmp/var/tmp/filesystem.image" ] || errnex "File '$src' is not valid."
+
+echo "Writing $dst"
+for f in "$tmp/var/tmp/kernel.image" "$tmp/var/tmp/filesystem.image"; do
+	$dir/tichksum -r "$f" >/dev/null
+	dd if="$f" bs=256 conv=sync 2>/dev/null
+done  > "$dst"
+[ ! -s "$dst" ] && errnex "Creating '$dst' failed."
+
+echo "Success!"
+
