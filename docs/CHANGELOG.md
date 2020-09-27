@@ -297,7 +297,7 @@ Latest changes
     * tinc 1.0.36/1.1pre17
     * tinyproxy 1.8.4
     * tmux 2.5
-    * tor 0.4.3.6
+    * tor 0.4.4.5
     * transmission 3.00
     * tree 1.8.0
     * uClibc++ 0.2.5-git
