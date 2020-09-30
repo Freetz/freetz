@@ -1,5 +1,4 @@
-Callmonitor
-===========
+# Callmonitor 1.20.9-git
 
 Der Callmonitor ermöglicht es, bei eingehenden Anrufen auf einer
 FritzBox beliebige Aktionen
@@ -15,8 +14,7 @@ Das Besondere an diesem Callmonitor (leider gibt es viele Projekte mit
 ähnlichem Namen) ist, dass er komplett auf der Fritzbox läuft; es ist
 also nicht nötig, weitere Rechner eingeschaltet zu haben.
 
-Installation
-------------
+## Installation
 
 [![[Callmonitor WebInterface]](../../docs/screenshots/6_md.png)](../../docs/screenshots/6.png)
 
@@ -26,7 +24,7 @@ realisiert, und kann bei dessen Installation einfach ausgewählt werden.
 
 Das Callmonitor-Paket kann nicht als Addon-Paket installiert werden.
 
-### Installation neuer Versionen
+##  Installation neuer Versionen
 
 Bitte beachtet: Mit Freetz 1.1 können nur Callmonitor-Version bis 1.15
 eingesetzt werden. Callmonitor 1.15.1 und höher benötigen Änderungen,
@@ -39,8 +37,7 @@ Freetz 1.2 kann man so vorgehen (im Wurzelverzeichnis von Freetz):
 svn switch http://svn.freetz.org/trunk/make/callmonitor/callmonitor.mk make/callmonitor/callmonitor.mk
 ```
 
-Weiterführende Links
---------------------
+## Weiterführende Links
 
 -   [Entwicklungsseite bei
     Sourceforge](http://sourceforge.net/projects/callmonitor/)
@@ -48,8 +45,7 @@ Weiterführende Links
     Diskussionen](http://www.ip-phone-forum.de/showthread.php?t=191723)
 
 
-Konfiguration
-=============
+## Konfiguration
 
 Die Konfiguration des Callmonitors nimmt man sinnvollerweise in mehreren
 Schritten vor, die sich auf verschiedene Seiten im Web-Interface von
@@ -59,8 +55,7 @@ Freetz verteilen:
 2.  Listeners für bestimmte Aktionen definieren
 3.  mit einem Testanruf die Konfiguration testen
 
-Basiskonfiguration
-------------------
+## Basiskonfiguration
 
 Auf der Seite Pakete-Callmonitor des Web-Interfaces lassen sich einige
 grundlegende Einstellungen vornehmen.
@@ -106,15 +101,13 @@ Ortsnetz nicht (immer) die Vorwahl mit übertragen wird. In aktuellen
 Versionen wird die Vorwahl automatisch aus den Einstellungen zur
 Internettelefonie übernommen (in der Weboberfläche von AVM).
 
-Listeners definieren
---------------------
+## Listeners definieren
 
 Als nächstes müssen sogenannte Listeners definiert werden, die dann bei
 eingehenden Anrufen die gewünschte Aktion starten. Genaueres hierzu auf
 einer speziellen Seite für die Listeners.
 
-Testanruf
----------
+## Testanruf
 
 Sind die Listeners einmal definiert, kann und sollte man sie mit einem
 Testanruf ausprobieren. Dafür kann man natürlich einen echten Anruf
@@ -122,8 +115,7 @@ machen - allerdings hat man oft nicht die Möglichkeit, spezielle Regeln
 zu testen. Daher gibt es die Möglichkeit, einen Testanruf über das
 Web-Interface zu generieren.
 
-Fehlersuche
------------
+## Fehlersuche
 
 Die Ausgaben des Testanrufs und ggf. die Debug-Meldungen (siehe oben, um
 das log zu sehen vorher in freetz-konfig diese option aktivieren um sie
@@ -140,8 +132,7 @@ Diskussionen](http://www.ip-phone-forum.de/showthread.php?t=100706)
 Unterstützung bekommen.
 
 
-Regeln (Listeners)
-==================
+## Regeln (Listeners)
 
 Die Listeners-Datei enthält eine Liste von Regeln, die festlegen, welche
 Aktionen unter welchen Bedingungen ausgeführt werden sollen.
@@ -191,8 +182,7 @@ nötig, da über die Listeners beliebiger Code ausgeführt werden kann.
 
 [![[Callmonitor: Listener Konfiguration]](../../docs/screenshots/20_md.png)](../../docs/screenshots/20.png)
 
-Format
-------
+## Format
 
 Seit Version 1.0 des Callmonitors gilt folgendes Format für die
 Listeners, mit dem auf bis zu acht verschiedene Ereignisse
@@ -245,8 +235,7 @@ Dabei ist jedoch zu beachten, dass in Spalte 2 bzw. 3 die MSNs, also die
 Internet-Rufnummern, anzugeben sind und nicht wie früher bspw. *SIP0*
 oder *SIP1*.
 
-Ereignis-Informationen für Aktionen
------------------------------------
+## Ereignis-Informationen für Aktionen
 
 Den Aktionen stehen Informationen über den auslösenden Anruf in
 Umgebungsvariablen bereit. Sie werden in Shell-Scripten mit einem $
@@ -294,8 +283,7 @@ vorher ist die Zuordnung ja nicht klar):
   -------- ------------------
 ```
 
-Formatierung der Ausgaben
--------------------------
+## Formatierung der Ausgaben
 
 Zur Formatierung der Ausgaben stehen folgende Funktionen bereit:
 
@@ -330,8 +318,7 @@ Zeilenumbruch enthält (line feed):
     dboxmessage foo.bar "Zeile 1${LF}Zeile 2"
 ```
 
-Muster für Ereignisse
----------------------
+## Muster für Ereignisse
 
 Es gibt mehrere Möglichkeiten, in den Listeners die Ereignisse
 anzugeben, bei der eine Regel auslösen soll:
@@ -367,8 +354,7 @@ anzugeben, bei der eine Regel auslösen soll:
     in:req,out:*
     ```
 
-Beispiele:
-----------
+## Beispiele:
 
 Verpasster Anruf (in:cancel) mailmessage an mehrere Email Adressen
 versenden:
@@ -396,8 +382,7 @@ Benachrichtigung per Email bei Faxempfang:
 in:disconnect ^ 0401234567$ mailmessage -s "Faxeingang von $SOURCE"
 ```
 
-Ereignisse
-==========
+## Ereignisse
 
 Ein erfolgreicher eingehender Anruf erzeugt nacheinander folgende
 Ereignisse (analog für ausgehende Anrufe mit `out:*`):
@@ -421,8 +406,7 @@ Ausgangsereignisse; das Ereignis `in:accept` wird nur intern benutzt):
 [![[CallMonitor: Ereignisse]](../../docs/screenshots/36_md.png)](../../docs/screenshots/36.png)
 
 
-Aktionen
-========
+## Aktionen
 
 Aktionen werden anhand von Regeln ausgeführt, die in den sogenannten
 Listeners definiert sind. Dabei kann beliebiger
@@ -454,8 +438,7 @@ Hintergrundinfos zur Datei `maillog.cfg` und dem checkmaild Paket kann
 man auch hier im Wiki unter [checkmaild](../checkmaild/README.mk)
 nachlesen.
 
-Benachrichtigen
----------------
+## Benachrichtigen
 
 Benachrichtigungen sind dafür da, eingehende und/oder verpasste Anrufe
 über verschiedene Kommunikationswege und auf verschiedenen Geräten zu
@@ -488,8 +471,7 @@ Benachrichtung auf ganz anderem Wege:
     SOAP-Nachricht
 -   Snarl: Benachrichtigung für Snarl
 
-Wählen, Wecken, Konfigurieren
------------------------------
+## Wählen, Wecken, Konfigurieren
 
 -   Wählhilfe: Ansprechen der Wählhilfe der
     FritzBox
@@ -497,8 +479,7 @@ Wählen, Wecken, Konfigurieren
 -   Fritz!Box-Konfiguration: WLAN, SIP,
     Portforwarding ein- und ausschalten
 
-Eigene Aktionen
----------------
+## Eigene Aktionen
 
 Mit den beiden Basisfunktionen *getmsg* und *rawmsg* können auf den
 Zielmaschinen nahezu beliebige Funktionen ausgeführt werden --- sofern
@@ -514,15 +495,13 @@ Auch andere, selbst-definierte Aktionen sind möglich:
 
 -   Selbst-definierte Aktionen
 
-Third-Party Software
---------------------
+## Third-Party Software
 
 CallMon2: auf Windows und Linux laufendes Perl-Skript,
 [http://zephyrsoftware.sf.net/](http://zephyrsoftware.sourceforge.net/?q=fritzbox/callmon2)
 (dort genaue Informationen zum Einrichten des ganzen!)
 
-Telefonbuch (Callers)
-=====================
+## Telefonbuch (Callers)
 
 Format:
 
@@ -551,8 +530,7 @@ können auch von Hand Nummer-Name-Paare eingetragen oder geändert werden
 [![[Callmonitor Callers]](../../docs/screenshots/216_md.png)](../../docs/screenshots/216.png)
 
 
-HTTP-Requests (getmsg)
-======================
+## HTTP-Requests (getmsg)
 
 Die Funktion `getmsg` sendet eine Benachrichtigung, indem sie diese per
 HTTP GET an einen Webserver schickt. Es ist möglich, die URL (nur Pfad +
@@ -563,8 +541,7 @@ URL, an der die Nachricht eingesetzt werden soll, mit `%s` markiert
 wird. `getmsg` sorgt selbst für die richtige Kodierung der Nachrichten
 (URL Encoding).
 
-Syntax:
--------
+## Syntax:
 
 ```
   Usage:  getmsg [OPTION]... <HOST> <url-template> [<message>]...
@@ -588,8 +565,7 @@ dieselben Optionen. Passend für den entsprechenden Empfänger sind
 URL-Template (`-t`), die Standard-Nachricht (`-d`) und der Port (`-p`)
 schon vorbelegt.
 
-Beispiel:
----------
+## Beispiel:
 
 ```
 *:* ^ ^ getmsg 192.168.0.111 -p 222 -t "/home/phone?event=%s&id=%s&time=%s&source=%s&source_name=%s&destination=%s&destination_name=%s&extension=%s&duration=%s&provider=%s" "${EVENT}" "${ID}" "${TIMESTAMP}" "${SOURCE}" "${SOURCE_NAME}" "${DEST}" "${DEST_NAME}" "${EXT}" "${DURATION}" "${PROVIDER}"
@@ -600,11 +576,9 @@ Das obere Beispiel bewirkt einen GET-Aufruf an
 mit allen relevanten Daten im Query-String.
 
 
-DBox2
-=====
+## DBox2
 
-DBox2 mit Neutrino Image
-------------------------
+## DBox2 mit Neutrino Image
 
 ```
   dboxmessage (default_dboxmessage)
@@ -624,8 +598,7 @@ als gemeinsame Grundlage.
 
 Stellt eine Nachricht auf dem LCD der DBox dar.
 
-DBox2 mit Enigma Image
-----------------------
+## DBox2 mit Enigma Image
 
 Wenn ihr ein Enigma Image auf eurer Box habt und im Popup vor dem
 eigentlichen Text ein "popup=" oder "nmsg=" erscheint, so könnt ihr
@@ -636,8 +609,7 @@ wie bei der Dreambox folgenden Befehl nutzen:
 ```
 
 
-Wählhilfe
-=========
+## Wählhilfe
 
 Die aus dem Webinterface von AVM bekannte Wählhilfe steht hier als
 Funktion zur Verfügung (seit Callmonitor 1.1).
@@ -659,8 +631,7 @@ hangup [PORT]
 ```
 
 
-Selbstdefinierte Aktionen
-=========================
+## Selbstdefinierte Aktionen
 
 Eigene Aktionen können als Shell-Funktionen in einer oder mehreren
 Dateien `/tmp/flash/callmonitor/actions.local.d/*.sh` abgelegt werden.
@@ -669,8 +640,7 @@ Dateien `/tmp/flash/callmonitor/actions.local.d/*.sh` abgelegt werden.
 
 Natürlich können auch beliebige externe Programme aufgerufen werden.
 
-Benutzernamen und Passwörter
-============================
+## Benutzernamen und Passwörter
 
 Alle Aktionen, die auf `getmsg` basieren, verstehen folgende Optionen,
 mit denen man Benutzername und Passwort für das Webinterface der Zielbox
@@ -690,8 +660,7 @@ Hostnamen angegeben werden:
   USERNAME:PASSWORD@HOST:PORT
 ```
 
-Beispiel
---------
+## Beispiel
 
 Also zum Beispiel:
 
@@ -719,8 +688,7 @@ Oder falls die D-Box auf einem anderen als dem Standardport lauscht:
 ```
 
 
-Freecom MusicPal
-================
+## Freecom MusicPal
 
 Version 1.15.1 enthält die neue Aktion **musicalpalmessage**, mit der
 man Nachrichten auf dem Display eines MusicPals von Freecom darstellen
@@ -750,8 +718,7 @@ Zum Anpassen der Standardnachricht kann die Shell-Funktion
 `default_musicpalmessage` überschrieben werden.
 
 
-Roku SoundBridge
-================
+## Roku SoundBridge
 
 Die [Roku
 SoundBridge](http://www.rokulabs.com/products_soundbridge.php)
@@ -784,8 +751,7 @@ Umgebungsvariable SB_TIMEOUT kann die Dauer der Anzeige bestimmt
 werden.
 
 
-VDR
-===
+## VDR
 
 VDR: Video Disk Recorder,
 [http://www.cadsoft.de/vdr/](http://www.cadsoft.de/vdr/)
@@ -795,8 +761,7 @@ VDR: Video Disk Recorder,
   (default_vdr)
 ```
 
-Benachrichtigung auf einem Samsung TV
-=====================================
+## Benachrichtigung auf einem Samsung TV
 
 Die Funktion `samsung` verschickt eine Benachrichtigung über einen
 Telefonanruf mit Hilfe der SOAP-Methode an ein Samsung TV:
@@ -847,8 +812,7 @@ Uhrzeit angezeigt. D.h. die Nachricht wird mit derselben Methode (SOAP)
 wie bei der Benachrichtigung über einen Telefonanruf verschickt, zzgl.
 der o.g. Daten.
 
-Snarl
-=====
+## Snarl
 
 [Snarl](http://www.fullphat.net/index.php) ist
 ähnlich wie Growl, welches einigen vielleicht bekannt ist, ist ein
@@ -875,8 +839,7 @@ echo -n "type=SNP#?version=1.0#?action=notification#?title=Anruf#?text=${SOURCE}
 [Thread](http://www.ip-phone-forum.de/showthread.php?t=216938)
 gezeigt, wie es geht. Danke!)
 
-Listener-Eintrag:
------------------
+## Listener-Eintrag:
 
 Der Listener-Eintrag im Callmonitor kann dazu z.B. so aussehen:
 
@@ -884,8 +847,7 @@ Der Listener-Eintrag im Callmonitor kann dazu z.B. so aussehen:
 in:request ^ ^ echo -n "type=SNP#?version=1.0#?action=notification#?title=eingehender Anruf#?text=von ${SOURCE} - ($SOURCE_NAME)${LF}für ${DEST_NAME} - (${DEST_DISP})${LF}#?timeout=20#?icon=C:\pic.png"$'\r\n' | nc 192.168.178.20 9887
 ```
 
-Screenshots:
-------------
+## Screenshots:
 
 So könnte eine Benachrichtung von Snarl dann aussehen. Die Angaben
 betreffend Anrufer, Rufnummer, Ereignis etc., lassen sich ja mittels des
@@ -902,8 +864,7 @@ Callmonitor entsprechend anpassen bzw. erweitern.
 > funktionieren nicht mit dem SNP von Snarl.
 
 
-XBox
-====
+## XBox
 
 Für diese Funktion muss das [XBox Media Center
 (XBMC)](http://www.xboxmediacenter.com) laufen und dort unter
@@ -920,8 +881,7 @@ Die XBox erlaubt mit `xboxmessage` keine Kommas in den Nachrichten. Der
 Titel der Nachricht kann über die Umgebungsvariable
 `XBOX_CAPTION="Telefonanruf"` beeinflusst werden.
 
-Anpassungen auf der XBox
-------------------------
+## Anpassungen auf der XBox
 
 Anzeigedauer und Größe des Fensters können in der Datei
 `DialogKaiToast.xml` angepasst werden. Je nach gewähltem TV-Typ ist die
@@ -967,8 +927,7 @@ jeweilige Datei unter `skin\Project Mayhem III\PAL\` oder
 ...
 ```
 
-Weitere Möglichkeiten
----------------------
+## Weitere Möglichkeiten
 
 Es gibt außerdem einen
 [Python-Script](http://ca.geocities.com/farside@rogers.com/Scripts/callerid.html),
@@ -980,8 +939,7 @@ enthalten, das zusätzlich die Anruferliste der FritzBox auf der XBox
 darstellen kann.
 
 
-YAC
-===
+## YAC
 
 YAC: Yet Another Caller ID Program,
 [http://sunflowerhead.com/software/yac/](http://sunflowerhead.com/software/yac/)
@@ -994,8 +952,7 @@ Syntax:
 ```
 
 
-Allgemeine Hinweise zu Funktionsaufrufen
-========================================
+## Allgemeine Hinweise zu Funktionsaufrufen
 
 Der Aufruf von Funktionen, die auf getmsg oder rawmsg basieren,
 sieht immer so aus:
@@ -1029,15 +986,13 @@ automatisch für die Kodierung der Umgebungsvariablen, die Text enthalten
 schreiben, ohne sich Gedanken über Kodierungen (URL- oder printf-)
 machen zu müssen.
 
-FritzBox-Konfiguration
-======================
+## FritzBox-Konfiguration
 
 Mit der Aktion `config` aus der `config.sh` (seit Callmonitor 1.8)
 lassen sich einige Funktionen in der Konfiguration der FritzBox
 umstellen.
 
-Portforwarding
---------------
+## Portforwarding
 
 Das Portforwarding kann aktiviert und deaktiviert werden.
 
@@ -1059,8 +1014,7 @@ Beispiele:
     config forward 5 toggle # 5. Portforwarding an-/abschalten
 ```
 
-WLAN
-----
+## WLAN
 
 Das WLAN kann aktiviert und deaktiviert werden.
 
@@ -1085,8 +1039,7 @@ Beispiele:
     config wlan 5 on     # 5-GHz-WLAN an
 ```
 
-DECT
-----
+## DECT
 
 DECT kann aktiviert und deaktiviert werden.
 
@@ -1104,8 +1057,7 @@ Beispiele:
     config dect on       # DECT an
 ```
 
-SIP
----
+## SIP
 
 Die SIP-Accounts können aktiviert und deaktiviert werden.
 
@@ -1124,8 +1076,7 @@ Beispiele:
     config sip 2 off     # 2. SIP-Account deaktivieren
 ```
 
-Rufumleitung
-------------
+## Rufumleitung
 
 (De-)Aktivierung der Rufumleitungen. (Seit Version 1.8.2) Unterstützt
 werden momentan nur Rufumleitungen des Typs "Anrufe von Rufnummer xy",
@@ -1139,8 +1090,7 @@ Syntax
     on|off                 an- bzw. abschalten der Rufumleitung
 ```
 
-Abfragen von Konfigurationswerten
----------------------------------
+## Abfragen von Konfigurationswerten
 
 (seit Version 1.9.1)
 
@@ -1156,8 +1106,7 @@ Einfach beim config-Aufruf den Wert weglassen:
 Ausgabe ist einer der Werte "on", "off" oder "error" (wenn z.B.
 die Wahlregel nicht existiert).
 
-Alternative
-===========
+## Alternative
 
 In neueren Firmware-Versionen ist der Callmonitor nicht unbedingt
 erforderlich, um die Funktionen anzuzeigen oder zu ändern. Alternativ
@@ -1166,11 +1115,9 @@ lassen sich diese mit dem
 von AVM bearbeiten.
 
 
-DreamBox
-========
+## DreamBox
 
-Dreambox mit Enigma 1
----------------------
+## Dreambox mit Enigma 1
 
 ```
   dreammessage [user[:password]@]host[:port] ["Alternative Nachricht"]
@@ -1199,7 +1146,7 @@ ihren Standardwerten gezeigt:
   DREAM_TIMEOUT=10 DREAM_CAPTION="Telefonanruf" DREAM_ICON=1 dreammessage box1
 ```
 
-### StandBy Check
+##  StandBy Check
 
 Befindet sich die zu benachrichtigende Dreambox im StandBy, werden die
 Nachrichten solange zwischengespeichert, bis sie wieder aus selbigem
@@ -1240,8 +1187,7 @@ eingebaut werden muss.
 *Quelle: [IPPF
 Thread](http://www.ip-phone-forum.de/showthread.php?t=100706&page=55)*
 
-DreamBox mit Enigma 2
----------------------
+## DreamBox mit Enigma 2
 
 ```
   dream2message (default_dream2message)
@@ -1257,8 +1203,7 @@ in:request ^ ^ dream2message 192.168.178.25 "${SOURCE_NAME} ${SOURCE} ruft an."
 ```
 
 
-E-Mail-Benachrichtigung
-=======================
+## E-Mail-Benachrichtigung
 
 Die Funktion `mailmessage` verschickt eine E-Mail mit Hilfe der Daten,
 die für den Push-Service eingerichtet sind (falls man nicht beim Aufruf
@@ -1296,8 +1241,7 @@ mailmessage -s "Oh, oh ... ($SOURCE)"
     `/tmp/flash/callmonitor/actions.local.d/` verwenden, siehe Anpassen
     der Benachrichtigungstexte).
 
-mail
-----
+## mail
 
 `mail` ist ein Skript, um Mails bei Mailserverfehlern
 zwischenzuspeichern und erneut zu schicken (alle Parameter und
@@ -1310,8 +1254,7 @@ Attachments werden gepackt in `/var/spool/mail/` abgelegt).
     auch andere Dienste es brauchen könnten; vielleicht wird in Zukunft
     mal ein eigenes Paket daraus.
 
-Ersatz für mail_missed_call
------------------------------
+## Ersatz für mail_missed_call
 
 Die Funktion `mail_missed_call` existiert seit Version 1.0 nicht mehr.
 An ihre Stelle tritt eine allgemeine Benachrichtigungsfunktion per
@@ -1333,8 +1276,7 @@ Anrufe informieren lassen, oder über alle ausgehenden an eine bestimmte
 Nummer oder oder oder ...
 
 
-DGStation Relook 400S
-=====================
+## DGStation Relook 400S
 
 Die [DGStation Relook
 400S](http://www.dgstation.co.kr) unterstützt nur die Anzeige
@@ -1352,8 +1294,7 @@ Beispiel für Benutzung mit veränderter Anzeigedauer (25 Sekunden):
 ```
 
 
-Einfache TCP-Verbindungen (rawmsg)
-==================================
+## Einfache TCP-Verbindungen (rawmsg)
 
 ```
   Usage: rawmsg [OPTION]... <HOST> <template> [<param>]...
@@ -1374,8 +1315,7 @@ URL-Template (`-t`), die Standard-Nachricht (`-d`) und der Port (`-p`)
 schon vorbelegt.
 
 
-Wake on LAN
-===========
+## Wake on LAN
 
 Zum Aufwecken eines Rechners im LAN --- sofern der Rechner dies generell
 unterstützt --- dient das in Freetz
@@ -1396,8 +1336,7 @@ Options:
 ```
 
 
-Wartung
-=======
+## Wartung
 
 Die Wartungsseite im Web-Interface ermöglicht folgendes:
 
@@ -1415,8 +1354,7 @@ Wartung*.
 [![[Callmonitor: Wartung]](../../docs/screenshots/24_md.png)](../../docs/screenshots/24.png)
 
 
-Rückwärtssuche
-==============
+## Rückwärtssuche
 
 Die Rückwärtssuche wird in der Basiskonfiguration
 des Callmonitors eingestellt. Sie wird bei einem der folgenden Dienste
@@ -1443,8 +1381,7 @@ verwendet, wenn die volle Rückwärtssuche kein Ergebnis liefert.
 [![[Callmonitor: Rückwärtssuche]](../../docs/screenshots/23_md.png)](../../docs/screenshots/23.png)
 
 
-Testanruf
-=========
+## Testanruf
 
 Nachdem die Listeners definiert sind, empfiehlt
 es sich, sie auf korrekte Funktion zu testen. Da man nicht immer jede
@@ -1468,17 +1405,15 @@ Debug-Informationen des Callmonitors angezeigt, die bei einer
 eventuellen Fehlersuche helfen.
 
 
-Callmonitor-FAQ
-===============
+## Callmonitor-FAQ
 
-#### Kann ich das Ergebnis der Rückwärtssuche auch auf meinem DECT-Telefon sehen?
+- Kann ich das Ergebnis der Rückwärtssuche auch auf meinem DECT-Telefon sehen?
 
 Nein. Es gibt momentan keine bekannte Möglichkeit, in die
 Anrufsignalisierung über DECT einzugreifen.
 
 
-Anpassen der Benachrichtigungstexte
-===================================
+## Anpassen der Benachrichtigungstexte
 
 Um den Inhalt einer Benachrichtigung an die eigenenen Bedürfnisse
 anpassen, gibt es folgenden Weg:
