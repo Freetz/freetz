@@ -404,7 +404,7 @@ oldconfig olddefconfig allnoconfig allyesconfig randconfig: config-cache $(CONFI
 	@$(CONFIG)/conf --$@ $(CONFIG_IN_CACHE) && touch .config
 
 reuseconfig: .config
-	@tools/saveconfig
+	@tools/reuseconfig
 
 config-cache: $(CONFIG_IN_CACHE)
 
