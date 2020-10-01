@@ -9,6 +9,7 @@ menuconfig-nocache                      Configuration without caching of .in fil
 menuconfig-single                       Alternative configuration
 oldconfig                               Updates existing .config file interactive
 olddefconfig                            Updates existing .config file automatically
+reuseconfig                             Removes device and toolchain related settings from .config file
 
 config-clean-deps                       Deselects everything not mandatory
 config-clean-deps-keep-busybox          Deselects all except BusyBox applets
