@@ -471,6 +471,7 @@ config FREETZ_STDCXXLIB
 
 config FREETZ_TARGET_CFLAGS
 	string "Target compiler flags"
+	default "-Ofast -pipe" if FREETZ_AVM_VERSION_07_2X_MIN
 	default "-Os -pipe"
 
 config FREETZ_RPATH
