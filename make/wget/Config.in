@@ -46,3 +46,8 @@ config FREETZ_PACKAGE_WGET_STATIC
 		- libcrypto
 		- libssl
 		- libgnutls
+
+config FREETZ_WGET
+	bool
+	select FREETZ_BUSYBOX_WGET if !FREETZ_PACKAGE_WGET || FREETZ_WGET_ALWAYS_AVAILABLE
+

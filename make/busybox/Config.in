@@ -50,10 +50,6 @@ config FREETZ_BUSYBOX__RECOMMENDED
 		USB, NFS oder HTTP source. Obviously the firmware on your box must
 		contain the necessary features to access that busybox.
 
-config FREETZ_WGET
-	bool
-	select FREETZ_BUSYBOX_WGET if !FREETZ_PACKAGE_WGET || FREETZ_WGET_ALWAYS_AVAILABLE
-
 config FREETZ_BUSYBOX__MANDATORY
 	bool # mandatory
 	select FREETZ_BUSYBOX__MANDATORY_05_2X if FREETZ_AVM_VERSION_05_2X_MIN
