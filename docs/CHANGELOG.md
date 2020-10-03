@@ -206,7 +206,7 @@ Latest changes
     * dropbear 2020.80
     * e2fsprogs 1.42.13
     * espeak 1.48.04
-    * expat 2.2.9
+    * expat 2.2.10
     * ffmpeg 1.2.12
     * freetype 2.10.1
     * fuse 2.9.7
