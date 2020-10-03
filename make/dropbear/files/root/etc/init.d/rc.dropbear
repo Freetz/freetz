@@ -22,7 +22,7 @@ pre_config() {
 	if [ ! -d "/mod/etc/ssh" ]; then
 		mkdir -p /mod/etc/ssh
 		for alg in rsa dss ecdsa ed25519; do
-			ln -sf /tmp/flash/dropbear/${alg}_host_key /mod/etc/ssh/${alg}_host_key
+			ln -sf /tmp/flash/dropbear/${alg}_host_key /mod/etc/ssh/${alg}_host_key.dropbear
 		done
 	fi
 
