@@ -470,7 +470,7 @@ if [ -z "$ISSINGLE$ISDUAL$ISRAM$ISUIMG$ISFIT" ]; then
 		ISFIT=true
 	elif tar tf "$file" --wildcards '*/firmware-update.uimg' &>/dev/null; then
 		ISUIMG=true
-	elif hexdump -n4 "$file" 2>/dev/null | grep -iq 'feed'; then
+	elif dd if="$file" bs=1 skip=2 count=2 2>/dev/null | base64 | grep -q '^7f4=$'; then
 		INMEM=true
 		ISRAM=true
 	else
