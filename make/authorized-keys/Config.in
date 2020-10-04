@@ -1,9 +1,9 @@
-comment "authorized_keys (needs Dropbear or OpenSSHd)"
-	depends on !(FREETZ_PACKAGE_DROPBEAR || FREETZ_PACKAGE_OPENSSH_sshd)
+comment "authorized_keys (needs Dropbear or OpenSSH)"
+	depends on !(FREETZ_PACKAGE_DROPBEAR || FREETZ_PACKAGE_OPENSSH)
 
 config FREETZ_PACKAGE_AUTHORIZED_KEYS
 	bool "authorized_keys: Frontend for SSH keys"
-	depends on FREETZ_PACKAGE_DROPBEAR || FREETZ_PACKAGE_OPENSSH_sshd
+	depends on FREETZ_PACKAGE_DROPBEAR || FREETZ_PACKAGE_OPENSSH
 	default n
 	help
 		This frontend allows the management of the authorized_keys file
