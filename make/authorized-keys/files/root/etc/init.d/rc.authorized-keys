@@ -3,7 +3,7 @@
 
 case $1 in
 	""|load)
-		for ak_file in authorized_keys known_hosts id_dsa id_rsa id_ed25519; do
+		for ak_file in authorized_keys known_hosts; do
 			modreg file authorized-keys $ak_file "$ak_file" 0 $ak_file
 		done
 		modreg daemon --hide authorized-keys
