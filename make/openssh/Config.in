@@ -52,11 +52,12 @@ config FREETZ_PACKAGE_OPENSSH_CLIENTUTILS
 	select FREETZ_PACKAGE_OPENSSH_ssh_add
 	select FREETZ_PACKAGE_OPENSSH_ssh_agent
 	default n
-
+if FREETZ_PACKAGE_OPENSSH_CLIENTUTILS
 config FREETZ_PACKAGE_OPENSSH_ssh_add
 	bool
 config FREETZ_PACKAGE_OPENSSH_ssh_agent
 	bool
+endif # FREETZ_PACKAGE_OPENSSH_CLIENTUTILS
 
 config FREETZ_PACKAGE_OPENSSH_KEYUTILS
 	bool "Key utilities (ssh-keygen, ssh-keysign, ssh-keyscan)"
@@ -64,13 +65,14 @@ config FREETZ_PACKAGE_OPENSSH_KEYUTILS
 	select FREETZ_PACKAGE_OPENSSH_ssh_keysign
 	select FREETZ_PACKAGE_OPENSSH_ssh_keyscan
 	default n
-
+if FREETZ_PACKAGE_OPENSSH_KEYUTILS
 config FREETZ_PACKAGE_OPENSSH_ssh_keygen
 	bool
 config FREETZ_PACKAGE_OPENSSH_ssh_keysign
 	bool
 config FREETZ_PACKAGE_OPENSSH_ssh_keyscan
 	bool
+endif # FREETZ_PACKAGE_OPENSSH_KEYUTILS
 
 config FREETZ_PACKAGE_OPENSSH_sftp
 	bool "SFTP client (sftp)"
