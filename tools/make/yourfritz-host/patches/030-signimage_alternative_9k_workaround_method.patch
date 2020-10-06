@@ -1,6 +1,6 @@
 --- signimage/sign_image
 +++ signimage/sign_image
-@@ -380,10 +380,17 @@
+@@ -381,10 +381,17 @@
  # needed                                                                           #
  #                                                                                  #
  ####################################################################################
@@ -15,10 +15,10 @@
  	"$YF_SIGNIMAGE_DD" if="$image_file" of="$tmp/filler.bin" bs=512 count=1 status=none 2>/dev/null
  	show_ok
 +  fi
- else
- 	touch "$tmp/filler.bin"
- fi
-@@ -395,6 +402,7 @@
+ elif [ $(( copy_blocks % 8 )) -eq 5 ] || [ $(( copy_blocks % 8 )) -eq 6 ]; then
+ 	# Our signature would nearly fill the last 4K block and another error would get triggered
+ 	# (a tar file without proper EoA blocks is used by AVM, if in last 4K block only 1 or 0
+@@ -405,6 +412,7 @@
  #                                                                                  #
  ####################################################################################
  "$YF_SIGNIMAGE_DD" if=/dev/zero of="$tmp/1K.bin" bs=512 count=2 status=none 2>/dev/null
@@ -26,7 +26,7 @@
  ####################################################################################
  #                                                                                  #
  # generate the signature file                                                      #
-@@ -406,7 +414,7 @@
+@@ -416,7 +424,7 @@
  #                                                                                  #
  ##################################A#################################################
  echo -en "Signing the image hash (\x1B[1m$hash_algo\x1B[0m) with RSA key from \x1B[1m${name_prefix}.${private_extension}\x1B[0m ... " 1>&2

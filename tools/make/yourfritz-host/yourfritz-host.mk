@@ -1,4 +1,4 @@
-YOURFRITZ_HOST_VERSION:=2958e4ab9d
+YOURFRITZ_HOST_VERSION:=078e386439
 YOURFRITZ_HOST_SOURCE:=yourfritz-$(YOURFRITZ_HOST_VERSION).tar.xz
 YOURFRITZ_HOST_SITE:=git_no_submodules@https://github.com/PeterPawn/YourFritz.git
 
@@ -6,6 +6,9 @@ YOURFRITZ_HOST_BASH_AS_SHEBANG += signimage/avm_pubkey_to_pkcs8
 YOURFRITZ_HOST_BASH_AS_SHEBANG += signimage/check_signed_image
 YOURFRITZ_HOST_BASH_AS_SHEBANG += signimage/generate_signing_key
 YOURFRITZ_HOST_BASH_AS_SHEBANG += signimage/sign_image
+
+YOURFRITZ_HOST_BASH_AS_SHEBANG += bootmanager/add_change_oem.sh
+YOURFRITZ_HOST_BASH_AS_SHEBANG += bootmanager/add_to_system_reboot.sh
 
 YOURFRITZ_HOST_BASH_AS_SHEBANG += eva_tools/eva_discover
 YOURFRITZ_HOST_BASH_AS_SHEBANG += eva_tools/eva_get_environment
