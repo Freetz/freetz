@@ -1465,6 +1465,17 @@ config FREETZ_PATCH_MODFS_ANNEX_SELECTION
 	help
 		Unhides Annex selection in Fritz!OS web interface.
 
+config FREETZ_PATCH_MODFS_MULTIPAGE_FAX
+	bool "Add support for sending multi-page faxes"
+	depends on FREETZ_AVM_HAS_PHONE
+	depends on FREETZ_AVM_VERSION_06_2X_MIN
+	default n
+	help
+		Adds support for sending multi-page faxes via FRITZ!OS web interface.
+		Based on
+		 https://stadler-its.de/blog/stadler-its-blog-1/post/mehrseitige-fritz-box-faxe-12
+		 https://github.com/PeterPawn/modfs/blob/master/contrib/modscripts/mod_multiple_fax_pages
+
 comment "Misc patches ---------------------------"
 
 config FREETZ_PATCH_W920V_LED_MODULE
