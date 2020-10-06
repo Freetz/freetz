@@ -1,7 +1,7 @@
 # Addons der "Digitalen Elite" werden hier nicht supported!
 
 Diese Addons wurden augenscheinlich von Personen programmiert die wenig bis gar keine Ahnung von Freetz haben.<br>
-Deshalb sind die dadurch verursachten Fehler vielfältig. Es ist sogar mölglich dass die Freetz-Konfiguration<br>
+Deshalb sind die dadurch verursachten Fehler vielfältig. Es ist sogar möglich dass die Freetz-Konfiguration<br>
 so nachhaltig beschädigt wird, dass selbst mit einem später geflashten Image ohne Addons die Fritzbox nicht<br>
 mehr richtig funktioniert. Ein Blick in die Foren zeigt:
  - Das Freetz-Webinterface funktioniert überhaupt nicht mehr
