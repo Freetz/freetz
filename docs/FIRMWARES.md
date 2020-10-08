@@ -70,6 +70,7 @@ Currently supported devices and firmwares
   - 121.06.55 rev38670 {GER}
   - 121.06.30 rev31156 {INT}
   - 121.06.52 rev33299 {INT}
+  - Alien 3490 (No wlan!)
 
 * __Fritz!Box WLAN 3490__
   - 140.06.31 rev31064 {GER}
