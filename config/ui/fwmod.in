@@ -51,6 +51,11 @@ menu "Firmware packaging (fwmod) options"
 		depends on ! FREETZ_FWMOD_SKIP_PACK
 		default n
 
+	config FREETZ_FWMOD_SIGN_KEY_FILES_PREFIX
+		depends on FREETZ_FWMOD_SIGN
+		string "Location of the key files used for signing"
+		default "${HOME}/.freetz.image_signing"
+
 	config FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD
 		string "Password of the private key to be used for signing"
 		depends on FREETZ_FWMOD_SIGN

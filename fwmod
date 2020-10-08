@@ -1524,11 +1524,11 @@ fi
 
 
 if [ "$DO_SIGN" -gt 0 ]; then
-	FREETZ_IMAGE_SIGNING_PREFIX="${HOME}/.freetz.image_signing"
+	[ -z ${FREETZ_FWMOD_SIGN_KEY_FILES_PREFIX} ] && error 1 "variable FREETZ_FWMOD_SIGN_KEY_FILES_PREFIX must not be empty"
 	function getNumberOfImageSigningFiles() {
 		local ret=0
 		for i in asc key pem; do
-			[ -e "${FREETZ_IMAGE_SIGNING_PREFIX}.$i" ] && ret=$((ret+1))
+			[ -e "${FREETZ_FWMOD_SIGN_KEY_FILES_PREFIX}.$i" ] && ret=$((ret+1))
 		done
 		echo $ret
 	}
@@ -1538,8 +1538,10 @@ if [ "$DO_SIGN" -gt 0 ]; then
 		echo0 "No image signing files found, generating them ..."
 		if [ -z "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" ]; then
 			# be verbose if no private key password provided
+			name_prefix="${FREETZ_FWMOD_SIGN_KEY_FILES_PREFIX}" \
 			"${TOOLS_DIR}/yf/signimage/generate_signing_key" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}"
 		else
+			name_prefix="${FREETZ_FWMOD_SIGN_KEY_FILES_PREFIX}" \
 			"${TOOLS_DIR}/yf/signimage/generate_signing_key" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" 2>"${MOD_DIR}/generate_signing_key.log"
 		fi
 		if [ $? -ne 0 ]; then
@@ -1553,8 +1555,8 @@ if [ "$DO_SIGN" -gt 0 ]; then
 		error 1 "Unexpected/wrong number of image signing files"
 	fi
 
-	echo0 "Copying ${FREETZ_IMAGE_SIGNING_PREFIX}.asc to /etc/avm_firmware_public_key9"
-	cp -a "${FREETZ_IMAGE_SIGNING_PREFIX}.asc" "${FILESYSTEM_MOD_DIR}/etc/avm_firmware_public_key9"
+	echo0 "Copying ${FREETZ_FWMOD_SIGN_KEY_FILES_PREFIX}.asc to /etc/avm_firmware_public_key9"
+	cp -a "${FREETZ_FWMOD_SIGN_KEY_FILES_PREFIX}.asc" "${FILESYSTEM_MOD_DIR}/etc/avm_firmware_public_key9"
 fi
 
 # ------------------------------------------------------------------
@@ -1759,10 +1761,12 @@ if [ "$DO_PACK" -gt 0 ]; then
 			# be verbose if no private key password provided
 			YF_SIGNIMAGE_TAR="${TAR_FOR_IMAGE_TARBALL}" \
 			YF_SIGNIMAGE_9K_WORKAROUND_METHOD="${FREETZ_SIGNIMAGE_9K_WORKAROUND_METHOD}" \
-			"${TOOLS_DIR}/yf/signimage/sign_image" "${img_name}.unsigned" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}"                                                > "${img_name}.signed"
+			name_prefix="${FREETZ_FWMOD_SIGN_KEY_FILES_PREFIX}" \
+			"${TOOLS_DIR}/yf/signimage/sign_image" "${img_name}.unsigned" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}"                               > "${img_name}.signed"
 		else
 			YF_SIGNIMAGE_TAR="${TAR_FOR_IMAGE_TARBALL}" \
 			YF_SIGNIMAGE_9K_WORKAROUND_METHOD="${FREETZ_SIGNIMAGE_9K_WORKAROUND_METHOD}" \
+			name_prefix="${FREETZ_FWMOD_SIGN_KEY_FILES_PREFIX}" \
 			"${TOOLS_DIR}/yf/signimage/sign_image" "${img_name}.unsigned" "${FREETZ_FWMOD_SIGN_PRIVATE_KEY_PASSWORD}" 2>"${MOD_DIR}/sign_image.log" > "${img_name}.signed"
 		fi
 		if [ $? -ne 0 ] || ! is_valid_tarball "${img_name}.signed"; then
