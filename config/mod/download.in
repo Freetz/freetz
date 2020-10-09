@@ -11,10 +11,10 @@ menu "Download options"
 			Necessary means that the regular Freetz mirrors are currently unavailable
 			or the desired package cannot be found on either of them.
 
-	config FREETZ_DL_URL_LATEST_USER
-		string "Custom URL for detection of latest firmware" if FREETZ_TYPE_FIRMWARE_LABOR_LATEST
-		help
-			You could set the URL for detection of latest firmware version here
+#	config FREETZ_DL_URL_LATEST_USER
+#		string "Custom URL for detection of latest firmware" if FREETZ_TYPE_FIRMWARE_LABOR_LATEST
+#		help
+#			You could set the URL for detection of latest firmware version here
 
 	config FREETZ_DL_DETECT_IMAGE_NAME
 		bool "Detect the .image file name inside a .zip" if FREETZ_SHOW_EXPERT
@@ -862,19 +862,19 @@ menu "Download options"
 #		#
 #		default ""
 
-	config FREETZ_DL_SOURCE_CONTAINER_MD5
-		string "MD5 checksum for container"             if FREETZ_DL_OVERRIDE
-		depends                                         on FREETZ_TYPE_FIRMWARE_LABOR && !FREETZ_TYPE_FIRMWARE_LABOR_LATEST
-		#
-		default ""
+#	config FREETZ_DL_SOURCE_CONTAINER_MD5
+#		string "MD5 checksum for container"             if FREETZ_DL_OVERRIDE
+#		depends                                         on FREETZ_TYPE_FIRMWARE_LABOR && !FREETZ_TYPE_FIRMWARE_LABOR_LATEST
+#		#
+#		default ""
 
-	config FREETZ_DL_URL_LATEST
-		string
-		depends                                                        on FREETZ_TYPE_FIRMWARE_LABOR_LATEST
-		#
-		default "https://boxmatrix.info/hosted/exports/labors.txt"     if FREETZ_TYPE_FIRMWARE_LABOR
-		#
-		default ""
+#	config FREETZ_DL_URL_LATEST
+#		string
+#		depends                                                        on FREETZ_TYPE_FIRMWARE_LABOR_LATEST
+#		#
+#		default "https://boxmatrix.info/hosted/exports/labors.txt"     if FREETZ_TYPE_FIRMWARE_LABOR
+#		#
+#		default ""
 
 	config FREETZ_DL_ALIEN
 		bool
