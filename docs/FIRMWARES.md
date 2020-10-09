@@ -167,6 +167,8 @@ Currently supported devices and firmwares
   - 142.07.19 rev00000 {INT} (Labor)
 * __Fritz!Box 6820 v3 LTE (UNTESTED)__
   - 254.07.19 rev00000 {GER} (Labor)
+* __Fritz!Box 6850 LTE (UNTESTED)__
+  - 262.07.21 rev00000 {ALL} (Labor)
 * __Fritz!Box 6890 LTE__
   - 162.06.87 rev59283 {ALL}
   - 162.07.03 rev68723 {ALL}
