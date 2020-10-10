@@ -65,13 +65,13 @@ Currently supported devices and firmwares
   - 103.06.55 rev38670 {GER}
   - 103.06.30 rev31156 {INT}
   - 103.06.52 rev34161 {INT}
-  - Alien 3490 (No wlan, no usb!)
+  - Alien 3490 {GER+INT} (No wlan, no usb!)
 * __Fritz!Box WLAN 3390__
   - 121.06.30 rev30889 {GER}
   - 121.06.55 rev38670 {GER}
   - 121.06.30 rev31156 {INT}
   - 121.06.52 rev33299 {INT}
-  - Alien 3490 (No wlan, no usb!)
+  - Alien 3490 {GER+INT} (No wlan, no usb!)
 
 * __Fritz!Box WLAN 3490__
   - 140.06.31 rev31064 {GER}
@@ -194,7 +194,7 @@ Currently supported devices and firmwares
 * __Fritz!Box Fon WLAN 7113__
   - 60.04.68 rev17260 {GER}
   - 90.04.86 rev27557 {INT} (Annex A)
-  - Alien 7170
+  - Alien 7170 {GER+INT}
 * __Fritz!Box Fon WLAN 7140__
   - 30.04.33 rev7321 {GER}
   - Alien 7170 {GER}
