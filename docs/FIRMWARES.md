@@ -243,12 +243,12 @@ Currently supported devices and firmwares
 * __Fritz!Box Fon WLAN 7312__
   - 117.06.30 rev30889 {GER}
   - 117.06.55 rev38630 {GER}
-  - Alien 7330 SL
+  - Alien 7330 {GER}
+  - Alien 7330 SL {GER}
 * __Fritz!Box Fon WLAN 7320__
   - 100.06.34 rev38646 {GER}
-  - Alien 7330 06.30 {GER+INT}
-  - Alien 7330 06.55 {GER}
-  - Alien 7330 SL 06.30 {GER}
+  - Alien 7330 {GER}
+  - Alien 7330 SL {GER}
 * __Fritz!Box Fon WLAN 7330__
   - 107.06.30 rev30889 {GER}
   - 107.06.55 rev38630 {GER}
