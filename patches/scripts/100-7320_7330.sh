@@ -37,4 +37,5 @@ modsed "s/GCOV_PREFIX_STRIP=.*$/GCOV_PREFIX_STRIP=\"3\"/g" "${FILESYSTEM_MOD_DIR
 
 # patch install script to accept firmware from 7330
 echo2 "applying install patch"
-modsed "s/mips34_16MB_dect441_1eth_1geth_1ab_pots_2usb_host_wlan11n_41167/mips34_16MB_dect441_2eth_1ab_2usb_host_wlan11n_37273/g" "${FIRMWARE_MOD_DIR}/var/install"
+isFreetzType 7320_7330_XL && modsed "s/mips34_16MB_dect441_1eth_1geth_1ab_pots_2usb_host_wlan11n_41167/mips34_16MB_dect441_2eth_1ab_2usb_host_wlan11n_37273/g" "${FIRMWARE_MOD_DIR}/var/install"
+isFreetzType 7320_7330_SL && modsed "s/mips34_16MB_dect441_1eth_1geth_1ab_2usb_host_wlan11n_01118/mips34_16MB_dect441_2eth_1ab_2usb_host_wlan11n_37273/g" "${FIRMWARE_MOD_DIR}/var/install"
