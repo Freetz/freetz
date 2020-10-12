@@ -1,12 +1,16 @@
-$(call PKG_INIT_BIN, 14.1)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA1:=671c0d0b554643e1b58665004c65519a330766db
-$(PKG)_SITE:=@SF/$(pkg)
+$(call PKG_INIT_BIN, 16.4)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-src.tar.gz
+$(PKG)_SOURCE_SHA1:=0a7cf3d269aa531c9c5d30de80dcfe1f513d92f0
+$(PKG)_SITE:=https://github.com/nzbget/nzbget/releases/download/v$($(PKG)_VERSION)
 
 $(PKG)_PATCH_POST_CMDS += $(call PKG_ADD_EXTRA_FLAGS,(CXX|LD)FLAGS)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
+$(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
+$(PKG)_STAGING_WEBUI_DIR:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/nzbget
+$(PKG)_TARGET_WEBUI_DIR:=$($(PKG)_DEST_DIR)/usr/share/nzbget
+$(PKG)_TARGET_NZBGET_CONF:=$($(PKG)_TARGET_WEBUI_DIR)/nzbget.conf
 
 $(PKG)_DEPENDS_ON += libxml2 $(STDCXXLIB) zlib
 $(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_NZBGET_WITH_CURSES),ncurses)
@@ -33,18 +37,31 @@ $($(PKG)_BINARY): $(NZBGET_DIR)/.configured
 		EXTRA_CXXFLAGS="-fpermissive" \
 		EXTRA_LDFLAGS="$(if $(FREETZ_PACKAGE_NZBGET_STATIC),-static)"
 
-$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
+$($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
+	$(SUBMAKE) -C $(NZBGET_DIR) \
+		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
+		install
+
+$($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 	$(INSTALL_BINARY_STRIP)
+
+$($(PKG)_TARGET_NZBGET_CONF): $($(PKG)_STAGING_BINARY)
+	mkdir -p $(NZBGET_TARGET_WEBUI_DIR)
+	$(call COPY_USING_TAR,$(NZBGET_STAGING_WEBUI_DIR),$(NZBGET_TARGET_WEBUI_DIR) .)
+	chmod 644 $@
+	touch $@
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_NZBGET_CONF)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(NZBGET_DIR) clean
 	$(RM) $(NZBGET_DIR)/.configured
 
 $(pkg)-uninstall:
-	$(RM) $(NZBGET_TARGET_BINARY)
+	$(RM) -r \
+		$(NZBGET_TARGET_BINARY) \
+		$(NZBGET_TARGET_WEBUI_DIR)
 
 $(PKG_FINISH)
