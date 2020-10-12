@@ -2,7 +2,7 @@
 
 echo1 "removing WLAN files"
 rm_files $(find ${FILESYSTEM_MOD_DIR}/lib/modules -name '*wireless*')
-rm_files $(find ${FILESYSTEM_MOD_DIR} ! -name '*.cfg' -a -name '*wlan*' | grep -Ev "^${FILESYSTEM_MOD_DIR}/(dev|oldroot|proc|sys|var)/")
+rm_files $(find ${FILESYSTEM_MOD_DIR} ! -name '*.cfg' -a -name '*wlan*' | grep -Ev "^${FILESYSTEM_MOD_DIR}/(dev|oldroot|proc|sys|var|usr\/lua)/")
 rm_files \
   ${FILESYSTEM_MOD_DIR}/lib/modules/fw_dcrhp_1150_ap.bin \
   ${FILESYSTEM_MOD_DIR}/sbin/hostapd \
@@ -43,6 +43,12 @@ sedfile="${HTML_LANG_MOD_DIR}/internet/internet_settings.lua"
 if [ "$FREETZ_AVM_VERSION_06_0X_MAX" == "y" -a -e $sedfile ]; then
 	modsed '/^require"wlanscan"$/d' $sedfile
 	modsed '/^wlanscanOnload.*$/d' $sedfile
+fi
+
+# patcht Assistenten > Internetzugang einrichten (ab 07.x)
+sedfile="${HTML_LANG_MOD_DIR}/assis/internet_dsl.lua"
+if [ "$FREETZ_AVM_VERSION_07_0X_MIN" == "y" -a -e $sedfile ]; then
+	modsed '/^updateOmaWlanSecurity(<?lua box.out(js.quoted(g_var.staenc or "")) ?>);$/d' $sedfile
 fi
 
 # patcht Heimnetz > Netzwerk > Geraete und Benutzer
