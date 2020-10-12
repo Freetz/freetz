@@ -7,9 +7,9 @@ config EXTERNAL_FREETZ_PACKAGE_NZBGET
 		 /usr/bin/nzbget
 
 config EXTERNAL_FREETZ_PACKAGE_NZBGET_WEBUI
-	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_NZBGET
+	depends on EXTERNAL_ENABLED && FREETZ_PACKAGE_NZBGET && EXTERNAL_SUBDIRS
 	bool "NZBGet_WEBUI"
 	default n
 	help
-		externals the following file(s):
-		/usr/share/nzbget/*
+		externals all files under
+		 /usr/share/nzbget
