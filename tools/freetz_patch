@@ -54,6 +54,20 @@ _findTool()
 	fi
 }
 
+# Strip $2 directory level(s) from one patch file, without argument: 1
+#
+# The $1 parameter is the name of the patch file to be stripped in place -
+# no backup! The patch file must be a unidiff, and no care is taken of spaces,
+# tabs or slashes within path names.
+strip_patch_level()
+{
+	local p=${2:-1}
+	while [ $p -gt 0 ]; do
+		sed -i -r 's/^(---|\+\+\+) [^/]+\//\1 /' "$1"
+		p=$(( $p - 1 ))
+	done
+}
+
 modpatch()
 {
 	if [ $# -ne 2 -a $# -ne 3 ]; then
@@ -179,6 +193,8 @@ modpatch()
 	elif [ $APPLY_PATCH_STATUS -gt 0 ]; then
 		error 2 "modpatch: Error in patch-file $patch_file"
 	elif [ "$_auto_fix_patches" == "y" ] && [ "$do_fix" == "y" ]; then
+		# Alter patch to patch-level 0
+		strip_patch_level "$patch_file" $p
 		# Create (temporary) clean patch file copy without any comments in between change sets
 		filtered_file="$(mktemp _filtered_patch.XXXXXXXX)" || exit 1
 		filterdiff "$patch_file" > "$filtered_file"
@@ -257,21 +273,4 @@ if [ "$(basename "$0")" == "freetz_patch" ]; then
 else
 	freetz_patch_name="modpatch"
 fi
-
-
-# Strip one directory level from one patch file
-#
-# The only parameter is the name of the patch file to be stripped in place -
-# no backup! The patch file must be a unidiff, and no care is taken of spaces,
-# tabs or slashes within path names.
-#
-# Note: This is just an inofficial little add-on and not part of the official
-# Freetz patch procedure, use at own risk. The function might come in handy if
-# you wish to canonise a set of patch files so they can be applied with patch
-# level zero (-p0).
-strip_patch_level()
-{
-	echo "Stripping one directory level from $1"
-	sed -i -r 's/^(---|\+\+\+) [^/]+\//\1 /' "$1"
-}
 
