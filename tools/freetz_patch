@@ -170,7 +170,6 @@ modpatch()
 		echo2 "applying patch${p#0} file $patch_file"
 		$read_patch_cmd "$patch_file" | patch --force ${backup}-d "$target_dir" -p$p --no-backup-if-mismatch 2>&1 | sed -e "s/^/${L2}/g"
 		READ_PATCH_STATUS=${PIPESTATUS[0]} APPLY_PATCH_STATUS=${PIPESTATUS[1]}
-		echo2 -- "----------------------------------------------------------------------"
 	else
 		$read_patch_cmd "$patch_file" | patch --force ${backup}-d "$target_dir" -p$p --no-backup-if-mismatch >/dev/null
 		READ_PATCH_STATUS=${PIPESTATUS[0]} APPLY_PATCH_STATUS=${PIPESTATUS[1]}
@@ -193,6 +192,7 @@ modpatch()
 		# Number of files to be patched should be the same in original and clean patch file
 		local file_count=${#files[@]}
 		test $file_count = ${#patch_lines[@]} -a $file_count = ${#filtered_lines[@]} || exit 1
+		echo2
 		echo2 "auto-fixing fuzzy patch file $patch_file"
 		#echo2 "    file_count     = $file_count"
 		#echo2 "    files          = ${files[*]}"
@@ -228,8 +228,8 @@ modpatch()
 		done
 		cd - > /dev/null
 		rm "$patch_file.orig"
-		echo2 -- "----------------------------------------------------------------------"
 	fi
+	[ "$is_verbose" == "y" -o "$do_fix" == "y" ] && echo2 -- "----------------------------------------------------------------------"
 }
 
 if [ "$(basename "$0")" == "freetz_patch" ]; then
