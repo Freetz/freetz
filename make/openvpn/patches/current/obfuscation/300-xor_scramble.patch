@@ -1,6 +1,6 @@
 --- src/openvpn/forward.c
 +++ src/openvpn/forward.c
-@@ -729,7 +729,10 @@
+@@ -811,7 +811,10 @@
  
      status = link_socket_read(c->c2.link_socket,
                                &c->c2.buf,
@@ -12,7 +12,7 @@
  
      if (socket_connection_reset(c->c2.link_socket, status))
      {
-@@ -1377,7 +1380,10 @@
+@@ -1621,7 +1624,10 @@
                  /* Send packet */
                  size = link_socket_write(c->c2.link_socket,
                                           &c->c2.to_link,
@@ -26,17 +26,17 @@
                  link_socket_write_post_size_adjust(&size, size_delta, &c->c2.to_link);
 --- src/openvpn/options.c
 +++ src/openvpn/options.c
-@@ -812,6 +812,9 @@
-     o->resolve_retry_seconds = RESOLV_RETRY_INFINITE;
+@@ -822,6 +822,9 @@
      o->resolve_in_advance = false;
      o->proto_force = -1;
+     o->occ = true;
 +    o->ce.xormethod = 0;
 +    o->ce.xormask ="\0";
 +    o->ce.xormasklen = 1;
- #ifdef ENABLE_OCC
-     o->occ = true;
- #endif
-@@ -974,6 +977,9 @@
+ #ifdef ENABLE_MANAGEMENT
+     o->management_log_history_cache = 250;
+     o->management_echo_buffer_size = 100;
+@@ -973,6 +976,9 @@
      setenv_str_i(es, "local_port", e->local_port, i);
      setenv_str_i(es, "remote", e->remote, i);
      setenv_str_i(es, "remote_port", e->remote_port, i);
@@ -46,7 +46,7 @@
  
      if (e->http_proxy_options)
      {
-@@ -1430,6 +1436,9 @@
+@@ -1452,6 +1458,9 @@
      SHOW_BOOL(bind_ipv6_only);
      SHOW_INT(connect_retry_seconds);
      SHOW_INT(connect_timeout);
@@ -56,7 +56,7 @@
  
      if (o->http_proxy_options)
      {
-@@ -5954,6 +5963,36 @@
+@@ -6236,6 +6245,36 @@
          }
          options->proto_force = proto_force;
      }
@@ -95,7 +95,7 @@
          struct http_proxy_options *ho;
 --- src/openvpn/options.h
 +++ src/openvpn/options.h
-@@ -101,6 +101,9 @@
+@@ -99,6 +99,9 @@
      int connect_retry_seconds;
      int connect_retry_seconds_max;
      int connect_timeout;
@@ -107,7 +107,7 @@
      const char *socks_proxy_port;
 --- src/openvpn/socket.c
 +++ src/openvpn/socket.c
-@@ -54,6 +54,47 @@
+@@ -55,6 +55,47 @@
      IPv6_TCP_HEADER_SIZE,
  };
  
@@ -157,7 +157,7 @@
   */
 --- src/openvpn/socket.h
 +++ src/openvpn/socket.h
-@@ -248,6 +248,10 @@
+@@ -249,6 +249,10 @@
  #endif
  };
  
@@ -168,7 +168,7 @@
  /*
   * Some Posix/Win32 differences.
   */
-@@ -1065,30 +1069,52 @@
+@@ -1049,30 +1053,52 @@
  static inline int
  link_socket_read(struct link_socket *sock,
                   struct buffer *buf,
@@ -225,7 +225,7 @@
  }
  
  /*
-@@ -1178,8 +1204,30 @@
+@@ -1163,8 +1189,30 @@
  static inline int
  link_socket_write(struct link_socket *sock,
                    struct buffer *buf,
