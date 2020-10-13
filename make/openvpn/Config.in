@@ -127,16 +127,17 @@ config FREETZ_PACKAGE_OPENVPN_WITH_TRAFFIC_OBFUSCATION
 	help
 		Adds support for an additional configuration option 'scramble'
 		with the following possible values:
-		 * "xormask" xormask
-		 * "xorptrpos"
-		 * "reverse"
-		 * "obfuscate" xormask
-
+		 * scramble xormask xor_string
+		 * scramble reverse
+		 * scramble xorptrpos
+		 * scramble obfuscate password
+		See https://tunnelblick.net/cOpenvpn_xorpatch.html
+		
 		WARNING:
-		 'scramble'-option and SSLH are NOT compatible. SSLH is not
-		 able to recognize OpenVPN traffic if 'scramble'-option
-		 is enabled in OpenVPN config. Don't enable it if you plan
-		 to use SSLH to demultiplex OpenVPN protocol.
+		scramble-option and SSLH are NOT compatible. SSLH is not
+		able to recognize OpenVPN traffic if 'scramble'-option
+		is enabled in OpenVPN config. Don't enable it if you plan
+		to use SSLH to demultiplex OpenVPN protocol.
 
 comment "Warning: OpenVPN traffic obfuscation and SSLH are not compatible"
 	depends on FREETZ_PACKAGE_OPENVPN_WITH_TRAFFIC_OBFUSCATION && FREETZ_PACKAGE_SSLH
