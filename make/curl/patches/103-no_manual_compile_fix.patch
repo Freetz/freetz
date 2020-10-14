@@ -1,9 +1,9 @@
 --- src/tool_operate.c
 +++ src/tool_operate.c
-@@ -2525,9 +2525,11 @@
+@@ -2559,9 +2559,11 @@
        /* Check if we were asked for the help */
        if(res == PARAM_HELP_REQUESTED)
-         tool_help();
+         tool_help(global->help_category);
 +#ifdef USE_MANUAL
        /* Check if we were asked for the manual */
        else if(res == PARAM_MANUAL_REQUESTED)
