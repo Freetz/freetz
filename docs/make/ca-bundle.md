@@ -1,4 +1,4 @@
-# CA-bundle 2020-07-22
+# CA-bundle 2020-10-14
 
 Das CA-bundle ist ein Paket von root CA (Certificate Authority) Zertifikaten.
 <br>

@@ -67,7 +67,7 @@
   * **<u>bvi/bmore 1.4.0 (binary only) </u><a id='bvi'></a>**<br>
     A hex editor/viewer for binary files
 
-  * **[CA-bundle 2020-07-22](ca-bundle.md)<a id='ca-bundle'></a>**<br>
+  * **[CA-bundle 2020-10-14](ca-bundle.md)<a id='ca-bundle'></a>**<br>
     The Mozilla CA certificate store in PEM format, see http://curl.haxx.se/docs/caextract.html Size of uncompressed file is about 250 KB.
 
   * **[Callmonitor 1.20.9-git](callmonitor.md)<a id='callmonitor'></a>**<br>
