@@ -255,7 +255,7 @@ Latest changes
     * minidlna 1.2.1
     * mpc 1.1.0
     * mpfr 3.1.6
-    * nano 2.4.3
+    * nano 5.3
     * ncftp-3.2.6
     * netatalk 2.2.5
     * ngircd 22

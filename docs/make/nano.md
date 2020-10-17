@@ -1,4 +1,4 @@
-# Nano 2.4.3 text editor (binary only)
+# Nano 5.3 text editor (binary only)
 
 **Nano** ist ein kleiner Texteditor für die Konsole, der aber im
 Gegensatz zu (n)vi eine Bedienung wie ein normaler Editor (z.B. der
