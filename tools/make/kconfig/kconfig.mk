@@ -1,6 +1,6 @@
-KCONFIG_VERSION:=v5.8
+KCONFIG_VERSION:=v5.9
 KCONFIG_SOURCE:=kconfig-$(KCONFIG_VERSION).tar.xz
-KCONFIG_SOURCE_SHA256:=1eb3d8c46c09d4bfafe17fdaeba506e8401930801a72f16aa230452997d1e973
+KCONFIG_SOURCE_SHA256:=b0a49edfd6b31102642122983fa0ccdaa27d20c3357f6912750b1e7c761e9747
 KCONFIG_SITE:=git_archive@git://repo.or.cz/linux.git,scripts/basic,scripts/kconfig,scripts/Kbuild.include,scripts/Makefile.build,scripts/Makefile.host,scripts/Makefile.lib,Documentation/kbuild/kconfig-language.rst,Documentation/kbuild/kconfig-macro-language.rst,Documentation/kbuild/kconfig.rst
 KCONFIG_DIR:=$(TOOLS_SOURCE_DIR)/kconfig-$(KCONFIG_VERSION)
 KCONFIG_MAKE_DIR:=$(TOOLS_DIR)/make/kconfig
