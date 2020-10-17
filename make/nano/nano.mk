@@ -1,12 +1,12 @@
-$(call PKG_INIT_BIN, 2.4.3)
+$(call PKG_INIT_BIN, 5.3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=0acc0ca68eee68ef38f899532a4873c6
-$(PKG)_SITE:=http://www.nano-editor.org/dist/v2.4
+$(PKG)_SOURCE_MD5:=1b55ef3a508d8eadcb561f763b0643cb
+$(PKG)_SITE:=http://www.nano-editor.org/dist/v5
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/nano
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/nano
 
-$(PKG)_SYNTAX_FILES_DIR:=$($(PKG)_DIR)/doc/syntax/
+$(PKG)_SYNTAX_FILES_DIR:=$($(PKG)_DIR)/syntax/
 $(PKG)_TARGET_SYNTAX_FILES_DIR:=$($(PKG)_DEST_DIR)/usr/share/nano/
 
 $(PKG)_DEPENDS_ON += ncurses
