@@ -9,7 +9,7 @@ config() {
 	rm -rf /mod/nzbget
 	ln -s "$NZBGET_CONFIGDIR" /mod/nzbget
 	mkdir "$NZBGET_CONFIGDIR" 2>/dev/null
-	if [ ! -d "$NZBGET_CONFIGDIR/nzbget.conf" ]; then
+	if [ ! -f "$NZBGET_CONFIGDIR/nzbget.conf" ]; then
 		cp /usr/share/nzbget/nzbget.conf "$NZBGET_CONFIGDIR"
 	fi
 }
