@@ -21,7 +21,7 @@ sec_end
 #
 
 NZBGET_PORT=$(grep -i "^ControlPort" /mod/nzbget/nzbget.conf | cut -d "=" -f2 | sed 's/^ //')
-HOST_IP=$(trim_string `hostname -i`)
+HOST_IP=$(trim_string $(hostname -i))
 
 sec_begin '$(lang de:"Webinterface" en:"Web interface")'
 	if [ "$(/etc/init.d/rc.nzbget status)" = 'stopped' ]; then

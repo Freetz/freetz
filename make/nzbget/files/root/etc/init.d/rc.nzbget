@@ -1,7 +1,6 @@
 #!/bin/sh
 
 DAEMON=nzbget
-DAEMON_BIN=nzbget
 DAEMON_LONG_NAME="NZBGet"
 . /etc/init.d/modlibrc
 
@@ -19,12 +18,12 @@ start() {
 		echo "$DAEMON_LONG_NAME is not configured, failed."
 		return 1
 	fi
-	modlib_startdaemon $DAEMON_BIN -D -c "$NZBGET_CONFIGDIR/nzbget.conf"
+	modlib_startdaemon $DAEMON -D -c "$NZBGET_CONFIGDIR/nzbget.conf"
 }
 
 stop() {
 	local current_pid="$(cat $PID_FILE 2>/dev/null)"
-	kill $current_pid 2>/dev/null
+	$DAEMON -Q -c "$NZBGET_CONFIGDIR/nzbget.conf"
 	sync
 	sleep 1
 	if kill -0 $current_pid 2>/dev/null; then
@@ -59,17 +58,8 @@ case $1 in
 	status)
 		modlib_status
 		;;
-	setup)
-		modlib_check_running && modlib_stop
-		config
-		$DAEMON_BINARY -s
-		;;
-	user)
-		modlib_check_running || config
-		$DAEMON_BINARY -u
-		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status|setup|user]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
 		exit 1
 		;;
 esac
