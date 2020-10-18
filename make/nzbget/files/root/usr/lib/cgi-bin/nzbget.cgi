@@ -24,7 +24,7 @@ NZBGET_PORT=$(grep -i "^ControlPort" /mod/nzbget/nzbget.conf | cut -d "=" -f2 | 
 HOST_IP=$(trim_string $(hostname -i))
 
 sec_begin '$(lang de:"Webinterface" en:"Web interface")'
-	if [ "$(/etc/init.d/rc.nzbget status)" = 'stopped' ]; then
+	if [ "$(/mod/etc/init.d/rc.nzbget status)" = 'stopped' ]; then
 		echo '<h2>$(lang de:"NZBGet wurde nicht gestartet!" en:"NZBGet isn't started!")</h2>'
 	else
 		if [ -z "$NZBGET_PORT" ]; then

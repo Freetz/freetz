@@ -18,17 +18,13 @@ start() {
 		echo "$DAEMON_LONG_NAME is not configured, failed."
 		return 1
 	fi
-	modlib_startdaemon $DAEMON -D -c "$NZBGET_CONFIGDIR/nzbget.conf"
+	modlib_startdaemon $DAEMON_BIN -D -c "$NZBGET_CONFIGDIR/nzbget.conf"
 }
 
 stop() {
-	local current_pid="$(cat $PID_FILE 2>/dev/null)"
-	$DAEMON -Q -c "$NZBGET_CONFIGDIR/nzbget.conf"
+	$DAEMON_BIN -Q -c "$NZBGET_CONFIGDIR/nzbget.conf"
 	sync
 	sleep 1
-	if kill -0 $current_pid 2>/dev/null; then
-		killall -9 $DAEMON_BIN
-	fi
 }
 
 case $1 in
