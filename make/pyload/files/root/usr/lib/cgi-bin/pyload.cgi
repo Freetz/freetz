@@ -13,7 +13,7 @@ sec_end
 
 #
 
-pyweb="$(sed -n '/^webinterface -/{N;N;N;N;N;N;N;N;N;s/.*"Activated" = \([a-zA-Z]*\).*/\1/p}' /mod/pyload/pyload.conf 2>/dev/null)"
+pyweb="$(grep -A9 '^webinterface -' /mod/pyload/pyload.conf 2>/dev/null | sed -n 's/.*"Activated" = \([a-zA-Z]*\).*/\1/p}')"
 if [ "$pyweb" == "True" -a "$(/mod/etc/init.d/rc.pyload status)" == "running" ]; then
 sec_begin '$(lang de:"Anzeigen" en:"Show")'
 
