@@ -1,7 +1,6 @@
 #!/bin/sh
 
 DAEMON=nzbget
-DAEMON_BIN=nzbget
 DAEMON_LONG_NAME="NZBGet"
 . /etc/init.d/modlibrc
 
@@ -23,13 +22,9 @@ start() {
 }
 
 stop() {
-	local current_pid="$(cat $PID_FILE 2>/dev/null)"
-	kill $current_pid 2>/dev/null
+	$DAEMON_BIN -Q -c "$NZBGET_CONFIGDIR/nzbget.conf"
 	sync
 	sleep 1
-	if kill -0 $current_pid 2>/dev/null; then
-		killall -9 $DAEMON_BIN
-	fi
 }
 
 case $1 in
@@ -59,17 +54,8 @@ case $1 in
 	status)
 		modlib_status
 		;;
-	setup)
-		modlib_check_running && modlib_stop
-		config
-		$DAEMON_BINARY -s
-		;;
-	user)
-		modlib_check_running || config
-		$DAEMON_BINARY -u
-		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status|setup|user]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
 		exit 1
 		;;
 esac
