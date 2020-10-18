@@ -1,0 +1,77 @@
+#!/bin/sh
+
+DAEMON=nzbget
+DAEMON_BIN=nzbget
+DAEMON_LONG_NAME="NZBGet"
+. /etc/init.d/modlibrc
+
+config() {
+	rm -rf /mod/nzbget
+	ln -s "$NZBGET_CONFIGDIR" /mod/nzbget
+	mkdir "$NZBGET_CONFIGDIR" 2>/dev/null
+	if [ ! -d "$NZBGET_CONFIGDIR/nzbget.conf" ]; then
+		cp /usr/share/nzbget/nzbget.conf "$NZBGET_CONFIGDIR"
+	fi
+}
+
+start() {
+	if [ ! -e "$NZBGET_CONFIGDIR/nzbget.conf" ]; then
+		echo "$DAEMON_LONG_NAME is not configured, failed."
+		return 1
+	fi
+	modlib_startdaemon $DAEMON_BIN -D -c "$NZBGET_CONFIGDIR/nzbget.conf"
+}
+
+stop() {
+	local current_pid="$(cat $PID_FILE 2>/dev/null)"
+	kill $current_pid 2>/dev/null
+	sync
+	sleep 1
+	if kill -0 $current_pid 2>/dev/null; then
+		killall -9 $DAEMON_BIN
+	fi
+}
+
+case $1 in
+	""|load)
+		config
+
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
+		modreg daemon $DAEMON
+
+		modlib_start $NZBGET_ENABLED
+		;;
+	unload)
+		modunreg daemon $DAEMON
+		modunreg cgi $DAEMON
+
+		modlib_stop
+		;;
+	start)
+		modlib_start
+		;;
+	stop)
+		modlib_stop
+		;;
+	restart)
+		modlib_restart
+		;;
+	status)
+		modlib_status
+		;;
+	setup)
+		modlib_check_running && modlib_stop
+		config
+		$DAEMON_BINARY -s
+		;;
+	user)
+		modlib_check_running || config
+		$DAEMON_BINARY -u
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status|setup|user]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
