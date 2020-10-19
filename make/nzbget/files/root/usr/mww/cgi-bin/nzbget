@@ -1,0 +1,9 @@
+#!/bin/sh
+. /usr/lib/libmodredir.sh
+if [ -s /etc/nzbget.conf ]; then
+	ngport="$(sed -n 's/^ControlPort=//p' /etc/nzbget.conf)"
+	nguser="$(sed -n 's/^ControlUsername=//p' /etc/nzbget.conf):"
+	ngpass="$(sed -n 's/^ControlPassword=//p' /etc/nzbget.conf)@"
+fi
+
+redirect "http://${nguser}${ngpass}$(self_host):${ngport:-6789}/" "nzbget"
