@@ -9,7 +9,7 @@ case $1 in
 		modreg daemon --hide $DAEMON
 
 		[ -r /etc/options.cfg ] && . /etc/options.cfg
-		[ "$FREETZ_PACKAGE_OPENSSH" == "y" ] && id_files=id_dsa id_rsa id_ed25519 id_ecdsa
+		[ "$FREETZ_PACKAGE_OPENSSH" == "y" ] && id_files="id_dsa id_rsa id_ed25519 id_ecdsa"
 		for ak_file in authorized_keys known_hosts $id_files; do
 			modreg file authorized-keys $ak_file "$ak_file" 0 $ak_file
 		done
