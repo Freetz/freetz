@@ -131,7 +131,7 @@ Latest changes
     * libssh2 1.9.0
     * libusb-compat 0.1.5
     * lzma1 4.65
-    * mbed TLS 2.7.17
+    * mbed TLS 2.24.0
     * minisatip 1.0.4
     * Mosquitto 1.6.8
     * MySQL 6.0.11-alpha
