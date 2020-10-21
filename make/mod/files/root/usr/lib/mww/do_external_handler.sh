@@ -60,7 +60,7 @@ cgi_begin '$(lang de:"external-Update" en:"external-update")'
 if [ "${FILENAME##*.}" != "external" ]; then
 	echo "<h1>$(lang de:"Update vorbereiten" en:"Prepare update")</h1>"
 	pre_begin
-	echo "$FILENAME is not a valid external file."
+	echo "$FILENAME is not an .external file."
 	pre_end
 	status "failed"
 	do_exit 1

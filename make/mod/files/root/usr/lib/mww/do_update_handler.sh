@@ -68,7 +68,7 @@ rm -f /tmp/.lfs.caching
 if [ "${FILENAME##*.}" != "image" ]; then
 	"<h1>$(lang de:"Update vorbereiten" en:"Prepare update")</h1>"
 	pre_begin
-	echo "$FILENAME is not a valid image file."
+	echo "$FILENAME is not an .image file."
 	pre_end
 	status "failed"
 	do_exit 1
