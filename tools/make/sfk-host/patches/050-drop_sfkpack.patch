@@ -20,7 +20,7 @@
  all: config.h
 --- sfkbase.hpp
 +++ sfkbase.hpp
-@@ -319,6 +319,7 @@
+@@ -317,6 +317,7 @@
  #define WITH_CASE_XNN
  #define SFKDEEPZIP   // sfk175
  
@@ -30,7 +30,23 @@
   #define SFKOFFICE   // sfk194
 --- sfk.cpp
 +++ sfk.cpp
-@@ -44864,7 +44864,9 @@
+@@ -45569,6 +45569,7 @@
+       bDone = 1;
+    }
+ 
++   #ifdef SFKPACK
+    if (!strcmp(pszCmd, "testcrc"))
+    {
+       int n = 100;
+@@ -45579,6 +45580,7 @@
+       delete [] buf;
+       bDone = 1;
+    }
++   #endif // SFKPACK
+ 
+    if (!strcmp(pszCmd, "testabs"))
+    {
+@@ -46103,7 +46105,9 @@
        cs.precachezip = 1;
        #endif // VFILEBASE
  
