@@ -1,6 +1,19 @@
 menu "Toolchain options"
 	visible if FREETZ_SHOW_EXPERT
 
+config FREETZ_DOWNLOAD_TOOLCHAIN_AVAILABLE
+	bool
+	depends on FREETZ_AVM_VERSION_06_9X_MAX
+	depends on !FREETZ_SYSTEM_TYPE_IPQ40xx
+	depends on !FREETZ_SYSTEM_TYPE_PUMA6
+	depends on !FREETZ_SYSTEM_TYPE_QCA956x
+	depends on !FREETZ_SEPARATE_AVM_UCLIBC
+	default y
+
+config FREETZ_BUILD_TOOLCHAIN_ADDITIONAL
+	bool "Show option to build own toolchains always"
+	default n
+
 choice
 	prompt "Toolchains"
 	default FREETZ_DOWNLOAD_TOOLCHAIN
@@ -9,14 +22,11 @@ choice
 
 	config FREETZ_DOWNLOAD_TOOLCHAIN
 		bool "Use precompiled toolchains (x86 only)"
-		depends on FREETZ_AVM_VERSION_06_9X_MAX
-		depends on !FREETZ_SYSTEM_TYPE_IPQ40xx
-		depends on !FREETZ_SYSTEM_TYPE_PUMA6
-		depends on !FREETZ_SYSTEM_TYPE_QCA956x
-		depends on !FREETZ_SEPARATE_AVM_UCLIBC
+		depends on FREETZ_DOWNLOAD_TOOLCHAIN_AVAILABLE
 
 	config FREETZ_BUILD_TOOLCHAIN
 		bool "Build own toolchains (4GB diskspace)"
+		depends on !FREETZ_DOWNLOAD_TOOLCHAIN_AVAILABLE || FREETZ_BUILD_TOOLCHAIN_ADDITIONAL
 
 endchoice # "Toolchains" #
 
