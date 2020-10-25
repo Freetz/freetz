@@ -17,6 +17,7 @@ config() {
 			sed -r 's/^(ParRename)=.*/\1=no/' -i "$NZBGET_CONFIGDIR/nzbget.conf"
 		fi
 		sed -r "s!^(MainDir)=.*!\1=${NZBGET_CONFIGDIR}!" -i "$NZBGET_CONFIGDIR/nzbget.conf"
+		sed -r 's!^(ScriptDir=\$\{MainDir\}/scripts).*!\1;/usr/share/nzbget/scripts!' -i "$NZBGET_CONFIGDIR/nzbget.conf"
 	fi
 }
 
