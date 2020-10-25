@@ -99,7 +99,9 @@ endef
 
 TOOLCHAIN_EXCLUDE_FILES := *uClibc++* *g++-uc *g++-wrapper* libtool* aclocal lib32
 # Union of versions 2.6.13, 2.6.19, and 2.6.28
+ifeq ($(strip $(FREETZ_KERNEL_VERSION_2)),y)
 KERNEL_HEADERS_SUBDIRS := asm asm-generic drm linux mtd rdma scsi sound video
+endif
 
 # $1 - toolchain base dir
 # $2 - tarball name suffix (TARGET_ARCH? / toolchain version)

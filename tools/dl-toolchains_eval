@@ -1,0 +1,97 @@
+#!/bin/bash
+rm -f out.raw out.kernel out.target
+
+evalconfig() {
+	echo -n .
+	(
+		for i in $* FREETZ_SERIES_ALL_CHOICE FREETZ_USER_LEVEL_EXPERT FREETZ_BUILD_TOOLCHAIN_ADDITIONAL FREETZ_BUILD_TOOLCHAIN FREETZ_TOOLCHAIN_32BIT; do echo "$i=y"; done > .config
+		tools/config/conf --olddefconfig config/Config.in >/dev/null
+		for i in $*; do grep "^$i=y" .config -q || return; done
+		echo -e "\n# $*"
+		. ./.config
+		[ "${FREETZ_KERNEL_VERSION:0:1}" != "2" ] && kernel="_kernel-$FREETZ_KERNEL_VERSION_MAJOR"
+		echo ${FREETZ_TARGET_ARCH_ENDIANNESS_DEPENDENT}_gcc-${FREETZ_KERNEL_GCC_VERSION}_uClibc-${FREETZ_TARGET_UCLIBC_VERSION}${FREETZ_AVM_UCLIBC_NPTL_ENABLED/y/-nptl}$kernel
+	) >> out.raw
+}
+
+#r
+for evalopts in \
+  "FREETZ_TYPE_WLAN    FREETZ_TYPE_FIRMWARE_04_XX" \
+  "FREETZ_TYPE_7270_V1 FREETZ_TYPE_FIRMWARE_04_XX FREETZ_TARGET_IPV6_SUPPORT" \
+  "FREETZ_TYPE_7270_V3 FREETZ_TYPE_FIRMWARE_06_0X" \
+  "FREETZ_TYPE_7270_V3 FREETZ_TYPE_FIRMWARE_06_0X FREETZ_TARGET_UCLIBC_0_9_33" \
+  "FREETZ_TYPE_7390    FREETZ_TYPE_FIRMWARE_05_2X" \
+  "FREETZ_TYPE_7390    FREETZ_TYPE_FIRMWARE_05_2X FREETZ_TARGET_UCLIBC_0_9_33" \
+  "FREETZ_TYPE_7390    FREETZ_TYPE_FIRMWARE_06_0X" \
+  "FREETZ_TYPE_7390    FREETZ_TYPE_FIRMWARE_06_2X" \
+  "FREETZ_TYPE_7490    FREETZ_TYPE_FIRMWARE_06_5X" \
+  "FREETZ_TYPE_7490    FREETZ_TYPE_FIRMWARE_07_2X" \
+  "FREETZ_TYPE_7580    FREETZ_TYPE_FIRMWARE_06_8X" \
+  "FREETZ_TYPE_7590    FREETZ_TYPE_FIRMWARE_07_0X" \
+  "FREETZ_TYPE_7590    FREETZ_TYPE_FIRMWARE_07_2X" \
+  "FREETZ_TYPE_1750    FREETZ_TYPE_FIRMWARE_07_0X" \
+  "FREETZ_TYPE_1750    FREETZ_TYPE_FIRMWARE_07_2X" \
+  "FREETZ_TYPE_4040    FREETZ_TYPE_FIRMWARE_07_0X" \
+  "FREETZ_TYPE_1200    FREETZ_TYPE_FIRMWARE_07_2X" \
+  "FREETZ_TYPE_7581    FREETZ_TYPE_FIRMWARE_07_1X" \
+  "FREETZ_TYPE_6490    FREETZ_TYPE_FIRMWARE_06_8X" \
+  "FREETZ_TYPE_6590    FREETZ_TYPE_FIRMWARE_07_0X" \
+  "FREETZ_TYPE_6590    FREETZ_TYPE_FIRMWARE_07_2X" \
+  "FREETZ_TYPE_6591    FREETZ_TYPE_FIRMWARE_07_0X" \
+  "FREETZ_TYPE_6660    FREETZ_TYPE_FIRMWARE_07_1X" \
+  "FREETZ_TYPE_6660    FREETZ_TYPE_FIRMWARE_07_2X" \
+; do evalconfig $evalopts; done
+FRITZBOX="$(cat config/ui/firmware.in | grep -A9999 '^### Hardware type' | grep -B9999 '^endchoice # "Hardware type"' | sed -rn 's/\t*config (FREETZ_TYPE_)/\1/p')"
+FIRMWARE="$(sed -rn 's/^\tconfig (FREETZ_TYPE_FIRMWARE_[X_0-9]{5}).*/\1/p' config/ui/firmware.in)"
+for box in $FRITZBOX; do
+for fos in $FIRMWARE; do
+evalconfig "$box $fos"
+done
+done
+echo
+
+#w
+grep -v '^#' out.raw | sort -u | grep uClibc | while read l; do grep "^$l$" -m1 -B1 out.raw; done | while read line; do
+#[ "${line:0:1}" == "#" ] && echo $line | tee -a out.kernel >> out.target && continue
+[ "${line:0:1}" == "#" -o "${line:0:1}" == "" ] && continue
+
+case "${line%%_*}" in
+	mipsel)  ARCH="MIPS" ;;
+	mips)    ARCH="MIPS" ;;
+	arm)     ARCH="ARM " ;;
+	i686)    ARCH="X86 " ;;
+esac
+echo -n "if FREETZ_TARGET_ARCH_$ARCH" | tee -a out.kernel >> out.target
+
+case "${line%%_*}" in
+	mipsel)  ENDI="&& FREETZ_TARGET_ARCH_LE" ;;
+	mips)    ENDI="&& FREETZ_TARGET_ARCH_BE" ;;
+	*)       ENDI="                        " ;;
+esac
+echo -n " $ENDI" | tee -a out.kernel >> out.target
+
+case "${line#*gcc-}" in
+	3*|4*)  GCC="$(echo $line | sed -nr 's/.*gcc-(.)\.(.).*/\1_\2/p')" ;;
+	5*|8*)  GCC="$(echo $line | sed -nr 's/.*gcc-(.).*/\1  /p')" ;;
+esac
+echo -n " && FREETZ_TARGET_GCC_$GCC" | tee -a out.kernel >> out.target
+
+UCLI="$(echo $line | sed -nr 's/.*uClibc-(.).(.).(..).*/\1_\2_\3/p')"
+echo -n " && FREETZ_TARGET_UCLIBC_$UCLI" >> out.target
+
+KERN="$(echo $line | sed -n 's/.*kernel-//p')"
+[ -z "$KERN" ] && KERN=2
+echo -n " && FREETZ_KERNEL_VERSION_${KERN//./_}" >> out.target
+
+echo | tee -a out.kernel >> out.target
+done
+
+#a
+echo "cat out.kernel | grep -v '^#' | sort -u"
+echo "cat out.target | grep -v '^#' | sort -u"
+echo "# rm -f out.raw out.kernel out.target"
+#grep -v '^#' out.raw | sort -u 
+#grep -v '^#' out.raw | sort -u | grep uClibc | while read l; do grep "^$l$" -m1 -B1 out.raw | head -n1; done | sort
+#grep -v '^#' out.raw | sort -u | grep uClibc | while read l; do grep "^$l$" -m1 -B1 out.raw           ; done
+#grep -v '^#' out.raw | sort -u | grep uClibc | while read l; do grep "^$l$" -m1 -B2 out.raw           ; done
+
