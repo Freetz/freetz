@@ -1,4 +1,5 @@
 #!/bin/bash
+VERSION="r17352"
 rm -f out.raw out.kernel out.target
 
 evalconfig() {
@@ -15,45 +16,28 @@ evalconfig() {
 }
 
 #r
-for evalopts in \
-  "FREETZ_TYPE_WLAN    FREETZ_TYPE_FIRMWARE_04_XX" \
-  "FREETZ_TYPE_7270_V1 FREETZ_TYPE_FIRMWARE_04_XX FREETZ_TARGET_IPV6_SUPPORT" \
-  "FREETZ_TYPE_7270_V3 FREETZ_TYPE_FIRMWARE_06_0X" \
-  "FREETZ_TYPE_7270_V3 FREETZ_TYPE_FIRMWARE_06_0X FREETZ_TARGET_UCLIBC_0_9_33" \
-  "FREETZ_TYPE_7390    FREETZ_TYPE_FIRMWARE_05_2X" \
-  "FREETZ_TYPE_7390    FREETZ_TYPE_FIRMWARE_05_2X FREETZ_TARGET_UCLIBC_0_9_33" \
-  "FREETZ_TYPE_7390    FREETZ_TYPE_FIRMWARE_06_0X" \
-  "FREETZ_TYPE_7390    FREETZ_TYPE_FIRMWARE_06_2X" \
-  "FREETZ_TYPE_7490    FREETZ_TYPE_FIRMWARE_06_5X" \
-  "FREETZ_TYPE_7490    FREETZ_TYPE_FIRMWARE_07_2X" \
-  "FREETZ_TYPE_7580    FREETZ_TYPE_FIRMWARE_06_8X" \
-  "FREETZ_TYPE_7590    FREETZ_TYPE_FIRMWARE_07_0X" \
-  "FREETZ_TYPE_7590    FREETZ_TYPE_FIRMWARE_07_2X" \
-  "FREETZ_TYPE_1750    FREETZ_TYPE_FIRMWARE_07_0X" \
-  "FREETZ_TYPE_1750    FREETZ_TYPE_FIRMWARE_07_2X" \
-  "FREETZ_TYPE_4040    FREETZ_TYPE_FIRMWARE_07_0X" \
-  "FREETZ_TYPE_1200    FREETZ_TYPE_FIRMWARE_07_2X" \
-  "FREETZ_TYPE_7581    FREETZ_TYPE_FIRMWARE_07_1X" \
-  "FREETZ_TYPE_6490    FREETZ_TYPE_FIRMWARE_06_8X" \
-  "FREETZ_TYPE_6590    FREETZ_TYPE_FIRMWARE_07_0X" \
-  "FREETZ_TYPE_6590    FREETZ_TYPE_FIRMWARE_07_2X" \
-  "FREETZ_TYPE_6591    FREETZ_TYPE_FIRMWARE_07_0X" \
-  "FREETZ_TYPE_6660    FREETZ_TYPE_FIRMWARE_07_1X" \
-  "FREETZ_TYPE_6660    FREETZ_TYPE_FIRMWARE_07_2X" \
-; do evalconfig $evalopts; done
-FRITZBOX="$(cat config/ui/firmware.in | grep -A9999 '^### Hardware type' | grep -B9999 '^endchoice # "Hardware type"' | sed -rn 's/\t*config (FREETZ_TYPE_)/\1/p')"
-FIRMWARE="$(sed -rn 's/^\tconfig (FREETZ_TYPE_FIRMWARE_[X_0-9]{5}).*/\1/p' config/ui/firmware.in)"
-for box in $FRITZBOX; do
-for fos in $FIRMWARE; do
-evalconfig "$box $fos"
-done
-done
+sed -nr 's/^ *dltc "(.*)".*/\1/p' $(dirname $(readlink -f $0))/dl-toolchains_make | while read evalopts; do evalconfig $evalopts; done
+#FRITZBOX="$(cat config/ui/firmware.in | grep -A9999 '^### Hardware type' | grep -B9999 '^endchoice # "Hardware type"' | sed -rn 's/\t*config (FREETZ_TYPE_)/\1/p')"
+#FIRMWARE="$(sed -rn 's/^\tconfig (FREETZ_TYPE_FIRMWARE_[X_0-9]{5}).*/\1/p' config/ui/firmware.in)"
+#for box in $FRITZBOX; do
+#for fos in $FIRMWARE; do
+#evalconfig "$box $fos"
+#done
+#done
 echo
 
 #w
-grep -v '^#' out.raw | sort -u | grep uClibc | while read l; do grep "^$l$" -m1 -B1 out.raw; done | while read line; do
-#[ "${line:0:1}" == "#" ] && echo $line | tee -a out.kernel >> out.target && continue
-[ "${line:0:1}" == "#" -o "${line:0:1}" == "" ] && continue
+grep -v '^#' out.raw | sort -u | grep uClibc | while read l; do grep "^$l$" -m1 -B2 out.raw; done | while read line; do
+[ "${line:0:1}" == "#" -o "${line:0:1}" == "" ] && echo $line | tee -a out.kernel >> out.target && continue
+
+FK="dl/${line%_uCli*}-freetz-${VERSION}-shared-glibc.tar.lzma"
+FT="dl/$line-freetz-${VERSION}-shared-glibc.tar.lzma"
+echo $FK >> out.kernel
+echo $FT >> out.target
+SK="$(md5sum $FK 2>/dev/null || echo 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')"
+ST="$(md5sum $FT 2>/dev/null || echo 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')"
+echo -n "default \"${SK%% *}\"    " >> out.kernel
+echo -n "default \"${ST%% *}\"    " >> out.target
 
 case "${line%%_*}" in
 	mipsel)  ARCH="MIPS" ;;
@@ -74,7 +58,8 @@ case "${line#*gcc-}" in
 	3*|4*)  GCC="$(echo $line | sed -nr 's/.*gcc-(.)\.(.).*/\1_\2/p')" ;;
 	5*|8*)  GCC="$(echo $line | sed -nr 's/.*gcc-(.).*/\1  /p')" ;;
 esac
-echo -n " && FREETZ_TARGET_GCC_$GCC" | tee -a out.kernel >> out.target
+echo -n " && FREETZ_KERNEL_GCC_$GCC" >> out.kernel
+echo -n " && FREETZ_TARGET_GCC_$GCC" >> out.target
 
 UCLI="$(echo $line | sed -nr 's/.*uClibc-(.).(.).(..).*/\1_\2_\3/p')"
 echo -n " && FREETZ_TARGET_UCLIBC_$UCLI" >> out.target

@@ -11,9 +11,13 @@ config FREETZ_DOWNLOAD_TOOLCHAIN_AVAILABLE
 		!FREETZ_SEPARATE_AVM_UCLIBC )
 	default y
 
-config FREETZ_BUILD_TOOLCHAIN_ADDITIONAL
-	bool "Show option to build own toolchains always"
+config FREETZ_BUILD_TOOLCHAIN_HIDE
+	bool "Hide option to build own toolchains"
 	default n
+	help
+		By selecting this the download toolchains are
+		automatically selected (if available) when you
+		change to another device.
 
 choice
 	prompt "Toolchains"
@@ -22,12 +26,12 @@ choice
 		Download Toolchain, build toolchain
 
 	config FREETZ_DOWNLOAD_TOOLCHAIN
-		bool "Use precompiled toolchains (x86 only)"
+		bool "Use precompiled i686 toolchains"
 		depends on FREETZ_DOWNLOAD_TOOLCHAIN_AVAILABLE
 
 	config FREETZ_BUILD_TOOLCHAIN
 		bool "Build own toolchains (4GB diskspace)"
-		depends on !FREETZ_DOWNLOAD_TOOLCHAIN_AVAILABLE || FREETZ_BUILD_TOOLCHAIN_ADDITIONAL
+		depends on !FREETZ_DOWNLOAD_TOOLCHAIN_AVAILABLE || !FREETZ_BUILD_TOOLCHAIN_HIDE
 
 endchoice # "Toolchains" #
 
