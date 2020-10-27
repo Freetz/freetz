@@ -1,6 +1,6 @@
 #!/bin/bash
-VERSION="r17352"
-rm -f out.raw out.kernel out.target
+
+VERSION="rLOCAL"
 
 evalconfig() {
 	echo -n .
@@ -14,6 +14,8 @@ evalconfig() {
 		echo ${FREETZ_TARGET_ARCH_ENDIANNESS_DEPENDENT}_gcc-${FREETZ_KERNEL_GCC_VERSION}_uClibc-${FREETZ_TARGET_UCLIBC_VERSION}${FREETZ_AVM_UCLIBC_NPTL_ENABLED/y/-nptl}$kernel
 	) >> out.raw
 }
+
+rm -f out.{raw,kernel,target}
 
 #r
 sed -nr 's/^ *dltc "(.*)".*/\1/p' $(dirname $(readlink -f $0))/dl-toolchains_make | while read evalopts; do evalconfig $evalopts; done
@@ -72,9 +74,9 @@ echo | tee -a out.kernel >> out.target
 done
 
 #a
-echo "cat out.kernel | grep -v '^#' | sort -u"
-echo "cat out.target | grep -v '^#' | sort -u"
-echo "# rm -f out.raw out.kernel out.target"
+cat out.kernel | grep -v '^#' | sort -u
+cat out.target | grep -v '^#' | sort -u
+rm -f out.{raw,kernel,target}
 #grep -v '^#' out.raw | sort -u 
 #grep -v '^#' out.raw | sort -u | grep uClibc | while read l; do grep "^$l$" -m1 -B1 out.raw | head -n1; done | sort
 #grep -v '^#' out.raw | sort -u | grep uClibc | while read l; do grep "^$l$" -m1 -B1 out.raw           ; done

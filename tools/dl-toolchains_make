@@ -1,12 +1,8 @@
 #!/bin/bash
 
-VERSION=r17352
-KERNEL_TOOLCHAIN_FILENAME_SUFFIX=freetz-${VERSION}-shared-glibc
-TARGET_TOOLCHAIN_FILENAME_SUFFIX=freetz-${VERSION}-shared-glibc
-
+VERSION="rLOCAL"
+SUFFIX=freetz-${VERSION}-shared-glibc
 TOOL_CONF=tools/config/conf
-DOT_CONFIG=.config
-DOWNLOADS=~/dl
 
 #
 # required kernel compiler versions:
@@ -59,8 +55,6 @@ DOWNLOADS=~/dl
 
 # grep -iE "NPTL|UCLIBC_VERSION=|GCC_[^XAMINCPU]*=|KERNEL_VERSION=|ARCH_.*=.$" .config
 
-mkdir -p $DOWNLOADS
-
 miniconfig() {
 local i
 for i in "$@"; do echo "$i=y"; done
@@ -69,23 +63,23 @@ FREETZ_USER_LEVEL_EXPERT=y
 FREETZ_SERIES_ALL=y
 FREETZ_BUILD_TOOLCHAIN=y
 FREETZ_TOOLCHAIN_32BIT=y
+FREETZ_TOOLCHAIN_CCACHE=n
 FREETZ_JLEVEL=9
 EOF
 }
 
 dltc() {
 	local options="$*"
-	optionsCommaSep=$(echo $options | sed -e 's| |,|g')
-	optionsUnderscoreSep=$(echo $options | sed -e 's| |_|g')
-	echo "Building toolchains for $optionsCommaSep"
+	echo "Building toolchains for ${options// /, }"
 	make distclean
 	rm -rf dl 2>/dev/null
-	ln -sf $DOWNLOADS dl
+	ln -sf ~/.freetz-dl dl
+	mkdir -p dl
 	make $TOOL_CONF
-	miniconfig $options > $DOT_CONFIG
+	miniconfig $options > .config
 	$TOOL_CONF --olddefconfig config/Config.in
-	cp -a $DOT_CONFIG $DOT_CONFIG.$optionsUnderscoreSep
-	make KTV=${KERNEL_TOOLCHAIN_FILENAME_SUFFIX} TTV=${TARGET_TOOLCHAIN_FILENAME_SUFFIX} toolchain
+	cp -a .config tc-${options// /_}.conf
+	make KTV=${SUFFIX} TTV=${SUFFIX} toolchain 2>&1 | tee tc-${options// /_}.make
 }
 
 # dltc "FREETZ_TYPE_WLAN    FREETZ_TYPE_FIRMWARE_04_XX"
