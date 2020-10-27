@@ -340,7 +340,7 @@ Currently supported devices and firmwares
 
 * __Fritz!Box Fon WLAN 7520__
   - 175.07.14 rev73182 {GER} [MESH18 NL4]
-  - 175.07.20 rev80404 {ALL} [PSQ19]
+  - 175.07.21 rev82822 {ALL} [PSQ19]
   - Alien 7530 {GER}
 * __Fritz!Box Fon WLAN 7530__
   - 164.07.02 rev62311 {GER}
