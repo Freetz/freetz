@@ -653,7 +653,7 @@
   * **<u>unfs3 0.9.22</u><a id='unfs3'></a>**<br>
     Userspace NFS v3 Server.
 
-  * **<u>unrar 5.4.5 (binary only)</u><a id='unrar'></a>**<br>
+  * **<u>unrar 6.0.1 (binary only)</u><a id='unrar'></a>**<br>
     Unarchiver for .rar files
 
   * **<u>usbids: USB IDs 0.0</u><a id='usbids'></a>**<br>
