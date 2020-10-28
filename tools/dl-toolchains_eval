@@ -75,7 +75,7 @@ done
 
 #a
 cat out.kernel | grep -v '^#' | sort -u
-cat out.target | grep -v '^#' | sort -u
+cat out.target | grep -v '^#' | grep -iv gcc.3 | sort -u
 rm -f out.{raw,kernel,target}
 #grep -v '^#' out.raw | sort -u 
 #grep -v '^#' out.raw | sort -u | grep uClibc | while read l; do grep "^$l$" -m1 -B1 out.raw | head -n1; done | sort
