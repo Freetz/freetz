@@ -304,7 +304,7 @@ Latest changes
     * udpxy 1.0.23-9
     * usbutils 007
     * umurmur 0.2.17
-    * unrar 5.5.8 (=rar 5.50)
+    * unrar 6.0.1
     * usbip 0.1.8
     * util-linux-ng 2.27.1
     * Vim 8.2.0769
