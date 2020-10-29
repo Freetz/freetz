@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2020.80)
+$(call PKG_INIT_BIN, 2020.81)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_SHA256:=d927941b91f2da150b2033f1a88b6a47999bf0afb1493a73e9216cffdb5d7949
+$(PKG)_SOURCE_SHA256:=48235d10b37775dbda59341ac0c4b239b82ad6318c31568b985730c788aac53b
 $(PKG)_SITE:=https://matt.ucc.asn.au/dropbear/releases,https://dropbear.nl/mirror/releases
 #$(PKG)_SITE:=hg@https://secure.ucc.asn.au/hg/dropbear
 
