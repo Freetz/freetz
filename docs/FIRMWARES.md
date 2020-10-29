@@ -443,7 +443,7 @@ Currently supported devices and firmwares
 * __Fritz!Repeater 3000__
   - 174.07.04 rev66458 {ALL}
   - 174.07.14 rev73940 {ALL} [MESH18 NL4]
-  - 174.07.20 rev81203 {ALL} [PSQ19]
+  - 174.07.21 rev83015 {ALL} [PSQ19]
 * __Fritz!Repeater 6000 (UNTESTED)__
   - 253.07.19 rev80524 {ALL} [PSQ19] (Inhaus)
 
