@@ -18,8 +18,7 @@
 # PID_FILE              /var/run/${DAEMON_BIN}.pid             pid-file for DAEMON
 # DAEMON_CFGFILE        /tmp/flash/${DAEMON}/${DAEMON}.cfg     config file for the daemon (typically used by startdaemon)
 
-export PATH=/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin:/mod/etc/init.d:/sbin:/bin:/usr/sbin:/usr/bin
-export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
+[ -r /var/env.daemon ] && . /var/env.daemon
 
 : ${DAEMON_LONG_NAME:=$DAEMON}
 : ${CONF_NAME:=$DAEMON}
@@ -195,7 +194,7 @@ modlib_startdaemon() {
 
 	startdaemon_pre
 	local rv_pre=$?
-	env - PATH="$PATH" LD_LIBRARY_PATH="$LD_LIBRARY_PATH" $DAEMON_ENV "$@" 1>&2
+	env - PATH="$PATH" LD_LIBRARY_PATH="$LD_LIBRARY_PATH" LANG="$LANG" $DAEMON_ENV "$@" 1>&2
 	local rv=$?
 	startdaemon_post
 	local rv_post=$?

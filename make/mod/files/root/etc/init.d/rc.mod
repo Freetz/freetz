@@ -2,7 +2,14 @@
 
 ## Store 'clean' environment for later use
 # overwrite AVM's version
-[ -z "$1" ] && env - /bin/sh -c 'VERBOSE_RC_CONF=n; . /etc/init.d/rc.conf; unset PWD; env' | sed -re 's/^([^=]+)=(.*)$/export \1='"'\2'"/ > /var/env.cache
+if [ -z "$1" ]; then
+       env - /bin/sh -c 'VERBOSE_RC_CONF=n; . /etc/init.d/rc.conf; unset PWD; env' | sed -re 's/^([^=]+)=(.*)$/export \1='"'\2'"/ > /var/env.cache
+       (
+               echo "export PATH='/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin:/mod/etc/init.d:/sbin:/bin:/usr/sbin:/usr/bin'"
+               echo "export LD_LIBRARY_PATH='/mod/lib:/mod/usr/lib'"
+               grep "^export LANG=" /var/env.cache
+       ) > /var/env.daemon
+fi
 
 DAEMON=mod
 . /etc/init.d/modlibrc
