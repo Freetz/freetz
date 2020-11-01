@@ -1,6 +1,6 @@
 --- src/chrtrans/makefile.in
 +++ src/chrtrans/makefile.in
-@@ -21,9 +21,17 @@
+@@ -21,6 +21,12 @@
  CFLAGS		= @CFLAGS@
  EXTRA_CPPFLAGS	= @EXTRA_CPPFLAGS@
  CPPFLAGS	= @CPPFLAGS@
@@ -11,14 +11,19 @@
 +HOSTDEFS	= -DHAVE_CONFIG_H
 +HOSTCPPFLAGS	= -DLINUX -D_GNU_SOURCE
  
- LIBS		= @LIBS@
+ WWWINC		= WWW/Library/Implementation
+ 
+@@ -32,7 +38,9 @@
+ BUILD_CPPFLAGS	= @BUILD_CPPFLAGS@ @DEFS@
+ 
+ BUILD_LIBS	= @BUILD_LIBS@
 +HOSTLIBS	= #
- LDFLAGS		= @LDFLAGS@
+ BUILD_LDFLAGS	= @BUILD_LDFLAGS@
 +HOSTLDFLAGS	= #
  
- INTLLIB		= @INTLDIR_MAKE@@INTLLIBS@
- 
-@@ -58,6 +66,15 @@
+ x		= @EXEEXT@
+ o		= .@BUILD_OBJEXT@
+@@ -52,6 +60,15 @@
  
  CTAGS		= @CTAGS@
  
@@ -34,16 +39,16 @@
  #
  # This file contains the font map for the default (hardware) font
  #
-@@ -123,7 +140,7 @@
+@@ -117,7 +134,7 @@
  C_SRC		= $(OBJS:$o=.c)
  
  $(MAKEUCTB) : $(OBJS)
--	$(BUILD_CC) $(CC_OPTS) $(BUILD_LDFLAGS) -o $@ $(OBJS) $(INTLLIB) $(BUILD_LIBS)
-+	$(HOSTCC) $(HOSTCC_OPTS) $(HOSTLDFLAGS) -o $@ $(OBJS) $(INTLLIB) $(HOSTLIBS)
+-	$(BUILD_CC) $(CC_OPTS) $(BUILD_LDFLAGS) -o $@ $(OBJS) $(BUILD_LIBS)
++	$(HOSTCC) $(HOSTCC_OPTS) $(HOSTLDFLAGS) -o $@ $(OBJS) $(HOSTLIBS)
  
  makeuctb$o : $(srcdir)/UCkd.h $(srcdir)/makeuctb.c
  
-@@ -131,11 +148,11 @@
+@@ -125,11 +142,11 @@
  
  .c$o:
  	@RULE_CC@
@@ -52,8 +57,8 @@
  
  .c.i:
  	@RULE_CC@
--	@ECHO_CC@$(BUILD_CPP) -C $(CPP_OPTS) $(srcdir)/$*.c >$@
-+	@ECHO_CC@$(HOSTCPP) -C $(HOSTCPP_OPTS) $(srcdir)/$*.c >$@
+-	@ECHO_CC@$(BUILD_CPP) $(CPP_OPTS) $(srcdir)/$*.c >$@
++	@ECHO_CC@$(HOSTCPP) $(HOSTCPP_OPTS) $(srcdir)/$*.c >$@
  
  .tbl.h:
  	./$(MAKEUCTB) $(srcdir)/$*.tbl $*.h

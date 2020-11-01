@@ -250,7 +250,7 @@ Latest changes
     * lighttpd 1.4.55
     * lsof 4.89
     * ltrace 0.7.91-git
-    * lynx 2.8.8
+    * lynx 2.8.9
     * mc (Midnight Commander) 4.8.25
     * minidlna 1.2.1
     * mpc 1.1.0
