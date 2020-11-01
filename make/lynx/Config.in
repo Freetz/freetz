@@ -12,3 +12,21 @@ config FREETZ_PACKAGE_LYNX
 		to files on the local system, as well as files on remote systems running
 		http, gopher, ftp, wais, nntp, finger, or cso/ph/qi servers, and
 		services accessible via logins to telnet, tn3270 or rlogin accounts.
+
+if FREETZ_PACKAGE_LYNX
+
+config FREETZ_PACKAGE_LYNX_WITH_SSL
+	bool "With https support"
+	select FREETZ_LIB_libcrypto
+	select FREETZ_LIB_libssl
+	select FREETZ_LIB_libdl
+	select FREETZ_OPENSSL_VERSION_PROMPT
+	default y
+
+config FREETZ_PACKAGE_LYNX_WITH_ZLIB
+	bool "With zlib support"
+	select FREETZ_LIB_libz
+	default y
+
+endif # FREETZ_PACKAGE_LYNX
+

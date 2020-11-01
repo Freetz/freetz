@@ -10,6 +10,9 @@ $(PKG)_TARGET_CFG:=$($(PKG)_DEST_DIR)/etc/$(pkg).cfg
 $(PKG)_LSS:=$($(PKG)_DIR)/samples/$(pkg).lss
 $(PKG)_TARGET_LSS:=$($(PKG)_DEST_DIR)/etc/$(pkg).lss
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_LYNX_WITH_SSL $(if $(FREETZ_PACKAGE_LYNX_WITH_SSL),FREETZ_OPENSSL_SHLIB_VERSION)
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_LYNX_WITH_ZLIB
+
 $(PKG)_CONFIGURE_OPTIONS += \
 	--enable-warnings \
 	--with-screen=ncurses \
@@ -28,7 +31,12 @@ $(PKG)_CONFIGURE_OPTIONS += \
 	--disable-source-cache \
 	--disable-trace
 
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_LYNX_WITH_SSL),--with-ssl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",--without-ssl)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_LYNX_WITH_ZLIB),--with-zlib="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",--without-zlib)
+
 $(PKG)_DEPENDS_ON += ncurses
+$(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_LYNX_WITH_SSL),openssl)
+$(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_LYNX_WITH_ZLIB),zlib)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
