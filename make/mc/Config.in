@@ -9,11 +9,15 @@ if FREETZ_PACKAGE_MC
 
 choice
 	prompt "Widget library"
-	default FREETZ_PACKAGE_MC_WITH_SLANG
+	default FREETZ_PACKAGE_MC_WITH_NCURSESW
 
 	config FREETZ_PACKAGE_MC_WITH_NCURSES
 	bool "Ncurses"
 	select FREETZ_LIB_libncurses
+
+	config FREETZ_PACKAGE_MC_WITH_NCURSESW
+	bool "Ncursesw"
+	select FREETZ_LIB_libncursesw
 
 	config FREETZ_PACKAGE_MC_WITH_SLANG
 	bool "S-Lang"

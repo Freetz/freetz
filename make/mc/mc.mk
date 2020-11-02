@@ -17,9 +17,18 @@ $(PKG)_DEPENDS_ON += slang
 $(PKG)_CONFIGURE_OPTIONS += --with-screen=slang
 endif
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_MC_WITH_NCURSESW
+ifeq ($(strip $(FREETZ_PACKAGE_MC_WITH_NCURSESW)),y)
+$(PKG)_DEPENDS_ON += ncursesw
+$(PKG)_CONFIGURE_ENV += ac_cv_search_addwstr="-lncursesw"
+$(PKG)_CONFIGURE_OPTIONS += --with-screen=ncurses
+$(PKG)_CONFIGURE_OPTIONS += --enable-utf8
+endif
+
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_MC_WITH_NCURSES
 ifeq ($(strip $(FREETZ_PACKAGE_MC_WITH_NCURSES)),y)
 $(PKG)_DEPENDS_ON += ncurses
+$(PKG)_CONFIGURE_ENV += ac_cv_search_addwstr="-lncurses"
 $(PKG)_CONFIGURE_OPTIONS += --with-screen=ncurses
 endif
 
