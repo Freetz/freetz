@@ -1,6 +1,6 @@
 menuconfig FREETZ_PACKAGE_NANO
 	bool "Nano 5.3 text editor (binary only)"
-	select FREETZ_LIB_libncurses
+	select FREETZ_LIB_libncurses if !FREETZ_PACKAGE_NANO_UTF8
 	default n
 	help
 		GNU GPL'd Pico clone with more functionality.
@@ -27,6 +27,13 @@ menuconfig FREETZ_PACKAGE_NANO
 		3.) Note that UTF8 support and spell checking is disabled by default.
 
 if FREETZ_PACKAGE_NANO
+
+config FREETZ_PACKAGE_NANO_UTF8
+	bool "With UTF8 support"
+	select FREETZ_LIB_libncursesw
+	default y
+	help
+		Use ncursesw for UTF8 support.
 
 config FREETZ_PACKAGE_NANO_TINY
 	bool "Tiny binary"
