@@ -11,12 +11,11 @@ config FREETZ_LIB_libncurses
 		Ncurses stands for "new curses", and is a replacement for the
 		discontinued 4.4 BSD classic curses.
 
-source "make/libs/ncurses/ncurses-Config.in"
+if FREETZ_LIB_libncurses
 
 config FREETZ_LIB_libform
 	bool "libform (libform.so)"
 	default n
-	select FREETZ_LIB_libncurses
 	help
 		The form library is a curses extension that supports easy programming of
 		on-screen forms for data entry and program control.
@@ -24,7 +23,6 @@ config FREETZ_LIB_libform
 config FREETZ_LIB_libmenu
 	bool "libmenu (libmenu.so)"
 	default n
-	select FREETZ_LIB_libncurses
 	help
 		The menu library is a curses extension that supports easy programming of
 		menu hierarchies with a uniform but flexible interface.
@@ -32,7 +30,6 @@ config FREETZ_LIB_libmenu
 config FREETZ_LIB_libpanel
 	bool "libpanel (libpanel.so)"
 	default n
-	select FREETZ_LIB_libncurses
 	help
 		The ncurses library by itself provides good support for screen displays
 		in which the windows are tiled (non-overlapping).
@@ -40,3 +37,8 @@ config FREETZ_LIB_libpanel
 		the visibility stack or pop to the top at runtime, the resulting book-
 		keeping can be tedious and difficult to get right. Hence the panels
 		library.
+
+endif # FREETZ_LIB_libncurses
+
+source "make/libs/ncurses/Config.in.terminfo"
+

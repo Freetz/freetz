@@ -257,6 +257,7 @@ Latest changes
     * mpfr 3.1.6
     * nano 5.3
     * ncftp-3.2.6
+    * ncurses 6.2
     * netatalk 2.2.5
     * ngircd 22
     * noip 2.1.9-1
