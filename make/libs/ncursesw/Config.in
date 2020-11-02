@@ -1,8 +1,8 @@
 
-source "make/libs/ncurses/Config.in.terminfo"
 
-config FREETZ_LIB_libncurses
-	bool "ncurses (libncurses.so)"
+
+config FREETZ_LIB_libncursesw
+	bool "ncursesw (libncursesw.so)"
 	select FREETZ_SHARE_terminfo
 	default n
 	help
@@ -13,29 +13,29 @@ config FREETZ_LIB_libncurses
 
 		Ncurses stands for "new curses", and is a replacement for the
 		discontinued 4.4 BSD classic curses.
+		
+		Ncursesw has additional wide-character (unicode) support.
+		Ncurses and Ncursesw libraries are source-compatible, but
+		not binary-compatible. 
 
+if FREETZ_LIB_libncursesw
 
-
-
-
-if FREETZ_LIB_libncurses
-
-config FREETZ_LIB_libform
-	bool "libform (libform.so)"
+config FREETZ_LIB_libformw
+	bool "libformw (libformw.so)"
 	default n
 	help
 		The form library is a curses extension that supports easy programming of
 		on-screen forms for data entry and program control.
 
-config FREETZ_LIB_libmenu
-	bool "libmenu (libmenu.so)"
+config FREETZ_LIB_libmenuw
+	bool "libmenuw (libmenuw.so)"
 	default n
 	help
 		The menu library is a curses extension that supports easy programming of
 		menu hierarchies with a uniform but flexible interface.
 
-config FREETZ_LIB_libpanel
-	bool "libpanel (libpanel.so)"
+config FREETZ_LIB_libpanelw
+	bool "libpanelw (libpanelw.so)"
 	default n
 	help
 		The ncurses library by itself provides good support for screen displays
@@ -45,5 +45,5 @@ config FREETZ_LIB_libpanel
 		keeping can be tedious and difficult to get right. Hence the panels
 		library.
 
-endif # FREETZ_LIB_libncurses
+endif # FREETZ_LIB_libncursesw
 

@@ -48,6 +48,9 @@ $(PKG)_CONFIGURE_OPTIONS += --with-shared
 $(PKG)_CONFIGURE_OPTIONS += --with-terminfo-dirs="$($(PKG)_TERMINFO_DIR)"
 $(PKG)_CONFIGURE_OPTIONS += --with-default-terminfo-dir="$($(PKG)_TERMINFO_DIR)"
 
+
+
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -101,7 +104,7 @@ $(pkg)-clean: $(pkg)-terminfo-clean
 	$(RM) \
 		$(NCURSES_LIBNAMES_SHORT:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/lib%*) \
 		$(NCURSES_LIBNAMES_SHORT:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/%.pc) \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcurses* \
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libncurses* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/{ncurses,ncurses_dll,term,curses,unctrl,termcap,eti,menu,form,panel}.h \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(NCURSES_LIBCONFIG_SHORT)
 
