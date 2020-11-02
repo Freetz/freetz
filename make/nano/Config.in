@@ -179,72 +179,71 @@ config FREETZ_PACKAGE_NANO_COLOR_SYNTAX
 		highlighting files" menu below (visible if this option is selected).
 		Files selected in the menu are also enabled automatically.
 
-menu "Nano syntax highlighting files"
-	depends on FREETZ_PACKAGE_NANO_COLOR_SYNTAX
+if FREETZ_PACKAGE_NANO_COLOR_SYNTAX
 
 config FREETZ_PACKAGE_NANO_SYNTAX_FILE_SH
 	bool "Syntax highlighting for .sh files"
-	default n
+	default y
 	help
 		Adds sh.nanorc to /usr/share/nano so you can use it in nanorc to
 		enable syntax highlighting for .sh files.
 
 config FREETZ_PACKAGE_NANO_SYNTAX_FILE_NANORC
 	bool "Syntax highlighting for .nanorc files"
-	default n
+	default y
 	help
 		Adds nanorc.nanorc to /usr/share/nano so you can use it in nanorc to
 		enable syntax highlighting for .nanorc files.
 
 config FREETZ_PACKAGE_NANO_SYNTAX_FILE_C
 	bool "Syntax highlighting for .c files"
-	default n
+	default y
 	help
 		Adds c.nanorc to /usr/share/nano so you can use it in nanorc to
 		enable syntax highlighting for .c files.
 
 config FREETZ_PACKAGE_NANO_SYNTAX_FILE_CSS
 	bool "Syntax highlighting for .css files"
-	default n
+	default y
 	help
 		Adds css.nanorc to /usr/share/nano so you can use it in nanorc to
 		enable syntax highlighting for .css files.
 
 config FREETZ_PACKAGE_NANO_SYNTAX_FILE_HTML
 	bool "Syntax highlighting for .html files"
-	default n
+	default y
 	help
 		Adds html.nanorc to /usr/share/nano so you can use it in nanorc to
 		enable syntax highlighting for .html files.
 
 config FREETZ_PACKAGE_NANO_SYNTAX_FILE_PHP
 	bool "Syntax highlighting for .php files"
-	default n
+	default y
 	help
 		Adds php.nanorc to /usr/share/nano so you can use it in nanorc to
 		enable syntax highlighting for .php files.
 
 config FREETZ_PACKAGE_NANO_SYNTAX_FILE_TEX
 	bool "Syntax highlighting for .tex files"
-	default n
+	default y
 	help
 		Adds tex.nanorc to /usr/share/nano so you can use it in nanorc to
 		enable syntax highlighting for .tex files.
 
 config FREETZ_PACKAGE_NANO_SYNTAX_FILE_PATCH
 	bool "Syntax highlighting for .patch files"
-	default n
+	default y
 	help
 		Adds patch.nanorc to /usr/share/nano so you can use it in nanorc to
 		enable syntax highlighting for .patch files.
 
 config FREETZ_PACKAGE_NANO_SYNTAX_FILE_XML
 	bool "Syntax highlighting for .xml files"
-	default n
+	default y
 	help
 		Adds xml.nanorc to /usr/share/nano so you can use it in nanorc to
 		enable syntax highlighting for .xml files.
 
-endmenu
+endif # FREETZ_PACKAGE_NANO_COLOR_SYNTAX
 
 endif # FREETZ_PACKAGE_NANO
