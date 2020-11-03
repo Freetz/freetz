@@ -1,5 +1,10 @@
 # NEWS
 
+ * __2020-11-02__<br>
+   Wegen Änderungen von Dateinamen durch die neuere Version von Ncurses kann es zu Problemen bei<br>
+   ```make``` kommen. Ein ```make distclean``` sollte helfen.<br>
+   Siehe [825600d4](https://github.com/Freetz-NG/freetz-ng/commit/825600d4c37e5784eeb650fc997447ffe882cb72)<br>
+
  * __2020-07-20__<br>
    Es kann zu einer ungültigen Kombination aus ```squashfs4``` Binary und Aufrufparametern in der ```fwmod```<br>
    kommen. Um dies zu verhindern: ```make squashfs4-le-dirclean ; make squashfs4-be-dirclean```<br>
