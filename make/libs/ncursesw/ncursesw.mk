@@ -21,6 +21,8 @@ $(PKG)_TERMINFO_DIR := /usr/share/terminfo
 
 
 
+$(PKG)_PKGCONFIG_DIR := /usr/lib/pkgconfig
+
 $(PKG)_CONFIGURE_ENV += cf_cv_func_nanosleep=yes
 $(PKG)_CONFIGURE_ENV += cf_cv_link_dataonly=yes
 # evaluated by running test program on target platform
@@ -47,6 +49,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-normal
 $(PKG)_CONFIGURE_OPTIONS += --with-shared
 $(PKG)_CONFIGURE_OPTIONS += --with-terminfo-dirs="$($(PKG)_TERMINFO_DIR)"
 $(PKG)_CONFIGURE_OPTIONS += --with-default-terminfo-dir="$($(PKG)_TERMINFO_DIR)"
+$(PKG)_CONFIGURE_OPTIONS += --with-pkg-config-libdir="$($(PKG)_PKGCONFIG_DIR)"
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-widec
 $(PKG)_CONFIGURE_OPTIONS += --with-build-cppflags=-D_GNU_SOURCE
@@ -65,7 +68,7 @@ $($(PKG)_LIBS_STAGING_DIR): $($(PKG)_LIBS_BUILD_DIR)
 		install.libs
 	$(PKG_FIX_LIBTOOL_LA) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(NCURSESW_LIBCONFIG_SHORT)
 	$(call PKG_FIX_LIBTOOL_LA,bindir datadir mandir) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(NCURSESW_LIBCONFIG_SHORT)
-	$(PKG_FIX_LIBTOOL_LA) $(NCURSESW_LIBNAMES_SHORT:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/pkgconfig/%.pc)
+	$(PKG_FIX_LIBTOOL_LA) $(NCURSESW_LIBNAMES_SHORT:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/%.pc)
 
 
 
