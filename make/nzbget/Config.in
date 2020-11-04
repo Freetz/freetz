@@ -29,9 +29,12 @@ config FREETZ_PACKAGE_NZBGET_WITH_CURSES
 config FREETZ_PACKAGE_NZBGET_WITH_TLS
 	bool "With SSL/TLS encryption support"
 	depends on FREETZ_PACKAGE_NZBGET
+	select FREETZ_LIB_libcrypto_WITH_EC
 	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_NZBGET_STATIC
 	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_NZBGET_STATIC
 	select FREETZ_LIB_libdl if ! FREETZ_PACKAGE_NZBGET_STATIC
+	select FREETZ_OPENSSL_VERSION_PROMPT
+	select FREETZ_OPENSSL_VERSION_1_REQUIRED
 	default n
 	help
 		Enables SSL/TLS-encrypted connection support.
