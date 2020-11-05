@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN, 16.02)
-$(PKG)_SOURCE:=p7zip_$($(PKG)_VERSION)_src_all.tar.bz2
+$(PKG)_SOURCE:=$(pkg)_$($(PKG)_VERSION)_src_all.tar.bz2
 $(PKG)_SOURCE_SHA256:=5eb20ac0e2944f6cb9c2d51dd6c4518941c185347d4089ea89087ffdd6e2341f
-$(PKG)_SITE:=https://downloads.sourceforge.net/p7zip/
+$(PKG)_SITE:=@SF/$(pkg)
 
 $(PKG)_BINARY := $($(PKG)_DIR)/bin/7z
 $(PKG)_TARGET_BINARY := $($(PKG)_DEST_DIR)/usr/bin/7z
