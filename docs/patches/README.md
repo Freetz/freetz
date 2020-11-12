@@ -382,7 +382,7 @@
     This patch removes Beta/Labor attributes from some (older) firmwares AVM released only as Betas so far.
 
   * **<u>PATCH_DISABLE_AVM_WATCHDOG: Disable AVM watchdog</u><a id='patch-disable-avm-watchdog'></a>**<br>
-    This disables the AVM watchdog on system start. The AVM watchdog reboots the device if - system start takes longer than 2-5 minutes - some defined AVM daemon crashes
+    This disables the AVM watchdog on system start. The AVM watchdog reboots the device if - system start takes longer than 2, 4 or 8 minutes - some defined AVM daemon crashes
 
   * **[PATCH_DSL_EXPERT: Patch extended DSL settings](PATCH_DSL_EXPERT.md)<a id='patch-dsl-expert'></a>**<br>
     Patches the extended dsl-settings from labor-dsl into all-in-one-firmwares.
