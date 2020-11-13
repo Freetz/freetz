@@ -1,0 +1,145 @@
+This patch has been created from AVM's opensrc packages:
+
+    diff -durN --no-dereference 6660.07.21 6660.07.22  > this.patch
+
+--- linux-4.9/drivers/regulator/int34d9-regulator.c	2020-06-26 07:47:14.000000000 +0200
++++ linux-4.9/drivers/regulator/int34d9-regulator.c	2020-08-25 12:15:35.000000000 +0200
+@@ -27,6 +27,14 @@
+ #include <linux/gpio/consumer.h>
+ #include <linux/regulator/int34d9-regulator.h>
+ 
++/* RCVNUM - Recovery Number Register
++ * Number of attempts to recover the system after a VR Fault occurred.
++ * Only bits [3:0] are changeable.
++ * Bits [7:4] are reserved.
++ */
++#define PUMA7_PMIC_RECOVER_COUNT 0x70
++#define PUMA7_PMIC_SHUTDOWN_REASON_REG 0x20
++
+ static int puma7_pmic_lpm_bbu = PUMA7_PMIC_LPM_CFG_BBU;
+ static int puma7_pmic_lpm_sb = PUMA7_PMIC_LPM_CFG_FAST_STANDBY;
+ static int puma7_pmic_lpm_dsb = PUMA7_PMIC_LPM_CFG_DEEP_STANDBY;
+@@ -66,6 +74,75 @@
+    return ret_val;
+ }
+ 
++static struct puma7_pmic *dev_to_puma7_pmic(struct device *dev)
++{
++	struct i2c_client *client = to_i2c_client(dev);
++
++	return i2c_get_clientdata(client);
++}
++
++static ssize_t pmic_shutdown_reason_show(struct device *dev,
++					struct device_attribute *attr,
++					char *buf)
++{
++	struct puma7_pmic *pmic = dev_to_puma7_pmic(dev);
++	s32 reg_val;
++
++	reg_val = puma7_pmic_read(pmic, PUMA7_PMIC_SHUTDOWN_REASON_REG);
++	if (reg_val < 0) {
++		dev_err(dev, "Failed to read PMIC shutdown reason: %d\n",
++				reg_val);
++		return reg_val;
++	}
++
++	return sprintf(buf, "0x%02x\n", reg_val);
++}
++
++static ssize_t pmic_recover_count_show(struct device *dev,
++					struct device_attribute *attr,
++					char *buf)
++{
++	struct puma7_pmic *pmic = dev_to_puma7_pmic(dev);
++	s32 reg_val;
++
++	reg_val = puma7_pmic_read(pmic, PUMA7_PMIC_RECOVER_COUNT);
++	if (reg_val < 0) {
++		dev_err(dev, "Failed to read PMIC counter: %d\n", reg_val);
++		return reg_val;
++	}
++
++	return sprintf(buf, "%d\n", reg_val);
++}
++
++static ssize_t pmic_recover_count_store(struct device *dev,
++					struct device_attribute *attr,
++					const char *buf, size_t count)
++{
++	struct puma7_pmic *pmic = dev_to_puma7_pmic(dev);
++	u8 value;
++	s32 ret;
++
++	ret = sscanf(buf, "%hhu", &value);
++	if (ret != 1 || value > 0x0F)
++		return -EINVAL;
++
++	ret =  puma7_pmic_write(pmic, PUMA7_PMIC_RECOVER_COUNT, value);
++	if (ret)
++		return ret;
++
++	return count;
++}
++
++static DEVICE_ATTR_RO(pmic_shutdown_reason);
++static DEVICE_ATTR_RW(pmic_recover_count);
++
++static struct attribute *pmic_attr_attrs[] = {
++	&dev_attr_pmic_shutdown_reason.attr,
++	&dev_attr_pmic_recover_count.attr,
++	NULL,
++};
++ATTRIBUTE_GROUPS(pmic_attr);
++
+ static int puma7_pmic_regulator_is_enabled(struct regulator_dev *rdev)
+ {
+    struct puma7_pmic *pmic = rdev_get_drvdata(rdev);
+@@ -435,6 +512,9 @@
+ 				ACPI_PUMA7_PMIC_DEVICE_NAME, pmic);
+    }
+ 
++	if (sysfs_create_groups(&dev->kobj, pmic_attr_groups))
++		dev_err(dev, "Failed to create PMIC sysfs group!");
++
+    if (ret == 0) {  
+       /* configure the PMIC */
+       if((ret = puma7_pmic_write(pmic, PUMA7_PMIC_LPMCTRL_REG, PUMA7_PMIC_LPM_CFG_ACTIVE)) < 0) {
+@@ -489,6 +569,8 @@
+       regulator_unregister(pmic->rdev[i]);
+    }
+ 
++   sysfs_remove_groups(&client->dev.kobj, pmic_attr_groups);
++
+    gpio_free(client->irq);
+    return 0;
+ }
+@@ -509,11 +591,11 @@
+ 
+ static struct i2c_driver puma7_pmic_driver = {
+ 	.probe = puma7_pmic_regulator_probe,
+-   .remove = puma7_pmic_regulator_remove,
++	.remove = puma7_pmic_regulator_remove,
+ 	.driver		= {
+ 		.name	= ACPI_PUMA7_PMIC_DEVICE_NAME,
+ 		.owner	= THIS_MODULE,
+-      .acpi_match_table = ACPI_PTR(puma7_pmic_acpi_match),
++		.acpi_match_table = ACPI_PTR(puma7_pmic_acpi_match),
+ 	},
+ 	.id_table	= puma7_pmic_id,
+ };
+@@ -534,4 +616,3 @@
+ MODULE_DESCRIPTION("PUMA7 PMIC voltage regulator driver");
+ MODULE_AUTHOR("Vinay Patel");
+ MODULE_LICENSE("GPL v2");
+-
+--- linux-4.9/.kernelvariables	2020-10-15 09:35:52.000000000 +0200
++++ linux-4.9/.kernelvariables	2020-10-15 10:07:10.000000000 +0200
+@@ -1,6 +1,6 @@
+ # vim: set autoread filetype=make:
+ #
+-# Auto-generated at build-80781
++# Auto-generated at build-82278
+ # while generating for Fritz_Box_HW252x
+ #
+ ARCH = x86
