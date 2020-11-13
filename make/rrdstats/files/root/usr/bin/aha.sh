@@ -73,7 +73,7 @@ dec2bin() {
 		bin="$(( $dec % 2 ))$bin"
 		dec="$(( $dec / 2 ))"
 	done
-	while [ ${#bin} -le 14 ]; do bin="0$bin"; done
+	while [ ${#bin} -le 17 ]; do bin="0$bin"; done
 	echo -n "$bin"
 }
 
@@ -123,24 +123,29 @@ raw_out() {
 		echo -e "\n"
 	done
 
-	min_len && echo "E DCBA 9876 54321 0 "
-	min_len && echo "| |||| |||| |||   | "
-	min_len && echo "| |||| |||| |||   +- Bit  0: HANFUN Gerät"
-	min_len && echo "| |||| |||| |||     "
-	min_len && echo "| |||| |||| ||+----- Bit  3: ?Action"
-	min_len && echo "| |||| |||| |+------ Bit  4: Alarm-Sensor"
-	min_len && echo "| |||| |||| +------- Bit  5: ?Trigger"
-	min_len && echo "| |||| ||||         "
-	min_len && echo "| |||| |||+--------- Bit  6: Heizkostenregler"
-	min_len && echo "| |||| ||+---------- Bit  7: Energiemessgerät"
-	min_len && echo "| |||| |+----------- Bit  8: Temperatursensor"
-	min_len && echo "| |||| +------------ Bit  9: Schaltsteckdose"
-	min_len && echo "| ||||              "
-	min_len && echo "| |||+-------------- Bit 10: DECT-Repeater"
-	min_len && echo "| ||+--------------- Bit 11: Mikrofon"
-	min_len && echo "| |+---------------- Bit 12: ?Bundle"
-	min_len && echo "| +----------------- Bit 13: HANFUN Unit"
-	min_len && echo "+------------------- Bit 14: ?Template"
+	min_len && echo "HGFE DCBA 9876 54321 0 "
+	min_len && echo "|||| |||| |||| ||||  | "
+	min_len && echo "|||| |||| |||| ||||  +- Bit  0: HANFUN Gerät"
+	min_len && echo "|||| |||| |||| ||||    "
+	min_len && echo "|||| |||| |||| |||+---- Bit  2: Lampe"
+	min_len && echo "|||| |||| |||| ||+----- Bit  3: ?Action"
+	min_len && echo "|||| |||| |||| |+------ Bit  4: Alarmsensor"
+	min_len && echo "|||| |||| |||| +------- Bit  5: Taster"
+	min_len && echo "|||| |||| ||||         "
+	min_len && echo "|||| |||| |||+--------- Bit  6: Heizkörperregler"
+	min_len && echo "|||| |||| ||+---------- Bit  7: Energiemessgerät"
+	min_len && echo "|||| |||| |+----------- Bit  8: Temperatursensor"
+	min_len && echo "|||| |||| +------------ Bit  9: Schaltsteckdose"
+	min_len && echo "|||| ||||              "
+	min_len && echo "|||| |||+-------------- Bit 10: DECT-Repeater"
+	min_len && echo "|||| ||+--------------- Bit 11: Mikrofon"
+	min_len && echo "|||| |+---------------- Bit 12: ?Bundle"
+	min_len && echo "|||| +----------------- Bit 13: HANFUN Unit"
+	min_len && echo "||||                   "
+	min_len && echo "|||+------------------- Bit 14: ?Template"
+	min_len && echo "||+-------------------- Bit 15: Schaltbar"
+	min_len && echo "|+--------------------- Bit 16: Dimmbar"
+	min_len && echo "+---------------------- Bit 17: Farbtemperatur"
 	echo
 }
 
