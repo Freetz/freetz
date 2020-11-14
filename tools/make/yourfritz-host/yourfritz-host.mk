@@ -8,6 +8,9 @@ YOURFRITZ_HOST_BASH_AS_SHEBANG += signimage/check_signed_image
 YOURFRITZ_HOST_BASH_AS_SHEBANG += signimage/generate_signing_key
 YOURFRITZ_HOST_BASH_AS_SHEBANG += signimage/sign_image
 
+YOURFRITZ_HOST_BASH_AS_SHEBANG += bootmanager/add_change_oem.sh
+YOURFRITZ_HOST_BASH_AS_SHEBANG += bootmanager/add_to_system_reboot.sh
+
 YOURFRITZ_HOST_BASH_AS_SHEBANG += eva_tools/eva_discover
 YOURFRITZ_HOST_BASH_AS_SHEBANG += eva_tools/eva_get_environment
 YOURFRITZ_HOST_BASH_AS_SHEBANG += eva_tools/eva_store_tffs
