@@ -7,10 +7,7 @@ rm_files "${FILESYSTEM_MOD_DIR}/etc/inetd.conf" # AVM Symlink to /var/tmp/inetd.
 
 # don't start inetd
 if [ -e "${FILESYSTEM_MOD_DIR}/lib/systemd/system/inetd.service" ]; then
-	rm_files "${FILESYSTEM_MOD_DIR}/lib/systemd/system/inetd.service"
-	for file in $(grep -l 'inetd.service' ${FILESYSTEM_MOD_DIR}/lib/systemd/system/*); do
-		modsed 's/inetd.service //g;s/ inetd.service//g;s/=inetd.service/=/g' "$file"
-	done
+	supervisor_delete_service "inetd"
 elif [ -e "${FILESYSTEM_MOD_DIR}/etc/init.d/S75-inetd" ]; then
 	rm_files "${FILESYSTEM_MOD_DIR}/etc/init.d/S75-inetd"
 else
