@@ -1,5 +1,21 @@
 #!/bin/bash
 
+# removes dependencies for (deleted) supervisor service "$1.service"
+supervisor_remove_dependency() {
+	local service="${1%.service}.service"
+	for file in $(grep -lP "(=| )${service}( |$)" ${FILESYSTEM_MOD_DIR}/lib/systemd/system/*); do
+		modsed -r "s/([= ])${service}( |$)/\1/g" "$file"
+	done
+}
+
+# deletes file of supervisor service "$1.service" & dependencies
+supervisor_delete_service() {
+	local service="${1%.service}.service"
+	rm_files "${FILESYSTEM_MOD_DIR}/lib/systemd/system/${service}"
+	supervisor_remove_dependency "${service}"
+}
+
+
 #linkbox_remove <menu-name>
 #removes links within a box on the left
 linkbox_remove() {
