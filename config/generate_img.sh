@@ -617,6 +617,11 @@ determine_() {
 	[ -e "$unpacked/bin/avmnexusd" ] && X="available" && in_b "FREETZ_AVM_HAS_NEXUS"
 	[ $DOSHOW -ge 2 ] && outp "nexus" "$X"
 
+	#UNTRUSTEDD
+	X="%"
+	[ -e "$unpacked/usr/bin/untrustedd" ] && X="available" && in_b "FREETZ_AVM_HAS_UNTRUSTEDD"
+	[ $DOSHOW -ge 2 ] && outp "untrustedd" "$X"
+
 	#PLCD
 	X="%"
 	[ -e "$unpacked/usr/sbin/plcd" -o -e "$unpacked/sbin/plcd" ] && X="available" && in_b "FREETZ_AVM_HAS_PLCD"

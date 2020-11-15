@@ -233,6 +233,9 @@
   * **[REMOVE_UMTSD: Remove UMTS (USB GSM)](REMOVE_UMTSD.md)<a id='remove-umtsd'></a>**<br>
     Remove UMTS support This patch will remove UMTS-dependent files from firmware. It saves about 12K compressed space in kernel.image.
 
+  * **<u>Remove UNTRUSTEDD</u><a id='remove-untrustedd'></a>**<br>
+    This removes the untrustedd daemon (10kB uncompressed) and related service script. Known so far: Nothing.
+
   * **[Remove UPnP (igdd/upnpd)](REMOVE_UPNP.md)<a id='remove-upnp'></a>**<br>
     Remove Universal Plug'n'Play daemon 'igdd/upnpd' and some more files used by it from firmware. Patch init scripts so they can cope with the non-existent binary. WARNING: Don't select this if you are using an AVM Repeater with Guest-Wlan! ATTENTION: Fritz!Fax relies on UPnP. Make sure you deactivate all UPnP features in the web menu before updating the firmware with this option. It may not be harmful not to deactivate it, but there is no guarantee. You can find the settings in the German web UI under Einstellungen System Netzwerkeinstellungen Statusinformationen ueber UPnP uebertragen (empfohlen)
 

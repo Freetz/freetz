@@ -236,6 +236,14 @@ config FREETZ_REMOVE_ASSISTANT_SIP
 		the web menu. With this patch you can't create new phones, but change and
 		use existing ones.
 
+config FREETZ_REMOVE_UNTRUSTEDD
+	bool "Remove UNTRUSTEDD"
+	default n
+	depends on FREETZ_AVM_HAS_UNTRUSTEDD
+	help
+		This removes the untrustedd daemon (10kB uncompressed) and related
+		service script. Known so far: Nothing.
+
 config FREETZ_REMOVE_PLCD
 	bool "Remove PLCD (powerline)"
 	default n
