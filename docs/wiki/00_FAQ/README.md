@@ -59,7 +59,7 @@
     * [Wie alt ist meine FritzBox?](FAQ.de.md#wie-alt-ist-meine-fritzbox)
     * [Wie viel **Flash** hat meine FritzBox 7270?](FAQ.de.md#wie-viel-flash-hat-meine-fritzbox-7270)
     * [Steuercodes für die Fritzbox](FAQ.de.md#steuercodes-für-die-fritzbox)
-    * [Hilfe, die Box ist total verkonfiguriert / Freetz "Not-AUS"](FAQ.de.md#hilfe-die-box-ist-total-verkonfiguriert-freetz-not-aus)
+    * [Hilfe, die Box ist total verkonfiguriert / Freetz "Not-AUS"](FAQ.de.md#hilfe-die-box-ist-total-verkonfiguriert--freetz-not-aus)
  - [FAQ [EN]](FAQ.en.md)
     * [Project name and history](FAQ.en.md#project-name-and-history)
     * [What is Freetz?](FAQ.en.md#what-is-freetz)
