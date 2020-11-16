@@ -297,7 +297,7 @@
 
   * **[haserl 0.9.35 (binary only)](../docs/make/haserl.md)<a id='haserl'></a>**<br>
     Haserl is a small program that uses shell or Lua script to create cgi web scripts. It is intended for environments where PHP or ruby are too big. A typical use is to run cgi scripts in an embedded environment, using a small web server, such as mini-httpd, lighty, or the server built into busybox. This package is mandatory
-     - [Using busybox httpd / inet](../docs/make/haserl.md#using-busybox-httpd-inet)
+     - [Using busybox httpd / inet](../docs/make/haserl.md#using-busybox-httpd--inet)
 
   * **[hd-idle 0.99](../docs/make/hd-idle.md)<a id='hd-idle'></a>**<br>
     Another idle-daemon for attached hard drives if sg3utils doesn't work as expected. This can happen with most low-cost USB drives.
@@ -446,7 +446,7 @@
      - [rc.custom](../docs/make/mod.md#rccustom)
      - [rc.external](../docs/make/mod.md#rcexternal)
      - [shutdown](../docs/make/mod.md#shutdown)
-     - [udev_first / udev_final](../docs/make/mod.md#udev-first-udev-final)
+     - [udev_first / udev_final](../docs/make/mod.md#udev-first--udev-final)
 
   * **[module-init-tools 3.12 (binary only)](../docs/make/module-init-tools.md)<a id='module-init-tools'></a>**<br>
     The module-init-tools (m-i-t) package provides many of the utilities needed by Linux systems for managing loadable Linux Kernel Modules. This includes depmod, insmod, rmmod, modprobe and tools like modinfo.
@@ -518,7 +518,7 @@
      - [ipt.(version).tar.gz](../docs/make/nhipt.md#iptversiontargz)
      - [Über *make menuconfig*](../docs/make/nhipt.md#über-make-menuconfig)
      - [ARBEITSWEISE:](../docs/make/nhipt.md#arbeitsweise)
-     - [Tipps & Literatur:](../docs/make/nhipt.md#tipps-literatur)
+     - [Tipps & Literatur:](../docs/make/nhipt.md#tipps--literatur)
      - [Bootprozess](../docs/make/nhipt.md#bootprozess)
      - [Konfigurationsdatei](../docs/make/nhipt.md#konfigurationsdatei)
      - [Dateien im freetz Paket](../docs/make/nhipt.md#dateien-im-freetz-paket)
@@ -573,7 +573,7 @@
 
   * **[OpenVPN 2.4.9/2.5.0](../docs/make/openvpn.md)<a id='openvpn'></a>**<br>
     VPN Server
-     - [Häufige Fragen / Howto](../docs/make/openvpn.md#häufige-fragen-howto)
+     - [Häufige Fragen / Howto](../docs/make/openvpn.md#häufige-fragen--howto)
      - [Konfigurationsanleitung](../docs/make/openvpn.md#konfigurationsanleitung)
      - [Portweiterleitung](../docs/make/openvpn.md#portweiterleitung)
      - [Static Key](../docs/make/openvpn.md#static-key)
@@ -581,7 +581,7 @@
      - [Routing vs. Bridging](../docs/make/openvpn.md#routing-vs-bridging)
      - [Fehlersuche: Ein paar Tips wenn es nicht gleich so klappt](../docs/make/openvpn.md#fehlersuche-ein-paar-tips-wenn-es-nicht-gleich-so-klappt)
      - [Verschlüsselung: Welcher "Cipher" ?](../docs/make/openvpn.md#verschlüsselung-welcher-cipher-)
-     - [DNS & Redirect all clients' traffic](../docs/make/openvpn.md#dns-redirect-all-clients-traffic)
+     - [DNS & Redirect all clients' traffic](../docs/make/openvpn.md#dns--redirect-all-clients-traffic)
      - [Diskussion](../docs/make/openvpn.md#diskussion)
      - [Neue, simple GUI (GUI2)](../docs/make/openvpn.md#neue-simple-gui-gui2)
      - [Weitere Konfigs anlegen](../docs/make/openvpn.md#weitere-konfigs-anlegen)
@@ -1098,7 +1098,7 @@
      - [Einrichtung](../docs/make/virtualip-cgi.md#einrichtung)
      - [Bekannte Probleme und Bugs](../docs/make/virtualip-cgi.md#bekannte-probleme-und-bugs)
      - [dsld-Syslogmeldung](../docs/make/virtualip-cgi.md#dsld-syslogmeldung)
-     - [Probleme mit OpenVPN / UDP](../docs/make/virtualip-cgi.md#probleme-mit-openvpn-udp)
+     - [Probleme mit OpenVPN / UDP](../docs/make/virtualip-cgi.md#probleme-mit-openvpn--udp)
      - [Probleme mit IPTV](../docs/make/virtualip-cgi.md#probleme-mit-iptv)
      - [Probleme mit dem SIP-Registrar Modus](../docs/make/virtualip-cgi.md#probleme-mit-dem-sip-registrar-modus)
 
