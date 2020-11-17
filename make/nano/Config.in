@@ -52,6 +52,7 @@ config FREETZ_PACKAGE_NANO_TINY
 config FREETZ_PACKAGE_NANO_HELP
 	bool "Online help"
 	depends on ! FREETZ_PACKAGE_NANO_TINY
+	select FREETZ_PACKAGE_NANO_MULTIBUFFER
 	default n
 	help
 		Show a list of available keyboard commands via Ctrl-G or F1. As the
@@ -138,6 +139,16 @@ config FREETZ_PACKAGE_NANO_MULTIBUFFER
 
 		This option adds about 4.4 KB to the minimum 182 KB
 		of Nano's non-tiny binary.
+
+config FREETZ_PACKAGE_NANO_MOUSE_CONTROL
+        bool "Mouse control"
+        default n
+        help
+                Nano has its own built-in mouse services, but they are limited.
+                They provide only the ability to move the cursor to the point
+                where you click, and to mark the beginning and end of a section
+                of text. Use the Alt-M key combination to toggle between using
+                the terminal's mouse services and nano's built-in mouse services.
 
 config FREETZ_PACKAGE_NANO_NANORC
 	bool "Nanorc startup file support"
