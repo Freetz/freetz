@@ -26,7 +26,7 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_NANO_WRAPPING_ROOT
 
 $(PKG)_CONFIGURE_OPTIONS += --without-slang
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
-$(PKG)_CONFIGURE_OPTIONS += --disable-mouse
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NANO_MOUSE_CONTROL),--enable-mouse,--disable-mouse)
 $(PKG)_CONFIGURE_OPTIONS += --disable-speller
 $(PKG)_CONFIGURE_OPTIONS += --disable-extra
 $(PKG)_CONFIGURE_OPTIONS += --with-wordbounds
