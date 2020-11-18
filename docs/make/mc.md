@@ -13,3 +13,10 @@ zugreifen kann wie auf lokale Verzeichnisse.
 [Wikipedia-Beitrag zum Midnight
 Commander](http://de.wikipedia.org/wiki/Midnight_Commander)
 
+Wenn Putty für die Verbindung zur Fritz!Box verwendet wird, sind folgende.
+Putty-Einstellungen zu empfehlen, um die korrekte Funktion und Darstellung.
+zu gewährleisten:
+
+    Window -> Translation -> Enable VT100 line drawing even in UTF-8 Mode
+    Window -> Colors -> Indicate bolded text by changing: The color
+    Connection -> Data -> Terminal-type string: xterm-color
