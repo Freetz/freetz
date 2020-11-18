@@ -146,10 +146,10 @@ start() {
 	wlan_up
 	motd
 
-	if [ -r /tmp/flash/mod/rc.custom ]; then
+	if [ -s /tmp/flash/mod/rc.custom ]; then
 		echo -n "Starting rc.custom ... "
-		sh /tmp/flash/mod/rc.custom 0</dev/null 1>/var/log/rc_custom.log 2>&1
-		echo "done."
+		nohup sh /tmp/flash/mod/rc.custom 0</dev/null 1>/var/log/rc_custom.log 2>&1 &
+		echo "asynchronous."
 	fi
 
 	touch /tmp/.modstarted
