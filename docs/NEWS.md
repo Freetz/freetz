@@ -1,9 +1,14 @@
 # NEWS
 
+ * __2020-11-18__<br>
+   Die rc.custom wird nun asynchron ausgeführt und kann den Startvorgang nicht mehr blockieren.<br>
+   Siehe [680b9ef6](https://github.com/Freetz-NG/freetz-ng/commit/680b9ef65c47a1eb4cbdcc18b0f9e9ff4799ba9e)<br>
+
  * __2020-11-02__<br>
    Wegen Änderungen von Dateinamen durch die neuere Version von Ncurses kann es zu Problemen bei<br>
    ```make``` kommen. Ein ```make distclean``` sollte helfen.<br>
    Siehe [825600d4](https://github.com/Freetz-NG/freetz-ng/commit/825600d4c37e5784eeb650fc997447ffe882cb72)<br>
+   Siehe [3a1864a2](https://github.com/Freetz-NG/freetz-ng/commit/3a1864a225479cd30305d9dc33369e7980ab2157)<br>
 
  * __2020-07-20__<br>
    Es kann zu einer ungültigen Kombination aus ```squashfs4``` Binary und Aufrufparametern in der ```fwmod```<br>
