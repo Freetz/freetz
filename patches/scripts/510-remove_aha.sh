@@ -5,7 +5,6 @@ for files in \
   usr/bin/ahamailer \
   lib/libaha.so* \
   usr/share/aha/ \
-  lib/systemd/system/aha.service \
   etc/init.d/S78-aha \
   usr/www/all/lua/ha_func_lib.lua \
   usr/www/all/net/home_auto_*.lua \
@@ -18,6 +17,7 @@ for files in \
   ; do
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
+supervisor_delete_service "aha"
 
 # 3272 doesn't have tr_smart_home
 if ! isFreetzType 3272; then

@@ -8,9 +8,8 @@ else
 	echo '/etc/init.d/rc.usbip reload >/dev/null' > "${FILESYSTEM_MOD_DIR}/sbin/printserv"
 fi
 
-rm_files \
-  "${FILESYSTEM_MOD_DIR}/lib/systemd/system/printer.service" \
-  "${FILESYSTEM_MOD_DIR}/etc/hotplug/udev-printer-lp"
+rm_files "${FILESYSTEM_MOD_DIR}/etc/hotplug/udev-printer-lp"
+supervisor_delete_service "printer"
 
 modsed \
   '/\/etc\/hotplug\/udev-printer-lp/d' \
