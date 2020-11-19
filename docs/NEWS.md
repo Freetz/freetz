@@ -10,6 +10,10 @@
    Siehe [825600d4](https://github.com/Freetz-NG/freetz-ng/commit/825600d4c37e5784eeb650fc997447ffe882cb72)<br>
    Siehe [3a1864a2](https://github.com/Freetz-NG/freetz-ng/commit/3a1864a225479cd30305d9dc33369e7980ab2157)<br>
 
+ * __2020-10-13__<br>
+   Für Patches von Packages kann Patchlevel 0-9 genutzt werden. Autofix erstellt immer Patches mit Level 0.<br>
+   Siehe [050b65e7](https://github.com/Freetz-NG/freetz-ng/commit/050b65e721f81885ddcbc35878a6dc51128a3806)<br>
+
  * __2020-07-20__<br>
    Es kann zu einer ungültigen Kombination aus ```squashfs4``` Binary und Aufrufparametern in der ```fwmod```<br>
    kommen. Um dies zu verhindern: ```make squashfs4-le-dirclean ; make squashfs4-be-dirclean```<br>
