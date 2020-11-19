@@ -25,6 +25,7 @@ Currently supported devices and firmwares
 ### Not supported devices
 
   * Repeater 310, 600 v1+v2 & 1160: No LAN ports, so a recovery is not possible.
+  * Fritz!Box 7530ax & 5530 and Repeater 6000: Devices with unsupported FIT image format.
 
 ### Fritz!Box (2xxx)
 
