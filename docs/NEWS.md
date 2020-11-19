@@ -14,6 +14,10 @@
    Für Patches von Packages kann Patchlevel 0-9 genutzt werden. Autofix erstellt immer Patches mit Level 0.<br>
    Siehe [050b65e7](https://github.com/Freetz-NG/freetz-ng/commit/050b65e721f81885ddcbc35878a6dc51128a3806)<br>
 
+ * __2020-09-26__<br>
+   Mit dem Script ```tools/image2inmemory``` können inmemory-Dateien von Images für "nand"-Geräte erstellt werden.<br>
+   Siehe [a8ec702e](https://github.com/Freetz-NG/freetz-ng/commit/a8ec702e382705d29a9dee02b28e693358c5cae5)<br>
+
  * __2020-07-20__<br>
    Es kann zu einer ungültigen Kombination aus ```squashfs4``` Binary und Aufrufparametern in der ```fwmod```<br>
    kommen. Um dies zu verhindern: ```make squashfs4-le-dirclean ; make squashfs4-be-dirclean```<br>
