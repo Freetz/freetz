@@ -72,6 +72,7 @@ Latest changes
   * bzimage2eva / eva2bzimage: conversion tools for PUMA6 kernels
   * patchelf: small utility to modify the dynamic linker and RPATH of ELF executables
   * uimg: tool to pack/unpack PUMA7 .uimg files (Intel Unified Image v3)
+  * image2inmemory: creates an in-memory image for nand/ram-boot devices, uses latest.image by default
 
 - New patches (read online help for more info):
     * udevmount: extends storage mounting of udev
@@ -177,9 +178,8 @@ Latest changes
     * The link ./images/latest.image points always to the latest successfully created firmware.
 
 - Updated tools and hooks:
-    * push_firmware: updated for ram-boot and dual-boot devices. Use it by execute "make push-firmware"
-      to flash the latest compiled image or use "./tools/push_firmware" for more options. The inmemory-image
-      format is deprecated and no longer needed, but still selectable.
+    * push_firmware: updated for uimg, ram-boot (nand) and dual-boot (docsis) devices. Use it by execute
+     "make push-firmware" to flash the latest compiled image or use "./tools/push_firmware" for more options.
 
 - Updated patches:
     * All selectable patches are expected to work. If a patch fails, report it! Disable the
