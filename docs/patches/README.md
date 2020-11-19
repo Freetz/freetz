@@ -222,7 +222,7 @@
     Removes the file /usr/bin/tr069fwupdate, needed for updating the firmware of dect devices.
 
   * **<u>REMOVE_TR069_HTTPSDL: Remove httpsdl</u><a id='remove-tr069-httpsdl'></a>**<br>
-    Removes the file /usr/bin/httpsdl, used by: * tr069/fwupdate, you have removed it * firmware updater, with Freetz you don't want it * some more ? This saves 15-45 KB of uncompressed data size.
+    Removes the file /usr/bin/httpsdl, used by: * tr069/fwupdate, you have removed it * firmware updater, with Freetz you don't want it * live-pictures from door clock (TFE) * some more ? This saves 15-45 KB of uncompressed data size.
 
   * **<u>REMOVE_TR069_PROVIDERS: Remove ISP db</u><a id='remove-tr069-providers'></a>**<br>
     Removes /etc/default.${BOX}/${OEM}/providers-${ALC}.tar  files containing the defaults for many ISPs. Every branding has such a file with up to 310 KB of uncompressed data size for each. WARNING: Enable this patch only if - you already have configured your internet connection, and - don't use any predefined ISP.
