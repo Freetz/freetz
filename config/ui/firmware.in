@@ -671,6 +671,15 @@ choice
 		select FREETZ_AVM_VERSION_07_2X
 		depends on FREETZ_AVM_HAS_FIRMWARE_07_2X
 
+	config FREETZ_TYPE_FIRMWARE_07_25_LABOR
+		bool "FRITZ!OS 07.24 Labor"
+		select FREETZ_AVM_VERSION_07_25
+		select FREETZ_DL_DETECT_IMAGE_NAME
+		depends on FREETZ_AVM_HAS_FIRMWARE_07_25_LABOR && FREETZ_SHOW_ADVANCED
+		help
+			Enable this to use an AVM Labor firmware as base for modding.
+			For more details see <http://www.avm.de/Labor/>.
+
 endchoice # "Firmware version" #
 
 comment " >> This firmware fits on AVM and AVME devices"
@@ -709,7 +718,8 @@ config FREETZ_TYPE_FIRMWARE_LABOR
 	bool
 	default y
 	depends on \
-		FREETZ_TYPE_FIRMWARE_07_2X_LABOR
+		FREETZ_TYPE_FIRMWARE_07_2X_LABOR || \
+		FREETZ_TYPE_FIRMWARE_07_25_LABOR
 
 ###
 ### Warning messages

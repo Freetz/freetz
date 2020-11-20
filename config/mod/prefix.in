@@ -95,8 +95,7 @@ config FREETZ_TYPE_PREFIX
 
 config FREETZ_TYPE_PREFIX_LABOR_FIRMWARE
 	string
-	default "_beta"             if FREETZ_TYPE_FIRMWARE_LABOR_BETA
-	default "_labor"            if FREETZ_TYPE_FIRMWARE_LABOR_TEST || FREETZ_TYPE_FIRMWARE_07_2X_LABOR
+	default "_labor"            if FREETZ_TYPE_FIRMWARE_LABOR
 	default "_inhaus"           if FREETZ_TYPE_FIRMWARE_INHAUS
 
 config FREETZ_TYPE_PREFIX_SERIES_SUBDIR
@@ -112,6 +111,7 @@ config FREETZ_TYPE_PREFIX_SERIES_SUBDIR
 	default "07_0X"             if FREETZ_AVM_VERSION_07_0X
 	default "07_1X"             if FREETZ_AVM_VERSION_07_1X
 	default "07_2X"             if FREETZ_AVM_VERSION_07_2X
+	default "07_25"             if FREETZ_AVM_VERSION_07_25
 
 config FREETZ_TYPE_PREFIX_ALIEN_HARDWARE
 	string

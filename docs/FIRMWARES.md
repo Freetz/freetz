@@ -178,6 +178,7 @@ Currently supported devices and firmwares
   - 162.07.03 rev68723 {ALL}
   - 162.07.13 rev73668 {ALL} [MESH18 NL3]
   - 162.07.21 rev82271 {ALL} [PSQ19]
+  - 162.07.24 rev00000 {ALL} (Labor)
 
 ### Fritz!Box Fon WLAN (70xx)
 
@@ -332,6 +333,7 @@ Currently supported devices and firmwares
   - 113.07.01 rev61484 {INT}
   - 113.07.12 rev70401 {INT} [MESH18 NL2]
   - 113.07.21 rev81779 {ALL} [PSQ19]
+  - 113.07.24 rev00000 {ALL} (Labor)
 
 ### Fritz!Box Fon WLAN (75xx)
 
@@ -385,6 +387,7 @@ Currently supported devices and firmwares
   - 154.07.01 rev61989 {INT}
   - 154.07.13 rev74390 {INT} [MESH18 NL3]
   - 154.07.21 rev82154 {ALL} [PSQ19]
+  - 154.07.24 rev00000 {ALL} (Labor)
 * __Fritz!Box Fon WLAN 7590 AX (UNTESTED)__
   - 259.07.19 rev80575 {ALL} [PSQ19] (Inhaus)
 
