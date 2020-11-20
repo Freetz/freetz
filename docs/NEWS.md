@@ -7,8 +7,10 @@
  * __2020-11-02__<br>
    Wegen Änderungen von Dateinamen durch die neuere Version von Ncurses kann es zu Problemen bei<br>
    ```make``` kommen. Ein ```make distclean``` sollte helfen.<br>
-   Siehe [825600d4](https://github.com/Freetz-NG/freetz-ng/commit/825600d4c37e5784eeb650fc997447ffe882cb72)<br>
-   Siehe [3a1864a2](https://github.com/Freetz-NG/freetz-ng/commit/3a1864a225479cd30305d9dc33369e7980ab2157)<br>
+   Siehe
+   [825600d4](https://github.com/Freetz-NG/freetz-ng/commit/825600d4c37e5784eeb650fc997447ffe882cb72) /
+   [3a1864a2](https://github.com/Freetz-NG/freetz-ng/commit/3a1864a225479cd30305d9dc33369e7980ab2157)
+   <br>
 
  * __2020-10-13__<br>
    Für Patches von Packages kann Patchlevel 0-9 genutzt werden. Autofix erstellt immer Patches mit Level 0.<br>
@@ -17,6 +19,10 @@
  * __2020-09-26__<br>
    Mit dem Script ```tools/image2inmemory``` können inmemory-Dateien von Images für "nand"-Geräte erstellt werden.<br>
    Siehe [a8ec702e](https://github.com/Freetz-NG/freetz-ng/commit/a8ec702e382705d29a9dee02b28e693358c5cae5)<br>
+
+ * __2020-08-17__<br>
+   Es können keine inmemory-Dateien mehr direkt mit ```make``` erstellt werden.<br>
+   Siehe [d2bd1d25](https://github.com/Freetz-NG/freetz-ng/commit/d2bd1d25a66534dcea5db6f009f26c5ca238ef62)<br>
 
  * __2020-07-20__<br>
    Es kann zu einer ungültigen Kombination aus ```squashfs4``` Binary und Aufrufparametern in der ```fwmod```<br>
