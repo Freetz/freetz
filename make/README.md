@@ -292,7 +292,7 @@
     Client to build a tunnel to the ipv6 network (see http://go6.net). The binary will be installed as /usr/sbin/gw6c and CGI frontend will be provided for a simple configuration. A sample can be found in /usr/share/gw6/.
      - [Alternativen](../docs/make/gw6.md#alternativen)
 
-  * **<u>HAProxy 1.8.26</u><a id='haproxy'></a>**<br>
+  * **<u>HAProxy 1.8.27</u><a id='haproxy'></a>**<br>
     haproxy is a loadbalancer.
 
   * **[haserl 0.9.35 (binary only)](../docs/make/haserl.md)<a id='haserl'></a>**<br>
@@ -809,7 +809,7 @@
     Streamripper records mp3 and ogg streams. For shoutcast style streams it finds the "meta data" or track separation data, and uses that as a marker for where the track should be separated.
      - [Verwendete Bibliotheken](../docs/make/streamripper.md#verwendete-bibliotheken)
 
-  * **[Stunnel 5.56](../docs/make/stunnel.md)<a id='stunnel'></a>**<br>
+  * **[Stunnel 5.57](../docs/make/stunnel.md)<a id='stunnel'></a>**<br>
     Stunnel universal SSL proxy
      - [Konfiguration](../docs/make/stunnel.md#konfiguration)
 
