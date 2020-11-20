@@ -215,7 +215,7 @@ Latest changes
     * gmp 6.1.2
     * gnu-make 4.2.1
     * gnutls 3.5.19
-    * haproxy 1.8.26
+    * haproxy 1.8.27
     * haserl 0.9.35
     * hplip 3.14.6
     * htop 1.0.3
@@ -294,7 +294,7 @@ Latest changes
     * sqlite 3.31.1
     * sslh 1.19c
     * strace 4.9 (kernel-2.6.13) / 5.0 (all other kernel versions)
-    * stunnel 5.56
+    * stunnel 5.57
     * subversion 1.8.19/1.9.12
     * tinc 1.0.36/1.1pre17
     * tinyproxy 1.8.4
