@@ -1336,7 +1336,7 @@ verstellt, dass die Box nicht mehr erreichbar ist. Auch in so einem Fall
 gibt es noch eine Möglichkeit vor dem Recover:
 
 [Den Freetz "Not-Aus"
-Schalter](http://www.voipfans.de/showthread.php?p=1001087).
+Schalter](https://www.ip-phone-forum.de/threads/155770/post-1000573).
 
 Wenn der Parameter *kernel_args* den Eintrag `ds_off=y` enthält, wird
 der Haupteil von Freetz nicht mehr gestartet (genauer wird
