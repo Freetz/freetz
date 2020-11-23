@@ -14,12 +14,14 @@ Mit Wireguard kann ein VPN aufgebaut werden. Es ist schneller als [OpenVPN](open
 
 ### Datendurchsatz
 Erfahrungswerte mit verschiedener Hardware.
-|  Client  |     Server     |    Download    |     Upload    |                                          Quelle                                     |
-| -------- | -------------- | -------------- | ------------- | ----------------------------------------------------------------------------------- |
-| Computer | Raspberry PI 4 | min 100 MBit/s | min 45 MBit/s | [cuma](https://github.com/Freetz-NG/freetz-ng/pull/101#issuecomment-716029888)      |
-| Computer | Fritz!Box 7590 | min  85 MBit/s | min 40 MBit/s | cuma                                                                                |
-| Computer | Fritz!Box 7490 | max  35 MBit/s | min 45 MBit/s | cuma                                                                                |
-| Computer | Fritz!Box 7520 | ca   35 MBit/s | ca  35 MBit/s | [wall007](https://github.com/Freetz-NG/freetz-ng/issues/118#issuecomment-731734627) |
+```
+|  Client  |     Server     |    Download    |     Upload    | Quelle  |
+| -------- | -------------- | -------------- | ------------- | ------- |
+| Computer | Raspberry PI 4 | min 100 MBit/s | min 45 MBit/s | cuma    |
+| Computer | Fritz!Box 7590 | min  85 MBit/s | min 40 MBit/s | cuma    |
+| Computer | Fritz!Box 7490 | max  35 MBit/s | min 45 MBit/s | cuma    |
+| Computer | Fritz!Box 7520 | ca   35 MBit/s | ca  35 MBit/s | wall007 |
+```
 
 ### Konfiguration für einen Wireguard-Server auf der Fritzbox mit einem PC erstellen
 
