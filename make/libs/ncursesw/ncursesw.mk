@@ -4,6 +4,8 @@ $(PKG)_SOURCE:=ncurses-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_SHA256:=30306e0c76e0f9f1f0de987cf1c82a5c21e1ce6568b9227f7da5b71cbea86c9d
 $(PKG)_SITE:=@GNU/$(pkg)
 
+$(PKG)_HOST_DEPENDS_ON += ncurses-host
+
 $(PKG)_LIBCONFIG_SHORT := ncursesw6-config
 $(PKG)_LIBNAMES_SHORT := ncursesw formw menuw panelw
 $(PKG)_LIBNAMES_LONG := $($(PKG)_LIBNAMES_SHORT:%=lib%.so.$($(PKG)_LIB_VERSION))
@@ -59,7 +61,9 @@ define $(PKG)_CUSTOM_UNPACK
 	$(TAR) xzf $(1) --strip-components=1 -C $($(PKG)_DIR)
 endef
 
+ifneq ($(strip $(DL_DIR)/$(NCURSESW_SOURCE)), $(strip $(DL_DIR)/$(NCURSES_HOST_SOURCE)))
 $(PKG_SOURCE_DOWNLOAD)
+endif
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
