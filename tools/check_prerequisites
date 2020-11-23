@@ -1,43 +1,23 @@
 #!/bin/bash
 
-LDCONFIG=/sbin/ldconfig
-
 error() {
 	echo $* >&2
-}
-
-check_program() {
-	which $1 > /dev/null 2>&1 && [ -x $(which $1) ]
-	return $?
-}
-
-check_lib() {
-	/sbin/ldconfig -p | grep "^[[:space:]]*$1 " > /dev/null
-	return $?
-}
-
-check_header() {
-	[ -n "$(find /usr/include/ /usr/local/include/ -path "*/$1" 2>/dev/null)" ]
-	return $?
+	exit 1
 }
 
 check_requisite() {
 	case "$2" in
 		program)
-			check_program "$@"
-			return $?
+			[ -x "$(which $1 2>/dev/null)" ]
 			;;
 		lib)
-			check_lib "$@"
-			return $?
+			ldconfig -p | grep -q "^[[:space:]]*$1 "
 			;;
 		header)
-			check_header "$@"
-			return $?
+			[ -n "$(find /usr/include/ /usr/local/include/ -path "*/$1" 2>/dev/null)" ]
 			;;
 		*)
 			error "Unknown requisite type: $2"
-			exit 1
 			;;
 	esac
 }
@@ -61,7 +41,6 @@ failed_requisite() {
 			;;
 		*)
 			error "Unknown requisite type: $2"
-			exit 1
 			;;
 	esac
 }
@@ -85,19 +64,13 @@ while [ $# -gt 0 ]; do
 			warn=false
 			;;
 		-w|--warn)
-			if [ "" != "$parser" ]; then
-				warn=true
-			fi
+			[ -n "$parser" ] && warn=true
 			;;
 		*)
-			if [ "" != "$parser" ]; then
-				req[${#req[*]}]="$1"
-				req[${#req[*]}]=$parser
-				req[${#req[*]}]=$warn
-			else
-				error "Invalid argument: $1"
-				exit 1
-			fi
+			[ -z "$parser" ] && error "Invalid argument: $1"
+			req[${#req[*]}]="$1"
+			req[${#req[*]}]=$parser
+			req[${#req[*]}]=$warn
 			warn=false
 	esac
 	shift
@@ -108,11 +81,10 @@ i=0
 while [ $i -lt ${#req[*]} ]; do
 	if ! check_requisite "${req[$i]}" ${req[$((i+1))]} ${req[$((i+2))]}; then
 		failed_requisite "${req[$i]}" ${req[$((i+1))]} ${req[$((i+2))]}
-		if ! ${req[$((i+2))]}; then
-			err=1
-		fi
+		${req[$((i+2))]} || err=1
 	fi
 	i=$((i+3))
 done
 
 exit $err
+
