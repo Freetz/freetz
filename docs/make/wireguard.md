@@ -15,7 +15,7 @@ Mit Wireguard kann ein VPN aufgebaut werden. Es ist schneller als [OpenVPN](open
 ### Datendurchsatz
 Erfahrungswerte mit verschiedener Hardware.
 |  Client  |     Server     |    Download    |     Upload    |                                          Quelle                                     |
-|:--------:|:--------------:|:--------------:|:-------------:|:-----------------------------------------------------------------------------------:|
+| -------- | -------------- | -------------- | ------------- | ----------------------------------------------------------------------------------- |
 | Computer | Raspberry PI 4 | min 100 MBit/s | min 45 MBit/s | [cuma](https://github.com/Freetz-NG/freetz-ng/pull/101#issuecomment-716029888)      |
 | Computer | Fritz!Box 7590 | min  85 MBit/s | min 40 MBit/s | cuma                                                                                |
 | Computer | Fritz!Box 7490 | max  35 MBit/s | min 45 MBit/s | cuma                                                                                |
