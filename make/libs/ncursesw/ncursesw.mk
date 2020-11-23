@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 6.2)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=78c4ede0c11f05e98b0ce5ca0e427f97028e30a92a5bfe56321a30a924c9614a
+$(PKG)_SOURCE:=ncurses-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_SHA256:=30306e0c76e0f9f1f0de987cf1c82a5c21e1ce6568b9227f7da5b71cbea86c9d
 $(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_LIBCONFIG_SHORT := ncursesw6-config
@@ -53,6 +53,11 @@ $(PKG)_CONFIGURE_OPTIONS += --with-pkg-config-libdir="$($(PKG)_PKGCONFIG_DIR)"
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-widec
 $(PKG)_CONFIGURE_OPTIONS += --with-build-cppflags=-D_GNU_SOURCE
+
+define $(PKG)_CUSTOM_UNPACK
+	mkdir -p $($(PKG)_DIR); \
+	$(TAR) xzf $(1) --strip-components=1 -C $($(PKG)_DIR)
+endef
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
