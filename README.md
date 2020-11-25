@@ -31,11 +31,6 @@ More features - less bugs!
   tools/push_firmware -h
 ```
 
-### Update GIT:
-```
-  git pull
-```
-
 ### Show GIT states:
 ```
   git status
@@ -46,6 +41,11 @@ More features - less bugs!
 ### Delete local changes:
 ```
   git fetch --all --prune ; git reset --hard origin/HEAD ; git clean -fd
+```
+
+### Update GIT:
+```
+  git pull
 ```
 
 ### Checkout old revision:
