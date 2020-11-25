@@ -48,6 +48,15 @@ More features - less bugs!
   git fetch --all --prune ; git reset --hard origin/HEAD ; git clean -fd
 ```
 
+### Checkout old revision:
+```
+  git checkout HASH-OF-COMMIT # -b NEW-BRANCH
+```
+### Checkout another branch:
+```
+  git checkout EXISTING-BRANCH
+```
+
 ### Mirrors:
 ```
   git clone https://gitlab.com/Freetz-NG/freetz-ng ~/freetz-ng
