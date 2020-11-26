@@ -4,12 +4,20 @@ menu "Toolchain options"
 config FREETZ_DOWNLOAD_TOOLCHAIN_AVAILABLE
 	bool
 	depends on FREETZ_REAL_DEVELOPER_ONLY__DLTCS || \
+		FREETZ_DOWNLOAD_TOOLCHAIN_EXPERIMENTAL || \
 		(FREETZ_AVM_VERSION_06_9X_MAX && \
 		!FREETZ_SYSTEM_TYPE_IPQ40xx && \
 		!FREETZ_SYSTEM_TYPE_PUMA6 && \
 		!FREETZ_SYSTEM_TYPE_QCA956x && \
 		!FREETZ_SEPARATE_AVM_UCLIBC )
 	default y
+
+config FREETZ_DOWNLOAD_TOOLCHAIN_EXPERIMENTAL
+	bool "Use EXPERIMENTAL precompiled toolchains"
+	default n
+	help
+		Yes, i am able to read this help and
+		know the meaning of EXPERIMENTAL.
 
 config FREETZ_BUILD_TOOLCHAIN_HIDE
 	bool "Hide option to build own toolchains"
