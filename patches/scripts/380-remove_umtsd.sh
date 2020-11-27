@@ -28,6 +28,7 @@ if [ "$FREETZ_AVM_VERSION_07_0X_MIN" == "y" ]; then
 	if [ "$FREETZ_AVM_VERSION_07_2X_MIN" == "y" ]; then
 		# configd execs mobiled
 		echo -e '#!/bin/sh\nexit 0' > "${FILESYSTEM_MOD_DIR}/bin/mobiled"
+		supervisor_delete_service "mobiled"
 	else
 		rm_files \
 		  "${FILESYSTEM_MOD_DIR}/bin/mobiled" \
