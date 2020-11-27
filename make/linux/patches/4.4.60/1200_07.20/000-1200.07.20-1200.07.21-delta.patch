@@ -1,0 +1,323 @@
+This patch has been created from AVM's opensrc packages:
+
+    diff -durN --no-dereference 1200.07.20 1200.07.21 > this.patch
+
+--- linux-4.4/arch/arm/boot/dts/Fritz_Box_HW249-0.dts	2020-06-12 15:45:57.000000000 +0200
++++ linux-4.4/arch/arm/boot/dts/Fritz_Box_HW249-0.dts	2020-10-01 11:11:07.000000000 +0200
+@@ -305,10 +305,14 @@
+ 			value = <50>;
+ 			param = <AVM_DEF_HW_PARAM_GPIO_OUT_ACTIVE_LOW>;
+ 		};
+-		led_connect: gpio_avm_led_pairing {
++		led_connect_g: gpio_avm_led_pairing_g {
+ 			value = <45>;
+ 			param = <AVM_DEF_HW_PARAM_GPIO_OUT_ACTIVE_HIGH>;
+ 		};
++		led_connect_y: gpio_avm_led_pairing_y {
++			value = <46>;
++			param = <AVM_DEF_HW_PARAM_GPIO_OUT_ACTIVE_LOW>;
++		};
+ 		gpio_avm_reset_plc {
+ 			value = <18>;
+ 			param = <AVM_DEF_HW_PARAM_GPIO_OUT_ACTIVE_HIGH>;
+@@ -324,7 +328,13 @@
+ 
+ 		repeater-one-no-rssi {
+ 			compatible = "avm,hui-generic-led-avm";
+-			avm-gpios = <&led_connect>;
++			avm-gpios = <&led_connect_g>, <&led_connect_y>;
++
++			colors {
++				normal = <0xFF>, <0x0>, <0x0>;
++				warn = <0x0>, <0xFF>, <0x0>;
++				error = <0xFF>, <0x0>, <0x0>;
++			};
+ 		};
+ 
+ 		repeater-plc-wlan {
+--- linux-4.4/arch/arm/boot/dts/Fritz_Box_HW258-0.dts	2020-06-12 15:45:57.000000000 +0200
++++ linux-4.4/arch/arm/boot/dts/Fritz_Box_HW258-0.dts	2020-10-01 11:11:07.000000000 +0200
+@@ -286,7 +286,12 @@
+ 				< 710000 >;
+ 		};
+ 
+-		lte_vctrl: fixedregulator@1 {
++		/* Power up sequence of the RM500Q:
++		 *  1) set vctrl to high and wait 50ms
++		 *  2) set power to high and wait 70ms
++		 *  3) set reset to high
++		 */
++		lte_vctrl: fixedregulator@2 {
+ 			compatible = "regulator-fixed";
+ 			regulator-name = "lte-vctrl";
+ 			regulator-min-microvolt = <5000000>;
+@@ -297,16 +302,27 @@
+ 			gpio = <&tlmm 31 GPIO_ACTIVE_HIGH>;
+ 		};
+ 
+-		lte_power: fixedregulator@0 {
++		lte_power: fixedregulator@1 {
+ 			compatible = "regulator-fixed";
+ 			regulator-name = "lte-power";
+ 			regulator-min-microvolt = <5000000>;
+ 			regulator-max-microvolt = <5000000>;
+ 			gpio = <&tlmm 9 GPIO_ACTIVE_HIGH>;
++			/* wait at least 70ms to enable reset */
++			startup-delay-us = <70000>;
++			enable-active-high;
++			vin-supply = <&lte_vctrl>;
++		};
++		lte_reset: fixedregulator@0 {
++			compatible = "regulator-fixed";
++			regulator-name = "lte-reset";
++			regulator-min-microvolt = <5000000>;
++			regulator-max-microvolt = <5000000>;
++			gpio = <&tlmm 10 GPIO_ACTIVE_HIGH>;
+ 			/* Also wait a bit here. */
+ 			startup-delay-us = <25000>;
+ 			enable-active-high;
+-			vin-supply = <&lte_vctrl>;
++			vin-supply = <&lte_power>;
+ 		};
+ 	};
+ 
+@@ -407,10 +423,6 @@
+ 			value = <49>;
+ 			param = <AVM_DEF_HW_PARAM_GPIO_OUT_ACTIVE_HIGH>;
+ 		};
+-		gpio_avm_lte_reset {
+-			value = <10>;
+-			param = <AVM_DEF_HW_PARAM_GPIO_OUT_ACTIVE_HIGH>;
+-		};
+ 		gpio_avm_lte_disable {
+ 			value = <11>;
+ 			param = <AVM_DEF_HW_PARAM_GPIO_OUT_ACTIVE_HIGH>;
+@@ -437,6 +449,6 @@
+ 
+ &pcie0 {
+ 	perst-gpio = <&tlmm 50 GPIO_ACTIVE_LOW>;
+-	vdda-supply = <&lte_power>;
++	vdda-supply = <&lte_reset>;
+ 	status = "ok";
+ };
+--- linux-4.4/avm/conf/linux-4.4.cortexa9	2020-06-12 15:45:57.000000000 +0200
++++ linux-4.4/avm/conf/linux-4.4.cortexa9	2020-10-01 11:11:07.000000000 +0200
+@@ -3866,10 +3866,7 @@
+ CONFIG_SLUB_DEBUG_ON=y
+ # CONFIG_SLUB_STATS is not set
+ CONFIG_HAVE_DEBUG_KMEMLEAK=y
+-CONFIG_DEBUG_KMEMLEAK=y
+-CONFIG_DEBUG_KMEMLEAK_EARLY_LOG_SIZE=1000
+-# CONFIG_DEBUG_KMEMLEAK_TEST is not set
+-CONFIG_DEBUG_KMEMLEAK_DEFAULT_OFF=y
++# CONFIG_DEBUG_KMEMLEAK is not set
+ # CONFIG_DEBUG_STACK_USAGE is not set
+ # CONFIG_DEBUG_VM is not set
+ # CONFIG_DEBUG_MEMORY_INIT is not set
+@@ -3910,7 +3907,7 @@
+ CONFIG_DEBUG_ATOMIC_SLEEP=y
+ # CONFIG_DEBUG_LOCKING_API_SELFTESTS is not set
+ # CONFIG_LOCK_TORTURE_TEST is not set
+-CONFIG_STACKTRACE=y
++# CONFIG_STACKTRACE is not set
+ # CONFIG_DEBUG_KOBJECT is not set
+ CONFIG_DEBUG_BUGVERBOSE=y
+ # CONFIG_DEBUG_LIST is not set
+--- linux-4.4/drivers/usb/core/hub.c	2020-06-12 15:45:57.000000000 +0200
++++ linux-4.4/drivers/usb/core/hub.c	2020-10-01 11:11:07.000000000 +0200
+@@ -2260,7 +2260,7 @@
+ 		/* descriptor may appear anywhere in config */
+ 		err = __usb_get_extra_descriptor(udev->rawdescriptors[0],
+ 				le16_to_cpu(udev->config[0].desc.wTotalLength),
+-				USB_DT_OTG, (void **) &desc);
++				USB_DT_OTG, (void **) &desc, sizeof(*desc));
+ 		if (err || !(desc->bmAttributes & USB_OTG_HNP))
+ 			return 0;
+ 
+--- linux-4.4/drivers/usb/core/usb.c	2020-06-12 15:45:57.000000000 +0200
++++ linux-4.4/drivers/usb/core/usb.c	2020-10-01 11:11:07.000000000 +0200
+@@ -681,14 +681,14 @@
+  */
+ 
+ int __usb_get_extra_descriptor(char *buffer, unsigned size,
+-			       unsigned char type, void **ptr)
++			       unsigned char type, void **ptr, size_t minsize)
+ {
+ 	struct usb_descriptor_header *header;
+ 
+ 	while (size >= sizeof(struct usb_descriptor_header)) {
+ 		header = (struct usb_descriptor_header *)buffer;
+ 
+-		if (header->bLength < 2) {
++		if (header->bLength < 2 || header->bLength > size) {
+ 			printk(KERN_ERR
+ 				"%s: bogus descriptor, type %d length %d\n",
+ 				usbcore_name,
+@@ -697,7 +697,7 @@
+ 			return -1;
+ 		}
+ 
+-		if (header->bDescriptorType == type) {
++		if (header->bDescriptorType == type && header->bLength >= minsize) {
+ 			*ptr = header;
+ 			return 0;
+ 		}
+--- linux-4.4/drivers/usb/host/hwa-hc.c	2020-06-12 15:45:57.000000000 +0200
++++ linux-4.4/drivers/usb/host/hwa-hc.c	2020-10-01 11:11:07.000000000 +0200
+@@ -654,7 +654,7 @@
+ 	top = itr + itr_size;
+ 	result = __usb_get_extra_descriptor(usb_dev->rawdescriptors[index],
+ 			le16_to_cpu(usb_dev->actconfig->desc.wTotalLength),
+-			USB_DT_SECURITY, (void **) &secd);
++			USB_DT_SECURITY, (void **) &secd, sizeof(*secd));
+ 	if (result == -1) {
+ 		dev_warn(dev, "BUG? WUSB host has no security descriptors\n");
+ 		return 0;
+--- linux-4.4/include/linux/usb.h	2020-06-12 15:45:57.000000000 +0200
++++ linux-4.4/include/linux/usb.h	2020-10-01 11:11:07.000000000 +0200
+@@ -333,11 +333,11 @@
+ };
+ 
+ int __usb_get_extra_descriptor(char *buffer, unsigned size,
+-	unsigned char type, void **ptr);
++	unsigned char type, void **ptr, size_t min);
+ #define usb_get_extra_descriptor(ifpoint, type, ptr) \
+ 				__usb_get_extra_descriptor((ifpoint)->extra, \
+ 				(ifpoint)->extralen, \
+-				type, (void **)ptr)
++				type, (void **)ptr, sizeof(**(ptr)))
+ 
+ /* ----------------------------------------------------------------------- */
+ 
+--- linux-4.4/include/uapi/linux/avm_led_event.h	2020-06-12 15:45:57.000000000 +0200
++++ linux-4.4/include/uapi/linux/avm_led_event.h	2020-10-01 11:11:07.000000000 +0200
+@@ -1,11 +1,11 @@
+-/*** LED-Events Version 2.33 ***/
++/*** LED-Events Version 2.34 ***/
+ 
+ #ifndef _avm_led_event_h_
+ #define _avm_led_event_h_
+ 
+ #ifndef LED_EVENT_VERSION
+ #define LED_EVENT_VERSION 2
+-#define LED_EVENT_SUBVERSION 33
++#define LED_EVENT_SUBVERSION 34
+ #endif
+ 
+ #ifndef AVM_LED_INTERNAL
+@@ -338,20 +338,83 @@
+ 	event_button_connect_wlan_repeater_long_done = 471,
+ 	event_afb_aktiv = 472,
+ 	event_afb_inaktiv = 473,
+-	LastEvent = 474
++	event_plc_low_phyrate = 474,
++	LastEvent = 475
+ };
+ #endif /*--- #ifndef AVM_LED_INTERNAL ---*/
+ 
+ 
+ #ifndef __KERNEL__
++/**
++ * Initialize LED event API for the current process.
++ *
++ * @param version use LED_EVENT_VERSION
++ *
++ * @retval 0 on success
++ * @retval -2 on version mismatch
++ * @retval -1 on open(2) failure, will set \c errno
++ */
+ int led_event_init(int version);  /* Aufruf: led_event_init(LED_EVENT_VERSION)*/
++
++/**
++ * Shutdown LED event API for the current process.
++ *
++ * @retval 0 on success
++ * @retval -1 if not initialized
++ * @retval -1 on close(2) failure, will set \c errno
++ */
+ int led_event_deinit(void);
+ 
++/**
++ * Trigger LED event.
++ *
++ * @param event LED event.
++ * @param value event value
++ *
++ * @retval 0 on success
++ * @retval -1 if not initialized
++ * @retval -1 on ioctl(2) failure, will set \c errno
++ */
+ int led_event_set(enum _led_event event, unsigned int value);
++
++/**
++ * Trigger LED event with \c value = 1.
++ *
++ * @param event LED event.
++ *
++ * @retval 0 on success
++ * @retval -1 if not initialized
++ * @retval -1 on ioctl(2) failure, will set \c errno
++ */
+ int led_event(enum _led_event event);  /* macht implizit: value=1 */
+ 
++/**
++ * Trigger LED event with parameter \p param and its length \p param_len.
++ *
++ * @param event LED event.
++ * @param value event value
++ * @param param_len LED event parameter \p param length, MUST not be 0
++ * @param param LED event parameter, MUST not be NULL
++ *
++ * @retval 0 on success
++ * @retval -1 if not initialized or parameter failure
++ * @retval -1 on ioctl(2) failure, will set \c errno
++ */
+ int led_event_set_with_event(enum _led_event event, unsigned int value, unsigned int param_len, void *param);
++
++/**
++ * Trigger LED event with \c value = 1 and parameter \p param and its length \p param_len.
++ *
++ * @param event LED event.
++ * @param param_len LED event parameter \p param length, MUST not be 0
++ * @param param LED event parameter, MUST not be NULL
++ *
++ * @retval 0 on success
++ * @retval -1 if not initialized or parameter failure
++ * @retval -1 on ioctl(2) failure, will set \c errno
++ */
+ int led_event_with_event(enum _led_event event, unsigned int param_len, void *param);  /* macht implizit: value=1 */
++
+ #endif /*--- #ifndef __KERNEL__ ---*/
+ 
+ 
+@@ -397,7 +460,7 @@
+  * Die Action-Funktion muss im Interrupt-Kontext aufrufbar sein und sollte größere Aktionen
+  * asynchron ausführen. 
+  * Parameter der Action Funktion sind:
+- *   - ĺed_id        => 0..99
++ *   - led_id        => 0..99
+  *   - action        => led_ext_enable/led_ext_disable ermöglichen eine De/Initialisierung der 
+  *                      LED-Ansteuerung; led_ext_error braucht hier nicht behandelt werden
+  *   - callback_func => falls die Aktion asychron ausgeführt wird, soll callback_func()
+--- linux-4.4/.kernelvariables	2020-07-31 13:55:19.000000000 +0200
++++ linux-4.4/.kernelvariables	2020-10-16 19:15:36.000000000 +0200
+@@ -1,6 +1,6 @@
+ # vim: set autoread filetype=make:
+ #
+-# Auto-generated at build-80517
++# Auto-generated at build-82709
+ # while generating for Fritz_Box_HW244
+ #
+ ARCH = arm
+--- linux-4.4/mm/slub.c	2020-06-12 15:45:57.000000000 +0200
++++ linux-4.4/mm/slub.c	2020-10-01 11:11:07.000000000 +0200
+@@ -5301,7 +5301,9 @@
+ 	&red_zone_attr.attr,
+ 	&poison_attr.attr,
+ 	&store_user_attr.attr,
++#ifdef CONFIG_SLUB_AVM_ALLOC_LIST
+ 	&store_user_lite_attr.attr,
++#endif
+ 	&validate_attr.attr,
+ 	&alloc_calls_attr.attr,
+ 	&free_calls_attr.attr,
