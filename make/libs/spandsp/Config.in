@@ -1,7 +1,7 @@
 config FREETZ_LIB_libspandsp
 	bool "libspandsp (libspandsp.so)"
 	default n
-	select FREETZ_LIB_libm
+	select FREETZ_LIB_libm if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libtiff
 	help
 		SpanDSP is a library of DSP functions for telephony, in the 8000 sample per

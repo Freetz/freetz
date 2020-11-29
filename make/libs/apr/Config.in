@@ -1,7 +1,7 @@
 config FREETZ_LIB_libapr
-	select FREETZ_LIB_libcrypt
-	select FREETZ_LIB_libm
-	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libcrypt    if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_libm        if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_libpthread  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libuuid
 	bool "Apache Portable Runtime Library (libapr-1.so)"
 	default n
@@ -11,7 +11,7 @@ config FREETZ_LIB_libapr
 		underlying platform-specific implementations.
 
 config FREETZ_LIB_libapr_WITH_DSO
-	select FREETZ_LIB_libdl
+	select FREETZ_LIB_libdl if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	bool "Build with DSO support" if FREETZ_LIB_libapr
 	default n
 	help

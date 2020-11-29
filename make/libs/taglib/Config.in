@@ -2,7 +2,7 @@ config FREETZ_LIB_libtag
 	bool "taglib (libtag.so)"
 	select FREETZ_LIB_STDCXXLIB
 	select FREETZ_LIB_STDCXXLIB_WITH_WCHAR
-	select FREETZ_LIB_libm
+	select FREETZ_LIB_libm if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libz
 	default n
 	help

@@ -1,6 +1,6 @@
 config FREETZ_LIB_liblept
 	bool "leptonica (liblept.so)"
-	select FREETZ_LIB_libm
+	select FREETZ_LIB_libm if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libjpeg
 	select FREETZ_LIB_libpng12
 	select FREETZ_LIB_libtiff

@@ -1,6 +1,6 @@
 config FREETZ_LIB_libopus
 	bool "libopus (libopus.so)"
-	select FREETZ_LIB_libm
+	select FREETZ_LIB_libm if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	default n
 	help
 		Opus is a totally open, royalty-free, highly versatile audio codec.

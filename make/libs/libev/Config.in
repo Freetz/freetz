@@ -1,6 +1,6 @@
 config FREETZ_LIB_libev
 	bool "libev (libev.so)"
-	select FREETZ_LIB_libm
+	select FREETZ_LIB_libm if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	default n
 	help
 		libev provides a full-featured and high-performance event loop

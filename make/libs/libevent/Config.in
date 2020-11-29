@@ -1,7 +1,7 @@
 config FREETZ_LIB_libevent
 	bool "libevent (libevent.so)"
 	default n
-	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libpthread if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	help
 		libevent is an asynchronous event notification software library.
 
