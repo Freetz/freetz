@@ -3,7 +3,7 @@ config FREETZ_PACKAGE_SOCAT
 	select FREETZ_REMOVE_SOCAT if FREETZ_AVM_HAS_SOCAT
 	select FREETZ_LIB_libcrypto
 	select FREETZ_LIB_libssl
-	select FREETZ_LIB_libutil
+	select FREETZ_LIB_libutil if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libz
 	default n
 	help

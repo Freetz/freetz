@@ -13,7 +13,7 @@ config FREETZ_LIB_libblkid
 config FREETZ_LIB_libcom_err
 	bool "libcom_err.so"
 	default n
-	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libpthread if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	help
 		libcomerr is a library used by e2fsprogs for error-handling.
 
@@ -34,7 +34,7 @@ config FREETZ_LIB_libss
 	bool "libss.so"
 	default n
 	select FREETZ_LIB_libcom_err
-	select FREETZ_LIB_libdl
+	select FREETZ_LIB_libdl if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	help
 		e2fsprogs' subsystem command parsing library.
 

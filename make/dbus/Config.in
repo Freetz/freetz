@@ -2,7 +2,7 @@ config FREETZ_PACKAGE_DBUS
 	bool "D-Bus 1.8.20"
 	default n
 	select FREETZ_LIB_libexpat
-	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libpthread if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	help
 		D-Bus is a message bus system, a simple way for applications
 		to talk to one another. In addition to interprocess
@@ -17,7 +17,7 @@ config FREETZ_PACKAGE_DBUS_monitor
 	bool "dbus-monitor"
 	default n
 	select FREETZ_LIB_libdbus
-	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libpthread if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	help
 		dbus-monitor allows to monitor messages sent over a D-Bus message bus.
 
@@ -25,7 +25,7 @@ config FREETZ_PACKAGE_DBUS_send
 	bool "dbus-send"
 	default n
 	select FREETZ_LIB_libdbus
-	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libpthread if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	help
 		dbus-send allows to send messages to a D-Bus message bus.
 
@@ -33,7 +33,7 @@ config FREETZ_PACKAGE_DBUS_uuidgen
 	bool "dbus-uuidgen"
 	default n
 	select FREETZ_LIB_libdbus
-	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libpthread if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	help
 		dbus-uuidgen generates or reads a universally unique ID.
 

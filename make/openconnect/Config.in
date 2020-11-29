@@ -1,20 +1,20 @@
 config FREETZ_PACKAGE_OPENCONNECT
 	bool "OpenConnect 7.04 (binary only)"
-	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_OPENCONNECT_STATIC
-	select FREETZ_LIB_libdl if ! FREETZ_PACKAGE_OPENCONNECT_STATIC
-	select FREETZ_LIB_libm if ! FREETZ_PACKAGE_OPENCONNECT_STATIC
-	select FREETZ_LIB_libpthread if ! FREETZ_PACKAGE_OPENCONNECT_STATIC
-	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_OPENCONNECT_STATIC
-	select FREETZ_LIB_libxml2 if ! FREETZ_PACKAGE_OPENCONNECT_STATIC
-	select FREETZ_LIB_libz if ! FREETZ_PACKAGE_OPENCONNECT_STATIC
+	select FREETZ_LIB_libcrypto   if ! FREETZ_PACKAGE_OPENCONNECT_STATIC
+	select FREETZ_LIB_libdl       if ! FREETZ_PACKAGE_OPENCONNECT_STATIC && FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_libm        if ! FREETZ_PACKAGE_OPENCONNECT_STATIC && FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_libpthread  if ! FREETZ_PACKAGE_OPENCONNECT_STATIC && FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_libssl      if ! FREETZ_PACKAGE_OPENCONNECT_STATIC
+	select FREETZ_LIB_libxml2     if ! FREETZ_PACKAGE_OPENCONNECT_STATIC
+	select FREETZ_LIB_libz        if ! FREETZ_PACKAGE_OPENCONNECT_STATIC
 	select FREETZ_OPENSSL_VERSION_PROMPT
 	default n
 	help
 		Cisco AnyConnect VPN Client
 
 config FREETZ_PACKAGE_OPENCONNECT_STATIC
-        bool "Link statically"
-        depends on FREETZ_PACKAGE_OPENCONNECT
-        default n
-        help
+	bool "Link statically"
+	depends on FREETZ_PACKAGE_OPENCONNECT
+	default n
+	help
 		Build OpenConnect binary with statically linked libraries.

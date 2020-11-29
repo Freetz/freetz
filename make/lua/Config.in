@@ -2,8 +2,8 @@ config FREETZ_PACKAGE_LUA
 	bool "Lua 5.1.5 (binary only)"
 	default n
 	select FREETZ_LIB_liblua
-	select FREETZ_LIB_libdl
-	select FREETZ_LIB_libm
+	select FREETZ_LIB_libdl  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_libm   if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	help
 		Lua Scripting Language.
 

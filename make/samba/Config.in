@@ -23,8 +23,8 @@ endchoice
 config FREETZ_PACKAGE_SAMBA_SMBD
 	bool "smbd (file sharing server)"
 	depends on FREETZ_PACKAGE_SAMBA
-	select FREETZ_LIB_libcrypt
-	select FREETZ_LIB_libdl
+	select FREETZ_LIB_libcrypt    if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_libdl       if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libpopt
 	select FREETZ_LIB_libz        if FREETZ_SAMBA_VERSION_3_6
 	select FREETZ_LIB_libiconv    if FREETZ_TARGET_UCLIBC_0_9_28
@@ -47,8 +47,8 @@ config FREETZ_PACKAGE_SAMBA_NMBD
 config FREETZ_PACKAGE_SAMBA_SMBCLIENT
 	bool "smbclient"
 	depends on FREETZ_PACKAGE_SAMBA
-	select FREETZ_LIB_libcrypt    if FREETZ_SAMBA_VERSION_3_0
-	select FREETZ_LIB_libdl
+	select FREETZ_LIB_libcrypt    if FREETZ_TARGET_UCLIBC_HAS_multiple_libs && FREETZ_SAMBA_VERSION_3_0
+	select FREETZ_LIB_libdl       if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libpopt
 	select FREETZ_LIB_libreadline
 	select FREETZ_LIB_libncurses
@@ -61,8 +61,8 @@ config FREETZ_PACKAGE_SAMBA_SMBCLIENT
 config FREETZ_PACKAGE_SAMBA_NMBLOOKUP
 	bool "nmblookup"
 	depends on FREETZ_PACKAGE_SAMBA
-	select FREETZ_LIB_libcrypt    if FREETZ_SAMBA_VERSION_3_0
-	select FREETZ_LIB_libdl
+	select FREETZ_LIB_libcrypt    if FREETZ_TARGET_UCLIBC_HAS_multiple_libs && FREETZ_SAMBA_VERSION_3_0
+	select FREETZ_LIB_libdl       if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libpopt
 	select FREETZ_LIB_libiconv    if FREETZ_TARGET_UCLIBC_0_9_28
 	default n

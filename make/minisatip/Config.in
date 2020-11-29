@@ -1,8 +1,8 @@
 config FREETZ_PACKAGE_MINISATIP
 	bool "minisatip 1.0.4 (binary only)"
 	default n
-	select FREETZ_LIB_libpthread
-	select FREETZ_LIB_librt
+	select FREETZ_LIB_libpthread     if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_librt          if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	help
 		Minisatip is a multi-threaded satip server version 1.2 that
 		runs under Linux and it was tested with DVB-S, DVB-S2,
@@ -33,7 +33,7 @@ config FREETZ_PACKAGE_MINISATIP_DVBAES
 	bool "Enable DVB/AES"
 	default y
 	select FREETZ_LIB_libcrypto
-	select FREETZ_LIB_libdl
+	select FREETZ_LIB_libdl          if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_OPENSSL_VERSION_PROMPT
 	select FREETZ_LIB_libz
 
@@ -46,7 +46,7 @@ config FREETZ_PACKAGE_MINISATIP_BACKTRACE
 	bool "Enable backtrace"
 	default n
 	depends on FREETZ_TARGET_UCLIBC_SUPPORTS_libubacktrace
-	select FREETZ_LIB_libubacktrace
+	select FREETZ_LIB_libubacktrace  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 
 endif # FREETZ_PACKAGE_MINISATIP
 

@@ -1,6 +1,6 @@
 menuconfig FREETZ_PACKAGE_XPDF
 	bool "Xpdf 3.04 (binary only)"
-	select FREETZ_LIB_libm
+	select FREETZ_LIB_libm if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_STDCXXLIB
 	default n
 	help

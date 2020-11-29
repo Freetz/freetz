@@ -1,6 +1,6 @@
 config FREETZ_LIB_libtiff
 	bool "TIFF library (libtiff.so)"
-	select FREETZ_LIB_libm
+	select FREETZ_LIB_libm if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libz
 	select FREETZ_LIB_libjpeg
 	default n

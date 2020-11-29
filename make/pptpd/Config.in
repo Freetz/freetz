@@ -2,7 +2,7 @@ config FREETZ_PACKAGE_PPTPD
 	bool "pptpd 1.4.0"
 	depends on FREETZ_PACKAGE_PPP
 	select FREETZ_PACKAGE_PPPD
-	select FREETZ_LIB_libutil
+	select FREETZ_LIB_libutil if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	default n
 	help
 		Poptop is an open source implementation of a PPTP server.

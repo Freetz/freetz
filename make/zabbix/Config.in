@@ -49,7 +49,7 @@ config FREETZ_PACKAGE_ZABBIX_agentd
 config FREETZ_PACKAGE_ZABBIX_server
 	bool "server"
 	depends on FREETZ_PACKAGE_ZABBIX
-	select FREETZ_LIB_libm
+	select FREETZ_LIB_libm if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libsqlite3
 	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_0_9_28
 	default n
@@ -67,7 +67,7 @@ config FREETZ_PACKAGE_ZABBIX_server
 config FREETZ_PACKAGE_ZABBIX_proxy
 	bool "proxy"
 	depends on FREETZ_PACKAGE_ZABBIX
-	select FREETZ_LIB_libm
+	select FREETZ_LIB_libm if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libsqlite3
 	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_0_9_28
 	default n

@@ -21,6 +21,6 @@ config FREETZ_PACKAGE_RTMPDUMP_rtmpdump
 config FREETZ_PACKAGE_RTMPDUMP_rtmpgw
 	bool "rtmpgw"
 	depends on FREETZ_PACKAGE_RTMPDUMP
-	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libpthread if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	help
 		RTMP streaming media gateway

@@ -1,6 +1,6 @@
 config FREETZ_LIB_liblzma
 	bool "LZMA (liblzma.so)"
-	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libpthread if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	default n
 	help
 		XZ is the successor to the Lempel-Ziv/Markov-chain Algorithm compression format,

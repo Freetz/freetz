@@ -4,8 +4,8 @@ comment "Without 'replace kernel' you can not use mppe/mppc."
 config FREETZ_PACKAGE_PPPD
 	bool "pppd 2.4.7"
 	depends on FREETZ_PACKAGE_PPP
-	select FREETZ_LIB_libcrypt
-	select FREETZ_LIB_libdl
+	select FREETZ_LIB_libcrypt          if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_libdl             if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_MODULE_ppp_async      if !FREETZ_AVM_HAS_PPP_ASYNC_BUILTIN
 	select FREETZ_MODULE_ppp_deflate    if !FREETZ_AVM_HAS_PPP_DEFLATE_BUILTIN
 	select FREETZ_MODULE_ppp_generic    if !FREETZ_AVM_HAS_PPP_BUILTIN && !FREETZ_KERNEL_VERSION_2_6_28

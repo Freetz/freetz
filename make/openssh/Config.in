@@ -1,7 +1,7 @@
 config FREETZ_PACKAGE_OPENSSH
 	bool "OpenSSH 8.3p1"
-	select FREETZ_LIB_libcrypt                if !FREETZ_PACKAGE_OPENSSH_STATIC
-	select FREETZ_LIB_libutil                 if !FREETZ_PACKAGE_OPENSSH_STATIC
+	select FREETZ_LIB_libcrypt                if !FREETZ_PACKAGE_OPENSSH_STATIC && FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_libutil                 if !FREETZ_PACKAGE_OPENSSH_STATIC && FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libz                    if !FREETZ_PACKAGE_OPENSSH_STATIC
 	#
 	select FREETZ_OPENSSL_VERSION_PROMPT

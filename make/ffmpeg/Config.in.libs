@@ -3,28 +3,28 @@ menu "FFmpeg libraries"
 config FREETZ_LIB_libavcodec
 	bool "libavcodec.so"
 	default n
-	select FREETZ_LIB_libm
-	select FREETZ_LIB_libz
-	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libm        if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_libz        if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_libpthread  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libavutil
 	select FREETZ_LIB_libopenjpeg if FREETZ_PACKAGE_FFMPEG_DECODER_libopenjpeg
 
 config FREETZ_LIB_libavdevice
 	bool "libavdevice.so"
 	default n
-	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libpthread  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 
 config FREETZ_LIB_libavfilter
 	bool "libavfilter.so"
-	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libpthread  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libavutil
 	default n
 
 config FREETZ_LIB_libavformat
 	bool "libavformat.so"
-	select FREETZ_LIB_libm
+	select FREETZ_LIB_libm        if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libz
-	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libm        if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libavcodec
 	select FREETZ_LIB_libavutil
 	default n
@@ -32,26 +32,26 @@ config FREETZ_LIB_libavformat
 config FREETZ_LIB_libavutil
 	bool "libavutil.so"
 	default n
-	select FREETZ_LIB_libm
-	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libm        if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_libpthread  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 
 config FREETZ_LIB_libpostproc
 	bool "libpostproc.so"
 	default n
-	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libpthread  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libavutil
 
 config FREETZ_LIB_libswresample
 	bool "libswresample.so"
-	select FREETZ_LIB_libm
-	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libm        if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_libpthread  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libavutil
 	default n
 
 config FREETZ_LIB_libswscale
 	bool "libswscale.so"
-	select FREETZ_LIB_libm
-	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libm        if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_libpthread  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libavutil
 	default n
 

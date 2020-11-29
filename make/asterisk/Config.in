@@ -1,8 +1,8 @@
 config FREETZ_PACKAGE_ASTERISK
 	bool "Asterisk 11.25.3 - EXPERIMENTAL"
-	select FREETZ_LIB_libdl
-	select FREETZ_LIB_libm
-	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libdl       if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_libm        if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_libpthread  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libcrypto
 	select FREETZ_LIB_libncurses
 	select FREETZ_LIB_libsqlite3
@@ -23,7 +23,7 @@ config FREETZ_PACKAGE_ASTERISK_LOWMEMORY
 config FREETZ_PACKAGE_ASTERISK_WITH_BACKTRACE
 	depends on FREETZ_PACKAGE_ASTERISK && FREETZ_TARGET_UCLIBC_SUPPORTS_libubacktrace
 	bool "enable backtrace support"
-	select FREETZ_LIB_libubacktrace
+	select FREETZ_LIB_libubacktrace if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	default n
 
 config FREETZ_PACKAGE_ASTERISK_DEBUG

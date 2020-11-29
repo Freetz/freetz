@@ -1,6 +1,6 @@
 config FREETZ_PACKAGE_PROXYCHAINS_NG
 	bool "ProxyChains-NG 4.14"
-	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libpthread if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	default n
 	help
 		A preloader which hooks calls to sockets in dynamically

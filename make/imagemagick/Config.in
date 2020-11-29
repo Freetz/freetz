@@ -1,7 +1,7 @@
 menuconfig FREETZ_PACKAGE_IMAGEMAGICK
 	bool "ImageMagick 7.0.10-10 (binary only)"
-	select FREETZ_LIB_libpthread
-	select FREETZ_LIB_libm
+	select FREETZ_LIB_libpthread  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_libm        if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	default n
 	help
 		ImageMagick is a robust collection of tools and libraries to read,

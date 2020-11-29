@@ -2,8 +2,8 @@ menuconfig FREETZ_PACKAGE_SANE_BACKENDS
 	bool "SANE 1.0.27"
 	select FREETZ_PACKAGE_INETD
 	select FREETZ_PACKAGE_SANE_BACKENDS_BACKEND_dll
-	select FREETZ_LIB_libm
-	select FREETZ_LIB_libpthread
+	select FREETZ_LIB_libm        if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_libpthread  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libusb_1
 	default n
 	help

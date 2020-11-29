@@ -1,6 +1,6 @@
 config FREETZ_PACKAGE_GPTFDISK
 	bool "gptfdisk 1.0.1"
-	select FREETZ_LIB_libm
+	select FREETZ_LIB_libm if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_STDCXXLIB
 	select FREETZ_LIB_libuuid
 	default n

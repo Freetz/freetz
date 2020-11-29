@@ -1,8 +1,8 @@
 config FREETZ_PACKAGE_APACHE2
 	bool "Apache HTTP Server 2.4.46 (binary only)"
-	select FREETZ_LIB_libcrypt        if ! FREETZ_PACKAGE_APACHE2_STATIC
-	select FREETZ_LIB_libdl           if ! FREETZ_PACKAGE_APACHE2_STATIC
-	select FREETZ_LIB_libm            if ! FREETZ_PACKAGE_APACHE2_STATIC
+	select FREETZ_LIB_libcrypt        if ! FREETZ_PACKAGE_APACHE2_STATIC && FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_libdl           if ! FREETZ_PACKAGE_APACHE2_STATIC && FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_libm            if ! FREETZ_PACKAGE_APACHE2_STATIC && FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libapr          if ! FREETZ_PACKAGE_APACHE2_STATIC
 	select FREETZ_LIB_libapr_WITH_DSO
 	select FREETZ_LIB_libaprutil      if ! FREETZ_PACKAGE_APACHE2_STATIC

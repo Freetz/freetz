@@ -4,7 +4,7 @@ comment "Dropbear (not available, needs replace kernel for pty-support)"
 config FREETZ_PACKAGE_DROPBEAR
 	bool "Dropbear 2020.81"
 	depends on FREETZ_REPLACE_KERNEL || FREETZ_AVM_HAS_PTY_SUPPORT || FREETZ_SHOW_ADVANCED
-	select FREETZ_LIB_libutil
+	select FREETZ_LIB_libutil if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	default y
 	help
 		Dropbear SSH server and client
