@@ -4758,6 +4758,7 @@ config FREETZ_BUSYBOX___V127_FEATURE_MOUNT_LABEL
 	  This also enables label or uuid support for swapon.
 
 config FREETZ_BUSYBOX___V127_FEATURE_MOUNT_NFS
+	depends on FREETZ_KERNEL_VERSION_2
 	bool "Support mounting NFS file systems on Linux < 2.6.23"
 	default n
 	depends on FREETZ_BUSYBOX___V127_MOUNT
@@ -6440,6 +6441,7 @@ config FREETZ_BUSYBOX___V127_FEATURE_INETD_SUPPORT_BUILTIN_CHARGEN
 	  Familiar character generator internal inetd service
 
 config FREETZ_BUSYBOX___V127_FEATURE_INETD_RPC
+	depends on FREETZ_TARGET_UCLIBC_SUPPORTS_rpc
 	bool "Support RPC services"
 	default n  # very rarely used, and needs Sun RPC support in libc
 	depends on FREETZ_BUSYBOX___V127_INETD

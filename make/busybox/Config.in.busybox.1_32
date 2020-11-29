@@ -4904,6 +4904,7 @@ config FREETZ_BUSYBOX___V132_FEATURE_MOUNT_LABEL
 	name. This feature utilizes the same functionality as blkid/findfs.
 
 config FREETZ_BUSYBOX___V132_FEATURE_MOUNT_NFS
+	depends on FREETZ_KERNEL_VERSION_2
 	bool "Support mounting NFS file systems on Linux < 2.6.23"
 	default n
 	depends on FREETZ_BUSYBOX___V132_MOUNT
@@ -6814,6 +6815,7 @@ config FREETZ_BUSYBOX___V132_FEATURE_INETD_SUPPORT_BUILTIN_CHARGEN
 		chargen dgram  udp wait   root internal
 
 config FREETZ_BUSYBOX___V132_FEATURE_INETD_RPC
+	depends on FREETZ_TARGET_UCLIBC_SUPPORTS_rpc
 	bool "Support RPC services"
 	default n  # very rarely used, and needs Sun RPC support in libc
 	depends on FREETZ_BUSYBOX___V132_INETD
