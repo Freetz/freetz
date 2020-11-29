@@ -4,13 +4,13 @@ config FREETZ_INSTALL_BASE
 	select FREETZ_PACKAGE_HASERL
 	select FREETZ_PACKAGE_INETD if FREETZ_AVM_HAS_INETD
 	select FREETZ_LIB_ld_uClibc
-	select FREETZ_LIB_libcrypt
-	select FREETZ_LIB_libdl
+	select FREETZ_LIB_libcrypt               if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_libdl                  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libgcc_s
-	select FREETZ_LIB_libm
-	select FREETZ_LIB_libpthread
-	select FREETZ_LIB_librt
-	select FREETZ_LIB_libubacktrace if FREETZ_TARGET_UCLIBC_REQUIRES_libubacktrace
+	select FREETZ_LIB_libm                   if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_libpthread             if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_librt                  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_libubacktrace          if FREETZ_TARGET_UCLIBC_HAS_multiple_libs && FREETZ_TARGET_UCLIBC_REQUIRES_libubacktrace
 	select FREETZ_LIB_libuClibc
 	select FREETZ_LIB_libctlmgr              if FREETZ_AVM_HAS_AVMDAEMON_PRELOAD && (FREETZ_AVM_HAS_USB_HOST || FREETZ_AVM_VERSION_07_0X_MIN)
 	select FREETZ_LIB_libctlmgr_WITH_CHMOD   if FREETZ_AVM_HAS_AVMDAEMON_PRELOAD && FREETZ_AVM_VERSION_07_0X_MIN
