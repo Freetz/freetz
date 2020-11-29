@@ -24,6 +24,9 @@ config FREETZ_MODULES_ALL
 
 
 menu "block"
+depends on \
+	(!FREETZ_AVM_HAS_MTD_BLOCK2MTD_BUILTIN) || \
+	(FREETZ_KERNEL_VERSION_2_6_19 && FREETZ_REPLACE_KERNEL)
 
 config FREETZ_MODULE_block2mtd
 	bool "block2mtd.ko"
