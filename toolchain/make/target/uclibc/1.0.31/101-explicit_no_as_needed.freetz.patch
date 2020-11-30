@@ -1,0 +1,11 @@
+--- Rules.mak
++++ Rules.mak
+@@ -618,7 +618,7 @@
+ $(eval $(call check-ld-var,--warn-once))
+ $(eval $(call check-ld-var,--sort-common))
+ $(eval $(call check-ld-var,--discard-all))
+-LDFLAGS_NOSTRIP:=$(LDFLAG-fuse-ld) $(CPU_LDFLAGS-y) -shared \
++LDFLAGS_NOSTRIP:=$(CC_FLAG_NO_ASNEEDED) $(LDFLAG-fuse-ld) $(CPU_LDFLAGS-y) -shared \
+ 	-Wl,--warn-common $(CFLAG_-Wl--warn-once) -Wl,-z,combreloc
+ 
+ ifeq ($(UCLIBC_BUILD_RELRO),y)
