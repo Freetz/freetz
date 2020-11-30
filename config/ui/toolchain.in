@@ -14,6 +14,7 @@ config FREETZ_DOWNLOAD_TOOLCHAIN_AVAILABLE
 
 config FREETZ_DOWNLOAD_TOOLCHAIN_EXPERIMENTAL
 	bool "Use EXPERIMENTAL precompiled toolchains"
+	depends on FREETZ_SHOW_DEVELOPER
 	default n
 	help
 		Yes, i am able to read this help and
@@ -228,10 +229,12 @@ choice
 	config FREETZ_TARGET_UCLIBC_1_0_31
 	bool "1.0.31 - EXPERIMENTAL"
 	depends on FREETZ_SEPARATE_AVM_UCLIBC
+	depends on FREETZ_SHOW_DEVELOPER
 
 	config FREETZ_TARGET_UCLIBC_1_0_36
 	bool "1.0.36 - EXPERIMENTAL"
 	depends on FREETZ_SEPARATE_AVM_UCLIBC
+	depends on FREETZ_SHOW_DEVELOPER
 endchoice
 
 comment "CAUTION: Usage of an uClibc version higher than that used by AVM may lead to an unstable box"

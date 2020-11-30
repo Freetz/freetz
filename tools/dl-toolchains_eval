@@ -7,7 +7,7 @@ make tools/config/conf &>/dev/null
 evalconfig() {
 	echo -n .
 	(
-		for i in $* FREETZ_SERIES_ALL_CHOICE FREETZ_USER_LEVEL_EXPERT FREETZ_BUILD_TOOLCHAIN_ADDITIONAL FREETZ_BUILD_TOOLCHAIN FREETZ_TOOLCHAIN_32BIT; do echo "$i=y"; done > .config
+		for i in $* FREETZ_SERIES_ALL_CHOICE FREETZ_USER_LEVEL_DEVELOPER FREETZ_BUILD_TOOLCHAIN_ADDITIONAL FREETZ_BUILD_TOOLCHAIN FREETZ_TOOLCHAIN_32BIT; do echo "$i=y"; done > .config
 		tools/config/conf --olddefconfig config/Config.in >/dev/null
 		for i in $*; do grep "^$i=y" .config -q || return; done
 		echo -e "\n# $*"

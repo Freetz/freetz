@@ -5,7 +5,7 @@
 
 choice
 	prompt "Hardware series"
-		depends on !FREETZ_USER_LEVEL_BEGINNER
+		depends on FREETZ_SHOW_ADVANCED
 		default FREETZ_SERIES_4N5 if FREETZ_REAL_DEVELOPER_ONLY__SERIES
 		default FREETZ_SERIES_ALL_CHOICE
 		help
@@ -43,7 +43,7 @@ endchoice # "Hardware series" #
 config FREETZ_SERIES_ALL_CONFIG
 	bool
 	default y
-	depends on FREETZ_USER_LEVEL_BEGINNER
+	depends on !FREETZ_SHOW_ADVANCED
 
 config FREETZ_SERIES_ALL
 	bool
@@ -676,6 +676,7 @@ choice
 		select FREETZ_AVM_VERSION_07_25
 		select FREETZ_DL_DETECT_IMAGE_NAME
 		depends on FREETZ_AVM_HAS_FIRMWARE_07_25_LABOR && FREETZ_SHOW_ADVANCED
+		depends on FREETZ_SHOW_DEVELOPER
 		help
 			Enable this to use an AVM Labor firmware as base for modding.
 			For more details see <http://www.avm.de/Labor/>.
