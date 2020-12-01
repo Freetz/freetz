@@ -944,6 +944,9 @@
 
   * **[wireguard-tools 1.0.20200827](../docs/make/wireguard.md)<a id='wireguard'></a>**<br>
     WireGuard is an extremely simple yet fast and modern VPN that utilizes state-of-the-art cryptography. It aims to be faster, simpler, leaner, and more useful than IPSec, while avoiding the massive headache. It intends to be considerably more performant than OpenVPN. WireGuard is designed as a general purpose VPN for running on embedded interfaces and super computers alike, fit for many different circumstances. Initially released for the Linux kernel, it plans to be cross-platform and widely deployable. It is currently under heavy development, but already it might be regarded as the most secure, easiest to use, and simplest VPN solution in the industry.
+     - [Hinweise](../docs/make/wireguard.md#hinweise)
+     - [Datendurchsatz](../docs/make/wireguard.md#datendurchsatz)
+     - [Konfiguration für einen Wireguard-Server auf der Fritzbox mit einem PC erstellen](../docs/make/wireguard.md#konfiguration-für-einen-wireguard-server-auf-der-fritzbox-mit-einem-pc-erstellen)
 
   * **<u>wireguard-linux-compat 1.0.20201112</u><a id='wireguard-linux-compat'></a>**<br>
     This package provides the kernel module required for Wireguard
