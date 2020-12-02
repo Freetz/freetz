@@ -1,18 +1,20 @@
 if FREETZ_KERNEL_VERSION_2
 
 config FREETZ_PACKAGE_IPTABLES_IS_SELECTABLE
-	bool
-	default y if \
+	def_bool y
+	depends on \
 		FREETZ_REPLACE_MODULE_AVAILABLE && \
 		!FREETZ_TYPE_W501V && \
 		!FREETZ_TYPE_5140
-	default n
-	help
-		Select this if you are sure that Iptables should work on your box
+
+comment "Iptables (not available, needs kernel modules)"
+	depends on !FREETZ_PACKAGE_IPTABLES_IS_SELECTABLE
 
 config FREETZ_PACKAGE_IPTABLES
 	bool "Iptables 1.4.11.1 (binary only)"
 	depends on FREETZ_PACKAGE_IPTABLES_IS_SELECTABLE
+	select FREETZ_PACKAGE_IPTABLES_KERNEL_MODULES
+	select FREETZ_PACKAGE_IPTABLES_SHARED_LIBS if !FREETZ_PACKAGE_IPTABLES_STATIC
 	default n
 	help
 		Netfilter/iptables
@@ -34,9 +36,9 @@ config FREETZ_PACKAGE_IPTABLES
 
 if FREETZ_PACKAGE_IPTABLES
 
+
 config FREETZ_PACKAGE_IPTABLES_SAVE_RESTORE
-	bool "Iptables-save / iptables-restore"
-	depends on FREETZ_PACKAGE_IPTABLES
+	bool "Iptables-save / -restore"
 	default n
 	help
 		iptables-save & iptables-restore
@@ -50,26 +52,20 @@ config FREETZ_PACKAGE_IPTABLES_XML
 
 config FREETZ_PACKAGE_IPTABLES_STATIC
 	bool "Link statically"
-	depends on FREETZ_PACKAGE_IPTABLES
-	default n
+	default y
 	help
 		Build a statically linked binary with all libraries compiled in
 
-# Include here for a cleaner menu structure (list packages before modules/libs)
+if FREETZ_KERNEL_VERSION_2
 source "make/iptables-cgi/Config.in"
 source "make/nhipt/Config.in"
-
 source "make/iptables/Config.in.modules"
+endif
 
-comment "CAUTION: Use of module ip_conntrack can lead to spontaneous reboots"
-	depends on FREETZ_PACKAGE_IPTABLES && \
-		FREETZ_MODULE_ip_conntrack && \
-		FREETZ_KERNEL_VERSION_2_6_13
 
 config FREETZ_PACKAGE_IPTABLES_KERNEL_MODULES
 	bool "Iptables kernel modules"
-	depends on FREETZ_PACKAGE_IPTABLES
-	default n
+	default y
 	help
 		Linux kernel modules for iptables
 
@@ -77,8 +73,14 @@ config FREETZ_PACKAGE_IPTABLES_KERNEL_MODULES
 		and vice versa, so please make sure to select both of them, if they are
 		needed for your purpose.
 
+if FREETZ_PACKAGE_IPTABLES_KERNEL_MODULES
+
+comment "CAUTION: Use of module ip_conntrack can lead to spontaneous reboots"
+depends on \
+	FREETZ_MODULE_ip_conntrack && \
+	FREETZ_KERNEL_VERSION_2_6_13
+
 menu "Select kernel modules (IPv4)"
-	depends on FREETZ_PACKAGE_IPTABLES_KERNEL_MODULES
 
 config FREETZ_MODULE_ip_conntrack
 	bool "ip_conntrack.ko"
@@ -724,10 +726,10 @@ config FREETZ_MODULE_ipt_TTL
 		the `mangle' table which alter the TTL (time to live) field of an IP
 		packet.
 
-endmenu
+endmenu # "Select kernel modules (IPv4)"
+
 
 menu "x_tables (both IPv4 and IPv6)"
-	depends on FREETZ_PACKAGE_IPTABLES_KERNEL_MODULES
 	depends on FREETZ_KERNEL_VERSION_2_6_19_MIN
 
 config FREETZ_MODULE_x_tables
@@ -955,10 +957,10 @@ config FREETZ_MODULE_xt_time
 	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
 	default n
 
-endmenu
+endmenu # "x_tables (both IPv4 and IPv6)"
+
 
 menu "Select kernel modules (IPv6)"
-	depends on FREETZ_PACKAGE_IPTABLES_KERNEL_MODULES
 	depends on FREETZ_TARGET_IPV6_SUPPORT
 
 config FREETZ_MODULE_ip6_queue
@@ -1222,12 +1224,15 @@ config FREETZ_MODULE_nf_conntrack_ipv6
 		Layer 3 independent connection tracking is experimental scheme which
 		generalize ip_conntrack to support other layer 3 protocols.
 
-endmenu
+endmenu # "Select kernel modules (IPv6)"
+
+endif # FREETZ_PACKAGE_IPTABLES_KERNEL_MODULES
+
 
 config FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
 	bool "Iptables shared libraries"
-	depends on FREETZ_PACKAGE_IPTABLES && ! FREETZ_PACKAGE_IPTABLES_STATIC
-	default n
+	depends on !FREETZ_PACKAGE_IPTABLES_STATIC
+	default y
 	help
 		Shared Libraries for iptables
 
@@ -1235,8 +1240,9 @@ config FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
 		and vice versa, so please make sure to select both of them, if they are
 		needed for your purpose.
 
+if FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
+
 menu "Select shared libraries (IPv4)"
-	depends on FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
 
 config FREETZ_LIB_libipt_addrtype
 	bool "libipt_addrtype.so"
@@ -1403,10 +1409,11 @@ config FREETZ_LIB_libipt_unclean
 	help
 		This module takes no options, but attempts to match packets which seem
 		malformed or unusual. This is regarded as experimental.
-endmenu
+
+endmenu # "Select shared libraries (IPv4)"
+
 
 menu "Select shared libraries (both IPv4 and IPv6)"
-	depends on FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
 
 config FREETZ_LIB_libxt_CLASSIFY
 	bool "libxt_CLASSIFY.so"
@@ -1729,10 +1736,11 @@ config FREETZ_LIB_libxt_udp
 	default n
 	help
 		These extensions can be used if `--protocol udp' is specified.
-endmenu
+
+endmenu # "Select shared libraries (both IPv4 and IPv6)"
+
 
 menu "Select shared libraries (IPv6)"
-	depends on FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
 	depends on FREETZ_TARGET_IPV6_SUPPORT
 
 config FREETZ_LIB_libip6t_ah
@@ -1782,7 +1790,7 @@ config FREETZ_LIB_libip6t_HL
 
 config FREETZ_LIB_libip6t_icmp6
 	bool "libip6t_icmp6.so"
-	default y
+	default n
 	help
 		This extension can be used if `--protocol ipv6-icmp' or
 		`--protocol icmpv6' is specified.
@@ -1822,7 +1830,11 @@ config FREETZ_LIB_libip6t_rt
 	default n
 	help
 		Match on IPv6 routing header.
-endmenu
+
+endmenu # "Select shared libraries (IPv6)"
+
+endif # FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
+
 
 endif # FREETZ_PACKAGE_IPTABLES
 endif # FREETZ_KERNEL_VERSION_2
