@@ -223,6 +223,7 @@ Latest changes
     * ImageMagick 7.0.10-10
     * inadyn-mt 02.28.10
     * iodine 0.7.0
+    * iptables 1.4.11.1/1.4.21/1.6.2
     * jpeg 9c
     * knock 0.7
     * lftp 4.8.4

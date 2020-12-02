@@ -1,4 +1,4 @@
-# Iptables 1.4.11.1 (binary only)
+# Iptables 1.4.11.1/1.4.21/1.6.2 (binary only)
 
 ### Current state (largely broken)
 

@@ -1,8 +1,13 @@
-$(call PKG_INIT_BIN, 1.4.11.1)
+$(call PKG_INIT_BIN, $(if $(FREETZ_KERNEL_VERSION_2),1.4.11.1,$(if $(FREETZ_KERNEL_VERSION_3),1.4.21,1.6.2)))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=7de6e1ae7ed8a2025f184763a6a24b9a
+$(PKG)_SOURCE_CHECKSUM_KERNEL2:=7de6e1ae7ed8a2025f184763a6a24b9a
+$(PKG)_SOURCE_CHECKSUM_KERNEL3:=536d048c8e8eeebcd9757d0863ebb0c0
+$(PKG)_SOURCE_CHECKSUM_KERNEL4:=6279effbf8f2c7ff53d19ae13308f8a6e6a60dd9
+$(PKG)_SOURCE_CHECKSUM:=$(IPTABLES_SOURCE_CHECKSUM_$(if $(FREETZ_KERNEL_VERSION_2),KERNEL2,$(if $(FREETZ_KERNEL_VERSION_3),KERNEL3,KERNEL4))))
 $(PKG)_SITE:=http://netfilter.org/projects/$(pkg)/files
-$(PKG)_CONDITIONAL_PATCHES+=$(KERNEL_VERSION_MAJOR)
+
+$(PKG)_CONDITIONAL_PATCHES_DIR := kernel$(strip $(foreach v,2 3 4 5,$(word 2,$(filter $(v)%,$(KERNEL_VERSION_MAJOR)) $v)))
+$(PKG)_CONDITIONAL_PATCHES+=$($(PKG)_CONDITIONAL_PATCHES_DIR) $($(PKG)_CONDITIONAL_PATCHES_DIR)/$(KERNEL_VERSION_MAJOR)
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_KERNEL_VERSION
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
@@ -14,13 +19,25 @@ $(PKG)_BINARY := $($(PKG)_DIR)/iptables/$(if $(FREETZ_PACKAGE_IPTABLES_STATIC),,
 $(PKG)_TARGET_BINARY := $($(PKG)_DEST_DIR)/usr/sbin/xtables-multi
 
 $(PKG)_LIBS_SUBDIRS := libiptc/.libs/
+ifeq ($(strip $(FREETZ_KERNEL_VERSION_2)),y)
 $(PKG)_LIBS_SUBDIRS += iptables/.libs/
+else
+$(PKG)_LIBS_SUBDIRS += libxtables/.libs/
+endif
 ifeq ($(strip $(FREETZ_TARGET_IPV6_SUPPORT)),y)
 $(PKG)_LIBS_SUBDIRS += libiptc/.libs/
 endif
 
 ifneq ($(strip $(FREETZ_PACKAGE_IPTABLES_STATIC)),y)
+ifeq ($(strip $(FREETZ_KERNEL_VERSION_2)),y)
 $(PKG)_LIBNAMES_ALL := libip4tc.so.0.0.0 libxtables.so.6.0.0 libip6tc.so.0.0.0
+else
+ifeq ($(strip $(FREETZ_KERNEL_VERSION_3)),y)
+$(PKG)_LIBNAMES_ALL := libip4tc.so.0.1.0 libxtables.so.10.0.0 libip6tc.so.0.1.0
+else
+$(PKG)_LIBNAMES_ALL := libip4tc.so.0.1.0 libxtables.so.12.0.0 libip6tc.so.0.1.0
+endif
+endif
 $(PKG)_LIBNAMES := $(filter-out $(if $(FREETZ_TARGET_IPV6_SUPPORT),,libip6tc%), $($(PKG)_LIBNAMES_ALL))
 $(PKG)_LIBS_BUILD_DIR := $(addprefix $($(PKG)_DIR)/,$(join $($(PKG)_LIBS_SUBDIRS),$($(PKG)_LIBNAMES)))
 $(PKG)_LIBS_TARGET_DIR := $(addprefix $($(PKG)_DEST_LIBDIR)/,$($(PKG)_LIBNAMES))
@@ -41,6 +58,7 @@ $(PKG)_CATEGORY:=Unstable
 $(PKG)_CONFIGURE_ENV += AR="$(TARGET_AR)"
 $(PKG)_CONFIGURE_ENV += RANLIB="$(TARGET_RANLIB)"
 $(PKG)_CONFIGURE_OPTIONS += --with-ksource="$(FREETZ_BASE_DIR)/$(KERNEL_SOURCE_DIR)"
+$(PKG)_CONFIGURE_OPTIONS += --disable-nftables
 $(PKG)_CONFIGURE_OPTIONS += --enable-ipv4
 ifneq ($(strip $(FREETZ_TARGET_IPV6_SUPPORT)),y)
 $(PKG)_CONFIGURE_OPTIONS += --disable-ipv6
