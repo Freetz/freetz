@@ -752,6 +752,23 @@ endmenu # "Select kernel modules (IPv4)"
 menu "x_tables (both IPv4 and IPv6)"
 	depends on FREETZ_KERNEL_VERSION_2_6_19_MIN
 
+config FREETZ_MODULE_nf_log_common
+	bool "nf_log_common.ko"
+	depends on FREETZ_KERNEL_VERSION_4_MIN
+	depends on FREETZ_MODULE_xt_LOG
+	select FREETZ_MODULE_nf_log_ipv4 if FREETZ_MODULE_ip_tables
+	select FREETZ_MODULE_nf_log_ipv6 if FREETZ_MODULE_ip6_tables
+
+config FREETZ_MODULE_nf_log_ipv4
+	bool "nf_log_ipv4.ko"
+	depends on FREETZ_MODULE_nf_log_common
+	depends on FREETZ_MODULE_ip_tables
+
+config FREETZ_MODULE_nf_log_ipv6
+	bool "nf_log_ipv6.ko"
+	depends on FREETZ_MODULE_nf_log_common
+	depends on FREETZ_MODULE_ip6_tables
+
 config FREETZ_MODULE_x_tables
 	bool "x_tables.ko"
 	default n
@@ -787,6 +804,7 @@ config FREETZ_MODULE_xt_HL
 config FREETZ_MODULE_xt_LOG
 	bool "xt_LOG.ko"
 	depends on !FREETZ_KERNEL_VERSION_2
+	select FREETZ_MODULE_nf_log_common if FREETZ_KERNEL_VERSION_4_MIN
 	default y
 	help
 		This option adds a `LOG' target, which allows you to create rules in
