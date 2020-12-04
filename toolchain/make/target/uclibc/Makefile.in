@@ -7,7 +7,10 @@ UCLIBC_FILES = \
 	\
 	libuClibc-$(TARGET_TOOLCHAIN_UCLIBC_VERSION).so \
 	libc.so \
-	libc.so.$(TARGET_TOOLCHAIN_UCLIBC_MAJOR_VERSION) \
+	$(sort \
+		libc.so.0 \
+		libc.so.$(TARGET_TOOLCHAIN_UCLIBC_MAJOR_VERSION) \
+	) \
 	\
 	$(if $(FREETZ_TARGET_UCLIBC_HAS_multiple_libs), \
 		libcrypt-$(TARGET_TOOLCHAIN_UCLIBC_VERSION).so \
