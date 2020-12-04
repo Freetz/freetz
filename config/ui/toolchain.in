@@ -226,11 +226,6 @@ choice
 	bool "1.0.15"
 	depends on FREETZ_SEPARATE_AVM_UCLIBC
 
-	config FREETZ_TARGET_UCLIBC_1_0_31
-	bool "1.0.31 - EXPERIMENTAL"
-	depends on FREETZ_SEPARATE_AVM_UCLIBC
-	depends on FREETZ_SHOW_DEVELOPER
-
 	config FREETZ_TARGET_UCLIBC_1_0_36
 	bool "1.0.36 - EXPERIMENTAL"
 	depends on FREETZ_SEPARATE_AVM_UCLIBC
@@ -437,7 +432,6 @@ config FREETZ_TARGET_UCLIBC_1
 	bool
 	default y           if FREETZ_TARGET_UCLIBC_1_0_14
 	default y           if FREETZ_TARGET_UCLIBC_1_0_15
-	default y           if FREETZ_TARGET_UCLIBC_1_0_31
 	default y           if FREETZ_TARGET_UCLIBC_1_0_36
 	default n
 
@@ -449,7 +443,6 @@ config FREETZ_TARGET_UCLIBC_VERSION
 	default "0.9.33.2"  if FREETZ_TARGET_UCLIBC_0_9_33
 	default "1.0.14"    if FREETZ_TARGET_UCLIBC_1_0_14
 	default "1.0.15"    if FREETZ_TARGET_UCLIBC_1_0_15
-	default "1.0.31"    if FREETZ_TARGET_UCLIBC_1_0_31
 	default "1.0.36"    if FREETZ_TARGET_UCLIBC_1_0_36
 
 config FREETZ_TARGET_UCLIBC_MAJOR_VERSION
