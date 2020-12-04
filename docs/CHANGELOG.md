@@ -130,6 +130,7 @@ Latest changes
     * libonig 6.7.1
     * libsrtp-1.4.4+20100615
     * libssh2 1.9.0
+    * libtirpc 1.2.6
     * libusb-compat 0.1.5
     * lzma1 4.65
     * mbed TLS 2.7.17/2.24.0
