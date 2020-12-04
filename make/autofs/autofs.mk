@@ -8,6 +8,8 @@ $(PKG)_SITE:=@KERNEL/linux/daemons/$(pkg)/v5
 $(PKG)_BUILD_PREREQ += bison flex
 $(PKG)_STARTLEVEL=50
 
+$(PKG)_DEPENDS_ON += $(if $(FREETZ_TARGET_UCLIBC_SUPPORTS_rpc),,libtirpc)
+
 $(PKG)_CONDITIONAL_PATCHES+=$(if $(FREETZ_KERNEL_VERSION_2_MAX),abandon,current)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/daemon/automount
@@ -31,7 +33,7 @@ $(PKG)_CONFIGURE_ENV += ac_cv_lib_nsl_yp_match=no
 $(PKG)_CONFIGURE_OPTIONS += --with-mapdir=/etc
 $(PKG)_CONFIGURE_OPTIONS += --with-fifodir=/var/run/automount
 $(PKG)_CONFIGURE_OPTIONS += --with-flagdir=/var/run/automount
-$(PKG)_CONFIGURE_OPTIONS += --without-libtirpc
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_UCLIBC_SUPPORTS_rpc),--without-libtirpc,--with-libtirpc)
 $(PKG)_CONFIGURE_OPTIONS += --without-dmalloc
 $(PKG)_CONFIGURE_OPTIONS += --without-systemd
 $(PKG)_CONFIGURE_OPTIONS += --without-hesiod
@@ -42,6 +44,10 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-sloppy-mount
 $(PKG)_CONFIGURE_OPTIONS += --disable-ext-env
 endif
 
+ifneq ($(strip $(FREETZ_TARGET_UCLIBC_SUPPORTS_rpc)),y)
+$(PKG)_CFLAGS += -I$(TARGET_TOOLCHAIN_STAGING_DIR)/include/tirpc
+endif
+$(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_UCLIBC_SUPPORTS_rpc
 $(PKG)_REBUILD_SUBOPTS += FREETZ_KERNEL_VERSION_2_MAX
 
 $(PKG)_MODULES := \
@@ -74,7 +80,7 @@ $($(PKG)_BINARY) $($(PKG)_MODULES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE1) -C $(AUTOFS_DIR) \
 		FREETZ=1 \
 		CC="$(TARGET_CC)" \
-		AUTOFS_CFLAGS="$(TARGET_CFLAGS)" \
+		AUTOFS_CFLAGS="$(TARGET_CFLAGS) $(AUTOFS_CFLAGS)" \
 		autofslibdir=$(FREETZ_LIBRARY_DIR)/autofs \
 		daemon
 
