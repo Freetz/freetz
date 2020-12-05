@@ -48,6 +48,7 @@ List of packages which do not use the default STARTLEVEL 99.
     - 81: stunnel
     - 81: vpnc
     - 81: vtun
+    - 81: wireguard
  * Routing
     - 82: bird
     - 82: quagga

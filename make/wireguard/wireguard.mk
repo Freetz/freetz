@@ -6,6 +6,8 @@ $(PKG)_SITE:=https://git.zx2c4.com/wireguard-tools/snapshot
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/wg
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/wg
 
+$(PKG)_STARTLEVEL=81
+
 $(PKG)_EXTRA_CFLAGS += --function-section -fdata-sections -fstack-protector-strong
 $(PKG)_EXTRA_LDFLAGS += -Wl,--gc-sections
 
