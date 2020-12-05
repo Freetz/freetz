@@ -77,11 +77,11 @@ start() {
 	log -x "Starting external ($EXTERNAL_DIRECTORY):"
 
 	# wait until it's external's turn
-	if [ ! -e /tmp/.modstarted -o -e /var/run/onlinechanged ]; then
+	if [ ! -e /tmp/.mod.started -o -e /var/run/onlinechanged ]; then
 		log -n "Waiting for mod-startup:"
 		spaceit=" "
 		while [ true ]; do
-			[ -e /tmp/.modstarted -a ! -e /var/run/onlinechanged ] && break
+			[ -e /tmp/.mod.started -a ! -e /var/run/onlinechanged ] && break
 			log -n "$spaceit."
 			spaceit=
 			sleep 1

@@ -18,7 +18,7 @@ log() {
 }
 
 # semaphore older than 3 min -> kill waiting sibling scripts (not during startup)
-if [ -e /tmp/.modstarted -a "$(find $PID_FILE -prune -mmin +3 2>/dev/null)" == "$PID_FILE" ]; then
+if [ -e /tmp/.mod.started -a "$(find $PID_FILE -prune -mmin +3 2>/dev/null)" == "$PID_FILE" ]; then
 	for pid in $(pidof onlinechanged.sh | sed "s/ \?$$//"); do
 		log "killing old process #$pid"
 		kill $pid
@@ -33,7 +33,7 @@ if [ -e /var/run/shutdown ]; then
 fi
 
 if [ -e $PID_FILE ]; then
-	if [ ! -e /tmp/.modstarted ]; then
+	if [ ! -e /tmp/.mod.started ]; then
 		# startup: quit if another onlinechanged is yet running
 		[ "$OC_STATE" == "offline" ] && rm -rf $PID_FILE 2>/dev/null
 		log "rejected"
@@ -50,9 +50,9 @@ fi
 touch $PID_FILE
 
 # startup: wait for rc.mod, abort if status changes to "offline"
-if [ ! -e /tmp/.modstarted ]; then
+if [ ! -e /tmp/.mod.started ]; then
 	log "sleeping"
-	while [ ! -e /tmp/.modstarted ]; do
+	while [ ! -e /tmp/.mod.started ]; do
 		if [ ! -e $PID_FILE ]; then
 			log "aborted"
 			exit 0
