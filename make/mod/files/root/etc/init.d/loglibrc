@@ -4,7 +4,8 @@
 loglib_console() {
 	local loglib_SVC="$(echo $1 | tr '[:lower:]' '[:upper:]')"
 	shift
-	echo -e "\033[94m[FREETZ]\033[m \033[33m$loglib_SVC\033[m: $*" >/dev/console
+	while [ ${#loglib_SVC} -lt 13 ]; do loglib_SVC=" $loglib_SVC  "; done
+	echo -e "\033[94m[FREETZ]\033[m \033[33m${loglib_SVC:0:13}\033[m $*" >/dev/console
 }
 
 loglib_logger() {
