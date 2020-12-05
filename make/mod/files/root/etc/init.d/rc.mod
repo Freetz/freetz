@@ -152,18 +152,16 @@ start() {
 		echo "asynchronous."
 	fi
 
-	touch /tmp/.modstarted
-
 	# 7390: external hook for nand flash, if NAND exists it is mounted under /var/media/ftp
 	if [ "$CONFIG_NAND" = 'y' -a -f "$MOD_EXTERNAL_DIRECTORY"/.external ] &&
-		df -P "$MOD_EXTERNAL_DIRECTORY" | tail -n1 | grep -q " /var/media/ftp$"; then
+	  df -P "$MOD_EXTERNAL_DIRECTORY" | tail -n1 | grep -q " /var/media/ftp$"; then
 		log "external detected on nand."
-		/mod/etc/init.d/rc.external start
-	 fi
+		nohup /mod/etc/init.d/rc.external start 0</dev/null 1>/dev/null 2>&1 &
+	fi
 
 	/usr/lib/mod/menu-update
-
 	log "Startup finished."
+	touch /tmp/.modstarted
 }
 
 stop_helper() {
