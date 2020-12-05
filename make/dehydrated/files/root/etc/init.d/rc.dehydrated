@@ -130,8 +130,8 @@ case $1 in
 		;;
 	cron)
 		[ "$DEHYDRATED_ENABLED" != "yes" ] && return
-		logger -t info "Run $DAEMON_LONG_NAME by cron."
- 		run
+		loglib_logger "$DAEMON" "Run $DAEMON_LONG_NAME by cron."
+		run
 		;;
 	*)
 		echo "Usage: $0 [load|unload|run|init|force|revoke <cert.pem>|config|cron]" 1>&2

@@ -74,9 +74,9 @@ case $1 in
 		mkdir -p /tmp/flash/opendd
 		[ ! -e /tmp/flash/opendd/opendd.pem ] && touch /tmp/flash/opendd/opendd.pem
 
-		modreg cgi 'opendd' 'OpenDD'
-		modreg file opendd opendd_pem 'opendd.pem' 0 "opendd_pem"
-		modreg daemon --hide opendd
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
+		modreg file $DAEMON opendd_pem 'opendd.pem' 0 "opendd_pem"
+		modreg daemon --hide $DAEMON
 
 		if [ "$OPENDD_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled." 1>&2
@@ -102,9 +102,9 @@ case $1 in
 			/mod/etc/init.d/rc.crond reload >/dev/null
 		fi
 
-		modunreg cgi 'opendd'
-		modunreg file opendd
-		modunreg daemon opendd
+		modunreg cgi $DAEMON
+		modunreg file $DAEMON
+		modunreg daemon $DAEMON
 		;;
 	run)
 		run
@@ -114,8 +114,8 @@ case $1 in
 		;;
 	cron)
 		[ "$OPENDD_ENABLED" != "yes" ] && return
-		logger -t info Run OpenDD by cron.
- 		run
+		loglib_logger "$DAEMON" "Run $DAEMON_LONG_NAME by cron."
+		run
 		;;
 	*)
 		echo "Usage: $0 [load|unload|run|config|cron]" 1>&2

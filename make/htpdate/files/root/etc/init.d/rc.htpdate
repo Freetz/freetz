@@ -40,8 +40,8 @@ set_cron() {
 
 case $1 in
 	""|load)
-		modreg cgi 'htpdate' 'htpdate'
-		modreg daemon --hide htpdate
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
+		modreg daemon --hide $DAEMON
 
 		if [ "$HTPDATE_ENABLED" != "yes" ]; then
 			echo "$DAEMON is disabled." 1>&2
@@ -50,8 +50,8 @@ case $1 in
 		set_cron 1>&2
 		;;
 	unload)
-		modunreg cgi 'htpdate'
-		modunreg daemon htpdate
+		modunreg cgi $DAEMON
+		modunreg daemon $DAEMON
 		;;
 	run)
 		run
@@ -61,8 +61,8 @@ case $1 in
 		;;
 	cron)
 		[ "$HTPDATE_ENABLED" != "yes" ] && return
-		logger -t info Run htpdate by cron.
- 		run
+		loglib_logger "$DAEMON" "Run $DAEMON_LONG_NAME by cron."
+		run
 		;;
 	*)
 		echo "Usage: $0 [load|unload|run|config|cron]" 1>&2
