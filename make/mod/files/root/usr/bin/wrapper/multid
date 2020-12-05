@@ -1,11 +1,11 @@
 #!/bin/sh
+. /etc/init.d/loglibrc
 
 log() {
 	local _log="$(cat)" # save stdin to _log
 	[ -z "$_log" ] && return
-	echo "[FREETZ] AVM-MULTID: $_log" > /dev/console
+	loglib_system "AVM-MULTID" "$_log"
 	echo "$_log" >> /var/log/mod_net.log
-	logger -t AVM-MULTID "$_log"
 }
 
 multid_mode=start

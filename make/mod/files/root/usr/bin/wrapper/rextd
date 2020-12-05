@@ -1,11 +1,11 @@
 #!/bin/sh
+. /etc/init.d/loglibrc
 
 log() {
 	local _log="$(cat)" # save stdin to _log
 	[ -z "$_log" ] && return
-	echo "[FREETZ] AVM-REXTD: $_log" > /dev/console
+	loglib_system "AVM-REXTD" "$_log"
 	echo "$_log" >> /var/log/mod_net.log
-	logger -t AVM-REXTD "$_log"
 }
 
 rextd_mode=start
