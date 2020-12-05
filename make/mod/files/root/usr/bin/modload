@@ -1,8 +1,15 @@
 #!/bin/sh
-
 # Usage: modload [force]
-
 [ -d "/tmp/flash" -a "$1" != "force" ] && exit 0
+
+. /etc/init.d/loglibrc
+log() {
+	while IFS='\n' read -r line; do
+		[ -z "$line" ] && continue
+		loglib_console "MODLOAD" "$line"
+		echo "$line" >> /var/log/mod_load.log
+	done
+}
 
 MODFILE=/var/flash/freetz
 newmod() {
@@ -11,22 +18,6 @@ newmod() {
 	tar -cf $MODFILE -C /tmp flash
 	echo 'done.'
 }
-
-echo -n "Loading $MODFILE ... "
-HEAD="$(head -c2 $MODFILE 2>/dev/null)"
-if [ -n "$HEAD" ]; then
-	[ "$HEAD" == "$(echo -ne '\x1F\x8B')" ] && COMP='z'
-	if cat $MODFILE | tar -x$COMP -C /tmp/ 2>/dev/null; then
-		echo "done."
-	else
-		echo "failed."
-		newmod
-	fi
-else
-	echo 'does not exist.'
-	newmod
-fi
-[ -d /tmp/flash/mod ] || mkdir -p /tmp/flash/mod
 
 # Symlink files (of specific type) into the /mod tree
 # $1    - file type (as in the shell command 'test')
@@ -41,36 +32,55 @@ lnmod() {
 	done
 }
 
-echo -n 'Loading users, groups and passwords ... '
-/usr/bin/modusers load
-echo 'done.'
+mod_load() {
+	echo -n "Loading $MODFILE ... "
+	HEAD="$(head -c2 $MODFILE 2>/dev/null)"
+	if [ -n "$HEAD" ]; then
+		[ "$HEAD" == "$(echo -ne '\x1F\x8B')" ] && COMP='z'
+		if cat $MODFILE | tar -x$COMP -C /tmp/ 2>/dev/null; then
+			echo "done."
+		else
+			echo "failed."
+			newmod
+		fi
+	else
+		echo 'does not exist.'
+		newmod
+	fi
+	[ -d /tmp/flash/mod ] || mkdir -p /tmp/flash/mod
 
-echo -n 'Loading hosts ... '
-/usr/bin/modhosts load
-echo 'done.'
+	echo -n 'Loading users, groups and passwords ... '
+	/usr/bin/modusers load
+	echo 'done.'
 
-echo -n 'Loading config ... '
-for pkg in $(cat /mod/etc/static.pkg 2>/dev/null) avm; do
-	[ -e "/mod/pkg/$pkg" ] || ln -s / "/mod/pkg/$pkg"
-	lnmod -d "/etc/default.$pkg"
-	lnmod -d "/usr/lib/cgi-bin/$pkg"
-	lnmod -x "/usr/lib/cgi-bin/$pkg.cgi"
-	lnmod -x "/etc/init.d/rc.$pkg"
-	lnmod -x $(ls /etc/init.d/rc.$pkg.* 2>/dev/null)
-	[ -r "/mod/etc/default.$pkg/$pkg.cfg" ] && /usr/bin/modconf load "$pkg"
-done
-/usr/bin/modconf load avm
-echo 'done.'
+	echo -n 'Loading hosts ... '
+	/usr/bin/modhosts load
+	echo 'done.'
 
-echo -n 'Loading modules ... '
-for MODULE in fat vfat  mbcache ext2  jbd ext3  crc16 jbd2 ext4  reiserfs  nls_utf8 hfsplus  ipv6; do
-	[ -e /lib/modules/$(uname -r)/kernel/*/*/${MODULE}.ko ] && modprobe $MODULE
-done
-if [ -r /tmp/flash/mod/modules ]; then
-	grep -v "^ *#" /tmp/flash/mod/modules | while read -r module; do
-		[ -n "$module" ] && modprobe ${module%.ko}
+	echo -n 'Loading config ... '
+	for pkg in $(cat /mod/etc/static.pkg 2>/dev/null) avm; do
+		[ -e "/mod/pkg/$pkg" ] || ln -s / "/mod/pkg/$pkg"
+		lnmod -d "/etc/default.$pkg"
+		lnmod -d "/usr/lib/cgi-bin/$pkg"
+		lnmod -x "/usr/lib/cgi-bin/$pkg.cgi"
+		lnmod -x "/etc/init.d/rc.$pkg"
+		lnmod -x $(ls /etc/init.d/rc.$pkg.* 2>/dev/null)
+		[ -r "/mod/etc/default.$pkg/$pkg.cfg" ] && /usr/bin/modconf load "$pkg"
 	done
-fi
-echo 'done.'
+	/usr/bin/modconf load avm
+	echo 'done.'
+
+	echo -n 'Loading modules ... '
+	for MODULE in fat vfat  mbcache ext2  jbd ext3  crc16 jbd2 ext4  reiserfs  nls_utf8 hfsplus  ipv6; do
+		[ -e /lib/modules/$(uname -r)/kernel/*/*/${MODULE}.ko ] && modprobe $MODULE
+	done
+	if [ -r /tmp/flash/mod/modules ]; then
+		grep -v "^ *#" /tmp/flash/mod/modules | while read -r module; do
+			[ -n "$module" ] && modprobe ${module%.ko}
+		done
+	fi
+	echo 'done.'
+}
+mod_load 2>&1 | log
 
 exit 0
