@@ -1,0 +1,20 @@
+# Logging functions for the shell-scripts
+
+
+loglib_console() {
+	local loglib_SVC="$(echo $1 | tr '[:lower:]' '[:upper:]')"
+	shift
+	echo -e "\033[94m[FREETZ]\033[m \033[33m$loglib_SVC\033[m: $*" >/dev/console
+}
+
+loglib_logger() {
+	local loglib_SVC="$(echo $1 | tr '[:lower:]' '[:upper:]')"
+	shift
+	logger -p 3.5 -t "FREETZ" "[$loglib_SVC] $*"
+}
+
+loglib_system() {
+	loglib_console $*
+	loglib_logger $*
+}
+
