@@ -1,4 +1,5 @@
 #!/bin/sh
+. /etc/init.d/loglibrc
 PID_FILE=/var/run/onlinechanged
 OC_STATE="$1"
 
@@ -12,9 +13,8 @@ log() {
 		addline="\n"
 		shift
 	done
-	echo -e "$(date '+%Y-%m-%d %H:%M:%S') [$$]: [$OC_STATE] $*$addline" >>/var/log/onlinechanged.log
-	echo "[FREETZ] ONLINECHANGED[$$]: [$OC_STATE] $*" > /dev/console
-	logger -t ONLINECHANGED[$$] "[$OC_STATE] $*"
+	loglib_system "ONLINECHANGED" "[$$-$OC_STATE] $*"
+	echo -e "$(date '+%Y-%m-%d %H:%M:%S') [$$-$OC_STATE] $*$addline" >>/var/log/onlinechanged.log
 }
 
 # semaphore older than 3 min -> kill waiting sibling scripts (not during startup)

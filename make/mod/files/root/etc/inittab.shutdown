@@ -1,4 +1,5 @@
 #!/bin/sh
+. /etc/init.d/loglibrc
 
 reverse_order() {
 	local _line
@@ -42,8 +43,7 @@ final_umount() {
 }
 
 log() {
-	echo "SHUTDOWN: $*"
-	logger -t SHUTDOWN "$*"
+	loglib_system "SHUTDOWN" "$*"
 }
 
 execnlog() {
