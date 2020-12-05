@@ -1,5 +1,5 @@
 #! /bin/sh
-
+. /etc/init.d/loglibrc
 [ -r /mod/etc/conf/mod.cfg ] && . /mod/etc/conf/mod.cfg
 
 # returns AVM firmware version as integer (i.e. without dot)
@@ -11,13 +11,10 @@ get_avm_firmware_version() {
 
 # Log to Syslog & Console
 log_freetz() {
-	local log_prio="user.notice"
-	local c_prefix='[INFO]'
-	[ "$1" == "err" ] && log_prio="user.err" && c_prefix='[FAIL]'
-	logger -p "$log_prio" -t FREETZMOUNT "$2"
-	echo "FREETZMOUNT: $c_prefix $2" > /dev/console
+	loglib_system "FREETZMOUNT" "$2"
+	local c_prefix
+	[ "$1" == "err" ] && c_prefix='[FAIL]' || c_prefix='[INFO]'
 	echo "$c_prefix $2" >> /var/log/mod_mount.log
-	return 0
 }
 
 # modified name generation for automatic mount point
