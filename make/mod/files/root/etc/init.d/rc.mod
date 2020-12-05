@@ -3,6 +3,7 @@
 ## Store 'clean' environment for later use
 # overwrite AVM's version
 if [ -z "$1" ]; then
+	[ -e /tmp/.modstarted ] && echo "Freetz is yet started!" && exit 1
 	env - /bin/sh -c 'VERBOSE_RC_CONF=n; . /etc/init.d/rc.conf; unset PWD; env' | sed -re 's/^([^=]+)=(.*)$/export \1='"'\2'"/ > /var/env.cache
 	(
 		echo "export PATH='/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin:/mod/etc/init.d:/sbin:/bin:/usr/sbin:/usr/bin'"
