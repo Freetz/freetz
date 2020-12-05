@@ -12,7 +12,7 @@ fi
 
 # Emergency stop switch for execution of Freetz as a whole
 [ ! -e "$dsfile" ] && echo '#!/bin/sh' > "$dsfile" && echo1 "adding ${dsfile#$FILESYSTEM_MOD_DIR}"
-echo '[ "$ds_off" == "y" ] || . /etc/init.d/rc.mod 2>&1 | tee /var/log/mod.log | sed "s/^/[FREETZ] RCMOD: /g"' >> "$dsfile"
+echo '[ "$ds_off" == "y" ] || nohup /etc/init.d/rc.mod 0</dev/null 1>/dev/null 2>&1 &' >> "$dsfile"
 chmod +x "$dsfile"
 
 # Emergency stop switch for execution of debug.cfg
