@@ -273,9 +273,11 @@ cat << EOF
 	  Cipher:&nbsp;
 	  <select id="id_act_cipher" style="width:150px;" name="my_cipher" onchange='if (this.value=="none") (alert($(lang de:"\"Achtung, Verkehr durch das VPN ist so unverschl\"+unescape(\"%FC\")+\"sselt!\"" en:"\"Caution: All traffic will be unencrypted!\""))); changeval();'>
 		$([ $HASBLOWFISH ] && echo '<option value="BF-CBC">Blowfish</option>')
-		<option value="AES-128-CBC">AES 128</option>
-		<option value="AES-192-CBC">AES 192</option>
-		<option value="AES-256-CBC">AES 256</option>
+		<option value="AES-128-CBC">AES 128 CBC</option>
+		<option value="AES-192-CBC">AES 192 CBC</option>
+		<option value="AES-256-CBC">AES 256 CBC</option>
+		<option value="AES-128-GCM">AES 128 GCM</option>
+		<option value="AES-256-GCM">AES 256 GCM</option>
 		<option value="DES-EDE3-CBC">Triple-DES</option>
 		<option value="none">$(lang de:"unverschl&uuml;sselt" en:"unencrypted")</option>
 	  </select>
