@@ -60,13 +60,14 @@ menu "Firmware packaging (fwmod) options"
 		depends on FREETZ_FWMOD_SIGN
 		default "freetz"
 		help
-			A password has to be set and needs at least 6 characters.
+			A password with at least 6 characters is required. It could
+			be set here or will be read from command line during make.
 			If you have forgotten the password, you could delete the
-			~/.freetz-signature/ directory to create a new key file set.
+			 ~/.freetz-signature/ directory to create a new key file set.
 
 			As ~/.freetz-signature/ is used by all you Freetz checkouts,
 			you need to use for all the same password! Or you link/create
-			./signature directory by yourself
+			./.signature/ directory by yourself.
 
 	config FREETZ_FWMOD_FORCE_PACK
 		bool "Force pack even if image is too big (SDK stick mode)"

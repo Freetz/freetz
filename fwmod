@@ -1816,9 +1816,20 @@ fi
 if [ "$DO_SIGN" -gt 0 ]; then
 	echo1 "checking signature key files"
 
-	#len
-	[ ${#FREETZ_FWMOD_SIGN_PASSWORD} -lt 6 ] && \
-		error 1 "password for private signature key file is to short"
+	if [ ${#FREETZ_FWMOD_SIGN_PASSWORD} -lt 6 ]; then
+		while true; do
+			read -sp "Enter password for private signature key file (hidden input): " FREETZ_FWMOD_SIGN_PASSWORD
+			echo
+			if [ -s "${SIGNATURE_SUBDIR}/prv" -a ${#FREETZ_FWMOD_SIGN_PASSWORD} -ge 6 ]; then
+				openssl rsa -in "${SIGNATURE_SUBDIR}/prv" -passin "pass:$FREETZ_FWMOD_SIGN_PASSWORD" -noout &>/dev/null && break
+				echo "Password is wrong, try again!"
+			else
+				[ ${#FREETZ_FWMOD_SIGN_PASSWORD} -ge 6 ] && break
+				echo "To short password, try again!"
+			fi
+		done
+	fi
+
 	#dir
 	[ ! -e "${SIGNATURE_SUBDIR}" -a ! -L "${SIGNATURE_SUBDIR}" ] && \
 		ln -s ~/.freetz-signature "${SIGNATURE_SUBDIR}"
