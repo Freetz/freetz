@@ -1842,7 +1842,7 @@ if [ "$DO_SIGN" -gt 0 ]; then
 	if [ ! -s "${SIGNATURE_SUBDIR}/prv" ]; then
 		echo2 "creating private signature key file"
 		rm -f "${SIGNATURE_SUBDIR}/prv" "${SIGNATURE_SUBDIR}/pub"
-		openssl genrsa -des3 -passout "pass:$FREETZ_FWMOD_SIGN_PASSWORD" -out "${SIGNATURE_SUBDIR}/prv" 1024 >/dev/null 2>&1 || \
+		openssl genrsa -aes128 -passout "pass:$FREETZ_FWMOD_SIGN_PASSWORD" -out "${SIGNATURE_SUBDIR}/prv" 1024 >/dev/null 2>&1 || \
 			error 1 "could not create private signature key file"
 	else
 		openssl rsa -in "${SIGNATURE_SUBDIR}/prv" -passin "pass:$FREETZ_FWMOD_SIGN_PASSWORD" -noout >/dev/null 2>&1 || \
