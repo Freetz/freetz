@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN, 2020-12-08)
 $(PKG)_SOURCE:=cacert-$($(PKG)_VERSION).pem
 $(PKG)_SOURCE_SHA256:=313d562594ebd07846ad6b840dd18993f22e0f8b3f275d9aacfae118f4f00fb7
-$(PKG)_SITE:=https://curl.se/ca,https://curl.haxx.se/ca
+$(PKG)_SITE:=https://www.curl.se/ca,https://curl.haxx.se/ca
 
 $(PKG)_BINARY:=$(DL_DIR)/$($(PKG)_SOURCE)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/etc/ssl/certs/ca-bundle.crt

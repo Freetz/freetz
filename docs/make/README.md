@@ -68,7 +68,7 @@
     A hex editor/viewer for binary files
 
   * **[CA-bundle 2020-12-08](ca-bundle.md)<a id='ca-bundle'></a>**<br>
-    The Mozilla CA certificate store in PEM format, see http://curl.haxx.se/docs/caextract.html Size of uncompressed file is about 250 KB.
+    The Mozilla CA certificate store in PEM format, see https://www.curl.se/docs/caextract.html Size of uncompressed file is about 250 KB.
 
   * **[Callmonitor 1.20.9-git](callmonitor.md)<a id='callmonitor'></a>**<br>
     Callmonitor enables you to perform arbitrary actions upon incoming calls on your AVM Fritz!Box (e.g., to send notifications to your favorite set-top box, to wake up your PC, or to send you a mail when you have missed a call).
