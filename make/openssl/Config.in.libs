@@ -49,16 +49,20 @@ choice
 	    - could be used (with some limitations) as a replacement for AVM's OpenSSL library
 
 	 version 1.0.2:
+	    - NOT supported by the OpenSSL development team anymore
+	      (s. https://www.openssl.org/policies/releasestrat.html)
 	    - Long Term Support (LTS) version, supported until 2019-12-31
-	    - could NOT be used as a replacement for AVM's OpenSSL library
+
+	 version 1.1.1:
+	    - Long Term Support (LTS) version, supported until 2023-09-11
 
 	config FREETZ_OPENSSL_VERSION_0
-	bool "0.9.8 - avoid using, out of support"
+	bool "0.9.8 - DEPRECATED"
 	depends on FREETZ_AVM_HAS_OPENSSL_VERSION_0
 	depends on !FREETZ_OPENSSL_VERSION_1_REQUIRED
 
 	config FREETZ_OPENSSL_VERSION_1
-	bool "1.0.2"
+	bool "1.0.2 - DEPRECATED"
 
 endchoice
 
@@ -102,7 +106,7 @@ config FREETZ_LIB_libcrypto_WITH_RC4
 
 config FREETZ_LIB_libcrypto_WITH_ZLIB
 	bool "Build with zlib support"
-	depends on FREETZ_OPENSSL_VERSION_1
+	depends on !FREETZ_OPENSSL_VERSION_0
 	select FREETZ_LIB_libz
 	default n
 

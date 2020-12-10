@@ -411,7 +411,7 @@
   * **<u>OpenSSH 8.4p1</u><a id='openssh'></a>**<br>
     OpenSSH is the premier connectivity tool for remote login with the SSH protocol. It encrypts all traffic to eliminate eavesdropping, connection hijacking, and other attacks. In addition, OpenSSH provides a large suite of secure tunneling capabilities, several authentication methods, and sophisticated configuration options.
 
-  * **<u>OpenSSL 0.9.8zh/1.0.2u(binary only)</u><a id='openssl'></a>**<br>
+  * **<u>OpenSSL 0.9.8zh/1.0.2u (binary only)</u><a id='openssl'></a>**<br>
     This package contains the OpenSSL command-line utility.
 
   * **[OpenVPN 2.4.9/2.5.0](openvpn.md)<a id='openvpn'></a>**<br>

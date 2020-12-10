@@ -35,14 +35,17 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_CONFIG_DIR
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENSSL_TRACE
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENSSL_STATIC
 
-$(PKG)_NO_CIPHERS := no-idea no-md2 no-mdc2 no-rc2 no-rc5 no-sha0 no-smime no-rmd160 no-aes192 no-ripemd no-camellia no-ans1 no-krb5 no-ssl2 no-ssl3
+$(PKG)_NO_CIPHERS := no-idea no-md2 no-mdc2 no-rc2 no-rc5 no-rmd160 no-camellia no-ssl2 no-ssl3
+$(PKG)_NO_CIPHERS += $(if $(or $(FREETZ_OPENSSL_VERSION_0),$(FREETZ_OPENSSL_VERSION_1)),no-sha0 no-smime no-aes192 no-ripemd no-ans1 no-krb5)
 $(PKG)_NO_CIPHERS += $(if $(FREETZ_LIB_libcrypto_WITH_RC4),,no-rc4)
 
-$(PKG)_OPTIONS    := shared no-err no-fips no-hw no-engines no-sse2 no-capieng no-seed
+$(PKG)_OPTIONS    := shared no-err no-hw no-sse2 no-capieng no-seed
+$(PKG)_OPTIONS    += $(if $(or $(FREETZ_OPENSSL_VERSION_0),$(FREETZ_OPENSSL_VERSION_1)),no-fips no-engines)
 $(PKG)_OPTIONS    += $(if $(FREETZ_LIB_libcrypto_WITH_EC),,no-ec)
 $(PKG)_OPTIONS    += $(if $(FREETZ_LIB_libcrypto_WITH_ZLIB),zlib)
 $(PKG)_OPTIONS    += $(if $(FREETZ_OPENSSL_VERSION_0),no-perlasm no-cms)
-$(PKG)_OPTIONS    += $(if $(FREETZ_OPENSSL_VERSION_1),no-ec_nistp_64_gcc_128 no-sctp no-srp no-store no-whirlpool)
+$(PKG)_OPTIONS    += $(if $(FREETZ_OPENSSL_VERSION_1),no-store)
+$(PKG)_OPTIONS    += $(if $(FREETZ_OPENSSL_VERSION_0),,no-ec_nistp_64_gcc_128 no-sctp no-srp no-whirlpool)
 $(PKG)_OPTIONS    += $(if $(FREETZ_PACKAGE_OPENSSL_TRACE),enable-ssl-trace)
 
 $(PKG)_CONFIGURE_DEFOPTS := n
@@ -52,6 +55,7 @@ $(PKG)_CONFIGURE_OPTIONS += --openssldir=$(FREETZ_OPENSSL_CONFIG_DIR)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_OPENSSL_SMALL_FOOTPRINT),-DOPENSSL_SMALL_FOOTPRINT)
 $(PKG)_CONFIGURE_OPTIONS += $(OPENSSL_NO_CIPHERS)
 $(PKG)_CONFIGURE_OPTIONS += $(OPENSSL_OPTIONS)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(or $(FREETZ_OPENSSL_VERSION_0),$(FREETZ_OPENSSL_VERSION_1)),,-DOPENSSL_NO_ASYNC)
 
 $(PKG)_MAKE_FLAGS += -C $(OPENSSL_DIR)
 $(PKG)_MAKE_FLAGS += MAKEDEPPROG="$(TARGET_CC)"
