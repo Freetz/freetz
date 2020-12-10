@@ -1,4 +1,4 @@
-# dehydrated 0.6.5 (letsencrypt)
+# dehydrated 0.7.0 (letsencrypt)
 
 Mit Dehydrated (und LigHTTPd) können Let's Encrypt Zertifikate erstellt und automatisch aktualisiert werden.
 <br>
