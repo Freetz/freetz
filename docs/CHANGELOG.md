@@ -245,7 +245,7 @@ Latest changes
     * libpopt 1.16
     * libtasn1 4.13
     * libtiff 4.0.7
-    * libusb1 1.0.24
+    * libusb1 1.0.23/1.0.24
     * libvorbis 1.3.5
     * libxml 2.9.9
     * libxslt/xsltproc 1.1.33
