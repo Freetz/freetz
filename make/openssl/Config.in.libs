@@ -29,17 +29,17 @@ config FREETZ_LIB_libssl
 		The OpenSSL ssl library implements the Secure Sockets Layer (SSL v2/v3)
 		and Transport Layer Security (TLS v1) protocols. It provides a rich API.
 
-config FREETZ_OPENSSL_VERSION_PROMPT
-	bool
-	default n
-
 config FREETZ_OPENSSL_VERSION_1_REQUIRED
 	bool
 	default n
 
-choice
+config FREETZ_OPENSSL_VERSION_PROMPT
+	bool
+	default n
 
-	depends on FREETZ_OPENSSL_VERSION_PROMPT
+if FREETZ_OPENSSL_VERSION_PROMPT
+
+choice
 	prompt "OpenSSL version"
 	default FREETZ_OPENSSL_VERSION_1
 	help
@@ -67,19 +67,16 @@ choice
 endchoice
 
 config FREETZ_OPENSSL_SHLIB_VERSION
-	depends on FREETZ_OPENSSL_VERSION_PROMPT
 	string
 	default "0.9.8" if FREETZ_OPENSSL_VERSION_0
 	default "1.0.0" if FREETZ_OPENSSL_VERSION_1
 
 config FREETZ_OPENSSL_LIBCRYPTO_EXTRA_LIBS
-	depends on FREETZ_OPENSSL_VERSION_PROMPT
 	string
 	default "-ldl -lz" if FREETZ_LIB_libcrypto_WITH_ZLIB
 	default "-ldl"
 
 menu "OpenSSL configuration"
-	depends on FREETZ_OPENSSL_VERSION_PROMPT
 
 config FREETZ_LIB_libcrypto_WITH_EC
 	bool "Support elliptic curve cryptography"
@@ -125,3 +122,6 @@ config FREETZ_OPENSSL_CONFIG_DIR
 		can be found.
 
 endmenu
+
+endif # FREETZ_OPENSSL_VERSION_PROMPT
+
