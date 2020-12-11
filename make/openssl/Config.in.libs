@@ -123,5 +123,37 @@ menu "OpenSSL configuration"
 
 endmenu
 
+
+config FREETZ_OPENSSL_VERSION_1_MIN
+	def_bool y
+	depends on \
+		FREETZ_OPENSSL_VERSION_1 || \
+		FREETZ_OPENSSL_VERSION_2_MIN
+
+config FREETZ_OPENSSL_VERSION_2_MIN
+	def_bool y
+	depends on \
+		FREETZ_OPENSSL_VERSION_2 || \
+		FREETZ_OPENSSL_VERSION_3_MIN
+
+config FREETZ_OPENSSL_VERSION_3_MIN
+	def_bool y
+	depends on \
+		FREETZ_OPENSSL_VERSION_3
+
+
+config FREETZ_OPENSSL_VERSION_1_MAX
+	def_bool y
+	depends on \
+		FREETZ_OPENSSL_VERSION_1 || \
+		FREETZ_OPENSSL_VERSION_0
+
+config FREETZ_OPENSSL_VERSION_2_MAX
+	def_bool y
+	depends on \
+		FREETZ_OPENSSL_VERSION_2 || \
+		FREETZ_OPENSSL_VERSION_1_MAX
+
+
 endif # FREETZ_OPENSSL_VERSION_PROMPT
 
