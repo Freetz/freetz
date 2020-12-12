@@ -49,6 +49,9 @@ if [ -d /proc/sys/net/ipv6 ] || find /lib/modules/*-*/kernel/net/ipv6 -maxdepth 
 	  "$(lang de:"Aktiviere IPv6 Unterst&uuml;tzung" en:"Enable IPv6 support")"
 fi
 
+cgi_print_checkbox_p "http2_enabled" "$LIGHTTPD_HTTP2_ENABLED" \
+  "$(lang de:"Aktiviere HTTP/2 Unterst&uuml;tzung" en:"Enable HTTP/2 support")"
+
 dirs=$LIGHTTPD_DOCROOT
 [ "$LIGHTTPD_CHROOT" = "yes" ] && dirs="$dirs/websites"
 [ "$LIGHTTPD_VIRTHOST" = "yes" ] && dirs="$dirs/default</li><li>$dirs/$LIGHTTPD_VIRTHOSTTYPE"
