@@ -224,13 +224,13 @@ EOF
 	virthost_conf "$LIGHTTPD_MODCGIVIRT" "$out"
 fi
 
-if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_COMPRESS" = "y" -a "$LIGHTTPD_MODCOMPRESS" = "yes" ]; then
+if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_DEFLATE" = "y" -a "$LIGHTTPD_MODDEFLATE" = "yes" ]; then
 cat << EOF
-server.modules += ( "mod_compress" )
+server.modules += ( "mod_deflate" )
 EOF
-	gendir "$LIGHTTPD_MODCOMPRESSDIR"
-	out="compress.cache-dir = \"$LIGHTTPD_MODCOMPRESSDIR\"\ncompress.filetype  = (\"text/plain\", \"text/html\")"
-	virthost_conf "$LIGHTTPD_MODCOMPRESSVIRT" "$out"
+	gendir "$LIGHTTPD_MODDEFLATEDIR"
+	out="deflate.cache-dir = \"$LIGHTTPD_MODDEFLATEDIR\"\n#deflate.mimetypes = (\"text/\")\ndeflate.allowed-encodings = ( \"gzip\", \"deflate\" )"
+	virthost_conf "$LIGHTTPD_MODDEFLATEVIRT" "$out"
 fi
 
 if [ "$LIGHTTPD_ERROR" = "yes" ]; then

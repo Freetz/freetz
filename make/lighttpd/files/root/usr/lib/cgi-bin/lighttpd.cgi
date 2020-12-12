@@ -25,7 +25,7 @@ check "$LIGHTTPD_LOGGING" yes:log
 check "$LIGHTTPD_MODCGI" yes:modcgi
 check "$LIGHTTPD_MODFASTCGIPHP" yes:modfastcgiphp
 check "$LIGHTTPD_MODFASTCGIRUBY" yes:modfastcgiruby
-check "$LIGHTTPD_MODCOMPRESS" yes:modcompress
+check "$LIGHTTPD_MODDEFLATE" yes:moddeflate
 check "$LIGHTTPD_ERROR" yes:error
 check "$LIGHTTPD_AUTH" yes:auth
 check "$LIGHTTPD_MODSTATUS" yes:modstatus
@@ -227,17 +227,17 @@ fi
 sec_end
 
 sec_begin '$(lang de:"Erweiterte Einstellungen" en:"Advanced Options")'
-if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_COMPRESS" = "y" ]; then
+if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_DEFLATE" = "y" ]; then
 cat << EOF
-<p><input type="hidden" name="modcompress" value="no">
-<input id="b2" type="checkbox" name="modcompress" value="yes"$modcompress_chk><label for="b2"> $(lang de:"mod_compress aktivieren (Cache Verzeichnis muss konfiguriert werden)" en:"Activate mod_compress (Cache dir must be configured")</label></p>
-<p> $(lang de:"Verzeichnis der Cache Daten" en:"Directory of Cache"): <input type="text" name="modcompressdir" size="30" maxlength="255" value="$(html "$LIGHTTPD_MODCOMPRESSDIR")"></p>
+<p><input type="hidden" name="moddeflate" value="no">
+<input id="b2" type="checkbox" name="moddeflate" value="yes"$moddeflate_chk><label for="b2"> $(lang de:"mod_deflate aktivieren (Cache Verzeichnis muss konfiguriert werden)" en:"Activate mod_deflate (Cache dir must be configured")</label></p>
+<p> $(lang de:"Verzeichnis der Cache Daten" en:"Directory of Cache"): <input type="text" name="moddeflatedir" size="30" maxlength="255" value="$(html "$LIGHTTPD_MODDEFLATEDIR")"></p>
 EOF
-virthost_conf "modcompressvirt" "$LIGHTTPD_MODCOMPRESSVIRT" '$(lang de:"Aktivierung von mod_compress" en:"activation of mod_compress support")'
+virthost_conf "moddeflatevirt" "$LIGHTTPD_MODDEFLATEVIRT" '$(lang de:"Aktivierung von mod_deflate" en:"activation of mod_deflate support")'
 echo "<hr>"
 else
 cat << EOF
-<p style="font-size:10px;">$(lang de:"Dateicaching kann nicht konfiguriert werden - mod_compress.so nicht vorhanden." en:"Caching of files cannot be configured - mod_compress.so unavailable.")</p>
+<p style="font-size:10px;">$(lang de:"Dateicaching kann nicht konfiguriert werden - mod_deflate.so nicht vorhanden." en:"Caching of files cannot be configured - mod_deflate.so unavailable.")</p>
 EOF
 fi
 if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_STATUS" = "y" ]; then
