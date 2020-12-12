@@ -1,5 +1,10 @@
 # NEWS
 
+ * __2020-12-05__<br>
+   Die rc.mod (also Freetz selbst) wird nun asynchron gestartet. Dadurch kann der Bootvorgang nicht mehr<br>
+   blockiert oder der AVM-Watchdog auslöset werden.<br>
+   Siehe [28ebac1a](https://github.com/Freetz-NG/freetz-ng/commit/28ebac1a84cda2ff1d014de428e8b60856ff55b0)<br>
+
  * __2020-11-18__<br>
    Die rc.custom wird nun asynchron ausgeführt und kann den Startvorgang nicht mehr blockieren.<br>
    Siehe [680b9ef6](https://github.com/Freetz-NG/freetz-ng/commit/680b9ef65c47a1eb4cbdcc18b0f9e9ff4799ba9e)<br>
