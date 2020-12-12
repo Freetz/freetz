@@ -27,6 +27,10 @@ start() {
 	modlib_startdaemon $DAEMON -f $DAEMON_CONFIG
 }
 
+reload() {
+	killall -USR1 $DAEMON # HUP reopens the log !
+}
+
 case $1 in
 	""|load)
 		mkdir -p /mod/etc/$DAEMON
@@ -64,6 +68,9 @@ case $1 in
 		;;
 	stop)
 		modlib_stop
+		;;
+	reload)
+		modlib_reload
 		;;
 	restart)
 		modlib_restart
