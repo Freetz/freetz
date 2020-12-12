@@ -35,12 +35,14 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_CONFIG_DIR
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENSSL_TRACE
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENSSL_STATIC
 
-$(PKG)_NO_CIPHERS := no-idea no-md2 no-mdc2 no-rc2 no-rc5 no-rmd160 no-camellia no-ssl2 no-ssl3
+$(PKG)_NO_CIPHERS := no-idea no-md2 no-mdc2 no-rc2 no-rc5 no-rmd160 no-camellia no-ssl3
+$(PKG)_NO_CIPHERS += $(if $(FREETZ_OPENSSL_VERSION_2_MAX),no-ssl2)
 $(PKG)_NO_CIPHERS += $(if $(FREETZ_OPENSSL_VERSION_1_MAX),no-sha0 no-smime no-aes192 no-ripemd no-ans1 no-krb5)
 $(PKG)_NO_CIPHERS += $(if $(FREETZ_LIB_libcrypto_WITH_RC4),,no-rc4)
 
-$(PKG)_OPTIONS    := shared no-err no-hw no-sse2 no-capieng no-seed
-$(PKG)_OPTIONS    += $(if $(FREETZ_OPENSSL_VERSION_1_MAX),no-fips no-engines)
+$(PKG)_OPTIONS    := shared no-err no-sse2 no-capieng no-seed
+$(PKG)_OPTIONS    += $(if $(FREETZ_OPENSSL_VERSION_2_MAX),no-hw)
+$(PKG)_OPTIONS    += $(if $(FREETZ_OPENSSL_VERSION_1_MAX),no-fips no-engines,no-engine)
 $(PKG)_OPTIONS    += $(if $(FREETZ_LIB_libcrypto_WITH_EC),,no-ec)
 $(PKG)_OPTIONS    += $(if $(FREETZ_LIB_libcrypto_WITH_ZLIB),zlib)
 $(PKG)_OPTIONS    += $(if $(FREETZ_OPENSSL_VERSION_0),no-perlasm no-cms)
@@ -60,12 +62,12 @@ $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_OPENSSL_VERSION_2_MIN),-DOPENSSL_NO_AS
 $(PKG)_MAKE_FLAGS += -C $(OPENSSL_DIR)
 $(PKG)_MAKE_FLAGS += MAKEDEPPROG="$(TARGET_CC)"
 $(PKG)_MAKE_FLAGS += CC="$(TARGET_CC)"
-$(PKG)_MAKE_FLAGS += AR="$(TARGET_AR) r"
+$(PKG)_MAKE_FLAGS += AR="$(TARGET_AR)$(if $(FREETZ_OPENSSL_VERSION_1_MAX), r)"
 $(PKG)_MAKE_FLAGS += RANLIB="$(TARGET_RANLIB)"
 $(PKG)_MAKE_FLAGS += NM="$(TARGET_NM)"
 $(PKG)_MAKE_FLAGS += FREETZ_MOD_OPTIMIZATION_FLAGS="$(TARGET_CFLAGS) -ffunction-sections -fdata-sections"
 $(PKG)_MAKE_FLAGS += SHARED_LDFLAGS=""
-$(PKG)_MAKE_FLAGS += INSTALL_PREFIX="$(TARGET_TOOLCHAIN_STAGING_DIR)"
+$(PKG)_MAKE_FLAGS += $(if $(FREETZ_OPENSSL_VERSION_1_MAX),INSTALL_PREFIX,DESTDIR)="$(TARGET_TOOLCHAIN_STAGING_DIR)"
 $(PKG)_MAKE_FLAGS += CROSS_COMPILE=1
 $(PKG)_MAKE_FLAGS += $(if $(FREETZ_PACKAGE_OPENSSL_STATIC),STATIC_APPS=1)
 
@@ -83,7 +85,7 @@ $($(PKG)_BINARY_BUILD_DIR) $($(PKG)_LIBS_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) $(OPENSSL_MAKE_FLAGS) all
 
 $($(PKG)_LIBS_STAGING_DIR): $($(PKG)_LIBS_BUILD_DIR)
-	$(SUBMAKE) $(OPENSSL_MAKE_FLAGS) install
+	$(SUBMAKE) $(OPENSSL_MAKE_FLAGS) $(if $(FREETZ_OPENSSL_VERSION_1_MAX),install,install_sw)
 	$(call PKG_FIX_LIBTOOL_LA,prefix) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/{libcrypto,libssl,openssl}.pc
 
