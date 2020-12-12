@@ -1,0 +1,11 @@
+--- Configurations/unix-Makefile.tmpl
++++ Configurations/unix-Makefile.tmpl
+@@ -417,7 +417,7 @@
+                           '$(CNF_CPPFLAGS)', '$(CPPFLAGS)') -}
+ BIN_CFLAGS={- join(' ', $target{bin_cflags} || (),
+                         @{$config{bin_cflags}},
+-                        '$(CNF_CFLAGS)', '$(CFLAGS)') -}
++                        '$(CNF_CFLAGS)', '$(CFLAGS)', '$(if $(STATIC_APPS),-static)') -}
+ BIN_CXXFLAGS={- join(' ', $target{bin_cxxflags} || (),
+                           @{$config{bin_cxxflags}},
+                           '$(CNF_CXXFLAGS)', '$(CXXFLAGS)') -}

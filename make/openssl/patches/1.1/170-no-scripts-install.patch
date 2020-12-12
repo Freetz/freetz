@@ -1,0 +1,31 @@
+--- Configurations/unix-Makefile.tmpl
++++ Configurations/unix-Makefile.tmpl
+@@ -553,28 +553,6 @@
+ 	@$(PERL) $(SRCDIR)/util/mkdir-p.pl "$(DESTDIR)$(OPENSSLDIR)/certs"
+ 	@$(PERL) $(SRCDIR)/util/mkdir-p.pl "$(DESTDIR)$(OPENSSLDIR)/private"
+ 	@$(PERL) $(SRCDIR)/util/mkdir-p.pl "$(DESTDIR)$(OPENSSLDIR)/misc"
+-	@set -e; for x in dummy $(MISC_SCRIPTS); do \
+-		if [ "$$x" = "dummy" ]; then continue; fi; \
+-		x1=`echo "$$x" | cut -f1 -d:`; \
+-		x2=`echo "$$x" | cut -f2 -d:`; \
+-		fn=`basename $$x1`; \
+-		$(ECHO) "install $$x1 -> $(DESTDIR)$(OPENSSLDIR)/misc/$$fn"; \
+-		cp $$x1 "$(DESTDIR)$(OPENSSLDIR)/misc/$$fn.new"; \
+-		chmod 755 "$(DESTDIR)$(OPENSSLDIR)/misc/$$fn.new"; \
+-		mv -f "$(DESTDIR)$(OPENSSLDIR)/misc/$$fn.new" \
+-		      "$(DESTDIR)$(OPENSSLDIR)/misc/$$fn"; \
+-		if [ "$$x1" != "$$x2" ]; then \
+-			ln=`basename "$$x2"`; \
+-			: {- output_off() unless windowsdll(); "" -}; \
+-			$(ECHO) "copy $(DESTDIR)$(OPENSSLDIR)/misc/$$ln -> $(DESTDIR)$(OPENSSLDIR)/misc/$$fn"; \
+-			cp "$(DESTDIR)$(OPENSSLDIR)/misc/$$fn" "$(DESTDIR)$(OPENSSLDIR)/misc/$$ln"; \
+-			: {- output_on() unless windowsdll();
+-			     output_off() if windowsdll(); "" -}; \
+-			$(ECHO) "link $(DESTDIR)$(OPENSSLDIR)/misc/$$ln -> $(DESTDIR)$(OPENSSLDIR)/misc/$$fn"; \
+-			ln -sf $$fn "$(DESTDIR)$(OPENSSLDIR)/misc/$$ln"; \
+-			: {- output_on() if windowsdll(); "" -}; \
+-		fi; \
+-	done
+ 	@$(ECHO) "install $(SRCDIR)/apps/openssl.cnf -> $(DESTDIR)$(OPENSSLDIR)/openssl.cnf.dist"
+ 	@cp $(SRCDIR)/apps/openssl.cnf "$(DESTDIR)$(OPENSSLDIR)/openssl.cnf.new"
+ 	@chmod 644 "$(DESTDIR)$(OPENSSLDIR)/openssl.cnf.new"

@@ -268,7 +268,7 @@ Latest changes
     * obexftp 0.23
     * openconnect 7.04
     * OpenSSH 8.4p1
-    * openssl 0.9.8zh/1.0.2u
+    * OpenSSL 0.9.8zh/1.0.2u/1.1.1i/3.0.0-alpha9
     * OpenVPN 2.4.9/2.5.0
     * pcre 8.43
     * PCSC-lite (pcscd) 1.9.0

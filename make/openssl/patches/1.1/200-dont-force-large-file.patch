@@ -1,0 +1,24 @@
+--- crypto/bio/bss_file.c
++++ crypto/bio/bss_file.c
+@@ -20,9 +20,6 @@
+  * of 32-bit platforms which allow for sequential access of large files
+  * without extra "magic" comprise *BSD, Darwin, IRIX...
+  */
+-# ifndef _FILE_OFFSET_BITS
+-#  define _FILE_OFFSET_BITS 64
+-# endif
+ #endif
+ 
+ #include <stdio.h>
+--- crypto/o_fopen.c
++++ crypto/o_fopen.c
+@@ -20,9 +20,6 @@
+  * of 32-bit platforms which allow for sequential access of large files
+  * without extra "magic" comprise *BSD, Darwin, IRIX...
+  */
+-#  ifndef _FILE_OFFSET_BITS
+-#   define _FILE_OFFSET_BITS 64
+-#  endif
+ # endif
+ 
+ #include "e_os.h"
