@@ -1,0 +1,73 @@
+--- Configurations/unix-Makefile.tmpl
++++ Configurations/unix-Makefile.tmpl
+@@ -179,38 +179,38 @@
+                                && $unified_info{attributes}->{scripts}->{$_}->{misc} }
+                         @{$unified_info{scripts}}))
+ -}
+-HTMLDOCS1={-
+-        join(" \\\n" . ' ' x 10,
+-             fill_lines(" ", $COLUMNS - 10,
+-                        @{$unified_info{htmldocs}->{man1}})) -}
+-HTMLDOCS3={-
+-        join(" \\\n" . ' ' x 10,
+-             fill_lines(" ", $COLUMNS - 10,
+-                        @{$unified_info{htmldocs}->{man3}})) -}
+-HTMLDOCS5={-
+-        join(" \\\n" . ' ' x 10,
+-             fill_lines(" ", $COLUMNS - 10,
+-                        @{$unified_info{htmldocs}->{man5}})) -}
+-HTMLDOCS7={-
+-        join(" \\\n" . ' ' x 10,
+-             fill_lines(" ", $COLUMNS - 10,
+-                        @{$unified_info{htmldocs}->{man7}})) -}
+-MANDOCS1={-
+-        join(" \\\n" . ' ' x 9,
+-             fill_lines(" ", $COLUMNS - 9,
+-                        @{$unified_info{mandocs}->{man1}})) -}
+-MANDOCS3={-
+-        join(" \\\n" . ' ' x 9,
+-             fill_lines(" ", $COLUMNS - 9,
+-                        @{$unified_info{mandocs}->{man3}})) -}
+-MANDOCS5={-
+-        join(" \\\n" . ' ' x 9,
+-             fill_lines(" ", $COLUMNS - 9,
+-                        @{$unified_info{mandocs}->{man5}})) -}
+-MANDOCS7={-
+-        join(" \\\n" . ' ' x 9,
+-             fill_lines(" ", $COLUMNS - 9,
+-                        @{$unified_info{mandocs}->{man7}})) -}
++#HTMLDOCS1={-
++#        join(" \\\n" . ' ' x 10,
++#             fill_lines(" ", $COLUMNS - 10,
++#                        @{$unified_info{htmldocs}->{man1}})) -}
++#HTMLDOCS3={-
++#        join(" \\\n" . ' ' x 10,
++#             fill_lines(" ", $COLUMNS - 10,
++#                        @{$unified_info{htmldocs}->{man3}})) -}
++#HTMLDOCS5={-
++#        join(" \\\n" . ' ' x 10,
++#             fill_lines(" ", $COLUMNS - 10,
++#                        @{$unified_info{htmldocs}->{man5}})) -}
++#HTMLDOCS7={-
++#        join(" \\\n" . ' ' x 10,
++#             fill_lines(" ", $COLUMNS - 10,
++#                        @{$unified_info{htmldocs}->{man7}})) -}
++#MANDOCS1={-
++#        join(" \\\n" . ' ' x 9,
++#             fill_lines(" ", $COLUMNS - 9,
++#                        @{$unified_info{mandocs}->{man1}})) -}
++#MANDOCS3={-
++#        join(" \\\n" . ' ' x 9,
++#             fill_lines(" ", $COLUMNS - 9,
++#                        @{$unified_info{mandocs}->{man3}})) -}
++#MANDOCS5={-
++#        join(" \\\n" . ' ' x 9,
++#             fill_lines(" ", $COLUMNS - 9,
++#                        @{$unified_info{mandocs}->{man5}})) -}
++#MANDOCS7={-
++#        join(" \\\n" . ' ' x 9,
++#             fill_lines(" ", $COLUMNS - 9,
++#                        @{$unified_info{mandocs}->{man7}})) -}
+ 
+ APPS_OPENSSL="{- use File::Spec::Functions;
+                  catfile("apps","openssl") -}"
