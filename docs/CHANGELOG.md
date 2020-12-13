@@ -215,7 +215,7 @@ Latest changes
     * git 2.26.2
     * gmp 6.1.2
     * gnu-make 4.2.1
-    * gnutls 3.5.19
+    * gnutls 3.6.15
     * haproxy 1.8.27
     * haserl 0.9.35
     * hplip 3.14.6
