@@ -123,8 +123,6 @@ enable_ssl() {
 cat << EOF
 ssl.engine = "$LIGHTTPD_SSLENABLE"
 ssl.pemfile = "/tmp/flash/lighttpd/crt.pem"
-ssl.use-sslv2 = "disable"
-ssl.use-sslv3 = "disable"
 #ssl.use-compression = "disable"
 EOF
 if [ -n "$LIGHTTPD_SSLCIPHER" ]; then
