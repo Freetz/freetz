@@ -1,8 +1,8 @@
 --- src/mod_openssl.c
 +++ src/mod_openssl.c
-@@ -1011,7 +1011,7 @@
-             }
-         }
+@@ -2179,7 +2179,7 @@
+             SSL_CTX_set_options(s->ssl_ctx, SSL_OP_PRIORITIZE_CHACHA);
+       #endif
  
 -      #ifndef OPENSSL_NO_DH
 +      #if !defined(OPENSSL_NO_DH) && !defined(OPENSSL_NO_BIO)
