@@ -229,7 +229,7 @@ cat << EOF
 server.modules += ( "mod_deflate" )
 EOF
 	gendir "$LIGHTTPD_MODDEFLATEDIR"
-	out="deflate.cache-dir = \"$LIGHTTPD_MODDEFLATEDIR\"\n#deflate.mimetypes = (\"text/\")\ndeflate.allowed-encodings = ( \"gzip\", \"deflate\" )"
+	out="deflate.cache-dir = \"$LIGHTTPD_MODDEFLATEDIR\"\ndeflate.mimetypes = (\"text/\")\ndeflate.allowed-encodings = ( \"gzip\", \"deflate\" )"
 	virthost_conf "$LIGHTTPD_MODDEFLATEVIRT" "$out"
 fi
 
