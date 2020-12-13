@@ -125,7 +125,7 @@ Latest changes
     * libdvbcsa 1.1.0
     * libgsm-1.0.13
     * libmnl 1.0.4
-    * libnettle 3.4.1
+    * libnettle 3.6
     * liblz4 1.9.3
     * libonig 6.7.1
     * libsrtp-1.4.4+20100615
