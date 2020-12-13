@@ -89,8 +89,10 @@ config FREETZ_OPENSSL_SHLIB_VERSION
 
 config FREETZ_OPENSSL_LIBCRYPTO_EXTRA_LIBS
 	string
-	default "-ldl -lz" if FREETZ_LIB_libcrypto_WITH_ZLIB
-	default "-ldl"
+	default "-ldl -pthread -lz"  if FREETZ_OPENSSL_VERSION_2_MIN && FREETZ_LIB_libcrypto_WITH_ZLIB
+	default "-ldl -pthread"      if FREETZ_OPENSSL_VERSION_2_MIN
+	default "-ldl -lz"           if FREETZ_OPENSSL_VERSION_1_MAX && FREETZ_LIB_libcrypto_WITH_ZLIB
+	default "-ldl"               if FREETZ_OPENSSL_VERSION_1_MAX
 
 menu "OpenSSL configuration"
 
