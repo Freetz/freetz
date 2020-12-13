@@ -121,6 +121,10 @@ cat << EOF
 <p><input id="d3" type="radio" name="ssladditional" value="yes"$ssladdly_chk><label for="d3"> $(lang de:"SSL zus&auml;tzlich" en:"Additional SSL support")</label>
 <input id="d4" type="radio" name="ssladditional" value="no"$ssladdln_chk><label for="d4"> $(lang de:"SSL exklusiv" en:"Exclusive SSL support")</label>
 </p>
+EOF
+
+if [ "$LIGHTTPD_SSLADDITIONAL" == "yes" ]; then
+cat << EOF
 <p> $(lang de:"SSL Port" en:"SSL port"): <input type="text" name="sslport" size="5" maxlength="5" value="$(html "$LIGHTTPD_SSLPORT")"></p>
 EOF
 
@@ -138,6 +142,9 @@ cat << EOF
 <p style="font-size:10px;">$(lang de:"HTTP redirect kann nicht konfiguriert werden - mod_redirect.so nicht vorhanden." en:"HTTP redirect cannot be configured - mod_redirect.so unavailable.")</p>
 EOF
 fi
+
+fi
+
 virthost_conf "sslvirt" "$LIGHTTPD_SSLVIRT" '$(lang de:"Aktivierung der SSL-Unterst&uuml;tzung" en:"activation of SSL support")'
 
 echo '<hr>'
