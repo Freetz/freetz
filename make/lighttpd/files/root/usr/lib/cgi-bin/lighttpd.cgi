@@ -89,8 +89,8 @@ sec_begin '$(lang de:"Erlaube Auflistung des Verzeichnisinhalts" en:"Allow listi
 if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_DIRLISTING" = "y" ]; then
 cat << EOF
 <p>
-<input id="d1" type="radio" name="dirlisting" value="enable"$dirlista_chk><label for="d1"> $(lang de:"Aktiviert" en:"Activated")</label>
-<input id="d2" type="radio" name="dirlisting" value="disable"$dirlistd_chk><label for="e2"> $(lang de:"Deaktiviert" en:"Deactivate")</label>
+<input id="d5" type="radio" name="dirlisting" value="enable"$dirlista_chk><label for="d5"> $(lang de:"Aktiviert" en:"Activated")</label>
+<input id="d6" type="radio" name="dirlisting" value="disable"$dirlistd_chk><label for="d6"> $(lang de:"Deaktiviert" en:"Deactivate")</label>
 </p>
 <p> $(lang de:"Kodierung der Dateinamen" en:"File name encoding"): <input type="text" name="dirlistingenc" size="6" maxlength="10" value="$(html "$LIGHTTPD_DIRLISTINGENC")"></p>
 EOF
