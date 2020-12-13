@@ -49,9 +49,6 @@ if [ -d /proc/sys/net/ipv6 ] || find /lib/modules/*-*/kernel/net/ipv6 -maxdepth 
 	  "$(lang de:"Aktiviere IPv6 Unterst&uuml;tzung" en:"Enable IPv6 support")"
 fi
 
-cgi_print_checkbox_p "http2_enabled" "$LIGHTTPD_HTTP2_ENABLED" \
-  "$(lang de:"Aktiviere HTTP/2 Unterst&uuml;tzung" en:"Enable HTTP/2 support")"
-
 dirs=$LIGHTTPD_DOCROOT
 [ "$LIGHTTPD_CHROOT" = "yes" ] && dirs="$dirs/websites"
 [ "$LIGHTTPD_VIRTHOST" = "yes" ] && dirs="$dirs/default</li><li>$dirs/$LIGHTTPD_VIRTHOSTTYPE"
@@ -126,8 +123,10 @@ cat << EOF
 </p>
 <p> $(lang de:"SSL Port" en:"SSL port"): <input type="text" name="sslport" size="5" maxlength="5" value="$(html "$LIGHTTPD_SSLPORT")"></p>
 EOF
+
 if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_REDIRECT" = "y" ]; then
 cat << EOF
+<hr>
 <p style="font-size:10px;">$(lang de:"Mit der folgenden Option wird eine Umleitung (HTTP redirect) vom unverschl&uuml;sselten Port zum SSL Port aktiviert. Diese Umleitung wird nur aktiv, wenn SSL zus&auml;tzlich zur unverschl&uuml;sselten Verbindung konfiguriert wurde. Bei der Benutzung von virtuellen Hosts werden nur die Hostnamen umgeleitet, f&uuml;r die eine SSL Unterst&uuml;tzung aktiv ist." en:"Using the following option, a HTTP redirect is activated redirecting traffic from the unencrypted port to the SSL port. This redirect is only active if SSL is configured as an additional service. When using virtual hosts, only the host names are redirected which are also configured for the SSL support.")</p>
 <p>
 <input type="hidden" name="sslredirect" value="no">
@@ -140,6 +139,11 @@ cat << EOF
 EOF
 fi
 virthost_conf "sslvirt" "$LIGHTTPD_SSLVIRT" '$(lang de:"Aktivierung der SSL-Unterst&uuml;tzung" en:"activation of SSL support")'
+
+echo '<hr>'
+cgi_print_checkbox_p "http2_enabled" "$LIGHTTPD_HTTP2_ENABLED" \
+  "$(lang de:"Aktiviere HTTP/2 Unterst&uuml;tzung" en:"Enable HTTP/2 support")"
+
 else
 cat << EOF
 <p style="font-size:10px;">$(lang de:"SSL Unterst&uuml;tzung in lighttpd nicht einkompiliert." en:"SSL support for lighttpd not compiled in.")</p>
