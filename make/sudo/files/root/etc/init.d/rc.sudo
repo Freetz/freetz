@@ -1,13 +1,17 @@
 #!/bin/sh
 
+DAEMON=sudo
+DAEMON_CFGFILE=/tmp/flash/$DAEMON/sudoers
+. /etc/init.d/modlibrc
+
 case $1 in
 	""|load)
-		mkdir -p /tmp/flash/sudo/
-		modreg file sudo sudoers "sudoers" 0 sudoers
-		ln -sf /tmp/flash/sudo/sudoers /mod/etc/sudoers
+		modlib_defaults $DAEMON_CFGFILE
+		ln -sf $DAEMON_CFGFILE /mod/etc/sudoers
+		modreg file $DAEMON sudoers "sudoers" 0 sudoers
 		;;
 	unload)
-		modunreg file sudo
+		modunreg file $DAEMON
 		;;
 	start)
 		;;
