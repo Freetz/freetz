@@ -772,7 +772,7 @@
   * **[smartmontools 7.1](../docs/make/smartmontools.md)<a id='smartmontools'></a>**<br>
     smartmontools contains utility programs (smartctl, smartd) to control/monitor storage systems using the Self-Monitoring, Analysis and Reporting Technology System (S.M.A.R.T.) built into most modern ATA and SCSI disks. It is derived from smartsuite.
 
-  * **[smstools3 3.1.14](../docs/make/smstools3.md)<a id='smstools3'></a>**<br>
+  * **[smstools3 3.1.21](../docs/make/smstools3.md)<a id='smstools3'></a>**<br>
     The SMS Server Tools 3 is a SMS Gateway software which can send and receive short messages through GSM modems and mobile phones. This is the enhanced version 3.x maintained by Mr. Keijo "Keke" Kasvi. WWW: http://smstools3.kekekasvi.com
      - [Datenverzeichnis](../docs/make/smstools3.md#datenverzeichnis)
      - [Senden und Empfangen mit dem Terminal](../docs/make/smstools3.md#senden-und-empfangen-mit-dem-terminal)

@@ -488,7 +488,7 @@ Latest changes
     * samba 3.6.13 (as an alternative to the 3.0.37, 3.0.37 is still the default one)
     * shellinabox 2.14
     * smartmontools 5.43
-    * smstools3 3.1.14
+    * smstools3 3.1.21
     * smusbutil 1.1
     * sslh 1.14
     * Sundtek DVB driver 130210.134617

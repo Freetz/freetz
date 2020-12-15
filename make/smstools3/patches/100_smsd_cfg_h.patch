@@ -1,7 +1,7 @@
---- src/smsd_cfg.h.orig	2012-04-16 22:58:03.000000000 +0200
-+++ src/smsd_cfg.h	2012-04-16 23:03:54.000000000 +0200
+--- src/smsd_cfg.h
++++ src/smsd_cfg.h
 @@ -21,7 +21,7 @@
- #include <time.h>
+ #include <signal.h>
  
  #ifndef __FreeBSD__
 -#define DEFAULT_CONFIGFILE "/etc/smsd.conf"
@@ -9,7 +9,7 @@
  #else
  #define DEFAULT_CONFIGFILE "%%PREFIX%%/etc/smsd.conf"
  #endif
-@@ -34,7 +34,7 @@
+@@ -36,7 +36,7 @@
  
  #define MM_CORE_FNAME "/tmp/mm_smsd_%i" /* %i is PID */
  
@@ -17,8 +17,8 @@
 +#define NUMBER_OF_MODEMS 64
  #define SIZE_NUM 16
  
- #define DEVICE devices[process_id]
-@@ -120,7 +120,7 @@
+ // 3.1.18: Definitions for process_id's:
+@@ -141,7 +141,7 @@
  typedef struct
  {
    char name[32]; 		// Name of the queue
