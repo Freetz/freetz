@@ -37,4 +37,4 @@ rc.smstools3 listsms
     [http://smstools3.kekekasvi.com/](http://smstools3.kekekasvi.com/)
 -   Falls der Stick nicht richtig erkannt wird, sondern nur als
     Datenträger:
-    [wiki:/packages/ppp#Weiteres](ppp.html#Weiteres)
+    [wiki:/packages/ppp#Weiteres](ppp.html#weiteres)
