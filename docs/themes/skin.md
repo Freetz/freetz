@@ -19,6 +19,3 @@ Zur Auswahl stehen:
  * **phoenix**<br>
    [![Skin phoenix](../screenshots/000-MOD_skin-phoenix_md.jpg)](../screenshots/000-MOD_skin-phoenix.jpg)<br><br>
 
- * **prisrak**<br>
-   [![Skin prisrak](../screenshots/000-MOD_skin-prisrak_md.png)](../screenshots/000-MOD_skin-prisrak.png)<br><br>
-   
