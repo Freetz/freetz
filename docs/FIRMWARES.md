@@ -437,6 +437,7 @@ Currently supported devices and firmwares
   - 134.07.01 rev63070 {ALL}
   - 134.07.12 rev70775 {ALL} [MESH18 NL2]
   - 134.07.21 rev83664 {ALL} [PSQ19]
+  - 134.07.24 rev00000 {ALL} (Labor)
 
 * __Fritz!Repeater 1200__
   - 172.07.14 rev73941 {ALL} [MESH18 NL4]
