@@ -49,6 +49,7 @@ Latest changes
     + update gcc-4.7.x version to 4.7.4
     + add support for gcc-4.8.x/4.9.x/5.x/8.x
     + add support for x86 target
+    + add uClibc-1.0.36 support
   * support for a 3rd (auxiliary) firmware
   * fakeroot: bump version to 1.23
   * lzma SDK: bump lzma SDK version to 4.65
