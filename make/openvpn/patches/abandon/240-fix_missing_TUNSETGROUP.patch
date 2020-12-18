@@ -1,8 +1,8 @@
 --- src/openvpn/tun.c
 +++ src/openvpn/tun.c
-@@ -2069,6 +2069,11 @@
- 
- #ifdef ENABLE_FEATURE_TUN_PERSIST
+@@ -2074,6 +2074,11 @@
+ # define TUNSETGROUP   _IOW('T', 206, int)
+ #endif
  
 +/* TUNSETGROUP appeared in 2.6.23 */
 +#ifndef TUNSETGROUP
