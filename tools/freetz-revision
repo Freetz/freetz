@@ -19,7 +19,8 @@ elif [ -d $DIR/.git ]; then
 	fi
 	fi
 	fi
-	[ "$RB" == "master" ] && RC="$(( $(git --git-dir=$GDB rev-list --no-merges --count HEAD) +10#0$(cat $DIR/.revdiff) ))${RM}"
+	[ "$RB" == "HEAD" -o "$RB" == "master" ] && RC="$(( $(git --git-dir=$GDB rev-list --no-merges --count HEAD) +10#0$(cat $DIR/.revdiff) ))${RM}"
+	[ "$RB" == "HEAD" ] && RB="$(git --git-dir=$GDB describe --tags --abbrev=0)"
 	RH="$(git --git-dir=$GDB rev-parse --verify --short @)"
 	[ "$1" ] && RB="${RB/master/}" || RD="$(git --git-dir=$GDB log --pretty='format:%cd' --date=format:'%Y-%m-%d' -1 @)"
 fi
