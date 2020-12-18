@@ -16,9 +16,18 @@ More features - less bugs!
  * You need an up to date Linux System with some [prerequisites](docs/wiki/10_Beginner/install.de.md#installation-der-ben%C3%B6tigten-pakete-ubuntu).
  * Or download a ready-to-use VM like Gismotro's [Freetz-Linux](https://freetz.digital-eliteboard.com/?dir=Teamserver/Freetz/Freetz-VM/VirtualBox/).
 
-### Quickstart:
+### Clone the main branch:
 ```
   git clone https://github.com/Freetz-NG/freetz-ng ~/freetz-ng
+```
+
+### Or clone a single [tag](/Freetz-NG/freetz-ng/tags):
+```
+  git clone https://github.com/Freetz-NG/freetz-ng ~/freetz-ng --single-branch --branch TAGNAME
+```
+
+### Build firmware:
+```
   cd ~/freetz-ng
   make menuconfig
   make
@@ -61,11 +70,6 @@ More features - less bugs!
 ```
   git clone https://gitlab.com/Freetz-NG/freetz-ng ~/freetz-ng
   git clone https://bitbucket.org/Freetz-NG/freetz-ng ~/freetz-ng
-```
-
-### Not recommended:
-```
-  svn co https://github.com/Freetz-NG/freetz-ng/trunk ~/freetz-ng
 ```
 
 ### Documentation:
