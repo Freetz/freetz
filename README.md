@@ -21,7 +21,7 @@ More features - less bugs!
   git clone https://github.com/Freetz-NG/freetz-ng ~/freetz-ng
 ```
 
-### Or clone a single [tag](/Freetz-NG/freetz-ng/tags):
+### Or clone a single [tag](../../tags):
 ```
   git clone https://github.com/Freetz-NG/freetz-ng ~/freetz-ng --single-branch --branch TAGNAME
 ```
