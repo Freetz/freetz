@@ -1,5 +1,13 @@
 # NEWS
 
+ * __2020-12-18__<br>
+   Es gibt nun den ersten [Tag](https://github.com/Freetz-NG/freetz-ng/tags) `ng20120`. Weitere git-Tags sind vor "grösseren" Änderungen geplant. Der Name setzt<br>
+   sich aus `ng`+`JJahr`+`MMonat`+`Unterversion` zusammen. Die Unterversion sollte meist eine `0` sein.<br>
+   Die automatisch angebotene und nicht deaktivierbare `.zip`-Datei darf auf keinen Fall verwendet werden, da<br>
+   darin keine Dateiberechtigungen enthalten sind! In der `.tar.gz` fehlt mindestens die Versionsinformation.<br>
+   Stattdessen sollte ein Tag wie in der [README](https://github.com/Freetz-NG/freetz-ng#or-clone-a-single-tag) beschrieben mit git ausgecheckt werden.<br>
+   Siehe [ng20120](https://github.com/Freetz-NG/freetz-ng/releases/tag/ng20120)<br>
+
  * __2020-12-05__<br>
    Die rc.mod (also Freetz selbst) wird nun asynchron gestartet. Dadurch kann der Bootvorgang nicht mehr<br>
    blockiert oder der AVM-Watchdog auslöset werden.<br>
