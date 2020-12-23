@@ -497,7 +497,7 @@ prepare_image
 # IPs
 [ ! $ip ] && ip=192.168.178.1
 oa="unknown"
-for horst in $(hostname -I); do
+for horst in $(ip -4 -o addr show scope global | grep -Po 'inet \K[\d.]+'); do
 	[ ${horst%.*} == ${ip%.*} ] && oa=$horst
 done
 if [ "$oa" == "unknown" ]; then
