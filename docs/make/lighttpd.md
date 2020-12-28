@@ -1,4 +1,4 @@
-# lighttpd 1.4.57
+# lighttpd 1.4.58
 
 Mit diesem Paket ist es möglich, den lighttpd Webserver zu erstellen.
 

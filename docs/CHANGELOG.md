@@ -250,7 +250,7 @@ Latest changes
     * libvorbis 1.3.5
     * libxml 2.9.9
     * libxslt/xsltproc 1.1.33
-    * lighttpd 1.4.57
+    * lighttpd 1.4.58
     * lsof 4.89
     * ltrace 0.7.91-git
     * lynx 2.8.9
