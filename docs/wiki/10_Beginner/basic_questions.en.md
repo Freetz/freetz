@@ -27,12 +27,13 @@
     You'll never have an kernel as expected by avm. Maybe some patches
     are missing, maybe some options are not selected as avm intended.
   * Build kernel modules?<br>
-    Make sure the latest source code for your device is available at
-    http://osp.avm.de/ and integrated into Freetz. The source code for
-    the flag ship model of your series (xx90) should be also available
-    to create a "delta" patch. If not, ask AVM: fritzbox_info@avm.de
-    The module needs to be enabled with ```make kernel-menuconfig```
-    as "M(odule)" and selected with ```make menuconfig```.
+     - If you dont know which module for a specific device is required, attach the device to a Linux PC to check it. Commands: `dmesg`, `lsusb`, `lsmod` etc
+     - Make sure the latest source code for your device is available at http://osp.avm.de/ and integrated into Freetz.
+       The source code for the flag ship model of your series (xx90) should be also available to create a "delta" patch.
+       If not, you need to ask AVM: fritzbox_info@avm.de
+     - Then the module needs to be enabled with ```make kernel-menuconfig``` as "M(odule)". Use `/` to search.
+     - If you dont want to do that every time, you could upload your changes in `make/linux/configs/freetz/` as a push-request.
+     - To copy the file to the image, selected it with ```make menuconfig``` or if not available add its names to `Kernel modules` -> `Own Modules`.
   * Execute files on storages?<br>
     Disabled by default since some time by AVM. To allow,
     select "Drop noexec for (external) storages" patch.
