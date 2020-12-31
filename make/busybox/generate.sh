@@ -93,11 +93,9 @@ for file in $BBDEP.*; do
 done >> "$BBDEP"
 
 echo -n " defaults ..."
-default FEATURE_COPYBUF_KB 64
-default FEATURE_VI_MAX_LEN 1024
+#default UNAME_OSNAME "" # AVM never used the default "GNU/Linux"
 default SUBST_WCHAR 63
 default LAST_SUPPORTED_WCHAR 767
-default BUSYBOX_EXEC_PATH "/bin/busybox"
 default FEATURE_CROND_DIR "/mod/var/spool/cron"
 default "Buffer allocation policy" ${BBTAG}_FEATURE_BUFFERS_USE_MALLOC
 depends_on LOCALE_SUPPORT "!FREETZ_TARGET_UCLIBC_0_9_28"

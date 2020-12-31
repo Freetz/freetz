@@ -307,7 +307,7 @@ config FREETZ_BUSYBOX___V131_FEATURE_PREFER_APPLETS
 
 config FREETZ_BUSYBOX___V131_BUSYBOX_EXEC_PATH
 	string "Path to busybox executable"
-	default "/bin/busybox"
+	default "/proc/self/exe"
 	help
 	When applets need to run other applets, busybox
 	sometimes needs to exec() itself. When the /proc filesystem is
@@ -1120,7 +1120,7 @@ config FREETZ_BUSYBOX___V131_FEATURE_USE_SENDFILE
 config FREETZ_BUSYBOX___V131_FEATURE_COPYBUF_KB
 	int "Copy buffer size, in kilobytes"
 	range 1 1024
-	default 64
+	default 4
 	help
 	Size of buffer used by cp, mv, install, wget etc.
 	Buffers which are 4 kb or less will be allocated on stack.
@@ -2957,7 +2957,7 @@ config FREETZ_BUSYBOX___V131_VI
 config FREETZ_BUSYBOX___V131_FEATURE_VI_MAX_LEN
 	int "Maximum screen width"
 	range 256 16384
-	default 1024
+	default 4096
 	depends on FREETZ_BUSYBOX___V131_VI
 	help
 	Contrary to what you may think, this is not eating much.
