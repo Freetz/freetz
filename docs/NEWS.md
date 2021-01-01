@@ -1,5 +1,15 @@
 # NEWS
 
+ * __2021-01-01__<br>
+   Auf Github gibt es einen neuen [Discussions](https://github.com/Freetz-NG/freetz-ng/discussions)-Bereich für
+   jedes Projekt. Im Gegensatz zu den [Issues](https://github.com/Freetz-NG/freetz-ng/issues) stellt dies keinen<br>
+   Bugtrack sondern mehr etwas in Richtung eines Forums dar. Wohin es sich entwickelt wird sich mit der Zeit zeigen.<br>
+   Hoffentlich wird es mehr als 1 Person geben die dort Fragen beantwortet!<br>
+   Wer seine Mitmenschen mit täglichen Wasserstandmeldungen über die mehr/weniger/gleichen Megabait seines Indaneds<br>
+   nach dem Laden der 100. Inhaus belästigen möchte ist dort allerdings falsch. Dafür gibt es ein Forum auf den Seychellen<br>
+   mit zensurfreudigen möchtegern Sittenwächtern. Solch einen Mist ist dort gerne gesehen und zuhauf zu finden.<br>
+   Siehe [DISCUSSIONS](https://github.com/Freetz-NG/freetz-ng/discussions)<br>
+
  * __2020-12-18__<br>
    Es gibt nun den ersten [Tag](https://github.com/Freetz-NG/freetz-ng/tags) `ng20120`. Weitere git-Tags sind vor "grösseren" Änderungen geplant. Der Name setzt<br>
    sich aus `ng`+`JJahr`+`MMonat`+`Unterversion` zusammen. Die Unterversion sollte meist eine `0` sein.<br>
