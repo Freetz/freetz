@@ -2,6 +2,7 @@
 [![Freetz-NG](screenshots/000-XXX_Freetz-NG_trans.png "Freetz-NG")](#)<br>
 <br>
 Watch important changes and [NEWS](NEWS.md) about Freetz-NG.<br>
+Talk about everything around Freetz-NG at [DISCUSSIONS](https://github.com/Freetz-NG/freetz-ng/discussions).<br>
 Check list of supported devices and [FIRMWARES](FIRMWARES.md).<br>
 Read [CHANGELOG](CHANGELOG.md) for all improvements and additions.<br>
 For download and quickstart instructions go to [README](https://github.com/Freetz-NG/freetz-ng/blob/master/README.md#readme).<br>
