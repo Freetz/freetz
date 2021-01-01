@@ -45,6 +45,9 @@ Latest changes
 - Updated packages and libs:
     * lighttpd 1.4.58
 
+- BusyBox:
+    * Updated version 1.32.1
+
 ### ng20120
 
 - Known problems:
