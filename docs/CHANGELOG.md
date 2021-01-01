@@ -1,8 +1,11 @@
 # CHANGELOG
 Latest changes
 
-- Freetz
+- Freetz-NG
   * [devel](#devel)
+  * [ng20120](#ng20120)
+
+- Freetz
   * [Freetz-2.0](#freetz-20)
   * [Freetz-1.2](#freetz-12)
   * [Freetz-1.1](#freetz-11)
@@ -35,14 +38,25 @@ Latest changes
 - Known problems:
   * Replace kernel does not work for most latest firmware versions.
   * Loading build kernel modules may work or do not. You'll notice.
-  * No download toolchains for firmware versions since FritzOS 7.0.
+
+- Build system:
+  * kconfig 5.10
+
+- Updated packages and libs:
+    * lighttpd 1.4.58
+
+### ng20120
+
+- Known problems:
+  * Replace kernel does not work for most latest firmware versions.
+  * Loading build kernel modules may work or do not. You'll notice.
 
 - Build system:
   * addons: additional to addon/static.pkg, addon/*.pkg could be used to enable addons, since r15856/3dda64565e
   * binutils:
     + add support for binutils-2.24.x/2.25.x/2.26.x/2.31.x
   * ccache 3.7.12
-  * kconfig 5.10
+  * kconfig 5.9
     + added olddefconfig target
     + removed oldnoconfig target
   * kernel-/target-toolchain:
@@ -250,7 +264,7 @@ Latest changes
     * libvorbis 1.3.5
     * libxml 2.9.9
     * libxslt/xsltproc 1.1.33
-    * lighttpd 1.4.58
+    * lighttpd 1.4.57
     * lsof 4.89
     * ltrace 0.7.91-git
     * lynx 2.8.9
