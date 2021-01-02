@@ -255,7 +255,7 @@
   * **<u>taglib (libtag.so)</u><a id='taglib'></a>**<br>
     TagLib is a library for reading and editing the meta-data of several popular audio formats. Currently it supports both ID3v1 and ID3v2 for MP3 files, Ogg Vorbis comments and ID3 tags and Vorbis comments in FLAC, MPC, Speex, WavPack TrueAudio, WAV, AIFF, MP4 and ASF files.
 
-  * **<u>uclibc: ld-uClibc-0.9.x.so</u><a id='uclibc'></a>**<br>
+  * **<u>uclibc: ld-uClibc-x.y.z.so</u><a id='uclibc'></a>**<br>
     uClibc is a small C standard library intended for embedded Linux systems. uClibc was created to support uClinux, a version of Linux not requiring a memory management unit and thus suited for microcontrollers (hence the "uC" in the name - "u" is a replacement for the Greek character "miu" often used as an abbreviation for the prefix "micro"). uClibc is much smaller than GNU C Library (glibc), the C library normally used with Linux distributions. While glibc is intended to fully support all relevant C standards across a wide range of platforms, uClibc is specifically focused on embedded Linux. Features can be enabled or disabled according to space requirements.
 
   * **<u>uclibcxx: uClibc++ (libuClibc++.so.0.2.5)</u><a id='uclibcxx'></a>**<br>
