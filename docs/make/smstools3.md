@@ -31,6 +31,62 @@ Empfangene SMS können so aufgelistet angezeigt:
 rc.smstools3 listsms
 ```
 
+### Event-Handler
+
+On every event (SENT; RECEIVED; FAILED; REPORT; CALL;) this script is called.
+
+The following is an simple example script that forwards all normal SMS to a pre-programmed number,
+and all SMS with a "Forward: <phone> " prefix, to mentioned <phone> but cleansed from the prefix.
+
+This way you can receive, and remotely respond to, SMS from your service provider.
+
+Caution: as is the script is an security risk (anyone can instruct it to forward an SMS)
+Also it only handles SMS in ISO text encoding, I believe non-ISO characters are simply dropped by smstools3,
+but embedded quotes will surely mess up the processing.
+
+```
+#!/bin/sh
+# Make executable or smstools3 will crash: chmod a+x
+# Debug by viewing /var/log/smsd
+
+NUMBER=316xxxxxxxx   # My Phone, international format without +
+#NUMBER2=316xxxxxxxx  # My alternate Phone
+
+SOURCE=`cat $2|grep ^From:|cut -d " " -f2`
+FORWARD=`cat $2|grep ^Forward:|cut -d " " -f2`
+
+SENDSMS="/etc/init.d/rc.smstools3 sendsms"
+
+if [ "$1" = "RECEIVED" ]; then
+
+    # line number of the actual message (last line)
+    line="$(awk '/^\s*$/{print NR}' $2|head -n 1)"
+    [ -z "$line" ] && exit 0
+
+    # extract message
+    MESSAGE="`sed "1,${line}da" < $2`"
+
+    # If forward command, then forward message
+    if [ -n "$FORWARD" ];then
+      #remove forward header
+      MESSAGE2=${MESSAGE#Forward: [0-9]* }
+      $SENDSMS "$FORWARD" "${MESSAGE2}"
+      sleep 1 # force sepate timestamp in temp file
+    fi
+
+    # If no forward command, then forward to preprogrammed number
+    # Even if a forward command, still forward to listed numbers, to show processing was OK
+    if [ -n "$NUMBER" ];then
+      $SENDSMS "$NUMBER" "Forward: ${SOURCE} ${MESSAGE}"
+    fi
+    if [ -n "$NUMBER2" ];then
+      sleep 1 # force sepate timestamp in temp file
+      $SENDSMS "$NUMBER2" "Forward: ${SOURCE} ${MESSAGE}"
+    fi
+
+fi
+```
+
 ### Weiteres
 
 -   Komplette Dokumentation:
