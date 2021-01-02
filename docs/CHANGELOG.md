@@ -49,6 +49,9 @@ Latest changes
     * Removed version 1.31.1
     * Updated version 1.32.1
 
+- New tools and hooks:
+  * fitimg: tool to pack/unpack FIT firmware files
+
 ### ng20120
 
 - Known problems:
