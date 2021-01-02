@@ -18,10 +18,12 @@ sec_end
 sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
 cgi_print_textline_p "dir"      "$SMSTOOLS3_DIR"      50/255 \
   "$(lang de:"Datenverzeichnis" en:"data directory"): "
+cgi_print_textline_p "events"   "$SMSTOOLS3_EVENTS"   50/255 \
+  "$(lang de:"Event-Handler" en:"event handler"): "
 cgi_print_textline_p "device"   "$SMSTOOLS3_DEVICE"   15/255 \
   "$(lang de:"UMTS-Ger&auml;t" en:"UMTS device"): "
 cgi_print_textline_p "pin"      "$SMSTOOLS3_PIN"      8      \
-  "PIN: " " ($(lang de:"leer lassen wenn deaktiviert" en:"leafe empty if deactivated"))"
+  "PIN: " " ($(lang de:"leer lassen wenn deaktiviert" en:"leave empty if deactivated"))"
 cgi_print_textline_p "loglevel" "$SMSTOOLS3_LOGLEVEL" 1      \
   "$(lang de:"Loglevel" en:"Log level"): "
 sec_end
