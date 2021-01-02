@@ -44,6 +44,7 @@ Latest changes
 
 - Updated packages and libs:
     * lighttpd 1.4.58
+    * smartmontools 7.2
 
 - BusyBox:
     * Removed version 1.31.1
