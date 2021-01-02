@@ -36,7 +36,7 @@ rc.smstools3 listsms
 On every event (SENT; RECEIVED; FAILED; REPORT; CALL;) this script is called.
 
 The following is an simple example script that forwards all normal SMS to a pre-programmed number,
-and all SMS with a "Forward: <phone> " prefix, to mentioned <phone> but cleansed from the prefix.
+and all SMS with a "Forward: \<phone\> " prefix, to mentioned \<phone\> but cleansed from the prefix.
 
 This way you can receive, and remotely respond to, SMS from your service provider.
 
