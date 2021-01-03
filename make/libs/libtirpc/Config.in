@@ -1,7 +1,7 @@
 config FREETZ_LIB_libtirpc
 	bool "libtirpc (libtirpc.so)"
 	depends on !FREETZ_TARGET_UCLIBC_SUPPORTS_rpc
-	depends on FREETZ_PACKAGE_AUTOFS
+	depends on FREETZ_PACKAGE_AUTOFS || FREETZ_PACKAGE_NFS_UTILS
 	default n
 	help
 		Libtirpc is a port of Suns Transport-Independent RPC library to
