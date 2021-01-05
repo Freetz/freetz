@@ -371,7 +371,9 @@ for i in ${sites[@]}; do
 				[ ! -x "$CHECKSUM_PROG" ] && CHECKSUM_PROG="$(which ${CHECKSUM_ALGO}sum)"
 			else
 				calculate_full_checksum
-				echo -e "\033[1;35mERROR: Unknown checksum algorithm for a hash length of ${#CHECKSUM}$FULL_CHECKSUM\033[0m"
+				[ "${CHECKSUM^^}" == "X" ] \
+				  && echo -e "\033[1;35mERROR: No valid checksum to verify found, downloaded file has$FULL_CHECKSUM\033[0m" \
+				  || echo -e "\033[1;35mERROR: Unknown checksum algorithm for a hash length of ${#CHECKSUM}$FULL_CHECKSUM\033[0m"
 				rm -f "$DL_DNF"
 				break
 			fi
