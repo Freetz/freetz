@@ -357,6 +357,7 @@ config FREETZ_AVM_HAS_FIRMWARE_07_2X_INHAUS
 	default y
 	depends on \
 		( (FREETZ_TYPE_LANG_DE||FREETZ_TYPE_LANG_EN) && ( \
+			FREETZ_TYPE_6850_5G || \
 			FREETZ_TYPE_7584 || \
 			FREETZ_TYPE_7599 \
 		))
@@ -365,10 +366,6 @@ config FREETZ_AVM_HAS_FIRMWARE_07_2X_LABOR
 	bool
 	default y
 	depends on \
-		( (FREETZ_TYPE_LANG_DE||FREETZ_TYPE_LANG_EN) && ( \
-			FREETZ_TYPE_6850_5G \
-		)) \
-		|| \
 		( FREETZ_TYPE_LANG_DE && ( \
 			FREETZ_TYPE_6820_V1 || \
 			FREETZ_TYPE_6820_V3 \
