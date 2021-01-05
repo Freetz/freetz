@@ -44,6 +44,7 @@ Latest changes
 
 - Updated packages and libs:
     * lighttpd 1.4.58
+    * shellinabox 2.21
     * smartmontools 7.2
 
 - BusyBox:

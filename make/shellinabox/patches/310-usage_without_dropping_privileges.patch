@@ -1,6 +1,6 @@
 --- shellinabox/shellinaboxd.c
 +++ shellinabox/shellinaboxd.c
-@@ -736,6 +736,7 @@
+@@ -786,6 +786,7 @@
  }
  
  static void usage(void) {
@@ -8,7 +8,7 @@
    // Drop privileges so that we can tell which uid/gid we would normally
    // run at.
    dropPrivileges();
-@@ -745,6 +746,10 @@
+@@ -795,6 +796,10 @@
    check(!getresgid(&r_gid, &e_gid, &s_gid));
    const char *user  = getUserName(r_uid);
    const char *group = getGroupName(r_gid);
@@ -17,9 +17,9 @@
 +  const char group[] = DEFAULT_GROUP;
 +#endif
  
-   message("Usage: shellinaboxd [OPTIONS]...\n"
+   printf("Usage: shellinaboxd [OPTIONS]...\n"
            "Starts an HTTP server that serves terminal emulators to AJAX "
-@@ -819,8 +824,10 @@
+@@ -875,8 +880,10 @@
            "  -t, --disable-ssl           disable transparent SSL support\n"
            "      --disable-ssl-menu      disallow changing transport mode\n",
            user, supportsPAM() ? "'AUTH' | " : "");

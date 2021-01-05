@@ -4,8 +4,8 @@
  
  shellinaboxd_LDADD   = liblogging.la                                          \
                         libhttp.la
--shellinaboxd_LDFLAGS = -static
-+shellinaboxd_LDFLAGS =
+-shellinaboxd_LDFLAGS =
++shellinaboxd_LDFLAGS = -all-static
  ## Added this for compatibility with older versions of autoconf/automake
  docdir               = ${datadir}/doc/${PACKAGE}
  
@@ -15,8 +15,8 @@
  shellinaboxd_LDADD = liblogging.la                                          \
                         libhttp.la
  
--shellinaboxd_LDFLAGS = -static
-+shellinaboxd_LDFLAGS =
+-shellinaboxd_LDFLAGS =
++shellinaboxd_LDFLAGS = -all-static
  symbolname = \
    sed -e 's/.*\/\([^.]*\)[.].*/\1/'                                           \
        -e 't0'                                                                 \

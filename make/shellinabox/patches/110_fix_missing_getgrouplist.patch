@@ -16,7 +16,7 @@ check if it's available and provide a replacement if necessary
  
 --- configure.ac
 +++ configure.ac
-@@ -34,7 +34,7 @@
+@@ -48,7 +48,7 @@
  
  dnl Prefer thread-safe functions, if available
  AC_CHECK_FUNCS([getgrgid_r getgrnam_r gethostbyname_r getpwnam_r getpwuid_r  \
@@ -27,7 +27,7 @@ check if it's available and provide a replacement if necessary
  AC_TRY_LINK([#ifndef _XOPEN_SOURCE
 --- configure
 +++ configure
-@@ -10655,7 +10655,7 @@
+@@ -12205,7 +12205,7 @@
  
  
  for ac_func in getgrgid_r getgrnam_r gethostbyname_r getpwnam_r getpwuid_r  \
@@ -38,9 +38,9 @@ check if it's available and provide a replacement if necessary
  ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
 --- shellinabox/launcher.c
 +++ shellinabox/launcher.c
-@@ -170,6 +170,47 @@
- static int   launcher = -1;
- static uid_t restricted;
+@@ -180,6 +180,47 @@
+ static int pamSessionSighupFlag;
+ #endif
  
 +#if !defined(HAVE_GETGROUPLIST)
 +/*

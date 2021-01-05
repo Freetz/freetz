@@ -537,7 +537,7 @@
   * **<u>sg3_utils (binary only)</u><a id='sg3-utils'></a>**<br>
     The sg3_utils package contains utilities that send SCSI commands to devices. As well as devices on transports traditionally associated with SCSI (e.g. Fibre Channel (FCP), Serial Attached SCSI (SAS) and the SCSI Parallel Interface(SPI)) many other devices use SCSI command sets. ATAPI cd/dvd drives and SATA disks that connect via a translation layer or a bridge device are examples of devices that use SCSI command sets. This package is primarly used by the spindown cgi package. Note also that currently only sg_start is built and used, other tools may follow as needed.
 
-  * **<u>shellinabox 2.14</u><a id='shellinabox'></a>**<br>
+  * **<u>shellinabox 2.21</u><a id='shellinabox'></a>**<br>
     Shell In A Box implements a web server that can export arbitrary command line tools to a web based terminal emulator. This emulator is accessible to any JavaScript and CSS enabled web browser and does not require any additional browser plugins.
 
   * **[siproxd 0.8.1](siproxd.md)<a id='siproxd'></a>**<br>

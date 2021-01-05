@@ -1,0 +1,28 @@
+
+  https://github.com/shellinabox/shellinabox/pull/477/commits/81bce5782b34e81e78aa5bcd18d7cf54a5228bad
+
+diff --git a/libhttp/ssl.c b/libhttp/ssl.c
+index 6d09035..c0f6796 100644
+--- a/libhttp/ssl.c
++++ b/libhttp/ssl.c
+@@ -1016,11 +1016,15 @@ int sslPromoteToSSL(struct SSLSupport *ssl, SSL **sslHndl, int fd,
+ }
+ 
+ BIO *sslGetNextBIO(BIO *b) {
+-#if OPENSSL_VERSION_NUMBER <= 0x10100000L
+-  return b->next_bio;
+-#else
+-  return BIO_next(b);
+-#endif
++    #if defined(HAVE_OPENSSL)
++        #if OPENSSL_VERSION_NUMBER <= 0x10100000L
++            return b->next_bio;
++        #else
++            return BIO_next(b);
++        #endif
++    #else
++        return NULL;
++    #endif
+ }
+ 
+ void sslFreeHndl(SSL **sslHndl) {
