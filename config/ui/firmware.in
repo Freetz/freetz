@@ -267,6 +267,7 @@ choice
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_4N5
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_IPQ40xx
 		bool "6850 5G - UNTESTED"
+		depends on FREETZ_SHOW_DEVELOPER
 
 	config FREETZ_TYPE_6890
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_4N5
@@ -473,6 +474,7 @@ choice
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_4N5
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_GRX5
 		bool "7590 AX - UNTESTED"
+		depends on FREETZ_SHOW_DEVELOPER
 
 	comment "Powerline"
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_EXT
@@ -650,6 +652,7 @@ choice
 		bool "FRITZ!OS 07.19 Inhaus"
 		select FREETZ_AVM_VERSION_07_2X
 		depends on FREETZ_AVM_HAS_FIRMWARE_07_2X_INHAUS && FREETZ_SHOW_ADVANCED
+		depends on FREETZ_SHOW_DEVELOPER
 		help
 			Enable this to use an AVM Inhaus firmware as base for modding.
 
