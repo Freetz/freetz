@@ -309,7 +309,7 @@ menu "Additional informations"
 	endif # FREETZ_IMAGE_NAME_CUSTOM
 
 	config FREETZ_CREATE_SEPARATE_OPTIONS_CFG
-		bool "Create options.cfg as a separate file" if FREETZ_SHOW_ADVANCED
+		bool "Create options.cfg as a separate file"
 		default y
 		help
 			When unchecked causes options.cfg to be created as a symbolic link to .config
@@ -319,7 +319,7 @@ menu "Additional informations"
 			size by about 160 bytes but reduces memory footprint at run-time.
 
 	choice
-		prompt "Include .config file in image" if FREETZ_SHOW_ADVANCED
+		prompt "Include .config file in image"
 		default FREETZ_DOT_CONFIG_STRIPPED
 		help
 			By default, a stripped version of the FREETZ configuration
