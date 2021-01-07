@@ -19,7 +19,7 @@ extra gesichertes WLAN und/oder Zweitnetzwerk benötigen.
 
 -   Internes Netz1: 192.168.178.0/255.255.255.0 (Anwendernetz)
 -   Internes Netz2: 192.168.181.0/255.255.255.0 (Servernetz, echte DMZ)
--   WLAN: 192.168.181.0/255.255.255.0
+-   WLAN: 192.168.182.0/255.255.255.0
 -   Internetrouter: 192.168.178.1 z.B. weitere Fritzbox, die sich im
     internen Netz befindet und gleichzeitig als DNS Server fungiert.
 
