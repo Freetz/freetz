@@ -50,6 +50,7 @@ Latest changes
 - BusyBox:
     * Removed version 1.31.1
     * Updated version 1.32.1
+    * Added version 1.33.0
 
 - New tools and hooks:
   * fitimg: tool to pack/unpack FIT firmware files
