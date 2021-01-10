@@ -357,12 +357,24 @@ modunsqfs()
 	fi
 }
 
+moduncpio()
+{
+	mkdir -p "$1"
+	cat "$2" | gunzip | cpio -id --quiet -D "$1" 2>&1
+	
+	if [ $? -gt 0 ]; then
+		error 1 "moduncpio: Error in $2"
+	fi
+}
+
 modunpack_autodetect_fs()
 {
 	if $BLKID -O 256 "$2" 2>/dev/null | grep -q 'TYPE="ext2"'; then
 		modunext2 "$@"
 	elif $BLKID -O 0 "$2" 2>/dev/null | grep -q 'TYPE="squashfs"'; then
 		modunsqfs "$@"
+	elif cat "$2" | gunzip 2>/dev/null | file - | grep -q 'cpio archive'; then
+		moduncpio "$@"
 	else
 		error 1 "modunpack_autodetect_fs: failed to detect file system type of '$2'"
 	fi
