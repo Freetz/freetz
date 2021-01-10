@@ -16,7 +16,7 @@ cat << EOF
 EOF
 unset -v _kernelversion
 if [ -r /proc/version ]; then
-	_kernelversion=$(cat /proc/version | sed -e 's/Linux version //;s/#.*//')
+	_kernelversion=$(cat /proc/version | sed -e 's/Linux version //;s/#.*//;s/.collect2:.*//')
 fi
 if [ -n "$_kernelversion" ]; then
 	echo "<dl class='info'><dt>Kernel$(lang de:"version" en:" version")</dt><dd>$_kernelversion</dd></dl>"
