@@ -36,6 +36,7 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 UIMG_TOOL="${0%/*}/uimg"
+FITIMG_TOOL="${0%/*}/fitimg"
 TSUM_TOOL="${0%/*}/tichksum"
 
 function wait_loader() {
@@ -483,14 +484,15 @@ if [ -z "$ISSINGLE$ISDUAL$ISRAM$ISUIMG$ISFIT" ]; then
 fi
 [ -z "$ISSINGLE$ISDUAL$ISRAM$ISUIMG$ISFIT" ] && echo "Can not recognize image, please use '-m<s|r|d|u|f>'."  && exit 1
 # arg check
-[ ! $ISSINGLE ] && [ $ISALICE ]        && echo "Parameter '-hn' is only allowed for single-boot mode."       && exit 1
-[ $ISSINGLE ]   && [ $LFS ]            && echo "Parameter '-lfs' is not allowed for single-boot mode."       && exit 1
-[ $ISDUAL ]     && [ ! $LFS ]          && LFS="1"
-[ $ISUIMG ]     && [ ! $LFS ]          && LFS="1"
-[ $ISUIMG ]     && [ ! -x $UIMG_TOOL ] && echo "File $UIMG_TOOL missing. Run 'make uimg' first."             && exit 1
-[ $ISRAM ]      && [ ! -x $TSUM_TOOL ] && echo "File $TSUM_TOOL missing. Run 'make tichksum-host' first."    && exit 1
-[ ! $ISRAM ]    && [ $FULLSIZE ]       && echo "Parameter '-ram' is only allowed for ram-boot mode."         && exit 1
-[ $ISFIT ]                             && echo "FIT is not supported yet!"                                   && exit 1
+[ ! $ISSINGLE ] && [ $ISALICE ]          && echo "Parameter '-hn' is only allowed for single-boot mode."       && exit 1
+[ $ISSINGLE ]   && [ $LFS ]              && echo "Parameter '-lfs' is not allowed for single-boot mode."       && exit 1
+[ $ISDUAL ]     && [ ! $LFS ]            && LFS="1"
+[ $ISUIMG ]     && [ ! $LFS ]            && LFS="1"
+[ $ISUIMG ]     && [ ! -x $UIMG_TOOL ]   && echo "File $UIMG_TOOL missing. Run 'make uimg' first."             && exit 1
+[ $ISFITIMG ]   && [ ! -x $FITIMG_TOOL ] && echo "File $FITIMG_TOOL missing. Run 'make fitimg' first."         && exit 1
+[ $ISRAM ]      && [ ! -x $TSUM_TOOL ]   && echo "File $TSUM_TOOL missing. Run 'make tichksum-host' first."    && exit 1
+[ ! $ISRAM ]    && [ $FULLSIZE ]         && echo "Parameter '-ram' is only allowed for ram-boot mode."         && exit 1
+[ $ISFIT ]                               && echo "FIT is not supported yet!"                                   && exit 1
 
 prepare_image
 
