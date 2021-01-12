@@ -1918,25 +1918,29 @@ if [ "$DO_PACK" -gt 0 ]; then
 		let KERNEL_LIMIT="$FREETZ_KERNEL_CUSTOM_MTD_SIZE*64*1024"
 	else
 		KERNEL_LIMIT="$(sed -nr 's/^kernel_size=(.*)/\1/p' ${FIRMWARE_DIR}/var/install)"
-		[ -z "$KERNEL_LIMIT" ] && error 1 "Can't find kernel_size in var/install"
+	#	[ -z "$KERNEL_LIMIT" ] && error 1 "Can't find kernel_size in var/install"
 	fi
 	[ -e "$FIRMWARE_MOD_DIR/var/firmware-update.uimg" ] && KERNEL_SIZE="$(gzip "$KERNEL_MOD" -c | wc -c)" || KERNEL_SIZE="$(wc -c < "$KERNEL_MOD")"
-	let KERNEL_DIFF="KERNEL_SIZE-KERNEL_LIMIT"
 
-	echo1 "kernel image size: $(byte_to_mb $KERNEL_SIZE), max $(byte_to_mb $KERNEL_LIMIT), free $(byte_to_mb $((-KERNEL_DIFF))) ($((-KERNEL_DIFF)) bytes)"
 	[ "$KERNEL_SIZE" -eq 0 ] && error 1 "kernel image is empty"
-	if [ "$KERNEL_SIZE" -gt "$KERNEL_LIMIT" ]; then
-		if [ "${FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE}" == "y" ]; then
-				error 1 -b "kernel image is $KERNEL_DIFF bytes too big. See https://freetz-ng.github.io/freetz-ng/wiki/00_FAQ/FAQ.de.html#filesystem-image-too-big for details."
-		else
-			if [ "$FORCE_PACK" -eq 0 -a "$DO_ZIP" -eq 0 ]; then
-				error 1 -b "combined kernel+filesystem image is $KERNEL_DIFF bytes too big. See https://freetz-ng.github.io/freetz-ng/wiki/00_FAQ/FAQ.de.html#filesystem-image-too-big for details."
-			fi
-			if [ "$FORCE_PACK" -gt 0 -a "$DO_ZIP" -eq 0 ]; then
-				echo0   -b "Use for SDK mode only. See https://web.archive.org/20200701000000/wehavemorefun.de/fritzbox/SDK-Firmware"
-			fi
-			if [ "$FORCE_PACK" -eq 0 -a "$DO_ZIP" -gt 0 ]; then
-				echo0   -b "Use for USBroot or NFSroot mode only."
+	if [ -z "$KERNEL_LIMIT" ]; then
+		echo1 "kernel image size: $(byte_to_mb $KERNEL_SIZE)"
+	else
+		let KERNEL_DIFF="KERNEL_SIZE-KERNEL_LIMIT"
+		echo1 "kernel image size: $(byte_to_mb $KERNEL_SIZE), max $(byte_to_mb $KERNEL_LIMIT), free $(byte_to_mb $((-KERNEL_DIFF))) ($((-KERNEL_DIFF)) bytes)"
+		if [ "$KERNEL_SIZE" -gt "$KERNEL_LIMIT" ]; then
+			if [ "${FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE}" == "y" ]; then
+					error 1 -b "kernel image is $KERNEL_DIFF bytes too big. See https://freetz-ng.github.io/freetz-ng/wiki/00_FAQ/FAQ.de.html#filesystem-image-too-big for details."
+			else
+				if [ "$FORCE_PACK" -eq 0 -a "$DO_ZIP" -eq 0 ]; then
+					error 1 -b "combined kernel+filesystem image is $KERNEL_DIFF bytes too big. See https://freetz-ng.github.io/freetz-ng/wiki/00_FAQ/FAQ.de.html#filesystem-image-too-big for details."
+				fi
+				if [ "$FORCE_PACK" -gt 0 -a "$DO_ZIP" -eq 0 ]; then
+					echo0   -b "Use for SDK mode only. See https://web.archive.org/20200701000000/wehavemorefun.de/fritzbox/SDK-Firmware"
+				fi
+				if [ "$FORCE_PACK" -eq 0 -a "$DO_ZIP" -gt 0 ]; then
+					echo0   -b "Use for USBroot or NFSroot mode only."
+				fi
 			fi
 		fi
 	fi
@@ -1998,7 +2002,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	fi
 
 
-	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ]; then
+	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 -a -n "$KERNEL_LIMIT" ]; then
 		if [ "$FREETZ_AVM_HAS_TAM" = "y" -a "${FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE}" != "y" ]; then
 			# Calculate aproximately free space in seconds for the answering machine
 			# 5*64kB sectors needed, see https://trac.boxmatrix.info/freetz-ng/ticket/1680#comment:4
