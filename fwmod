@@ -823,6 +823,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	all_known_oems="1und1 aol avm avme ewetel freenet otwo tcom versatel"
 	iterate_over_oems_pattern='for[ ]+i[ ]+in[ ]+('"${all_known_oems// /|}"')[^;]*;[ ]*do'
 	oems=$(sed -n -r -e '/'"${iterate_over_oems_pattern}"'/ { s/^.*for[ ]+i[ ]+in[ ]+([^;]+);[ ]+do.*$/\1/p; q }' "${FIRMWARE_MOD_DIR}/var/install")
+	[ -z "$oems" ] && for oem in "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_*/*"; do oems="$oems ${oem##*/}"; done
 	[ -z "$oems" ] && error 1 "failed to determine OEMs supported by the original firmware"
 
 	echo0 -n "applying symlinks, deleting additional webinterfaces"
