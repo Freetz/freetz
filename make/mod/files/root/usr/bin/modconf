@@ -117,7 +117,8 @@ EOF
 							continue
 						;;
 					esac
-					echo "export $name='${value//'/'\"'\"'}'"
+					value="${value//'/'\"'\"'}"
+					echo "export $name='$value'"
 					;;
 				*)
 					echo "Invalid assignment '$assignment'" 1>&2
