@@ -160,6 +160,12 @@ config FREETZ_SYSTEM_TYPE_QCA956x
 		FREETZ_TYPE_2400 || \
 		FREETZ_TYPE_4020
 
+config FREETZ_SYSTEM_TYPE_QCAARMv8
+	bool
+	default y
+	depends on \
+		FREETZ_TYPE_6000
+
 config FREETZ_SYSTEM_TYPE_UR8
 	bool
 	default y
@@ -207,6 +213,7 @@ config FREETZ_SYSTEM_TYPE
 	default "puma7"         if FREETZ_SYSTEM_TYPE_PUMA7
 	default "qca955x"       if FREETZ_SYSTEM_TYPE_QCA955x
 	default "qca956x"       if FREETZ_SYSTEM_TYPE_QCA956x
+	default "qcaarmv8"      if FREETZ_SYSTEM_TYPE_QCAARMv8
 	default "ur8"           if FREETZ_SYSTEM_TYPE_UR8
 	default "vr9"           if FREETZ_SYSTEM_TYPE_VR9
 
@@ -223,7 +230,8 @@ config FREETZ_CPU_MODEL_ARM_cortex
 	bool
 	default y
 	depends on \
-		FREETZ_CPU_MODEL_ARM_cortex_a9
+		FREETZ_CPU_MODEL_ARM_cortex_a9 || \
+		FREETZ_CPU_MODEL_ARM_cortex_a53
 
 config FREETZ_CPU_MODEL_ARM_cortex_a9
 	bool
@@ -231,6 +239,12 @@ config FREETZ_CPU_MODEL_ARM_cortex_a9
 	depends on \
 		FREETZ_SYSTEM_TYPE_BCM63138 || \
 		FREETZ_SYSTEM_TYPE_IPQ40xx
+
+config FREETZ_CPU_MODEL_ARM_cortex_a53
+	bool
+	default y
+	depends on \
+		FREETZ_SYSTEM_TYPE_QCAARMv8
 
 config FREETZ_CPU_MODEL_MIPS_4KEc
 	bool
