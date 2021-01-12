@@ -219,6 +219,12 @@ config FREETZ_SYSTEM_TYPE_CORE_SUFFIX
 
 # cpu model (the same variable name as in /proc/cpuinfo)
 
+config FREETZ_CPU_MODEL_ARM_cortex
+	bool
+	default y
+	depends on \
+		FREETZ_CPU_MODEL_ARM_cortex_a9
+
 config FREETZ_CPU_MODEL_ARM_cortex_a9
 	bool
 	default y
