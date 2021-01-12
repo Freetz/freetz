@@ -1984,19 +1984,23 @@ if [ "$DO_PACK" -gt 0 ]; then
 			let FILESYSTEM_LIMIT="$FREETZ_FILESYSTEM_CUSTOM_MTD_SIZE*64*1024"
 		else
 			FILESYSTEM_LIMIT="$(sed -nr 's/^filesystem_size=(.*)/\1/p' ${FIRMWARE_DIR}/var/install)"
-			[ -z "$FILESYSTEM_LIMIT" ] && error 1 "Can't find filesystem_size in var/install"
+		#	[ -z "$FILESYSTEM_LIMIT" ] && error 1 "Can't find filesystem_size in var/install"
 		fi
 		let FILESYSTEM_SIZE="$(wc -c < "$FILESYSTEM_MOD")"
-		let FILESYSTEM_DIFF="FILESYSTEM_SIZE-FILESYSTEM_LIMIT"
 
-		echo1 "filesystem image size: $(byte_to_mb $FILESYSTEM_SIZE), max $(byte_to_mb $FILESYSTEM_LIMIT), free $(byte_to_mb $((-FILESYSTEM_DIFF))) ($((-FILESYSTEM_DIFF)) bytes)"
 		[ "$FILESYSTEM_SIZE" -eq 0 ] && error 1 "filesystem image is empty"
-		if [ "$FILESYSTEM_SIZE" -gt "$FILESYSTEM_LIMIT" ]; then
-			if [ "$FORCE_PACK" -eq 0 -a "$DO_ZIP" -eq 0 ]; then
-				error 1 -b "filesystem image is $FILESYSTEM_DIFF bytes too big. See https://freetz-ng.github.io/freetz-ng/wiki/00_FAQ/FAQ.de.html#filesystem-image-too-big for details."
-			fi
-			if [ "$FORCE_PACK" -ne 0 -o "$DO_ZIP" -ne 0 ]; then
-				echo0   -b "Use for USBroot or NFSroot mode only."
+		if [ -z "$FILESYSTEM_LIMIT" ]; then
+			echo1 "filesystem image size: $(byte_to_mb $FILESYSTEM_SIZE)"
+		else
+			let FILESYSTEM_DIFF="FILESYSTEM_SIZE-FILESYSTEM_LIMIT"
+			echo1 "filesystem image size: $(byte_to_mb $FILESYSTEM_SIZE), max $(byte_to_mb $FILESYSTEM_LIMIT), free $(byte_to_mb $((-FILESYSTEM_DIFF))) ($((-FILESYSTEM_DIFF)) bytes)"
+			if [ "$FILESYSTEM_SIZE" -gt "$FILESYSTEM_LIMIT" ]; then
+				if [ "$FORCE_PACK" -eq 0 -a "$DO_ZIP" -eq 0 ]; then
+					error 1 -b "filesystem image is $FILESYSTEM_DIFF bytes too big. See https://freetz-ng.github.io/freetz-ng/wiki/00_FAQ/FAQ.de.html#filesystem-image-too-big for details."
+				fi
+				if [ "$FORCE_PACK" -ne 0 -o "$DO_ZIP" -ne 0 ]; then
+					echo0   -b "Use for USBroot or NFSroot mode only."
+				fi
 			fi
 		fi
 	fi
