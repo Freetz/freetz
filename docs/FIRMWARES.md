@@ -121,6 +121,7 @@ Currently supported devices and firmwares
 * __Fritz!Box 5491 Fiber__
   - 171.07.01 rev64362 {ALL}
   - 171.07.12 rev71193 {ALL} [MESH18 NL2]
+  - Alien 7490 {GER+INT} (No fiber!)
 
 * __Fritz!Box 5530 Fiber (UNTESTED)__
   - 257.07.24 rev84939 {ALL} [PSQ19 Phase 2] (Inhaus)
