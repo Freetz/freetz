@@ -15,9 +15,13 @@ EOF
 	# The width of the whole cgi: There are 20px border, 20 px space
 	# and 180px for the menu area.
 	let _cgi_content_width=_cgi_width+30
+	let _cgi_title_width=_cgi_width+30
 	let _cgi_border_width=_cgi_content_width-20
 	let _cgi_total_width=_cgi_content_width+20
 	[ -z "$id" ] || let _cgi_total_width+=180
+	let _cgi_title_box_width=_cgi_total_width+11
+	let _cgi_title_box_mid_width=_cgi_total_width-49
+	let _cgi_title_box_version_width=_cgi_total_width-255
 
 	export _cgi_content_width
 }
@@ -29,14 +33,14 @@ skin_body_begin() {
 		help="&nbsp;<span class='help'>(<a href='$(html "$_CGI_HELP")' target='_blank'>Hilfe</a>)</span>"
 	fi
 	cat << EOF
-	<div id="wrapper">
-	<div id="title-box">
+	<div id="wrapper" style="width:${_cgi_total_width}px">
+	<div id="title-box" style="width:${_cgi_title_box_width}px">
 		<div id="title-box-left"></div>
-		<div id="title-box-mid"></div>
+		<div id="title-box-mid" style="width:${_cgi_title_box_mid_width}px"></div>
 		<div id="title-box-right"></div>
 		<div id="title-box-logo"><a href="https://freetz-ng.github.io" target="_blank" class="logo"><img src="/images/newfreetz/freetz_logo.gif"></a></div>
 		<div id="title-box-fun">the fun has just begun ...</div>
-		<div id="title-box-version">$(html < /etc/.freetz-version)</div>
+		<div id="title-box-version" style="width:${_cgi_title_box_version_width}px">$(html < /etc/.freetz-version)</div>
 	</div>
 	<div id="contentwrapper" style="width:${_cgi_total_width}px">
 EOF
