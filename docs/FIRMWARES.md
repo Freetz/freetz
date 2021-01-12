@@ -6,7 +6,7 @@ Currently supported devices and firmwares
  * [Fritz!Box WLAN (3xxx)](#fritzbox-wlan-3xxx)
  * [Fritz!Box WAN (4xxx)](#fritzbox-wan-4xxx)
  * [Fritz!Box Fon (50xx/51xx)](#fritzbox-fon-50xx51xx)
- * [Fritz!Box Fiber (54xx)](#fritzbox-fiber-54xx)
+ * [Fritz!Box Fiber (54xx/55xx)](#fritzbox-fiber-54xx55xx)
  * [Fritz!Box Cable (64xx/65xx)](#fritzbox-cable-64xx65xx)
  * [Fritz!Box LTE (68xx)](#fritzbox-lte-68xx)
  * [Fritz!Box Fon WLAN (70xx)](#fritzbox-fon-wlan-70xx)
@@ -25,7 +25,6 @@ Currently supported devices and firmwares
 ### Not supported devices
 
   * Repeater N/G, 310, 600 v1+v2 & 1160: No LAN ports, so a recovery is not possible.
-  * Fritz!Box 7530ax & 5530 and Repeater 6000: Devices with unsupported FIT image format.
 
 ### Fritz!Box (2xxx)
 
@@ -112,7 +111,7 @@ Currently supported devices and firmwares
 * __Fritz!Box Fon 5140__
   - 43.04.67 rev13928 {GER}
 
-### Fritz!Box Fiber (54xx)
+### Fritz!Box Fiber (54xx/55xx)
 
 * __Fritz!Box 5490 Fiber__
   - 151.07.01 rev63544 {ALL}
@@ -122,6 +121,9 @@ Currently supported devices and firmwares
 * __Fritz!Box 5491 Fiber__
   - 171.07.01 rev64362 {ALL}
   - 171.07.12 rev71193 {ALL} [MESH18 NL2]
+
+* __Fritz!Box 5530 Fiber (UNTESTED)__
+  - 257.07.24 rev84939 {ALL} [PSQ19 Phase 2] (Inhaus)
 
 ### Fritz!Box Cable (64xx/65xx)
 
@@ -353,6 +355,8 @@ Currently supported devices and firmwares
   - 164.07.13 rev75481 {INT} [MESH18 NL3]
   - 164.07.21 rev82823 {ALL} [PSQ19]
   - 164.07.24 rev00000 {ALL} (Labor)
+* __Fritz!Box Fon WLAN 7530 AX (UNTESTED)__
+  - 256.07.20 rev82015 {ALL} [PSQ19] (Inhaus)
 * __Fritz!Box Fon WLAN 7560__
   - 149.06.53 rev41227 {GER}
   - 149.06.83 rev43670 {GER}
@@ -391,7 +395,7 @@ Currently supported devices and firmwares
   - 154.07.21 rev82154 {ALL} [PSQ19]
   - 154.07.24 rev00000 {ALL} (Labor)
 * __Fritz!Box Fon WLAN 7590 AX (UNTESTED)__
-  - 259.07.19 rev80575 {ALL} [PSQ19] (Inhaus)
+  - 259.07.19 rev84588 {ALL} [PSQ19] (Inhaus)
 
 ### Fritz!Powerline
 
@@ -453,6 +457,8 @@ Currently supported devices and firmwares
   - 174.07.14 rev73940 {ALL} [MESH18 NL4]
   - 174.07.21 rev83015 {ALL} [PSQ19]
   - 174.07.24 rev00000 {ALL} (Labor)
+* __Fritz!Repeater 6000 (UNTESTED)__
+  - 253.07.19 rev84807 {ALL} [PSQ19] (Inhaus)
 
 ### T-Com derivatives
 
