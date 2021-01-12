@@ -133,5 +133,6 @@ entpackt wird. Es wird empfohlen, erst die external hochzuladen
 \[Freetz-WebIf → System → Firmware-Update\] und danach erst die
 Firmware. So stehen die external-Pakete der aktualisierten Firmware
 schon zur Verfügung.
+[![external_services](../../screenshots/176_md.png)](../../screenshots/176.png)
 
 
