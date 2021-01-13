@@ -1896,11 +1896,17 @@ fi
 if [ "$DO_PACK" -gt 0 ]; then
 	[ ! -x "$MKSQUASHFS" ] && error 1 "cannot find $MKSQUASHFS"
 
+	if [ "$FREETZ_AVM_PROP_INNER_FILESYSTEM_TYPE_CPIO" == "y" ]; then
+		echo0 "creating ${INNER_FS_PREFIX}filesystem image (CPIO-gz)"
+
+		find $FILESYSTEM_MOD_DIR/ -mindepth 1 -printf '%P\n' | cpio -o --quiet -H newc -D $FILESYSTEM_MOD_DIR/ | gzip -9 > $ABS_BASE_DIR/${MAIN_FILESYSTEM_MOD}
+	else
 	echo0 "creating ${INNER_FS_PREFIX}filesystem image (SquashFS${FREETZ_SQUASHFS_VERSION}-${FREETZ_AVM_SQUASHFS_COMPRESSION})"
 	echo1 "SquashFS block size: $(($FREETZ_SQUASHFS_BLOCKSIZE/1024)) kB ($FREETZ_SQUASHFS_BLOCKSIZE bytes)"
 
 	rm -f $ABS_BASE_DIR/${MAIN_FILESYSTEM_MOD}
 	"$MKSQUASHFS" $FILESYSTEM_MOD_DIR/* $ABS_BASE_DIR/${MAIN_FILESYSTEM_MOD} $MKSQUASHFS_OPTIONS >> $MOD_DIR/filesystem.log 2>&1
+	fi
 
 	if [ "${FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE}" == "y" ]; then
 		echo0 "copying kernel image"
