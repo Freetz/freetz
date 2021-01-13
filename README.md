@@ -15,6 +15,7 @@ More features - less bugs!
 ### Requirements:
  * You need an up to date Linux System with some [prerequisites](docs/wiki/10_Beginner/install.de.md#installation-der-ben%C3%B6tigten-pakete-ubuntu).
  * Or download a ready-to-use VM like Gismotro's [Freetz-Linux](https://freetz.digital-eliteboard.com/?dir=Teamserver/Freetz/Freetz-VM/VirtualBox/).
+ * Your linux user needs to have set `umask 0022` before checkout and during make.
 
 ### Clone the main branch:
 ```
