@@ -28,7 +28,9 @@ config FREETZ_REPLACE_KERNEL_AVAILABLE
 # "kernel version used by Freetz" == "kernel version used by AVM"
 config FREETZ_REPLACE_MODULE_AVAILABLE
 	bool
-	depends on !(FREETZ_SYSTEM_TYPE_BCM63138)                                 # no kernel 4.1.38 sources for 7581/7582
+	depends on !(FREETZ_SYSTEM_TYPE_BCM63138)                                 # no kernel 4.1.38 sources for 7581/7582 & 4.1.52 sources for 7530ax
+	depends on !(FREETZ_SYSTEM_TYPE_QCAARMv8)                                 # no kernel 4.4.60 sources for 6000
+	depends on !(FREETZ_KERNEL_VERSION_4_9_231)                               # no kernel 4.9.231 sources for 5530
 	default y
 	help
 		Select this if only source code from a previous firmware version is available for your box.
