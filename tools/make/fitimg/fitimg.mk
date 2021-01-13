@@ -1,11 +1,10 @@
-FITIMG_VERSION:=0.1
-FITIMG_SOURCE:=fitimg_$(FITIMG_VERSION).tar.gz
-FITIMG_SOURCE_MD5:=f2974653121a1f1a2cf2db4130a6e306
+FITIMG_VERSION:=0.2
+FITIMG_SOURCE:=fitimg-$(FITIMG_VERSION).tar.gz
+FITIMG_SOURCE_MD5:=00ea7049939935f0e9514c211110e53d
 FITIMG_SITE:=https://boxmatrix.info/hosted/hippie2000
 
 FITIMG_MAKE_DIR:=$(TOOLS_DIR)/make/fitimg
 FITIMG_DIR:=$(TOOLS_SOURCE_DIR)/fitimg-$(FITIMG_VERSION)
-
 
 fitimg-source: $(DL_DIR)/$(FITIMG_SOURCE)
 $(DL_DIR)/$(FITIMG_SOURCE): | $(DL_DIR)
@@ -13,13 +12,13 @@ $(DL_DIR)/$(FITIMG_SOURCE): | $(DL_DIR)
 
 fitimg-unpacked: $(FITIMG_DIR)/.unpacked
 $(FITIMG_DIR)/.unpacked: $(DL_DIR)/$(FITIMG_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
-	mkdir -p $(FITIMG_DIR)
-	$(call UNPACK_TARBALL,$(DL_DIR)/$(FITIMG_SOURCE),$(FITIMG_DIR))
+	$(call UNPACK_TARBALL,$(DL_DIR)/$(FITIMG_SOURCE),$(TOOLS_SOURCE_DIR))
+	$(call APPLY_PATCHES,$(FITIMG_MAKE_DIR)/patches,$(FITIMG_DIR))
 	touch $@
 
-$(FITIMG_DIR)/bin/fitimg: $(FITIMG_DIR)/.unpacked
+$(FITIMG_DIR)/fitimg: $(FITIMG_DIR)/.unpacked
 
-$(TOOLS_DIR)/fitimg: $(FITIMG_DIR)/bin/fitimg
+$(TOOLS_DIR)/fitimg: $(FITIMG_DIR)/fitimg
 	$(INSTALL_FILE)
 
 fitimg: $(TOOLS_DIR)/fitimg
