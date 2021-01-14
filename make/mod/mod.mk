@@ -10,6 +10,7 @@ $(PKG)_EXCLUDED += $(if $(FREETZ_STYLE_COLORED),usr/share/style/colorscheme-grey
 
 $(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_MOD_SWAPOPTIONS),,etc/init.d/rc.swap usr/mww/cgi-bin/exec.d/create-swap.sh usr/lib/cgi-bin/mod/conf/20-swap.sh)
 $(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_MOD_ETCSERVICES),,etc/services)
+$(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_MOD_ETCNETCONFIG),,etc/netconfig)
 
 $(PKG)_EXCLUDED += $(if $(FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE),,usr/mww/cgi-bin/system_lfs.cgi usr/mww/cgi-bin/exec.d/linux_fs_start.sh)
 

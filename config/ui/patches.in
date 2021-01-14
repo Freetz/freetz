@@ -1595,6 +1595,14 @@ config FREETZ_ADD_ETCSERVICES
 		Adds /etc/services file.
 		Used eg by netstat to display names of IP-ports.
 
+config FREETZ_ADD_ETCNETCONFIG
+	bool "Add /etc/netconfig"
+	default y
+	select FREETZ_PACKAGE_MOD_ETCNETCONFIG
+	help
+		Adds /etc/netconfig file.
+		Used eg by libtirpc and rpcbind.
+
 config FREETZ_ADD_ANNEX_A_FIRMWARE
 	bool "Add Annex A firmware file"
 	depends on FREETZ_TYPE_7270_V1
