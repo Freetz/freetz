@@ -30,6 +30,12 @@ start() {
 		touch $NFS_DIR/$file
 	done
 
+	# rpcbind needs this for xdr
+	if [ "$RPCPROG" == 'rpcbind' ]; then
+		mkdir -p /var/run/rpcbind
+		chown -R nobody.nobody /var/run/rpcbind
+	fi
+
 	"$RPCPROG"
 	exitval1=$?
 	exportfs -r > /dev/null 2>&1
