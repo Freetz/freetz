@@ -1,0 +1,11 @@
+--- support/nfs/svc_create.c
++++ support/nfs/svc_create.c
+@@ -133,8 +133,6 @@
+ 		hint.ai_family = AF_INET6;
+ #endif	/* IPV6_SUPPORTED */
+ 	else {
+-		xlog(L_ERROR, "Unrecognized bind address family: %s",
+-			nconf->nc_protofmly);
+ 		return NULL;
+ 	}
+ 
