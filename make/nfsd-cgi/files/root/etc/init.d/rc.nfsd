@@ -1,7 +1,8 @@
 #!/bin/sh
 
+[ -x "$(which rpcbind 2>/dev/null)" ] && RPCPROG='rpcbind' || RPCPROG='portmap'
 DAEMON=nfsd
-DAEMON_CHECK="portmap nfsd mountd"
+DAEMON_CHECK="$RPCPROG nfsd mountd"
 . /etc/init.d/modlibrc
 
 PROCNFSD_DIR=/proc/fs/nfsd
@@ -29,15 +30,15 @@ start() {
 		touch $NFS_DIR/$file
 	done
 
-	/usr/sbin/portmap
- 	exitval1=$?
-	/usr/sbin/exportfs -r > /dev/null 2>&1
- 	exitval2=$?
+	"$RPCPROG"
+	exitval1=$?
+	exportfs -r > /dev/null 2>&1
+	exitval2=$?
 	[ "$NFSD_NO_NFS_V4" == "yes" ] && NO_NFS_VERSION_4="-N 4"
-	/usr/sbin/nfsd $NO_NFS_VERSION_4
- 	exitval3=$?
- 	[ -n "$NFSD_MOUNTD_PORT" ] && PORTARG="-p $NFSD_MOUNTD_PORT"
-	/usr/sbin/mountd $PORTARG
+	nfsd $NO_NFS_VERSION_4
+	exitval3=$?
+	[ -n "$NFSD_MOUNTD_PORT" ] && PORTARG="-p $NFSD_MOUNTD_PORT"
+	mountd $PORTARG
 	exitval4=$?
 
 	if [ "$exitval1" -eq 0 ] && [ "$exitval2" -eq 0 ] \
@@ -56,7 +57,7 @@ stop() {
 	exitval2=$?
 	/usr/sbin/exportfs -au
 	exitval3=$?
-	killall portmap > /dev/null 2>&1
+	killall "$RPCPROG" > /dev/null 2>&1
 	exitval4=$?
 	umount $PROCNFSD_DIR > /dev/null 2>&1
 	[ "$exitval1" -eq 0 -a "$exitval2" -eq 0 -a "$exitval3" -eq 0 -a "$exitval4" -eq 0 ] && return 0
@@ -71,7 +72,7 @@ case $1 in
 		[ -d "/tmp/flash/nfsd" ] || mkdir -p /tmp/flash/nfsd
 		ln -fs /tmp/flash/nfsd/exports /var/tmp/exports
 
-		# portmap needs this
+		# portmap/rpcbind needs this
 		modlib_add_user_and_group nobody
 
 		modreg cgi 'nfsd' 'NFS-Server'
