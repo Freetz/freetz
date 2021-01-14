@@ -1,0 +1,9 @@
+config FREETZ_PACKAGE_RPCBIND
+	bool "RPCBind 1.2.5 (binary only)"
+	depends on !FREETZ_TARGET_UCLIBC_SUPPORTS_rpc
+	default n
+	select FREETZ_PACKAGE_TCP_WRAPPERS
+	select FREETZ_LIB_libtirpc
+	help
+		The rpcbind utility is a server that converts
+		RPC program numbers into universal addresses.

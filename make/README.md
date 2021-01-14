@@ -769,6 +769,9 @@ Index:
   * **<u>ripmime 1.2.16.21 (binary only)</u><a id='ripmime'></a>**<br>
     ripmime is an utility to decode and extract the parts of mime-formatted mails.
 
+  * **<u>RPCBind 1.2.5 (binary only)</u><a id='rpcbind'></a>**<br>
+    The rpcbind utility is a server that converts RPC program numbers into universal addresses.
+
   * **[RRDtool 1.2.30 (binary only)](../docs/make/rrdtool.md)<a id='rrdtool'></a>**<br>
     RRDtool is the OpenSource industry standard, high performance data logging and graphing system for time series data. Use it to write your custom monitoring shell scripts or create whole applications using its PHP bindings.
      - [Einleitung](../docs/make/rrdtool.md#einleitung)

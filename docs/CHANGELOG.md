@@ -42,6 +42,9 @@ Latest changes
 - Build system:
   * kconfig 5.10
 
+- New packages, libs, modules:
+    * RPCBind 1.2.5
+
 - Updated packages and libs:
     * jpeg 9d
     * lighttpd 1.4.58
