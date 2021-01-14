@@ -15,13 +15,15 @@ EOF
 	# The width of the whole cgi: There are 20px border, 20 px space
 	# and 180px for the menu area.
 	let _cgi_content_width=_cgi_width+30
-	let _cgi_title_width=_cgi_width+30
 	let _cgi_border_width=_cgi_content_width-20
 	let _cgi_total_width=_cgi_content_width+20
 	[ -z "$id" ] || let _cgi_total_width+=180
 	let _cgi_title_box_width=_cgi_total_width+11
 	let _cgi_title_box_mid_width=_cgi_total_width-49
 	let _cgi_title_box_version_width=_cgi_total_width-255
+
+	# If there is no menu, we can use the space between menu and content.
+	[ -z "$id" ] && let _cgi_content_width+=20 && let _cgi_border_width+=20
 
 	export _cgi_content_width
 }
