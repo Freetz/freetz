@@ -1,5 +1,6 @@
 #!/bin/sh
 
+[ -x "$(which rpcbind 2>/dev/null)" ] && RPCPROG='rpcbind' || RPCPROG='portmap'
 DAEMON=unfs3
 DAEMON_BIN=unfsd
 . /etc/init.d/modlibrc
@@ -13,10 +14,10 @@ start() {
 		exit 1
 	fi
 
-	/usr/sbin/portmap
- 	exitval1=$?
-	/usr/bin/unfsd -u -i $PID_FILE
- 	exitval2=$?
+	"$RPCPROG"
+	exitval1=$?
+	unfsd -u -i $PID_FILE
+	exitval2=$?
 
 	if [ "$exitval1" -eq 0 -a "$exitval2" -eq 0 ]; then
 		echo 'done.'
@@ -30,7 +31,7 @@ stop() {
 	local id=$(cat $PID_FILE 2>/dev/null)
 	kill $id 2>/dev/null
 	exitval1=$?
-	killall portmap > /dev/null 2>&1
+	killall "$RPCPROG" >/dev/null 2>&1
 	exitval2=$?
 	[ "$exitval1" -eq 0 -a "$exitval2" -eq 0 ] && return 0
 }
@@ -40,7 +41,7 @@ case $1 in
 		[ -d "/tmp/flash/unfs3" ] || mkdir -p /tmp/flash/unfs3
 		ln -fs /tmp/flash/unfs3/exports /var/tmp/exports
 
-		# portmap needs this
+		# portmap/rpcbind needs this
 		modlib_add_user_and_group nobody
 
 		modreg cgi $DAEMON 'UNFS-Server'
