@@ -396,7 +396,7 @@ Currently supported devices and firmwares
   - 154.07.21 rev82154 {ALL} [PSQ19]
   - 154.07.24 rev00000 {ALL} (Labor)
 * __Fritz!Box Fon WLAN 7590 AX (UNTESTED)__
-  - 259.07.19 rev84588 {ALL} [PSQ19] (Inhaus)
+  - 259.07.24 rev85188 {ALL} [PSQ19 Phase 2] (Inhaus)
 
 ### Fritz!Powerline
 
@@ -459,7 +459,7 @@ Currently supported devices and firmwares
   - 174.07.21 rev83015 {ALL} [PSQ19]
   - 174.07.24 rev00000 {ALL} (Labor)
 * __Fritz!Repeater 6000 (UNTESTED)__
-  - 253.07.19 rev84807 {ALL} [PSQ19] (Inhaus)
+  - 253.07.19 rev85252 {ALL} [PSQ19] (Inhaus)
 
 ### T-Com derivatives
 
