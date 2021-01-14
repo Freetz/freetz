@@ -1,18 +1,24 @@
 $(call PKG_INIT_BIN, 0.9.22)
 $(PKG)_SOURCE:=unfs3-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=ddf679a5d4d80096a59f3affc64f16e5
-$(PKG)_SITE:=@SF/project/unfs3/unfs3/0.9.22
+$(PKG)_SITE:=@SF/project/unfs3/unfs3/$($(PKG)_VERSION),https://github.com/unfs3/unfs3/releases/download/$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/unfsd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/unfsd
 
 $(PKG)_DEPENDS_ON += $(if $(FREETZ_TARGET_UCLIBC_SUPPORTS_rpc),portmap,rpcbind)
+$(PKG)_DEPENDS_ON += $(if $(FREETZ_TARGET_UCLIBC_SUPPORTS_rpc),,libtirpc)
+
+ifneq ($(strip $(FREETZ_TARGET_UCLIBC_SUPPORTS_rpc)),y)
+$(PKG)_CFLAGS += -ltirpc -I$(TARGET_TOOLCHAIN_STAGING_DIR)/include/tirpc
+endif
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(UNFS3_DIR)
+	$(SUBMAKE) -C $(UNFS3_DIR) \
+		CFLAGS="$(TARGET_CFLAGS) $(UNFS3_CFLAGS)"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
