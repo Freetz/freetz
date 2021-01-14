@@ -3,8 +3,11 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5:=ed46f09b9c0fa2d49015f6431bc5ea7b
 $(PKG)_SITE:=@SF/rpcbind
 
-$(PKG)_BINARY:=$($(PKG)_DIR)/rpcbind
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/rpcbind
+$(PKG)_BINARY:=rpcbind rpcinfo
+$(PKG)_BINARY_BUILD_DIR:=$($(PKG)_BINARY:%=$($(PKG)_DIR)/%)
+$(PKG)_BINARY_TARGET_DIR:=$($(PKG)_BINARY:%=$($(PKG)_DEST_DIR)/usr/sbin/%)
+
+$(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_RPCBIND_RPCINFO),,/usr/sbin/rpcinfo)
 
 $(PKG)_DEPENDS_ON += tcp_wrappers
 $(PKG)_DEPENDS_ON += libtirpc
@@ -21,21 +24,21 @@ $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
-$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
+$($(PKG)_BINARY_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(RPCBIND_DIR) \
 		CFLAGS="$(TARGET_CFLAGS) $(RPCBIND_CFLAGS)"
 
-$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
+$($(PKG)_BINARY_TARGET_DIR): $($(PKG)_BINARY_BUILD_DIR)
 	$(INSTALL_BINARY_STRIP)
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_BINARY_TARGET_DIR)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(RPCBIND_DIR) clean
 
 $(pkg)-uninstall:
-	$(RM) $(RPCBIND_TARGET_BINARY)
+	$(RM) $(RPCBIND_BINARY_TARGET_DIR)
 
 $(PKG_FINISH)
