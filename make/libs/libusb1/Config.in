@@ -4,3 +4,13 @@ config FREETZ_LIB_libusb_1
 	default n
 	help
 		A library for accessing Linux USB devices (current API).
+
+if FREETZ_LIB_libusb_1
+
+config FREETZ_LIB_libusb_1_WITH_ABANDON
+	bool
+	depends on FREETZ_AVM_GCC_4_MAX || FREETZ_KERNEL_VERSION_2_MAX
+	default y
+
+endif # FREETZ_LIB_libusb_1
+
