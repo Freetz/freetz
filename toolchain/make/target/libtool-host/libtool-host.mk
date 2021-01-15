@@ -42,6 +42,7 @@ $(LIBTOOL_HOST_DIR)/.configured: $(LIBTOOL_HOST_DIR)/.unpacked | $(TARGET_CXX_CR
 		--enable-shared \
 		--enable-static \
 		$(DISABLE_NLS) \
+		$(QUIET) \
 	);
 	touch $@
 

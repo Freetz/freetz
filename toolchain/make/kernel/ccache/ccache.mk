@@ -38,6 +38,7 @@ $(CCACHE_KERNEL_DIR)/.configured: $(CCACHE_KERNEL_DIR)/.unpacked
 		--host=$(GNU_HOST_NAME) \
 		--build=$(GNU_HOST_NAME) \
 		--prefix=/usr \
+		$(QUIET) \
 	);
 	touch $@
 

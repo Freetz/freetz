@@ -22,6 +22,7 @@ $(PATCHELF_HOST_DIR)/.configured: $(PATCHELF_HOST_DIR)/.unpacked
 		CC="$(TOOLS_CC)" \
 		./configure \
 		--prefix=/usr \
+		$(QUIET) \
 	);
 	touch $@
 

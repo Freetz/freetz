@@ -35,6 +35,7 @@ $(LZMA2_HOST_DIR)/.configured: $(LZMA2_HOST_DIR)/.unpacked
 		--enable-static=yes \
 		--without-libiconv-prefix \
 		--without-libintl-prefix \
+		$(QUIET) \
 	);
 	touch $@
 

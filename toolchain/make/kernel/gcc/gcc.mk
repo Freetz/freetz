@@ -71,6 +71,7 @@ $(GCC_KERNEL_BUILD_DIR)/.configured: $(GCC_KERNEL_DIR)/.unpacked $(GCC_KERNEL_IN
 		$(GCC_KERNEL_WITH_HOST_MPC) \
 		$(GCC_KERNEL_WITH_HOST_ISL) \
 		--disable-nls \
+		$(QUIET) \
 	);
 	touch $@
 

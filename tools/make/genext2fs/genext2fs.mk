@@ -22,6 +22,7 @@ $(GENEXT2FS_DIR)/.configured: $(GENEXT2FS_DIR)/.unpacked
 	(cd $(GENEXT2FS_DIR); \
 		autoreconf -f -i && \
 		./configure --prefix=$(FREETZ_BASE_DIR)/$(TOOLS_DIR) \
+		$(QUIET) \
 	);
 	touch $@
 

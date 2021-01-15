@@ -24,6 +24,7 @@ $(TAR_HOST_DIR)/.configured: $(TAR_HOST_DIR)/.unpacked
 		--prefix=/usr \
 		--without-selinux \
 		$(DISABLE_NLS) \
+		$(QUIET) \
 	);
 	touch $@
 

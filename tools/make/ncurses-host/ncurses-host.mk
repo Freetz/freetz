@@ -24,6 +24,7 @@ $(NCURSES_HOST_DIR)/.configured: $(NCURSES_HOST_DIR)/.unpacked
 		\
 		\
 		$(DISABLE_NLS) \
+		$(QUIET) \
 	);
 	touch $@
 

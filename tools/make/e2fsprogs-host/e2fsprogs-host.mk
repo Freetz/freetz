@@ -48,6 +48,7 @@ $(E2FSPROGS_HOST_DIR)/.configured: $(E2FSPROGS_HOST_DIR)/.unpacked
 		--disable-threads \
 		--disable-tls \
 		$(DISABLE_NLS) \
+		$(QUIET) \
 	);
 	touch $@
 

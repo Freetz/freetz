@@ -58,6 +58,7 @@ $(FAKEROOT_BIARCH_DIR)/.configured: $(FAKEROOT_DIR)/.unpacked
 		$(if $(findstring Microsoft,$(shell uname -r)),--with-ipc=tcp,) \
 		$(if $(findstring Microsoft,$(shell uname -r)),--host=$(shell uname -m),) \
 		$(DISABLE_NLS) \
+		$(QUIET) \
 	);
 	touch $@
 
