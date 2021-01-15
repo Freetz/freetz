@@ -32,6 +32,8 @@ forenuser
 hermann72pb
 hippie2000
 horle
+id1508
+idealist1508
 JasperMichalke
 JBBgameich
 johnbock
@@ -40,6 +42,7 @@ M66B
 magenbrot
 markuschen
 martinkoehler
+Maurits
 MaxMuster
 maz
 McNetic
