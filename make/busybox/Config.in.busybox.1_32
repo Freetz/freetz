@@ -6873,6 +6873,7 @@ config FREETZ_BUSYBOX___V132_IPRULE
 	Short form of "ip rule"
 
 config FREETZ_BUSYBOX___V132_IPNEIGH
+	depends on FREETZ_KERNEL_VERSION_2_6_19_MIN
 	bool "ipneigh (8.3 kb)"
 	default n
 	select FREETZ_BUSYBOX___V132_FEATURE_IP_NEIGH
@@ -6923,6 +6924,7 @@ config FREETZ_BUSYBOX___V132_FEATURE_IP_RULE
 	Add support for rule commands to "ip".
 
 config FREETZ_BUSYBOX___V132_FEATURE_IP_NEIGH
+	depends on FREETZ_KERNEL_VERSION_2_6_19_MIN
 	bool "ip neighbor"
 	default n
 	depends on FREETZ_BUSYBOX___V132_IP || FREETZ_BUSYBOX___V132_IPNEIGH

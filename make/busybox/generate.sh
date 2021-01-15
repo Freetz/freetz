@@ -138,6 +138,10 @@ depends_on NANDDUMP     "FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTIN
 # in Freetz menuconfig. This ensures (as a side effect) that "ps -l" is always available.
 depends_on DESKTOP "FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL"
 
+# header file is missing in 2.6.13
+depends_on FEATURE_IP_NEIGH "FREETZ_KERNEL_VERSION_2_6_19_MIN"
+depends_on IPNEIGH "FREETZ_KERNEL_VERSION_2_6_19_MIN"
+
 # from-file-to-file mode is supported since 2.6.33
 depends_on FEATURE_USE_SENDFILE "FREETZ_KERNEL_VERSION_3_MIN"
 
