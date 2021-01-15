@@ -1689,6 +1689,7 @@ config FREETZ_DISABLE_SERIAL_CONSOLE
 
 config FREETZ_PATCH_DISABLE_AVM_WATCHDOG
 	bool "Disable AVM watchdog"
+	default y if FREETZ_SYSTEM_TYPE_GRX5 && FREETZ_AVM_VERSION_07_2X_MIN
 	default n
 	help
 		This disables the AVM watchdog on system start.
