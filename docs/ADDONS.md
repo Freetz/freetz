@@ -12,6 +12,7 @@ mehr richtig funktioniert. Ein Blick in die Foren zeigt:
  - Es werden fehlerhafte Binaries gestartet die Crashes verursachen
  - Manche Einstellungen werden doppelt gespeichert
  - Andere Einstellungen dagegen werden gar nicht mehr gespeichert
+ - Es ist nicht mehr möglich ein Einstellungsbackup widerherzustellen
  - Benutzer werden gelöscht
  - ...
 
