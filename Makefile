@@ -182,6 +182,7 @@ export VERBOSE
 include $(TOOLS_DIR)/make/Makefile.in
 include $(call sorted-wildcard,$(TOOLS_DIR)/make/*/*.mk)
 
+TOOLS_CACHECLEAN:=$(patsubst %,%-cacheclean,$(TOOLS))
 TOOLS_CLEAN:=$(patsubst %,%-clean,$(TOOLS))
 TOOLS_DIRCLEAN:=$(patsubst %,%-dirclean,$(TOOLS))
 TOOLS_DISTCLEAN:=$(patsubst %,%-distclean,$(TOOLS))
@@ -207,6 +208,7 @@ $(FW_IMAGES_DIR):
 ifneq ($(strip $(FREETZ_HAVE_DOT_CONFIG)),y)
 
 step: menuconfig
+cacheclean: $(TOOLS_CACHECLEAN) common-cacheclean
 clean: $(TOOLS_CLEAN) common-clean
 dirclean: $(TOOLS_DIRCLEAN) common-dirclean
 distclean: $(TOOLS_DISTCLEAN) common-distclean
@@ -321,6 +323,7 @@ check-downloads: $(PACKAGES_CHECK_DOWNLOADS)
 
 mirror: $(MIRROR_DIR) $(PACKAGES_MIRROR)
 
+cacheclean: $(TOOLS_CACHECLEAN) common-cacheclean
 clean: $(TARGETS_CLEAN) $(PACKAGES_CLEAN) $(LIBS_CLEAN) $(TOOLCHAIN_CLEAN) $(TOOLS_CLEAN) common-clean
 dirclean: $(TOOLCHAIN_DIRCLEAN) $(TOOLS_DISTCLEAN) common-dirclean
 distclean: $(TOOLCHAIN_DISTCLEAN) $(TOOLS_DISTCLEAN) common-distclean
@@ -456,13 +459,15 @@ $(eval $(call CONFIG_CLEAN_DEPS,config-clean-deps,kernel modules$(_comma) shared
 # Deactivate all optional stuff except for Busybox applets
 $(eval $(call CONFIG_CLEAN_DEPS,config-clean-deps-keep-busybox,kernel modules$(_comma) shared libraries and terminfos,MODULE|LIB|SHARE_terminfo))
 
-common-clean:
+common-cacheclean:
 	[ ! -x .fwmod_custom ] || ./.fwmod_custom clean
 	./fwmod_custom clean
 	$(RM) make/Config.in.generated make/external.in.generated
 	$(RM) .static .dynamic .packages .exclude-release-tmp $(CONFIG_IN_CACHE)
 	$(RM) -r $(BUILD_DIR)
 	$(RM) -r $(FAKEROOT_CACHE_DIR)
+
+common-clean: common-cacheclean
 
 common-dirclean: common-clean $(if $(FREETZ_HAVE_DOT_CONFIG),kernel-dirclean)
 	$(RM) -r $(if $(FREETZ_HAVE_DOT_CONFIG),$(PACKAGES_DIR) $(SOURCE_DIR) $(TARGET_TOOLCHAIN_DIR),$(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT))
@@ -517,6 +522,6 @@ help:
 
 .PHONY: all world step $(KCONFIG_TARGETS) config-cache tools recover \
 	config-clean-deps-modules config-clean-deps-libs config-clean-deps-busybox config-clean-deps-terminfo config-clean-deps config-clean-deps-keep-busybox \
-	clean dirclean distclean common-clean common-dirclean common-distclean release \
-	$(TOOLS) $(TOOLS_CLEAN) $(TOOLS_DIRCLEAN) $(TOOLS_DISTCLEAN) $(TOOLS_SOURCE) \
+	cacheclean clean dirclean distclean common-cacheclean common-clean common-dirclean common-distclean release \
+	$(TOOLS) $(TOOLS_CACHECLEAN) $(TOOLS_CLEAN) $(TOOLS_DIRCLEAN) $(TOOLS_DISTCLEAN) $(TOOLS_SOURCE) \
 	check-dot-config-uptodateness

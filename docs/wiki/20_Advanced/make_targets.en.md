@@ -18,6 +18,7 @@ config-clean-deps-libs                  Deselects all libraries
 config-clean-deps-busybox               Deselects all BusyBox applets
 config-clean-deps-terminfo              Deselects all terminfos
 
+cacheclean                              Removes samll cached files and directories
 clean                                   Remove unpacked images and some cache files
 dirclean                                Clean sources (except tools and .config)
 distclean                               Clean everything except the download directory
