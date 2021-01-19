@@ -328,6 +328,9 @@ Index:
   * **[Add Annex A firmware file](ADD_ANNEX_A_FIRMWARE.md)<a id='add-annex-a-firmware'></a>**<br>
     Add lib/modules/dsp_ur8/ur8-A-dsl.bin. This costs about 400 KB of uncompressed data size. But you can remove Annex B file if you plan to use Annex A.
 
+  * **<u>ADD_ETCNETCONFIG: Add /etc/netconfig</u><a id='add-etcnetconfig'></a>**<br>
+    Adds /etc/netconfig file. Used eg by libtirpc and rpcbind.
+
   * **<u>ADD_ETCSERVICES: Add /etc/services</u><a id='add-etcservices'></a>**<br>
     Adds /etc/services file. Used eg by netstat to display names of IP-ports.
 
