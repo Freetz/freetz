@@ -46,6 +46,7 @@ Latest changes
     * RPCBind 1.2.5
 
 - Updated packages and libs:
+    * CA-bundle 2021-01-19
     * jpeg 9d
     * lighttpd 1.4.58
     * shellinabox 2.21
