@@ -47,6 +47,7 @@ Latest changes
 
 - Updated packages and libs:
     * CA-bundle 2021-01-19
+    * dnsmasq 2.80/2.83
     * jpeg 9d
     * lighttpd 1.4.58
     * shellinabox 2.21
