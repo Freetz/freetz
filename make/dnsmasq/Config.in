@@ -6,22 +6,13 @@ config FREETZ_PACKAGE_DNSMASQ
 
 if FREETZ_PACKAGE_DNSMASQ
 
-choice
-	prompt "Version"
-		default FREETZ_PACKAGE_DNSMASQ_VERSION_CURRENT
-
-	config FREETZ_PACKAGE_DNSMASQ_VERSION_ABANDON
-		bool "2.80"
-		depends on !FREETZ_TARGET_IPV6_SUPPORT
-		help
-			Version 2.80 is the last with IPv4-only support. If
-			you want to use a newer version, enable IPv6 support.
-
-	config FREETZ_PACKAGE_DNSMASQ_VERSION_CURRENT
-		bool "2.83"
-		depends on FREETZ_TARGET_IPV6_SUPPORT
-
-endchoice
+config FREETZ_PACKAGE_DNSMASQ_VERSION_ABANDON
+	bool
+	default y
+	depends on !FREETZ_TARGET_IPV6_SUPPORT
+	help
+		Version 2.80 is the last with IPv4-only support. If
+		you want to use a newer version, enable IPv6 support.
 
 config FREETZ_PACKAGE_DNSMASQ_WITH_DNSSEC
 	bool "Enable DNSSEC support"
