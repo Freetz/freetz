@@ -175,6 +175,7 @@ Currently supported devices and firmwares
   - 254.07.19 rev00000 {GER} (Labor)
 * __Fritz!Box 6850 LTE (UNTESTED)__
   - 262.07.21 rev82687 {ALL} [PSQ19]
+  - 262.07.24 rev00000 {ALL} (Labor)
 * __Fritz!Box 6850 5G (UNTESTED)__
   - 258.07.19 rev00000 {ALL} (Labor)
 * __Fritz!Box 6890 LTE__
@@ -337,7 +338,7 @@ Currently supported devices and firmwares
   - 113.07.01 rev61484 {INT}
   - 113.07.12 rev70401 {INT} [MESH18 NL2]
   - 113.07.21 rev81779 {ALL} [PSQ19]
-  - 113.07.24 rev00000 {ALL} (Labor)
+  - 113.07.24 rev00000 {ALL} [PSQ19 Phase 2] (Labor)
 
 ### Fritz!Box Fon WLAN (75xx)
 
@@ -355,7 +356,7 @@ Currently supported devices and firmwares
   - 164.07.02 rev62314 {INT}
   - 164.07.13 rev75481 {INT} [MESH18 NL3]
   - 164.07.21 rev82823 {ALL} [PSQ19]
-  - 164.07.24 rev00000 {ALL} (Labor)
+  - 164.07.24 rev00000 {ALL} [PSQ19 Phase 2] (Labor)
 * __Fritz!Box Fon WLAN 7530 AX (UNTESTED)__
   - 256.07.20 rev82015 {ALL} [PSQ19] (Inhaus)
 * __Fritz!Box Fon WLAN 7560__
@@ -394,7 +395,7 @@ Currently supported devices and firmwares
   - 154.07.01 rev61989 {INT}
   - 154.07.13 rev74390 {INT} [MESH18 NL3]
   - 154.07.21 rev82154 {ALL} [PSQ19]
-  - 154.07.24 rev00000 {ALL} (Labor)
+  - 154.07.24 rev00000 {ALL} [PSQ19 Phase 2] (Labor)
 * __Fritz!Box Fon WLAN 7590 AX (UNTESTED)__
   - 259.07.24 rev85188 {ALL} [PSQ19 Phase 2] (Inhaus)
 
@@ -444,7 +445,7 @@ Currently supported devices and firmwares
   - 134.07.01 rev63070 {ALL}
   - 134.07.12 rev70775 {ALL} [MESH18 NL2]
   - 134.07.21 rev83664 {ALL} [PSQ19]
-  - 134.07.24 rev00000 {ALL} (Labor)
+  - 134.07.24 rev00000 {ALL} [PSQ19 Phase 2] (Labor)
 
 * __Fritz!Repeater 1200__
   - 172.07.14 rev73941 {ALL} [MESH18 NL4]
@@ -452,12 +453,12 @@ Currently supported devices and firmwares
 * __Fritz!Repeater 2400 (UNTESTED)__
   - 169.07.12 rev71975 {ALL} [MESH18 NL2]
   - 169.07.21 rev83013 {ALL} [PSQ19]
-  - 169.07.24 rev00000 {ALL} (Labor)
+  - 169.07.24 rev00000 {ALL} [PSQ19 Phase 2] (Labor)
 * __Fritz!Repeater 3000__
   - 174.07.04 rev66458 {ALL}
   - 174.07.14 rev73940 {ALL} [MESH18 NL4]
   - 174.07.21 rev83015 {ALL} [PSQ19]
-  - 174.07.24 rev00000 {ALL} (Labor)
+  - 174.07.24 rev00000 {ALL} [PSQ19 Phase 2] (Labor)
 * __Fritz!Repeater 6000 (UNTESTED)__
   - 253.07.19 rev85252 {ALL} [PSQ19] (Inhaus)
 
