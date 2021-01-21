@@ -175,7 +175,7 @@ Currently supported devices and firmwares
   - 254.07.19 rev00000 {GER} (Labor)
 * __Fritz!Box 6850 LTE (UNTESTED)__
   - 262.07.21 rev82687 {ALL} [PSQ19]
-  - 262.07.24 rev00000 {ALL} (Labor)
+  - 262.07.24 rev00000 {ALL} [PSQ19 Phase 2] (Labor)
 * __Fritz!Box 6850 5G (UNTESTED)__
   - 258.07.19 rev00000 {ALL} (Labor)
 * __Fritz!Box 6890 LTE__
