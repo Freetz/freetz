@@ -360,7 +360,7 @@ modunsqfs()
 moduncpio()
 {
 	mkdir -p "$1"
-	cat "$2" | gunzip | cpio -id --quiet -D "$1" 2>&1
+	cat "$2" | gunzip | cpio -mid --quiet -D "$1" 2>&1
 	
 	if [ $? -gt 0 ]; then
 		error 1 "moduncpio: Error in $2"
