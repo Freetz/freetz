@@ -243,11 +243,11 @@ endef
 #
 # Writes list entries to a file, each entry on a new line
 #
-# $1 - list
+# $1 - list (trailing slashes will be removed)
 # $2 - name of the file list entries to be written to
 #
 define write-list-to-file
-(set -f; $(RM) $(strip $(2)); printf $(if $(strip $(1)),"%s\n" $(strip $(1)) | sort -u,"") >$(strip $(2)));
+(set -f; $(RM) $(strip $(2)); printf $(if $(strip $(1)),"%s\n" $(strip $(1)) | sed 's/\/$$$$//g' | sort -u,"") >$(strip $(2)));
 endef
 
 #
