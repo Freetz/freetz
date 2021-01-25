@@ -1,6 +1,9 @@
 if FREETZ_TYPE_5530
 
-config FREETZ_AVM_HAS_AHA
+config FREETZ_AVM_HAS_SIGNATURE
+	def_bool y
+
+config FREETZ_AVM_HAS_MULTIPLE_BRANDINGS
 	def_bool y
 
 config FREETZ_AVM_HAS_BRANDING_1und1
@@ -9,28 +12,7 @@ config FREETZ_AVM_HAS_BRANDING_1und1
 config FREETZ_AVM_HAS_BRANDING_avm
 	def_bool y
 
-config FREETZ_AVM_HAS_CHRONYD
-	def_bool y
-
-config FREETZ_AVM_HAS_DECT
-	def_bool y
-
-config FREETZ_AVM_HAS_DSLD
-	def_bool y
-
-config FREETZ_AVM_HAS_DTRACE
-	def_bool y
-
-config FREETZ_AVM_HAS_FAX
-	def_bool y
-
-config FREETZ_AVM_HAS_INETD
-	def_bool y
-
-config FREETZ_AVM_HAS_IP_BINARY
-	def_bool y
-
-config FREETZ_AVM_HAS_KIDS
+config FREETZ_AVM_HAS_MULTIPLE_LANGUAGES
 	def_bool y
 
 config FREETZ_AVM_HAS_LANGUAGE_de
@@ -54,16 +36,74 @@ config FREETZ_AVM_HAS_LANGUAGE_nl
 config FREETZ_AVM_HAS_LANGUAGE_pl
 	def_bool y
 
-config FREETZ_AVM_HAS_MULTIPLE_BRANDINGS
+config FREETZ_AVM_SERIAL_CONSOLE_DEVICE
+	string
+	default "/dev/ttyLTQ0"
+
+config FREETZ_AVM_HAS_REBOOT_SCRIPT
 	def_bool y
 
-config FREETZ_AVM_HAS_MULTIPLE_LANGUAGES
+config FREETZ_AVM_HAS_IP_BINARY
+	def_bool y
+
+config FREETZ_AVM_HAS_AHA
+	def_bool y
+
+config FREETZ_AVM_HAS_DECT
 	def_bool y
 
 config FREETZ_AVM_HAS_MYFRITZ
 	def_bool y
 
+config FREETZ_AVM_HAS_WLAN
+	def_bool y
+
+config FREETZ_AVM_HAS_CHRONYD
+	def_bool y
+
+config FREETZ_AVM_HAS_INETD
+	def_bool y
+
+config FREETZ_AVM_HAS_TAM
+	def_bool y
+
+config FREETZ_AVM_HAS_PHONE
+	def_bool y
+
+config FREETZ_AVM_HAS_TR069
+	def_bool y
+
+config FREETZ_AVM_HAS_TR069_FWUPDATE
+	def_bool y
+
+config FREETZ_AVM_HAS_FAX
+	def_bool y
+
+config FREETZ_AVM_HAS_UDEV
+	def_bool y
+
+config FREETZ_AVM_HAS_TC
+	def_bool y
+
+config FREETZ_AVM_HAS_SHOWDSLDSTAT
+	def_bool y
+
+config FREETZ_AVM_HAS_DSLD
+	def_bool y
+
+config FREETZ_AVM_HAS_VPN
+	def_bool y
+
+config FREETZ_AVM_HAS_DTRACE
+	def_bool y
+
 config FREETZ_AVM_HAS_NEXUS
+	def_bool y
+
+config FREETZ_AVM_HAS_UNTRUSTEDD
+	def_bool y
+
+config FREETZ_AVM_HAS_PLCD
 	def_bool y
 
 config FREETZ_AVM_HAS_NSSWITCH
@@ -75,43 +115,19 @@ config FREETZ_AVM_HAS_OPENSSL
 config FREETZ_AVM_HAS_OPENSSL_VERSION_1
 	def_bool y
 
-config FREETZ_AVM_HAS_PHONE
+config FREETZ_AVM_HAS_KIDS
 	def_bool y
 
-config FREETZ_AVM_HAS_PLCD
+config FREETZ_AVM_PROP_INNER_FILESYSTEM_TYPE_CPIO
 	def_bool y
 
-config FREETZ_AVM_HAS_REBOOT_SCRIPT
+config FREETZ_AVM_PROP_SEPARATE_FILESYSTEM_IMAGE
 	def_bool y
 
-config FREETZ_AVM_HAS_SHOWDSLDSTAT
+config FREETZ_AVM_PROP_KERNEL_4_9_218
 	def_bool y
 
-config FREETZ_AVM_HAS_SIGNATURE
-	def_bool y
-
-config FREETZ_AVM_HAS_TAM
-	def_bool y
-
-config FREETZ_AVM_HAS_TC
-	def_bool y
-
-config FREETZ_AVM_HAS_TR069
-	def_bool y
-
-config FREETZ_AVM_HAS_TR069_FWUPDATE
-	def_bool y
-
-config FREETZ_AVM_HAS_UDEV
-	def_bool y
-
-config FREETZ_AVM_HAS_UNTRUSTEDD
-	def_bool y
-
-config FREETZ_AVM_HAS_VPN
-	def_bool y
-
-config FREETZ_AVM_HAS_WLAN
+config FREETZ_AVM_PROP_KERNEL_CONFIG_AREA_SIZE_0
 	def_bool y
 
 config FREETZ_AVM_PROP_ARCH_BE
@@ -123,21 +139,8 @@ config FREETZ_AVM_PROP_ARCH_MIPS
 config FREETZ_AVM_PROP_GCC_8
 	def_bool y
 
-config FREETZ_AVM_PROP_INNER_FILESYSTEM_TYPE_CPIO
-	def_bool y
-
-config FREETZ_AVM_PROP_KERNEL_CONFIG_AREA_SIZE_0
-	def_bool y
-
-config FREETZ_AVM_PROP_SEPARATE_FILESYSTEM_IMAGE
-	def_bool y
-
 config FREETZ_AVM_PROP_UCLIBC_SEPARATE
 	def_bool y
-
-config FREETZ_AVM_SERIAL_CONSOLE_DEVICE
-	string
-	default "/dev/ttyLTQ0"
 
 endif
 
