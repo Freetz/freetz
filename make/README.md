@@ -1016,7 +1016,7 @@ Index:
 
 ### W
 
-  * **[Wget GNU 1.20.3 (binary only)](../docs/make/wget.md)<a id='wget'></a>**<br>
+  * **[Wget GNU 1.21.1 (binary only)](../docs/make/wget.md)<a id='wget'></a>**<br>
     GNU Wget is a free software package for retrieving files using HTTP, HTTPS and FTP, the most widely-used Internet protocols. It is a non-interactive commandline tool, so it may easily be called from scripts, cron jobs, terminals, etc.
 
   * **[wireguard-tools 1.0.20200827](../docs/make/wireguard.md)<a id='wireguard'></a>**<br>
