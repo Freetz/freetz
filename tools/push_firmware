@@ -36,7 +36,6 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 UIMG_TOOL="${0%/*}/uimg"
-FITIMG_TOOL="${0%/*}/fitimg"
 TSUM_TOOL="${0%/*}/tichksum"
 
 function wait_loader() {
@@ -73,7 +72,7 @@ function push_fw() {
 	done
 	echo
 
-	if [ $ISRAM ]; then
+	if [ -n "$ISRAM$ISFIT" ]; then
 		if [ "${FULLSIZE//0/}" == "x" ]; then
 			wait_loader
 			enval="$(read_enval memsize)"
@@ -83,9 +82,9 @@ function push_fw() {
 			echo
 		fi
 
-		MAPSTART=0x80000000  # start mapped memory
+		[ $ISRAM ] && MAPSTART=0x80000000 && FILESIZE="0x$(printf '%.8x' $(stat --printf='%s' "$mtdram1"))"
+		[ $ISFIT ] && MAPSTART=0x00000000 && FILESIZE="0x$(printf '%.8x' $(stat --printf='%s' "$fitimage"))"
 		MAPLIMIT="0x$(printf '%.8x' $(( $MAPSTART + $FULLSIZE )))"
-		FILESIZE="0x$(printf '%.8x' $(stat --printf='%s' "$mtdram1"))"
 		FREESIZE="0x$(printf '%.8x' $(( $FULLSIZE - $FILESIZE )))"
 		MTDSTART="0x$(printf '%.8x' $(( $MAPSTART + $FULLSIZE - $FILESIZE )))"
 
@@ -110,7 +109,7 @@ function push_fw() {
 			echo " * Designated linux_fs_start: $LFS"
 			echo
 		fi
-		if [ $ISRAM ]; then
+		if [ -n "$ISRAM$ISFIT" ]; then
 			[ "$LFS" == "9" ] && LFS=
 		elif [ $ISDUAL ]; then
 			[ $LFS -ne 1 ] && ARMsysMTD='0'  && ARMkrnMTD='1'  && X86sysMTD='6'  && X86krnMTD='7'
@@ -162,7 +161,17 @@ function push_fw() {
 	fi
 
 	if [ $FOUND_NCFTP ]; then
-		if [ $ISRAM ]; then
+		if [ $ISFIT ]; then
+			ncftpput \
+				-C -d stdout -u adam2 -p adam2 \
+				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
+				-W "quote MEDIA SDRAM" \
+				-W "quote SETENV memsize ${FREESIZE}" \
+				-W "quote SETENV kernel_args_tmp \"avm_fwupdate mtdram1=${MTDSTART},${MAPLIMIT} mtdparts_ext=update-image.0:${FILESIZE}@0x0(fit-image)\"" \
+				-X "$([ ! $LFS ] && echo "quote SYST" || echo "quote SETENV linux_fs_start $LFS")" \
+				-Y "quote QUIT" \
+				$ip ${fitimage} "${MTDSTART} ${MAPLIMIT}" || exit $?
+		elif [ $ISRAM ]; then
 			ncftpput \
 				-C -d stdout -u adam2 -p adam2 \
 				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
@@ -216,7 +225,20 @@ function push_fw() {
 			echo "miserable failure" && exit 1
 		fi
 	elif [ $FOUND_FTP ]; then
-		if [ $ISRAM ]; then
+		if [ $ISFIT ]; then
+			ftp -n -p <<EOT
+open $ip
+user adam2 adam2
+debug
+bin
+quote MEDIA SDRAM
+quote SETENV memsize ${FREESIZE}
+quote SETENV kernel_args_tmp "avm_fwupdate mtdram1=${MTDSTART},${MAPLIMIT} mtdparts_ext=update-image.0:${FILESIZE}@0x0(fit-image)"
+put ${fitimage} "${MTDSTART} ${MAPLIMIT}"
+$([ $LFS ] && echo quote SETENV linux_fs_start $LFS)
+quit
+EOT
+		elif [ $ISRAM ]; then
 			ftp -n -p <<EOT
 open $ip
 user adam2 adam2
@@ -281,7 +303,19 @@ telnet_hn() {
 }
 
 prepare_image() {
-	if [ $ISRAM ]; then
+	if [ $ISFIT ]; then
+		tmpdir=$(mktemp -td freetz_XXX) || { echo "Error creating temporary directory."; exit 1; }
+		fitimage="$tmpdir/fitboot.flash"
+		if tar -C $tmpdir/ -xf $file --wildcards '*/fit-image' >/dev/null 2>&1; then
+			if [ -s "$tmpdir/var/tmp/fit-image" ]; then
+				mv "$tmpdir/var/tmp/fit-image" "$fitimage"
+			fi
+		fi
+		if [ ! -s "$fitimage" ]; then
+			echo -e "\nError: file is not a valid fit-boot image to be written to the device.\n" >&2
+			exit 1
+		fi
+	elif [ $ISRAM ]; then
 		tmpdir=$(mktemp -td freetz_XXX) || { echo "Error creating temporary directory."; exit 1; }
 		mtdram1="$tmpdir/ramboot.flash"
 		if [ $INMEM ]; then
@@ -378,11 +412,11 @@ usage()
 	echo "-mu               Force mode uimg-boot (newer docsis devices, like 6591 & 6660)"
 	echo "                    See https://bitbucket.org/fesc2000/ffritz/src/6591/README-6591.md"
 	echo "-mf               Force mode fit-boot (latest devices, like 5530 & 7530 AX)"
-	echo "                    Not supported yet!"
+	echo "                    Experimental and not tested with real hardware!"
 	echo "-f                Disable safety prompt."
 	echo "-ip <ip>          Bootloader IP address or hostname, default 192.168.178.1"
-	echo "-ram <mb>         Only ram-boot mode: Usable ram size in MB of your device."
-	echo "                    Without this parameter, the default of 128 MB will be used."
+	echo "-ram <mb>         Only ram-boot and fit-boot mode: Usable ram size in MB of your device."
+	echo "                    Without this parameter, the default of 128 MB (FIT: 512) will be used."
 	echo "                    Some devices like Repeater 3000 need 256 MB to flash."
 	echo "                    Use '0' to detect and use all available ram."
 	echo "-lfs <0|1|9>      Not single-boot mode: Set linux_fs_start to 0 or 1 and flash into this."
@@ -482,17 +516,15 @@ if [ -z "$ISSINGLE$ISDUAL$ISRAM$ISUIMG$ISFIT" ]; then
 		[ "$N" == "1" -a "$S" == "0" ] && ISSINGLE=true
 	fi
 fi
-[ -z "$ISSINGLE$ISDUAL$ISRAM$ISUIMG$ISFIT" ] && echo "Can not recognize image, please use '-m<s|r|d|u|f>'."  && exit 1
+[ -z "$ISSINGLE$ISDUAL$ISRAM$ISUIMG$ISFIT" ]   && echo "Can not recognize image, please use '-m<s|r|d|u|f>'."              && exit 1
 # arg check
-[ ! $ISSINGLE ] && [ $ISALICE ]          && echo "Parameter '-hn' is only allowed for single-boot mode."       && exit 1
-[ $ISSINGLE ]   && [ $LFS ]              && echo "Parameter '-lfs' is not allowed for single-boot mode."       && exit 1
-[ $ISDUAL ]     && [ ! $LFS ]            && LFS="1"
-[ $ISUIMG ]     && [ ! $LFS ]            && LFS="1"
-[ $ISUIMG ]     && [ ! -x $UIMG_TOOL ]   && echo "File $UIMG_TOOL missing. Run 'make uimg' first."             && exit 1
-[ $ISFITIMG ]   && [ ! -x $FITIMG_TOOL ] && echo "File $FITIMG_TOOL missing. Run 'make fitimg' first."         && exit 1
-[ $ISRAM ]      && [ ! -x $TSUM_TOOL ]   && echo "File $TSUM_TOOL missing. Run 'make tichksum-host' first."    && exit 1
-[ ! $ISRAM ]    && [ $FULLSIZE ]         && echo "Parameter '-ram' is only allowed for ram-boot mode."         && exit 1
-[ $ISFIT ]                               && echo "FIT is not supported yet!"                                   && exit 1
+[ ! $ISSINGLE ] && [ $ISALICE ]                && echo "Parameter '-hn' is only allowed for single-boot mode."             && exit 1
+[ $ISSINGLE ]   && [ $LFS ]                    && echo "Parameter '-lfs' is not allowed for single-boot mode."             && exit 1
+[ $ISDUAL ]     && [ ! $LFS ]                  && LFS="1"
+[ $ISUIMG ]     && [ ! $LFS ]                  && LFS="1"
+[ $ISUIMG ]     && [ ! -x $UIMG_TOOL ]         && echo "File $UIMG_TOOL missing. Run 'make uimg' first."                   && exit 1
+[ $ISRAM ]      && [ ! -x $TSUM_TOOL ]         && echo "File $TSUM_TOOL missing. Run 'make tichksum-host' first."          && exit 1
+[ ! $ISRAM ] && [ ! $ISFIT ] && [ $FULLSIZE ]  && echo "Parameter '-ram' is only allowed for ram-boot and fit-boot mode."  && exit 1
 
 prepare_image
 
@@ -532,16 +564,17 @@ if [ -z "$FOUND_NCFTP" -a -z "$FOUND_FTP" ]; then
 	exit 1
 fi
 if [ -z "$FOUND_FTP" ]; then
-	[ $ISRAM ]       && [ "${FULLSIZE//0/}" == "x" ] && echo "Parameter '-ram' has to be bigger than 0 if you have no 'ftp' installed."  && exit 1
-	[ ! $ISSINGLE ]  && [ -z "$LFS" ]                && echo "Parameter '-lfs' is mandatory if you have no 'ftp' installed."             && exit 1
-	[ $ISDUAL ]      && [ "$LFS" == "9" ]            && echo "Parameter '-lfs' with 0 or 1 is mandatory if you have no 'ftp' installed." && exit 1
-	[ $ISUIMG ]      && [ "$LFS" == "9" ]            && echo "Parameter '-lfs' with 0 or 1 is mandatory if you have no 'ftp' installed." && exit 1
+	[ -n "$ISRAM$ISFIT" ] && [ "${FULLSIZE//0/}" == "x" ] && echo "Parameter '-ram' has to be bigger than 0 if you have no 'ftp' installed."  && exit 1
+	[ ! $ISSINGLE ]       && [ -z "$LFS" ]                && echo "Parameter '-lfs' is mandatory if you have no 'ftp' installed."             && exit 1
+	[ $ISDUAL ]           && [ "$LFS" == "9" ]            && echo "Parameter '-lfs' with 0 or 1 is mandatory if you have no 'ftp' installed." && exit 1
+	[ $ISUIMG ]           && [ "$LFS" == "9" ]            && echo "Parameter '-lfs' with 0 or 1 is mandatory if you have no 'ftp' installed." && exit 1
 fi
 if [ -n "$CMD" ]; then
 	[ "$CMD" == "ftp" ] && FOUND_NCFTP=""
 	[ "$CMD" == "ncftp" ] && FOUND_FTP=""
 fi
 if [ -n "$FOUND_NCFTP" -a -n "$FOUND_FTP" ]; then
+	[ $ISFIT ]    && FOUND_NCFTP=""
 	[ $ISRAM ]    && FOUND_NCFTP=""
 	[ $ISDUAL ]   && FOUND_NCFTP=""
 	[ $ISUIMG ]   && FOUND_NCFTP=""
@@ -558,6 +591,8 @@ echo " * Outgoing IP: $oa"
 
 if [ $ISUIMG ]; then
 	OUTVAL="uimg"
+elif [ $ISFIT ]; then
+	OUTVAL="fit"
 elif [ $ISDUAL ]; then
 	OUTVAL="dual"
 elif [ $INMEM ]; then
@@ -569,8 +604,11 @@ else
 fi
 echo " * Flash mode: $OUTVAL-boot"
 
-if [ $ISRAM ]; then
-	[ -z "$FULLSIZE" ] && FULLSIZE="0x08000000"
+if [ -n "$ISRAM$ISFIT" ]; then
+	if [ -z "$FULLSIZE" ]; then
+		[ $ISFIT ] && FULLSIZE="0x20000000"
+		[ $ISRAM ] && FULLSIZE="0x08000000"
+	fi
 	[ "${FULLSIZE//0/}" == "x" ] && OUTVAL="<detect>" || OUTVAL="$(( $FULLSIZE /1024/1024 )) MB"
 	echo " * Allowed memory size: $OUTVAL"
 fi
