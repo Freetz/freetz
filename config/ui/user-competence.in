@@ -41,3 +41,14 @@ config FREETZ_SHOW_EXPERT
 config FREETZ_SHOW_DEVELOPER
 	bool
 
+if !FREETZ_REAL_DEVELOPER_ONLY__KCONF && \
+	FREETZ_USER_LEVEL_DEVELOPER
+
+	comment " "
+	comment " ************************ WARNING *************************"
+	comment "                   DO NOT USE DEVELOPER!                   "
+	comment " **********************************************************"
+	comment " "
+
+endif
+
