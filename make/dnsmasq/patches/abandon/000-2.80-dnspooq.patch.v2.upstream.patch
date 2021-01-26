@@ -1,0 +1,1312 @@
+
+  http://www.thekelleys.org.uk/dnsmasq/dnspooq-patches/
+
+diff -ruN ../../dnsmasq-2.80/dnsmasq-2.80/src/dnsmasq.h src/dnsmasq.h
+--- ../../dnsmasq-2.80/dnsmasq-2.80/src/dnsmasq.h	2020-06-24 16:20:25.402359071 +0100
++++ src/dnsmasq.h	2021-01-25 21:44:00.621416214 +0000
+@@ -138,6 +138,7 @@
+ #endif
+ 
+ #if defined(HAVE_LINUX_NETWORK)
++#include <linux/sockios.h>
+ #include <linux/capability.h>
+ /* There doesn't seem to be a universally-available 
+    userspace header for these. */
+@@ -648,16 +649,19 @@
+ #define FREC_ADDED_PHEADER    128
+ #define FREC_TEST_PKTSZ       256
+ #define FREC_HAS_EXTRADATA    512        
++#define FREC_HAS_PHEADER     1024
+ 
+-#ifdef HAVE_DNSSEC
+-#define HASH_SIZE 20 /* SHA-1 digest size */
+-#else
+-#define HASH_SIZE sizeof(int)
+-#endif
++#define HASH_SIZE 32 /* SHA-256 digest size */
+ 
+ struct frec {
+-  union mysockaddr source;
+-  struct all_addr dest;
++  struct frec_src {
++    union mysockaddr source;
++    struct all_addr dest;
++    unsigned int iface, log_id;
++    unsigned short orig_id;
++    int fd;
++    struct frec_src *next;
++  } frec_src;
+   struct server *sentto; /* NULL means free */
+   struct randfd *rfd4;
+ #ifdef HAVE_IPV6
+@@ -665,7 +669,7 @@
+ #endif
+   unsigned int iface;
+   unsigned short orig_id, new_id;
+-  int log_id, fd, forwardall, flags;
++  int log_id, forwardall, flags;
+   time_t time;
+   unsigned char *hash[HASH_SIZE];
+ #ifdef HAVE_DNSSEC 
+@@ -1081,6 +1085,8 @@
+   int back_to_the_future;
+ #endif
+   struct frec *frec_list;
++  struct frec_src *free_frec_src;
++  int frec_src_count;
+   struct serverfd *sfds;
+   struct irec *interfaces;
+   struct listener *listeners;
+@@ -1206,7 +1212,6 @@
+ 			     struct bogus_addr *baddr, time_t now);
+ int check_for_ignored_address(struct dns_header *header, size_t qlen, struct bogus_addr *baddr);
+ int check_for_local_domain(char *name, time_t now);
+-unsigned int questions_crc(struct dns_header *header, size_t plen, char *name);
+ size_t resize_packet(struct dns_header *header, size_t plen, 
+ 		  unsigned char *pheader, size_t hlen);
+ int add_resource_record(struct dns_header *header, char *limit, int *truncp,
+@@ -1234,9 +1239,11 @@
+ 			  int check_unsigned, int *neganswer, int *nons);
+ int dnskey_keytag(int alg, int flags, unsigned char *key, int keylen);
+ size_t filter_rrsigs(struct dns_header *header, size_t plen);
+-unsigned char* hash_questions(struct dns_header *header, size_t plen, char *name);
+ int setup_timestamp(void);
+ 
++/* hash_questions.c */
++unsigned char *hash_questions(struct dns_header *header, size_t plen, char *name);
++
+ /* crypto.c */
+ const struct nettle_hash *hash_find(char *name);
+ int hash_init(const struct nettle_hash *hash, void **ctxp, unsigned char **digestp);
+diff -ruN ../../dnsmasq-2.80/dnsmasq-2.80/src/dnssec.c src/dnssec.c
+--- ../../dnsmasq-2.80/dnsmasq-2.80/src/dnssec.c	2020-06-24 16:20:25.166363162 +0100
++++ src/dnssec.c	2021-01-17 21:14:00.612747792 +0000
+@@ -222,138 +222,147 @@
+     && serial_compare_32(curtime, date_end) == SERIAL_LT;
+ }
+ 
+-/* Return bytes of canonicalised rdata, when the return value is zero, the remaining 
+-   data, pointed to by *p, should be used raw. */
+-static int get_rdata(struct dns_header *header, size_t plen, unsigned char *end, char *buff, int bufflen,
+-		     unsigned char **p, u16 **desc)
++/* Return bytes of canonicalised rrdata one by one.
++   Init state->ip with the RR, and state->end with the end of same.
++   Init state->op to NULL.
++   Init state->desc to RR descriptor.
++   Init state->buff with a MAXDNAME * 2 buffer.
++   
++   After each call which returns 1, state->op points to the next byte of data.
++   On returning 0, the end has been reached.
++*/
++struct rdata_state {
++  u16 *desc;
++  size_t c;
++  unsigned char *end, *ip, *op;
++  char *buff;
++};
++
++static int get_rdata(struct dns_header *header, size_t plen, struct rdata_state *state)
+ {
+-  int d = **desc;
++  int d;
+   
+-  /* No more data needs mangling */
+-  if (d == (u16)-1)
++  if (state->op && state->c != 1)
+     {
+-      /* If there's more data than we have space for, just return what fits,
+-	 we'll get called again for more chunks */
+-      if (end - *p > bufflen)
+-	{
+-	  memcpy(buff, *p, bufflen);
+-	  *p += bufflen;
+-	  return bufflen;
+-	}
+-      
+-      return 0;
++      state->op++;
++      state->c--;
++      return 1;
+     }
+- 
+-  (*desc)++;
+-  
+-  if (d == 0 && extract_name(header, plen, p, buff, 1, 0))
+-    /* domain-name, canonicalise */
+-    return to_wire(buff);
+-  else
+-    { 
+-      /* plain data preceding a domain-name, don't run off the end of the data */
+-      if ((end - *p) < d)
+-	d = end - *p;
++
++  while (1)
++    {
++      d = *(state->desc);
+       
+-      if (d != 0)
++      if (d == (u16)-1)
+ 	{
+-	  memcpy(buff, *p, d);
+-	  *p += d;
++	  /* all the bytes to the end. */
++	  if ((state->c = state->end - state->ip) != 0)
++	    {
++	      state->op = state->ip;
++	      state->ip = state->end;;
++	    }
++	  else
++	    return 0;
++	}
++      else
++	{
++	  state->desc++;
++	  
++	  if (d == (u16)0)
++	    {
++	      /* domain-name, canonicalise */
++	      int len;
++	      
++	      if (!extract_name(header, plen, &state->ip, state->buff, 1, 0) ||
++		  (len = to_wire(state->buff)) == 0)
++		continue;
++	      
++	      state->c = len;
++	      state->op = (unsigned char *)state->buff;
++	    }
++	  else
++	    {
++	      /* plain data preceding a domain-name, don't run off the end of the data */
++	      if ((state->end - state->ip) < d)
++		d = state->end - state->ip;
++	      
++	      if (d == 0)
++		continue;
++		  
++	      state->op = state->ip;
++	      state->c = d;
++	      state->ip += d;
++	    }
+ 	}
+       
+-      return d;
++      return 1;
+     }
+ }
+ 
+-/* Bubble sort the RRset into the canonical order. 
+-   Note that the byte-streams from two RRs may get unsynced: consider 
+-   RRs which have two domain-names at the start and then other data.
+-   The domain-names may have different lengths in each RR, but sort equal
+-
+-   ------------
+-   |abcde|fghi|
+-   ------------
+-   |abcd|efghi|
+-   ------------
+-
+-   leaving the following bytes as deciding the order. Hence the nasty left1 and left2 variables.
+-*/
++/* Bubble sort the RRset into the canonical order. */
+ 
+ static int sort_rrset(struct dns_header *header, size_t plen, u16 *rr_desc, int rrsetidx, 
+ 		      unsigned char **rrset, char *buff1, char *buff2)
+ {
+-  int swap, quit, i, j;
++  int swap, i, j;
+   
+   do
+     {
+       for (swap = 0, i = 0; i < rrsetidx-1; i++)
+ 	{
+-	  int rdlen1, rdlen2, left1, left2, len1, len2, len, rc;
+-	  u16 *dp1, *dp2;
+-	  unsigned char *end1, *end2;
++	  int rdlen1, rdlen2;
++	  struct rdata_state state1, state2;
++	  
+ 	  /* Note that these have been determined to be OK previously,
+ 	     so we don't need to check for NULL return here. */
+-	  unsigned char *p1 = skip_name(rrset[i], header, plen, 10);
+-	  unsigned char *p2 = skip_name(rrset[i+1], header, plen, 10);
+-	  
+-	  p1 += 8; /* skip class, type, ttl */
+-	  GETSHORT(rdlen1, p1);
+-	  end1 = p1 + rdlen1;
+-	  
+-	  p2 += 8; /* skip class, type, ttl */
+-	  GETSHORT(rdlen2, p2);
+-	  end2 = p2 + rdlen2; 
+-	  
+-	  dp1 = dp2 = rr_desc;
+-	  
+-	  for (quit = 0, left1 = 0, left2 = 0, len1 = 0, len2 = 0; !quit;)
++	  state1.ip = skip_name(rrset[i], header, plen, 10);
++	  state2.ip = skip_name(rrset[i+1], header, plen, 10);
++	  state1.op = state2.op = NULL;
++	  state1.buff = buff1;
++	  state2.buff = buff2;
++	  state1.desc = state2.desc = rr_desc;
++	  
++	  state1.ip += 8; /* skip class, type, ttl */
++	  GETSHORT(rdlen1, state1.ip);
++	  if (!CHECK_LEN(header, state1.ip, plen, rdlen1))
++	    return rrsetidx; /* short packet */
++	  state1.end = state1.ip + rdlen1;
++	  
++	  state2.ip += 8; /* skip class, type, ttl */
++	  GETSHORT(rdlen2, state2.ip);
++	  if (!CHECK_LEN(header, state2.ip, plen, rdlen2))
++	    return rrsetidx; /* short packet */
++	  state2.end = state2.ip + rdlen2; 
++	  	  
++	  while (1)
+ 	    {
+-	      if (left1 != 0)
+-		memmove(buff1, buff1 + len1 - left1, left1);
+-	      
+-	      if ((len1 = get_rdata(header, plen, end1, buff1 + left1, (MAXDNAME * 2) - left1, &p1, &dp1)) == 0)
+-		{
+-		  quit = 1;
+-		  len1 = end1 - p1;
+-		  memcpy(buff1 + left1, p1, len1);
+-		}
+-	      len1 += left1;
+-	      
+-	      if (left2 != 0)
+-		memmove(buff2, buff2 + len2 - left2, left2);
+-	      
+-	      if ((len2 = get_rdata(header, plen, end2, buff2 + left2, (MAXDNAME *2) - left2, &p2, &dp2)) == 0)
+-		{
+-		  quit = 1;
+-		  len2 = end2 - p2;
+-		  memcpy(buff2 + left2, p2, len2);
+-		}
+-	      len2 += left2;
+-	       
+-	      if (len1 > len2)
+-		left1 = len1 - len2, left2 = 0, len = len2;
+-	      else
+-		left2 = len2 - len1, left1 = 0, len = len1;
++	      int ok1, ok2;
+ 	      
+-	      rc = (len == 0) ? 0 : memcmp(buff1, buff2, len);
+-	      
+-	      if (rc > 0 || (rc == 0 && quit && len1 > len2))
+-		{
+-		  unsigned char *tmp = rrset[i+1];
+-		  rrset[i+1] = rrset[i];
+-		  rrset[i] = tmp;
+-		  swap = quit = 1;
+-		}
+-	      else if (rc == 0 && quit && len1 == len2)
++	      ok1 = get_rdata(header, plen, &state1);
++	      ok2 = get_rdata(header, plen, &state2);
++
++	      if (!ok1 && !ok2)
+ 		{
+ 		  /* Two RRs are equal, remove one copy. RFC 4034, para 6.3 */
+ 		  for (j = i+1; j < rrsetidx-1; j++)
+ 		    rrset[j] = rrset[j+1];
+ 		  rrsetidx--;
+ 		  i--;
++		  break;
++		}
++	      else if (ok1 && (!ok2 || *state1.op > *state2.op)) 
++		{
++		  unsigned char *tmp = rrset[i+1];
++		  rrset[i+1] = rrset[i];
++		  rrset[i] = tmp;
++		  swap = 1;
++		  break;
+ 		}
+-	      else if (rc < 0)
+-		quit = 1;
++	      else if (ok2 && (!ok1 || *state2.op > *state1.op))
++		break;
++	      
++	      /* arrive here when bytes are equal, go round the loop again
++		 and compare the next ones. */
+ 	    }
+ 	}
+     } while (swap);
+@@ -549,15 +558,18 @@
+       wire_len = to_wire(keyname);
+       hash->update(ctx, (unsigned int)wire_len, (unsigned char*)keyname);
+       from_wire(keyname);
++
++#define RRBUFLEN 128 /* Most RRs are smaller than this. */
+       
+       for (i = 0; i < rrsetidx; ++i)
+ 	{
+-	  int seg;
+-	  unsigned char *end, *cp;
+-	  u16 len, *dp;
++	  int j;
++	  struct rdata_state state;
++	  u16 len;
++	  unsigned char rrbuf[RRBUFLEN];
+ 	  
+ 	  p = rrset[i];
+-	 	  
++	  
+ 	  if (!extract_name(header, plen, &p, name, 1, 10)) 
+ 	    return STAT_BOGUS;
+ 
+@@ -566,12 +578,11 @@
+ 	  /* if more labels than in RRsig name, hash *.<no labels in rrsig labels field>  4035 5.3.2 */
+ 	  if (labels < name_labels)
+ 	    {
+-	      int k;
+-	      for (k = name_labels - labels; k != 0; k--)
++	      for (j = name_labels - labels; j != 0; j--)
+ 		{
+ 		  while (*name_start != '.' && *name_start != 0)
+ 		    name_start++;
+-		  if (k != 1 && *name_start == '.')
++		  if (j != 1 && *name_start == '.')
+ 		    name_start++;
+ 		}
+ 	      
+@@ -586,30 +597,66 @@
+ 	  hash->update(ctx, (unsigned int)wire_len, (unsigned char *)name_start);
+ 	  hash->update(ctx, 4, p); /* class and type */
+ 	  hash->update(ctx, 4, (unsigned char *)&nsigttl);
+-	  
+-	  p += 8; /* skip class, type, ttl */
++
++	  p += 8; /* skip type, class, ttl */
+ 	  GETSHORT(rdlen, p);
+ 	  if (!CHECK_LEN(header, p, plen, rdlen))
+ 	    return STAT_BOGUS; 
+-	  
+-	  end = p + rdlen;
+-	  
+-	  /* canonicalise rdata and calculate length of same, use name buffer as workspace.
+-	     Note that name buffer is twice MAXDNAME long in DNSSEC mode. */
+-	  cp = p;
+-	  dp = rr_desc;
+-	  for (len = 0; (seg = get_rdata(header, plen, end, name, MAXDNAME * 2, &cp, &dp)) != 0; len += seg);
+-	  len += end - cp;
+-	  len = htons(len);
+-	  hash->update(ctx, 2, (unsigned char *)&len); 
+-	  
+-	  /* Now canonicalise again and digest. */
+-	  cp = p;
+-	  dp = rr_desc;
+-	  while ((seg = get_rdata(header, plen, end, name, MAXDNAME * 2, &cp, &dp)))
+-	    hash->update(ctx, seg, (unsigned char *)name);
+-	  if (cp != end)
+-	    hash->update(ctx, end - cp, cp);
++
++	  /* Optimisation for RR types which need no cannonicalisation.
++	     This includes DNSKEY DS NSEC and NSEC3, which are also long, so
++	     it saves lots of calls to get_rdata, and avoids the pessimal
++	     segmented insertion, even with a small rrbuf[].
++	     
++	     If canonicalisation is not needed, a simple insertion into the hash works.
++	  */
++	  if (*rr_desc == (u16)-1)
++	    {
++	      len = htons(rdlen);
++	      hash->update(ctx, 2, (unsigned char *)&len);
++	      hash->update(ctx, rdlen, p);
++	    }
++	  else
++	    {
++	      /* canonicalise rdata and calculate length of same, use 
++		 name buffer as workspace for get_rdata. */
++	      state.ip = p;
++	      state.op = NULL;
++	      state.desc = rr_desc;
++	      state.buff = name;
++	      state.end = p + rdlen;
++	      
++	      for (j = 0; get_rdata(header, plen, &state); j++)
++		if (j < RRBUFLEN)
++		  rrbuf[j] = *state.op;
++	      
++	      len = htons((u16)j);
++	      hash->update(ctx, 2, (unsigned char *)&len); 
++	      
++	      /* If the RR is shorter than RRBUFLEN (most of them, in practice)
++		 then we can just digest it now. If it exceeds RRBUFLEN we have to
++		 go back to the start and do it in chunks. */
++	      if (j >= RRBUFLEN)
++		{
++		  state.ip = p;
++		  state.op = NULL;
++		  state.desc = rr_desc;
++		  
++		  for (j = 0; get_rdata(header, plen, &state); j++)
++		    {
++		      rrbuf[j] = *state.op;
++		      
++		      if (j == RRBUFLEN - 1)
++			{
++			  hash->update(ctx, RRBUFLEN, rrbuf);
++			  j = -1;
++			}
++		    }
++		}
++	      
++	      if (j != 0)
++		hash->update(ctx, j, rrbuf);
++	    }
+ 	}
+      
+       hash->digest(ctx, hash->digest_size, digest);
+@@ -2059,35 +2106,4 @@
+   return ret;
+ }
+ 
+-unsigned char* hash_questions(struct dns_header *header, size_t plen, char *name)
+-{
+-  int q;
+-  unsigned int len;
+-  unsigned char *p = (unsigned char *)(header+1);
+-  const struct nettle_hash *hash;
+-  void *ctx;
+-  unsigned char *digest;
+-  
+-  if (!(hash = hash_find("sha1")) || !hash_init(hash, &ctx, &digest))
+-    return NULL;
+-  
+-  for (q = ntohs(header->qdcount); q != 0; q--) 
+-    {
+-      if (!extract_name(header, plen, &p, name, 1, 4))
+-	break; /* bad packet */
+-      
+-      len = to_wire(name);
+-      hash->update(ctx, len, (unsigned char *)name);
+-      /* CRC the class and type as well */
+-      hash->update(ctx, 4, p);
+-
+-      p += 4;
+-      if (!CHECK_LEN(header, p, plen, 0))
+-	break; /* bad packet */
+-    }
+-  
+-  hash->digest(ctx, hash->digest_size, digest);
+-  return digest;
+-}
+-
+ #endif /* HAVE_DNSSEC */
+diff -ruN ../../dnsmasq-2.80/dnsmasq-2.80/src/forward.c src/forward.c
+--- ../../dnsmasq-2.80/dnsmasq-2.80/src/forward.c	2020-06-24 16:20:25.062364964 +0100
++++ src/forward.c	2021-01-25 21:42:54.448474898 +0000
+@@ -16,10 +16,12 @@
+ 
+ #include "dnsmasq.h"
+ 
+-static struct frec *lookup_frec(unsigned short id, void *hash);
++static struct frec *lookup_frec(unsigned short id, int fd, int family, void *hash);
+ static struct frec *lookup_frec_by_sender(unsigned short id,
+ 					  union mysockaddr *addr,
+ 					  void *hash);
++static struct frec *lookup_frec_by_query(void *hash, unsigned int flags);
++
+ static unsigned short get_id(void);
+ static void free_frec(struct frec *f);
+ 
+@@ -259,20 +261,29 @@
+   int type = SERV_DO_DNSSEC, norebind = 0;
+   struct all_addr *addrp = NULL;
+   unsigned int flags = 0;
++  unsigned int fwd_flags = 0;
+   struct server *start = NULL;
+-#ifdef HAVE_DNSSEC
+   void *hash = hash_questions(header, plen, daemon->namebuff);
++#ifdef HAVE_DNSSEC
+   int do_dnssec = 0;
+-#else
+-  unsigned int crc = questions_crc(header, plen, daemon->namebuff);
+-  void *hash = &crc;
+ #endif
+   unsigned int gotname = extract_request(header, plen, daemon->namebuff, NULL);
+   unsigned char *oph = find_pseudoheader(header, plen, NULL, NULL, NULL, NULL);
+   (void)do_bit;
+-
++  
++  if (header->hb4 & HB4_CD)
++    fwd_flags |= FREC_CHECKING_DISABLED;
++  if (ad_reqd)
++    fwd_flags |= FREC_AD_QUESTION;
++  if (oph)
++    fwd_flags |= FREC_HAS_PHEADER;
++#ifdef HAVE_DNSSEC
++  if (do_bit)
++    fwd_flags |= FREC_DO_QUESTION;
++#endif
++  
+   /* may be no servers available. */
+-  if (forward || (hash && (forward = lookup_frec_by_sender(ntohs(header->id), udpaddr, hash))))
++  if (forward || (forward = lookup_frec_by_sender(ntohs(header->id), udpaddr, hash)))
+     {
+       /* If we didn't get an answer advertising a maximal packet in EDNS,
+ 	 fall back to 1280, which should work everywhere on IPv6.
+@@ -346,6 +357,40 @@
+     }
+   else 
+     {
++      /* Query from new source, but the same query may be in progress
++	 from another source. If so, just add this client to the
++	 list that will get the reply.
++	 
++	 Note that is the EDNS client subnet option is in use, we can't do this,
++	 as the clients (and therefore query EDNS options) will be different
++	 for each query. The EDNS subnet code has checks to avoid
++	 attacks in this case. */
++      if (!option_bool(OPT_CLIENT_SUBNET) && (forward = lookup_frec_by_query(hash, fwd_flags)))
++	{
++	  /* Note whine_malloc() zeros memory. */
++	  if (!daemon->free_frec_src &&
++	      daemon->frec_src_count < daemon->ftabsize &&
++	      (daemon->free_frec_src = whine_malloc(sizeof(struct frec_src))))
++	    daemon->frec_src_count++;
++	  
++	  /* If we've been spammed with many duplicates, just drop the query. */
++	  if (daemon->free_frec_src)
++	    {
++	      struct frec_src *new = daemon->free_frec_src;
++	      daemon->free_frec_src = new->next;
++	      new->next = forward->frec_src.next;
++	      forward->frec_src.next = new;
++	      new->orig_id = ntohs(header->id);
++	      new->source = *udpaddr;
++	      new->dest = *dst_addr;
++	      new->log_id = daemon->log_id;
++	      new->iface = dst_iface;
++	      new->fd = udpfd;
++	    }
++	  
++	  return 1;
++	}
++	
+       if (gotname)
+ 	flags = search_servers(now, &addrp, gotname, daemon->namebuff, &type, &domain, &norebind);
+       
+@@ -360,15 +405,15 @@
+       
+       if (forward)
+ 	{
+-	  forward->source = *udpaddr;
+-	  forward->dest = *dst_addr;
+-	  forward->iface = dst_iface;
+-	  forward->orig_id = ntohs(header->id);
++	  forward->frec_src.source = *udpaddr;
++	  forward->frec_src.dest = *dst_addr;
++	  forward->frec_src.iface = dst_iface;
++	  forward->frec_src.orig_id = ntohs(header->id);
++	  forward->frec_src.fd = udpfd;
+ 	  forward->new_id = get_id();
+-	  forward->fd = udpfd;
+ 	  memcpy(forward->hash, hash, HASH_SIZE);
+ 	  forward->forwardall = 0;
+-	  forward->flags = 0;
++	  forward->flags = fwd_flags;
+ 	  if (norebind)
+ 	    forward->flags |= FREC_NOREBIND;
+ 	  if (header->hb4 & HB4_CD)
+@@ -423,9 +468,9 @@
+       unsigned char *pheader;
+       
+       /* If a query is retried, use the log_id for the retry when logging the answer. */
+-      forward->log_id = daemon->log_id;
++      forward->frec_src.log_id = daemon->log_id;
+       
+-      plen = add_edns0_config(header, plen, ((unsigned char *)header) + PACKETSZ, &forward->source, now, &subnet);
++      plen = add_edns0_config(header, plen, ((unsigned char *)header) + PACKETSZ, &forward->frec_src.source, now, &subnet);
+       
+       if (subnet)
+ 	forward->flags |= FREC_HAS_SUBNET;
+@@ -499,7 +544,7 @@
+ 		  if (option_bool(OPT_CONNTRACK))
+ 		    {
+ 		      unsigned int mark;
+-		      if (get_incoming_mark(&forward->source, &forward->dest, 0, &mark))
++		      if (get_incoming_mark(&forward->frec_src.source, &forward->frec_src.dest, 0, &mark))
+ 			setsockopt(fd, SOL_SOCKET, SO_MARK, &mark, sizeof(unsigned int));
+ 		    }
+ #endif
+@@ -566,7 +611,7 @@
+ 	return 1;
+       
+       /* could not send on, prepare to return */ 
+-      header->id = htons(forward->orig_id);
++      header->id = htons(forward->frec_src.orig_id);
+       free_frec(forward); /* cancel */
+     }	  
+   
+@@ -780,9 +825,6 @@
+   size_t nn;
+   struct server *server;
+   void *hash;
+-#ifndef HAVE_DNSSEC
+-  unsigned int crc;
+-#endif
+ 
+   /* packet buffer overwritten */
+   daemon->srv_save = NULL;
+@@ -812,14 +854,9 @@
+   if (difftime(now, server->pktsz_reduced) > UDP_TEST_TIME)
+     server->edns_pktsz = daemon->edns_pktsz;
+ 
+-#ifdef HAVE_DNSSEC
+   hash = hash_questions(header, n, daemon->namebuff);
+-#else
+-  hash = &crc;
+-  crc = questions_crc(header, n, daemon->namebuff);
+-#endif
+   
+-  if (!(forward = lookup_frec(ntohs(header->id), hash)))
++  if (!(forward = lookup_frec(ntohs(header->id), fd, family, hash)))
+     return;
+   
+ #ifdef HAVE_DUMPFILE
+@@ -829,8 +866,8 @@
+ 
+   /* log_query gets called indirectly all over the place, so 
+      pass these in global variables - sorry. */
+-  daemon->log_display_id = forward->log_id;
+-  daemon->log_source_addr = &forward->source;
++  daemon->log_display_id = forward->frec_src.log_id;
++  daemon->log_source_addr = &forward->frec_src.source;
+   
+   if (daemon->ignore_addr && RCODE(header) == NOERROR &&
+       check_for_ignored_address(header, n, daemon->ignore_addr))
+@@ -848,7 +885,6 @@
+       int is_sign;
+ 
+ #ifdef HAVE_DNSSEC
+-      /* For DNSSEC originated queries, just retry the query to the same server. */
+       if (forward->flags & (FREC_DNSKEY_QUERY | FREC_DS_QUERY))
+ 	{
+ 	  struct server *start;
+@@ -874,6 +910,8 @@
+ 	      }
+ 	    
+ 	  
++	  fd = -1;
++
+ 	  if (start->sfd)
+ 	    fd = start->sfd->fd;
+ 	  else
+@@ -882,17 +920,15 @@
+ 	      if (start->addr.sa.sa_family == AF_INET6)
+ 		{
+ 		  /* may have changed family */
+-		  if (!forward->rfd6)
+-		    forward->rfd6 = allocate_rfd(AF_INET6);
+-		  fd = forward->rfd6->fd;
++		   if (forward->rfd6 || (forward->rfd6 = allocate_rfd(AF_INET6)))
++		     fd = forward->rfd6->fd;
+ 		}
+ 	      else
+ #endif
+ 		{
+ 		  /* may have changed family */
+-		  if (!forward->rfd4)
+-		    forward->rfd4 = allocate_rfd(AF_INET);
+-		  fd = forward->rfd4->fd;
++		  if (forward->rfd4 || (forward->rfd4 = allocate_rfd(AF_INET)))
++		    fd = forward->rfd4->fd;
+ 		}
+ 	    }
+ 	
+@@ -1102,6 +1138,7 @@
+ #ifdef HAVE_IPV6
+ 		      new->rfd6 = NULL;
+ #endif
++		      new->frec_src.next = NULL;
+ 		      new->flags &= ~(FREC_DNSKEY_QUERY | FREC_DS_QUERY | FREC_HAS_EXTRADATA);
+ 		      new->forwardall = 0;
+ 		      
+@@ -1131,8 +1168,7 @@
+ 				  querystr("dnssec-query", querytype));
+ #endif
+   
+-		      if ((hash = hash_questions(header, nn, daemon->namebuff)))
+-			memcpy(new->hash, hash, HASH_SIZE);
++		      memcpy(new->hash, hash_questions(header, nn, daemon->namebuff), HASH_SIZE);
+ 		      new->new_id = get_id();
+ 		      header->id = htons(new->new_id);
+ 		      /* Save query for retransmission */
+@@ -1168,11 +1204,15 @@
+ 			  if (option_bool(OPT_CONNTRACK))
+ 			    {
+ 			      unsigned int mark;
+-			      if (get_incoming_mark(&orig->source, &orig->dest, 0, &mark))
++			      if (get_incoming_mark(&orig->frec_src.source, &orig->frec_src.dest, 0, &mark))
+ 				setsockopt(fd, SOL_SOCKET, SO_MARK, &mark, sizeof(unsigned int));
+ 			    }
+ #endif
+ 			  
++			  /* Can't get socket. */
++			  if (fd == -1)
++			    return;
++			  
+ #ifdef HAVE_DUMPFILE
+ 			  dump_packet(DUMP_SEC_QUERY, (void *)header, (size_t)nn, NULL, &server->addr);
+ #endif
+@@ -1241,9 +1281,11 @@
+       
+       if ((nn = process_reply(header, now, forward->sentto, (size_t)n, check_rebind, no_cache_dnssec, cache_secure, bogusanswer, 
+ 			      forward->flags & FREC_AD_QUESTION, forward->flags & FREC_DO_QUESTION, 
+-			      forward->flags & FREC_ADDED_PHEADER, forward->flags & FREC_HAS_SUBNET, &forward->source)))
++			      forward->flags & FREC_ADDED_PHEADER, forward->flags & FREC_HAS_SUBNET, &forward->frec_src.source)))
+ 	{
+-	  header->id = htons(forward->orig_id);
++	  struct frec_src *src;
++
++	  header->id = htons(forward->frec_src.orig_id);
+ 	  header->hb4 |= HB4_RA; /* recursion if available */
+ #ifdef HAVE_DNSSEC
+ 	  /* We added an EDNSO header for the purpose of getting DNSSEC RRs, and set the value of the UDP payload size
+@@ -1259,13 +1301,26 @@
+ 	    }
+ #endif
+ 
++	  for (src = &forward->frec_src; src; src = src->next)
++	    {
++	      header->id = htons(src->orig_id);
++	      
+ #ifdef HAVE_DUMPFILE
+-	  dump_packet(DUMP_REPLY, daemon->packet, (size_t)nn, NULL, &forward->source);
++	      dump_packet(DUMP_REPLY, daemon->packet, (size_t)nn, NULL, &src->source);
+ #endif
+-	  
+-	  send_from(forward->fd, option_bool(OPT_NOWILD) || option_bool (OPT_CLEVERBIND), daemon->packet, nn, 
+-		    &forward->source, &forward->dest, forward->iface);
++	      
++	      send_from(src->fd, option_bool(OPT_NOWILD) || option_bool (OPT_CLEVERBIND), daemon->packet, nn, 
++			&src->source, &src->dest, src->iface);
++
++	      if (option_bool(OPT_EXTRALOG) && src != &forward->frec_src)
++		{
++		  daemon->log_display_id = src->log_id;
++		  daemon->log_source_addr = &src->source;
++		  log_query(F_UPSTREAM, "query", NULL, "duplicate");
++		}
++	    }
+ 	}
++
+       free_frec(forward); /* cancel */
+     }
+ }
+@@ -1989,15 +2044,9 @@
+ 	      if (!flags && last_server)
+ 		{
+ 		  struct server *firstsendto = NULL;
+-#ifdef HAVE_DNSSEC
+-		  unsigned char *newhash, hash[HASH_SIZE];
+-		  if ((newhash = hash_questions(header, (unsigned int)size, daemon->namebuff)))
+-		    memcpy(hash, newhash, HASH_SIZE);
+-		  else
+-		    memset(hash, 0, HASH_SIZE);
+-#else
+-		  unsigned int crc = questions_crc(header, (unsigned int)size, daemon->namebuff);
+-#endif		  
++		  unsigned char hash[HASH_SIZE];
++		  memcpy(hash, hash_questions(header, (unsigned int)size, daemon->namebuff), HASH_SIZE);
++
+ 		  /* Loop round available servers until we succeed in connecting to one.
+ 		     Note that this code subtly ensures that consecutive queries on this connection
+ 		     which can go to the same server, do so. */
+@@ -2122,20 +2171,11 @@
+ 		      /* If the crc of the question section doesn't match the crc we sent, then
+ 			 someone might be attempting to insert bogus values into the cache by 
+ 			 sending replies containing questions and bogus answers. */
+-#ifdef HAVE_DNSSEC
+-		      newhash = hash_questions(header, (unsigned int)m, daemon->namebuff);
+-		      if (!newhash || memcmp(hash, newhash, HASH_SIZE) != 0)
++		      if (memcmp(hash, hash_questions(header, (unsigned int)m, daemon->namebuff), HASH_SIZE) != 0)
+ 			{ 
+ 			  m = 0;
+ 			  break;
+ 			}
+-#else			  
+-		      if (crc != questions_crc(header, (unsigned int)m, daemon->namebuff))
+-			{
+-			  m = 0;
+-			  break;
+-			}
+-#endif
+ 
+ 		      m = process_reply(header, now, last_server, (unsigned int)m, 
+ 					option_bool(OPT_NO_REBIND) && !norebind, no_cache_dnssec, cache_secure, bogusanswer,
+@@ -2233,6 +2273,17 @@
+ 
+ static void free_frec(struct frec *f)
+ {
++  struct frec_src *src, *tmp;
++
++   /* add back to freelist of not the record builtin to every frec. */
++  for (src = f->frec_src.next; src; src = tmp)
++    {
++      tmp = src->next;
++      src->next = daemon->free_frec_src;
++      daemon->free_frec_src = src;
++    }
++  
++  f->frec_src.next = NULL;    
+   free_rfd(f->rfd4);
+   f->rfd4 = NULL;
+   f->sentto = NULL;
+@@ -2347,15 +2398,25 @@
+   return f; /* OK if malloc fails and this is NULL */
+ }
+ 
+-/* crc is all-ones if not known. */
+-static struct frec *lookup_frec(unsigned short id, void *hash)
++static struct frec *lookup_frec(unsigned short id, int fd, int family, void *hash)
+ {
+   struct frec *f;
+ 
+   for(f = daemon->frec_list; f; f = f->next)
+     if (f->sentto && f->new_id == id && 
+-	(!hash || memcmp(hash, f->hash, HASH_SIZE) == 0))
+-      return f;
++	(memcmp(hash, f->hash, HASH_SIZE) == 0))
++      {
++	/* sent from random port */
++	if (family == AF_INET && f->rfd4 && f->rfd4->fd == fd)
++	  return f;
++
++	if (family == AF_INET6 && f->rfd6 && f->rfd6->fd == fd)
++	  return f;
++
++	/* sent to upstream from bound socket. */
++	if (f->sentto->sfd && f->sentto->sfd->fd == fd)
++	  return f;
++      }
+       
+   return NULL;
+ }
+@@ -2365,17 +2426,39 @@
+ 					  void *hash)
+ {
+   struct frec *f;
++  struct frec_src *src;
++
++  for (f = daemon->frec_list; f; f = f->next)
++    if (f->sentto &&
++	!(f->flags & (FREC_DNSKEY_QUERY | FREC_DS_QUERY)) &&
++	memcmp(hash, f->hash, HASH_SIZE) == 0)
++      for (src = &f->frec_src; src; src = src->next)
++	if (src->orig_id == id && 
++	    sockaddr_isequal(&src->source, addr))
++	  return f;
++  
++  return NULL;
++}
++
++static struct frec *lookup_frec_by_query(void *hash, unsigned int flags)
++{
++  struct frec *f;
++
++  /* FREC_DNSKEY and FREC_DS_QUERY are never set in flags, so the test below 
++     ensures that no frec created for internal DNSSEC query can be returned here. */
++
++#define FLAGMASK (FREC_CHECKING_DISABLED | FREC_AD_QUESTION | FREC_DO_QUESTION \
++		  | FREC_HAS_PHEADER | FREC_DNSKEY_QUERY | FREC_DS_QUERY)
+   
+   for(f = daemon->frec_list; f; f = f->next)
+     if (f->sentto &&
+-	f->orig_id == id && 
+-	memcmp(hash, f->hash, HASH_SIZE) == 0 &&
+-	sockaddr_isequal(&f->source, addr))
++	(f->flags & FLAGMASK) == flags &&
++	memcmp(hash, f->hash, HASH_SIZE) == 0)
+       return f;
+-   
++  
+   return NULL;
+ }
+- 
++
+ /* Send query packet again, if we can. */
+ void resend_query()
+ {
+@@ -2416,12 +2499,20 @@
+ static unsigned short get_id(void)
+ {
+   unsigned short ret = 0;
++  struct frec *f;
+   
+-  do 
+-    ret = rand16();
+-  while (lookup_frec(ret, NULL));
+-  
+-  return ret;
++  while (1)
++    {
++      ret = rand16();
++
++      /* ensure id is unique. */
++      for (f = daemon->frec_list; f; f = f->next)
++	if (f->sentto && f->new_id == ret)
++	  break;
++
++      if (!f)
++	return ret;
++    }
+ }
+ 
+ 
+diff -ruN ../../dnsmasq-2.80/dnsmasq-2.80/src/hash_questions.c src/hash_questions.c
+--- ../../dnsmasq-2.80/dnsmasq-2.80/src/hash_questions.c	1970-01-01 01:00:00.000000000 +0100
++++ src/hash_questions.c	2021-01-17 22:45:14.568900865 +0000
+@@ -0,0 +1,281 @@
++/* Copyright (c) 2012-2020 Simon Kelley
++
++   This program is free software; you can redistribute it and/or modify
++   it under the terms of the GNU General Public License as published by
++   the Free Software Foundation; version 2 dated June, 1991, or
++   (at your option) version 3 dated 29 June, 2007.
++
++   This program is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++   GNU General Public License for more details.
++
++   You should have received a copy of the GNU General Public License
++   along with this program.  If not, see <http://www.gnu.org/licenses/>.
++*/
++
++
++/* Hash the question section. This is used to safely detect query 
++   retransmission and to detect answers to questions we didn't ask, which 
++   might be poisoning attacks. Note that we decode the name rather 
++   than CRC the raw bytes, since replies might be compressed differently. 
++   We ignore case in the names for the same reason. 
++
++   The hash used is SHA-256. If we're building with DNSSEC support,
++   we use the Nettle cypto library. If not, we prefer not to
++   add a dependency on Nettle, and use a stand-alone implementaion. 
++*/
++
++#include "dnsmasq.h"
++
++#ifdef HAVE_DNSSEC
++unsigned char *hash_questions(struct dns_header *header, size_t plen, char *name)
++{
++  int q;
++  unsigned char *p = (unsigned char *)(header+1);
++  const struct nettle_hash *hash;
++  void *ctx;
++  unsigned char *digest;
++  
++  if (!(hash = hash_find("sha256")) || !hash_init(hash, &ctx, &digest))
++    {
++      /* don't think this can ever happen. */
++      static unsigned char dummy[HASH_SIZE];
++      static int warned = 0;
++
++      if (!warned)
++	my_syslog(LOG_ERR, _("Failed to create SHA-256 hash object"));
++      warned = 1;
++     
++      return dummy;
++    }
++  
++  for (q = ntohs(header->qdcount); q != 0; q--) 
++    {
++      char *cp, c;
++
++      if (!extract_name(header, plen, &p, name, 1, 4))
++	break; /* bad packet */
++
++      for (cp = name; (c = *cp); cp++)
++	 if (c >= 'A' && c <= 'Z')
++	   *cp += 'a' - 'A';
++
++      hash->update(ctx, cp - name, (unsigned char *)name);
++      /* CRC the class and type as well */
++      hash->update(ctx, 4, p);
++
++      p += 4;
++      if (!CHECK_LEN(header, p, plen, 0))
++	break; /* bad packet */
++    }
++  
++  hash->digest(ctx, hash->digest_size, digest);
++  return digest;
++}
++
++#else /* HAVE_DNSSEC */
++
++#define SHA256_BLOCK_SIZE 32            // SHA256 outputs a 32 byte digest
++typedef unsigned char BYTE;             // 8-bit byte
++typedef unsigned int  WORD;             // 32-bit word, change to "long" for 16-bit machines
++
++typedef struct {
++  BYTE data[64];
++  WORD datalen;
++  unsigned long long bitlen;
++  WORD state[8];
++} SHA256_CTX;
++
++static void sha256_init(SHA256_CTX *ctx);
++static void sha256_update(SHA256_CTX *ctx, const BYTE data[], size_t len);
++static void sha256_final(SHA256_CTX *ctx, BYTE hash[]);
++
++
++unsigned char *hash_questions(struct dns_header *header, size_t plen, char *name)
++{
++  int q;
++  unsigned char *p = (unsigned char *)(header+1);
++  SHA256_CTX ctx;
++  static BYTE digest[SHA256_BLOCK_SIZE];
++  
++  sha256_init(&ctx);
++    
++  for (q = ntohs(header->qdcount); q != 0; q--) 
++    {
++      char *cp, c;
++
++      if (!extract_name(header, plen, &p, name, 1, 4))
++	break; /* bad packet */
++
++      for (cp = name; (c = *cp); cp++)
++	 if (c >= 'A' && c <= 'Z')
++	   *cp += 'a' - 'A';
++
++      sha256_update(&ctx, (BYTE *)name, cp - name);
++      /* CRC the class and type as well */
++      sha256_update(&ctx, (BYTE *)p, 4);
++
++      p += 4;
++      if (!CHECK_LEN(header, p, plen, 0))
++	break; /* bad packet */
++    }
++  
++  sha256_final(&ctx, digest);
++  return (unsigned char *)digest;
++}
++
++/* Code from here onwards comes from https://github.com/B-Con/crypto-algorithms
++   and was written by Brad Conte (brad@bradconte.com), to whom all credit is given.
++
++   This code is in the public domain, and the copyright notice at the head of this 
++   file does not apply to it.
++*/
++
++
++/****************************** MACROS ******************************/
++#define ROTLEFT(a,b) (((a) << (b)) | ((a) >> (32-(b))))
++#define ROTRIGHT(a,b) (((a) >> (b)) | ((a) << (32-(b))))
++
++#define CH(x,y,z) (((x) & (y)) ^ (~(x) & (z)))
++#define MAJ(x,y,z) (((x) & (y)) ^ ((x) & (z)) ^ ((y) & (z)))
++#define EP0(x) (ROTRIGHT(x,2) ^ ROTRIGHT(x,13) ^ ROTRIGHT(x,22))
++#define EP1(x) (ROTRIGHT(x,6) ^ ROTRIGHT(x,11) ^ ROTRIGHT(x,25))
++#define SIG0(x) (ROTRIGHT(x,7) ^ ROTRIGHT(x,18) ^ ((x) >> 3))
++#define SIG1(x) (ROTRIGHT(x,17) ^ ROTRIGHT(x,19) ^ ((x) >> 10))
++
++/**************************** VARIABLES *****************************/
++static const WORD k[64] = {
++			   0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
++			   0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
++			   0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
++			   0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
++			   0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
++			   0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
++			   0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
++			   0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2
++};
++
++/*********************** FUNCTION DEFINITIONS ***********************/
++static void sha256_transform(SHA256_CTX *ctx, const BYTE data[])
++{
++  WORD a, b, c, d, e, f, g, h, i, j, t1, t2, m[64];
++  
++  for (i = 0, j = 0; i < 16; ++i, j += 4)
++    m[i] = (data[j] << 24) | (data[j + 1] << 16) | (data[j + 2] << 8) | (data[j + 3]);
++  for ( ; i < 64; ++i)
++    m[i] = SIG1(m[i - 2]) + m[i - 7] + SIG0(m[i - 15]) + m[i - 16];
++
++  a = ctx->state[0];
++  b = ctx->state[1];
++  c = ctx->state[2];
++  d = ctx->state[3];
++  e = ctx->state[4];
++  f = ctx->state[5];
++  g = ctx->state[6];
++  h = ctx->state[7];
++
++  for (i = 0; i < 64; ++i)
++    {
++      t1 = h + EP1(e) + CH(e,f,g) + k[i] + m[i];
++      t2 = EP0(a) + MAJ(a,b,c);
++      h = g;
++      g = f;
++      f = e;
++      e = d + t1;
++      d = c;
++      c = b;
++      b = a;
++      a = t1 + t2;
++    }
++  
++  ctx->state[0] += a;
++  ctx->state[1] += b;
++  ctx->state[2] += c;
++  ctx->state[3] += d;
++  ctx->state[4] += e;
++  ctx->state[5] += f;
++  ctx->state[6] += g;
++  ctx->state[7] += h;
++}
++
++static void sha256_init(SHA256_CTX *ctx)
++{
++  ctx->datalen = 0;
++  ctx->bitlen = 0;
++  ctx->state[0] = 0x6a09e667;
++  ctx->state[1] = 0xbb67ae85;
++  ctx->state[2] = 0x3c6ef372;
++  ctx->state[3] = 0xa54ff53a;
++  ctx->state[4] = 0x510e527f;
++  ctx->state[5] = 0x9b05688c;
++  ctx->state[6] = 0x1f83d9ab;
++  ctx->state[7] = 0x5be0cd19;
++}
++
++static void sha256_update(SHA256_CTX *ctx, const BYTE data[], size_t len)
++{
++  WORD i;
++  
++  for (i = 0; i < len; ++i)
++    {
++      ctx->data[ctx->datalen] = data[i];
++      ctx->datalen++;
++      if (ctx->datalen == 64) {
++	sha256_transform(ctx, ctx->data);
++	ctx->bitlen += 512;
++	ctx->datalen = 0;
++      }
++    }
++}
++
++static void sha256_final(SHA256_CTX *ctx, BYTE hash[])
++{
++  WORD i;
++  
++  i = ctx->datalen;
++
++  // Pad whatever data is left in the buffer.
++  if (ctx->datalen < 56)
++    {
++      ctx->data[i++] = 0x80;
++      while (i < 56)
++	ctx->data[i++] = 0x00;
++    }
++  else
++    {
++      ctx->data[i++] = 0x80;
++      while (i < 64)
++	ctx->data[i++] = 0x00;
++      sha256_transform(ctx, ctx->data);
++      memset(ctx->data, 0, 56);
++    }
++  
++  // Append to the padding the total message's length in bits and transform.
++  ctx->bitlen += ctx->datalen * 8;
++  ctx->data[63] = ctx->bitlen;
++  ctx->data[62] = ctx->bitlen >> 8;
++  ctx->data[61] = ctx->bitlen >> 16;
++  ctx->data[60] = ctx->bitlen >> 24;
++  ctx->data[59] = ctx->bitlen >> 32;
++  ctx->data[58] = ctx->bitlen >> 40;
++  ctx->data[57] = ctx->bitlen >> 48;
++  ctx->data[56] = ctx->bitlen >> 56;
++  sha256_transform(ctx, ctx->data);
++  
++  // Since this implementation uses little endian byte ordering and SHA uses big endian,
++  // reverse all the bytes when copying the final state to the output hash.
++  for (i = 0; i < 4; ++i)
++    {
++      hash[i]      = (ctx->state[0] >> (24 - i * 8)) & 0x000000ff;
++      hash[i + 4]  = (ctx->state[1] >> (24 - i * 8)) & 0x000000ff;
++      hash[i + 8]  = (ctx->state[2] >> (24 - i * 8)) & 0x000000ff;
++      hash[i + 12] = (ctx->state[3] >> (24 - i * 8)) & 0x000000ff;
++      hash[i + 16] = (ctx->state[4] >> (24 - i * 8)) & 0x000000ff;
++      hash[i + 20] = (ctx->state[5] >> (24 - i * 8)) & 0x000000ff;
++      hash[i + 24] = (ctx->state[6] >> (24 - i * 8)) & 0x000000ff;
++      hash[i + 28] = (ctx->state[7] >> (24 - i * 8)) & 0x000000ff;
++    }
++}
++
++#endif
+diff -ruN ../../dnsmasq-2.80/dnsmasq-2.80/src/rfc1035.c src/rfc1035.c
+--- ../../dnsmasq-2.80/dnsmasq-2.80/src/rfc1035.c	2020-06-24 16:20:25.742353178 +0100
++++ src/rfc1035.c	2021-01-17 21:43:49.058347291 +0000
+@@ -335,55 +335,6 @@
+   return ansp;
+ }
+ 
+-/* CRC the question section. This is used to safely detect query 
+-   retransmission and to detect answers to questions we didn't ask, which 
+-   might be poisoning attacks. Note that we decode the name rather 
+-   than CRC the raw bytes, since replies might be compressed differently. 
+-   We ignore case in the names for the same reason. Return all-ones
+-   if there is not question section. */
+-#ifndef HAVE_DNSSEC
+-unsigned int questions_crc(struct dns_header *header, size_t plen, char *name)
+-{
+-  int q;
+-  unsigned int crc = 0xffffffff;
+-  unsigned char *p1, *p = (unsigned char *)(header+1);
+-
+-  for (q = ntohs(header->qdcount); q != 0; q--) 
+-    {
+-      if (!extract_name(header, plen, &p, name, 1, 4))
+-	return crc; /* bad packet */
+-      
+-      for (p1 = (unsigned char *)name; *p1; p1++)
+-	{
+-	  int i = 8;
+-	  char c = *p1;
+-
+-	  if (c >= 'A' && c <= 'Z')
+-	    c += 'a' - 'A';
+-
+-	  crc ^= c << 24;
+-	  while (i--)
+-	    crc = crc & 0x80000000 ? (crc << 1) ^ 0x04c11db7 : crc << 1;
+-	}
+-      
+-      /* CRC the class and type as well */
+-      for (p1 = p; p1 < p+4; p1++)
+-	{
+-	  int i = 8;
+-	  crc ^= *p1 << 24;
+-	  while (i--)
+-	    crc = crc & 0x80000000 ? (crc << 1) ^ 0x04c11db7 : crc << 1;
+-	}
+-
+-      p += 4;
+-      if (!CHECK_LEN(header, p, plen, 0))
+-	return crc; /* bad packet */
+-    }
+-
+-  return crc;
+-}
+-#endif
+-
+ size_t resize_packet(struct dns_header *header, size_t plen, unsigned char *pheader, size_t hlen)
+ {
+   unsigned char *ansp = skip_questions(header, plen);
+@@ -1743,8 +1694,10 @@
+ 			anscount++;
+ 		    }
+ 		}
++	      else
++		return 0; /* give up if any cached CNAME in chain can't be used for DNSSEC reasons. */
+ 	    }
+-
++	  
+ 	  if (qtype == T_CNAME || qtype == T_ANY)
+ 	    {
+ 	      if ((crecp = cache_find_by_name(NULL, name, now, F_CNAME | (dryrun ? F_NO_RR : 0))) &&
