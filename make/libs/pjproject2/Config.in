@@ -84,7 +84,7 @@ config FREETZ_LIB_libpjsip_ua
 config FREETZ_LIB_libpjsua
 	bool "libpjsua (libpjsua.so)"
 	select FREETZ_PJPROJECT2
-	select FREETZ_LIB_libm
+	select FREETZ_LIB_libm        if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libpjlib_util
 	select FREETZ_LIB_libpjmedia_audiodev
 	select FREETZ_LIB_libpjmedia_codec
