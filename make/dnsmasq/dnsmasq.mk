@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 2.83)
+$(call PKG_INIT_BIN, 2.84rc2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=ffc1f7e8b05e22d910b9a71d09f1128197292766dc7c54cb7018a1b2c3af4aea
-$(PKG)_SITE:=http://thekelleys.org.uk/dnsmasq
+$(PKG)_SOURCE_SHA256:=e76ff2e75da4ce5191c89e7393de218c75732a5feb454ed43b320eb17dd66581
+$(PKG)_SITE:=http://thekelleys.org.uk/dnsmasq/release-candidates
 #$(PKG)_SITE:=git://thekelleys.org.uk/dnsmasq.git
 
 $(PKG)_STARTLEVEL=40 # multid-wrapper may start it earlier!
