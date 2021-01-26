@@ -386,6 +386,7 @@ config FREETZ_BUSYBOX___V127_PIE
 	  Most people will leave this set to 'N'.
 
 config FREETZ_BUSYBOX___V127_NOMMU
+	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	bool "Force NOMMU build"
 	default n
 	help
