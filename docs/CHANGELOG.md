@@ -52,6 +52,7 @@ Latest changes
     * lighttpd 1.4.58
     * shellinabox 2.21
     * smartmontools 7.2
+    * socat 1.7.4.1
     * Wget 1.21.1
 
 - BusyBox:

@@ -1,4 +1,4 @@
-# socat 1.7.3.3 (binary only)
+# socat 1.7.4.1 (binary only)
 
 **[socat](http://www.dest-unreach.org/socat/)** ist
 eine Alternative zum [netcat Paket](netcat.md), welches mit

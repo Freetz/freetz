@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.7.3.3)
+$(call PKG_INIT_BIN, 1.7.4.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=b2a032a47b8b89a18485697fa975154f
+$(PKG)_SOURCE_MD5:=36cad050ecf4981ab044c3fbd75c643f
 $(PKG)_SITE:=http://www.dest-unreach.org/socat/download
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/socat
