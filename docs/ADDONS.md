@@ -12,8 +12,9 @@ mehr richtig funktioniert. Ein Blick in die Foren zeigt:
  - Es werden fehlerhafte Binaries gestartet die Crashes verursachen
  - Manche Einstellungen werden doppelt gespeichert
  - Andere Einstellungen dagegen werden gar nicht mehr gespeichert
- - Es ist nicht mehr möglich ein Einstellungsbackup widerherzustellen
+ - Es ist nicht mehr möglich ein Einstellungsbackup wiederherzustellen
  - Benutzer werden gelöscht
+ - Planloses setzen von Systemvariablen verursachen Segfaults von AVM Binaries
  - ...
 
 Falls aus versehen ein Image mit Addon geflasht wurds, empfiehlt sich ein Recovery um alle Einstellungen zu<br>
