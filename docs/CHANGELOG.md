@@ -42,6 +42,7 @@ Latest changes
 
 - Updated packages and libs:
     * cifs-utils 6.12
+    * rsync 3.2.3
 
 ### ng21010
 

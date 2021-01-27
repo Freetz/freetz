@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 3.1.2)
+$(call PKG_INIT_BIN, 3.2.3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=0f758d7e000c0f7f7d3792610fad70cb
+$(PKG)_SOURCE_MD5:=209f8326f5137d8817a6276d9577a2f1
 $(PKG)_SITE:=@SAMBA/rsync/src
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/rsync
@@ -10,10 +10,20 @@ $(PKG)_DEPENDS_ON += popt zlib
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 
-$(PKG)_CONFIGURE_OPTIONS += --disable-iconv
+$(PKG)_CONFIGURE_OPTIONS += --disable-debug
+$(PKG)_CONFIGURE_OPTIONS += --disable-md2man
+$(PKG)_CONFIGURE_OPTIONS += --disable-simd
+$(PKG)_CONFIGURE_OPTIONS += --disable-asm
 $(PKG)_CONFIGURE_OPTIONS += --disable-locale
+$(PKG)_CONFIGURE_OPTIONS += --disable-openssl
+$(PKG)_CONFIGURE_OPTIONS += --disable-xxhash
+$(PKG)_CONFIGURE_OPTIONS += --disable-zstd
+$(PKG)_CONFIGURE_OPTIONS += --disable-lz4
+$(PKG)_CONFIGURE_OPTIONS += --disable-iconv
+$(PKG)_CONFIGURE_OPTIONS += --disable-acl-support
 $(PKG)_CONFIGURE_OPTIONS += --without-included-popt
 $(PKG)_CONFIGURE_OPTIONS += --without-included-zlib
+$(PKG)_CONFIGURE_OPTIONS += --with-nobody-group=nobody
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),,--disable-ipv6)
 
 $(PKG_SOURCE_DOWNLOAD)
