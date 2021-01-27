@@ -504,7 +504,7 @@ Index:
   * **[module-init-tools 3.12 (binary only)](../docs/make/module-init-tools.md)<a id='module-init-tools'></a>**<br>
     The module-init-tools (m-i-t) package provides many of the utilities needed by Linux systems for managing loadable Linux Kernel Modules. This includes depmod, insmod, rmmod, modprobe and tools like modinfo.
 
-  * **[mtr 0.80 (binary only)](../docs/make/mtr.md)<a id='mtr'></a>**<br>
+  * **[mtr 0.80/0.94 (binary only)](../docs/make/mtr.md)<a id='mtr'></a>**<br>
     mtr combines the functionality of the 'traceroute' and 'ping' programs in a single network diagnostic tool.
 
 ### N

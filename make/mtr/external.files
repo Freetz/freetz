@@ -1,1 +1,3 @@
-[ "$EXTERNAL_FREETZ_PACKAGE_MTR" == "y" ] && EXTERNAL_FILES+=" /usr/sbin/mtr"
+[ "$EXTERNAL_FREETZ_PACKAGE_MTR" == "y"                                                 ] && EXTERNAL_FILES+=" /usr/sbin/mtr"
+[ "$EXTERNAL_FREETZ_PACKAGE_MTR" == "y" -a "$FREETZ_PACKAGE_MTR_VERSION_ABANDON" != "y" ] && EXTERNAL_FILES+=" /usr/sbin/mtr-packet"
+

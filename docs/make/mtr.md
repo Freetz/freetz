@@ -1,4 +1,4 @@
-# mtr 0.80 (binary only)
+# mtr 0.80/0.94 (binary only)
 
 **[mtr](http://www.bitwizard.nl/mtr/)** (**M**y
 **TR**aceroute) kombiniert die Funktionalität von
