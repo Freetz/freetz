@@ -1,5 +1,12 @@
 # NEWS
 
+ * __2021-01-27__<br>
+   Es wurde ein neuer [Tag](https://github.com/Freetz-NG/freetz-ng/tags) `ng21010` erstellt.<br>
+   Die automatisch angebotene und nicht deaktivierbare `.zip`-Datei darf auf keinen Fall verwendet werden, da<br>
+   darin keine Dateiberechtigungen enthalten sind! In der `.tar.gz` fehlt mindestens die Versionsinformation.<br>
+   Stattdessen sollte ein Tag wie in der [README](https://github.com/Freetz-NG/freetz-ng#or-clone-a-single-tag) beschrieben mit git ausgecheckt werden.<br>
+   Siehe [ng21010](https://github.com/Freetz-NG/freetz-ng/releases/tag/ng21010)<br>
+
  * __2021-01-01__<br>
    Auf Github gibt es einen neuen [Discussions](https://github.com/Freetz-NG/freetz-ng/discussions)-Bereich für
    jedes Projekt. Im Gegensatz zu den [Issues](https://github.com/Freetz-NG/freetz-ng/issues) stellt dies keinen<br>
