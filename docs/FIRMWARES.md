@@ -421,7 +421,7 @@ Currently supported devices and firmwares
 * __Fritz!Powerline 1260E__
   - 157.07.01 rev63181 {ALL}
   - 157.07.12 rev70670 {ALL} [MESH18 NL2]
-  - 157.07.20 rev80579 {ALL} [PSQ19]
+  - 157.07.21 rev84898 {ALL} [PSQ19]
 
 ### Fritz!Repeater
 
