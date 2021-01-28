@@ -1,5 +1,10 @@
 # NEWS
 
+ * __2021-01-28__<br>
+   Ein alter Kompatibilitätseintrag wurde entfernt. Falls die .config noch nicht aktualisiert wurde kann<br>
+   dies so erzwungen werden: `sed '/FEATURE_CROND_DIR/d' -i .config ; make olddefconfig`<br>
+   Siehe [8441999c](https://github.com/Freetz-NG/freetz-ng/commit/8441999c177216cbeb54eefa711e867905a6864c)<br>
+
  * __2021-01-27__<br>
    Es wurde ein neuer [Tag](https://github.com/Freetz-NG/freetz-ng/tags) `ng21010` erstellt.<br>
    Die automatisch angebotene und nicht deaktivierbare `.zip`-Datei darf auf keinen Fall verwendet werden, da<br>
