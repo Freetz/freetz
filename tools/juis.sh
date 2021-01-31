@@ -2,7 +2,7 @@
 SCRIPT="$(readlink -f $0)"
 PARENT="$(dirname ${SCRIPT%/*})"
 [ "$1" == "f" ] && f=f && shift
-[ "$#" == "0" ] && sed -rn 's/^.\t*default "(Serial=.*)" *if .*/\1/p' "$PARENT/config/mod/download.in" | while read line; do $SCRIPT $f "$line"; done && echo -e '\n' && exit 0
+[ "$#" == "0" ] && sed -rn 's/^.\t*default "(Serial=.*)" *if .*/\1/p' "$PARENT/config/mod/download.in" | while read line; do $SCRIPT $f "$line"; done && sleep 7 && exit 0
 
 FREETZ_DL_SOURCE_JUIS="$*"
 JUIS_FAKE="$(hexdump -n3 -e '/1 "%02X"' /dev/random)"
