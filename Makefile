@@ -464,7 +464,7 @@ common-cacheclean:
 	./fwmod_custom clean
 	$(RM) make/Config.in.generated make/external.in.generated
 	$(RM) .static .dynamic .packages .exclude-release-tmp $(CONFIG_IN_CACHE)
-	$(RM) $(DL_FW_DIR)/*.detected.image $(DL_FW_DIR)/*.detected.image.url $(DL_FW_DIR)/*.detected.image.url.bak
+	$(RM) $(DL_FW_DIR)/*.detected.image $(DL_FW_DIR)/*.detected.image.url
 	$(RM) -r $(BUILD_DIR)
 	$(RM) -r $(FAKEROOT_CACHE_DIR)
 
