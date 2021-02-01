@@ -13,9 +13,9 @@ JUIS_LNG=de && JUIS_OEM=avm
 #[ "${FREETZ_TYPE_LANG_DE}" != "y" ] && JUIS_LNG=en && JUIS_OEM=avme
 JUIS_TXT=$(echo $FREETZ_DL_SOURCE_JUIS | sed "s/%FAKE%/$JUIS_FAKE/;s/%SER%/$JUIS_SER/;s/%REV%/$JUIS_REV/;s/%LNG%/$JUIS_LNG/;s/%OEM%/$JUIS_OEM/")
 [ "$f" != "f" ] && echo -e "\n$JUIS_TXT"
-#                        tools/yf/juis/juis_check --debug -i $JUIS_TXT
-[ "$f" != "f" ] &&       tools/yf/juis/juis_check         -i $JUIS_TXT 2>&1 | grep -vE "^DelayDownload|Neue Version gefunden"
-[ "$f" == "f" ] && nohup tools/yf/juis/juis_check         -i $JUIS_TXT 2>&1 | grep -vE "^DelayDownload|Neue Version gefunden" &
+#                        env - tools/yf/juis/juis_check --debug -i $JUIS_TXT
+[ "$f" != "f" ] &&       env - tools/yf/juis/juis_check         -i $JUIS_TXT 2>&1 | grep -vE "^DelayDownload|Found newer version"
+[ "$f" == "f" ] && nohup env - tools/yf/juis/juis_check         -i $JUIS_TXT 2>&1 | grep -vE "^DelayDownload|Found newer version" &
 
 exit 0
 
