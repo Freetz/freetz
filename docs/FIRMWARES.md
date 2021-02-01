@@ -169,12 +169,12 @@ Currently supported devices and firmwares
   - 142.06.83 rev43648 {ALL}
   - 142.07.01 rev63482 {GER}
   - 142.07.13 rev73673 {GER} [MESH18 NL3]
-  - 142.07.19 rev00000 {GER} (Labor)
+  - 142.07.19 rev00000 {GER} [PSQ19] (Labor)
 * __Fritz!Box 6820 v2 LTE__
   - 142.07.13 rev73674 {INT} [MESH18 NL3]
-  - 142.07.19 rev00000 {INT} (Labor)
+  - 142.07.19 rev00000 {INT} [PSQ19] (Labor)
 * __Fritz!Box 6820 v3 LTE (UNTESTED)__
-  - 254.07.19 rev00000 {GER} (Labor)
+  - 254.07.19 rev00000 {GER} [PSQ19] (Labor)
 * __Fritz!Box 6850 LTE (UNTESTED)__
   - 262.07.21 rev82687 {ALL} [PSQ19]
   - 262.07.24 rev00000 {ALL} [PSQ19 Phase 2] (Labor)
@@ -185,7 +185,7 @@ Currently supported devices and firmwares
   - 162.07.03 rev68723 {ALL}
   - 162.07.13 rev73668 {ALL} [MESH18 NL3]
   - 162.07.21 rev82271 {ALL} [PSQ19]
-  - 162.07.24 rev00000 {ALL} (Labor)
+  - 162.07.24 rev00000 {ALL} [PSQ19 Phase 2] (Labor)
 
 ### Fritz!Box Fon WLAN (70xx)
 
