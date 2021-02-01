@@ -13,7 +13,7 @@ menu "Download options"
 
 	config FREETZ_DL_DETECT_IMAGE_NAME
 		bool "Detect the .image file name" if FREETZ_SHOW_EXPERT
-		depends on !FREETZ_TYPE_FIRMWARE_FINAL
+		depends on FREETZ_TYPE_FIRMWARE_DETECT_LATEST || FREETZ_TYPE_FIRMWARE_07_25_LABOR
 		default n
 		help
 			Detect the .image file name automatically.
