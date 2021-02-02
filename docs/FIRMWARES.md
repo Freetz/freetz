@@ -155,15 +155,6 @@ Currently supported devices and firmwares
 * __Fritz!Box 6810 LTE (UNTESTED)__
   - 108.06.34 rev36874 {GER}
   - 108.06.34 rev36875 {INT}
-* __Fritz!Box 6840 LTE__
-  - 105.06.30 rev31187 {GER}
-  - 105.06.50 rev33168 {GER}
-  - 105.06.85 rev64222 {GER}
-  - 105.06.30 rev31224 {INT}
-  - 105.06.50 rev33168 {INT}
-  - 105.06.85 rev64221 {INT}
-* __Fritz!Box 6842 LTE (UNTESTED)__
-  - 123.06.34 rev36874 {GER}
 
 * __Fritz!Box 6820 v1 LTE__
   - 142.06.83 rev43648 {ALL}
@@ -175,11 +166,23 @@ Currently supported devices and firmwares
   - 142.07.19 rev00000 {INT} [PSQ19] (Labor)
 * __Fritz!Box 6820 v3 LTE (UNTESTED)__
   - 254.07.19 rev00000 {GER} [PSQ19] (Labor)
+
+* __Fritz!Box 6840 LTE__
+  - 105.06.30 rev31187 {GER}
+  - 105.06.50 rev33168 {GER}
+  - 105.06.85 rev64222 {GER}
+  - 105.06.30 rev31224 {INT}
+  - 105.06.50 rev33168 {INT}
+  - 105.06.85 rev64221 {INT}
+* __Fritz!Box 6842 LTE (UNTESTED)__
+  - 123.06.34 rev36874 {GER}
+
 * __Fritz!Box 6850 LTE (UNTESTED)__
   - 262.07.21 rev82687 {ALL} [PSQ19]
   - 262.07.24 rev00000 {ALL} [PSQ19 Phase 2] (Labor)
 * __Fritz!Box 6850 5G (UNTESTED)__
   - 258.07.19 rev82499 {ALL} [PSQ19] (Inhaus)
+
 * __Fritz!Box 6890 LTE__
   - 162.06.87 rev59283 {ALL}
   - 162.07.03 rev68723 {ALL}
