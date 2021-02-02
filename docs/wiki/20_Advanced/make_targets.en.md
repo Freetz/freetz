@@ -2,7 +2,7 @@
 
 
 ```
-help                                    Shows this help text
+help                                    Shows docs/wiki/20_Advanced/make_targets.en.md
 
 menuconfig                              Configuration of Freetz
 menuconfig-nocache                      Configuration without caching of .in files
@@ -10,6 +10,8 @@ menuconfig-single                       Alternative configuration
 oldconfig                               Updates existing .config file interactive
 olddefconfig                            Updates existing .config file automatically
 reuseconfig                             Removes device and toolchain related settings from .config file
+allnoconfig                             Sets everything to (n)o
+allyesconfig                            Sets everything to (y)es
 
 config-clean-deps                       Deselects everything not mandatory
 config-clean-deps-keep-busybox          Deselects all except BusyBox applets
@@ -37,7 +39,7 @@ tools-dirclean                          Cleans everything of the Freetz tools
 uclibc-menuconfig                       Configuration of selected uClibc
 
 firmware-nocompile                      Creates firmware without packages and libraries
-mirror                                  Downloads all package sources files
+mirror                                  Downloads all selected package sources files
 release                                 Creates a release file (change .version before)
 
 push-firmware                           Calls tools/push_firmware with images/latest.image
