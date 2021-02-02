@@ -463,6 +463,7 @@ common-cacheclean:
 	[ ! -x .fwmod_custom ] || ./.fwmod_custom clean
 	./fwmod_custom clean
 	$(RM) make/Config.in.generated make/external.in.generated
+	$(RM) .config.compressed .config.old  .config.*.tmp
 	$(RM) .static .dynamic .packages .exclude-release-tmp $(CONFIG_IN_CACHE)
 	$(RM) $(DL_FW_DIR)/*.detected.image $(DL_FW_DIR)/*.detected.image.url
 	$(RM) -r $(BUILD_DIR)
@@ -474,7 +475,7 @@ common-dirclean: common-clean $(if $(FREETZ_HAVE_DOT_CONFIG),kernel-dirclean)
 	$(RM) -r $(if $(FREETZ_HAVE_DOT_CONFIG),$(PACKAGES_DIR) $(SOURCE_DIR) $(TARGET_TOOLCHAIN_DIR),$(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT))
 
 common-distclean: common-dirclean
-	$(RM)    .config.compressed .config.old .config.cmd .tmpconfig.h *.log
+	$(RM)    .config.cmd .tmpconfig.h *.log
 	$(RM) -r include/config
 	$(RM) -r $(FW_IMAGES_DIR)
 	$(RM) -r $(KERNEL_TARGET_DIR)
