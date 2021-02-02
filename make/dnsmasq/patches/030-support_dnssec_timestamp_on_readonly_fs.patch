@@ -12,7 +12,7 @@
  
 --- src/dnsmasq.h
 +++ src/dnsmasq.h
-@@ -1067,6 +1067,7 @@
+@@ -1083,6 +1083,7 @@
  #ifdef HAVE_DNSSEC
    struct ds_config *ds;
    char *timestamp_file;
@@ -20,14 +20,14 @@
  #endif
  
    /* globally used stuff for DNS */
-@@ -1241,6 +1242,7 @@
+@@ -1257,6 +1258,7 @@
+ int dnskey_keytag(int alg, int flags, unsigned char *key, int keylen);
  size_t filter_rrsigs(struct dns_header *header, size_t plen);
- unsigned char* hash_questions(struct dns_header *header, size_t plen, char *name);
  int setup_timestamp(void);
 +void update_timestamp_amtime(void); /* sets atime and mtime of the timestamp_file to the current time */
  
- /* crypto.c */
- const struct nettle_hash *hash_find(char *name);
+ /* hash_questions.c */
+ void hash_questions_init(void);
 --- src/dnssec.c
 +++ src/dnssec.c
 @@ -145,6 +145,7 @@
