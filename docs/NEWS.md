@@ -1,5 +1,10 @@
 # NEWS
 
+ * __2021-01-31__<br>
+   Für Labor und Inhaus können im menuconfig durch Aktivieren der Option `Detect the latest firmware version`<br>
+   automatisch mittels PeterPawns juis_check.sh von AVMs JUIS die aktuellste Firmwareversionen abgerufen werden.<br>
+   Siehe [39f7254b](https://github.com/Freetz-NG/freetz-ng/commit/39f7254bbe83c5edb62a1163c948603a521d13d1)<br>
+
  * __2021-01-28__<br>
    Ein alter Kompatibilitätseintrag wurde entfernt. Falls die .config noch nicht aktualisiert wurde kann<br>
    dies so erzwungen werden: `sed '/FEATURE_CROND_DIR/d' -i .config ; make olddefconfig`<br>
