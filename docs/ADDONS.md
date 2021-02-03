@@ -15,6 +15,7 @@ mehr richtig funktioniert. Ein Blick in die Foren zeigt:
  - Es ist nicht mehr möglich ein Einstellungsbackup wiederherzustellen
  - Benutzer werden gelöscht
  - Planloses setzen von Systemvariablen verursachen Segfaults von AVM Binaries
+ - Überflüssiges ständiges Speichern ins Flash lässt den Speicher schneller altern
  - ...
 
 Falls aus versehen ein Image mit Addon geflasht wurds, empfiehlt sich ein Recovery um alle Einstellungen zu<br>
