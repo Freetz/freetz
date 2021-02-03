@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.4.58)
+$(call PKG_INIT_BIN, 1.4.59)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=267feffda13a190ebdce7b15172d8be16da98008457f30fddecd72832d126d0e
+$(PKG)_SOURCE_SHA256:=fb953db273daef08edb6e202556cae8a3d07eed6081c96bd9903db957d1084d5
 $(PKG)_SITE:=http://download.lighttpd.net/lighttpd/releases-1.4.x
 
 $(PKG)_BINARY_BUILD_DIR := $($(PKG)_DIR)/src/lighttpd
@@ -8,7 +8,7 @@ $(PKG)_BINARY_TARGET_DIR := $($(PKG)_DEST_DIR)/usr/bin/lighttpd
 
 $(PKG)_MODULES_DIR := /usr/lib/lighttpd
 $(PKG)_MODULES_ALL := \
-	accesslog access alias \
+	access accesslog ajp13 alias \
 	auth authn_dbi authn_file authn_gssapi authn_ldap authn_mysql authn_pam \
 	cgi cml \
 	deflate dirlisting \

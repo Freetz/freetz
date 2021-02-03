@@ -45,6 +45,7 @@ Latest changes
     * curl 7.75.0
     * haproxy 1.8.28
     * libgd 2.3.1
+    * lighttpd 1.4.59
     * mtr 0.80/0.94
     * rsync 3.2.3
 

@@ -1,5 +1,5 @@
 menuconfig FREETZ_PACKAGE_LIGHTTPD
-	bool "lighttpd 1.4.58"
+	bool "lighttpd 1.4.59"
 	select FREETZ_LIB_libpthread if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libpcre
 	select FREETZ_PACKAGE_LIGHTTPD_MOD_ACCESS
@@ -119,6 +119,14 @@ config FREETZ_PACKAGE_LIGHTTPD_MOD_ACCESSLOG
 	help
 		This option adds mod_accesslog.so to the image.
 		Please see https://redmine.lighttpd.net/wiki/1/Docs:ModAccessLog
+		for more information on this module.
+
+config FREETZ_PACKAGE_LIGHTTPD_MOD_AJP13
+	bool "mod_ajp13"
+	default y
+	help
+		This option adds mod_ajp13.so to the image.
+		Please see https://redmine.lighttpd.net/wiki/1/Docs:ModAjp13
 		for more information on this module.
 
 config FREETZ_PACKAGE_LIGHTTPD_MOD_ALIAS
