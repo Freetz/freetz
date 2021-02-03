@@ -50,7 +50,7 @@ More features - less bugs!
 
 ### Delete local changes:
 ```
-  git fetch --all --prune ; git reset --hard origin/HEAD ; git clean -fd
+  git checkout master ; git fetch --all --prune ; git reset --hard origin/HEAD ; git clean -fd
 ```
 
 ### Update GIT:
