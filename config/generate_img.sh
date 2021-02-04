@@ -162,15 +162,45 @@ determine_() {
 	[ ! -d "$unpacked" ] && echo "Directory missing: $dirname" && return 1
 
 
-#	#NAME
-#	if [ -e "$unpacked/etc/init.d/rc.init" ]; then
-#		X="$(grep 'OEM=all' $unpacked/etc/init.d/rc.init | grep ' _PRODUKT_NAME=' | sed 's/.* _PRODUKT_NAME=//;s/#/ /g' | tail -n1)"
-#	else
-#		X="$(sed -rn 's/^export CONFIG_PRODUKT_NAME=\"?([^\"]*)\"?$/\1/p' $unpacked/etc/init.d/rc.conf | head -n1)"
-#	fi
-#	in_s FREETZ_AVM_PROP_NAME "$X"
-#	[ -z "$X" ] && echo "ERROR-01" 1>&2 && X=ERROR
-#	[ $DOSHOW -ge 2 ] && outp "name" "$X"
+	#NAME
+	if [ -e "$unpacked/etc/init.d/rc.init" ]; then
+		X="$(grep ' _PRODUKT_NAME=' $unpacked/etc/init.d/rc.init | sed -rn 's/^HW=[^a][^ ]* OEM=all _PRODUKT_NAME=//p' | sed 's/\#/ /g')"
+	else
+		X="$(sed -rn 's/^export CONFIG_PRODUKT_NAME=\"?([^\"]*)\"?$/\1/p' $unpacked/etc/init.d/rc.conf | head -n1)"
+	fi
+	in_s FREETZ_AVM_PROP_NAME "$X"
+	[ -z "$X" ] && echo "ERROR-01" 1>&2 && X=ERROR
+	[ $DOSHOW -ge 2 ] && outp "name" "$X"
+
+	#MAJOR
+	if [ -e "$unpacked/etc/init.d/rc.init" ]; then
+		X="$(grep '^HW=[^a]' $unpacked/etc/init.d/rc.init | sed -rn 's/.* VERSION_MAJOR=//p')"
+	else
+		X="$(sed -rn 's/^export CONFIG_VERSION_MAJOR=\"?([^\"]*)\"?$/\1/p' $unpacked/etc/init.d/rc.conf | tail -n1)"
+	fi
+	in_s FREETZ_AVM_PROP_MAJOR "$X"
+	[ -z "$X" ] && echo "ERROR-22" 1>&2 && X=ERROR
+	[ $DOSHOW -ge 2 ] && outp " major" "$X"
+	Y="$X"
+	#HWREV
+	if [ -e "$unpacked/etc/init.d/rc.init" ]; then
+		X="$(grep '^HW=[^a]' $unpacked/etc/init.d/rc.init | tail -n1 | sed -rn 's/^HW=([^ ]*) .*/\1/p')"
+	else
+		X="$(sed -rn 's/^export CONFIG_PRODUKT=.*_HW([^\"x]*)x?\"?$/\1/p' $unpacked/etc/init.d/rc.conf | tail -n1)"
+	fi
+	if [ -z "$X" ]; then
+		if   [ "${Y##0}" -le  30 ]; then X="$(( ${Y##0} + 65 ))"
+		elif [ "${Y##0}" -le  54 ]; then X="$(( ${Y##0} + 68 ))"
+		elif [ "${Y##0}" -le  60 ]; then X="$(( ${Y##0} + 69 ))"
+		elif [ "${Y##0}" -le  67 ]; then X="$(( ${Y##0} + 70 ))"
+		elif [ "${Y##0}" -le  75 ]; then X="$(( ${Y##0} + 71 ))"
+		elif [ "${Y##0}" -le 150 ]; then X="$(( ${Y##0} + 72 ))"
+		else                                 X="${Y##0}"
+		fi
+	fi
+	in_s FREETZ_AVM_PROP_HWREV "$X"
+	[ -z "$X" ] && echo "ERROR-23" 1>&2 && X=ERROR
+	[ $DOSHOW -ge 2 ] && outp " hwrev" "$X"
 
 
 	#SIGNED
