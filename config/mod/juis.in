@@ -1,0 +1,150 @@
+if FREETZ_TYPE_FIRMWARE_DETECT_LATEST
+
+#	config FREETZ_DL_JUIS_BUILDTYPE
+#		string
+#		default "1000"  if FREETZ_TYPE_FIRMWARE_INHAUS
+#		default "1001"  if FREETZ_TYPE_FIRMWARE_LABOR
+#		default "1   "
+
+	config FREETZ_DL_JUIS_PUBLIC
+		string
+		default "0"  if FREETZ_TYPE_FIRMWARE_INHAUS
+		default "1"  if FREETZ_TYPE_FIRMWARE_LABOR
+		default " "
+
+	config FREETZ_DL_JUIS_COUNTRY
+		string
+		default "049"
+
+	config FREETZ_DL_JUIS_LANG
+		string
+		default "en"  if !FREETZ_TYPE_LANG_DE
+		default "de"
+
+	config FREETZ_DL_JUIS_OEM
+		string
+		default "avme"  if !FREETZ_TYPE_LANG_DE
+		default "avm "
+
+	config FREETZ_DL_JUIS_FLAG
+		string
+		default "cable_retail"  if FREETZ_TYPE_CABLE
+		default "empty       "
+
+	config FREETZ_DL_JUIS_ANNEX
+		string
+		default "A    "  if FREETZ_TYPE_ANNEX_A
+		default "B    "  if FREETZ_TYPE_DSL
+		default "Kabel"  if FREETZ_TYPE_CABLE
+		default "pon  "  if FREETZ_TYPE_FIBER
+		default "Ohne "
+
+	config FREETZ_DL_JUIS_FOS
+		string
+		default "04.30-5%REV% "  if FREETZ_TYPE_FIRMWARE_04_XX
+		default "05.22-26%REV%"  if FREETZ_TYPE_FIRMWARE_05_2X
+		default "05.51-26%REV%"  if FREETZ_TYPE_FIRMWARE_05_5X
+		default "06.03-26%REV%"  if FREETZ_TYPE_FIRMWARE_06_0X
+		default "06.29-29%REV%"  if FREETZ_TYPE_FIRMWARE_06_2X
+		default "06.49-31%REV%"  if FREETZ_TYPE_FIRMWARE_06_5X
+		default "06.80-42%REV%"  if FREETZ_TYPE_FIRMWARE_06_8X
+		default "06.90-46%REV%"  if FREETZ_TYPE_FIRMWARE_06_9X
+		default "07.00-60%REV%"  if FREETZ_TYPE_FIRMWARE_07_0X
+		default "07.08-65%REV%"  if FREETZ_TYPE_FIRMWARE_07_1X_INHAUS
+		default "07.10-69%REV%"  if FREETZ_TYPE_FIRMWARE_07_1X
+		default "07.19-81%REV%"  if FREETZ_TYPE_FIRMWARE_07_2X_INHAUS
+		default "07.19-82%REV%"  if FREETZ_TYPE_FIRMWARE_07_2X_LABOR
+		default "07.19-80%REV%"  if FREETZ_TYPE_FIRMWARE_07_2X
+		default "07.24-84%REV%"  if FREETZ_TYPE_FIRMWARE_07_25_INHAUS
+		default "07.24-84%REV%"  if FREETZ_TYPE_FIRMWARE_07_25_LABOR
+		default "07.24-85%REV%"  if FREETZ_TYPE_FIRMWARE_07_25
+		default "%FOS%"
+
+	config FREETZ_DL_JUIS_OID
+		string
+		default "00040E"  if FREETZ_TYPE_FON
+		default "00040E"  if FREETZ_TYPE_WLAN
+		default "0896D7"  if FREETZ_TYPE_0300
+		default "3431C4"  if FREETZ_TYPE_0450
+		default "3431C4"  if FREETZ_TYPE_0540
+		default "246511"  if FREETZ_TYPE_0546
+		default "5C4979"  if FREETZ_TYPE_1160
+		default "444E6D"  if FREETZ_TYPE_1200
+		default "3431C4"  if FREETZ_TYPE_1240
+		default "5C4979"  if FREETZ_TYPE_1260
+		default "3810D5"  if FREETZ_TYPE_1750
+		default "3431C4"  if FREETZ_TYPE_1759
+		default "001F3F"  if FREETZ_TYPE_2170
+		default "989BCB"  if FREETZ_TYPE_2400
+		default "2C91AB"  if FREETZ_TYPE_3000
+		default "00150C"  if FREETZ_TYPE_3020
+		default "00150C"  if FREETZ_TYPE_3130
+		default "BC0543"  if FREETZ_TYPE_3131
+		default "001F3F"  if FREETZ_TYPE_3170
+		default "0024FE"  if FREETZ_TYPE_3270
+		default "0896D7"  if FREETZ_TYPE_3272
+		default "246511"  if FREETZ_TYPE_3370
+		default "9CC7A6"  if FREETZ_TYPE_3390
+		default "C80E14"  if FREETZ_TYPE_3490
+		default "C80E14"  if FREETZ_TYPE_4020
+		default "7CFF4D"  if FREETZ_TYPE_4040
+		default "00040E"  if FREETZ_TYPE_5050
+		default "001F3F"  if FREETZ_TYPE_5124
+		default "001A4F"  if FREETZ_TYPE_5140
+		default "CCCE1E"  if FREETZ_TYPE_5490
+		default "444E6D"  if FREETZ_TYPE_5491
+		default "2C91AB"  if FREETZ_TYPE_5530
+		default "C80E14"  if FREETZ_TYPE_6430
+		default "3431C4"  if FREETZ_TYPE_6490
+		default "444E6D"  if FREETZ_TYPE_6590
+		default "2C3AFD"  if FREETZ_TYPE_6591
+		default "2C3AFD"  if FREETZ_TYPE_6660
+		default "246511"  if FREETZ_TYPE_6810
+		default "C80E14"  if FREETZ_TYPE_6820_V1
+		default "989BCB"  if FREETZ_TYPE_6820_V2
+		default "2C3AFD"  if FREETZ_TYPE_6820_V3
+		default "9CC7A6"  if FREETZ_TYPE_6840
+		default "9CC7A6"  if FREETZ_TYPE_6842
+		default "2C91AB"  if FREETZ_TYPE_6850_4G
+		default "2C3AFD"  if FREETZ_TYPE_6890
+		default "00040E"  if FREETZ_TYPE_7050
+		default "0024FE"  if FREETZ_TYPE_7112
+		default "001C4A"  if FREETZ_TYPE_7113
+		default "00150C"  if FREETZ_TYPE_7140
+		default "00150C"  if FREETZ_TYPE_7141
+		default "001A4F"  if FREETZ_TYPE_7150
+		default "001F3F"  if FREETZ_TYPE_7170
+		default "001F3F"  if FREETZ_TYPE_7240
+		default "001C4A"  if FREETZ_TYPE_7270_V1
+		default "001F3F"  if FREETZ_TYPE_7270_V2
+		default "0024FE"  if FREETZ_TYPE_7270_V3
+		default "3431C4"  if FREETZ_TYPE_7272
+		default "246511"  if FREETZ_TYPE_7312
+		default "BC0543"  if FREETZ_TYPE_7320
+		default "9CC7A6"  if FREETZ_TYPE_7330_SL
+		default "0896D7"  if FREETZ_TYPE_7330_XL
+		default "BC0543"  if FREETZ_TYPE_7340
+		default "246511"  if FREETZ_TYPE_7360_SL
+		default "C02506"  if FREETZ_TYPE_7360_V1
+		default "0896D7"  if FREETZ_TYPE_7360_V2
+		default "0896D7"  if FREETZ_TYPE_7362
+		default "0896D7"  if FREETZ_TYPE_7390
+		default "3810D5"  if FREETZ_TYPE_7412
+		default "5C4979"  if FREETZ_TYPE_7430
+		default "3431C4"  if FREETZ_TYPE_7490
+		default "444E6D"  if FREETZ_TYPE_7520
+		default "2C3AFD"  if FREETZ_TYPE_7530
+		default "3CA62F"  if FREETZ_TYPE_7539
+		default "7CFF4D"  if FREETZ_TYPE_7560
+		default "BC0543"  if FREETZ_TYPE_7570
+		default "3810D5"  if FREETZ_TYPE_7580
+		default "9CC7A6"  if FREETZ_TYPE_7581
+		default "E0286D"  if FREETZ_TYPE_7582
+		default "444E6D"  if FREETZ_TYPE_7583
+		default "3CA62F"  if FREETZ_TYPE_7590
+		default "%FAKE%"
+		help
+			To get more OID ranges of 'maca' see https://boxmatrix.info/wiki/Property:maca
+
+endif # FREETZ_TYPE_FIRMWARE_DETECT_LATEST
+
