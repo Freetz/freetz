@@ -168,7 +168,7 @@ determine_() {
 	else
 		X="$(sed -rn 's/^export CONFIG_PRODUKT_NAME=\"?([^\"]*)\"?$/\1/p' $unpacked/etc/init.d/rc.conf | head -n1)"
 	fi
-	in_s FREETZ_AVM_PROP_NAME "$X"
+	in_s FREETZ_AVM_PROP_NAME "${X// /$(printf '\342\200\212')}"
 	[ -z "$X" ] && echo "ERROR-01" 1>&2 && X=ERROR
 	[ $DOSHOW -ge 2 ] && outp "name" "$X"
 
