@@ -56,14 +56,7 @@ else
 		fi; \
 		if [ -z "$$$$DL_URL_FIRMWARE" ]; then \
 			echo -n "No cached value, asking avm for latest firmware ... "; \
-			JUIS_FAKE=$$$$(hexdump -n3 -e '/1 "%02X"' /dev/random); \
-			JUIS_SER=$$$$(hexdump -n3 -e '/1 "%02X"' /dev/random); \
-			JUIS_REV=$$$$(echo $$$$(( RANDOM % 10 ))$$$$(( RANDOM % 10 ))$$$$(( RANDOM % 10 ))); \
-			[ "$$(FREETZ_TYPE_LANG_DE)" == "y" ] && JUIS_LNG=de && JUIS_OEM=avm; \
-			[ "$$(FREETZ_TYPE_LANG_DE)" != "y" ] && JUIS_LNG=en && JUIS_OEM=avme; \
-			JUIS_TXT=$$$$(echo $$(FREETZ_DL_SOURCE_JUIS) | sed "s/%FAKE%/$$$$JUIS_FAKE/;s/%SER%/$$$$JUIS_SER/;s/%REV%/$$$$JUIS_REV/;s/%LNG%/$$$$JUIS_LNG/;s/%OEM%/$$$$JUIS_OEM/"); \
-			echo env - tools/yf/juis/juis_check --debug -i $$$$JUIS_TXT >/dev/null; \
-			DL_URL_FIRMWARE="$$$$(env - tools/yf/juis/juis_check -i $$$$JUIS_TXT 2>&1 | sed -n 's/^URL=//p')"; \
+			DL_URL_FIRMWARE="$$$$(tools/juis $$(FREETZ_DL_JUIS_STRING))"; \
 			echo "$$$$DL_URL_FIRMWARE" > "$$(IMAGE$(1)).url"; \
 		fi; \
 		if [ -z "$$$$DL_URL_FIRMWARE" ]; then \

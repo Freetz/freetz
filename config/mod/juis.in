@@ -53,7 +53,7 @@ if FREETZ_TYPE_FIRMWARE_DETECT_LATEST
 		default "07.08-65%REV%"  if FREETZ_TYPE_FIRMWARE_07_1X_INHAUS
 		default "07.10-69%REV%"  if FREETZ_TYPE_FIRMWARE_07_1X
 		default "07.19-81%REV%"  if FREETZ_TYPE_FIRMWARE_07_2X_INHAUS
-		default "07.19-82%REV%"  if FREETZ_TYPE_FIRMWARE_07_2X_LABOR
+		default "07.19-81%REV%"  if FREETZ_TYPE_FIRMWARE_07_2X_LABOR
 		default "07.19-80%REV%"  if FREETZ_TYPE_FIRMWARE_07_2X
 		default "07.24-84%REV%"  if FREETZ_TYPE_FIRMWARE_07_25_INHAUS
 		default "07.24-84%REV%"  if FREETZ_TYPE_FIRMWARE_07_25_LABOR
@@ -142,9 +142,17 @@ if FREETZ_TYPE_FIRMWARE_DETECT_LATEST
 		default "E0286D"  if FREETZ_TYPE_7582
 		default "444E6D"  if FREETZ_TYPE_7583
 		default "3CA62F"  if FREETZ_TYPE_7590
-		default "%FAKE%"
+		default "%OID%"
 		help
 			To get more OID ranges of 'maca' see https://boxmatrix.info/wiki/Property:maca
+
+	config FREETZ_DL_JUIS_STRING
+		string
+		default "Version=${FREETZ_AVM_PROP_MAJOR}.${FREETZ_DL_JUIS_FOS} Serial=${FREETZ_DL_JUIS_OID}%SER% Name=${FREETZ_AVM_PROP_NAME} HW=${FREETZ_AVM_PROP_HWREV} OEM=${FREETZ_DL_JUIS_OEM} Lang=${FREETZ_DL_JUIS_LANG} Annex=${FREETZ_DL_JUIS_ANNEX} Country=${FREETZ_DL_JUIS_COUNTRY} Flag=${FREETZ_DL_JUIS_FLAG} Public=${FREETZ_DL_JUIS_PUBLIC} Nonce=%NNC%"
+		help
+			The 'spaces' in 'Name' are ZWSP (zero-width space) in UTF-8 encoding!
+			Run: "printf '\342\200\212'" to get the character.
+			See https://github.com/PeterPawn/YourFritz/commit/1a750243448cde0f76c1d3a8296d51c8082950d3
 
 endif # FREETZ_TYPE_FIRMWARE_DETECT_LATEST
 

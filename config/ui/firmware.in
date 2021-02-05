@@ -716,17 +716,30 @@ comment " >> This firmware fits on AVM and AVME devices"
 
 config FREETZ_TYPE_FIRMWARE_DETECT_LATEST
 	bool "Detect the latest firmware version"
-	default y if FREETZ_SHOW_DEVELOPER
+	default y if FREETZ_SHOW_DEVELOPER && !FREETZ_TYPE_FIRMWARE_FINAL
 	default n
 	select FREETZ_DL_DETECT_IMAGE_NAME
-	depends on FREETZ_SHOW_ADVANCED && !FREETZ_TYPE_FIRMWARE_FINAL
+	depends on FREETZ_SHOW_EXPERT
+	depends on !FREETZ_TYPE_FIRMWARE_FINAL || \
+		( FREETZ_TYPE_FIRMWARE_04_XX && !FREETZ_AVM_HAS_FIRMWARE_05_2X) || \
+		( FREETZ_TYPE_FIRMWARE_05_2X && !FREETZ_AVM_HAS_FIRMWARE_05_5X) || \
+		( FREETZ_TYPE_FIRMWARE_05_5X && !FREETZ_AVM_HAS_FIRMWARE_06_0X) || \
+		( FREETZ_TYPE_FIRMWARE_06_0X && !FREETZ_AVM_HAS_FIRMWARE_06_2X) || \
+		( FREETZ_TYPE_FIRMWARE_06_2X && !FREETZ_AVM_HAS_FIRMWARE_06_5X) || \
+		( FREETZ_TYPE_FIRMWARE_06_5X && !FREETZ_AVM_HAS_FIRMWARE_06_8X) || \
+		( FREETZ_TYPE_FIRMWARE_06_8X && !FREETZ_AVM_HAS_FIRMWARE_06_9X) || \
+		( FREETZ_TYPE_FIRMWARE_06_9X && !FREETZ_AVM_HAS_FIRMWARE_07_0X) || \
+		( FREETZ_TYPE_FIRMWARE_07_0X && !FREETZ_AVM_HAS_FIRMWARE_07_1X) || \
+		( FREETZ_TYPE_FIRMWARE_07_1X && !FREETZ_AVM_HAS_FIRMWARE_07_2X) || \
+		( FREETZ_TYPE_FIRMWARE_07_2X && !FREETZ_AVM_HAS_FIRMWARE_07_25) || \
+		( FREETZ_TYPE_FIRMWARE_07_25)
 	help
-		Automatically detect the latest firmware
-		version by using AVM's juis.
+		Automatically detect the latest firmware version by using AVM's juis.
 		A posive result will be cached for 1 hour.
 		WARNING: Changes by AVM are not recognized!
-		This is okay for small ones, but will cause
-		problems for bigger changes.
+		This is okay for small ones (7.20 -> 7.21), but will cause
+		problems for bigger changes (7.1x -> 7.2x).
+		For Labor/Inhaus this could happen for every version bump!
 
 ###
 ### Release aliases
