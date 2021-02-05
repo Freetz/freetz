@@ -40,6 +40,9 @@ Latest changes
   * Replace kernel does not work for most latest firmware versions.
   * Loading build kernel modules may work or do not. You'll notice.
 
+- Updated tools and hooks:
+  * fitimg 0.3
+
 - Updated packages and libs:
     * cifs-utils 6.12
     * curl 7.75.0
