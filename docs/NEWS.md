@@ -1,5 +1,10 @@
 # NEWS
 
+ * __2021-02-05__<br>
+   Juis ist jetzt bei allen Geräten auch für stabile Firmwareversionen aktivierbar. Aus technischen Gründen ist dies nur für die<br>
+   jeweils neueste Firmwarereihe wie zB `07.2x` möglich.<br>
+   Siehe [c12795f5](https://github.com/Freetz-NG/freetz-ng/commit/c12795f57d8ba7cb139da6c75fec0940483ff0c6)<br>
+
  * __2021-01-31__<br>
    Für Labor und Inhaus können im menuconfig durch Aktivieren der Option `Detect the latest firmware version`<br>
    automatisch mittels PeterPawns juis_check.sh von AVMs JUIS die aktuellste Firmwareversionen abgerufen werden.<br>
