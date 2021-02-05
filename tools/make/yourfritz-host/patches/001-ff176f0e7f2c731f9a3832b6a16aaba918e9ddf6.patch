@@ -1,0 +1,182 @@
+From ff176f0e7f2c731f9a3832b6a16aaba918e9ddf6 Mon Sep 17 00:00:00 2001
+From: YourFritz <git@yourfritz.de>
+Date: Wed, 13 Mar 2019 04:34:21 +0100
+Subject: [PATCH] juis_check: add preliminary support for beta versions
+
+---
+ juis/juis_check | 72 ++++++++++++++++++++++++++++---------------------
+ 1 file changed, 41 insertions(+), 31 deletions(-)
+
+--- juis/juis_check
++++ juis/juis_check
+@@ -148,16 +148,18 @@
+ 		__nl "            z.B. (derzeitiger Stand, kann sich bei AVM jederzeit ändern) die Angabe von"
+ 		__nl "            'cable_retail', damit man eine sinnvolle Antwort erhält"
+ 		__nl "-----------------------------------------------------------------------------------------------"
+-		__nl "$inhouse_option_name      '1', um nur nach offziellen Versionen zu suchen oder '0', um auch die sogenannten"
+-		__nl "            'Inhouse'-Versionen (zumindest bei einigen dieser Firmware-Einträge steht dann ein"
+-		__nl "            'Inhouse' oder 'Inhaus' auch in der Beschreibung der Version in der SOAP-Antwort,"
+-		__nl "            daher habe ich diese Benennung irgendwann mal übernommen) zu finden, für die AVM"
+-		__nl "            aber natürlich noch viel weniger Support leistet als für die offiziellen Labor-"
+-		__nl "            Versionen (und für die gibt es schon keinen Support) - dieser Parameter eignet sich"
+-		__nl "            auch nicht für den Einstieg in eine Labor-Reihe, der muss immer noch über die"
+-		__nl "            manuelle Installation der ersten Labor-Version erfolgen und erst danach kann man"
+-		__nl "            dann (vermutlich auf der Basis von 'Buildnumber') auch weitere Labor-Versionen über"
+-		__nl "            die Abfrage bei AVM finden"
++		__nl "$buildtype_option_name      - '1', um nur nach offziellen Versionen zu suchen oder"
++		__nl "            - '2', um auch freigegebene Beta-Versionen bei der Suche zu berücksichtigen oder"
++		__nl "            - '0', um auch die sogenannten 'Inhouse'-Versionen (zumindest bei einigen dieser"
++		__nl "               Firmware-Einträge steht dann ein 'Inhouse' oder 'Inhaus' auch in der"
++		__nl "               Beschreibung der Version in der SOAP-Antwort, daher habe ich diese Benennung"
++		__nl "               irgendwann mal übernommen) zu finden, für die AVM aber natürlich noch viel"
++		__nl "               weniger Support leistet als für die offiziellen Labor-Versionen (und für die"
++		__nl "               gibt es schon keinen Support) - dieser Parameter eignet sich auch nicht für den"
++		__nl "               Einstieg in eine Labor-Reihe, der muss immer noch über die manuelle Installation"
++		__nl "               der ersten Labor-Version erfolgen und erst danach kann man dann (vermutlich auf"
++		__nl "               der Basis von 'Buildnumber') auch weitere Labor-Versionen über die Abfrage bei"
++		__nl "               AVM finden"
+ 		__nl "-----------------------------------------------------------------------------------------------"
+ 		__nl "Nonce       dieser Parameter ist komplett optional, sein Fehlen führt auch nicht zur Abfrage"
+ 		__nl "            bei der FRITZ!Box und der Wert (es muss sich um die Base64-Darstellung einer Folge"
+@@ -281,7 +283,9 @@
+ 		__nl "Country     the ITU recommended country code (E.164)"
+ 		__nl "Flag        a comma-delimited list of flags to be included into the request"
+ 		__nl "-----------------------------------------------------------------------------------------------"
+-		__nl "$inhouse_option_name      '1' to check only for public versions, '0' to accept 'inhouse builds' instead"
++		__nl "$buildtype_option_name      - '1' to check only for public versions or"
++		__nl "            - '2' to check for public beta versions, too, or"
++		__nl "            - '0' to accept 'inhouse builds' instead"
+ 		__nl "-----------------------------------------------------------------------------------------------"
+ 		__nl "Nonce       this parameter is strictly optional, its absence will not trigger any attempt to"
+ 		__nl "            read from the 'Box' device and its value isn't checked further (has to be a Base64"
+@@ -659,7 +663,8 @@
+ # the (variable's) name and meaning are a little bit confusing, but really 'true' or 'false' in shell
+ # syntax  ... a value of "1" means "no inhouse version" (or 'inhouse=false') and "0" searches for non-public
+ # versions
+-inhouse_option_name="Public"
++# value of '2', '3' and '4' added later, to support public beta releases with different focus (Labor, BETA, PHONE, PLUS) 
++buildtype_option_name="Public"
+ # nonce variable name for response signature
+ nonce_option_name="Nonce"
+ # local file retrieval constants
+@@ -1229,7 +1234,7 @@
+ 	__debug "$(__get_localized DBG_015)"
+ fi
+ # we use the older variant with a 'Version' value here to retain backward compatibility
+-names="$(get_names "$common_names $serial_name" "$alt_names" 1) $flags_name $inhouse_option_name"
++names="$(get_names "$common_names $serial_name" "$alt_names" 1) $flags_name $buildtype_option_name"
+ #######################################################################################################
+ #                                                                                                     #
+ # first attempt to process name/value pairs from command line, to set variables without an existing   #
+@@ -1240,7 +1245,7 @@
+ 	name="${nv%%=*}"
+ 	value="${nv#*=}"
+ 	valid=0
+-	l_names="$(get_names "$common_names $serial_name" "$alt_names" 1) $flags_name $inhouse_option_name"
++	l_names="$(get_names "$common_names $serial_name" "$alt_names" 1) $flags_name $buildtype_option_name"
+ 	for n in $l_names; do
+ 		if [ "$n" = "$name" ]; then
+ 			__debug "$(__get_localized DBG_009)" "$n" "$value"
+@@ -1268,7 +1273,7 @@
+ #######################################################################################################
+ detect=0
+ for n in $names; do
+-	[ "$n" = "$inhouse_option_name" ] && continue
++	[ "$n" = "$buildtype_option_name" ] && continue
+ 	eval var="\$$n"
+ 	if [ -z "$var" ] || [ "$var" = "detect" ]; then
+ 		detect=1
+@@ -1289,7 +1294,7 @@
+ 		fi
+ 		__debug "$(__get_localized DBG_017)" "$local_dir/$boxinfo1"
+ 		cat "$local_dir/$boxinfo1" >"$boxinfo"
+-		names="$(get_names "$common_names $serial_name" "$alt_names" 2) $flags_name $inhouse_option_name"
++		names="$(get_names "$common_names $serial_name" "$alt_names" 2) $flags_name $buildtype_option_name"
+ 		ns="q"
+ 		replace="$boxinfo1_replace_names"
+ 	else
+@@ -1306,12 +1311,12 @@
+ 				__emsg "$(__get_localized ERR_003)" "$boxinfo2" "$Box" "$boxport"
+ 				exit 3
+ 			else
+-				names="$(get_names "$common_names $serial_name" "$alt_names" 1) $flags_name $inhouse_option_name"
++				names="$(get_names "$common_names $serial_name" "$alt_names" 1) $flags_name $buildtype_option_name"
+ 				ns="j"
+ 				replace="$boxinfo2_replace_names"
+ 			fi
+ 		else
+-			names="$(get_names "$common_names $serial_name" "$alt_names" 2) $flags_name $inhouse_option_name"
++			names="$(get_names "$common_names $serial_name" "$alt_names" 2) $flags_name $buildtype_option_name"
+ 			ns="q"
+ 			replace="$boxinfo1_replace_names"
+ 		fi
+@@ -1332,22 +1337,23 @@
+ for n in $names; do
+ 	eval var="\$$n"
+ 	if [ "$var" = "$$_empty" ]; then
+-		[ "$n" = "$inhouse_option_name" ] && eval ${inhouse_option_name}=1 || eval $n=""
++		[ "$n" = "$buildtype_option_name" ] && eval ${buildtype_option_name}=1 || eval $n=""
+ 	elif ! [ "${var#fixed:}" = "$var" ]; then
+ 		eval $n="${var#fixed:}"
+-	elif [ "$n" = "$inhouse_option_name" ]; then
++	elif [ "$n" = "$buildtype_option_name" ]; then
+ 		if ! [ -z "$var" ]; then
+-			d="$(printf -- "%s\n" "$var" | sed -e "y/AEFLRSTU/aeflrstu/")"
++			d="$(printf -- "%s\n" "$var" | sed -e "y/ABEFLRSTU/abeflrstu/")"
+ 			[ "$(printf -- "%s\n" "$d" | sed -n -e "s|^false\$|0|p")" = "0" ] && var=0
+ 			[ "$(printf -- "%s\n" "$d" | sed -n -e "s|^true\$|1|p")" = "1" ] && var=1
+-			if ! [ "$var" = "0" ] && ! [ "$var" = "1" ]; then
+-				__emsg "$(__get_localized ERR_004)" "$inhouse_option_name"
++			[ "$(printf -- "%s\n" "$d" | sed -n -e "s|^beta\$|2|p")" = "2" ] && var=2
++			if ! [ "$var" = "0" ] && ! [ "$var" = "1" ] && ! [ "$var" = "2" ]; then
++				__emsg "$(__get_localized ERR_004)" "$buildtype_option_name"
+ 				exit 1
+ 			else
+-				eval $inhouse_option_name=$var
++				eval $buildtype_option_name=$var
+ 			fi
+ 		else
+-			eval $inhouse_option_name=1
++			eval $buildtype_option_name=1
+ 		fi
+ 	elif [ -z "$var" ] || [ "$var" = "detect" ]; then
+ 		val="$(extract_xml "$boxinfo" "$ns" $n)"
+@@ -1379,7 +1385,7 @@
+ 	name="${nv%%=*}"
+ 	value="${nv#*=}"
+ 	valid=0
+-	[ "$name" = "$inhouse_option_name" ] && continue
++	[ "$name" = "$buildtype_option_name" ] && continue
+ 	l_names="$(get_names "$common_names $serial_name" "$alt_names" 1) $flags_name"
+ 	for n in $l_names; do
+ 		if [ "$n" = "$name" ]; then
+@@ -1420,12 +1426,16 @@
+ # prepare additional variables                                                                        #
+ #                                                                                                     #
+ #######################################################################################################
+-[ -z "$(eval printf "%s" "\$$inhouse_option_name")" ] && eval $inhouse_option_name=1
+-if ! [ "$(eval printf "%s" "\$$inhouse_option_name")" = "0" ] && ! [ "$(eval printf "%s" "\$$inhouse_option_name")" = "1" ]; then
+-	__emsg "$(__get_localized ERR_006)" "$inhouse_option_name"
++[ -z "$(eval printf "%s" "\$$buildtype_option_name")" ] && eval $buildtype_option_name=1
++if ! [ "$(eval printf "%s" "\$$buildtype_option_name")" = "0" ] && ! [ "$(eval printf "%s" "\$$buildtype_option_name")" = "1" ] && ! [ "$(eval printf "%s" "\$$buildtype_option_name")" = "2" ]; then
++	__emsg "$(__get_localized ERR_006)" "$buildtype_option_name"
+ 	exit 1
+ fi
+-eval type="100\$$inhouse_option_name"
++if [ "$(eval printf "%s" "\$$buildtype_option_name")" = "2" ]; then
++	type="1007"
++else
++	eval type="100\$$buildtype_option_name"
++fi
+ if [ -z "$HW" ]; then
+ 	__emsg "$(__get_localized ERR_014)"
+ 	exit 4
+@@ -1468,7 +1478,7 @@
+ #                                                                                                     #
+ #######################################################################################################
+ if __is_debug; then
+-	names="$(get_names "$common_names $serial_name" "$alt_names" 2) $flags_name $inhouse_option_name"
++	names="$(get_names "$common_names $serial_name" "$alt_names" 2) $flags_name $buildtype_option_name"
+ 	__debug "$delimiter_line"
+ 	__debug "$(__get_localized DBG_003)"
+ 	__debug "$delimiter_line"
