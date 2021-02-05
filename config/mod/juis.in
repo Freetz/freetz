@@ -4,13 +4,13 @@ if FREETZ_TYPE_FIRMWARE_DETECT_LATEST
 #		string
 #		default "1000"  if FREETZ_TYPE_FIRMWARE_INHAUS
 #		default "1001"  if FREETZ_TYPE_FIRMWARE_LABOR
-#		default "1   "
+#		default "1"
 
 	config FREETZ_DL_JUIS_PUBLIC
 		string
 		default "0"  if FREETZ_TYPE_FIRMWARE_INHAUS
 		default "1"  if FREETZ_TYPE_FIRMWARE_LABOR
-		default " "
+		default "0"
 
 	config FREETZ_DL_JUIS_COUNTRY
 		string
@@ -24,24 +24,24 @@ if FREETZ_TYPE_FIRMWARE_DETECT_LATEST
 	config FREETZ_DL_JUIS_OEM
 		string
 		default "avme"  if !FREETZ_TYPE_LANG_DE
-		default "avm "
+		default "avm"
 
 	config FREETZ_DL_JUIS_FLAG
 		string
 		default "cable_retail"  if FREETZ_TYPE_CABLE
-		default "empty       "
+		default "empty"
 
 	config FREETZ_DL_JUIS_ANNEX
 		string
-		default "A    "  if FREETZ_TYPE_ANNEX_A
-		default "B    "  if FREETZ_TYPE_DSL
+		default "A"      if FREETZ_TYPE_ANNEX_A
+		default "B"      if FREETZ_TYPE_DSL
 		default "Kabel"  if FREETZ_TYPE_CABLE
-		default "pon  "  if FREETZ_TYPE_FIBER
-		default "Ohne "
+		default "pon"    if FREETZ_TYPE_FIBER
+		default "Ohne"
 
 	config FREETZ_DL_JUIS_FOS
 		string
-		default "04.30-5%REV% "  if FREETZ_TYPE_FIRMWARE_04_XX
+		default "04.30-5%REV%"   if FREETZ_TYPE_FIRMWARE_04_XX
 		default "05.22-26%REV%"  if FREETZ_TYPE_FIRMWARE_05_2X
 		default "05.51-26%REV%"  if FREETZ_TYPE_FIRMWARE_05_5X
 		default "06.03-26%REV%"  if FREETZ_TYPE_FIRMWARE_06_0X
