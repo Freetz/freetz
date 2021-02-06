@@ -169,6 +169,14 @@ endmenu # "Webif customization" #
 menu "Additional informations"
 	visible if FREETZ_SHOW_ADVANCED
 
+	config FREETZ_ADD_JUIS_CHECK
+		bool "Add juis_check"
+		select FREETZ_PACKAGE_JUIS_CHECK
+		default y if FREETZ_AVM_VERSION_07_0X_MIN
+		default n
+		help
+			Adds update check to webif, category 'system'.
+
 	# TODO: invert logic
 	config FREETZ_REMOVE_BOX_INFO
 		bool "Remove BOX-Info page"

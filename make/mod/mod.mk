@@ -12,8 +12,6 @@ $(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_MOD_SWAPOPTIONS),,etc/init.d/rc.swap us
 $(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_MOD_ETCSERVICES),,etc/services)
 $(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_MOD_ETCNETCONFIG),,etc/netconfig)
 
-$(PKG)_EXCLUDED += $(if $(FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE),,usr/mww/cgi-bin/system_lfs.cgi usr/mww/cgi-bin/exec.d/linux_fs_start.sh)
-
 $(PKG)_EXCLUDED += $(if $(FREETZ_AVM_HAS_UDEV),etc/device.table,etc/udev)
 $(PKG)_EXCLUDED += $(if $(FREETZ_CUSTOM_UDEV_RULES),,etc/default.mod/udev_*.def etc/udev/rules.d/??-custom.rules)
 $(PKG)_EXCLUDED += $(if $(FREETZ_PATCH_FREETZMOUNT),,usr/lib/libmodmount.sh usr/lib/cgi-bin/mod/conf/30-mount.sh)
@@ -37,6 +35,8 @@ $(PKG)_EXCLUDED += $(if $(FREETZ_TARGET_IPV6_SUPPORT),,usr/lib/cgi-bin/mod/conf/
 $(PKG)_EXCLUDED += $(if $(FREETZ_STRIP_SCRIPTS),usr/share/abo??.txt)
 $(PKG)_EXCLUDED += $(if $(FREETZ_REMOVE_BOX_INFO),usr/lib/cgi-bin/mod/box_info.cgi)
 $(PKG)_EXCLUDED += $(if $(FREETZ_REMOVE_FREETZ_INFO),usr/lib/cgi-bin/mod/do_download_config.cgi usr/lib/cgi-bin/mod/info.cgi)
+$(PKG)_EXCLUDED += $(if $(FREETZ_ADD_JUIS_CHECK),,usr/mww/cgi-bin/system_juis.cgi usr/mww/cgi-bin/exec.d/juis_check.sh)
+$(PKG)_EXCLUDED += $(if $(FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE),,usr/mww/cgi-bin/system_lfs.cgi usr/mww/cgi-bin/exec.d/linux_fs_start.sh)
 
 $(pkg):
 
