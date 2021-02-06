@@ -431,6 +431,9 @@ Index:
   * **<u>js OSSP 1.6.20070208 (binary only)</u><a id='js'></a>**<br>
     OSSP js is a stand-alone distribution of the JavaScript (JS) programming language reference implementation from Mozilla.
 
+  * **<u>juis_check 0.4</u><a id='juis-check'></a>**<br>
+    juis_check script from PeterPawn's YourFritz.
+
 ### K
 
   * **[Knockd 0.7](../docs/make/knock.md)<a id='knock'></a>**<br>
