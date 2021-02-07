@@ -11,9 +11,15 @@ vfromk() {
 if [ -n "$LAST" ]; then
 	echo '<pre>'
 	if [ "$(vfromk Found)" == "true" ]; then
-		echo "$(lang de:"Version" en:"Version"): <a title='$(vfromk Name)'>$(vfromk Version | sed 's/-/ rev/')</a>"
-		echo "$(lang de:"Info" en:"Info"): <a target="_blank" href=$(vfromk InfoURL)>$(vfromk InfoText)<a/>"
-		echo "$(lang de:"Download" en:"Download"): <a href=$(vfromk DownloadURL)>$(vfromk DownloadURL | sed 's/.*\///')<a/>"
+		echo -n "$(lang de:"Version" en:"Version"): "
+		VERS="$(vfromk Version | sed 's/-/ rev/')"
+		NAME="$(vfromk Name)"
+		[ -n "$NAME" ] && echo "<a title='$NAME'>${VERS:-$NAME}</a>" || echo "${VERS:-$(lang de:"Unbekannt" en:"Unknown")}"
+		TEXT="$(vfromk InfoText)"
+		IURL="$(vfromk InfoURL)"
+		[ -n "$IURL" ] && echo "$(lang de:"Info" en:"Info"): <a target="_blank" href=$IURL>${TEXT:-${IURL##*/}}</a>"
+		DURL="$(vfromk DownloadURL)"
+		[ -n "$DURL" ] && echo "$(lang de:"Download" en:"Download"): <a href=$DURL>${DURL##*/}</a>"
 	else
 		echo "$(lang de:"Keine Firmware gefunden" en:"No firmware found")"
 	fi

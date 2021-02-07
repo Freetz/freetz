@@ -8,6 +8,7 @@ do__juis_check() {
 
 	VER="$(/etc/version -v)"
 	REV="$(/etc/version -vsub | sed 's/-//')"
+	[ -z "$REV" ] && REV="$(/etc/version --project)"
 	echo "Local version: $VER${REV:+-$REV}"
 
 	if [ "$REV" -gt 0 2>/dev/null ]; then
