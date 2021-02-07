@@ -18,7 +18,9 @@ TOOLS+=$(sort $(basename $(notdir $(wildcard $(TOOLS_DIR)/make/*/*.mk))))
 TOOLS_CONDITIONAL+=gmp-host
 TOOLS_CONDITIONAL+=mpc-host
 TOOLS_CONDITIONAL+=mpfr-host
+ifneq ($(strip $(FREETZ_SHARE_terminfo)),y)
 TOOLS_CONDITIONAL+=ncurses-host
+endif
 ifneq ($(strip $(FREETZ_STRIP_LIBRARIES)),y)
 TOOLS_CONDITIONAL+=mklibs
 endif
