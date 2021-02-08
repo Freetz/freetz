@@ -714,15 +714,10 @@ endchoice # "Firmware version" #
 comment " >> This firmware fits on AVM and AVME devices"
 	depends on FREETZ_AVM_PROP_ALL_REGIONS && !( ( (!FREETZ_AVM_HAS_BRANDING_1und1 || FREETZ_REMOVE_BRANDING_1und1) && FREETZ_REMOVE_BRANDING_avm) || FREETZ_REMOVE_BRANDING_avme)
 
-config FREETZ_TYPE_FIRMWARE_DETECT_LATEST
-	bool "Detect the latest firmware version"
-	depends on FREETZ_AVM_HAS_JUIS_SUPPORT
-	default y if FREETZ_SHOW_DEVELOPER && !FREETZ_TYPE_FIRMWARE_FINAL
-	default n
-	select FREETZ_DL_DETECT_IMAGE_NAME
-	depends on FREETZ_SHOW_EXPERT
-	depends on !FREETZ_TYPE_ALIEN_HARDWARE
-	depends on !FREETZ_TYPE_FIRMWARE_FINAL || \
+config FREETZ_AVM_VERSION_LATEST_MAJOR
+	bool
+	default y
+	depends on \
 		( FREETZ_TYPE_FIRMWARE_04_XX && !FREETZ_AVM_HAS_FIRMWARE_05_2X) || \
 		( FREETZ_TYPE_FIRMWARE_05_2X && !FREETZ_AVM_HAS_FIRMWARE_05_5X) || \
 		( FREETZ_TYPE_FIRMWARE_05_5X && !FREETZ_AVM_HAS_FIRMWARE_06_0X) || \
@@ -735,10 +730,21 @@ config FREETZ_TYPE_FIRMWARE_DETECT_LATEST
 		( FREETZ_TYPE_FIRMWARE_07_1X && !FREETZ_AVM_HAS_FIRMWARE_07_2X) || \
 		( FREETZ_TYPE_FIRMWARE_07_2X && !FREETZ_AVM_HAS_FIRMWARE_07_25) || \
 		( FREETZ_TYPE_FIRMWARE_07_25)
+
+config FREETZ_TYPE_FIRMWARE_DETECT_LATEST
+	bool "Detect the latest firmware version"
+	depends on FREETZ_SHOW_EXPERT
+	depends on FREETZ_AVM_HAS_JUIS_SUPPORT
+	depends on !FREETZ_TYPE_ALIEN_HARDWARE
+	depends on !FREETZ_TYPE_FIRMWARE_FINAL || FREETZ_AVM_VERSION_LATEST_MAJOR
+	select FREETZ_DL_DETECT_IMAGE_NAME
+	default y if !FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_SHOW_DEVELOPER
+	default n
 	help
 		Automatically detect the latest firmware version by using AVM's juis.
 		A posive result will be cached for 1 hour.
-		WARNING: Changes by AVM are not recognized!
+		WARNING:
+		Changes by AVM are not recognized!
 		This is okay for small ones (7.20 -> 7.21), but will cause
 		problems for bigger changes (7.1x -> 7.2x).
 		For Labor/Inhaus this could happen for every version bump!
