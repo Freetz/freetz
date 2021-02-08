@@ -24,7 +24,7 @@ miniconfig() {
 	for i in "$@"; do echo "$i=y"; done
 cat << EOF
 FREETZ_USER_LEVEL_DEVELOPER=y
-FREETZ_SHOW_DEVELOPER=y
+FREETZ_SERIES_ALL=y
 FREETZ_TYPE_FIRMWARE_DETECT_LATEST=y
 EOF
 }
@@ -43,6 +43,7 @@ juisstring() {
 multi() {
 	rm -f $PARENT/config/custom.in
 	make $TOOL_CONF >/dev/null
+	[ ! -x $PARENT/tools/yf/juis/juis_check ] && echo 'Building tools' && make yourfritz-host >/dev/null
 	for device in $(grep 'prompt "Hardware type"' $PARENT/config/ui/firmware.in -A999 | grep '^endchoice' -m1 -B999 | sed -rn 's/.*config //p' | tac); do
 #		echo " >>  $device"
 		grep -q '^FREETZ_TYPE_FIRMWARE_DETECT_LATEST=y$' $PARENT/.config || continue
