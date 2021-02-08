@@ -11,6 +11,10 @@ $(PKG)_DEPENDS_ON += $(STDCXXLIB)
 $(PKG)_REBUILD_SUBOPTS += FREETZ_STDCXXLIB
 
 $(PKG)_CONFIGURE_OPTIONS += --without-nvme-devicescan
+ifeq ($(strip $(FREETZ_TARGET_GCC_4_MAX)),y)
+$(PKG)_CONFIGURE_OPTIONS += CFLAGS="$(TARGET_CFLAGS) -fno-stack-protector" 
+$(PKG)_CONFIGURE_OPTIONS += CXXFLAGS="$(TARGET_CFLAGS) -fno-stack-protector"
+endif
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
