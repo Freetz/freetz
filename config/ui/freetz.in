@@ -171,6 +171,8 @@ menu "Additional informations"
 
 	config FREETZ_ADD_JUIS_CHECK
 		bool "Add juis_check"
+		select FREETZ_BUSYBOX_BASE64
+		select FREETZ_BUSYBOX_HEXDUMP
 		select FREETZ_PACKAGE_JUIS_CHECK
 		default y if FREETZ_AVM_VERSION_07_0X_MIN
 		default n
