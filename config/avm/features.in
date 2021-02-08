@@ -222,6 +222,17 @@ config FREETZ_AVM_HAS_DEBUG_CFG_SUPPORT
 		(FREETZ_AVM_VERSION_05_5X_MAX &&  FREETZ_SYSTEM_TYPE_UR8) || \
 		(FREETZ_AVM_VERSION_06_0X_MAX && !FREETZ_SYSTEM_TYPE_UR8)
 
+config FREETZ_AVM_HAS_JUIS_SUPPORT
+	bool
+	default y
+	depends on \
+		FREETZ_TYPE_7170     || \
+		FREETZ_TYPE_7270_V1  || \
+		FREETZ_TYPE_7570     || \
+		FREETZ_AVM_VERSION_05_2X_MIN
+	help
+		If /var/juis_boxinfo.xml or /usr/www/$OEM/jason_boxinfo.xml exists.
+
 # multid.leases file used by AVM uses "8 columns"-format instead of "7 columns"-one
 # Note: v2 is a Freetz internal name, it is unknown if and how AVM distinguishes the file format version.
 # TODO: check the default values, at the moment pure assumption
