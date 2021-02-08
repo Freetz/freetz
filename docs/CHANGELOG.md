@@ -49,7 +49,7 @@ Latest changes
 - Updated packages and libs:
     * cifs-utils 6.12
     * curl 7.75.0
-    * haproxy 1.8.28
+    * haproxy 2.2.9
     * libgd 2.3.1
     * lighttpd 1.4.59
     * mtr 0.80/0.94
