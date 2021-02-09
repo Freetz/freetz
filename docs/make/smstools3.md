@@ -1,4 +1,6 @@
 # smstools3 3.1.21
+ - Homepage: [http://smstools3.kekekasvi.com/](http://smstools3.kekekasvi.com/)
+ - Changelog: [http://smstools3.kekekasvi.com/index.php?p=history3](http://smstools3.kekekasvi.com/index.php?p=history3)
 
 [![SMStools3](../screenshots/251_md.jpg)](../screenshots/251.jpg)
 

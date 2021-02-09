@@ -3,6 +3,9 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_SHA256:=48235d10b37775dbda59341ac0c4b239b82ad6318c31568b985730c788aac53b
 $(PKG)_SITE:=https://matt.ucc.asn.au/dropbear/releases,https://dropbear.nl/mirror/releases
 #$(PKG)_SITE:=hg@https://secure.ucc.asn.au/hg/dropbear
+### WEBSITE:=https://matt.ucc.asn.au/dropbear/dropbear.html
+### CHANGES:=https://matt.ucc.asn.au/dropbear/CHANGES
+### CVSREPO:=https://hg.ucc.asn.au/dropbear/file/tip
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/dropbearmulti
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/dropbearmulti

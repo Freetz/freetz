@@ -4,6 +4,9 @@ $(PKG)_SOURCE_SHA256_ABANDON:=cf285395a679f0b68c0acde2cb2480e8ead6ca07ff14c1bc52
 $(PKG)_SOURCE_SHA256_CURRENT:=029a426e44d656cb4e1189319c95fe6fc9864247724f5599d99df9c4c3478fbd
 $(PKG)_SOURCE_SHA256:=$(OPENVPN_SOURCE_SHA256_$(if $(FREETZ_PACKAGE_OPENVPN_VERSION_ABANDON),ABANDON,CURRENT))
 $(PKG)_SITE:=https://swupdate.openvpn.net/community/releases,https://build.openvpn.net/downloads/releases
+### WEBSITE:=https://openvpn.net/community-downloads/
+### CHANGES:=https://community.openvpn.net/openvpn/wiki/ChangesInOpenvpn25
+### CVSREPO:=https://github.com/OpenVPN/openvpn
 
 $(PKG)_CONDITIONAL_PATCHES+=$(if $(FREETZ_PACKAGE_OPENVPN_VERSION_ABANDON),abandon,current)
 ifeq ($(strip $(FREETZ_PACKAGE_OPENVPN_WITH_TRAFFIC_OBFUSCATION)),y)

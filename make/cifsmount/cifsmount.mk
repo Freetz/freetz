@@ -2,6 +2,9 @@ $(call PKG_INIT_BIN, 6.12)
 $(PKG)_SOURCE:=cifs-utils-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_SHA256:=922ddcc3059922e80789312c386b9c569991b4350d3ae3099de3e4b82f3885ef
 $(PKG)_SITE:=@SAMBA/linux-cifs/cifs-utils
+### WEBSITE:=https://wiki.samba.org/index.php/LinuxCIFS_utils
+### CHANGES:=https://wiki.samba.org/index.php/LinuxCIFS_utils#News
+### CVSREPO:=https://git.samba.org/?p=cifs-utils.git;a=summary
 
 $(PKG)_STARTLEVEL=50
 

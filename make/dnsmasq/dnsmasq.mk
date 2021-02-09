@@ -5,6 +5,10 @@ $(PKG)_SOURCE_MD5_CURRENT:=1875b70e98569f5d0abd84b78b816d31
 $(PKG)_SOURCE_MD5:=$(DNSMASQ_SOURCE_MD5_$(if $(FREETZ_PACKAGE_DNSMASQ_VERSION_ABANDON),ABANDON,CURRENT))
 $(PKG)_SITE:=http://thekelleys.org.uk/dnsmasq
 #$(PKG)_SITE:=git://thekelleys.org.uk/dnsmasq.git
+### WEBSITE:=http://thekelleys.org.uk/dnsmasq/doc.html
+### MANPAGE:=http://thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html
+### CHANGES:=http://thekelleys.org.uk/dnsmasq
+### CVSREPO:=http://thekelleys.org.uk/gitweb/?p=dnsmasq.git;a=summary
 
 $(PKG)_STARTLEVEL=40 # multid-wrapper may start it earlier!
 

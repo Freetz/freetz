@@ -28,6 +28,11 @@ dsc="$(sed -rn 's/[ \t]*bool "([^\"]*)"[ \t]*.*/\1/p' "$INPWD/$pkg/Config.in" 2>
 
 if [ -e "$MDPWD/$pkg.md" ]; then
 	sed "1c# $dsc" -i "$MDPWD/$pkg.md"
+	for pair in CVSREPO°Repository CHANGES°Changelog MANPAGE°Manpage WEBSITE°Homepage; do
+		sed "/^ - ${pair#*°}: \[.*)$/d" -i "$MDPWD/$pkg.md"
+		lnk="$(sed -n "s/^### ${pair%%°*}:= *//p" $INPWD/$pkg/$pkg.mk)"
+		[ -n "$lnk" ] && sed "2i\ - ${pair#*°}: \[$lnk\]($lnk)" -i "$MDPWD/$pkg.md"
+	done
 	itm="[$itm](../docs/make/$pkg.md)"
 	lst="$(sed -n 's/^### //p' "$MDPWD/$pkg.md" | grep -v ' Links$')"
 else

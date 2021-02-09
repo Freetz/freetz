@@ -1,4 +1,7 @@
 # OpenVPN 2.4.10/2.5.0
+ - Homepage: [https://openvpn.net/community-downloads/](https://openvpn.net/community-downloads/)
+ - Changelog: [https://community.openvpn.net/openvpn/wiki/ChangesInOpenvpn25](https://community.openvpn.net/openvpn/wiki/ChangesInOpenvpn25)
+ - Repository: [https://github.com/OpenVPN/openvpn](https://github.com/OpenVPN/openvpn)
 
 OpenVPN ist ein Programm zur Herstellung eines Virtuellen Privaten
 Netzwerkes (VPN) über eine verschlüsselte TLS-Verbindung.

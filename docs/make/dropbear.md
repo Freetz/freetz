@@ -1,4 +1,7 @@
 # Dropbear 2020.81
+ - Homepage: [https://matt.ucc.asn.au/dropbear/dropbear.html](https://matt.ucc.asn.au/dropbear/dropbear.html)
+ - Changelog: [https://matt.ucc.asn.au/dropbear/CHANGES](https://matt.ucc.asn.au/dropbear/CHANGES)
+ - Repository: [https://hg.ucc.asn.au/dropbear/file/tip](https://hg.ucc.asn.au/dropbear/file/tip)
 
 > "Dropbear is a relatively small SSH 2 server and client. [... ...]
 > Dropbear is particularly useful for "embedded"-type Linux (or other

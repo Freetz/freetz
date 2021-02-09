@@ -2,6 +2,8 @@ $(call PKG_INIT_BIN, 2.2.9)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_SHA256:=21680459b08b9ba21c8cc9f5dbd0ee6e1842f57a3a67f87179871e1c13ebd4e3
 $(PKG)_SITE:=http://www.haproxy.org/download/2.2/src
+### WEBSITE:=http://www.haproxy.org/
+### CHANGES:=http://www.haproxy.org/download/2.2/src/CHANGELOG
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/haproxy
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/haproxy

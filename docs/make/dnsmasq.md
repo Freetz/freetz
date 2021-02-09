@@ -1,4 +1,8 @@
 # Dnsmasq 2.80/2.84
+ - Homepage: [http://thekelleys.org.uk/dnsmasq/doc.html](http://thekelleys.org.uk/dnsmasq/doc.html)
+ - Manpage: [http://thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html](http://thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html)
+ - Changelog: [http://thekelleys.org.uk/dnsmasq](http://thekelleys.org.uk/dnsmasq)
+ - Repository: [http://thekelleys.org.uk/gitweb/?p=dnsmasq.git;a=summary](http://thekelleys.org.uk/gitweb/?p=dnsmasq.git;a=summary)
 
 [![Konfiguration](../screenshots/200_md.png)](../screenshots/200.png)
 
