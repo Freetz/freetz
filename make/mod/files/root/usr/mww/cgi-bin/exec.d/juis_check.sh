@@ -4,7 +4,7 @@ echo 'Please wait ...'
 echo
 
 do__juis_check() {
-	local MAJOR VER REV PUBLIC TMP MAC NAME HWREV OEM LANG COUNTRY ANNEX FLAG NONCE JUIS
+	local MAJOR VER REV BUILDTYPE TMP MAC NAME HWREV OEM LANG COUNTRY ANNEX FLAG NONCE JUIS
 
 	MAJOR="$(sed -nr 's/^firmware_info[ \t]*([^\.]*).*/\1/p' /proc/sys/urlader/environment)"
 
@@ -14,13 +14,8 @@ do__juis_check() {
 	[ -z "$REV" ] && REV="0"
 	echo "Local version: $MAJOR.$VER-$REV"
 
-	case "$(sed -n 's/"//g;s/.* CONFIG_BUILDTYPE=//p' /etc/init.d/rc.conf 2>/dev/null)" in
-		1000) PUBLIC='0' ;;
-		1001) PUBLIC='1' ;;
-		*) PUBLIC='2' ;;
-	esac
-
-	if [ "$PUBLIC" == "2" ]; then
+	BUILDTYPE="$(sed -n 's/"//g;s/.* CONFIG_BUILDTYPE=//p' /etc/init.d/rc.conf 2>/dev/null)"
+	if [ -n "$BUILDTYPE" -a "$BUILDTYPE" != "1" ]; then
 		VER="$(echo ${VER} | sed 's/\.//;s/^0*//')"
 		VER="$(echo 0$(( $VER - 1 )) | sed -r 's/.*(..)(..)$/\1.\2/')"
 	fi
@@ -48,7 +43,7 @@ do__juis_check() {
 
 	NONCE="$(dd if=/dev/urandom bs=16 count=1 2>/dev/null | base64)"
 
-	JUIS="Version=$MAJOR.$VER-$REV Serial=$MAC Name=$NAME HW=$HWREV OEM=$OEM Lang=$LANG Country=$COUNTRY Annex=$ANNEX Flag=$FLAG Public=$PUBLIC Nonce=$NONCE"
+	JUIS="Version=$MAJOR.$VER-$REV Serial=$MAC Name=$NAME HW=$HWREV OEM=$OEM Lang=$LANG Country=$COUNTRY Annex=$ANNEX Flag=$FLAG Buildtype=$BUILDTYPE Nonce=$NONCE"
 	echo
 #	echo -e "JUIS: $JUIS\n"
 #	juis_check -d -n -i -s /tmp/.juis_check $JUIS 2>&1            | html | sed 's/\[[0-9]*m//g;s/.*juis_check.: //'
