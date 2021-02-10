@@ -41,7 +41,7 @@ Latest changes
   * Loading build kernel modules may work or do not. You'll notice.
 
 - New packages, libs, modules:
-    * juis_check 0.4
+    * juis_check 0.5
 
 - Updated tools and hooks:
   * fitimg 0.4
