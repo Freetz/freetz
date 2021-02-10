@@ -85,11 +85,6 @@ define ERROR
 printf "\n$(_Y)%s$(_N)\n" "ERROR: $(2)";  exit $(1);
 endef
 
-# check for very old linux with kernel v3 or less
-ifeq ($(shell uname -r | sed 's/\..*//;s/^[1-3]//'),)
-$(error Your Linux System is too old. Please upgrade it or use Freetz-Linux: https://github.com/Freetz-NG/freetz-ng/blob/master/README.md ..)
-endif
-
 # check for proper make version
 ifneq ($(filter 3.7% 3.80 3.81,$(MAKE_VERSION)),)
 $(error Your make ($(MAKE_VERSION)) is too old. Go get at least 3.82)
