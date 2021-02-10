@@ -85,11 +85,6 @@ define ERROR
 printf "\n$(_Y)%s$(_N)\n" "ERROR: $(2)";  exit $(1);
 endef
 
-# check for old git version 1
-ifeq ($(shell git version | sed 's/[^0-9]*1.*//'),)
-  $(error Your Linux System seams to be too old, git is version 1. Please upgrade it or use Freetz-Linux: https://github.com/Freetz-NG/freetz-ng/blob/master/README.md ..)
-endif
-
 # check for very old linux with kernel v3 or less
 ifeq ($(shell uname -r | sed 's/\..*//;s/^[1-3]//'),)
 $(error Your Linux System is too old. Please upgrade it or use Freetz-Linux: https://github.com/Freetz-NG/freetz-ng/blob/master/README.md ..)
