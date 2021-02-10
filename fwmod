@@ -985,7 +985,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	[ ! -L "$FILESYSTEM_MOD_DIR"/opt ] && mkdir -p "$FILESYSTEM_MOD_DIR"/opt
 
 	# Determine Freetz version
-	FREETZ_VERSION="$(${TOOLS_DIR}/freetz-revision fwmod)"
+	FREETZ_VERSION="$(${TOOLS_DIR}/freetz_revision fwmod)"
 
 	echo1 "setting freetz-version '${FREETZ_VERSION}'"
 	echo "${FREETZ_VERSION}" > "${FILESYSTEM_MOD_DIR}/etc/.freetz-version"
