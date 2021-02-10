@@ -564,6 +564,12 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		[ ! -x $tool ] && error 1 "cannot find the tool $tool"
 	done
 
+	# Is cpio up to date ?
+	if [ "$FREETZ_AVM_PROP_INNER_FILESYSTEM_TYPE_CPIO" == "y" ]; then
+		[ -z "$(cpio --version 2>/dev/null | sed -nr 's/^cpio .* 2\.([0-9]*)(\.[0-9]+)*/\1/p' | sed -r 's/^([0-9]|10|11)$//')" ] && \
+		  error 1 "cpio version 2.12 is required"
+	fi
+
 	# Remove NMI vector from SquashFS
 	if [ "$FREETZ_AVM_HAS_NMI_VECTOR" == "y" ]; then
 		echo0 "removing NMI vector from SquashFS"
