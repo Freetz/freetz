@@ -96,8 +96,8 @@ $(error Your Linux System is too old. Please upgrade it or use Freetz-Linux: htt
 endif
 
 # check for proper make version
-ifneq ($(filter 3.7% 3.80,$(MAKE_VERSION)),)
-$(error Your make ($(MAKE_VERSION)) is too old. Go get at least 3.81)
+ifneq ($(filter 3.7% 3.80 3.81,$(MAKE_VERSION)),)
+$(error Your make ($(MAKE_VERSION)) is too old. Go get at least 3.82)
 endif
 
 # Current user == root? -> Error
