@@ -44,7 +44,7 @@ Latest changes
     * juis_check 0.5
 
 - Updated tools and hooks:
-  * fitimg 0.4
+  * fitimg 0.5
 
 - Updated packages and libs:
     * cifs-utils 6.12
