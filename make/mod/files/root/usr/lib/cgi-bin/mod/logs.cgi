@@ -62,6 +62,7 @@ case "$3" in
 		$logg || echo "<br><h1>$(lang de:"Keine Logdateien gefunden" en:"No log files found")!</h1>"
 		;;
 	*)
+		do_log /var/log/mod_lang.log
 		do_log /var/log/mod_load.log
 		do_log /var/log/mod_net.log
 		do_log /var/log/mod_voip.log

@@ -1,7 +1,10 @@
+[ -r /etc/options.cfg ] && . /etc/options.cfg
+
 skins="$(ls /usr/share/skin)"
 for skin in $skins; do
 	check "$MOD_SKIN" $skin:${skin}
 done
+
 
 sec_begin '$(lang de:"Weboberfl&auml;che" en:"Web interface")'
 
@@ -63,6 +66,11 @@ if [ -r "/usr/lib/cgi-bin/mod/box_info.cgi" -o -r "/usr/lib/cgi-bin/mod/info.cgi
 	echo "</p>"
 fi
 
+[ "$FREETZ_LANG_XX" == "y" ] && cgi_print_radiogroup \
+  "lang" "$MOD_LANG" "" "$(lang de:"Sprachauswahl" en:"Language selection"):" \
+  "de::deutsch" \
+  "en::english"
+
 cat << EOF
 <p>$(lang de:"Skinauswahl" en:"Skin selection"):
 EOF
@@ -70,6 +78,7 @@ for skin in $skins; do
 	skin_nice_name="$(echo -n "${skin:0:1}" | tr '[:lower:]' '[:upper:]')${skin:1}"
 	echo "<input id=\""$skin"\" type=\"radio\" name=\"skin\" value=\""$skin"\" "$(eval echo \$${skin}_chk)"><label for=\""$skin"\"> "$skin_nice_name"</label>"
 done
+echo '</p>'
 
 cgi_print_textline_p "cgi_width" "$MOD_CGI_WIDTH" 4 "$(lang de:"Breite des Hauptinhalts" en:"Width of the main content area"):"
 cgi_print_checkbox_p "show_memory_usage" "$MOD_SHOW_MEMORY_USAGE" "$(lang de:"Zeige Speicherverbrauch" en:"Show memory usage")"

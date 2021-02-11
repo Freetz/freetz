@@ -415,6 +415,9 @@ modlangconf()
 modlang()
 {
 	# modlang <conffile> <dir>
+
+	[ "$FREETZ_LANG_STRING" == "xx" ] && return
+
 	case $1 in
 		/*) conffile=$1 ;;
 		*)  conffile="$PWD/$1" ;;
@@ -442,7 +445,7 @@ modlang()
 
 	(
 		if ! cd "${2}"; then
-		    	warn "modlang: $2 does not exist"
+			warn "modlang: $2 does not exist"
 			return
 		fi
 		local dot_exclude="$(echo $FREETZ_BASE_DIR/$1 | sed 's/language$/exclude/')"

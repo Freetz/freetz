@@ -1,2 +1,11 @@
 #!/bin/sh
-echo '*** error: language not set ***'
+[ -r /etc/options.cfg ] && . /etc/options.cfg
+[ "$FREETZ_LANG_XX" != "y" ] && echo '*** error: language not set ***' && exit 1
+[ "$#" == "0" ] && echo "$(pwd) -- $(cat /proc/$PPID/cmdline | xargs -0)" >> /var/log/mod_lang.log
+for lng in $(modconf value MOD_LANG mod) de en; do
+	for par in "$@"; do
+		ret="$(echo -n "$par" | sed -n "s/^$lng://p")"
+		[ -n "$ret" ] && echo -n "$ret" && exit
+	done
+done
+

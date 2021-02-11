@@ -11,12 +11,24 @@ menu "Web Interface"
 		config FREETZ_LANG_EN
 			bool "en - english"
 
+		config FREETZ_LANG_XX
+			bool "xx - EXPERIMENTAL"
+			depends on FREETZ_SHOW_DEVELOPER
+			help
+				The current language could be switched by webinterface.
+				WARNING:
+				 - Every string on the webinterface opens a subshell on
+				   every page load! This could be very slow.
+				 - Not every package is compatible yet and shows all languages.
+				 - For some strings a reboot is required.
+
 	endchoice # "Freetz language" #
 
 	config FREETZ_LANG_STRING
 		string
 		default "de"            if FREETZ_LANG_DE
 		default "en"            if FREETZ_LANG_EN
+		default "xx"            if FREETZ_LANG_XX
 
 
 	config FREETZ_SECURITY_LEVEL
