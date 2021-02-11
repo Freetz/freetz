@@ -11,13 +11,18 @@ vfromk() {
 if [ -n "$LAST" ]; then
 	echo '<pre>'
 	if [ "$(vfromk Found)" == "true" ]; then
-		echo -n "$(lang de:"Version" en:"Version"): "
+		IVER="$(sed -nr 's/^firmware_info[ \t]*//p' /proc/sys/urlader/environment)"
+		IREV="$(/etc/version --project)"
+		[ -z "$IREV" ] && IREV="$(/etc/version -vsub | sed 's/-//')"
+		echo "$(lang de:"Installierte Version" en:"Installierte version"): $IVER-${IREV:-0}"
+		echo '</pre><pre>'
+		echo -n "$(lang de:"Neueste Version" en:"Latest version"): "
 		VERS="$(vfromk Version | sed 's/-/ rev/')"
 		NAME="$(vfromk Name)"
 		[ -n "$NAME" ] && echo "<a title='$NAME'>${VERS:-$NAME}</a>" || echo "${VERS:-$(lang de:"Unbekannt" en:"Unknown")}"
 		TEXT="$(vfromk InfoText)"
 		IURL="$(vfromk InfoURL)"
-		[ -n "$IURL" ] && echo "$(lang de:"Info" en:"Info"): <a target="_blank" href=$IURL>${TEXT:-${IURL##*/}}</a>"
+		[ -n "$IURL" ] && echo "$(lang de:"Changelog" en:"Changelog"): <a target="_blank" href=$IURL>${TEXT:-${IURL##*/}}</a>"
 		DURL="$(vfromk DownloadURL)"
 		[ -n "$DURL" ] && echo "$(lang de:"Download" en:"Download"): <a href=$DURL>${DURL##*/}</a>"
 	else
