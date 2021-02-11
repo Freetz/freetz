@@ -7,7 +7,7 @@ $(PKG)_SITE:=http://thekelleys.org.uk/dnsmasq
 #$(PKG)_SITE:=git://thekelleys.org.uk/dnsmasq.git
 ### WEBSITE:=http://thekelleys.org.uk/dnsmasq/doc.html
 ### MANPAGE:=http://thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html
-### CHANGES:=http://thekelleys.org.uk/dnsmasq
+### CHANGES:=http://thekelleys.org.uk/dnsmasq/CHANGELOG
 ### CVSREPO:=http://thekelleys.org.uk/gitweb/?p=dnsmasq.git;a=summary
 
 $(PKG)_STARTLEVEL=40 # multid-wrapper may start it earlier!
