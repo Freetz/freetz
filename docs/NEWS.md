@@ -1,5 +1,15 @@
 # NEWS
 
+ * __[2021-02-09](#2021-02-09)__<a id='2021-02-09'></a><br>
+   In den Makefiles von Packages können nun "Kommentare" angegeben werden aus denen Links im `docs/` Verzeichnis<br>
+   generiert werden. Aktuell möglich sind:<br>
+   ```### WEBSITE:=http...```<br>
+   ```### MANPAGE:=http...```<br>
+   ```### CHANGES:=http...```<br>
+   ```### CVSREPO:=http...```<br>
+   Beispiel: [dnsmasq.html](https://freetz-ng.github.io/freetz-ng/make/dnsmasq.html) - [dnsmasq.mk](https://github.com/Freetz-NG/freetz-ng/blob/master/make/dnsmasq/dnsmasq.mk)<br>
+   Siehe [551baf7b](https://github.com/Freetz-NG/freetz-ng/commit/551baf7bf9ed902be832fe69ed1bdf49c7b6e333)<br>
+
  * __[2021-02-05](#2021-02-05)__<a id='2021-02-05'></a><br>
    Juis ist jetzt bei allen Geräten auch für stabile Firmwareversionen aktivierbar. Aus technischen Gründen ist dies nur für die<br>
    jeweils neueste Firmwarereihe wie zB `07.2x` möglich.<br>
