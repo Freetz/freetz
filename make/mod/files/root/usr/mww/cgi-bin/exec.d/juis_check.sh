@@ -16,7 +16,7 @@ do__juis_check() {
 
 	BUILDTYPE="$(sed -n 's/"//g;s/.* CONFIG_BUILDTYPE=//p' /etc/init.d/rc.conf 2>/dev/null)"
 	[ -z "$BUILDTYPE" ] && BUILDTYPE='1'
-	if [ "$BUILDTYPE" != "1" -o "$FREETZ_TYPE_ALIEN_HARDWARE" == "y" ]; then
+	if [ "$BUILDTYPE" == "1" -o "$FREETZ_TYPE_ALIEN_HARDWARE" == "y" ]; then
 		[ "$FREETZ_TYPE_ALIEN_HARDWARE" == "y" ] && TMP='30' || TMP='1'
 		VER="$(echo ${VER} | sed 's/\.//;s/^0*//')"
 		VER="$(echo 0$(( $VER - $TMP )) | sed -r 's/.*(..)(..)$/\1.\2/')"
