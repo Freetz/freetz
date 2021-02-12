@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, fba8ed34aed2169b6c1daa1e816bae1f14b49d78)
+$(call PKG_INIT_BIN, 049839bdf5811ed0c7d9b3036249c12a294ecffe)
 $(PKG)_BINARY:=$($(PKG)_DIR)/juis/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
 
