@@ -2,6 +2,7 @@
 Currently supported devices and firmwares
 
  * [Not supported devices](#not-supported-devices)
+ * [Newer firmware versions](#newer-firmware-versions)
  * [Fritz!Box (2xxx)](#fritzbox-2xxx)
  * [Fritz!Box WLAN (3xxx)](#fritzbox-wlan-3xxx)
  * [Fritz!Box WAN (4xxx)](#fritzbox-wan-4xxx)
@@ -25,6 +26,10 @@ Currently supported devices and firmwares
 ### Not supported devices
 
   * Repeater N/G, 310, 600 v1+v2 & 1160: No LAN ports, so a recovery is not possible.
+
+### Newer firmware versions
+
+  * Select `Detect the latest firmware version` to use untested firmware versions.
 
 ### Fritz!Box (2xxx)
 
