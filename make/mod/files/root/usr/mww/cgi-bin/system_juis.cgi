@@ -12,9 +12,14 @@ if [ -n "$LAST" ]; then
 	echo '<pre>'
 	if [ "$(vfromk Found)" == "true" ]; then
 		IVER="$(sed -nr 's/^firmware_info[ \t]*//p' /proc/sys/urlader/environment)"
-		IREV="$(/etc/version --project)"
+		IREV="$(sed -nr 's/.*[ ^]*CONFIG_BUILDNUMBER="?([^"]*).*/\1/p' /etc/init.d/rc.conf)"
+		[ -z "$IREV" ] && IREV="$(/etc/version --project)"
 		[ -z "$IREV" ] && IREV="$(/etc/version -vsub | sed 's/-//')"
-		echo "$(lang de:"Installierte Version" en:"Installierte version"): $IVER-${IREV:-0}"
+		BLDT="$(sed -nr 's/.*[ ^]*CONFIG_BUILDTYPE="?([^"]*).*/\1/p' /etc/init.d/rc.conf)"
+		[ "$BLDT" == "1001" ] && BLDT='Labor'
+		[ "$BLDT" == "1000" ] && BLDT='Inhaus'
+		[ "$BLDT" == "1" ] && BLDT=''
+		echo "$(lang de:"Installierte Version" en:"Installierte version"): $IVER${IREV:+ rev$IREV}${BLDT:+ $BLDT}"
 		echo '</pre><pre>'
 		echo -n "$(lang de:"Neueste Version" en:"Latest version"): "
 		VERS="$(vfromk Version | sed 's/-/ rev/')"
