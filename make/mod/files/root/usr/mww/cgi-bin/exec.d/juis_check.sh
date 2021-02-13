@@ -3,7 +3,7 @@ echo '<pre>'
 echo 'Please wait ...'
 echo
 
-juis short | html
+juis | html
 
 echo
 echo "done."
