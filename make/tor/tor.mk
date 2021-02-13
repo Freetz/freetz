@@ -2,6 +2,10 @@ $(call PKG_INIT_BIN, 0.4.4.6)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_SHA256:=5f154c155803adf5c89e87cab53017b6908c5ebe50c65839e8cf4fbd2abe1fdc
 $(PKG)_SITE:=https://www.torproject.org/dist
+### WEBSITE:=https://www.torproject.org/download/tor/
+### MANPAGE:=https://trac.torproject.org/projects/tor/wiki/
+### CHANGES:=https://gitweb.torproject.org/tor.git/tree/ChangeLog
+### CVSREPO:=https://gitweb.torproject.org/tor.git/
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/app/tor
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/tor

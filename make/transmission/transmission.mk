@@ -2,7 +2,10 @@ $(call PKG_INIT_BIN, 3.00)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SOURCE_SHA256:=9144652fe742f7f7dd6657716e378da60b751aaeda8bef8344b3eefc4db255f2
 $(PKG)_SITE:=https://github.com/transmission/transmission-releases/raw/master
-
+### WEBSITE:=https://transmissionbt.com/download/
+### MANPAGE:=https://github.com/transmission/transmission/wiki
+### CHANGES:=https://github.com/transmission/transmission/releases
+### CVSREPO:=https://github.com/transmission/transmission
 
 $(PKG)_BINARIES_ALL_SHORT     := cli  daemon  remote  create  edit   show
 $(PKG)_BINARIES_BUILD_SUBDIRS := cli/ daemon/ utils/  utils/  utils/ utils/
