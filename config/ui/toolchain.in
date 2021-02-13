@@ -665,6 +665,7 @@ config FREETZ_TOOLCHAIN_32BIT
 
 config FREETZ_TOOLCHAIN_CCACHE
 	bool "Build ccache"
+	default y if FREETZ_SHOW_DEVELOPER
 	default n
 	help
 		ccache is a compiler cache. It acts as a caching pre-processor to C/C++
