@@ -2,6 +2,9 @@ $(call PKG_INIT_BIN, 1.0.20201112)
 $(PKG)_SOURCE:=wireguard-linux-compat-$($(PKG)_VERSION).tar.xz
 $(PKG)_SOURCE_SHA256:=89eae7f0c0bd6c8df3ba2e090984974ff68741a9f26aa0922890f8ca727897e1
 $(PKG)_SITE:=https://git.zx2c4.com/wireguard-linux-compat/snapshot
+### WEBSITE:=https://www.wireguard.com/
+### CHANGES:=https://git.zx2c4.com/wireguard-linux-compat/log/
+### CVSREPO:=https://git.zx2c4.com/wireguard-linux-compat/
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_AVM_VERSION_07_2X_MIN
 $(PKG)_REBUILD_SUBOPTS += FREETZ_KERNEL_VERSION_4_4_60
