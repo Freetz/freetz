@@ -36,6 +36,38 @@ endif
 TARGET_CROSS:=$(call qstrip,$(FREETZ_TARGET_CROSS))
 KERNEL_CROSS:=$(call qstrip,$(FREETZ_KERNEL_CROSS))
 
+
+# s. uclibc-${version}/ldso/ldso/dl-elf.c::_dl_load_shared_library
+STANDARD_LIBRARY_DIRS:=/lib /usr/lib
+
+FREETZ_RPATH_SPACE_SEPARATED:=$(patsubst %/,%,$(subst :,$(_space),$(call qstrip,$(FREETZ_RPATH))))
+FREETZ_RPATH:=$(subst $(_space),:,$(FREETZ_RPATH_SPACE_SEPARATED))
+
+ifneq (,$(if $(MAKECMDGOALS),$(filter-out $(KCONFIG_TARGETS),$(MAKECMDGOALS)),do-validate-FREETZ_RPATH))
+# check if FREETZ_RPATH contains a valid value
+ifneq (1,$(words $(FREETZ_RPATH)))
+$(error FREETZ_RPATH (="$(FREETZ_RPATH)") must not be empty and must not contain spaces)
+endif
+$(foreach entry,$(FREETZ_RPATH_SPACE_SEPARATED), \
+$(if $(filter /%,$(entry)),,$(error FREETZ_RPATH (="$(FREETZ_RPATH)" contains invalid entry "$(entry)", each entry must be an absolute path))) \
+)
+ifneq (,$(filter     $(STANDARD_LIBRARY_DIRS),$(FREETZ_RPATH_SPACE_SEPARATED)))
+ifneq (,$(filter-out $(STANDARD_LIBRARY_DIRS),$(FREETZ_RPATH_SPACE_SEPARATED)))
+$(error FREETZ_RPATH (="$(FREETZ_RPATH)") contains both standard and non-standard search paths. This is NOT supported)
+endif
+endif
+ifeq (,$(filter-out $(STANDARD_LIBRARY_DIRS),$(FREETZ_RPATH_SPACE_SEPARATED)))
+$(info )
+$(warning FREETZ_RPATH (="$(FREETZ_RPATH)") contains only standard search paths. The only use-case for such a configuration (and this is the only reason we support it) is to create binaries using the Freetz toolchain and run them on a non-freetz'ed box.)
+$(info )
+endif
+endif
+
+FREETZ_LIBRARY_DIR:=$(firstword $(FREETZ_RPATH_SPACE_SEPARATED))
+FREETZ_LD_RUN_PATH:=$(if $(filter-out $(STANDARD_LIBRARY_DIRS),$(FREETZ_RPATH_SPACE_SEPARATED)),LD_RUN_PATH="$(FREETZ_RPATH)")
+MAKE_ENV+=FREETZ_LIBRARY_DIR="$(FREETZ_LIBRARY_DIR)"
+
+
 TARGET_CFLAGS_HW_CAPABILITIES :=
 ifeq ($(strip $(FREETZ_TARGET_ARCH_ARM)),y)
 TARGET_CFLAGS_HW_CAPABILITIES += $(if $(call qstrip,$(FREETZ_GCC_CPU)),-mcpu=$(call qstrip,$(FREETZ_GCC_CPU)))
@@ -67,12 +99,14 @@ ifeq ($(strip $(FREETZ_SEPARATE_AVM_UCLIBC)),y)
 TARGET_CFLAGS_LD:=-Wl,-I/usr/lib/freetz/ld-uClibc.so.1
 endif
 
+
 ifneq ($(filter -march=% -mcpu=% -mtune=% -mfpu=% -mfloat-abi=% -m%-float -Wa$(_comma)--trap,$(call qstrip,$(FREETZ_TARGET_CFLAGS))),)
 $(error Please remove any ARCH/CPU/FPU/FLOAT-ABI/MODE related flags (-march/-mcpu/-mtune/-mfpu/-mfloat-abi/-m*-float/-Wa$(_comma)--trap) \
 	from target compiler flags (FREETZ_TARGET_CFLAGS variable in your .config). \
 	These flags are automatically set by Freetz build environment now)
 endif
 TARGET_CFLAGS:=$(strip $(TARGET_CFLAGS_HW_CAPABILITIES) $(call qstrip,$(FREETZ_TARGET_CFLAGS)) $(TARGET_CFLAGS_$(call qstrip,$(FREETZ_TARGET_ARCH))) $(TARGET_CFLAGS_LFS) $(TARGET_CFLAGS_LD))
+
 
 FPIC:=-fPIC
 
@@ -103,35 +137,6 @@ TARGET_STRIP:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)strip --remove-section={.commen
 # Don't use TARGET_TOOLCHAIN_PATH here because it's not set
 TARGET_PATH="$(TARGET_MAKE_PATH):$(KERNEL_MAKE_PATH):$(PATH)"
 
-# s. uclibc-${version}/ldso/ldso/dl-elf.c::_dl_load_shared_library
-STANDARD_LIBRARY_DIRS:=/lib /usr/lib
-
-FREETZ_RPATH_SPACE_SEPARATED:=$(patsubst %/,%,$(subst :,$(_space),$(call qstrip,$(FREETZ_RPATH))))
-FREETZ_RPATH:=$(subst $(_space),:,$(FREETZ_RPATH_SPACE_SEPARATED))
-
-ifneq (,$(if $(MAKECMDGOALS),$(filter-out $(KCONFIG_TARGETS),$(MAKECMDGOALS)),do-validate-FREETZ_RPATH))
-# check if FREETZ_RPATH contains a valid value
-ifneq (1,$(words $(FREETZ_RPATH)))
-$(error FREETZ_RPATH (="$(FREETZ_RPATH)") must not be empty and must not contain spaces)
-endif
-$(foreach entry,$(FREETZ_RPATH_SPACE_SEPARATED), \
-$(if $(filter /%,$(entry)),,$(error FREETZ_RPATH (="$(FREETZ_RPATH)" contains invalid entry "$(entry)", each entry must be an absolute path))) \
-)
-ifneq (,$(filter     $(STANDARD_LIBRARY_DIRS),$(FREETZ_RPATH_SPACE_SEPARATED)))
-ifneq (,$(filter-out $(STANDARD_LIBRARY_DIRS),$(FREETZ_RPATH_SPACE_SEPARATED)))
-$(error FREETZ_RPATH (="$(FREETZ_RPATH)") contains both standard and non-standard search paths. This is NOT supported)
-endif
-endif
-ifeq (,$(filter-out $(STANDARD_LIBRARY_DIRS),$(FREETZ_RPATH_SPACE_SEPARATED)))
-$(info )
-$(warning FREETZ_RPATH (="$(FREETZ_RPATH)") contains only standard search paths. The only use-case for such a configuration (and this is the only reason we support it) is to create binaries using the Freetz toolchain and run them on a non-freetz'ed box.)
-$(info )
-endif
-endif
-
-FREETZ_LIBRARY_DIR:=$(firstword $(FREETZ_RPATH_SPACE_SEPARATED))
-FREETZ_LD_RUN_PATH:=$(if $(filter-out $(STANDARD_LIBRARY_DIRS),$(FREETZ_RPATH_SPACE_SEPARATED)),LD_RUN_PATH="$(FREETZ_RPATH)")
-MAKE_ENV+=FREETZ_LIBRARY_DIR="$(FREETZ_LIBRARY_DIR)"
 
 # commands to run before calling configure
 # each command has to be terminated by ';'
