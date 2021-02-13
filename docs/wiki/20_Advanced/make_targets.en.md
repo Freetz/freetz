@@ -26,6 +26,8 @@ dirclean                                Clean sources (except tools and .config)
 distclean                               Clean everything except the download directory
 
 $(pkg)-precompiled                      Compiles package/library $(pkg)
+$(pkg)-recompile                        Recompiles package/library $(pkg)
+$(pkg)-autofix                          Adjusts patches of package/library $(pkg)
 $(pkg)-dirclean                         Removes build-directory of $(pkg)
 $(pkg)-distclean                        Removes build-directory and all target files of $(pkg)
 

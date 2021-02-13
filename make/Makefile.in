@@ -616,6 +616,10 @@ $(pkg)-dirclean: $(pkg)-dirclean--int
 $(pkg)-distclean: $(pkg)-dirclean $(pkg)-clean $(pkg)-uninstall
 .PHONY: $(pkg)-dirclean $(pkg)-dirclean--int $(pkg)-distclean $(pkg)-clean $(pkg)-uninstall
 
+$(pkg)-autofix: $(pkg)-dirclean
+	$(MAKE) AUTO_FIX_PATCHES=y $(pkg)-unpacked
+$(pkg)-recompile: $(pkg)-dirclean $(pkg)-precompiled
+
 PKG:=
 PKG_TYPE:=
 PKG_MAKEFILE:=
