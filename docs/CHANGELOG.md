@@ -54,6 +54,7 @@ Latest changes
     * lighttpd 1.4.59
     * mtr 0.80/0.94
     * rsync 3.2.3
+    * wireguard-linux-compat 1.0.20210124
 
 ### ng21010
 
