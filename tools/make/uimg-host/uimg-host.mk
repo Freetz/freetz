@@ -33,6 +33,7 @@ $(UIMG_DIR)/uimg: $(UIMG_DIR)/.unpacked
 
 $(TOOLS_DIR)/uimg: $(UIMG_DIR)/uimg
 	$(INSTALL_FILE)
+	strip $@
 
 uimg: $(TOOLS_DIR)/uimg
 
