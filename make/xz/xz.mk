@@ -1,8 +1,11 @@
-$(call PKG_INIT_BIN, 5.2.4)
+$(call PKG_INIT_BIN, 5.2.5)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=003e4d0b1b1899fc6e3000b24feddf7c
+$(PKG)_SOURCE_MD5:=aa1621ec7013a19abab52a8aff04fe5b
 $(PKG)_SITE:=http://tukaani.org/xz
+### WEBSITE:=https://tukaani.org/xz/
+### CHANGES:=https://git.tukaani.org/?p=xz.git;a=blob_plain;f=NEWS;hb=HEAD
+### CVSREPO:=https://git.tukaani.org/?p=xz.git
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/xz/.libs/xz
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/xz

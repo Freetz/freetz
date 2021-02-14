@@ -45,6 +45,7 @@ Latest changes
 
 - Updated tools and hooks:
   * fitimg 0.5
+  * xz 5.2.5
 
 - Updated packages and libs:
     * cifs-utils 6.12
@@ -55,6 +56,7 @@ Latest changes
     * mtr 0.80/0.94
     * rsync 3.2.3
     * wireguard-linux-compat 1.0.20210124
+    * lzma2 5.2.5
 
 ### ng21010
 
