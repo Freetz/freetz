@@ -34,7 +34,6 @@ $(TAR_HOST_DIR)/src/tar: $(TAR_HOST_DIR)/.configured
 
 $(TOOLS_DIR)/tar-gnu: $(TAR_HOST_DIR)/src/tar
 	$(INSTALL_FILE)
-	strip $@
 
 tar-host: $(TOOLS_DIR)/tar-gnu
 

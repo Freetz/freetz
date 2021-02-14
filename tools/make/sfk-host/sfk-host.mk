@@ -30,7 +30,6 @@ $(SFK_HOST_DIR)/sfk: $(SFK_HOST_DIR)/.configured
 
 $(TOOLS_DIR)/sfk: $(SFK_HOST_DIR)/sfk
 	$(INSTALL_FILE)
-	strip $@
 
 sfk-host: $(TOOLS_DIR)/sfk
 

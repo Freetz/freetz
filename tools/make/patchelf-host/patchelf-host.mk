@@ -32,7 +32,6 @@ $(PATCHELF_HOST_DIR)/src/patchelf: $(PATCHELF_HOST_DIR)/.configured
 
 $(TOOLS_DIR)/patchelf: $(PATCHELF_HOST_DIR)/src/patchelf
 	$(INSTALL_FILE)
-	strip $@
 
 patchelf-host: $(TOOLS_DIR)/patchelf
 

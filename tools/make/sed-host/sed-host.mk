@@ -34,7 +34,6 @@ $(SED_HOST_DIR)/sed/sed: $(SED_HOST_DIR)/.configured
 
 $(TOOLS_DIR)/sed: $(SED_HOST_DIR)/sed/sed
 	$(INSTALL_FILE)
-	strip $@
 
 sed-host: $(TOOLS_DIR)/sed
 

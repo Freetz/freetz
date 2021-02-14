@@ -37,7 +37,6 @@ $(GENEXT2FS_DIR)/.tests-passed: $(GENEXT2FS_DIR)/genext2fs
 
 $(TOOLS_DIR)/genext2fs: $(GENEXT2FS_DIR)/genext2fs
 	$(INSTALL_FILE)
-	strip $@
 
 genext2fs: $(TOOLS_DIR)/genext2fs
 

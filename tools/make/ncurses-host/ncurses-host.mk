@@ -34,7 +34,6 @@ $(NCURSES_HOST_DIR)/progs/tic: $(NCURSES_HOST_DIR)/.configured
 
 $(TOOLS_DIR)/tic: $(NCURSES_HOST_DIR)/progs/tic
 	$(INSTALL_FILE)
-	strip $@
 
 ncurses-host: $(TOOLS_DIR)/tic
 
