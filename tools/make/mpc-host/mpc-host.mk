@@ -48,3 +48,4 @@ mpc-host-dirclean:
 
 mpc-host-distclean: mpc-host-dirclean
 	$(RM) $(MPC_HOST_DESTDIR)/lib/libmpc* $(MPC_HOST_DESTDIR)/include/*mpc*.h
+

@@ -35,8 +35,10 @@ $(FAKEROOT_HOST_DIR)/.unpacked: $(DL_DIR)/$(FAKEROOT_HOST_SOURCE) | $(TOOLS_SOUR
 
 $(FAKEROOT_HOST_MAINARCH_DIR)/.configured: $(FAKEROOT_HOST_DIR)/.unpacked
 	(mkdir -p $(FAKEROOT_HOST_MAINARCH_DIR); cd $(FAKEROOT_HOST_MAINARCH_DIR); $(RM) config.cache; \
-		CFLAGS="-O3 -Wall" \
 		CC="$(TOOLS_CC)" \
+		CXX="$(TOOLS_CXX)" \
+		CFLAGS="$(TOOLS_CFLAGS)" \
+		LDFLAGS="$(TOOLS_LDFLAGS)" \
 		../../configure \
 		--prefix=$(FAKEROOT_HOST_DESTDIR) \
 		--enable-shared \
@@ -51,8 +53,10 @@ $(FAKEROOT_HOST_TARGET_SCRIPT): $(FAKEROOT_HOST_MAINARCH_DIR)/.configured
 
 $(FAKEROOT_HOST_BIARCH_DIR)/.configured: $(FAKEROOT_HOST_DIR)/.unpacked
 	(mkdir -p $(FAKEROOT_HOST_BIARCH_DIR); cd $(FAKEROOT_HOST_BIARCH_DIR); $(RM) config.cache; \
-		CFLAGS="$(HOST_CFLAGS_FORCE_32BIT_CODE) -O3 -Wall" \
 		CC="$(TOOLS_CC)" \
+		CXX="$(TOOLS_CXX)" \
+		CFLAGS="$(TOOLS_CFLAGS) $(HOST_CFLAGS_FORCE_32BIT_CODE)" \
+		LDFLAGS="$(TOOLS_LDFLAGS)" \
 		../../configure \
 		--prefix=$(FAKEROOT_HOST_DESTDIR) \
 		--enable-shared \
@@ -65,6 +69,7 @@ $(FAKEROOT_HOST_BIARCH_DIR)/.configured: $(FAKEROOT_HOST_DIR)/.unpacked
 
 $(FAKEROOT_HOST_TARGET_BIARCH_LIB): $(FAKEROOT_HOST_BIARCH_DIR)/.configured
 	$(MAKE) -C $(FAKEROOT_HOST_BIARCH_DIR) libdir="$(FAKEROOT_HOST_BIARCH_LD_PRELOAD_PATH)" install-libLTLIBRARIES
+	touch $@
 
 fakeroot-host: $(FAKEROOT_HOST_TARGET_SCRIPT) $(if $(BIARCH_BUILD_SYSTEM),$(FAKEROOT_HOST_TARGET_BIARCH_LIB))
 

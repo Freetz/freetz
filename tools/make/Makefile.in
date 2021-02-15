@@ -1,5 +1,11 @@
 TOOLS_CC:=gcc
 TOOLS_CXX:=g++
+TOOLS_CFLAGS:=-Wall -O2
+
+TOOLS_LDFLAGS:=
+ifeq ($(strip $(FREETZ_HOSTTOOLS_STATIC)),y)
+TOOLS_LDFLAGS+=--static
+endif
 
 # bitness of the build system (also the host system)
 # heuristic: if "uname -m" contains 64 then it's a 64-bit system, 32-bit otherwise

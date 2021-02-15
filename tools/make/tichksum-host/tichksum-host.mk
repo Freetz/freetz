@@ -9,7 +9,7 @@ $(TICHKSUM_HOST_DIR)/.unpacked: $(wildcard $(TICHKSUM_HOST_SRC)/*) | $(TOOLS_SOU
 	touch $@
 
 $(TICHKSUM_HOST_DIR)/tichksum: $(TICHKSUM_HOST_DIR)/.unpacked
-	$(MAKE) CC="$(TOOLS_CC)" -C $(TICHKSUM_HOST_DIR)
+	$(MAKE) CC="$(TOOLS_CC)" CXX="$(TOOLS_CXX)" CFLAGS="$(TOOLS_CFLAGS)" LDFLAGS="$(TOOLS_LDFLAGS)" -C $(TICHKSUM_HOST_DIR)
 
 $(TOOLS_DIR)/tichksum: $(TICHKSUM_HOST_DIR)/tichksum
 	$(INSTALL_FILE)
@@ -24,3 +24,4 @@ tichksum-host-dirclean:
 
 tichksum-host-distclean: tichksum-host-dirclean
 	$(RM) $(TOOLS_DIR)/tichksum
+

@@ -18,8 +18,10 @@ $(NCURSES_HOST_DIR)/.unpacked: $(DL_DIR)/$(NCURSES_HOST_SOURCE) | $(TOOLS_SOURCE
 
 $(NCURSES_HOST_DIR)/.configured: $(NCURSES_HOST_DIR)/.unpacked
 	(cd $(NCURSES_HOST_DIR); $(RM) config.cache; \
-		CFLAGS="-Wall -O2" \
 		CC="$(TOOLS_CC)" \
+		CXX="$(TOOLS_CXX)" \
+		CFLAGS="$(TOOLS_CFLAGS)" \
+		LDFLAGS="$(TOOLS_LDFLAGS)" \
 		./configure \
 		\
 		\
@@ -45,3 +47,4 @@ ncurses-host-dirclean:
 
 ncurses-host-distclean: ncurses-host-dirclean
 	$(RM) $(TOOLS_DIR)/tic
+

@@ -46,3 +46,4 @@ gmp-host-dirclean:
 
 gmp-host-distclean: gmp-host-dirclean
 	$(RM) $(GMP_HOST_DESTDIR)/lib/libgmp* $(GMP_HOST_DESTDIR)/include/gmp*.h
+

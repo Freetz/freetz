@@ -4,7 +4,7 @@ PROGS = find-squashfs
 OBJS += find-squashfs.o
 
 all: $(OBJS)
-	$(CC) -o find-squashfs $(OBJS)
+	$(CC) $(LDFLAGS) -o find-squashfs $(OBJS)
 
 clean:
 	rm -f $(PROGS) $(OBJS)

@@ -9,7 +9,7 @@ $(AVM_RLE_HOST_DIR)/.unpacked: $(wildcard $(AVM_RLE_HOST_SRC)/*) | $(TOOLS_SOURC
 	touch $@
 
 $(AVM_RLE_HOST_DIR)/avm-rle-decode: $(AVM_RLE_HOST_DIR)/.unpacked
-	$(MAKE) CC="$(TOOLS_CC)" -C $(AVM_RLE_HOST_DIR)
+	$(MAKE) CC="$(TOOLS_CC)" CXX="$(TOOLS_CXX)" CFLAGS="$(TOOLS_CFLAGS)" LDFLAGS="$(TOOLS_LDFLAGS)" -C $(AVM_RLE_HOST_DIR)
 
 $(TOOLS_DIR)/avm-rle-decode: $(AVM_RLE_HOST_DIR)/avm-rle-decode
 	$(INSTALL_FILE)
@@ -27,3 +27,4 @@ avm-rle-host-dirclean:
 
 avm-rle-host-distclean: avm-rle-host-dirclean
 	$(RM) $(TOOLS_DIR)/avm-rle-*
+

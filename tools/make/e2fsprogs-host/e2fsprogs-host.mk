@@ -22,6 +22,10 @@ $(E2FSPROGS_HOST_DIR)/.unpacked: $(DL_DIR)/$(E2FSPROGS_HOST_SOURCE) | $(TOOLS_SO
 
 $(E2FSPROGS_HOST_DIR)/.configured: $(E2FSPROGS_HOST_DIR)/.unpacked
 	(cd $(E2FSPROGS_HOST_DIR); $(RM) config.cache; \
+		CC="$(TOOLS_CC)" \
+		CXX="$(TOOLS_CXX)" \
+		CFLAGS="$(TOOLS_CFLAGS)" \
+		LDFLAGS="$(TOOLS_LDFLAGS)" \
 		./configure \
 		--prefix=/ \
 		--disable-bsd-shlibs \
@@ -89,3 +93,4 @@ e2fsprogs-host-dirclean:
 
 e2fsprogs-host-distclean: e2fsprogs-host-dirclean
 	$(RM) $(TOOLS_DIR)/e2fsck $(TOOLS_DIR)/debugfs $(TOOLS_DIR)/tune2fs
+

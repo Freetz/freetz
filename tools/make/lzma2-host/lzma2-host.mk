@@ -9,6 +9,7 @@ LZMA2_HOST_MAKE_DIR:=$(TOOLS_DIR)/make/lzma2-host
 LZMA2_HOST_ALONE_DIR:=$(LZMA2_HOST_DIR)/src/xz
 LZMA2_HOST_LIB_DIR:=$(LZMA2_HOST_DIR)/src/liblzma/.libs
 
+
 lzma2-host-source: $(DL_DIR)/$(LZMA2_HOST_SOURCE)
 $(DL_DIR)/$(LZMA2_HOST_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(LZMA2_HOST_SOURCE) $(LZMA2_HOST_SITE) $(LZMA2_HOST_SOURCE_MD5)
@@ -21,7 +22,12 @@ $(LZMA2_HOST_DIR)/.unpacked: $(DL_DIR)/$(LZMA2_HOST_SOURCE) | $(TOOLS_SOURCE_DIR
 	touch $@
 
 $(LZMA2_HOST_DIR)/.configured: $(LZMA2_HOST_DIR)/.unpacked
-	(cd $(LZMA2_HOST_DIR); ./configure \
+	(cd $(LZMA2_HOST_DIR); $(RM) config.cache; \
+		CC="$(TOOLS_CC)" \
+		CXX="$(TOOLS_CXX)" \
+		CFLAGS="$(TOOLS_CFLAGS)" \
+		LDFLAGS="$(TOOLS_LDFLAGS)" \
+		./configure \
 		--enable-encoders=lzma1,lzma2,delta \
 		--enable-decoders=lzma1,lzma2,delta \
 		--disable-lzmadec \
@@ -50,6 +56,7 @@ $(TOOLS_DIR)/xz: $(LZMA2_HOST_ALONE_DIR)/xz
 
 lzma2-host: $(LZMA2_HOST_DIR)/liblzma.a $(TOOLS_DIR)/xz
 
+
 lzma2-host-clean:
 	-$(MAKE) -C $(LZMA2_HOST_DIR) clean
 	$(RM) $(LZMA2_HOST_DIR)/liblzma.a
@@ -59,3 +66,4 @@ lzma2-host-dirclean:
 
 lzma2-host-distclean: lzma2-host-dirclean
 	$(RM) $(TOOLS_DIR)/xz
+

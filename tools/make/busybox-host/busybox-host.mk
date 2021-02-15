@@ -26,7 +26,7 @@ $(BUSYBOX_HOST_DIR)/.configured: $(BUSYBOX_HOST_DIR)/.unpacked $(BUSYBOX_HOST_CO
 	touch $@
 
 $(BUSYBOX_HOST_BINARY): $(BUSYBOX_HOST_DIR)/.configured
-	$(MAKE) -C $(BUSYBOX_HOST_DIR)
+	$(MAKE) CC="$(TOOLS_CC)" CXX="$(TOOLS_CXX)" CFLAGS="$(TOOLS_CFLAGS)" LDFLAGS="$(TOOLS_LDFLAGS)" -C $(BUSYBOX_HOST_DIR)
 
 $(BUSYBOX_HOST_TARGET_BINARY): $(BUSYBOX_HOST_BINARY)
 	$(INSTALL_FILE)
@@ -45,3 +45,4 @@ busybox-host-dirclean:
 
 busybox-host-distclean: busybox-host-dirclean
 	find $(BUSYBOX_HOST_TARGET_DIR) \( -lname busybox -o -name busybox \) -delete
+

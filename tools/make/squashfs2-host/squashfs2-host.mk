@@ -25,7 +25,8 @@ $(SQUASHFS2_HOST_TOOLS_BUILD_DIR): $(SQUASHFS2_HOST_DIR)/.unpacked $(LZMA1_HOST_
 	$(MAKE) -C $(SQUASHFS2_HOST_BUILD_DIR) \
 		CC="$(TOOLS_CC)" \
 		CXX="$(TOOLS_CXX)" \
-		CFLAGS="-fcommon" \
+		CFLAGS="$(TOOLS_CFLAGS) -fcommon" \
+		LDFLAGS="$(TOOLS_LDFLAGS)" \
 		LZMA_LIBNAME=lzma1 \
 		LZMA_DIR="$(abspath $(LZMA1_HOST_DIR))" \
 		$(SQUASHFS2_HOST_TOOLS:%=%-lzma)
@@ -44,3 +45,4 @@ squashfs2-host-dirclean:
 
 squashfs2-host-distclean: squashfs2-host-dirclean
 	$(RM) $(SQUASHFS2_HOST_TOOLS_TARGET_DIR)
+

@@ -18,8 +18,10 @@ $(PATCHELF_HOST_DIR)/.unpacked: $(DL_DIR)/$(PATCHELF_HOST_SOURCE) | $(TOOLS_SOUR
 
 $(PATCHELF_HOST_DIR)/.configured: $(PATCHELF_HOST_DIR)/.unpacked
 	(cd $(PATCHELF_HOST_DIR); $(RM) config.cache; \
-		CFLAGS="-Wall -O2" \
 		CC="$(TOOLS_CC)" \
+		CXX="$(TOOLS_CXX)" \
+		CFLAGS="$(TOOLS_CFLAGS)" \
+		LDFLAGS="$(TOOLS_LDFLAGS)" \
 		./configure \
 		--prefix=/usr \
 		$(QUIET) \
@@ -43,3 +45,4 @@ patchelf-host-dirclean:
 
 patchelf-host-distclean: patchelf-host-dirclean
 	$(RM) $(TOOLS_DIR)/patchelf
+

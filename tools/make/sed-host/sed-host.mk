@@ -18,8 +18,10 @@ $(SED_HOST_DIR)/.unpacked: $(DL_DIR)/$(SED_HOST_SOURCE) | $(TOOLS_SOURCE_DIR) $(
 
 $(SED_HOST_DIR)/.configured: $(SED_HOST_DIR)/.unpacked
 	(cd $(SED_HOST_DIR); $(RM) config.cache; \
-		CFLAGS="-Wall -O2" \
 		CC="$(TOOLS_CC)" \
+		CXX="$(TOOLS_CXX)" \
+		CFLAGS="$(TOOLS_CFLAGS)" \
+		LDFLAGS="$(TOOLS_LDFLAGS)" \
 		./configure \
 		--prefix=/usr \
 		--without-selinux \
@@ -47,3 +49,4 @@ sed-host-distclean: sed-host-dirclean
 	$(RM) $(TOOLS_DIR)/sed
 	
 .PHONY: sed-host-source sed-host-unpacked sed-host sed-host-clean sed-host-dirclean sed-host-distclean
+

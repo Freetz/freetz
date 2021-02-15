@@ -19,6 +19,10 @@ $(SFK_HOST_DIR)/.unpacked: $(DL_DIR)/$(SFK_HOST_SOURCE) | $(TOOLS_SOURCE_DIR) $(
 
 $(SFK_HOST_DIR)/.configured: $(SFK_HOST_DIR)/.unpacked
 	(cd $(SFK_HOST_DIR); $(RM) config.cache; \
+		CC="$(TOOLS_CC)" \
+		CXX="$(TOOLS_CXX)" \
+		CFLAGS="$(TOOLS_CFLAGS)" \
+		LDFLAGS="$(TOOLS_LDFLAGS)" \
 		./configure \
 		--prefix=$(SFK_HOST_DESTDIR) \
 		$(DISABLE_NLS) \
@@ -41,3 +45,4 @@ sfk-host-dirclean:
 
 sfk-host-distclean: sfk-host-dirclean
 	$(RM) $(TOOLS_DIR)/sfk
+

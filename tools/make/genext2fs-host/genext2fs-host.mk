@@ -19,9 +19,13 @@ $(GENEXT2FS_DIR)/.unpacked: $(DL_DIR)/$(GENEXT2FS_SOURCE) | $(TOOLS_SOURCE_DIR) 
 	touch $@
 
 $(GENEXT2FS_DIR)/.configured: $(GENEXT2FS_DIR)/.unpacked
-	(cd $(GENEXT2FS_DIR); \
-		autoreconf -f -i && \
-		./configure --prefix=$(FREETZ_BASE_DIR)/$(TOOLS_DIR) \
+	(cd $(GENEXT2FS_DIR); autoreconf -f -i; \
+		CC="$(TOOLS_CC)" \
+		CXX="$(TOOLS_CXX)" \
+		CFLAGS="$(TOOLS_CFLAGS)" \
+		LDFLAGS="$(TOOLS_LDFLAGS)" \
+		./configure \
+		--prefix=$(FREETZ_BASE_DIR)/$(TOOLS_DIR) \
 		$(QUIET) \
 	);
 	touch $@

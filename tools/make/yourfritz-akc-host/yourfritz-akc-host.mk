@@ -35,3 +35,4 @@ yourfritz-akc-host-dirclean:
 
 yourfritz-akc-host-distclean: yourfritz-akc-host-dirclean
 	$(RM) $(YOURFRITZ_AKC_HOST_TOOLS_TARGET_DIR)
+

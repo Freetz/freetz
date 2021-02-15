@@ -50,3 +50,4 @@ yourfritz-host-dirclean:
 
 yourfritz-host-distclean: yourfritz-host-dirclean
 	$(RM) $(TOOLS_DIR)/yf
+
