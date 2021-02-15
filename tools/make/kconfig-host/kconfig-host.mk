@@ -47,7 +47,7 @@ kconfig-host-dirclean:
 	$(RM) -r $(KCONFIG_HOST_DIR)
 
 kconfig-host-distclean: kconfig-host-dirclean
-	$(RM) $(KCONFIG_HOST_TARGET_DIR)/conf $(KCONFIG_HOST_TARGET_DIR)/mconf
+	$(RM) -r $(KCONFIG_HOST_TARGET_DIR)/
 
 .PHONY: kconfig-host-source kconfig-host-unpacked kconfig-host kconfig-host-clean kconfig-host-dirclean kconfig-host-distclean
 
