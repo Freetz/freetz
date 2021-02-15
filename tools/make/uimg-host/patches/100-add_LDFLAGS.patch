@@ -1,0 +1,11 @@
+--- Makefile
++++ Makefile
+@@ -15,7 +15,7 @@
+ 
+ $(BUILDDIR)/uimg:	uimg.c
+ 	@mkdir -p $(BUILDDIR)
+-	$(CC) $(CFLAGS) -o $@ $<
++	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $<
+ 
+ clean:
+ 	rm -f $(BUILDDIR)/uimg

@@ -1,0 +1,10 @@
+--- Makefile
++++ Makefile
+@@ -90,6 +90,7 @@
+ 
+ xdelta3: $(SOURCES)
+ 	$(CC) -O3 -Wall -Wshadow xdelta3.c -lm -o xdelta3 \
++              $(LDFLAGS) \
+               -DXD3_DEBUG=0 \
+               -DXD3_USE_LARGEFILE64=1 \
+               -DREGRESSION_TEST=1 \
