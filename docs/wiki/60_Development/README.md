@@ -121,5 +121,6 @@
     * [Commenting](shell_coding_conventions.en.md#commenting)
     * [Pathnames](shell_coding_conventions.en.md#pathnames)
     * [Interpreter Magic](shell_coding_conventions.en.md#interpreter-magic)
+ - [SquashFS 4 (BE) [EN]](squashfs4-be.en.md)
  - [STARTLEVEL of packages [EN]](startlevel_of_packages.en.md)
 

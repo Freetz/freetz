@@ -1,3 +1,4 @@
+# SquashFS 4 (BE)
 This document summarizes all (so far known) technical details about a non-standard SquashFS format
 (called AVM-BE below) used by AVM since Fritz!OS Labor 6.35.
 
