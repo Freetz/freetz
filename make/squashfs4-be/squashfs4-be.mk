@@ -21,7 +21,7 @@ $(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%4-
 $(PKG)_LDFLAGS := -Wl,--gc-sections
 $(PKG)_LDFLAGS += $(if $(FREETZ_PACKAGE_SQUASHFS4_BE_ALL_STAT),-static)
 
-ifneq ($(strip $(DL_DIR)/$(SQUASHFS4_BE_SOURCE)),$(strip $(DL_DIR)/$(SQUASHFS4_HOST_BE_SOURCE)))
+ifneq ($(strip $(DL_DIR)/$(SQUASHFS4_BE_SOURCE)),$(strip $(DL_DIR)/$(SQUASHFS4_BE_HOST_SOURCE)))
 $(PKG_SOURCE_DOWNLOAD)
 endif
 $(PKG_UNPACKED)

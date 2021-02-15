@@ -3,7 +3,7 @@ UIMG_HOST_SOURCE:=uimg-$(UIMG_HOST_VERSION).tar.xz
 UIMG_HOST_SOURCE_SHA256:=1f5b3b473f50c6ff79a7859be336245c39fc1d2b6c89baf862de6de1f7caf8e0
 UIMG_HOST_SITE:=git@https://bitbucket.org/fesc2000/uimg-tool.git
 
-UIMG_HOST_MAKE_DIR:=$(TOOLS_DIR)/make/uimg
+UIMG_HOST_MAKE_DIR:=$(TOOLS_DIR)/make/uimg-host
 UIMG_HOST_DIR:=$(TOOLS_SOURCE_DIR)/uimg-$(UIMG_HOST_VERSION)
 
 

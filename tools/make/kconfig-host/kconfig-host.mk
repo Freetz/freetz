@@ -1,52 +1,53 @@
-KCONFIG_VERSION:=v5.10
-KCONFIG_SOURCE:=kconfig-$(KCONFIG_VERSION).tar.xz
-KCONFIG_SOURCE_SHA256:=cc78ab90d9a51d800c484d1078cda734910d8f3455f97e7a860cd7ca98d18571
-KCONFIG_SITE:=git_archive@git://repo.or.cz/linux.git,scripts/basic,scripts/kconfig,scripts/Kbuild.include,scripts/Makefile.build,scripts/Makefile.host,scripts/Makefile.lib,Documentation/kbuild/kconfig-language.rst,Documentation/kbuild/kconfig-macro-language.rst,Documentation/kbuild/kconfig.rst
-KCONFIG_DIR:=$(TOOLS_SOURCE_DIR)/kconfig-$(KCONFIG_VERSION)
-KCONFIG_MAKE_DIR:=$(TOOLS_DIR)/make/kconfig
-KCONFIG_TARGET_DIR:=$(TOOLS_DIR)/config
+KCONFIG_HOST_VERSION:=v5.10
+KCONFIG_HOST_SOURCE:=kconfig-$(KCONFIG_HOST_VERSION).tar.xz
+KCONFIG_HOST_SOURCE_SHA256:=cc78ab90d9a51d800c484d1078cda734910d8f3455f97e7a860cd7ca98d18571
+KCONFIG_HOST_SITE:=git_archive@git://repo.or.cz/linux.git,scripts/basic,scripts/kconfig,scripts/Kbuild.include,scripts/Makefile.build,scripts/Makefile.host,scripts/Makefile.lib,Documentation/kbuild/kconfig-language.rst,Documentation/kbuild/kconfig-macro-language.rst,Documentation/kbuild/kconfig.rst
+KCONFIG_HOST_DIR:=$(TOOLS_SOURCE_DIR)/kconfig-$(KCONFIG_HOST_VERSION)
+KCONFIG_HOST_MAKE_DIR:=$(TOOLS_DIR)/make/kconfig-host
+KCONFIG_HOST_TARGET_DIR:=$(TOOLS_DIR)/config
 
-kconfig-source: $(DL_DIR)/$(KCONFIG_SOURCE)
-$(DL_DIR)/$(KCONFIG_SOURCE): | $(DL_DIR)
-	$(DL_TOOL) $(DL_DIR) $(KCONFIG_SOURCE) $(KCONFIG_SITE) $(KCONFIG_SOURCE_SHA256)
+kconfig-host-source: $(DL_DIR)/$(KCONFIG_HOST_SOURCE)
+$(DL_DIR)/$(KCONFIG_HOST_SOURCE): | $(DL_DIR)
+	$(DL_TOOL) $(DL_DIR) $(KCONFIG_HOST_SOURCE) $(KCONFIG_HOST_SITE) $(KCONFIG_HOST_SOURCE_SHA256)
 
-kconfig-unpacked: $(KCONFIG_DIR)/.unpacked
-$(KCONFIG_DIR)/.unpacked: $(DL_DIR)/$(KCONFIG_SOURCE) | $(TOOLS_SOURCE_DIR)
-	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xf $(DL_DIR)/$(KCONFIG_SOURCE)
-	$(call APPLY_PATCHES,$(KCONFIG_MAKE_DIR)/patches,$(KCONFIG_DIR))
-	$(if $(FREETZ_REAL_DEVELOPER_ONLY__BUTTONS),$(call APPLY_PATCHES,$(KCONFIG_MAKE_DIR)/patches/buttons,$(KCONFIG_DIR)))
+kconfig-host-unpacked: $(KCONFIG_HOST_DIR)/.unpacked
+$(KCONFIG_HOST_DIR)/.unpacked: $(DL_DIR)/$(KCONFIG_HOST_SOURCE) | $(TOOLS_SOURCE_DIR)
+	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xf $(DL_DIR)/$(KCONFIG_HOST_SOURCE)
+	$(call APPLY_PATCHES,$(KCONFIG_HOST_MAKE_DIR)/patches,$(KCONFIG_HOST_DIR))
+	$(if $(FREETZ_REAL_DEVELOPER_ONLY__BUTTONS),$(call APPLY_PATCHES,$(KCONFIG_HOST_MAKE_DIR)/patches/buttons,$(KCONFIG_HOST_DIR)))
 	touch $@
 
-$(KCONFIG_DIR)/scripts/kconfig/conf: $(KCONFIG_DIR)/.unpacked
-	$(MAKE) -C $(KCONFIG_DIR) config
+$(KCONFIG_HOST_DIR)/scripts/kconfig/conf: $(KCONFIG_HOST_DIR)/.unpacked
+	$(MAKE) -C $(KCONFIG_HOST_DIR) config
 
-$(KCONFIG_DIR)/scripts/kconfig/mconf: $(KCONFIG_DIR)/.unpacked
-	$(MAKE) -C $(KCONFIG_DIR) menuconfig
+$(KCONFIG_HOST_DIR)/scripts/kconfig/mconf: $(KCONFIG_HOST_DIR)/.unpacked
+	$(MAKE) -C $(KCONFIG_HOST_DIR) menuconfig
 
-$(KCONFIG_TARGET_DIR)/conf: $(KCONFIG_DIR)/scripts/kconfig/conf
+$(KCONFIG_HOST_TARGET_DIR)/conf: $(KCONFIG_HOST_DIR)/scripts/kconfig/conf
 	$(INSTALL_FILE)
 
-$(KCONFIG_TARGET_DIR)/mconf: $(KCONFIG_DIR)/scripts/kconfig/mconf
+$(KCONFIG_HOST_TARGET_DIR)/mconf: $(KCONFIG_HOST_DIR)/scripts/kconfig/mconf
 	$(INSTALL_FILE)
 
-kconfig: $(KCONFIG_TARGET_DIR)/conf $(KCONFIG_TARGET_DIR)/mconf
+kconfig-host: $(KCONFIG_HOST_TARGET_DIR)/conf $(KCONFIG_HOST_TARGET_DIR)/mconf
 
-kconfig-clean:
+kconfig-host-clean:
 	$(RM) \
-		$(KCONFIG_DIR)/scripts/basic/.*.cmd \
-		$(KCONFIG_DIR)/scripts/kconfig/.*.cmd \
-		$(KCONFIG_DIR)/scripts/kconfig/lxdialog/.*.cmd \
-		$(KCONFIG_DIR)/scripts/kconfig/*.o \
-		$(KCONFIG_DIR)/scripts/kconfig/lxdialog/*.o \
-		$(KCONFIG_DIR)/scripts/kconfig/zconf.*.c \
-		$(KCONFIG_DIR)/scripts/basic/fixdep \
-		$(KCONFIG_DIR)/scripts/kconfig/conf \
-		$(KCONFIG_DIR)/scripts/kconfig/mconf
+		$(KCONFIG_HOST_DIR)/scripts/basic/.*.cmd \
+		$(KCONFIG_HOST_DIR)/scripts/kconfig/.*.cmd \
+		$(KCONFIG_HOST_DIR)/scripts/kconfig/lxdialog/.*.cmd \
+		$(KCONFIG_HOST_DIR)/scripts/kconfig/*.o \
+		$(KCONFIG_HOST_DIR)/scripts/kconfig/lxdialog/*.o \
+		$(KCONFIG_HOST_DIR)/scripts/kconfig/zconf.*.c \
+		$(KCONFIG_HOST_DIR)/scripts/basic/fixdep \
+		$(KCONFIG_HOST_DIR)/scripts/kconfig/conf \
+		$(KCONFIG_HOST_DIR)/scripts/kconfig/mconf
 
-kconfig-dirclean:
-	$(RM) -r $(KCONFIG_DIR)
+kconfig-host-dirclean:
+	$(RM) -r $(KCONFIG_HOST_DIR)
 
-kconfig-distclean: kconfig-dirclean
-	$(RM) $(KCONFIG_TARGET_DIR)/conf $(KCONFIG_TARGET_DIR)/mconf
+kconfig-host-distclean: kconfig-host-dirclean
+	$(RM) $(KCONFIG_HOST_TARGET_DIR)/conf $(KCONFIG_HOST_TARGET_DIR)/mconf
 
-.PHONY: kconfig-source kconfig-unpacked kconfig kconfig-clean kconfig-dirclean kconfig-distclean
+.PHONY: kconfig-host-source kconfig-host-unpacked kconfig-host kconfig-host-clean kconfig-host-dirclean kconfig-host-distclean
+

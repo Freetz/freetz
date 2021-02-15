@@ -4,7 +4,7 @@ TOOLS_CXX:=g++
 # bitness of the build system (also the host system)
 # heuristic: if "uname -m" contains 64 then it's a 64-bit system, 32-bit otherwise
 HOST_BITNESS:=$(if $(findstring 64,$(shell uname -m)),64,32)
-# on 32-bit systems no special CFLAGS are required, on all other systems use -m32 [ and hope it's supported :-) ]
+# on 32-bit systems no special CFLAGS are required, on all other systems use -m32 [ and hope it's supported :-) aarch64 does not :{ ]
 HOST_CFLAGS_FORCE_32BIT_CODE:=$(if $(filter-out 32,$(HOST_BITNESS)),-m32)
 
 TOOLS_SOURCE_DIR:=$(FREETZ_BASE_DIR)/source/host-tools
@@ -22,8 +22,9 @@ ifneq ($(strip $(FREETZ_SHARE_terminfo)),y)
 TOOLS_CONDITIONAL+=ncurses-host
 endif
 ifneq ($(strip $(FREETZ_STRIP_LIBRARIES)),y)
-TOOLS_CONDITIONAL+=mklibs
+TOOLS_CONDITIONAL+=mklibs-host
 endif
 TOOLS_CONDITIONAL+=python-host
 TOOLS_CONDITIONAL+=scons-host
-TOOLS_CONDITIONAL+=xdelta
+TOOLS_CONDITIONAL+=xdelta-host
+
