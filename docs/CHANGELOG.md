@@ -45,6 +45,7 @@ Latest changes
 
 - Updated tools and hooks:
   * fitimg 0.5
+  * patchelf 0.12
   * xz 5.2.5
 
 - Updated packages and libs:
