@@ -8,6 +8,7 @@ GMP_HOST_MAKE_DIR:=$(TOOLS_DIR)/make/gmp-host
 GMP_HOST_DESTDIR:=$(HOST_TOOLS_DIR)
 GMP_HOST_BINARY:=$(GMP_HOST_DESTDIR)/lib/libgmp.a
 
+
 gmp-host-source: $(DL_DIR)/$(GMP_HOST_SOURCE)
 $(DL_DIR)/$(GMP_HOST_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(GMP_HOST_SOURCE) $(GMP_HOST_SITE) $(GMP_HOST_SOURCE_SHA256)
@@ -36,7 +37,8 @@ $(GMP_HOST_DIR)/.configured: $(GMP_HOST_DIR)/.unpacked
 $(GMP_HOST_BINARY): $(GMP_HOST_DIR)/.configured | $(HOST_TOOLS_DIR)
 	$(MAKE) -C $(GMP_HOST_DIR) install
 
-gmp-host: $(GMP_HOST_BINARY)
+gmp-host-precompiled: $(GMP_HOST_BINARY)
+
 
 gmp-host-clean:
 	-$(MAKE) -C $(GMP_HOST_DIR) clean

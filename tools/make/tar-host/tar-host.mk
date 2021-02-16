@@ -6,6 +6,7 @@ TAR_HOST_SITE:=@GNU/tar
 TAR_HOST_MAKE_DIR:=$(TOOLS_DIR)/make/tar-host
 TAR_HOST_DIR:=$(TOOLS_SOURCE_DIR)/tar-$(TAR_HOST_VERSION)
 
+
 tar-host-source: $(DL_DIR)/$(TAR_HOST_SOURCE)
 $(DL_DIR)/$(TAR_HOST_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(TAR_HOST_SOURCE) $(TAR_HOST_SITE) $(TAR_HOST_SOURCE_MD5)
@@ -38,7 +39,8 @@ $(TAR_HOST_DIR)/src/tar: $(TAR_HOST_DIR)/.configured
 $(TOOLS_DIR)/tar-gnu: $(TAR_HOST_DIR)/src/tar
 	$(INSTALL_FILE)
 
-tar-host: $(TOOLS_DIR)/tar-gnu
+tar-host-precompiled: $(TOOLS_DIR)/tar-gnu
+
 
 tar-host-clean:
 	-$(MAKE) -C $(TAR_HOST_DIR) clean

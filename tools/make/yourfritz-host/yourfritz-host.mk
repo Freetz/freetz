@@ -25,6 +25,7 @@ YOURFRITZ_HOST_STRIP_TRAILING_WHITESPACES += bootmanager/gui_bootmanager
 YOURFRITZ_HOST_MAKE_DIR:=$(TOOLS_DIR)/make/yourfritz-host
 YOURFRITZ_HOST_DIR:=$(TOOLS_SOURCE_DIR)/yourfritz-$(YOURFRITZ_HOST_VERSION)
 
+
 yourfritz-host-source: $(DL_DIR)/$(YOURFRITZ_HOST_SOURCE)
 $(DL_DIR)/$(YOURFRITZ_HOST_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(YOURFRITZ_HOST_SOURCE) $(YOURFRITZ_HOST_SITE) $(YOURFRITZ_HOST_SOURCE_SHA256)
@@ -41,7 +42,8 @@ $(YOURFRITZ_HOST_DIR)/.symlinked: | $(YOURFRITZ_HOST_DIR)/.unpacked
 	@ln -Tsf ../$(YOURFRITZ_HOST_DIR:$(FREETZ_BASE_DIR)/%=%) $(TOOLS_DIR)/yf
 	touch $@
 
-yourfritz-host: $(YOURFRITZ_HOST_DIR)/.symlinked
+yourfritz-host-precompiled: $(YOURFRITZ_HOST_DIR)/.symlinked
+
 
 yourfritz-host-clean:
 

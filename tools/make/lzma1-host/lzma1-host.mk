@@ -42,7 +42,7 @@ $(LZMA1_HOST_DIR)/liblzma1++.a: $(LZMA1_HOST_LIBCXX_DIR)/liblzma++.a
 $(TOOLS_DIR)/lzma: $(LZMA1_HOST_ALONE_DIR)/lzma
 	$(INSTALL_FILE)
 
-lzma1-host: $(LZMA1_HOST_DIR)/liblzma1.a $(LZMA1_HOST_DIR)/liblzma1++.a $(TOOLS_DIR)/lzma
+lzma1-host-precompiled: $(LZMA1_HOST_DIR)/liblzma1.a $(LZMA1_HOST_DIR)/liblzma1++.a $(TOOLS_DIR)/lzma
 
 
 lzma1-host-clean:

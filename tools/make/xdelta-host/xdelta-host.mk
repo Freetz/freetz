@@ -22,7 +22,7 @@ $(XDELTA_HOST_DIR)/xdelta3: $(XDELTA_HOST_DIR)/.unpacked
 $(TOOLS_DIR)/xdelta3: $(XDELTA_HOST_DIR)/xdelta3
 	$(INSTALL_FILE)
 
-xdelta-host: $(TOOLS_DIR)/xdelta3
+xdelta-host-precompiled: $(TOOLS_DIR)/xdelta3
 
 
 xdelta-host-clean:

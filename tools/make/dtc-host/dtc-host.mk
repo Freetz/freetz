@@ -8,6 +8,7 @@ DTC_HOST_MAKE_DIR:=$(TOOLS_DIR)/make/dtc-host
 
 DTC_LIBFDT_HOST_DIR:=$(DTC_HOST_DIR)/libfdt
 
+
 dtc-host-source: $(DL_DIR)/$(DTC_HOST_SOURCE)
 $(DL_DIR)/$(DTC_HOST_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(DTC_HOST_SOURCE) $(DTC_HOST_SITE) $(DTC_HOST_SOURCE_SHA256)
@@ -24,7 +25,8 @@ $(DTC_LIBFDT_HOST_DIR)/libfdt.a: $(DTC_HOST_DIR)/.unpacked
 		BITNESS="$(HOST_CFLAGS_FORCE_32BIT_CODE)"
 	touch -c $@
 
-dtc-host: $(DTC_LIBFDT_HOST_DIR)/libfdt.a
+dtc-host-precompiled: $(DTC_LIBFDT_HOST_DIR)/libfdt.a
+
 
 dtc-host-clean:
 	-$(MAKE) -f Makefile.freetz -C $(DTC_LIBFDT_HOST_DIR) clean

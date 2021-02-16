@@ -22,7 +22,7 @@ $(FITIMG_HOST_DIR)/fitimg: $(FITIMG_HOST_DIR)/.unpacked
 $(TOOLS_DIR)/fitimg: $(FITIMG_HOST_DIR)/fitimg
 	$(INSTALL_FILE)
 
-fitimg-host: $(TOOLS_DIR)/fitimg
+fitimg-host-precompiled: $(TOOLS_DIR)/fitimg
 
 
 fitimg-host-clean:
@@ -32,7 +32,4 @@ fitimg-host-dirclean:
 
 fitimg-host-distclean: fitimg-host-dirclean
 	$(RM) $(TOOLS_DIR)/fitimg
-
-
-.PHONY: fitimg-host-source fitimg-host-unpacked fitimg-host fitimg-host-clean fitimg-host-dirclean fitimg-host-distclean
 

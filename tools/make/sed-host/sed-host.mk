@@ -6,6 +6,7 @@ SED_HOST_SITE:=@GNU/sed
 SED_HOST_MAKE_DIR:=$(TOOLS_DIR)/make/sed-host
 SED_HOST_DIR:=$(TOOLS_SOURCE_DIR)/sed-$(SED_HOST_VERSION)
 
+
 sed-host-source: $(DL_DIR)/$(SED_HOST_SOURCE)
 $(DL_DIR)/$(SED_HOST_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(SED_HOST_SOURCE) $(SED_HOST_SITE) $(SED_HOST_SOURCE_SHA256)
@@ -38,7 +39,8 @@ $(SED_HOST_DIR)/sed/sed: $(SED_HOST_DIR)/.configured
 $(TOOLS_DIR)/sed: $(SED_HOST_DIR)/sed/sed
 	$(INSTALL_FILE)
 
-sed-host: $(TOOLS_DIR)/sed
+sed-host-precompiled: $(TOOLS_DIR)/sed
+
 
 sed-host-clean:
 	-$(MAKE) -C $(SED_HOST_DIR) clean
@@ -48,6 +50,4 @@ sed-host-dirclean:
 
 sed-host-distclean: sed-host-dirclean
 	$(RM) $(TOOLS_DIR)/sed
-	
-.PHONY: sed-host-source sed-host-unpacked sed-host sed-host-clean sed-host-dirclean sed-host-distclean
 

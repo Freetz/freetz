@@ -24,7 +24,7 @@ $(UIMG_HOST_DIR)/uimg: $(UIMG_HOST_DIR)/.unpacked
 $(TOOLS_DIR)/uimg: $(UIMG_HOST_DIR)/uimg
 	$(INSTALL_FILE)
 
-uimg-host: $(TOOLS_DIR)/uimg
+uimg-host-precompiled: $(TOOLS_DIR)/uimg
 
 
 uimg-host-clean:
@@ -35,6 +35,4 @@ uimg-host-dirclean:
 
 uimg-host-distclean: uimg-host-dirclean
 	$(RM) $(TOOLS_DIR)/uimg
-
-.PHONY: uimg-host-source uimg-host-unpacked uimg-host uimg-host-clean uimg-host-dirclean uimg-host-distclean
 

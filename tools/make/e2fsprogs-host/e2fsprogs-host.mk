@@ -10,6 +10,7 @@ E2FSPROGS_HOST_E2FSCK_BINARY:=$(E2FSPROGS_HOST_DIR)/e2fsck/e2fsck
 E2FSPROGS_HOST_DEBUGFS_BINARY:=$(E2FSPROGS_HOST_DIR)/debugfs/debugfs
 E2FSPROGS_HOST_TUNE2FS_BINARY:=$(E2FSPROGS_HOST_DIR)/misc/tune2fs
 
+
 e2fsprogs-host-source: $(DL_DIR)/$(E2FSPROGS_HOST_SOURCE)
 $(DL_DIR)/$(E2FSPROGS_HOST_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(E2FSPROGS_HOST_SOURCE) $(E2FSPROGS_HOST_SITE) $(E2FSPROGS_HOST_SOURCE_MD5)
@@ -82,7 +83,8 @@ $(E2FSPROGS_HOST_DIR)/.devel: $(E2FSPROGS_HOST_DIR)/.compiled
 	$(SED) -i -r -e 's,^(prefix=).*,\1$(E2FSPROGS_HOST_DEVEL_ROOT),' $(E2FSPROGS_HOST_DEVEL_ROOT)/lib/pkgconfig/*.pc && \
 	touch $@
 
-e2fsprogs-host: $(TOOLS_DIR)/e2fsck $(TOOLS_DIR)/debugfs $(TOOLS_DIR)/tune2fs
+e2fsprogs-host-precompiled: $(TOOLS_DIR)/e2fsck $(TOOLS_DIR)/debugfs $(TOOLS_DIR)/tune2fs
+
 
 e2fsprogs-host-clean:
 	-$(MAKE) -C $(E2FSPROGS_HOST_DIR) clean

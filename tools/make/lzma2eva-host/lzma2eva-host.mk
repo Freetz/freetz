@@ -17,7 +17,7 @@ $(LZMA2EVA_HOST_TOOLS:%=$(LZMA2EVA_HOST_DIR)/%): $(LZMA2EVA_HOST_DIR)/.unpacked
 $(LZMA2EVA_HOST_TOOLS:%=$(TOOLS_DIR)/%): $(TOOLS_DIR)/%: $(LZMA2EVA_HOST_DIR)/%
 	$(INSTALL_FILE)
 
-lzma2eva-host: $(LZMA2EVA_HOST_TOOLS:%=$(TOOLS_DIR)/%)
+lzma2eva-host-precompiled: $(LZMA2EVA_HOST_TOOLS:%=$(TOOLS_DIR)/%)
 
 
 lzma2eva-host-clean:

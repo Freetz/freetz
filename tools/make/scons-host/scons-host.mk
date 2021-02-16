@@ -27,7 +27,7 @@ $(SCONS_HOST): $(SCONS_HOST_DIR)/.unpacked | python-host
 		--no-install-man
 	find $(dir $@) -maxdepth 1 -type f -name "scons*" -exec $(SED) -i -r -e 's,^#![ ]*/usr/bin/env[ ]*python,#!$(abspath $(HOST_TOOLS_DIR)/usr/bin/python),g' \{\} \+
 
-scons-host: $(SCONS_HOST)
+scons-host-precompiled: $(SCONS_HOST)
 
 
 scons-host-clean:

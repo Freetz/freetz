@@ -7,6 +7,7 @@ GENEXT2FS_SITE:=cvs@pserver:anonymous@genext2fs.cvs.sourceforge.net:/cvsroot/gen
 GENEXT2FS_MAKE_DIR:=$(TOOLS_DIR)/make/genext2fs-host
 GENEXT2FS_DIR:=$(TOOLS_SOURCE_DIR)/genext2fs-$(GENEXT2FS_VERSION)
 
+
 genext2fs-host-source: $(DL_DIR)/$(GENEXT2FS_SOURCE)
 $(DL_DIR)/$(GENEXT2FS_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(GENEXT2FS_SOURCE) $(GENEXT2FS_SITE) $(GENEXT2FS_SOURCE_SHA256)
@@ -42,7 +43,8 @@ $(GENEXT2FS_DIR)/.tests-passed: $(GENEXT2FS_DIR)/genext2fs
 $(TOOLS_DIR)/genext2fs: $(GENEXT2FS_DIR)/genext2fs
 	$(INSTALL_FILE)
 
-genext2fs-host: $(TOOLS_DIR)/genext2fs
+genext2fs-host-precompiled: $(TOOLS_DIR)/genext2fs
+
 
 genext2fs-host-clean:
 	-$(MAKE) -C $(GENEXT2FS_DIR) clean

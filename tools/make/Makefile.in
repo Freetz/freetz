@@ -19,18 +19,28 @@ HOST_TOOLS_DIR:=$(FREETZ_BASE_DIR)/$(TOOLS_BUILD_DIR)
 $(TOOLS_SOURCE_DIR) $(HOST_TOOLS_DIR):
 	@mkdir -p $@
 
-TOOLS+=$(sort $(basename $(notdir $(wildcard $(TOOLS_DIR)/make/*/*.mk))))
+TOOLS:=$(sort $(basename $(notdir $(wildcard $(TOOLS_DIR)/make/*/*.mk))))
 
 TOOLS_CONDITIONAL+=gmp-host
 TOOLS_CONDITIONAL+=mpc-host
 TOOLS_CONDITIONAL+=mpfr-host
-ifneq ($(strip $(FREETZ_SHARE_terminfo)),y)
-TOOLS_CONDITIONAL+=ncurses-host
-endif
 ifneq ($(strip $(FREETZ_STRIP_LIBRARIES)),y)
 TOOLS_CONDITIONAL+=mklibs-host
 endif
+ifneq ($(strip $(FREETZ_SHARE_terminfo)),y)
+TOOLS_CONDITIONAL+=ncurses-host
+endif
 TOOLS_CONDITIONAL+=python-host
 TOOLS_CONDITIONAL+=scons-host
+TOOLS_CONDITIONAL+=tools-host
 TOOLS_CONDITIONAL+=xdelta-host
+
+TOOLS_BUILD_LOCAL+=fakeroot-host
+TOOLS_BUILD_LOCAL+=gmp-host
+TOOLS_BUILD_LOCAL+=kconfig-host
+TOOLS_BUILD_LOCAL+=mpc-host
+TOOLS_BUILD_LOCAL+=mpfr-host
+TOOLS_BUILD_LOCAL+=scons-host
+TOOLS_BUILD_LOCAL+=tools-host
+TOOLS_BUILD_LOCAL+=yourfritz-host
 

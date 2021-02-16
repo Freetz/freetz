@@ -7,6 +7,7 @@ SFK_HOST_MAKE_DIR:=$(TOOLS_DIR)/make/sfk-host
 SFK_HOST_DIR:=$(TOOLS_SOURCE_DIR)/sfk-$(SFK_HOST_VERSION)
 SFK_HOST_DESTDIR:=$(FREETZ_BASE_DIR)/$(TOOLS_DIR)
 
+
 sfk-host-source: $(DL_DIR)/$(SFK_HOST_SOURCE)
 $(DL_DIR)/$(SFK_HOST_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(SFK_HOST_SOURCE) $(SFK_HOST_SITE) $(SFK_HOST_SOURCE_MD5)
@@ -35,7 +36,8 @@ $(SFK_HOST_DIR)/sfk: $(SFK_HOST_DIR)/.configured
 $(TOOLS_DIR)/sfk: $(SFK_HOST_DIR)/sfk
 	$(INSTALL_FILE)
 
-sfk-host: $(TOOLS_DIR)/sfk
+sfk-host-precompiled: $(TOOLS_DIR)/sfk
+
 
 sfk-host-clean:
 	-$(MAKE) -C $(SFK_HOST_DIR) clean

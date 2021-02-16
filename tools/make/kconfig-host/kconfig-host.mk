@@ -6,6 +6,7 @@ KCONFIG_HOST_DIR:=$(TOOLS_SOURCE_DIR)/kconfig-$(KCONFIG_HOST_VERSION)
 KCONFIG_HOST_MAKE_DIR:=$(TOOLS_DIR)/make/kconfig-host
 KCONFIG_HOST_TARGET_DIR:=$(TOOLS_DIR)/config
 
+
 kconfig-host-source: $(DL_DIR)/$(KCONFIG_HOST_SOURCE)
 $(DL_DIR)/$(KCONFIG_HOST_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(KCONFIG_HOST_SOURCE) $(KCONFIG_HOST_SITE) $(KCONFIG_HOST_SOURCE_SHA256)
@@ -29,7 +30,8 @@ $(KCONFIG_HOST_TARGET_DIR)/conf: $(KCONFIG_HOST_DIR)/scripts/kconfig/conf
 $(KCONFIG_HOST_TARGET_DIR)/mconf: $(KCONFIG_HOST_DIR)/scripts/kconfig/mconf
 	$(INSTALL_FILE)
 
-kconfig-host: $(KCONFIG_HOST_TARGET_DIR)/conf $(KCONFIG_HOST_TARGET_DIR)/mconf
+kconfig-host-precompiled: $(KCONFIG_HOST_TARGET_DIR)/conf $(KCONFIG_HOST_TARGET_DIR)/mconf
+
 
 kconfig-host-clean:
 	$(RM) \

@@ -7,6 +7,7 @@ PATCHELF_HOST_SITE:=https://github.com/NixOS/patchelf/releases/download/$(PATCHE
 PATCHELF_HOST_MAKE_DIR:=$(TOOLS_DIR)/make/patchelf-host
 PATCHELF_HOST_DIR:=$(TOOLS_SOURCE_DIR)/patchelf-$(PATCHELF_HOST_VERSION_LONG)
 
+
 patchelf-host-source: $(DL_DIR)/$(PATCHELF_HOST_SOURCE)
 $(DL_DIR)/$(PATCHELF_HOST_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(PATCHELF_HOST_SOURCE) $(PATCHELF_HOST_SITE) $(PATCHELF_HOST_SOURCE_MD5)
@@ -36,7 +37,8 @@ $(PATCHELF_HOST_DIR)/src/patchelf: $(PATCHELF_HOST_DIR)/.configured
 $(TOOLS_DIR)/patchelf: $(PATCHELF_HOST_DIR)/src/patchelf
 	$(INSTALL_FILE)
 
-patchelf-host: $(TOOLS_DIR)/patchelf
+patchelf-host-precompiled: $(TOOLS_DIR)/patchelf
+
 
 patchelf-host-clean:
 	-$(MAKE) -C $(PATCHELF_HOST_DIR) clean

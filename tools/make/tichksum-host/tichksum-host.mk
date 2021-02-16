@@ -1,6 +1,7 @@
 TICHKSUM_HOST_SRC:=$(TOOLS_DIR)/make/tichksum-host/src
 TICHKSUM_HOST_DIR:=$(TOOLS_SOURCE_DIR)/tichksum
 
+
 tichksum-host-unpacked: $(TICHKSUM_HOST_DIR)/.unpacked
 $(TICHKSUM_HOST_DIR)/.unpacked: $(wildcard $(TICHKSUM_HOST_SRC)/*) | $(TOOLS_SOURCE_DIR) tar-host
 	$(RM) -r $(TICHKSUM_HOST_DIR)
@@ -14,7 +15,8 @@ $(TICHKSUM_HOST_DIR)/tichksum: $(TICHKSUM_HOST_DIR)/.unpacked
 $(TOOLS_DIR)/tichksum: $(TICHKSUM_HOST_DIR)/tichksum
 	$(INSTALL_FILE)
 
-tichksum-host: $(TOOLS_DIR)/tichksum
+tichksum-host-precompiled: $(TOOLS_DIR)/tichksum
+
 
 tichksum-host-clean:
 	-$(MAKE) -C $(TICHKSUM_HOST_DIR) clean

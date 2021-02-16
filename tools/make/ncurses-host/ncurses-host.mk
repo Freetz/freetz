@@ -6,6 +6,7 @@ NCURSES_HOST_SITE:=@GNU/ncurses
 NCURSES_HOST_MAKE_DIR:=$(TOOLS_DIR)/make/ncurses-host
 NCURSES_HOST_DIR:=$(TOOLS_SOURCE_DIR)/ncurses-$(NCURSES_HOST_VERSION)
 
+
 ncurses-host-source: $(DL_DIR)/$(NCURSES_HOST_SOURCE)
 $(DL_DIR)/$(NCURSES_HOST_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(NCURSES_HOST_SOURCE) $(NCURSES_HOST_SITE) $(NCURSES_HOST_SOURCE_SHA256)
@@ -37,7 +38,8 @@ $(NCURSES_HOST_DIR)/progs/tic: $(NCURSES_HOST_DIR)/.configured
 $(TOOLS_DIR)/tic: $(NCURSES_HOST_DIR)/progs/tic
 	$(INSTALL_FILE)
 
-ncurses-host: $(TOOLS_DIR)/tic
+ncurses-host-precompiled: $(TOOLS_DIR)/tic
+
 
 ncurses-host-clean:
 	-$(MAKE) -C $(NCURSES_HOST_DIR) clean

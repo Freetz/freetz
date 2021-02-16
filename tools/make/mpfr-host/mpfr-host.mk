@@ -9,6 +9,7 @@ MPFR_HOST_DESTDIR:=$(HOST_TOOLS_DIR)
 MPFR_HOST_BINARY:=$(MPFR_HOST_DESTDIR)/lib/libmpfr.a
 MPFR_HOST_BINARY_DEPS:=gmp-host
 
+
 mpfr-host-source: $(DL_DIR)/$(MPFR_HOST_SOURCE)
 $(DL_DIR)/$(MPFR_HOST_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(MPFR_HOST_SOURCE) $(MPFR_HOST_SITE) $(MPFR_HOST_SOURCE_SHA256)
@@ -37,7 +38,8 @@ $(MPFR_HOST_DIR)/.configured: $(MPFR_HOST_DIR)/.unpacked $(MPFR_HOST_BINARY_DEPS
 $(MPFR_HOST_BINARY): $(MPFR_HOST_DIR)/.configured | $(HOST_TOOLS_DIR)
 	$(MAKE) -C $(MPFR_HOST_DIR)/src install
 
-mpfr-host: $(MPFR_HOST_BINARY)
+mpfr-host-precompiled: $(MPFR_HOST_BINARY)
+
 
 mpfr-host-clean:
 	-$(MAKE) -C $(MPFR_HOST_DIR) clean

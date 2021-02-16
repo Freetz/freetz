@@ -54,7 +54,7 @@ $(LZMA2_HOST_DIR)/liblzma.a: $(LZMA2_HOST_LIB_DIR)/liblzma.a
 $(TOOLS_DIR)/xz: $(LZMA2_HOST_ALONE_DIR)/xz
 	$(INSTALL_FILE)
 
-lzma2-host: $(LZMA2_HOST_DIR)/liblzma.a $(TOOLS_DIR)/xz
+lzma2-host-precompiled: $(LZMA2_HOST_DIR)/liblzma.a $(TOOLS_DIR)/xz
 
 
 lzma2-host-clean:

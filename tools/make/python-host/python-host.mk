@@ -49,7 +49,7 @@ $(PYTHON_HOST_TARGET_BINARY): $(PYTHON_HOST_BINARY) | $(HOST_TOOLS_DIR)
 	cp -a $(PYTHON_HOST_BINARY) $(PYTHON_HOST_DIR)/Parser/pgen \
 		$(HOST_TOOLS_DIR)/usr/bin
 
-python-host: $(PYTHON_HOST_TARGET_BINARY)
+python-host-precompiled: $(PYTHON_HOST_TARGET_BINARY)
 
 
 python-host-clean:
@@ -74,6 +74,4 @@ python-host-distclean: python-host-dirclean
 		$(HOST_TOOLS_DIR)/usr/lib/pkgconfig/python* \
 		$(HOST_TOOLS_DIR)/usr/share/python2.7 \
 		$(HOST_TOOLS_DIR)/usr/share/man/man1/python*
-
-.PHONY: python-host-source python-host-unpacked python-host-configured python-host python-host-clean python-host-dirclean python-host-distclean
 
