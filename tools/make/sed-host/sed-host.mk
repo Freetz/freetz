@@ -25,6 +25,7 @@ $(SED_HOST_DIR)/.configured: $(SED_HOST_DIR)/.unpacked
 		./configure \
 		--prefix=/usr \
 		--without-selinux \
+		--disable-acl \
 		$(DISABLE_NLS) \
 		$(QUIET) \
 	);

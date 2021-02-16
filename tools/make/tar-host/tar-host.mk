@@ -25,6 +25,7 @@ $(TAR_HOST_DIR)/.configured: $(TAR_HOST_DIR)/.unpacked
 		./configure \
 		--prefix=/usr \
 		--without-selinux \
+		--disable-acl \
 		$(DISABLE_NLS) \
 		$(QUIET) \
 	);
