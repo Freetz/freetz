@@ -427,6 +427,8 @@ menu "Download options"
 		default "@AVM/fritzbox-7530/deutschland/fritz.os,@1&1/7530"                                                        if (FREETZ_TYPE_7530 || FREETZ_TYPE_7520_7530) && FREETZ_TYPE_LANG_DE
 		default "@AVM/fritzbox-7530/{other,belgium}/fritz.os"                                                              if (FREETZ_TYPE_7530 || FREETZ_TYPE_7520_7530) && FREETZ_TYPE_LANG_EN
 		#
+		default "@AVM/fritzbox-7530-ax/deutschland/fritz.os"                                                               if FREETZ_TYPE_7539
+		#
 		default "@AVM/{fritzbox-7560/deutschland/fritz.os,fritzbox.7560/firmware/deutsch},@1&1/7560"                       if FREETZ_TYPE_7560 && FREETZ_TYPE_LANG_DE
 		default "@AVM/{fritzbox-7560/other/fritz.os,fritzbox.7560/firmware/english}"                                       if FREETZ_TYPE_7560 && FREETZ_TYPE_LANG_EN
 		#
@@ -771,7 +773,7 @@ menu "Download options"
 		default "FRITZ.Box_7530-07.21.image"                                                   if (FREETZ_TYPE_7530 || FREETZ_TYPE_7520_7530)                        && FREETZ_TYPE_FIRMWARE_07_2X
 		default "FRITZ.Box_7530-07.24-85384-LabBETA.image"                                     if (FREETZ_TYPE_7530 || FREETZ_TYPE_7520_7530)                        && FREETZ_TYPE_FIRMWARE_07_25_LABOR
 		#
-		default "FRITZ.Box_7530_AX-07.20-82015-Inhaus.image"                                   if FREETZ_TYPE_7539 && FREETZ_TYPE_FIRMWARE_07_2X_INHAUS
+		default "FRITZ.Box_7530_AX-07.22.image"                                                if FREETZ_TYPE_7539
 		#
 		default "FRITZ.Box_7560.en-de-es-it-fr-pl.149.06.83.image"                             if FREETZ_TYPE_7560 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_06_8X
 		default "FRITZ.Box_7560.en-de-es-it-fr-pl.149.07.01.image"                             if FREETZ_TYPE_7560 && FREETZ_TYPE_LANG_EN && FREETZ_TYPE_FIRMWARE_07_0X
