@@ -90,12 +90,6 @@ ifeq ($(shell uname -r | sed 's/\..*//;s/^[1-3]//'),)
 $(info Your Linux System is very old. Please upgrade it or use Freetz-Linux: https://github.com/Freetz-NG/freetz-ng/blob/master/README.md)
 endif
 
-# check cpu for i686, 32 or 64 bit
-ifneq ($(shell uname -m | sed 's/.*86.*/y/'),y)
-$(if $(strip $(FREETZ_DOWNLOAD_TOOLCHAIN)),$(error You have no i686 CPU, please disable precompiled (download) toolchains))
-$(if $(strip $(FREETZ_HOSTTOOLS_DOWNLOAD)),$(error You have no i686 CPU, please disable precompiled (download) host-tools))
-endif
-
 # check for proper make version
 ifneq ($(filter 3.7% 3.80 3.81,$(MAKE_VERSION)),)
 $(error Your make ($(MAKE_VERSION)) is too old. Go get at least 3.82)
@@ -161,7 +155,24 @@ world: check-dot-config-uptodateness $(DL_DIR) $(BUILD_DIR) $(KERNEL_TARGET_DIR)
 
 KCONFIG_TARGETS:=menuconfig menuconfig-single config oldconfig olddefconfig allnoconfig allyesconfig randconfig listnewconfig config-compress
 
+# load user configuration file
 -include $(TOPDIR)/.config
+
+# check cpu for i686, 32 or 64 bit
+ifneq ($(shell uname -m | sed 's/.*86.*/y/'),y)
+ifneq ($(findstring menuconfig,$(MAKECMDGOALS)),menuconfig)
+ifeq ($(FREETZ_DOWNLOAD_TOOLCHAIN),y)
+DLCHG:=$(shell echo 'y' ; sed 's/^# FREETZ_BUILD_TOOLCHAIN .*/FREETZ_BUILD_TOOLCHAIN=y/' -i $(TOPDIR)/.config)
+DLCHG:=$(shell echo 'y' ; sed 's/^FREETZ_DOWNLOAD_TOOLCHAIN=.*/# FREETZ_DOWNLOAD_TOOLCHAIN is not set/' -i $(TOPDIR)/.config)
+$(info You have no i686 CPU, precompiled (download) toolchains automatically disabled.)
+endif
+ifeq ($(FREETZ_HOSTTOOLS_DOWNLOAD),y)
+DLCHG:=$(shell echo 'y' ; sed 's/^FREETZ_HOSTTOOLS_DOWNLOAD=.*/# FREETZ_HOSTTOOLS_DOWNLOAD is not set/' -i $(TOPDIR)/.config)
+$(info You have no i686 CPU, precompiled (download) host-tools automatically disabled.)
+endif
+$(if $(DLCHG),$(error Please re-run))
+endif
+endif
 
 VERBOSE:=
 QUIET:=--quiet
