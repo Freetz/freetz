@@ -40,6 +40,9 @@ Latest changes
   * Replace kernel does not work for most latest firmware versions.
   * Loading build kernel modules may work or do not. You'll notice.
 
+- Build system:
+  * kconfig 5.11
+
 - New packages, libs, modules:
     * juis_check 0.5
 
