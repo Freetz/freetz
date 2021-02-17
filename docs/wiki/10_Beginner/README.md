@@ -38,6 +38,7 @@
     * [Notwendige Pakete](install.de.md#notwendige-pakete)
     * [Installation der benötigten Pakete (Ubuntu)](install.de.md#installation-der-benötigten-pakete-ubuntu)
     * [Installation der benötigten Pakete (Fedora)](install.de.md#installation-der-benötigten-pakete-fedora)
+    * [Installierte Distrubution ermitteln](install.de.md#installierte-distrubution-ermitteln)
     * [Erstellung & Installation](install.de.md#erstellung--installation)
     * [coLinux / andLinux / speedLinux](install.de.md#colinux--andlinux--speedlinux)
     * [Cygwin](install.de.md#cygwin)
