@@ -324,16 +324,9 @@ darin, diesen Code per Copy and Paste auf der Konsole auszuführen.
 
     # Ubuntu 16.04 x64:
     sudo apt -y install imagemagick subversion git bc wget sudo gcc g++ binutils autoconf automake autopoint libtool-bin make bzip2 libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config ecj fastjar realpath perl libstring-crc32-perl ruby ruby1.9 gawk python libusb-dev unzip intltool libacl1-dev libcap-dev libc6-dev-i386 lib32ncurses5-dev gcc-multilib lib32stdc++6 libglib2.0-dev
-```
 
-Wer vergessen hat welche Ubuntu Version er installierte kann dies mit
-folgenden Befehlen prüfen:
-
-```
-	# Ubuntu Version: ergibt z.B. "Ubuntu 12.04.1 LTS \n \l"
-	cat /etc/issue
-	# Maschinen Typ: ergibt z.B. "i686" bei 32-bit Ubuntu und "x86_64" bei 64-Bit Ubuntu
-	uname -m
+    # Ubuntu 20.04 x64:
+    sudo apt -y install lib32z1-dev inkscape imagemagick subversion git bc wget sudo gcc g++ binutils autoconf automake autopoint libtool-bin make bzip2 libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config ecj fastjar perl libstring-crc32-perl ruby gawk python libusb-dev unzip intltool libacl1-dev libcap-dev libc6-dev-i386 lib32ncurses5-dev gcc-multilib lib32stdc++6 libglib2.0-dev 
 ```
 
 ### Installation der benötigten Pakete (Fedora)
@@ -342,6 +335,28 @@ folgenden Befehlen prüfen:
 	sudo yum -y install ImageMagick subversion gcc gcc-c++ binutils autoconf automake libtool make bzip2 ncurses-devel zlib-devel flex bison patch texinfo gettext pkgconfig ecj perl perl-String-CRC32 wget glib2-devel git libacl-devel libattr-devel libcap-devel
 	# Auf 64-Bit Systemen sind zusätzlich folgende Pakete zu installieren:
 	sudo yum -y install ncurses-devel.i686 glibc-devel.i686 libgcc.i686
+```
+
+### Installierte Distrubution ermitteln
+Wer vergessen hat welche Linux Version er installierte kann dies mit folgenden Befehlen prüfen:
+
+- Linux Distribution:
+```
+	$ hostnamectl status
+	  Operating System: Fedora 33 (Thirty Three)
+		    Kernel: Linux 5.10.15-200.fc33.x86_64
+```
+	
+- Ubuntu Version:
+```
+	$ lsb_release -d
+	Description:    Ubuntu 14.04.6 LTS
+```
+	
+- Maschinen Typ: "i686" bei 32-bit x86 und "x86_64" bei 64-Bit x86
+```
+	$ uname -m
+	aarch64
 ```
 
 ### Erstellung & Installation
