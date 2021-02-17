@@ -22,7 +22,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		TARGET=custom \
 		USE_EPOLL=$(if $(FREETZ_KERNEL_VERSION_2_6_28_MIN),1) \
 		USE_OPENSSL=$(if $(FREETZ_PACKAGE_HAPROXY_WITH_OPENSSL),1) \
-		USE_PCRE=1 \
+		USE_PCRE=$(if $(FREETZ_PACKAGE_HAPROXY_WITH_PCRE),1) \
 		CC="$(TARGET_CC)" \
 		CFLAGS="$(TARGET_CFLAGS) -ffunction-sections -fdata-sections" \
 		LDFLAGS="-Wl,--gc-sections"
