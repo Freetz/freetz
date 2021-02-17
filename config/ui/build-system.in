@@ -41,14 +41,20 @@ menu "Build system options"
 			and make/<pkg>/patches. If so, the package will be recreated.
 
 	comment "Host tools ------------------------------------------------------"
-		depends on FREETZ_SHOW_DEVELOPER
 
 	config FREETZ_HOSTTOOLS_STATIC
 		bool "Link statically"
-		depends on FREETZ_SHOW_DEVELOPER && !FREETZ_HOSTTOOLS_DOWNLOAD
+		depends on !FREETZ_HOSTTOOLS_DOWNLOAD && FREETZ_SHOW_DEVELOPER
 		default n
 		help
 			Usefull if you build an archive to download.
+
+	config FREETZ_HOSTTOOLS_DOWNLOAD
+		bool "Use precompiled i686 host-tools"
+		default y
+		help
+			Download and use precompiled binaries files. Not
+			every tool is included, see $(TOOLS_BUILD_LOCAL).
 
 endmenu # "Build system options" #
 

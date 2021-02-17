@@ -21,6 +21,7 @@ $(TOOLS_SOURCE_DIR) $(HOST_TOOLS_DIR):
 
 TOOLS:=$(sort $(basename $(notdir $(wildcard $(TOOLS_DIR)/make/*/*.mk))))
 
+# tools not built by default
 TOOLS_CONDITIONAL+=gmp-host
 TOOLS_CONDITIONAL+=mpc-host
 TOOLS_CONDITIONAL+=mpfr-host
@@ -35,6 +36,7 @@ TOOLS_CONDITIONAL+=scons-host
 TOOLS_CONDITIONAL+=tools-host
 TOOLS_CONDITIONAL+=xdelta-host
 
+# tools not in dl-archive
 TOOLS_BUILD_LOCAL+=fakeroot-host
 TOOLS_BUILD_LOCAL+=gmp-host
 TOOLS_BUILD_LOCAL+=kconfig-host

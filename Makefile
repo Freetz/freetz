@@ -332,8 +332,10 @@ distclean: $(TOOLCHAIN_DISTCLEAN) $(TOOLS_DISTCLEAN) common-distclean
 
 endif # FREETZ_HAVE_DOT_CONFIG!=y
 
+#wrapper: $TOOL-host -> $TOOL-host-precompiled
 $(filter-out $(TOOLS_BUILD_LOCAL),$(TOOLS)): % : $(if $(FREETZ_HOSTTOOLS_DOWNLOAD),tools-host,%-precompiled)
 $(filter $(TOOLS_BUILD_LOCAL),$(TOOLS)): % : %-precompiled
+
 tools: $(DL_DIR) $(SOURCE_DIR_ROOT) $(filter-out $(TOOLS_CONDITIONAL),$(TOOLS))
 tools-dirclean: $(TOOLS_DIRCLEAN)
 tools-distclean: $(TOOLS_DISTCLEAN)
