@@ -174,6 +174,15 @@ $(if $(DLCHG),$(error Please re-run))
 endif
 endif
 
+# check for installed 32-bit libz
+ifneq ($(shell ldconfig -p | grep -v 'x86-64' | grep -Eq '^[[:space:]]*libz.so(\.[01])* ' && echo 'y'),y)
+ifeq ($(FREETZ_HOSTTOOLS_DOWNLOAD),y)
+DLCHG:=$(shell echo 'y' ; sed 's/^FREETZ_HOSTTOOLS_DOWNLOAD=.*/# FREETZ_HOSTTOOLS_DOWNLOAD is not set/' -i $(TOPDIR)/.config)
+$(info You have no libz.so (32-bit) installed, precompiled (download) host-tools automatically disabled.)
+$(if $(DLCHG),$(error Please re-run))
+endif
+endif
+
 VERBOSE:=
 QUIET:=--quiet
 QUIETSHORT:=-q
