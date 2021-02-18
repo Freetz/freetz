@@ -13,6 +13,9 @@ check_requisite() {
 		lib)
 			ldconfig -p | grep -q "^[[:space:]]*$1 "
 			;;
+		lib32)
+			ldconfig -p | grep -v 'x86-64' | grep -Eq "^[[:space:]]*$1(\.[01])* "
+			;;
 		header)
 			[ -n "$(find /usr/include/ /usr/local/include/ -path "*/$1" 2>/dev/null)" ]
 			;;
@@ -36,6 +39,9 @@ failed_requisite() {
 		lib)
 			echo "$required: The library $1 was not found in /etc/ld.so.cache."
 			;;
+		lib32)
+			echo "$required: The library $1 (32-bit) was not found in /etc/ld.so.cache."
+			;;
 		header)
 			echo "$required: The header file $1 was not found in /usr/(local/)include."
 			;;
@@ -57,6 +63,10 @@ while [ $# -gt 0 ]; do
 			;;
 		-l|--lib)
 			parser=lib
+			warn=false
+			;;
+		--lib32)
+			parser=lib32
 			warn=false
 			;;
 		-p|--program)
