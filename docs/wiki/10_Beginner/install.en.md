@@ -176,6 +176,8 @@ development `/trunk` if you wish.
 
 ### Notwendige Pakete
 
+* Siehe [PREREQUISITES](../../PREREQUISITES.md)
+
 Für das Erstellen der Firmware kann auch Knoppix verwendet werden, wozu
 keine Linux-Installation erforderlich ist. Wichtig ist, dass zum
 Kompilieren des Mods unter Linux keine FAT oder NTFS Partition verwendet
@@ -275,29 +277,7 @@ Hier wird zusätzlich folgendes benötigt:
 
 ### Installation der benötigten Pakete
 
-Eine einfache Möglichkeit die benötigten Pakete zu installieren besteht
-darin, diesen Code in der Konsole auszuführen:
-
-```
-	sudo apt-get -y update
-	sudo apt-get -y upgrade
-	sudo apt-get -y dist-upgrade
-
-	# Angepasst z.B. auf Ubuntu 9.04 (kein automake 1.8, "ecj" statt "ecj-bootstrap"):
-	sudo apt-get -y install imagemagick subversion gcc g++ binutils autoconf automake automake1.9 libtool make bzip2 libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config jikes ecj fastjar realpath perl libstring-crc32-perl ruby ruby1.8 gawk python libusb-dev unzip intltool libglib2.0-dev xz-utils git-core libacl1-dev libattr1-dev libcap-dev
-
-	# Ubuntu 9.10, 10.xx, 11.xx und 12.04
-	sudo apt-get -y install imagemagick subversion gcc g++ bzip2 binutils automake patch autoconf libtool pkg-config make libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config ecj fastjar realpath perl libstring-crc32-perl ruby ruby1.8 gawk python libusb-dev unzip intltool libglib2.0-dev xz-utils git-core libacl1-dev libattr1-dev libcap-dev
-
-	#Ubuntu 13.04 und 14.04
-	sudo apt-get -y install graphicsmagick subversion gcc g++ binutils autoconf automake automake1.9 libtool make bzip2 libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config ecj fastjar realpath perl libstring-crc32-perl ruby ruby1.8 gawk python libusb-dev unzip intltool libacl1-dev libcap-dev
-
-	# Seit Debian Jessie bzw. Ubuntu 15.04 (vivid) wird zusätzlich das Paket libtool-bin benötigt:
-	sudo apt-get -y install libtool-bin
-
-	# Auf 64-Bit Systemen sind zusätzlich folgende Pakete zu installieren:
-	sudo apt-get -y install libc6-dev-i386 lib32ncurses5-dev gcc-multilib lib32stdc++6
-```
+* Verschoben: [PREREQUISITES](../../PREREQUISITES.md)
 
 ### Erstellung & Installation
 

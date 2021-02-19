@@ -131,7 +131,7 @@ endif
 # Simple checking of build prerequisites
 ifneq ($(NO_PREREQ_CHECK),y)
 ifneq (OK,$(shell $(CHECK_PREREQ_TOOL) $$(cat .build-prerequisites) >&2 && echo OK))
-$(error Some build prerequisites are missing! Please install the missing packages before trying again. See https://freetz-ng.github.io/freetz-ng/wiki/10_Beginner/install.de.html#notwendige-pakete for installation hints)
+$(error Some build prerequisites are missing! Please install the missing packages before trying again. See https://freetz-ng.github.io/freetz-ng/PREREQUISITES for installation hints)
 endif
 endif
 
@@ -178,7 +178,7 @@ endif
 ifneq ($(shell ldconfig -p | grep -v 'x86-64' | grep -Eq '^[[:space:]]*libz.so(\.[01])* ' && echo 'y'),y)
 ifeq ($(FREETZ_HOSTTOOLS_DOWNLOAD),y)
 DLCHG:=$(shell echo 'y' ; sed 's/^FREETZ_HOSTTOOLS_DOWNLOAD=.*/# FREETZ_HOSTTOOLS_DOWNLOAD is not set/' -i $(TOPDIR)/.config)
-$(info You have no libz.so (32-bit) installed, precompiled (download) host-tools automatically disabled.)
+$(info You have no libz.so (32-bit) installed, precompiled (download) host-tools automatically disabled. See: https://freetz-ng.github.io/freetz-ng/PREREQUISITES)
 $(if $(DLCHG),$(error Please re-run))
 endif
 endif
