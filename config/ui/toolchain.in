@@ -548,6 +548,17 @@ config FREETZ_TARGET_GCC_VERSION
 	default "${FREETZ_TARGET_GCC_MAJOR_VERSION}.${FREETZ_TARGET_GCC_MINOR_VERSION}"  if !FREETZ_TARGET_GCC_SNAPSHOT
 	default "${FREETZ_TARGET_GCC_MAJOR_VERSION}-${FREETZ_TARGET_GCC_SNAPSHOT_DATE}"  if  FREETZ_TARGET_GCC_SNAPSHOT
 
+config FREETZ_GNULIBATOMIC_VERSION
+	string
+	default "0.0.0"     if FREETZ_TARGET_GCC_4_6
+	default "0.0.0"     if FREETZ_TARGET_GCC_4_7
+	default "1.0.0"     if FREETZ_TARGET_GCC_4_8
+	default "1.0.0"     if FREETZ_TARGET_GCC_4_9
+	default "1.1.0"     if FREETZ_TARGET_GCC_5
+	default "1.2.0"     if FREETZ_TARGET_GCC_8
+	help
+		Unused! Fix make/libs/libatomic/libatomic.mk
+
 config FREETZ_GNULIBSTDCXX_VERSION
 	string
 	default "6.0.16"    if FREETZ_TARGET_GCC_4_6

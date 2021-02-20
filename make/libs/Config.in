@@ -17,7 +17,6 @@ menu "C++"
 		bool
 		select FREETZ_LIB_libuClibc__WITH_WCHAR if FREETZ_STDCXXLIB_USE_UCLIBCXX
 		default n
-	source "make/libs/libstdcxx/Config.in"
 	source "make/libs/uclibcxx/Config.in"
 endmenu ### "C++"
 
@@ -64,6 +63,12 @@ menu "File systems"
 	source "make/fuse/Config.in.libs"
 	source "make/ntfs/Config.in.libs"
 endmenu ### "File systems"
+
+menu "GCC"
+	source "make/libs/libatomic/Config.in"
+	source "make/libs/libgcc_s/Config.in"
+	source "make/libs/libstdcxx/Config.in"
+endmenu ### "GCC"
 
 menu "GLib"
 	source "make/libs/glib2/Config.in"
@@ -178,7 +183,6 @@ endmenu ### "XML & XSLT"
 source "make/libs/attr/Config.in"
 source "make/libs/libcap/Config.in"
 source "make/dbus/Config.in.libs"
-source "make/libs/libgcc_s/Config.in"
 source "make/libs/libconfig/Config.in"
 source "make/libs/libdaemon/Config.in"
 source "make/libs/devmapper/Config.in"
