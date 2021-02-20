@@ -1,237 +1,178 @@
 menu "Apache Portable Runtime libs"
-
-source "make/libs/apr/Config.in"
-source "make/libs/apr-util/Config.in"
-
+	source "make/libs/apr/Config.in"
+	source "make/libs/apr-util/Config.in"
 endmenu ### "Apache Portable Runtime libs"
 
 menu "Avahi libraries"
-
-source "make/avahi/Config.in.libs"
-
+	source "make/avahi/Config.in.libs"
 endmenu ### "Avahi libraries"
 
 menu "C++"
-
-config FREETZ_LIB_STDCXXLIB
-	bool
-	select FREETZ_LIB_libuClibc__ if FREETZ_STDCXXLIB_USE_UCLIBCXX
-	select FREETZ_LIB_libstdc__ if FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
-	default n
-
-config FREETZ_LIB_STDCXXLIB_WITH_WCHAR
-	bool
-	select FREETZ_LIB_libuClibc__WITH_WCHAR if FREETZ_STDCXXLIB_USE_UCLIBCXX
-	default n
-
-source "make/libs/libstdcxx/Config.in"
-source "make/libs/uclibcxx/Config.in"
-
+	config FREETZ_LIB_STDCXXLIB
+		bool
+		select FREETZ_LIB_libuClibc__ if FREETZ_STDCXXLIB_USE_UCLIBCXX
+		select FREETZ_LIB_libstdc__ if FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
+		default n
+	config FREETZ_LIB_STDCXXLIB_WITH_WCHAR
+		bool
+		select FREETZ_LIB_libuClibc__WITH_WCHAR if FREETZ_STDCXXLIB_USE_UCLIBCXX
+		default n
+	source "make/libs/libstdcxx/Config.in"
+	source "make/libs/uclibcxx/Config.in"
 endmenu ### "C++"
 
 menu "Charsets & Internationalization"
-
-source "make/iconv/Config.in.libs"
-source "make/libs/gettext/Config.in"
-
+	source "make/iconv/Config.in.libs"
+	source "make/libs/gettext/Config.in"
 endmenu ### "Charsets & Internationalization"
 
 menu "Crypto & SSL"
-
-comment "GnuPG ----------------------------------"
-source "make/libs/libgpg-error/Config.in"
-source "make/libs/libgcrypt/Config.in"
-
-comment "GnuTLS ---------------------------------"
-source "make/gnutls/Config.in.libs"
-source "make/libs/libtasn1/Config.in"
-
-comment "mbed TLS -------------------------------"
-source "make/libs/mbedtls/Config.in"
-
-comment "Nettle ---------------------------------"
-source "make/libs/nettle/Config.in"
-
-comment "OpenSSL --------------------------------"
-source "make/openssl/Config.in.libs"
-source "make/libs/libavmhmac/Config.in"
-
-comment "PolarSSL -------------------------------"
-source "make/libs/polarssl12/Config.in"
-source "make/libs/polarssl13/Config.in"
-
-comment "SSH ------------------------------------"
-source "make/libs/libssh2/Config.in"
-
+	comment "GnuPG ----------------------------------"
+		source "make/libs/libgpg-error/Config.in"
+		source "make/libs/libgcrypt/Config.in"
+	comment "GnuTLS ---------------------------------"
+		source "make/gnutls/Config.in.libs"
+		source "make/libs/libtasn1/Config.in"
+	comment "mbed TLS -------------------------------"
+		source "make/libs/mbedtls/Config.in"
+	comment "Nettle ---------------------------------"
+		source "make/libs/nettle/Config.in"
+	comment "OpenSSL --------------------------------"
+		source "make/openssl/Config.in.libs"
+		source "make/libs/libavmhmac/Config.in"
+	comment "PolarSSL -------------------------------"
+		source "make/libs/polarssl12/Config.in"
+		source "make/libs/polarssl13/Config.in"
+	comment "SSH ------------------------------------"
+		source "make/libs/libssh2/Config.in"
 endmenu ### "Crypto & SSL"
 
 menu "Data compression"
-
-source "make/libs/lz4/Config.in"
-source "make/xz/Config.in.libs"
-source "make/libs/lzo/Config.in"
-source "make/libs/zlib/Config.in"
-
+	source "make/libs/lz4/Config.in"
+	source "make/xz/Config.in.libs"
+	source "make/libs/lzo/Config.in"
+	source "make/libs/zlib/Config.in"
 endmenu ### "Data compression"
 
 menu "Database"
-
-source "make/libs/db/Config.in"
-source "make/sqlite/Config.in.libs"
-
+	source "make/libs/db/Config.in"
+	source "make/sqlite/Config.in.libs"
 endmenu ### "Database"
 
 menu "File systems"
-
-source "make/e2fsprogs/Config.in.libs"
-source "make/fuse/Config.in.libs"
-source "make/ntfs/Config.in.libs"
-
+	source "make/e2fsprogs/Config.in.libs"
+	source "make/fuse/Config.in.libs"
+	source "make/ntfs/Config.in.libs"
 endmenu ### "File systems"
 
 menu "GLib"
-
-source "make/libs/glib2/Config.in"
-
+	source "make/libs/glib2/Config.in"
 endmenu ### "GLib"
 
 menu "Graphics & fonts"
-
-source "make/libs/freetype/Config.in"
-source "make/libs/libart_lgpl/Config.in"
-source "make/libs/libexif/Config.in"
-source "make/libs/jpeg/Config.in"
-source "make/libs/leptonica/Config.in"
-source "make/libs/libpng/Config.in"
-source "make/libs/libgd/Config.in"
-source "make/libs/openjpeg/Config.in"
-source "make/tesseract/Config.in.libs"
-source "make/tiff/Config.in.libs"
-source "make/netpbm/Config.in.libs"
-
+	source "make/libs/freetype/Config.in"
+	source "make/libs/libart_lgpl/Config.in"
+	source "make/libs/libexif/Config.in"
+	source "make/libs/jpeg/Config.in"
+	source "make/libs/leptonica/Config.in"
+	source "make/libs/libpng/Config.in"
+	source "make/libs/libgd/Config.in"
+	source "make/libs/openjpeg/Config.in"
+	source "make/tesseract/Config.in.libs"
+	source "make/tiff/Config.in.libs"
+	source "make/netpbm/Config.in.libs"
 endmenu ### "Graphics & fonts"
 
 menu "Multi precision arithmetic libs"
-
-source "make/libs/gmp/Config.in"
-source "make/libs/mpfr/Config.in"
-source "make/libs/mpc/Config.in"
-
+	source "make/libs/gmp/Config.in"
+	source "make/libs/mpfr/Config.in"
+	source "make/libs/mpc/Config.in"
 endmenu ### "Multi precision arithmetic libs"
 
 menu "Multimedia"
-
-source "make/libs/libdvbcsa/Config.in"
-
-menu "Audio and video codecs"
-
-menu "Audio codecs"
-source "make/libs/flac/Config.in"
-source "make/libs/libmad/Config.in"
-source "make/libs/libogg/Config.in"
-source "make/libs/opus/Config.in"
-source "make/libs/speex/Config.in"
-endmenu
-
-source "make/ffmpeg/Config.in.libs"
-
-menu "Video codecs"
-comment "Vorbis video codec ---------------------"
-source "make/libs/libvorbis/Config.in"
-endmenu
-
-endmenu ## "Audio and video codecs"
-
-menu "ID3 tag reading libs"
-
-source "make/libs/libid3tag/Config.in"
-source "make/libs/taglib/Config.in"
-
-endmenu ## "ID3 tag reading libs"
-
+	source "make/libs/libdvbcsa/Config.in"
+	menu "Audio and video codecs"
+		menu "Audio codecs"
+			source "make/libs/flac/Config.in"
+			source "make/libs/libmad/Config.in"
+			source "make/libs/libogg/Config.in"
+			source "make/libs/opus/Config.in"
+			source "make/libs/speex/Config.in"
+		endmenu
+		source "make/ffmpeg/Config.in.libs"
+		menu "Video codecs"
+			comment "Vorbis video codec ---------------------"
+			source "make/libs/libvorbis/Config.in"
+		endmenu
+	endmenu ## "Audio and video codecs"
+	menu "ID3 tag reading libs"
+		source "make/libs/libid3tag/Config.in"
+		source "make/libs/taglib/Config.in"
+	endmenu ## "ID3 tag reading libs"
 endmenu ### "Multimedia"
 
 menu "ncurses"
-
-source "make/libs/ncurses/Config.in"
-source "make/libs/ncursesw/Config.in"
-
+	source "make/libs/ncurses/Config.in"
+	source "make/libs/ncursesw/Config.in"
 endmenu ### "ncurses"
 
 menu "Networking"
-
-comment "ATM ------------------------------------"
-source "make/libs/linux-atm/Config.in"
-
-comment "Bluetooth ------------------------------"
-source "make/libs/bluez-libs/Config.in"
-source "make/libs/openobex/Config.in"
-
-comment "ISDN & CAPI ----------------------------"
-source "make/libs/libcapi/Config.in"
-
-comment "Misc networking ------------------------"
-source "make/libs/libdnet/Config.in"
-source "make/libs/libgsm/Config.in"
-source "make/libs/iksemel/Config.in"
-source "make/libs/libpcap/Config.in"
-source "make/libs/libmnl/Config.in"
-source "make/libs/libnet/Config.in"
-source "make/libs/liboping/Config.in"
-source "make/libs/libosip2/Config.in"
-source "make/libs/spandsp/Config.in"
-source "make/libs/srtp/Config.in"
-source "make/libs/libtirpc/Config.in"
-
+	comment "ATM ------------------------------------"
+		source "make/libs/linux-atm/Config.in"
+	comment "Bluetooth ------------------------------"
+		source "make/libs/bluez-libs/Config.in"
+		source "make/libs/openobex/Config.in"
+	comment "ISDN & CAPI ----------------------------"
+		source "make/libs/libcapi/Config.in"
+	comment "Misc networking ------------------------"
+		source "make/libs/libdnet/Config.in"
+		source "make/libs/libgsm/Config.in"
+		source "make/libs/iksemel/Config.in"
+		source "make/libs/libpcap/Config.in"
+		source "make/libs/libmnl/Config.in"
+		source "make/libs/libnet/Config.in"
+		source "make/libs/liboping/Config.in"
+		source "make/libs/libosip2/Config.in"
+		source "make/libs/spandsp/Config.in"
+		source "make/libs/srtp/Config.in"
+		source "make/libs/libtirpc/Config.in"
 endmenu ### "Networking"
 
 menu "PJ Project"
-source "make/libs/pjproject2/Config.in"
+	source "make/libs/pjproject2/Config.in"
 endmenu ### "PJ Project"
 
 menu "Readline"
-
-source "make/libs/readline/Config.in"
-
+	source "make/libs/readline/Config.in"
 endmenu ### "Readline"
 
 menu "Regular expressions"
-
-source "make/libs/libonig/Config.in"
-source "make/libs/pcre/Config.in"
-
+	source "make/libs/libonig/Config.in"
+	source "make/libs/pcre/Config.in"
 endmenu ### "Regular expressions"
 
 menu "uClibc"
-
-source "make/libs/uclibc/Config.in"
-
+	source "make/libs/uclibc/Config.in"
 endmenu ### "uClibc"
 
 menu "USB & FTDI"
-
-source "make/libs/libusb/Config.in"
-source "make/libs/libusb1/Config.in"
-source "make/libs/libftdi/Config.in"
-
+	source "make/libs/libusb/Config.in"
+	source "make/libs/libusb1/Config.in"
+	source "make/libs/libftdi/Config.in"
 endmenu ### "USB & FTDI"
 
 menu "Web and WebDAV"
-
-source "make/curl/Config.in.libs"
-source "make/libs/jansson/Config.in"
-source "make/js/Config.in.libs"
-source "make/libs/neon/Config.in"
-source "make/libs/serf/Config.in"
-
+	source "make/curl/Config.in.libs"
+	source "make/libs/jansson/Config.in"
+	source "make/js/Config.in.libs"
+	source "make/libs/neon/Config.in"
+	source "make/libs/serf/Config.in"
 endmenu ### "Web and WebDAV"
 
 menu "XML & XSLT"
-
-source "make/libs/expat/Config.in"
-source "make/libs/libxml2/Config.in"
-source "make/xsltproc/Config.in.libs"
-
+	source "make/libs/expat/Config.in"
+	source "make/libs/libxml2/Config.in"
+	source "make/xsltproc/Config.in.libs"
 endmenu ### "XML & XSLT"
 
 source "make/libs/attr/Config.in"
@@ -259,3 +200,4 @@ source "make/slang/Config.in.libs"
 source "make/libs/libsynce/Config.in"
 source "make/libs/sysfsutils/Config.in"
 source "make/libs/yaml/Config.in"
+
