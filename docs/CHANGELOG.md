@@ -58,7 +58,7 @@ Latest changes
     * libgd 2.3.1
     * lighttpd 1.4.59
     * mtr 0.80/0.94
-    * OpenSSL 0.9.8zh/1.0.2u/1.1.1j/3.0.0-alpha9
+    * OpenSSL 0.9.8zh/1.0.2u/1.1.1j/3.0.0-alpha12
     * pcre 8.44
     * rsync 3.2.3
     * wireguard-linux-compat 1.0.20210124
