@@ -570,8 +570,17 @@ config FREETZ_GNULIBSTDCXX_VERSION
 
 config FREETZ_STDCXXLIB
 	string
-	default "uclibcxx"  if FREETZ_STDCXXLIB_USE_UCLIBCXX
-	default "libstdcxx" if FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
+	default "uclibcxx"                       if FREETZ_STDCXXLIB_USE_UCLIBCXX
+	default "libstdcxx"                      if FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
+config FREETZ_LIB_STDCXXLIB
+	def_bool n
+	select FREETZ_LIB_libuClibc__            if FREETZ_STDCXXLIB_USE_UCLIBCXX
+	select FREETZ_LIB_libstdc__              if FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
+	default n
+config FREETZ_LIB_STDCXXLIB_WITH_WCHAR
+	def_bool n
+	select FREETZ_LIB_libuClibc__WITH_WCHAR  if FREETZ_STDCXXLIB_USE_UCLIBCXX
+	default n
 
 config FREETZ_TARGET_CFLAGS
 	string "Target compiler flags"
