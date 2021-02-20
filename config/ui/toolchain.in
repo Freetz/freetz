@@ -363,10 +363,33 @@ endchoice
 config FREETZ_TARGET_GCC_4_MIN
 	bool
 	default y
+	depends on FREETZ_TARGET_GCC_4_6_MIN
+
+config FREETZ_TARGET_GCC_4_6_MIN
+	bool
+	default y
 	depends on \
 		FREETZ_TARGET_GCC_4_6 || \
+		FREETZ_TARGET_GCC_4_7_MIN
+
+config FREETZ_TARGET_GCC_4_7_MIN
+	bool
+	default y
+	depends on \
 		FREETZ_TARGET_GCC_4_7 || \
+		FREETZ_TARGET_GCC_4_8_MIN
+
+config FREETZ_TARGET_GCC_4_8_MIN
+	bool
+	default y
+	depends on \
 		FREETZ_TARGET_GCC_4_8 || \
+		FREETZ_TARGET_GCC_4_9_MIN
+
+config FREETZ_TARGET_GCC_4_9_MIN
+	bool
+	default y
+	depends on \
 		FREETZ_TARGET_GCC_4_9 || \
 		FREETZ_TARGET_GCC_5_MIN
 
