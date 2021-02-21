@@ -51,6 +51,9 @@ Latest changes
   * patchelf 0.12
   * xz 5.2.5
 
+- Build system:
+  * ccache 4.2
+
 - Updated packages and libs:
     * cifs-utils 6.12
     * curl 7.75.0

@@ -1,15 +1,17 @@
-CCACHE_KERNEL_VERSION:=3.7.12
+CCACHE_KERNEL_VERSION:=4.2
 CCACHE_KERNEL_SOURCE:=ccache-$(CCACHE_KERNEL_VERSION).tar.xz
-CCACHE_KERNEL_MD5:=4c9a09ae499d1d82bb83e67f1068f9bb
+CCACHE_KERNEL_MD5:=17a7eea3dd1becb3e830b58e324ec697
 CCACHE_KERNEL_SITE:=https://github.com/ccache/ccache/releases/download/v$(CCACHE_KERNEL_VERSION)
 
 CCACHE_KERNEL_DIR:=$(KERNEL_TOOLCHAIN_DIR)/ccache-$(CCACHE_KERNEL_VERSION)
+CCACHE_KERNEL_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/kernel/ccache
 CCACHE_KERNEL_BINARY:=ccache
 CCACHE_KERNEL_TARGET_BINARY:=bin/ccache
 
+CCACHE_KERNEL_BIN_DIR:=$(KERNEL_TOOLCHAIN_STAGING_DIR)/bin-ccache
+
 CCACHE_CACHE_DIR=$(HOME)/.freetz-ccache
 
-CCACHE_KERNEL_BIN_DIR:=$(KERNEL_TOOLCHAIN_STAGING_DIR)/bin-ccache
 
 ccache-kernel-source: $(DL_DIR)/$(CCACHE_KERNEL_SOURCE)
 $(DL_DIR)/$(CCACHE_KERNEL_SOURCE): | $(DL_DIR)
@@ -19,26 +21,27 @@ ccache-kernel-unpacked: $(CCACHE_KERNEL_DIR)/.unpacked
 $(CCACHE_KERNEL_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_KERNEL_SOURCE) | $(KERNEL_TOOLCHAIN_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	$(RM) -r $(CCACHE_KERNEL_DIR)
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(CCACHE_KERNEL_SOURCE),$(KERNEL_TOOLCHAIN_DIR))
+	$(call APPLY_PATCHES,$(CCACHE_KERNEL_MAKE_DIR)/patches,$(CCACHE_KERNEL_DIR))
 	# WARNING - this will break if the toolchain is moved.
 	# Should probably patch things to use a relative path.
-	$(SED) -i 's,conf->path,"$(CCACHE_KERNEL_BIN_DIR)",' $(CCACHE_KERNEL_DIR)/src/execute.c
+	$(SED) -i 's,ctx.config.path(),"$(CCACHE_KERNEL_BIN_DIR)",' $(CCACHE_KERNEL_DIR)/src/execute.cpp
 #	$(SED) -i -e "s,getenv(\"CCACHE_DIR\"),\"$(KERNEL_TOOLCHAIN_STAGING_DIR)/var/cache\",g" \
 #		$(CCACHE_KERNEL_DIR)/ccache.c
-	$(SED) -i 's,getenv("CCACHE_DIR"),"$(CCACHE_CACHE_DIR)",' $(CCACHE_KERNEL_DIR)/src/ccache.c
+	$(SED) -i 's,getenv("CCACHE_DIR"),"$(CCACHE_CACHE_DIR)",' $(CCACHE_KERNEL_DIR)/src/ccache.cpp
 	mkdir -p $(CCACHE_KERNEL_DIR)/cache
 	touch $@
 
 $(CCACHE_KERNEL_DIR)/.configured: $(CCACHE_KERNEL_DIR)/.unpacked
 	mkdir -p $(CCACHE_KERNEL_DIR)/
-	(cd $(CCACHE_KERNEL_DIR); $(RM) config.cache; \
+	(cd $(CCACHE_KERNEL_DIR); $(RM) config.h; \
 		CC="$(TOOLCHAIN_HOSTCC)" \
+		CXX="$(TOOLCHAIN_HOSTCXX)" \
 		CFLAGS="$(TOOLCHAIN_HOST_CFLAGS)" \
-		./configure \
-		--target=$(REAL_GNU_KERNEL_NAME) \
-		--host=$(GNU_HOST_NAME) \
-		--build=$(GNU_HOST_NAME) \
-		--prefix=/usr \
-		$(QUIET) \
+		cmake . \
+		-DCMAKE_C_COMPILER_TARGET=$(GNU_HOST_NAME) \
+		-DCMAKE_CXX_COMPILER_TARGET=$(GNU_HOST_NAME) \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		$(QUIETCMAKE) \
 	);
 	touch $@
 
@@ -67,6 +70,7 @@ else
 ccache-kernel: $(KERNEL_TOOLCHAIN_STAGING_DIR)/$(CCACHE_KERNEL_TARGET_BINARY)
 endif
 
+
 ccache-kernel-clean:
 	if [ -f $(CCACHE_KERNEL_BIN_DIR)/$(REAL_GNU_KERNEL_NAME)-gcc ] ; then \
 		$(RM) $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-gcc; \
@@ -80,3 +84,4 @@ ccache-kernel-dirclean: ccache-kernel-clean
 	$(RM) -r $(CCACHE_KERNEL_DIR)
 
 .PHONY: ccache-kernel ccache-kernel-source ccache-kernel-unpacked ccache-kernel-clean ccache-kernel-dirclean
+

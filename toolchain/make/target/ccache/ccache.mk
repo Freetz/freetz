@@ -1,15 +1,17 @@
-CCACHE_VERSION:=3.7.12
+CCACHE_VERSION:=4.2
 CCACHE_SOURCE:=ccache-$(CCACHE_VERSION).tar.xz
-CCACHE_MD5:=4c9a09ae499d1d82bb83e67f1068f9bb
+CCACHE_MD5:=17a7eea3dd1becb3e830b58e324ec697
 CCACHE_SITE:=https://github.com/ccache/ccache/releases/download/v$(CCACHE_VERSION)
 
 CCACHE_DIR:=$(TARGET_TOOLCHAIN_DIR)/ccache-$(CCACHE_VERSION)
+CCACHE_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/ccache
 CCACHE_BINARY:=ccache
 CCACHE_TARGET_BINARY:=usr/bin/ccache
 
 CCACHE_BIN_DIR:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache
 
 CCACHE_CACHE_DIR=$(HOME)/.freetz-ccache
+
 
 ccache-source: $(DL_DIR)/$(CCACHE_SOURCE)
 ifneq ($(strip $(DL_DIR)/$(CCACHE_SOURCE)), $(strip $(DL_DIR)/$(CCACHE_KERNEL_SOURCE)))
@@ -21,25 +23,26 @@ ccache-unpacked: $(CCACHE_DIR)/.unpacked
 $(CCACHE_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_SOURCE) | $(TARGET_TOOLCHAIN_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	$(RM) -r $(CCACHE_DIR)
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(CCACHE_SOURCE),$(TARGET_TOOLCHAIN_DIR))
+	$(call APPLY_PATCHES,$(CCACHE_MAKE_DIR)/patches,$(CCACHE_DIR))
 	# WARNING - this will break if the toolchain is moved.
 	# Should probably patch things to use a relative path.
-	$(SED) -i 's,conf->path,"$(CCACHE_BIN_DIR)",' $(CCACHE_DIR)/src/execute.c
+	$(SED) -i 's,ctx.config.path(),"$(CCACHE_BIN_DIR)",' $(CCACHE_DIR)/src/execute.cpp
 #	$(SED) -i -e "s,getenv(\"CCACHE_DIR\"),\"$(TARGET_TOOLCHAIN_STAGING_DIR)/var/cache\",g" \
 #		$(CCACHE_DIR)/ccache.c
-	$(SED) -i 's,getenv("CCACHE_DIR"),"$(CCACHE_CACHE_DIR)",' $(CCACHE_DIR)/src/ccache.c
+	$(SED) -i 's,getenv("CCACHE_DIR"),"$(CCACHE_CACHE_DIR)",' $(CCACHE_DIR)/src/ccache.cpp
 	mkdir -p $(CCACHE_DIR)/cache
 	touch $@
 
 $(CCACHE_DIR)/.configured: $(CCACHE_DIR)/.unpacked
-	(cd $(CCACHE_DIR); $(RM) config.cache; \
+	(cd $(CCACHE_DIR); $(RM) config.h; \
 		CC=$(TOOLCHAIN_HOSTCC) \
+		CXX=$(TOOLCHAIN_HOSTCXX) \
 		CFLAGS="$(TOOLCHAIN_HOST_CFLAGS)" \
-		./configure \
-		--target=$(GNU_HOST_NAME) \
-		--host=$(GNU_HOST_NAME) \
-		--build=$(GNU_HOST_NAME) \
-		--prefix=/usr \
-		$(QUIET) \
+		cmake . \
+		-DCMAKE_C_COMPILER_TARGET=$(GNU_HOST_NAME) \
+		-DCMAKE_CXX_COMPILER_TARGET=$(GNU_HOST_NAME) \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		$(QUIETCMAKE) \
 	);
 	touch $@
 
@@ -77,6 +80,7 @@ else
 ccache: $(TARGET_TOOLCHAIN_STAGING_DIR)/$(CCACHE_TARGET_BINARY)
 endif
 
+
 ccache-clean:
 	for i in gcc g++; do \
 		if [ -f $(CCACHE_BIN_DIR)/$(REAL_GNU_TARGET_NAME)-$$i ] ; then \
@@ -93,3 +97,4 @@ ccache-dirclean: ccache-clean
 	$(RM) -r $(CCACHE_DIR)
 
 .PHONY: ccache ccache-source ccache-unpacked ccache-clean ccache-dirclean
+
