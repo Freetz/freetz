@@ -53,11 +53,11 @@ check "$RRDSTATS_DIGITEMP_HTTP"  yes:digitemp_http
 check "$RRDSTATS_DIGITEMP_INETD" yes:digitemp_inetd
 check "$RRDSTATS_DIGITEMP_AUTH"  yes:digitemp_auth
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$RRDSTATS_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Anzeigen" en:"Show statistics")'
+sec_begin "$(lang de:"Anzeigen" en:"Show statistics")"
 
 cat << EOF
 <ul>
@@ -77,7 +77,7 @@ EOF
 fi
 
 sec_end
-sec_begin '$(lang de:"Einstellungen" en:"Settings")'
+sec_begin "$(lang de:"Einstellungen" en:"Settings")"
 
 cat << EOF
 <p>
@@ -163,7 +163,7 @@ EOF
 fi
 
 sec_end
-sec_begin '$(lang de:"Backup" en:"Backup")'
+sec_begin "$(lang de:"Backup" en:"Backup")"
 
 cat << EOF
 <p>$(lang de:"Backup Verzeichnis" en:"Backup folder"):&nbsp;<input type="text" name="rrdbackup" size="45" maxlength="255" value="$(html "$RRDSTATS_RRDBACKUP")"></p>
@@ -190,7 +190,7 @@ EOF
 sec_end
 
 if [ "$FREETZ_PACKAGE_RRDSTATS_CABLEMODEM" == "y" ]; then
-sec_begin '$(lang de:"Kabelmodem" en:"Cable modem")'
+sec_begin "$(lang de:"Kabelmodem" en:"Cable modem")"
 
 cat << EOF
 <p>
@@ -336,7 +336,7 @@ sec_end
 fi
 
 if [ "$FREETZ_PACKAGE_RRDSTATS_SEGMENTLOAD" == "y" ]; then
-sec_begin '$(lang de:"Kabelsegment" en:"Cable segment")'
+sec_begin "$(lang de:"Kabelsegment" en:"Cable segment")"
 cat << EOF
 
 <p>
@@ -368,7 +368,7 @@ sec_end
 fi
 
 if [ "$FREETZ_PACKAGE_RRDSTATS_STORAGE" == "y" ]; then
-sec_begin '$(lang de:"Disks" en:"Disks")'
+sec_begin "$(lang de:"Disks" en:"Disks")"
 
 cat << EOF
 
@@ -423,7 +423,7 @@ sec_end
 fi
 
 if [ "$FREETZ_PACKAGE_RRDSTATS_NETWORK" == "y" ]; then
-sec_begin '$(lang de:"Interfaces" en:"Interfaces")'
+sec_begin "$(lang de:"Interfaces" en:"Interfaces")"
 
 cat << EOF
 
@@ -665,3 +665,4 @@ EOF
 
 sec_end
 fi
+

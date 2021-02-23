@@ -9,14 +9,14 @@ check "$LCD4LINUX_WEBENABLED" yes:webenabled
 check "$LCD4LINUX_WEB_INETD" yes:web_inetd
 
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$LCD4LINUX_ENABLED" "" "" 0
 sec_end
 
 
 if [ "$(/mod/etc/init.d/rc.lcd4linux status)" == "running" -a "$LCD4LINUX_OUTPUT" == "yes" ]; then
 if [ "$LCD4LINUX_WEBENABLED" = "yes" -o "$LCD4LINUX_STATUSPAGE" = "yes" ]; then
-sec_begin '$(lang de:"Anzeigen" en:"Show")'
+sec_begin "$(lang de:"Anzeigen" en:"Show")"
 
 if [ "$LCD4LINUX_STATUSPAGE" = "yes" ]; then
 cat << EOF
@@ -39,7 +39,7 @@ fi
 fi
 
 
-sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
+sec_begin "$(lang de:"Konfiguration" en:"Configuration")"
 
 cat << EOF
 <p>
@@ -65,7 +65,7 @@ sec_end
 
 
 if [ "$LCD4LINUX_OUTPUT" == "yes" ]; then
-sec_begin '$(lang de:"Ausgabe" en:"Output")'
+sec_begin "$(lang de:"Ausgabe" en:"Output")"
 
 cat << EOF
 <p>

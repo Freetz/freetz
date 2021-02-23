@@ -13,7 +13,7 @@ nth() {
 
 cgi_begin "OpenVPN Clients"
 
-sec_begin '$(lang de:"Verbundene VPN-Clients" en:"Connected clients")' sec-connected
+sec_begin "$(lang de:"Verbundene VPN-Clients" en:"Connected clients")" sec-connected
 
 echo "<p>$(lang de:"Laut Status-Datei sind folgende Clients verbunden:" en:"Status file entries of connected sessions:") </p>"
 
@@ -29,8 +29,9 @@ for config in $(echo -e "$NAMES"); do
 	fi
 	let c++
 done
-echo '<p><small><i>$(lang de:"Angezeigt nur f&uuml;r konfigurierte Server mit angew&auml;hlter Option \"Statusprotokoll\"" en:"Shown only for server configurations with selected option \"Log status\"") </i></small></p>'
+echo "<p><small><i>$(lang de:"Angezeigt nur f&uuml;r konfigurierte Server mit angew&auml;hlter Option \"Statusprotokoll\"" en:"Shown only for server configurations with selected option \"Log status\"") </i></small></p>"
 
 sec_end
 
 cgi_end
+

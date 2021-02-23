@@ -3,7 +3,7 @@
 . /usr/lib/libmodcgi.sh
 . /mod/etc/conf/rrdstats.cfg
 
-cgi_begin '$(lang de:"DigiTemp initialisieren" en:"Initialize DigiTemp")'
+cgi_begin "$(lang de:"DigiTemp initialisieren" en:"Initialize DigiTemp")"
 
 echo "<p>$(lang de:"Initialisiere DigiTemp" en:"Initializing DigiTemp") ... $(lang de:"Bitte warten" en:"Please wait")</p>"
 
@@ -22,6 +22,7 @@ echo '</pre>'
 
 modsave >/dev/null 2>&1
 
-echo -n '<p><input type="button" value="$(lang de:"Fenster schlie&szlig;en" en:"Close window")" onclick="window.close()"/></p>'
+echo -n "<p><input type='button' value='$(lang de:"Fenster schlie&szlig;en" en:"Close window")' onclick='window.close()'/></p>"
 
 cgi_end
+

@@ -1,12 +1,12 @@
-CAPTION='$(lang de:"RRDstats - Alert-Definition f&uuml;r SmartHome" en:"RRDstats - alert definition for SmartHome")'
-DESCRIPTION='Syntax: <tt>&lt;ain&gt;  &lt;type&gt; &lt;value&gt; &lt;condition&gt; &lt;interval&gt; &lt;command(s)&gt;</tt><br>
+CAPTION="$(lang de:"RRDstats - Alert-Definition f&uuml;r SmartHome" en:"RRDstats - alert definition for SmartHome")"
+DESCRIPTION="Syntax: <tt>&lt;ain&gt;  &lt;type&gt; &lt;value&gt; &lt;condition&gt; &lt;interval&gt; &lt;command(s)&gt;</tt><br>
 $(lang de:"Beispiele" en:"Examples"):<br>
 <tt>123456789012 volt 215 min 300 callaction dial 00001234567; sleep 25; callaction hangup;</tt><br>
 <tt>123456789ABC watt 999 max 99 mailer -t temp@abcdefg.net -s "Dect 200: $* > 99"</tt><br>
 <tt>123456789XYZ grad  0  min 60 max 3600 /usr/bin/aha.sh docmd $1 off</tt><br>
 $(lang de:"KEINE TABULATOREN - NUR LEERZEICHEN!" en:"NO TABS - ONLY SPACEBARS!")<br>
 $(lang de:"M&ouml;gliche Werte f&uuml;r" en:"Available values for") <tt>type</tt>: <tt>watt volt kilo grad curr fact</tt><br> 
-$(lang de:"Hinweis: Die Einheit des Intervalls ist Sekunden, als Parameter werden die AIN und alle Werte des Aktors &uuml;bergeben." en:"Hint: The measure unit of the interval is seconds, as parameters the AIN and all values of actor will be set.")'
+$(lang de:"Hinweis: Die Einheit des Intervalls ist Sekunden, als Parameter werden die AIN und alle Werte des Aktors &uuml;bergeben." en:"Hint: The measure unit of the interval is seconds, as parameters the AIN and all values of actor will be set.")"
 
 CONFIG_FILE='/tmp/flash/rrdstats/smarthome.alert'
 CONFIG_SAVE='modsave flash; if pidof rrdstats > /dev/null; then echo ""; /mod/etc/init.d/rc.rrdstats restart; fi'

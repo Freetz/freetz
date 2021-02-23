@@ -35,11 +35,11 @@ check "$LIGHTTPD_LOGGING_ACCESS_FILE" yes:accesslog_file "*":accesslog_syslog
 check "$LIGHTTPD_LOGGING_ERROR_FILE" yes:errorlog_file "*":errorlog_syslog
 check "$LIGHTTPD_VIRTHOST" yes:virthost
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$LIGHTTPD_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Web Server" en:"Web server")'
+sec_begin "$(lang de:"Web Server" en:"Web server")"
 cat << EOF
 <p> $(lang de:"Server binden an Port" en:"Listen on port"): <input type="text" name="port" size="5" maxlength="5" value="$(html "$LIGHTTPD_PORT")"></p>
 EOF
@@ -67,7 +67,7 @@ cat << EOF
 EOF
 sec_end
 
-sec_begin '$(lang de:"Virtuelle Hosts" en:"Virtual Hosts")'
+sec_begin "$(lang de:"Virtuelle Hosts" en:"Virtual Hosts")"
 if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_EVHOST" = "y" ]; then
 cat << EOF
 <p><input type="hidden" name="virthost" value="no">
@@ -82,7 +82,7 @@ EOF
 fi
 sec_end
 
-sec_begin '$(lang de:"Erlaube Auflistung des Verzeichnisinhalts" en:"Allow listing of directory contents")'
+sec_begin "$(lang de:"Erlaube Auflistung des Verzeichnisinhalts" en:"Allow listing of directory contents")"
 if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_DIRLISTING" = "y" ]; then
 cat << EOF
 <p>
@@ -91,7 +91,7 @@ cat << EOF
 </p>
 <p> $(lang de:"Kodierung der Dateinamen" en:"File name encoding"): <input type="text" name="dirlistingenc" size="6" maxlength="10" value="$(html "$LIGHTTPD_DIRLISTINGENC")"></p>
 EOF
-virthost_conf "dirlistingvirt" "$LIGHTTPD_DIRLISTINGVIRT" '$(lang de:"Verzeichnisauflistung" en:"directory listing")'
+virthost_conf "dirlistingvirt" "$LIGHTTPD_DIRLISTINGVIRT" "$(lang de:"Verzeichnisauflistung" en:"directory listing")"
 else
 cat << EOF
 <p style="font-size:10px;">$(lang de:"Auflistung des Verzeichnisinhaltes nicht m&ouml;glich - mod_dirlisting.so nicht vorhanden." en:"Listing of directory contents not available - mod_dirlisting.so unavailable.")</p>
@@ -99,7 +99,7 @@ EOF
 fi
 sec_end
 
-sec_begin '$(lang de:"SSL Unterst&uuml;tzung" en:"SSL support")'
+sec_begin "$(lang de:"SSL Unterst&uuml;tzung" en:"SSL support")"
 if [ "$FREETZ_PACKAGE_LIGHTTPD_WITH_SSL" = "y" ]; then
 cat << EOF
 <p style="font-size:10px;">$(lang de:"Damit lighttpd mit SSL-Unterst&uuml;tzung gestartet werden kann, m&uuml;ssen Zertifikat &amp; Schl&uuml;ssel <a href=\"$(href file lighttpd crt)\">hier</a> eingetragen sein." en:"To start lighttpd with SSL-Support you have to setup Certifikat&amp;Key <a TARGET=\"_blank\" href=\"$(href file lighttpd crt)\">here</a>.")</p>
@@ -145,7 +145,7 @@ fi
 
 fi
 
-virthost_conf "sslvirt" "$LIGHTTPD_SSLVIRT" '$(lang de:"Aktivierung der SSL-Unterst&uuml;tzung" en:"activation of SSL support")'
+virthost_conf "sslvirt" "$LIGHTTPD_SSLVIRT" "$(lang de:"Aktivierung der SSL-Unterst&uuml;tzung" en:"activation of SSL support")"
 
 echo '<hr>'
 cgi_print_checkbox_p "http2_enabled" "$LIGHTTPD_HTTP2_ENABLED" \
@@ -158,7 +158,7 @@ EOF
 fi
 sec_end
 
-sec_begin '$(lang de:"Zugriffskontrolle" en:"Access control")'
+sec_begin "$(lang de:"Zugriffskontrolle" en:"Access control")"
 if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_AUTH" = "y" ]; then
 cat << EOF
 <p style="font-size:10px;">$(lang de:"Damit lighttpd Benutzer authentisieren kann, m&uuml;ssen Benutzer <a href=\"$(href file lighttpd user)\">hier</a> eingetragen sein." en:"To allow lighttpd to authenticate users, you have to add users <a TARGET=\"_blank\" href=\"$(href file lighttpd user)\">here</a>.")</p>
@@ -176,13 +176,13 @@ EOF
 fi
 sec_end
 
-sec_begin '$(lang de:"Dynamische Webseiten" en:"Dynamic Web Pages")'
+sec_begin "$(lang de:"Dynamische Webseiten" en:"Dynamic Web Pages")"
 if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_CGI" = "y" ]; then
 cat << EOF
 <p><input type="hidden" name="modcgi" value="no">
 <input id="b1" type="checkbox" name="modcgi" value="yes"$modcgi_chk><label for="b1"> $(lang de:"mod_cgi aktivieren (Dateien *.cgi und in /cgi-bin ausf&uuml;hrbar)" en:"Activate mod_cgi (files *.cgi and in /cgi-bin executable")</label></p>
 EOF
-virthost_conf "modcgivirt" "$LIGHTTPD_MODCGIVIRT" '$(lang de:"Aktivierung von mod_cgi" en:"activation of mod_cgi")'
+virthost_conf "modcgivirt" "$LIGHTTPD_MODCGIVIRT" "$(lang de:"Aktivierung von mod_cgi" en:"activation of mod_cgi")"
 echo "<hr>"
 else
 cat << EOF
@@ -210,7 +210,7 @@ cat << EOF
 <p> $(lang de:"Pfad zu php-cgi" en:"Path to php-cgi"): <input type="text" name="modfastcgiphppath" size="30" maxlength="255" value="$(html "$LIGHTTPD_MODFASTCGIPHPPATH")"></p>
 <p> $(lang de:"Maximale Anzahl der PHP Prozesse" en:"Maximum number of PHP processes"): <input type="text" name="modfastcgiphpmaxproc" size="2" maxlength="2" value="$(html "$LIGHTTPD_MODFASTCGIPHPMAXPROC")"></p>
 EOF
-virthost_conf "modfastcgiphpvirt" "$LIGHTTPD_MODFASTCGIPHPVIRT" '$(lang de:"Aktivierung der PHP-FastCGI Unterst&uuml;tzung" en:"activation of PHP FastCGI support")'
+virthost_conf "modfastcgiphpvirt" "$LIGHTTPD_MODFASTCGIPHPVIRT" "$(lang de:"Aktivierung der PHP-FastCGI Unterst&uuml;tzung" en:"activation of PHP FastCGI support")"
 echo "<hr>"
 cat << EOF
 <p><input type="hidden" name="modfastcgiruby" value="no">
@@ -232,7 +232,7 @@ cat << EOF
 <p> $(lang de:"Pfad zu ruby-cgi" en:"Path to ruby-cgi"): <input type="text" name="modfastcgirubypath" size="30" maxlength="255" value="$(html "$LIGHTTPD_MODFASTCGIRUBYPATH")"></p>
 <p> $(lang de:"Maximale Anzahl der RUBY Prozesse" en:"Maximum number of RUBY processes"): <input type="text" name="modfastcgirubymaxproc" size="2" maxlength="2" value="$(html "$LIGHTTPD_MODFASTCGIRUBYMAXPROC")"></p>
 EOF
-virthost_conf "modfastcgirubyvirt" "$LIGHTTPD_MODFASTCGIRUBYVIRT" '$(lang de:"Aktivierung der RUBY-FastCGI Unterst&uuml;tzung" en:"activation of RUBY FastCGI support")'
+virthost_conf "modfastcgirubyvirt" "$LIGHTTPD_MODFASTCGIRUBYVIRT" "$(lang de:"Aktivierung der RUBY-FastCGI Unterst&uuml;tzung" en:"activation of RUBY FastCGI support")"
 else
 cat << EOF
 <p style="font-size:10px;">$(lang de:"FastCGI Unterst&uuml;tzung kann nicht konfiguriert werden - mod_fastcgi.so nicht vorhanden." en:"FastCGI support cannot be configured - mod_fastcgi.so unavailable.")</p>
@@ -240,14 +240,14 @@ EOF
 fi
 sec_end
 
-sec_begin '$(lang de:"Erweiterte Einstellungen" en:"Advanced Options")'
+sec_begin "$(lang de:"Erweiterte Einstellungen" en:"Advanced Options")"
 if [ "$FREETZ_PACKAGE_LIGHTTPD_MOD_DEFLATE" = "y" ]; then
 cat << EOF
 <p><input type="hidden" name="moddeflate" value="no">
 <input id="b2" type="checkbox" name="moddeflate" value="yes"$moddeflate_chk><label for="b2"> $(lang de:"mod_deflate aktivieren (Cache Verzeichnis muss konfiguriert werden)" en:"Activate mod_deflate (Cache dir must be configured")</label></p>
 <p> $(lang de:"Verzeichnis der Cache Daten" en:"Directory of Cache"): <input type="text" name="moddeflatedir" size="30" maxlength="255" value="$(html "$LIGHTTPD_MODDEFLATEDIR")"></p>
 EOF
-virthost_conf "moddeflatevirt" "$LIGHTTPD_MODDEFLATEVIRT" '$(lang de:"Aktivierung von mod_deflate" en:"activation of mod_deflate support")'
+virthost_conf "moddeflatevirt" "$LIGHTTPD_MODDEFLATEVIRT" "$(lang de:"Aktivierung von mod_deflate" en:"activation of mod_deflate support")"
 echo "<hr>"
 else
 cat << EOF
@@ -266,7 +266,7 @@ cat << EOF
 <p> $(lang de:"URL f&uuml;r Statistiken" en:"URL for statistics"): <input type="text" name="modstatusstatistic" size="30" maxlength="255" value="$(html "$LIGHTTPD_MODSTATUSSTATISTIC")"></p>
 <p> $(lang de:"URL f&uuml;r Status" en:"URL for status"): <input type="text" name="modstatusstatus" size="30" maxlength="255" value="$(html "$LIGHTTPD_MODSTATUSSTATUS")"></p>
 EOF
-virthost_conf "modstatusvirt" "$LIGHTTPD_MODSTATUSVIRT" '$(lang de:"Aktivierung von mod_status" en:"activation of mod_status support")'
+virthost_conf "modstatusvirt" "$LIGHTTPD_MODSTATUSVIRT" "$(lang de:"Aktivierung von mod_status" en:"activation of mod_status support")"
 echo "<hr>"
 else
 cat << EOF
@@ -279,17 +279,17 @@ cat << EOF
 <p style="font-size:10px;">$(lang de:"Der Server kann selbst-erstellte Fehlermeldungen zur&uuml;cksenden, inklusive eigene 404 Fehlerseiten. Generell k&ouml;nnen auch andere HTTP-Fehler (zum Beispiel 500) entsprechend behandelt werden. Es k&ouml;nnen ausschliesslich statische Seiten zur&uuml;ckgesendet werden. Das Format der Dateinamen lautet: &lt;Fehlerdatei-Prefix&gt;&lt;status-code&gt;.html. Der Prefix muss dabei der absolute Pfadname auf dem Hostsystem sein, nicht nur innerhalb des Datenverzeichnisses." en:"You can customize what page to send back based on a status code. This provides you with an alternative way to customize 404 pages. You may also customize other status-codes with their own custom page (500 pages, etc). Only static files are allowed to be sent back. Format: &lt;errorfile-prefix&gt;&lt;status-code&gt;.html. This path must be the absolute path name on the host system, not only starting with the docroot.")</p>
 <p> $(lang de:"Datei-Prefix f&uuml;r Fehler" en:"File prefix for error"): <input type="text" name="errorfile" size="30" maxlength="255" value="$(html "$LIGHTTPD_ERRORFILE")"></p>
 EOF
-virthost_conf "errorvirt" "$LIGHTTPD_ERRORVIRT" '$(lang de:"Aktivierung der Fehlerseiten" en:"activation of error pages")'
+virthost_conf "errorvirt" "$LIGHTTPD_ERRORVIRT" "$(lang de:"Aktivierung der Fehlerseiten" en:"activation of error pages")"
 cat << EOF
 <hr>
 <p style="font-size:10px;">$(lang de:"Die folgenden Boxen erlauben, die maximale Datentransferrate in kBytes/s festzulegen. Der Wert 0 bedeutet kein Limit. Bitte beachte, dass ein Wert von unter 32 kb/s effektiv den Verkehr auf 32 kb/s aufgrund der Gr&ouml;sse der TCP Sendepuffer drosselt." en:"The following boxes allw the specification of the maximum data transfer rate in kBytes/s. The value of 0 means no limit. Please note  that a limit below 32kb/s might actually limit the traffic to 32kb/s. This is caused by the size of the TCP send buffer.")</p>
 <p> $(lang de:"Maximale Datenrate pro Verbindung" en:"Maximum throughput per connection"): <input type="text" name="limitconn" size="5" maxlength="5" value="$(html "$LIGHTTPD_LIMITCONN")"> kBytes/s</p>
 <p> $(lang de:"Maximale Datenrate aller Verbindungen" en:"Maximum throughput for all connections"): <input type="text" name="limitsrv" size="5" maxlength="5" value="$(html "$LIGHTTPD_LIMITSRV")"> kBytes/s</p>
 EOF
-virthost_conf "limitvirt" "$LIGHTTPD_LIMITVIRT" '$(lang de:"Drosselung der Datentransferrate" en:"limitation of data transfer rate")'
+virthost_conf "limitvirt" "$LIGHTTPD_LIMITVIRT" "$(lang de:"Drosselung der Datentransferrate" en:"limitation of data transfer rate")"
 sec_end
 
-sec_begin '$(lang de:"Server Logdateien" en:"Server log files")'
+sec_begin "$(lang de:"Server Logdateien" en:"Server log files")"
 cat << EOF
 <p style="font-size:10px;">$(lang de:"Bitte beachte, dass die Logdateien wertvollen RAM Speicher belegen falls das Standardverzeichnis f&uuml;r die Logdateien verwendet wird (siehe unten). Nutze das Logging nur f&uuml;r Fehlersuche und schalten es f&uuml;r den normalen Betrieb ab." en:"Please note that the log files use precious RAM memory if the standard directory for the log files is used (see below). Use logging only for debugging and disable it for regular operation.")</p>
 EOF
@@ -336,3 +336,4 @@ cat << EOF
 <p> $(lang de:"Fehler-Log (Error log)" en:"Error log"): <input type="text" name="logging_error" size="25" maxlength="255" value="$(html "$LIGHTTPD_LOGGING_ERROR")"></p>
 EOF
 sec_end
+

@@ -2,12 +2,12 @@
 
 . /usr/lib/libmodcgi.sh
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")' sec_start
+sec_begin "$(lang de:"Starttyp" en:"Start type")" sec_start
 cgi_print_radiogroup_service_starttype "enabled" "$WIREGUARD_ENABLED" "" "" 0
 sec_end
 
 if [ "$(/mod/etc/init.d/rc.wireguard status)" == "running" ]; then
-sec_begin '$(lang de:"Anzeigen" en:"Show")'
+sec_begin "$(lang de:"Anzeigen" en:"Show")"
 cat << EOF
 <ul>
 <li><a href="$(href status wireguard peers)">$(lang de:"Peers anzeigen" en:"Show peers")</a></li>
@@ -16,10 +16,11 @@ EOF
 sec_end
 fi
 
-sec_begin '$(lang de:"Einstellungen" en:"Configuration")'
+sec_begin "$(lang de:"Einstellungen" en:"Configuration")"
 cgi_print_textline_p "ip" "$WIREGUARD_IP" 20/255 "$(lang de:"IPv4-Adresse" en:"IPv4 address"): "
 cgi_print_textline_p "ip6" "$WIREGUARD_IP6" 35/255 "$(lang de:"IPv6-Adresse" en:"IPv6 address"): "
 cat << EOF
 <p>$(lang de:"IPv6 leer lassen, wenn nicht vorhanden" en:"Leave IPv6 empty if not applicable")</p>
 EOF
 sec_end
+

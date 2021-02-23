@@ -19,8 +19,8 @@ case $1 in
 
 		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
 		modreg daemon $DAEMON
-		modreg file $DAEMON conf '$(lang en:"Inetd config" de:"Konfiguration")' 2 "inetd_conf"
-		modreg file $DAEMON user '$(lang en:"Inetd custom" de:"Benutzerdefiniert")' 0 "inetd_user"
+		modreg file $DAEMON conf "$(lang en:"Inetd config" de:"Konfiguration")" 2 "inetd_conf"
+		modreg file $DAEMON user "$(lang en:"Inetd custom" de:"Benutzerdefiniert")" 0 "inetd_user"
 
 		# enable pending AVM daemons which tried to start early during startup by inetdctl
 		for daemon in /tmp/.inetd.pending.*; do

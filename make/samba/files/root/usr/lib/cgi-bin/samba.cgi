@@ -3,7 +3,7 @@
 . /usr/lib/libmodcgi.sh
 
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 
 NMBD=$(which nmbd)
 if [ -L "$NMBD" -o -x "$NMBD" ]; then
@@ -23,7 +23,7 @@ fi
 sec_end
 
 
-sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
+sec_begin "$(lang de:"Konfiguration" en:"Configuration")"
 
 cgi_print_radiogroup \
 	"smbd_security" "$SAMBA_SMBD_SECURITY" "" "$(lang de:"Samba security" en:"Samba security"):&nbsp;" \
@@ -46,7 +46,7 @@ sec_end
 
 
 if [ -d /var/media/ftp ]; then
-sec_begin '$(lang de:"Standardfreigaben" en:"Default shares")'
+sec_begin "$(lang de:"Standardfreigaben" en:"Default shares")"
 cgi_print_checkbox_p "avmshares" "$SAMBA_AVMSHARES" "$(lang de:"Alle Partitionen freigeben" en:"Share all partitions")"
 cgi_print_checkbox_p "readonly" "$SAMBA_READONLY" "$(lang de:"Freigaben sind nur lesbar" en:"Shares are only readable")"
 sec_end

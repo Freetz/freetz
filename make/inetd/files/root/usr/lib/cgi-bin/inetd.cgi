@@ -3,7 +3,7 @@
 
 . /usr/lib/libmodcgi.sh
 
-sec_begin '$(lang de:"Internet 'Superserver' (inetd)" en:"Internet 'super-server' (inetd)")'
+sec_begin "$(lang de:"Internet 'Superserver' (inetd)" en:"Internet 'super-server' (inetd)")"
 
 if [ -d /proc/sys/net/ipv6 ] || find /lib/modules/*-*/kernel/net/ipv6 -maxdepth 1 -name ipv6.ko >/dev/null 2>&1; then
 	cgi_print_checkbox_p "ipv6_support" "$INETD_IPV6_SUPPORT" \

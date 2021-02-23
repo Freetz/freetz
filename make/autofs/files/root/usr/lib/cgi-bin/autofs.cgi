@@ -6,11 +6,11 @@
 check "$AUTOFS_DAVFS2_CONF" yes:davfs2_conf
 check "$AUTOFS_EXTERNAL" yes:external
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$AUTOFS_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
+sec_begin "$(lang de:"Konfiguration" en:"Configuration")"
 cat << EOF
 <h2>$(lang de:"Optionale Aufrufparameter:" en:"Optional commandline parameters:")</h2>
 <p><input type="text" name="cmdline" size="55" maxlength="250" value="$(html "$AUTOFS_CMDLINE")"></p>
@@ -26,7 +26,7 @@ fi
 sec_end
 
 if [ "$FREETZ_PACKAGE_DAVFS2" == "y" ]; then
-sec_begin '$(lang de:"Dateisysteme" en:"Filesystems")'
+sec_begin "$(lang de:"Dateisysteme" en:"Filesystems")"
 cat << EOF
 <p>
 <input type="hidden" name="davfs2_conf" value="no">
@@ -37,3 +37,4 @@ cat << EOF
 EOF
 sec_end
 fi
+

@@ -72,9 +72,9 @@ case $1 in
 	""|load)
 		modlib_defaults
 
-		modreg file $DAEMON addhole_allow '$(lang de:"Ausnahmen" en:"Exceptions")' 1 addhole_allow
-		modreg file $DAEMON addhole_other '$(lang de:"Eigene" en:"Other")' 1 addhole_other
-		modreg file $DAEMON addhole_hosts '$(lang de:"Hosts" en:"Hosts")' 2 addhole_hosts
+		modreg file $DAEMON addhole_allow "$(lang de:"Ausnahmen" en:"Exceptions")" 1 addhole_allow
+		modreg file $DAEMON addhole_other "$(lang de:"Eigene" en:"Other")" 1 addhole_other
+		modreg file $DAEMON addhole_hosts "$(lang de:"Hosts" en:"Hosts")" 2 addhole_hosts
 		modreg cgi $DAEMON $DAEMON_LONG_NAME
 		modreg extra $DAEMON "" 2 download
 		modreg extra $DAEMON "" 2 clear

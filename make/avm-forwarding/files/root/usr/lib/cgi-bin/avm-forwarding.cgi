@@ -18,7 +18,7 @@ function byId(id) {
 </script>
 EOF
 
-sec_begin '$(lang en:"Important" de:"Wichtiger Hinweis")' new-forward-rule
+sec_begin "$(lang en:"Important" de:"Wichtiger Hinweis")" new-forward-rule
 cat << EOF
 $(lang en:"Please note that there is no (known) reliable way to enable port forwarding to the Fritzbox without doing severe modifications to the AVM configuration files. This results in a risk that these changes might render the AVM settings unusable. In addition, the regular firmware might overwrite the settings made here.
 <br>
@@ -31,7 +31,7 @@ Es ist daher dringend anzuraten, die \"normale\" AVM GUI nicht gleichzeitig mit 
 Am besten beenden Sie zuvor alle anderen Zugriffe auf die Box und f&uuml;hren sofort nach der &Uuml;bernahme der &Auml;nderung einen Reboot der Box durch.<br><br>Nur Ports (Dienste) auf der Box selbst k&ouml;nnen freigegeben werden. Weiterleitungen zu anderen Ger&auml;ten erm&ouml;glicht nur die AVM-GUI!")
 EOF
 sec_end
-sec_begin '$(lang en:"Open new port on fritzbox" de:"Neue Port Freigabe auf der Fritzbox")' new-forward-rule
+sec_begin "$(lang en:"Open new port on fritzbox" de:"Neue Port Freigabe auf der Fritzbox")" new-forward-rule
 cat << EOF
 <table><tr><td>
  <select name="fwdprotokoll" id="id_fwdproto" onchange=" (fdprot=this.value); build_new_fwdrule()">
@@ -53,8 +53,8 @@ Name: <input type="text" name="fwd_name" id="id_fwdname" size="18" maxlength="18
 EOF
 sec_end
 
-sec_begin '$(lang en:"Port forwarding rules to box itself" de:"Port Forwarding-Regeln auf die Fritzbox")' forward-rules
-[ $FWVER -ge 550 ] && echo '<p><small>$(lang en:"This firmware prevents opening FTP port (21) here. Use AVM webif instead." de:"Diese Firmware erm&ouml;glicht hier keine Freigabe des FTP-Ports (21). Bitte das AVM Webif daf&uuml;r nutzen. <br> (Internet -> Freigaben -> FRITZBox-Dienste -> \"Internetzugriff auf Ihre Speichermedien &uuml;ber FTP/FTPS aktiviert\")") </small></p>'
+sec_begin "$(lang en:"Port forwarding rules to box itself" de:"Port Forwarding-Regeln auf die Fritzbox")" forward-rules
+[ $FWVER -ge 550 ] && echo "<p><small>$(lang en:"This firmware prevents opening FTP port (21) here. Use AVM webif instead." de:"Diese Firmware erm&ouml;glicht hier keine Freigabe des FTP-Ports (21). Bitte das AVM Webif daf&uuml;r nutzen. <br> (Internet -> Freigaben -> FRITZBox-Dienste -> \"Internetzugriff auf Ihre Speichermedien &uuml;ber FTP/FTPS aktiviert\")") </small></p>"
 cat << EOF
 
 $(lang en:"For debugging show forwarding rules" de:"Zum Debuggen Forward-Regeln anzeigen"): <input type="checkbox" onclick='document.getElementById("rules").style.display=(this.checked)? "block" : "none"' >

@@ -14,7 +14,7 @@ if [ -z "$WOL_MAC" ]; then
 	exit 1
 fi
 
-cgi_begin '$(lang de:"Wecke '\"$WOL_MAC\"' auf ..." en:"Wake up '\"$WOL_MAC\"' ...")'
+cgi_begin "$(lang de:"Wecke '\"$WOL_MAC\"' auf ..." en:"Wake up '\"$WOL_MAC\"' ...")"
 
 echo -n '<pre>sending magic frame ... '
 
@@ -35,6 +35,7 @@ else
 	echo 'failed.'
 fi
 echo '</pre>'
-echo '<form action="/cgi-bin/index.cgi"><input type="submit" value="$(lang de:"Zur&uuml;ck" en:"Back")"></form>'
+echo "<form action='/cgi-bin/index.cgi'><input type='submit' value='$(lang de:"Zur&uuml;ck" en:"Back")'></form>"
 
 cgi_end
+

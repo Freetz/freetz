@@ -8,7 +8,7 @@ echo -e "export AVM_PORTFW_TCP='$AVM_PORTFW_TCP'\nexport AVM_PORTFW_UDP='$AVM_PO
 . /usr/lib/libmodcgi.sh
 
 
-sec_begin '$(lang de:"Einstellungen" en:"Settings")'
+sec_begin "$(lang de:"Einstellungen" en:"Settings")"
 
 cat << EOF
 $(lang de:"Freizugebende Ports, mehrere durch Leerzeichen getrennt" en:"Ports to open, multiple seperated by spaces").

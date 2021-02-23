@@ -15,9 +15,9 @@ case $1 in
 		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
 		[ ! -e "$DAEMON_CONFIG" ] && /mod/etc/default.$DAEMON/haproxy_conf > $DAEMON_CONFIG
 
-		modreg file $DAEMON config '$(lang de:"Konfiguration" en:"Configuration")' 1 "haproxy_conf"
+		modreg file $DAEMON config "$(lang de:"Konfiguration" en:"Configuration")" 1 "haproxy_conf"
 		[ -r /etc/options.cfg ] && . /etc/options.cfg
-		[ "$FREETZ_PACKAGE_HAPROXY_WITH_OPENSSL" == "y" ] && modreg file $DAEMON cert '$(lang de:"Zertifikat" en:"Certificate")' 0 "haproxy_cert"
+		[ "$FREETZ_PACKAGE_HAPROXY_WITH_OPENSSL" == "y" ] && modreg file $DAEMON cert "$(lang de:"Zertifikat" en:"Certificate")" 0 "haproxy_cert"
 		modreg cgi $DAEMON $DAEMON_LONG_NAME
 		modreg daemon $DAEMON
 

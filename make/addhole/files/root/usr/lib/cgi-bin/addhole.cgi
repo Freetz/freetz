@@ -3,7 +3,7 @@
 . /usr/lib/libmodcgi.sh
 
 
-sec_begin '$(lang de:"Status" en:"Status")'
+sec_begin "$(lang de:"Status" en:"Status")"
 
 echo -n '<pre><FONT SIZE=-1>'
 /mod/etc/init.d/rc.addhole status | html
@@ -12,7 +12,7 @@ echo '</FONT></pre>'
 sec_end
 
 
-sec_begin '$(lang de:"Wartung" en:"Maintenance")'
+sec_begin "$(lang de:"Wartung" en:"Maintenance")"
 
 cat << EOF
 <p>
@@ -25,7 +25,7 @@ EOF
 sec_end
 
 
-sec_begin '$(lang de:"Einstellungen" en:"Settings")'
+sec_begin "$(lang de:"Einstellungen" en:"Settings")"
 
 cgi_print_textline_p "file" "$ADDHOLE_FILE" 55/255 "$(lang de:"Datei mit blockierten Hosts" en:"File with blocked hosts"): "
 
@@ -41,7 +41,7 @@ EOF
 sec_end
 
 
-sec_begin '$(lang de:"Cron" en:"Cron")'
+sec_begin "$(lang de:"Cron" en:"Cron")"
 
 cgi_print_checkbox_p "cron_enabled" "$ADDHOLE_CRON_ENABLED" "$(lang de:"Blockierte Hosts automatisch updaten" en:"Update blocked hosts automatically")."
 

@@ -2,11 +2,11 @@
 
 . /usr/lib/libmodcgi.sh
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$WOL_ENABLED" "" "" 1
 sec_end
 
-sec_begin '$(lang de:"Anzeigen" en:"Show")'
+sec_begin "$(lang de:"Anzeigen" en:"Show")"
 
 cat << EOF
 <ul>
@@ -16,7 +16,7 @@ EOF
 
 sec_end
 
-sec_begin '$(lang de:"Bekannte Hosts" en:"Known hosts")'
+sec_begin "$(lang de:"Bekannte Hosts" en:"Known hosts")"
 
 cat << EOF
 <ul>
@@ -26,7 +26,7 @@ cat << EOF
 EOF
 
 sec_end
-sec_begin '$(lang de:"WOL Interface" en:"WOL interface")'
+sec_begin "$(lang de:"WOL Interface" en:"WOL interface")"
 
 cat << EOF
 <h2>$(lang de:"Port des WOL-Webservers" en:"Port of WOL webserver"):</h2>
@@ -34,7 +34,7 @@ cat << EOF
 EOF
 
 sec_end
-sec_begin '$(lang de:"Zugriff" en:"Access")'
+sec_begin "$(lang de:"Zugriff" en:"Access")"
 
 cat << EOF
 <p>$(lang de:"Benutzer" en:"User"): <input type="text" name="user" size="20" maxlength="255" value="$(html "$WOL_USER")"></p>
@@ -42,3 +42,4 @@ cat << EOF
 EOF
 
 sec_end
+

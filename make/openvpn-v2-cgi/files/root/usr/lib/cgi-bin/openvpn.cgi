@@ -18,7 +18,7 @@ else
 	filepath=/tmp/flash/openvpn/${pkgname}/
 fi
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")' sec_start
+sec_begin "$(lang de:"Starttyp" en:"Start type")" sec_start
 
 cgi_print_radiogroup_service_starttype \
 	"enabled" "$OPENVPN_ENABLED" "" "" 1
@@ -26,7 +26,7 @@ cgi_print_radiogroup_service_starttype \
 sec_end
 
 if [ -n "$(find /lib/modules/ -name tun.ko -o -name yf_patchkernel.ko)" ]; then
-sec_begin '$(lang de:"Optionen" en:"Options")' sec_opts
+sec_begin "$(lang de:"Optionen" en:"Options")" sec_opts
 
 cgi_print_checkbox_p "load_tun" "$OPENVPN_LOAD_TUN" \
 	"$(lang de:"Lade das tun Modul (und falls vorhanden yf_patchkernel) automatisch" en:"Load the tun module (and if available yf_patchkernel) automatically")."
@@ -34,7 +34,7 @@ cgi_print_checkbox_p "load_tun" "$OPENVPN_LOAD_TUN" \
 sec_end
 fi
 
-sec_begin '$(lang de:"Einstellungen" en:"Configuration")' sec_conf
+sec_begin "$(lang de:"Einstellungen" en:"Configuration")" sec_conf
 
 cat << EOF
 $(lang de:"Hinweis: Zertifikate und Keys liegen unter " en:"Certs and keys are located ") <i>${filepath}</i>
@@ -45,3 +45,4 @@ $(lang de:"Hinweis: Zertifikate und Keys liegen unter " en:"Certs and keys are l
 EOF
 
 sec_end
+

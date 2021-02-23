@@ -32,7 +32,7 @@ case $1 in
 	""|load)
 		[ ! -d /tmp/flash/$DAEMON ] && mkdir -p /tmp/flash/$DAEMON
 		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
-		modreg file $DAEMON wireguard '$(lang de:"Konfiguration" en:"Configuration")' 1 wireguard
+		modreg file $DAEMON wireguard "$(lang de:"Konfiguration" en:"Configuration")" 1 wireguard
 		modreg daemon $DAEMON
 		modlib_start $WIREGUARD_ENABLED
 		;;
@@ -62,3 +62,4 @@ case $1 in
 esac
 
 exit 0
+

@@ -8,12 +8,12 @@ check "$SYSLOGD_LOCAL" yes:local
 check "$SYSLOGD_KLOGD" yes:klogd
 check "$SYSLOGD_LOGGING" log_to_file circular_buffer
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$SYSLOGD_ENABLED" "" "" 0
 sec_end
 
 if [ "$SYSLOGD_LOCAL" = "yes" ]; then
-sec_begin '$(lang de:"Anzeigen" en:"Extra")'
+sec_begin "$(lang de:"Anzeigen" en:"Extra")"
 
 cat << EOF
 <ul>
@@ -22,7 +22,7 @@ cat << EOF
 EOF
 sec_end
 fi
-sec_begin '$(lang de:"Optionen" en:"Options")'
+sec_begin "$(lang de:"Optionen" en:"Options")"
 
 cat << EOF
 <input type="hidden" name="network" value="no">
@@ -110,3 +110,4 @@ cat << EOF
 EOF
 
 sec_end
+

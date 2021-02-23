@@ -2,7 +2,7 @@
 
 . /usr/lib/libmodcgi.sh
 
-cgi_begin '$(lang de:"SmartHome aktualisieren" en:"Refresh DigiTemp")'
+cgi_begin "$(lang de:"SmartHome aktualisieren" en:"Refresh DigiTemp")"
 
 echo "<p>$(lang de:"Aktualisiere SmartHome" en:"Refreshing SmartHome") ... $(lang de:"Bitte warten" en:"Please wait")</p>"
 
@@ -17,6 +17,7 @@ echo '</pre>'
 
 modsave >/dev/null 2>&1
 
-echo -n '<p><input type="button" value="$(lang de:"Fenster schlie&szlig;en" en:"Close window")" onclick="window.close()"/></p>'
+echo -n "<p><input type='button' value='$(lang de:"Fenster schlie&szlig;en" en:"Close window")' onclick='window.close()'/></p>"
 
 cgi_end
+

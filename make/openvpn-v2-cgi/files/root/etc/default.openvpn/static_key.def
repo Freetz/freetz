@@ -1,5 +1,7 @@
 CAPTION='Static Key (OpenVPN)'
-DESCRIPTION='$(lang de:"Automatisch erzeugter Schl&uuml;ssel. Wird als statischer Schl&uuml;ssel oder als TLS-Schl&uuml;ssel auf der/den Gegenseite(n) ben&ouml;tigt." en:"Automaticly generated. Required as static key or as TLS-key on the remote site(s).")<br>$(lang de:"Zum generieren" en:"To generate"): openvpn --genkey --secret /tmp/flash/openvpn/static.key'
+DESCRIPTION="$(lang de:"Automatisch erzeugter Schl&uuml;ssel. Wird als statischer Schl&uuml;ssel oder als TLS-Schl&uuml;ssel auf der/den Gegenseite(n) ben&ouml;tigt." en:"Automaticly generated. Required as static key or as TLS-key on the remote site(s).")<br>$(lang de:"Zum generieren" en:"To generate"): openvpn --genkey --secret /tmp/flash/openvpn/static.key"
+
 CONFIG_FILE='/tmp/flash/openvpn/static.key'
 CONFIG_SAVE='modsave flash; /mod/etc/init.d/rc.openvpn reload'
 CONFIG_TYPE='text'
+

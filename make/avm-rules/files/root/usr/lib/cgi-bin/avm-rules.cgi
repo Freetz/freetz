@@ -10,7 +10,7 @@ echo -e "export AVM_RULES_SIP='$AVM_RULES_SIP'\nexport AVM_RULES_TCP='$AVM_RULES
 . /usr/lib/libmodcgi.sh
 
 
-sec_begin '$(lang de:"Einstellungen" en:"Settings")'
+sec_begin "$(lang de:"Einstellungen" en:"Settings")"
 
 cgi_print_checkbox_p "sip" "$AVM_RULES_SIP" "$(lang de:"VoIP-Ports" en:"VoIP ports"): tcp+udp 5060 + udp 7078-7109"
 

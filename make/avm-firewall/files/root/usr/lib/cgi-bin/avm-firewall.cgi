@@ -44,7 +44,7 @@ function byId(id) {
 </script>
 EOF
 
-sec_begin '$(lang en:"Mode" de:"Ansicht")'
+sec_begin "$(lang en:"Mode" de:"Ansicht")"
 cat << EOF
 <input id="e1" type="radio" name="fwmode" value="firewall" checked onclick='byId("new-fw-rule").style.display = "block"; byId("fw-rules").style.display = "block"; byId("new-forward-rule").style.display = "none"; byId("forward-rules").style.display = "none";'>
 <label for="e1">Firewall</label>
@@ -55,7 +55,7 @@ EOF
 
 sec_end
 
-sec_begin '$(lang en:"Firewall add new rule" de:"Neue Firewall-Regel")' new-fw-rule
+sec_begin "$(lang en:"Firewall add new rule" de:"Neue Firewall-Regel")" new-fw-rule
 cat << EOF
 <p>
 <input type="hidden" name="gui" value="*gui*">
@@ -128,7 +128,7 @@ EOF
 echo $rulescount
 sec_end
 
-sec_begin '$(lang en:"Firewall rules" de:"Firewall-Regeln")' fw-rules
+sec_begin "$(lang en:"Firewall rules" de:"Firewall-Regeln")" fw-rules
 cat << EOF
 
 <table width="100%"> <tr> <td><font color="red">$(lang en:"Incoming" de:"Eingehende Regeln")</font> (lowinput)<input type="radio" name="selectrules" id="id_li_rules" checked onclick='if (selrules=="ho"){allrules_ho=allrules}; selrules="li" ; allrules=allrules_li; Init_FW_Table()'>
@@ -166,7 +166,7 @@ echo '</table>'
 #EOF
 sec_end
 
-sec_begin '$(lang en:"Port forwarding add new rule" de:"Neue Port Forwarding-Regel")' new-forward-rule
+sec_begin "$(lang en:"Port forwarding add new rule" de:"Neue Port Forwarding-Regel")" new-forward-rule
 cat << EOF
 <p>
 <table border="0">
@@ -203,8 +203,8 @@ cat << EOF
 EOF
 sec_end
 
-sec_begin '$(lang en:"Port forwarding rules" de:"Port Forwarding-Regeln")' forward-rules
-[ "$FREETZ_AVM_VERSION_05_5X_MIN" == "y" ] && echo '<p><small>$(lang en:"This firmware prevents forwarding to FTP (port 21) here. Use AVM webif instead." de:"Diese Firmware erm&ouml;glicht hier keine Freigabe f&uuml;r FTP (Port 21). Bitte das AVM Webif daf&uuml;r nutzen. <br> (Internet -> Freigaben -> FRITZBox-Dienste -> \"Internetzugriff auf Ihre Speichermedien &uuml;ber FTP/FTPS aktiviert\")") </small></p>'
+sec_begin "$(lang en:"Port forwarding rules" de:"Port Forwarding-Regeln")" forward-rules
+[ "$FREETZ_AVM_VERSION_05_5X_MIN" == "y" ] && echo "<p><small>$(lang en:"This firmware prevents forwarding to FTP (port 21) here. Use AVM webif instead." de:"Diese Firmware erm&ouml;glicht hier keine Freigabe f&uuml;r FTP (Port 21). Bitte das AVM Webif daf&uuml;r nutzen. <br> (Internet -> Freigaben -> FRITZBox-Dienste -> \"Internetzugriff auf Ihre Speichermedien &uuml;ber FTP/FTPS aktiviert\")") </small></p>"
 cat << EOF
 
 $(lang en:"For debugging show forwarding rules" de:"Zum Debuggen Forward-Regeln anzeigen"): <input type="checkbox" onclick='document.getElementById("forwardingrules").style.display=(this.checked)? "block" : "none"' >

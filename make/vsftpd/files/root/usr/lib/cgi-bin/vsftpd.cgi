@@ -22,12 +22,12 @@ check "$VSFTPD_ENABLE_RELOAD_SCRIPT" yes:reload_script
 check "$VSFTPD_PASV_ADDRESS" yes:pasv_add
 check "$VSFTPD_SHOW_BANNER" yes:show_banner
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$VSFTPD_ENABLED" "" "" 1
 sec_end
 
 if [ "$VSFTPD_LOG_SYSLOG" != "yes" ]; then
-sec_begin '$(lang de:"Anzeigen" en:"Show")'
+sec_begin "$(lang de:"Anzeigen" en:"Show")"
 
 cat << EOF
 <ul>
@@ -38,14 +38,14 @@ EOF
 sec_end
 fi
 
-sec_begin '$(lang de:"FTP Server" en:"FTP server")'
+sec_begin "$(lang de:"FTP Server" en:"FTP server")"
 
 cat << EOF
 <p> $(lang de:"Server binden an Port" en:"Listen on port"): <input type="text" name="port" size="5" maxlength="5" value="$(html "$VSFTPD_PORT")"></p>
 EOF
 
 sec_end
-sec_begin '$(lang de:"Zugriff" en:"Access")'
+sec_begin "$(lang de:"Zugriff" en:"Access")"
 
 cat << EOF
 <p style="font-size:10px;">$(lang de:"Das Passwort f&uuml;r den Benutzer 'ftp' kann mit dem Kommando 'passwd ftp' festgelegt und mit 'modusers save; modsave flash' persistent gespeichert werden." en:"The password for the user 'ftp' can be set by using the command 'passwd ftp' and subsequently saved persistently by 'modusers save; modsave flash'.")</p><p>
@@ -66,7 +66,7 @@ EOF
 
 sec_end
 if [ "$FREETZ_PACKAGE_VSFTPD_WITH_SSL" == "y" ]; then
-sec_begin '$(lang de:"SSL-Einstellungen" en:"SSL Settings")'
+sec_begin "$(lang de:"SSL-Einstellungen" en:"SSL Settings")"
 
 cat << EOF
 <p>
@@ -92,7 +92,7 @@ EOF
 
 sec_end
 fi
-sec_begin '$(lang de:"Erweiterte Einstellungen" en:"Advanced Options")'
+sec_begin "$(lang de:"Erweiterte Einstellungen" en:"Advanced Options")"
 
 cat << EOF
 <p>
@@ -132,7 +132,7 @@ $(lang de:"Die beiden folgenden Einstellungen werden haupts&auml;chlich f&uuml;r
 EOF
 
 sec_end
-sec_begin '$(lang de:"Zus&auml;tzliche Konfigurationsoptionen (f&uuml;r Experten)" en:"Additional config options (for experts)")'
+sec_begin "$(lang de:"Zus&auml;tzliche Konfigurationsoptionen (f&uuml;r Experten)" en:"Additional config options (for experts)")"
 
 cat << EOF
 $(lang de:"Mehr Infos: <a TARGET=\"_blank\" href=\"http://vsftpd.beasts.org/vsftpd_conf.html\">hier</a>" en:"more information: <a TARGET=\"_blank\" http://vsftpd.beasts.org/vsftpd_conf.html\">here</a>")</font><br />
@@ -140,7 +140,7 @@ $(lang de:"Mehr Infos: <a TARGET=\"_blank\" href=\"http://vsftpd.beasts.org/vsft
 EOF
 
 sec_end
-sec_begin '$(lang de:"Logging" en:"Logging")'
+sec_begin "$(lang de:"Logging" en:"Logging")"
 
 cat << EOF
 
@@ -163,7 +163,7 @@ EOF
 
 
 sec_end
-sec_begin '$(lang de:"Chroot_List" en:"chroot_list")'
+sec_begin "$(lang de:"Chroot_List" en:"chroot_list")"
 
 cat << EOF
 <p style="font-size:10px;">$(lang de:"F&uuml;ge alle Nutzer in die Liste ein, die ein chroot jail gesperrt werden sollen. Falls du 'chroot jail' aktiviert hast, &auml;ndert sich die Bedeutung der Liste. Alle User in der Liste werden dann NICHT in das chroot jail geschlossen." en:"Put all local users in the list who should be placed in a chroot jail in their home directory upon login. The meaning is slightly different if 'chroot jail' is set to YES. In this case, the list becomes a list of users which are NOT to be placed in a chroot() jail.")</p>
@@ -171,3 +171,4 @@ cat << EOF
 EOF
 
 sec_end
+

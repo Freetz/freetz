@@ -60,20 +60,20 @@ cat << EOF
 </style>
 EOF
 
-sec_begin '$(lang de:"Bemerkung" en:"Remark")' sec-remark
+sec_begin "$(lang de:"Bemerkung" en:"Remark")" sec-remark
 
 cat << EOF
 <p>
-$(lang
-	de:"Die meisten Textboxen, Checkboxen, Buttons etc. bieten hilfreiche \"MouseOver-Texte\" (mit Maus auf ein Objekt zeigen und halten) an, die beim Vestehen einer Einstellungen n&uuml;tzlich sind!"
-	en:"Most text boxes, check boxes, buttons etc. are equipped with helpful mouseover texts (point to object with mouse and hold) which help understand a particular setting."
+$(lang \
+  de:"Die meisten Textboxen, Checkboxen, Buttons etc. bieten hilfreiche \"MouseOver-Texte\" (mit Maus auf ein Objekt zeigen und halten) an, die beim Vestehen einer Einstellungen n&uuml;tzlich sind!" \
+  en:"Most text boxes, check boxes, buttons etc. are equipped with helpful mouseover texts (point to object with mouse and hold) which help understand a particular setting." \
 )
 </p>
 EOF
 
 sec_end
 
-sec_begin '$(lang de:"Konfigurationsverwaltung" en:"Multiple Configurations")' sec-conf
+sec_begin "$(lang de:"Konfigurationsverwaltung" en:"Multiple Configurations")" sec-conf
 
 cat << EOF
 <table class="padded" style="float:left;">
@@ -115,7 +115,7 @@ sec_end
 
 echo "<script> document.getElementById('sec-conf').style.display = 'none';</script>"
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 
 # build hidden input fields
 for var in $ALLVARS; do
@@ -171,7 +171,7 @@ EOF
 
 sec_end
 
-sec_begin '$(lang de:"Basiseinstellungen" en:"Basic Configuration")'
+sec_begin "$(lang de:"Basiseinstellungen" en:"Basic Configuration")"
 
 cat << EOF
 <table class="padded">
@@ -250,7 +250,7 @@ EOF
 
 sec_end
 
-sec_begin '$(lang de:"Sicherheit" en:"Security")'
+sec_begin "$(lang de:"Sicherheit" en:"Security")"
 
 cat << EOF
 <table class="padded">
@@ -289,7 +289,7 @@ cat << EOF
 	  </div>
 	</td>
 </tr>
-$([ ! $HASBLOWFISH ] && echo '<tr></tr><tr><td colspan="3">$(lang de:"Achtung, Standard-Cipher \"Blowfish\" wird von diesem OpenVPN nicht unterst&uuml;tzt!" en:"Caution! Default cipher \"blowfish\" is not supported by this OpenVPN binary") </td></tr>')
+$([ ! $HASBLOWFISH ] && echo "<tr></tr><tr><td colspan="3">$(lang de:"Achtung, Standard-Cipher \"Blowfish\" wird von diesem OpenVPN nicht unterst&uuml;tzt!" en:"Caution! Default cipher \"blowfish\" is not supported by this OpenVPN binary") </td></tr>")
 <tr>
 	<td colspan="3">
 	  <div id="div_no_certtype" style="display:none; padding-top:10px;">
@@ -312,7 +312,7 @@ $([ ! $HASBLOWFISH ] && echo '<tr></tr><tr><td colspan="3">$(lang de:"Achtung, S
 EOF
 sec_end
 
-sec_begin '$(lang de:"VPN IP-Adressen und Routing im VPN" en:"VPN IP-Addresses and VPN Routing")' div_ip_settings
+sec_begin "$(lang de:"VPN IP-Adressen und Routing im VPN" en:"VPN IP-Addresses and VPN Routing")" div_ip_settings
 cat << EOF
 <div class="small" style="padding-bottom:10px;">
 $(lang de:"Hier werden die IP-Adressen und das Routing vom VPN konfiguriert." en:"You can configure VPN IP addresses and routing inside the VPN here")
@@ -421,7 +421,7 @@ EOF
 
 sec_end
 
-sec_begin '$(lang de:"Server-Einstellungen (bei Zertifikaten)" en:"Server Configuration (only with certificatess)")' sec-server-conf
+sec_begin "$(lang de:"Server-Einstellungen (bei Zertifikaten)" en:"Server Configuration (only with certificatess)")" sec-server-conf
 
 cat << EOF
 <div id="srv_conf_cert">
@@ -473,7 +473,7 @@ EOF
 
 sec_end
 
-sec_begin '$(lang de:"Weitere Optionen" en:"Further Options")'
+sec_begin "$(lang de:"Weitere Optionen" en:"Further Options")"
 
 cat << EOF
 <div style="display:block;">
@@ -1028,3 +1028,4 @@ changeval();
 EOF
 
 sec_end
+

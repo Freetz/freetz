@@ -86,7 +86,7 @@ log_file() {
 if [ "$SYSLOGD_LOCAL" = "yes" ]; then
 	script
 	if [ "$SYSLOGD_LOGGING" = "circular_buffer" ]; then
-		logread | log_stream '$(lang de:"Ringpuffer" en:"Memory buffer")'
+		logread | log_stream "$(lang de:"Ringpuffer" en:"Memory buffer")"
 	elif [ "$SYSLOGD_LOGGING" = "log_to_file" ]; then
 		if [ -e "$SYSLOGD_ALTERNATIVE_LOGFILE" ]; then
 			log_file "$SYSLOGD_ALTERNATIVE_LOGFILE"
@@ -95,5 +95,6 @@ if [ "$SYSLOGD_LOCAL" = "yes" ]; then
 		fi
 	fi
 else
-	echo '<h1>$(lang de:"Kein lokales Loggen aktiviert" en:"No local logging enabled")!</h1>'
+	echo "<h1>$(lang de:"Kein lokales Loggen aktiviert" en:"No local logging enabled")!</h1>"
 fi
+
