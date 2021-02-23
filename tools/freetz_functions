@@ -380,13 +380,14 @@ modunpack_autodetect_fs()
 	fi
 }
 
+
 modlangsubst()
 {
 	# modlangsubst <lang> <file>
 	#   Substitutes all $(lang de:"Deutscher Text" en:"English text" ...) occurrences
 	#   in <file> with <text> of the corresponding <lang>:"<text>" section.
 
-	s='[\t\r\n ]'
+	s='[\t\r\n\\ ]'
 	val='\(\([^"\\]*\(\\.\)*\)*\)'
 	entry="\w\+:\"${val}\""
 
@@ -464,6 +465,7 @@ modlang()
 		done
 	)
 }
+
 
 # list of static packages, sorted by start level
 static_packages()
