@@ -21,7 +21,7 @@ echo "<script> document.getElementById(\"inp_pw\").focus(); </script>"
 echo '<br><br>'
 
 # Waren wir schonmal hier? Dann war was falsch!
-[ "$WRONGPW" = 1 ] && echo "<b>$(lang de:"Passwort falsch!" en:"Wrong password!")</b><p>"
+[ "$WRONGPW" = 1 ] && echo "<b>$(lang de:"Passwort falsch!" en:"Wrong password!")</b>"
 
 cgi_end
 
