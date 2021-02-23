@@ -6,7 +6,7 @@
 . /mod/etc/conf/mod.cfg
 
 cgi --id=firmware_update
-cgi_begin '$(lang de:"external-Datei Update" en:"external-file update")'
+cgi_begin "$(lang de:"external-Datei Update" en:"external-file update")"
 
 cat << EOF
 <script type=text/javascript>
@@ -48,3 +48,4 @@ $(lang de:"hochgeladen werden." en:"upload the appropriate firmware afterwards."
 EOF
 
 cgi_end
+

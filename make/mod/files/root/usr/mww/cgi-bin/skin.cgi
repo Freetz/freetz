@@ -11,13 +11,13 @@ invalid_skin() {
 	source /usr/lib/libmodcgi.sh
 	cgi --id=skin
 	cgi_begin 'Skins'
-	[ $# -gt 0 ] && print_error "$(lang
-		de:"'$name' ist kein g&uuml;ltiger Skin."
-		en:"'$name' is not a valid skin."
+	[ $# -gt 0 ] && print_error "$(lang \
+	  de:"'$name' ist kein g&uuml;ltiger Skin." \
+	  en:"'$name' is not a valid skin." \
 	)"
-	echo "<p>$(lang
-		de:"Es stehen folgende Skins zur Auswahl (ben&ouml;tigt Cookies):"
-		en:"Please choose from the following skins (cookies required):"
+	echo "<p>$(lang \
+	  de:"Es stehen folgende Skins zur Auswahl (ben&ouml;tigt Cookies):" \
+	  en:"Please choose from the following skins (cookies required):" \
 	)"
 	echo "<ul>"
 	local skin
@@ -25,9 +25,9 @@ invalid_skin() {
 		echo "<li><a href="?name=$skin">$skin</a></li>"
 	done
 	echo "</ul>"
-	echo "<p><a href="?reset=1">$(lang
-		de:"Zur&uuml;ck zum Standard-Skin"
-		en:"Switch back to default skin"
+	echo "<p><a href="?reset=1">$(lang \
+	  de:"Zur&uuml;ck zum Standard-Skin" \
+	  en:"Switch back to default skin" \
 	)</a></p>"
 	cgi_end
 	exit
@@ -64,3 +64,4 @@ case $SKIN_NAME in
 esac
 
 set_skin "$SKIN_NAME"
+

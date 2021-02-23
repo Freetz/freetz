@@ -5,7 +5,7 @@
 # include environment variables
 [ -r /var/env.cache ] && . /var/env.cache
 
-notdefined='$(lang de:"unbekannt" en:"unknown")'
+notdefined="$(lang de:"unbekannt" en:"unknown")"
 divstyle="style='margin-top:6px;'"
 
 getNetworkInfo() {
@@ -97,7 +97,7 @@ _CONFIG_TFFS="$(echo $CONFIG_ROMSIZE | sed -ne "s/^.*sflash_size=\([0-9]*\).*/\1
 [ $(which run_clock) ] && run_clock=$(run_clock | sed 's/.*: //')
 reboot_status="$(cat /proc/sys/urlader/reboot_status 2>/dev/null)"
 
-sec_begin '$(lang de:"Hardware" en:"Hardware")'
+sec_begin "$(lang de:"Hardware" en:"Hardware")"
 
 echo "<dl class='info'>"
 echo "<dt>$(lang de:"Boxname" en:"Box name")</dt><dd>$CONFIG_PRODUKT_NAME</dd>"
@@ -152,7 +152,7 @@ fi
 
 sec_end
 
-sec_begin '$(lang de:"Bootenvironment" en:"Boot environment")'
+sec_begin "$(lang de:"Bootenvironment" en:"Boot environment")"
 
 echo "<dl class='info'>"
 [ -n "$loaderversion" ]  && echo "<dt>$(lang de:"Bootloaderversion" en:"Version of bootloader")</dt><dd>$loaderversion</dd>"
@@ -172,35 +172,35 @@ sec_end
 
 donet_val="$(cgi_param net)"
 if [ "$donet_val" != "0" ]; then
-sec_begin '$(lang de:"Netzwerk" en:"Network")'
+sec_begin "$(lang de:"Netzwerk" en:"Network")"
 
 if [ "${donet_val%1}" == "$donet_val" ]; then
 donet_arg='?net=1'
-donet_msg='$(lang de:"Sektion anzeigen" en:"Show section")'
+donet_msg="$(lang de:"Sektion anzeigen" en:"Show section")"
 else
-donet_msg='$(lang de:"Sektion ausblenden" en:"Hide section")'
+donet_msg="$(lang de:"Sektion ausblenden" en:"Hide section")"
 
 host_name=$(hostname)
 ext_name="$(sed 's/.*[ \t]//g' /var/tmp/ddnsstat.txt 2>/dev/null | sort -u)"
 act_ip=$(hostname -i)
 pubip="$(/usr/bin/get_ip)"
-echo '<table width="100%"><tr><td><b>$(lang de:"Netze" en:"Networks"):</b></td>'
-echo '<td><b><small>IP-$(lang de:"Adresse" en:"Address")</small></b></td>'
+echo "<table width="100%"><tr><td><b>$(lang de:"Netze" en:"Networks"):</b></td>"
+echo "<td><b><small>IP-$(lang de:"Adresse" en:"Address")</small></b></td>"
 echo '<td><b><small>Hostname</small></b></td></tr>'
 if [ -n "$pubip" ]; then
-	echo '<tr><td><b><small>$(lang de:"&Ouml;ffentlich" en:"Public")</small></b></td>'
+	echo "<tr><td><b><small>$(lang de:"&Ouml;ffentlich" en:"Public")</small></b></td>"
 	echo "<td>$pubip</td>"
 	[ -n "$ext_name" ] && ping_ip=$(ping -c 1 -W 1 "$ext_name" 2>/dev/null | sed -n 's/^PING .*(\(.*\)).*/\1/p')
 	[ "$pubip" = "$ping_ip" ] && echo "<td>$ext_name</td>"
 	echo '</tr>'
 fi
-echo '<tr><td><b><small>$(lang de:"Intern" en:"Internal")</small></b></td>'
+echo "<tr><td><b><small>$(lang de:"Intern" en:"Internal")</small></b></td>"
 echo "<td>$act_ip</td><td>$host_name</td></tr>"
-echo '<tr><td><b><small>$(lang de:"Urloader" en:"Boot loader")</small></b></td>'
+echo "<tr><td><b><small>$(lang de:"Urloader" en:"Boot loader")</small></b></td>"
 echo "<td>$ip_init_address</td></tr></table>"
 
-echo '<table width="100%"><tr><td><b>$(lang de:"Schnittstellen" en:"Interfaces"):&nbsp;&nbsp;</b></td><td><b><small>$(lang de:"Protokoll" en:"Protocol")</small></b></td>'
-echo '<td><b><small>$(lang de:"IP-Adresse" en:"IP address")</small></b></td><td><b><small>$(lang de:"Namen" en:"Names")</small></b></td></tr>'
+echo "<table width="100%"><tr><td><b>$(lang de:"Schnittstellen" en:"Interfaces"):&nbsp;&nbsp;</b></td><td><b><small>$(lang de:"Protokoll" en:"Protocol")</small></b></td>"
+echo "<td><b><small>$(lang de:"IP-Adresse" en:"IP address")</small></b></td><td><b><small>$(lang de:"Namen" en:"Names")</small></b></td></tr>"
 getNetworkInfo | while read i p a n; do
 	[ -z "$(echo "$a" | grep -E '169.|127.')" ] && echo "<tr><td>$i</td><td>$p</td><td>$a</td><td><small>$n</small></td></tr>"
 done
@@ -224,12 +224,12 @@ fi
 
 avsar_ver=/proc/avalanche/avsar_ver
 if [ -r "$avsar_ver" ]; then
-	sec_begin '$(lang de:"DSL-Treiber und -Hardware" en:"DSL drivers and hardware")'
+	sec_begin "$(lang de:"DSL-Treiber und -Hardware" en:"DSL drivers and hardware")"
 		echo "<pre class='plain'>$(cat "$avsar_ver")</pre>"
 	sec_end
 fi
 
-sec_begin '$(lang de:"Firmware" en:"Firmware")'
+sec_begin "$(lang de:"Firmware" en:"Firmware")"
 
 echo "<dl class='info'>"
 echo "<dt>Firmware$(lang de:"" en:" ")version</dt><dd>${CONFIG_VERSION_MAJOR}.${CONFIG_VERSION}"
@@ -244,7 +244,7 @@ echo "</dl>"
 sec_end
 
 if [ -r /var/env.cache ]; then
-	sec_begin '$(lang de:"Eigenschaften" en:"Properties")'
+	sec_begin "$(lang de:"Eigenschaften" en:"Properties")"
 		echo -n '<div class="textwrapper"><textarea style="margin-top:6px;" name="content" rows="5" cols="10" wrap="off" readonly>'
 		sed -e "s/^export //g" /var/env.cache | html
 		echo -n '</textarea></div>'

@@ -8,7 +8,7 @@ do_remount() {
 }
 
 do_unmount() {
-	sec_begin '$(lang de:"Unmount-Meldungen" en:"Unmount messages")'
+	sec_begin "$(lang de:"Unmount-Meldungen" en:"Unmount messages")"
 	echo "<pre class='plain'>"
 	if [ ! -e /var/tmp/mediadevmap ]; then
 		/etc/hotplug/storage unplug "$MOUNTED_PATH" 2> "$ERRORFILE" | html
@@ -72,7 +72,7 @@ print_mp() {
 		echo -n "<td class='path'>$showpath</td><td class='device'>$showdev</td>"
 		echo -n "<td class='fstype'>$fstyp</td>"
 		echo -n '<td class='actions'>'
-		$actions && echo -n '<small>$(lang de:"Mountoptionen" en:"Mount options"):</small>'
+		$actions && echo -n "<small>$(lang de:"Mountoptionen" en:"Mount options"):</small>"
 		echo '</td></tr>'
 	fi
 	echo -n "<tr><td colspan='3' class='free'>${used} $(lang de:"von" en:"of") ${total} $(lang de:"belegt" en:"used"), ${free} $(lang de:"frei" en:"free")</td>"
@@ -134,7 +134,7 @@ MOUNT=$(mount)
 if [ "$MOD_MOUNTED_CONF" == "yes" -a "$onmain" == "true" ]; then
 	mfilt=$(echo "$MOUNT" | sed -rn 's/^([^ ]+) on (\/var\/flash) type ([^ ]*) \(([^)]*)\)$/\3 \4 \1 \2/p')
 	if [ -n "$mfilt" ]; then
-		sec_begin '$(lang de:"Konfigurationspartition" en:"Config partition") (/var/flash)'
+		sec_begin "$(lang de:"Konfigurationspartition" en:"Config partition") (/var/flash)"
 		echo '<table class="mounted">'
 		echo "$mfilt" | print_mountpoints
 		echo "</table>"
@@ -146,7 +146,7 @@ fi
 if [ "$MOD_MOUNTED_TEMP" == "yes" -a "$onmain" == "true" ]; then
 	mfilt=$(echo "$MOUNT" | sed -rn 's/^([^ ]+) on (\/var) type ([^ ]*) \(([^)]*)\)$/\3 \4 \1 \2/p')
 	if [ -n "$mfilt" ]; then
-		sec_begin '$(lang de:"Tempor&auml;rer Speicher" en:"Temporary storage") (/var)'
+		sec_begin "$(lang de:"Tempor&auml;rer Speicher" en:"Temporary storage") (/var)"
 		echo '<table class="mounted">'
 		echo "$mfilt" | print_mountpoints
 		echo "</table>"
@@ -166,7 +166,7 @@ if [ "$MOD_MOUNTED_MAIN" == "yes" -o "$onmain" == "false" ]; then
 		'
 	)
 	outsize=large
-	sec_begin '$(lang de:"Datenspeicher" en:"Storages")'
+	sec_begin "$(lang de:"Datenspeicher" en:"Storages")"
 	if [ -n "$mfilt" ]; then
 		echo '<table class="mounted">'
 		echo "$mfilt" | print_mountpoints

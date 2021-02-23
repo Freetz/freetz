@@ -7,7 +7,7 @@ cat << EOF
 <h2>$(lang de:"Swap-Datei" en:"Swap file")</h2>
 EOF
 cgi_print_textline_p "swap_file" "$MOD_SWAP_FILE" 50/255 "$(lang de:"Pfad" en:"Path"): " \
-	'<br>($(lang de:"Beispiel:" en:"e.g.") /var/media/ftp/uStor01/swapfile $(lang de:"oder" en:"or") /dev/sda1)'
+	"<br>($(lang de:"Beispiel:" en:"e.g.") /var/media/ftp/uStor01/swapfile $(lang de:"oder" en:"or") /dev/sda1)"
 echo "<p>"
 cgi_print_textline "swap_size" "" "" "$(lang de:"Gr&ouml;&szlig;e" en:"Size"): " " MB "
 cat << EOF

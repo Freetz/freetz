@@ -4,11 +4,11 @@
 
 <html><body>
 	<script type="text/javascript"><%
-	if mv "$FORM_source" "$FORM_target"
-	then
-		echo 'window.parent.output.innerHTML="$(lang de:"Datei erfolgreich nach '$FORM_target' hochgeladen.\\nDateigr&ouml;&szlig;e:" en:"File successfully uploaded to '$FORM_target'.\\nFile size:") '$(cat $FORM_target | wc -c)' $(lang de:"Bytes" en:"bytes")";'
+	if mv "$FORM_source" "$FORM_target"; then
+		echo "window.parent.output.innerHTML='$(lang de:"Datei erfolgreich hochgeladen nach: $FORM_target\\nDateigr&ouml;&szlig;e:" en:"File successfully uploaded to: $FORM_target\\nFile size:") $(cat $FORM_target | wc -c) $(lang de:"Bytes" en:"bytes")';"
 	else
-		echo 'window.parent.output.innerHTML="$(lang de:"FEHLER: Entweder das Hochladen oder das Umbenennen nach" en:"ERROR: Either uploading or renaming to") '$FORM_target' $(lang de:"war nicht m&ouml;glich." en:"has failed.")";'
+		echo "window.parent.output.innerHTML='$(lang de:"FEHLER: Entweder das Hochladen oder das Umbenennen war nicht m&ouml;glich." en:"ERROR: Either uploading or renaming has failed.")';"
 	fi
 	%></script>
 </body></html>
+

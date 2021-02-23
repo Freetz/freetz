@@ -6,9 +6,9 @@ unset error
 if [ "$pid1" != "$pid2" ] || [ ! -f /var/run/rudi_shell.pid ]; then
 	error="$(lang de:"Falsches Token" en:"Wrong token")"
 elif [ "$sec_level" -gt 0 ]; then
-	error="$(lang
-		de:"Sicherheitsstufe erlaubt keinen Shell-Zugriff"
-		en:"Security level does not allow shell access"
+	error="$(lang \
+	  de:"Sicherheitsstufe erlaubt keinen Shell-Zugriff" \
+	  en:"Security level does not allow shell access" \
 	)"
 fi
 if [ -n "$error" ]; then
@@ -17,3 +17,4 @@ if [ -n "$error" ]; then
 	exit 1
 fi
 %>
+

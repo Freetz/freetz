@@ -42,3 +42,4 @@ echo "</div>"
 source "$HANDLER_DIR/list_body.sh"
 
 cgi_end
+

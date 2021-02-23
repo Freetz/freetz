@@ -8,9 +8,9 @@ IFS=$OIFS
 TITLE=$3 sec=$4 def=$5
 
 if [ $# -eq 0 ]; then
-	cgi_error "$(lang
-		de:"Datei '$ID' des Pakets '$PACKAGE' ist unbekannt."
-		en:"File '$ID' of package '$PACKAGE' is unknown."
+	cgi_error "$(lang \
+	  de:"Datei '$ID' des Pakets '$PACKAGE' ist unbekannt." \
+	  en:"File '$ID' of package '$PACKAGE' is unknown." \
 	)</p>"
 	exit
 fi
@@ -27,10 +27,10 @@ allowed() {
 	! [ -z "$CONFIG_CMD$CONFIG_FILE" -o "$sec_level" -gt "$sec" ]
 }
 print_access_denied() {
-	print_warning '$(lang
-		de:"Konfiguration in der aktuellen Sicherheitsstufe nicht verf&uuml;gbar!"
-		en:"Settings are not available at current security level!"
-	)'
+	print_warning "$(lang \
+	  de:"Konfiguration in der aktuellen Sicherheitsstufe nicht verf&uuml;gbar!" \
+	  en:"Settings are not available at current security level!" \
+	)"
 }
 
 readonly=false
@@ -44,3 +44,4 @@ case $REQUEST_METHOD in
 	POST)	source "$HANDLER_DIR/save.sh" ;;
 	GET|*)	source "$HANDLER_DIR/edit.sh" ;;
 esac
+

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo '<h1>$(lang de:"Aktuelle Firmwareversion" en:"Latest firmware version")</h1>'
+echo "<h1>$(lang de:"Aktuelle Firmwareversion" en:"Latest firmware version")</h1>"
 
 LAST="$(date -d @$(stat -c %Y /tmp/.juis_check) +'%d.%m.%Y %H:%M:%S' 2>/dev/null)"
 echo "<ul><li>$(lang de:"Letzte &Uuml;berpr&uuml;fung" en:"Last check"): ${LAST:-niemals}</li></ul>"
@@ -36,5 +36,5 @@ if [ -n "$LAST" ]; then
 	echo '</pre>'
 fi
 
-stat_button juis_check '$(lang de:"Firmwareversion pr&uuml;fen" en:"Check firmware version")'
+stat_button juis_check "$(lang de:"Firmwareversion pr&uuml;fen" en:"Check firmware version")"
 

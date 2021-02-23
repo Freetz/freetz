@@ -11,15 +11,15 @@ cgi --id=password
 cgi_begin 'Passwort'
 
 if [ "$result" -ne 0 ]; then
-	echo '<h1>$(lang de:"Passwort wurde nicht ge&auml;ndert." en:"Password unchanged.")</h1>'
+	echo "<h1>$(lang de:"Passwort wurde nicht ge&auml;ndert." en:"Password unchanged.")</h1>"
 	if [ "$result" -eq 2 ]; then
-		echo '<p>$(lang de:"Falsches (altes) Passwort." en:"Wrong (old) password.")</p>'
+		echo "<p>$(lang de:"Falsches (altes) Passwort." en:"Wrong (old) password.")</p>"
 	fi
 else
-	echo '<h1>$(lang de:"Passwort erfolgreich ge&auml;ndert." en:"New password set.")</h1>'
+	echo "<h1>$(lang de:"Passwort erfolgreich ge&auml;ndert." en:"New password set.")</h1>"
 	echo -n "$MOD_HTTPD_USER$MOD_CGI_PASSWORD" | md5sum | sed 's/[ ]*-.*//' > /tmp/flash/mod/webmd5
 	rm /tmp/*.webcfg
-	echo '<p>$(lang de:"Starte Weboberfl&auml;che neu ..." en:"Restarting webcfg ...")</p>'
+	echo "<p>$(lang de:"Starte Weboberfl&auml;che neu ..." en:"Restarting webcfg ...")</p>"
 	/mod/etc/init.d/rc.webcfg restart > /dev/null 2>&1
 
 	#XMail admin account
@@ -53,3 +53,4 @@ fi
 back_button mod status
 
 cgi_end
+

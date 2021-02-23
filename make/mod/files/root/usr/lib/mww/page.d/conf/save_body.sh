@@ -81,9 +81,9 @@ if [ -n "$SERVICE_CMD" ]; then
 	exec 2>&1
 
 	case $SERVICE_CMD in
-		start)   message='$(lang de:"Starte" en:"Starting")' ;;
-		stop)    message='$(lang de:"Stoppe" en:"Stopping")' ;;
-		restart) message='$(lang de:"Restarte" en:"Restarting")' ;;
+		start)   message="$(lang de:"Starte" en:"Starting")" ;;
+		stop)    message="$(lang de:"Stoppe" en:"Stopping")" ;;
+		restart) message="$(lang de:"Restarte" en:"Restarting")" ;;
 	esac
 
 	echo "<div id='result'>"
@@ -191,3 +191,4 @@ fi | while read line; do echo $line | highlight; done
 pkg_post_$hook | html | highlight
 
 echo '</pre>'
+

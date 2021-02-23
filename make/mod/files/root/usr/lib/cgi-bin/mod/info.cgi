@@ -5,7 +5,7 @@
 
 divstyle="style='margin-top:6px;'"
 
-sec_begin '$(lang de:"Firmware-Informationen" en:"Information about firmware")'
+sec_begin "$(lang de:"Firmware-Informationen" en:"Information about firmware")"
 
 cat << EOF
 <dl class="info">
@@ -121,7 +121,7 @@ preprocess_conf() {
 #
 format_conf() {
 	type=START
-	sec_begin '$(lang de:"FREETZ-Konfiguration" en:"FREETZ configuration")'
+	sec_begin "$(lang de:"FREETZ-Konfiguration" en:"FREETZ configuration")"
 	cat <<- 'EOF'
 	<table id="freetz-conf" style="width:100%">
 	<tr>
@@ -201,7 +201,7 @@ if [ -r /etc/.config ]; then
 fi
 
 if [ -n "$FREETZ_INFO_EXTERNAL_FILES" ]; then
-	sec_begin '$(lang de:"Ausgelagerte Dateien" en:"Externalised files")'
+	sec_begin "$(lang de:"Ausgelagerte Dateien" en:"Externalised files")"
 		let width=_cgi_width-30
 		echo -n "<pre style='width: ${width}px; max-height: 100px;'>"
 		echo -n "$FREETZ_INFO_EXTERNAL_FILES" | sort

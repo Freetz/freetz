@@ -1,24 +1,25 @@
 #! /bin/sh
 [ -r "/mod/etc/conf/mod.cfg" ] && . /mod/etc/conf/mod.cfg || exit $?
 
-mode=${1:-start}
+mode="${1:-start}"
 
 if [ "$mode" = start ]; then
-	modreg status mod '$(lang de:"Mod-Logs" en:"Mod logs")' logs
-	modreg status mod '$(lang de:"AVM-Logs" en:"AVM logs")' logs_avm
+	modreg status mod "$(lang de:"Mod-Logs" en:"Mod logs")" logs
+	modreg status mod "$(lang de:"AVM-Logs" en:"AVM logs")" logs_avm
 fi
 
 [ "$mode" = reload ] && modunreg status mod mounted
 if [ "$MOD_MOUNTED_SUB" = yes ]; then
-	modreg status mod '$(lang de:"Datenspeicher" en:"Storages")' mounted
+	modreg status mod "$(lang de:"Datenspeicher" en:"Storages")" mounted
 fi
 
 [ "$mode" = reload ] && modunreg status mod box_info
 if [ "$MOD_SHOW_BOX_INFO" = yes -a -r "/usr/lib/cgi-bin/mod/box_info.cgi" ]; then
-	modreg status mod '$(lang de:"AVM-Info" en:"AVM info")' box_info
+	modreg status mod "$(lang de:"AVM-Info" en:"AVM info")" box_info
 fi
 
 [ "$mode" = reload ] && modunreg status mod info
 if [ "$MOD_SHOW_FREETZ_INFO" = yes -a -r "/usr/lib/cgi-bin/mod/info.cgi" ]; then
-	modreg status mod '$(lang de:"Mod-Info" en:"Mod info")' info
+	modreg status mod "$(lang de:"Mod-Info" en:"Mod info")" info
 fi
+

@@ -4,10 +4,10 @@ echo "<h1>$CAPTION</h1>"
 if ! allowed; then
 	print_access_denied
 elif $readonly; then
-	print_info '$(lang
-		de:"Datei ist nur lesbar und kann nicht ge&auml;ndert werden."
-		en:"Read-only file. It may not be modified."
-	)'
+	print_info "$(lang \
+		de:"Datei ist nur lesbar und kann nicht ge&auml;ndert werden." \
+		en:"Read-only file. It may not be modified." \
+	)"
 fi
 
 eval "$CONFIG_PREPARE"
@@ -19,7 +19,7 @@ case $CONFIG_TYPE in
 		[ -r "$CONFIG_FILE" ] && html < "$CONFIG_FILE"
 		echo '</textarea></div>'
 		if ! $readonly; then
-			echo '<div class="btn"><input type="submit" value="$(lang de:"&Uuml;bernehmen" en:"Apply")"></div>'
+			echo "<div class='btn'><input type='submit' value='$(lang de:"&Uuml;bernehmen" en:"Apply")'></div>"
 		fi
 		echo '</form>'
 		;;

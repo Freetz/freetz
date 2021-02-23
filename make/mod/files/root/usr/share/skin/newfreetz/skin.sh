@@ -32,7 +32,7 @@ skin_body_begin() {
 	local title=$1 id=$2
 	local help=""
 	if [ -n "$_CGI_HELP" ]; then
-		help="&nbsp;<span class='help'>(<a href='$(html "$_CGI_HELP")' target='_blank'>Hilfe</a>)</span>"
+		help="&nbsp;<span class='help'>(<a href='$(html "$_CGI_HELP")' target='_blank'>$(lang de:"Hilfe" en:"Help")</a>)</span>"
 	fi
 	cat << EOF
 	<div id="wrapper" style="width:${_cgi_total_width}px">
@@ -96,9 +96,9 @@ skin_body_end() {
 	</div>
 
 	<div id="footer">
-		<span class="datetime" title="Systemzeit des Routers">$(date +'%d.%m.%Y %H:%M')</span>&nbsp;&ndash;
+		<span class="datetime" title="$(lang de:"Systemzeit des Routers" en:"Router's system time")">$(date +"$(lang de:"%d.%m.%Y" en:"%m/%d/%Y") %H:%M")</span>&nbsp;&ndash;
 		<span class="uptime" title="Uptime">$(uptime | sed -r 's/.*(up.*), *load.*/\1/')</span>&nbsp;&ndash;
-		<span class="opt">optimiert f&uuml;r Mozilla Firefox</span>
+		<span class="opt">$(lang de:"optimiert f&uuml;r" en:"optimized for") Mozilla Firefox</span>
 	</div>
 </div>
 </div>

@@ -81,9 +81,9 @@ stat_line() {
 	if $disable; then
 		start=false; stop=false
 	fi
-	stat_button "$pkg" "$daemon" $(lang de:"start" en:"start") $start
-	stat_button "$pkg" "$daemon" $(lang de:"stop" en:"stop") $stop
-	stat_button "$pkg" "$daemon" $(lang de:"restart" en:"restart") $stop
+	stat_button "$pkg" "$daemon" "$(lang de:"start" en:"start")" $start
+	stat_button "$pkg" "$daemon" "$(lang de:"stop" en:"stop")" $stop
+	stat_button "$pkg" "$daemon" "$(lang de:"restart" en:"restart")" $stop
 
 	if [ "$MOD_SHOW_MEMORY_USAGE" = yes ] && [ $class = running ]; then
 		pid="$(cat /var/run/$daemon.pid 2>/dev/null)"

@@ -13,3 +13,4 @@ else
 	echo -n 'Content-Type: text/html'$'\r\n\r\n'
 	echo "$FORM_script" | tr -d '\r' | sh 2>&1 | head -c 64000 | sed -e 's/&/\&amp;/g ; s/</\&lt;/g ; s/>/\&gt;/g'
 fi %>
+

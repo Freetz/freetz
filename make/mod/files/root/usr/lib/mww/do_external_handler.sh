@@ -55,7 +55,7 @@ case $NAME in
 	*:external_start*) external_start=true ;;
 esac
 
-cgi_begin '$(lang de:"external-Update" en:"external-update")'
+cgi_begin "$(lang de:"external-Update" en:"external-update")"
 
 if [ "${FILENAME##*.}" != "external" ]; then
 	echo "<h1>$(lang de:"Update vorbereiten" en:"Prepare update")</h1>"
@@ -124,3 +124,4 @@ if [ -e /mod/etc/init.d/rc.external ] && $external_start; then
 fi
 
 do_exit 0
+

@@ -3,7 +3,7 @@ SERVICE_PKG=/mod/etc/reg/pkg.reg
 source /usr/lib/mod/service.sh
 
 stat_avm() {
-	sec_begin '$(lang de:"AVM-Dienste" en:"AVM services")'
+	sec_begin "$(lang de:"AVM-Dienste" en:"AVM services")"
 	stat_begin
 
 	select_avm() [ "$1" = avm ]
@@ -14,7 +14,7 @@ stat_avm() {
 }
 
 stat_builtin() {
-	sec_begin '$(lang de:"Basis-Pakete" en:"Built-in packages")'
+	sec_begin "$(lang de:"Basis-Pakete" en:"Built-in packages")"
 	stat_begin
 
 	select_mod() [ "$1" = mod ]
@@ -40,13 +40,13 @@ stat_lines() {
 }
 
 stat_static() {
-	sec_begin '$(lang de:"Statische Pakete" en:"Static packages")'
+	sec_begin "$(lang de:"Statische Pakete" en:"Static packages")"
 	stat_begin
 
 	select_static() [ "$1" != avm -a "$1" != mod ]
 	stat_lines select_static
 	if [ ! -s "$SERVICE_REG" ]; then
-		echo '<p><i>$(lang de:"keine statischen Pakete" en:"no static packages")</i></p>'
+		echo "<p><i>$(lang de:"keine statischen Pakete" en:"no static packages")</i></p>"
 	fi
 
 	stat_end
@@ -71,3 +71,4 @@ case $view in
 		print_error "$(lang de:"Unbekannte Ansicht" en:"unknown view") '$view'"
 		;;
 esac
+

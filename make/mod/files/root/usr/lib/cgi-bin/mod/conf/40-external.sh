@@ -5,7 +5,7 @@ check "$MOD_EXTERNAL_BEHAVIOUR" copy:external_behaviour_copy "*":external_behavi
 
 sec_begin 'external'
 _services=$(cat /mod/etc/external.pkg 2>/dev/null)
-[ -z "$_services" ] && _services=$(lang de:"-keine-" en:"-none-")
+[ -z "$_services" ] && _services="$(lang de:"-keine-" en:"-none-")"
 
 cgi_print_textline_p "external_directory" "$MOD_EXTERNAL_DIRECTORY" 55/255 "$(lang de:"Verzeichnis von external" en:"Directory for external"): "
 
@@ -45,3 +45,4 @@ $(lang de:"Abbrechen falls die Jahreszahl gr&ouml;&szlig;er als dieser Wert ist"
 EOF
 
 sec_end
+

@@ -23,3 +23,4 @@ else
 	esac
 	echo '</pre>'
 fi | while read line; do echo $line | highlight; done
+

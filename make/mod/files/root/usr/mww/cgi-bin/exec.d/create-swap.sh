@@ -49,8 +49,9 @@ if $error; then
 </form>
 EOF
 else
-	echo '<p>$(lang de:"Zum Aktivieren der Swap-Datei m&uuml;ssen die Einstellungen noch gespeichert werden." en:"To activate swapfile, settings must be saved.")</p>'
+	echo "<p>$(lang de:"Zum Aktivieren der Swap-Datei m&uuml;ssen die Einstellungen noch gespeichert werden." en:"To activate swapfile, settings must be saved.")</p>"
 fi
-echo -n '<p><input type="button" value="$(lang de:"Fenster schlie&szlig;en" en:"Close window")" onclick="window.close()"/></p>'
+echo -n "<p><input type='button' value='$(lang de:"Fenster schlie&szlig;en" en:"Close window")' onclick='window.close()'/></p>"
 
 cgi_end
+

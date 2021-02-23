@@ -5,16 +5,16 @@
 
 if [ "$sec_level" -gt 0 ]; then
 	cgi --id=rudishell
-	cgi_begin '$(lang de:"Rudi(ment&auml;r)-Shell" en:"Rudi(mentary) Shell")'
-	print_warning '$(lang
-		de:"Rudi-Shell ist in der aktuellen Sicherheitsstufe nicht verf&uuml;gbar!"
-		en:"Rudi shell is not available at the current security level!"
-	)'
+	cgi_begin "$(lang de:"Rudi(ment&auml;r)-Shell" en:"Rudi(mentary) Shell")"
+	print_warning "$(lang \
+	  de:"Rudi-Shell ist in der aktuellen Sicherheitsstufe nicht verf&uuml;gbar!" \
+	  en:"Rudi shell is not available at the current security level!" \
+	)"
 	cgi_end
 	exit
 fi
 
-cgi_begin '$(lang de:"Rudi(ment&auml;r)-Shell" en:"Rudi(mentary) Shell")'
+cgi_begin "$(lang de:"Rudi(ment&auml;r)-Shell" en:"Rudi(mentary) Shell")"
 cat << EOF
 	<script type="text/javascript">
 		var editing=0,code,output,exec,tar,gz,dl,his,repeat,file,hist = Array();
@@ -100,3 +100,4 @@ cat << EOF
 EOF
 cgi_end
 echo $$ > /var/run/rudi_shell.pid
+

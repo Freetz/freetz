@@ -54,7 +54,7 @@ status() {
 	echo "</p>"
 }
 
-cgi_begin '$(lang de:"Firmware-Update" en:"Firmware update")'
+cgi_begin "$(lang de:"Firmware-Update" en:"Firmware update")"
 
 #system_lfs
 for X in /tmp/.lfs.wrapper /tmp/.lfs.reserve; do
@@ -66,7 +66,7 @@ done
 rm -f /tmp/.lfs.caching
 
 if [ "${FILENAME##*.}" != "image" ]; then
-	"<h1>$(lang de:"Update vorbereiten" en:"Prepare update")</h1>"
+	echo "<h1>$(lang de:"Update vorbereiten" en:"Prepare update")</h1>"
 	pre_begin
 	echo "$FILENAME is not an .image file."
 	pre_end
@@ -75,9 +75,9 @@ if [ "${FILENAME##*.}" != "image" ]; then
 fi
 
 cat << EOF
-<h1>$(lang
-	de:"Firmware extrahieren, Update vorbereiten"
-	en:"Extract firmware, prepare update"
+<h1>$(lang \
+  de:"Firmware extrahieren, Update vorbereiten" \
+  en:"Extract firmware, prepare update" \
 )</h1>
 EOF
 
@@ -97,9 +97,9 @@ esac
 
 
 if $downgrade; then
-	echo "<p>$(lang
-		de:"Downgrade vorbereiten"
-		en:"Prepare downgrade"
+	echo "<p>$(lang \
+	  de:"Downgrade vorbereiten" \
+	  en:"Prepare downgrade" \
 	) ... </p>"
 	pre_begin
 	/usr/bin/prepare-downgrade | html
@@ -108,9 +108,9 @@ if $downgrade; then
 fi
 
 if [ "$stop" = stop_avm ]; then
-	echo "<p>$(lang
-		de:"AVM-Dienste anhalten, Teil 1"
-		en:"Stopping AVM services, part 1"
+	echo "<p>$(lang \
+	  de:"AVM-Dienste anhalten, Teil 1" \
+	  en:"Stopping AVM services, part 1" \
 	) (prepare_fwupgrade start) ... </p>"
 	pre_begin
 	prepare_fwupgrade start 2>&1 | html
@@ -119,9 +119,9 @@ if [ "$stop" = stop_avm ]; then
 fi
 
 if [ "$stop" = semistop_avm ]; then
-	echo "<p>$(lang
-		de:"Einige der AVM-Dienste anhalten, Teil 1"
-		en:"Stopping some of the AVM services, part 1"
+	echo "<p>$(lang \
+	  de:"Einige der AVM-Dienste anhalten, Teil 1" \
+	  en:"Stopping some of the AVM services, part 1" \
 	) (prepare_fwupgrade start_from_internet) ... </p>"
 	pre_begin
 	prepare_fwupgrade start_from_internet 2>&1 | html
@@ -129,9 +129,9 @@ if [ "$stop" = semistop_avm ]; then
 	status "done"
 fi
 
-echo "<p>$(lang
-	de:"Firmware-Archiv extrahieren"
-	en:"Extracting firmware archive"
+echo "<p>$(lang \
+  de:"Firmware-Archiv extrahieren" \
+  en:"Extracting firmware archive" \
 ) ... </p>"
 pre_begin
 untar() {
@@ -147,9 +147,9 @@ fi
 status "done"
 
 if [ "$stop" != nostop_avm ]; then
-	echo "<p>$(lang
-		de:"AVM-Dienste anhalten, Teil 2"
-		en:"Stopping AVM services, part 2"
+	echo "<p>$(lang \
+	  de:"AVM-Dienste anhalten, Teil 2" \
+	  en:"Stopping AVM services, part 2" \
 	) (prepare_fwupgrade end) ... </p>"
 	pre_begin
 	prepare_fwupgrade end 2>&1 | html
@@ -160,22 +160,20 @@ fi
 [ "$stop" = semistop_avm ] && ( sleep 30; reboot )&
 
 cat << EOF
-<p>$(lang
-	de:"Ausf&uuml;hren des Firmware-Installationsskripts"
-	en:"Executing firmware installation script"
+<p>$(lang \
+  de:"Ausf&uuml;hren des Firmware-Installationsskripts" \
+  en:"Executing firmware installation script" \
 ) /var/install ... </p>
 EOF
 if [ ! -x /var/install ]; then
-	status "failed" "$(lang
-		de:"Installationsskript nicht gefunden oder nicht ausf&uuml;hrbar."
-		en:"Installation script not found or not executable."
+	status "failed" "$(lang \
+	  de:"Installationsskript nicht gefunden oder nicht ausf&uuml;hrbar." \
+	  en:"Installation script not found or not executable." \
 	)"
 	cat << EOF
-<p>$(lang
-	de:"Weiter ohne Neustart. Sie sollten bei Bedarf noch die extrahierten
-	Dateien l&ouml;schen."
-	en:"Resuming without reboot. You may want to clean up the extracted
-	files."
+<p>$(lang \
+  de:"Weiter ohne Neustart. Sie sollten bei Bedarf noch die extrahierten Dateien l&ouml;schen." \
+  en:"Resuming without reboot. You may want to clean up the extracted files." \
 )</p>
 EOF
 	do_exit 1
@@ -215,17 +213,17 @@ esac
 
 [ $result -le 1 2>/dev/null ] && color=green || color=red
 
-status "done" "$(lang
-	de:"R&uuml;ckgabewert des Installationsskripts"
-	en:"Installation script return code"
+status "done" "$(lang \
+  de:"R&uuml;ckgabewert des Installationsskripts" \
+  en:"Installation script return code" \
 ): <B>$result (<FONT COLOR=$color>$result_txt</FONT>)</B>"
 
 if [ "$FREETZ_TYPE_CABLE" != "y" ]; then
 	echo "<p>$(lang de:"Von" en:"Generated content of") /var/post_install$(lang de:" generierter Inhalt:" en:":")</p>"
 	if [ ! -x /var/post_install ]; then
-		print_error "$(lang
-			de:"Nach-Installationsskript nicht gefunden oder nicht ausf&uuml;hrbar."
-			en:"Post-installation script not found or not executable."
+		print_error "$(lang \
+		  de:"Nach-Installationsskript nicht gefunden oder nicht ausf&uuml;hrbar." \
+		  en:"Post-installation script not found or not executable." \
 		)"
 		do_exit 1
 	fi
@@ -236,15 +234,9 @@ fi
 
 [ "$FREETZ_TYPE_CABLE" != "y" ] && cat << EOF
 <p>
-$(lang
-	de:"Das Nach-Installationsskript l&auml;uft beim Neustart (reboot) und f&uuml;hrt
-die darin definierten Aktionen aus, z.B. das tats&auml;chliche Flashen der Firmware.
-Sie k&ouml;nnen immer noch entscheiden, diesen Vorgang abzubrechen, indem Sie das
-Skript und den Rest der extrahierten Firmware-Komponenten l&ouml;schen."
-	en:"The post-installation script will be executed upon reboot and
-perform the actions specified therein, e.g. the actual firmware flashing.  You
-may still choose to interrupt this process by removing the script along with
-the rest of the extracted firmware components."
+$(lang \
+  de:"Das Nach-Installationsskript l&auml;uft beim Neustart (reboot) und f&uuml;hrt die darin definierten Aktionen aus, z.B. das tats&auml;chliche Flashen der Firmware. Sie k&ouml;nnen immer noch entscheiden, diesen Vorgang abzubrechen, indem Sie das Skript und den Rest der extrahierten Firmware-Komponenten l&ouml;schen." \
+  en:"The post-installation script will be executed upon reboot and perform the actions specified therein, e.g. the actual firmware flashing. You may still choose to interrupt this process by removing the script along with the rest of the extracted firmware components." \
 )
 </p>
 EOF
@@ -255,3 +247,4 @@ if $rebootbox; then
 fi
 
 do_exit 0
+

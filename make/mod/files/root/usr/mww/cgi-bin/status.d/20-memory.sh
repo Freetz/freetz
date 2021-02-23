@@ -16,7 +16,7 @@ read_meminfo
 
 
 # RAM
-sec_begin '$(lang de:"Arbeitsspeicher" en:"Main memory") (RAM)'
+sec_begin "$(lang de:"Arbeitsspeicher" en:"Main memory") (RAM)"
 total=$(($mem_MemTotal*10/1024))
 free=$(($mem_MemFree*10/1024))
 cached=$(($mem_Cached*10/1024))
@@ -33,7 +33,7 @@ sec_end
 
 # SWAP
 if has_swap; then
-	sec_begin '$(lang de:"Swap-Speicher" en:"Swap space") (RAM)'
+	sec_begin "$(lang de:"Swap-Speicher" en:"Swap space") (RAM)"
 	total=$(($mem_SwapTotal*10/1024))
 	free=$(($mem_SwapFree*10/1024))
 	cached=$(($mem_SwapCached*10/1024))
@@ -51,7 +51,7 @@ fi
 
 # TFFS
 if [ "$MOD_MOUNTED_TFFS" == "yes" ]; then
-	sec_begin '$(lang de:"Flash-Speicher" en:"Flash memory") (TFFS)'
+	sec_begin "$(lang de:"Flash-Speicher" en:"Flash memory") (TFFS)"
 	echo info > /proc/tffs
 	percent=$(grep '^fill=' /proc/tffs)
 	percent=${percent#fill=}

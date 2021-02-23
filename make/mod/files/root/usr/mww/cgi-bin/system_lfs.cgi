@@ -121,5 +121,5 @@ cat << EOF | sed -r 's#(Running|Momentan| enabled| aktiviert)#<span class="succe
 <pre>$SECB</pre>
 EOF
 
-stat_button linux_fs_start '$(lang de:"Firmwarepartition wechseln" en:"Toggle firmware partition")'
+stat_button linux_fs_start "$(lang de:"Firmwarepartition wechseln" en:"Toggle firmware partition")"
 

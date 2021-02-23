@@ -6,3 +6,4 @@ echo "</div>"
 ( source "$HANDLER_DIR/edit_body.sh" )
 
 cgi_end
+

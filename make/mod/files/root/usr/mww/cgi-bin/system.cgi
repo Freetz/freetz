@@ -15,17 +15,17 @@ cgi_begin 'System'
 [ -e /usr/mww/cgi-bin/system_juis.cgi ] && . /usr/mww/cgi-bin/system_juis.cgi
 
 echo "<h1>$(lang de:"Box neustarten" en:"Restart box")</h1>"
-stat_button reboot '$(lang de:"Reboot" en:"Reboot")'
+stat_button reboot "$(lang de:"Reboot" en:"Reboot")"
 
 echo "<h1>$(lang de:"Nicht unterst&uuml;tzte &Auml;nderungen" en:"Unauthorized changes")</h1>"
 cat << EOF
-<p>$(lang
-	de:"Diese Warnung l&auml;sst sich hier zur&uuml;cksetzen."
-	en:"This warning can be reset here."
+<p>$(lang \
+  de:"Diese Warnung l&auml;sst sich hier zur&uuml;cksetzen." \
+  en:"This warning can be reset here." \
 )</p>
 EOF
 
-# stat_button cleanup '$(lang de:"TFFS aufr&auml;umen" en:"Clean up TFFS")'
-stat_button fw-attrib '$(lang de:"Warnung zur&uuml;cksetzen" en:"Reset warning")'
+# stat_button cleanup "$(lang de:"TFFS aufr&auml;umen" en:"Clean up TFFS")"
+stat_button fw-attrib "$(lang de:"Warnung zur&uuml;cksetzen" en:"Reset warning")"
 
 cgi_end

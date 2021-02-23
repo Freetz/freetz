@@ -29,7 +29,7 @@ package_services() {
 		[ "$pkg" = "$selected_pkg" -a "$hide" = false ] || continue
 		let count++
 		if [ $count -eq 1 ]; then
-			sec_begin '$(lang de:"Status" en:"Status")'
+			sec_begin "$(lang de:"Status" en:"Status")"
 			stat_begin
 		fi
 		local long="$(sed -n "s/^$daemon|//p" "$SERVICE_PKG")"
@@ -60,3 +60,4 @@ if [ -x "$cgi" ]; then
 else
 	print_error "$(lang de:"Kein Skript f&uuml;r" en:"No script for") '$PACKAGE/$ID'."
 fi
+
