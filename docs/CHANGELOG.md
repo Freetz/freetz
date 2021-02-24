@@ -36,27 +36,25 @@ Latest changes
 
 ### devel
 
-- Known problems:
+ - Known problems:
    * Replace kernel does not work for most latest firmware versions.
    * Loading build kernel modules may work or do not. You'll notice.
 
-- Build system:
+ - Build system:
+   * ccache 4.2
    * kconfig 5.11
    * kernel-/target-toolchain:
       + uClibc-ng 1.0.37
 
-- New packages, libs, modules:
+ - New packages, libs, modules:
    * juis_check 0.5
 
-- Updated tools and hooks:
+ - Updated tools and hooks:
    * fitimg 0.5
    * patchelf 0.12
    * xz 5.2.5
 
-- Build system:
-   * ccache 4.2
-
-- Updated packages and libs:
+ - Updated packages and libs:
    * cifs-utils 6.12
    * curl 7.75.0
    * haproxy 2.2.9
