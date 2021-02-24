@@ -37,35 +37,37 @@ Latest changes
 ### devel
 
 - Known problems:
-  * Replace kernel does not work for most latest firmware versions.
-  * Loading build kernel modules may work or do not. You'll notice.
+   * Replace kernel does not work for most latest firmware versions.
+   * Loading build kernel modules may work or do not. You'll notice.
 
 - Build system:
-  * kconfig 5.11
+   * kconfig 5.11
+   * kernel-/target-toolchain:
+      + uClibc-ng 1.0.37
 
 - New packages, libs, modules:
-    * juis_check 0.5
+   * juis_check 0.5
 
 - Updated tools and hooks:
-  * fitimg 0.5
-  * patchelf 0.12
-  * xz 5.2.5
+   * fitimg 0.5
+   * patchelf 0.12
+   * xz 5.2.5
 
 - Build system:
-  * ccache 4.2
+   * ccache 4.2
 
 - Updated packages and libs:
-    * cifs-utils 6.12
-    * curl 7.75.0
-    * haproxy 2.2.9
-    * libgd 2.3.1
-    * lighttpd 1.4.59
-    * mtr 0.80/0.94
-    * OpenSSL 0.9.8zh/1.0.2u/1.1.1j/3.0.0-alpha12
-    * pcre 8.44
-    * rsync 3.2.3
-    * wireguard-linux-compat 1.0.20210124
-    * lzma2 5.2.5
+   * cifs-utils 6.12
+   * curl 7.75.0
+   * haproxy 2.2.9
+   * libgd 2.3.1
+   * lighttpd 1.4.59
+   * mtr 0.80/0.94
+   * OpenSSL 0.9.8zh/1.0.2u/1.1.1j/3.0.0-alpha12
+   * pcre 8.44
+   * rsync 3.2.3
+   * wireguard-linux-compat 1.0.20210124
+   * lzma2 5.2.5
 
 ### ng21010
 
