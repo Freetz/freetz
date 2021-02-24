@@ -167,7 +167,7 @@ case $1 in
 		modreg daemon $DAEMON
 		modreg extra iptables "" 2 controller
 		modreg conf iptables editor 'Editor'
-		modreg file iptables rules '$(lang de:"Regeln" en:"Rules")' 0 "iptables"
+		modreg file iptables rules "$(lang de:"Regeln" en:"Rules")" 0 "iptables"
 		modreg file iptables services 'Services' 0 "services"
 
 		[ ! -r "/var/tmp/flash/iptables_services" ] && cp /mod/etc/default.iptables/iptables_services /var/tmp/flash/iptables_services

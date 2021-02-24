@@ -14,7 +14,7 @@ if [ -z "$CLEAN_LEVEL" ]; then
 	exit 1
 fi
 
-cgi_begin '$(lang de:"Reinige" en:"Cleaning")'
+cgi_begin "$(lang de:"Reinige" en:"Cleaning")"
 
 echo -n '<pre>starting cleaning ... '
 
@@ -31,6 +31,6 @@ else
 	fi
 fi
 
-echo '<form action="/cgi-bin/maint.cgi"><input type="hidden" name="action" value="clean"><input type="submit" value="$(lang de:"Zur&uuml;ck" en:"Back")"></form>'
+echo "<form action="/cgi-bin/maint.cgi"><input type="hidden" name="action" value="clean"><input type="submit" value="$(lang de:'Zur&uuml;ck' en:'Back')"></form>"
 
 cgi_end

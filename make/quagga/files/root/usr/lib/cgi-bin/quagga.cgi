@@ -7,11 +7,11 @@ for daemon in $daemonlist; do
 [ -x /usr/sbin/$daemon ] && daemons="$daemons $daemon"
 done
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$QUAGGA_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Routing-Daemonen" en:"Routing daemons")'
+sec_begin "$(lang de:"Routing-Daemonen" en:"Routing daemons")"
 
 echo '<ul>'
 
@@ -30,7 +30,7 @@ done
 echo "</ul>"
 
 sec_end
-sec_begin '$(lang de:"Konfigurationsdatei(en)" en:"Configuration file(s)")'
+sec_begin "$(lang de:"Konfigurationsdatei(en)" en:"Configuration file(s)")"
 
 cat << EOF
 <ul>

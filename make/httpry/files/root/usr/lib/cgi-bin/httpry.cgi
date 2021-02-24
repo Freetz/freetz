@@ -3,11 +3,11 @@
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 . /usr/lib/libmodcgi.sh
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$HTTPRY_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Konfiguration und Filter" en:"Configuration and filter")'
+sec_begin "$(lang de:"Konfiguration und Filter" en:"Configuration and filter")"
 cat << EOF
 <p>
 $(lang de:"Parameter (au&szlig;er -d -u -o -i): " en:"Parameters (except -d -u -o -i): ")
@@ -28,7 +28,7 @@ $(lang de:"Interface: " en:"Interface: ")
 EOF
 sec_end
 
-sec_begin '$(lang de:"Hilfe" en:"Help")'
+sec_begin "$(lang de:"Hilfe" en:"Help")"
 cat << EOF
 <p>
 <textarea id="help" " name="config" rows="20" cols="90" wrap="off">$(html "$(httpry -h)")</textarea>

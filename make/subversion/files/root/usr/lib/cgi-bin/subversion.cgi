@@ -4,11 +4,11 @@
 
 check "$SUBVERSION_LOGGING" yes:log
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$SUBVERSION_ENABLED" "" "" 1
 sec_end
 
-sec_begin '$(lang de:"Priorit&auml;t" en:"Priority")'
+sec_begin "$(lang de:"Priorit&auml;t" en:"Priority")"
 cat << EOF
 <p>
 <label for='nicelevel'>Nice-Level: </label>
@@ -17,7 +17,7 @@ cat << EOF
 EOF
 sec_end
 
-sec_begin '$(lang de:"Repository" en:"Repository")'
+sec_begin "$(lang de:"Repository" en:"Repository")"
 cat << EOF
 <p>
 <label for="root">$(lang de:"Pfad" en:"Path"): </label>
@@ -26,7 +26,7 @@ cat << EOF
 EOF
 sec_end
 
-sec_begin '$(lang de:"Server" en:"Server")'
+sec_begin "$(lang de:"Server" en:"Server")"
 cat << EOF
 <p>
 <label for="bindaddress">$(lang de:"Bind-Adresse" en:"Bind-address"): </label>
@@ -40,7 +40,7 @@ cat << EOF
 EOF
 sec_end
 
-sec_begin '$(lang de:"Logging" en:"Logging")'
+sec_begin "$(lang de:"Logging" en:"Logging")"
 cat << EOF
 <p>
 <input type="hidden" name="logging" value="no">

@@ -6,12 +6,12 @@
 check "$OPENSSH_PWDAUTH" yes:pwdauth_yes "*":pwdauth_no
 check "$OPENSSH_ROOT" yes:root_yes "*":root_no
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$OPENSSH_ENABLED" "" "" 1
 sec_end
 
 if [ "$FREETZ_PACKAGE_AUTHORIZED_KEYS" == "y" ]; then
-sec_begin '$(lang de:"Public Key Authentication" en:"Public key authentication")'
+sec_begin "$(lang de:"Public Key Authentication" en:"Public key authentication")"
 cat << EOF
 <ul>
 <li><a href="$(href file authorized-keys authorized_keys)">$(lang de:"authorized_keys bearbeiten" en:"Edit authorized_keys")</a></li>
@@ -20,7 +20,7 @@ EOF
 sec_end
 fi
 
-sec_begin '$(lang de:"SSH Server" en:"SSH server")'
+sec_begin "$(lang de:"SSH Server" en:"SSH server")"
 cat << EOF
 <p><i>$(lang de:"Der SSH Server ist gebunden an" en:"The SSH server is listening on"):</i>
 Port: <input type="text" name="port" size="5" maxlength="5" value="$(html "$OPENSSH_PORT")"></p>

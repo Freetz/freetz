@@ -4,8 +4,8 @@
 . /usr/lib/libmodcgi.sh
 
 SELF='downremover'
-TITLE='$(lang de:"Downloader - Aufr&auml;umen" en:"Downloader - Removing")'
-NM_REMOVE='$(lang de:"Aufr&auml;umen" en:"Removing")'
+TITLE="$(lang de:"Downloader - Aufr&auml;umen" en:"Downloader - Removing")"
+NM_REMOVE="$(lang de:"Aufr&auml;umen" en:"Removing")"
 
 cmd_button() {
 local name=${1:-cmd} act=$2 cmd=$3 label=$4 method=get

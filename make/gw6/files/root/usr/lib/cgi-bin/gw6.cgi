@@ -4,11 +4,11 @@
 
 check "$GW6_LOGGING" yes:log
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$GW6_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"gw6" en:"gw6")'
+sec_begin "$(lang de:"gw6" en:"gw6")"
 
 cat << EOF
 <table border="0">
@@ -33,11 +33,14 @@ cat << EOF
 </tr>
 </table>
 
-$(lang de:"Hinweis: Wenn ein Benutzername eingegeben wurde, wird gw6 ein Subnetz anfordern und automatisch
-radvd auf dem Interface lan aktivieren. Wird kein Benutzername angegeben, dann wird gw6 nur eine
-einzige IP-Adresse anfordern." en:"Note: If a username is given, gw6 will request a subnet and
-radvd will be started automatically on interface lan. If no username is given, gw6 will request only
-one single IP address.")
+$(lang \
+de:"Hinweis: Wenn ein Benutzername eingegeben wurde, wird gw6 ein Subnetz anfordern und automatisch \
+radvd auf dem Interface lan aktivieren. Wird kein Benutzername angegeben, dann wird gw6 nur eine \
+einzige IP-Adresse anfordern." \
+  en:"Note: If a username is given, gw6 will request a subnet and \
+radvd will be started automatically on interface lan. If no username is given, gw6 will request only \
+one single IP address." \
+  )
 EOF
 
 sec_end

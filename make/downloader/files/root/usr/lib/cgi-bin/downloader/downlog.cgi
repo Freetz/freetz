@@ -4,7 +4,7 @@
 . /usr/lib/libmodcgi.sh
 
 SELF='downlog'
-TITLE='$(lang de:"Downloader - Protokoll" en:"Downloader - log")'
+TITLE="$(lang de:"Downloader - Protokoll" en:"Downloader - log")"
 DOWNLOGFILE='/var/log/downloader.log'
 
 cgi_begin "$TITLE"

@@ -12,11 +12,11 @@ select "$NETATALK_LOG_LEVEL" \
   LOG_MAXDEBUG:logmaxdebug \
 	"*":lognote
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$NETATALK_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Einstellungen" en:"Settings")'
+sec_begin "$(lang de:"Einstellungen" en:"Settings")"
 
 cat << EOF
 <ul>
@@ -26,7 +26,7 @@ cat << EOF
 EOF
 
 sec_end
-sec_begin '$(lang de:"Benutzer" en:"Users")'
+sec_begin "$(lang de:"Benutzer" en:"Users")"
 
 cat << EOF
 <p>
@@ -40,7 +40,7 @@ $(lang de:"Benutzer werden wie folgt angelegt und persistent gespeichert" en:"Cr
 EOF
 
 sec_end
-sec_begin '$(lang de:"Netatalk" en:"Netatalk")'
+sec_begin "$(lang de:"Netatalk" en:"Netatalk")"
 
 cat << EOF
 <p>

@@ -15,11 +15,11 @@ if [ "$(cgi_param load_adblocklist)" == "yes" -a -n "$(cgi_param alt_path)" ]; t
 	/mod/etc/default.privoxy/privoxy_loadadblocklist ${PRIVOXY_ALT_PATH}
 fi
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$PRIVOXY_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Einstellungen" en:"Configuration")'
+sec_begin "$(lang de:"Einstellungen" en:"Configuration")"
 
 cat << EOF
 <h2>$(lang de:"Der Privoxy Server ist gebunden an" en:"The Privoxy server is listening on")</h2>
@@ -28,7 +28,7 @@ $(lang de:"Port" en:"Port"):&nbsp;<input id="port" type="text" size="5" maxlengt
 EOF
 
 sec_end
-sec_begin '$(lang de:"Filter" en:"Content Filter")'
+sec_begin "$(lang de:"Filter" en:"Content Filter")"
 
 cat << EOF
 <h2>$(lang de:"Privoxy soll Inhalte beim Surfen filtern" en:"Privoxy shall filter internet content")</h2>
@@ -48,7 +48,7 @@ cat << EOF
 EOF
 
 sec_end
-sec_begin '$(lang de:"AdBlock Plus"  en:"AdBlock Plus")'
+sec_begin "$(lang de:"AdBlock Plus"  en:"AdBlock Plus")"
 
 if [ "$FREETZ_PACKAGE_PRIVOXY_WITH_ADBLOCK" = "y" ]; then
 cat << EOF
@@ -67,7 +67,7 @@ EOF
 fi
 
 sec_end
-sec_begin '$(lang de:"Weiterleitung" en:"Forwarding") (optional)'
+sec_begin "$(lang de:"Weiterleitung" en:"Forwarding") (optional)"
 
 cat << EOF
 <p><label for="socks">$(lang de:"N&auml;chster Proxy-Server:" en:"Next proxy:")</label>  <input id="socks" type="text" size="21" title="Syntax: &lt;ip&gt;:&lt;port&gt;" maxlength="21" name="forward_socks" value="$(html "$PRIVOXY_FORWARD_SOCKS")"><br />
@@ -86,7 +86,7 @@ cat << EOF
 EOF
 
 sec_end
-sec_begin '$(lang de:"Zugriffskontrolle" en:"Access Control") (optional)'
+sec_begin "$(lang de:"Zugriffskontrolle" en:"Access Control") (optional)"
 
 cat << EOF
 <p>$(lang de:"Lies das Privoxy Benutzerhandbuch zum Thema <a href='http://www.privoxy.org/user-manual/config.html#ACCESS-CONTROL' target='_blank'>Zugriffskontrolle</a> f&uuml;r eine detailierte Beschreibung." en:"See the Privoxy User Manual about <a href='http://www.privoxy.org/user-manual/config.html#ACCESS-CONTROL' target='_blank'>Access Control</a> for a brief description.")</p>

@@ -5,11 +5,11 @@
 check "$RADVD_FORWARD" yes:forward
 check "$RADVD_SETIPV6" yes:setipv6
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$RADVD_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"radvd" en:"radvd")'
+sec_begin "$(lang de:"radvd" en:"radvd")"
 
 cat << EOF
 <table border="0">
@@ -44,7 +44,7 @@ EOF
 
 sec_end
 
-sec_begin '$(lang de:"Optionale Parameter" en:"Optional parameters")'
+sec_begin "$(lang de:"Optionale Parameter" en:"Optional parameters")"
 cat << EOF
 $(lang de:"Leerzeichen getrennte Liste der Clients an die es erlaubt ist Prefixe anzuk&uuml;ndigen" en:"A space separated list of clients (IPv6 addresses) to advertise to"):
 <input type="text" name="clients" size="55" maxlength="255" value="$(html "$RADVD_CLIENTS")">

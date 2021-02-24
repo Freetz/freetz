@@ -5,7 +5,7 @@
 
 #
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 
 cgi_print_radiogroup_service_starttype "enabled" "$UNFS3_ENABLED" "" "" 0
 

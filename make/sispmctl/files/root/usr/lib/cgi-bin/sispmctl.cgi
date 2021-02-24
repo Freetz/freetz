@@ -11,11 +11,11 @@ skin_web1=''; skin_web2=''
 [ "$SISPMCTL_SKIN" = "web1" ] && skin_web1=' selected'
 [ "$SISPMCTL_SKIN" = "web2" ] && skin_web2=' selected'
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$SISPMCTL_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Integrierter WEB-Server" en:"Integrated WEB Server")'
+sec_begin "$(lang de:"Integrierter WEB-Server" en:"Integrated WEB Server")"
 
 if [ -d /usr/share/sispmctl-web2 ]
 then
@@ -45,13 +45,13 @@ TYPEs="$(echo "$sispmss" | sed -n -e '/device type/s/device type\:[[:space:]]*//
 if [ -n "$IDs" ]
 then
 	NUMB_DEV=$(echo "$IDs" | wc -l)
-	sec_begin '$(lang de:"Erkannte Steckdosenleisten" en:"Detected multiple socket outlets")'
+	sec_begin "$(lang de:"Erkannte Steckdosenleisten" en:"Detected multiple socket outlets")"
 
 	echo "<table><tr><td>"
-	echo '<font size="-2"><b>$(lang de:"Seriennummer" en:"Serial No")&nbsp;&nbsp;</b></font></td>'
-	echo '<td><font size="-2"><b>$(lang de:"Typ" en:"Type")&nbsp;&nbsp;</b></font></td>'
+	echo "<font size="-2"><b>$(lang de:"Seriennummer" en:"Serial No")&nbsp;&nbsp;</b></font></td>"
+	echo "<td><font size="-2"><b>$(lang de:"Typ" en:"Type")&nbsp;&nbsp;</b></font></td>"
 	echo '<td><font size="-2"><b>Name&nbsp;&nbsp;</b></font></td>'
-	echo '<td><font size="-2"><b>$(lang de:"Status" en:"State")&nbsp;&nbsp;</b></font></td></tr>'
+	echo "<td><font size="-2"><b>$(lang de:"Status" en:"State")&nbsp;&nbsp;</b></font></td></tr>"
 	ii=1
 	while [ $ii -le $NUMB_DEV ]
 	do
@@ -109,7 +109,7 @@ else
 	NUMB_DEV=0
 fi
 
-sec_begin '$(lang de:"Zuordnung und Benennung der Steckdosen" en:"Allocation and naming")'
+sec_begin "$(lang de:"Zuordnung und Benennung der Steckdosen" en:"Allocation and naming")"
 
 cat << EOF
 <p>$(lang de:"Anzahl der verwalteten Steckdosenleisten" en:"Number of administrated devices"):
@@ -127,12 +127,12 @@ done
 echo "</select></p>"
 
 echo '<table><tr><td>'
-echo '<font size="-2"><b>$(lang de:"Seriennummer" en:"Serial No")&nbsp;&nbsp;&nbsp;</b></font></td>'
-echo '<td><font size="-2"><b>$(lang de:"Benennung" en:"Naming")&nbsp;&nbsp;&nbsp;</b></font></td>'
-echo '<td><font size="-2"><b>$(lang de:"Steckdose" en:"Socket") 1&nbsp;&nbsp;&nbsp;</b></font></td>'
-echo '<td><font size="-2"><b>$(lang de:"Steckdose" en:"Socket") 2&nbsp;&nbsp;&nbsp;</b></font></td>'
-echo '<td><font size="-2"><b>$(lang de:"Steckdose" en:"Socket") 3&nbsp;&nbsp;&nbsp;</b></font></td>'
-echo '<td><font size="-2"><b>$(lang de:"Steckdose" en:"Socket") 4&nbsp;&nbsp;&nbsp;</b></font></td>'
+echo "<font size="-2"><b>$(lang de:"Seriennummer" en:"Serial No")&nbsp;&nbsp;&nbsp;</b></font></td>"
+echo "<td><font size="-2"><b>$(lang de:"Benennung" en:"Naming")&nbsp;&nbsp;&nbsp;</b></font></td>"
+echo "<td><font size="-2"><b>$(lang de:"Steckdose" en:"Socket") 1&nbsp;&nbsp;&nbsp;</b></font></td>"
+echo "<td><font size="-2"><b>$(lang de:"Steckdose" en:"Socket") 2&nbsp;&nbsp;&nbsp;</b></font></td>"
+echo "<td><font size="-2"><b>$(lang de:"Steckdose" en:"Socket") 3&nbsp;&nbsp;&nbsp;</b></font></td>"
+echo "<td><font size="-2"><b>$(lang de:"Steckdose" en:"Socket") 4&nbsp;&nbsp;&nbsp;</b></font></td>"
 echo '<td><font size="-2"><b>Port&nbsp;&nbsp;&nbsp;</b></font></td></tr>'
 ii=1
 while [ $ii -le $SISPMCTL_NUMOFDEV ]

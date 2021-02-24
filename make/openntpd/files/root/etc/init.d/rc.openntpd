@@ -27,7 +27,7 @@ case $1 in
 		modreg cgi 'openntpd' 'OpenNTPD'
 		modreg daemon $DAEMON
 		if [ "$CONFIG_FILE" != '/etc/ntpd.conf' ]; then
-			modreg file $DAEMON conf '$(lang de:"Konfiguration" en:"Configuration")' 0 "openntpd_conf"
+			modreg file $DAEMON conf "$(lang de:"Konfiguration" en:"Configuration")" 0 "openntpd_conf"
 		fi
 
 		modlib_start $OPENNTPD_ENABLED

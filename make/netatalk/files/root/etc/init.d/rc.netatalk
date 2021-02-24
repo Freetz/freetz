@@ -28,8 +28,8 @@ case $1 in
 		modlib_adduser ftpuser -G users -D -S -h "/var/media/ftp" -g "ftpuser"
 
 		modreg cgi netatalk "Netatalk"
-		modreg file netatalk applevolumes_default '$(lang de:"Freigaben" en:"Shares")' 1 "applevolumes_default"
-		modreg file netatalk afpd_conf '$(lang de:"Virtuelle Datei-Server" en:"Virtual Fileservers")' 1 "afpd_conf"
+		modreg file netatalk applevolumes_default "$(lang de:"Freigaben" en:"Shares")" 1 "applevolumes_default"
+		modreg file netatalk afpd_conf "$(lang de:"Virtuelle Datei-Server" en:"Virtual Fileservers")" 1 "afpd_conf"
 		modreg daemon netatalk
 
 		config

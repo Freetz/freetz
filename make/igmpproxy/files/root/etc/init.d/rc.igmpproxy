@@ -15,7 +15,7 @@ case $1 in
 		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
 		[ ! -e "$DAEMON_CONFIG" ] && cat /mod/etc/default.$DAEMON/$DAEMON.config > $DAEMON_CONFIG
 
-		modreg file $DAEMON config '$(lang de:"Konfiguration" en:"Configuration")' 1 "igmpproxy_config"
+		modreg file $DAEMON config "$(lang de:"Konfiguration" en:"Configuration")" 1 "igmpproxy_config"
 		modreg cgi $DAEMON $DAEMON_LONG_NAME
 		modreg daemon $DAEMON
 

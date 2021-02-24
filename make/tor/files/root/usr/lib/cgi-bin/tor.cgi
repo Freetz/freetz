@@ -8,11 +8,11 @@ check "$TOR_RELAY_ENABLED" yes:relay_enabled
 check "$TOR_DATADIRPERSISTENT" yes:datadirpersistent_enabled
 check "$TOR_BRIDGERELAY" yes:bridgerelay
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$TOR_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Einstellungen" en:"Configuration")'
+sec_begin "$(lang de:"Einstellungen" en:"Configuration")"
 
 cat << EOF
 <h2>$(lang de:"Der Tor Server ist gebunden an" en:"The Tor server is listening on")</h2>
@@ -29,7 +29,7 @@ $(lang de:"Port" en:"Port"):&nbsp;<input id="port" type="text" size="5" maxlengt
 EOF
 
 sec_end
-sec_begin '$(lang de:"Zugriffskontrolle" en:"Access Control")'
+sec_begin "$(lang de:"Zugriffskontrolle" en:"Access Control")"
 
 cat << EOF
 <p>$(lang de:"Erlaubte Clients" en:"Allowed clients"): <input id="e4" type="radio" name="socks_policy_reject" value="no"$open_chk><label for="e4"> $(lang de:"alle" en:"all")</label> <input id="e3" type="radio" name="socks_policy_reject" value="yes"$closed_chk><label for="e3"> $(lang de:"eingeschr&auml;nkt" en:"restricted")</label></p>
@@ -41,7 +41,7 @@ Syntax: &lt;addr&gt;[/&lt;mask&gt;]<br />
 EOF
 
 sec_end
-sec_begin '$(lang de:"Eingangs- und Ausgangsknoten" en:"Entry and exit nodes")'
+sec_begin "$(lang de:"Eingangs- und Ausgangsknoten" en:"Entry and exit nodes")"
 
 cat << EOF
 <h2>$(lang de:"Tor-Eingangsknoten (einer pro Zeile)" en:"Tor entry nodes (one per line)")</h2>
@@ -57,7 +57,7 @@ cat << EOF
 EOF
 
 sec_end
-sec_begin '$(lang de:"Tor als Relay (Node) konfigurieren" en:"Relay (node) configuration")'
+sec_begin "$(lang de:"Tor als Relay (Node) konfigurieren" en:"Relay (node) configuration")"
 
 cat << EOF
 <p>$(lang de:"Tor auch als Server starten" en:"Open tor relay"): <input type="hidden" name="relay_enabled" value="no"><input id="e8" type="checkbox" name="relay_enabled" value="yes"$relay_enabled_chk></p>
@@ -76,7 +76,7 @@ EOF
 sec_end
 
 if [ "$TOR_RELAY_ENABLED" == "yes" ]; then
-sec_begin '$(lang de:"Erweiterte Relay-Konfiguration" en:"Advanced relay options")'
+sec_begin "$(lang de:"Erweiterte Relay-Konfiguration" en:"Advanced relay options")"
 cat << EOF
 <ul>
 <li><a href="$(href file tor secret_id_key)">$(lang de:"Secret ID Key bearbeiten" en:"Edit secret id key")</a></li>

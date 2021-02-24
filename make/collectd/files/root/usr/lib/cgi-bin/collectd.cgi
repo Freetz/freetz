@@ -4,11 +4,11 @@
 
 . /usr/lib/libmodcgi.sh
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$COLLECTD_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Statistiken anzeigen" en:"Show statistics")'
+sec_begin "$(lang de:"Statistiken anzeigen" en:"Show statistics")"
 
 cat << EOF
 <ul>
@@ -18,7 +18,7 @@ EOF
 
 sec_end
 
-sec_begin '$(lang de:"Einstellungen" en:"Settings")'
+sec_begin "$(lang de:"Einstellungen" en:"Settings")"
 cat << EOF
 <p>
 $(lang de:"Verzeichnis f&uuml;r Graphen" en:"Graph folder"):&nbsp;<input type="text" name="graphdir" size="45" maxlength="255" value="$(html "$COLLECTD_GRAPHDIR")">
@@ -44,7 +44,7 @@ EOF
 
 sec_end
 
-sec_begin '$(lang de:"Fortgeschrittene Einstellungen" en:"Expert Settings")'
+sec_begin "$(lang de:"Fortgeschrittene Einstellungen" en:"Expert Settings")"
 cat << EOF
 <p>
 $(lang de:"Eigenes Skript f&uuml;r die Generierung der Graphen" en:"Custom script for graph generation"):&nbsp;<input type="text" name="graph_script" size="40" maxlength="255" value="$(html "$COLLECTD_GRAPH_SCRIPT")">

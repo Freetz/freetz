@@ -2,11 +2,11 @@
 
 . /usr/lib/libmodcgi.sh
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$SUNDTEK_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Informationen" en:"Informations")'
+sec_begin "$(lang de:"Informationen" en:"Informations")"
 
 echo "$(lang de:"Treiberversion" en:"Driver version"):"
 echo -n '<pre><FONT SIZE=-1>'
@@ -28,7 +28,7 @@ if [ "$(/mod/etc/init.d/rc.sundtek status 2>/dev/null)" == "running" ]; then
 fi
 sec_end
 
-sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
+sec_begin "$(lang de:"Konfiguration" en:"Configuration")"
 cat << EOF
 $(lang de:"Parameter f&uuml;r 'sundtek-mediaclient' (einer pro Zeile)" en:"Parameters for 'sundtek-mediaclient' (one per row)")
 <p><textarea name="config" rows="9" cols="59" maxlength="255">$(html "$SUNDTEK_CONFIG")</textarea></p>

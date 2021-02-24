@@ -22,8 +22,8 @@ case "$1" in
 
 		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
 		modreg daemon $DAEMON
-		modreg file $DAEMON shares '$(lang de:"Freigaben" en:"Shares")' 1 "shares"
-		modreg file $DAEMON sharesx '$(lang de:"Erweitert" en:"Options")' 1 "sharesx"
+		modreg file $DAEMON shares "$(lang de:"Freigaben" en:"Shares")" 1 "shares"
+		modreg file $DAEMON sharesx "$(lang de:"Erweitert" en:"Options")" 1 "sharesx"
 
 		modlib_start $RSYNC_ENABLED
 		;;

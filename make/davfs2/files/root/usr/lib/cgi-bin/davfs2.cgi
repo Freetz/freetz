@@ -4,11 +4,11 @@
 [ -r /etc/options.cfg ] && . /etc/options.cfg
 
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$DAVFS2_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Einstellungen" en:"Settings")'
+sec_begin "$(lang de:"Einstellungen" en:"Settings")"
 cat << EOF
 <p>
 $(lang de:"Tempor&auml;res Verzeichnis" en:"Temporary directory")
@@ -23,7 +23,7 @@ $(lang de:"Cachegr&ouml;&szlig;e" en:"Cache size")
 EOF
 sec_end
 
-sec_begin '$(lang de:"Konten" en:"Accounts")'
+sec_begin "$(lang de:"Konten" en:"Accounts")"
 cat << EOF
 <script>
 

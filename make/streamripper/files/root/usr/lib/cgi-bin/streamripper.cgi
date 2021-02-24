@@ -8,11 +8,11 @@ check "$STREAMRIPPER_SERVER3_ENABLED" "yes":active3
 check "$STREAMRIPPER_SERVER4_ENABLED" "yes":active4
 check "$STREAMRIPPER_SERVER5_ENABLED" "yes":active5
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$STREAMRIPPER_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Filteregeln um bereits gerippte Dateien erg&auml;nzen" en:"Add ripped files to filter rules")'
+sec_begin "$(lang de:"Filteregeln um bereits gerippte Dateien erg&auml;nzen" en:"Add ripped files to filter rules")"
 
 cat << EOF
 <ul>
@@ -21,7 +21,7 @@ cat << EOF
 EOF
 sec_end
 
-sec_begin '$(lang de:"Allgemeine Optionen" en:"Basic options")'
+sec_begin "$(lang de:"Allgemeine Optionen" en:"Basic options")"
 
 cat << EOF
 <p><label for='r91'>$(lang de:"Startoptionen" en:"Startoptions"): </label><input id='r91' type='text' name='startoptions' size='70' maxlength='255' value='$(html "$STREAMRIPPER_STARTOPTIONS")'></p>

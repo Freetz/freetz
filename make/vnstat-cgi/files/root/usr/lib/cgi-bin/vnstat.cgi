@@ -6,11 +6,11 @@ check "$VNSTAT_WEBENABLED" yes:webenabled
 check "$VNSTAT_WEB_AUTH" yes:web_auth
 check "$VNSTAT_WEB_INETD" yes:web_inetd
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$VNSTAT_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Anzeigen" en:"Show statistics")'
+sec_begin "$(lang de:"Anzeigen" en:"Show statistics")"
 
 cat << EOF
 <ul>
@@ -18,7 +18,7 @@ cat << EOF
 EOF
 
 sec_end
-sec_begin '$(lang de:"Einstellungen" en:"Settings")'
+sec_begin "$(lang de:"Einstellungen" en:"Settings")"
 
 cat << EOF
 <p>
@@ -38,7 +38,7 @@ $(lang de:" - leer lassen f&uuml;r alle" en:" - leave empty for all")
 EOF
 
 sec_end
-sec_begin '$(lang de:"Webserver" en:"Webserver")'
+sec_begin "$(lang de:"Webserver" en:"Webserver")"
 
 cat << EOF
 <p>

@@ -5,7 +5,7 @@
 
 check "$DEHYDRATED_ENABLED" yes:auto "*":man
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cat << EOF
 <p>
 <input id="auto" type="radio" name="enabled" value="yes"$auto_chk><label for="auto"> $(lang de:"Aktiviert" en:"Enabled")</label>
@@ -17,7 +17,7 @@ $(lang de:"Let's Encrypt aktualisiert die Zertifikate mittels cron automatisch u
 EOF
 sec_end
 
-sec_begin '$(lang de:"Anzeigen" en:"Show")'
+sec_begin "$(lang de:"Anzeigen" en:"Show")"
 cat << EOF
 <ul>
 <li><a href="$(href status dehydrated dehydrated_log)">$(lang de:"Logdatei anzeigen" en:"Show log file")</a></li>
@@ -25,7 +25,7 @@ cat << EOF
 EOF
 sec_end
 
-sec_begin '$(lang de:"Cron" en:"Cron")'
+sec_begin "$(lang de:"Cron" en:"Cron")"
 cat << EOF
 <p><input type="text" name="crond_h" size="6" maxlength="9" value="$(html "$DEHYDRATED_CROND_H")">&nbsp;$(lang de:"Stunde" en:"Hour")</p>
 <p><input type="text" name="crond_m" size="6" maxlength="9" value="$(html "$DEHYDRATED_CROND_M")">&nbsp;$(lang de:"Minute" en:"Minute")</p>
@@ -33,7 +33,7 @@ cat << EOF
 EOF
 sec_end
 
-sec_begin '$(lang de:"Optionen" en:"Options")'
+sec_begin "$(lang de:"Optionen" en:"Options")"
 cat << EOF
 
 <p>$(lang de:"Schl&uuml;sselgr&ouml;&szlig;e (mindestens 2048)" en:"Key length (at least 2048)"): <input type="text" name="keysize" size="5" maxlength="4" value="$(html "$DEHYDRATED_KEYSIZE")"></p>
@@ -50,7 +50,7 @@ cat << EOF
 EOF
 sec_end
 
-sec_begin '$(lang de:"Erweitert" en:"Advanced")'
+sec_begin "$(lang de:"Erweitert" en:"Advanced")"
 cat << EOF
 <p>$(lang de:"E-Mail Adresse" en:"E-mail address"): <input type="text" name="regmail" size="55" maxlength="255" value="$(html "$DEHYDRATED_REGMAIL")"></p>
 EOF
@@ -67,7 +67,7 @@ $(lang de:"Eigene Eintr&auml;ge in der" en:"Custom values into") <a target='_bla
 EOF
 sec_end
 
-sec_begin '$(lang de:"Hinweis" en:"Note")'
+sec_begin "$(lang de:"Hinweis" en:"Note")"
 cat << EOF
 <ul>
 <li>$(lang de:"Zum initialisieren und anzeigen der Ausgaben" en:"To initialize and show output run"): <i>rc.dehydrated init</i></li>

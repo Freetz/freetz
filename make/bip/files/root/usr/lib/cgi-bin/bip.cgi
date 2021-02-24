@@ -5,11 +5,11 @@
 check "$BIP_LOG" true:log
 check "$BIP_LOG_SYSTEM" true:log_system
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$BIP_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
+sec_begin "$(lang de:"Konfiguration" en:"Configuration")"
 
 cat << EOF
 <h2>$(lang de:"Port:" en:"Port:")</h2>

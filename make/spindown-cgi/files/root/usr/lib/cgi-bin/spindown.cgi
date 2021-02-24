@@ -4,11 +4,11 @@
 
 check "$SPINDOWN_MODE" 3:mode3 "*":mode5
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$SPINDOWN_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Optionen" en:"Options")'
+sec_begin "$(lang de:"Optionen" en:"Options")"
 cat << EOF
 <p><label for="device">$(lang de:"Ger&auml;tename" en:"Device name"):</label> <input
 id="device" size="10" maxlength="15" type="text" name="device"

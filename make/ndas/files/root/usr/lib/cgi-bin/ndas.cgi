@@ -4,12 +4,12 @@
 
 select "$NDAS_ACCESSMODE" w:am_rw "*":am_ro
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$NDAS_ENABLED" "" "" 0
 sec_end
 
 
-sec_begin '$(lang de:"Einstellungen" en:"Settings")'
+sec_begin "$(lang de:"Einstellungen" en:"Settings")"
 
 cgi_print_textline_p "id"                 "$(html "$NDAS_ID")"                 29 "$(lang de:"NDAS Ger&auml;te-ID" en:"NDAS Device-ID"): "
 cgi_print_textline_p "numberofpartitions" "$(html "$NDAS_NUMBEROFPARTITIONS")"  2 "$(lang de:"Anzahl der Partitionen" en:"Number of Partitions"): " "" number

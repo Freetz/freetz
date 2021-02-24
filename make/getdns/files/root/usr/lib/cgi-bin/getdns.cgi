@@ -3,7 +3,7 @@
 . /usr/lib/libmodcgi.sh
 check "$GETDNS_LOGLEVEL" 0:loglevel_c0 1:loglevel_c1 2:loglevel_c2 3:loglevel_c3 5:loglevel_c5 6:loglevel_c6 7:loglevel_c7 "*":loglevel_c4
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")' sec_start
+sec_begin "$(lang de:"Starttyp" en:"Start type")" sec_start
 cgi_print_radiogroup_service_starttype "enabled" "$GETDNS_ENABLED" "" "" 0
 sec_end
 

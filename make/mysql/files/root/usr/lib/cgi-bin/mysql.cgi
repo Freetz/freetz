@@ -3,7 +3,7 @@
 . /usr/lib/libmodcgi.sh
 [ -r /etc/options.cfg ] && . /etc/options.cfg
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 
 cgi_print_radiogroup_service_starttype "enabled" "$MYSQL_ENABLED" "" "" 0
 
@@ -12,7 +12,7 @@ sec_end
 #
 
 if [ "$FREETZ_PACKAGE_MYSQL_mysql" == "y" ]; then
-sec_begin '$(lang de:"Anzeigen" en:"Show")'
+sec_begin "$(lang de:"Anzeigen" en:"Show")"
 
 cat << EOF
 <ul>
@@ -25,7 +25,7 @@ fi
 
 #
 
-sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
+sec_begin "$(lang de:"Konfiguration" en:"Configuration")"
 
 cgi_print_textline_p "dir" "$MYSQL_DIR" 55/255 "$(lang de:"Verzeichnis" en:"Directory"): "
 cgi_print_textline_p "host" "$MYSQL_HOST" 15/15 "$(lang de:"IP-Adresse" en:"IP address") (0.0.0.0 $(lang de:"f&uuml;r alle IPs" en:"means all IPs")): "
@@ -35,7 +35,7 @@ sec_end
 
 #
 
-sec_begin '$(lang de:"Erweitert" en:"Advanced")'
+sec_begin "$(lang de:"Erweitert" en:"Advanced")"
 
 cgi_print_checkbox_p "loggen" "$MYSQL_LOGGEN" "$(lang de:"Logge allgemeines" en:"General log") "
 cgi_print_checkbox_p "logerr" "$MYSQL_LOGERR" "$(lang de:"Logge Fehler" en:" Error log") "
@@ -48,7 +48,7 @@ sec_end
 [ ! -e "$MYSQL_DIR" ] && setup=y
 [ -x "$(which mysql)" ] && remote=y
 if [ "$setup" == y -o "$remote" == y ]; then
-sec_begin '$(lang de:"Hinweis" en:"Note")'
+sec_begin "$(lang de:"Hinweis" en:"Note")"
 
 echo "<ul>"
 if [ "$setup" == y ]; then

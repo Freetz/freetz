@@ -25,13 +25,13 @@ for i in 0 1 2 3 4 5; do
 	select "$INADYN_MT_VERBOSE" "$i":verbose${i}
 done
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 
 cgi_print_radiogroup_service_starttype "enabled" "$INADYN_MT_ENABLED" "" "" 0
 
 sec_end
 
-sec_begin '$(lang de:"Inadyn-Daemon" en:"Inadyn-Daemon")'
+sec_begin "$(lang de:"Inadyn-Daemon" en:"Inadyn-Daemon")"
 
 cat << EOF
 <p>$(lang de:"Log-Level" en:"Verbosity level") :

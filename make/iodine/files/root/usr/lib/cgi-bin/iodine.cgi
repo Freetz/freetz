@@ -2,11 +2,11 @@
 
 . /usr/lib/libmodcgi.sh
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$IODINE_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Server" en:"Server")'
+sec_begin "$(lang de:"Server" en:"Server")"
 
 cgi_print_textline_p "domain" "$IODINE_DOMAIN" 20/255 \
   "$(lang de:"DNS Domain Name" en:"DNS Domain name"): "

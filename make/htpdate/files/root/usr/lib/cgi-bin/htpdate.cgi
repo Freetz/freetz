@@ -5,7 +5,7 @@
 
 check "$HTPDATE_ENABLED" yes:auto "*":man
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cat << EOF
 <p>
 <input id="auto" type="radio" name="enabled" value="yes"$auto_chk><label for="auto"> $(lang de:"Aktiviert" en:"Enabled")</label>
@@ -17,14 +17,14 @@ $(lang de:"Htpdate l&auml;uft nicht als Dienst, da es die die Zeit nach einem IP
 EOF
 sec_end
 
-sec_begin '$(lang de:"Optionen" en:"Options")'
+sec_begin "$(lang de:"Optionen" en:"Options")"
 cat << EOF
 <p>$(lang de:"Parameter" en:"Parameters"): <input type="text" name="parameters" size="55" maxlength="250" value="$(html "$HTPDATE_PARAMETERS")"></p>
 <p>$(lang de:"Server" en:"Servers"): <input type="text" name="servers" size="75" maxlength="250" value="$(html "$HTPDATE_SERVERS")"></p>
 EOF
 sec_end
 
-sec_begin '$(lang de:"Cron" en:"Cron")'
+sec_begin "$(lang de:"Cron" en:"Cron")"
 cat << EOF
 <p>$(lang de:"Intervall" en:"Interval"): <input type="text" name="cron_int" size="15" maxlength="20" value="$(html "$HTPDATE_CRON_INT")"></p>
 EOF

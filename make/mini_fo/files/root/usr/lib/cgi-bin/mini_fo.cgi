@@ -8,7 +8,7 @@ boot=$(/mod/etc/init.d/rc.mini_fo bootstatus)
 check "$storage" "":none ram "*":jffs2
 check "$boot" enabled:boot "*":noboot
 
-sec_begin '$(lang de:"Speicherort" en:"Storage location")'
+sec_begin "$(lang de:"Speicherort" en:"Storage location")"
 
 if ! $(grep -q jffs2 /proc/mtd); then
 	jffs2_disabled=" disabled"
@@ -23,7 +23,7 @@ cat << EOF
 EOF
 
 sec_end
-sec_begin '$(lang de:"Mini_fo beim Booten aktivieren" en:"Activate mini_fo at boot time")'
+sec_begin "$(lang de:"Mini_fo beim Booten aktivieren" en:"Activate mini_fo at boot time")"
 
 cat << EOF
 <p>

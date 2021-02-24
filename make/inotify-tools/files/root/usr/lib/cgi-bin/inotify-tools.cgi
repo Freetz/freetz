@@ -2,11 +2,11 @@
 
 . /usr/lib/libmodcgi.sh
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$INOTIFY_TOOLS_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Logdatei" en:"Log file")'
+sec_begin "$(lang de:"Logdatei" en:"Log file")"
 
 cat << EOF
 <p>

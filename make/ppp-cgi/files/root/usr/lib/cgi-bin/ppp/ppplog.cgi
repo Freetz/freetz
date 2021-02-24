@@ -9,7 +9,7 @@ if [ -n "$PPP_DIAGTTY" ]; then
 
 eval "$(modcgi branding:pkg:cmd mod_cgi)"
 if [ -n "$MOD_CGI_CMD" ]; then
-	sec_begin '$(lang de:"Hinweis" en:"Remark")'
+	sec_begin "$(lang de:"Hinweis" en:"Remark")"
 	echo "<font size=-2 color=red><br>$(lang de:"Aktualisierung wurde angefordert. Dies kann bis zu einer Minute dauern." en:"Refresh initiated. This max take up to one minute.")<br></font>"
 	sec_end
 	(sleep 1; echo -en "AT+CPIN?\r"  >$PPP_DIAGTTY;)&
@@ -18,7 +18,7 @@ if [ -n "$MOD_CGI_CMD" ]; then
 	(sleep 4; echo -en "at+COPS=?\r" >$PPP_DIAGTTY;)&
 fi
 
-sec_begin '$(lang de:"Status" en:"State")'
+sec_begin "$(lang de:"Status" en:"State")"
 
 local_ALL="<UL>"
 RECVALL=$(cat /tmp/ppp_logger.tmp 2>/dev/null | grep "^+COPS: (" | tail -n1 | sed 's/.*: (//; s/)$//;s/ /_/g;s/),*(/ /g')

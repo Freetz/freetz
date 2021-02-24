@@ -17,13 +17,13 @@ act_standby=''; act_hibernate=''; act_lock=''; act_monoff=''; act_monon=''
 
 
 
-sec_begin '$(lang de:"Entfernter Rechner" en:"Remote Host")'
+sec_begin "$(lang de:"Entfernter Rechner" en:"Remote Host")"
 cat << EOF
 <p>Port: <input type="text" name="port" size="5" maxlength="5" value="$(html "$HOL_PORT")">&nbsp;&nbsp;&nbsp;&nbsp;
 Passwort: <input type="password" name="pass" size="20" maxlength="255" value="$(html "$HOL_PASS")"></p>
 EOF
 sec_end
-sec_begin '$(lang de:"Aktionen" en:"Actions")'
+sec_begin "$(lang de:"Aktionen" en:"Actions")"
 
 cat << EOF
 <p>Aktion:

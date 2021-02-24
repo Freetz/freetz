@@ -12,7 +12,7 @@ check "$OPENDD_OFFLINE" 1:offline
 check "$OPENDD_USE_SSL" 1:use_ssl
 check "$OPENDD_EMAIL_ENABLED" yes:email_enabled
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cat << EOF
 <p>
 <input id="auto" type="radio" name="enabled" value="yes"$auto_chk><label for="auto"> $(lang de:"Aktiviert" en:"Enabled")</label>
@@ -24,7 +24,7 @@ $(lang de:"OpenDD aktualisiert die dynamischen DNS-Adressen nach einem IP-Wechse
 EOF
 sec_end
 
-sec_begin '$(lang de:"Optionen" en:"Options")'
+sec_begin "$(lang de:"Optionen" en:"Options")"
 cat << EOF
 <p>
 <input type="hidden" name="force_update" value="no">
@@ -33,7 +33,7 @@ cat << EOF
 EOF
 sec_end
 
-sec_begin '$(lang de:"Account" en:"Account")'
+sec_begin "$(lang de:"Account" en:"Account")"
 cat << EOF
 <p>$(lang de:"Server" en:"Server"): <input type="text" name="server" size="55" maxlength="250" value="$(html "$OPENDD_SERVER")"></p>
 <p>$(lang de:"Hostname" en:"Hostname"): <input type="text" name="host" size="55" maxlength="250" value="$(html "$OPENDD_HOST")">
@@ -52,7 +52,7 @@ EOF
 fi
 sec_end
 
-sec_begin '$(lang de:"E-Mail" en:"E-Mail")'
+sec_begin "$(lang de:"E-Mail" en:"E-Mail")"
 cat << EOF
 <p>
 <input type="hidden" name="email_enabled" value="no">
@@ -70,7 +70,7 @@ cat << EOF
 EOF
 sec_end
 
-sec_begin '$(lang de:"Erweiterte Optionen" en:"Advanced options")'
+sec_begin "$(lang de:"Erweiterte Optionen" en:"Advanced options")"
 cat << EOF
 <p>
 <input type="hidden" name="wildcard" value="0">

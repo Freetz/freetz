@@ -4,11 +4,11 @@
 
 check "$RSYNC_LOG_SYSLOG" yes:log_syslog_yes "*":log_syslog_no
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$RSYNC_ENABLED" "" "" 1
 sec_end
 
-sec_begin '$(lang de:"Einstellungen" en:"Settings")'
+sec_begin "$(lang de:"Einstellungen" en:"Settings")"
 cat << EOF
 <ul>
 <li><a href="$(href file rsync shares)">$(lang de:"Eigene Freigaben" en:"Shares")</a></li>
@@ -17,7 +17,7 @@ cat << EOF
 EOF
 sec_end
 
-sec_begin '$(lang de:"RSync" en:"RSync")'
+sec_begin "$(lang de:"RSync" en:"RSync")"
 cat << EOF
 <p>
 <label for="bindaddress">$(lang de:"Bind-Adresse" en:"Bind-address"): </label>

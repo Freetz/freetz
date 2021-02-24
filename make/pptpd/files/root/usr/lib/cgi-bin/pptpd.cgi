@@ -5,19 +5,19 @@
 
 check "$PPTPD_ROUTING" yes:routing_yes "*":routing_no
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$PPTPD_ENABLED" "" "" 0
 sec_end
 
 if [ "$FREETZ_REPLACE_KERNEL" != "y" ]; then
-sec_begin '$(lang de:"Warnung" en:"Attention")'
+sec_begin "$(lang de:"Warnung" en:"Attention")"
 cat << EOF
 $(lang de:"Ohne 'replace kernel' kann mppe und mppc nicht genutzt werden." en:"Without 'replace kernel' you can not use mppe and mppc.")
 EOF
 sec_end
 fi
 
-sec_begin '$(lang de:"Weitere Konfigurationsdateien" en:"Other configuration files")'
+sec_begin "$(lang de:"Weitere Konfigurationsdateien" en:"Other configuration files")"
 cat << EOF
 <ul>
 <li><a href="$(href file pppd chap_secrets)">PPPD: $(lang de:"chap-secrets bearbeiten" en:"edit chap-secrets")</a></li>
@@ -32,7 +32,7 @@ cat << EOF
 EOF
 sec_end
 
-sec_begin '$(lang de:"IP-Routing" en:"IP routing")'
+sec_begin "$(lang de:"IP-Routing" en:"IP routing")"
 cat << EOF
 <small style="font-size:0.8em"> <i>$(lang de:"Hier wird das Routing zu Client-Netzen konfiguriert." en:"Here you can configure the routing to client subnets.")</i></small>
 <p>

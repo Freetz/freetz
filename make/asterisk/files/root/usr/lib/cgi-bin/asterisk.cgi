@@ -2,19 +2,19 @@
 
 . /usr/lib/libmodcgi.sh
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$ASTERISK_ENABLED" "" "" 0
 sec_end
 
 #
 
-sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
+sec_begin "$(lang de:"Konfiguration" en:"Configuration")"
 cgi_print_textline_p "configdir" "$ASTERISK_CONFIGDIR" 55/255 "$(lang de:"Konfigurationsverzeichnis" en:"Directory containing configuration files"): "
 sec_end
 
 #
 
-sec_begin '$(lang de:"Dokumentation" en:"Documentation")'
+sec_begin "$(lang de:"Dokumentation" en:"Documentation")"
 cat << EOM
 <ul>
 <li><a target=blank href="https://wiki.asterisk.org/wiki/display/AST/Asterisk+11+Documentation">Asterisk 11 $(lang de:"Dokumentation" en:"documentation")</a></li>
@@ -24,7 +24,7 @@ sec_end
 
 #
 
-sec_begin '$(lang de:"Hinweis" en:"Note")'
+sec_begin "$(lang de:"Hinweis" en:"Note")"
 echo '<ul>'
 if [ ! -s "$ASTERISK_CONFIGDIR/asterisk.conf" ]; then
 cat << EOF

@@ -8,11 +8,11 @@ check "$POLIPO_DISABLESERVERSLIST" true:serverdis
 check "$POLIPO_DISABLECONFIGURATION" true:confdis
 check "$POLIPO_DISABLELOCALINTERFACE" true:localifdis
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$POLIPO_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
+sec_begin "$(lang de:"Konfiguration" en:"Configuration")"
 
 cat << EOF
 <i>Proxy-IP:</i> &nbsp; <input type="text" name="ip" size="20" maxlength="20" value="$(html "$POLIPO_IP")"> &nbsp; &nbsp; &nbsp;
@@ -36,7 +36,7 @@ EOF
 
 sec_end
 
-sec_begin '$(lang de:"Polipo interne Webschnittstelle" en:"Polipo internal web interface")'
+sec_begin "$(lang de:"Polipo interne Webschnittstelle" en:"Polipo internal web interface")"
 
 cat << EOF
 <table  width="100%" style="table-layout:fixed">

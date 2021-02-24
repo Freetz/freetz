@@ -8,11 +8,11 @@ check "$CHECKMAILD_IMAP2" Y:imap2 "*":pop2
 check "$CHECKMAILD_CFGNOTIFY" Y:cfgnotify_yes "*":cfgnotify_no
 check "$CHECKMAILD_RECVMSG" Y:msg_recv_yes "*":msg_recv_no
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$CHECKMAILD_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Konten" en:"Accounts")'
+sec_begin "$(lang de:"Konten" en:"Accounts")"
 
 cat << EOF
 <script>
@@ -75,7 +75,7 @@ EOF
 
 sec_end
 
-sec_begin '$(lang de:"Einstellungen" en:"Configuration")'
+sec_begin "$(lang de:"Einstellungen" en:"Configuration")"
 
 cat << EOF
 <input type='hidden' name='cfgnotify' value='N'>
@@ -87,3 +87,4 @@ cat << EOF
 EOF
 
 sec_end
+

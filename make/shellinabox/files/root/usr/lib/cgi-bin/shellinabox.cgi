@@ -1,13 +1,13 @@
 #!/bin/sh
 
 if  $(echo "$QUERY_STRING" | grep -q dogencert ); then
-        sh /mod/etc/default.shellinabox/generate_cert.sh
-        echo '<textarea id="certout">'
-        cat /tmp/shellinabox_certificate.pem
-        echo '</textarea>'
-        echo '<script>parent.document.getElementById("id_cert").value=document.getElementById("certout").value</script>'
-        rm /tmp/shellinabox_certificate.pem
-        exit
+	sh /mod/etc/default.shellinabox/generate_cert.sh
+	echo '<textarea id="certout">'
+	cat /tmp/shellinabox_certificate.pem
+	echo '</textarea>'
+	echo '<script>parent.document.getElementById("id_cert").value=document.getElementById("certout").value</script>'
+	rm /tmp/shellinabox_certificate.pem
+	exit
 fi
 
 . /usr/lib/libmodcgi.sh
@@ -28,11 +28,11 @@ if [ "$FREETZ_PACKAGE_SHELLINABOX_BOXCERT" == y ]; then
 	fi
 fi
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$SHELLINABOX_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
+sec_begin "$(lang de:"Konfiguration" en:"Configuration")"
 
 cat << EOF
 <table>

@@ -30,7 +30,7 @@ cat << EOF
 EOF
 
 if [ -z "$action" ]; then
-	sec_begin $(lang de:"Wartung" en:"Maintenance")
+	sec_begin "$(lang de:"Wartung" en:"Maintenance")"
 cat << EOF
 <table>
 <tr>

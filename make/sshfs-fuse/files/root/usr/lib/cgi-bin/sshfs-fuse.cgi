@@ -2,25 +2,25 @@
 
 . /usr/lib/libmodcgi.sh
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$SSHFS_FUSE_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Public Key Authentication" en:"Public key authentication")'
+sec_begin "$(lang de:"Public Key Authentication" en:"Public key authentication")"
 
 cat << EOF
-<p><i>$(lang de:"SSHFS funktioniert nur, wenn unter 'SSH known_hosts' der Schlüssel für den Zielhost hinterlegt ist." en:"You should add the remote host to the global ssh_known_hosts file. Otherwise sshfs will fail unless the user has ssh'ed to the host before."):</i></p>
+<p><i>$(lang de:"SSHFS funktioniert nur, wenn unter 'SSH known_hosts' der Schl&uuml;ssel f&uuml;r den Zielhost hinterlegt ist." en:"You should add the remote host to the global ssh_known_hosts file. Otherwise sshfs will fail unless the user has ssh'ed to the host before."):</i></p>
 <ul>
 <li><a href="$(href file authorized-keys known_hosts)">$(lang de:"known_hosts bearbeiten" en:"Edit known_hosts")</a></li>
 </ul>
-<p><i>$(lang de:"Man kann das Passwort weglassen, wenn unter 'SSH authorized_keys' ein Userschlüssel hinterlegt wurde." en:"In most cases it is better to use SSH keys and leave the password field emty."):</i></p>
+<p><i>$(lang de:"Man kann das Passwort weglassen, wenn unter 'SSH authorized_keys' ein Userschl&uuml;ssel hinterlegt wurde." en:"In most cases it is better to use SSH keys and leave the password field emty."):</i></p>
 <ul>
 <li><a href="$(href file authorized-keys authorized_keys)">$(lang de:"authorized_keys bearbeiten" en:"Edit authorized_keys")</a></li>
 </ul>
 EOF
 sec_end
 
-sec_begin '$(lang de:"Freigaben" en:"Start shares")'
+sec_begin "$(lang de:"Freigaben" en:"Start shares")"
 
 cat << EOF
 

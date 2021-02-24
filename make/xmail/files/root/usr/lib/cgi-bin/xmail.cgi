@@ -22,18 +22,18 @@ check "$XMAIL_SYSTEMLOG" yes:systemlog
 
 [ "$XMAIL_PHPXMAIL" == 1 ] && (
 . /usr/lib/libmodredir.sh
-sec_begin '$(lang de:"PHPXmail" en:"PHPXmail")'
+sec_begin "$(lang de:"PHPXmail" en:"PHPXmail")"
 cat << EOF
 <p>$(lang de:"Auf dieser Fritz!Box ist das PHPXMail Webfrontend installiert, klicken sie" en:"On this Fritz!Box is the PHPXMail webfrontend installed, so you can klick") <b><a style='font-size:14px;' target='_blank' href=/phpxmail/index.php>$(lang de:"hier" en:"here")</a></b>$(lang de:", um es zu starten." en:" to start it.")<p>
 EOF
 sec_end
 )
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$XMAIL_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Zentrale Serverkonfiguration" en:"Core server configuration")'
+sec_begin "$(lang de:"Zentrale Serverkonfiguration" en:"Core server configuration")"
 cat << EOF
 <p><input type="hidden" name="unpriv" value="no">
 <input id="u1" type="checkbox" name="unpriv" value="yes"$unpriv_chk><label for="u1"> $(lang de:"XMail mit unpriviligierter Benutzer ID starten" en:"Start XMail with unprivileged user ID")</label></p>
@@ -46,7 +46,7 @@ cat << EOF
 EOF
 sec_end
 
-sec_begin '$(lang de:"Angebotene Dienste" en:"Offered services")'
+sec_begin "$(lang de:"Angebotene Dienste" en:"Offered services")"
 cat << EOF
 <p style="font-size:10px;">$(lang de:"Bitte beachte: Wenn XMail mit einer unpriviligierten Benutzer-ID gestartet wird, m&uuml;ssen alle hier angegebenen Ports gr&ouml;sser oder gleich 1024 sein, da ansonsten der Dienst nicht startet. Um Dienste aus dem Internet zug&auml;nglich zu machen, musst du eine Port-Weiterleitung mit der Fritz!Box Firewall einrichten (z.B. von Port 25 auf der Internet-Seite zum Port 10025 auf der lokalen Seite)." en:"Please note: If XMail is started with an unprivileged user ID, all ports must be above or equal to 1024 as otherwise the service will not be started. To make services available from the Internet, please use the port forwarding with the Fritz!Box firewall (e.g. from port 25 on the Internet side to port 10025 on the local side.")</p>
 <hr>
@@ -94,7 +94,7 @@ cat << EOF
 EOF
 sec_end
 
-sec_begin '$(lang de:"Server Logging" en:"Server logging")'
+sec_begin "$(lang de:"Server Logging" en:"Server logging")"
 cat << EOF
 <p style="font-size:10px;">$(lang de:"Bitte beachte, dass XMail die Logdaten in logs/ speichert." en:"Please note that XMail saves the log data in logs/.")</p>
 <p>
@@ -113,7 +113,7 @@ EOF
 sec_end
 
 [ "$XMAIL_SSLSUPPORT" == 1 -o "$XMAIL_PHPXMAIL" != 1 ] && (
-sec_begin '$(lang de:"Tipps zur Konfiguration" en:"Hints for configuration")'
+sec_begin "$(lang de:"Tipps zur Konfiguration" en:"Hints for configuration")"
 [ "$XMAIL_SSLSUPPORT" == 1 ] &&
 cat << EOF
 <p style="font-size:10px;">$(lang de:"Zur Aktivierung von SSL musst du das SSL Zertifikat und den entsprechenden privaten SSL Schl&uuml;ssel in das oben angegebene Verzeichnis f&uuml;r XMail kopieren: Das Zertifikat muss als Datei server.cert und der private Schl&uuml;ssen als Datei server.key gespeichert werden. Beachte bitte, dass XMail das Recht haben muss, diese Dateien zu lesen (wenn du oben ausgew&auml;hlt hast, dass XMail mit einer unpriviligierten Benutzer-ID startet, m&uuml;ssen die Dateien lesbar f&uuml;r den Benutzer xmail oder die Gruppe xmail sein)." en:"To activate SSL you have to provide the SSL certificate and the corresponding private key which have to be copied into the above given XMail directory. The certificate must be saved in the file server.cert and the key in the file server.key. Please ensure that XMail has the permissions to read those files (if you selected to start XMail with an unprivileged ID, these files must be readable by the user xmail or group xmail).")</p>

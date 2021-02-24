@@ -4,14 +4,14 @@
 
 VERSION="1.1"
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cat << EOF
 <div style="float: right;"><font size="1">Version: $VERSION</font></div>
 EOF
 cgi_print_radiogroup_service_starttype "enabled" "$IPTABLES_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Einstellungen" en:"Settings")'
+sec_begin "$(lang de:"Einstellungen" en:"Settings")"
 cat << EOF
 <h2>ip_conntrack</h2>
 <p>hashsize: <input type="text" name="ip_conntrack_hashsize" size="10" maxlength="255" value="$(html "$IPTABLES_IP_CONNTRACK_HASHSIZE")"></p>
@@ -19,7 +19,7 @@ cat << EOF
 EOF
 sec_end
 
-sec_begin '$(lang de:"Aktuelle Werte" en:"Running values")'
+sec_begin "$(lang de:"Aktuelle Werte" en:"Running values")"
 if lsmod | grep -q "ip_conntrack "; then
 	ipct_hashsize=$(cat /sys/module/ip_conntrack/parameters/hashsize)
 	ipct_count=$(cat /proc/sys/net/ipv4/netfilter/ip_conntrack_count)

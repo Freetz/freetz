@@ -57,7 +57,7 @@ case $1 in
 
 		modreg cgi "$DAEMON" "isc-dhcp"
 		modreg daemon $DAEMON
-		modreg file $DAEMON dhcpd-conf '$(lang de:"Konfiguration" en:"Configuration")' 0 isc-dhcpd_conf
+		modreg file $DAEMON dhcpd-conf "$(lang de:"Konfiguration" en:"Configuration")" 0 isc-dhcpd_conf
 
 		modlib_start $ISC_DHCP_ENABLED
 		;;

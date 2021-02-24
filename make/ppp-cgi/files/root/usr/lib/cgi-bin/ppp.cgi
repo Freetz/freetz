@@ -7,11 +7,11 @@ check "$PPP_FALLBACK" yes:fallback
 
 eval "$(modcgi branding:pkg:cmd mod_cgi)"
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$PPP_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Einstellungen" en:"Settings")'
+sec_begin "$(lang de:"Einstellungen" en:"Settings")"
 cat << EOF
 <p>
 $(lang de:"Allgemeine Logdatei" en:"Global logfile"):&nbsp;<input type="text" name="logfile" size="45" maxlength="255" value="$(html "$PPP_LOGFILE")">
@@ -32,7 +32,7 @@ EOF
 sec_end
 
 if [ -n "$PPP_DIAGTTY" ]; then
-sec_begin '$(lang de:"Modus" en:"Mode")'
+sec_begin "$(lang de:"Modus" en:"Mode")"
 if [ -n "$MOD_CGI_CMD" ] && [ -n "$PPP_DIAGTTY" ]; then
 	outMOD=$MOD_CGI_CMD
 	if [ "$MOD_CGI_CMD" = "o3G" ]; then
@@ -70,7 +70,7 @@ EOF
 sec_end
 fi
 
-sec_begin '$(lang de:"Fallback" en:"Fallback")'
+sec_begin "$(lang de:"Fallback" en:"Fallback")"
 cat << EOF
 <small style="font-size:0.8em">
 Vorsicht! Dieses Feature ist experimentell und darf nur nach sorgf&auml;ltiger Pr&uuml;fung des Quelltextes auf eigene Gefahr hin aktiviert werden!

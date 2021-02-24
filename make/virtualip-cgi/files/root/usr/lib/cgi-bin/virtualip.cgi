@@ -2,11 +2,11 @@
 
 . /usr/lib/libmodcgi.sh
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$VIRTUALIP_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Netwerkeinstellungen" en:"Network settings")'
+sec_begin "$(lang de:"Netwerkeinstellungen" en:"Network settings")"
 
 cat << EOF
 <p>$(lang de:"Virtuelle IP-Adresse" en:"Virtual IP-Adress"): <input id="ip" type="text" name="ip" value="$(html "$VIRTUALIP_IP")">

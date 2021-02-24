@@ -5,7 +5,7 @@
 
 #
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 
 cgi_print_radiogroup_service_starttype "enabled" "$TINC_ENABLED" "" "" 0
 
@@ -13,7 +13,7 @@ sec_end
 
 #
 
-sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
+sec_begin "$(lang de:"Konfiguration" en:"Configuration")"
 
 cgi_print_textline_p "server0" "$TINC_SERVER0" 25/255 "$(lang de:"Alias dieses Servers" en:"Alias of this server"): "
 
@@ -25,7 +25,7 @@ sec_end
 
 #
 
-sec_begin '$(lang de:"Erweitert" en:"Advanced")'
+sec_begin "$(lang de:"Erweitert" en:"Advanced")"
 
 cgi_print_textline_p "addr" "$TINC_ADDR" 35/255 "$(lang de:"Binden an" en:"Bind to") (IP): "
 cgi_print_textline_p "port" "$TINC_PORT" 5/6 "$(lang de:"Port" en:"Port"): "
@@ -34,7 +34,7 @@ sec_end
 
 #
 
-sec_begin '$(lang de:"Loggen" en:"Logging")'
+sec_begin "$(lang de:"Loggen" en:"Logging")"
 
 cgi_print_textline_p "debuglevel" "$TINC_DEBUGLEVEL" 1/1 "$(lang de:"Debuglevel" en:"Debug level") (0-5): "
 

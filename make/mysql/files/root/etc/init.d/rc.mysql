@@ -7,7 +7,7 @@ DAEMON_BIN=mysqld
 
 
 config() {
-        modlib_config
+	modlib_config
 }
 
 startdaemon_pre() {
@@ -70,11 +70,11 @@ case $1 in
 
 		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
 		modreg daemon $DAEMON
-		modreg file $DAEMON mysql__my_cnf $(lang de:"Aktuell" en:"Current") 0 my_cnf
-		modreg file $DAEMON mysql__config $(lang de:"Eigene" en:"Custom") 2 config
+		modreg file $DAEMON mysql__my_cnf "$(lang de:"Aktuell" en:"Current")" 0 my_cnf
+		modreg file $DAEMON mysql__config "$(lang de:"Eigene" en:"Custom")" 2 config
 		[ -r /etc/options.cfg ] && . /etc/options.cfg
 		if [ "$FREETZ_PACKAGE_MYSQL_mysql" == "y" ]; then
-			modreg file $DAEMON status $(lang de:"Status" en:"Status") 2 status
+			modreg file $DAEMON status "$(lang de:"Status" en:"Status")" 2 status
 
 			modreg status $DAEMON "$DAEMON_LONG_NAME" mysql_status
 		fi

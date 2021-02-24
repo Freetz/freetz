@@ -12,11 +12,11 @@ check "$TRANSMISSION_USEDHT" yes:usedht
 check "$TRANSMISSION_USEUTP" yes:useutp
 
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$TRANSMISSION_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Priorit&auml;t" en:"Priority")'
+sec_begin "$(lang de:"Priorit&auml;t" en:"Priority")"
 
 cat << EOF
 <p>
@@ -28,7 +28,7 @@ EOF
 
 sec_end
 
-sec_begin '$(lang de:"Logging" en:"Logging")'
+sec_begin "$(lang de:"Logging" en:"Logging")"
 
 cat << EOF
 <p>
@@ -44,7 +44,7 @@ EOF
 
 sec_end
 
-sec_begin '$(lang de:"Arbeitsverzeichnisse" en:"Working Directories")'
+sec_begin "$(lang de:"Arbeitsverzeichnisse" en:"Working Directories")"
 
 cat << EOF
 <p>
@@ -116,7 +116,7 @@ EOF
 sec_end
 
 
-sec_begin '$(lang de:"Peer-Einstellungen" en:"Peer-Settings")'
+sec_begin "$(lang de:"Peer-Einstellungen" en:"Peer-Settings")"
 
 cat << EOF
 <small>$(lang
@@ -179,7 +179,7 @@ EOF
 sec_end
 
 
-sec_begin '$(lang de:"RPC- und Webinterface-Einstellungen" en:"RPC and Web Interface Settings")'
+sec_begin "$(lang de:"RPC- und Webinterface-Einstellungen" en:"RPC and Web Interface Settings")"
 
 cat << EOF
 <small>$(lang

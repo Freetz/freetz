@@ -5,7 +5,7 @@
 
 #
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 
 cgi_print_radiogroup_service_starttype "enabled" "$PYLOAD_ENABLED" "" "" 0
 
@@ -15,7 +15,7 @@ sec_end
 
 pyweb="$(grep -A9 '^webinterface -' /mod/pyload/pyload.conf 2>/dev/null | sed -n 's/.*"Activated" = \([a-zA-Z]*\).*/\1/p' | head -n1)"
 if [ "$pyweb" == "True" -a "$(/mod/etc/init.d/rc.pyload status)" == "running" ]; then
-sec_begin '$(lang de:"Anzeigen" en:"Show")'
+sec_begin "$(lang de:"Anzeigen" en:"Show")"
 
 cat << EOF
 <ul>
@@ -28,7 +28,7 @@ fi
 
 #
 
-sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
+sec_begin "$(lang de:"Konfiguration" en:"Configuration")"
 
 cgi_print_textline_p "configdir" "$PYLOAD_CONFIGDIR" 55/255 "$(lang de:"pyLoad Verzeichnis" en:"pyLoad directory"): "
 
@@ -36,7 +36,7 @@ sec_end
 
 #
 
-sec_begin '$(lang de:"Hinweis" en:"Note")'
+sec_begin "$(lang de:"Hinweis" en:"Note")"
 
 echo '<ul>'
 if [ ! -s "$PYLOAD_CONFIGDIR/pyload.conf" ]; then

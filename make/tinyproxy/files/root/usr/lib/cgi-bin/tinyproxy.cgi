@@ -18,11 +18,11 @@ check "$TINYPROXY_FILTERDEFAULTDENY" yes:filterdefaultdeny
 check "$TINYPROXY_REVERSEONLY" yes:reverseonly
 check "$TINYPROXY_REVERSEMAGIC" yes:reversemagic
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$TINYPROXY_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Proxy-Grundkonfiguration" en:"Basic proxy configuration")'
+sec_begin "$(lang de:"Proxy-Grundkonfiguration" en:"Basic proxy configuration")"
 
 cat << EOF
 <p>(*): $(lang de:"Optionen mit mehreren m&ouml;glichen Eintr&auml;gen, per Komma getrennt <br>(z.B. \"Allow: 127.0.0.1;192.168.178.0/24\" oder \"ConnectPort: 443;563\") " en:"Multiple entries are separated by \";\" <br>(eg. \"Allow: 127.0.0.1;192.168.178.0/24\" or \"ConnectPort: 443;563\")")</p>
@@ -59,7 +59,7 @@ echo '<input type="hidden" name="catchall" value="no">'
 fi
 
 sec_end
-sec_begin '$(lang de:"Konfigurationsserver Einstellungen" en:"Configure a HTTP server to deliver a PAC file")'
+sec_begin "$(lang de:"Konfigurationsserver Einstellungen" en:"Configure a HTTP server to deliver a PAC file")"
 
 cat << EOF
 <p><input id="confserver1" type="hidden" name="confserver" value="no" />
@@ -68,7 +68,7 @@ cat << EOF
 EOF
 
 sec_end
-sec_begin '$(lang de:"Sicherheit und Filter" en:"Security and filter configuration")'
+sec_begin "$(lang de:"Sicherheit und Filter" en:"Security and filter configuration")"
 
 cat << EOF
 <table>
@@ -89,7 +89,7 @@ cat << EOF
 EOF
 sec_end
 
-sec_begin '$(lang de:"weitere Proxy Konfiguration" en:"Extended proxy configuration")'
+sec_begin "$(lang de:"weitere Proxy Konfiguration" en:"Extended proxy configuration")"
 
 cat << EOF
 <table>

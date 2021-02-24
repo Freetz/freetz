@@ -9,7 +9,7 @@ check "$DOWNLOADER_ENABLED" yes:auto "*":man
 if [ "$DOWNLOADER_SRVPRFX" = "ftp://" ]; then ftp_chk=' selected'; else http_chk=' selected'; fi
 check "$DOWNLOADER_DEBUG" yes:debug
 
-sec_begin '$(lang de:"Aktivierung" en:"Activation")'
+sec_begin "$(lang de:"Aktivierung" en:"Activation")"
 
 cat << EOF
 <div style="float: right;">Version 0.2</div>
@@ -25,7 +25,7 @@ cat << EOF
 EOF
 
 sec_end
-sec_begin '$(lang de:"Serverparameter" en:"Server parameters")'
+sec_begin "$(lang de:"Serverparameter" en:"Server parameters")"
 
 cat << EOF
 <table>
@@ -60,7 +60,7 @@ value="http://"$http_chk>http://</option>
 </p>
 EOF
 sec_end
-sec_begin '$(lang de:"Downloadparameter" en:"Download parameters")'
+sec_begin "$(lang de:"Downloadparameter" en:"Download parameters")"
 
 cat << EOF
 <p>$(lang de:"Wartezeit" en:"Duration"):
@@ -71,7 +71,7 @@ cat << EOF
 EOF
 
 sec_end
-sec_begin '$(lang de:"Dateien zum Downloaden" en:"Download files")'
+sec_begin "$(lang de:"Dateien zum Downloaden" en:"Download files")"
 
 cat << EOF
 <table>

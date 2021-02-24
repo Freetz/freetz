@@ -6,19 +6,19 @@
 check "$PPTP_ROUTING" yes:routing_yes "*":routing_no
 check "$PPTP_RESTART" yes:restart
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$PPTP_ENABLED" "" "" 0
 sec_end
 
 if [ "$FREETZ_REPLACE_KERNEL" != "y" ]; then
-sec_begin '$(lang de:"Warnung" en:"Attention")'
+sec_begin "$(lang de:"Warnung" en:"Attention")"
 cat << EOF
 $(lang de:"Ohne 'replace kernel' kann mppe und mppc nicht genutzt werden." en:"Without 'replace kernel' you can not use mppe and mppc.")
 EOF
 sec_end
 fi
 
-sec_begin '$(lang de:"Konfigurationsdateien" en:"Configuration files")'
+sec_begin "$(lang de:"Konfigurationsdateien" en:"Configuration files")"
 cat << EOF
 <ul>
 <li><a href="$(href file pppd chap_secrets)">PPPD: $(lang de:"chap-secrets bearbeiten" en:"edit chap-secrets")</a></li>
@@ -27,7 +27,7 @@ cat << EOF
 EOF
 sec_end
 
-sec_begin '$(lang de:"PPTP Konfiguration" en:"PPTP configuration")'
+sec_begin "$(lang de:"PPTP Konfiguration" en:"PPTP configuration")"
 cat << EOF
 <p>$(lang de:"Hostname/IP-Adresse" en:"Hostname/IP address"): <input type="text" name="address" size="35" maxlength="255" value="$(html "$PPTP_ADDRESS")"></p>
 <p>$(lang de:"Benutzername" en:"Username"): <input type="text" name="user" size="15" maxlength="20" value="$(html "$PPTP_USER")"></p>
@@ -35,7 +35,7 @@ cat << EOF
 EOF
 sec_end
 
-sec_begin '$(lang de:"Zus&auml;tzliche Einstellungen" en:"Additional configuration")'
+sec_begin "$(lang de:"Zus&auml;tzliche Einstellungen" en:"Additional configuration")"
 cat << EOF
 <p>$(lang de:"Kommandozeilen-Optionen" en:"Commandline options"): <input type="text" name="options" size="24" maxlength="255" value="$(html "$PPTP_OPTIONS")"></p>
 <p><input type="hidden" name="restart" value="no">
@@ -44,7 +44,7 @@ cat << EOF
 EOF
 sec_end
 
-sec_begin '$(lang de:"IP-Routing" en:"IP routing")'
+sec_begin "$(lang de:"IP-Routing" en:"IP routing")"
 cat << EOF
 <small style="font-size:0.8em"> <i>$(lang de:"Hier wird das Routing zum Server-Netz konfiguriert." en:"Here you can configure the routing to the server subnet.")</i></small>
 <p>

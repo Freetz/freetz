@@ -8,11 +8,11 @@ check "$MINIDLNA_INOTIFY" yes:inotify
 check "$MINIDLNA_ENABLE_TIVO" yes:enable_tivo
 check "$MINIDLNA_STRICT_DLNA" yes:strict_dlna
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$MINIDLNA_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Anzeigen" en:"Show")'
+sec_begin "$(lang de:"Anzeigen" en:"Show")"
 cat << EOF
 <ul>
 <li><a href="$(href status minidlna minidlna_status)">$(lang de:"Status anzeigen" en:"Show status")</a></li>
@@ -20,7 +20,7 @@ cat << EOF
 EOF
 sec_end
 
-sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
+sec_begin "$(lang de:"Konfiguration" en:"Configuration")"
 MINIDLNA_AVAILABLE_NIFS=$(ifconfig | sed -rne 's,^([a-zA-Z.][a-zA-Z0-9]*) .*,\1,p')
 cat << EOF
 

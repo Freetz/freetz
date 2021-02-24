@@ -6,13 +6,13 @@ for i in crit err warning notice info debug; do
 	select "$STUNNEL_VERBOSE" "$i":verbose_${i}
 done
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 
 cgi_print_radiogroup_service_starttype "enabled" "$STUNNEL_ENABLED" "" "" 0
 
 sec_end
 
-sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
+sec_begin "$(lang de:"Konfiguration" en:"Configuration")"
 
 cgi_print_radiogroup \
 	"use_box_cert" "$STUNNEL_USE_BOX_CERT" "" "$(lang de:"Standard-Zertifikat f&uuml;r Server-Dienste" en:"Default certificate for non-client services"):&nbsp;" \
@@ -36,7 +36,7 @@ cat << EOF
 </p>
 EOF
 sec_end
-sec_begin '$(lang de:"Dienste" en:"Services")'
+sec_begin "$(lang de:"Dienste" en:"Services")"
 
 cat << EOF
 <ul>

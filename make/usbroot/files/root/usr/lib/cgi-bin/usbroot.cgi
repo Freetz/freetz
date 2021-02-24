@@ -24,7 +24,7 @@ for i in ext2 ext3; do
 done
 
 # html output
-sec_begin '$(lang de:"USB Root aktivieren/deaktivieren" en:"Enable/Disable USB root")'
+sec_begin "$(lang de:"USB Root aktivieren/deaktivieren" en:"Enable/Disable USB root")"
 
 cat << EOF
 <p><input id="e1" type="radio" name="enabled" value="yes"$e1_chk/><label
@@ -35,7 +35,7 @@ EOF
 
 sec_end
 
-sec_begin '$(lang de:"Ger&auml;t- und Partitionswahl" en:"Device and partition selection")'
+sec_begin "$(lang de:"Ger&auml;t- und Partitionswahl" en:"Device and partition selection")"
 
 cat << EOF
 <table width="100%">
@@ -87,45 +87,43 @@ done
 
 cat << EOF
 </table>
-<p><small>$(lang de:"Hinweis: Es k&ouml;nnen nur Partitionen mit Dateisystemtyp <i>ext2</i> oder <i>ext3</i>
-ausgew&auml;hlt werden. Au&szlig;erdem muss das jeweilige Kernelmodul vorhanden sein. Eine Ausnahme bildet
-<i>ext3</i>, welches ggf. als <i>ext2</i> (ohne Journaling-Funktionalit&auml;t) gemountet werden kann. Dazu
-muss der Wert von &bdquo;Dateisystem mounten als&rdquo; entsprechend gesetzt sein." en:"Hint: Only partitions
-of typ <i>ext2</i> or <i>ext3</i> are selectable. Also the corresponding kernel module has to be available.
-An exception is <i>ext3</i> with can be mounted as <i>ext2</i> (without the journaling functionality).
-Check setting 'Mount filesystem as' below .")</small></p>
+<p><small>$(lang \
+  de:"Hinweis: Es k&ouml;nnen nur Partitionen mit Dateisystemtyp <i>ext2</i> oder <i>ext3</i> ausgew&auml;hlt werden. Au&szlig;erdem muss das jeweilige Kernelmodul vorhanden sein. Eine Ausnahme bildet <i>ext3</i>, welches ggf. als <i>ext2</i> (ohne Journaling-Funktionalit&auml;t) gemountet werden kann. Dazu muss der Wert von &bdquo;Dateisystem mounten als&rdquo; entsprechend gesetzt sein." \
+  en:"Hint: Only partitions of typ <i>ext2</i> or <i>ext3</i> are selectable. Also the corresponding kernel module has to be available. An exception is <i>ext3</i> with can be mounted as <i>ext2</i> (without the journaling functionality). Check setting 'Mount filesystem as' below ." \
+)</small></p>
 EOF
 
 sec_end
 
-sec_begin '$(lang de:"Einstellungen" en:"Settings")'
+sec_begin "$(lang de:"Einstellungen" en:"Settings")"
 
 cat << EOF
 <p>$(lang de:"Root-Verzeichnis" en:"Root directory"): <input id="usbpath"
 size="40" maxlength="64" type="text" name="usbpath" value="$(html "$USBROOT_USBPATH")"/><br />
-<small>$(lang de:"Geben Sie hier den vollen Ordnernamen innerhalb der Ordner-Hierarchie des USB-Ger&auml;tes
-an, welcher als Root-Verzeichnis verwendet werden soll, z.B. /mein/avmroot. Der Ordnername darf keine
-Leerzeichen enthalten." en:"Enter the full path name of the directory which should be used as root directory,
-e.g. /my/avmroot. The name must not contain blanks.")</small></p>
+<small>$(lang \
+  de:"Geben Sie hier den vollen Ordnernamen innerhalb der Ordner-Hierarchie des USB-Ger&auml;tes an, welcher als Root-Verzeichnis verwendet werden soll, z.B. /mein/avmroot. Der Ordnername darf keine Leerzeichen enthalten." \
+  en:"Enter the full path name of the directory which should be used as root directory, e.g. /my/avmroot. The name must not contain blanks." \
+)</small></p>
 <p><label for="fstype">$(lang de:"Dateisystem mounten als" en:"Mount filesystem as"): </label><input
 type="input" id="fstype" size="20" maxlength="10" name="fstype" value="$(html "$USBROOT_FSTYPE")"/></p>
 <p>$(lang de:"Mount Optionen" en:"Mount options"): <input id="mntoptions"
 size="40" maxlength="64" type="text" name="mntoptions" value="$(html "$USBROOT_MNTOPTIONS")"/><br />
-<small>$(lang de:"Geben Sie hier kommagetrennte Optionen an, welche beim Mounten des Dateisystems
-verwendet werden (siehe Man-Pages von mount). Beispiel: rw,noatime,nodiratime"
-en:"Enter a comma-separated list of options which are used when the filesystem is mounted.
-E.g.: rw,noatime,nodiratime")</small></p>
-<p>$(lang de:"Altes Root-Filesystem (Flashspeicher) unmounten:" en:"Unmount old root filesystem
-(flash memory):") <input id="y1" type="radio" name="unmountoldroot" value="yes"$y1_chk><label
-for="y1"> $(lang de:"Ja" en:"Yes")</label><input id="n1" type="radio"
-name="unmountoldroot" value="no"$n1_chk/><label for="n1"> $(lang de:"Nein" en:"No")</label><br />
-<small>$(lang de:"Achtung: Das Aktivieren dieser Option kann zu einer Reboot-Schleife führen." en:"Caution:
-Activating this option can cause reboot loops")</small></p>
+<small>$(lang \
+  de:"Geben Sie hier kommagetrennte Optionen an, welche beim Mounten des Dateisystems verwendet werden (siehe Man-Pages von mount). Beispiel: rw,noatime,nodiratime" \
+  en:"Enter a comma-separated list of options which are used when the filesystem is mounted. E.g.: rw,noatime,nodiratime" \
+)</small></p>
+<p>$(lang de:"Altes Root-Filesystem (Flashspeicher) unmounten:" en:"Unmount old root filesystem (flash memory):") 
+<input id="y1" type="radio" name="unmountoldroot" value="yes"$y1_chk><label for="y1"> 
+$(lang de:"Ja" en:"Yes")</label><input id="n1" type="radio" name="unmountoldroot" value="no"$n1_chk/><label for="n1"> $(lang de:"Nein" en:"No")</label><br />
+<small>$(lang de:"Achtung: Das Aktivieren dieser Option kann zu einer Reboot-Schleife f&uuml;hren." en:"Caution: Activating this option can cause reboot loops")</small></p>
 EOF
 
 sec_end
 
 cat << EOF
-<p>$(lang de:"&Auml;nderungen werden erst nach einem Neustart aktiv, auch wenn hier bereits die neuen Werte angezeigt werden."
-en:"Changes will take effect after a reboot, even if new settings will already be displayed here.")</p>
+<p>$(lang \
+  de:"&Auml;nderungen werden erst nach einem Neustart aktiv, auch wenn hier bereits die neuen Werte angezeigt werden." \
+  en:"Changes will take effect after a reboot, even if new settings will already be displayed here." \
+)</p>
 EOF
+

@@ -4,7 +4,7 @@
 . /usr/lib/libmodcgi.sh
 
 
-sec_begin '$(lang de:"Information" en:"Information")'
+sec_begin "$(lang de:"Information" en:"Information")"
 
 cat << EOF
 <p>
@@ -17,7 +17,7 @@ $(lang en:"To start Mcabber you have to start it from the console." de:"Mcabber 
 EOF
 
 sec_end
-sec_begin '$(lang de:"Einstellungen" en:"settings")'
+sec_begin "$(lang de:"Einstellungen" en:"settings")"
 
 cat << EOF
 <p>$(lang de:"Benutzername" en:"username"): <input id="username" type="text" name="username" value="$(html "$MCABBER_USERNAME")"></p>

@@ -5,7 +5,7 @@
 
 #
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 
 cgi_print_radiogroup_service_starttype \
 	"enabled" "$SQUID_ENABLED" "" "" 0
@@ -14,7 +14,7 @@ sec_end
 
 #
 
-sec_begin '$(lang de:"Status" en:"Status")'
+sec_begin "$(lang de:"Status" en:"Status")"
 
 cat << EOF
 <ul>
@@ -26,7 +26,7 @@ sec_end
 
 #
 
-sec_begin '$(lang de:"Squid" en:"Squid")'
+sec_begin "$(lang de:"Squid" en:"Squid")"
 
 cgi_print_textline_p "port" "$SQUID_PORT" 5/5 "$(lang de:"Port" en:"Port"): "
 cgi_print_textline_p "localnet" "$SQUID_LOCALNET" 31/31 "$(lang de:"Lokales Netzwerk" en:"Local network"): "
@@ -39,7 +39,7 @@ sec_end
 
 #
 
-sec_begin '$(lang de:"Cachegr&ouml;&szlig;e" en:"Cache size")'
+sec_begin "$(lang de:"Cachegr&ouml;&szlig;e" en:"Cache size")"
 
 echo '<font color="red">$(lang de:"Diese Werte sollten nur von erfahrenen Benutzern ver&auml;ndert werden" en:"These values  should only be altered by experienced users")!</font><br>'
 

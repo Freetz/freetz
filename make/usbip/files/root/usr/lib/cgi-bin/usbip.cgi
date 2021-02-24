@@ -6,11 +6,11 @@ check "$USBIP_ALL" yes:all
 check "$USBIP_STORAGES" yes:storages
 check "$USBIP_HUBS" yes:hubs
 
-sec_begin '$(lang de:"Starttyp" en:"Start type")'
+sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$USBIP_ENABLED" "" "" 0
 sec_end
 
-sec_begin '$(lang de:"Momentan verbundene Ger&auml;te" en:"Currently connected devices")'
+sec_begin "$(lang de:"Momentan verbundene Ger&auml;te" en:"Currently connected devices")"
 USBIP_DEVICES_CONNECTED="$(usbip_bind_driver --list | grep -v "^List USB devices$")"
 cat << EOF
 
@@ -21,7 +21,7 @@ $USBIP_DEVICES_CONNECTED
 EOF
 sec_end
 
-sec_begin '$(lang de:"Konfiguration" en:"Configuration")'
+sec_begin "$(lang de:"Konfiguration" en:"Configuration")"
 cat << EOF
 
 <p>
