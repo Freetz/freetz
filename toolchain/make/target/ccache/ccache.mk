@@ -27,17 +27,14 @@ $(CCACHE_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_SOURCE) | $(TARGET_TOOLCHAIN_DIR) $(
 	# WARNING - this will break if the toolchain is moved.
 	# Should probably patch things to use a relative path.
 	$(SED) -i 's,ctx.config.path(),"$(CCACHE_BIN_DIR)",' $(CCACHE_DIR)/src/execute.cpp
-#	$(SED) -i -e "s,getenv(\"CCACHE_DIR\"),\"$(TARGET_TOOLCHAIN_STAGING_DIR)/var/cache\",g" \
-#		$(CCACHE_DIR)/ccache.c
-	$(SED) -i 's,getenv("CCACHE_DIR"),"$(CCACHE_CACHE_DIR)",' $(CCACHE_DIR)/src/ccache.cpp
-	mkdir -p $(CCACHE_DIR)/cache
 	touch $@
 
 $(CCACHE_DIR)/.configured: $(CCACHE_DIR)/.unpacked
-	(cd $(CCACHE_DIR); $(RM) config.h; \
-		CC=$(TOOLCHAIN_HOSTCC) \
-		CXX=$(TOOLCHAIN_HOSTCXX) \
+	(cd $(CCACHE_DIR); $(RM) CMakeCache.txt; \
+		CC="$(TOOLCHAIN_HOSTCC)" \
+		CXX="$(TOOLCHAIN_HOSTCXX)" \
 		CFLAGS="$(TOOLCHAIN_HOST_CFLAGS)" \
+		CXXFLAGS="$(TOOLCHAIN_HOST_CFLAGS)" \
 		cmake . \
 		-DCMAKE_C_COMPILER_TARGET=$(GNU_HOST_NAME) \
 		-DCMAKE_CXX_COMPILER_TARGET=$(GNU_HOST_NAME) \
@@ -59,16 +56,15 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/$(CCACHE_TARGET_BINARY): $(CCACHE_DIR)/$(CCACHE_
 	for i in gcc g++; do \
 		[ -f $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-$$i -a \
 			! -h $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-$$i ] && \
-			mv $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-$$i \
-					$(CCACHE_BIN_DIR)/ || true; \
+			mv $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-$$i $(CCACHE_BIN_DIR)/ || true; \
 	done
-	(cd $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin; \
+	( cd $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin; \
 		ln -fs ccache $(REAL_GNU_TARGET_NAME)-gcc; \
 		ln -fs ccache $(REAL_GNU_TARGET_NAME)-g++; \
 	)
-	(cd $(CCACHE_BIN_DIR); \
-		ln -fs $(REAL_GNU_TARGET_NAME)-g++ $(REAL_GNU_TARGET_NAME)-c++; \
+	( cd $(CCACHE_BIN_DIR); \
 		ln -fs $(REAL_GNU_TARGET_NAME)-gcc $(REAL_GNU_TARGET_NAME)-cc; \
+		ln -fs $(REAL_GNU_TARGET_NAME)-g++ $(REAL_GNU_TARGET_NAME)-c++; \
 		for i in gcc g++ cc c++; do \
 			ln -fs $(REAL_GNU_TARGET_NAME)-$$i $(GNU_TARGET_NAME)-$$i; \
 		done; \
@@ -84,13 +80,12 @@ endif
 ccache-clean:
 	for i in gcc g++; do \
 		if [ -f $(CCACHE_BIN_DIR)/$(REAL_GNU_TARGET_NAME)-$$i ] ; then \
-			rm -rf  $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-$$i; \
-			mv $(CCACHE_BIN_DIR)/$(REAL_GNU_TARGET_NAME)-$$i \
-				$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/; \
+			$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-$$i; \
+			mv $(CCACHE_BIN_DIR)/$(REAL_GNU_TARGET_NAME)-$$i $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/; \
 		fi; \
 	done
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/$(CCACHE_TARGET_BINARY)
 	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/$(CCACHE_TARGET_BINARY)
 	-$(MAKE) -C $(CCACHE_DIR) clean
 
 ccache-dirclean: ccache-clean

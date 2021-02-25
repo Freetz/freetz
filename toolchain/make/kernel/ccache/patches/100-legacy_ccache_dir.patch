@@ -1,11 +1,20 @@
 --- src/ccache.cpp
 +++ src/ccache.cpp
-@@ -1965,7 +1965,7 @@
- set_up_config(Config& config)
- {
-   const std::string home_dir = Util::get_home_directory();
--  const std::string legacy_ccache_dir = home_dir + "/.ccache";
-+  const std::string legacy_ccache_dir = home_dir + "/.freetz-ccache";
-   const bool legacy_ccache_dir_exists =
-     Stat::stat(legacy_ccache_dir).is_directory();
-   const char* const env_xdg_cache_home = getenv("XDG_CACHE_HOME");
+@@ -1973,7 +1973,7 @@
+ 
+   const char* env_ccache_configpath = getenv("CCACHE_CONFIGPATH");
+   if (env_ccache_configpath) {
+-    config.set_primary_config_path(env_ccache_configpath);
++    config.set_primary_config_path(home_dir + "/.freetz-ccache");
+   } else {
+     // Only used for ccache tests:
+     const char* const env_ccache_configpath2 = getenv("CCACHE_CONFIGPATH2");
+@@ -1999,7 +1999,7 @@
+     } else {
+       primary_config_dir = default_config_dir(home_dir);
+     }
+-    config.set_primary_config_path(primary_config_dir + "/ccache.conf");
++    config.set_primary_config_path(home_dir + "/.freetz-ccache" + "/ccache.conf");
+   }
+ 
+   const std::string& cache_dir_before_primary_config = config.cache_dir();
