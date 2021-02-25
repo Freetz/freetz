@@ -32,7 +32,7 @@ check_requisite() {
 }
 
 failed_requisite() {
-	local required URL='See https://freetz-ng.github.io/freetz-ng/PREREQUISITES'
+	local required URL='See https://freetz-ng.github.io/freetz-ng/PREREQUISITES '
 	if $3; then
 		required="WARNING"
 	else
@@ -40,27 +40,32 @@ failed_requisite() {
 	fi
 	case "$2" in
 		pkgconf)
-			echo "$required: The pkgconf $1 was not found in /usr/(local/)lib*/(*/)pkgconfig/. $URL"
+			echo -n "$required: The pkgconf '$1' was not found in /usr/(local/)lib*/(*/)pkgconfig/. $URL"
 			;;
 		pkgconf32)
-			echo "$required: The pkgconf $1 (32-bit) was not found in /usr/(local/)lib/(*/)pkgconfig/. $URL"
+			echo -n "$required: The pkgconf '$1' (32-bit) was not found in /usr/(local/)lib/(*/)pkgconfig/. $URL"
 			;;
 		program)
-			echo "$required: The program $1 was not found in path. $URL"
+			echo -n "$required: The program '$1' was not found in path. $URL"
 			;;
 		lib)
-			echo "$required: The library $1 was not found in /etc/ld.so.cache. $URL"
+			echo -n "$required: The library '$1' was not found in /etc/ld.so.cache. $URL"
 			;;
 		lib32)
-			echo "$required: The library $1 (32-bit) was not found in /etc/ld.so.cache. $URL"
+			echo -n "$required: The library '$1' (32-bit) was not found in /etc/ld.so.cache. $URL"
 			;;
 		header)
-			echo "$required: The header file $1 was not found in /usr/(local/)include. $URL"
+			echo -n "$required: The header file '$1' was not found in /usr/(local/)include. $URL"
 			;;
 		*)
-			error "Unknown requisite type: $2"
+			error "Unknown requisite type: '$2'"
 			;;
 	esac
+	sleep 1; echo -n '.'
+	sleep 1; echo -n '.'
+	sleep 1; echo -n '.'
+	sleep 1; echo -n ' '
+	sleep 1; echo
 }
 
 declare -a req
