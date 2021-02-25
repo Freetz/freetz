@@ -696,20 +696,20 @@ config FREETZ_TARGET_TOOLCHAIN
 		Build the binutils and gcc to run on the target.
 		Files are installed into toolchain/target/target-utils.
 
-comment "Both kernel and target toolchain related options ----------------"
+comment "Tools and toolchains options ------------------------"
 config FREETZ_TOOLCHAIN_MINIMIZE_REQUIRED_GLIBC_VERSION
 #	bool "Minimize required GLIBC version" if FREETZ_BUILD_TOOLCHAIN
 	bool
 	default y
 
 config FREETZ_TOOLCHAIN_32BIT
-	bool "Build 32-bit tools+toolchains"
+	bool "Build 32-bit tools and toolchains"
 	default n
 	help
 		This option causes 32-bit tools and toolchains to be built on a 64-bit systems.
 
 config FREETZ_TOOLCHAIN_CCACHE
-	bool "Build ccache"
+	bool "Build ccache for kernel and target"
 	default y if FREETZ_SHOW_DEVELOPER
 	default n
 	help
@@ -721,6 +721,14 @@ config FREETZ_TOOLCHAIN_CCACHE
 		The idea came from Erik Thiele wrote the original compilercache program
 		as a bourne shell script. ccache is a re-implementation of Erik's idea
 		in C with more features and better performance.
+
+config FREETZ_HOSTTOOLS_DOWNLOAD
+	bool "Use precompiled i686 host-tools"
+	select FREETZ_TOOLCHAIN_32BIT
+	default y
+	help
+		Download and use precompiled binaries files. Not
+		every tool is included, see $(TOOLS_BUILD_LOCAL).
 
 endmenu # "Toolchain options" #
 

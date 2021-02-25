@@ -40,15 +40,5 @@ menu "Build system options"
 			If this is activated, all packages are checked for changes in make/<pkg>/files
 			and make/<pkg>/patches. If so, the package will be recreated.
 
-	comment "Host tools ------------------------------------------------------"
-
-	config FREETZ_HOSTTOOLS_DOWNLOAD
-		bool "Use precompiled i686 host-tools"
-		select FREETZ_TOOLCHAIN_32BIT
-		default y
-		help
-			Download and use precompiled binaries files. Not
-			every tool is included, see $(TOOLS_BUILD_LOCAL).
-
 endmenu # "Build system options" #
 
