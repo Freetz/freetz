@@ -21,6 +21,7 @@ choice
 
 	config FREETZ_DOWNLOAD_TOOLCHAIN
 		bool "Use precompiled i686 toolchains"
+		select FREETZ_TOOLCHAIN_32BIT
 		depends on FREETZ_DOWNLOAD_TOOLCHAIN_AVAILABLE
 
 	config FREETZ_BUILD_TOOLCHAIN
@@ -702,10 +703,10 @@ config FREETZ_TOOLCHAIN_MINIMIZE_REQUIRED_GLIBC_VERSION
 	default y
 
 config FREETZ_TOOLCHAIN_32BIT
-	bool "Build 32-bit toolchains" if FREETZ_BUILD_TOOLCHAIN
+	bool "Build 32-bit tools+toolchains"
 	default n
 	help
-		This option causes a 32-bit toolchain to be built even on 64-bit systems.
+		This option causes 32-bit tools and toolchains to be built on a 64-bit systems.
 
 config FREETZ_TOOLCHAIN_CCACHE
 	bool "Build ccache"
