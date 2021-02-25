@@ -292,6 +292,7 @@ config FREETZ_AVM_HAS_FIRMWARE_07_0X
 			FREETZ_TYPE_7590 \
 		))
 
+
 config FREETZ_AVM_HAS_FIRMWARE_07_1X_INHAUS
 	bool
 	default y
@@ -352,6 +353,7 @@ config FREETZ_AVM_HAS_FIRMWARE_07_1X
 			FREETZ_TYPE_7590 \
 		))
 
+
 config FREETZ_AVM_HAS_FIRMWARE_07_2X_INHAUS
 	bool
 	default y
@@ -392,6 +394,7 @@ config FREETZ_AVM_HAS_FIRMWARE_07_2X
 			FREETZ_TYPE_7580 \
 		))
 
+
 config FREETZ_AVM_HAS_FIRMWARE_07_25_INHAUS
 	bool
 	default y
@@ -416,8 +419,7 @@ config FREETZ_AVM_HAS_FIRMWARE_07_25_LABOR
 			FREETZ_TYPE_7530 || \
 			FREETZ_TYPE_7539 || \
 			FREETZ_TYPE_7560 || \
-			FREETZ_TYPE_7580 || \
-			FREETZ_TYPE_7590 \
+			FREETZ_TYPE_7580 \
 		)) \
 		|| \
 		( FREETZ_TYPE_LANG_DE && ( \
@@ -432,6 +434,15 @@ config FREETZ_AVM_HAS_FIRMWARE_07_25_LABOR
 		( FREETZ_TYPE_LANG_EN && ( \
 			FREETZ_TYPE_6820_V2 \
 		))
+
+config FREETZ_AVM_HAS_FIRMWARE_07_25
+	bool
+	default y
+	depends on \
+		( (FREETZ_TYPE_LANG_DE||FREETZ_TYPE_LANG_EN) && ( \
+			FREETZ_TYPE_7590 \
+		))
+
 
 ###
 ### Languages
