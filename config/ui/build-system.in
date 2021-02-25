@@ -42,13 +42,6 @@ menu "Build system options"
 
 	comment "Host tools ------------------------------------------------------"
 
-	config FREETZ_HOSTTOOLS_STATIC
-		bool "Link statically - DEVELOPER"
-		depends on !FREETZ_HOSTTOOLS_DOWNLOAD && FREETZ_SHOW_DEVELOPER
-		default n
-		help
-			Usefull if you build an archive to download.
-
 	config FREETZ_HOSTTOOLS_DOWNLOAD
 		bool "Use precompiled i686 host-tools"
 		select FREETZ_TOOLCHAIN_32BIT
