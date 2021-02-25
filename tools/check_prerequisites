@@ -7,6 +7,12 @@ error() {
 
 check_requisite() {
 	case "$2" in
+		pkgconf)
+			[ -n "$(find /usr/lib*/pkgconfig/ /usr/local/lib*/pkgconfig/ /usr/lib/*/pkgconfig/ -name "$1" 2>/dev/null)" ]
+			;;
+		pkgconf32)
+			[ -n "$(find /usr/lib/pkgconfig/  /usr/local/lib/pkgconfig/  /usr/lib/*/pkgconfig/ -name "$1" 2>/dev/null | grep -v 'x86_64')" ]
+			;;
 		program)
 			[ -x "$(which $1 2>/dev/null)" ]
 			;;
@@ -33,6 +39,12 @@ failed_requisite() {
 		required="ERROR"
 	fi
 	case "$2" in
+		pkgconf)
+			echo "$required: The pkgconf $1 was not found in /usr/(local/)lib*/(*/)pkgconfig/."
+			;;
+		pkgconf32)
+			echo "$required: The pkgconf $1 (32-bit) was not found in /usr/(local/)lib/(*/)pkgconfig/."
+			;;
 		program)
 			echo "$required: The program $1 was not found in path."
 			;;
@@ -67,6 +79,14 @@ while [ $# -gt 0 ]; do
 			;;
 		--lib32)
 			parser=lib32
+			warn=false
+			;;
+		--pkgconf)
+			parser=pkgconf
+			warn=false
+			;;
+		--pkgconf32)
+			parser=pkgconf32
 			warn=false
 			;;
 		-p|--program)
