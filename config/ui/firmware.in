@@ -597,6 +597,7 @@ config FREETZ_TYPE_LANGUAGE
 
 choice
 	prompt "Firmware version"
+	default FREETZ_TYPE_FIRMWARE_07_25
 	default FREETZ_TYPE_FIRMWARE_07_2X
 	default FREETZ_TYPE_FIRMWARE_07_1X
 	default FREETZ_TYPE_FIRMWARE_07_0X
@@ -610,47 +611,47 @@ choice
 	default FREETZ_TYPE_FIRMWARE_04_XX
 
 	config FREETZ_TYPE_FIRMWARE_04_XX
-		bool "FRITZ!OS 04.xx"
+		bool "FRITZ!OS 04.00+"
 		select FREETZ_AVM_VERSION_04_XX
 		depends on FREETZ_AVM_HAS_FIRMWARE_04_XX
 
 	config FREETZ_TYPE_FIRMWARE_05_2X
-		bool "FRITZ!OS 05.2x"
+		bool "FRITZ!OS 05.20+"
 		select FREETZ_AVM_VERSION_05_2X
 		depends on FREETZ_AVM_HAS_FIRMWARE_05_2X
 
 	config FREETZ_TYPE_FIRMWARE_05_5X
-		bool "FRITZ!OS 05.5x"
+		bool "FRITZ!OS 05.50+"
 		select FREETZ_AVM_VERSION_05_5X
 		depends on FREETZ_AVM_HAS_FIRMWARE_05_5X
 
 	config FREETZ_TYPE_FIRMWARE_06_0X
-		bool "FRITZ!OS 06.0x"
+		bool "FRITZ!OS 06.00+"
 		select FREETZ_AVM_VERSION_06_0X
 		depends on FREETZ_AVM_HAS_FIRMWARE_06_0X
 
 	config FREETZ_TYPE_FIRMWARE_06_2X
-		bool "FRITZ!OS 06.2x/06.3x"
+		bool "FRITZ!OS 06.20+"
 		select FREETZ_AVM_VERSION_06_2X
 		depends on FREETZ_AVM_HAS_FIRMWARE_06_2X
 
 	config FREETZ_TYPE_FIRMWARE_06_5X
-		bool "FRITZ!OS 06.5x/06.6x"
+		bool "FRITZ!OS 06.50+"
 		select FREETZ_AVM_VERSION_06_5X
 		depends on FREETZ_AVM_HAS_FIRMWARE_06_5X
 
 	config FREETZ_TYPE_FIRMWARE_06_8X
-		bool "FRITZ!OS 06.8x"
+		bool "FRITZ!OS 06.80+"
 		select FREETZ_AVM_VERSION_06_8X
 		depends on FREETZ_AVM_HAS_FIRMWARE_06_8X
 
 	config FREETZ_TYPE_FIRMWARE_06_9X
-		bool "FRITZ!OS 06.9x"
+		bool "FRITZ!OS 06.90+"
 		select FREETZ_AVM_VERSION_06_9X
 		depends on FREETZ_AVM_HAS_FIRMWARE_06_9X
 
 	config FREETZ_TYPE_FIRMWARE_07_0X
-		bool "FRITZ!OS 07.0x"
+		bool "FRITZ!OS 07.00+"
 		select FREETZ_AVM_VERSION_07_0X
 		depends on FREETZ_AVM_HAS_FIRMWARE_07_0X
 
@@ -663,13 +664,13 @@ choice
 			Enable this to use an AVM Inhaus firmware as base for modding.
 
 	config FREETZ_TYPE_FIRMWARE_07_1X
-		bool "FRITZ!OS 07.1x"
+		bool "FRITZ!OS 07.10+"
 		select FREETZ_AVM_VERSION_07_1X
 		depends on FREETZ_AVM_HAS_FIRMWARE_07_1X
 
 
 	config FREETZ_TYPE_FIRMWARE_07_2X_INHAUS
-		bool "FRITZ!OS 07.19 Inhaus"
+		bool "FRITZ!OS 07.19 Inhaus - DEVELOPER"
 		select FREETZ_AVM_VERSION_07_2X
 		depends on FREETZ_AVM_HAS_FIRMWARE_07_2X_INHAUS && FREETZ_SHOW_ADVANCED
 		depends on FREETZ_SHOW_DEVELOPER
@@ -677,13 +678,13 @@ choice
 			Enable this to use an AVM Inhaus firmware as base for modding.
 
 	config FREETZ_TYPE_FIRMWARE_07_2X
-		bool "FRITZ!OS 07.2x"
+		bool "FRITZ!OS 07.20+"
 		select FREETZ_AVM_VERSION_07_2X
 		depends on FREETZ_AVM_HAS_FIRMWARE_07_2X
 
 
 	config FREETZ_TYPE_FIRMWARE_07_25_INHAUS
-		bool "FRITZ!OS 07.24 Inhaus"
+		bool "FRITZ!OS 07.24 Inhaus - DEVELOPER"
 		select FREETZ_AVM_VERSION_07_25
 		depends on FREETZ_AVM_HAS_FIRMWARE_07_25_INHAUS && FREETZ_SHOW_ADVANCED
 		depends on FREETZ_SHOW_DEVELOPER
@@ -691,7 +692,7 @@ choice
 			Enable this to use an AVM Inhaus firmware as base for modding.
 
 	config FREETZ_TYPE_FIRMWARE_07_25_LABOR
-		bool "FRITZ!OS 07.24 Labor"
+		bool "FRITZ!OS 07.24 Labor - DEVELOPER"
 		select FREETZ_AVM_VERSION_07_25
 		select FREETZ_DL_DETECT_IMAGE_NAME
 		depends on FREETZ_AVM_HAS_FIRMWARE_07_25_LABOR && FREETZ_SHOW_ADVANCED
@@ -699,6 +700,12 @@ choice
 		help
 			Enable this to use an AVM Labor firmware as base for modding.
 			For more details see <http://www.avm.de/Labor/>.
+
+	config FREETZ_TYPE_FIRMWARE_07_25
+		bool "FRITZ!OS 07.25+ - UNTESTED"
+		select FREETZ_AVM_VERSION_07_25
+		depends on FREETZ_AVM_HAS_FIRMWARE_07_25
+		depends on FREETZ_SHOW_EXPERT
 
 
 endchoice # "Firmware version" #
