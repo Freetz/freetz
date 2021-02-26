@@ -42,7 +42,6 @@ Latest changes
 
  - Build system:
    * ccache 4.2
-   * kconfig 5.11
    * kernel-/target-toolchain:
       + uClibc-ng 1.0.37
 
@@ -51,6 +50,7 @@ Latest changes
 
  - Updated tools and hooks:
    * fitimg 0.5
+   * kconfig 5.11
    * patchelf 0.12
    * xz 5.2.5
 
