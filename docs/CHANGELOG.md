@@ -48,6 +48,9 @@ Latest changes
  - New packages, libs, modules:
    * juis_check 0.5
 
+ - New tools and hooks:
+   * pseudo 1.9.0 oe-core
+
  - Updated tools and hooks:
    * fitimg 0.5
    * kconfig 5.11
