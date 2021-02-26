@@ -54,7 +54,7 @@ MAKE=make -j$(FREETZ_JLEVEL)
 DL_TOOL:=$(TOOLS_DIR)/freetz_download
 PATCH_TOOL:=$(TOOLS_DIR)/freetz_patch
 PARSE_CONFIG_TOOL:=$(TOOLS_DIR)/parse-config
-CHECK_PREREQ_TOOL:=$(TOOLS_DIR)/check_prerequisites
+CHECK_PREREQ_TOOL:=$(TOOLS_DIR)/prerequisites
 GENERATE_IN_TOOL:=$(TOOLS_DIR)/genin
 
 # do not use sorted-wildcard here, it's first defined in files included here
@@ -130,7 +130,7 @@ endif
 
 # Simple checking of build prerequisites
 ifneq ($(NO_PREREQ_CHECK),y)
-ifneq (OK,$(shell $(CHECK_PREREQ_TOOL) $$(cat .build-prerequisites) >&2 && echo OK))
+ifneq (OK,$(shell $(CHECK_PREREQ_TOOL) >&2 && echo OK))
 $(error Some build prerequisites are missing! Please install the missing packages before trying again. See https://freetz-ng.github.io/freetz-ng/PREREQUISITES for installation hints)
 endif
 endif

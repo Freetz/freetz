@@ -1,9 +1,6 @@
 #!/bin/bash
-
-error() {
-	echo $* >&2
-	exit 1
-}
+SCRIPT="$(readlink -f $0)"
+PARENT="$(dirname ${SCRIPT%/*})"
 
 check_requisite() {
 	case "$2" in
@@ -26,100 +23,50 @@ check_requisite() {
 			[ -n "$(find /usr/include/ /usr/local/include/ -path "*/$1" 2>/dev/null)" ]
 			;;
 		*)
-			error "Unknown requisite type: $2"
+			false
 			;;
 	esac
 }
 
 failed_requisite() {
-	local required URL='See https://freetz-ng.github.io/freetz-ng/PREREQUISITES '
-	if $3; then
-		required="WARNING"
-	else
-		required="ERROR"
-	fi
 	case "$2" in
 		pkgconf)
-			echo -n "$required: The pkgconf '$1' was not found in /usr/(local/)lib*/(*/)pkgconfig/. $URL"
+			echo "ERROR: The pkgconf '$1' was not found in /usr/(local/)lib*/(*/)pkgconfig/"
 			;;
 		pkgconf32)
-			echo -n "$required: The pkgconf '$1' (32-bit) was not found in /usr/(local/)lib/(*/)pkgconfig/. $URL"
+			echo "ERROR: The pkgconf '$1' (32-bit) was not found in /usr/(local/)lib/(*/)pkgconfig/"
 			;;
 		program)
-			echo -n "$required: The program '$1' was not found in path. $URL"
+			echo "ERROR: The program '$1' was not found in path"
 			;;
 		lib)
-			echo -n "$required: The library '$1' was not found in /etc/ld.so.cache. $URL"
+			echo "ERROR: The library '$1' was not found in /etc/ld.so.cache"
 			;;
 		lib32)
-			echo -n "$required: The library '$1' (32-bit) was not found in /etc/ld.so.cache. $URL"
+			echo "ERROR: The library '$1' (32-bit) was not found in /etc/ld.so.cache"
 			;;
 		header)
-			echo -n "$required: The header file '$1' was not found in /usr/(local/)include. $URL"
+			echo "ERROR: The header file '$1' was not found in /usr/(local/)include"
 			;;
 		*)
-			error "Unknown requisite type: '$2'"
+			echo "Unknown requisite type '$2' for '$1'."
 			;;
 	esac
-	sleep 1; echo -n '.'
-	sleep 1; echo -n '.'
-	sleep 1; echo -n '.'
-	sleep 1; echo -n ' '
-	sleep 1; echo
 }
 
-declare -a req
-parser=
-warn=false
-
-while [ $# -gt 0 ]; do
-	case "$1" in
-		-h|--header)
-			parser=header
-			warn=false
-			;;
-		-l|--lib)
-			parser=lib
-			warn=false
-			;;
-		--lib32)
-			parser=lib32
-			warn=false
-			;;
-		--pkgconf)
-			parser=pkgconf
-			warn=false
-			;;
-		--pkgconf32)
-			parser=pkgconf32
-			warn=false
-			;;
-		-p|--program)
-			parser=program
-			warn=false
-			;;
-		-w|--warn)
-			[ -n "$parser" ] && warn=true
-			;;
-		*)
-			[ -z "$parser" ] && error "Invalid argument: $1"
-			req[${#req[*]}]="$1"
-			req[${#req[*]}]=$parser
-			req[${#req[*]}]=$warn
-			warn=false
-	esac
-	shift
-done
-
-err=0
-i=0
-while [ $i -lt ${#req[*]} ]; do
-	if ! check_requisite "${req[$i]}" ${req[$((i+1))]} ${req[$((i+2))]}; then
-		failed_requisite "${req[$i]}" ${req[$((i+1))]} ${req[$((i+2))]}
-		${req[$((i+2))]} || err=1
-	fi
-	i=$((i+3))
-done
-
-exit $err
+retval=0
+while read parser file depends; do
+	[ -z "$file" ] && continue
+	# check dependencies
+	[ "${#depends}" == '0' ] && mandatory='y' || mandatory='n'
+	for x in $depends; do
+		grep -q "^$x=y" "$PARENT/.config" && mandatory='y'
+	done
+	[ "$mandatory" != 'y' ] && continue
+	# check installed
+	check_requisite "$file" "$parser" && continue
+	failed_requisite "$file" "$parser"
+	retval=1
+done < <(sed 's/#.*//g;/^[ \t]*$/d' "$PARENT/.prerequisites" 2>/dev/null)
+exit $retval
 
