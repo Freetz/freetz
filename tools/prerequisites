@@ -14,7 +14,7 @@ check_requisite() {
 			[ -x "$(which $1 2>/dev/null)" ]
 			;;
 		lib)
-			ldconfig -p | grep -q "^[[:space:]]*$1 "
+			ldconfig -p | grep -Eq "^[[:space:]]*$1(\.[01])* "
 			;;
 		lib32)
 			ldconfig -p | grep -v 'x86-64' | grep -Eq "^[[:space:]]*$1(\.[01])* "
@@ -60,7 +60,7 @@ while read parser file depends; do
 	# check dependencies
 	[ "${#depends}" == '0' ] && mandatory='y' || mandatory='n'
 	for x in $depends; do
-		grep -q "^$x=y" "$PARENT/.config" && mandatory='y'
+		grep -q "^$x=y$" "$PARENT/.config" 2>/dev/null && mandatory='y'
 	done
 	[ "$mandatory" != 'y' ] && continue
 	# check installed
