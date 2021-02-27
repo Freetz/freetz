@@ -321,10 +321,10 @@ validate_signature() {
 # Create id string based on MD5 hashes of firmware images
 FIRMWARE_MD5="$("$MD5SUM" "$FIRMWARE" | cut -d ' ' -f 1)"
 [ "$FIRMWARE2" ] && FIRMWARE_MD5="$FIRMWARE_MD5-$("$MD5SUM" "$FIRMWARE2" | cut -d ' ' -f 1)"
+[ "$FREETZ_ROOTEMU_FAKEROOT" != 'y' ] && FIRMWARE_MD5="$FIRMWARE_MD5-pseudo" || FIRMWARE_MD5="$FIRMWARE_MD5-fakeroot"
 
 FAKEROOT_CACHE_DIR="$ABS_BASE_DIR/.fakeroot-cache"
-mkdir -p "$FAKEROOT_CACHE_DIR"
-[ "$FREETZ_ROOTEMU_FAKEROOT" != 'y' ] && FAKEROOT_CACHE_DB="$FAKEROOT_CACHE_DIR/files.db" || FAKEROOT_CACHE_DB="$FAKEROOT_CACHE_DIR/$FIRMWARE_MD5"
+[ "$FREETZ_ROOTEMU_FAKEROOT" != 'y' ] && FAKEROOT_CACHE_DB="$FAKEROOT_CACHE_DIR/files.db" || FAKEROOT_CACHE_DB="$FAKEROOT_CACHE_DIR/fakeroot.cvs"
 
 # Are we in a fakeroot context?
 if [ -n "$FWMOD_RECURSIVE" ] && [ $UID -eq 0 ]; then
@@ -333,8 +333,8 @@ if [ -n "$FWMOD_RECURSIVE" ] && [ $UID -eq 0 ]; then
 	if [ $((FWMOD_RECURSIVE)) -eq 0 ] || [ "$SELF" != "$(sed -nr 's/^Name:[[:blank:]]+(.*)/\1/p' /proc/$FWMOD_RECURSIVE/status)" ]; then
 		error 1 "$SELF must not run in a fakeroot environment"
 	fi
-	# Does fakeroot cache (size>0) exist for current combination of firmwares and has this combination already been unpacked?
-	if [ -s "$FAKEROOT_CACHE_DB" ] && [ "$(cat "$UNPACKED_FILE" 2>/dev/null)" == "$FIRMWARE_MD5" ]; then
+	# Has current combination of firmware already been unpacked?
+	if [ "$(cat "$UNPACKED_FILE" 2>/dev/null)" == "$FIRMWARE_MD5" ]; then
 		# Yes -> skip unpack
 		[ $DO_UNPACK -gt 0 ] && SKIP_UNPACK="STEP 1: UNPACK (SKIPPED)\n\n"
 		DO_UNPACK=0
@@ -345,17 +345,27 @@ if [ -n "$FWMOD_RECURSIVE" ] && [ $UID -eq 0 ]; then
 	fi
 else
 	# No -> fakeroot is inactive
-	if [ "$FREETZ_ROOTEMU_FAKEROOT" != 'y' ]; then
-							 PSEUDO_PREFIX="$TOOLS_DIR/build" PSEUDO_LOCALSTATEDIR="$FAKEROOT_CACHE_DIR"                  "$TOOLS_DIR/build/bin/pseudo"  -B  &>/dev/null  #dbscan
-		FWMOD_RECURSIVE="$$" PSEUDO_PREFIX="$TOOLS_DIR/build" PSEUDO_LOCALSTATEDIR="$FAKEROOT_CACHE_DIR" PSEUDO_DEBUG="0" "$TOOLS_DIR/build/bin/pseudo" '--' "${CMDLINE_ORIG[@]}"
+	if [ "$(cat "$UNPACKED_FILE" 2>/dev/null)" == "$FIRMWARE_MD5" ]; then
+		# Remove recreated dir before database cleanup
+		rm -rf "${DIR}/modified"
+		rm -f "${DIR}/.modified"
 	else
-		# Does fakeroot cache (size>0) exist for current combination of firmwares and has this combination already been unpacked?
-		if [ -s "$FAKEROOT_CACHE_DB" ] && [ -s "$UNPACKED_FILE" ] && [ "$(cat "$UNPACKED_FILE")" == "$FIRMWARE_MD5" ]; then
+		# Dont keep old databases on a new unpack
+		mkdir -p "$FAKEROOT_CACHE_DIR"
+		rm -rf $FAKEROOT_CACHE_DIR/*
+	fi
+	if [ "$FREETZ_ROOTEMU_FAKEROOT" != 'y' ]; then
+		                     PSEUDO_PREFIX="$TOOLS_DIR/build" PSEUDO_LOCALSTATEDIR="$FAKEROOT_CACHE_DIR"                  "$TOOLS_DIR/build/bin/pseudo"  -B  &>/dev/null  #scan
+		FWMOD_RECURSIVE="$$" PSEUDO_PREFIX="$TOOLS_DIR/build" PSEUDO_LOCALSTATEDIR="$FAKEROOT_CACHE_DIR" PSEUDO_DEBUG="0" "$TOOLS_DIR/build/bin/pseudo" '--' "${CMDLINE_ORIG[@]}"
+		                     PSEUDO_PREFIX="$TOOLS_DIR/build" PSEUDO_LOCALSTATEDIR="$FAKEROOT_CACHE_DIR"                  "$TOOLS_DIR/build/bin/pseudo"  -S  &>/dev/null  #halt
+	else
+		# Has current combination of firmware already been unpacked?
+		if [ "$(cat "$UNPACKED_FILE" 2>/dev/null)" == "$FIRMWARE_MD5" ]; then
 			# Yes -> use existing cache and firmwares (no unpack necessary)
-			NON_FAKEROOT_USERNAME=$(id -u -n) FWMOD_RECURSIVE=$$ $TOOLS_DIR/build/bin/fakeroot -i "$FAKEROOT_CACHE_DB"  -s  "$FAKEROOT_CACHE_DB" '--' "${CMDLINE_ORIG[@]}"
+			NON_FAKEROOT_USERNAME=$(id -u -n) FWMOD_RECURSIVE=$$ $TOOLS_DIR/build/bin/fakeroot -i "$FAKEROOT_CACHE_DB" -s "$FAKEROOT_CACHE_DB" '--' "${CMDLINE_ORIG[@]}"
 		else
 			# No -> create new fakeroot cache and unpack firmwares
-			NON_FAKEROOT_USERNAME=$(id -u -n) FWMOD_RECURSIVE=$$ $TOOLS_DIR/build/bin/fakeroot -s "$FAKEROOT_CACHE_DB" '--' "${CMDLINE_ORIG[@]}"
+			NON_FAKEROOT_USERNAME=$(id -u -n) FWMOD_RECURSIVE=$$ $TOOLS_DIR/build/bin/fakeroot                         -s "$FAKEROOT_CACHE_DB" '--' "${CMDLINE_ORIG[@]}"
 		fi
 	fi
 	retval=$?
