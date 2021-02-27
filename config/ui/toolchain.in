@@ -722,6 +722,19 @@ config FREETZ_TOOLCHAIN_CCACHE
 		as a bourne shell script. ccache is a re-implementation of Erik's idea
 		in C with more features and better performance.
 
+choice
+	prompt "Root emulator"
+	default FREETZ_ROOTEMU_PSEUDO if FREETZ_SHOW_DEVELOPER
+	default FREETZ_ROOTEMU_FAKEROOT
+
+	config FREETZ_ROOTEMU_FAKEROOT
+		bool "Use fakeroot"
+
+	config FREETZ_ROOTEMU_PSEUDO
+		bool "Use pseudo"
+
+endchoice # "Root emulator" #
+
 config FREETZ_HOSTTOOLS_DOWNLOAD
 	bool "Use precompiled i686 host-tools"
 	select FREETZ_TOOLCHAIN_32BIT

@@ -19,6 +19,9 @@ $(TOOLS_SOURCE_DIR) $(HOST_TOOLS_DIR):
 TOOLS:=$(sort $(basename $(notdir $(wildcard $(TOOLS_DIR)/make/*/*.mk))))
 
 # tools not built by default
+ifneq ($(strip $(FREETZ_ROOTEMU_FAKEROOT)),y)
+TOOLS_CONDITIONAL+=fakeroot-host
+endif
 TOOLS_CONDITIONAL+=gmp-host
 TOOLS_CONDITIONAL+=mpc-host
 TOOLS_CONDITIONAL+=mpfr-host
@@ -27,6 +30,9 @@ TOOLS_CONDITIONAL+=mklibs-host
 endif
 ifneq ($(strip $(FREETZ_SHARE_terminfo)),y)
 TOOLS_CONDITIONAL+=ncurses-host
+endif
+ifneq ($(strip $(FREETZ_ROOTEMU_PSEUDO)),y)
+TOOLS_CONDITIONAL+=pseudo-host
 endif
 TOOLS_CONDITIONAL+=python-host
 TOOLS_CONDITIONAL+=scons-host

@@ -36,7 +36,7 @@ pseudo-host-unpacked: $(PSEUDO_HOST_DIR)/.unpacked
 $(PSEUDO_HOST_DIR)/.unpacked: $(DL_DIR)/$(PSEUDO_HOST_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	mkdir -p $(PSEUDO_HOST_DIR)
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(PSEUDO_HOST_SOURCE),$(PSEUDO_HOST_DIR))
-	mv $(PSEUDO_HOST_DIR)/* $(PSEUDO_HOST_MAINARCH_DIR)
+	mv $(PSEUDO_HOST_DIR)/pseudo-* $(PSEUDO_HOST_MAINARCH_DIR)
 	$(call APPLY_PATCHES,$(PSEUDO_HOST_MAKE_DIR)/patches,$(PSEUDO_HOST_MAINARCH_DIR))
 	cp -a $(PSEUDO_HOST_MAINARCH_DIR) $(PSEUDO_HOST_BIARCH_DIR)
 	touch $@
@@ -51,7 +51,7 @@ $(PSEUDO_HOST_MAINARCH_DIR)/.configured: $(PSEUDO_HOST_DIR)/.unpacked
 		--prefix=$(PSEUDO_HOST_DESTDIR) \
 		--enable-xattr=no \
 		$(if $(BIARCH_BUILD_SYSTEM),--bits=32) \
-		--cflags="-Wno-cast-function-type -fcommon $(if $(BIARCH_BUILD_SYSTEM),$(HOST_CFLAGS_FORCE_32BIT_CODE))" \
+		--cflags="-Wno-cast-function-type -Wno-nonnull-compare -fcommon $(if $(BIARCH_BUILD_SYSTEM),$(HOST_CFLAGS_FORCE_32BIT_CODE))" \
 		--libdir=$(PSEUDO_HOST_MAINARCH_LD_PRELOAD_PATH) \
 	);
 	touch $@
@@ -69,7 +69,7 @@ $(PSEUDO_HOST_BIARCH_DIR)/.configured: $(PSEUDO_HOST_DIR)/.unpacked
 		--prefix=$(PSEUDO_HOST_DESTDIR) \
 		--enable-xattr=no \
 		--bits=$(HOST_BITNESS) \
-		--cflags="-Wno-cast-function-type -fcommon" \
+		--cflags="-Wno-cast-function-type -Wno-nonnull-compare -fcommon" \
 		--libdir=$(PSEUDO_HOST_BIARCH_LD_PRELOAD_PATH) \
 	);
 	touch $@

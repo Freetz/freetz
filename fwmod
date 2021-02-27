@@ -319,27 +319,22 @@ validate_signature() {
 #######################################
 
 # Create id string based on MD5 hashes of firmware images
-if [ "$FIRMWARE2" ]; then
-	FIRMWARE_MD5="$("$MD5SUM" "$FIRMWARE2" | cut -d ' ' -f 1)"
-fi
-FIRMWARE_MD5="$("$MD5SUM" "$FIRMWARE" | cut -d ' ' -f 1)_$FIRMWARE_MD5"
+FIRMWARE_MD5="$("$MD5SUM" "$FIRMWARE" | cut -d ' ' -f 1)"
+[ "$FIRMWARE2" ] && FIRMWARE_MD5="$FIRMWARE_MD5-$("$MD5SUM" "$FIRMWARE2" | cut -d ' ' -f 1)"
 
-FAKEROOT="$TOOLS_DIR/build/bin/fakeroot"
 FAKEROOT_CACHE_DIR="$ABS_BASE_DIR/.fakeroot-cache"
-FAKEROOT_CACHE="$FAKEROOT_CACHE_DIR/$FIRMWARE_MD5"
-if [ ! -e "$FAKEROOT_CACHE_DIR" ]; then
-	mkdir -p "$FAKEROOT_CACHE_DIR"
-fi
+mkdir -p "$FAKEROOT_CACHE_DIR"
+[ "$FREETZ_ROOTEMU_FAKEROOT" != 'y' ] && FAKEROOT_CACHE_DB="$FAKEROOT_CACHE_DIR/files.db" || FAKEROOT_CACHE_DB="$FAKEROOT_CACHE_DIR/$FIRMWARE_MD5"
 
 # Are we in a fakeroot context?
-if [ "$FAKEROOTKEY" ] && [ $UID -eq 0 ]; then
+if [ -n "$FWMOD_RECURSIVE" ] && [ $UID -eq 0 ]; then
 	# Yes -> fakeroot is active
 	# Make sure fakeroot call came from ourselves so we can assume the cache settings to be correct
 	if [ $((FWMOD_RECURSIVE)) -eq 0 ] || [ "$SELF" != "$(sed -nr 's/^Name:[[:blank:]]+(.*)/\1/p' /proc/$FWMOD_RECURSIVE/status)" ]; then
 		error 1 "$SELF must not run in a fakeroot environment"
 	fi
 	# Does fakeroot cache (size>0) exist for current combination of firmwares and has this combination already been unpacked?
-	if [ -s "$FAKEROOT_CACHE" ] && [ -s "$UNPACKED_FILE" ] && [ "$(cat "$UNPACKED_FILE")" == "$FIRMWARE_MD5" ]; then
+	if [ -s "$FAKEROOT_CACHE_DB" ] && [ "$(cat "$UNPACKED_FILE" 2>/dev/null)" == "$FIRMWARE_MD5" ]; then
 		# Yes -> skip unpack
 		[ $DO_UNPACK -gt 0 ] && SKIP_UNPACK="STEP 1: UNPACK (SKIPPED)\n\n"
 		DO_UNPACK=0
@@ -350,13 +345,18 @@ if [ "$FAKEROOTKEY" ] && [ $UID -eq 0 ]; then
 	fi
 else
 	# No -> fakeroot is inactive
-	# Does fakeroot cache (size>0) exist for current combination of firmwares and has this combination already been unpacked?
-	if [ -s "$FAKEROOT_CACHE" ] && [ -s "$UNPACKED_FILE" ] && [ "$(cat "$UNPACKED_FILE")" == "$FIRMWARE_MD5" ]; then
-		# Yes -> use existing cache and firmwares (no unpack necessary)
-		NON_FAKEROOT_USERNAME=$(id -u -n) FWMOD_RECURSIVE=$$ "$FAKEROOT" -i "$FAKEROOT_CACHE" -s "$FAKEROOT_CACHE" '--' "${CMDLINE_ORIG[@]}"
+	if [ "$FREETZ_ROOTEMU_FAKEROOT" != 'y' ]; then
+							 PSEUDO_PREFIX="$TOOLS_DIR/build" PSEUDO_LOCALSTATEDIR="$FAKEROOT_CACHE_DIR"                  "$TOOLS_DIR/build/bin/pseudo"  -B  &>/dev/null  #dbscan
+		FWMOD_RECURSIVE="$$" PSEUDO_PREFIX="$TOOLS_DIR/build" PSEUDO_LOCALSTATEDIR="$FAKEROOT_CACHE_DIR" PSEUDO_DEBUG="0" "$TOOLS_DIR/build/bin/pseudo" '--' "${CMDLINE_ORIG[@]}"
 	else
-		# No -> create new fakeroot cache and unpack firmwares
-		NON_FAKEROOT_USERNAME=$(id -u -n) FWMOD_RECURSIVE=$$ "$FAKEROOT" -s "$FAKEROOT_CACHE" '--' "${CMDLINE_ORIG[@]}"
+		# Does fakeroot cache (size>0) exist for current combination of firmwares and has this combination already been unpacked?
+		if [ -s "$FAKEROOT_CACHE_DB" ] && [ -s "$UNPACKED_FILE" ] && [ "$(cat "$UNPACKED_FILE")" == "$FIRMWARE_MD5" ]; then
+			# Yes -> use existing cache and firmwares (no unpack necessary)
+			NON_FAKEROOT_USERNAME=$(id -u -n) FWMOD_RECURSIVE=$$ $TOOLS_DIR/build/bin/fakeroot -i "$FAKEROOT_CACHE_DB"  -s  "$FAKEROOT_CACHE_DB" '--' "${CMDLINE_ORIG[@]}"
+		else
+			# No -> create new fakeroot cache and unpack firmwares
+			NON_FAKEROOT_USERNAME=$(id -u -n) FWMOD_RECURSIVE=$$ $TOOLS_DIR/build/bin/fakeroot -s "$FAKEROOT_CACHE_DB" '--' "${CMDLINE_ORIG[@]}"
+		fi
 	fi
 	retval=$?
 	[ $retval -eq 0 ] || exit $retval
