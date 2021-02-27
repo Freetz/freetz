@@ -34,6 +34,7 @@ sudo dnf -y update && sudo systemctl daemon-reload
 ```
 sudo dnf -y groupinstall "Development Tools" "Development Libraries"
 sudo dnf -y install sqlite.i686 sqlite-devel libzstd-devel.i686 cmake zlib-devel.i686 libstdc++-devel.i686 openssl xz bc unar inkscape ImageMagick subversion ccache gcc gcc-c++ binutils autoconf automake libtool make bzip2 ncurses-devel ncurses-term zlib-devel flex bison patch texinfo gettext pkgconfig ecj perl perl-String-CRC32 wget glib2-devel git libacl-devel libattr-devel libcap-devel ncurses-devel.i686 glibc-devel.i686 libgcc.i686
+
 ```
 
  - Falls auf dem folgenden System ein 64-Bit Linux installiert ist wird zusätzlich benötigt:
@@ -48,9 +49,17 @@ sudo yum -y install execstack ImageMagick subversion gcc gcc-c++ binutils autoco
 
 ### Ubuntu
 
-Zum Umstellen auf eine deutsch Tastaturbelegung: `sudo locale-gen de_DE` und `sudo dpkg-reconfigure console-data` ausführen,
-siehe [LocaleConf](https://help.ubuntu.com/community/LocaleConf)
+ - Deutsche Tastaturbelegung
+   Siehe [ubuntu.com: LocaleConf](https://help.ubuntu.com/community/LocaleConf)
+```
+sudo locale-gen de_DE && sudo dpkg-reconfigure console-data
+```
 
+ - 32-Bit aktivieren
+   Siehe [debian.org: Multiarch HOWTO](https://wiki.debian.org/Multiarch/HOWTO) und [heise.de: Pakete für mehrere CPU-Architekturen in Linux installieren](http://heise.de/-2056403)
+```
+dpkg --print-foreign-architectures | grep -q i386 || sudo dpkg --add-architecture i386
+```
 
  - System updaten:
 ```
