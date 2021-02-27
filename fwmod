@@ -352,7 +352,7 @@ else
 	else
 		# Dont keep old databases on a new unpack
 		mkdir -p "$FAKEROOT_CACHE_DIR"
-		rm -rf $FAKEROOT_CACHE_DIR/*
+		rm -f $FAKEROOT_CACHE_DIR/*
 	fi
 	if [ "$FREETZ_ROOTEMU_FAKEROOT" != 'y' ]; then
 		                     PSEUDO_PREFIX="$TOOLS_DIR/build" PSEUDO_LOCALSTATEDIR="$FAKEROOT_CACHE_DIR"                  "$TOOLS_DIR/build/bin/pseudo"  -B  &>/dev/null  #scan
