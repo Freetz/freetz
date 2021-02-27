@@ -1,6 +1,10 @@
 # NEWS
 
  * __[2021-02-17](#2021-02-17)__<a id='2021-02-17'></a><br>
+   Alternativ zu [fakeroot](http://freshmeat.sourceforge.net/projects/fakeroot) kann [pseudo](https://www.yoctoproject.org/software-item/pseudo/) zur Imageerstellung ausgewählt werden.<br>
+   Siehe [74ad5acd](https://github.com/Freetz-NG/freetz-ng/commit/74ad5acd02bd31e83dc249563345a9f8f6c602fe)<br>
+
+ * __[2021-02-17](#2021-02-17)__<a id='2021-02-17'></a><br>
    Zu den `Download-Toolchains` gibt es jetzt die `Download-Host-Tools`. Dies spart etwas Zeit beim Imagebau. Auf einem<br>
    64-Bit Linux muss die 32-Bit Version von `libz` installiert sein! Für Ubuntu: ```sudo apt-get install lib32z1-dev```<br>
    Siehe [cc66c126](https://github.com/Freetz-NG/freetz-ng/commit/cc66c1264725c60edc8ca5bc7795c6243a9ab41e)<br>
