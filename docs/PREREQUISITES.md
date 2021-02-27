@@ -43,7 +43,7 @@ sudo yum -y install ncurses-devel.i686 glibc-devel.i686 libgcc.i686
 
  - Fedora ~20 32-Bit:
 ```
-sudo yum -y install ImageMagick subversion gcc gcc-c++ binutils autoconf automake libtool make bzip2 ncurses-devel zlib-devel flex bison patch texinfo gettext pkgconfig ecj perl perl-String-CRC32 wget glib2-devel git libacl-devel libattr-devel libcap-devel
+sudo yum -y install execstack ImageMagick subversion gcc gcc-c++ binutils autoconf automake libtool make bzip2 ncurses-devel zlib-devel flex bison patch texinfo gettext pkgconfig ecj perl perl-String-CRC32 wget glib2-devel git libacl-devel libattr-devel libcap-devel
 ```
 
 ### Ubuntu
@@ -61,7 +61,9 @@ sudo apt-get -y dist-upgrade
 
  - Ubuntu 20 64-Bit:
 ```
-sudo apt -y install sqlite:i386 sqlite-dev libzstd-dev:i386 libzstd-dev cmake lib32z1-dev unar inkscape imagemagick subversion git bc wget sudo ccache gcc g++ binutils autoconf automake autopoint libtool-bin make bzip2 libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config ecj fastjar perl libstring-crc32-perl ruby gawk python libusb-dev unzip intltool libacl1-dev libcap-dev libc6-dev-i386 lib32ncurses5-dev gcc-multilib lib32stdc++6 libglib2.0-dev 
+sudo apt -y install execstack sqlite3 libsqlite3-dev libzstd-dev:i386 libzstd-dev cmake lib32z1-dev unar inkscape imagemagick subversion git bc wget sudo ccache gcc g++ binutils autoconf automake autopoint libtool-bin make bzip2 libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config ecj fastjar perl libstring-crc32-perl ruby gawk python libusb-dev unzip intltool libacl1-dev libcap-dev libc6-dev-i386 lib32ncurses5-dev gcc-multilib lib32stdc++6 libglib2.0-dev 
+# sqlite-32bit lässt sich mit apt nicht installieren, aber mit apt-get schon. Siehe auch: https://developpaper.com/ubuntu-solves-the-problem-of-libsqlite3-0-dependency-recommended/
+sudo apt-get -y install sqlite3:i386
 ```
 
  - Ubuntu 16 64-Bit:
