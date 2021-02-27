@@ -49,14 +49,14 @@ sudo yum -y install execstack ImageMagick subversion gcc gcc-c++ binutils autoco
 
 ### Ubuntu
 
- - Deutsche Tastaturbelegung
-   Siehe [ubuntu.com: LocaleConf](https://help.ubuntu.com/community/LocaleConf)
+ - Deutsche Tastaturbelegung:<br>
+Siehe [ubuntu.com: LocaleConf](https://help.ubuntu.com/community/LocaleConf)
 ```
 sudo locale-gen de_DE && sudo dpkg-reconfigure console-data
 ```
 
- - 32-Bit aktivieren
-   Siehe [debian.org: Multiarch HOWTO](https://wiki.debian.org/Multiarch/HOWTO) und [heise.de: Pakete für mehrere CPU-Architekturen in Linux installieren](http://heise.de/-2056403)
+ - 32-Bit aktivieren:<br>
+Siehe [debian.org: Multiarch HOWTO](https://wiki.debian.org/Multiarch/HOWTO) und [heise.de: Pakete für mehrere CPU-Architekturen in Linux installieren](http://heise.de/-2056403)
 ```
 dpkg --print-foreign-architectures | grep -q i386 || sudo dpkg --add-architecture i386
 ```
