@@ -52,7 +52,7 @@ sudo yum -y install execstack ImageMagick subversion gcc gcc-c++ binutils autoco
  - Deutsche Tastaturbelegung:<br>
 Siehe [ubuntu.com: LocaleConf](https://help.ubuntu.com/community/LocaleConf)
 ```
-sudo locale-gen de_DE && sudo dpkg-reconfigure console-data
+sudo apt-get -y install console-data && sudo locale-gen de_DE && sudo dpkg-reconfigure console-data && exit
 ```
 
  - 32-Bit aktivieren:<br>
