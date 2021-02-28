@@ -1,6 +1,6 @@
 # NEWS
 
- * __[2021-02-17](#2021-02-17)__<a id='2021-02-17'></a><br>
+ * __[2021-02-27](#2021-02-27)__<a id='2021-02-27'></a><br>
    Alternativ zu [fakeroot](http://freshmeat.sourceforge.net/projects/fakeroot) kann [pseudo](https://www.yoctoproject.org/software-item/pseudo/) zur Imageerstellung ausgewählt werden.<br>
    Siehe [74ad5acd](https://github.com/Freetz-NG/freetz-ng/commit/74ad5acd02bd31e83dc249563345a9f8f6c602fe)<br>
 
