@@ -553,6 +553,22 @@ determine_() {
 	[ $DOSHOW -ge 2 ] && outp "tr069fwu" "$X"
 
 
+	#LEDPAGE
+	X="%"
+	[ -e $unpacked/usr/www/avm/system/led_display.lua ] && X="available" && in_b "FREETZ_AVM_HAS_LEDPAGE"
+	[ $DOSHOW -ge 2 ] && outp "ledpage" "$X"
+
+	#DDNSD
+	X="%"
+	[ -e "$unpacked/sbin/ddnsd" ] && X="available" && in_b "FREETZ_AVM_HAS_DDNSD"
+	[ $DOSHOW -ge 2 ] && outp "ddnsd" "$X"
+
+	#KMOD
+	X="%"
+	[ -e "$unpacked/usr/bin/kmod" ] && X="available" && in_b "FREETZ_AVM_HAS_KMOD"
+	[ $DOSHOW -ge 2 ] && outp "kmod" "$X"
+
+
 	#MINID
 	X="%"
 	[ -e "$unpacked/bin/minid" -o -L "$unpacked/bin/minid" ] && X="available" && in_b "FREETZ_AVM_HAS_MINID"
