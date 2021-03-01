@@ -479,7 +479,6 @@ choice
 	config FREETZ_TYPE_7590
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_4N5
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_GRX5
-		select FREETZ_REMOVE_UNTRUSTEDD if FREETZ_TYPE_FIRMWARE_07_2X_MIN
 		bool "7590"
 
 	config FREETZ_TYPE_7599
@@ -692,20 +691,18 @@ choice
 			Enable this to use an AVM Inhaus firmware as base for modding.
 
 	config FREETZ_TYPE_FIRMWARE_07_25_LABOR
-		bool "FRITZ!OS 07.24 Labor - DEVELOPER"
+		bool "FRITZ!OS 07.24 Labor"
 		select FREETZ_AVM_VERSION_07_25
 		select FREETZ_DL_DETECT_IMAGE_NAME
 		depends on FREETZ_AVM_HAS_FIRMWARE_07_25_LABOR && FREETZ_SHOW_ADVANCED
-		depends on FREETZ_SHOW_DEVELOPER
 		help
 			Enable this to use an AVM Labor firmware as base for modding.
 			For more details see <http://www.avm.de/Labor/>.
 
 	config FREETZ_TYPE_FIRMWARE_07_25
-		bool "FRITZ!OS 07.25+ - UNTESTED"
+		bool "FRITZ!OS 07.25+"
 		select FREETZ_AVM_VERSION_07_25
 		depends on FREETZ_AVM_HAS_FIRMWARE_07_25
-		depends on FREETZ_SHOW_EXPERT
 
 
 endchoice # "Firmware version" #
