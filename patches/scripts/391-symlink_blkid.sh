@@ -1,12 +1,15 @@
+[ "$FREETZ_PACKAGE_E2FSPROGS_BLKID" == "y" -o "$FREETZ_BUSYBOX__KEEP_BINARIES" != "y" ] || return 0
+echo1 "moving blkid around"
+
 if [ -x "${FILESYSTEM_MOD_DIR}/usr/sbin/blkid" ]; then
-	echo1 "moving AVM's blkid from /usr/sbin to /sbin"
+	echo2 "moving AVM's blkid from /usr/sbin to /sbin"
 	mv "${FILESYSTEM_MOD_DIR}/usr/sbin/blkid" "${FILESYSTEM_MOD_DIR}/sbin/"
 	# symlink /sbin-version from /usr/sbin (AVM uses absolute /usr/sbin-path in some scripts)
 	ln -sf ../../sbin/blkid "${FILESYSTEM_MOD_DIR}/usr/sbin/blkid"
 fi
 
 if [ -x "${FILESYSTEM_MOD_DIR}/sbin/blkid" ]; then
-	echo1 "renaming AVM's blkid to blkid-avm"
+	echo2 "renaming AVM's blkid to blkid-avm"
 	mv "${FILESYSTEM_MOD_DIR}/sbin/blkid" "${FILESYSTEM_MOD_DIR}/sbin/blkid-avm"
 fi
 
@@ -28,6 +31,7 @@ get_preferred_blkid_version() {
 
 preferred_blkid_version=$(get_preferred_blkid_version)
 if [ -n "$preferred_blkid_version" ]; then
-	echo1 "symlinking blkid to $preferred_blkid_version"
+	echo2 "symlinking blkid to $preferred_blkid_version"
 	ln -sf "$preferred_blkid_version" "${FILESYSTEM_MOD_DIR}/sbin/blkid"
 fi
+

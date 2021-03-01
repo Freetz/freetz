@@ -1,12 +1,3 @@
-if [ "$FREETZ_REMOVE_UMTSD" == "y" -o "$FREETZ_REMOVE_ASSISTANT" == "y" ]; then
-	[ -e "${HTML_LANG_MOD_DIR}/html/logincheck.html" ] && modsed \
-	  's/\(^var umts = \).*/\10;/g' \
-	  "${HTML_LANG_MOD_DIR}/html/logincheck.html"
-	modsed \
-	  's/\(^local start_umts.*\) =.*/\1 = false/g' \
-	  "${LUA_MOD_DIR}/first.lua"
-fi
-
 [ "$FREETZ_REMOVE_UMTSD" == "y" ] || return 0
 echo1 "remove umtsd files"
 
