@@ -1,3 +1,4 @@
+[ "$FREETZ_AVM_VERSION_07_1X_MAX" == "y" ] || return 0
 [ "$FREETZ_AVM_HAS_ONLY_HTML" != "y" ] || return 0
 echo1 "patching hostname to allow dots/domain name"
 
