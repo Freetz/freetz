@@ -19,6 +19,16 @@ for files in $(grep -rsl '<? setvariable var:showVpn 1 ?>' ${HTML_SPEC_MOD_DIR})
 	modsed 's/<? setvariable var:showVpn 1 ?>//' "$files"
 done
 
+# patcht System > FRITZ!Box-Benutzer > edit > Berechtigungen > VPN
+file="${HTML_LANG_MOD_DIR}/system/boxuser_edit.lua"
+if [ -e "$file" ]; then
+	echo2 "patching $file"
+	modsed \
+	  's/rights_checkbox("vpn_access"/disabled__&/' \
+	  "$file" \
+	  "disabled__rights_checkbox"
+fi
+
 echo1 "patching rc.conf"
 modsed "s/CONFIG_VPN=.*$/CONFIG_VPN=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 
