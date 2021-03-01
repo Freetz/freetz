@@ -10,6 +10,7 @@ choice
 	config FREETZ_DOWNLOAD_TOOLCHAIN
 		bool "Use precompiled i686 toolchains"
 		select FREETZ_TOOLCHAIN_32BIT
+		depends on FREETZ_SHOW_EXPERT
 
 	config FREETZ_BUILD_TOOLCHAIN
 		bool "Build own toolchains (4GB diskspace)"
@@ -690,6 +691,7 @@ config FREETZ_TOOLCHAIN_MINIMIZE_REQUIRED_GLIBC_VERSION
 
 config FREETZ_TOOLCHAIN_32BIT
 	bool "Build 32-bit tools and toolchains"
+	depends on FREETZ_SHOW_EXPERT
 	default n
 	help
 		This option causes 32-bit tools and toolchains to be built on a 64-bit systems.
@@ -718,11 +720,13 @@ choice
 
 	config FREETZ_ROOTEMU_PSEUDO
 		bool "Use pseudo"
+		depends on FREETZ_SHOW_EXPERT
 
 endchoice # "Root emulator" #
 
 config FREETZ_HOSTTOOLS_DOWNLOAD
 	bool "Use precompiled i686 host-tools"
+	depends on FREETZ_SHOW_EXPERT
 	select FREETZ_TOOLCHAIN_32BIT
 	default y
 	help
