@@ -1,7 +1,13 @@
-[ -e "${FILESYSTEM_MOD_DIR}/usr/www/all/webservices/homeautoswitch.lua" -a "$FREETZ_AVM_VERSION_06_2X_MIN" == "y" ] || return 0
+[ "$FREETZ_PACKAGE_RRDSTATS_SMARTHOME" == "y" ] || return 0
+[ "$FREETZ_AVM_VERSION_06_2X_MIN" == "y" ] || return 0
 echo1 "enabling aha voltage"
 
 # patcht homeautoswitch.lua > getdevicelistinfos"
+
+if [ ! -e "${FILESYSTEM_MOD_DIR}/usr/www/all/webservices/homeautoswitch.lua" ]; then
+	echo2 "homeautoswitch.lua not found"
+	return 1
+fi
 
 if [ "$FREETZ_AVM_VERSION_07_2X_MIN" == "y" ] ; then
 	PVER="07_2X"

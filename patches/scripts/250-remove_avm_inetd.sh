@@ -1,5 +1,4 @@
 [ "$FREETZ_PACKAGE_INETD" == "y" -a "$FREETZ_AVM_HAS_INETD" == "y" ] || return 0
-
 echo1 "removing AVM inetd"
 
 rm_files "${FILESYSTEM_MOD_DIR}/bin/inetdctl" # AVM wrapper / starter script for ftpd, samba and webdav
@@ -18,3 +17,4 @@ else
 		modsed '/^\/usr\/sbin\/inetd.*$/echo INTERCHANGED: &/' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 	fi
 fi
+

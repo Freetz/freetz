@@ -1,3 +1,6 @@
+
+echo1 "creating inittab"
+
 # Do not start the shell if it should be disabled
 [ "$FREETZ_DISABLE_SERIAL_CONSOLE" == "y" ] && shell="" || shell="-/bin/sh"
 

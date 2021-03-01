@@ -1,4 +1,17 @@
 [ "$FREETZ_ENFORCE_URLADER_SETTINGS" = y ] || return 0
+set_desired_urlader_vars() {
+	local urlader_var freetz_config_var
+	for urlader_var in firmware_version my_ipaddress ProductID; do
+		freetz_config_var="FREETZ_ENFORCE_URLADER_SETTING_${urlader_var^^}"
+		if [ -n "${!freetz_config_var}" ]; then
+			cat <<- EOF
+			set_urlader_var "${urlader_var}" "${!freetz_config_var}"
+			EOF
+		fi
+	done
+}
+[ -n "$(set_desired_urlader_vars)" ] || return 0
+echo1 "enforce urlader settings"
 
 define_urlader_funcs() {
 cat <<- 'EOF'
@@ -12,18 +25,6 @@ cat <<- 'EOF'
 EOF
 }
 
-set_desired_urlader_vars() {
-local urlader_var freetz_config_var
-for urlader_var in firmware_version my_ipaddress ProductID; do
-	freetz_config_var="FREETZ_ENFORCE_URLADER_SETTING_${urlader_var^^}"
-	if [ -n "${!freetz_config_var}" ]; then
-		cat <<- EOF
-		set_urlader_var "${urlader_var}" "${!freetz_config_var}"
-		EOF
-	fi
-done
-}
-
 mount_proc() {
 cat <<- 'EOF'
 	mount -t proc proc /proc
@@ -35,10 +36,6 @@ cat <<- 'EOF'
 	umount /proc
 EOF
 }
-
-[ -n "$(set_desired_urlader_vars)" ] || return 0
-
-echo1 "enforce urlader settings"
 
 {
 	rc_S="${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
@@ -78,3 +75,4 @@ echo1 "enforce urlader settings"
 
 chmod 755 "${rc_S}.modified"
 mv "${rc_S}.modified" "${rc_S}"
+

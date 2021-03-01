@@ -1,3 +1,6 @@
+
+
+
 STORAGE_FILE="${FILESYSTEM_MOD_DIR}/etc/hotplug/storage"
 
 echo1 "fixing some typos in AVM storage/mount code"

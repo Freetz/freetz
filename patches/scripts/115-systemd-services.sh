@@ -1,6 +1,7 @@
 [ -n "$SYSTEMD_CORE_MOD_DIR" ] || return 0
+echo1 "adding supervisor services"
 
-echo1 "adding modload.service"
+echo2 "adding modload.service"
 cat << 'EOF' > "${FILESYSTEM_MOD_DIR}/lib/systemd/system/modload.service"
 [Unit]
 ExecStart=/etc/boot.d/core/20-modload
@@ -11,7 +12,7 @@ After=tffs.service environment.service
 WantedBy=environment.target
 EOF
 
-echo1 "adding rcmod.service"
+echo2 "adding rcmod.service"
 cat << 'EOF' > "${FILESYSTEM_MOD_DIR}/lib/systemd/system/rcmod.service"
 [Unit]
 ExecStart=/etc/boot.d/core/99-zzz-rcmod

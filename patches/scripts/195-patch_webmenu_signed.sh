@@ -24,3 +24,4 @@ for oem in $(supported_brandings) all; do
 		modsed 's,box[.]query("[^"]*/signed_firmware"),"1",g' ${FILESYSTEM_MOD_DIR}${file}
 	done
 done
+

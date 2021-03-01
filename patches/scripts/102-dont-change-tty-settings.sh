@@ -1,4 +1,6 @@
+
 [ "$FREETZ_AVM_VERSION_06_0X_MIN" == "y" ] || return 0
+echo1 "preventing tty setting changes"
 
 # freetz launches sysinit without controlling tty (s. patches/scripts/102-add_inittab.sh)
 # don't try to set/change tty settings as it won't work

@@ -1,19 +1,22 @@
+[ "$FREETZ_DISABLE_DEBUG_CFG_SUPPORT" == "y" -o "$FREETZ_RESTORE_DEBUG_CFG_SUPPORT" == "y" ] || return 0
+echo1 "patching debug.cfg"
+
 if [ -e "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.tail.sh" ]; then
-        rcfile="${FILESYSTEM_MOD_DIR}/etc/init.d/rc.tail.sh"
+	rcfile="${FILESYSTEM_MOD_DIR}/etc/init.d/rc.tail.sh"
 else
-        rcfile="${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
+	rcfile="${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
 fi
 
 if grep -q "mknod /var/flash/debug.cfg" "$rcfile" 2>/dev/null; then
 	# firmware supports debug.cfg
 	if [ "${FREETZ_DISABLE_DEBUG_CFG_SUPPORT}" == y ]; then
-		echo1 "disabling processing of /var/flash/debug.cfg"
+		echo2 "disabling processing of /var/flash/debug.cfg"
 		modsed -r 's,^([ \t]*[.][ \t]+/var/flash/debug[.]cfg),: # disabled by freetz: \1,' "$rcfile"
 	fi
 else
 	# no support for debug.cfg
 	if [ "${FREETZ_RESTORE_DEBUG_CFG_SUPPORT}" == y ]; then
-		echo1 "restoring support for /var/flash/debug.cfg"
+		echo2 "restoring support for /var/flash/debug.cfg"
 
 modsed '/echo 1 > \/proc\/sys\/kernel\/panic_on_oops/ a\
 ##########################################################################################\
@@ -39,3 +42,4 @@ if [ "$FREETZ_ASYNCHRONOUS_DEBUG_CFG" == "y" ]; then
 			"$rcfile"
 	fi
 fi
+

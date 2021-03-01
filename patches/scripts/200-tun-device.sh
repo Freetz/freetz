@@ -1,3 +1,4 @@
+[ "$FREETZ_PACKAGE_OPENVPN" == "y" -o "$FREETZ_PACKAGE_VPNC" == "y" ] || return 0
 [ "$FREETZ_AVM_VERSION_05_2X_MIN" == "y" ] || return 0
 echo1 "creating symlink for tun device"
 

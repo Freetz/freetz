@@ -1,3 +1,6 @@
+
+echo1 "creating fstab"
+
 cat << 'EOF' > "${FILESYSTEM_MOD_DIR}/etc/fstab"
 ## /etc/fstab: static file system information.
 ## <file system>  <mount point>  <type>  <options>                 <dump>  <pass>
