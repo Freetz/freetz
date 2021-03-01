@@ -1,5 +1,18 @@
 # NEWS
 
+ * __[2021-03-01](#2021-03-01)__<a id='2021-03-01'></a><br>
+   [Akute Angriffswelle auf Fritzbox-Nutzer, jetzt handeln!](https://heise.de/-5068111) berichtet Heise. Laut [AVM](https://avm.de/service/aktuelle-sicherheitshinweise/) ist das ganz normal und macht nichts.<br>
+   Dies mag stimmen, solange in den closed-source Teilen die aus dem Internet erreichbar sind kein Bug entdeckt wird,<br>
+   das kommt aber auch schon mal vor: [Hack gegen AVM-Router: Fritzbox-Lücke offengelegt, Millionen Router in Gefahr](https://heise.de/-2136784)<br>
+   Das eigentliche Problem liegt aber darin dass ein Hersteller einen DynDNS-Dienst anbietet ("myfritz") und sich so leicht<br>
+   viel seiner Geräte finden lassen. Die kyrptischen Namen die hierbei vergeben werden verursachen ausschliesslich Probleme<br>
+   beim Merken, irgendeinen Vorteil haben sie nicht. Denn jedes ausgestelle HTTPS Zertifikat ist öffentlich einsehbar, zb im<br>
+   [Transparenzreport von Google](https://transparencyreport.google.com/). Dieser listet aktuell [etwa 100.000 Zertifikate für Hostnamen](https://transparencyreport.google.com/https/certificates?cert_search=include_subdomains:true;domain:myfritz.net;issuer_uid:6637846985631092092) unter `myfritz.net` auf.<br>
+   Was kann man tun?
+    - Auf keinen Fall Standardports (HTTPS: 443) verwenden
+    - Am besten einen anderen Dyndns-Anbieter nutzen
+    - Optimalerweise keine Dienste der Fritzbox ins Internet freigeben
+
  * __[2021-02-27](#2021-02-27)__<a id='2021-02-27'></a><br>
    Alternativ zu [fakeroot](http://freshmeat.sourceforge.net/projects/fakeroot) kann [pseudo](https://www.yoctoproject.org/software-item/pseudo/) zur Imageerstellung ausgewählt werden.<br>
    Siehe [74ad5acd](https://github.com/Freetz-NG/freetz-ng/commit/74ad5acd02bd31e83dc249563345a9f8f6c602fe)<br>
