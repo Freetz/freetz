@@ -169,7 +169,7 @@ Index:
   * **<u>REMOVE_LANGUAGE_pl: pl</u><a id='remove-language-pl'></a>**<br>
 
   * **<u>Remove leftover</u><a id='remove-leftover'></a>**<br>
-    This enables the scripts in patches/cond/300-remove-leftover/ which remove some unused leftovers of avm, like ptest.
+    This enables the scripts in patches/cond/300-remove-leftover/ which remove some unused leftovers of avm, currently 111-disable_crashreport.sh 170-remove_dect_related_files_on_nondect_box.sh 510-remove_usbmon.sh 565-remove_more.sh 565-remove_ncurses.sh 570-remove-trustedd.sh 800-remove_oemcheck.sh 800-remove_ptest.sh
 
   * **<u>Remove libfuse.so</u><a id='remove-libfuse'></a>**<br>
     This removes libfuse.so and saves about 132 KB (uncompressed). NTFS and Webdav are also removed.
@@ -523,7 +523,7 @@ Index:
     If Y is choosen, this changes the semantics of the LEDs on the front panel of your 7570/W920V box fitting the descriptions of the W920V.
 
   * **<u>Patch webif features</u><a id='patch-webif-features'></a>**<br>
-    This enables the scripts in patches/cond/800-webif_features/ which patch some webif features to webif, most for extender.
+    This enables the scripts in patches/cond/800-webif_features/ which patch some webif features, currently 210-patch_hostname.sh 811-show_tr069_config.sh 812-show_update_config.sh 821-show_network_repeater.sh 822-show_dvb_services.sh
 
   * **[Replace dtrace](REPLACE_DTRACE.md)<a id='replace-dtrace'></a>**<br>
     Dtrace will be replaced by a symlink to /tmp/flash/mod/dtrace. Activating this option lets you execute a custom action via phone using #97*3* keycode sequence.

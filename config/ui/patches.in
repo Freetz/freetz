@@ -28,7 +28,15 @@ config FREETZ_REMOVE_LEFTOVER
 	default y
 	help
 		This enables the scripts in patches/cond/300-remove-leftover/
-		which remove some unused leftovers of avm, like ptest.
+		which remove some unused leftovers of avm, currently
+		 111-disable_crashreport.sh
+		 170-remove_dect_related_files_on_nondect_box.sh
+		 510-remove_usbmon.sh
+		 565-remove_more.sh
+		 565-remove_ncurses.sh
+		 570-remove-trustedd.sh
+		 800-remove_oemcheck.sh
+		 800-remove_ptest.sh
 
 config FREETZ_REMOVE_MODULE_BINS
 	bool "Remove module bins"
@@ -1154,7 +1162,12 @@ config FREETZ_PATCH_WEBIF_FEATURES
 	default n
 	help
 		This enables the scripts in patches/cond/800-webif_features/
-		which patch some webif features to webif, most for extender.
+		which patch some webif features, currently
+		 210-patch_hostname.sh
+		 811-show_tr069_config.sh
+		 812-show_update_config.sh
+		 821-show_network_repeater.sh
+		 822-show_dvb_services.sh
 
 config FREETZ_PATCH_SIGNED
 	bool "Patch web menu signed message"

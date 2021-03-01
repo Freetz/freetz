@@ -17,7 +17,7 @@
  - 106-wrapper_multid.sh
  - 107-wrapper_ar7login.sh
 
- - ### fixes
+### fixes
  - 090-var_install_fixes.sh
  - 196-storage_fixes.sh
  - 521-fix_dect_update.sh
@@ -27,5 +27,6 @@
  - 108-patch_multid-wait.sh
  - 105-S06-logging.sh
  - 391-symlink_blkid.sh
+ - 401-remove_ftpd_banner.sh
  - 620-symlink_wget.sh
 
