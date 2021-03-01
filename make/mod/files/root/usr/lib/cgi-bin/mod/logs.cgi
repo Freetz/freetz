@@ -28,11 +28,6 @@ case "$3" in
 	logs_avm*)
 		logg=false
 
-		msgsend ctlmgr sessions
-		[ "0$(wc -l /var/tmp/sessions.txt 2>/dev/null | sed 's/ .*//')" -gt 2 ] || rm -f /var/tmp/sessions.txt
-		do_log /var/tmp/sessions.txt "WEB-Sessions"
-		rm -f /var/tmp/sessions.txt
-
 		do_log /proc/avm/log_sd/crash
 		do_log /proc/avm/log_sd/crash2
 		do_log /proc/avm/log_sd/panic
@@ -57,6 +52,12 @@ case "$3" in
 		do_log /var/tmp/lgpm.log
 		do_log /var/tmp/tcloud.log
 
+		msgsend ctlmgr sessions
+		[ "0$(wc -l /var/tmp/sessions.txt 2>/dev/null | sed 's/ .*//')" -gt 2 ] || rm -f /var/tmp/sessions.txt
+		do_log /var/tmp/sessions.txt "WEB-Sessions"
+		rm -f /var/tmp/sessions.txt
+
+		do_log /proc/avm/wdt "AVM-Watchdog"
 		do_log /proc/kdsld/dsliface/internet/ipmasq/pcp44 "PCP-Sessions"
 
 		$logg || echo "<br><h1>$(lang de:"Keine Logdateien gefunden" en:"No log files found")!</h1>"
