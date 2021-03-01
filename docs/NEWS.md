@@ -1,5 +1,11 @@
 # NEWS
 
+ * __[2021-03-02](#2021-03-02)__<a id='2021-03-02'></a><br>
+   Vorcompilierte Tools und Toolchains sowie ccache sind nun komplett deaktiviert.<br>
+   Es scheint wohl doch sehr kompliziert zu sein `apt-get` zu bedienen.<br>
+   Die 30 Minuten die ein Imagebau nun mehr benötig hat man zur freien Verfügung.<br>
+   Siehe [d6c35401](https://github.com/Freetz-NG/freetz-ng/commit/d6c35401204f899f11478ef316b0a003faef9ab9)<br>
+
  * __[2021-03-01](#2021-03-01)__<a id='2021-03-01'></a><br>
    [Akute Angriffswelle auf Fritzbox-Nutzer, jetzt handeln!](https://heise.de/-5068111) berichtet Heise. Laut [AVM](https://avm.de/service/aktuelle-sicherheitshinweise/) ist das ganz normal und macht nichts.<br>
    Dies mag stimmen, solange in den closed-source Teilen die aus dem Internet erreichbar sind kein Bug entdeckt wird,<br>
