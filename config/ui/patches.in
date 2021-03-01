@@ -23,6 +23,13 @@ config FREETZ_SELECT_HARDENING
 
 comment "Removal patches ------------------------------------------"
 
+config FREETZ_REMOVE_LEFTOVER
+	bool "Remove leftover"
+	default y
+	help
+		This enables the scripts in patches/cond/300-remove-leftover/
+		which remove some unused leftovers of avm, like ptest.
+
 config FREETZ_REMOVE_MODULE_BINS
 	bool "Remove module bins"
 	depends on !FREETZ_AVM_HAS_KMOD

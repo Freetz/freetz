@@ -1,5 +1,6 @@
 
 echo1 "removing ptest"
+
 rm_files \
   "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.ptest.release" \
   "${FILESYSTEM_MOD_DIR}/etc/init.d/S42-ptest" \
