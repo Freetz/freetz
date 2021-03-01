@@ -330,7 +330,7 @@ config FREETZ_REMOVE_MYFRITZ
 config FREETZ_REMOVE_DDNSD
 	bool "Remove DDNSD"
 	default n
-	depends on FREETZ_AVM_HAS_MYFRITZ
+	depends on FREETZ_AVM_HAS_DDNSD
 	help
 		Removes the Dynamic DNS daemon (saves about 70 KB in compressed image)
 
@@ -1188,7 +1188,8 @@ config FREETZ_MODIFY_COUNTER
 
 config FREETZ_ENABLE_LED_DEACTIVATION
 	bool "Enable LED deactivation page"
-	depends on FREETZ_AVM_VERSION_06_0X_MIN && FREETZ_AVM_VERSION_07_0X_MAX
+	depends on FREETZ_AVM_HAS_LEDPAGE
+	depends on FREETZ_AVM_VERSION_07_0X_MAX
 	default n
 	help
 		Re-enables access to the LED deactivation page in expert mode.
