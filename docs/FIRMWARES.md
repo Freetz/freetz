@@ -424,7 +424,7 @@ Currently supported devices and firmwares
   - 129.06.50 rev33971 {ALL}
   - 129.06.92 rev47358 {ALL}
   - 129.07.01 rev65030 {ALL}
-  - 129.07.12 rev70667 {ALL} [MESH18 NL2]
+  - 129.07.13 rev86607 {ALL} [MESH18 NL3]
 * __Fritz!Powerline 546E__
   - 118.06.32 rev31507 {GER}
   - 118.06.50 rev33971 {ALL}
