@@ -522,6 +522,9 @@ Index:
   * **[PATCH_W920V_LED_MODULE: Change LED semantics to W920V](PATCH_W920V_LED_MODULE.md)<a id='patch-w920v-led-module'></a>**<br>
     If Y is choosen, this changes the semantics of the LEDs on the front panel of your 7570/W920V box fitting the descriptions of the W920V.
 
+  * **<u>Patch webif features</u><a id='patch-webif-features'></a>**<br>
+    This enables the scripts in patches/cond/800-webif_features/ which patch some webif features to webif, most for extender.
+
   * **[Replace dtrace](REPLACE_DTRACE.md)<a id='replace-dtrace'></a>**<br>
     Dtrace will be replaced by a symlink to /tmp/flash/mod/dtrace. Activating this option lets you execute a custom action via phone using #97*3* keycode sequence.
 
