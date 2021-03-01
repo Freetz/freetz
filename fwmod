@@ -1020,8 +1020,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 		exit
 	fi
 
+	echo1 -l "patches applied"
+
 	# remove oems
-	echo1 -n "removing oem:"
+	echo1 -ln "removing oem:"
 	oem_removed=0
 	oem_kept=0
 	oem_list=
@@ -1089,7 +1091,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	fi
 
 	if [ "$FREETZ_INSTALL_BASE" == "y" ]; then
-		echo "installing mod base"
+		echo0 "installing mod base"
 
 		MOD_ROOT="${VARTAR_MOD_DIR}/var/mod"
 		mkdir -p "${MOD_ROOT}/pkg" "${MOD_ROOT}/home" "${MOD_ROOT}/lib" "${MOD_ROOT}/root"
@@ -1638,7 +1640,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	fi
 
 	touch "${DIR}/.modified"
-	echo -e "done.\n"
+	echo0 "done.\n"
 fi
 
 
