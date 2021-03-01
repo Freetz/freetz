@@ -24,3 +24,4 @@ if [ -e "$file" ]; then
 	  "s/bGuestDisabled = true/bGuestDisabled = false/g" \
 	  "$file"
 fi
+

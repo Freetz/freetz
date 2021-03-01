@@ -1,5 +1,4 @@
-[ "$FREETZ_MODIFY_DSL_WARNING" == "y" ] || return 0;
-
+[ "$FREETZ_MODIFY_DSL_WARNING" == "y" ] || return 0
 echo1 "patching dsl overview"
 
 if [ "$FREETZ_AVM_VERSION_07_2X_MIN" == "y" ] ; then

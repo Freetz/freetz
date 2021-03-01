@@ -1,5 +1,4 @@
 [ "$FREETZ_PATCH_VOL_COUNTER" == "y" ] || return 0
-
 echo1 "adding volume counter support to the web-ui"
 
 vol_counter_sed=$(mktemp -q -t "${FREETZ_TYPE_PREFIX}-${FREETZ_TYPE_PREFIX_SERIES_SUBDIR}-vol-counter-XXXXXX.sed")
@@ -43,3 +42,4 @@ rm -f "${vol_counter_sed}" "${vol_counter_patch}"
 # set CONFIG_VOL_COUNTER to "y"
 echo1 "enabling volume counter support in /etc/init.d/rc.conf"
 modsed 's,CONFIG_VOL_COUNTER=.*$,CONFIG_VOL_COUNTER="y",' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf" 'CONFIG_VOL_COUNTER="y"$'
+

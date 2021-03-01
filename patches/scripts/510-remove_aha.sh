@@ -1,5 +1,6 @@
 [ "$FREETZ_REMOVE_AHA" == "y" ] || return 0
 echo1 "removing aha files"
+
 for files in \
   usr/bin/aha \
   usr/bin/ahamailer \
@@ -58,9 +59,9 @@ if [ "$FREETZ_AVM_VERSION_07_1X_MAX" == "y" ]; then
 	modsed -r 's,(function show_smarthome_broadcast.*),\1\nreturn false\nend,' $sedfile
 fi
 
-
 sedfile="${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 echo1 "patching ${sedfile##*/}"
 modsed "s/CONFIG_HOME_AUTO=.*$/CONFIG_HOME_AUTO=\"n\"/g" $sedfile
 modsed "s/CONFIG_HOME_AUTO_NET=.*$/CONFIG_HOME_AUTO_NET=\"n\"/g" $sedfile
 modsed "s/CONFIG_DECT_HOME=.*$/CONFIG_DECT_HOME=\"n\"/g" $sedfile
+

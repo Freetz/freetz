@@ -3,7 +3,6 @@
 [ "$FREETZ_AVMPLUGINS_WLAN" == "y" ] && return 0
 echo1 "hiding WLAN plugin"
 
-
 if [ "$FREETZ_AVM_VERSION_06_5X_MAX" == "y" ]; then
 
 	# patcht WLAN > Funknetz

@@ -1,6 +1,6 @@
 [ "$FREETZ_REMOVE_AVM_VPN" == "y" ] || return 0
-
 echo1 "removing AVM-VPN files"
+
 for files in \
   bin/avmike \
   $(isNeededEntry "libikeapi" "${FILESYSTEM_MOD_DIR}/usr/bin/ctlmgr" "${FILESYSTEM_MOD_DIR}/usr/bin/avm/ctlmgr" || echo 'lib/libikeapi*.so*') \
@@ -21,3 +21,4 @@ done
 
 echo1 "patching rc.conf"
 modsed "s/CONFIG_VPN=.*$/CONFIG_VPN=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+

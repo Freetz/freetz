@@ -5,6 +5,7 @@ remove_plugin() {
 return 0  # remove plugin
 }
 remove_plugin || [ "$FREETZ_REMOVE_MEDIASRV" == "y" ] || return 0
+echo1 "remove mediasrv"
 
 # if nas, mediaserv und samba are removed -> remove_nas deletes menu item Heimnetz > Speicher (NAS)
 

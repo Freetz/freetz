@@ -1,5 +1,4 @@
-[ "$FREETZ_PATCH_MODFS_BOOT_MANAGER" = "y" ] || return 0;
-
+[ "$FREETZ_PATCH_MODFS_BOOT_MANAGER" == "y" ] || return 0
 echo1 "adding modfs boot-manager"
 
 TEMPDIR=$(mktemp -d)

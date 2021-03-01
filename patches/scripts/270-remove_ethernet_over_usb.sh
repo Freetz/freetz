@@ -9,3 +9,4 @@ if [ -e $sedfile ]; then
 	echo1 "patching ${sedfile##*/}"
 	modsed '/.*<tr>$/{N;N;N;/^[ \t]*<tr>\n.*StateLed("<? query usb:status.carrier ?>").*/d}' $sedfile
 fi
+

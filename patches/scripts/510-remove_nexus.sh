@@ -1,5 +1,6 @@
 [ "$FREETZ_REMOVE_NEXUS" == "y" ] || return 0
 echo1 "removing nexus files"
+
 for files in \
   etc/init.d/e45-avmnexusd \
   etc/init.d/E45-avmnexusd \

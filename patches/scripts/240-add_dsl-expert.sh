@@ -9,6 +9,7 @@ for file in \
   ${HTML_SPEC_MOD_DIR}/internet/feedback.html \
   ; do
 	[ ! -f "$file" ] && continue
+	echo2 "patching $file"
 	modsed "
 	s|query box:settings.expertmode.activated ?>. .1.|query box:settings/expertmode/activated ?>' '0'|
 	" "$file"
@@ -18,10 +19,10 @@ for file in \
 <li><a href=\"javascript:uiDoLaborDSLPage()\">Einstellungen<\/a><\/li>\n\
 \` ?>\
 " "$file"
-	echo2 "patching $file"
 done
 
 modpatch \
   "$FILESYSTEM_MOD_DIR" \
   "${PATCHES_COND_DIR}/240-add-dsl-expert-pages/" \
   "/usr/www/all/html/de/internet/awatch.js"
+

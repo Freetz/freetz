@@ -34,3 +34,4 @@ if [ "$FREETZ_REMOVE_PIGLET_V2" == "y" ]; then
 fi
 
 rm_files "$files"
+

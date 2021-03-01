@@ -1,6 +1,6 @@
-[ "$FREETZ_REMOVE_USBHOST" = "y" ] || return 0
-
+[ "$FREETZ_REMOVE_USBHOST" == "y" ] || return 0
 echo1 "removing USB Host"
+
 rm_files "${MODULES_DIR}/kernel/drivers/usb/ahci/usbahcicore.ko"
 rm_files "${MODULES_DIR}/kernel/drivers/usb/core/usbcore.ko"
 rm_files "${MODULES_DIR}/kernel/drivers/usb/misc/usbauth/usbauth.ko"

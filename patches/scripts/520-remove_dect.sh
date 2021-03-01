@@ -1,5 +1,6 @@
 [ "$FREETZ_REMOVE_DECT" == "y" ] || return 0
 echo1 "removing DECT files"
+
 for files in \
   bin/supportdata.dect \
   sbin/start_dect_update.sh \
@@ -16,7 +17,7 @@ for files in \
   lib/modules/dectfw_firstlevel.hex \
   lib/modules/dectfw_secondlevel.hex \
   ; do
-        rm_files "${FILESYSTEM_MOD_DIR}/$files"
+	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
 fi
 
@@ -42,11 +43,11 @@ menulua_remove dect.podcast
 
 # don't patch this in firmwares < 05.5x (see https://trac.boxmatrix.info/freetz-ng/ticket/2056)
 if [ "$FREETZ_AVM_VERSION_05_5X_MIN" == "y" ]; then
-MODPROBEPIGLET=$(grep -l -i dect_firstlevelfile "${FILESYSTEM_MOD_DIR}/etc/init.d/"* 2>/dev/null)
-if [ -e "$MODPROBEPIGLET" ]; then
-	echo1 "patching ${MODPROBEPIGLET##*/}"
-	modsed '/^dect_[a-z]*levelfile=/ d; s!dect_[a-z]*levelfile=[^ ]*\level.hex!!g; s!.*dect_io.*!#&!' $MODPROBEPIGLET
-fi
+	MODPROBEPIGLET=$(grep -l -i dect_firstlevelfile "${FILESYSTEM_MOD_DIR}/etc/init.d/"* 2>/dev/null)
+	if [ -e "$MODPROBEPIGLET" ]; then
+		echo1 "patching ${MODPROBEPIGLET##*/}"
+		modsed '/^dect_[a-z]*levelfile=/ d; s!dect_[a-z]*levelfile=[^ ]*\level.hex!!g; s!.*dect_io.*!#&!' $MODPROBEPIGLET
+	fi
 fi
 
 MODPROBEDECT=$(grep -l -i -e "^modprobe dect_io$" "${FILESYSTEM_MOD_DIR}/etc/init.d/"* 2>/dev/null)
@@ -61,3 +62,4 @@ fi
 
 echo1 "patching rc.conf"
 modsed "s/\(CONFIG_.*DECT.*=\).*/\1\"n\"/" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+

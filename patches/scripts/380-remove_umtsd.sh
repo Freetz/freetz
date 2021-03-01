@@ -9,6 +9,7 @@ fi
 
 [ "$FREETZ_REMOVE_UMTSD" == "y" ] || return 0
 echo1 "remove umtsd files"
+
 rm_files \
   "${MODULES_DIR}/kernel/drivers/usb/serial/option.ko" \
   "${FILESYSTEM_MOD_DIR}/etc/hotplug/udev-gsm-tty" \

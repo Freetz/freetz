@@ -1,6 +1,6 @@
 [ "$FREETZ_REMOVE_VOIPD" == "y" ] || return 0
-
 echo1 "removing VoIP files"
+
 for files in \
   bin/showvoipdstat \
   bin/voipd \
@@ -35,3 +35,4 @@ modsed "s/CONFIG_FONQUALITY=.*$/CONFIG_FONQUALITY=\"n\"/g" "${FILESYSTEM_MOD_DIR
 
 touch "${FILESYSTEM_MOD_DIR}/bin/voipd"
 chmod +x "${FILESYSTEM_MOD_DIR}/bin/voipd"
+

@@ -3,8 +3,6 @@ echo1 "enabling update config"
 
 # iDea:  hermann72pb (http://www.ip-phone-forum.de/showthread.php?t=280142)
 
-
 # patcht System > Update > Auto-Update (Menupunkt)
-
 enable_page update_auto
 

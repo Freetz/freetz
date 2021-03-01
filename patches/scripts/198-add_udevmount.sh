@@ -1,5 +1,4 @@
 [ "$FREETZ_PATCH_UDEVMOUNT" == "y" ] || return 0
-
 echo1 'adding udevmount'
 
 MOUNTSD="${FILESYSTEM_MOD_DIR}/etc/hotplug/udev-mount-sd"

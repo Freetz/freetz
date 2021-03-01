@@ -61,3 +61,4 @@ modsed '/jslSetEnabled( *"uiViewVCI" *, *b *)/ ajslSetEnabled("uiViewPcr",b);' "
 #modsed '/id="uiViewVCI"/ a</tr>\n<tr>\n<td><label for="uiViewTrafficClass">Traffic Class</label></td>\n<td><select id="uiViewTrafficClass" class="Eingabefeld">\n<option>UBR</option>\n<option>CBR</option>\n<option>VBR</option>\n</select></td>' "${HTML_SPEC_MOD_DIR}/fon/sipoptionen.html"
 modsed '/id="uiViewVCI"/ a</tr>\n<tr>\n<td><label for="uiViewScr">SCR</label></td>\n<td><input type="text" size="5" maxlength="5" class="Eingabefeld" id="uiViewScr"></td>' "${HTML_SPEC_MOD_DIR}/fon/sipoptionen.html"
 modsed '/id="uiViewVCI"/ a</tr>\n<tr>\n<td><label for="uiViewPcr">PCR</label></td>\n<td><input type="text" size="5" maxlength="5" class="Eingabefeld" id="uiViewPcr"></td>' "${HTML_SPEC_MOD_DIR}/fon/sipoptionen.html"
+

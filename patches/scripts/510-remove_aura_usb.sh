@@ -1,5 +1,6 @@
 [ "$FREETZ_REMOVE_AURA_USB" == "y" ] || return 0
 echo1 "removing aura-usb files"
+
 for files in \
   ${HTML_SPEC_MOD_DIR}/usb/pp_aura.html \
   ${HTML_SPEC_MOD_DIR}/usb/aura.* \

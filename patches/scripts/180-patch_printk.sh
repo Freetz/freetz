@@ -14,3 +14,4 @@ for file in rc.S S17-isdn S11-piglet; do
 		modsed "/^cat \/dev\/debug.*$/ s/^/: #/g" "$FILESYSTEM_MOD_DIR/etc/init.d/$file"
 	fi
 done
+

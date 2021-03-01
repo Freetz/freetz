@@ -1,6 +1,6 @@
 [ "$FREETZ_REMOVE_TELEPHONY" == "y" ] || return 0
-
 echo1 "removing telephony files"
+
 if [ "$FREETZ_AVM_HAS_USB_HOST" == "y" ]; then
 	rm_files \
 	  $(find ${FILESYSTEM_MOD_DIR} ! -path '*/lib/*' -a -name '*isdn*' | grep -Ev '^${FILESYSTEM_MOD_DIR}/(proc|dev|sys|oldroot|var)/') \
@@ -134,3 +134,4 @@ fi
 # entfernt: "Hinweis: Es wird zur Zeit noch telefoniert. Wenn Sie das
 # Firmware-Update jetzt starten, werden alle Telefongespraeche beendet."
 modsed 's/^if next.calls. then$/if false then/' "${HTML_LANG_MOD_DIR}/system/update_file.lua"
+

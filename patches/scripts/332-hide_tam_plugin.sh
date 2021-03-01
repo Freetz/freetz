@@ -3,7 +3,6 @@
 [ "$FREETZ_AVMPLUGINS_TAM" == "y" ] && return 0
 echo1 "hiding TAM plugin"
 
-
 # patcht Telefonie > Anrufbeantworter
 modsed \
   's/pageData\["tam"\] /&and nil /g' \

@@ -18,10 +18,10 @@ if [ "$FREETZ_REMOVE_ANNEX_B_FIRMWARE" == "y" ]; then
 fi
 
 if [ "$FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_DIFFS" == "y" ]; then
+	echo1 "removing Multi-Annex firmware diff files"
 	# <?lua write_data_pump_section() ?>    and    ^write_data_pump_section()$
 	sedfile="${HTML_LANG_MOD_DIR}/internet/dsl_line_settings.lua"
 	[ -e "$sedfile" ] && modsed '/lua write_data_pump_section/d;/^write_data_pump_section/d' "$sedfile"
-	echo1 "removing Multi-Annex firmware diff files"
 	for files in \
 	  lib/modules/dsp_*/*-?-dsl.bin.bsdiff \
 	  lib/modules/dsp_*/*-?-dsl.bin.md5sum \
@@ -45,3 +45,4 @@ if [ "$FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_DIFFS" == "y" ]; then
 		supervisor_delete_service "dsl"
 	fi
 fi
+

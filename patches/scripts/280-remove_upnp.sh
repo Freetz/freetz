@@ -1,6 +1,6 @@
 [ "$FREETZ_REMOVE_UPNP" == "y" ] || return 0
-
 echo1 "removing AVM UPnP daemon (igdd or upnpd or upnpdevd)"
+
 rm_files \
   $(find ${FILESYSTEM_MOD_DIR}/sbin -maxdepth 1 -type f -name upnpdevd -o -name upnpd -o -name igdd | xargs) \
   $(find ${FILESYSTEM_MOD_DIR}/etc -maxdepth 1 -type d -name 'default.*' | xargs -I{} find {} -name 'any.xml' -o -name 'fbox*.xml') \
@@ -61,3 +61,4 @@ modsed "s/CONFIG_UPNP=.*$/CONFIG_UPNP=\"n\"/g" "$FILESYSTEM_MOD_DIR/etc/init.d/r
 #modsed '/killall.*igdd/d' "${FILESYSTEM_MOD_DIR}/bin/prepare_fwupgrade"
 #modsed '/.*igdd -s/d'     "${FILESYSTEM_MOD_DIR}/bin/prepare_fwupgrade"
 #modsed 's/ igdd / /g'     "${FILESYSTEM_MOD_DIR}/bin/prepare_fwupgrade"
+

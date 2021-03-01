@@ -1,5 +1,6 @@
 [ "$FREETZ_REMOVE_KIDS" == "y" ] || return 0
 echo1 "removing kids files (userman/contfiltd)"
+
 rm_files \
   ${FILESYSTEM_MOD_DIR}/bin/userman* \
   $(find ${HTML_LANG_MOD_DIR} -name 'userlist*' -o -name 'useradd*') \
@@ -74,3 +75,4 @@ else
 	modsed "s/CONFIG_KIDS=.*$/CONFIG_KIDS=\"n\"/g" "$FILESYSTEM_MOD_DIR/etc/init.d/rc.conf"
 	modsed "s/CONFIG_KIDS_CONTENT=.*$/CONFIG_KIDS_CONTENT=\"n\"/g" "$FILESYSTEM_MOD_DIR/etc/init.d/rc.conf"
 fi
+

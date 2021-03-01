@@ -1,5 +1,4 @@
-[ "$FREETZ_MODIFY_DSL_SETTINGS" == "y" ] || return 0;
-
+[ "$FREETZ_MODIFY_DSL_SETTINGS" == "y" ] || return 0
 echo1 "patching dsl settings"
 
 # allow applying patch

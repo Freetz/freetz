@@ -1,5 +1,6 @@
 [ "$FREETZ_REMOVE_MINID" == "y" ] || return 0
 echo1 "removing minid files"
+
 for files in \
   bin/minid \
   bin/minidcfg \
@@ -45,3 +46,4 @@ done
 
 echo1 "patching rc.conf"
 modsed "s/CONFIG_MINI=.*$/CONFIG_MINI=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
+

@@ -1,9 +1,9 @@
 [ "$FREETZ_REMOVE_AVM_E2FSPROGS" == "y" ] || return 0
+echo1 "remove AVM's e2fsprogs/util-linux binaries"
 
 # Note: all AVM binaries are actually from util-linux package
 # mkswap, swapon, swapoff, renice are replaced with their busybox counterparts
 
-echo1 "remove AVM's e2fsprogs/util-linux binaries"
 for files in \
   blkid \
   chattr \
@@ -41,3 +41,4 @@ for files in \
 		rm_files "$filenpath"
 	done
 done
+

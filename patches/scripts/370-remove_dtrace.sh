@@ -1,10 +1,7 @@
 [ "$FREETZ_REMOVE_DTRACE" == "y" ] || return 0
-
-if [ "$FREETZ_REPLACE_DTRACE" != "y" ]; then
-	echo1 "removing dtrace file"
-else
-	echo1 "replacing dtrace file"
-fi
+[ "$FREETZ_REPLACE_DTRACE" != "y" ] && action='removing' || action='replacing'
+echo1 "$action dtrace file"
 
 rm_files "${FILESYSTEM_MOD_DIR}/usr/bin/dtrace"
 [ "$FREETZ_REPLACE_DTRACE" == "y" ] && ln -s /tmp/flash/mod/dtrace "${FILESYSTEM_MOD_DIR}/usr/bin/dtrace"
+

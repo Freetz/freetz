@@ -29,3 +29,4 @@ else
 	[ -e "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.rtc.sh" ] && \
 	  modsed "s#/var/dev/rtc#/dev/rtc#g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.rtc.sh"
 fi
+

@@ -1,5 +1,4 @@
-[ "$FREETZ_ENABLE_LED_DEACTIVATION" == "y" -a -f "${FILESYSTEM_MOD_DIR}/usr/www/all/system/led_display.lua" ] || return 0
-
+[ "$FREETZ_ENABLE_LED_DEACTIVATION" == "y" ] || return 0
 echo1 "re-adding LED (de-)activation page"
 
 if [ "$FREETZ_AVM_VERSION_07_0X_MIN" == "y" ] ; then
@@ -15,3 +14,4 @@ elif [ "$FREETZ_AVM_VERSION_06_0X_MIN" == "y" ] ; then
 fi
 
 modpatch "${FILESYSTEM_MOD_DIR}" "${PATCHES_COND_DIR}/enable_led_deactivation-${PVER}.patch"
+

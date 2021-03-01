@@ -1,6 +1,6 @@
 [ "$FREETZ_REMOVE_NTFS" == "y" ] || [ "$FREETZ_PACKAGE_NTFS" == "y" ] || return 0
-
 echo1 "remove AVM's ntfs-3g files"
+
 for files in \
   bin/ntfs-3g \
   lib/libfuse.so* \
@@ -15,3 +15,4 @@ if [ "$FREETZ_REMOVE_NTFS" == "y" ]; then
 else
 	ln -s /usr/bin/ntfs-3g ${FILESYSTEM_MOD_DIR}/bin/ntfs-3g
 fi
+

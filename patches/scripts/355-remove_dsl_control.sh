@@ -1,6 +1,6 @@
 [ "$FREETZ_REMOVE_DSL_CONTROL" == "y" ] || return 0
-
 echo1 "removing dsl_control"
+
 for files in \
   usr/sbin/vr10/dsl_control \
   usr/sbin/dsl_control \

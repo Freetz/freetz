@@ -10,3 +10,4 @@ unset WS0
 if isFreetzType W501V W701V W901V; then
 	modsed "s/avme/tcom/g" "${HTML_SPEC_MOD_DIR}/fon/sipoptionen.js"
 fi
+

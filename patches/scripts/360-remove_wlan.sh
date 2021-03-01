@@ -1,6 +1,6 @@
 [ "$FREETZ_REMOVE_WLAN" == "y" ] || return 0
-
 echo1 "removing WLAN files"
+
 rm_files $(find ${FILESYSTEM_MOD_DIR}/lib/modules -name '*wireless*')
 rm_files $(find ${FILESYSTEM_MOD_DIR} ! -name '*.cfg' -a -name '*wlan*' | grep -Ev "^${FILESYSTEM_MOD_DIR}/(dev|oldroot|proc|sys|var|usr\/lua)/")
 rm_files \

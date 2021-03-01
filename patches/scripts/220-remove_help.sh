@@ -1,6 +1,7 @@
 [ "$FREETZ_REMOVE_HELP" == "y" ] || return 0
-# from m*.* mod
 echo1 "removing help"
+
+# from m*.* mod
 
 HELP_DIR="${HTML_LANG_MOD_DIR}/help"
 
@@ -28,3 +29,4 @@ else
 	find "${HTML_SPEC_MOD_DIR}/js" -name '*.js' -type f |
 	  xargs -I '{}' "$TOOLS_DIR/developer/remove_js_function.sh" "{}" "jslPopHelp[[:alpha:]]*"
 fi
+

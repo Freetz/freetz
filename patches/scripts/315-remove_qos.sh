@@ -1,6 +1,6 @@
 [ "$FREETZ_REMOVE_QOS" == "y" ] || return 0
-
 echo1 "removing qos files"
+
 [ -e "${HTML_LANG_MOD_DIR}/internet/trafapp.lua" ] && traf='trafapp' || traf='trafficappl'
 rm_files \
   "${MODULES_DIR}/kernel/net/sched/" \
@@ -33,3 +33,4 @@ fi
 echo1 "patching rc.conf"
 modsed "s/CONFIG_NQOS=y/CONFIG_NQOS=n/g" "$FILESYSTEM_MOD_DIR/etc/init.d/rc.conf"
 modsed "s/CONFIG_QOS_METER=y/CONFIG_QOS_METER=n/g" "$FILESYSTEM_MOD_DIR/etc/init.d/rc.conf"
+

@@ -1,6 +1,7 @@
 [ "$FREETZ_REMOVE_ASSISTANT" == "y" ] || return 0
-# from m*.* mod
 echo1 "removing assistant"
+
+# from m*.* mod
 
 rm_files \
   "${HTML_SPEC_MOD_DIR}/konfig" \

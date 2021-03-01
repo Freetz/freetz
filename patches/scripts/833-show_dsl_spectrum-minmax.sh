@@ -1,5 +1,4 @@
-[ "$FREETZ_MODIFY_DSL_SPECTRUM" == "y" ] || return 0;
-
+[ "$FREETZ_MODIFY_DSL_SPECTRUM" == "y" ] || return 0
 echo1 "patching dsl spectrum"
 
 if [ "$FREETZ_AVM_VERSION_07_0X_MIN" == "y" ] ; then

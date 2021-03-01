@@ -1,5 +1,4 @@
 [ "$FREETZ_ADD_REGEXT_GUI" == "y" ] || return 0
-
 echo1 "adding GUI switch to set reg_from_outside"
 
 SEARCHSTR='-name fon_config_End.[f|h|j]*  -o -name fon_config.frm -o -name fon_config_IPPhone_1.[j|h]*'
@@ -40,3 +39,4 @@ for file_n in $(find ${FILESYSTEM_MOD_DIR}/usr/www/ -type f  \( $SEARCHSTR \) -p
 	esac
 	grep -q "RegFromOutside" "$file_n" && echo2 "  added Reg From Outside to file: ${file_n##*/}"
 done
+
