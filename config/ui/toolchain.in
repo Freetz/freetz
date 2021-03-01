@@ -3,6 +3,7 @@ menu "Toolchain options"
 
 choice
 	prompt "Toolchains"
+	default FREETZ_DOWNLOAD_TOOLCHAIN if FREETZ_REAL_DEVELOPER_ONLY__DLTXS
 	default FREETZ_BUILD_TOOLCHAIN
 
 	help
@@ -713,6 +714,7 @@ config FREETZ_TOOLCHAIN_CCACHE
 
 choice
 	prompt "Root emulator"
+	default FREETZ_ROOTEMU_PSEUDO if FREETZ_REAL_DEVELOPER_ONLY__DLTXS
 	default FREETZ_ROOTEMU_FAKEROOT
 
 	config FREETZ_ROOTEMU_FAKEROOT
@@ -728,6 +730,7 @@ config FREETZ_HOSTTOOLS_DOWNLOAD
 	bool "Use precompiled i686 host-tools"
 	depends on FREETZ_SHOW_EXPERT
 	select FREETZ_TOOLCHAIN_32BIT
+	default y if FREETZ_REAL_DEVELOPER_ONLY__DLTXS
 	default n
 	help
 		Download and use precompiled binaries files. Not
