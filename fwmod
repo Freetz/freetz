@@ -345,11 +345,7 @@ if [ -n "$FWMOD_RECURSIVE" ] && [ $UID -eq 0 ]; then
 	fi
 else
 	# No -> fakeroot is inactive
-	if [ "$(cat "$UNPACKED_FILE" 2>/dev/null)" == "$FIRMWARE_MD5" ]; then
-		# Remove recreated dir before database cleanup
-		rm -rf "${DIR}/modified"
-		rm -f "${DIR}/.modified"
-	else
+	if [ "$(cat "$UNPACKED_FILE" 2>/dev/null)" != "$FIRMWARE_MD5" ]; then
 		# Dont keep old databases on a new unpack
 		mkdir -p "$FAKEROOT_CACHE_DIR"
 		rm -f $FAKEROOT_CACHE_DIR/*
