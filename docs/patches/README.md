@@ -189,7 +189,7 @@ Index:
     Remove the mini-daemon (minid) and some other related files. This patch removes Fritz!Mini and MT-D/F support and all Web UI entrys. Saves compressed 660 KB on a 7270_V3 and 460 KB on a 7170. ATTENTION: You must remove all Fritz!Mini's from your Fritz!Box configuration and delete all Mini users with the Gini! software to avoid complications.
 
   * **<u>Remove module bins</u><a id='remove-module-bins'></a>**<br>
-    Removes these (unused) kernel files: modules.dep.bin modules.alias.bin modules.symbols.bin
+    Removes these (unused) kernel files: modules.alias.bin modules.builtin.bin modules.dep.bin modules.symbols.bin
 
   * **<u>REMOVE_MULTI_ANNEX_FIRMWARE_DIFFS: Remove 2nd Annex firmware</u><a id='remove-multi-annex-firmware-diffs'></a>**<br>
     Remove the diffs to the prime firmware. This saves about 120-230 KB of uncompressed data size and 67 KB of bspatch. Select this only if you don't want to switch the firmware. See https://web.archive.org/20200701000000/www.wehavemorefun.de/fritzbox/Multi-DSL-Firmware
