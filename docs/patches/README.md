@@ -151,6 +151,9 @@ Index:
   * **[Remove kids (usermand/contfiltd)](REMOVE_KIDS.md)<a id='remove-kids'></a>**<br>
     Remove userman/contfiltd files (Kindersicherung)
 
+  * **<u>Remove kmod</u><a id='remove-kmod'></a>**<br>
+    Removes kmod and links like modprobe, lsmod, insmod and rmmod. Instead the BusyBox applets will be used.
+
 ### L
 
   * **<u>Remove languages</u><a id='remove-language'></a>**<br>

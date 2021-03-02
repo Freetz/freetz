@@ -49,6 +49,14 @@ config FREETZ_REMOVE_MODULE_BINS
 		 modules.dep.bin
 		 modules.symbols.bin
 
+config FREETZ_REMOVE_KMOD
+	bool "Remove kmod"
+	depends on FREETZ_AVM_HAS_KMOD
+	default y
+	help
+		Removes kmod and links like modprobe, lsmod, insmod and rmmod.
+		Instead the BusyBox applets will be used.
+
 config FREETZ_REMOVE_MICROVOIP_DSL
 	bool "Remove microvoip-dsl.bin"
 	depends on \
