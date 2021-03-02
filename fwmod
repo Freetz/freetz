@@ -1423,13 +1423,20 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 		echo1 "generating modules.dep"
 		DEPMOD_TEMP="$(mktemp)"
-		NM=$NM ${TOOLS_DIR}/depmod.pl -e -b "$MODULES_DIR" \
-			-F ${KERNEL_REP_DIR}/System-${KERNEL_ID}.map \
-			2>&1 | tee "$DEPMOD_TEMP"
-		if grep -q "^unresolved symbol " "$DEPMOD_TEMP"; then
-			warn "Unresolved symbols detected, not all AVM-features may work.\nNo current sources by AVM? Error in kernel's .config?"
+		if [ "$FREETZ_AVM_VERSION_07_2X_MIN" == "y" ]; then
+			LANG=C depmod -e -b "$FILESYSTEM_MOD_DIR" \
+			  -F ${KERNEL_REP_DIR}/System-${KERNEL_ID}.map \
+			  $FREETZ_KERNEL_VERSION \
+			  2>&1 | tee "$DEPMOD_TEMP"
+		else
+			NM=$NM ${TOOLS_DIR}/depmod.pl -e -b "$MODULES_DIR" \
+			  -F ${KERNEL_REP_DIR}/System-${KERNEL_ID}.map \
+			  2>&1 | tee "$DEPMOD_TEMP"
 		fi
-		rm -rf "$DEPMOD_TEMP" 2>/dev/null
+		if grep -qE "(unresolved|unknown) symbol" "$DEPMOD_TEMP"; then
+			warn "Unresolved symbols detected, not all AVM-features may work.\nNo current sources by AVM? Error in kernel's .config? Ask fritzbox_info@avm.de for sources!"
+		fi
+		rm -f "$DEPMOD_TEMP"
 		# add plugin kernel modules for 7270v1 if plugins are not enabled
 		if [ "$FREETZ_TYPE_7270_V1" == "y" -a "$FREETZ_AVMPLUGINS_INTEGRATE" != "y" ]; then
 			echo "kernel/drivers/net/rfcntl/rfcntl.ko: kernel/drivers/char/audio/avm_audio.ko" >> $MODULES_DIR/modules.dep
