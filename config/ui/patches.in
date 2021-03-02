@@ -271,9 +271,10 @@ config FREETZ_REMOVE_ASSISTANT_SIP
 		use existing ones.
 
 config FREETZ_REMOVE_UNTRUSTEDD
-	bool "Remove UNTRUSTEDD"
-	default n
+	bool "Remove UNTRUSTEDD - DEVELOPER"
+	depends on FREETZ_SHOW_DEVELOPER
 	depends on FREETZ_AVM_HAS_UNTRUSTEDD
+	default n
 	help
 		This removes the untrustedd daemon (10kB uncompressed) and related
 		service script. Known so far: Nothing.
@@ -1736,8 +1737,8 @@ config FREETZ_DISABLE_SERIAL_CONSOLE
 		e.g. minicom.
 
 config FREETZ_PATCH_DISABLE_AVM_WATCHDOG
-	bool "Disable AVM watchdog"
-	default y if FREETZ_SYSTEM_TYPE_GRX5 && FREETZ_AVM_VERSION_07_2X_MIN
+	bool "Disable AVM watchdog - DEVELOPER"
+	depends on FREETZ_SHOW_DEVELOPER
 	default n
 	help
 		This disables the AVM watchdog on system start.
