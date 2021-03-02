@@ -40,13 +40,13 @@ all_no_freetz() {
 	# - /var/flash/calllog processing
 	# - telnetd on/off by phone (#96*7* / #96*8*)
 	# - automatic telnetd start
-	source "${patches_scripts}/114-run_telefon_in_inhouse_mode.sh"
-
-	# enforce urlader settings, useful on boxes with bootloader version >=1.3179 (7490) resp. >=1.3229 (7580)
-	source "${patches_scripts}/101-enforce_urlader-settings.sh"
+	source "${patches_scripts}/114-run_telefon_in_inhaus_mode.sh"
 
 	# hardcode branding in rc.conf (an alternative to the enforce-urlader-settings patch above)
 	source "${patches_scripts}/101-enforce_branding_via_rc.conf.sh"
+
+	# enforce urlader settings, useful on boxes with bootloader version >=1.3179 (7490) resp. >=1.3229 (7580)
+	source "${patches_scripts}/101-enforce_urlader-settings.sh"
 
 	# restore debug.cfg support
 	source "${patches_scripts}/114-debug_cfg_support.sh"

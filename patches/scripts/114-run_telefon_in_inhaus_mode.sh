@@ -1,4 +1,4 @@
-[ "$FREETZ_RUN_TELEFON_IN_INHOUSE_MODE" == "y" ] || return 0
+[ "$FREETZ_RUN_TELEFON_IN_INHAUS_MODE" == "y" ] || return 0
 echo1 'forcing telefon daemon to run in "inhaus mode"'
 
 # https://www.ip-phone-forum.de/threads/307385/post-2416060
