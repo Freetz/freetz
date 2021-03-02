@@ -3915,14 +3915,14 @@ config FREETZ_BUSYBOX___V127_DEPMOD
 	  and modules.symbols) that contain dependency information
 	  for modprobe.
 config FREETZ_BUSYBOX___V127_INSMOD
-	depends on !FREETZ_PACKAGE_MODULE_INIT_TOOLS_insmod
+	depends on !FREETZ_AVM_HAS_KMOD && !FREETZ_PACKAGE_MODULE_INIT_TOOLS_insmod
 	bool "insmod"
 	default n
 	select FREETZ_BUSYBOX___V127_PLATFORM_LINUX
 	help
 	  insmod is used to load specified modules in the running kernel.
 config FREETZ_BUSYBOX___V127_LSMOD
-	depends on !FREETZ_PACKAGE_MODULE_INIT_TOOLS_lsmod
+	depends on !FREETZ_AVM_HAS_KMOD && !FREETZ_PACKAGE_MODULE_INIT_TOOLS_lsmod
 	bool "lsmod"
 	default n
 	select FREETZ_BUSYBOX___V127_PLATFORM_LINUX
@@ -3945,7 +3945,7 @@ config FREETZ_BUSYBOX___V127_MODINFO
 	help
 	  Show information about a Linux Kernel module
 config FREETZ_BUSYBOX___V127_MODPROBE
-	depends on !FREETZ_PACKAGE_MODULE_INIT_TOOLS_modprobe
+	depends on !FREETZ_AVM_HAS_KMOD && !FREETZ_PACKAGE_MODULE_INIT_TOOLS_modprobe
 	bool "modprobe"
 	default n
 	select FREETZ_BUSYBOX___V127_PLATFORM_LINUX
@@ -3964,7 +3964,7 @@ config FREETZ_BUSYBOX___V127_FEATURE_MODPROBE_BLACKLIST
 	  hardware autodetection scripts to load modules like evdev, frame
 	  buffer drivers etc.
 config FREETZ_BUSYBOX___V127_RMMOD
-	depends on !FREETZ_PACKAGE_MODULE_INIT_TOOLS_rmmod
+	depends on !FREETZ_AVM_HAS_KMOD && !FREETZ_PACKAGE_MODULE_INIT_TOOLS_rmmod
 	bool "rmmod"
 	default n
 	select FREETZ_BUSYBOX___V127_PLATFORM_LINUX
