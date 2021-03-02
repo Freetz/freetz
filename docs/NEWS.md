@@ -11,7 +11,7 @@
    Dies mag stimmen, solange in den closed-source Teilen die aus dem Internet erreichbar sind kein Bug entdeckt wird,<br>
    das kommt aber auch schon mal vor: [Hack gegen AVM-Router: Fritzbox-Lücke offengelegt, Millionen Router in Gefahr](https://heise.de/-2136784)<br>
    Das eigentliche Problem liegt aber darin dass ein Hersteller einen DynDNS-Dienst anbietet ("myfritz") und sich so leicht<br>
-   viel seiner Geräte finden lassen. Die kyrptischen Namen die hierbei vergeben werden verursachen ausschliesslich Probleme<br>
+   viele seiner Geräte finden lassen. Die kyrptischen Namen die hierbei vergeben werden verursachen ausschliesslich Probleme<br>
    beim Merken, irgendeinen Vorteil haben sie nicht. Denn jedes ausgestelle HTTPS Zertifikat ist öffentlich einsehbar, zb im<br>
    [Transparenzreport von Google](https://transparencyreport.google.com/). Dieser listet aktuell [etwa 100.000 Zertifikate für Hostnamen](https://transparencyreport.google.com/https/certificates?cert_search=include_subdomains:true;domain:myfritz.net;issuer_uid:6637846985631092092) unter `myfritz.net` auf.<br>
    Was kann man tun?

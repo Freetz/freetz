@@ -1,5 +1,5 @@
 [ "$FREETZ_AVM_VERSION_05_2X_MIN" == "y" ] || return 0
-echo1 "createing char device to save to flash"
+echo1 "creating char device to save to flash"
 
 for f in \
   etc/init.d/S08-tffs \

@@ -1,8 +1,8 @@
 # undisableable patches
 
 ### mandatory
- - 102-add_inittab.sh
  - 010-no_exits_from_rc.S.sh
+ - 102-add_inittab.sh
  - 102-dont-change-tty-settings.sh
  - 115-patch-ds_off.sh
  - 130-add_fstab.sh
@@ -24,8 +24,8 @@
 
 ### other
  - 080-start_plugin.sh
- - 108-patch_multid-wait.sh
  - 105-S06-logging.sh
+ - 108-patch_multid-wait.sh
  - 391-symlink_blkid.sh
  - 401-remove_ftpd_banner.sh
  - 620-symlink_wget.sh
