@@ -1,0 +1,75 @@
+
+  http://ftp.debian.org/debian/pool/main/f/fakeroot/fakeroot_1.25.3-1.1.debian.tar.xz
+
+From ffba4a8941a5f11748a9d305bf76691e7a2aa296 Mon Sep 17 00:00:00 2001
+From: Johannes 'josch' Schauer <josch@mister-muffin.de>
+Date: Tue, 3 Nov 2020 00:55:40 +0100
+Subject: [PATCH] Revert "Use fixed-width members in fake_msg"
+
+This reverts commit 2a53909e732b19ccbaf6d1534e932dff74fa757e.
+---
+ message.h | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/message.h b/message.h
+index 6fad1fb..9dfce94 100644
+--- a/message.h
++++ b/message.h
+@@ -48,7 +48,9 @@ typedef uint32_t fake_gid_t;
+ typedef uint32_t fake_mode_t;
+ typedef uint32_t fake_nlink_t;
+ 
++#if __SUNPRO_C
+ #pragma pack(4)
++#endif
+ struct fakestat {
+ 	fake_uid_t   uid;
+ 	fake_gid_t   gid;
+@@ -58,32 +60,42 @@ struct fakestat {
+ 	fake_mode_t  mode;
+ 	fake_nlink_t nlink;
+ } FAKEROOT_ATTR(packed);
++#if __SUNPRO_C
+ #pragma pack()
++#endif
+ 
+ #define MAX_IPC_BUFFER_SIZE 1024
+ 
++#if __SUNPRO_C
+ #pragma pack(4)
++#endif
+ struct fakexattr {
+ 	uint32_t   buffersize;
+ 	char       buf[MAX_IPC_BUFFER_SIZE];
+ 	int32_t    flags_rc; /* flags from setxattr. Return code on round trip */
+ } FAKEROOT_ATTR(packed);
++#if __SUNPRO_C
+ #pragma pack()
++#endif
+ 
++#if __SUNPRO_C
+ #pragma pack(4)
++#endif
+ struct fake_msg {
+ #ifndef FAKEROOT_FAKENET
+-	int64_t mtype; /* message type in SYSV message sending */
++	long mtype; /* message type in SYSV message sending */
+ #endif
+ 	func_id_t       id; /* the requested function */
+ #ifndef FAKEROOT_FAKENET
+ 	pid_t pid;
+-	int32_t serial;
++	int serial;
+ #endif
+ 	struct fakestat st;
+ 	struct fakexattr xattr;
+ 	uint32_t        remote;
+ } FAKEROOT_ATTR(packed);
++#if __SUNPRO_C
+ #pragma pack()
++#endif
+ 
+ #endif
+-- 
+2.27.0
+

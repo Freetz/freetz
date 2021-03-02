@@ -52,6 +52,7 @@ Latest changes
    * pseudo 1.9.0 oe-core
 
  - Updated tools and hooks:
+   * fakeroot 1.25.3
    * fitimg 0.5
    * kconfig 5.11
    * patchelf 0.12

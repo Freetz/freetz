@@ -1,7 +1,11 @@
-FAKEROOT_HOST_VERSION:=1.23
-FAKEROOT_HOST_SOURCE:=fakeroot_$(FAKEROOT_HOST_VERSION).orig.tar.xz
-FAKEROOT_HOST_SOURCE_MD5:=b82c5e99b6365a838e73d05718083f6a
+FAKEROOT_HOST_VERSION:=1.25.3
+FAKEROOT_HOST_SOURCE:=fakeroot_$(FAKEROOT_HOST_VERSION).orig.tar.gz
+FAKEROOT_HOST_SOURCE_SHA256:=8e903683357f7f5bcc31b879fd743391ad47691d4be33d24a76be3b6c21e956c
 FAKEROOT_HOST_SITE:=http://ftp.debian.org/debian/pool/main/f/fakeroot
+### WEBSITE:=https://wiki.debian.org/FakeRoot
+### MANPAGE:=https://man.archlinux.org/man/fakeroot.1.en
+### CHANGES:=https://bugs.debian.org/cgi-bin/pkgreport.cgi?pkg=fakeroot;dist=unstable
+### CVSREPO:=https://github.com/openwrt/openwrt/tree/master/tools/fakeroot/patches
 
 FAKEROOT_HOST_MAKE_DIR:=$(TOOLS_DIR)/make/fakeroot-host
 FAKEROOT_HOST_DIR:=$(TOOLS_SOURCE_DIR)/fakeroot-$(FAKEROOT_HOST_VERSION)
@@ -25,12 +29,13 @@ BIARCH_BUILD_SYSTEM:=$(and \
 
 fakeroot-host-source: $(DL_DIR)/$(FAKEROOT_HOST_SOURCE)
 $(DL_DIR)/$(FAKEROOT_HOST_SOURCE): | $(DL_DIR)
-	$(DL_TOOL) $(DL_DIR) $(FAKEROOT_HOST_SOURCE) $(FAKEROOT_HOST_SITE) $(FAKEROOT_HOST_SOURCE_MD5)
+	$(DL_TOOL) $(DL_DIR) $(FAKEROOT_HOST_SOURCE) $(FAKEROOT_HOST_SITE) $(FAKEROOT_HOST_SOURCE_SHA256)
 
 fakeroot-host-unpacked: $(FAKEROOT_HOST_DIR)/.unpacked
 $(FAKEROOT_HOST_DIR)/.unpacked: $(DL_DIR)/$(FAKEROOT_HOST_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(FAKEROOT_HOST_SOURCE),$(TOOLS_SOURCE_DIR))
 	$(call APPLY_PATCHES,$(FAKEROOT_HOST_MAKE_DIR)/patches,$(FAKEROOT_HOST_DIR))
+	(cd $(FAKEROOT_HOST_DIR); ./bootstrap)
 	touch $@
 
 $(FAKEROOT_HOST_MAINARCH_DIR)/.configured: $(FAKEROOT_HOST_DIR)/.unpacked
@@ -42,11 +47,10 @@ $(FAKEROOT_HOST_MAINARCH_DIR)/.configured: $(FAKEROOT_HOST_DIR)/.unpacked
 		../../configure \
 		--prefix=$(FAKEROOT_HOST_DESTDIR) \
 		--enable-shared \
-		$(if $(findstring Microsoft,$(shell uname -r)),--with-ipc=tcp,) \
+		$(if $(findstring Microsoft,$(shell uname -r)),--with-ipc=tcp,--with-ipc=sysv) \
 		$(DISABLE_NLS) \
 	);
 	touch $@
-
 $(FAKEROOT_HOST_TARGET_SCRIPT): $(FAKEROOT_HOST_MAINARCH_DIR)/.configured
 	$(MAKE) -C $(FAKEROOT_HOST_MAINARCH_DIR) install
 	$(SED) -i -e 's,^PATHS=.*,PATHS=$(FAKEROOT_HOST_MAINARCH_LD_PRELOAD_PATH):$(FAKEROOT_HOST_BIARCH_LD_PRELOAD_PATH),g' $(FAKEROOT_HOST_TARGET_SCRIPT)
@@ -60,13 +64,12 @@ $(FAKEROOT_HOST_BIARCH_DIR)/.configured: $(FAKEROOT_HOST_DIR)/.unpacked
 		../../configure \
 		--prefix=$(FAKEROOT_HOST_DESTDIR) \
 		--enable-shared \
-		$(if $(findstring Microsoft,$(shell uname -r)),--with-ipc=tcp,) \
+		$(if $(findstring Microsoft,$(shell uname -r)),--with-ipc=tcp,--with-ipc=sysv) \
 		$(if $(findstring Microsoft,$(shell uname -r)),--host=$(shell uname -m),) \
 		$(DISABLE_NLS) \
 		$(QUIET) \
 	);
 	touch $@
-
 $(FAKEROOT_HOST_TARGET_BIARCH_LIB): $(FAKEROOT_HOST_BIARCH_DIR)/.configured
 	$(MAKE) -C $(FAKEROOT_HOST_BIARCH_DIR) libdir="$(FAKEROOT_HOST_BIARCH_LD_PRELOAD_PATH)" install-libLTLIBRARIES
 	touch $@
