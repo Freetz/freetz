@@ -307,7 +307,7 @@ Index:
   * **[REMOVE_UMTSD: Remove UMTS (USB GSM)](REMOVE_UMTSD.md)<a id='remove-umtsd'></a>**<br>
     Remove UMTS support This patch will remove UMTS-dependent files from firmware. It saves about 12K compressed space in kernel.image.
 
-  * **<u>Remove UNTRUSTEDD</u><a id='remove-untrustedd'></a>**<br>
+  * **<u>Remove UNTRUSTEDD - DEVELOPER</u><a id='remove-untrustedd'></a>**<br>
     This removes the untrustedd daemon (10kB uncompressed) and related service script. Known so far: Nothing.
 
   * **[Remove UPnP (igdd/upnpd)](REMOVE_UPNP.md)<a id='remove-upnp'></a>**<br>
@@ -465,7 +465,7 @@ Index:
   * **<u>PATCH_BETA_ATTRIBUTES: Patch Beta/Labor attributes</u><a id='patch-beta-attributes'></a>**<br>
     This patch removes Beta/Labor attributes from some (older) firmwares AVM released only as Betas so far.
 
-  * **<u>PATCH_DISABLE_AVM_WATCHDOG: Disable AVM watchdog</u><a id='patch-disable-avm-watchdog'></a>**<br>
+  * **<u>PATCH_DISABLE_AVM_WATCHDOG: Disable AVM watchdog - DEVELOPER</u><a id='patch-disable-avm-watchdog'></a>**<br>
     This disables the AVM watchdog on system start. The AVM watchdog reboots the device if - system start takes longer than 2, 4 or 8 minutes - some defined AVM daemon crashes
 
   * **[PATCH_DSL_EXPERT: Patch extended DSL settings](PATCH_DSL_EXPERT.md)<a id='patch-dsl-expert'></a>**<br>
@@ -543,7 +543,7 @@ Index:
   * **<u>RESTORE_DEBUG_CFG_SUPPORT: Restore support for /var/flash/debug.cfg</u><a id='restore-debug-cfg-support'></a>**<br>
     Restores support for /var/flash/debug.cfg removed by AVM for security reasons in Fritz!OS 6.20 (6.0x on some boxes).
 
-  * **<u>RUN_TELEFON_IN_INHOUSE_MODE: Run telefon daemon in inhaus mode</u><a id='run-telefon-in-inhouse-mode'></a>**<br>
+  * **<u>RUN_TELEFON_IN_INHAUS_MODE: Run telefon daemon in inhaus mode</u><a id='run-telefon-in-inhaus-mode'></a>**<br>
     Running telefon daemon in "inhaus mode" restores: - Processing of /var/flash/calllog on incoming calls. In case you added telnetd, this patch also restores: - Support for telnetd on/off by phone (#96*7* / #96*8*). - Processing of /var/flash/fx_conf attributes responsible for automatic start of telnetd.
 
   * **<u>Select hardening</u><a id='select-hardening'></a>**<br>
