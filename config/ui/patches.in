@@ -40,9 +40,7 @@ config FREETZ_REMOVE_LEFTOVER
 
 config FREETZ_REMOVE_MODULE_BINS
 	bool "Remove module bins"
-	depends on !FREETZ_AVM_HAS_KMOD
-	depends on !(FREETZ_AVM_VERSION_07_2X_MIN && FREETZ_SYSTEM_TYPE_GRX5)
-	default n if FREETZ_AVM_VERSION_07_2X_MIN
+	depends on FREETZ_AVM_VERSION_07_1X_MAX
 	default y
 	help
 		Removes these (unused) kernel files:
