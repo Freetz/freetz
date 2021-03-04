@@ -1,0 +1,80 @@
+#!/bin/bash
+
+exit1() {
+echo -e "$*"
+rm -rf "$TDIR"
+exit 1
+}
+
+# arguments
+IN="$1"
+OUT="$2"
+PASS="$3"
+if [ "$#" != "2" -a "$#" != "3" ]; then
+	echo
+	echo "Decodes a freetz settings backup file to restore on another device"
+	echo
+	echo "Usage: $0: <in> <out> [pass]"
+	echo " <in>   - file to read encrypted settings backup .tar file"
+	echo " <out>  - file to write decrypted settings backup .tbz file"
+	echo " [pass] - password of encrypted file"
+	exit1
+fi
+[ ! -s "$IN" ] && exit1 "File $IN does not exist!"
+[ -e "$OUT" ] && exit1 "File $OUT does yet exist!"
+
+# decoder
+SCRIPT="$(readlink -f $0)"
+PARENT="$(dirname ${SCRIPT%/*})"
+DECS="$PARENT/tools/decoder"
+[ ! -x "$DECS/decode_secrets" ] && exit1 "Please run 'make yourfritz-decoder-host' first."
+
+# unpack
+TDIR="$(mktemp -d)"
+[ ! -d "$TDIR" ] && exit1 "Can not create temporary directory."
+echo "Using temp: $TDIR"
+tar xf "$IN" -C "$TDIR" settings.tgz.crypted environment.txt.crypted
+[ -e "$TDIR/settings.tgz.crypted" -a -e "$TDIR/environment.txt.crypted" ] || exit1 "This is not a valid encrypted settings backup file"
+
+# decrypt
+[ -z "$PASS" ] && echo "You have to enter your password 2 (or 4) times!"
+for x in settings.tgz environment.txt; do
+	openssl enc -d -aes256 -pbkdf2 ${PASS:+-pass pass:$PASS} -in "$TDIR/$x.crypted" -out "$TDIR/$x"
+	retval=$?
+	if [ "$retval" != "0" ]; then
+		echo "Trying OpenSSL 1.0 compatibility mode"
+		openssl enc -d -aes256 ${PASS:+-pass pass:$PASS} -in "$TDIR/$x.crypted" -out "$TDIR/$x"
+		retval=$?
+	fi
+	[ "$retval" != "0" ] && exit1 "Decryption failed, wrong password?"
+	rm "$TDIR/$x.crypted"
+done
+tar xf "$TDIR/settings.tgz" -C "$TDIR"
+rm "$TDIR/settings.tgz"
+
+# password
+KEY="$("$DECS/password_from_device" -a "$TDIR/environment.txt")"
+[ -z "$KEY" ] && exit1 "Can not find device key"
+echo "Device key: $KEY"
+rm "$TDIR/environment.txt"
+
+# decode
+mkdir "$TDIR/decrypted"
+echo -n "Processing files "
+for x in $TDIR/var_flash/*; do
+	"$DECS/decode_secrets" "$KEY" < "$x" > "$TDIR/decrypted/${x#$TDIR/var_flash/}" && echo -n "."
+done
+echo
+echo "Changed values:"
+diff -Nau0r $TDIR/* | grep '^[-+][+ \t]' | sed -r "s,.* $TDIR/var_flash/([^\t ]*).*,\1,g"
+rm -rf "$TDIR/var_flash"
+
+# bundling
+mv "$TDIR/decrypted" "$TDIR/var_flash"
+echo "Writing decoded $OUT"
+tar czf "$OUT" -C "$TDIR" var_flash/
+
+# cleanup
+rm -rf "$TDIR"
+echo "done"
+

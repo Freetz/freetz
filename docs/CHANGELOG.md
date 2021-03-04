@@ -41,6 +41,9 @@ Latest changes
    * Replace kernel does not work for most latest firmware versions.
    * Loading build kernel modules may work or do not. You'll notice.
 
+ - New tools and hooks:
+   * tools/decoder_for_settings_backup can decode an (encrypted only!) settings backup file to restore on another device
+
  - Firmware updates:
    * Please see [FIRMWARES](FIRMWARES.md) for the list of currently supported devices and firmwares.
 
