@@ -27,16 +27,33 @@ choice
 		select FREETZ_SHOW_ADVANCED
 		select FREETZ_SHOW_EXPERT
 
+	config FREETZ_USER_LEVEL_APTGURU
+		bool "APTguru"
+		select FREETZ_SHOW_ADVANCED
+		select FREETZ_SHOW_EXPERT
+		select FREETZ_SHOW_APTGURU
+		help
+			This enables precompiled tools+toolchains
+			WARNING
+			You need the forbidden knowledge to
+			 - open a URL in your browser
+			 - read what you see
+			 - understand what you see
+			 - install missing dependencies
+
 	config FREETZ_USER_LEVEL_DEVELOPER
 		bool "Developer"
 		select FREETZ_SHOW_ADVANCED
 		select FREETZ_SHOW_EXPERT
+		select FREETZ_SHOW_APTGURU
 		select FREETZ_SHOW_DEVELOPER
 endchoice
 
 config FREETZ_SHOW_ADVANCED
 	bool
 config FREETZ_SHOW_EXPERT
+	bool
+config FREETZ_SHOW_APTGURU
 	bool
 config FREETZ_SHOW_DEVELOPER
 	bool

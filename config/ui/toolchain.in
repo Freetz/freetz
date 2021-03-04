@@ -3,7 +3,7 @@ menu "Toolchain options"
 
 choice
 	prompt "Toolchains"
-	default FREETZ_DOWNLOAD_TOOLCHAIN if FREETZ_REAL_DEVELOPER_ONLY__DLTXS
+	default FREETZ_DOWNLOAD_TOOLCHAIN if FREETZ_SHOW_APTGURU
 	default FREETZ_BUILD_TOOLCHAIN
 
 	help
@@ -12,7 +12,7 @@ choice
 	config FREETZ_DOWNLOAD_TOOLCHAIN
 		bool "Use precompiled i686 toolchains"
 		select FREETZ_TOOLCHAIN_32BIT
-		depends on FREETZ_REAL_DEVELOPER_ONLY__DLTXS
+		depends on FREETZ_SHOW_APTGURU
 
 	config FREETZ_BUILD_TOOLCHAIN
 		bool "Build own toolchains (4GB diskspace)"
@@ -693,15 +693,15 @@ config FREETZ_TOOLCHAIN_MINIMIZE_REQUIRED_GLIBC_VERSION
 
 config FREETZ_TOOLCHAIN_32BIT
 	bool "Build 32-bit tools and toolchains"
-	depends on FREETZ_REAL_DEVELOPER_ONLY__DLTXS
+	depends on FREETZ_SHOW_APTGURU
 	default n
 	help
 		This option causes 32-bit tools and toolchains to be built on a 64-bit systems.
 
 config FREETZ_TOOLCHAIN_CCACHE
 	bool "Build ccache for kernel and target"
-	depends on FREETZ_REAL_DEVELOPER_ONLY__DLTXS
-	default y if FREETZ_REAL_DEVELOPER_ONLY__DLTXS
+	depends on FREETZ_SHOW_APTGURU
+	default y if FREETZ_SHOW_APTGURU
 	default n
 	help
 		ccache is a compiler cache. It acts as a caching pre-processor to C/C++
@@ -715,7 +715,7 @@ config FREETZ_TOOLCHAIN_CCACHE
 
 choice
 	prompt "Root emulator"
-	default FREETZ_ROOTEMU_PSEUDO if FREETZ_REAL_DEVELOPER_ONLY__DLTXS
+	default FREETZ_ROOTEMU_PSEUDO if FREETZ_SHOW_APTGURU
 	default FREETZ_ROOTEMU_FAKEROOT
 
 	config FREETZ_ROOTEMU_FAKEROOT
@@ -723,15 +723,15 @@ choice
 
 	config FREETZ_ROOTEMU_PSEUDO
 		bool "Use pseudo"
-		depends on FREETZ_REAL_DEVELOPER_ONLY__DLTXS
+		depends on FREETZ_SHOW_APTGURU
 
 endchoice # "Root emulator" #
 
 config FREETZ_HOSTTOOLS_DOWNLOAD
 	bool "Use precompiled i686 host-tools"
-	depends on FREETZ_REAL_DEVELOPER_ONLY__DLTXS
+	depends on FREETZ_SHOW_APTGURU
 	select FREETZ_TOOLCHAIN_32BIT
-	default y if FREETZ_REAL_DEVELOPER_ONLY__DLTXS
+	default y if FREETZ_SHOW_APTGURU
 	default n
 	help
 		Download and use precompiled binaries files. Not
