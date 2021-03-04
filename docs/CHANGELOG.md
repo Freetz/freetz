@@ -50,6 +50,7 @@ Latest changes
 
  - New tools and hooks:
    * pseudo 1.9.0 oe-core
+   * yourfritz-decoder 0.4-git
 
  - Updated tools and hooks:
    * fakeroot 1.25.3
