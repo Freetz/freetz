@@ -33,7 +33,7 @@ sudo dnf -y update && sudo systemctl daemon-reload
  - Fedora 33 64-Bit:
 ```
 sudo dnf -y groupinstall "Development Tools" "Development Libraries"
-sudo dnf -y install kmod execstack sqlite.i686 sqlite-devel libzstd-devel.i686 cmake zlib-devel.i686 libstdc++-devel.i686 openssl xz bc unar inkscape ImageMagick subversion ccache gcc gcc-c++ binutils autoconf automake libtool make bzip2 ncurses-devel ncurses-term zlib-devel flex bison patch texinfo gettext pkgconfig ecj perl perl-String-CRC32 wget glib2-devel git libacl-devel libattr-devel libcap-devel ncurses-devel.i686 glibc-devel.i686 libgcc.i686
+sudo dnf -y install rsync kmod execstack sqlite.i686 sqlite-devel libzstd-devel.i686 cmake zlib-devel.i686 libstdc++-devel.i686 openssl xz bc unar inkscape ImageMagick subversion ccache gcc gcc-c++ binutils autoconf automake libtool make bzip2 ncurses-devel ncurses-term zlib-devel flex bison patch texinfo gettext pkgconfig ecj perl perl-String-CRC32 wget glib2-devel git libacl-devel libattr-devel libcap-devel ncurses-devel.i686 glibc-devel.i686 libgcc.i686
 
 ```
 
@@ -72,7 +72,7 @@ sudo apt-get -y dist-upgrade
 
  - Ubuntu 20 64-Bit:
 ```
-sudo apt -y install kmod execstack sqlite3 libsqlite3-dev libzstd-dev:i386 libzstd-dev cmake lib32z1-dev unar inkscape imagemagick subversion git bc wget sudo ccache gcc g++ binutils autoconf automake autopoint libtool-bin make bzip2 libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config ecj fastjar perl libstring-crc32-perl ruby gawk python libusb-dev unzip intltool libacl1-dev libcap-dev libc6-dev-i386 lib32ncurses5-dev gcc-multilib lib32stdc++6 libglib2.0-dev 
+sudo apt -y install rsync kmod execstack sqlite3 libsqlite3-dev libzstd-dev:i386 libzstd-dev cmake lib32z1-dev unar inkscape imagemagick subversion git bc wget sudo ccache gcc g++ binutils autoconf automake autopoint libtool-bin make bzip2 libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config ecj fastjar perl libstring-crc32-perl ruby gawk python libusb-dev unzip intltool libacl1-dev libcap-dev libc6-dev-i386 lib32ncurses5-dev gcc-multilib lib32stdc++6 libglib2.0-dev 
 # sqlite-32bit lässt sich mit apt nicht installieren, aber mit apt-get schon. Siehe auch: https://developpaper.com/ubuntu-solves-the-problem-of-libsqlite3-0-dependency-recommended/
 sudo apt-get -y install sqlite3:i386
 ```
