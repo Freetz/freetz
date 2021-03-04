@@ -73,6 +73,9 @@ Latest changes
    * wireguard-linux-compat 1.0.20210124
    * lzma2 5.2.5
 
+ - Firmware updates:
+   * Please see [FIRMWARES](FIRMWARES.md) for the list of currently supported devices and firmwares.
+
 ### ng21010
 
 - Known problems:
