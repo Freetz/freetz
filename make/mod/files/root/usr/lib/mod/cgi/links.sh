@@ -57,14 +57,15 @@ _cgi_location() {
 			"$out" "/cgi-bin/conf/$pkg" "$@" ;;
 		mod)    case $2 in
 				""|status) "$out" "/cgi-bin/status.cgi" ;;
-				extras)    "$out" "/cgi-bin/extra.cgi" ;;
-				daemons)   "$out" "/cgi-bin/service" ;;
 				about)     "$out" "/cgi-bin/about.cgi" ;;
+				daemons)   "$out" "/cgi-bin/service" ;;
 				system)    "$out" "/cgi-bin/system.cgi" ;;
-				conf)      _cgi_location "$out" cgi mod ;;
+				backup)    "$out" "/cgi-bin/backup/index.cgi" ;;
 				update)    "$out" "/cgi-bin/update/firmware.cgi" ;;
 				support)   "$out" "/cgi-bin/support/index.cgi" ;;
 				freetz)    "$out" "/cgi-bin/freetz.cgi" ;;
+				extras)    "$out" "/cgi-bin/extra.cgi" ;;
+				conf)      _cgi_location "$out" cgi mod ;;
 			esac
 			;;
 		*)    "$out" "/error/unknown-type" "$type" ;;
