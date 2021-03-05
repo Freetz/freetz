@@ -29,10 +29,9 @@ SCRIPT="$(readlink -f $0)"
 PARENT="$(dirname ${SCRIPT%/*})"
 DECS="$PARENT/tools/decoder/scripts"
 DECB="$PARENT/tools/decoder/bin/decoder.$(uname -m)"
-[ ! -x "$(which xxd 2>/dev/null)" ] && DECB="${DECB}_invalid"  # WORKAROUND, may be removed later
 [ ! -d "$DECS" ] && exit1 "Please run 'make yourfritz-decoder-host' first."
-[ ! -x "$DECB" ] && echo "Using decoder scripts in $DECS" || echo "Using decoder binary $DECB"
-[ ! -x "$DECB" ] && DECODER="$DECS/" || DECODER="$DECB "
+[ ! -x "$DECB" ] && echo "Using decoder scripts $DECS" && DECODER="$DECS/" && PFDHEX=''
+[   -x "$DECB" ] && echo "Using decoder binary $DECB"  && DECODER="$DECB " && PFDHEX='--hex-output'
 
 # unpack
 TDIR="$(mktemp -d)"
@@ -58,10 +57,7 @@ tar xf "$TDIR/settings.tgz" -C "$TDIR"
 rm "$TDIR/settings.tgz"
 
 # password
-[ ! -x "$DECB" ] \
-  && KEY="$($DECS/password_from_device -a "$TDIR/environment.txt")" \
-  || KEY="$($DECB password_from_device -a "$TDIR/environment.txt" | xxd -p)"  # WORKAROUND, may be removed later
-#KEY="${DECODER}password_from_device -a "$TDIR/environment.txt")"  # use instead WORKAROUND
+KEY=$(${DECODER}password_from_device $PFDHEX -a "$TDIR/environment.txt")
 [ -z "$KEY" ] && exit1 "Can not find device key"
 echo "Device key: $KEY"
 rm "$TDIR/environment.txt"
@@ -81,7 +77,7 @@ rm -rf "$TDIR/var_flash"
 
 # bundling
 mv "$TDIR/decrypted" "$TDIR/var_flash"
-echo "Writing decoded $OUT"
+echo "Writing file: $OUT"
 tar czf "$OUT" -C "$TDIR" var_flash/
 
 # cleanup
