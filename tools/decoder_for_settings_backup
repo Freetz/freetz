@@ -1,27 +1,28 @@
 #!/bin/bash
 
 exit1() {
-echo -e "$*"
-rm -rf "$TDIR"
-exit 1
+	echo -e "$*"
+	rm -rf "$TDIR"
+	exit 1
 }
 
 # arguments
 IN="$1"
-OUT="$2"
-PASS="$3"
-if [ "$#" != "2" -a "$#" != "3" ]; then
+PASS="$2"
+if [ "$#" != "1" -a "$#" != "2" ]; then
 	echo
-	echo "Decodes a freetz settings backup file to restore on another device"
+	echo "Decodes an encrypted freetz settings backup file to restore on another device"
 	echo
-	echo "Usage: $0: <in> <out> [pass]"
-	echo " <in>   - file to read encrypted settings backup .tar file"
-	echo " <out>  - file to write decrypted settings backup .tbz file"
-	echo " [pass] - password of encrypted file"
+	echo "Usage: $0: <file> [pass]"
+	echo " <file> - encrypted settings backup .tar file"
+	echo " [pass] - password of settings backup file"
+	echo " Output will be saved with extension .decoded.tar"
 	exit1
 fi
-[ ! -s "$IN" ] && exit1 "File $IN does not exist!"
+OUT="${IN%.*}"
+OUT="${OUT%.crypted}.decoded.tar"
 [ -e "$OUT" ] && exit1 "File $OUT does yet exist!"
+[ ! -s "$IN" ] && exit1 "File $IN does not exist!"
 
 # decoder
 SCRIPT="$(readlink -f $0)"
