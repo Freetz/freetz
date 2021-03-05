@@ -44,6 +44,11 @@ Latest changes
  - New tools and hooks:
    * tools/decoder_for_settings_backup can decode an (encrypted only!) settings backup file to restore on another device
 
+ - Web interface:
+   * Settings backup:
+      + Check for identic device, AVM passwords are device specific encoded
+      + Support of encrypted setting backup files (openssl is required)
+
  - Firmware updates:
    * Please see [FIRMWARES](FIRMWARES.md) for the list of currently supported devices and firmwares.
 

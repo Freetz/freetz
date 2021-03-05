@@ -1,5 +1,15 @@
 menu "Web Interface"
 
+	config FREETZ_BACKUP_ENCRYPTION
+		bool "Setting backup encryption"
+		select FREETZ_PACKAGE_OPENSSL
+		default n
+		help
+			Encrypted backups - are encrypted. And could additional
+			be decoded with tools/decoder_for_settings_backup to be
+			able to restore on another device.
+			For encryption OpenSSL is selected and used.
+
 	choice
 		prompt "Freetz language"
 		default FREETZ_LANG_DE if FREETZ_TYPE_LANG_DE || FREETZ_TYPE_LANG_A_CH
