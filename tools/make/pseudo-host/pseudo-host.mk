@@ -23,9 +23,7 @@ PSEUDO_HOST_TARGET_BIARCH_LIB:=$(PSEUDO_HOST_BIARCH_LD_PRELOAD_PATH)/libpseudo.s
 # We need 32-bit pseudo support if we use the 32-bit mips*-linux-strip during fwmod on a 64-bit host
 # The correct condition here would be:
 # (using 32-bit [tools/toolchains] [own/dl]) AND (any of the STRIP-options is selected) AND (host is 64-bit)
-BIARCH_BUILD_SYSTEM:=$(and \
-	$(FREETZ_TOOLCHAIN_32BIT), \
-	$(filter-out 32,$(HOST_BITNESS)))
+BIARCH_BUILD_SYSTEM:=$(filter-out 32,$(HOST_BITNESS))
 
 
 pseudo-host-source: $(DL_DIR)/$(PSEUDO_HOST_SOURCE)
