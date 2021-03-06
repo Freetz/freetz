@@ -61,7 +61,7 @@ rm "$TDIR/settings.tgz"
 mv "$TDIR/environment.txt.crypted" "$TDIR/Environment.txt.crypted"
 KEY=$(${DECODER}password_from_device $PFDHEX -a "$TDIR/environment.txt")
 [ -z "$KEY" ] && exit1 "Can not find device key"
-echo "Device key: $KEY"
+echo -n "Device key: ${KEY:0:4}" ; echo "${KEY:4}" | sed 's/./*/g'
 rm "$TDIR/environment.txt"
 
 # decode
