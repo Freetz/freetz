@@ -58,10 +58,16 @@ retval=0
 while read parser file depends; do
 	[ -z "$file" ] && continue
 	# check dependencies
+	[ "${depends%% *}" == 'and' ] && \
+	  MODE="and" && \
+	  depends="${depends#and }"
+	depends="${depends#or }"
 	[ "${#depends}" == '0' ] && mandatory='y' || mandatory='n'
+	ands='y'
 	for x in $depends; do
-		grep -q "^$x=y$" "$PARENT/.config" 2>/dev/null && mandatory='y'
+		grep -q "^$x=y$" "$PARENT/.config" 2>/dev/null && mandatory='y' || ands='n'
 	done
+	[ "$MODE" == "and" -a "$ands" != "y" ] && mandatory='n'
 	[ "$mandatory" != 'y' ] && continue
 	# check installed
 	check_requisite "$file" "$parser" && continue
