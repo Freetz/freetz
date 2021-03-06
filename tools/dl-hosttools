@@ -6,13 +6,14 @@ local i
 for i in "$@"; do echo "$i=y"; done
 cat << EOF
 FREETZ_USER_LEVEL_EXPERT=y
-FREETZ_HOSTTOOLS_DOWNLOAD=n
-FREETZ_TOOLCHAIN_CCACHE=n
+# FREETZ_TOOLCHAIN_32BIT is not set
+# FREETZ_TOOLCHAIN_CCACHE is not set
+# FREETZ_HOSTTOOLS_DOWNLOAD is not set
 FREETZ_JLEVEL=9
 EOF
 }
 
-SKIP="config yf"
+SKIP="config decoder yf"
 FILE="tools-$(date '+%Y-%m-%d')"
 OUTP="dl/$FILE.tar.xz"
 [ -s "$OUTP" ] && echo "File $OUTP exists" && exit 1
