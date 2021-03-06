@@ -12,7 +12,7 @@ mklibs() {
 	rm -rf "${MOD_DIR}/mklibs-progs" "${MOD_DIR}/mklibs-out"
 	mkdir -p "${MOD_DIR}/mklibs-out"
 	# first find all programs and add them to the mklibs list
-	find "${FILESYSTEM_MOD_DIR}" -type f -perm +100 -exec \
+	find "${FILESYSTEM_MOD_DIR}" -type f -perm /100 -exec \
 		file -r -N -F '' {} + | \
 		awk ' /executable.*dynamically/ { print $1 }' > "${MOD_DIR}/mklibs-progs"
 	# find all loadable objects that are not regular libraries and add them to the list as well
