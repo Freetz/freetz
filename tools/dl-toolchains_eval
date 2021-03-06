@@ -18,6 +18,7 @@ evalconfig() {
 }
 
 #r
+#sed -nr 's/^#? *dltc "(.*)".*/\1/p' $(dirname $(readlink -f $0))/dl-toolchains_make | while read evalopts; do evalconfig $evalopts; done
 sed -nr 's/^ *dltc "(.*)".*/\1/p' $(dirname $(readlink -f $0))/dl-toolchains_make | while read evalopts; do evalconfig $evalopts; done
 #FRITZBOX="$(cat config/ui/firmware.in | grep -A9999 '^### Hardware type' | grep -B9999 '^endchoice # "Hardware type"' | sed -rn 's/\t*config (FREETZ_TYPE_)/\1/p')"
 #FIRMWARE="$(sed -rn 's/^\tconfig (FREETZ_TYPE_FIRMWARE_[X_0-9]{5}).*/\1/p' config/ui/firmware.in)"
@@ -32,8 +33,9 @@ sed -nr 's/^ *dltc "(.*)".*/\1/p' $(dirname $(readlink -f $0))/dl-toolchains_mak
 echo
 
 #w
-grep -v '^#' out.raw | sort -u | grep uClibc | while read l; do grep "^$l$" -m1 -B2 out.raw; done | sed 's/gcc-3\..\../gcc-4.6.4/' | while read line; do
+grep -v '^#' out.raw | sort -u | grep uClibc | while read l; do grep "^$l$" -m1 -B2 out.raw; done | while read line; do
 [ "${line:0:1}" == "#" -o "${line:0:1}" == "" ] && echo $line | tee -a out.kernel >> out.target && continue
+echo $line | grep 'uClibc-0.9.28' -q && line="$(echo $line | sed 's/gcc-3\..\../gcc-4.6.4/')"
 
 FK="dl/${line%_uCli*}-freetz-${VERSION}-shared-glibc.tar.lzma"
 FT="dl/$line-freetz-${VERSION}-shared-glibc.tar.lzma"
