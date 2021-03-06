@@ -87,6 +87,16 @@ sudo apt -y install imagemagick subversion git bc wget sudo gcc g++ binutils aut
 sudo apt-get -y install imagemagick subversion git gcc g++ binutils autoconf automake autopoint libtool-bin make bzip2 libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config ecj fastjar realpath perl libstring-crc32-perl ruby ruby1.8 gawk python libusb-dev unzip intltool libacl1-dev libcap-dev libc6-dev-i386 lib32ncurses5-dev gcc-multilib lib32stdc++6 libglib2.0-dev
 ```
 
+ - Ubuntu 14 64-Bit:
+```
+sudo apt-get -y install gcc-multilib libc6-dev-i386 libsqlite3-dev lib32stdc++6 cmake execstack ccache rsync openssl inkscape git build-essential libtool graphicsmagick imagemagick subversion gcc g++ binutils autoconf automake automake1.9 libtool make bzip2 libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config ecj fastjar realpath perl libstring-crc32-perl ruby gawk python libusb-dev unzip intltool libacl1-dev libcap-dev
+Zusätzlich muss manuell installiert werden:
+cmake min v3.4.3  https://ftp.osuosl.org/pub/blfs/conglomeration/cmake/cmake-3.4.3.tar.gz
+cpio min v2.12    https://ftp.gnu.org/gnu/cpio/cpio-2.12.tar.bz2
+make min v3.82    https://ftp.gnu.org/gnu/make/make-3.82.tar.bz2
+libzstd min v0    https://github.com/facebook/zstd/releases/download/v1.4.9/zstd-1.4.9.tar.gz
+```
+
  - Falls auf den folgenden Systemen ein 64-Bit Linux installiert ist wird zusätzlich benötigt:
 ```
 sudo apt-get -y install libc6-dev-i386 lib32ncurses5-dev gcc-multilib lib32stdc++6
