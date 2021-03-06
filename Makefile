@@ -160,27 +160,18 @@ KCONFIG_TARGETS:=menuconfig menuconfig-single config oldconfig olddefconfig alln
 # load user configuration file
 -include $(TOPDIR)/.config
 
-# check cpu for i686, 32 or 64 bit
-ifneq ($(shell uname -m | sed 's/.*86.*/y/'),y)
+# check cpu for x86_64
+ifneq ($(shell uname -m),x86_64)
 ifneq ($(findstring menuconfig,$(MAKECMDGOALS)),menuconfig)
 ifeq ($(FREETZ_DOWNLOAD_TOOLCHAIN),y)
 DLCHG:=$(shell echo 'y' ; sed 's/^# FREETZ_BUILD_TOOLCHAIN .*/FREETZ_BUILD_TOOLCHAIN=y/' -i $(TOPDIR)/.config)
 DLCHG:=$(shell echo 'y' ; sed 's/^FREETZ_DOWNLOAD_TOOLCHAIN=.*/# FREETZ_DOWNLOAD_TOOLCHAIN is not set/' -i $(TOPDIR)/.config)
-$(info You have no i686 CPU, precompiled (download) toolchains automatically disabled.)
+$(info You have no x86_64 CPU, precompiled (download) toolchains automatically disabled.)
 endif
 ifeq ($(FREETZ_HOSTTOOLS_DOWNLOAD),y)
 DLCHG:=$(shell echo 'y' ; sed 's/^FREETZ_HOSTTOOLS_DOWNLOAD=.*/# FREETZ_HOSTTOOLS_DOWNLOAD is not set/' -i $(TOPDIR)/.config)
-$(info You have no i686 CPU, precompiled (download) host-tools automatically disabled.)
+$(info You have no x86_64 CPU, precompiled (download) host-tools automatically disabled.)
 endif
-$(if $(DLCHG),$(error Please re-run))
-endif
-endif
-
-# check for installed 32-bit libz
-ifneq ($(shell ldconfig -p | grep -v 'x86-64' | grep -Eq '^[[:space:]]*libz.so(\.[01])* ' && echo 'y'),y)
-ifeq ($(FREETZ_HOSTTOOLS_DOWNLOAD),y)
-DLCHG:=$(shell echo 'y' ; sed 's/^FREETZ_HOSTTOOLS_DOWNLOAD=.*/# FREETZ_HOSTTOOLS_DOWNLOAD is not set/' -i $(TOPDIR)/.config)
-$(info You have no libz.so (32-bit) installed, precompiled (download) host-tools automatically disabled. See: https://freetz-ng.github.io/freetz-ng/PREREQUISITES)
 $(if $(DLCHG),$(error Please re-run))
 endif
 endif
