@@ -9,7 +9,7 @@ exit1() {
 # arguments
 IN="$1"
 PASS="$2"
-if [ "$#" != "1" -a "$#" != "2" ]; then
+if [ "$#" == "0" ]; then
 	echo
 	echo "Decodes an encrypted freetz settings backup file to restore on another device"
 	echo
@@ -19,8 +19,7 @@ if [ "$#" != "1" -a "$#" != "2" ]; then
 	echo " Output will be saved with extension .decoded.tar"
 	exit1
 fi
-OUT="${IN%.*}"
-OUT="${OUT%.crypted}.decoded.tar"
+OUT="${IN%.*}.decoded.tar"
 [ -e "$OUT" ] && exit1 "File $OUT does yet exist!"
 [ ! -s "$IN" ] && exit1 "File $IN does not exist!"
 
@@ -37,26 +36,29 @@ DECB="$PARENT/tools/decoder/bin/decoder.$(uname -m)"
 TDIR="$(mktemp -d)"
 [ ! -d "$TDIR" ] && exit1 "Can not create temporary directory."
 echo "Using temp: $TDIR"
-tar xf "$IN" -C "$TDIR" settings.tgz.crypted environment.txt.crypted
-[ -e "$TDIR/settings.tgz.crypted" -a -e "$TDIR/environment.txt.crypted" ] || exit1 "This is not a valid encrypted settings backup file"
+tar xf "$IN" -C "$TDIR" --exclude=identity.md5
+[ -s "$TDIR/settings.tgz.crypted" -a -s "$TDIR/environment.txt.crypted" ] || exit1 "This is not a valid encrypted settings backup file"
 
 # decrypt
-[ -z "$PASS" ] && echo "You have to enter your password 2 (or 4) times!"
+[ -z "$PASS" ] && read -sp "Enter password for decryption (hidden input): " PASS  && echo
+SSLCOMPAT='n'
 for x in settings.tgz environment.txt; do
-	openssl enc -d -aes256 -pbkdf2 ${PASS:+-pass pass:$PASS} -in "$TDIR/$x.crypted" -out "$TDIR/$x"
+	openssl enc -d -aes256 -pbkdf2 -pass pass:"$PASS" -in "$TDIR/$x.crypted" -out "$TDIR/$x"
 	retval=$?
 	if [ "$retval" != "0" ]; then
 		echo "Trying OpenSSL 1.0 compatibility mode"
-		openssl enc -d -aes256 ${PASS:+-pass pass:$PASS} -in "$TDIR/$x.crypted" -out "$TDIR/$x"
+		openssl enc -d -aes256 -pass pass:"$PASS" -in "$TDIR/$x.crypted" -out "$TDIR/$x"
 		retval=$?
+		SSLCOMPAT='y'
 	fi
 	[ "$retval" != "0" ] && exit1 "Decryption failed, wrong password?"
-	rm "$TDIR/$x.crypted"
 done
+rm "$TDIR/settings.tgz.crypted"
 tar xf "$TDIR/settings.tgz" -C "$TDIR"
 rm "$TDIR/settings.tgz"
 
 # password
+mv "$TDIR/environment.txt.crypted" "$TDIR/Environment.txt.crypted"
 KEY=$(${DECODER}password_from_device $PFDHEX -a "$TDIR/environment.txt")
 [ -z "$KEY" ] && exit1 "Can not find device key"
 echo "Device key: $KEY"
@@ -72,13 +74,22 @@ for x in $TDIR/var_flash/*; do
 done
 echo
 echo "Changed values:"
-diff -Nau0r $TDIR/* | grep '^[-+][+ \t]' | sed -r "s,.* $TDIR/var_flash/([^\t ]*).*,\1,g"
+diff -Nau0r $TDIR/decrypted $TDIR/var_flash | grep '^[-+][+ \t]' | sed -r "s,.* $TDIR/var_flash/([^\t ]*).*,\1,g"
+rm -rf "$TDIR/var_flash"
+
+# enctyption
+mv "$TDIR/decrypted" "$TDIR/var_flash"
+[ "$(openssl version | sed -rn 's/^OpenSSL ([0-9])\.([0-9])\..*/\1\2/p')" -lt 11 2>/dev/null ] && SSLOPT='-md sha256' || SSLOPT='-pbkdf2'
+[ "$SSLCOMPAT" == 'y' ] && SSLOPT='-md sha256'
+tar cz -C "$TDIR" var_flash/ | openssl enc -e -aes256 $SSLOPT -pass pass:"$PASS" > "$TDIR/settings.tgz.crypted" \
+  || exit1 "Can not encrypt settings"
 rm -rf "$TDIR/var_flash"
 
 # bundling
-mv "$TDIR/decrypted" "$TDIR/var_flash"
+echo 'This file is decoded and could be restored to any device' >> "$TDIR/contents.txt"
+sed '/decoder_for_settings_backup/d' -i "$TDIR/contents.txt"
 echo "Writing file: $OUT"
-tar czf "$OUT" -C "$TDIR" var_flash/
+tar cf "$OUT" -C "$TDIR" $(ls -1 $TDIR) || exit1 "Can not pack file"
 
 # cleanup
 rm -rf "$TDIR"
