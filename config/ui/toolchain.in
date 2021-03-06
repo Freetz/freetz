@@ -10,8 +10,7 @@ choice
 		Download Toolchain, build toolchain
 
 	config FREETZ_DOWNLOAD_TOOLCHAIN
-		bool "Use precompiled i686 toolchains"
-		select FREETZ_TOOLCHAIN_32BIT
+		bool "Use precompiled x86_64 toolchains"
 		depends on FREETZ_SHOW_APTGURU
 
 	config FREETZ_BUILD_TOOLCHAIN
@@ -694,6 +693,8 @@ config FREETZ_TOOLCHAIN_MINIMIZE_REQUIRED_GLIBC_VERSION
 config FREETZ_TOOLCHAIN_32BIT
 	bool "Build 32-bit tools and toolchains"
 	depends on FREETZ_SHOW_APTGURU
+	depends on !FREETZ_DOWNLOAD_TOOLCHAIN
+	depends on !FREETZ_HOSTTOOLS_DOWNLOAD
 	default n
 	help
 		This option causes 32-bit tools and toolchains to be built on a 64-bit systems.
@@ -728,9 +729,8 @@ choice
 endchoice # "Root emulator" #
 
 config FREETZ_HOSTTOOLS_DOWNLOAD
-	bool "Use precompiled i686 host-tools"
+	bool "Use precompiled x86_64 host-tools"
 	depends on FREETZ_SHOW_APTGURU
-	select FREETZ_TOOLCHAIN_32BIT
 	default y if FREETZ_SHOW_APTGURU
 	default n
 	help
