@@ -422,7 +422,7 @@ download_by_vcs() {
 
 	SUBDIR=$(echo "$DL_FILE" | sed -r -e 's,(.*)[.]tar[.](gz|bz2|xz)$,\1,')
 	FILEPART="${URLs##*/}"
-	VERSION=$(echo "${SUBDIR/${FILEPART%.git}/}" | sed -r -e 's,[^-]*-(.+),\1,')
+	VERSION=$(echo "${SUBDIR/${FILEPART%.git}/}" | sed -e 's,.*-,,')
 	[ -n "$VERSION" ] || { echo "Failed to detect version from $DL_FILE"; exit 1; }
 
 	TMP_DIR=$(mktemp -d -t freetzXXX) || { echo "Error creating temporary dir."; exit 1; }
