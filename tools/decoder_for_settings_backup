@@ -74,7 +74,7 @@ for x in $TDIR/var_flash/*; do
 done
 echo
 echo "Changed values:"
-diff -Nau0r $TDIR/decrypted $TDIR/var_flash | grep '^[-+][+ \t]' | sed -r "s,.* $TDIR/var_flash/([^\t ]*).*,\1,g"
+diff -Nau0r $TDIR/var_flash $TDIR/decrypted | grep -a '^[-+][+ \t]' | sed -r "s,.* $TDIR/var_flash/([^\t ]*).*,\1,g"
 rm -rf "$TDIR/var_flash"
 
 # enctyption
