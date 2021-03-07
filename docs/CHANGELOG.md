@@ -49,6 +49,9 @@ Latest changes
    * precompiled host-tools updated to x86_64 (only)
    * tools/decoder_for_settings_backup can decode an (encrypted only!) settings backup file to restore on another device
 
+ - Updated tools and hooks:
+   * yourfritz-decoder 0.4-git
+
  - Updated packages and libs:
    * libgd 2.3.2
 
