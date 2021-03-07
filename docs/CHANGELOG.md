@@ -41,7 +41,12 @@ Latest changes
    * Replace kernel does not work for most latest firmware versions.
    * Loading build kernel modules may work or do not. You'll notice.
 
+ - Build system:
+   * kernel-/target-toolchains:
+      + precompiled toolchains updated to x86_64 (only)
+
  - New tools and hooks:
+   * precompiled host-tools updated to x86_64 (only)
    * tools/decoder_for_settings_backup can decode an (encrypted only!) settings backup file to restore on another device
 
  - Updated packages and libs:
