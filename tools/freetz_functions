@@ -661,7 +661,7 @@ function symlinks-abs2rel() {
 			continue
 		fi
 
-		TARGET_CANONICAL=$(readlink --canonicalize-missing --no-newline "$LINK")
+		TARGET_CANONICAL="$(realpath ${TARGET_FS_ROOT}${TARGET} | sed "s,^${TARGET_FS_ROOT},,")"
 		if [ $? -ne 0 ]; then
 			warn0 "${FUNCNAME}: failed to determine canonical name of '${LINK#${TARGET_FS_ROOT}}' -> '$TARGET'"
 			continue
