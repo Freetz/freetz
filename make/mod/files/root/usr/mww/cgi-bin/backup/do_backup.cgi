@@ -29,7 +29,6 @@ This file contains a settings backup by Freetz-NG
 $fname
 To restore with an older freetz revision: upload only settings.tgz
 EOF
-[ -n "$SICPW" ] && echo 'If you want to restore to another device, use: tools/decoder_for_settings_backup'                              >> "$OUTER_DIR/contents.txt"
 [ -n "$SICPW" ] && echo 'For manual decryption: openssl enc -d -aes256 -in settings.tgz.crypted -out settings.tgz [-pbkdf2|-md sha256]' >> "$OUTER_DIR/contents.txt"
 [ -s "$OUTER_DIR/contents.txt" ] || fail "$(lang de:"Fehler beim Erstellen von contents.txt" en:"Erron on creating of contents.txt")"
 

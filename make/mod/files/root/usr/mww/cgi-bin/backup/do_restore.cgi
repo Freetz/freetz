@@ -55,8 +55,7 @@ if [ "$FAILURE" != "y" -a -e "$OUTER_DIR/identity.md5" ]; then
 	echo "$(lang de:"Aktuelles Ger&auml;t" en:"This device"): $IDENT_l"
 	echo "$(lang de:"Sicherungsdatei" en:"Backup file"): $IDENT_r"
 	[ "$IDENT_l" != "$IDENT_r" ] \
-	  && fail "$(lang de:"FEHLER: Diese Sicherungsdatei wurde auf einem anderen Ger&auml;t erstellt" en:"ERROR: This backup file was created on another device")." \
-	  && echo "$(lang de:"Das Script tools/decoder_for_settings_backup kann zum Entschl&uuml;sseln genutzt werden" en:"The script tools/decoder_for_settings_backup could be used to decrypt")."
+	  && fail "$(lang de:"FEHLER: Diese Sicherungsdatei wurde auf einem anderen Ger&auml;t erstellt" en:"ERROR: This backup file was created on another device")."
 	rm -f "$OUTER_DIR/identity.md5"
 	okay
 fi
