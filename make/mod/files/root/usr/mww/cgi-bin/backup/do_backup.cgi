@@ -28,17 +28,17 @@ cat << EOF > "$OUTER_DIR/contents.txt"
 This file contains a settings backup by Freetz-NG
 $fname
 To restore with an older freetz revision: upload only settings.tgz
-If you want to restore to another device, use: tools/decoder_for_settings_backup
 EOF
+[ -n "$SICPW" ] && echo 'If you want to restore to another device, use: tools/decoder_for_settings_backup'                              >> "$OUTER_DIR/contents.txt"
 [ -n "$SICPW" ] && echo 'For manual decryption: openssl enc -d -aes256 -in settings.tgz.crypted -out settings.tgz [-pbkdf2|-md sha256]' >> "$OUTER_DIR/contents.txt"
-[ -s "$OUTER_DIR/contents.txt" ]  || fail "$(lang de:"Fehler beim Erstellen des Contents" en:"Erron on creating content")"
+[ -s "$OUTER_DIR/contents.txt" ] || fail "$(lang de:"Fehler beim Erstellen von contents.txt" en:"Erron on creating of contents.txt")"
 
 # Create temporary files of character streams in /var/flash
 for x in /var/flash/*; do cat "$x" > "$INNER_DIR/${x##*/}"; done
 
 # Pack (and encrypt) temporary settings file
 if [ -z "$SICPW" ]; then
-	tar cz -C "$OUTER_DIR" "${INNER_DIR##*/}/"                                                 > "$OUTER_DIR/settings.tgz" \
+	tar cz -C "$OUTER_DIR" "${INNER_DIR##*/}/"                                                  > "$OUTER_DIR/settings.tgz" \
 	  || fail "$(lang de:"Fehler beim Erzeugen der Datei" en:"Erron on creating file")"
 else
 	[ "$(openssl version | sed -rn 's/^OpenSSL ([0-9])\.([0-9])\..*/\1\2/p')" -lt 11 2>/dev/null ] && SSLOPT='-md sha256' || SSLOPT='-pbkdf2'
