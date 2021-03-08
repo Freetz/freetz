@@ -178,6 +178,27 @@ config FREETZ_MODULE_btusb
 	bool "btusb.ko"
 	depends on !FREETZ_AVM_HAS_BT_HCIBTUSB_BUILTIN && FREETZ_KERNEL_VERSION_2_6_28_MIN
 	select FREETZ_MODULE_bluetooth
+	select FREETZ_MODULE_btintel if !FREETZ_AVM_HAS_BT_INTEL_BUILTIN        && FREETZ_KERNEL_VERSION_4_MIN
+	select FREETZ_MODULE_btbcm   if !FREETZ_AVM_HAS_BT_HCIBTUSB_BCM_BUILTIN && FREETZ_KERNEL_VERSION_4_MIN
+	select FREETZ_MODULE_btrtl   if !FREETZ_AVM_HAS_BT_HCIBTUSB_RTL_BUILTIN && FREETZ_KERNEL_VERSION_4_MIN
+	default n
+
+config FREETZ_MODULE_btintel
+	bool "btintel.ko"
+	depends on !FREETZ_AVM_HAS_BT_INTEL_BUILTIN        && FREETZ_KERNEL_VERSION_4_MIN
+	depends on FREETZ_MODULE_btusb
+	default n
+
+config FREETZ_MODULE_btbcm
+	bool "btbcm.ko"
+	depends on !FREETZ_AVM_HAS_BT_HCIBTUSB_BCM_BUILTIN && FREETZ_KERNEL_VERSION_4_MIN
+	depends on FREETZ_MODULE_btusb
+	default n
+
+config FREETZ_MODULE_btrtl
+	bool "btrtl.ko"
+	depends on !FREETZ_AVM_HAS_BT_HCIBTUSB_RTL_BUILTIN && FREETZ_KERNEL_VERSION_4_MIN
+	depends on FREETZ_MODULE_btusb
 	default n
 
 config FREETZ_MODULE_capiconn
