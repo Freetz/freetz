@@ -23,8 +23,8 @@ UCLIBC_CONFIG_FILE:=$(UCLIBC_MAKE_DIR)/configs/freetz/config-$(FREETZ_TARGET_ARC
 UCLIBC_TARGET_SUBDIR:=$(if $(FREETZ_SEPARATE_AVM_UCLIBC),usr/lib/freetz,lib)
 
 # uClibc >= 0.9.31 supports parallel building
-# TODO 1.0.14: reenable parallel building for 1.0.x
-UCLIBC_MAKE:=$(if $(or $(FREETZ_TARGET_UCLIBC_0_9_28),$(FREETZ_TARGET_UCLIBC_0_9_29),$(FREETZ_TARGET_UCLIBC_1_0_14),$(FREETZ_TARGET_UCLIBC_1_0_15)),$(MAKE1),$(MAKE)) 
+#  TODO    1.0.14: reenable parallel building
+UCLIBC_MAKE:=$(if $(or $(FREETZ_TARGET_UCLIBC_0_9_28),$(FREETZ_TARGET_UCLIBC_0_9_29),$(FREETZ_TARGET_UCLIBC_1_0_14)),$(MAKE1),$(MAKE)) 
 
 UCLIBC_COMMON_BUILD_FLAGS:=
 
