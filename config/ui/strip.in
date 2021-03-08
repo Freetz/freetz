@@ -10,6 +10,7 @@ menu "Strip options"
 
 	config FREETZ_STRIP_LIBRARIES
 		bool "Run mklibs on the built root filesystem - EXPERIMENTAL"
+		depends on !FREETZ_SEPARATE_AVM_UCLIBC
 		default n
 		help
 			Recompiles all the shared libraries to only include the
