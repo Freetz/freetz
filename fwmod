@@ -1619,7 +1619,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 				! \( -name '*.ko' -o -path '*/usr/www/*' -o -path '*/etc/default*' -o -path '*/lib/modules*' \) \
 				\( -perm /100 -o -name "*.so*" \) \
 				-type f \
-				-exec file {} '+' | sed -n 's|^\(.*\):.*MIPS.*not stripped.*|\1|p' \
+				-exec file {} '+' | sed -n 's|^\(.*\):.* not stripped.*|\1|p' \
 		); do
 			echo2 $i
 			chmod u+r $i
