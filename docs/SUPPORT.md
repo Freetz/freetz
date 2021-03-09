@@ -41,7 +41,7 @@ Wie kann ich Freetz-NG unterstützen?
     - Die Prüfsumme in ```make/$PKG/$PKG.mk``` anpassen.
     - Falls der Dateiname die Version enthält, ```make/$PKG/external.*``` anpassen.
     - Vorhandene Patches in ```make/$PKG/patches/``` aktualisieren durch<br>
-      ausführen von: ```AUTO_FIX_PATCHES=y make $PKG-unpacked```
+      ausführen von: ```make $PKG-autofix```
     - Compilieren testen mit: ```make $PKG-precompiled FREETZ_VERBOSITY_LEVEL=2```
     - Am besten noch auf eine Fritzbox flashen und testen.
   * **Wiki**<br>
