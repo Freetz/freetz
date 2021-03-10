@@ -48,7 +48,7 @@ if [ "$FAILURE" != "y" -a -e "$FORM_uploadfile" ]; then
 fi
 
 # identity
-if [ "$FAILURE" != "y" -a -e "$OUTER_DIR/identity.md5" ]; then
+if [ "$FAILURE" != "y" -a -e "$OUTER_DIR/identity.md5" -a "$FORM_freetz_only" != "on" ]; then
 	echo "$(lang de:"Pr&uuml;fe Identit&auml;t" en:"Checking identity") ..."
 	IDENT_r="$(cat "$OUTER_DIR/identity.md5")"
 	IDENT_l="$(sort /proc/sys/urlader/environment | sed -rn "s/^(SerialNumber|maca|tr069_passphrase|wlan_key)[ \t]*//p" | md5sum | sed 's/ .*//')"
@@ -69,12 +69,16 @@ if [ "$FAILURE" != "y" -a -e "$OUTER_DIR/settings.tgz.crypted" -a -z "$SICPW" ];
 	okay
 fi
 
-# crypted
-if [ "$FAILURE" != "y" -a -e "$OUTER_DIR/settings.tgz.crypted" ]; then
-	echo "$(lang de:"Sicherungsdateien entschl&uuml;sseln" en:"Dectypting backup files") ..."
+# openssl
+if [ "$FAILURE" != "y" ] && [ -e "$OUTER_DIR/settings.tgz.crypted" ]; then
 	SSLV="$(openssl version | sed -rn 's/^OpenSSL ([0-9])\.([0-9])\..*/\1\2/p')"
 	[ "$SSLV" -lt 11 2>/dev/null ] && F1ST='-md sha256' && S2ND='-pbkdf2'
 	[ "$SSLV" -ge 11 2>/dev/null ] && S2ND='-md sha256' && F1ST='-pbkdf2'
+fi
+
+# crypted
+if [ "$FAILURE" != "y" -a -e "$OUTER_DIR/settings.tgz.crypted" ]; then
+	echo "$(lang de:"Sicherungsdateien entschl&uuml;sseln" en:"Decrypting backup files") ..."
 	openssl         enc -d -aes256 $F1ST -in "$OUTER_DIR/settings.tgz.crypted" -pass env:SICPW | tar xvz -C "$OUTER_DIR" $FONLY
 	retval=$?
 	if [ "$retval" != "0" ]; then
