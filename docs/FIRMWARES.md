@@ -371,7 +371,7 @@ Currently supported devices and firmwares
   - 164.07.02 rev62314 {INT}
   - 164.07.13 rev75481 {INT} [MESH18 NL3]
   - 164.07.21 rev82823 {ALL} [PSQ19]
-  - 164.07.24 rev85384 {ALL} [PSQ19 Phase 2] (Labor)
+  - 164.07.25 rev86866 {ALL} [PSQ19 Phase 2]
 * __Fritz!Box Fon WLAN 7530 AX (UNTESTED)__
   - 256.07.22 rev85878 {ALL} [PSQ19]
   - 256.07.24 rev86287 {ALL} [PSQ19 Phase 2] (Labor)
