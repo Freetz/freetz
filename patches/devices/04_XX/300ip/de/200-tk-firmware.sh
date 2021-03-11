@@ -52,4 +52,5 @@ EOF
 
 # patch install script to accept firmware from FBF or Eumex
 echo1 "applying install patch"
-modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/de/install-300ip-as-fon.patch" || exit 2
+modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/100-aliens/install/install-300ip-as-fon_de.patch" || exit 2
+

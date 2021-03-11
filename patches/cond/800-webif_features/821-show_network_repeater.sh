@@ -8,6 +8,6 @@ echo1 "enabling network config"
 # patcht Heimnetz > Netzwerk
 modpatch \
   "$FILESYSTEM_MOD_DIR" \
-  "${PATCHES_COND_DIR}/show_network_repeater/" \
+  "${PATCHES_COND_DIR}/821-show_network_repeater/" \
   "${MENU_DATA_LUA}"
 

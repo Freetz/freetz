@@ -9,5 +9,5 @@ elif [ "$FREETZ_AVM_VERSION_06_5X_MIN" == "y" ] ; then
 	PVER="06_5X"
 fi
 
-modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/833-show_dsl_spectrum-minmax_${PVER}.patch"
+modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/833-show_dsl_spectrum-minmax/833-show_dsl_spectrum-minmax_${PVER}.patch"
 

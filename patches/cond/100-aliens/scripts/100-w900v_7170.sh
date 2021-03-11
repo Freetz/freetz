@@ -22,12 +22,12 @@ cp ${DIR}/.tk/original/filesystem/lib/modules/microvoip_isdn_top.bit* "${FILESYS
 #cp "${DIR}/.tk/original/filesystem/etc/init.d/rc.init" "${FILESYSTEM_MOD_DIR}/etc/init.d"
 
 echo2 "patching webmenu"
-isFreetzType LANG_DE && modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/intro_bar_middle_alien_7170.patch"
-modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/remove-FON3-7170-alien.patch" || exit 2
+isFreetzType LANG_DE && modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/100-aliens/cond/intro_bar_middle_alien_7170.patch"
+modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/100-aliens/patches/remove-FON3-7170-alien.patch" || exit 2
 
 if [ ! "$FREETZ_REMOVE_DECT" == "y" ];then
 	echo2 "Add dect sites to webmenu"
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/sp2fritz-W900V_7170.patch" || exit 2
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/100-aliens/cond/sp2fritz-W900V_7170.patch" || exit 2
 	cp "${DIR}/.tk/original/filesystem/usr/share/ctlmgr/libdect.so" "${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr"
 fi
 
@@ -43,7 +43,7 @@ modsed '/modprobe Piglet piglet_bitfile.*$/i \
  if [ "$HWRevision_BitFileCount" = "1" ] ; then \
  piglet_load_params="\$piglet_load_params piglet_enable_switch=1" \
  fi' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
-modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/rc.S-W900V_7170.patch"
+modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/100-aliens/rc.S/rc.S-W900V_7170.patch"
 
 modsed "s/CONFIG_VERSION_MAJOR=.*$/CONFIG_VERSION_MAJOR=\"34\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 modsed "s/CONFIG_PRODUKT_NAME=.*$/CONFIG_PRODUKT_NAME=\"FRITZ!Box Fon Speedport W 900V\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
@@ -99,4 +99,5 @@ fi
 
 # patch install script to accept firmware from FBF on Speedport
 echo1 "applying install patch"
-modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/install-W900V_7170.patch" || exit 2
+modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/100-aliens/install/install-W900V_7170.patch" || exit 2
+

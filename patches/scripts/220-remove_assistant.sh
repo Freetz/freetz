@@ -41,17 +41,17 @@ else
 		linkbox_row=$(cat $linkbox_file |nl| sed -n "s/^ *\([0-9]*\).*<a href=.javascript:jslGoTo.'konfig','home'..>.*<.a>$/\1/p")
 		modsed "$((linkbox_row-13)),$((linkbox_row+19))d" $linkbox_file
 	elif isFreetzType 7112 7113 7141 7150 7170 7270_V1 7570; then
-		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/${FREETZ_TYPE_LANGUAGE}/remove_assistant_${FREETZ_TYPE_PREFIX}.patch"
+		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/220-remove_assistant/remove_assistant_${FREETZ_TYPE_LANGUAGE}_${FREETZ_TYPE_PREFIX}.patch"
 	elif isFreetzType 7140; then
 		if isFreetzType LANG_A_CH; then
-			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/remove_assistant_7140.patch"
+			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/220-remove_assistant/remove_assistant_de_7140.patch"
 		else
-			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/remove_assistant.patch"
+			modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/220-remove_assistant/remove_assistant_de.patch"
 		fi
 	elif [ "$FREETZ_AVM_HAS_PHONE" == "y" ]; then
-		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/remove_assistant.patch"
+		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/220-remove_assistant/remove_assistant_de.patch"
 	else
-		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/remove_assistant_wop.patch"
+		modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/220-remove_assistant/remove_assistant_de_wop.patch"
 	fi
 fi
 

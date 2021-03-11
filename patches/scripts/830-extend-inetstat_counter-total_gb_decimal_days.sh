@@ -11,5 +11,5 @@ elif [ "$FREETZ_AVM_VERSION_06_5X_MIN" == "y" ] ; then
 	PVER="06_5X"
 fi
 
-modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/830-extend-inetstat_counter-total_gb_decimal_days_${PVER}.patch"
+modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/830-extend-inetstat_counter-total_gb_decimal_days/830-extend-inetstat_counter-total_gb_decimal_days_${PVER}.patch"
 

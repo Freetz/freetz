@@ -26,8 +26,8 @@ cp -a -R "${DIR}/.tk/original/filesystem/lib/modules/2.6.13.1-ohio/kernel/driver
 cp -a -R "${DIR}/.tk/original/filesystem/lib/modules/2.6.13.1-ohio/kernel/drivers/char/Piglet_noemif" "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/drivers/char/"
 
 echo2 "patching webmenu"
-isFreetzType LANG_DE && modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/intro_bar_middle_alien_7170.patch"
-#modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/7113_7170.patch"
+isFreetzType LANG_DE && modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/100-aliens/cond/intro_bar_middle_alien_7170.patch"
+#modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/100-aliens/install/install-7113_7170.patch"
 
 echo2 "moving default config dir"
 mv "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7170" "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7113"
@@ -53,4 +53,5 @@ modsed "s/CONFIG_WLAN_SAVEMEM=.*$/CONFIG_WLAN_SAVEMEM=\"y\"/g" "${FILESYSTEM_MOD
 
 # patch install script to accept firmware from 7170
 echo1 "applying install patch"
-modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/install-7113_7170.patch" || exit 2
+modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/100-aliens/install/install-7113_7170.patch" || exit 2
+

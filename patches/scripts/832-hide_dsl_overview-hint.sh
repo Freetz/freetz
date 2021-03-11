@@ -11,5 +11,5 @@ elif [ "$FREETZ_AVM_VERSION_06_5X_MIN" == "y" ] ; then
 	PVER="06_5X"
 fi
 
-modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/832-hide_dsl_overview-hint_${PVER}.patch"
+modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/832-hide_dsl_overview-hint/832-hide_dsl_overview-hint_${PVER}.patch"
 

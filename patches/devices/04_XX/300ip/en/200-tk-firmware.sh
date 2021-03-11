@@ -3,4 +3,5 @@ ln -sf default.Fritz_Box_FON  "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_Eumex
 
 # patch install script to accept firmware from FBF or Eumex
 echo2 "applying install patch"
-modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/en/install-300ip-as-fon.patch" || exit 2
+modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_DIR}/cond/100-aliens/install/install-300ip-as-fon_en.patch" || exit 2
+

@@ -16,5 +16,5 @@ elif [ "$FREETZ_AVM_VERSION_06_5X_MIN" == "y" ] ; then
 	PVER="06_5X"
 fi
 
-modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/831-extend-dsl_line_settings-speed_${PVER}.patch"
+modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/831-extend-dsl_line_settings-speed/831-extend-dsl_line_settings-speed_${PVER}.patch"
 

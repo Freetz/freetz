@@ -6,5 +6,5 @@ echo1 "enabling dvb-c tv-services"
 # patcht DVB-C > TV-Dienste
 modpatch \
   "$FILESYSTEM_MOD_DIR" \
-  "${PATCHES_COND_DIR}/show_dvb_services.patch"
+  "${PATCHES_COND_DIR}/822-show_dvb_services.patch"
 

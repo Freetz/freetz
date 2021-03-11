@@ -36,10 +36,10 @@ cp -a -R "${DIR}/.tk/original/filesystem/lib/modules/2.6.13.1-ohio/kernel/driver
 cp -a -R "${DIR}/.tk/original/filesystem/lib/modules/2.6.13.1-ohio/kernel/drivers/char/Piglet_noemif" "${FILESYSTEM_MOD_DIR}/lib/modules/2.6.13.1-ohio/kernel/drivers/char/"
 
 echo2 "patching webmenu"
-isFreetzType LANG_DE && modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/intro_bar_middle_alien_7170.patch"
+isFreetzType LANG_DE && modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/100-aliens/cond/intro_bar_middle_alien_7170.patch"
 
-modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/remove-POTS-7170-alien.patch"
-modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/remove-FON3-7170-alien.patch"
+modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/100-aliens/patches/remove-POTS-7170-alien.patch"
+modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/100-aliens/patches/remove-FON3-7170-alien.patch"
 
 echo2 "moving default config dir"
 if isFreetzType ANNEX_A; then
@@ -75,7 +75,8 @@ modsed "s/CONFIG_USB_STORAGE_SPINDOWN=.*$/CONFIG_USB_STORAGE_SPINDOWN=\"n\"/g" "
 # patch install script to accept firmware from 7170
 echo1 "applying install patch"
 if isFreetzType ANNEX_A; then
-	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/install-7112_7170_Annex_A.patch" || exit 2
+	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/100-aliens/install/install-7112_7170_Annex_A.patch" || exit 2
 else
-	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/install-7112_7170.patch" || exit 2
+	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/100-aliens/install/install-7112_7170.patch" || exit 2
 fi
+

@@ -14,9 +14,9 @@ echo2 "copying 7141 files"
 cp -a "${DIR}/.tk/original/filesystem/lib/modules/microvoip_isdn_top.bit" "${FILESYSTEM_MOD_DIR}/lib/modules"
 
 echo2 "patching webmenu"
-isFreetzType LANG_DE && modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/intro_bar_middle_alien_7170.patch"
+isFreetzType LANG_DE && modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/100-aliens/cond/intro_bar_middle_alien_7170.patch"
 
-modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/remove-FON3-7170-alien.patch" || exit 2
+modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/100-aliens/patches/remove-FON3-7170-alien.patch" || exit 2
 
 echo2 "moving default config dir"
 mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_717* "${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_7141" || exit 2
@@ -37,7 +37,8 @@ modsed "s/HWRevision_ATA=0$/HWRevision_ATA=1/" "${FILESYSTEM_MOD_DIR}/etc/init.d
 # patch install script to accept firmware from 7170
 echo1 "applying install patch"
 if isFreetzType LANG_A_CH ANNEX_A; then
-	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/install-7141_7170_Annex_A.patch" || exit 2
+	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/100-aliens/install/install-7141_7170_Annex_A.patch" || exit 2
 else
-	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/install-7141_7170.patch" || exit 2
+	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/100-aliens/install/install-7141_7170.patch" || exit 2
 fi
+

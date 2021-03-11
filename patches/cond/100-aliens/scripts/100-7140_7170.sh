@@ -16,8 +16,8 @@ rm_files "${FILESYSTEM_MOD_DIR}/lib/modules/microvoip_isdn_top.bit1"
 
 echo2 "patching webmenu"
 isFreetzType LANG_DE && \
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/intro_bar_middle_alien_7170.patch"
-#modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/7140_7170.patch"
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/100-aliens/cond/intro_bar_middle_alien_7170.patch"
+#modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/100-aliens/install/install-7140_7170.patch"
 
 echo2 "moving default config dir"
 if isFreetzType ANNEX_A; then
@@ -51,7 +51,8 @@ fi
 # patch install script to accept firmware from 7170
 echo1 "applying install patch"
 if isFreetzType ANNEX_A; then
-	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/install-7140_7170_Annex_A.patch" || exit 2
+	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/100-aliens/install/install-7140_7170_Annex_A.patch" || exit 2
 else
-	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/install-7140_7170.patch" || exit 2
+	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/100-aliens/install/install-7140_7170.patch" || exit 2
 fi
+

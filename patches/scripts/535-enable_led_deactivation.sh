@@ -13,5 +13,5 @@ elif [ "$FREETZ_AVM_VERSION_06_0X_MIN" == "y" ] ; then
 	PVER="06_0X"
 fi
 
-modpatch "${FILESYSTEM_MOD_DIR}" "${PATCHES_COND_DIR}/enable_led_deactivation-${PVER}.patch"
+modpatch "${FILESYSTEM_MOD_DIR}" "${PATCHES_COND_DIR}/535-enable_led_deactivation/535-enable_led_deactivation-${PVER}.patch"
 

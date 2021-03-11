@@ -27,7 +27,7 @@ for i in \
 done
 
 echo2 "patching webmenu"
-isFreetzType LANG_DE && modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/de/intro_bar_middle_alien_7170.patch"
+isFreetzType LANG_DE && modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/100-aliens/cond/intro_bar_middle_alien_7170.patch"
 
 echo2 "moving default config dir"
 mv ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_717* ${FILESYSTEM_MOD_DIR}/etc/default.Fritz_Box_3170
@@ -40,11 +40,11 @@ ${SCRIPTPATCHER} -fdi ${RC_S_FILE} -s "copy_telefonie_defaults" -o ${RC_S_FILE}
 ${SCRIPTPATCHER} -fdi ${RC_S_FILE} -s "link_telefonie_defaults" -o ${RC_S_FILE}
 
 if isFreetzType LANG_DE; then
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/rc.S-3170_7170_de_Annex_B.patch" || exit 2
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/100-aliens/rc.S/rc.S-3170_7170_de_Annex_B.patch" || exit 2
 elif isFreetzType LANG_EN ANNEX_B; then
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/rc.S-3170_7170_en_Annex_B.patch" || exit 2
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/100-aliens/rc.S/rc.S-3170_7170_en_Annex_B.patch" || exit 2
 elif isFreetzType LANG_A_CH || isFreetzType LANG_EN ANNEX_A; then
-	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/rc.S-3170_7170_Annex_A.patch" || exit 2
+	modpatch "$FILESYSTEM_MOD_DIR" "${PATCHES_COND_DIR}/100-aliens/rc.S/rc.S-3170_7170_Annex_A.patch" || exit 2
 fi
 
 modsed "s/piglet_bitfile_offset=0/piglet_bitfile_offset=0x4b/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.S"
@@ -84,7 +84,8 @@ modsed "s/HWRevision_ATA=0$/HWRevision_ATA=1/" "${FILESYSTEM_MOD_DIR}/etc/init.d
 # patch install script to accept firmware from 7170
 echo1 "applying install patch"
 if isFreetzType LANG_DE || isFreetzType ANNEX_B; then
-	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/install-3170_7170.patch" || exit 2
+	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/100-aliens/install/install-3170_7170.patch" || exit 2
 else
-	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/install-3170_7170_a_ch.patch" || exit 2
+	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/100-aliens/install/install-3170_7170_a_ch.patch" || exit 2
 fi
+

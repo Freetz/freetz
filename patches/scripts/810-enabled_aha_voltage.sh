@@ -19,5 +19,5 @@ fi
 
 modpatch \
   "$FILESYSTEM_MOD_DIR" \
-  "${PATCHES_COND_DIR}/enabled_aha_voltage_${PVER}.patch"
+  "${PATCHES_COND_DIR}/810-enabled_aha_voltage/810-enabled_aha_voltage_${PVER}.patch"
 

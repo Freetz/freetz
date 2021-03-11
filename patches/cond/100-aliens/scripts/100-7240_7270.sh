@@ -68,5 +68,6 @@ modsed "s/ur8_16MB_xilinx_4eth_2ab_isdn_nt_te_pots_wlan_usb_host_dect_plus_55266
 #fi
 # set OEM to avme for international firmware
 if isFreetzType LANG_EN; then
-	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/en/install-7240_7270.patch" || exit 2
+	modpatch "$FIRMWARE_MOD_DIR" "${PATCHES_COND_DIR}/100-aliens/install/install-7240_7270.patch" || exit 2
 fi
+
