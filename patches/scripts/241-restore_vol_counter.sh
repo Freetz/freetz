@@ -8,7 +8,7 @@ vol_counter_patch=$(mktemp -q -t "${FREETZ_TYPE_PREFIX}-${FREETZ_TYPE_PREFIX_SER
 # 1. replace German umlauts and ß with their html counterparts
 # 2. escape regexp backreference symbol (&) and the separator symbol (#) we use in our sed script
 # 3. convert vol-counter-htmltext_de.db.txt to sed script
-cat "${PATCHES_COND_DIR}/241-vol-counter/${FREETZ_TYPE_PREFIX}-${FREETZ_TYPE_PREFIX_SERIES_SUBDIR}-vol-counter-htmltext_de.db.txt" \
+cat "${PATCHES_COND_DIR}/241-restore_vol_counter/${FREETZ_TYPE_PREFIX}-${FREETZ_TYPE_PREFIX_SERIES_SUBDIR}-vol-counter-htmltext_de.db.txt" \
 | sed -e '
 s#'$'\xc3\x84''#\&Auml;#g
 s#'$'\xc3\xa4''#\&auml;#g
@@ -27,7 +27,7 @@ for oem in $(supported_brandings) all; do
 	[ -d "${www_oem}" -a ! -L "${www_oem}" ] || continue
 
 	# replace htmltext_de.db references {?XXX:XXX?} in the patch with their text values
-	cat "${PATCHES_COND_DIR}/241-vol-counter/${FREETZ_TYPE_PREFIX}-${FREETZ_TYPE_PREFIX_SERIES_SUBDIR}-vol-counter.patch" \
+	cat "${PATCHES_COND_DIR}/241-restore_vol_counter/${FREETZ_TYPE_PREFIX}-${FREETZ_TYPE_PREFIX_SERIES_SUBDIR}-vol-counter.patch" \
 	| sed -f "${vol_counter_sed}" \
 	| sed -r -e 's,^(([+]{3}|-{3}) usr/www/)all/,\1'"${oem}"'/,' \
 	> "${vol_counter_patch}"

@@ -23,6 +23,6 @@ done
 
 modpatch \
   "$FILESYSTEM_MOD_DIR" \
-  "${PATCHES_COND_DIR}/240-add-dsl-expert-pages/" \
+  "${PATCHES_COND_DIR}/240-add_dsl-expert/" \
   "/usr/www/all/html/de/internet/awatch.js"
 
