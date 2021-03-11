@@ -892,11 +892,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 			done
 		done
 	))
-	echo1 "applying patches: ${FREETZ_TYPE_PREFIX_SERIES_SUBDIR}/${FREETZ_TYPE_PREFIX}${FREETZ_TYPE_PREFIX_LABOR_FIRMWARE}-${FREETZ_TYPE_LANGUAGE} (${PATCHES_DEVICES_DIR_FULL_LIST[@]#${PATCHES_DEVICES_DIR}/})"
 
 	# Apply patches
-	if [ ! -d "${PATCHES_DEVICES_DIR_BOX_SPECIFIC}" -a ! -d "${PATCHES_DEVICES_DIR_FW_SERIES_SPECIFIC}" ]; then
-		error 1 "missing ${PATCHES_DEVICES_DIR_BOX_SPECIFIC}"
+	if [ -d "$FREETZ_TYPE_PREFIX_SERIES_SUBDIR" ]; then
+		echo1 "applying patches: ${FREETZ_TYPE_PREFIX_SERIES_SUBDIR}/${FREETZ_TYPE_PREFIX}${FREETZ_TYPE_PREFIX_LABOR_FIRMWARE}-${FREETZ_TYPE_LANGUAGE} (${PATCHES_DEVICES_DIR_FULL_LIST[@]#${PATCHES_DEVICES_DIR}/})"
 	fi
 
 	# Execute firmware-series-specific and box-specific patch scripts (both common for all languages and language-specific)
