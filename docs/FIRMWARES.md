@@ -8,7 +8,7 @@ Currently supported devices and firmwares
  * [Fritz!Box WAN (4xxx)](#fritzbox-wan-4xxx)
  * [Fritz!Box Fon (50xx/51xx)](#fritzbox-fon-50xx51xx)
  * [Fritz!Box Fiber (54xx/55xx)](#fritzbox-fiber-54xx55xx)
- * [Fritz!Box Cable (64xx/65xx)](#fritzbox-cable-64xx65xx)
+ * [Fritz!Box Cable (64xx/65xx/66xx)](#fritzbox-cable-64xx65xx66xx)
  * [Fritz!Box LTE (68xx)](#fritzbox-lte-68xx)
  * [Fritz!Box Fon WLAN (70xx)](#fritzbox-fon-wlan-70xx)
  * [Fritz!Box Fon WLAN (71xx)](#fritzbox-fon-wlan-71xx)
@@ -134,7 +134,7 @@ Currently supported devices and firmwares
   - 257.07.21 rev83233 {GER} [AXKFW2]
   - 257.07.24 rev86251 {ALL} [PSQ19 Phase 2] (Labor)
 
-### Fritz!Box Cable (64xx/65xx)
+### Fritz!Box Cable (64xx/65xx/66xx)
 
 * __Fritz!Box 6430 Cable (UNTESTED)__
   - 159.07.12 rev72224 {GER} [MESH18 NL2]
