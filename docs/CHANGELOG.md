@@ -51,6 +51,7 @@ Latest changes
  - Updated packages and libs:
    * stunnel 5.58
    * libgd 2.3.2
+   * mbed TLS 2.7.19/2.26.0
 
  - Web interface:
    * Settings backup:
