@@ -49,9 +49,10 @@ Latest changes
    * precompiled host-tools updated to x86_64 (only)
 
  - Updated packages and libs:
-   * stunnel 5.58
+   * haproxy 2.2.10
    * libgd 2.3.2
    * mbed TLS 2.7.19/2.26.0
+   * stunnel 5.58
 
  - Web interface:
    * Settings backup:
