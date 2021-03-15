@@ -1,4 +1,4 @@
-# HAProxy 2.2.9
+# HAProxy 2.2.10
  - Homepage: [https://www.haproxy.org/](https://www.haproxy.org/)
  - Manpage: [https://linux.die.net/man/1/haproxy](https://linux.die.net/man/1/haproxy)
  - Changelog: [https://www.haproxy.org/download/2.2/src/CHANGELOG](https://www.haproxy.org/download/2.2/src/CHANGELOG)
