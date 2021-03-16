@@ -96,6 +96,7 @@ done
 
 echo -n " defaults ..."
 #default UNAME_OSNAME "" # AVM never used the default "GNU/Linux"
+default FEATURE_DEFAULT_PASSWD_ALGO "sha512" # AVM uses the oldest 'des' as default
 default SUBST_WCHAR 63
 default LAST_SUPPORTED_WCHAR 767
 default FEATURE_CROND_DIR "/mod/var/spool/cron"
