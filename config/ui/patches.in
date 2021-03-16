@@ -1774,6 +1774,7 @@ config FREETZ_RUN_TELEFON_IN_INHAUS_MODE
 	bool "Run telefon daemon in inhaus mode"
 	depends on FREETZ_AVM_HAS_PHONE
 	depends on !FREETZ_AVM_HAS_TELNETD
+	default y if FREETZ_ADD_TELNETD
 	default n
 	help
 		Running telefon daemon in "inhaus mode" restores:
