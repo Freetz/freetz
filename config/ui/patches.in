@@ -1784,6 +1784,15 @@ config FREETZ_RUN_TELEFON_IN_INHAUS_MODE
 		 - Processing of /var/flash/fx_conf attributes responsible
 		   for automatic start of telnetd.
 
+config FREETZ_REPLACE_AR7LOGIN
+	bool "Replace ar7login"
+	depends on (FREETZ_AVM_HAS_TELNETD && !FREETZ_REMOVE_TELNETD) || FREETZ_ADD_TELNETD
+	default y
+	help
+		If wrapper was started by telnetd AND root password
+		is defined, proceed with regular user/password login.
+		Otherwise fall back to web password (and user, if set) login.
+
 config FREETZ_PATCH_START_WLAN_IF_ON_BOOT
 	bool "Start wlan interface on boot"
 	depends on FREETZ_AVM_HAS_WLAN && !FREETZ_REMOVE_WLAN
