@@ -526,7 +526,7 @@ Index:
     This enables the scripts in patches/cond/800-webif_features/ which patch some webif features, currently 210-patch_hostname.sh 811-show_tr069_config.sh 812-show_update_config.sh 821-show_network_repeater.sh 822-show_dvb_services.sh
 
   * **<u>Replace ar7login</u><a id='replace-ar7login'></a>**<br>
-    If wrapper was started by telnetd AND root password is defined, proceed with regular user/password login. A login with user 'root' is not allowed due to /etc/securetty! Otherwise fall back to web password (and user, if set) login.
+    If wrapper was started by telnetd AND root password is defined, proceed with regular user/password login. Otherwise fall back to web password (and user, if set) login.
 
   * **[Replace dtrace](REPLACE_DTRACE.md)<a id='replace-dtrace'></a>**<br>
     Dtrace will be replaced by a symlink to /tmp/flash/mod/dtrace. Activating this option lets you execute a custom action via phone using #97*3* keycode sequence.

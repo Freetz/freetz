@@ -3863,6 +3863,7 @@ config FREETZ_BUSYBOX___V132_LOGIN_SCRIPTS
 	just prior to switching from root to logged-in user.
 
 config FREETZ_BUSYBOX___V132_FEATURE_NOLOGIN
+	depends on !FREETZ_REPLACE_AR7LOGIN
 	bool "Support /etc/nologin"
 	default n
 	depends on FREETZ_BUSYBOX___V132_LOGIN
@@ -3871,6 +3872,7 @@ config FREETZ_BUSYBOX___V132_FEATURE_NOLOGIN
 	If it exists, non-root logins are prohibited.
 
 config FREETZ_BUSYBOX___V132_FEATURE_SECURETTY
+	depends on !FREETZ_REPLACE_AR7LOGIN
 	bool "Support /etc/securetty"
 	default n
 	depends on FREETZ_BUSYBOX___V132_LOGIN
