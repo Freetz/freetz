@@ -34,9 +34,8 @@ config FREETZ_PACKAGE_BIP_BIPMKPW
 config FREETZ_PACKAGE_BIP_WITH_SSL
 	bool "build with SSL support"
 	depends on FREETZ_PACKAGE_BIP
-	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_BIP_STATIC
-	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_BIP_STATIC
-	select FREETZ_OPENSSL_VERSION_PROMPT if FREETZ_PACKAGE_BIP_STATIC
+	select FREETZ_LIB_libcrypto if !FREETZ_PACKAGE_BIP_STATIC
+	select FREETZ_LIB_libssl    if !FREETZ_PACKAGE_BIP_STATIC
 	default n
 	help
 		This option enables SSL support for bip.
@@ -60,3 +59,4 @@ config FREETZ_PACKAGE_BIP_OIDENTD
 	depends on FREETZ_PACKAGE_BIP_WITH_OIDENTD
 	select FREETZ_PACKAGE_OIDENTD
 	default n
+

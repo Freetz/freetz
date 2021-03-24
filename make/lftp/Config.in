@@ -16,9 +16,8 @@ config FREETZ_PACKAGE_LFTP
 config FREETZ_PACKAGE_LFTP_WITH_SSL
 	bool "build with SSL support"
 	depends on FREETZ_PACKAGE_LFTP
-	select FREETZ_LIB_libcrypto           if ! FREETZ_PACKAGE_LFTP_STATIC
-	select FREETZ_LIB_libssl              if ! FREETZ_PACKAGE_LFTP_STATIC
-	select FREETZ_OPENSSL_VERSION_PROMPT  if FREETZ_PACKAGE_LFTP_STATIC
+	select FREETZ_LIB_libcrypto if !FREETZ_PACKAGE_LFTP_STATIC
+	select FREETZ_LIB_libssl    if !FREETZ_PACKAGE_LFTP_STATIC
 	default n
 	help
 		This option enables SSL support.
@@ -29,3 +28,4 @@ config FREETZ_PACKAGE_LFTP_STATIC
 	default n
 	help
 		Build lftp binary with statically linked libraries.
+

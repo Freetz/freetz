@@ -3,7 +3,6 @@ config FREETZ_PACKAGE_IPSEC_TOOLS
 	depends on FREETZ_KERNEL_VERSION_2_6_32_MAX # version 0.7.2 doesn't compile with kernel versions >= 3.x
 	depends on FREETZ_REPLACE_KERNEL
 	select FREETZ_LIB_libcrypto           if !FREETZ_PACKAGE_IPSEC_TOOLS_STATIC
-	select FREETZ_OPENSSL_VERSION_PROMPT  if  FREETZ_PACKAGE_IPSEC_TOOLS_STATIC
 	select FREETZ_LIB_libutil             if !FREETZ_PACKAGE_IPSEC_TOOLS_STATIC && FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 #	select FREETZ_MODULE_ah4
 #	select FREETZ_MODULE_esp4
@@ -49,3 +48,4 @@ config FREETZ_PACKAGE_IPSEC_TOOLS_WITH_RACOONCTL
 		Includes IPsec-tools racoonctl into the image.
 		racoonctl is used to control racoon operation, if ipsec-tools was configured with adminport support.
 		Communication between racoonctl and racoon is done through a UNIX socket.
+

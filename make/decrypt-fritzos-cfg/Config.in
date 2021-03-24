@@ -34,7 +34,6 @@ choice
 	config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_OPENSSL
 		bool "OpenSSL"
 		select FREETZ_LIB_libcrypto if FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_ALL_DYN
-		select FREETZ_OPENSSL_VERSION_PROMPT if !FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_ALL_DYN
 endchoice
 
 choice
@@ -161,3 +160,4 @@ config FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_allcfgconv_c
 
 		Just replace all invocations of allcfgconv with allcfgconv-c,
 		and that's it.
+

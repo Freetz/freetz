@@ -28,10 +28,9 @@ config FREETZ_PACKAGE_NGIRCD_WITH_ZLIB
 config FREETZ_PACKAGE_NGIRCD_WITH_SSL
 	bool "build with SSL support"
 	depends on FREETZ_PACKAGE_NGIRCD
-	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_NGIRCD_STATIC
-	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_NGIRCD_STATIC
-	select FREETZ_OPENSSL_VERSION_PROMPT if FREETZ_PACKAGE_NGIRCD_STATIC
-	select FREETZ_LIB_libdl if ! FREETZ_PACKAGE_NGIRCD_STATIC && FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_libcrypto if !FREETZ_PACKAGE_NGIRCD_STATIC
+	select FREETZ_LIB_libssl    if !FREETZ_PACKAGE_NGIRCD_STATIC
+	select FREETZ_LIB_libdl     if !FREETZ_PACKAGE_NGIRCD_STATIC && FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	default n
 	help
 		This option enables SSL support for ngircd.
@@ -42,3 +41,4 @@ config FREETZ_PACKAGE_NGIRCD_STATIC
 	default n
 	help
 		Causes all libraries ngircd depends on to be linked in statically.
+

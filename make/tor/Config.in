@@ -10,7 +10,6 @@ config FREETZ_PACKAGE_TOR
 	select FREETZ_LIB_libcrypto_WITH_EC
 	select FREETZ_LIB_libssl             if !FREETZ_PACKAGE_TOR_STATIC
 	select FREETZ_LIB_libz               if !FREETZ_PACKAGE_TOR_STATIC
-	select FREETZ_OPENSSL_VERSION_PROMPT if FREETZ_PACKAGE_TOR_STATIC
 	default n
 	help
 		The Onion Router
@@ -40,3 +39,4 @@ config FREETZ_PACKAGE_TOR_STATIC
 		Build tor binary with statically linked libraries.
 
 endif # FREETZ_PACKAGE_TOR
+

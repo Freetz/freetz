@@ -33,7 +33,6 @@ config FREETZ_PACKAGE_NZBGET_WITH_TLS
 	select FREETZ_LIB_libcrypto         if !FREETZ_PACKAGE_NZBGET_STATIC
 	select FREETZ_LIB_libssl            if !FREETZ_PACKAGE_NZBGET_STATIC
 	select FREETZ_LIB_libdl             if !FREETZ_PACKAGE_NZBGET_STATIC && FREETZ_TARGET_UCLIBC_HAS_multiple_libs
-	select FREETZ_OPENSSL_VERSION_PROMPT if FREETZ_PACKAGE_NZBGET_STATIC
 	default n
 	help
 		Enables SSL/TLS-encrypted connection support.
@@ -52,3 +51,4 @@ config FREETZ_PACKAGE_NZBGET_STATIC
 	default n
 	help
 		Link all libraries into the binary.
+

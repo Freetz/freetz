@@ -150,9 +150,8 @@ config FREETZ_PACKAGE_PHP_WITH_SQLITE3
 
 config FREETZ_PACKAGE_PHP_WITH_SSL
 	bool "build with SSL support"
-	select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_PHP_STATIC
-	select FREETZ_LIB_libssl if ! FREETZ_PACKAGE_PHP_STATIC
-	select FREETZ_OPENSSL_VERSION_PROMPT if FREETZ_PACKAGE_PHP_STATIC
+	select FREETZ_LIB_libcrypto if !FREETZ_PACKAGE_PHP_STATIC
+	select FREETZ_LIB_libssl    if !FREETZ_PACKAGE_PHP_STATIC
 	default n
 	help
 		This option enables the SSL support for PHP
@@ -192,3 +191,4 @@ config FREETZ_PACKAGE_PHP_STATIC
 	default n
 	help
 		Causes all libraries PHP depends on to be linked in statically.
+

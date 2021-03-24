@@ -7,7 +7,6 @@ config FREETZ_PACKAGE_OPENCONNECT
 	select FREETZ_LIB_libssl      if ! FREETZ_PACKAGE_OPENCONNECT_STATIC
 	select FREETZ_LIB_libxml2     if ! FREETZ_PACKAGE_OPENCONNECT_STATIC
 	select FREETZ_LIB_libz        if ! FREETZ_PACKAGE_OPENCONNECT_STATIC
-	select FREETZ_OPENSSL_VERSION_PROMPT if !FREETZ_PACKAGE_OPENCONNECT_STATIC
 	default n
 	help
 		Cisco AnyConnect VPN Client
@@ -18,3 +17,4 @@ config FREETZ_PACKAGE_OPENCONNECT_STATIC
 	default n
 	help
 		Build OpenConnect binary with statically linked libraries.
+

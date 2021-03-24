@@ -20,7 +20,6 @@ config FREETZ_PACKAGE_XMAIL_WITH_SSL
 	depends on FREETZ_PACKAGE_XMAIL
 	select FREETZ_LIB_libcrypto if !FREETZ_PACKAGE_XMAIL_STATIC
 	select FREETZ_LIB_libssl    if !FREETZ_PACKAGE_XMAIL_STATIC
-	select FREETZ_OPENSSL_VERSION_PROMPT if FREETZ_PACKAGE_XMAIL_STATIC
 	default n
 	help
 		This option enables SSL support for XMail.
@@ -31,3 +30,4 @@ config FREETZ_PACKAGE_XMAIL_STATIC
 	default n
 	help
 		Build XMail with staticly linked Libs.
+
