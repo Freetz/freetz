@@ -1543,12 +1543,13 @@ config FREETZ_KEEP_AVM_UCLIBC
 
 comment "Replace OpenSSL libraries (not available, requires openssl-0.9.8)"
 	depends on FREETZ_SHOW_ADVANCED && \
-		FREETZ_AVM_HAS_OPENSSL_VERSION_0 && FREETZ_LIB_libcrypto && !FREETZ_OPENSSL_VERSION_0
+		FREETZ_AVM_HAS_OPENSSL_VERSION_0 && !FREETZ_OPENSSL_VERSION_0
 
 config FREETZ_REPLACE_OPENSSL
 	bool "Replace OpenSSL libraries"
 	depends on FREETZ_SHOW_ADVANCED && \
-		FREETZ_AVM_HAS_OPENSSL_VERSION_0 && FREETZ_LIB_libcrypto &&  FREETZ_OPENSSL_VERSION_0
+		FREETZ_AVM_HAS_OPENSSL_VERSION_0 &&  FREETZ_OPENSSL_VERSION_0
+	select FREETZ_LIB_libcrypto
 	select FREETZ_LIB_libssl
 	default n
 	help
