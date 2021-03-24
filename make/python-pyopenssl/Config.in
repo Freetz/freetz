@@ -4,7 +4,7 @@ comment "pyopenssl (not available, needs OpenSSL 1.0 or older)"
 config FREETZ_PACKAGE_PYTHON_PYOPENSSL
 	bool "pyopenssl 0.13.1"
 	depends on FREETZ_PACKAGE_PYTHON
-	depends on !FREETZ_OPENSSL_VERSION_1_MAX
+	depends on FREETZ_OPENSSL_VERSION_1_MAX
 	select FREETZ_PACKAGE_PYTHON_MOD_CTYPES
 	select FREETZ_LIB_libpython2 if !FREETZ_PACKAGE_PYTHON_STATIC
 	select FREETZ_LIB_libcrypto

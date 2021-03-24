@@ -1,11 +1,14 @@
+comment "getdns (not available, needs OpenSSL 1.0 or newer)"
+	depends on !FREETZ_OPENSSL_VERSION_1_MIN
+
 config FREETZ_PACKAGE_GETDNS
 	bool "getdns 1.5.2"
-	select FREETZ_LIB_libpthread if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
-	#
-	select FREETZ_OPENSSL_VERSION_1_REQUIRED
+	depends on FREETZ_OPENSSL_VERSION_1_MIN
 	select FREETZ_LIB_libcrypto
 	select FREETZ_LIB_libcrypto_WITH_EC
 	select FREETZ_LIB_libssl
+	#
+	select FREETZ_LIB_libpthread if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	#
 	select FREETZ_LIB_libyaml
 	default n

@@ -49,13 +49,17 @@ config FREETZ_PACKAGE_MOSQUITTO_WITH_UUID
 	help
 		Build using libuuid for clientid generation.
 
+comment "SSL not available, needs OpenSSL 1.0 or newer"
+	depends on !FREETZ_OPENSSL_VERSION_1_MIN
+
 config FREETZ_PACKAGE_MOSQUITTO_WITH_SSL
 	bool "build with SSL support"
 	depends on FREETZ_PACKAGE_MOSQUITTO
-		select FREETZ_OPENSSL_VERSION_1_REQUIRED
-		select FREETZ_LIB_libcrypto
-		select FREETZ_LIB_libcrypto_WITH_EC
-		select FREETZ_LIB_libssl
+	depends on FREETZ_OPENSSL_VERSION_1_MIN
+	select FREETZ_LIB_libcrypto
+	select FREETZ_LIB_libcrypto_WITH_EC
+	select FREETZ_LIB_libssl
 	default n
 	help
 		This option enables SSL support for mosquitto.
+
