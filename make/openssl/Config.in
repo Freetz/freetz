@@ -11,18 +11,18 @@ config FREETZ_PACKAGE_OPENSSL
 
 if FREETZ_PACKAGE_OPENSSL
 
-config FREETZ_PACKAGE_OPENSSL_TRACE
-	bool "With trace output support"
-	depends on FREETZ_OPENSSL_VERSION_1_MIN
-	default n
-	help
-		Build OpenSSL binary with SSL trace support.
+	config FREETZ_PACKAGE_OPENSSL_TRACE
+		bool "With trace output support"
+		depends on FREETZ_OPENSSL_VERSION_1_MIN
+		default n
+		help
+			Build OpenSSL binary with SSL trace support.
 
-config FREETZ_PACKAGE_OPENSSL_STATIC
-	bool "Link statically"
-	default n
-	help
-		Causes all libraries OpenSSL binary depends on to be linked in statically.
+	config FREETZ_PACKAGE_OPENSSL_STATIC
+		bool "Link statically"
+		default n
+		help
+			Causes all libraries OpenSSL binary depends on to be linked in statically.
 
 endif # FREETZ_PACKAGE_OPENSSL
 
