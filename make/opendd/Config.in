@@ -9,11 +9,19 @@ config FREETZ_PACKAGE_OPENDD
 		It is also very easy to deploy.
 		WWW: http://www.bsdmon.com/wakka/OpenDD
 
-config FREETZ_PACKAGE_OPENDD_WITH_SSL
-	bool "with SSL encryption (port 443)"
-	depends on FREETZ_PACKAGE_OPENDD
-	select FREETZ_LIB_libcrypto
-	select FREETZ_LIB_libssl
-	default y
-	help
-		Build with SSL encryption (port 443)
+if FREETZ_PACKAGE_OPENDD
+
+	comment "SSL encryption needs OpenSSL 1.0 or older"
+		depends on !FREETZ_OPENSSL_VERSION_1_MAX
+
+	config FREETZ_PACKAGE_OPENDD_WITH_SSL
+		bool "with SSL encryption (port 443)"
+		depends on FREETZ_OPENSSL_VERSION_1_MAX
+		select FREETZ_LIB_libcrypto
+		select FREETZ_LIB_libssl
+		default y
+		help
+			Build with SSL encryption (port 443)
+
+endif # FREETZ_PACKAGE_OPENDD
+
