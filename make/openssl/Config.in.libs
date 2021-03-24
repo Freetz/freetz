@@ -2,7 +2,6 @@ config FREETZ_LIB_libcrypto
 	bool "OpenSSL cryptographic library (libcrypto.so)"
 	select FREETZ_LIB_libdl       if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libpthread  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs && FREETZ_OPENSSL_VERSION_2_MIN
-	select FREETZ_OPENSSL_VERSION_PROMPT
 	default n
 	help
 		crypto - OpenSSL cryptographic library
@@ -21,8 +20,8 @@ config FREETZ_LIB_libcrypto
 
 config FREETZ_LIB_libssl
 	bool "OpenSSL SSL/TLS library (libssl.so)"
-	depends on FREETZ_LIB_libcrypto
 	select FREETZ_LIB_libdl if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_libcrypto
 	default n
 	help
 		SSL - OpenSSL SSL/TLS library
@@ -30,15 +29,6 @@ config FREETZ_LIB_libssl
 		The OpenSSL ssl library implements the Secure Sockets Layer (SSL v2/v3)
 		and Transport Layer Security (TLS v1) protocols. It provides a rich API.
 
-config FREETZ_OPENSSL_VERSION_1_REQUIRED
-	bool
-	default n
-
-config FREETZ_OPENSSL_VERSION_PROMPT
-	bool
-	default n
-
-if FREETZ_OPENSSL_VERSION_PROMPT
 
 choice
 	prompt "OpenSSL version"
@@ -64,7 +54,6 @@ choice
 	config FREETZ_OPENSSL_VERSION_0
 		bool "0.9.8 - DEPRECATED"
 		depends on FREETZ_AVM_HAS_OPENSSL_VERSION_0
-		depends on !FREETZ_OPENSSL_VERSION_1_REQUIRED
 
 	config FREETZ_OPENSSL_VERSION_1
 		bool "1.0.2 - DEPRECATED"
@@ -78,23 +67,25 @@ choice
 		depends on !FREETZ_TARGET_UCLIBC_0_9_28 && !FREETZ_TARGET_UCLIBC_0_9_29 && FREETZ_TARGET_GCC_4_8_MIN
 		depends on FREETZ_SHOW_DEVELOPER
 
-endchoice
+endchoice # "OpenSSL version"
 
-config FREETZ_OPENSSL_SHLIB_VERSION
-	string
-	default "0.9.8" if FREETZ_OPENSSL_VERSION_0
-	default "1.0.0" if FREETZ_OPENSSL_VERSION_1
-	default "1.1"   if FREETZ_OPENSSL_VERSION_2
-	default "3"     if FREETZ_OPENSSL_VERSION_3
-
-config FREETZ_OPENSSL_LIBCRYPTO_EXTRA_LIBS
-	string
-	default "-ldl -pthread -lz"  if FREETZ_OPENSSL_VERSION_2_MIN && FREETZ_LIB_libcrypto_WITH_ZLIB
-	default "-ldl -pthread"      if FREETZ_OPENSSL_VERSION_2_MIN
-	default "-ldl -lz"           if FREETZ_OPENSSL_VERSION_1_MAX && FREETZ_LIB_libcrypto_WITH_ZLIB
-	default "-ldl"               if FREETZ_OPENSSL_VERSION_1_MAX
 
 menu "OpenSSL configuration"
+	depends on FREETZ_LIB_libcrypto
+
+	config FREETZ_OPENSSL_SHLIB_VERSION
+		string
+		default "0.9.8" if FREETZ_OPENSSL_VERSION_0
+		default "1.0.0" if FREETZ_OPENSSL_VERSION_1
+		default "1.1"   if FREETZ_OPENSSL_VERSION_2
+		default "3"     if FREETZ_OPENSSL_VERSION_3
+
+	config FREETZ_OPENSSL_LIBCRYPTO_EXTRA_LIBS
+		string
+		default "-ldl -pthread -lz"  if FREETZ_OPENSSL_VERSION_2_MIN && FREETZ_LIB_libcrypto_WITH_ZLIB
+		default "-ldl -pthread"      if FREETZ_OPENSSL_VERSION_2_MIN
+		default "-ldl -lz"           if FREETZ_OPENSSL_VERSION_1_MAX && FREETZ_LIB_libcrypto_WITH_ZLIB
+		default "-ldl"               if FREETZ_OPENSSL_VERSION_1_MAX
 
 	config FREETZ_LIB_libcrypto_WITH_EC
 		bool "Support elliptic curve cryptography"
@@ -139,7 +130,7 @@ menu "OpenSSL configuration"
 			(configuration settings, private key, certificates, etc.)
 			can be found.
 
-endmenu
+endmenu # "OpenSSL configuration"
 
 
 config FREETZ_OPENSSL_VERSION_1_MIN
@@ -171,7 +162,4 @@ config FREETZ_OPENSSL_VERSION_2_MAX
 	depends on \
 		FREETZ_OPENSSL_VERSION_2 || \
 		FREETZ_OPENSSL_VERSION_1_MAX
-
-
-endif # FREETZ_OPENSSL_VERSION_PROMPT
 
