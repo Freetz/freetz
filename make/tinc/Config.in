@@ -19,8 +19,9 @@ config FREETZ_PACKAGE_TINC
 		and encryption to create a secure private network between hosts on
 		the Internet.
 
+if FREETZ_PACKAGE_TINC
+
 choice
-	depends on FREETZ_PACKAGE_TINC
 	prompt "Version"
 	default FREETZ_PACKAGE_TINC_VERSION_1_0
 
@@ -33,7 +34,6 @@ endchoice
 
 config FREETZ_PACKAGE_TINC_tinc
 	bool "Include tinc control utility"
-	depends on FREETZ_PACKAGE_TINC
 	depends on FREETZ_PACKAGE_TINC_VERSION_1_1
 	default n
 	select FREETZ_LIB_libreadline if !FREETZ_PACKAGE_TINC_STATIC
@@ -41,7 +41,6 @@ config FREETZ_PACKAGE_TINC_tinc
 
 config FREETZ_PACKAGE_TINC_STATIC
 	bool "Link statically"
-	depends on FREETZ_PACKAGE_TINC
 	default n
 	help
 		Tinc needs the following shared libraries which can be linked in statically
@@ -49,3 +48,6 @@ config FREETZ_PACKAGE_TINC_STATIC
 		- liblzo2.so
 		- libcrypto.so
 		- libz.so
+
+endif # FREETZ_PACKAGE_TINC
+
