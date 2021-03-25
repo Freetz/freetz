@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 2.2.10)
-$(PKG)_LIB_VERSION:=1.6.12
+$(call PKG_INIT_LIB, 2.3.0)
+$(PKG)_LIB_VERSION:=1.7.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=e0fe49a6b3480827c9455e4cfc799133
+$(PKG)_SOURCE_SHA256:=caa34f99b6e3bcea8502507eb6549a0a84510b244a748dfb287271b2d47467a9
 $(PKG)_SITE:=@SF/expat,https://github.com/libexpat/libexpat/releases/download/R_$(subst .,_,$($(PKG)_VERSION))
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/lib/.libs/libexpat.so.$($(PKG)_LIB_VERSION)
