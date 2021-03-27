@@ -1,8 +1,8 @@
 --- session.c
 +++ session.c
-@@ -1338,6 +1338,15 @@
+@@ -1331,6 +1331,15 @@
  	
- 		debug3("%s: checking '%s'", __func__, component);
+ 		debug3_f("checking '%s'", component);
  
 +		/* do not check root directory on Freetz as this
 +		 * is read-only anyway
@@ -14,5 +14,5 @@
 +		}
 +
  		if (stat(component, &st) != 0)
- 			fatal("%s: stat(\"%s\"): %s", __func__,
+ 			fatal_f("stat(\"%s\"): %s",
  			    component, strerror(errno));

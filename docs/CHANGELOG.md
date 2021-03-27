@@ -54,6 +54,7 @@ Latest changes
    * libgd 2.3.2
    * mbed TLS 2.7.19/2.26.0
    * minidlna 1.3.0
+   * OpenSSH 8.5p1
    * OpenSSL 0.9.8zh/1.0.2u/1.1.1k/3.0.0-alpha13
    * stunnel 5.58
 
