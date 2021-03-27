@@ -478,7 +478,7 @@ Index:
   * **<u>minicom 2.5 (binary only)</u><a id='minicom'></a>**<br>
     Minicom is a menu driven communications program. It emulates ANSI and VT102 terminals. It has a dialing directory and auto zmodem download. NOTE: Minicom will expect its configurations in "/var/tmp/flash/minicom/" which has to be created before the first run of the binary by "mkdir -p  /var/tmp/flash/minicom/". To save this and after any change of minicom's configurations you will have to write it to flash with "modsave".
 
-  * **[minidlna 1.2.1](../docs/make/minidlna.md)<a id='minidlna'></a>**<br>
+  * **[minidlna 1.3.0](../docs/make/minidlna.md)<a id='minidlna'></a>**<br>
     The MiniDLNA daemon is an UPnP-A/V and DLNA service which serves multimedia content to compatible clients on the network.
      - [Konfiguartion](../docs/make/minidlna.md#konfiguartion)
 

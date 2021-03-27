@@ -1,16 +1,20 @@
-$(call PKG_INIT_BIN, 1.2.1)
+$(call PKG_INIT_BIN, 1.3.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=a968d3d84971322471cabda3669cc0f8
+$(PKG)_SOURCE_SHA256:=47d9b06b4c48801a4c1112ec23d24782728b5495e95ec2195bbe5c81bc2d3c63
 $(PKG)_SITE:=@SF/minidlna
+### WEBSITE:=https://sourceforge.net/projects/minidlna/
+### MANPAGE:=https://manpages.debian.org/testing/minidlna/minidlnad.1.en.html
+### CHANGES:=https://sourceforge.net/p/minidlna/git/ci/master/tree/NEWS
+### CVSREPO:=https://sourceforge.net/p/minidlna/git/ci/master/tree/
 
-$(PKG)_CONDITIONAL_PATCHES+=$(FREETZ_PACKAGE_MINIDLNA_LANG)
+$(PKG)_CONDITIONAL_PATCHES+=$(if $(FREETZ_PACKAGE_MINIDLNA_LANG_DE),de)
 
 $(PKG)_PATCH_POST_CMDS += $(call PKG_ADD_EXTRA_FLAGS,(C|LD)FLAGS|LIBS)
 
 $(PKG)_BINARY := $($(PKG)_DIR)/minidlnad
 $(PKG)_TARGET_BINARY := $($(PKG)_DEST_DIR)/usr/sbin/minidlna
 
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_MINIDLNA_LANG
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_MINIDLNA_LANG_DE
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_MINIDLNA_STATIC
 
 $(PKG)_DEPENDS_ON += ffmpeg libexif flac libid3tag jpeg libogg libvorbis sqlite
@@ -69,3 +73,4 @@ $(pkg)-uninstall:
 	$(RM) $(MINIDLNA_TARGET_BINARY)
 
 $(PKG_FINISH)
+
