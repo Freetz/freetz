@@ -1,8 +1,9 @@
 
 Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
 
---- archival/Config.src
-+++ archival/Config.src
+diff -urdN busybox-1.33.0/archival/Config.src busybox-1.33.0.new/archival/Config.src
+--- busybox-1.33.0/archival/Config.src	2020-12-29 17:46:47.000000000 +0100
++++ busybox-1.33.0.new/archival/Config.src	2021-03-25 19:22:01.000000000 +0100
 @@ -21,6 +21,10 @@
  	bool "Make tar, rpm, modprobe etc understand .gz data"
  	default y
@@ -14,8 +15,9 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
  config FEATURE_SEAMLESS_Z
  	bool "Make tar, rpm, modprobe etc understand .Z data"
  	default n  # it is ancient
---- archival/bbunzip.c
-+++ archival/bbunzip.c
+diff -urdN busybox-1.33.0/archival/bbunzip.c busybox-1.33.0.new/archival/bbunzip.c
+--- busybox-1.33.0/archival/bbunzip.c	2020-12-29 17:46:47.000000000 +0100
++++ busybox-1.33.0.new/archival/bbunzip.c	2021-03-25 23:39:33.000000000 +0100
 @@ -194,18 +194,31 @@
  
  #if ENABLE_UNCOMPRESS \
@@ -50,7 +52,7 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
  	return filename;
  }
  #endif
-@@ -449,6 +462,38 @@
+@@ -449,6 +462,39 @@
  }
  #endif
  
@@ -69,8 +71,9 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
 +//config:	select FEATURE_LZIP_DECOMPRESS
 +//config:	help
 +//config:	lunzip is used to decompress archives created by lzip.
-+//config:	You can use the '-t' option to test the integrity of
-+//config:	an archive, without decompressing it.
++//config:	You can use the option '-t' to test the integrity of an archive,
++//config:	without decompressing it.
++//config:
 +
 +//applet:IF_LUNZIP(APPLET(lunzip, BB_DIR_USR_BIN, BB_SUID_DROP))
 +//kbuild:lib-$(CONFIG_LUNZIP) += bbunzip.o
@@ -89,8 +92,9 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
  
  /*
   * Small lzma deflate implementation.
---- archival/dpkg.c
-+++ archival/dpkg.c
+diff -urdN busybox-1.33.0/archival/dpkg.c busybox-1.33.0.new/archival/dpkg.c
+--- busybox-1.33.0/archival/dpkg.c	2020-12-29 17:46:47.000000000 +0100
++++ busybox-1.33.0.new/archival/dpkg.c	2021-03-25 19:22:01.000000000 +0100
 @@ -1505,6 +1505,9 @@
  #if ENABLE_FEATURE_SEAMLESS_XZ
  	llist_add_to(&(ar_handle->accept), (char*)"control.tar.xz");
@@ -111,8 +115,9 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
  
  	/* Assign the tar handle as a subarchive of the ar handle */
  	ar_handle->dpkg__sub_archive = tar_handle;
---- archival/dpkg_deb.c
-+++ archival/dpkg_deb.c
+diff -urdN busybox-1.33.0/archival/dpkg_deb.c busybox-1.33.0.new/archival/dpkg_deb.c
+--- busybox-1.33.0/archival/dpkg_deb.c	2020-12-29 17:46:47.000000000 +0100
++++ busybox-1.33.0.new/archival/dpkg_deb.c	2021-03-25 19:22:01.000000000 +0100
 @@ -69,6 +69,10 @@
  	llist_add_to(&ar_archive->accept, (char*)"data.tar.bz2");
  	llist_add_to(&control_tar_llist, (char*)"control.tar.bz2");
@@ -124,8 +129,9 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
  #if ENABLE_FEATURE_SEAMLESS_LZMA
  	llist_add_to(&ar_archive->accept, (char*)"data.tar.lzma");
  	llist_add_to(&control_tar_llist, (char*)"control.tar.lzma");
---- archival/libarchive/Kbuild.src
-+++ archival/libarchive/Kbuild.src
+diff -urdN busybox-1.33.0/archival/libarchive/Kbuild.src busybox-1.33.0.new/archival/libarchive/Kbuild.src
+--- busybox-1.33.0/archival/libarchive/Kbuild.src	2020-12-29 17:46:47.000000000 +0100
++++ busybox-1.33.0.new/archival/libarchive/Kbuild.src	2021-03-25 19:22:01.000000000 +0100
 @@ -37,6 +37,7 @@
  	get_header_tar.o \
  	get_header_tar_gz.o \
@@ -159,13 +165,14 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
  lib-$(CONFIG_FEATURE_SEAMLESS_LZMA)     += open_transformer.o decompress_unlzma.o
  lib-$(CONFIG_FEATURE_SEAMLESS_XZ)       += open_transformer.o decompress_unxz.o
  lib-$(CONFIG_FEATURE_COMPRESS_USAGE)    += open_transformer.o decompress_bunzip2.o
---- archival/libarchive/decompress_lunzip.c
-+++ archival/libarchive/decompress_lunzip.c
-@@ -0,0 +1,497 @@
+diff -urdN busybox-1.33.0/archival/libarchive/decompress_lunzip.c busybox-1.33.0.new/archival/libarchive/decompress_lunzip.c
+--- busybox-1.33.0/archival/libarchive/decompress_lunzip.c	1970-01-01 01:00:00.000000000 +0100
++++ busybox-1.33.0.new/archival/libarchive/decompress_lunzip.c	2021-03-25 20:14:10.000000000 +0100
+@@ -0,0 +1,493 @@
 +/*
 + * lunzip implementation for busybox
 + *
-+ * Copyright (C) 2012-2019 Antonio Diaz Diaz.
++ * Copyright (C) 2012-2021 Antonio Diaz Diaz.
 + *
 + * Licensed under GPLv2 or later, see file LICENSE in this source tree.
 + */
@@ -572,10 +579,6 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
 +						if (len == min_match_len &&	/* End Of Stream marker */
 +							LZd_verify_trailer(d))
 +							return 0;
-+						if (len == min_match_len + 1) {	/* Sync Flush marker */
-+							Rd_load(rdec);
-+							continue;
-+						}
 +						return 1;
 +					}
 +				}
@@ -659,8 +662,9 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
 +	free(rdec.buffer);
 +	return total;
 +}
---- archival/libarchive/filter_accept_list_reassign.c
-+++ archival/libarchive/filter_accept_list_reassign.c
+diff -urdN busybox-1.33.0/archival/libarchive/filter_accept_list_reassign.c busybox-1.33.0.new/archival/libarchive/filter_accept_list_reassign.c
+--- busybox-1.33.0/archival/libarchive/filter_accept_list_reassign.c	2020-12-29 17:46:47.000000000 +0100
++++ busybox-1.33.0.new/archival/libarchive/filter_accept_list_reassign.c	2021-03-25 19:22:01.000000000 +0100
 @@ -43,6 +43,12 @@
  			archive_handle->dpkg__action_data_subarchive = get_header_tar_bz2;
  			return EXIT_SUCCESS;
@@ -674,8 +678,9 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
  		if (ENABLE_FEATURE_SEAMLESS_LZMA
  		 && strcmp(name_ptr, "lzma") == 0
  		) {
---- archival/libarchive/get_header_tar_lz.c
-+++ archival/libarchive/get_header_tar_lz.c
+diff -urdN busybox-1.33.0/archival/libarchive/get_header_tar_lz.c busybox-1.33.0.new/archival/libarchive/get_header_tar_lz.c
+--- busybox-1.33.0/archival/libarchive/get_header_tar_lz.c	1970-01-01 01:00:00.000000000 +0100
++++ busybox-1.33.0.new/archival/libarchive/get_header_tar_lz.c	2021-03-25 19:22:01.000000000 +0100
 @@ -0,0 +1,20 @@
 +/* vi: set sw=4 ts=4: */
 +/*
@@ -697,11 +702,12 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
 +	/* Can only do one file at a time */
 +	return EXIT_FAILURE;
 +}
---- archival/libarchive/lzip.h
-+++ archival/libarchive/lzip.h
+diff -urdN busybox-1.33.0/archival/libarchive/lzip.h busybox-1.33.0.new/archival/libarchive/lzip.h
+--- busybox-1.33.0/archival/libarchive/lzip.h	1970-01-01 01:00:00.000000000 +0100
++++ busybox-1.33.0.new/archival/libarchive/lzip.h	2021-03-25 20:14:10.000000000 +0100
 @@ -0,0 +1,249 @@
 +/*  Lzip - LZMA lossless data compressor
-+    Copyright (C) 2008-2019 Antonio Diaz Diaz.
++    Copyright (C) 2008-2021 Antonio Diaz Diaz.
 +
 +    This program is free software: you can redistribute it and/or modify
 +    it under the terms of the GNU General Public License as published by
@@ -949,8 +955,9 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
 +		sz >>= 8;
 +	}
 +}
---- archival/libarchive/open_transformer.c
-+++ archival/libarchive/open_transformer.c
+diff -urdN busybox-1.33.0/archival/libarchive/open_transformer.c busybox-1.33.0.new/archival/libarchive/open_transformer.c
+--- busybox-1.33.0/archival/libarchive/open_transformer.c	2020-12-29 17:46:47.000000000 +0100
++++ busybox-1.33.0.new/archival/libarchive/open_transformer.c	2021-03-25 19:22:01.000000000 +0100
 @@ -189,6 +189,17 @@
  		USE_FOR_NOMMU(xstate->xformer_prog = "bunzip2";)
  		goto found_magic;
@@ -977,13 +984,14 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
  			IF_FEATURE_SEAMLESS_XZ("/xz")
  			" magic");
  
---- archival/lzip.c
-+++ archival/lzip.c
-@@ -0,0 +1,1433 @@
+diff -urdN busybox-1.33.0/archival/lzip.c busybox-1.33.0.new/archival/lzip.c
+--- busybox-1.33.0/archival/lzip.c	1970-01-01 01:00:00.000000000 +0100
++++ busybox-1.33.0.new/archival/lzip.c	2021-03-25 23:50:02.000000000 +0100
+@@ -0,0 +1,1436 @@
 +/*
 + * lzip implementation for busybox
 + *
-+ * Copyright (C) 2012-2019 Antonio Diaz Diaz.
++ * Copyright (C) 2012-2021 Antonio Diaz Diaz.
 + *
 + * Licensed under GPLv2 or later, see file LICENSE in this source tree.
 + */
@@ -995,16 +1003,19 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
 +//config:	lzip is a lossless data compressor with a user interface similar to
 +//config:	the one of gzip or bzip2. lzip can compress about as fast as gzip or
 +//config:	compress most files more than bzip2 (depending on compression level).
-+//config:	Decompression speed is intermediate between gzip and bzip2. lzip is
-+//config:	better than gzip and bzip2 from a data recovery perspective.
++//config:	Decompression speed is intermediate between gzip and bzip2. lzip has
++//config:	been designed, written, and tested with great care to replace gzip and
++//config:	bzip2 as the standard general-purpose compressed format for unix-like
++//config:	systems, especially for long-term archiving.
 +//config:
 +//config:config FEATURE_LZIP_DECOMPRESS
 +//config:	bool "Enable decompression"
 +//config:	default y
 +//config:	depends on LZIP || LUNZIP
 +//config:	help
-+//config:	Enable -d (--decompress) and -t (--test) options for lzip.
++//config:	Enable options -d (--decompress) and -t (--test) for lzip.
 +//config:	This will be automatically selected if lunzip is enabled.
++//config:
 +
 +//applet:IF_LZIP(APPLET(lzip, BB_DIR_USR_BIN, BB_SUID_DROP))
 +
@@ -2377,7 +2388,7 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
 +	int i;
 +	char *m_arg;
 +	char *s_arg;
-+	/* Must match BBUNPK_foo constants! */
++	/* Must match BBUNPK_foo constants in include/bb_archive.h! */
 +	unsigned opt = getopt32(argv, BBUNPK_OPTSTR IF_FEATURE_LZIP_DECOMPRESS("dt") "0123456789Fm:s:", &m_arg, &s_arg);
 +
 +#if ENABLE_FEATURE_LZIP_DECOMPRESS	/* lunzip_main may not be visible... */
@@ -2413,8 +2424,9 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
 +	argv += optind;
 +	return bbunpack(argv, pack_lzip, append_ext, "lz");
 +}
---- archival/tar.c
-+++ archival/tar.c
+diff -urdN busybox-1.33.0/archival/tar.c busybox-1.33.0.new/archival/tar.c
+--- busybox-1.33.0/archival/tar.c	2020-12-29 17:46:47.000000000 +0100
++++ busybox-1.33.0.new/archival/tar.c	2021-03-25 19:47:52.000000000 +0100
 @@ -43,7 +43,7 @@
  //config:config FEATURE_TAR_AUTODETECT
  //config:	bool "Autodetect compressed tarballs"
@@ -2432,24 +2444,26 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
  //usage:	"a"
  //usage:	IF_FEATURE_TAR_CREATE("h")
  //usage:	IF_FEATURE_TAR_NOPRESERVE_TIME("m")
-@@ -814,6 +815,9 @@
- //usage:     "\n	--lzma	(De)compress using lzma"
- //usage:	)
+@@ -809,6 +810,9 @@
+ //usage:	IF_FEATURE_SEAMLESS_BZ2(
+ //usage:     "\n	-j	(De)compress using bzip2"
  //usage:	)
 +//usage:	IF_FEATURE_SEAMLESS_LZ(
 +//usage:     "\n	-y	(De)compress using lzip"
 +//usage:	)
- //usage:     "\n	-a	(De)compress based on extension"
- //usage:	IF_FEATURE_TAR_CREATE(
- //usage:     "\n	-h	Follow symlinks"
-@@ -849,6 +853,7 @@
+ //usage:	IF_FEATURE_SEAMLESS_LZMA(
+ //usage:	IF_FEATURE_TAR_LONG_OPTIONS(
+ //usage:     "\n	--lzma	(De)compress using lzma"
+@@ -849,7 +853,8 @@
  	IF_FEATURE_TAR_FROM(     OPTBIT_EXCLUDE_FROM,)
  	IF_FEATURE_SEAMLESS_GZ(  OPTBIT_GZIP        ,)
  	IF_FEATURE_SEAMLESS_XZ(  OPTBIT_XZ          ,)
-+	IF_FEATURE_SEAMLESS_LZ(  OPTBIT_LZIP        ,)
- 	IF_FEATURE_SEAMLESS_Z(   OPTBIT_COMPRESS    ,) // 16th bit
+-	IF_FEATURE_SEAMLESS_Z(   OPTBIT_COMPRESS    ,) // 16th bit
++	IF_FEATURE_SEAMLESS_LZ(  OPTBIT_LZIP        ,) // 16th bit
++	IF_FEATURE_SEAMLESS_Z(   OPTBIT_COMPRESS    ,)
  	OPTBIT_AUTOCOMPRESS_BY_EXT,
  	IF_FEATURE_TAR_NOPRESERVE_TIME(OPTBIT_NOPRESERVE_TIME,)
+ #if ENABLE_FEATURE_TAR_LONG_OPTIONS
 @@ -877,6 +882,7 @@
  	OPT_EXCLUDE_FROM = IF_FEATURE_TAR_FROM(     (1 << OPTBIT_EXCLUDE_FROM)) + 0, // X
  	OPT_GZIP         = IF_FEATURE_SEAMLESS_GZ(  (1 << OPTBIT_GZIP        )) + 0, // z
@@ -2513,8 +2527,9 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
  		if (opt & OPT_LZMA) {
  			USE_FOR_MMU(IF_FEATURE_SEAMLESS_LZMA(xformer = unpack_lzma_stream;))
  			USE_FOR_NOMMU(xformer_prog = "unlzma";)
---- configs/TEST_nommu_defconfig
-+++ configs/TEST_nommu_defconfig
+diff -urdN busybox-1.33.0/configs/TEST_nommu_defconfig busybox-1.33.0.new/configs/TEST_nommu_defconfig
+--- busybox-1.33.0/configs/TEST_nommu_defconfig	2020-12-29 17:46:47.000000000 +0100
++++ busybox-1.33.0.new/configs/TEST_nommu_defconfig	2021-03-25 19:22:01.000000000 +0100
 @@ -107,6 +107,7 @@
  CONFIG_FEATURE_SEAMLESS_LZMA=y
  CONFIG_FEATURE_SEAMLESS_BZ2=y
@@ -2532,8 +2547,9 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
  CONFIG_LZOP=y
  CONFIG_LZOP_COMPR_HIGH=y
  CONFIG_RPM2CPIO=y
---- configs/TEST_noprintf_defconfig
-+++ configs/TEST_noprintf_defconfig
+diff -urdN busybox-1.33.0/configs/TEST_noprintf_defconfig busybox-1.33.0.new/configs/TEST_noprintf_defconfig
+--- busybox-1.33.0/configs/TEST_noprintf_defconfig	2020-12-29 17:46:47.000000000 +0100
++++ busybox-1.33.0.new/configs/TEST_noprintf_defconfig	2021-03-25 19:22:01.000000000 +0100
 @@ -118,6 +118,7 @@
  CONFIG_FEATURE_SEAMLESS_LZMA=y
  CONFIG_FEATURE_SEAMLESS_BZ2=y
@@ -2551,8 +2567,9 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
  # CONFIG_LZOP is not set
  # CONFIG_LZOP_COMPR_HIGH is not set
  # CONFIG_RPM2CPIO is not set
---- configs/TEST_rh9_defconfig
-+++ configs/TEST_rh9_defconfig
+diff -urdN busybox-1.33.0/configs/TEST_rh9_defconfig busybox-1.33.0.new/configs/TEST_rh9_defconfig
+--- busybox-1.33.0/configs/TEST_rh9_defconfig	2020-12-29 17:46:47.000000000 +0100
++++ busybox-1.33.0.new/configs/TEST_rh9_defconfig	2021-03-25 19:22:01.000000000 +0100
 @@ -116,6 +116,7 @@
  CONFIG_FEATURE_SEAMLESS_LZMA=y
  CONFIG_FEATURE_SEAMLESS_BZ2=y
@@ -2570,8 +2587,9 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
  CONFIG_LZOP=y
  # CONFIG_LZOP_COMPR_HIGH is not set
  CONFIG_RPM2CPIO=y
---- configs/android2_defconfig
-+++ configs/android2_defconfig
+diff -urdN busybox-1.33.0/configs/android2_defconfig busybox-1.33.0.new/configs/android2_defconfig
+--- busybox-1.33.0/configs/android2_defconfig	2020-12-29 17:46:47.000000000 +0100
++++ busybox-1.33.0.new/configs/android2_defconfig	2021-03-25 19:22:01.000000000 +0100
 @@ -120,6 +120,7 @@
  CONFIG_FEATURE_SEAMLESS_LZMA=y
  CONFIG_FEATURE_SEAMLESS_BZ2=y
@@ -2589,8 +2607,9 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
  CONFIG_LZOP=y
  CONFIG_LZOP_COMPR_HIGH=y
  CONFIG_RPM2CPIO=y
---- configs/android_defconfig
-+++ configs/android_defconfig
+diff -urdN busybox-1.33.0/configs/android_defconfig busybox-1.33.0.new/configs/android_defconfig
+--- busybox-1.33.0/configs/android_defconfig	2020-12-29 17:46:47.000000000 +0100
++++ busybox-1.33.0.new/configs/android_defconfig	2021-03-25 19:22:01.000000000 +0100
 @@ -140,6 +140,7 @@
  CONFIG_FEATURE_SEAMLESS_LZMA=y
  CONFIG_FEATURE_SEAMLESS_BZ2=y
@@ -2608,8 +2627,9 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
  CONFIG_LZOP=y
  CONFIG_LZOP_COMPR_HIGH=y
  CONFIG_RPM2CPIO=y
---- configs/android_ndk_defconfig
-+++ configs/android_ndk_defconfig
+diff -urdN busybox-1.33.0/configs/android_ndk_defconfig busybox-1.33.0.new/configs/android_ndk_defconfig
+--- busybox-1.33.0/configs/android_ndk_defconfig	2020-12-29 17:46:47.000000000 +0100
++++ busybox-1.33.0.new/configs/android_ndk_defconfig	2021-03-25 19:22:01.000000000 +0100
 @@ -130,6 +130,7 @@
  CONFIG_FEATURE_SEAMLESS_LZMA=y
  CONFIG_FEATURE_SEAMLESS_BZ2=y
@@ -2627,8 +2647,9 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
  CONFIG_LZOP=y
  CONFIG_LZOP_COMPR_HIGH=y
  CONFIG_RPM=y
---- configs/cygwin_defconfig
-+++ configs/cygwin_defconfig
+diff -urdN busybox-1.33.0/configs/cygwin_defconfig busybox-1.33.0.new/configs/cygwin_defconfig
+--- busybox-1.33.0/configs/cygwin_defconfig	2020-12-29 17:46:47.000000000 +0100
++++ busybox-1.33.0.new/configs/cygwin_defconfig	2021-03-25 19:22:01.000000000 +0100
 @@ -120,6 +120,7 @@
  CONFIG_FEATURE_SEAMLESS_LZMA=y
  CONFIG_FEATURE_SEAMLESS_BZ2=y
@@ -2646,8 +2667,9 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
  CONFIG_LZOP=y
  # CONFIG_LZOP_COMPR_HIGH is not set
  CONFIG_RPM2CPIO=y
---- configs/freebsd_defconfig
-+++ configs/freebsd_defconfig
+diff -urdN busybox-1.33.0/configs/freebsd_defconfig busybox-1.33.0.new/configs/freebsd_defconfig
+--- busybox-1.33.0/configs/freebsd_defconfig	2020-12-29 17:46:47.000000000 +0100
++++ busybox-1.33.0.new/configs/freebsd_defconfig	2021-03-25 19:22:01.000000000 +0100
 @@ -118,6 +118,7 @@
  CONFIG_FEATURE_SEAMLESS_LZMA=y
  CONFIG_FEATURE_SEAMLESS_BZ2=y
@@ -2665,8 +2687,9 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
  CONFIG_LZOP=y
  # CONFIG_LZOP_COMPR_HIGH is not set
  CONFIG_RPM2CPIO=y
---- include/bb_archive.h
-+++ include/bb_archive.h
+diff -urdN busybox-1.33.0/include/bb_archive.h busybox-1.33.0.new/include/bb_archive.h
+--- busybox-1.33.0/include/bb_archive.h	2020-12-29 17:46:47.000000000 +0100
++++ busybox-1.33.0.new/include/bb_archive.h	2021-03-25 19:22:01.000000000 +0100
 @@ -9,6 +9,8 @@
  	COMPRESS_MAGIC = 0x1f9d,
  	GZIP_MAGIC  = 0x1f8b,
@@ -2701,8 +2724,9 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
  IF_DESKTOP(long long) int unpack_lzma_stream(transformer_state_t *xstate) FAST_FUNC;
  IF_DESKTOP(long long) int unpack_xz_stream(transformer_state_t *xstate) FAST_FUNC;
  
---- include/libbb.h
-+++ include/libbb.h
+diff -urdN busybox-1.33.0/include/libbb.h busybox-1.33.0.new/include/libbb.h
+--- busybox-1.33.0/include/libbb.h	2020-12-29 17:46:47.000000000 +0100
++++ busybox-1.33.0.new/include/libbb.h	2021-03-25 19:22:01.000000000 +0100
 @@ -941,6 +941,7 @@
  #define SEAMLESS_COMPRESSION (0 \
   || ENABLE_FEATURE_SEAMLESS_XZ \
@@ -2719,8 +2743,9 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
  
  #if ENABLE_ROUTE
  void bb_displayroutes(int noresolve, int netstatfmt) FAST_FUNC;
---- miscutils/man.c
-+++ miscutils/man.c
+diff -urdN busybox-1.33.0/miscutils/man.c busybox-1.33.0.new/miscutils/man.c
+--- busybox-1.33.0/miscutils/man.c	2020-12-29 17:46:47.000000000 +0100
++++ busybox-1.33.0.new/miscutils/man.c	2021-03-25 19:22:01.000000000 +0100
 @@ -180,6 +180,11 @@
  	if (run_pipe(filename_with_zext, man, level))
  		return 1;
@@ -2733,8 +2758,9 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
  #if ENABLE_FEATURE_SEAMLESS_BZ2
  	strcpy(ext, "bz2");
  	if (run_pipe(filename_with_zext, man, level))
---- scripts/fix_ws.sh
-+++ scripts/fix_ws.sh
+diff -urdN busybox-1.33.0/scripts/fix_ws.sh busybox-1.33.0.new/scripts/fix_ws.sh
+--- busybox-1.33.0/scripts/fix_ws.sh	2020-12-29 17:46:47.000000000 +0100
++++ busybox-1.33.0.new/scripts/fix_ws.sh	2021-03-25 19:22:01.000000000 +0100
 @@ -19,6 +19,7 @@
  | while read name; do
      test "YES" = "${name/*.bz2/YES}" && continue
@@ -2743,8 +2769,9 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
      test "YES" = "${name/*.png/YES}" && continue
      test "YES" = "${name/*.gif/YES}" && continue
      test "YES" = "${name/*.jpg/YES}" && continue
---- testsuite/bunzip2.tests
-+++ testsuite/bunzip2.tests
+diff -urdN busybox-1.33.0/testsuite/bunzip2.tests busybox-1.33.0.new/testsuite/bunzip2.tests
+--- busybox-1.33.0/testsuite/bunzip2.tests	2020-12-29 17:46:47.000000000 +0100
++++ busybox-1.33.0.new/testsuite/bunzip2.tests	2021-03-25 19:22:01.000000000 +0100
 @@ -9,6 +9,9 @@
  elif test "${0##*/}" = "bunzip2.tests"; then
      unpack=bunzip2
@@ -2782,8 +2809,9 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
  )
  rm -rf testdir
  
---- testsuite/bzcat.tests
-+++ testsuite/bzcat.tests
+diff -urdN busybox-1.33.0/testsuite/bzcat.tests busybox-1.33.0.new/testsuite/bzcat.tests
+--- busybox-1.33.0/testsuite/bzcat.tests	2020-12-29 17:46:47.000000000 +0100
++++ busybox-1.33.0.new/testsuite/bzcat.tests	2021-03-25 19:22:01.000000000 +0100
 @@ -30,10 +30,18 @@
      $ECHO -ne "\x17\x72\x45\x38\x50\x90\x5b\xb8\xe8\xa3"
  }
@@ -2803,17 +2831,19 @@ Taken from http://download.savannah.gnu.org/releases/lzip/busybox/
      `test x"$CONFIG_FEATURE_SEAMLESS_Z"   = x"y" && echo Z`
  do
      prep() {
---- testsuite/lunzip.tests
-+++ testsuite/lunzip.tests
+diff -urdN busybox-1.33.0/testsuite/lunzip.tests busybox-1.33.0.new/testsuite/lunzip.tests
+--- busybox-1.33.0/testsuite/lunzip.tests	1970-01-01 01:00:00.000000000 +0100
++++ busybox-1.33.0.new/testsuite/lunzip.tests	2021-03-25 19:22:01.000000000 +0100
 @@ -0,0 +1,3 @@
 +#!/bin/sh
 +
 +. ./bunzip2.tests
---- testsuite/lzip.tests
-+++ testsuite/lzip.tests
+diff -urdN busybox-1.33.0/testsuite/lzip.tests busybox-1.33.0.new/testsuite/lzip.tests
+--- busybox-1.33.0/testsuite/lzip.tests	1970-01-01 01:00:00.000000000 +0100
++++ busybox-1.33.0.new/testsuite/lzip.tests	2021-03-25 20:14:10.000000000 +0100
 @@ -0,0 +1,58 @@
 +#!/bin/sh
-+# Copyright (C) 2012-2019 Antonio Diaz Diaz.
++# Copyright (C) 2012-2021 Antonio Diaz Diaz.
 +# Licensed under GPLv2 or later, see file LICENSE in this source tree.
 +
 +. ./testing.sh
