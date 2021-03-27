@@ -165,18 +165,19 @@ menu "Web Interface"
 		config FREETZ_TAGGING_PIMPED
 			bool "Pimped"
 
-#		config FREETZ_TAGGING_PRISRAK
-#			bool "prisrak"
-
 	endchoice # "AVM tagging" #
+
+	config FREETZ_TAGGING_ENABLED
+		bool
+		depends on !FREETZ_TAGGING_NONE
+		default y
 
 	config FREETZ_TAGGING_STRING
 		string
-		default "none"          if FREETZ_TAGGING_NONE
+		depends on !FREETZ_TAGGING_NONE
 		default "cuma"          if FREETZ_TAGGING_CUMA
 		default "freetz-ng"     if FREETZ_TAGGING_NG
 		default "pimped"        if FREETZ_TAGGING_PIMPED
-		default "prisrak"       if FREETZ_TAGGING_PRISRAK
 
 	config FREETZ_WEBIF_LINK
 		bool "AVM menu link"
