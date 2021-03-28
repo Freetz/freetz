@@ -1,0 +1,16 @@
+--- linux-4.4/GNUmakefile
++++ linux-4.4/GNUmakefile
+@@ -114,13 +114,6 @@
+ 		USERINCLUDE_AVM_SUBPROJECTS='$(USERINCLUDE_AVM_SUBPROJECTS)' \
+ 		LINUXINCLUDE_AVM_SUBPROJECTS='$(LINUXINCLUDE_AVM_SUBPROJECTS)'
+ 	@# Skip config diff for out-of-tree module builds
+-ifeq ($(KBUILD_EXTMOD)$(M),)
+-    ifeq ($(words $(sort $(AVM_KCONFIG_CONFIG) $(KCONFIG_CONFIG))),2)
+-	$(if $(filter-out $(no-config-diff-targets),$@),\
+-		@scripts/diffconfig $(AVM_KCONFIG_CONFIG) $(KCONFIG_CONFIG) | \
+-		 sed -re '1{s|^|Linux config has changed compared to $(AVM_KCONFIG_CONFIG):\n|}' >&2)
+-    endif
+-endif
+ 
+ $(KCONFIG_CONFIG): $(wildcard $(AVM_KCONFIG_CONFIG))
+ 	$(if $<,@echo "UPD $< -> $@")
