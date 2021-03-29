@@ -75,8 +75,23 @@ Index:
   * **<u>REMOVE_BRANDING_freenet: freenet</u><a id='remove-branding-freenet'></a>**<br>
     Freenet branding
 
+  * **<u>REMOVE_BRANDING_kabelbw: kabelbw</u><a id='remove-branding-kabelbw'></a>**<br>
+    Kabel Baden-Württemberg branding
+
+  * **<u>REMOVE_BRANDING_kdg: kdg</u><a id='remove-branding-kdg'></a>**<br>
+    Kabel Deutschland GmbH branding
+
+  * **<u>REMOVE_BRANDING_lgi: lgi</u><a id='remove-branding-lgi'></a>**<br>
+    Liberty Global Incorporated branding
+
   * **<u>REMOVE_BRANDING_otwo: otwo</u><a id='remove-branding-otwo'></a>**<br>
     O2 branding
+
+  * **<u>REMOVE_BRANDING_tcom: tcom</u><a id='remove-branding-tcom'></a>**<br>
+    Deutsche Telekom AG branding
+
+  * **<u>REMOVE_BRANDING_unity: unity</u><a id='remove-branding-unity'></a>**<br>
+    Unitymedia GmbH branding
 
   * **<u>REMOVE_BRANDING_versatel: versatel</u><a id='remove-branding-versatel'></a>**<br>
     Versatel branding
