@@ -154,11 +154,11 @@ Currently supported devices and firmwares
 * __Fritz!Box 6591 Cable__
   - 161.07.13 rev75441 {GER} [MESH18 NL3]
   - 161.07.22 rev84582 {GER} [PSQ19]
-  - 161.07.24 rev86266 {GER} [PSQ19 Phase 2] (Labor)
+  - 161.07.24 rev87307 {GER} [PSQ19 Phase 2] (Labor)
 * __Fritz!Box 6660 Cable__
   - 252.07.15 rev78740 {GER} [6660 FCS]
   - 252.07.24 rev85910 {GER} [PSQ19]
-  - 252.07.24 rev86265 {GER} [PSQ19 Phase 2] (Labor)
+  - 252.07.24 rev87309 {GER} [PSQ19 Phase 2] (Labor)
 
 ### Fritz!Box LTE (68xx)
 
