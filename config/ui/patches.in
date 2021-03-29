@@ -454,99 +454,103 @@ config FREETZ_REMOVE_BRANDING
 
 		echo $(cat /proc/sys/urlader/firmware_version)
 
-config FREETZ_REMOVE_BRANDING_1und1
-	bool "1und1"
-	depends on FREETZ_REMOVE_BRANDING && FREETZ_AVM_HAS_BRANDING_1und1
-	default y if FREETZ_AVM_PROP_ALL_REGIONS && FREETZ_TYPE_LANG_EN
-	default n
-	help
-		1&1 branding
+if FREETZ_REMOVE_BRANDING
 
-config FREETZ_REMOVE_BRANDING_aol
-	bool "aol"
-	depends on FREETZ_REMOVE_BRANDING && FREETZ_AVM_HAS_BRANDING_aol
-	default n
-	help
-		AOL branding
+	config FREETZ_REMOVE_BRANDING_1und1
+		bool "1und1"
+		depends on FREETZ_AVM_HAS_BRANDING_1und1
+		default y if FREETZ_AVM_PROP_ALL_REGIONS && FREETZ_TYPE_LANG_EN
+		default n
+		help
+			1&1 branding
 
-config FREETZ_REMOVE_BRANDING_avm
-	bool "avm"
-	depends on FREETZ_REMOVE_BRANDING && FREETZ_AVM_HAS_BRANDING_avm
-	default y if FREETZ_AVM_PROP_ALL_REGIONS && FREETZ_TYPE_LANG_EN
-	default n
-	help
-		AVM (german) branding
+	config FREETZ_REMOVE_BRANDING_aol
+		bool "aol"
+		depends on FREETZ_AVM_HAS_BRANDING_aol
+		default n
+		help
+			AOL branding
 
-config FREETZ_REMOVE_BRANDING_avme
-	bool "avme"
-	depends on FREETZ_REMOVE_BRANDING && FREETZ_AVM_HAS_BRANDING_avme
-	default y if FREETZ_AVM_PROP_ALL_REGIONS && FREETZ_TYPE_LANG_DE
-	default n
-	help
-		AVME (international) branding
+	config FREETZ_REMOVE_BRANDING_avm
+		bool "avm"
+		depends on FREETZ_AVM_HAS_BRANDING_avm
+		default y if FREETZ_AVM_PROP_ALL_REGIONS && FREETZ_TYPE_LANG_EN
+		default n
+		help
+			AVM (german) branding
 
-config FREETZ_REMOVE_BRANDING_ewetel
-	bool "ewetel"
-	depends on FREETZ_REMOVE_BRANDING && FREETZ_AVM_HAS_BRANDING_ewetel
-	default n
-	help
-		EWE TEL branding
+	config FREETZ_REMOVE_BRANDING_avme
+		bool "avme"
+		depends on FREETZ_AVM_HAS_BRANDING_avme
+		default y if FREETZ_AVM_PROP_ALL_REGIONS && FREETZ_TYPE_LANG_DE
+		default n
+		help
+			AVME (international) branding
 
-config FREETZ_REMOVE_BRANDING_freenet
-	bool "freenet"
-	depends on FREETZ_REMOVE_BRANDING && FREETZ_AVM_HAS_BRANDING_freenet
-	default n
-	help
-		Freenet branding
+	config FREETZ_REMOVE_BRANDING_ewetel
+		bool "ewetel"
+		depends on FREETZ_AVM_HAS_BRANDING_ewetel
+		default n
+		help
+			EWE TEL branding
 
-config FREETZ_REMOVE_BRANDING_kabelbw
-	bool "kabelbw"
-	depends on FREETZ_REMOVE_BRANDING && FREETZ_AVM_HAS_BRANDING_kabelbw
-	default n
-	help
-		Kabel Baden-Württemberg branding
+	config FREETZ_REMOVE_BRANDING_freenet
+		bool "freenet"
+		depends on FREETZ_AVM_HAS_BRANDING_freenet
+		default n
+		help
+			Freenet branding
 
-config FREETZ_REMOVE_BRANDING_kdg
-	bool "kdg"
-	depends on FREETZ_REMOVE_BRANDING && FREETZ_AVM_HAS_BRANDING_kdg
-	default n
-	help
-		Kabel Deutschland GmbH branding
+	config FREETZ_REMOVE_BRANDING_kabelbw
+		bool "kabelbw"
+		depends on FREETZ_AVM_HAS_BRANDING_kabelbw
+		default n
+		help
+			Kabel Baden-Württemberg branding
 
-config FREETZ_REMOVE_BRANDING_lgi
-	bool "lgi"
-	depends on FREETZ_REMOVE_BRANDING && FREETZ_AVM_HAS_BRANDING_lgi
-	default n
-	help
-		Liberty Global Incorporated branding
+	config FREETZ_REMOVE_BRANDING_kdg
+		bool "kdg"
+		depends on FREETZ_AVM_HAS_BRANDING_kdg
+		default n
+		help
+			Kabel Deutschland GmbH branding
 
-config FREETZ_REMOVE_BRANDING_otwo
-	bool "otwo"
-	depends on FREETZ_REMOVE_BRANDING && FREETZ_AVM_HAS_BRANDING_otwo
-	default n
-	help
-		O2 branding
+	config FREETZ_REMOVE_BRANDING_lgi
+		bool "lgi"
+		depends on FREETZ_AVM_HAS_BRANDING_lgi
+		default n
+		help
+			Liberty Global Incorporated branding
 
-config FREETZ_REMOVE_BRANDING_tcom
-	bool "tcom"
-	depends on FREETZ_REMOVE_BRANDING && FREETZ_AVM_HAS_BRANDING_tcom
-	default n
-	help
-		Deutsche Telekom AG branding
+	config FREETZ_REMOVE_BRANDING_otwo
+		bool "otwo"
+		depends on FREETZ_AVM_HAS_BRANDING_otwo
+		default n
+		help
+			O2 branding
 
-config FREETZ_REMOVE_BRANDING_unity
-	bool "unity"
-	depends on FREETZ_REMOVE_BRANDING && FREETZ_AVM_HAS_BRANDING_unity
-	default n
-	help
-		Unitymedia GmbH branding
+	config FREETZ_REMOVE_BRANDING_tcom
+		bool "tcom"
+		depends on FREETZ_AVM_HAS_BRANDING_tcom
+		default n
+		help
+			Deutsche Telekom AG branding
 
-config FREETZ_REMOVE_BRANDING_versatel
-	bool "versatel"
-	depends on FREETZ_REMOVE_BRANDING && FREETZ_AVM_HAS_BRANDING_versatel
-	default n
-	help
-		Versatel branding
+	config FREETZ_REMOVE_BRANDING_unity
+		bool "unity"
+		depends on FREETZ_AVM_HAS_BRANDING_unity
+		default n
+		help
+			Unitymedia GmbH branding
+
+	config FREETZ_REMOVE_BRANDING_versatel
+		bool "versatel"
+		depends on FREETZ_AVM_HAS_BRANDING_versatel
+		default n
+		help
+			Versatel branding
+
+endif # FREETZ_REMOVE_BRANDING
 
 
 config FREETZ_REMOVE_CAPIOVERTCP
