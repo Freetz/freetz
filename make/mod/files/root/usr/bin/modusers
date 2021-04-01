@@ -28,9 +28,11 @@ load() {
 		tar xOf /var.tar ./var/tmp/${f%.mod} | while read l; do grep -q "^${l%%:*}:" /tmp/$f || echo "$l" >> /tmp/$f; done
 	done
 	# /var/tmp/passwd.tmp is created by ctlmgr, do NOT MoVe due to libctlmgr
-	cp /var/tmp/passwd.tmp /var/tmp/passwd.avm 2>/dev/null && rm -rf /var/tmp/passwd.tmp
+	cp /var/tmp/passwd.tmp /var/tmp/passwd.avm 2>/dev/null && rm -f /var/tmp/passwd.tmp
+	# no update by ctlmgr, so use current values
+	[ ! -e /var/tmp/passwd.avm ] && cp /var/tmp/passwd /var/tmp/passwd.avm 2>/dev/null
 	# load AVM's app-users, boxusrs (and ftpusers) which were created by ctlmgr
-	[ -e /var/tmp/passwd.avm ] && grep -E '^(app|boxusr|ftpuser)[0-9]*(int|-internet)*:' /var/tmp/passwd.avm >> /tmp/passwd.mod
+	grep -E '^(app|boxusr|ftpuser)[0-9]*(int|-internet)*:' /var/tmp/passwd.avm >> /tmp/passwd.mod 2>/dev/null
 	# special case: ftpuser is created and/or used by avm and/or freetz
 	grep -q "^ftpuser:" /tmp/passwd.mod || grep "^ftpuser:" "$SAVE_DIR/passwd" >> /tmp/passwd.mod 2>/dev/null
 	# prevent race-condition while creating /etc/passwd
