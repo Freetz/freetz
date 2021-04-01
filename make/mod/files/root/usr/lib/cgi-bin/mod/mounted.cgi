@@ -158,7 +158,7 @@ fi
 if [ "$MOD_MOUNTED_MAIN" == "yes" -o "$onmain" == "false" ]; then
 	mfilt=$(echo "$MOUNT" |
 		sed -rn '
-			\#^/dev/(sd|mapper/)|^https?://|^.* on .* type (cifs|fuse|jffs|ubifs|yaffs)|^.*:/.* on .* type nfs# {
+			\#^/dev/(sd|mapper/)|^https?://|^.* on .* type (cifs|fuse|jffs|ubifs|yaffs|ext)|^.*:/.* on .* type nfs# {
 				\# on /wrapper | on /var/flash #! {
 					s/^([^ ]+) on (.*) type ([^ ]*) \(([^)]*)\)$/\3 \4 \1 \2/; p
 				}
