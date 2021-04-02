@@ -4,71 +4,109 @@
 
 cgi --id=backup_restore
 cgi_begin "$(lang de:"Konfiguration sichern/wiederherstellen" en:"Backup/restore configuration")"
+[ -x "$(which tr069fwupdate)" ] && TR069FU_FOUND=y || TR069FU_FOUND=n
 [ -x "$(which openssl)" ] && OPENSSL_FOUND=y || OPENSSL_FOUND=n
+[ -x "$(which decoder)" ] && DECODER_FOUND=y || DECODER_FOUND=n
+#  wget "https://github.com/PeterPawn/decoder/raw/master/bin/decoder.$(uname -m)" -O /mod/usr/bin/decoder
+
+[ "$TR069FU_FOUND" != "y" ]                            && TR069FU_STATE='disabled' || TR069FU_STATE=''
+[ "$OPENSSL_FOUND" != "y" ]                            && OPENSSL_STATE='disabled' || OPENSSL_STATE='checked'
+[ "$TR069FU_FOUND" != "y" -a "$OPENSSL_FOUND" != "y" ] &&  BACKUP_STATE='disabled' ||  BACKUP_STATE=''
+
+[ "$DECODER_FOUND" != "y" ]                            && DECODER_STATE='disabled' || DECODER_STATE=''
+[ "$OPENSSL_FOUND" != "y" ]                            && RESTORE_STATE='disabled' || RESTORE_STATE=''
 
 cat << EOF
-<h1>$(lang de:"Sicherung" en:"Backup")</h1>
-
-<p>$(lang \
-  de:"Sichern s&auml;mtlicher Einstellungen aus dem Flash-Speicher <i>/var/flash</i>. Dies umfa&szlig;t sowohl die Einstellungen der Original-Firmware als auch die von Freetz sowie s&auml;mtlicher sonstiger beim Start geladener Erweiterungen (z.B. LCR-Updater)." \
-  en:"Save all settings from flash memory <i>/var/flash</i>. This includes original firmware settings as well as Freetz and other installed extensions (e.g. LCR Updater)." \
-)</p>
-
-<h2>$(lang de:"Verschl&uuml;sselung" en:"Encryption")</h2>
-<p>
-EOF
-
-if [ "$OPENSSL_FOUND" == "n" ]; then
-	echo "$(lang de:"Es ist kein OpenSSL installiert. Verschl&uuml;sselung nicht verf&uuml;gbar" en:"There is no OpenSSL installed. Encryption not available")!<br>"
-fi
-
-cat << EOF
-$(lang \
-  de:"Ein verschl&uuml;sseltes Backup enth&auml;lt zus&auml;tzliche Daten um die Sicherung auch auf einem anderen Ger&auml;t wiederherzustellen zu k&ouml;nnen." \
-  en:"An encrypted backup contains additional data to restore the backup even on another device." \
-)
-</p>
-
 <form action="do_backup.cgi" method="GET">
-EOF
+	<h1>$(lang de:"Sicherung" en:"Backup")</h1>
 
-if [ "$OPENSSL_FOUND" == "y" ]; then
-	echo "<p><label for="password_restore">$(lang de:"Passwort (leer lassen f&uuml;r unverschl&uuml;sselt)" en:"Password (leave empty for unencrypted)"):<br></label>"
-	echo "<input type=text name="password_restore" id="password_restore" size="35"></p>"
-fi
-
-cat << EOF
-	<p><input type=submit value="$(lang de:"Sichern" en:"Save")" style="width:150px"></p>
-</form>
-
-<hr>
-<h1>$(lang de:"Wiederherstellung" en:"Restore")</h1>
-
-<p>$(lang \
-  de:"Wiederherstellen eines zuvor gesicherten Archivs mit Einstellungen. Damit wird das Ger&auml;t wieder in den Zustand zum Zeitpunkt der entsprechenden Sicherung versetzt." \
-  en:"Restore previously saved configuration archive.  This way the device will be restored to the state it was in when you created the corresponding backup." \
-)</p>
-
-<p><b><i>$(lang \
-  de:"Nach der Wiederherstellung sollte das Ger&auml;t neu gestartet werden, um alle Einstellungen zu aktivieren. Bitte danach die Einstellungen &uuml;berpr&uuml;fen!" \
-  en:"After restore you should reboot the device in order to activate the configuration. Please remember to double-check all settings afterwards!" \
-)</i></b></p>
-
-<form action="do_restore.cgi" method="POST" enctype="multipart/form-data">
-	<p><input type=file name="uploadfile"></p>
 	<p>
-	  <input type=checkbox name="freetz_only" id="freetz_only"><label for="freetz_only">$(lang de:"Nur Freetz-Einstellungen wiederherstellen" en:"Restore Freetz settings only")</label><br>
-	  <input type=checkbox name="restart" id="restart" checked><label for="restart">$(lang de:"Neustart nach Wiederherstellung" en:"Reboot after restore")</label>
+	$(lang \
+	  de:"Sichern s&auml;mtlicher Einstellungen aus dem Flash-Speicher <i>/var/flash</i>. Dies umfa&szlig;t sowohl die Einstellungen von AVM als auch die von Freetz sowie s&auml;mtlicher sonstiger installierten Erweiterungen." \
+	  en:"Save all settings from flash memory <i>/var/flash</i>. This includes firmware settings of AVM as well as Freetz and other installed extensions." \
+	)
 	</p>
-EOF
 
-if [ "$OPENSSL_FOUND" == "y" ]; then
-	echo "<p><label for="password_restore">$(lang de:"Passwort (falls verschl&uuml;sselt)" en:"Password (if encrypted)"):<br>"
-	echo "</label><input type=password name="password_restore" id="password_restore" size="35"></p>"
-fi
+	<p>
+	<input type=checkbox name="do_export" id="do_export" $TR069FU_STATE>
+	<label for="do_export">
+	$(lang de:"Zus&auml;tzlich ein Export der AVM Einstellungen hinzuf&uuml;gen" en:"Include additional an export of the AVM settings")
+	<br>
+	$(lang \
+	  de:"Der Export kann &uuml;ber das AVM-Webinterface wiederhergestellt werden. Bei neuerem FritzOS muss ein Passwort eingegeben werden." \
+	  en:"An export could be restored by the AVM web interface. With newer FritzOS a password needs to be entered." \
+	)
+	</label>
+	</p>
 
-cat << EOF
-	<p><input type=submit value="$(lang de:"Wiederherstellen" en:"Restore")" style="width:150px"></p>
+	<p>
+	<input type=checkbox name="do_encrypt" id="do_encrypt" $OPENSSL_STATE>
+	<label for="do_encrypt">
+	$(lang de:"Das Backup mit OpenSSL verschl&uuml;sseln" en:"Encrypt the backup with OpenSSL")
+	<br>
+	$(lang \
+	  de:"Ein verschl&uuml;sseltes Backup enth&auml;lt zus&auml;tzliche Daten um die Sicherung auch auf einem anderen Ger&auml;t wiederherzustellen zu k&ouml;nnen." \
+	  en:"An encrypted backup contains additional data to restore the backup even on another device." \
+	)
+	</label>
+	</p>
+
+	<p>
+	<label for="password_backup">$(lang de:"Passwort f&uumlr Verschl&uumlsselung und Export" en:"Password for encryption and export"):</label>
+	<br>
+	<input type=text name="password_backup" id="password_backup" size="35" $BACKUP_STATE>
+	</p>
+
+	<p>
+	<input type=submit value="$(lang de:"Sichern" en:"Save")" style="width:150px">
+	</p>
+
+</form>
+<hr>
+<form action="do_restore.cgi" method="POST" enctype="multipart/form-data">
+	<h1>$(lang de:"Wiederherstellung" en:"Restore")</h1>
+
+	<p>
+	$(lang \
+	  de:"Wiederherstellen eines zuvor gesicherten Archivs mit Einstellungen. Damit wird das Ger&auml;t wieder in den Zustand zum Zeitpunkt der entsprechenden Sicherung versetzt." \
+	  en:"Restore previously saved configuration archive.  This way the device will be restored to the state it was in when you created the corresponding backup." \
+	)
+	</p>
+
+	<p>
+	<b>
+	<i>$(lang \
+	  de:"Nach der Wiederherstellung sollte das Ger&auml;t neu gestartet werden, um alle Einstellungen zu aktivieren. Bitte danach die Einstellungen &uuml;berpr&uuml;fen!" \
+	  en:"After restore you should reboot the device in order to activate the configuration. Please remember to double-check all settings afterwards!" \
+	)
+	</i>
+	</b>
+	</p>
+
+	<p>
+	<input type=file name="uploadfile">
+	</p>
+
+	<p>
+	<input type=checkbox name="decode_avm" id="decode_avm" $DECODER_STATE>
+	<label for="decode_avm">$(lang de:"Die AVM-Einstellungen dekodieren" en:"Decode AVM settings")</label>
+	<br>
+	<input type=checkbox name="freetz_only" id="freetz_only">
+	<label for="freetz_only">$(lang de:"Nur Freetz-Einstellungen wiederherstellen" en:"Restore Freetz settings only")</label>
+	<br>
+	<input type=checkbox name="restart" id="restart" checked>
+	<label for="restart">$(lang de:"Neustart nach Wiederherstellung" en:"Reboot after restore")</label>
+	</p>
+
+	<p>
+	<label for="password_restore">$(lang de:"Passwort (falls verschl&uuml;sselt)" en:"Password (if encrypted)"):
+	<br>
+	</label><input type=password name="password_restore" id="password_restore" size="35" $RESTORE_STATE>
+	</p>
+
+	<p>
+	<input type=submit value="$(lang de:"Wiederherstellen" en:"Restore")" style="width:150px">
+	</p>
 </form>
 EOF
 

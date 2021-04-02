@@ -509,7 +509,7 @@ common-distclean: common-dirclean
 	$(RM) -r $(TOOLCHAIN_BUILD_DIR)
 	$(RM) -r $(TOOLS_BUILD_DIR)
 	$(RM)    $(DL_DIR)
-	@echo "The files ./.config ./config/custom.in ./.fwmod_custom and the directories ~/.freetz-ccache/ ~/.freetz-dl/ ~/.freetz-signature/ were not removed."
+	@echo "The files ./.config ./config/custom.in ./.fwmod_custom and the directories ~/.freetz-dl/ ~/.freetz-signature/ were not removed."
 
 release: distclean
 	version="$$(cat .version)"; \

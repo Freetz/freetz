@@ -1,14 +1,32 @@
 menu "Web Interface"
 
 	config FREETZ_BACKUP_ENCRYPTION
-		bool "Setting backup encryption"
+		bool "Settings backup encryption"
 		select FREETZ_PACKAGE_OPENSSL
 		default n
 		help
-			Encrypted backups - are encrypted. And could additional
-			be decoded with tools/decoder_for_settings_backup to be
-			able to restore on another device.
+			Encrypted backups - are encrypted. And contain additional
+			data to be be decoded and restored on another device.
 			For encryption OpenSSL is selected and used.
+
+	config FREETZ_BACKUP_DECODING
+		bool "Settings backup decoding"
+		select FREETZ_BACKUP_ENCRYPTION
+		select FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG
+		default n
+		help
+			Decoding allows to restore a backups on another device with Freetz.
+			Use the AVM webif if AVM still allows you restoring on your device!
+			For encryption decoder aka decrypt_fritzos_cfg is selected and used.
+
+	config FREETZ_BACKUP_EXPORT
+		bool "Settings backup export"
+		default n
+		help
+			Includes an AVM settings export in a freetz backup.
+			This is usefull to restore to another device by AVM webif.
+			It uses tr069fwupdate which can not be removed anymore.
+
 
 	choice
 		prompt "Freetz language"

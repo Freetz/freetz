@@ -11,9 +11,16 @@ fail() {
 	[ -z "$FAIL" ] && FAIL="$@"
 }
 
-export SICPW="${QUERY_STRING##*password_restore=}"
+para() {
+	echo "&$QUERY_STRING" | sed -rn "s/.*&${1}=([^&]*).*/\1/p"
+}
+DOEXP="$(para 'do_export')"
+DOENC="$(para 'do_encrypt')"
+export SICPW="$(para 'password_backup')"
+[ "$DOENC" == "on" -a -z "$SICPW" ] && fail "$(lang de:"Es wurde kein Passwort angegeben" en:"You have not provided a password")."
+
 [ -z "$CONFIG_LABOR_ID_NAME" ] && REV="" || REV="-$(sed -nr 's/.*[ ^]*CONFIG_BUILDNUMBER="?([^"]*).*/\1/p' /etc/init.d/rc.conf)"
-fname="$(echo ${CONFIG_PRODUKT_NAME}_${CONFIG_VERSION_MAJOR}.${CONFIG_VERSION}${REV}-$(cat /etc/.freetz-version)$(date '+_%Y-%m-%d_%H%M')_settings${SICPW:+.crypted}.tar | tr ' !' '_.')"
+fname="$(echo ${CONFIG_PRODUKT_NAME}_${CONFIG_VERSION_MAJOR}.${CONFIG_VERSION}${REV}-$(cat /etc/.freetz-version)$(date '+_%Y-%m-%d_%H%M')_settings${DOENC:+.crypted}.tar | tr ' !' '_.')"
 
 # Create temp-dirs for backup
 OUTER_DIR="/tmp/settings.tmp.backup"
@@ -24,19 +31,21 @@ mkdir -p "$INNER_DIR" || fail "$(lang de:"Fehler beim Erstellen des Verzeichniss
 # Create additional files
 sort /proc/sys/urlader/environment | sed -rn "s/^(SerialNumber|maca|tr069_passphrase|wlan_key)[ \t]*//p" | md5sum | sed 's/ .*//' > "$OUTER_DIR/identity.md5" \
   || fail "$(lang de:"Fehler beim Erstellen der Identit&auml;t" en:"Erron on creating identity")"
+[ "$DOEXP" == "on" ] && tr069fwupdate configexport $SICPW | sed -n "/^\*\*\*\* FRITZ/,\$p" | gzip > "$OUTER_DIR/export.avm.gz"
 cat << EOF > "$OUTER_DIR/contents.txt"
 This file contains a settings backup by Freetz-NG
 $fname
 To restore with an older freetz revision: upload only settings.tgz
 EOF
-[ -n "$SICPW" ] && echo 'For manual decryption: openssl enc -d -aes256 -in settings.tgz.crypted -out settings.tgz [-pbkdf2|-md sha256]' >> "$OUTER_DIR/contents.txt"
+[ "$DOENC" == "on" ] && echo 'For manual decryption: openssl enc -d -aes256 -in settings.tgz.crypted -out settings.tgz [-pbkdf2|-md sha256]' >> "$OUTER_DIR/contents.txt"
+[ "$DOEXP" == "on" ] && echo 'The file export.avm could be restored with the AVM web interface.' >> "$OUTER_DIR/contents.txt"
 [ -s "$OUTER_DIR/contents.txt" ] || fail "$(lang de:"Fehler beim Erstellen von contents.txt" en:"Erron on creating of contents.txt")"
 
 # Create temporary files of character streams in /var/flash
 for x in /var/flash/*; do cat "$x" > "$INNER_DIR/${x##*/}"; done
 
 # Pack (and encrypt) temporary settings file
-if [ -z "$SICPW" ]; then
+if [ "$DOENC" != "on" ]; then
 	tar cz -C "$OUTER_DIR" "${INNER_DIR##*/}/"                                                  > "$OUTER_DIR/settings.tgz" \
 	  || fail "$(lang de:"Fehler beim Erzeugen der Datei" en:"Erron on creating file")"
 else
