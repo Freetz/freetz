@@ -17,19 +17,19 @@ config FREETZ_PACKAGE_OPENVPN
 if FREETZ_PACKAGE_OPENVPN
 
 
-choice
-	prompt "Version"
-		default FREETZ_PACKAGE_OPENVPN_VERSION_CURRENT
+#choice
+#	prompt "Version"
+#		default FREETZ_PACKAGE_OPENVPN_VERSION_CURRENT
 
 	config FREETZ_PACKAGE_OPENVPN_VERSION_ABANDON
-		bool "2.4.x"
+		bool #"2.4.x"
 		depends on FREETZ_KERNEL_VERSION_2_6_13
 
 	config FREETZ_PACKAGE_OPENVPN_VERSION_CURRENT
-		bool "2.5.x"
+		bool #"2.5.x"
 		depends on !FREETZ_KERNEL_VERSION_2_6_13
 
-endchoice
+#endchoice
 
 
 choice
