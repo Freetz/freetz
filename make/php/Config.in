@@ -35,8 +35,12 @@ config FREETZ_PACKAGE_PHP_cli
 	select FREETZ_LIB_libpcre if ! FREETZ_PACKAGE_PHP_STATIC
 	default n
 
+comment "Apache2 module needs OpenSSL 1.0 or older"
+	depends on !FREETZ_OPENSSL_VERSION_1_MAX
+
 config FREETZ_PACKAGE_PHP_apxs2
 	bool "Apache2 module"
+	depends on FREETZ_OPENSSL_VERSION_1_MAX
 	select FREETZ_LIB_libapr_WITH_DSO
 	select FREETZ_LIB_libpcre
 	select FREETZ_LIB_libcurl            if FREETZ_PACKAGE_PHP_WITH_CURL
@@ -148,8 +152,12 @@ config FREETZ_PACKAGE_PHP_WITH_SQLITE3
 	help
 		This option enables the SQLite (v3) support for PHP
 
+comment "SSL support needs OpenSSL 1.0 or older"
+	depends on !FREETZ_OPENSSL_VERSION_1_MAX
+
 config FREETZ_PACKAGE_PHP_WITH_SSL
 	bool "build with SSL support"
+	depends on FREETZ_OPENSSL_VERSION_1_MAX
 	select FREETZ_LIB_libcrypto if !FREETZ_PACKAGE_PHP_STATIC
 	select FREETZ_LIB_libssl    if !FREETZ_PACKAGE_PHP_STATIC
 	default n
