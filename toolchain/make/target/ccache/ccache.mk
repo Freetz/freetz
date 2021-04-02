@@ -10,8 +10,6 @@ CCACHE_TARGET_BINARY:=usr/bin/ccache
 
 CCACHE_BIN_DIR:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache
 
-CCACHE_CACHE_DIR=$(HOME)/.freetz-ccache
-
 
 ccache-source: $(DL_DIR)/$(CCACHE_SOURCE)
 ifneq ($(strip $(DL_DIR)/$(CCACHE_SOURCE)), $(strip $(DL_DIR)/$(CCACHE_KERNEL_SOURCE)))
@@ -23,7 +21,7 @@ ccache-unpacked: $(CCACHE_DIR)/.unpacked
 $(CCACHE_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_SOURCE) | $(TARGET_TOOLCHAIN_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	$(RM) -r $(CCACHE_DIR)
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(CCACHE_SOURCE),$(TARGET_TOOLCHAIN_DIR))
-	$(call APPLY_PATCHES,$(CCACHE_MAKE_DIR)/patches,$(CCACHE_DIR))
+	#$(call APPLY_PATCHES,$(CCACHE_MAKE_DIR)/patches,$(CCACHE_DIR))
 	# WARNING - this will break if the toolchain is moved.
 	# Should probably patch things to use a relative path.
 	$(SED) -i 's,ctx.config.path(),"$(CCACHE_BIN_DIR)",' $(CCACHE_DIR)/src/execute.cpp
@@ -47,7 +45,6 @@ $(CCACHE_DIR)/$(CCACHE_BINARY): $(CCACHE_DIR)/.configured
 	$(MAKE) -C $(CCACHE_DIR)
 
 $(TARGET_TOOLCHAIN_STAGING_DIR)/$(CCACHE_TARGET_BINARY): $(CCACHE_DIR)/$(CCACHE_BINARY)
-	mkdir -p $(CCACHE_CACHE_DIR)
 	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin
 	cp $(CCACHE_DIR)/$(CCACHE_BINARY) $(TARGET_TOOLCHAIN_STAGING_DIR)/$(CCACHE_TARGET_BINARY)
 	# Keep the actual toolchain binaries in a directory at the same level.
