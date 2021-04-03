@@ -5,6 +5,7 @@ SAVE_DIR=/tmp/flash/users
 FILES="passwd group shadow gshadow"
 
 load() {
+	[ -x /usr/bin/modinotify ] && modinotify stop
 	mkdir -pm 700 $SAVE_DIR
 	# temporary file
 	touch "/tmp/passwd.mod"
@@ -38,6 +39,7 @@ load() {
 	# prevent race-condition while creating /etc/passwd
 	mv /tmp/passwd.mod /tmp/passwd
 	touch /tmp/.usersloaded
+	[ -x /usr/bin/modinotify ] && modinotify start
 }
 
 save() {
@@ -67,3 +69,4 @@ case $1 in
 		exit 1
 		;;
 esac
+
