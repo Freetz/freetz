@@ -24,9 +24,9 @@ file="${HTML_LANG_MOD_DIR}/system/boxuser_edit.lua"
 if [ -e "$file" ]; then
 	echo2 "patching $file"
 	modsed \
-	  's/rights_checkbox("vpn_access"/disabled__&/' \
+	  's/.*function rights_checkbox(.*)/&\nif which == "vpn_access" then return html.div{} end/' \
 	  "$file" \
-	  "disabled__rights_checkbox"
+	  "then return html.div{} end"
 fi
 
 echo1 "patching rc.conf"
