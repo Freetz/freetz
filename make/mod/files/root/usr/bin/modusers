@@ -1,6 +1,9 @@
 #!/bin/sh
 #save/load users and groups from/to flash (not TFFS)
 
+# shutdown: do nothing
+[ -e /var/run/shutdown ] && exit
+
 SAVE_DIR=/tmp/flash/users
 FILES="passwd group shadow gshadow"
 
