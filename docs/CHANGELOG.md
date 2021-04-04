@@ -53,6 +53,7 @@ Latest changes
    * curl 7.76.0
    * expat 2.3.0
    * haproxy 2.2.13
+   * iperf 3.9
    * libgd 2.3.2
    * mbed TLS 2.7.19/2.26.0
    * minidlna 1.3.0
