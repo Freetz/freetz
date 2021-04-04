@@ -1,0 +1,56 @@
+#!/bin/sh
+#reloads freetz users in /etc/passwd after avm's ctlmgr crippled it with bad cached values
+
+PID_DAEMON='/var/run/modpasswd.pid'
+PID_SCRIPT='/var/run/modpasswd.run'
+
+. /etc/init.d/loglibrc
+log() {
+	loglib_console "MODPASSWD" "$*"
+	echo -e "$(date '+%Y-%m-%d %H:%M:%S') $*" >> /var/log/mod_passwd.log
+}
+
+run() {
+	echo "$$" > "$PID_SCRIPT"
+	inotifyd - /var/tmp/passwd &>/dev/null &
+	local PID="$!"
+	echo "$PID" > "$PID_DAEMON"
+	wait "$PID"
+
+	log "Sleeping"
+	sleep 1
+	log "Running"
+	nohup modusers load 0</dev/null &>/dev/null &
+}
+
+start() {
+	log "Starting"
+	nohup $0 run 0</dev/null &>/dev/null &
+}
+
+stop() {
+	local PID
+	PID="$(cat "$PID_SCRIPT" 2>/dev/null)"
+	kill -0 "$PID" &>/dev/null && kill -9 "$PID" &>/dev/null
+	PID="$(cat "$PID_DAEMON" 2>/dev/null)"
+	kill -0 "$PID" &>/dev/null && kill -9 "$PID" &>/dev/null
+	rm -f "$PID_SCRIPT" "$PID_DAEMON"
+}
+
+case $1 in
+	stop)
+		stop
+		;;
+	start)
+		stop
+		start
+		;;
+	run)
+		run
+		;;
+	*)
+		echo "Usage: $0 [stop|start]" 1>&2
+		exit 1
+		;;
+esac
+
