@@ -4,7 +4,7 @@ eval "$(modcgi oldpassword:password:replay mod_cgi)"
 	echo "$MOD_CGI_OLDPASSWORD"
 	echo "$MOD_CGI_PASSWORD"
 	echo "$MOD_CGI_REPLAY"
-} | modpasswd freetz > /dev/null 2>&1
+} | modwebpw freetz > /dev/null 2>&1
 result=$?
 
 cgi --id=password

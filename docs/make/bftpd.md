@@ -12,7 +12,8 @@ einem Passwort zu schützen, kann man wie folgt vorgehen:
     für den Benutzer ftp ändern:
 
     ``` 
-    modpasswd ftp
+    passwd ftp
+    modsave
     ```
 
 Nun ist der Zugriff auf den FTP Server nur noch als Benutzer ftp mit dem

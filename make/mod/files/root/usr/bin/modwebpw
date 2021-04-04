@@ -1,6 +1,6 @@
 #!/bin/sh
-#
-# Usage: modpasswd freetz
+#Changes the password of the Freetz-Webif
+# Usage: modwebpw freetz
 
 TMP=/var/tmp
 FLASH=$TMP/flash
@@ -34,21 +34,21 @@ case $1 in
 
 		if [ "$passwd1" != "$passwd2" -o -z "$passwd1" ]; then
 			echo 'Passwords do not match or empty password.' 1>&2
-			echo 'modpasswd: The password for freetz webconfig is unchanged.' 1>&2
+			echo 'modwebpw: The password for freetz webconfig is unchanged.' 1>&2
 			echo '' 1>&2
 			exit 1
 		fi
 
 		/usr/bin/modconf set mod MOD_HTTPD_PASSWD=$(/usr/sbin/httpd -m "$passwd1")
 
-		echo 'modpasswd: Password for freetz webconfig changed.'
+		echo 'modwebpw: Password for freetz webconfig changed.'
 		echo ''
 
 		/usr/bin/modconf save mod
 		[ "$2" = "noflash" ] || /usr/bin/modsave flash
 		;;
 	*)
-		echo "Usage: modpasswd freetz" >&2
+		echo "Usage: modwebpw freetz" >&2
 		exit 1
 		;;
 esac
