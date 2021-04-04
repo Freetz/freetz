@@ -81,7 +81,7 @@ int rename(const char *old, const char *new) {
 #ifdef D_RENAME
 	if (strcmp(old, "/var/tmp/passwd.tmp")==0) {
 		debug_printf("(rejected)\n");
-		system("/usr/bin/modusers update");
+		system("/usr/bin/modusers load");
 		return 0;
 	}
 #endif
