@@ -1,0 +1,19 @@
+#!/bin/sh
+# allows changig (deleting) /etc/passwd and saves users temporary
+
+function watchit() {
+	local val=$?
+	modpasswd start
+	exit $val
+}
+
+if [ -x /usr/bin/modpasswd ]; then
+	trap watchit EXIT SIGTERM SIGINT
+	modpasswd stop
+fi
+
+${0##*mod} $@
+ret=$?
+modusers save
+exit $ret
+

@@ -100,14 +100,13 @@ modlib_adduser() {
 	shift
 	grep -q "^$user:" /etc/passwd && return 0
 	echo -n "Creating user '$user' ... "
-	[ -x /usr/bin/modpasswd ] && modpasswd stop
-	local msg="$(adduser $@ $user 2>&1)"
+	local msg="$(modadduser $@ $user 2>&1)"
 	local ret=$?
-	[ -x /usr/bin/modpasswd ] && modpasswd start
-	if [ $ret -eq 0 ]; then
-		echo -n "saving ... "
-		modusers save && echo "done." || echo "failed."
-	else
+#	if [ $ret -eq 0 ]; then
+#		echo -n "saving ... "
+#		modusers save && echo "done." || echo "failed."
+#	else
+	if [ $ret -ne 0 ]; then
 		echo "failed: $msg"
 		exit 1
 	fi
