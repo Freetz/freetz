@@ -12,7 +12,7 @@ log() {
 
 run() {
 	echo "$$" > "$PID_SCRIPT"
-	inotifyd - /var/tmp/passwd &>/dev/null &
+	inotifyd - /var/tmp/passwd:x &>/dev/null &
 	local PID="$!"
 	echo "$PID" > "$PID_DAEMON"
 	wait "$PID"
