@@ -36,7 +36,7 @@ echo "$SYMS" | sed 's/##.*//g' | uniq | while read cat; do
 		C="$(echo "$TMP" | wc -l | sed 's/ .*//')"
 		[ -z "$L" -o -z "$C" ] && echo "nohelp1: $sym" 1>&2 && continue
 		T=$(( $C - $L))
-		N="$(echo "$TMP" | tail -n "$T" | grep -P "^[ \t]*(#|(end)*if|config|bool|string|int|depends on|(end)*menu|comment|menuconfig|(end)*choice|prompt|select|default|source|help)" -n | head -n1 | sed 's/:.*//')"
+		N="$(echo "$TMP" | tail -n "$T" | grep -P "^[ \t]*(#|(end)*if|config|bool|string|int|depends on|(end)*menu|comment|menuconfig|(end)*choice|prompt|select|default|source|help)($|\t| )" -n | head -n1 | sed 's/:.*//')"
 		help="$(echo "$TMP" | tail -n "$T" | head -n "$(( ${N:-99} - 1 ))" | grep -vP '^[ \t]*$' | sed 's/[ \t]*$//g;s/^[ \t]*//g;s/$/ /g' | tr -d '\n' | sed 's/ $//')"
 		[ -z "$help" ] && echo "nohelp2: $sym" 1>&2 && continue
 		echo "    $help"
