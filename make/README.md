@@ -158,7 +158,7 @@ Index:
     Option GlobeTrotter GPRS/EDGE/3G/HSDPA and Vodafone 3G/GPRS datacard control tool. comgt is a scripting language interpreter useful for establishing communications on serial lines and through PCMCIA modems as well as GPRS and 3G datacards.
 
   * **[Cpmaccfg 0.6 (binary only)](../docs/make/cpmaccfg.md)<a id='cpmaccfg'></a>**<br>
-    With a patched kernel and this tool it is possible to
+    With a patched kernel and this tool it is possible to configure the ADM6996L switch (at least FB 7170, maybe other FBs with 4 LAN ports work too) to support VLANs and/or to split the LAN ports into different subnets. It is also possible to view or set each ports power configuration and to disable auto media detection and to force a given media type for each port (10/100 Mbit, Half-/Full-Duplex). Some features are only available when Replace Kernel is selected. Since version 0.6 cpmaccfg detects the tantos switches used i.e. in F!B 7270. However, since there is not enough documentation (freely) available yet, it is not yet possible to configure this chipset.
      - [cpmaccfg-cgi](../docs/make/cpmaccfg.md#cpmaccfg-cgi)
 
   * **<u>cryptsetup 1.7.5 (binary only)</u><a id='cryptsetup'></a>**<br>
@@ -279,7 +279,7 @@ Index:
      - [Hilfe für die Konfiguration](../docs/make/emailrelay.md#hilfe-für-die-konfiguration)
 
   * **[Empty 0.6.15b (binary only)](../docs/make/empty.md)<a id='empty'></a>**<br>
-    empty is an utility that provides an interface to execute and/or
+    empty is an utility that provides an interface to execute and/or interact with processes under pseudo-terminal sessions (PTYs). This tool is definitely useful in programming of shell scripts designed to communicate with interactive programs like telnet, ssh, ftp, etc. In some cases, empty can be the simplest replacement for TCL/expect or other similar programming tools.
 
   * **[eSpeak 1.48.04 (binary only)](../docs/make/espeak.md)<a id='espeak'></a>**<br>
     eSpeak is a compact open source software speech synthesizer for English and other languages.
@@ -372,14 +372,16 @@ Index:
     A program for converting text from one encoding to another.
 
   * **<u>ifstat 1.1 (binary only)</u><a id='ifstat'></a>**<br>
+    ifstat is a tool to report network interfaces bandwith just like vmstat/iostat do for other system counters. ifstat gathers these statistics from the kernel internal counters, which is highly operating system dependent. If the net-snmp (or ucd-snmp) library is available, ifstat can use it to gather statistics from remote equipments (hosts, routers, switches...) or even the local host if a SNMP daemon is running. ifstat's functionnalities can also be included in a static library for use in other applications. To use it, you just have to pass --enable-library while configuring ifstat WWW: http://gael.roualland.free.fr/ifstat/
 
   * **<u>iftop 0.17 (binary only)</u><a id='iftop'></a>**<br>
+    iftop does for network usage what top(1) does for CPU usage. It listens to network traffic on a named interface and displays a table of current bandwidth usage by pairs of hosts. Handy for answering the question "why is our ADSL link so slow?". WWW: http://www.ex-parrot.com/pdw/iftop/
 
   * **[igmpproxy 0.1](../docs/make/igmpproxy.md)<a id='igmpproxy'></a>**<br>
     IGMPproxy is a simple dynamic Multicast Routing Daemon using only IGMP signalling. It's intended for simple forwarding of Multicast traffic between networks.
 
   * **<u>ImageMagick 7.0.10-10 (binary only)</u><a id='imagemagick'></a>**<br>
-    ImageMagick is a robust collection of tools and libraries to read, write, and manipulate an image in many image formats, including popular formats like TIFF, JPEG, PNG, PDF, PhotoCD, and GIF. With ImageMagick, you can create images dynamically, making it suitable for Web applications. You can also resize, rotate, sharpen, color-reduce, or add special effects to an image and save your completed work in many different image formats. Image processing operations are available from the command line as well as through C, C++, and PERL-based programming
+    ImageMagick is a robust collection of tools and libraries to read, write, and manipulate an image in many image formats, including popular formats like TIFF, JPEG, PNG, PDF, PhotoCD, and GIF. With ImageMagick, you can create images dynamically, making it suitable for Web applications. You can also resize, rotate, sharpen, color-reduce, or add special effects to an image and save your completed work in many different image formats. Image processing operations are available from the command line as well as through C, C++, and PERL-based programming interfaces.
 
   * **[Inadyn-mt 02.28.10](../docs/make/inadyn-mt.md)<a id='inadyn-mt'></a>**<br>
     INADYN-MT - Simple Dynamic DNS client. INADYN-MT is a free DynDNS client. It gives the possibility to have your own fixed hostname registered on the internet, although your IP might be changing. It checks periodically whether the IP address stored by the DNS server is the real current IP address of the machine that is running INADYN.
@@ -423,7 +425,7 @@ Index:
 ### J
 
   * **[JamVM 1.5.4 (binary only)](../docs/make/jamvm.md)<a id='jamvm'></a>**<br>
-    JamVM - extremely small Java VM JamVM is a new Java Virtual Machine which conforms to the JVM specification version 2 (blue book). In comparison to most other VM's (free and commercial) it is extremely small, with a stripped executable on PowerPC of only ~160K, and Intel 140K. However, unlike other small VMs (e.g. KVM) it is designed to support the full specification, and includes support for object finalisation, Soft/Weak/Phantom References, class-unloading, the Java Native Interface (JNI) and the Reflection API. Class Libraries: JamVM is designed to use the GNU Classpath Java class library. A number of classes are reference classes which must be modified for a particular VM. These are provided along with JamVM (see INSTALL). JamVM should always work with the latest development snapshot of Classpath (currently 0.93). It should also work with the latest version direct from CVS, and the upcoming 0.94 snapshot (but check the Classpath mailing lists for possible patches). Later snapshots of Classpath may also work, if no modifications have been made to the VM
+    JamVM - extremely small Java VM JamVM is a new Java Virtual Machine which conforms to the JVM specification version 2 (blue book). In comparison to most other VM's (free and commercial) it is extremely small, with a stripped executable on PowerPC of only ~160K, and Intel 140K. However, unlike other small VMs (e.g. KVM) it is designed to support the full specification, and includes support for object finalisation, Soft/Weak/Phantom References, class-unloading, the Java Native Interface (JNI) and the Reflection API. Class Libraries: JamVM is designed to use the GNU Classpath Java class library. A number of classes are reference classes which must be modified for a particular VM. These are provided along with JamVM (see INSTALL). JamVM should always work with the latest development snapshot of Classpath (currently 0.93). It should also work with the latest version direct from CVS, and the upcoming 0.94 snapshot (but check the Classpath mailing lists for possible patches). Later snapshots of Classpath may also work, if no modifications have been made to the VM interface. Note, JamVM will not work with the class library from Sun or IBM's Virtual Machines.
 
   * **<u>jq 1.6 (binary only)</u><a id='jq'></a>**<br>
     jq is a lightweight and flexible command-line JSON processor.
@@ -448,7 +450,7 @@ Index:
     LFTP is sophisticated file transfer program with command line interface. It supports FTP, HTTP, FISH, SFTP, HTTPS and FTPS protocols. GNU Readline library is used for input.
 
   * **[lighttpd 1.4.59](../docs/make/lighttpd.md)<a id='lighttpd'></a>**<br>
-    Security, speed, compliance, and flexibility -- all of these describe lighttpd (pron. lighty) which is rapidly redefining efficiency of a webserver; as it is designed and optimized for high performance environments. With a small memory footprint compared to other web-servers, effective management of the cpu-load, and advanced feature set (FastCGI, SCGI, Auth, Output-Compression, URL-Rewriting and many more) lighttpd is the perfect solution for every server that is suffering load problems. In case you want to configure virtual hosts, you may want to consider the package onlinechanged-cgi which allows you to
+    Security, speed, compliance, and flexibility -- all of these describe lighttpd (pron. lighty) which is rapidly redefining efficiency of a webserver; as it is designed and optimized for high performance environments. With a small memory footprint compared to other web-servers, effective management of the cpu-load, and advanced feature set (FastCGI, SCGI, Auth, Output-Compression, URL-Rewriting and many more) lighttpd is the perfect solution for every server that is suffering load problems. In case you want to configure virtual hosts, you may want to consider the package onlinechanged-cgi which allows you to configure multiple DynDNS entries for your box.
      - [Einrichtung](../docs/make/lighttpd.md#einrichtung)
      - [Perl](../docs/make/lighttpd.md#perl)
 
@@ -523,7 +525,7 @@ Index:
     A netcat clone with ipv6 support.
 
   * **[ncftp 3.2.6 (binaries only)](../docs/make/ncftp.md)<a id='ncftp'></a>**<br>
-    NcFTP is a free program that use the File Transfer Protocol. The purpose of ncftp is to provide a powerful and flexible
+    NcFTP is a free program that use the File Transfer Protocol. The purpose of ncftp is to provide a powerful and flexible interface to the Internet standard File Transfer Protocol. Although the program appears to be rather spartan, you'll find that ncftp has a wealth of valuable performance and usage features. The program was designed with an emphasis on usability, and it does as much as it can for you automatically so you can do what you expect to do with a file transfer program, which is transfer files between two interconnected systems. WWW: http://www.ncftp.com/ncftp/
      - [Was ist NcFTP?](../docs/make/ncftp.md#was-ist-ncftp)
      - [Wozu kann NcFTP benutzt werden?](../docs/make/ncftp.md#wozu-kann-ncftp-benutzt-werden)
      - [Wie installiere ich NcFTP?](../docs/make/ncftp.md#wie-installiere-ich-ncftp)
@@ -557,7 +559,7 @@ Index:
      - [MGTG as a service](../docs/make/netsnmp.md#mgtg-as-a-service)
 
   * **<u>nfsroot: NFS-root 0.1</u><a id='nfsroot'></a>**<br>
-    Mount a remote filesystem (fs) from an NFS server and use it as a root fs which is fully writable and basically unlimited in size. The Linux kernel will still be loaded from your box and during the first phase of the init process the SquashFS on the box is still used, but after the NFS-root is mounted, we pivot_root into it and it becomes the new root fs. The read-only fs on the box can still be accessed under /oldroot, but is absolutely not necessary anymore after pivot_root. Having said that, it should be clear that the remote folder to be mounted should contain everything necessary to run the box. Usually you just create a full copy of a target fs (e.g. from build/modified/filesystem or from an unpacked firmware image) and start modifying it as needed. The binaries (kernel modules, executables, shared libraries) used therein just have to fit the kernel installed on the box. Note: The mini_fo overlay filesystem will not be used if an NFS-root was mounted first (see mini_fo package). Still, both packages can be installed at the same time, because mini_fo is still useful if NFS-root is decativated. Note: This package needs "replace kernel" because a kernel patch is necessary to make the 'nfsroot' bootloader environment variable usable for our purpose. So, if if "replace kernel" is inactive, you will not see this package in
+    Mount a remote filesystem (fs) from an NFS server and use it as a root fs which is fully writable and basically unlimited in size. The Linux kernel will still be loaded from your box and during the first phase of the init process the SquashFS on the box is still used, but after the NFS-root is mounted, we pivot_root into it and it becomes the new root fs. The read-only fs on the box can still be accessed under /oldroot, but is absolutely not necessary anymore after pivot_root. Having said that, it should be clear that the remote folder to be mounted should contain everything necessary to run the box. Usually you just create a full copy of a target fs (e.g. from build/modified/filesystem or from an unpacked firmware image) and start modifying it as needed. The binaries (kernel modules, executables, shared libraries) used therein just have to fit the kernel installed on the box. Note: The mini_fo overlay filesystem will not be used if an NFS-root was mounted first (see mini_fo package). Still, both packages can be installed at the same time, because mini_fo is still useful if NFS-root is decativated. Note: This package needs "replace kernel" because a kernel patch is necessary to make the 'nfsroot' bootloader environment variable usable for our purpose. So, if if "replace kernel" is inactive, you will not see this package in menuconfig. Note: There currently is no web interface for this package, because an NFS-root is an expert thing anyway. The command-line interface and help screen of /etc/init.d/rc.nfs makes it pretty easy to (de-)activate and configure the functionality of this package. As configuration data are stored in bootloader environment rather than in TFFS like for other packages, this package is special anyway.
 
   * **[nfs-utils 1.3.4 (binary only)](../docs/make/nfs-utils.md)<a id='nfs-utils'></a>**<br>
     Linux NFS utility package Select nfsd-cgi if you want a configuration web interface. If this does not work, enable replace-kernel!
@@ -787,7 +789,7 @@ Index:
     rtmpdump is a toolkit for RTMP streams. All forms of RTMP are supported, including rtmp://, rtmpt://, rtmpe://, rtmpte://, and rtmps://.
 
   * **<u>Rush 1.7 (binary only)</u><a id='rush'></a>**<br>
-    GNU Rush is a Restricted User Shell, designed for sites providing limited remote access to their resources, such as, for example, savannah.gnu.org. Its main program, rush, is
+    GNU Rush is a Restricted User Shell, designed for sites providing limited remote access to their resources, such as, for example, savannah.gnu.org. Its main program, rush, is configured as a user login shell for users that are allowed only remote access to the machine. Using a flexible configuration file, GNU Rush gives administrator complete control over the command lines that users execute, and allows to tune the usage of system resources, such as virtual memory, CPU time, etc. on a per-user basis. http://puszcza.gnu.org.ua/software/rush/
 
 ### S
 
@@ -835,7 +837,7 @@ Index:
      - [Weitere Screenshots](../docs/make/sispmctl.md#weitere-screenshots)
 
   * **<u>slang: S-Lang 2.3.1a (binary only)</u><a id='slang'></a>**<br>
-    S-Lang is a powerful interpreted language that may be embedded
+    S-Lang is a powerful interpreted language that may be embedded into an application to make the application extensible. Note: at the moment this options causes only libslang to be included in the image, i.e. S-Lang shell support is disabled.
 
   * **<u>Slurm 0.3.3 (binary only)</u><a id='slurm'></a>**<br>
     slurm - yet another network load monitor slurm started as a FreeBSD port of the Linux ppp link monitor called pppstatus by Gabriel Montenegro. features: - "realtime" traffic statistics - three graph modes: combined RX and TX and two split views - can monitor any network device - curses ascii graphics
@@ -1048,7 +1050,7 @@ Index:
     Xpdf is an open source viewer for Portable Document Format (PDF) files. (These are also sometimes also called 'Acrobat' files, from the name of Adobe's PDF software.) The Xpdf project also includes a PDF text extractor, PDF-to-PostScript converter, and various other utilities. This packages includes only the non-X utilities.
 
   * **[Xrelayd 0.2.1pre2](../docs/make/xrelayd.md)<a id='xrelayd'></a>**<br>
-    SSL tunnel based on PolarSSL. Xrelayd is a stripped down version of stunnel based on PolarSSL library. Essentially, this package makes your router's websrv or httpd SSL-enabled, offering you the option of remote
+    SSL tunnel based on PolarSSL. Xrelayd is a stripped down version of stunnel based on PolarSSL library. Essentially, this package makes your router's websrv or httpd SSL-enabled, offering you the option of remote configuration via WWW or secure remote use of features like Rudi-Shell.
      - [Konfiguration](../docs/make/xrelayd.md#konfiguration)
      - [Zertifikate auf der Box erzeugen](../docs/make/xrelayd.md#zertifikate-auf-der-box-erzeugen)
 
@@ -1087,7 +1089,7 @@ Index:
      - [Benutzung](../docs/make/nano-shell.md#benutzung)
 
   * **[pciutils 3.1.7 (binary only)](../docs/make/pciutils.md)<a id='pciutils'></a>**<br>
-    The PCI Utilities are a collection of programs for inspecting and manipulating configuration of PCI devices, all based on a common portable library libpci which offers access to the PCI
+    The PCI Utilities are a collection of programs for inspecting and manipulating configuration of PCI devices, all based on a common portable library libpci which offers access to the PCI configuration space on a variety of operating systems. lspci displays detailed information about all PCI buses and devices in the system. setpci allows reading from and writing to PCI device configuration registers. For example, you can adjust the latency timers with it.
 
   * **[strace 4.9/5.0 (binary only)](../docs/make/strace.md)<a id='strace'></a>**<br>
     strace - trace system calls and signals strace is a system call tracer, i.e. a debugging tool which prints out a trace of all the system calls made by a another process/program.
@@ -1165,11 +1167,11 @@ Index:
     Squid is a caching proxy for the Web supporting HTTP, HTTPS, FTP, and more. It reduces bandwidth and improves response times by caching and reusing frequently-requested web pages. Squid has extensive access controls and makes a great server accelerator.
 
   * **[usbip: USB/IP 0.1.8](../docs/make/usbip.md)<a id='usbip'></a>**<br>
-    USB/IP Project aims to develop a general USB device sharing system over IP network. To share USB devices between computers with their full functionality, USB/IP encapsulates "USB I/O messages"
+    USB/IP Project aims to develop a general USB device sharing system over IP network. To share USB devices between computers with their full functionality, USB/IP encapsulates "USB I/O messages" into IP packets and transmits them between computers. If you plan to share a printer with this package, consider to remove AVM's printserv, but not the usblp kernel module.
      - [Verwendete Bibliotheken](../docs/make/usbip.md#verwendete-bibliotheken)
 
   * **[usbroot: USB root 0.2](../docs/make/usbroot.md)<a id='usbroot'></a>**<br>
-    Mount an ext{2,3} filesystem (fs) from an USB stick and use it as root fs which may be fully writable and basically unlimited in size. The Linux kernel will still be loaded from your box and during the first phase of the init process the SquashFS on the box is still used, but after the USB root is mounted, we pivot_root into it and it becomes the new root fs. The default is to unmount the read-only fs on the box to conserve memory, but if desired, it can be still be accessed under /oldroot (though this is absolutely not necessary anymore after pivot_root). Having said that, it should be clear that the usb stick should contain everything necessary to run the box. Usually you just create a full copy of a target filesystem (e.g. from build/modified/filesystem or from an unpacked firmware image) and start modifying it as needed. The binaries (kernel modules, executables, shared libraries) used therein just have to fit the kernel installed on the box. Note: The webinterface makes it pretty easy to (de-)activate and
+    Mount an ext{2,3} filesystem (fs) from an USB stick and use it as root fs which may be fully writable and basically unlimited in size. The Linux kernel will still be loaded from your box and during the first phase of the init process the SquashFS on the box is still used, but after the USB root is mounted, we pivot_root into it and it becomes the new root fs. The default is to unmount the read-only fs on the box to conserve memory, but if desired, it can be still be accessed under /oldroot (though this is absolutely not necessary anymore after pivot_root). Having said that, it should be clear that the usb stick should contain everything necessary to run the box. Usually you just create a full copy of a target filesystem (e.g. from build/modified/filesystem or from an unpacked firmware image) and start modifying it as needed. The binaries (kernel modules, executables, shared libraries) used therein just have to fit the kernel installed on the box. Note: The webinterface makes it pretty easy to (de-)activate and configure the functionality of this package. However, USB root is an expert thing! See also the help screen of /etc/init.d/rc.usbroot for further description. As some config data is stored in bootloader environment, this package is special anyway.
      - [Vorteile](../docs/make/usbroot.md#vorteile)
      - [Konfiguration und Kompilierung](../docs/make/usbroot.md#konfiguration-und-kompilierung)
      - [Packen, kopieren auf die Fritz!Box und entpacken](../docs/make/usbroot.md#packen-kopieren-auf-die-fritzbox-und-entpacken)
@@ -1218,7 +1220,7 @@ Index:
      - [Deprecated?](../docs/make/avm-rules.md#deprecated)
 
   * **<u>Cpmaccfg CGI 1.0</u><a id='cpmaccfg'></a>**<br>
-    Configuration front-end to cpmaccfg This frontend shows the current settings of the LAN ports and gives a very simple way to set VLAN, portmode and WLAN assigment. Additional to this, you can set IP addresses for the VLAN
+    Configuration front-end to cpmaccfg This frontend shows the current settings of the LAN ports and gives a very simple way to set VLAN, portmode and WLAN assigment. Additional to this, you can set IP addresses for the VLAN interfaces eth0-eth3 if needed.
 
   * **[dnsd-cgi](../docs/make/dnsd-cgi.md)<a id='dnsd'></a>**<br>
     WebIF for dnsd (busybox applet)
