@@ -1,5 +1,5 @@
-pkg_pre_save() 
-{
+
+pkg_pre_save() {
 	[ -f /mod/etc/conf/radvd.cfg ] && . /mod/etc/conf/radvd.cfg
 
 	old_address=$RADVD_ADDRESS
@@ -11,3 +11,8 @@ pkg_pre_save()
 		/mod/etc/init.d/rc.radvd remove
 	fi
 }
+
+pkg_pre_def() {
+	/mod/etc/init.d/rc.radvd remove
+}
+

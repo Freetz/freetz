@@ -1,5 +1,5 @@
-pkg_post_save()
-{
+
+pkg_post_save() {
 	[ -f /mod/etc/conf/usbroot.cfg ] && . /mod/etc/conf/usbroot.cfg
 
 	if [ "$USBROOT_ENABLED" == "yes" ]; then
@@ -25,8 +25,9 @@ pkg_post_save()
 		echo 'done.'
 	fi
 }
-pkg_post_def()
-{
+
+pkg_post_def() {
 	/mod/etc/init.d/rc.usbroot off
 	/mod/etc/init.d/rc.usbroot nostore
 }
+

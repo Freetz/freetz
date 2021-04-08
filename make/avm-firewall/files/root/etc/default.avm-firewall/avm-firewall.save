@@ -1,15 +1,17 @@
-pkg_apply_save()
-{
+
+rc_status() { :; }
+
+apply_changes() { :; }
+
+pkg_apply_save() {
 	/mod/etc/init.d/rc.avm-firewall save
 }
 
-pkg_apply_def()
-{
+pkg_apply_def() {
 	/mod/etc/init.d/rc.avm-firewall save defaults_restored
 }
 
-pkg_post_save()
-{
+pkg_post_save() {
 	[ -f /mod/etc/conf/avm-firewall.cfg ] && . /mod/etc/conf/avm-firewall.cfg
 	if echo "$AVM_FIREWALL_DO_ACTIVATE" | grep -q dsld; then
 		[ "$AVM_FIREWALL_LOG_DROPPED" != "yes" ] && LOGD="-n" || LOGD=""
@@ -29,6 +31,3 @@ pkg_post_save()
 	fi
 }
 
-rc_status() { :; }
-
-apply_changes() { :; }

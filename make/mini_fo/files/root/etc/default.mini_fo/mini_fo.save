@@ -1,5 +1,5 @@
-pkg_pre_save() 
-{
+
+pkg_pre_save() {
 	oldstorage=$(/mod/etc/init.d/rc.mini_fo store | sed -e "s/mini_fo=//")
 	oldboot=$(/mod/etc/init.d/rc.mini_fo bootstatus)
 	vars=$(modcgi "boot:storage")
@@ -21,8 +21,9 @@ pkg_pre_save()
 		fi
 	fi
 }
-pkg_pre_def() 
-{
+
+pkg_pre_def() {
 	/mod/etc/init.d/rc.mini_fo nostore
 	/mod/etc/init.d/rc.mini_fo off
 }
+
