@@ -117,12 +117,18 @@ else
 fi
 
 # default functions for $package.save
+#apply
 pkg_pre_save() { :; }
 pkg_apply_save() { :; }
 pkg_post_save() { :; }
+#default
 pkg_pre_def() { :; }
 pkg_apply_def() { :; }
 pkg_post_def() { :; }
+#both
+pkg_pre() { pkg_pre_$1; }
+pkg_apply() { pkg_apply_$1; }
+pkg_post() { pkg_post_$1; }
 
 # load package's implementation of these functions
 if [ -r "/mod/etc/default.$package/$package.save" ]; then
@@ -161,7 +167,7 @@ if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
 	fi
 fi
 
-pkg_pre_$hook | html | highlight
+pkg_pre $hook | html | highlight
 
 if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
 	apply_changes stop "$package"
@@ -181,14 +187,13 @@ if [ -r "/mod/etc/default.$package/$package.cfg" ]; then
 	echo
 	{
 		apply_changes start "$package"
-		pkg_apply_$hook
+		pkg_apply $hook
 		echo
 		modsave flash
 	} | html
 fi | while read line; do echo $line | highlight; done
 
-
-pkg_post_$hook | html | highlight
+pkg_post $hook | html | highlight
 
 echo '</pre>'
 
