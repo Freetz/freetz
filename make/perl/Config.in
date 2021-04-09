@@ -1,0 +1,309 @@
+config FREETZ_PACKAGE_PERL
+	bool "perl 5.27.5 (binary only)"
+	default n
+	help
+		Perl without operating-specific functions such as readdir.
+
+config FREETZ_PACKAGE_PERL_VERSION
+	string "perl version"
+	default "5.27.5"
+	depends on FREETZ_PACKAGE_PERL
+	help
+		Version string to be used: 5.24.3 5.26.1 5.27.5
+
+config FREETZ_PACKAGE_PERL_MODULES
+	string "perl modules"
+	default ""
+	depends on FREETZ_PACKAGE_PERL
+	help
+		List of perl modules to copy to the rootfs.
+		E.g.
+		warnings.pm warnings/register.pm strict.pm constant.pm vars.pm
+		Exporter.pm Exporter/Heavy.pm Carp.pm Getopt/Long.pm
+
+config FREETZ_PACKAGE_PERL_PREFIX
+	string "Install prefix for perl"
+	depends on FREETZ_PACKAGE_PERL
+	default "/usr"       if  FREETZ_PACKAGE_PERL
+
+menu "Modules"
+depends on FREETZ_PACKAGE_PERL
+
+config FREETZ_PACKAGE_PERL_ADDITIONAL_EXTRA_MODULES
+	string "cpan extra modules"
+	default ""
+	depends on FREETZ_PACKAGE_PERL
+	help
+		List of extra perl modules from CPAN.
+		E.g.
+		Modul::Name
+		
+config FREETZ_PACKAGE_PERL_PODSIMPLE
+	bool "add module Pod::Simple"
+	depends on FREETZ_PACKAGE_PERL
+	default y
+	help
+		Pod::Simple - framework for parsing Pod
+
+config FREETZ_PACKAGE_PERL_IOSOCKETIP
+	bool "add module IO::Socket::IP"
+	depends on FREETZ_PACKAGE_PERL
+	default y
+	help
+		IO::Socket::IP - Family-neutral IP socket supporting both IPv4 and IPv6
+
+config FREETZ_PACKAGE_PERL_LOCALECODES
+	bool "add module Locale::Codes"
+	depends on FREETZ_PACKAGE_PERL
+	default y
+	help
+		Locale::Codes - a distribution of modules to handle locale codes
+
+config FREETZ_PACKAGE_PERL_NETSSLEY
+	bool "add module Net::SSLEY"
+	depends on FREETZ_PACKAGE_PERL
+	select FREETZ_PACKAGE_OPENSSL
+	default y
+	help
+		Add Net:SSLEY -- High level functions for accessing web servers
+
+config FREETZ_PACKAGE_PERL_IOSOCKETSSL
+	bool "add module IO::Socket::SSL"
+	depends on FREETZ_PACKAGE_PERL
+	select FREETZ_PACKAGE_OPENSSL
+	default y
+	help
+		Add IO::Socket::SSL -- Nearly transparent SSL encapsulation for IO::Socket::INET.
+
+config FREETZ_PACKAGE_PERL_DBI
+	bool "add module DBI"
+	depends on FREETZ_PACKAGE_PERL
+	select FREETZ_PACKAGE_SQLITE
+	default y
+	help
+		Add DBI - Database independent interface for Perl.
+
+config FREETZ_PACKAGE_PERL_DBDSQLITE
+	bool "add module DBD-SQLite"
+	depends on FREETZ_PACKAGE_PERL
+	select FREETZ_PACKAGE_SQLITE
+	default y
+	help
+		Add DBD-SQLite - Self-contained RDBMS in a DBI Driver.
+
+config FREETZ_PACKAGE_PERL_URIESCAPE
+	bool "add module URI::Escape"
+	depends on FREETZ_PACKAGE_PERL
+	default y
+	help
+		URI::Escape - Percent-encode and percent-decode unsafe characters.
+
+config FREETZ_PACKAGE_PERL_IOINTERFACE
+	bool "add module IO::Interface"
+	depends on FREETZ_PACKAGE_PERL
+	default y
+	help
+		IO::Interface - Perl extension for access to network card configuration information
+
+config FREETZ_PACKAGE_PERL_HTMLPARSER
+	bool "add module HTML-Parser"
+	depends on FREETZ_PACKAGE_PERL
+	default y
+	help
+		HTML-Parser - distribution is is a collection of modules that parse and extract information from HTML documents
+
+config FREETZ_PACKAGE_PERL_XMLSIMPLE
+	bool "add module XML::Simple"
+	depends on FREETZ_PACKAGE_PERL
+	select FREETZ_PACKAGE_PERL_SCALARLISTUTILS
+	select FREETZ_PACKAGE_PERL_XMLSAX
+	select FREETZ_PACKAGE_PERL_XMLSAXEXPAT
+	default y
+	help
+		XML::Simple - An API for simple XML files 
+
+config FREETZ_PACKAGE_PERL_XMLSAXBASE
+	bool "add module XML::SAX::Base"
+	depends on FREETZ_PACKAGE_PERL
+	default y
+	help
+		XML::SAX::Base - Base class SAX Drivers and Filters 
+
+config FREETZ_PACKAGE_PERL_XMLNAMESPACESUPPORT
+	bool "add module XML::NamespaceSupport"
+	depends on FREETZ_PACKAGE_PERL
+	default y
+	help
+		XML::NamespaceSupport - A simple generic namespace processor
+
+config FREETZ_PACKAGE_PERL_XMLSAX
+	bool "add module XML::SAX"
+	depends on FREETZ_PACKAGE_PERL
+	select FREETZ_PACKAGE_PERL_XMLSAXBASE
+	select FREETZ_PACKAGE_PERL_XMLNAMESPACESUPPORT
+	default y
+	help
+		XML::SAX - Simple API for XML
+
+config FREETZ_PACKAGE_PERL_XMLPARSER
+	bool "add module XML::Parser"
+	depends on FREETZ_PACKAGE_PERL
+	select FREETZ_PACKAGE_PERL_XMLSAXEXPAT
+	default y
+	help
+		XML::Parser - A perl module for parsing XML documents
+
+config FREETZ_PACKAGE_PERL_XMLSAXEXPAT
+	bool "add module XML::SAX::Expat"
+	depends on FREETZ_PACKAGE_PERL
+	default y
+	help
+		XML::SAX::Expat - SAX2 Driver for Expat (XML::Parser)
+
+config FREETZ_PACKAGE_PERL_SCALARLISTUTILS
+	bool "add module Scalar-List-Utils"
+	depends on FREETZ_PACKAGE_PERL
+	default y
+	help
+		Scalar-List-Utils - This package contains a selection of subroutines that people have
+                expressed would be nice to have in the perl core.
+                
+config FREETZ_PACKAGE_PERL_DATAUUID
+	bool "add module Data::UUID"
+	depends on FREETZ_PACKAGE_PERL
+	default y
+	help
+                Data::UUID - Globally/Universally Unique Identifiers (GUIDs/UUIDs)
+                
+config FREETZ_PACKAGE_PERL_LIBWWWPERL
+	bool "add module libwww-perl"
+	depends on FREETZ_PACKAGE_PERL
+	select FREETZ_PACKAGE_PERL_HTTPCOOKIES
+	select FREETZ_PACKAGE_PERL_HTTPMESSAGE
+	select FREETZ_PACKAGE_PERL_HTTPDATE
+	select FREETZ_PACKAGE_PERL_TRYTINY
+	select FREETZ_PACKAGE_PERL_HTTPDAEMON
+	select FREETZ_PACKAGE_PERL_IOHTML
+	select FREETZ_PACKAGE_PERL_NETHTTP
+	select FREETZ_PACKAGE_PERL_HTTPNEGOTIATE
+	default y
+	help
+                libwww-perl - The World-Wide Web library for Perl 
+
+config FREETZ_PACKAGE_PERL_HTTPCOOKIES
+	bool "add module HTTP::Cookies"
+	depends on FREETZ_PACKAGE_PERL
+	default y
+	help
+                 HTTP::Cookies - HTTP cookie jars
+
+config FREETZ_PACKAGE_PERL_IOHTML
+	bool "add module IO::HTML"
+	depends on FREETZ_PACKAGE_PERL
+	default y
+	help
+                 IO::HTML - Open an HTML file with automatic charset detection
+
+config FREETZ_PACKAGE_PERL_HTTPNEGOTIATE
+	bool "add module HTTP::Negotiate"
+	depends on FREETZ_PACKAGE_PERL
+	default y
+	help
+                 HTTP::Negotiate - choose a variant to serve
+
+config FREETZ_PACKAGE_PERL_NETHTTP
+	bool "add module Net::HTTP"
+	depends on FREETZ_PACKAGE_PERL
+	default y
+	help
+                 Net::HTTP - Low-level HTTP connection (client)
+
+config FREETZ_PACKAGE_PERL_HTTPMESSAGE
+	bool "add module HTTP::Message"
+	depends on FREETZ_PACKAGE_PERL
+	default y
+	help
+                 HTTP::Message - HTTP style message (base class)
+
+config FREETZ_PACKAGE_PERL_HTTPDATE
+	bool "add module HTTP::Date"
+	depends on FREETZ_PACKAGE_PERL
+	default y
+	help
+                 HTTP::Date - date conversion routines
+
+config FREETZ_PACKAGE_PERL_TRYTINY
+	bool "add module Try::Tiny"
+	depends on FREETZ_PACKAGE_PERL
+	default y
+	help
+                 Try::Tiny - Minimal try/catch with proper preservation of $@
+
+config FREETZ_PACKAGE_PERL_HTTPDAEMON
+	bool "add module HTTP::Daemon"
+	depends on FREETZ_PACKAGE_PERL
+	select FREETZ_PACKAGE_PERL_LWPMEDIATYPES
+	default y
+	help
+                 HTTP::Daemon - a simple http server class
+
+config FREETZ_PACKAGE_PERL_LWPMEDIATYPES
+	bool "add module LWP::MediaTypes"
+	depends on FREETZ_PACKAGE_PERL
+	default y
+	help
+                 LWP::MediaTypes - guess media type for a file or a URL
+
+config FREETZ_PACKAGE_PERL_SOAPLITE
+	bool "add module SOAP::Lite"
+	depends on FREETZ_PACKAGE_PERL
+	select FREETZ_PACKAGE_PERL_CLASSINSPECTOR
+	default y
+	help
+                 SOAP::Lite - Perl's Web Services Toolkit 
+
+config FREETZ_PACKAGE_PERL_CLASSINSPECTOR
+	bool "add module Class::Inspector"
+	depends on FREETZ_PACKAGE_PERL
+	default y
+	help
+                 Class::Inspector - Get information about a class and its structure
+
+config FREETZ_PACKAGE_PERL_XMLPARSERLITE
+	bool "add module XML::Parser::Lite"
+	depends on FREETZ_PACKAGE_PERL
+	default y
+	help
+                 XML::Parser::Lite - Lightweight pure-perl XML Parser (based on regexps)
+
+config FREETZ_PACKAGE_PERL_CRYPTRIJNDAEL
+	bool "add module Crypt::Rijndael"
+	depends on FREETZ_PACKAGE_PERL
+	default y
+	help
+                 Crypt::Rijndael - Crypt::CBC compliant Rijndael encryption module
+
+config FREETZ_PACKAGE_PERL_NETTELNET
+	bool "add module Net::Telnet"
+	depends on FREETZ_PACKAGE_PERL
+	default y
+	help
+                 Net::Telnet - interact with TELNET port or other TCP ports
+
+config FREETZ_PACKAGE_PERL_ENCODELOCALE
+	bool "add module Encode::Locale"
+	depends on FREETZ_PACKAGE_PERL
+	default y
+	help
+                 Encode::Locale - Determine the locale encoding
+
+config FREETZ_PACKAGE_PERL_CRYPTCBC
+	bool "add module Crypt::CBC and Crypt::OpenSSL::AES"
+	depends on FREETZ_PACKAGE_PERL
+	select FREETZ_PACKAGE_OPENSSL
+	default y
+	help
+                 Crypt::CBC - Encrypt Data with Cipher Block Chaining Mode
+                 Crypt::OpenSSL::AES - A Perl wrapper around OpenSSL's AES library
+
+endmenu

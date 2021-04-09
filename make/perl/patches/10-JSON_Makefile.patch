@@ -1,0 +1,31 @@
+--- /dev/null
++++ JSON_Makefile.PL
+@@ -0,0 +1,28 @@
++require 5.00503;
++use strict;
++use ExtUtils::MakeMaker;
++
++use vars qw($Bin $Script);
++BEGIN {
++    my $pos = rindex $0, '/';
++    $pos = rindex $0, "\\" if $pos == -1;
++    if ($pos != -1) {
++        $Bin = substr($0, 0, $pos);
++        $Script = substr($0, $pos+1);
++    }
++    else {
++        $Bin = '.';
++        $Script = $0;
++    }
++}
++
++$| = 1;
++
++$ENV{PERL_JSON_BACKEND} = 'JSON::backportPP';
++
++WriteMakefile(
++    'NAME'          => 'JSON',
++    'VERSION_FROM'  => 'lib/JSON.pm', # finds $VERSION
++    'ABSTRACT_FROM' => 'lib/JSON.pm', # retrieve abstract from module
++    'AUTHOR' => 'Makamaka Hannyaharamitu, E<lt>makamaka[at]cpan.orgE<gt>',
++);

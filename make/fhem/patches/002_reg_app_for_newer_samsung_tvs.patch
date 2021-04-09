@@ -1,0 +1,173 @@
+--- regapp.pl	2018-04-07 09:00:44.818539700 +0200
++++ regapp.pl	2018-03-30 21:48:03.407893139 +0200
+@@ -0,0 +1,170 @@
++#!/usr/bin/perl
++
++# masterray57@gmail.com 01/2018
++
++use strict;
++use warnings;
++
++use JSON;
++use IO::Socket::INET;
++use Time::HiRes qw(gettimeofday);
++
++use constant DEBUG => 0;
++
++#=== Change here ====================================================================
++my $tv_address = 'XXX.XXX.XXX.XXX';
++my $tv_port    = '8080';
++my $device_id  = '471147';
++my $app_id     = 'com.samsung.companion';
++#====================================================================================
++
++my $external_server = 'https://34.210.190.209:5443'; # ec2-34-210-190-209.us-west-2.compute.amazonaws.com
++my %external_header = (
++	'Authorization' => 'Basic b3JjaGVzdHJhdG9yOnBhc3N3b3Jk',
++	'Content-Type'  => 'application/json',
++	'User-Agent'    => 'Remotie%202/1 CFNetwork/893.7 Darwin/17.3.0'
++	);
++	
++my %json_header = (
++	'Content-Type'  => 'application/json',
++	);
++
++my $res;
++
++### STEP 0 START
++	my $step0_pin_url = "http://$tv_address:$tv_port/ws/apps/CloudPINPage";
++	$res = HTTP_Request ( $step0_pin_url, 'POST', 'pin4', undef, \%json_header );
++	die "STEP 0 POST: Couldn't get the document.\n" unless ($res);
++
++	my $step0_url = "http://$tv_address:$tv_port/ws/pairing?step=0&app_id=$app_id&device_id=$device_id&type=1";
++	$res = HTTP_Request ( $step0_url, 'GET', undef, undef, \%json_header );
++	die "STEP 0 GET: Couldn't get the document.\n" unless ($res);
++	#we can prob ignore this response
++### STEP 0 END
++
++### STEP 1 START
++	print 'Enter TV Pin: '; my $pin = <STDIN>; chomp $pin;
++
++	my %payload = ( 'pin' => $pin, 'payload' => '', 'deviceId' => $device_id );
++	$res = HTTP_Request ( "$external_server/step1", 'POST', encode_json \%payload, undef, \%external_header );
++	die "STEP 1 POST #1: Couldn't get the document.\n" unless ($res);
++
++	my $step1_url = "http://$tv_address:$tv_port/ws/pairing?step=1&app_id=$app_id&device_id=$device_id&type=1";
++	$res = HTTP_Request ( $step1_url, 'POST', $res, undef, \%json_header );
++	die "STEP 1 POST #2: Couldn't get the document.\n" unless ($res);
++### STEP 1 END	
++
++### STEP 2 START
++	$res =~ s/\\"/"/g;
++	%payload = ( 'pin' => $pin, 'payload' => $res, 'deviceId' => $device_id );
++	$res = HTTP_Request ( "$external_server/step2", 'POST', encode_json \%payload, undef, \%external_header );
++	die "STEP 2 POST #1: Couldn't get the document.\n" unless ($res);
++		
++	my $step2_url = "http://$tv_address:$tv_port/ws/pairing?step=2&app_id=$app_id&device_id=$device_id&type=1&request_id=0";
++	$res = HTTP_Request ( $step2_url, 'POST', $res, undef, \%json_header );
++	die "STEP 2 POST #2: Couldn't get the document.\n" unless ($res);
++### STEP 2 END
++
++### STEP 3 START
++	$res =~ s/\\"/"/g; # unescape double quotes
++	%payload = ( 'pin' => $pin, 'payload' => $res, 'deviceId' => $device_id );
++	my $result = HTTP_Request ( "$external_server/step3", 'POST', encode_json \%payload, undef, \%external_header );
++	die "STEP 3 POST #1: Couldn't get the document.\n" unless ($res);
++	
++	my $step3_url = "http://$tv_address:$tv_port/ws/apps/CloudPINPage/run";
++	$res = HTTP_Request ( $step3_url, 'DELETE' );
++	die "STEP 3 DELETE: Couldn't get the document.\n" unless ($res);
++### STEP 3 END
++	
++	open (KEY, '>./samsung_session_key.txt') or die "ERROR cannot open file for output the keys.\n";
++		print KEY "$result\n";
++		print("session key saved to file 'samsung_session_key.txt'\n\n");
++	close (KEY);
++
++
++sub HTTP_Request
++{
++	my ($url, $method, $data, $timeout, $header_ref) = @_;
++	$timeout //= 4.0;
++  
++  	if($method !~ /POST|GET|DELETE/) {
++		print "HTTP_Request $url: wrong method, $method.\n";
++		return undef;
++	}
++  
++	if($url !~ /^(http|https):\/\/([^:\/]+)(:\d+)?(\/.*)$/) {
++		print "HTTP_Request $url: malformed or unsupported URL.\n";
++		return undef;
++	}
++	my ($protocol, $host, $port, $path) = ($1, $2, $3, $4);
++
++	if(defined($port)) {
++		$port =~ s/^://;
++	} else {
++		$port = ($protocol eq "https" ? '443' : '80');
++	}
++	$path //= '/';
++
++	my $conn;
++	if($protocol eq "https") {
++		eval "use IO::Socket::SSL";
++		if($@) {
++			print "$@\n";
++		}
++		else {
++			$conn = IO::Socket::SSL->new(PeerAddr => "$host:$port", Timeout=>$timeout, SSL_verify_mode=>0);
++		}
++	} else {
++		$conn = IO::Socket::INET->new(PeerAddr => "$host:$port", Timeout=>$timeout);
++	}
++
++	if(!$conn) {
++		print "HTTP_Request $host: Can't connect.\n";
++		undef $conn;
++		return undef;
++	}
++	
++	my @header = ();
++	while ( my ($key, $value) = each %{ $header_ref } ) {
++		push @header, $key . ': ' . $value;
++	}
++	
++	$host =~ s/:.*//;
++	my $hdr  = "$method $path HTTP/1.0\r\nHost: $host\r\n";
++	   $hdr .= 'Content-Length: ' . length($data) . "\r\n" if($data);
++	   $hdr .= join("\r\n", @header) if (@header);
++	   $hdr .= "\r\n\r\n"; 
++	
++	syswrite $conn, $hdr;
++	syswrite $conn, $data if ($data);
++	shutdown $conn, 1; # writing data stopped
++
++	my ($buf, $ret) = ('', ''); 
++	$conn->timeout($timeout);
++	for(;;) {
++		my ($rout, $rin) = ('', '');
++		vec($rin, $conn->fileno(), 1) = 1;
++		my $nfound = select($rout=$rin, undef, undef, $timeout);
++		if($nfound <= 0) {
++		  print "HTTP_Request $url: Select timeout/error: $!\n";
++		  shutdown $conn, 2; undef $conn;
++		  return undef;
++		}
++
++		my $len = sysread($conn, $buf, 65536);
++		last if(!defined($len) || $len <= 0);
++		$ret .= $buf;
++	}
++
++	$ret =~ s/(.*?)\r\n\r\n//s; # Not greedy: switch off the header.
++
++	if(!length($ret)) {
++		@header = split("\r\n", $1);
++		if ($header[0]) {$header[0] =~ /^[^ ]+ ([\d]{3})/; return $1;}
++	}
++	shutdown $conn, 2; undef $conn;
++
++	return $ret;
++}
++
++
