@@ -3,7 +3,7 @@ Author: Adam Conrad <adconrad@ubuntu.com>
 
 --- libfakeroot.c
 +++ libfakeroot.c
-@@ -1587,7 +1587,7 @@
+@@ -1661,7 +1661,7 @@
  #endif /* HAVE_CAPSET */
  
  #if defined(HAVE_SETXATTR) || defined(HAVE_LSETXATTR) || defined(HAVE_FSETXATTR)
@@ -12,7 +12,7 @@ Author: Adam Conrad <adconrad@ubuntu.com>
  {
    xattr_args xattr;
    xattr.name = name;
-@@ -1642,7 +1642,7 @@
+@@ -1716,7 +1716,7 @@
  #endif /* defined(HAVE_LISTXATTR) || defined(HAVE_LLISTXATTR) || defined(HAVE_FLISTXATTR) */
  
  #if defined(HAVE_REMOVEXATTR) || defined(HAVE_LREMOVEXATTR) || defined(HAVE_FREMOVEXATTR)
@@ -21,7 +21,7 @@ Author: Adam Conrad <adconrad@ubuntu.com>
  {
    xattr_args xattr;
    xattr.name = name;
-@@ -1660,7 +1660,7 @@
+@@ -1734,7 +1734,7 @@
  #endif /* defined(HAVE_REMOVEXATTR) || defined(HAVE_LREMOVEXATTR) || defined(HAVE_FREMOVEXATTR) */
  
  #ifdef HAVE_SETXATTR
@@ -30,7 +30,7 @@ Author: Adam Conrad <adconrad@ubuntu.com>
  {
    INT_STRUCT_STAT st;
    int r;
-@@ -1681,7 +1681,7 @@
+@@ -1755,7 +1755,7 @@
  #endif /* HAVE_SETXATTR */
  
  #ifdef HAVE_LSETXATTR
@@ -39,7 +39,7 @@ Author: Adam Conrad <adconrad@ubuntu.com>
  {
    INT_STRUCT_STAT st;
    int r;
-@@ -1702,7 +1702,7 @@
+@@ -1776,7 +1776,7 @@
  #endif /* HAVE_LSETXATTR */
  
  #ifdef HAVE_FSETXATTR
@@ -48,7 +48,7 @@ Author: Adam Conrad <adconrad@ubuntu.com>
  {
    INT_STRUCT_STAT st;
    int r;
-@@ -1849,7 +1849,7 @@
+@@ -1923,7 +1923,7 @@
  #endif /* HAVE_FLISTXATTR */
  
  #ifdef HAVE_REMOVEXATTR
@@ -57,7 +57,7 @@ Author: Adam Conrad <adconrad@ubuntu.com>
  {
    INT_STRUCT_STAT st;
    int r;
-@@ -1870,7 +1870,7 @@
+@@ -1944,7 +1944,7 @@
  #endif /* HAVE_REMOVEXATTR */
  
  #ifdef HAVE_LREMOVEXATTR
@@ -66,7 +66,7 @@ Author: Adam Conrad <adconrad@ubuntu.com>
  {
    INT_STRUCT_STAT st;
    int r;
-@@ -1891,7 +1891,7 @@
+@@ -1965,7 +1965,7 @@
  #endif /* HAVE_LREMOVEXATTR */
  
  #ifdef HAVE_FREMOVEXATTR
