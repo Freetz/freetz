@@ -5,16 +5,9 @@
 cgi --id=backup_restore
 cgi_begin "$(lang de:"Konfiguration sichern/wiederherstellen" en:"Backup/restore configuration")"
 [ -x "$(which tr069fwupdate)" ] && TR069FU_FOUND=y || TR069FU_FOUND=n
-[ -x "$(which openssl)" ] && OPENSSL_FOUND=y || OPENSSL_FOUND=n
-[ -x "$(which decoder)" ] && DECODER_FOUND=y || DECODER_FOUND=n
+[ -x "$(which openssl)"       ] && OPENSSL_FOUND=y || OPENSSL_FOUND=n
+[ -x "$(which decoder)"       ] && DECODER_FOUND=y || DECODER_FOUND=n
 #  wget "https://github.com/PeterPawn/decoder/raw/master/bin/decoder.$(uname -m)" -O /mod/usr/bin/decoder
-
-[ "$TR069FU_FOUND" != "y" ]                            && TR069FU_STATE='disabled' || TR069FU_STATE=''
-[ "$OPENSSL_FOUND" != "y" ]                            && OPENSSL_STATE='disabled' || OPENSSL_STATE='checked'
-[ "$TR069FU_FOUND" != "y" -a "$OPENSSL_FOUND" != "y" ] &&  BACKUP_STATE='disabled' ||  BACKUP_STATE=''
-
-[ "$DECODER_FOUND" != "y" ]                            && DECODER_STATE='disabled' || DECODER_STATE=''
-[ "$OPENSSL_FOUND" != "y" ]                            && RESTORE_STATE='disabled' || RESTORE_STATE=''
 
 cat << EOF
 <form action="do_backup.cgi" method="GET">
@@ -26,9 +19,12 @@ cat << EOF
 	  en:"Save all settings from flash memory <i>/var/flash</i>. This includes firmware settings of AVM as well as Freetz and other installed extensions." \
 	)
 	</p>
+EOF
 
+if [ "$TR069FU_FOUND" == "y" ]; then
+cat << EOF
 	<p>
-	<input type=checkbox name="do_export" id="do_export" $TR069FU_STATE>
+	<input type=checkbox name="do_export" id="do_export" >
 	<label for="do_export">
 	$(lang de:"Zus&auml;tzlich ein Export der AVM Einstellungen hinzuf&uuml;gen" en:"Include additional an export of the AVM settings")
 	<br>
@@ -38,9 +34,13 @@ cat << EOF
 	)
 	</label>
 	</p>
+EOF
+fi
 
+if [ "$OPENSSL_FOUND" == "y" ]; then
+cat << EOF
 	<p>
-	<input type=checkbox name="do_encrypt" id="do_encrypt" $OPENSSL_STATE>
+	<input type=checkbox name="do_encrypt" id="do_encrypt" checked>
 	<label for="do_encrypt">
 	$(lang de:"Das Backup mit OpenSSL verschl&uuml;sseln" en:"Encrypt the backup with OpenSSL")
 	<br>
@@ -50,13 +50,20 @@ cat << EOF
 	)
 	</label>
 	</p>
+EOF
+fi
 
+if [ "$TR069FU_FOUND" == "y" -o "$OPENSSL_FOUND" == "y" ]; then
+cat << EOF
 	<p>
 	<label for="password_backup">$(lang de:"Passwort f&uumlr Verschl&uumlsselung und Export" en:"Password for encryption and export"):</label>
 	<br>
-	<input type=text name="password_backup" id="password_backup" size="35" $BACKUP_STATE>
+	<input type=text name="password_backup" id="password_backup" size="35" >
 	</p>
+EOF
+fi
 
+cat << EOF
 	<p>
 	<input type=submit value="$(lang de:"Sichern" en:"Save")" style="width:150px">
 	</p>
@@ -88,22 +95,36 @@ cat << EOF
 	</p>
 
 	<p>
-	<input type=checkbox name="decode_avm" id="decode_avm" $DECODER_STATE>
+EOF
+
+if [ "$DECODER_FOUND" == "y" ]; then
+cat << EOF
+	<input type=checkbox name="decode_avm" id="decode_avm" >
 	<label for="decode_avm">$(lang de:"Die AVM-Einstellungen dekodieren" en:"Decode AVM settings")</label>
 	<br>
+EOF
+fi
+
+cat << EOF
 	<input type=checkbox name="freetz_only" id="freetz_only">
 	<label for="freetz_only">$(lang de:"Nur Freetz-Einstellungen wiederherstellen" en:"Restore Freetz settings only")</label>
 	<br>
 	<input type=checkbox name="restart" id="restart" checked>
 	<label for="restart">$(lang de:"Neustart nach Wiederherstellung" en:"Reboot after restore")</label>
 	</p>
+EOF
 
+if [ "$OPENSSL_FOUND" == "y" ]; then
+cat << EOF
 	<p>
-	<label for="password_restore">$(lang de:"Passwort (falls verschl&uuml;sselt)" en:"Password (if encrypted)"):
+	<label for="password_restore">$(lang de:"Passwort (falls verschl&uuml;sselt)" en:"Password (if encrypted)"):</label>
 	<br>
-	</label><input type=password name="password_restore" id="password_restore" size="35" $RESTORE_STATE>
+	<input type=password name="password_restore" id="password_restore" size="35" >
 	</p>
+EOF
+fi
 
+cat << EOF
 	<p>
 	<input type=submit value="$(lang de:"Wiederherstellen" en:"Restore")" style="width:150px">
 	</p>
