@@ -1299,8 +1299,9 @@ config FREETZ_BUSYBOX___V133_LUNZIP
 	select FREETZ_BUSYBOX___V133_FEATURE_LZIP_DECOMPRESS
 	help
 	lunzip is used to decompress archives created by lzip.
-	You can use the '-t' option to test the integrity of
-	an archive, without decompressing it.
+	You can use the option '-t' to test the integrity of an archive,
+	without decompressing it.
+
 config FREETZ_BUSYBOX___V133_UNLZMA
 	bool "unlzma (7.5 kb)"
 	default n
@@ -1477,16 +1478,19 @@ config FREETZ_BUSYBOX___V133_LZIP
 	lzip is a lossless data compressor with a user interface similar to
 	the one of gzip or bzip2. lzip can compress about as fast as gzip or
 	compress most files more than bzip2 (depending on compression level).
-	Decompression speed is intermediate between gzip and bzip2. lzip is
-	better than gzip and bzip2 from a data recovery perspective.
+	Decompression speed is intermediate between gzip and bzip2. lzip has
+	been designed, written, and tested with great care to replace gzip and
+	bzip2 as the standard general-purpose compressed format for unix-like
+	systems, especially for long-term archiving.
 
 config FREETZ_BUSYBOX___V133_FEATURE_LZIP_DECOMPRESS
 	bool "Enable decompression"
 	default n
 	depends on FREETZ_BUSYBOX___V133_LZIP || FREETZ_BUSYBOX___V133_LUNZIP
 	help
-	Enable -d (--decompress) and -t (--test) options for lzip.
+	Enable options -d (--decompress) and -t (--test) for lzip.
 	This will be automatically selected if lunzip is enabled.
+
 config FREETZ_BUSYBOX___V133_LZOP
 	bool "lzop (12 kb)"
 	default n

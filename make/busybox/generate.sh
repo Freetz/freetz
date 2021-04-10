@@ -37,7 +37,10 @@ tar xf "$ARC" -C "$BBDIR" ||  exit 1
 echo -n " patching ..."
 cd "$BBDIR/busybox-$BBVER/"
 for p in $BBDIR/patches/$BBMAJ/*.patch; do
-	patch -p0 < $p >/dev/null
+	for l in 0 1 2 3 4 5 6 7 8 9; do
+		patch -f -p$l --dry-run < $p &>/dev/null && break || l=0
+	done
+	patch -p$l < $p >/dev/null
 done
 
 echo -n " building ..."
@@ -193,3 +196,4 @@ depends_on FEATURE_SH_STANDALONE   "FREETZ_BUSYBOX__NOEXEC_NOFORK_OPTIMIZATIONS"
 depends_on FEATURE_USE_BSS_TAIL "FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL"
 
 echo " done."
+
