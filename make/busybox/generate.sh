@@ -102,6 +102,7 @@ echo -n " defaults ..."
 default FEATURE_DEFAULT_PASSWD_ALGO "sha512" # AVM uses the oldest 'des' as default
 default SUBST_WCHAR 63
 default LAST_SUPPORTED_WCHAR 767
+default LAST_SYSTEM_ID 899  # AVM deletes users above default 999
 default FEATURE_CROND_DIR "/mod/var/spool/cron"
 default "Buffer allocation policy" ${BBTAG}_FEATURE_BUFFERS_USE_MALLOC
 depends_on LOCALE_SUPPORT "!FREETZ_TARGET_UCLIBC_0_9_28"

@@ -160,9 +160,9 @@ KCONFIG_TARGETS:=menuconfig menuconfig-single config oldconfig olddefconfig alln
 # load user configuration file
 -include $(TOPDIR)/.config
 
+ifneq ($(findstring menuconfig,$(MAKECMDGOALS)),menuconfig)
 # check cpu for x86_64
 ifneq ($(shell uname -m),x86_64)
-ifneq ($(findstring menuconfig,$(MAKECMDGOALS)),menuconfig)
 ifeq ($(FREETZ_DOWNLOAD_TOOLCHAIN),y)
 DLCHG:=$(shell echo 'y' ; sed 's/^# FREETZ_BUILD_TOOLCHAIN .*/FREETZ_BUILD_TOOLCHAIN=y/' -i $(TOPDIR)/.config)
 DLCHG:=$(shell echo 'y' ; sed 's/^FREETZ_DOWNLOAD_TOOLCHAIN=.*/# FREETZ_DOWNLOAD_TOOLCHAIN is not set/' -i $(TOPDIR)/.config)
@@ -172,8 +172,14 @@ ifeq ($(FREETZ_HOSTTOOLS_DOWNLOAD),y)
 DLCHG:=$(shell echo 'y' ; sed 's/^FREETZ_HOSTTOOLS_DOWNLOAD=.*/# FREETZ_HOSTTOOLS_DOWNLOAD is not set/' -i $(TOPDIR)/.config)
 $(info You have no x86_64 CPU, precompiled (download) host-tools automatically disabled.)
 endif
-$(if $(DLCHG),$(error Please re-run))
 endif
+# change LAST_SYSTEM_ID: 999 -> 899
+ifeq ($(shell sed -n 's/^FREETZ_BUSYBOX___V..._LAST_SYSTEM_ID=//p' $(TOPDIR)/.config),999)
+DLCHG:=$(shell echo 'y' ; sed 's/^\(FREETZ_BUSYBOX___V..._LAST_SYSTEM_ID\)=.*/\1=899/' -i $(TOPDIR)/.config)
+$(info BusyBox LAST_SYSTEM_ID automatically changed.)
+endif
+#
+$(if $(DLCHG),$(error Please re-run))
 endif
 
 VERBOSE:=
