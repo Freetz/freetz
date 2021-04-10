@@ -17,7 +17,7 @@ config() {
 	ln -s $VNSTAT_DBDIR /var/lib/vnstat
 
 	if [ -z "$VNSTAT_INTERFACES" ]; then
-		VNSTAT_INTERFACES=$(ifconfig | grep "^\w" | sed 's/ .*//g')
+		VNSTAT_INTERFACES=$(ifconfig | grep "^\w" | sed 's/ .*//g' | grep -v ':')
 	else
 		#delete unused databases
 		for dbfile in $(ls -A /var/lib/vnstat/ 2>/dev/null); do
