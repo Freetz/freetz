@@ -1,5 +1,9 @@
 # NEWS
 
+ * __[2021-04-10](#2021-04-10)__<a id='2021-04-10'></a><br>
+   Neue Linux-Benutzer werden jetzt mit IDs ab 900 angelegt. Dadurch werden sie nicht mehr von AVM gelöscht.<br>
+   Siehe [8d2700ef](https://github.com/Freetz-NG/freetz-ng/commit/8d2700ef40fc5ccee7a1dd03c55b11430b13b0c4)<br>
+
  * __[2021-03-04](#2021-03-04)__<a id='2021-03-04'></a><br>
    Es wurde ein neuer [Tag](https://github.com/Freetz-NG/freetz-ng/tags) `ng21030` erstellt.<br>
    Die automatisch angebotene und nicht deaktivierbare `.zip`-Datei darf auf keinen Fall verwendet werden, da<br>
