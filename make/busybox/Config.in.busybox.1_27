@@ -3633,6 +3633,7 @@ config FREETZ_BUSYBOX___V127_CHPASSWD
 
 config FREETZ_BUSYBOX___V127_FEATURE_DEFAULT_PASSWD_ALGO
 	string "Default encryption method (passwd -a, cryptpw -m, chpasswd -c ALG)"
+	default "md5" if FREETZ_TARGET_UCLIBC_0
 	default "sha512"
 	depends on FREETZ_BUSYBOX___V127_PASSWD || FREETZ_BUSYBOX___V127_CRYPTPW || FREETZ_BUSYBOX___V127_CHPASSWD
 	help

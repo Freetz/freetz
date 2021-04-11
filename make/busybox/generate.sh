@@ -99,7 +99,7 @@ done
 
 echo -n " defaults ..."
 #default UNAME_OSNAME "" # AVM never used the default "GNU/Linux"
-default FEATURE_DEFAULT_PASSWD_ALGO "sha512" # AVM uses the oldest 'des' as default
+default FEATURE_DEFAULT_PASSWD_ALGO 'md5\" if FREETZ_TARGET_UCLIBC_0\n\tdefault \"sha512' # AVM uses the oldest 'des' as default
 default SUBST_WCHAR 63
 default LAST_SUPPORTED_WCHAR 767
 default LAST_SYSTEM_ID 899  # AVM deletes users above default 999
