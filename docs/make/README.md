@@ -490,9 +490,6 @@ Index:
   * **<u>PCSC-lite (pcscd) 1.9.0 (binary only)</u><a id='pcsc-lite'></a>**<br>
     The purpose of PCSC Lite is to provide a Windows(R) SCard interface in a very small form factor for communicating to smart cards and readers.
 
-  * **<u>Perl 5.32.1 (binary only)</u><a id='perl'></a>**<br>
-    Perl without operating-specific functions such as readdir.
-
   * **<u>phonebook-tools: Phone book tools 0.0</u><a id='phonebook-tools'></a>**<br>
     A set of tools for reading and converting Fritz!Box phone book to such (easy parseable) formats like: - .csv (comma-separated values), or - .tsv (tab-separated values).
 
@@ -841,6 +838,9 @@ Index:
   * **<u>Collectd 4.10.3</u><a id='collectd'></a>**<br>
     Collectd collects information about the system it is running on and stores this information. The information can then be used to do find current performance bottlenecks (i. e. performance analysis) and predict future system load (i. e. capacity planning). Or if you just want pretty graphs of your private server and are fed up with some homegrown solution you're at the right place, too.
 
+  * **<u>fhem -r16562 (5.8)</u><a id='fhem'></a>**<br>
+    fhem is a perl server for house automation, see web page http://fhem.de
+
   * **<u>gptfdisk 1.0.1</u><a id='gptfdisk'></a>**<br>
     Interactive GUID partition table (GPT) manipulator
 
@@ -861,6 +861,9 @@ Index:
 
   * **[MySQL 6.0.11-alpha](mysql.md)<a id='mysql'></a>**<br>
     MySQL is a very fast, multi-threaded, multi-user and robust SQL (Structured Query Language) database server. Unstable, as this version is quite old, but runs well on Fritzbox. Do not expose this daemon to the internet!
+
+  * **<u>Perl 5.32.1 (binary only)</u><a id='perl'></a>**<br>
+    Perl without operating-specific functions such as readdir.
 
   * **[sane-backends: SANE 1.0.27](sane-backends.md)<a id='sane-backends'></a>**<br>
     SANE - Scanner support (initial Freetz package by Michael Denk, tehron @ http://www.ip-phone-forum.de/)

@@ -9,17 +9,21 @@ config FREETZ_PACKAGE_FHEM
 		fhem is a perl server for house automation,
 		see web page http://fhem.de
 
+if FREETZ_PACKAGE_FHEM
+
 config FREETZ_PACKAGE_FHEM_WITH_STV
 	bool "Enable STV module"
-	depends on FREETZ_PACKAGE_FHEM
 	select FREETZ_PACKAGE_PYTHON_SAMSUNGCTL
 	default n
 	help
 		Enables the STV modul, ou might have to register.
 
-	config FREETZ_PACKAGE_FHEM_WITH_STV_IP
-		depends on FREETZ_PACKAGE_FHEM
-		string "enter ip address of samsung tv"
-		default "192.168."
-		help
-		    Patch ip address of samsung tv in regapp.pl to register samsungctl remote control to use with 70_STV.pm
+config FREETZ_PACKAGE_FHEM_WITH_STV_IP
+	string "enter ip address of samsung tv"
+	default "192.168."
+	help
+		Patch ip address of samsung tv in regapp.pl to register
+		samsungctl remote control to use with 70_STV.pm
+
+endif # FREETZ_PACKAGE_FHEM
+

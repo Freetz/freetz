@@ -6,6 +6,8 @@ $(PKG)_SOURCE:=fhem-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=svn@https://svn.fhem.de/fhem/trunk/fhem
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/fhem
 
+$(PKG)_CATEGORY:=Unstable
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
@@ -29,6 +31,7 @@ $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
+
 $(pkg)-clean:
 	$(RM) $(FHEM_DIR)/.configured
 
@@ -39,3 +42,4 @@ $(pkg)-uninstall:
 	$(RM) -rf $(FHEM_TARGET_BINARY)
 
 $(PKG_FINISH)
+
