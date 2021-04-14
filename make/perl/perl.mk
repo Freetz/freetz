@@ -1,20 +1,16 @@
-# partly taken from www.buildroot.org
-$(call PKG_INIT_BIN, $(shell [ "$(FREETZ_PACKAGE_PERL_VERSION)" = "" ] && echo 5.27.5 || echo $(FREETZ_PACKAGE_PERL_VERSION)))
+$(call PKG_INIT_BIN, 5.32.1)
 $(PKG)_SOURCE:=perl-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5_5.24.1:=765ef511b5b87a164e2531403ee16b3c
-$(PKG)_SOURCE_MD5_5.24.2:=62a52f0f743fa461af449bd18d63886c
-$(PKG)_SOURCE_MD5_5.24.3:=b25f1b1a0082e9e2043eb3c13bba6044
-$(PKG)_SOURCE_MD5_5.26.1:=a7e5c531ee1719c53ec086656582ea86
-$(PKG)_SOURCE_MD5_5.27.5:=33c922c45cffc46e447099947e0db960
-$(PKG)_SOURCE_MD5:=$(PKG)_SOURCE_MD5_$($(PKG)_VERSION)
+$(PKG)_SOURCE_MD5:=40dff18daf18178c7fc4579451be38ef
 $(PKG)_SITE:=http://www.cpan.org/src/5.0
+
+# partly taken from www.buildroot.org
 $(PKG)_SOURCES:=
 $(PKG)_ADDITIONAL_CPAN_MODULES:=
 
-$(PKG)_CROSS_VERSION:=1.1.8
+$(PKG)_CROSS_VERSION:=1.3.5
 $(PKG)_CROSS_DIR:=$(PERL_DIR)
 $(PKG)_CROSS_SOURCE:=perl-cross-$($(PKG)_CROSS_VERSION).tar.gz
-$(PKG)_CROSS_SOURCE_MD5:=2317a9a390b5a9f01b9f80e7f4533df6
+$(PKG)_CROSS_SOURCE_MD5:=a4d8faf1946e1074f88e711b8658716d
 $(PKG)_CROSS_SITE:=https://github.com/arsv/perl-cross/releases/download/$($(PKG)_CROSS_VERSION)
 $(PKG)_SOURCES += $(DL_DIR)/$(PKG)_CROSS_SOURCE
 $(PKG)_ADDITIONAL_CPAN_MODULES += CROSS
@@ -486,30 +482,28 @@ $(PKG)_DEPENDS_ON += sqlite
 $(PKG)_CONFIGURE_PRE_CMDS += cat $(PERL_DBI_DIR)/Driver.xst | $(SED) 's/~DRIVER~/SQLite/g' > $(PERL_DBDSQLITE_DIR)/SQLite.xsi
 endif
 
+$(PKG)_CATEGORY:=Unstable
 
-$(PKG)_PREFIX := $(if $(FREETZ_PACKAGE_PERL_PREFIX),$(strip $(FREETZ_PACKAGE_PERL_PREFIX)),/usr)
 $(PKG)_BINARY:=$($(PKG)_DIR)/perl
-ifeq ($(EXTERNAL_FREETZ_PACKAGE_PERL),y)
-$(PKG)_TESTPACK:=$($(PKG)_DIR)/TESTPACK.tar.gz
-endif
-$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)$(PERL_PREFIX)/bin/perl
+$(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/perl
 $(PKG)_TARGET_MODULES:=$($(PKG)_TARGET_DIR)/.modules_installed
-$(PKG)_TARGET_MODULES_DIR:=$($(PKG)_DEST_DIR)$(PERL_PREFIX)/lib/perl5/$($(PKG)_VERSION)
+$(PKG)_TARGET_MODULES_DIR:=$($(PKG)_DEST_DIR)/usr/lib/perl5/$($(PKG)_VERSION)
 $(PKG)_TARGET_MODS:=$(subst ",,$(FREETZ_PACKAGE_PERL_MODULES))
 
 $(PKG)_PATCH_PRE_CMDS += chmod -R u+w .;
 $(PKG)_PATCH_POST_CMDS += $(SED) -r -i -e 's|/5([.][0-9]{2}){1,2}|/$($(PKG)_VERSION)|g' uconfig.sh;
-$(PKG)_PATCH_POST_CMDS += $(SED) -r -i -e 's|/usr/local|$($(PKG)_PREFIX)|g'                         uconfig.sh;
+$(PKG)_PATCH_POST_CMDS += $(SED) -r -i -e 's|/usr/local|/usr)|g'                        uconfig.sh;
 
 $(PKG_SOURCE_DOWNLOAD_NOP)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED)
 
 $(PKG)_EXTRA_CFLAGS := -fno-stack-protector -ffunction-sections -fdata-sections
-$(PKG)_EXTRA_LDFLAGS := -Wl,--gc-sections -Wl,-rpath=$(PERL_PREFIX)/lib/perl5/$(PERL_VERSION)/mips-linux/CORE
+$(PKG)_EXTRA_LDFLAGS := -Wl,--gc-sections -Wl,-rpath=/usr/lib/perl5/$($(PKG)_VERSION)/mips-linux/CORE
 $(PKG)_CONFIGURE_OPTIONS = -Duseshrplib -Dbyteorder='87654321' 
 $(PKG)_CONFIGURE_OPTIONS += -Dextras="IO LWP Sys::Hostname Net::DNS Mail:SPF::Query Sys::Hostname::Long $(FREETZ_PACKAGE_PERL_ADDITIONAL_EXTRA_MODULES)"
 $(PKG)_CONFIGURE_OPTIONS += -Accflags="$(PERL_EXTRA_CFLAGS) $(PERL_EXTRA_LDFLAGS)"
+
 
 $(pkg)-download:  $(DL_DIR)/$($(PKG)_SOURCE) $($(PKG)_SOURCES)
 $($(PKG)_SOURCES):
@@ -517,6 +511,7 @@ $($(PKG)_SOURCES):
 
 $(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR) $($(PKG)_SOURCES)
 	$(DL_TOOL) $(DL_DIR) $(PERL_SOURCE) $(PERL_SITE) $(PERL_MD5)
+
 
 $($(PKG)_DIR)/configure: $($(PKG)_DIR)/.unpacked
 	$(foreach mod,$(PERL_ADDITIONAL_CPAN_MODULES),mkdir -p $(PERL_$(mod)_DIR); $(call UNPACK_TARBALL,$(DL_DIR)/$(PERL_$(mod)_SOURCE),$(PERL_$(mod)_DIR),1);)
@@ -527,12 +522,13 @@ $($(PKG)_DIR)/configure: $($(PKG)_DIR)/.unpacked
 	touch $@
 
 $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/configure
-	cd $(PERL_DIR) && PATH=$(TARGET_PATH) ./configure --target=$(GNU_TARGET_NAME) --target-tools-prefix=$(REAL_GNU_TARGET_NAME)- --prefix=$(PERL_PREFIX) $(PERL_CONFIGURE_OPTIONS) && \
+	cd $(PERL_DIR) && PATH=$(TARGET_PATH) ./configure --target=$(GNU_TARGET_NAME) --target-tools-prefix=$(REAL_GNU_TARGET_NAME)- --prefix=/usr $(PERL_CONFIGURE_OPTIONS) && \
 	cd $(PWD) && touch $@
 
 $($(PKG)_DIR)/miniperl_top: $($(PKG)_DIR)/.configured
 	$(SUBMAKE1) -C $(PERL_DIR) -f Makefile utilities \
-		CC="$(TARGET_CC)" OPTIMIZE="$(TARGET_CFLAGS)"
+		CC="$(TARGET_CC)" \
+		OPTIMIZE="$(TARGET_CFLAGS)"
 	touch $@
 
 $($(PKG)_DIR)/lib/lib.pm: $($(PKG)_DIR)/miniperl_top
@@ -540,18 +536,17 @@ $($(PKG)_DIR)/lib/lib.pm: $($(PKG)_DIR)/miniperl_top
 	
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured $($(PKG)_DIR)/lib/lib.pm
 	$(SUBMAKE1) -C $(PERL_DIR) -f Makefile \
-		CC="$(TARGET_CC)" OPTIMIZE="$(TARGET_CFLAGS)" TARGET_TOOLCHAIN_STAGING_DIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" && \
+		CC="$(TARGET_CC)" \
+		OPTIMIZE="$(TARGET_CFLAGS)" \
+		TARGET_TOOLCHAIN_STAGING_DIR="$(TARGET_TOOLCHAIN_STAGING_DIR)"
 	touch $@
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
-	 $(SUBMAKE1) -C $(PERL_DIR) -f Makefile \
-	        DESTDIR="$(PWD)/$(PERL_DEST_DIR)" install.perl && \
-	 cd $(PERL_DEST_DIR)/$(PERL_PREFIX)/bin; rm perl; ln -s perl$(PERL_VERSION) perl && \
-	 touch perl$(PERL_VERSION)
-
-$($(PKG)_TESTPACK) .dummy_$(pkg): $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_MODULES)
-	-$(SUBMAKE1) -i -C $(PERL_DIR) -f Makefile testpack;
-	cp $(PERL_TESTPACK) $(PERL_TARGET_MODULES_DIR)/.
+	$(SUBMAKE1) -C $(PERL_DIR) -f Makefile \
+		DESTDIR="$(PWD)/$(PERL_DEST_DIR)" \
+		install.perl
+	ln -f $(PERL_DEST_DIR)/usr/bin/perl$($(PKG)_VERSION) $(PERL_DEST_DIR)/usr/bin/perl
+	touch $@
 
 $($(PKG)_TARGET_MODULES): $($(PKG)_DIR)/.unpacked
 	mkdir -p $(PERL_TARGET_MODULES_DIR)
@@ -567,7 +562,8 @@ $($(PKG)_TARGET_MODULES): $($(PKG)_DIR)/.unpacked
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_MODULES) $($(PKG)_TESTPACK)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_MODULES)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(PERL_DIR) -f Makefile clean
@@ -583,3 +579,4 @@ $(pkg)-uninstall:
 	$(RM) -r $(PERL_TARGET_MODULES_DIR)
 
 $(PKG_FINISH)
+
