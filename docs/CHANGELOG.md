@@ -61,7 +61,7 @@ Latest changes
    * minidlna 1.3.0
    * OpenSSH 8.5p1
    * OpenSSL 0.9.8zh/1.0.2u/1.1.1k/3.0.0-alpha13
-   * OpenVPN 2.4.10/2.5.2
+   * OpenVPN 2.4.11/2.5.2
    * Perl 5.32.1
    * stunnel 5.58
    * Tor 0.4.5.7
