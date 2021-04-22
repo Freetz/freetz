@@ -24,10 +24,12 @@ if FREETZ_PACKAGE_OPENVPN
 	config FREETZ_PACKAGE_OPENVPN_VERSION_ABANDON
 		bool #"2.4.x"
 		depends on FREETZ_KERNEL_VERSION_2_6_13
+		default y
 
 	config FREETZ_PACKAGE_OPENVPN_VERSION_CURRENT
 		bool #"2.5.x"
 		depends on !FREETZ_KERNEL_VERSION_2_6_13
+		default y
 
 #endchoice
 
