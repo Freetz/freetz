@@ -34,7 +34,7 @@ Index:
   * **[ACME.sh 2.88 (letsencrypt)](../docs/make/acme.md)<a id='acme'></a>**<br>
     A pure Unix shell script implementing ACME client protocol.
 
-  * **[apache2: Apache HTTP Server 2.4.46 (binary only)](../docs/make/apache2.md)<a id='apache2'></a>**<br>
+  * **[apache2: Apache HTTP Server 2.4.47 (binary only)](../docs/make/apache2.md)<a id='apache2'></a>**<br>
     The Apache httpd server
      - [apache.conf](../docs/make/apache2.md#apacheconf)
      - [Passwortschutz mit .htaccess](../docs/make/apache2.md#passwortschutz-mit-htaccess)
