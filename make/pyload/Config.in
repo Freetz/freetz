@@ -12,7 +12,7 @@ config FREETZ_PACKAGE_PYLOAD
 	select FREETZ_PACKAGE_PYTHON_IMAGING_LIBRARY
 	select FREETZ_PACKAGE_PYTHON_PYCRYPTO
 	select FREETZ_PACKAGE_PYTHON_PYCURL
-	select FREETZ_PACKAGE_PYTHON_PYOPENSSL
+	select FREETZ_PACKAGE_PYTHON_PYOPENSSL if FREETZ_OPENSSL_VERSION_1_MAX
 	select FREETZ_LIB_libcurl_WITH_SSL
 	select FREETZ_PACKAGE_JS
 	default n
@@ -74,3 +74,4 @@ config FREETZ_PACKAGE_PYLOAD_WITH_LIGHTWEIGHT_WSGI_SERVER
 		Activating this option allows you to say 'lightweight'
 		while configuring pyLoad and answering the question
 		for the web-server backend.
+
