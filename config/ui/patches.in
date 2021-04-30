@@ -837,10 +837,10 @@ config FREETZ_REMOVE_TR069
 config FREETZ_REMOVE_TR064
 	bool "Remove tr064" if FREETZ_SHOW_ADVANCED
 	depends on FREETZ_REMOVE_TR069
+	depends on FREETZ_AVM_HAS_TR064
 	default n
 	help
 		Removes libtr064 to save space.
-
 		WARNING: Access by some AVM apps is no longer possible!
 
 config FREETZ_REMOVE_TR069_FWUPDATE

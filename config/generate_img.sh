@@ -528,6 +528,12 @@ determine_() {
 	[ $DOSHOW -ge 2 ] && outp "phone" "$X"
 
 
+	#TR064
+	P=TR064
+	grep -q "^export CONFIG_$P=" "$unpacked/etc/init.d/rc.conf" && X="available" || X="%"
+	[ "$X" == "available" ] && in_b "FREETZ_AVM_HAS_${P^^}"
+	[ $DOSHOW -ge 2 ] && outp "${P,,}" "$X"
+
 	#TR069
 	X="%"
 	[ -e "$unpacked/usr/share/ctlmgr/libtr069.so" ] && X="available" && in_b "FREETZ_AVM_HAS_TR069"
