@@ -16,7 +16,7 @@ config FREETZ_BUSYBOX___V133_HAVE_DOT_CONFIG
 menu "Settings"
 
 config FREETZ_BUSYBOX___V133_DESKTOP
-	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
+	depends on !FREETZ_PATCH_FREETZMOUNT && !FREETZ_PACKAGE_OPENVPN_CGI && !FREETZ_PACKAGE_GW6
 	bool "Enable compatibility for full-blown desktop systems (8kb)"
 	default n
 	help
@@ -7877,7 +7877,7 @@ config FREETZ_BUSYBOX___V133_PS
 
 config FREETZ_BUSYBOX___V133_FEATURE_PS_WIDE
 	bool "Enable wide output (-w)"
-	default n
+	default y
 	depends on (FREETZ_BUSYBOX___V133_PS || FREETZ_BUSYBOX___V133_MINIPS) && !FREETZ_BUSYBOX___V133_DESKTOP
 	help
 	Support argument 'w' for wide output.
@@ -7886,7 +7886,7 @@ config FREETZ_BUSYBOX___V133_FEATURE_PS_WIDE
 
 config FREETZ_BUSYBOX___V133_FEATURE_PS_LONG
 	bool "Enable long output (-l)"
-	default n
+	default y
 	depends on (FREETZ_BUSYBOX___V133_PS || FREETZ_BUSYBOX___V133_MINIPS) && !FREETZ_BUSYBOX___V133_DESKTOP
 	help
 	Support argument 'l' for long output.

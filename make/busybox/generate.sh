@@ -142,10 +142,10 @@ depends_on UBIUPDATEVOL "FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTIN
 # AVM never uses an applet, but always a binary.
 depends_on NANDDUMP     "FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL"
 
-# Freetz mandatory options BUSYBOX_FEATURE_PS_LONG & BUSYBOX_FEATURE_PS_WIDE both depend on !DESKTOP.
-# Make DESKTOP depend on some non-existing symbol to prevent the user from (accidentally) selecting it
-# in Freetz menuconfig. This ensures (as a side effect) that "ps -l" is always available.
-depends_on DESKTOP "FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL"
+# BUSYBOX_FEATURE_PS_LONG & BUSYBOX_FEATURE_PS_WIDE depends on !DESKTOP.
+depends_on DESKTOP "!FREETZ_PATCH_FREETZMOUNT \&\& !FREETZ_PACKAGE_OPENVPN_CGI \&\& !FREETZ_PACKAGE_GW6"
+default FEATURE_PS_LONG y
+default FEATURE_PS_WIDE y
 
 # header file is missing in 2.6.13
 depends_on FEATURE_IP_NEIGH "FREETZ_KERNEL_VERSION_2_6_19_MIN"
