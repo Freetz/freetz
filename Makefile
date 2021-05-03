@@ -293,9 +293,10 @@ package-list: package-list-clean $(PACKAGES_LIST)
 	@touch .static
 	@( echo "# Automatically generated - DO NOT EDIT!"; cat .static ) > .static.tmp
 	@mv .static.tmp .static
+	@touch .packages
 
 package-list-clean:
-	@$(RM) .static
+	@$(RM) .static .packages
 
 firmware-nocompile: tools $(DL_IMAGE)
 ifneq ($(strip $(FREETZ_FWMOD_SKIP_ALL)),y)
