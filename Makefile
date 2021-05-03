@@ -293,12 +293,9 @@ package-list: package-list-clean $(PACKAGES_LIST)
 	@touch .static
 	@( echo "# Automatically generated - DO NOT EDIT!"; cat .static ) > .static.tmp
 	@mv .static.tmp .static
-	@touch .dynamic
-	@( echo "# Automatically generated - DO NOT EDIT!"; cat .dynamic ) > .dynamic.tmp
-	@mv .dynamic.tmp .dynamic
 
 package-list-clean:
-	@$(RM) .static .dynamic
+	@$(RM) .static
 
 firmware-nocompile: tools $(DL_IMAGE)
 ifneq ($(strip $(FREETZ_FWMOD_SKIP_ALL)),y)
@@ -496,7 +493,7 @@ common-cacheclean:
 	./fwmod_custom clean
 	$(RM) make/Config.in.generated make/external.in.generated
 	$(RM) .config.compressed .config.old  .config.*.tmp
-	$(RM) .static .dynamic .packages .exclude-release-tmp $(CONFIG_IN_CACHE)
+	$(RM) .static .packages .exclude-release-tmp $(CONFIG_IN_CACHE)
 	$(RM) $(DL_FW_DIR)/*.detected.image $(DL_FW_DIR)/*.detected.image.url
 	$(RM) -r $(BUILD_DIR)
 	$(RM) -r $(FAKEROOT_CACHE_DIR)
