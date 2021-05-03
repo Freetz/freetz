@@ -852,7 +852,6 @@ PKG_CONFIGURED_NOP=$(eval $(PKG_CONFIGURED_NOP__INT))
 ## Add package to list files
 define PKG_LIST__INT
 $(pkg)-list:
-	@echo "S$(strip $($(PKG)_STARTLEVEL))$(pkg)-$($(PKG)_VERSION)" >> .static
 	@echo "S$(strip $($(PKG)_STARTLEVEL)) $(pkg) $($(PKG)_VERSION) FREETZ_PACKAGE_$(PKG)" >> .packages
 .PHONY: $(pkg)-list
 endef

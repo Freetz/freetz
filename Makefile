@@ -290,13 +290,10 @@ include $(TOOLCHAIN_DIR)/make/download-toolchain.mk
 endif
 
 package-list: package-list-clean $(PACKAGES_LIST)
-	@touch .static
-	@( echo "# Automatically generated - DO NOT EDIT!"; cat .static ) > .static.tmp
-	@mv .static.tmp .static
 	@touch .packages
 
 package-list-clean:
-	@$(RM) .static .packages
+	@$(RM) .packages
 
 firmware-nocompile: tools $(DL_IMAGE)
 ifneq ($(strip $(FREETZ_FWMOD_SKIP_ALL)),y)
@@ -494,7 +491,7 @@ common-cacheclean:
 	./fwmod_custom clean
 	$(RM) make/Config.in.generated make/external.in.generated
 	$(RM) .config.compressed .config.old  .config.*.tmp
-	$(RM) .static .packages .exclude-release-tmp $(CONFIG_IN_CACHE)
+	$(RM) .packages .exclude-release-tmp $(CONFIG_IN_CACHE)
 	$(RM) $(DL_FW_DIR)/*.detected.image $(DL_FW_DIR)/*.detected.image.url
 	$(RM) -r $(BUILD_DIR)
 	$(RM) -r $(FAKEROOT_CACHE_DIR)
