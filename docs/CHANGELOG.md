@@ -46,8 +46,8 @@ Latest changes
    * kernel-/target-toolchains:
       + precompiled toolchains updated to x86_64 (only)
 
- - New tools and hooks:
-   * precompiled host-tools updated to x86_64 (only)
+ - Updated tools and hooks:
+   * kconfig 5.12
 
  - Updated packages and libs:
    * ca-bundle 2021-04-13
