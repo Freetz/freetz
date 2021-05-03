@@ -40,7 +40,7 @@ print_entry() {
 			print_entry "$type" "${name}_$sub"
 		fi
 	else
-		[ "$type" == "cgi" ] && name="$name_cgi"
+		[ "$type" == "cgi" ] && name="${name}_cgi"
 		[ "$type" == "cgi" -o "$type" == "pkg" ] && ver="$(cut /etc/packages.lst -d ' ' -f 3,4 | sed -n "s/^${name//_/.} / /p")" || ver=''
 		echo "$name$ver<br>"
 		open_entry=$name
