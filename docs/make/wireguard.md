@@ -1,4 +1,4 @@
-# wireguard-tools 1.0.20200827
+# wireguard-tools 1.0.20210424
  - Homepage: [https://www.wireguard.com/](https://www.wireguard.com/)
  - Manpage: [https://www.wireguard.com/quickstart/](https://www.wireguard.com/quickstart/)
  - Changelog: [https://git.zx2c4.com/wireguard-tools/log/](https://git.zx2c4.com/wireguard-tools/log/)
