@@ -51,6 +51,7 @@ Latest changes
    * kconfig 5.12
 
  - BusyBox:
+   * Removed version 1.32.1
    * Updated version 1.33.1
 
  - Updated packages and libs:
