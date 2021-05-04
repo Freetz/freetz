@@ -49,6 +49,9 @@ Latest changes
  - Updated tools and hooks:
    * kconfig 5.12
 
+ - BusyBox:
+   * Updated version 1.33.1
+
  - Updated packages and libs:
    * ACME.sh 2.8.9 (letsencrypt)
    * ca-bundle 2021-04-13
