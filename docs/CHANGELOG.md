@@ -47,6 +47,7 @@ Latest changes
       + precompiled toolchains updated to x86_64 (only)
 
  - Updated tools and hooks:
+   * busybox 1.33.1
    * kconfig 5.12
 
  - BusyBox:
