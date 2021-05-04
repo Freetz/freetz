@@ -43,6 +43,7 @@ Latest changes
 
  - Build system:
    * ccache 4.2.1
+   * dl-tools 2021-05-04
    * kernel-/target-toolchains:
       + precompiled toolchains updated to x86_64 (only)
 
