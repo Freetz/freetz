@@ -82,8 +82,8 @@ function push_fw() {
 			echo
 		fi
 
-		[ $ISRAM ] && MAPSTART=0x80000000 && FILESIZE="0x$(printf '%.8x' $(stat --printf='%s' "$mtdram1"))"
-		[ $ISFIT ] && MAPSTART=0x00000000 && FILESIZE="0x$(printf '%.8x' $(stat --printf='%s' "$fitimage"))"
+		[ $ISRAM ] && FILESIZE="0x$(printf '%.8x' $(stat --printf='%s' "$mtdram1"))"
+		[ $ISFIT ] && FILESIZE="0x$(printf '%.8x' $(stat --printf='%s' "$fitimage"))"
 		MAPLIMIT="0x$(printf '%.8x' $(( $MAPSTART + $FULLSIZE )))"
 		FREESIZE="0x$(printf '%.8x' $(( $FULLSIZE - $FILESIZE )))"
 		MTDSTART="0x$(printf '%.8x' $(( $MAPSTART + $FULLSIZE - $FILESIZE )))"
@@ -415,6 +415,7 @@ usage()
 	echo "                    Experimental and not tested with real hardware!"
 	echo "-f                Disable safety prompt."
 	echo "-ip <ip>          Bootloader IP address or hostname, default 192.168.178.1"
+	echo "-map <hex>        Only ram-boot and fit-boot mode: Start of mapped memory (PHYS_OFFSET)."
 	echo "-ram <mb>         Only ram-boot and fit-boot mode: Usable ram size in MB of your device."
 	echo "                    Without this parameter, the default of 128 MB (FIT: 384) will be used."
 	echo "                    Some devices like Repeater 3000 need 256 MB to flash."
@@ -451,6 +452,14 @@ while [ $# -ge 1 ]; do
 		(-ip)
 			[ -z "$2" -o "$2" != "${2#\-}" ] && usage
 			ip=$2
+			shift
+			;;
+		(-map)
+			MAPSTART="$2"
+			[ "0x" != "${2:0:2}" ] && MAPSTART=''
+			[ "x" != "$(echo $2 | sed 's/[0-9a-fA-F]//g')" ] && MAPSTART=''
+			[ "$MAPSTART" == "0" -a "${MAPSTART//0/}" != "x" ] && MAPSTART=''
+			[ -z "$MAPSTART" ] && echo "Invalid value for map start" && usage
 			shift
 			;;
 		(-ram)
@@ -525,6 +534,7 @@ fi
 [ $ISUIMG ]     && [ ! -x $UIMG_TOOL ]         && echo "File $UIMG_TOOL missing. Run 'make uimg-host' first."              && exit 1
 [ $ISRAM ]      && [ ! -x $TSUM_TOOL ]         && echo "File $TSUM_TOOL missing. Run 'make tichksum-host' first."          && exit 1
 [ ! $ISRAM ] && [ ! $ISFIT ] && [ $FULLSIZE ]  && echo "Parameter '-ram' is only allowed for ram-boot and fit-boot mode."  && exit 1
+[ ! $ISRAM ] && [ ! $ISFIT ] && [ $MAPSTART ]  && echo "Parameter '-map' is only allowed for ram-boot and fit-boot mode."  && exit 1
 
 prepare_image
 
@@ -605,6 +615,10 @@ fi
 echo " * Flash mode: $OUTVAL-boot"
 
 if [ -n "$ISRAM$ISFIT" ]; then
+	if [ -z "$MAPSTART" ]; then
+		[ $ISRAM ] && MAPSTART=0x80000000
+		[ $ISFIT ] && MAPSTART=0x00000000
+	fi
 	if [ -z "$FULLSIZE" ]; then
 		[ $ISFIT ] && FULLSIZE="0x18000000"
 		[ $ISRAM ] && FULLSIZE="0x08000000"
