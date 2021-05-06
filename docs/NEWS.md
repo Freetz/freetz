@@ -1,5 +1,14 @@
 # NEWS
 
+ * __[2021-05-05](#2021-05-05)__<a id='2021-05-05'></a><br>
+   Die libc und `SEPARATE_AVM_UCLIBC`<br>
+   Bis zu Fritzos 7.0x hat AVM uClibc-ng 1.0.14 oder ältere uClibc verwendet. Beginnend mit 7.1x wurden dann<br>
+   neuere und teilweise verschiedene Versionen von uClibc-ng, musl oder glibc genutzt. Freetz nutzt weiterhin<br>
+   ausschliesslich eine neuere Version von uClibc-ng. Diese wird von den AVM-Binaries nicht gefunden und bei<br>
+   den Freetz-Binaries wird der Pfad nach `/usr/lib/freetz/` fest vorgegeben.<br>
+   Falls man nur mit Freetz erstellte Binaries nutzen möchte, muss die libc Library auch kopiert werden! Der<br>
+   Pfad kann gegebenenfalls mit `FREETZ_RPATH` angepasst werden.
+
  * __[2021-04-10](#2021-04-10)__<a id='2021-04-10'></a><br>
    Neue Linux-Benutzer werden jetzt mit IDs ab 900 angelegt. Dadurch werden sie nicht mehr von AVM gelöscht.<br>
    Siehe [8d2700ef](https://github.com/Freetz-NG/freetz-ng/commit/8d2700ef40fc5ccee7a1dd03c55b11430b13b0c4)<br>
