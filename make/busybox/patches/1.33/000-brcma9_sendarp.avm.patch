@@ -1,51 +1,30 @@
-diff -Naur include/applets.src.h include/applets.src.h
---- include/applets.src.h	2010-08-23 02:44:35.000000000 +0200
-+++ include/applets.src.h	2016-02-08 18:55:44.830331585 +0100
-@@ -80,6 +80,9 @@
- IF_ADDUSER(APPLET(adduser, BB_DIR_USR_SBIN, BB_SUID_DROP))
- IF_ADJTIMEX(APPLET(adjtimex, BB_DIR_SBIN, BB_SUID_DROP))
- IF_ARP(APPLET(arp, BB_DIR_SBIN, BB_SUID_DROP))
-+// brcm begin
-+IF_SENDARP(APPLET(sendarp, BB_DIR_USR_SBIN, BB_SUID_DROP))
-+// brcm end
- IF_ARPING(APPLET(arping, BB_DIR_USR_SBIN, BB_SUID_DROP))
- IF_BASENAME(APPLET_NOFORK(basename, basename, BB_DIR_USR_BIN, BB_SUID_DROP, basename))
- IF_BBCONFIG(APPLET(bbconfig, BB_DIR_BIN, BB_SUID_DROP))
-diff -Naur networking/Config.src networking/Config.src
---- networking/Config.src	2010-08-23 02:44:35.000000000 +0200
-+++ networking/Config.src	2016-02-08 18:58:20.138330504 +0100
-@@ -60,6 +60,14 @@
- 	help
- 	  Ping hosts by ARP packets.
- 
-+# brcm begin
-+config SENDARP
-+	bool "sendarp"
-+	default y
-+	help
-+	  Ping hosts by ARP packets.
-+# brcm end
+--- networking/sendarp.c	1970-01-01 00:00:00.000000000 +0000
++++ networking/sendarp.c	2021-05-05 18:43:25.777088185 +0000
+@@ -0,0 +1,193 @@
++/* vi: set sw=4 ts=4: */
++/*
++ * Licensed under GPLv2 or later, see file LICENSE in this source tree.
++ *
++ */
 +
- config BRCTL
- 	bool "brctl"
- 	default y
-diff -Naur networking/Kbuild.src networking/Kbuild.src
---- networking/Kbuild.src	2010-08-23 02:44:35.000000000 +0200
-+++ networking/Kbuild.src	2016-02-08 18:58:27.298330454 +0100
-@@ -9,6 +9,9 @@
- INSERT
- lib-$(CONFIG_ARP)          += arp.o interface.o
- lib-$(CONFIG_ARPING)       += arping.o
-+# brcm begin
-+lib-$(CONFIG_SENDARP)      += sendarp.o
-+# brcm end
- lib-$(CONFIG_BRCTL)        += brctl.o
- lib-$(CONFIG_DNSD)         += dnsd.o
- lib-$(CONFIG_ETHER_WAKE)   += ether-wake.o
-diff -Naur networking/sendarp.c networking/sendarp.c
---- networking/sendarp.c	1970-01-01 01:00:00.000000000 +0100
-+++ networking/sendarp.c	2015-11-05 11:54:35.178421000 +0100
-@@ -0,0 +1,176 @@
++//config:config SENDARP
++//config:	bool "sendarp"
++//config:	default y
++//config:	help
++//config:	  Ping hosts by ARP packets.
++
++//applet:IF_SENDARP(APPLET(sendarp, BB_DIR_USR_SBIN, BB_SUID_DROP))
++
++//kbuild:lib-$(CONFIG_SENDARP) += sendarp.o
++
++//usage:#define sendarp_trivial_usage
++//usage:       "-s <src device name> -d <dst device name>"
++//usage:#define sendarp_full_usage "\n\n"
++//usage:       "Send ARP packet with src device's IP and Hardware address to dst device.\n"
++//usage:     "\nOptions:"
++//usage:     "\n   -s DEVNAME  src device name."
++//usage:     "\n   -d DEVNAME  dst device name."
++
 +#include <stdlib.h>
 +#include <string.h>
 +#include <fcntl.h>
@@ -168,13 +147,6 @@ diff -Naur networking/sendarp.c networking/sendarp.c
 +	return rc;
 +}
 +
-+//usage:#define sendarp_trivial_usage
-+//usage:       "-s <src device name> -d <dst device name>"
-+//usage:#define sendarp_full_usage "\n\n"
-+//usage:       "Send ARP packet with src device's IP and Hardware address to dst device.\n"
-+//usage:     "\nOptions:"
-+//usage:     "\n   -s DEVNAME  src device name."
-+//usage:     "\n   -d DEVNAME  dst device name."
 +static void sendArp(char *srcDev, char *destDev) {
 +    int sock;
 +    struct arpMsg arp;
