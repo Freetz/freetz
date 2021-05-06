@@ -616,6 +616,11 @@ determine_() {
 	[ -e "$unpacked/sbin/tc" ] && X="available" && in_b "FREETZ_AVM_HAS_TC"
 	[ $DOSHOW -ge 2 ] && outp "tc" "$X"
 
+	#IPTABLES
+	X="%"
+	[ -e "$unpacked/bin/xtables-multi" ] && X="available" && in_b "FREETZ_AVM_HAS_IPTABLES"
+	[ $DOSHOW -ge 2 ] && outp "iptables" "$X"
+
 
 	#SMBD
 	X="%"
