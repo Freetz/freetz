@@ -365,6 +365,12 @@ determine_() {
 	[ $DOSHOW -ge 1 ] && outp " cpu" "$CPU"
 
 
+	#SENDARP
+	P=SENDARP
+	[ -L "$unpacked/usr/sbin/sendarp" ] && X="available" || X="%"
+	[ "$X" == "available" ] && in_b "FREETZ_AVM_HAS_${P^^}"
+	[ $DOSHOW -ge 2 ] && outp "${P,,}" "$X"
+
 	#REBOOT
 	X=
 	[ -f "$unpacked/sbin/reboot" ] && X="file"
