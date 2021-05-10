@@ -42,7 +42,7 @@ Latest changes
    * Loading build kernel modules may work or do not. You'll notice.
 
  - Build system:
-   * ccache 4.2.1
+   * ccache 4.3
    * dl-tools 2021-05-04
    * kernel-/target-toolchains:
       + precompiled toolchains updated to x86_64 (only)
