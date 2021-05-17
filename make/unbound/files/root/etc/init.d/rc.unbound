@@ -20,12 +20,12 @@ case $1 in
 
 		modreg file $DAEMON conf 'unbound: unbound.conf' 1 "unbound_conf"
 		modreg cgi $DAEMON unbound
-                modreg daemon $DAEMON
+		modreg daemon $DAEMON
 
 		modlib_start $UNBOUND_ENABLED
 		;;
 	unload)
-                modunreg daemon $DAEMON
+		modunreg daemon $DAEMON
 		modunreg cgi $DAEMON
 		modunreg file $DAEMON
 		modlib_stop

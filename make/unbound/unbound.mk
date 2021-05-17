@@ -1,7 +1,11 @@
 $(call PKG_INIT_BIN, 1.13.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=0cd660a40d733acc6e7cce43731cac62
-$(PKG)_SITE:=http://www.$(pkg).net/downloads
+$(PKG)_SITE:=https://www.$(pkg).net/downloads
+### WEBSITE:=https://www.unbound.net
+### MANPAGE:=https://www.unbound.net/documentation/unbound.html
+### CHANGES:=https://www.nlnetlabs.nl/projects/unbound/download/
+### CVSREPO:=https://github.com/NLnetLabs/unbound
 
 $(PKG)_BINARIES:=$(pkg) $(pkg)-control $(pkg)-checkconf
 $(PKG)_BINARIES_BUILD_DIR:=$($(PKG)_BINARIES:%=$($(PKG)_DIR)/%)

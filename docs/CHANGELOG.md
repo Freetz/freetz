@@ -47,6 +47,9 @@ Latest changes
    * kernel-/target-toolchains:
       + precompiled toolchains updated to x86_64 (only)
 
+ - New packages, libs, modules:
+   * Unbound 1.13.1
+
  - Updated tools and hooks:
    * busybox 1.33.1
    * kconfig 5.12
