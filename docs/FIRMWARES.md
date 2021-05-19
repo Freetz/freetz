@@ -128,6 +128,7 @@ Currently supported devices and firmwares
 * __Fritz!Box 5491 Fiber__
   - 171.07.01 rev64362 {ALL}
   - 171.07.12 rev71193 {ALL} [MESH18 NL2]
+  - 171.07.27 rev88547 {ALL} [PSQ19P2NL2-aM7Poh3a]
 
 * __Fritz!Box 5530 Fiber (UNTESTED)__
   - 257.07.21 rev83233 {GER} [AXKFW2]
