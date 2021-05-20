@@ -26,6 +26,7 @@ config() {
 	mkdir "$_DIR/incoming" 2>/dev/null
 	mkdir "$_DIR/outgoing" 2>/dev/null
 	mkdir "$_DIR/conveyed" 2>/dev/null
+	mkdir -p /var/spool
 	ln -s "$_DIR" /var/spool/sms
 
 	if [ ! -d "$_DIR" ]; then
