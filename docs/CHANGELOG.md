@@ -67,6 +67,7 @@ Latest changes
    * haproxy 2.4.0
    * iperf 3.9
    * libgd 2.3.2
+   * libtirpc 1.3.2
    * mbed TLS 2.7.19/2.26.0
    * minidlna 1.3.0
    * OpenSSH 8.5p1

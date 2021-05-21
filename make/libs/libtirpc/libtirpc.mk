@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 1.2.6)
+$(call PKG_INIT_LIB, 1.3.2)
 $(PKG)_LIB_VERSION:=3.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_SHA256:=4278e9a5181d5af9cd7885322fdecebc444f9a3da87c526e7d47f7a12a37d1cc
+$(PKG)_SOURCE_SHA256:=e24eb88b8ce7db3b7ca6eb80115dd1284abc5ec32a8deccfed2224fc2532b9fd
 $(PKG)_SITE:=@SF/libtirpc
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
