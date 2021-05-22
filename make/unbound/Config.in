@@ -90,6 +90,16 @@ if FREETZ_PACKAGE_UNBOUND
 			
 			About 1,0 MB uncompressed.
 
+		config FREETZ_PACKAGE_UNBOUND_CONTROL_SETUP
+			bool "unbound-control-setup"
+			depends on FREETZ_PACKAGE_UNBOUND_CONTROL
+			select FREETZ_PACKAGE_OPENSSL
+			default n
+			help
+				unbount-control-setup - helper script for unbound-control
+				
+				About 6 kB uncompressed.
+
 	config FREETZ_PACKAGE_UNBOUND_HOST
 		bool "unbound-host"
 		default n
