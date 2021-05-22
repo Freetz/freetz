@@ -1,5 +1,6 @@
-config FREETZ_PACKAGE_UNBOUND
+menuconfig FREETZ_PACKAGE_UNBOUND
 	bool "Unbound 1.13.1"
+	select FREETZ_PACKAGE_UNBOUND_DAEMON
 	select FREETZ_LIB_libssl
 	select FREETZ_LIB_libcrypto
 	select FREETZ_LIB_libexpat
@@ -29,4 +30,81 @@ config FREETZ_PACKAGE_UNBOUND
 		  Non-goals:
 		    * An authoritative name server.
 		    * Too many Features.
+
+if FREETZ_PACKAGE_UNBOUND
+
+	config FREETZ_PACKAGE_UNBOUND_DAEMON
+		bool "unbound"
+		default y
+		help
+			unbound - Unbound DNS validating resolver
+			
+			It  uses a built in list of authoritative nameservers for the root zone
+			(.), the so called root hints.  On receiving a DNS query  it  will  ask
+			the root nameservers for an answer and will in almost all cases receive
+			a delegation to a top level domain (TLD) authoritative nameserver.   It
+			will  then ask that nameserver for an answer.  It will recursively con-
+			tinue until an answer is found or no answer  is  available  (NXDOMAIN).
+			For performance and efficiency reasons that answer is cached for a cer-
+			tain time (the answer's time-to-live or TTL).  A second query  for  the
+			same  name  will  then be answered from the cache.  Unbound can also do
+			DNSSEC validation.
+
+			About 1,1 MB uncompressed.
+
+	config FREETZ_PACKAGE_UNBOUND_ANCHOR
+		bool "unbound-anchor"
+		default n
+		help
+			unbound-anchor - Unbound anchor utility.
+			
+			Unbound-anchor performs setup or update of the root trust anchor for
+			DNSSEC validation. The program fetches the trust anchor with the
+			method from RFC7958 when regular RFC5011 update fails to bring it up to
+			date. It can be run (as root) from the commandline, or run as part of
+			startup scripts. Before you start the unbound DNS server.
+			
+			About 60 kB uncompressed.
+
+	config FREETZ_PACKAGE_UNBOUND_CHECKCONF
+		bool "unbound-checkconf"
+		default n
+		help
+			unbound-checkconf - Check unbound configuration file for errors.
+			
+			Unbound-checkconf checks the configuration file for the unbound DNS
+			resolver for syntax and other errors. The config file syntax is de-
+			scribed in unbound.conf.
+			
+			About 1,0 MB uncompressed.
+
+	config FREETZ_PACKAGE_UNBOUND_CONTROL
+		bool "unbound-control"
+		default n
+		help
+			unbound-control - Unbound remote server control utility.
+			
+			Unbound-control performs remote administration on the unbound DNS
+			server. It reads the configuration file, contacts the unbound server
+			over SSL sends the command and displays the result.
+			
+			About 1,0 MB uncompressed.
+
+	config FREETZ_PACKAGE_UNBOUND_HOST
+		bool "unbound-host"
+		default n
+		help
+			unbound-host - unbound DNS lookup utility
+			
+			Unbound-host uses the unbound validating resolver to query for the
+			hostname and display results. With the -v option it displays validation
+			status: secure, insecure, bogus (security failure).
+			
+			By default it reads no configuration file whatsoever. It attempts to
+			reach the internet root servers. With -C an unbound config file and
+			with -r resolv.conf can be read.
+			
+			About 119 kB uncompressed.
+
+endif # FREETZ_PACKAGE_UNBOUND
 

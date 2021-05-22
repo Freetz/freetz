@@ -40,6 +40,11 @@ $(PKG)_CONFIGURE_OPTIONS += --with-pthreads
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libcrypto_WITH_EC),--enable-ecdsa,--disable-ecdsa)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_OPENSSL_VERSION_1_MAX),--enable-gost,--disable-gost)
 
+$(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_UNBOUND_ANCHOR)    ,,usr/bin/unbound-anchor)
+$(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_UNBOUND_CHECKCONF) ,,usr/bin/unbound-checkconf)
+$(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_UNBOUND_CONTROL)   ,,usr/bin/unbound-control)
+$(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_UNBOUND_HOST)      ,,usr/bin/unbound-host)
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
