@@ -64,7 +64,7 @@ case $1 in
 		modlib_defaults $DAEMON_CFGFILE
 		[ ! -s "/tmp/flash/$DAEMON/root.key" ] && echo '. IN DS 20326 8 2 E06D44B80B8F1D39A95C0B0D7C65D08458E880409BBC683457104237C7F8EC8D' > /tmp/flash/$DAEMON/root.key
 		[ ! -e "/tmp/flash/$DAEMON/root.hints" ] && touch /tmp/flash/$DAEMON/root.hints
-		chown -R nobody /tmp/flash/$DAEMON
+		chown -R nobody.nobody /tmp/flash/$DAEMON
 
 		modreg file $DAEMON "unbound_hints" 'root.hints'   1 "unbound_hints"
 		modreg file $DAEMON "unbound_key"   'root.key'     1 "unbound_key"
