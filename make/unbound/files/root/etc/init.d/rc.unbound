@@ -1,7 +1,8 @@
 #!/bin/sh
 
 DAEMON=unbound
-CONF_FILE=/tmp/flash/$DAEMON/$DAEMON.conf
+DAEMON_LONG_NAME=Unbound
+DAEMON_CFGFILE=/tmp/flash/$DAEMON/$DAEMON.conf
 . /etc/init.d/modlibrc
 
 
@@ -11,9 +12,8 @@ start() {
 
 case $1 in
 	""|load)
-		[ ! -d "/tmp/flash/$DAEMON" ] && mkdir -p /tmp/flash/$DAEMON
-
-		[ ! -e "$CONF_FILE" ] && /etc/default.$DAEMON/unbound_conf > $CONF_FILE
+		modlib_add_user_and_group nobody
+		modlib_defaults $DAEMON_CFGFILE
 		[ ! -s "/tmp/flash/$DAEMON/root.key" ] && echo '. IN DS 20326 8 2 E06D44B80B8F1D39A95C0B0D7C65D08458E880409BBC683457104237C7F8EC8D' > /tmp/flash/$DAEMON/root.key
 		[ ! -e "/tmp/flash/$DAEMON/root.hints" ] && touch /tmp/flash/$DAEMON/root.hints
 		chown -R nobody /tmp/flash/$DAEMON
@@ -21,7 +21,7 @@ case $1 in
 		modreg file $DAEMON "unbound_hints" 'root.hints'   1 "unbound_hints"
 		modreg file $DAEMON "unbound_key"   'root.key'     1 "unbound_key"
 		modreg file $DAEMON "unbound_conf"  'unbound.conf' 1 "unbound_conf"
-		modreg cgi $DAEMON unbound
+		modreg cgi $DAEMON $DAEMON_LONG_NAME
 		modreg daemon $DAEMON
 
 		modlib_start $UNBOUND_ENABLED
@@ -41,13 +41,17 @@ case $1 in
 	restart)
 		modlib_restart
 		;;
+	reload)
+		modlib_reload
+		;;
 	status)
 		modlib_status
 		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|reload|status]" 1>&2
 		exit 1
 		;;
 esac
 
 exit 0
+
