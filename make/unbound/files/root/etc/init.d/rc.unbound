@@ -38,6 +38,20 @@ stop_post() {
 }
 
 
+config() {
+	[ "$FREETZ_PACKAGE_UNBOUND_WEBIF_CRON" != "y" ] && return
+	local NEW OLD="$(cat /tmp/cron.d/$DAEMON 2>/dev/null)"
+	if [ "$UNBOUND_CRON_ENABLED" == "yes" -a -n "$UNBOUND_CRON_TIMEM" -a -n "UNBOUND_CRON_TIMEH" -a -n "UNBOUND_CRON_WEEKD" ]; then
+		NEW="$UNBOUND_CRON_TIMEM $UNBOUND_CRON_TIMEH * * $UNBOUND_CRON_WEEKD  /mod/etc/init.d/rc.unbound update"
+	fi
+	if [ "$OLD" != "$NEW" ] ; then
+		mkdir -p /tmp/cron.d/
+		echo "$NEW" > /tmp/cron.d/$DAEMON
+		/mod/etc/init.d/rc.crond reload >/dev/null
+	fi
+}
+
+
 case $1 in
 	""|load|multid|rextd)
 		if [ "$1" == "multid" -o "$1" == "rextd" ]; then
@@ -58,12 +72,19 @@ case $1 in
 		modreg cgi $DAEMON $DAEMON_LONG_NAME
 		modreg daemon $DAEMON
 
+		config
 		modlib_start $UNBOUND_ENABLED
 		;;
 	unload)
 		modunreg daemon $DAEMON
 		modunreg cgi $DAEMON
 		modunreg file $DAEMON
+
+		if [ -e /tmp/cron.d/$DAEMON ]; then
+			rm -f /tmp/cron.d/$DAEMON
+			/mod/etc/init.d/rc.crond reload >/dev/null
+		fi
+
 		modlib_stop
 		;;
 	start)
@@ -81,11 +102,34 @@ case $1 in
 	reload)
 		modlib_reload
 		;;
+	update)
+		echo -n "Updating $DAEMON_LONG_NAME ... "
+		wget https://www.internic.net/domain/named.root -q -O - | grep -v '^;' > /tmp/.$DAEMON.root
+		if [ ! -s /tmp/.$DAEMON.root ]; then
+			rm -f /tmp/.$DAEMON.root
+			echo "failed."
+			exit 1
+		fi
+		if [ "$(cat /tmp/.$DAEMON.root | md5sum)" == "$(cat /tmp/flash/$DAEMON/root.hints | md5sum)" ]; then
+			echo "skipped."
+		else
+			cat /tmp/.$DAEMON.root > /tmp/flash/$DAEMON/root.hints
+			echo "done."
+			modsave flash
+			modlib_reload
+		fi
+		rm -f /tmp/.$DAEMON.root
+		;;
+	config)
+		echo -n "Configuring $DAEMON_LONG_NAME ... "
+		config
+		echo "done."
+		;;
 	status)
 		modlib_status
 		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|reload|status]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|reload|update|config|status]" 1>&2
 		exit 1
 		;;
 esac

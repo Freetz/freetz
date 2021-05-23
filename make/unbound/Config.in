@@ -39,6 +39,18 @@ if FREETZ_PACKAGE_UNBOUND
 		help
 			Freetz web interface to configure unbound daemon.
 
+		config FREETZ_PACKAGE_UNBOUND_WEBIF_CRON
+			bool "Update root servers"
+			depends on FREETZ_PACKAGE_UNBOUND_WEBIF
+			select FREETZ_BUSYBOX_MD5SUM
+			select FREETZ_PACKAGE_WGET
+			select FREETZ_PACKAGE_WGET_WITH_SSL
+			select FREETZ_PACKAGE_WGET_CA_BUNDLE
+			select FREETZ_LIB_libcrypto_WITH_EC
+			default y
+			help
+				Updates root.hints with wget by cron.
+
 	config FREETZ_PACKAGE_UNBOUND_DAEMON
 		bool "Binary unbound"
 		default n
