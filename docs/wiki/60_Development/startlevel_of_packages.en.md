@@ -28,6 +28,7 @@ List of packages which do not use the default STARTLEVEL 99.
  * DNS
     - 40: bind           (multid-wrapper may start it earlier!)
     - 40: dnsmasq        (multid-wrapper may start it earlier!)
+    - 40: unbound        (multid-wrapper may start it earlier!)
 
  * Mounting
     - 50: autofs

@@ -7,6 +7,8 @@ $(PKG)_SITE:=https://www.$(pkg).net/downloads
 ### CHANGES:=https://www.nlnetlabs.nl/projects/unbound/download/
 ### CVSREPO:=https://github.com/NLnetLabs/unbound
 
+$(PKG)_STARTLEVEL=40 # multid-wrapper may start it earlier!
+
 $(PKG)_BINARIES:=$(pkg) $(pkg)-control $(pkg)-checkconf
 $(PKG)_BINARIES_BUILD_DIR:=$($(PKG)_BINARIES:%=$($(PKG)_DIR)/%)
 $(PKG)_BINARIES_TARGET_DIR:=$($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
