@@ -1,8 +1,8 @@
-CAPTION="unbound: unbound.conf"
-DESCRIPTION="$(lang de:"Manpage auf" en:"Manpage at") www.unbound.net: <a target=blank href=http://www.unbound.net/documentation/unbound.conf.html>http://www.unbound.net/documentation/unbound.conf.html</a>"
+CAPTION="Unbound: unbound.conf"
+DESCRIPTION="$(lang de:"Manpage" en:"Manpage"): <a target=blank href=https://nlnetlabs.nl/documentation/unbound/unbound.conf/>https://nlnetlabs.nl/documentation/unbound/unbound.conf/</a>"
 
 CONFIG_FILE='/tmp/flash/unbound/unbound.conf'
-CONFIG_SAVE='modsave flash; if pidof unbound > /dev/null; then echo ""; /mod/etc/init.d/rc.unbound restart; fi'
+CONFIG_SAVE='modsave flash; pidof unbound >/dev/null && /mod/etc/init.d/rc.unbound restart'
 CONFIG_TYPE='text'
 
 TEXT_ROWS=30

@@ -18,7 +18,9 @@ case $1 in
 		[ ! -e "/tmp/flash/$DAEMON/root.hints" ] && touch /tmp/flash/$DAEMON/root.hints
 		chown -R nobody /tmp/flash/$DAEMON
 
-		modreg file $DAEMON conf 'unbound: unbound.conf' 1 "unbound_conf"
+		modreg file $DAEMON "unbound_hints" 'root.hints'   1 "unbound_hints"
+		modreg file $DAEMON "unbound_key"   'root.key'     1 "unbound_key"
+		modreg file $DAEMON "unbound_conf"  'unbound.conf' 1 "unbound_conf"
 		modreg cgi $DAEMON unbound
 		modreg daemon $DAEMON
 
