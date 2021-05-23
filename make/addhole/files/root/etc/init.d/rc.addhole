@@ -39,7 +39,7 @@ download() {
 	reload
 }
 
-clear() {
+clear_hosts() {
 	cat "$DAEMON_CFGFILE" | grep -vE "^[ \t]*#|^[ \t]*$|localhost" | sed 's/#.*//g' | grep "\." | sort -u | sed "s/^/$ADDHOLE_SINK /g" > $HOSTS 2>/dev/null
 	[ -s "$ADDHOLE_FILE" ] || echo '#' > "$HOSTS"
 	reload
@@ -111,7 +111,7 @@ case $1 in
 		;;
 	clear)
 		echo -n "Clearing $DAEMON_LONG_NAME ... "
-		clear
+		clear_hosts
 		echo "done."
 		;;
 	config)
