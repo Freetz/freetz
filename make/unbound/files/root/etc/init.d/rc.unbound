@@ -5,13 +5,47 @@ DAEMON_LONG_NAME=Unbound
 DAEMON_CFGFILE=/tmp/flash/$DAEMON/$DAEMON.conf
 . /etc/init.d/modlibrc
 
+[ -e /etc/init.d/rc.rextd ] && MASTER=rextd || MASTER=multid
+
+[ -r /etc/options.cfg ] && . /etc/options.cfg
+
+if [ "$FREETZ_AVMDAEMON_DISABLE_DNS" != "y" ]; then
+	[ "$(/etc/init.d/rc.$MASTER status)" != "running" -o "$UNBOUND_MULTID_RESTART" != "yes" ] && nomultid=y
+else
+	nomultid=y
+fi
+
+
+startdaemon_pre() {
+	[ "$nomultid" == "y" ] || /etc/init.d/rc.$MASTER stop >/dev/null
+}
 
 start() {
 	modlib_startdaemon unbound $UNBOUND_CMDLINE
 }
 
+startdaemon_post() {
+	[ "$nomultid" == "y" ] || /etc/init.d/rc.$MASTER start >/dev/null
+}
+
+
+stop_pre() {
+	[ "$nomultid" == "y" ] || /etc/init.d/rc.$MASTER stop >/dev/null
+}
+
+stop_post() {
+	[ "$nomultid" == "y" ] || /etc/init.d/rc.$MASTER start >/dev/null
+}
+
+
 case $1 in
-	""|load)
+	""|load|multid|rextd)
+		if [ "$1" == "multid" -o "$1" == "rextd" ]; then
+			[ "$UNBOUND_WRAPPER" != "yes" ] && exit
+		else
+			[ "$UNBOUND_WRAPPER" == "yes" ] && exit
+		fi
+
 		modlib_add_user_and_group nobody
 		modlib_defaults $DAEMON_CFGFILE
 		[ ! -s "/tmp/flash/$DAEMON/root.key" ] && echo '. IN DS 20326 8 2 E06D44B80B8F1D39A95C0B0D7C65D08458E880409BBC683457104237C7F8EC8D' > /tmp/flash/$DAEMON/root.key
@@ -39,6 +73,9 @@ case $1 in
 		modlib_stop
 		;;
 	restart)
+		if [ "$FREETZ_AVMDAEMON_DISABLE_DNS" != "y" ]; then
+			modlib_check_running && nomultid=y
+		fi
 		modlib_restart
 		;;
 	reload)

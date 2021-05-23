@@ -16,7 +16,7 @@ while [ $# -gt 0 ]; do
 done
 
 if [ "$multid_mode" == "start" ]; then
-	for dns_pkg in dnsmasq bind; do
+	for dns_pkg in bind dnsmasq unbound; do
 		if [ -e /mod/etc/init.d/rc.$dns_pkg ]; then
 			rc="/mod/etc/init.d/rc.$dns_pkg"
 		else
