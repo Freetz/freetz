@@ -20,7 +20,7 @@ config() {
 }
 
 startdaemon_pre() {
-	[ "$nomultid" != "y" ] && /etc/init.d/rc.$MASTER stop >/dev/null || true
+	[ "$nomultid" == "y" ] || /etc/init.d/rc.$MASTER stop >/dev/null
 }
 
 start() {
@@ -30,7 +30,7 @@ start() {
 }
 
 startdaemon_post() {
-	[ "$nomultid" != "y" ] && /etc/init.d/rc.$MASTER start >/dev/null
+	[ "$nomultid" == "y" ] || /etc/init.d/rc.$MASTER start >/dev/null
 
 	if [ ! -L "/var/flash/multid.leases" -a "$DNSMASQ_DHCP" = "yes" ]; then
 		rm -f /var/flash/multid.leases
@@ -49,11 +49,11 @@ startdaemon_post() {
 }
 
 stop_pre() {
-	[ "$nomultid" != "y" ] && /etc/init.d/rc.$MASTER stop >/dev/null
+	[ "$nomultid" == "y" ] || /etc/init.d/rc.$MASTER stop >/dev/null
 }
 
 stop_post() {
-	[ "$nomultid" != "y" ] && /etc/init.d/rc.$MASTER start >/dev/null
+	[ "$nomultid" == "y" ] || /etc/init.d/rc.$MASTER start >/dev/null
 
 	if [ -L "/var/flash/multid.leases" ]; then
 		major=$(grep tffs /proc/devices)
