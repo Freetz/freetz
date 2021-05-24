@@ -133,5 +133,10 @@ if FREETZ_PACKAGE_UNBOUND
 			
 			About 119 kB uncompressed.
 
+	config FREETZ_PACKAGE_UNBOUND_EC
+		bool "Force elliptic curve support"
+		select FREETZ_LIB_libcrypto_WITH_EC
+		default y
+
 endif # FREETZ_PACKAGE_UNBOUND
 

@@ -48,7 +48,7 @@ $(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_UNBOUND_CHECKCONF)     ,,usr/bin/unboun
 $(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_UNBOUND_CONTROL)       ,,usr/bin/unbound-control)
 $(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_UNBOUND_CONTROL_SETUP) ,,usr/bin/unbound-control-setup)
 $(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_UNBOUND_HOST)          ,,usr/bin/unbound-host)
-$(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_UNBOUND_WEBIF)         ,,etc/default.unbound/ etc/init.d/rc.unbound usr/lib/cgi-bin/unbound/ usr/lib/cgi-bin/unbound.cgi)
+$(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_UNBOUND_WEBIF)         ,,etc/default.unbound/ etc/init.d/rc.unbound usr/lib/cgi-bin/unbound.cgi)
 
 
 $(PKG_SOURCE_DOWNLOAD)
