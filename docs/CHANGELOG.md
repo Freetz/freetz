@@ -47,7 +47,8 @@ Latest changes
    * kernel-/target-toolchains:
       + precompiled toolchains updated to x86_64 (only)
 
- - New packages, libs, modules:
+ - New packages and libs:
+   * libldns 1.7.1
    * Unbound 1.13.1
 
  - Updated tools and hooks:

@@ -1,0 +1,18 @@
+config FREETZ_LIB_libldns
+	bool "libldns (libldns.so)"
+	select FREETZ_LIB_libcrypto
+	select FREETZ_LIB_libssl
+	default n
+	help
+		The goal of ldns is to simplify DNS programming, it supports recent RFCs
+		like the DNSSEC documents, and allows developers to easily create software
+		conforming to current RFCs, and experimental software for current Internet
+		Drafts. A secondary benefit of using ldns is speed; ldns is written in C
+		it should be a lot faster than Perl.
+
+	config FREETZ_LIB_libldns_WITH_EC
+		bool "Force elliptic curve support"
+		depends on FREETZ_LIB_libldns
+		select FREETZ_LIB_libcrypto_WITH_EC
+		default y
+
