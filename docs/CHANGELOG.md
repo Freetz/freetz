@@ -61,7 +61,7 @@ Latest changes
 
  - Updated packages and libs:
    * ACME.sh 2.8.9 (letsencrypt)
-   * ca-bundle 2021-04-13
+   * ca-bundle 2021-05-25
    * curl 7.76.1
    * dnsmasq 2.80/2.85
    * expat 2.4.1
