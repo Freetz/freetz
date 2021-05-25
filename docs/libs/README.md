@@ -91,6 +91,9 @@ Index:
 
 ### L
 
+  * **<u>ldns: libldns (libldns.so)</u><a id='ldns'></a>**<br>
+    The goal of ldns is to simplify DNS programming, it supports recent RFCs like the DNSSEC documents, and allows developers to easily create software conforming to current RFCs, and experimental software for current Internet Drafts. A secondary benefit of using ldns is speed; ldns is written in C it should be a lot faster than Perl.
+
   * **<u>leptonica (liblept.so)</u><a id='leptonica'></a>**<br>
     A library for efficient image processing and image analysis operations.
 
