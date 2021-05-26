@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_CURL
-	bool "Curl 7.76.1 (binary only)"
+	bool "Curl 7.77.0 (binary only)"
 	default n
 	select FREETZ_LIB_libcurl if ! FREETZ_PACKAGE_CURL_STATIC
 	help
@@ -12,32 +12,32 @@ config FREETZ_PACKAGE_CURL
 
 if FREETZ_PACKAGE_CURL
 
-config FREETZ_PACKAGE_CURL_SELECT_SSL
-	bool "Select SSL support"
-	default y
-	select FREETZ_LIB_libcurl_WITH_SSL
+	config FREETZ_PACKAGE_CURL_SELECT_SSL
+		bool "Select SSL support"
+		default y
+		select FREETZ_LIB_libcurl_WITH_SSL
 
-config FREETZ_PACKAGE_CURL_SELECT_CA_BUNDLE
-	bool "Select CA-bundle"
-	depends on FREETZ_PACKAGE_CURL_SELECT_SSL
-	default y
-	select FREETZ_PACKAGE_CA_BUNDLE
+		config FREETZ_PACKAGE_CURL_SELECT_CA_BUNDLE
+			bool "Select CA-bundle"
+			depends on FREETZ_PACKAGE_CURL_SELECT_SSL
+			default y
+			select FREETZ_PACKAGE_CA_BUNDLE
 
-config FREETZ_PACKAGE_CURL_SELECT_SFTP
-	bool "Select sftp support"
-	default n
-	select FREETZ_LIB_libcurl_WITH_SFTP
+	config FREETZ_PACKAGE_CURL_SELECT_SFTP
+		bool "Select sftp support"
+		default n
+		select FREETZ_LIB_libcurl_WITH_SFTP
 
-config FREETZ_PACKAGE_CURL_SELECT_ZLIB
-	bool "Select zlib support"
-	default n
-	select FREETZ_LIB_libcurl_WITH_ZLIB
+	config FREETZ_PACKAGE_CURL_SELECT_ZLIB
+		bool "Select zlib support"
+		default n
+		select FREETZ_LIB_libcurl_WITH_ZLIB
 
-config FREETZ_PACKAGE_CURL_STATIC
-	bool "Link statically"
-	default n
-	help
-		Causes all libraries curl binary depends on to be linked in statically
+	config FREETZ_PACKAGE_CURL_STATIC
+		bool "Link statically"
+		default n
+		help
+			Causes all libraries curl binary depends on to be linked in statically
 
 endif # FREETZ_PACKAGE_CURL
 

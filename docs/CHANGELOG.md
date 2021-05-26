@@ -63,7 +63,7 @@ Latest changes
    * ACME.sh 2.8.9 (letsencrypt)
    * apache 2.4.48
    * ca-bundle 2021-05-25
-   * curl 7.76.1
+   * curl 7.77.0
    * dnsmasq 2.80/2.85
    * expat 2.4.1
    * haproxy 2.4.0
