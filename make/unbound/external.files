@@ -1,2 +1,8 @@
-[ "$EXTERNAL_FREETZ_PACKAGE_UNBOUND" == "y" ] && EXTERNAL_FILES+=" /usr/bin/unbound /usr/bin/unbound-anchor /usr/bin/unbound-control /usr/bin/unbound-checkconf /usr/bin/unbound-host"
-[ "$EXTERNAL_FREETZ_LIB_libunbound"  == "y" ] && EXTERNAL_FILES+=" /usr/lib/freetz/libunbound.so.8.1.12"
+[ "$EXTERNAL_FREETZ_PACKAGE_UNBOUND_DAEMON"         == "y" ] && EXTERNAL_FILES+=" /usr/bin/unbound"
+[ "$EXTERNAL_FREETZ_PACKAGE_UNBOUND_ANCHOR"         == "y" ] && EXTERNAL_FILES+=" /usr/bin/unbound-anchor"
+[ "$EXTERNAL_FREETZ_PACKAGE_UNBOUND_CHECKCONF"      == "y" ] && EXTERNAL_FILES+=" /usr/bin/unbound-checkconf"
+[ "$EXTERNAL_FREETZ_PACKAGE_UNBOUND_CONTROL"        == "y" ] && EXTERNAL_FILES+=" /usr/bin/unbound-control"
+[ "$EXTERNAL_FREETZ_PACKAGE_UNBOUND_CONTROL_SETUP"  == "y" ] && EXTERNAL_FILES+=" /usr/bin/unbound-control-setup"
+[ "$EXTERNAL_FREETZ_PACKAGE_UNBOUND_HOST"           == "y" ] && EXTERNAL_FILES+=" /usr/bin/unbound-host"
+[ "$EXTERNAL_FREETZ_LIB_libunbound"                 == "y" ] && EXTERNAL_FILES+=" ${FREETZ_LIBRARY_DIR}/libunbound.so.8.1.12"
+
