@@ -58,7 +58,6 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARIES_BUILD_DIR) $($(PKG)_WRAPPED_BUILD_DIR) $($(PKG)_SCRIPTS_BUILD_DIR): $($(PKG)_DIR)/.configured
-	wget -N -q -c https://www.internic.net/domain/named.cache -O $(UNBOUND_DIR)/root.hints
 	$(SUBMAKE) -C $(UNBOUND_DIR)
 
 $($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/bin/%: $($(PKG)_DIR)/%
@@ -94,3 +93,4 @@ $(pkg)-uninstall:
 
 $(call PKG_ADD_LIB,libunbound)
 $(PKG_FINISH)
+
