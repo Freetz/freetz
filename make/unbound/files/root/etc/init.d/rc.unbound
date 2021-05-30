@@ -66,6 +66,8 @@ case $1 in
 		[ ! -e "/tmp/flash/$DAEMON/root.hints" ] && touch /tmp/flash/$DAEMON/root.hints
 		chown -R nobody.nobody /tmp/flash/$DAEMON
 
+		[ "$FREETZ_PACKAGE_UNBOUND_WEBIF_STATS" == "y" ] && \
+		modreg file $DAEMON "unbound_stats" 'Stats'        1 "unbound_stats"
 		modreg file $DAEMON "unbound_hints" 'root.hints'   1 "unbound_hints"
 		modreg file $DAEMON "unbound_key"   'root.key'     1 "unbound_key"
 		modreg file $DAEMON "unbound_conf"  'unbound.conf' 1 "unbound_conf"
@@ -128,8 +130,12 @@ case $1 in
 	status)
 		modlib_status
 		;;
+	stats)
+		[ -n "$2" ] && SHORT='|=0$'
+		(unbound-control stats_noreset || echo "Error") | grep -vE "^thread|^histogram$SHORT"
+		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|reload|update|config|status]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|reload|update|config|status|stats]" 1>&2
 		exit 1
 		;;
 esac

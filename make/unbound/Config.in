@@ -29,6 +29,14 @@ if FREETZ_PACKAGE_UNBOUND
 			help
 				Updates root.hints with wget by cron.
 
+		config FREETZ_PACKAGE_UNBOUND_WEBIF_STATS
+			bool "Show daemon stats"
+			depends on FREETZ_PACKAGE_UNBOUND_WEBIF
+			select FREETZ_PACKAGE_UNBOUND_CONTROL
+			default y
+			help
+				Uses unbound-control to show stats.
+
 	config FREETZ_PACKAGE_UNBOUND_DAEMON
 		bool "Binary unbound"
 		default n
