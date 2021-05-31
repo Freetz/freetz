@@ -90,6 +90,7 @@ Currently supported devices and firmwares
   - 140.06.83 rev43895 {INT}
   - 140.07.01 rev61726 {INT}
   - 140.07.12 rev70430 {INT} [MESH18 NL2]
+  - 140.07.27 rev88861 {ALL} [PSQ19P2NL2-aM7Poh3a]
 
 ### Fritz!Box WAN (4xxx)
 
