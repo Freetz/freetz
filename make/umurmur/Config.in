@@ -23,6 +23,7 @@ choice
 	config FREETZ_PACKAGE_UMURMUR_OPENSSL
 		bool "OpenSSL"
 		select FREETZ_LIB_libcrypto
+		select FREETZ_LIB_libcrypto_WITH_EC
 		select FREETZ_LIB_libssl
 
 	config FREETZ_PACKAGE_UMURMUR_MBEDTLS
@@ -31,3 +32,4 @@ choice
 		select FREETZ_LIB_libmbedtls
 		select FREETZ_LIB_libmbedx509
 endchoice
+
