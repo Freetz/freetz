@@ -60,7 +60,7 @@ Latest changes
    * Updated version 1.33.1
 
  - Updated packages and libs:
-   * ACME.sh 2.8.9 (letsencrypt)
+   * ACME.sh 2.9.0 (letsencrypt)
    * apache 2.4.48
    * ca-bundle 2021-05-25
    * curl 7.77.0
