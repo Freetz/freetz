@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 8.5p1)
+$(call PKG_INIT_BIN, 8.6p1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA1:=72eadcbe313b07b1dd3b693e41d3cd56d354e24e
+$(PKG)_SOURCE_SHA1:=8f9f0c94317baeb97747d6258f3997b4542762c0
 $(PKG)_SITE:=http://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable,ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
 ### WEBSITE:=https://www.openssh.com/
 ### MANPAGE:=https://www.openssh.com/manual.html
@@ -53,6 +53,7 @@ $(PKG)_EXTRA_CFLAGS  += -ffunction-sections -fdata-sections
 $(PKG)_EXTRA_LDFLAGS += -Wl,--gc-sections
 $(PKG)_EXTRA_LDFLAGS += $(if $(FREETZ_PACKAGE_OPENSSH_STATIC),-static)
 
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -71,6 +72,7 @@ $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_BIN_BINARIES_TARGET_DIR) $($(PKG)_SBIN_BINARIES_TARGET_DIR) $($(PKG)_LIB_BINARIES_TARGET_DIR)
 
+
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(OPENSSH_DIR) clean
 
@@ -78,3 +80,4 @@ $(pkg)-uninstall:
 	$(RM) $(OPENSSH_BIN_BINARIES_TARGET_DIR) $(OPENSSH_SBIN_BINARIES_TARGET_DIR) $(OPENSSH_LIB_BINARIES_TARGET_DIR)
 
 $(PKG_FINISH)
+

@@ -2,7 +2,7 @@ comment "OpenSSH (not available, needs OpenSSL 1.0 or newer)"
 	depends on !FREETZ_OPENSSL_VERSION_1_MIN
 
 config FREETZ_PACKAGE_OPENSSH
-	bool "OpenSSH 8.5p1"
+	bool "OpenSSH 8.6p1"
 	depends on FREETZ_OPENSSL_VERSION_1_MIN
 	#
 	select FREETZ_LIB_libcrypto               if !FREETZ_PACKAGE_OPENSSH_INTERNAL_CRYPTO && !FREETZ_PACKAGE_OPENSSH_STATIC
@@ -22,93 +22,94 @@ config FREETZ_PACKAGE_OPENSSH
 
 if FREETZ_PACKAGE_OPENSSH
 
-config FREETZ_PACKAGE_OPENSSH_AUTHORIZED_KEYS
-	bool "Select authorized_keys"
-	default y
-	select FREETZ_PACKAGE_AUTHORIZED_KEYS
-	help
-		Selects the "authorized_keys: Frontend for SSH keys" web
-		interface package to manage the authorized_keys file for
-		key-based authentication and private keys.
+	config FREETZ_PACKAGE_OPENSSH_AUTHORIZED_KEYS
+		bool "Select authorized_keys"
+		default y
+		select FREETZ_PACKAGE_AUTHORIZED_KEYS
+		help
+			Selects the "authorized_keys: Frontend for SSH keys" web
+			interface package to manage the authorized_keys file for
+			key-based authentication and private keys.
 
-config FREETZ_PACKAGE_OPENSSH_sshd
-	bool "SSH server (sshd)"
-	default n
+	config FREETZ_PACKAGE_OPENSSH_sshd
+		bool "SSH server (sshd)"
+		default n
 
-comment "SSH client (ssh) (not available, provided by dropbear)"
-	depends on FREETZ_PACKAGE_DROPBEAR && !FREETZ_PACKAGE_DROPBEAR_SERVER_ONLY
-config FREETZ_PACKAGE_OPENSSH_ssh
-	bool "SSH client (ssh)"
-	depends on !FREETZ_PACKAGE_DROPBEAR || FREETZ_PACKAGE_DROPBEAR_SERVER_ONLY
-	default n
+	comment "SSH client (ssh) (not available, provided by dropbear)"
+		depends on FREETZ_PACKAGE_DROPBEAR && !FREETZ_PACKAGE_DROPBEAR_SERVER_ONLY
+	config FREETZ_PACKAGE_OPENSSH_ssh
+		bool "SSH client (ssh)"
+		depends on !FREETZ_PACKAGE_DROPBEAR || FREETZ_PACKAGE_DROPBEAR_SERVER_ONLY
+		default n
 
-comment "Secure copy (scp) (not available, provided by dropbear)"
-	depends on FREETZ_PACKAGE_DROPBEAR && !FREETZ_PACKAGE_DROPBEAR_SERVER_ONLY
-config FREETZ_PACKAGE_OPENSSH_scp
-	bool "Secure copy (scp)"
-	depends on !FREETZ_PACKAGE_DROPBEAR || FREETZ_PACKAGE_DROPBEAR_SERVER_ONLY
-	select FREETZ_PACKAGE_OPENSSH_ssh
-	default n
+	comment "Secure copy (scp) (not available, provided by dropbear)"
+		depends on FREETZ_PACKAGE_DROPBEAR && !FREETZ_PACKAGE_DROPBEAR_SERVER_ONLY
+	config FREETZ_PACKAGE_OPENSSH_scp
+		bool "Secure copy (scp)"
+		depends on !FREETZ_PACKAGE_DROPBEAR || FREETZ_PACKAGE_DROPBEAR_SERVER_ONLY
+		select FREETZ_PACKAGE_OPENSSH_ssh
+		default n
 
-config FREETZ_PACKAGE_OPENSSH_CLIENTUTILS
-	bool "Client utilities (ssh-add, ssh-agent)"
-	select FREETZ_PACKAGE_OPENSSH_ssh_add
-	select FREETZ_PACKAGE_OPENSSH_ssh_agent
-	default n
-if FREETZ_PACKAGE_OPENSSH_CLIENTUTILS
-config FREETZ_PACKAGE_OPENSSH_ssh_add
-	bool
-config FREETZ_PACKAGE_OPENSSH_ssh_agent
-	bool
-endif # FREETZ_PACKAGE_OPENSSH_CLIENTUTILS
+	config FREETZ_PACKAGE_OPENSSH_CLIENTUTILS
+		bool "Client utilities (ssh-add, ssh-agent)"
+		select FREETZ_PACKAGE_OPENSSH_ssh_add
+		select FREETZ_PACKAGE_OPENSSH_ssh_agent
+		default n
 
-config FREETZ_PACKAGE_OPENSSH_KEYUTILS
-	bool "Key utilities (ssh-keygen, ssh-keysign, ssh-keyscan)"
-	select FREETZ_PACKAGE_OPENSSH_ssh_keygen
-	select FREETZ_PACKAGE_OPENSSH_ssh_keysign
-	select FREETZ_PACKAGE_OPENSSH_ssh_keyscan
-	default n
-if FREETZ_PACKAGE_OPENSSH_KEYUTILS
-config FREETZ_PACKAGE_OPENSSH_ssh_keygen
-	bool
-config FREETZ_PACKAGE_OPENSSH_ssh_keysign
-	bool
-config FREETZ_PACKAGE_OPENSSH_ssh_keyscan
-	bool
-endif # FREETZ_PACKAGE_OPENSSH_KEYUTILS
+	if FREETZ_PACKAGE_OPENSSH_CLIENTUTILS
+		config FREETZ_PACKAGE_OPENSSH_ssh_add
+			bool
+		config FREETZ_PACKAGE_OPENSSH_ssh_agent
+			bool
+	endif # FREETZ_PACKAGE_OPENSSH_CLIENTUTILS
 
-config FREETZ_PACKAGE_OPENSSH_sftp
-	bool "SFTP client (sftp)"
-	default n
+	config FREETZ_PACKAGE_OPENSSH_KEYUTILS
+		bool "Key utilities (ssh-keygen, ssh-keysign, ssh-keyscan)"
+		select FREETZ_PACKAGE_OPENSSH_ssh_keygen
+		select FREETZ_PACKAGE_OPENSSH_ssh_keysign
+		select FREETZ_PACKAGE_OPENSSH_ssh_keyscan
+		default n
+	if FREETZ_PACKAGE_OPENSSH_KEYUTILS
+		config FREETZ_PACKAGE_OPENSSH_ssh_keygen
+			bool
+		config FREETZ_PACKAGE_OPENSSH_ssh_keysign
+			bool
+		config FREETZ_PACKAGE_OPENSSH_ssh_keyscan
+			bool
+	endif # FREETZ_PACKAGE_OPENSSH_KEYUTILS
 
-config FREETZ_PACKAGE_OPENSSH_sftp_server
-	bool "SFTP server (sftp-server)"
-	default n
+	config FREETZ_PACKAGE_OPENSSH_sftp
+		bool "SFTP client (sftp)"
+		default n
 
-comment "Configuration ---"
+	config FREETZ_PACKAGE_OPENSSH_sftp_server
+		bool "SFTP server (sftp-server)"
+		default n
 
-config FREETZ_PACKAGE_OPENSSH_INTERNAL_CRYPTO
-	bool "Use internal crypto algorithms only"
-	default n
-	help
-		Disable use of OpenSSL and use internal crypto algorithms only.
+	comment "Configuration ---"
 
-		Note: enabling this option
-		 - eliminates OpenSSL as OpenSSH runtime dependency on the one hand
-		 - limits the available KEy eXchange algorithms to ed25519 only
-		   on the other one (your client must support it)
+	config FREETZ_PACKAGE_OPENSSH_INTERNAL_CRYPTO
+		bool "Use internal crypto algorithms only"
+		default n
+		help
+			Disable use of OpenSSL and use internal crypto algorithms only.
 
-config FREETZ_PACKAGE_OPENSSH_STATIC
-	bool "Link statically"
-	default n
-	help
-		OpenSSH needs the following shared libraries which
-		can be linked in statically by activating this switch:
-		- libcrypt
-		- libcrypto
-		- libdl
-		- libutil
-		- libz
+			Note: enabling this option
+			 - eliminates OpenSSL as OpenSSH runtime dependency on the one hand
+			 - limits the available KEy eXchange algorithms to ed25519 only
+			   on the other one (your client must support it)
+
+	config FREETZ_PACKAGE_OPENSSH_STATIC
+		bool "Link statically"
+		default n
+		help
+			OpenSSH needs the following shared libraries which
+			can be linked in statically by activating this switch:
+			- libcrypt
+			- libcrypto
+			- libdl
+			- libutil
+			- libz
 
 endif # FREETZ_PACKAGE_OPENSSH
 
