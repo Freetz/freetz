@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 9.11.22)
+$(call PKG_INIT_BIN, 9.11.32)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=afc6d8015006f1cabf699ff19f517bb8fd9c1811e5231f26baf51c3550262ac9
+$(PKG)_SOURCE_SHA256:=cbf8cb4b74dd1452d97c3a2a8c625ea346df8516b4b3508ef07443121a591342
 $(PKG)_SITE:=http://ftp.isc.org/isc/bind9/$($(PKG)_VERSION)
 
 $(PKG)_STARTLEVEL=40 # multid-wrapper may start it earlier!

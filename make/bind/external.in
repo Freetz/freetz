@@ -7,35 +7,41 @@ config EXTERNAL_FREETZ_PACKAGE_BIND
 		 /usr/sbin/named
 		 /usr/sbin/rndc
 		 /usr/bin/nsupdate
-
-config EXTERNAL_FREETZ_PACKAGE_BIND_NAMED
-	depends on EXTERNAL_FREETZ_PACKAGE_BIND && FREETZ_PACKAGE_BIND_NAMED
-	bool "named"
-	default n
-	help
-		externals the following file(s):
-		 /usr/sbin/named
-
-config EXTERNAL_FREETZ_PACKAGE_BIND_RNDC
-	depends on EXTERNAL_FREETZ_PACKAGE_BIND && FREETZ_PACKAGE_BIND_RNDC
-	bool "rndc"
-	default n
-	help
-		externals the following file(s):
-		 /usr/sbin/rndc
-
-config EXTERNAL_FREETZ_PACKAGE_BIND_NSUPDATE
-	depends on EXTERNAL_FREETZ_PACKAGE_BIND && FREETZ_PACKAGE_BIND_NSUPDATE
-	bool "nsupdate"
-	default n
-	help
-		externals the following file(s):
-		 /usr/bin/nsupdate
-
-config EXTERNAL_FREETZ_PACKAGE_BIND_DIG
-	depends on EXTERNAL_FREETZ_PACKAGE_BIND && FREETZ_PACKAGE_BIND_DIG
-	bool "dig"
-	default n
-	help
-		externals the following file(s):
 		 /usr/bin/dig
+
+if EXTERNAL_FREETZ_PACKAGE_BIND
+
+	config EXTERNAL_FREETZ_PACKAGE_BIND_NAMED
+		depends on FREETZ_PACKAGE_BIND_NAMED
+		bool "named"
+		default n
+		help
+			externals the following file(s):
+			 /usr/sbin/named
+
+	config EXTERNAL_FREETZ_PACKAGE_BIND_RNDC
+		depends on FREETZ_PACKAGE_BIND_RNDC
+		bool "rndc"
+		default n
+		help
+			externals the following file(s):
+			 /usr/sbin/rndc
+
+	config EXTERNAL_FREETZ_PACKAGE_BIND_NSUPDATE
+		depends on FREETZ_PACKAGE_BIND_NSUPDATE
+		bool "nsupdate"
+		default n
+		help
+			externals the following file(s):
+			 /usr/bin/nsupdate
+
+	config EXTERNAL_FREETZ_PACKAGE_BIND_DIG
+		depends on FREETZ_PACKAGE_BIND_DIG
+		bool "dig"
+		default n
+		help
+			externals the following file(s):
+			 /usr/bin/dig
+
+endif # EXTERNAL_FREETZ_PACKAGE_BIND
+
