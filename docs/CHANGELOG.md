@@ -67,6 +67,7 @@ Latest changes
    * curl 7.77.0
    * dnsmasq 2.80/2.85
    * expat 2.4.1
+   * gnutls 3.6.16
    * haproxy 2.4.0
    * iperf 3.9
    * libgd 2.3.2
