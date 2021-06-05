@@ -70,6 +70,7 @@ Latest changes
    * gnutls 3.6.16
    * haproxy 2.4.0
    * iperf 3.9
+   * libgcrypt 1.9.3
    * libgd 2.3.2
    * libtirpc 1.3.2
    * mbed TLS 2.7.19/2.26.0
