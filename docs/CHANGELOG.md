@@ -79,7 +79,7 @@ Latest changes
    * OpenVPN 2.4.11/2.5.2
    * Perl 5.32.1
    * stunnel 5.59
-   * Tor 0.4.5.7
+   * Tor 0.4.5.8
    * unrar 6.0.6
    * vsftpd 3.0.4
    * wireguard-linux-compat 1.0.20210424
