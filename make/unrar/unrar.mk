@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 6.0.1)
+$(call PKG_INIT_BIN, 6.0.6)
 $(PKG)_SOURCE:=unrarsrc-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=43e4d3ac762e2f58bfa9e37693efa342c1363eb1029fab409dfdf69171201450
+$(PKG)_SOURCE_SHA256:=011ef7290d3394a62bb5bfced914cd510a7eea7255cf69417f9c952bb6056588
 $(PKG)_SITE:=http://www.rarlab.com/rar
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/unrar
