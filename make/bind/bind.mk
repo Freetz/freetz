@@ -26,6 +26,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --enable-atomic=no
 $(PKG)_CONFIGURE_OPTIONS += --enable-epoll=no
+$(PKG)_CONFIGURE_OPTIONS += --with-lmdb=no
 $(PKG)_CONFIGURE_OPTIONS += --with-randomdev="/dev/random"
 $(PKG)_CONFIGURE_OPTIONS += --with-libtool
 $(PKG)_CONFIGURE_OPTIONS += --without-openssl
