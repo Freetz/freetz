@@ -3,7 +3,7 @@ Description: Adding support for UTF8.
 
 --- features.c
 +++ features.c
-@@ -27,6 +27,10 @@ handle_feat(struct vsf_session* p_sess)
+@@ -27,6 +27,10 @@
        vsf_cmdio_write_raw(p_sess, " AUTH TLS\r\n");
      }
    }
@@ -16,7 +16,7 @@ Description: Adding support for UTF8.
      vsf_cmdio_write_raw(p_sess, " EPRT\r\n");
 --- parseconf.c
 +++ parseconf.c
-@@ -28,6 +28,7 @@ static struct parseconf_bool_setting
+@@ -28,6 +28,7 @@
  parseconf_bool_array[] =
  {
    { "anonymous_enable", &tunable_anonymous_enable },
@@ -34,7 +34,7 @@ Description: Adding support for UTF8.
  int tunable_pasv_enable;
  int tunable_port_enable;
  int tunable_chroot_local_user;
-@@ -150,6 +151,7 @@ tunables_load_defaults()
+@@ -154,6 +155,7 @@
  {
    tunable_anonymous_enable = 1;
    tunable_local_enable = 0;
@@ -44,7 +44,7 @@ Description: Adding support for UTF8.
    tunable_chroot_local_user = 0;
 --- tunables.h
 +++ tunables.h
-@@ -11,6 +11,7 @@ void tunables_load_defaults();
+@@ -11,6 +11,7 @@
  /* Booleans */
  extern int tunable_anonymous_enable;          /* Allow anon logins */
  extern int tunable_local_enable;              /* Allow local logins */

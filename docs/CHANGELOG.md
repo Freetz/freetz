@@ -78,6 +78,7 @@ Latest changes
    * Perl 5.32.1
    * stunnel 5.59
    * Tor 0.4.5.7
+   * vsftpd 3.0.4
    * wireguard-linux-compat 1.0.20210424
    * wireguard-tools 1.0.20210424
 

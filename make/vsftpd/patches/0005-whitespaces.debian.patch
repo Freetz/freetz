@@ -3,7 +3,7 @@ Description: trim white spaces from option values (Closes: #419857, #536803).
 
 --- parseconf.c
 +++ parseconf.c
-@@ -279,7 +279,7 @@ vsf_parseconf_load_setting(const char* p
+@@ -283,7 +283,7 @@
          }
          else
          {
@@ -14,7 +14,7 @@ Description: trim white spaces from option values (Closes: #419857, #536803).
        }
 --- str.c
 +++ str.c
-@@ -104,6 +104,18 @@ str_strdup(const struct mystr* p_str)
+@@ -104,6 +104,18 @@
    return vsf_sysutil_strdup(str_getbuf(p_str));
  }
  
@@ -35,7 +35,7 @@ Description: trim white spaces from option values (Closes: #419857, #536803).
  {
 --- str.h
 +++ str.h
-@@ -31,6 +31,7 @@ void str_alloc_ulong(struct mystr* p_str
+@@ -31,6 +31,7 @@
  void str_alloc_filesize_t(struct mystr* p_str, filesize_t the_filesize);
  void str_copy(struct mystr* p_dest, const struct mystr* p_src);
  const char* str_strdup(const struct mystr* p_str);
@@ -45,7 +45,7 @@ Description: trim white spaces from option values (Closes: #419857, #536803).
  void str_trunc(struct mystr* p_str, unsigned int trunc_len);
 --- sysutil.c
 +++ sysutil.c
-@@ -1035,6 +1035,18 @@ vsf_sysutil_strdup(const char* p_str)
+@@ -1035,6 +1035,18 @@
    return strdup(p_str);
  }
  
@@ -66,7 +66,7 @@ Description: trim white spaces from option values (Closes: #419857, #536803).
  {
 --- sysutil.h
 +++ sysutil.h
-@@ -186,6 +186,7 @@ int vsf_sysutil_wait_get_exitcode(
+@@ -187,6 +187,7 @@
  /* Various string functions */
  unsigned int vsf_sysutil_strlen(const char* p_text);
  char* vsf_sysutil_strdup(const char* p_str);
