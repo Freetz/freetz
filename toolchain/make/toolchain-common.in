@@ -15,6 +15,11 @@ ifeq ($(strip $(FREETZ_TOOLCHAIN_32BIT)),y)
 TOOLCHAIN_HOST_CFLAGS+=$(HOST_CFLAGS_FORCE_32BIT_CODE)
 endif
 
+# gcc5 does not like be compiled by gcc11/C++17
+ifeq ($(strip $(FREETZ_TARGET_GCC_5_MAX)),y)
+TOOLCHAIN_HOST_CFLAGS+=--std=c++14
+endif
+
 GCC_COMMON_CONFIGURE_OPTIONS_HW_CAPABILITIES:=
 ifeq ($(strip $(FREETZ_TARGET_ARCH_ARM)),y)
 GCC_COMMON_CONFIGURE_OPTIONS_HW_CAPABILITIES+=$(if $(call qstrip,$(FREETZ_GCC_CPU)),--with-cpu=$(call qstrip,$(FREETZ_GCC_CPU)))
@@ -125,3 +130,4 @@ define COPY_KERNEL_HEADERS
 		cp -pLR $(strip $(1))/include/$(if $(strip $(3)),$(strip $(3)),*) $(strip $(2))/include/; \
 	fi;
 endef
+
