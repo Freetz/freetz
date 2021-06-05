@@ -1,4 +1,4 @@
-# AutoFS 5.0.5/5.1.6
+# AutoFS 5.0.5/5.1.7
 
 Mit diesem Paket können verschiedene Dateisysteme nach /var/media/autofs
 gemountet werden.
