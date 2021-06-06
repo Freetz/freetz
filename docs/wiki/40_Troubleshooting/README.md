@@ -7,9 +7,9 @@
     * [Konfiguration Chatzilla-Plugin in Firefox](irc_channel.md#konfiguration-chatzilla-plugin-in-firefox)
  - [Troubleshooting Build-Abbruch](make_fail.md)
  - [Häufige selbständige Reboots](random_reboots.md)
-    * [Weiterführende Links](random_reboots.md#weiterfhrende-links)
+    * [Weiterführende Links](random_reboots.md#weiterführende-links)
  - [Kaputtes Telefonbuch reparieren](repair_phonebook.md)
     * [Symptom](repair_phonebook.md#symptom)
     * [Ursache](repair_phonebook.md#ursache)
-    * [Lösung](repair_phonebook.md#lsung)
+    * [Lösung](repair_phonebook.md#lösung)
 
