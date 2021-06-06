@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 1.37)
-$(PKG)_LIB_VERSION:=0.28.0
+$(call PKG_INIT_LIB, 1.42)
+$(PKG)_LIB_VERSION:=0.32.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=729f22d917494fdc4b54fce5aa6547c7
+$(PKG)_SOURCE_MD5:=133fed221ba8f63f5842858a1ff67cb3
 $(PKG)_SITE:=ftp://ftp.gnupg.org/gcrypt/libgpg-error
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
@@ -36,6 +36,7 @@ $(pkg): $($(PKG)_STAGING_BINARY)
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
+
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(LIBGPG_ERROR_DIR) clean
 	$(RM) -r \
@@ -49,3 +50,4 @@ $(pkg)-uninstall:
 	$(RM) $(LIBGPG_ERROR_TARGET_DIR)/libgpg-error*.so*
 
 $(PKG_FINISH)
+

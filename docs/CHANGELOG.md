@@ -73,6 +73,7 @@ Latest changes
    * iperf 3.9
    * libgcrypt 1.9.3
    * libgd 2.3.2
+   * libgpg-error 1.42
    * libtirpc 1.3.2
    * mbed TLS 2.7.19/2.26.0
    * minidlna 1.3.0
