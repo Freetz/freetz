@@ -1,50 +1,52 @@
 config FREETZ_PACKAGE_BIND
 	bool "BIND 9.11.32"
+	select FREETZ_LIB_libpthread if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	default n
 	help
 		BIND is an implementation of the Domain Name System (DNS) protocols.
 		The name BIND stands for "Berkeley Internet Name Daemon".
 		You have to provide the config and needed zone files yourself.
 
-config FREETZ_PACKAGE_BIND_NAMED
-	bool "named"
-	depends on FREETZ_PACKAGE_BIND
-	default y
-	help
-		Adds named, a internet domain name server.
+if FREETZ_PACKAGE_BIND
 
-comment "HINT: Don't forget to enable the DNS server."
-depends on FREETZ_PACKAGE_BIND_NAMED && \
-	FREETZ_AVMDAEMON_DISABLE_DNS
+	config FREETZ_PACKAGE_BIND_NAMED
+		bool "named"
+		default y
+		help
+			Adds named, a internet domain name server.
 
-config FREETZ_PACKAGE_BIND_NAMED_DISABLE_DNS
-	bool "Disable multid's DNS"
-	depends on FREETZ_PACKAGE_BIND_NAMED
-	depends on FREETZ_AVM_HAS_AVMDAEMON_PRELOAD
-	select FREETZ_AVMDAEMON_DISABLE_MULTIDPORTS
-	select FREETZ_AVMDAEMON_DISABLE_DNS
-	select FREETZ_AVMDAEMON_DISABLE_LLMNR
-	default y
-	help
-		This selects the remapping of multid's DNS (and LLMNR) ports.
+		comment "HINT: Don't forget to enable the DNS server."
+		depends on FREETZ_PACKAGE_BIND_NAMED && \
+			FREETZ_AVMDAEMON_DISABLE_DNS
 
-config FREETZ_PACKAGE_BIND_RNDC
-	bool "rndc (binary only)"
-	depends on FREETZ_PACKAGE_BIND
-	default n
-	help
-		Adds the rndc name server control utility binary.
+		config FREETZ_PACKAGE_BIND_NAMED_DISABLE_DNS
+			bool "Disable multid's DNS"
+			depends on FREETZ_PACKAGE_BIND_NAMED
+			depends on FREETZ_AVM_HAS_AVMDAEMON_PRELOAD
+			select FREETZ_AVMDAEMON_DISABLE_MULTIDPORTS
+			select FREETZ_AVMDAEMON_DISABLE_DNS
+			select FREETZ_AVMDAEMON_DISABLE_LLMNR
+			default y
+			help
+				This selects the remapping of multid's DNS (and LLMNR) ports.
 
-config FREETZ_PACKAGE_BIND_NSUPDATE
-	bool "nsupdate (binary only)"
-	depends on FREETZ_PACKAGE_BIND
-	default n
-	help
-		Adds the nsupdate binary for manipulation dynamic Zones.
+	config FREETZ_PACKAGE_BIND_RNDC
+		bool "rndc (binary only)"
+		default n
+		help
+			Adds the rndc name server control utility binary.
 
-config FREETZ_PACKAGE_BIND_DIG
-	bool "dig (binary only)"
-	depends on FREETZ_PACKAGE_BIND
-	default n
-	help
-		Adds the dig DNS lookup utility.
+	config FREETZ_PACKAGE_BIND_NSUPDATE
+		bool "nsupdate (binary only)"
+		default n
+		help
+			Adds the nsupdate binary for manipulation dynamic Zones.
+
+	config FREETZ_PACKAGE_BIND_DIG
+		bool "dig (binary only)"
+		default n
+		help
+			Adds the dig DNS lookup utility.
+
+endif # FREETZ_PACKAGE_BIND
+

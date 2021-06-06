@@ -39,7 +39,7 @@ $(PKG)_CONFIGURE_OPTIONS += --without-purify
 $(PKG)_CONFIGURE_OPTIONS += --without-libjson
 $(PKG)_CONFIGURE_OPTIONS += --without-libxml2
 $(PKG)_CONFIGURE_OPTIONS += --without-zlib
-$(PKG)_CONFIGURE_OPTIONS += --disable-threads
+$(PKG)_CONFIGURE_OPTIONS += --enable-threads
 $(PKG)_CONFIGURE_OPTIONS += --disable-backtrace
 $(PKG)_CONFIGURE_OPTIONS += --disable-symtable
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
@@ -49,6 +49,7 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 $(PKG)_MAKE_FLAGS += EXTRA_CFLAGS="-ffunction-sections -fdata-sections" EXTRA_BINARY_LDFLAGS="-Wl,--gc-sections"
 
 $(PKG)_EXPORT_LIB_DIR := $(FREETZ_BASE_DIR)/$(BIND_DIR)/_exportlib
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -74,6 +75,7 @@ $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR_sbin) $($(PKG)_BINARIES_TARGET_DIR_bin) $($(PKG)_EXPORT_LIB_DIR)/.installed
 
+
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(BIND_DIR) clean
 	$(RM) -r $(BIND_DIR)/.configured $(BIND_DIR)/.compiled $(BIND_EXPORT_LIB_DIR)/.installed $(BIND_EXPORT_LIB_DIR)
@@ -82,3 +84,4 @@ $(pkg)-uninstall:
 	$(RM) $(BIND_BINARIES_ALL_TARGET_DIR_sbin) $(BIND_BINARIES_ALL_TARGET_DIR_bin)
 
 $(PKG_FINISH)
+
