@@ -8,8 +8,8 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
 
-$(PKG)_DIGESTS            := blake2 crc gostr3411-94 md4 md5 rmd160 sha1 sha256 sha512 stribog tiger whirlpool
-$(PKG)_SYMMETRIC_CIPHERS  := aes arcfour blowfish camellia cast5 des gost28147 idea rfc2268 salsa20 seed serpent twofish
+$(PKG)_DIGESTS            := blake2 crc gostr3411-94 md2 md4 md5 rmd160 sha1 sha3 sha256 sha512 sm3 stribog tiger whirlpool
+$(PKG)_SYMMETRIC_CIPHERS  := aes arcfour blowfish camellia cast5 chacha20 des gost28147 idea rfc2268 salsa20 seed serpent sm4 twofish
 $(PKG)_ASYMMETRIC_CIPHERS := dsa ecc elgamal rsa
 $(foreach i,DIGEST SYMMETRIC_CIPHER ASYMMETRIC_CIPHER, \
   $(eval $(PKG)_REBUILD_SUBOPTS += $(patsubst %,FREETZ_LIB_libgcrypt_WITH_$(call LEGAL_VARNAME,$(i))_%,$($(PKG)_$(i)S))) \

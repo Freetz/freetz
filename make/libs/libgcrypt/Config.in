@@ -6,6 +6,7 @@ config FREETZ_LIB_libgcrypt
 	select FREETZ_LIB_libgcrypt_WITH_DIGEST_sha1
 	select FREETZ_LIB_libgcrypt_WITH_DIGEST_sha256
 	select FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_aes
+	select FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_chacha20
 	select FREETZ_LIB_libgcrypt_WITH_ASYMMETRIC_CIPHER_ecc
 	select FREETZ_LIB_libgcrypt_WITH_ASYMMETRIC_CIPHER_rsa
 	default n
@@ -29,6 +30,8 @@ menu "Configuration"
 	config FREETZ_LIB_libgcrypt_WITH_DIGEST_gostr3411_94
 		bool "GOST R 34.11-94"
 		select FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_gost28147
+	config FREETZ_LIB_libgcrypt_WITH_DIGEST_md2
+		bool "MD2"
 	config FREETZ_LIB_libgcrypt_WITH_DIGEST_md4
 		bool "MD4"
 	config FREETZ_LIB_libgcrypt_WITH_DIGEST_md5
@@ -37,10 +40,14 @@ menu "Configuration"
 		bool "RMD160"
 	config FREETZ_LIB_libgcrypt_WITH_DIGEST_sha1
 		bool "SHA1"
+	config FREETZ_LIB_libgcrypt_WITH_DIGEST_sha3
+		bool "SHA3"
 	config FREETZ_LIB_libgcrypt_WITH_DIGEST_sha256
 		bool "SHA256"
 	config FREETZ_LIB_libgcrypt_WITH_DIGEST_sha512
 		bool "SHA512"
+	config FREETZ_LIB_libgcrypt_WITH_DIGEST_sm3
+		bool "SM3"
 	config FREETZ_LIB_libgcrypt_WITH_DIGEST_stribog
 		bool "Stribog"
 	config FREETZ_LIB_libgcrypt_WITH_DIGEST_tiger
@@ -59,6 +66,8 @@ menu "Configuration"
 		bool "Camellia"
 	config FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_cast5
 		bool "CAST5"
+	config FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_chacha20
+		bool "ChaCha20"
 	config FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_des
 		bool "DES"
 	config FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_gost28147
@@ -73,6 +82,8 @@ menu "Configuration"
 		bool "SEED"
 	config FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_serpent
 		bool "Serpent"
+	config FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_sm4
+		bool "SM4"
 	config FREETZ_LIB_libgcrypt_WITH_SYMMETRIC_CIPHER_twofish
 		bool "Twofish"
 
