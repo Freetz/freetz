@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 1.9.3)
 $(PKG)_LIB_VERSION:=20.3.3
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-#$(PKG)_SOURCE_SHA1:=
+$(PKG)_SOURCE_SHA1:=3fcb490b9b7347344708eeb7b4a95464
 $(PKG)_SITE:=ftp://ftp.gnupg.org/gcrypt/libgcrypt
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
