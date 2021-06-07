@@ -1,0 +1,137 @@
+
+#  https://gcc.gnu.org/legacy-ml/gcc-patches/2012-12/msg01122.html
+
+Hello,
+
+Canadian Cross Builds fail to build libgcc/unwind-dw2.c
+
+...
+../../../../libgcc/unwind-dw2.c:42:21: fatal error: sys/sdt.h: No such
+file or directory
+...
+
+when the build machine has sys/sdt.h installed (systemtap-sdt-devel),
+but not the target's, because of this:
+
+#ifdef HAVE_SYS_SDT_H
+#include <sys/sdt.h>
+#endif
+
+This appears to be because auto-host.h unconditionally defines
+HAVE_SYS_SDT_H from config.in, that should be guarded with #ifndef
+USED_FOR_TARGET
+
+This patch changes the sys/sdt.h detection to the standard macro to
+correctly generate it. And need to regenerate configure and config.in.
+
+Checked for x86 native boostrap OK and SH4-linux Cross and Native builds
+on host (with and without systemtap host header installed)
+
+OK for trunk ?
+
+Thanks,
+
+Christian
+
+--------------000509040405010701060101
+Content-Type: text/x-patch; name="cross-sdt.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="cross-sdt.patch"
+
+2012-12-18  Christian Bruel  <christian.bruel@st.com>
+
+	* configure.ac: Check sys/sdt.h with AC_CHECK_HEADERS.
+	* configure: Regenerate.
+	* config.in: Regenerat.e
+
+Index: gcc/configure
+===================================================================
+--- gcc/configure	(revision 194574)
++++ gcc/configure	(working copy)
+@@ -8464,7 +8464,7 @@
+ 
+ for ac_header in limits.h stddef.h string.h strings.h stdlib.h time.h iconv.h \
+ 		 fcntl.h ftw.h unistd.h sys/file.h sys/time.h sys/mman.h \
+-		 sys/resource.h sys/param.h sys/times.h sys/stat.h \
++		 sys/resource.h sys/param.h sys/times.h sys/sdt.h sys/stat.h \
+ 		 direct.h malloc.h langinfo.h ldfcn.h locale.h wchar.h
+ do :
+   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+@@ -27887,20 +27887,6 @@
+ 
+ fi
+ 
+-# Test for <sys/sdt.h> on the target.
+-
+-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking sys/sdt.h in the target C library" >&5
+-$as_echo_n "checking sys/sdt.h in the target C library... " >&6; }
+-have_sys_sdt_h=no
+-if test -f $target_header_dir/sys/sdt.h; then
+-  have_sys_sdt_h=yes
+-
+-$as_echo "#define HAVE_SYS_SDT_H 1" >>confdefs.h
+-
+-fi
+-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_sys_sdt_h" >&5
+-$as_echo "$have_sys_sdt_h" >&6; }
+-
+ # Check if TFmode long double should be used by default or not.
+ # Some glibc targets used DFmode long double, but with glibc 2.4
+ # and later they can use TFmode.
+Index: gcc/config.in
+===================================================================
+--- gcc/config.in	(revision 194574)
++++ gcc/config.in	(working copy)
+@@ -1416,7 +1416,7 @@
+ #endif
+ 
+ 
+-/* Define if your PowerPC64 linker supports a large TOC. */
++/* Define if your AIX linker supports a large TOC. */
+ #ifndef USED_FOR_TARGET
+ #undef HAVE_LD_LARGE_TOC
+ #endif
+@@ -1670,8 +1670,11 @@
+ #endif
+ 
+ 
+-/* Define if your target C library provides sys/sdt.h */
++/* Define to 1 if you have the <sys/sdt.h> header file. */
++#ifndef USED_FOR_TARGET
+ #undef HAVE_SYS_SDT_H
++#endif
++
+ 
+ /* Define to 1 if you have the <sys/stat.h> header file. */
+ #ifndef USED_FOR_TARGET
+Index: gcc/configure.ac
+===================================================================
+--- gcc/configure.ac	(revision 194574)
++++ gcc/configure.ac	(working copy)
+@@ -1029,7 +1029,7 @@
+ AC_HEADER_TIOCGWINSZ
+ AC_CHECK_HEADERS(limits.h stddef.h string.h strings.h stdlib.h time.h iconv.h \
+ 		 fcntl.h ftw.h unistd.h sys/file.h sys/time.h sys/mman.h \
+-		 sys/resource.h sys/param.h sys/times.h sys/stat.h \
++		 sys/resource.h sys/param.h sys/times.h sys/sdt.h sys/stat.h \
+ 		 direct.h malloc.h langinfo.h ldfcn.h locale.h wchar.h)
+ 
+ # Check for thread headers.
+@@ -5326,17 +5326,6 @@
+ 	    [Define if your target C library provides stack protector support])
+ fi
+ 
+-# Test for <sys/sdt.h> on the target.
+-GCC_TARGET_TEMPLATE([HAVE_SYS_SDT_H])
+-AC_MSG_CHECKING(sys/sdt.h in the target C library)
+-have_sys_sdt_h=no
+-if test -f $target_header_dir/sys/sdt.h; then
+-  have_sys_sdt_h=yes
+-  AC_DEFINE(HAVE_SYS_SDT_H, 1,
+-            [Define if your target C library provides sys/sdt.h])
+-fi
+-AC_MSG_RESULT($have_sys_sdt_h)
+-
+ # Check if TFmode long double should be used by default or not.
+ # Some glibc targets used DFmode long double, but with glibc 2.4
+ # and later they can use TFmode.
