@@ -396,15 +396,16 @@ Currently supported devices and firmwares
   - 153.07.21 rev82454 {GER} [PSQ19]
   - 153.07.27 rev88747 {GER} [PSQ19P2NL2-aM7Poh3a]
 * __Fritz!Box Fon WLAN 7581 (UNTESTED)__
-  - 152.07.14 rev87288 {ALL} [MESH18 NL3]
+  - 152.07.15 rev89092 {ALL} [MESH18 NL3]
 * __Fritz!Box Fon WLAN 7582 (UNTESTED)__
-  - 156.07.14 rev87287 {ALL} [MESH18 NL3]
+  - 156.07.15 rev89093 {ALL} [MESH18 NL3]
 * __Fritz!Box Fon WLAN 7583__
   - 167.07.12 rev70707 {GER} [MESH18 NL2]
   - 167.07.15 rev75887 {INT} [MESH18 NL2]
   - 167.07.21 rev82361 {ALL} [PSQ19]
+  - 167.07.27 rev89094 {ALL} [PSQ19P2NL2-aM7Poh3a]
 * __Fritz!Box Fon WLAN 7583 VDSL (UNTESTED)__
-  - 260.07.26 rev88911 {ALL} [PSQ19P2NL2-aM7Poh3a] (Inhaus)
+  - 260.07.27 rev89095 {ALL} [PSQ19P2NL2-aM7Poh3a]
 
 * __Fritz!Box Fon WLAN 7590__
   - 154.06.86 rev45533 {GER}
