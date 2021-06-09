@@ -90,7 +90,7 @@ Currently supported devices and firmwares
   - 140.06.83 rev43895 {INT}
   - 140.07.01 rev61726 {INT}
   - 140.07.12 rev70430 {INT} [MESH18 NL2]
-  - 140.07.27 rev88861 {ALL} [PSQ19P2NL2-aM7Poh3a]
+  - 140.07.28 rev89041 {ALL} [PSQ19P2NL2-aM7Poh3a]
 
 ### Fritz!Box WAN (4xxx)
 
@@ -133,7 +133,7 @@ Currently supported devices and firmwares
 
 * __Fritz!Box 5530 Fiber (UNTESTED)__
   - 257.07.21 rev83233 {GER} [AXKFW2]
-  - 257.07.26 rev87635 {ALL} [PSQ19 Phase 2]
+  - 257.07.27 rev89022 {ALL} [PSQ19P2NL2-aM7Poh3a]
 
 ### Fritz!Box Cable (64xx/65xx/66xx)
 
