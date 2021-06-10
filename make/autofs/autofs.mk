@@ -98,7 +98,7 @@ $($(PKG)_MODULES_TARGET_DIR): $($(PKG)_DEST_LIBDIR)/autofs/%: $($(PKG)_DIR)/modu
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_LIBRARY) $($(PKG)_MODULES_TARGET_DIR)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $(if $(FREETZ_KERNEL_VERSION_2_MAX),,$($(PKG)_TARGET_LIBRARY)) $($(PKG)_MODULES_TARGET_DIR)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(AUTOFS_DIR) clean
