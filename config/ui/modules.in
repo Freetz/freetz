@@ -292,15 +292,16 @@ config FREETZ_MODULE_sr_mod
 	select FREETZ_MODULE_cdrom if !FREETZ_AVM_HAS_CDROM_PKTCDVD_BUILTIN
 	default n
 
-config FREETZ_MODULE_usblp
-	bool "usblp.ko"
-	depends on !FREETZ_AVM_HAS_USB_PRINTER_BUILTIN
-	default n
-
 config FREETZ_MODULE_usb_storage
 	bool "usb-storage.ko"
 	depends on !FREETZ_AVM_HAS_USB_STORAGE_BUILTIN
 	select FREETZ_MODULE_scsi_mod if !FREETZ_AVM_HAS_SCSI_MOD_BUILTIN
+	default n
+
+config FREETZ_MODULE_usbcore
+	bool "usbcore.ko"
+	depends on !FREETZ_AVM_HAS_USB_BUILTIN
+	select FREETZ_MODULE_musb_hdrc if FREETZ_SYSTEM_TYPE_UR8 && FREETZ_AVM_SOURCE_7270_04_86
 	default n
 
 config FREETZ_MODULE_usbip
@@ -314,6 +315,11 @@ config FREETZ_MODULE_usbip_common_mod
 	bool "usbip_common_mod.ko"
 	depends on !FREETZ_AVM_HAS_USB_IP_COMMON_BUILTIN
 	depends on FREETZ_MODULE_usbip
+	default n
+
+config FREETZ_MODULE_usblp
+	bool "usblp.ko"
+	depends on !FREETZ_AVM_HAS_USB_PRINTER_BUILTIN
 	default n
 
 config FREETZ_MODULE_usbmon
