@@ -15,6 +15,9 @@ $(PKG)_CONDITIONAL_PATCHES+=$(if $(FREETZ_KERNEL_VERSION_2_MAX),abandon,current)
 $(PKG)_BINARY:=$($(PKG)_DIR)/daemon/automount
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/automount
 
+$(PKG)_LIBRARY:=$($(PKG)_DIR)/lib/libautofs.so
+$(PKG)_TARGET_LIBRARY:=$($(PKG)_DEST_LIBDIR)/libautofs.so
+
 ifneq ($(FREETZ_KERNEL_VERSION_2_MAX),y)
 $(PKG)_CONFIGURE_ENV += ac_cv_path_UMOUNT=/bin/umount
 $(PKG)_CONFIGURE_ENV += ac_cv_path_MOUNT=/bin/mount
@@ -76,7 +79,7 @@ else
 $(PKG_CONFIGURED_CONFIGURE)
 endif
 
-$($(PKG)_BINARY) $($(PKG)_MODULES_BUILD_DIR): $($(PKG)_DIR)/.configured
+$($(PKG)_BINARY) $($(PKG)_LIBRARY) $($(PKG)_MODULES_BUILD_DIR): $($(PKG)_DIR)/.configured
 	$(SUBMAKE1) -C $(AUTOFS_DIR) \
 		FREETZ=1 \
 		CC="$(TARGET_CC)" \
@@ -87,18 +90,21 @@ $($(PKG)_BINARY) $($(PKG)_MODULES_BUILD_DIR): $($(PKG)_DIR)/.configured
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
 
+$($(PKG)_TARGET_LIBRARY): $($(PKG)_LIBRARY)
+	$(INSTALL_LIBRARY_STRIP)
+
 $($(PKG)_MODULES_TARGET_DIR): $($(PKG)_DEST_LIBDIR)/autofs/%: $($(PKG)_DIR)/modules/%
 	$(INSTALL_BINARY_STRIP)
 
 $(pkg):
 
-$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_MODULES_TARGET_DIR)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_LIBRARY) $($(PKG)_MODULES_TARGET_DIR)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(AUTOFS_DIR) clean
 	$(RM) $(AUTOFS_DIR)/.configured
 
 $(pkg)-uninstall:
-	$(RM) $(AUTOFS_TARGET_BINARY) $(AUTOFS_MODULES_TARGET_DIR)
+	$(RM) $(AUTOFS_TARGET_BINARY) $(AUTOFS_TARGET_LIBRARY) $(AUTOFS_MODULES_TARGET_DIR)
 
 $(PKG_FINISH)
