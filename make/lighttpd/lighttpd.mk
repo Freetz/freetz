@@ -117,6 +117,10 @@ else
 $(PKG)_CONFIGURE_OPTIONS += --without-webdav-locks
 endif
 
+ifeq ($(strip $(FREETZ_TARGET_UCLIBC_SUPPORTS_inotify)),n)
+$(PKG)_CONFIGURE_ENV += ac_cv_header_sys_inotify_h=no
+endif
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
