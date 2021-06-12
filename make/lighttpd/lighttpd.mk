@@ -117,7 +117,7 @@ else
 $(PKG)_CONFIGURE_OPTIONS += --without-webdav-locks
 endif
 
-ifeq ($(strip $(FREETZ_TARGET_UCLIBC_SUPPORTS_inotify)),n)
+ifneq ($(strip $(FREETZ_TARGET_UCLIBC_SUPPORTS_inotify)),y)
 $(PKG)_CONFIGURE_ENV += ac_cv_header_sys_inotify_h=no
 endif
 
