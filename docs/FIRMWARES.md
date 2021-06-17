@@ -100,7 +100,7 @@ Currently supported devices and firmwares
 * __Fritz!Box 4040__
   - 155.07.01 rev61489 {ALL}
   - 155.07.14 rev73181 {ALL} [MESH18 NL4]
-  - 155.07.24 rev85886 {ALL} [PSQ19 Phase 2] (Labor)
+  - 155.07.27 rev89429 {ALL} [PSQ19P2NL2-aM7Poh3a]
 
 ### Fritz!Box Fon (50xx/51xx)
 
@@ -340,6 +340,7 @@ Currently supported devices and firmwares
   - 146.07.01 rev61690 {INT}
   - 146.07.12 rev70527 {INT} [MESH18 NL2]
   - 146.07.21 rev81809 {ALL} [PSQ19]
+  - 146.07.27 rev89278 {ALL} [PSQ19P2NL2-aM7Poh3a]
 
 * __Fritz!Box Fon WLAN 7490__
   - 113.06.30 rev30889 {GER}
@@ -443,6 +444,9 @@ Currently supported devices and firmwares
   - 157.07.01 rev63181 {ALL}
   - 157.07.12 rev70670 {ALL} [MESH18 NL2]
   - 157.07.21 rev84898 {ALL} [PSQ19]
+  - 157.07.27 rev89426 {ALL} [PSQ19P2NL2-aM7Poh3a]
+* __Fritz!Powerline 1260 v2__
+  - 249.07.27 rev89427 {ALL} [PSQ19P2NL2-aM7Poh3a]
 
 ### Fritz!Repeater
 
@@ -475,7 +479,7 @@ Currently supported devices and firmwares
 * __Fritz!Repeater 2400 (UNTESTED)__
   - 169.07.12 rev71975 {ALL} [MESH18 NL2]
   - 169.07.21 rev83013 {ALL} [PSQ19]
-  - 169.07.24 rev85466 {ALL} [PSQ19 Phase 2] (Labor)
+  - 169.07.27 rev89422 {ALL} [PSQ19P2NL2-aM7Poh3a]
 * __Fritz!Repeater 3000__
   - 174.07.04 rev66458 {ALL}
   - 174.07.14 rev73940 {ALL} [MESH18 NL4]

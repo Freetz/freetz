@@ -493,22 +493,27 @@ choice
 	config FREETZ_TYPE_0540
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_EXT
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_AR934x
-		bool "540e"
+		bool "540E"
 
 	config FREETZ_TYPE_0546
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_EXT
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_AR934x
-		bool "546e"
+		bool "546E"
 
 	config FREETZ_TYPE_1240
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_EXT
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_AR934x
-		bool "1240e - UNTESTED"
+		bool "1240E - UNTESTED"
 
-	config FREETZ_TYPE_1260
+	config FREETZ_TYPE_1260_V1
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_EXT
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_IPQ40xx
-		bool "1260e"
+		bool "1260E"
+
+	config FREETZ_TYPE_1260_V2
+		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_EXT
+		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_IPQ40xx
+		bool "1260 v2"
 
 	comment "Repeater"
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_EXT
@@ -536,7 +541,7 @@ choice
 	config FREETZ_TYPE_1750
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_EXT
 		select FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_QCA955x
-		bool "1750e"
+		bool "1750E"
 
 	config FREETZ_TYPE_2400
 		depends on FREETZ_SERIES_ALL || FREETZ_SERIES_EXT
@@ -1140,6 +1145,11 @@ endchoice # prompt "Annex" #
 ###
 ### Device aliases
 ###
+
+config FREETZ_TYPE_1260
+	bool
+	depends on FREETZ_TYPE_1260_V1 || FREETZ_TYPE_1260_V2
+	default y
 
 config FREETZ_TYPE_3270
 	bool
