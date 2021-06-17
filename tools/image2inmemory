@@ -21,7 +21,7 @@ dst="$(readlink -f ${2:-${src}.inmemory})"
 
 echo "Reading $src"
 tmp=$(mktemp -td inmem_XXX) || errnex "Creating temporary directory failed."
-tar -C $tmp/ -xf $src --wildcards '*.image' &>/dev/null || errnex "Unpacking '$src' failed."
+tar -C $tmp/ -xf $src --wildcards '*.image' &>/dev/null
 [ -s "$tmp/var/tmp/kernel.image" -a -s "$tmp/var/tmp/filesystem.image" ] || errnex "File '$src' is not valid."
 
 echo "Writing $dst"
