@@ -131,7 +131,7 @@ Currently supported devices and firmwares
   - 171.07.12 rev71193 {ALL} [MESH18 NL2]
   - 171.07.27 rev88547 {ALL} [PSQ19P2NL2-aM7Poh3a]
 
-* __Fritz!Box 5530 Fiber (UNTESTED)__
+* __Fritz!Box 5530 Fiber (DEVELOPER)__
   - 257.07.21 rev83233 {GER} [AXKFW2]
   - 257.07.27 rev89022 {ALL} [PSQ19P2NL2-aM7Poh3a]
 
@@ -191,7 +191,7 @@ Currently supported devices and firmwares
 * __Fritz!Box 6850 LTE (UNTESTED)__
   - 262.07.21 rev82687 {ALL} [PSQ19]
   - 262.07.24 rev84969 {ALL} [PSQ19 Phase 2] (Labor)
-* __Fritz!Box 6850 5G (UNTESTED)__
+* __Fritz!Box 6850 5G (DEVELOPER)__
   - 258.07.19 rev82499 {ALL} [PSQ19] (Inhaus)
 
 * __Fritz!Box 6890 LTE__
@@ -375,7 +375,7 @@ Currently supported devices and firmwares
   - 164.07.13 rev75481 {INT} [MESH18 NL3]
   - 164.07.21 rev82823 {ALL} [PSQ19]
   - 164.07.27 rev88520 {ALL} [PSQ19P2NL2-aM7Poh3a]
-* __Fritz!Box Fon WLAN 7530 AX (UNTESTED)__
+* __Fritz!Box Fon WLAN 7530 AX (DEVELOPER)__
   - 256.07.22 rev85878 {ALL} [PSQ19]
   - 256.07.27 rev88622 {ALL} [PSQ19P2NL2-aM7Poh3a]
 * __Fritz!Box Fon WLAN 7560__
@@ -418,7 +418,7 @@ Currently supported devices and firmwares
   - 154.07.13 rev74390 {INT} [MESH18 NL3]
   - 154.07.21 rev82154 {ALL} [PSQ19]
   - 154.07.27 rev88306 {ALL} [PSQ19P2NL2-aM7Poh3a]
-* __Fritz!Box Fon WLAN 7590 AX (UNTESTED)__
+* __Fritz!Box Fon WLAN 7590 AX (DEVELOPER)__
   - 259.07.27 rev88873 {ALL} [PSQ19P2NL2-aM7Poh3a]
 
 ### Fritz!Powerline
@@ -485,7 +485,7 @@ Currently supported devices and firmwares
   - 174.07.14 rev73940 {ALL} [MESH18 NL4]
   - 174.07.21 rev83015 {ALL} [PSQ19]
   - 174.07.24 rev85468 {ALL} [PSQ19 Phase 2] (Labor)
-* __Fritz!Repeater 6000 (UNTESTED)__
+* __Fritz!Repeater 6000 (DEVELOPER)__
   - 253.07.27 rev88862 {ALL} [PSQ19P2NL2-aM7Poh3a]
 
 ### T-Com derivatives
