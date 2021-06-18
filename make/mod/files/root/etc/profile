@@ -9,10 +9,10 @@ export LD_LIBRARY_PATH=/mod/lib:/mod/usr/lib
 tty="$(tty)"
 
 case "$tty" in
-	/dev/tts/* | /dev/ttyS[01] | /dev/ttyLTQ[01] )
-	stty -F $tty rows 50 cols 132
-	echo -e "\033[50;132q\c"
-	;;
+	/dev/tts/* | /dev/ttyS[01] | /dev/ttyMSM0 | /dev/ttyLTQ0 | /dev/ttyAMA0 )
+		stty -F $tty rows 50 cols 132
+		echo -e "\033[50;132q\c"
+		;;
 esac
 
 # Set TERM and HOME
@@ -21,7 +21,7 @@ case $tty in
 		[ -z "$TERM" ] && export TERM=xterm
 		unset serial_term
 		;;
-	/dev/tts/*|/dev/ttyS*|/dev/ttyLTQ*|/dev/console)
+	/dev/tts/*|/dev/ttyS*|/dev/ttyMSM0|/dev/ttyLTQ0|/dev/ttyAMA0|/dev/console)
 		export TERM=vt102
 		export serial_term=y
 		if [ -z "$HOME" -o "$HOME" == "/" ]; then
@@ -53,3 +53,4 @@ alias w='uptime'
 [ -d /etc/profile.d ] && for p in /etc/profile.d/* /mod/etc/profile.d/*; do
 	[ -r "$p" ] && . "$p"
 done
+
