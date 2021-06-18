@@ -5,7 +5,7 @@ DAEMON=cpmaccfg
 
 start() {
 	# include environment
-	[ -r /var/env.cache ] && . /var/env.cache
+	. /var/env.mod.rcconf
 	BOXTYPE=${CONFIG_PRODUKT#Fritz_Box_}
 
 	[ -z "$BOXTYPE" ] && echo "Warning: boxtype not recognized"

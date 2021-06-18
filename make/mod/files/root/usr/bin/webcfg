@@ -1,17 +1,16 @@
 #!/bin/sh
 
-export PATH=/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin:/sbin:/bin:/usr/sbin:/usr/bin
-export LD_LIBRARY_PATH=/mod/lib
+. /var/env.mod.daemon
 
 DAEMON=webcfg
 DAEMON_BIN=httpd-$DAEMON
 DAEMON_ENV="PATH=$PATH WEBIF=mww"
 
+
 if [ ! -r "/mod/etc/conf/mod.cfg" ]; then
 	echo "Error[$DAEMON]: not configured" 1>&2
 	exit 1
 fi
-
 . /mod/etc/conf/mod.cfg
 
 homedir=/usr/mww/

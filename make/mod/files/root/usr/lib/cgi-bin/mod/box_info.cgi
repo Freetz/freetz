@@ -3,7 +3,7 @@
 
 
 # include environment variables
-[ -r /var/env.cache ] && . /var/env.cache
+. /var/env.mod.rcconf
 
 notdefined="$(lang de:"unbekannt" en:"unknown")"
 divstyle="style='margin-top:6px;'"
@@ -243,10 +243,9 @@ echo "</dl>"
 
 sec_end
 
-if [ -r /var/env.cache ]; then
-	sec_begin "$(lang de:"Eigenschaften" en:"Properties")"
-		echo -n '<div class="textwrapper"><textarea style="margin-top:6px;" name="content" rows="5" cols="10" wrap="off" readonly>'
-		sed -e "s/^export //g" /var/env.cache | html
-		echo -n '</textarea></div>'
-	sec_end
-fi
+sec_begin "$(lang de:"Eigenschaften" en:"Properties")"
+	echo -n '<div class="textwrapper"><textarea style="margin-top:6px;" name="content" rows="5" cols="10" wrap="off" readonly>'
+	sed -e "s/^export //g" /var/env.mod.rcconf | html
+	echo -n '</textarea></div>'
+sec_end
+

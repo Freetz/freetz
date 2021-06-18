@@ -1,13 +1,11 @@
 #!/bin/sh
 
-export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin
-export LD_LIBRARY_PATH=/mod/lib
+. /var/env.mod.daemon
 
 DAEMON=hp-utils
 SUBDAEMON=hp-utils
 DAEMON_BIN=httpd-$SUBDAEMON
 DAEMON_ENV="PATH=$PATH"
-
 
 if [ ! -r "/mod/etc/conf/${DAEMON}.cfg" ]; then
 	echo "Error[$DAEMON]: not configured" 1>&2

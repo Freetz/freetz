@@ -9,7 +9,7 @@ TMPFILE="/tmp/.dsld."
 
 [ -r /etc/options.cfg ] && . /etc/options.cfg
 # include environment required for dsld restart
-[ -r /var/env.cache ] && . /var/env.cache
+. /var/env.mod.rcconf
 
 start() {
 	echo -n "Starting ${DAEMON_LONG_NAME} ... "

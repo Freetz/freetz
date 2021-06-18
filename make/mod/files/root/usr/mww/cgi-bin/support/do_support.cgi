@@ -1,6 +1,6 @@
 #!/bin/sh
 # include environment variables
-[ -r /var/env.cache ] && . /var/env.cache
+. /var/env.mod.rcconf
 
 fname=$(echo ${CONFIG_PRODUKT_NAME}_${CONFIG_VERSION_MAJOR}.${CONFIG_VERSION}-$(cat /etc/.freetz-version)$(date '+_%Y-%m-%d_%H%M_support.tgz') | tr ' !' '_.')
 CR=$'\r'
@@ -36,7 +36,7 @@ tffs_major="$(sed -n 's/ tffs$//p' /proc/devices)"
 [ ! -e /var/flash/crash.log ] && mknod /var/flash/crash.log c "$tffs_major" 95
 [ ! -e /var/flash/panic ] && mknod /var/flash/panic c "$tffs_major" 96
 # (log)files
-for l in $(find /etc/*.pkg /var/log/* /etc/.config /etc/options.cfg /tmp/flash/mod/rc.* /var/flash/debug.cfg /var/flash/crash.log /var/flash/panic /var/env.cache /proc/partitions /proc/bus/usb/devices /mod/etc/conf/cs_cams.cfg /mod/etc/conf/tbflex.cfg -type f -o -type c); do
+for l in $(find /etc/*.pkg /var/log/* /etc/.config /etc/options.cfg /tmp/flash/mod/rc.* /var/flash/debug.cfg /var/flash/crash.log /var/flash/panic /var/env.* /proc/partitions /proc/bus/usb/devices /mod/etc/conf/cs_cams.cfg /mod/etc/conf/tbflex.cfg -type f -o -type c); do
 	cat $l > $SUPDIR/${l##*/} 2>&1
 done
 [ -e $SUPDIR/.config ] && mv $SUPDIR/.config $SUPDIR/config.txt
