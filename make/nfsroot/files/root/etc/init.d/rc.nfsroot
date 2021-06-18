@@ -66,9 +66,9 @@ start()
 	tffs_major=${major%%tffs}
 	mkdir -p /var/flash
 	mknod /var/flash/multid.leases	 c $tffs_major $((0x70))
-	mknod /var/flash/ar7.cfg		 c $tffs_major $((0x71))
+	mknod /var/flash/ar7.cfg	 c $tffs_major $((0x71))
 	# CONFIG_ETH_COUNT, HWRevision_ATA
-	. /etc/init.d/rc.conf
+	. /var/env.mod.rcconf
 
 	echo "*** Initialising network interfaces ... ***"
 	# Start multid temporarily (not needed anymore after setup)
@@ -186,3 +186,4 @@ case $1 in
 		exit 1
 		;;
 esac
+
