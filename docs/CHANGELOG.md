@@ -78,7 +78,7 @@ Latest changes
    * mbed TLS 2.7.19/2.26.0
    * minidlna 1.3.0
    * OpenSSH 8.6p1
-   * OpenSSL 0.9.8zh/1.0.2u/1.1.1k/3.0.0-alpha13
+   * OpenSSL 0.9.8zh/1.0.2u/1.1.1k/3.0.0-beta1
    * OpenVPN 2.4.11/2.5.3
    * Perl 5.32.1
    * stunnel 5.59

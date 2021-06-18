@@ -1,9 +1,25 @@
 --- Configurations/unix-Makefile.tmpl
 +++ Configurations/unix-Makefile.tmpl
-@@ -195,38 +195,38 @@
+@@ -215,54 +215,54 @@
                                 && $unified_info{attributes}->{scripts}->{$_}->{misc} }
                          @{$unified_info{scripts}}))
  -}
+-IMAGEDOCS1={-
+-        join(" \\\n" . ' ' x 10,
+-             fill_lines(" ", $COLUMNS - 10,
+-                        @{$unified_info{imagedocs}->{man1}})) -}
+-IMAGEDOCS3={-
+-        join(" \\\n" . ' ' x 10,
+-             fill_lines(" ", $COLUMNS - 10,
+-                        @{$unified_info{imagedocs}->{man3}})) -}
+-IMAGEDOCS5={-
+-        join(" \\\n" . ' ' x 10,
+-             fill_lines(" ", $COLUMNS - 10,
+-                        @{$unified_info{imagedocs}->{man5}})) -}
+-IMAGEDOCS7={-
+-        join(" \\\n" . ' ' x 10,
+-             fill_lines(" ", $COLUMNS - 10,
+-                        @{$unified_info{imagedocs}->{man7}})) -}
 -HTMLDOCS1={-
 -        join(" \\\n" . ' ' x 10,
 -             fill_lines(" ", $COLUMNS - 10,
@@ -36,6 +52,22 @@
 -        join(" \\\n" . ' ' x 9,
 -             fill_lines(" ", $COLUMNS - 9,
 -                        @{$unified_info{mandocs}->{man7}})) -}
++#IMAGEDOCS1={-
++#        join(" \\\n" . ' ' x 10,
++#             fill_lines(" ", $COLUMNS - 10,
++#                        @{$unified_info{imagedocs}->{man1}})) -}
++#IMAGEDOCS3={-
++#        join(" \\\n" . ' ' x 10,
++#             fill_lines(" ", $COLUMNS - 10,
++#                        @{$unified_info{imagedocs}->{man3}})) -}
++#IMAGEDOCS5={-
++#        join(" \\\n" . ' ' x 10,
++#             fill_lines(" ", $COLUMNS - 10,
++#                        @{$unified_info{imagedocs}->{man5}})) -}
++#IMAGEDOCS7={-
++#        join(" \\\n" . ' ' x 10,
++#             fill_lines(" ", $COLUMNS - 10,
++#                        @{$unified_info{imagedocs}->{man7}})) -}
 +#HTMLDOCS1={-
 +#        join(" \\\n" . ' ' x 10,
 +#             fill_lines(" ", $COLUMNS - 10,
