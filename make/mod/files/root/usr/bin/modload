@@ -33,7 +33,20 @@ lnmod() {
 }
 
 mod_load() {
-	echo -n "Loading $MODFILE ... "
+	echo -n 'Loading env ... '
+	# store 'clean' environment
+	env - /bin/sh -c 'VERBOSE_RC_CONF=n; . /etc/init.d/rc.conf; unset PWD; env' | sed -re 's/^([^=]+)=(.*)$/export \1='"'\2'"/ > /var/env.mod.rcconf
+	# overwrite AVM's version - why?
+	#ln -sf env.mod.rcconf /var/env.cache
+	# include with paths and lang
+	(
+		echo  "export PATH='/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin:/mod/etc/init.d:$PATH'"
+		echo  "export LD_LIBRARY_PATH='/mod/lib:/mod/usr/lib'"
+		grep "^export LANG=" /var/env.mod.rcconf
+	) > /var/env.mod.daemon
+	echo "done."
+
+	echo -n 'Loading flash ... '
 	HEAD="$(head -c2 $MODFILE 2>/dev/null)"
 	if [ -n "$HEAD" ]; then
 		[ "$HEAD" == "$(echo -ne '\x1F\x8B')" ] && COMP='z'
@@ -49,7 +62,7 @@ mod_load() {
 	fi
 	[ -d /tmp/flash/mod ] || mkdir -p /tmp/flash/mod
 
-	echo -n 'Loading users, groups and passwords ... '
+	echo -n 'Loading users ... '
 	/usr/bin/modusers load
 	echo 'done.'
 
