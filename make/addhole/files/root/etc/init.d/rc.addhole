@@ -22,8 +22,8 @@ download() {
 	cat "$DAEMON_CFGFILE" >> $TMP 2>/dev/null
 
 	[ -z "$OTH" ] && echo "$ADDHOLE_URLS" | sed 's/^ *//g;s/ *$//g' | grep -vE "^#|^$" | while read -r line; do
-		[ -z "$STF" ] && echo -n "Downloading from " && echo $line | sed -rn  's/^(.*\/\/[^\/]*).*/\1/p'
-		wget -q "$line" -O - | grep -vE "^[ \t]*#|^[ \t]*$" | sed 's/#.*//g' | awk '{print $2}' >> $TMP
+		[ -z "$STF" ] && echo "Downloading $line"
+		wget -q "$line" -O - | grep -vE "^[ \t]*#|^[ \t]*$" | sed 's/#.*//g;s/.*[ \t]//g' >> $TMP
 	done
 
 	ACK="$(sed 's/#.*//g;s/[ \t]//g;s/^/|/g' "${DAEMON_CFGFILE%/*}/allow.txt" 2>/dev/null | tr -d '\n' | sed 's/||/|/g;s/^|//;s/|$//')"
