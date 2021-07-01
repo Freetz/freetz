@@ -30,6 +30,7 @@ config FREETZ_REPLACE_KERNEL_AVAILABLE
 config FREETZ_REPLACE_MODULE_AVAILABLE
 	bool
 	depends on !(FREETZ_SYSTEM_TYPE_BCM63138)                                 # no kernel 4.1.38 sources for 7581/7582 integrated
+	depends on !(FREETZ_SYSTEM_TYPE_IPQ40xx && FREETZ_AVM_VERSION_07_25_MIN)
 	default y
 	help
 		Select this if only source code from a previous firmware version is available for your box.
