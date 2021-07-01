@@ -32,6 +32,7 @@ feedzapper
 fidelio-dev
 flosch-dev
 forenuser
+Hadis
 harryboo
 hermann72pb
 hippie2000
@@ -44,6 +45,7 @@ johnbock
 kriegaex
 M66B
 magenbrot
+Marcel
 markuschen
 martinkoehler
 Maurits
