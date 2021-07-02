@@ -262,16 +262,15 @@ config FREETZ_TARGET_BINUTILS_2_24_DEFAULT
 	default y
 config FREETZ_TARGET_BINUTILS_2_25_DEFAULT
 	bool
-	depends on FREETZ_KERNEL_BINUTILS_2_25_DEFAULT
+	depends on FREETZ_KERNEL_BINUTILS_2_25_DEFAULT && !FREETZ_SEPARATE_AVM_UCLIBC
 	default y
 config FREETZ_TARGET_BINUTILS_2_31_DEFAULT
 	bool
 	depends on FREETZ_KERNEL_BINUTILS_2_31_DEFAULT && !FREETZ_SEPARATE_AVM_UCLIBC
 	default y
-
 config FREETZ_TARGET_BINUTILS_2_36_DEFAULT
 	bool
-	depends on FREETZ_KERNEL_BINUTILS_2_31_DEFAULT &&  FREETZ_SEPARATE_AVM_UCLIBC
+	depends on                                         FREETZ_SEPARATE_AVM_UCLIBC
 	default y
 
 choice
@@ -314,13 +313,13 @@ choice
 
 	config FREETZ_TARGET_BINUTILS_2_31
 		bool "binutils-2.31.1"
-		depends on FREETZ_TARGET_GCC_8 && !FREETZ_SEPARATE_AVM_UCLIBC
+		depends on FREETZ_TARGET_GCC_8
 		# depends on any kernel version
 		depends on FREETZ_TARGET_BINUTILS_2_31_DEFAULT || (FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE)
 
 	config FREETZ_TARGET_BINUTILS_2_36
 		bool "binutils-2.36.1"
-		depends on FREETZ_TARGET_GCC_8 &&  FREETZ_SEPARATE_AVM_UCLIBC
+		# depends on all gcc versions
 		# depends on any kernel version
 		depends on FREETZ_TARGET_BINUTILS_2_36_DEFAULT || (FREETZ_BUILD_TOOLCHAIN || FREETZ_DL_TOOLCHAIN_OVERRIDE)
 endchoice
