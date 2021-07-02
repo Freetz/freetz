@@ -42,6 +42,8 @@ Latest changes
    * Loading build kernel modules may work or do not. You'll notice.
 
  - Build system:
+  * binutils:
+    + add support for binutils-2.24.x/2.25.x/2.26.x/2.31.x/2.36.x
    * ccache 4.3
    * dl-tools 2021-05-04
    * kernel-/target-toolchains:
