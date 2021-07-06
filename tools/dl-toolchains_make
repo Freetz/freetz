@@ -70,7 +70,7 @@ EOF
 }
 
 dltc() {
-	local options="$*"
+	local options="$(echo $* | sed 's/  */ /g')"
 	echo "Building toolchains for ${options// /, }"
 	make distclean
 	rm -rf dl 2>/dev/null
