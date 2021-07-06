@@ -66,7 +66,7 @@ Latest changes
    * apache 2.4.48
    * AutoFS 5.0.5/5.1.7
    * BIND 9.11.32
-   * ca-bundle 2021-05-25
+   * ca-bundle 2021-07-05
    * curl 7.77.0
    * dnsmasq 2.80/2.85
    * expat 2.4.1
