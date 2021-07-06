@@ -1,8 +1,8 @@
 --- scripts/kconfig/lkc.h
 +++ scripts/kconfig/lkc.h
-@@ -24,15 +24,7 @@
- #define PACKAGE "linux"
- #endif
+@@ -20,15 +20,7 @@
+ 
+ #define SRCTREE "srctree"
  
 -#ifndef CONFIG_
 -#define CONFIG_ "CONFIG_"
@@ -15,5 +15,5 @@
 -#define CONFIG_ CONFIG_prefix()
 +#define CONFIG_ ""
  
- enum conf_def_mode {
- 	def_default,
+ extern int yylineno;
+ void zconfdump(FILE *out);

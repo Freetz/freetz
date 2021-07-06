@@ -55,7 +55,7 @@ Latest changes
 
  - Updated tools and hooks:
    * busybox 1.33.1
-   * kconfig 5.12
+   * kconfig 5.13
 
  - BusyBox:
    * Removed version 1.32.1
