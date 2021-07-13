@@ -39,7 +39,7 @@ echo "<pre>"
 # unpack
 if [ "$FAILURE" != "y" -a -s "$FORM_uploadfile" ]; then
 	echo "$(lang de:"Entpacke hochgeladene Datei" en:"Extracting uploaded file") ..."
-	[ "${FORM_uploadfile%.tgz}" != "$FORM_uploadfile" ] && COMPR='z' || COMPR=''
+	[ "$(dd if=${FORM_uploadfile} bs=2 count=1 2>/dev/null | md5sum | sed 's/ .*//')}" == "5b25786f919872ca265a821a845567c0" ] && COMPR='z' || COMPR=''
 	tar xv${COMPR}f "$FORM_uploadfile" -C "$OUTER_DIR" --exclude=contents.txt \
 	  || fail "$(lang de:"FEHLER: Die Datei konnte nicht entpackt werden" en:"ERROR: The file could not be unpacked")."
 	okay
