@@ -20,13 +20,13 @@ ar7hostname () {
 	fi
 }
 
-isip () {
-	echo $1 | egrep -q '^[[:digit:]]{1,3}(\.[[:digit:]]{1,3}){3}$' && return 0
-}
-ismac () {
+ismac() {
 	echo $1 | egrep -q '^[[:xdigit:]]{2}(:[[:xdigit:]]{2}){5}$' && return 0
 }
-isip6 () {
+isip4() {
+	echo $1 | egrep -q '^[[:digit:]]{1,3}(\.[[:digit:]]{1,3}){3}$' && return 0
+}
+isip6() {
 	## example 111a:222b:333c:444d:555e:666f:77a7:88b8
 	echo $1 | egrep -q '^(([[:xdigit:]]{1,4}):){7}(([[:xdigit:]]{1,4}))$' && return 0
 
@@ -50,6 +50,10 @@ isip6 () {
 
 	## example 111a:222b:333c:444d:555e::77a7:88b8
 	echo $1 | egrep -q '^((([[:xdigit:]]{1,4}):){5}(:([[:xdigit:]]{1,4})){1,2})$' && return 0
+}
+isip() {
+	isip4 $1 && return 0
+	isip6 $1 && return 0
 }
 
 create_resolv_conf () {
@@ -87,17 +91,14 @@ case $1 in
 		touch /var/tmp/ethers
 
 		if [ -r /tmp/flash/mod/hosts ]; then
-			egrep -v '^(#|[[:space:]]*$)' /tmp/flash/mod/hosts |
-				while read -r ip mac interface host desc; do
-					if [ -z "$host" -o "$host" = "*" ]; then
-						let hnr="$hnr+1"
-						host="pc${hnr}"
-					fi
-
-					isip $ip && echo -e "${ip}\t${host} $desc" >> /var/tmp/hosts
-					isip6 $ip && echo -e "${ip}\t${host} $desc" >> /var/tmp/hosts
-					ismac $mac && echo -e "${mac}\t${host}" >> /var/tmp/ethers
-				done
+			last=''
+			egrep -v '^(#|[[:space:]]*$)' /tmp/flash/mod/hosts | sort -k4 |
+			  while read -r ip mac interface host desc; do
+				[ -z "$host" -o "$host" = "*" ] && host="pc$(( hnr = hnr + 1))"
+				isip $ip && echo -e "${ip}\t${host} $desc" >> /var/tmp/hosts
+				[ "$last" == "$host" ] && continue || last="$host"
+				ismac $mac && echo -e "${mac}\t${host}" >> /var/tmp/ethers
+			done
 		fi
 
 		if ! egrep "^127.0.0.1([[:space:]]+[^[:space:]#]+)*[[:space:]]+localhost($|[[:space:]#])" /var/tmp/hosts -q 2>/dev/null; then
