@@ -278,7 +278,7 @@ case $1 in
 		dellock $?
 		;;
 	*)
-		echo "Usage: $0 <alias|fancy|small|battery|modus|gradc|translate <ain|name>|docmd <device> <command>|-1|0|1|16-56|8,0-28,0 >" 1>&2
+		echo "Usage: $0 <alias|fancy|small|battery|modus|gradc|translate <ain|name>|docmd <device> <command|-1|0|1|16-56|8,0-28,0> >" 1>&2
 		dellock
 		exit 1
 		;;
