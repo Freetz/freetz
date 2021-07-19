@@ -61,6 +61,9 @@ Latest changes
    * Removed version 1.32.1
    * Updated version 1.33.1
 
+ - Updated tools and hooks:
+   * fitimg 0.6
+
  - Updated packages and libs:
    * ACME.sh 2.9.0 (letsencrypt)
    * apache 2.4.48
