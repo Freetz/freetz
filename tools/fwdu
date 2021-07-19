@@ -137,8 +137,6 @@ image() {
 	if [ -e var/tmp/fit-image ]; then
 		FLV_FIT='1'
 		$FTOOLS/fitimg -x var/tmp/fit-image -d var/tmp/ -n -f -q
-		[ -e var/tmp/*_kernel ]     && mv var/tmp/*_kernel     var/tmp/kernel.image
-		[ -e var/tmp/*_filesystem ] && mv var/tmp/*_filesystem var/tmp/filesystem.image
 	fi
 
 	if [ -e var/firmware-update.uimg ]; then
