@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.6.8)
+$(call PKG_INIT_BIN, 1.6.15)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=24a0e567c845b3e41b75e237d200edf8
+$(PKG)_SOURCE_MD5:=792bdd8fce3a8a1db102988ef6a9a02f
 $(PKG)_SITE:=http://mosquitto.org/files/source
 
 $(PKG)_CATEGORY:=Unstable

@@ -1151,7 +1151,7 @@ Index:
      - [Mögliche Nebeneffekte](../docs/make/mini_fo.md#mögliche-nebeneffekte)
      - [Restore original file](../docs/make/mini_fo.md#restore-original-file)
 
-  * **<u>Mosquitto 1.6.8</u><a id='mosquitto'></a>**<br>
+  * **<u>Mosquitto 1.6.15</u><a id='mosquitto'></a>**<br>
     Eclipse Mosquitto™ is an open source (EPL/EDL licensed) message broker that implements the MQTT protocol versions 5.0, 3.1.1 and 3.1. MQTT provides a lightweight method of carrying out messaging using a publish/subscribe model. This makes it suitable for "Internet of Things" messaging such as with low power sensors or mobile devices such as phones, embedded computers or microcontrollers like the Arduino.
 
   * **[MySQL 6.0.11-alpha](../docs/make/mysql.md)<a id='mysql'></a>**<br>
