@@ -63,6 +63,7 @@ Latest changes
 
  - Updated tools and hooks:
    * fitimg 0.6
+   * pseudo 1.9.0 oe-core b988b0a
 
  - Updated packages and libs:
    * ACME.sh 2.9.0 (letsencrypt)

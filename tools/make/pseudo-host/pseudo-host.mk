@@ -1,6 +1,6 @@
-PSEUDO_HOST_VERSION:=60e25a36558f1f07dcce1a044fe976b475bec42b
+PSEUDO_HOST_VERSION:=b988b0a6b8afd8d459bc9a2528e834f63a3d59b2
 PSEUDO_HOST_SOURCE:=pseudo-$(PSEUDO_HOST_VERSION).tar.xz
-PSEUDO_HOST_SOURCE_SHA256:=13551ba434fb3784820bae11f054fa45b2a5fabc9c5c76dd4d09787c78c8ddeb
+PSEUDO_HOST_SOURCE_SHA256:=987b8d1628a95405ac6afc4c1a4df248a2fc3e42af854bb3d7055581aee43083
 PSEUDO_HOST_SITE:=git@https://git.yoctoproject.org/git/pseudo
 #PSEUDO_HOST_SITE:=http://downloads.yoctoproject.org/releases/pseudo/
 ### WEBSITE:=https://www.yoctoproject.org/software-item/pseudo/
