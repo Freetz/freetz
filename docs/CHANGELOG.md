@@ -70,7 +70,7 @@ Latest changes
    * AutoFS 5.0.5/5.1.7
    * BIND 9.11.32
    * ca-bundle 2021-07-05
-   * curl 7.77.0
+   * curl 7.78.0
    * dnsmasq 2.80/2.85
    * expat 2.4.1
    * gnutls 3.6.16

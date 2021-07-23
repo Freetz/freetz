@@ -1,10 +1,10 @@
-$(call PKG_INIT_BIN, 7.77.0)
+$(call PKG_INIT_BIN, 7.78.0)
 $(PKG)_LIB_VERSION:=4.7.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=0f64582c54282f31c0de9f0a1a596b182776bd4df9a4c4a2a41bbeb54f62594b
+$(PKG)_SOURCE_SHA256:=be42766d5664a739c3974ee3dfbbcbe978a4ccb1fe628bb1d9b59ac79e445fb5
 $(PKG)_SITE:=https://curl.se/download,https://curl.haxx.se/download
 
-$(PKG)_BINARY:=$($(PKG)_DIR)/src$(if $(FREETZ_PACKAGE_CURL_STATIC),,/.libs)/curl
+$(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/curl
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/curl
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/lib/.libs/libcurl.so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libcurl.so.$($(PKG)_LIB_VERSION)
@@ -80,8 +80,9 @@ $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libcurl_WITH_OPENSSL),--with-ssl="
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libcurl_WITH_MBEDTLS),--with-mbedtls="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",--without-mbedtls)
 $(PKG)_CONFIGURE_OPTIONS += --without-ca-bundle
 $(PKG)_CONFIGURE_OPTIONS += --without-gssapi
+$(PKG)_CONFIGURE_OPTIONS += --without-libpsl
+$(PKG)_CONFIGURE_OPTIONS += --without-libgsasl
 $(PKG)_CONFIGURE_OPTIONS += --without-libidn
-$(PKG)_CONFIGURE_OPTIONS += --without-libmetalink
 $(PKG)_CONFIGURE_OPTIONS += --without-librtmp
 $(PKG)_CONFIGURE_OPTIONS += --without-nghttp2
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libcurl_WITH_SFTP),--with-libssh2="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",--without-libssh2)
