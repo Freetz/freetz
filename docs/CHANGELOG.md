@@ -66,7 +66,7 @@ Latest changes
    * pseudo 1.9.0 oe-core b988b0a
 
  - Updated packages and libs:
-   * ACME.sh 2.9.0 (letsencrypt)
+   * ACME.sh 3.0.0 (letsencrypt)
    * apache 2.4.48
    * AutoFS 5.0.5/5.1.7
    * BIND 9.11.32
