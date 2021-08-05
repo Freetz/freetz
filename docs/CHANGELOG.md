@@ -45,7 +45,7 @@ Latest changes
   * binutils:
     + add support for binutils-2.24.x/2.25.x/2.26.x/2.31.x/2.36.x
    * ccache 4.3
-   * host-tools 2021-07-23
+   * host-tools 2021-08-05
    * kernel-/target-toolchains:
       + precompiled toolchains updated to x86_64 (only)
 
