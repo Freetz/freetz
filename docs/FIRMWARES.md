@@ -100,7 +100,7 @@ Currently supported devices and firmwares
 * __Fritz!Box 4040__
   - 155.07.01 rev61489 {ALL}
   - 155.07.14 rev73181 {ALL} [MESH18 NL4]
-  - 155.07.27 rev89429 {ALL} [PSQ19P2NL2-aM7Poh3a]
+  - 155.07.28 rev90043 {ALL} [PSQ19P2NL3-Go0phie0]
 * __Fritz!Box 4060 (DEVELOPER)__
   - 261.07.26 rev89743 {ALL} [PSQ19P2NL2-aM7Poh3a] (Inhaus)
 
