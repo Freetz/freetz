@@ -57,6 +57,7 @@ Latest changes
    * busybox 1.33.1
    * kconfig 5.13
    * patchelf 0.13
+   * tar 1.34
 
  - BusyBox:
    * Removed version 1.32.1
