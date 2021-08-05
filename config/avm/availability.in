@@ -401,14 +401,6 @@ config FREETZ_AVM_HAS_FIRMWARE_07_25_INHAUS
 			FREETZ_TYPE_4060 \
 		))
 
-config FREETZ_AVM_HAS_FIRMWARE_07_25_LABOR
-	bool
-	default y
-	depends on \
-		( (FREETZ_TYPE_LANG_DE||FREETZ_TYPE_LANG_EN) && ( \
-			XXXXXXXXXXx \
-		))
-
 config FREETZ_AVM_HAS_FIRMWARE_07_25
 	bool
 	default y
@@ -453,6 +445,11 @@ config FREETZ_AVM_HAS_FIRMWARE_07_25
 		( FREETZ_TYPE_LANG_EN && ( \
 			FREETZ_TYPE_6820_V2 \
 		))
+
+config FREETZ_AVM_HAS_FIRMWARE_07_25_LABOR
+	bool
+	default y
+	depends on FREETZ_AVM_HAS_FIRMWARE_07_25
 
 
 ###

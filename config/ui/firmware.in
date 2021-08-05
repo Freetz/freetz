@@ -699,19 +699,20 @@ choice
 		help
 			Enable this to use an AVM Inhaus firmware as base for modding.
 
-	config FREETZ_TYPE_FIRMWARE_07_25_LABOR
-		bool "FRITZ!OS 07.24 Labor"
-		select FREETZ_AVM_VERSION_07_25
-		select FREETZ_DL_DETECT_IMAGE_NAME
-		depends on FREETZ_AVM_HAS_FIRMWARE_07_25_LABOR && FREETZ_SHOW_ADVANCED
-		help
-			Enable this to use an AVM Labor firmware as base for modding.
-			For more details see <http://www.avm.de/Labor/>.
-
 	config FREETZ_TYPE_FIRMWARE_07_25
 		bool "FRITZ!OS 07.25+"
 		select FREETZ_AVM_VERSION_07_25
 		depends on FREETZ_AVM_HAS_FIRMWARE_07_25
+
+	config FREETZ_TYPE_FIRMWARE_07_25_LABOR
+		bool "FRITZ!OS 07.25+ Labor"
+		select FREETZ_AVM_VERSION_07_25
+		select FREETZ_DL_DETECT_IMAGE_NAME
+		select FREETZ_TYPE_FIRMWARE_DETECT_LATEST
+		depends on FREETZ_AVM_HAS_FIRMWARE_07_25_LABOR && FREETZ_SHOW_EXPERT
+		help
+			Enable this to use an AVM Labor firmware as base for modding.
+			For more details see <http://www.avm.de/Labor/>.
 
 
 endchoice # "Firmware version" #
