@@ -21,11 +21,9 @@ Signed-off-by: Ivan A. Melnikov <iv@altlinux.org>
  src/patchelf.cc | 11 +++++++++++
  2 files changed, 15 insertions(+), 3 deletions(-)
 
-diff --git a/src/elf.h b/src/elf.h
-index e4e167c..a92289d 100644
---- a/src/elf.h
-+++ b/src/elf.h
-@@ -1572,9 +1572,10 @@ typedef struct
+--- src/elf.h
++++ src/elf.h
+@@ -1574,9 +1574,10 @@
  
  /* Legal values for p_type field of Elf32_Phdr.  */
  
@@ -39,11 +37,9 @@ index e4e167c..a92289d 100644
  
  /* Special program header types.  */
  
-diff --git a/src/patchelf.cc b/src/patchelf.cc
-index 18e1f83..31013a4 100644
---- a/src/patchelf.cc
-+++ b/src/patchelf.cc
-@@ -742,6 +742,17 @@ void ElfFile<ElfFileParamNames>::writeReplacedSections(Elf_Off & curOff,
+--- src/patchelf.cc
++++ src/patchelf.cc
+@@ -757,6 +757,17 @@
                  }
          }
  
