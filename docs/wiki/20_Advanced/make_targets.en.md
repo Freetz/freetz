@@ -25,6 +25,7 @@ clean                                   Remove unpacked images and some cache fi
 dirclean                                Clean sources (except tools and .config)
 distclean                               Clean everything except the download directory
 
+$(pkg)-unpacked                         Unpacks and patches $(pkg)
 $(pkg)-precompiled                      Compiles package/library $(pkg)
 $(pkg)-recompile                        Recompiles package/library $(pkg)
 $(pkg)-autofix                          Adjusts patches of package/library $(pkg)
