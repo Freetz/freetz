@@ -828,7 +828,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	rm -f "${DIR}/.modified"
 
 	# Copy the unpacked directory
-	[ -n "$PV" ] && echo0 "preparing modified directory"
+	[ -n "$PV" ] && echo0 "preparing directory build/modified/"
 	mkdir -p "$MOD_DIR"
 	[ "$FREETZ_AVM_HAS_UDEV" == y ] || exclude_dev="--exclude=./filesystem/dev"
 	"$TAR_GNU" -c -C "$ORG_DIR" $exclude_dev  --exclude='*.log' . | ${PV:-cat} | "$TAR" -x -C "$MOD_DIR" || exit 1
