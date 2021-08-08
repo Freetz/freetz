@@ -179,6 +179,9 @@ TAR_GNU_TOOL="tar-gnu"
 MD5SUM_TOOL="md5sum"
 BUSYBOX_TOOL="busybox"
 
+# Optional tools
+PV="$(which pv >/dev/null && echo 'pv -rcb')"
+
 # Absolute tools paths
 EXTERNAL="${TOOLS_DIR}/${EXTERNAL_TOOL}"
 DEBUGFS="${TOOLS_DIR}/${DEBUGFS_TOOL}"
@@ -237,6 +240,7 @@ rm "$DOT_CONFIG.fwmod"
 # Set default verbosity level, just in case none was defined in the (possibly
 # user-defined and minimal) config file
 : ${FREETZ_VERBOSITY_LEVEL:=0}
+[ "$FREETZ_VERBOSITY_LEVEL" -lt 2 ] && PV=''
 
 # Kernel/SquashFS images contained in firmware
 KERNEL_IMAGE="${FREETZ_AVM_IMAGES_SUBDIR}/kernel.image"
@@ -824,9 +828,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 	rm -f "${DIR}/.modified"
 
 	# Copy the unpacked directory
+	[ -n "$PV" ] && echo0 "preparing modified directory"
 	mkdir -p "$MOD_DIR"
 	[ "$FREETZ_AVM_HAS_UDEV" == y ] || exclude_dev="--exclude=./filesystem/dev"
-	"$TAR_GNU" -c -C "$ORG_DIR" $exclude_dev  --exclude='*.log' . | "$TAR" -x -C "$MOD_DIR" || exit 1
+	"$TAR_GNU" -c -C "$ORG_DIR" $exclude_dev  --exclude='*.log' . | ${PV:-cat} | "$TAR" -x -C "$MOD_DIR" || exit 1
 
 	# Fix some permissions
 	chmod -R u+w "$FILESYSTEM_MOD_DIR"
