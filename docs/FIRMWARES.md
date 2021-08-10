@@ -342,7 +342,7 @@ Currently supported devices and firmwares
   - 146.07.01 rev61690 {INT}
   - 146.07.12 rev70527 {INT} [MESH18 NL2]
   - 146.07.21 rev81809 {ALL} [PSQ19]
-  - 146.07.27 rev89278 {ALL} [PSQ19P2NL2-aM7Poh3a]
+  - 146.07.28 rev90115 {ALL} [PSQ19P2NL3-Go0phie0]
 
 * __Fritz!Box Fon WLAN 7490__
   - 113.06.30 rev30889 {GER}
