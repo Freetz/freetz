@@ -1272,6 +1272,7 @@ Index:
      - [Loggen der Kanäle](../docs/make/rrdstats.md#loggen-der-kanäle)
      - [Kabelsegment](../docs/make/rrdstats.md#kabelsegment)
      - [SmartHome](../docs/make/rrdstats.md#smarthome)
+     - [Script aha.sh](../docs/make/rrdstats.md#script-ahash)
      - [Datenbanken](../docs/make/rrdstats.md#datenbanken)
      - [Dateiübersicht (unvollständig)](../docs/make/rrdstats.md#dateiübersicht-unvollständig)
      - [BUGS](../docs/make/rrdstats.md#bugs)
