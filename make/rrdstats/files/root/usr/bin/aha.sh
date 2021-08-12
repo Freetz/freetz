@@ -281,6 +281,7 @@ case $1 in
 		;;
 	*)
 		echo "Usage: $0 <alias|fancy|small|battery|modus|gradc|translate <ain|name>|docmd <device> <command|-1|0|1|16-56|8,0-28,0> >" 1>&2
+		echo "See also: https://freetz-ng.github.io/freetz-ng/make/rrdstats.html#script-ahash" 1>&2
 		dellock
 		exit 1
 		;;
