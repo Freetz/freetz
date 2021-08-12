@@ -94,7 +94,10 @@ raw_out() {
 		for item in manufacturer productname fwversion functionbitmask identifier id; do
 			min_len "$item = "
 			readitm "$device " $item
-			[ "$item" == "functionbitmask" ] && min_len && dec2bin $(readitm "$device " $item) | sed -re 's/(.*)(....)(....)(....)(....)(..)$/\1 \2 \3 \4 \5 \6\n/;s/0/-/g'
+			if [ "$item" == "functionbitmask" ]; then
+				min_len && dec2bin $(readitm "$device " $item) | sed -re 's/(.*)(....)(....)(....)(....)$/\1 \2 \3 \4 \5 \6\n/;s/0/-/g'
+				min_len && echo "SRQ PONM LKJI HGFE DCBA "
+			fi
 		done
 
 		for child in name  present state mode lock devicelock  power voltage energy  celsius offset  current factor  masterdeviceid members  tist tsoll absenk komfort windowopenactiv  battery batterylow  lastpressedtimestamp; do
@@ -123,31 +126,31 @@ raw_out() {
 		echo -e "\n"
 	done
 
-	min_len && echo "I HGFE DCBA 9876 5432 10 "
-	min_len && echo "| |||| |||| |||| ||||  | "
-	min_len && echo "| |||| |||| |||| ||||  +- Bit  0: HANFUN Gerät"
-	min_len && echo "| |||| |||| |||| ||||    "
-	min_len && echo "| |||| |||| |||| |||+---- Bit  2: Lampe"
-	min_len && echo "| |||| |||| |||| ||+----- Bit  3: ?Action"
-	min_len && echo "| |||| |||| |||| |+------ Bit  4: Alarmsensor"
-	min_len && echo "| |||| |||| |||| +------- Bit  5: Taster"
-	min_len && echo "| |||| |||| ||||         "
-	min_len && echo "| |||| |||| |||+--------- Bit  6: Heizkörperregler"
-	min_len && echo "| |||| |||| ||+---------- Bit  7: Energiemessgerät"
-	min_len && echo "| |||| |||| |+----------- Bit  8: Temperatursensor"
-	min_len && echo "| |||| |||| +------------ Bit  9: Schaltsteckdose"
-	min_len && echo "| |||| ||||              "
-	min_len && echo "| |||| |||+-------------- Bit 10: DECT-Repeater"
-	min_len && echo "| |||| ||+--------------- Bit 11: Mikrofon"
-	min_len && echo "| |||| |+---------------- Bit 12: ?Bundle"
-	min_len && echo "| |||| +----------------- Bit 13: HANFUN Unit"
-	min_len && echo "| ||||                   "
-	min_len && echo "| |||+------------------- Bit 14: ?Template"
-	min_len && echo "| ||+-------------------- Bit 15: Schaltbar"
-	min_len && echo "| |+--------------------- Bit 16: Potentiometer"
-	min_len && echo "| +---------------------- Bit 17: Farbtemperatur"
-	min_len && echo "|                        "
-	min_len && echo "+------------------------ Bit 18: Rollladensteuerung"
+	min_len && echo "SRQ PONM LKJI HGFE DCBA "
+	min_len && echo "||| |||| |||| |||| |||| "
+	min_len && echo "||| |||| |||| |||| |||+- Bit  0/A: HANFUN Gerät"
+	min_len && echo "||| |||| |||| |||| ||+-- Bit  1/B: ?Unused"
+	min_len && echo "||| |||| |||| |||| |+--- Bit  2/C: Lampe"
+	min_len && echo "||| |||| |||| |||| +---- Bit  3/D: ?Action"
+	min_len && echo "||| |||| |||| ||||      "
+	min_len && echo "||| |||| |||| |||+------ Bit  4/E: Alarmsensor"
+	min_len && echo "||| |||| |||| ||+------- Bit  5/F: Taster"
+	min_len && echo "||| |||| |||| |+-------- Bit  6/G: Heizkörperregler"
+	min_len && echo "||| |||| |||| +--------- Bit  7/H: Energiemessgerät"
+	min_len && echo "||| |||| ||||           "
+	min_len && echo "||| |||| |||+----------- Bit  8/I: Temperatursensor"
+	min_len && echo "||| |||| ||+------------ Bit  9/J: Schaltsteckdose"
+	min_len && echo "||| |||| |+------------- Bit 10/K: DECT-Repeater"
+	min_len && echo "||| |||| +-------------- Bit 11/L: Mikrofon"
+	min_len && echo "||| ||||                "
+	min_len && echo "||| |||+---------------- Bit 12/M: ?Bundle"
+	min_len && echo "||| ||+----------------- Bit 13/N: HANFUN Unit"
+	min_len && echo "||| |+------------------ Bit 14/O: ?Template"
+	min_len && echo "||| +------------------- Bit 15/P: Schaltbar"
+	min_len && echo "|||                     "
+	min_len && echo "||+--------------------- Bit 16/Q: Potentiometer"
+	min_len && echo "|+---------------------- Bit 17/R: Farbtemperatur"
+	min_len && echo "+----------------------- Bit 18/S: Rollladensteuerung"
 	echo
 }
 
