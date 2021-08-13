@@ -909,6 +909,7 @@ menu "Download options"
 		bool
 		default y
 		depends on \
+			FREETZ_TYPE_1759_1750 || \
 			FREETZ_TYPE_3170_7170 || \
 			FREETZ_TYPE_7112_7170 || \
 			FREETZ_TYPE_7113_7170 || \
@@ -930,6 +931,8 @@ menu "Download options"
 	config FREETZ_DL_SITE2
 		string "AVM alien web interface DL Site"                                        if FREETZ_DL_OVERRIDE
 		depends on FREETZ_DL_ALIEN
+		#
+		default "@AVM/fritzwlan/fritzwlan-repeater-dvb-c/{other,deutschland}/fritz.os"  if FREETZ_TYPE_1759_1750
 		#
 		default "@AVM/fritzbox.wlan_3170/firmware/deutsch"                              if FREETZ_TYPE_3170_7170
 		default "@AVM/fritzbox.fon_wlan_7112/firmware/deutsch,@1&1/7112"                if FREETZ_TYPE_7112_7170
@@ -958,6 +961,8 @@ menu "Download options"
 	config FREETZ_DL_SOURCE2
 		string "AVM alien web interface firmware source"                                if FREETZ_DL_OVERRIDE
 		depends on FREETZ_DL_ALIEN
+		#
+		default "FRITZ.Box_WLAN_Repeater_DVB_C.en-de-es-it-fr-pl.133.07.01.image"       if FREETZ_TYPE_1759_1750
 		#
 		default "fritz.box_wlan_3170.49.04.58.image"                                    if FREETZ_TYPE_3170_7170
 		default "FRITZ.Box_Fon_WLAN_7112.87.04.88.image"                                if FREETZ_TYPE_7112_7170
