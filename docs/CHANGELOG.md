@@ -86,6 +86,7 @@ Latest changes
    * libgpg-error 1.42
    * libtirpc 1.3.2
    * mbed TLS 2.7.19/2.27.0
+   * mc (Midnight Commander) 4.8.27
    * minidlna 1.3.0
    * Mosquitto 1.6.15
    * OpenSSH 8.6p1
