@@ -51,7 +51,7 @@ Latest changes
 
  - New packages and libs:
    * libldns 1.7.1
-   * Unbound 1.13.1
+   * Unbound 1.13.2
 
  - Updated tools and hooks:
    * busybox 1.33.1
