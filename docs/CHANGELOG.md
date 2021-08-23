@@ -97,7 +97,7 @@ Latest changes
    * Tor 0.4.5.8
    * uMurmur 0.2.20
    * unrar 6.0.6
-   * vsftpd 3.0.4
+   * vsftpd 3.0.5
    * wireguard-linux-compat 1.0.20210424
    * wireguard-tools 1.0.20210424
 
