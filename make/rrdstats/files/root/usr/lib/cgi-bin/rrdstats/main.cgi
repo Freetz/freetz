@@ -1000,7 +1000,7 @@ generate_graph() {
 						GPRINT:$V2:AVERAGE:%8.${DECMAL}lf \
 						GPRINT:$V2:MAX:%8.${DECMAL}lf \
 						GPRINT:$V2:LAST:\t%8.${DECMAL}lf\n \
-						COMMENT:$NBSP$NSBP${NBSP}Scheinleistung\t(min/avg/max/cur)$NBSP \
+						COMMENT:$NBSP${NBSP}Scheinleistung\t(min/avg/max/cur)$NBSP \
 						GPRINT:sein:MIN:\t%8.${DECMAL}lf \
 						GPRINT:sein:AVERAGE:%8.${DECMAL}lf \
 						GPRINT:sein:MAX:%8.${DECMAL}lf \
@@ -1395,11 +1395,13 @@ EOF
 						[ "$lock" == 1 ] && buttlock=disabled || buttlock=enabled
 						[ -z "$state" ] && buttstate=yellow
 						butact="onclick=\"if (confirm('$name schalten?')==true) window.location=('$SCRIPT_NAME?pdev=$pdev$refresh&ain=$ain&state=$(( ($state+1)%2 ))')\""
-						[ -z "$state" ] && butact="onclick=\"val = prompt('Solltemperatur (8-28):');if (val) window.location=('$SCRIPT_NAME?pdev=$pdev$refresh&ain=$ain&state='+parseFloat(val.replace(',','.'))*2)\""
+						[ -z "$state" ] && butact="onclick=\"val = prompt('Solltemperatur (8-28|253|254):');if (val) window.location=('$SCRIPT_NAME?pdev=$pdev$refresh&ain=$ain&state='+(parseFloat(val) < 253 ? parseFloat(val.replace(',','.'))*2 : parseFloat(val)))\""
 						if [ -n "$celsius" ]; then
 							grad="$(echo $celsius | sed 's/.$/,&/g')"
 							if [ -n "$tsoll" ]; then
 								soll="$(echo $(( ${tsoll}0 / 2)) | sed 's/.$/,&/g')"
++								[ "$soll" == 126,5 ] && soll="AUS"
++								[ "$soll" == 127,0 ] && soll="EIN"
 								temps=" (${grad%,0}->${soll%,0})"
 							else
 								temps=" (${grad%,0}${GRAD}C)"
