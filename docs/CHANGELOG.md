@@ -90,7 +90,7 @@ Latest changes
    * minidlna 1.3.0
    * Mosquitto 1.6.15
    * OpenSSH 8.6p1
-   * OpenSSL 0.9.8zh/1.0.2u/1.1.1k/3.0.0-beta1
+   * OpenSSL 0.9.8zh/1.0.2u/1.1.1l/3.0.0-beta1
    * OpenVPN 2.4.11/2.5.3
    * Perl 5.32.1
    * stunnel 5.59
