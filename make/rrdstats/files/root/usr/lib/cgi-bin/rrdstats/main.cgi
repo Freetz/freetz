@@ -1400,8 +1400,8 @@ EOF
 							grad="$(echo $celsius | sed 's/.$/,&/g')"
 							if [ -n "$tsoll" ]; then
 								soll="$(echo $(( ${tsoll}0 / 2)) | sed 's/.$/,&/g')"
-+								[ "$soll" == 126,5 ] && soll="AUS"
-+								[ "$soll" == 127,0 ] && soll="EIN"
+								[ "$soll" == 126,5 ] && soll="AUS"
+								[ "$soll" == 127,0 ] && soll="EIN"
 								temps=" (${grad%,0}->${soll%,0})"
 							else
 								temps=" (${grad%,0}${GRAD}C)"
