@@ -287,7 +287,7 @@ Latest changes
     * liblz4 1.9.3
     * libonig 6.7.1
     * libsrtp-1.4.4+20100615
-    * libssh2 1.9.0
+    * libssh2 1.10.0
     * libtirpc 1.2.6
     * libusb-compat 0.1.5
     * lzma1 4.65

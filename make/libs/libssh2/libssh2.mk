@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 1.9.0)
+$(call PKG_INIT_LIB, 1.10.0)
 $(PKG)_LIB_VERSION:=1.0.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=d5fb8bd563305fd1074dda90bd053fb2d29fc4bce048d182f96eaa466dfadafd
+$(PKG)_SOURCE_SHA256:=2d64e90f3ded394b91d3a2e774ca203a4179f69aebee03003e5a6fa621e41d51
 $(PKG)_SITE:=https://www.libssh2.org/download
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
@@ -26,7 +26,8 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libssh2_WITH_OPENSSL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libssh2_WITH_MBEDTLS
 $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libssh2_WITH_ZLIB
 
-$(PKG)_CONFIGURE_PRE_CMDS += ./buildconf || { $(call ERROR,1,buildconf failed) };
+$(PKG)_CONFIGURE_PRE_CMDS += autoreconf -i;
+$(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
