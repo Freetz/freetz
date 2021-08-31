@@ -56,7 +56,7 @@ Latest changes
  - Updated tools and hooks:
    * busybox 1.33.1
    * dtc 1.6.1
-   * kconfig 5.13
+   * kconfig 5.14
    * patchelf 0.13
    * tar 1.34
 
