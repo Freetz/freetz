@@ -63,6 +63,7 @@ Latest changes
  - BusyBox:
    * Removed version 1.32.1
    * Updated version 1.33.1
+   * Added version 1.34.0
 
  - Updated tools and hooks:
    * fitimg 0.6
