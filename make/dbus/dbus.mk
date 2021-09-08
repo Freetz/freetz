@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 1.10.32)
-$(PKG)_LIB_VERSION:=3.14.18
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=5eb350a660d8fd6f0100fdaf86d96694
+$(call PKG_INIT_BIN, 1.13.18)
+$(PKG)_LIB_VERSION:=3.29.0
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE_SHA256:=8078f5c25e34ab907ce06905d969dc8ef0ccbec367e1e1707c7ecf8460f4254e
 $(PKG)_SITE:=http://$(pkg).freedesktop.org/releases/$(pkg)
 
 $(PKG)_STARTLEVEL=90 # before avahi
@@ -28,6 +28,7 @@ $(PKG)_DEPENDS_ON += expat
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
 $(PKG)_CONFIGURE_ENV += ac_cv_func_accept4=no
+$(PKG)_CONFIGURE_ENV += ac_cv_func_poll=no
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
