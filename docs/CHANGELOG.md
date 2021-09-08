@@ -76,6 +76,7 @@ Latest changes
    * BIND 9.11.32
    * ca-bundle 2021-07-05
    * curl 7.78.0
+   * dbus 1.10.32
    * dnsmasq 2.80/2.85
    * expat 2.4.1
    * git 2.33.0

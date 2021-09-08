@@ -189,7 +189,7 @@ Index:
      - [Einstellungen/ Optionen](../docs/make/davfs2.md#einstellungen-optionen)
      - [Weiterführende Threads im IPPF](../docs/make/davfs2.md#weiterführende-threads-im-ippf)
 
-  * **<u>dbus: D-Bus 1.8.20</u><a id='dbus'></a>**<br>
+  * **<u>dbus: D-Bus 1.10.32</u><a id='dbus'></a>**<br>
     D-Bus is a message bus system, a simple way for applications to talk to one another. In addition to interprocess communication, D-Bus helps coordinate process lifecycle; it makes it simple and reliable to code a "single instance" application or daemon, and to launch applications and daemons on demand when their services are needed.
 
   * **[Debootstrap (binary only)](../docs/make/debootstrap.md)<a id='debootstrap'></a>**<br>

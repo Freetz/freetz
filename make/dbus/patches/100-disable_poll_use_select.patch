@@ -1,15 +1,15 @@
 --- configure
 +++ configure
-@@ -18684,7 +18684,7 @@
+@@ -19679,7 +19679,7 @@
  fi
  
  
--for ac_func in vsnprintf vasprintf nanosleep usleep setenv clearenv unsetenv socketpair getgrouplist fpathconf setrlimit poll setlocale localeconv strtoll strtoull issetugid getresuid
-+for ac_func in vsnprintf vasprintf nanosleep usleep setenv clearenv unsetenv socketpair getgrouplist fpathconf setrlimit      setlocale localeconv strtoll strtoull issetugid getresuid
+-for ac_func in vsnprintf vasprintf nanosleep usleep setenv clearenv unsetenv socketpair getgrouplist fpathconf setrlimit poll setlocale localeconv strtoll strtoull issetugid getresuid setresuid getrlimit prlimit
++for ac_func in vsnprintf vasprintf nanosleep usleep setenv clearenv unsetenv socketpair getgrouplist fpathconf setrlimit      setlocale localeconv strtoll strtoull issetugid getresuid setresuid getrlimit prlimit
  do :
    as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
  ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
-@@ -18766,6 +18766,7 @@
+@@ -19761,6 +19761,7 @@
  
  
  
@@ -17,7 +17,7 @@
  #### Check for broken poll; taken from Glib's configure
  
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for broken poll" >&5
-@@ -18809,6 +18810,7 @@
+@@ -19804,6 +19805,7 @@
  
  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $broken_poll" >&5
  $as_echo "$broken_poll" >&6; }

@@ -147,7 +147,7 @@ Index:
   * **[davfs2: davfs 1.5.2/1.6.0](davfs2.md)<a id='davfs2'></a>**<br>
     davfs is a Linux file system driver that allows you to mount a WebDAV server as a disk drive. WebDAV is an extension to HTTP/1.1 that allows remote collaborative authoring of Web resources, defined in RFC 4918.
 
-  * **<u>dbus: D-Bus 1.8.20</u><a id='dbus'></a>**<br>
+  * **<u>dbus: D-Bus 1.10.32</u><a id='dbus'></a>**<br>
     D-Bus is a message bus system, a simple way for applications to talk to one another. In addition to interprocess communication, D-Bus helps coordinate process lifecycle; it makes it simple and reliable to code a "single instance" application or daemon, and to launch applications and daemons on demand when their services are needed.
 
   * **[Debootstrap (binary only)](debootstrap.md)<a id='debootstrap'></a>**<br>
