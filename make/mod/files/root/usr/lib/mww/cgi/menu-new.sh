@@ -214,7 +214,8 @@ EOF
 		[ "$pkg" = mod -o "$pkg" = avm ] && continue
 		title=$pkg
 		if [ -r "$p/$pkg.meta" ]; then
-			source "$p/$pkg.meta"
+#			source "$p/$pkg.meta"
+			title="$(sed "s/^title=//;s/'//g" "$p/$pkg.meta")"
 		fi
 		echo "$title|$pkg"
 	done | tr '[:upper:]' '[:lower:]' | sort |
@@ -233,7 +234,8 @@ EOF
 new_menu_prepare_package() {
 	local pkg=$1
 	title=$pkg
-	[ -r "$p/$pkg.meta" ] && source "$p/$pkg.meta"
+#	[ -r "$p/$pkg.meta" ] && source "$p/$pkg.meta"
+	[ -r "$p/$pkg.meta" ] && title="$(sed "s/^title=//;s/'//g" "$p/$pkg.meta")"
 	echo -n "<a id='$(_cgi_id "pkg:$pkg")' class='package' href='$(cat "$p/$pkg.index")'>$(html "$title")</a>"
 }
 
