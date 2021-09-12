@@ -1,6 +1,6 @@
-CCACHE_VERSION:=4.4
+CCACHE_VERSION:=4.4.1
 CCACHE_SOURCE:=ccache-$(CCACHE_VERSION).tar.xz
-CCACHE_MD5:=ee7be3c225cc5f77aa4a0e339b06b464
+CCACHE_SHA256:=ebd6dfb5b15dfe39310e1f5834bafbe6ab526c71df8ad08a508e8a242bad8159
 CCACHE_SITE:=https://github.com/ccache/ccache/releases/download/v$(CCACHE_VERSION)
 
 CCACHE_DIR:=$(TARGET_TOOLCHAIN_DIR)/ccache-$(CCACHE_VERSION)
@@ -14,7 +14,7 @@ CCACHE_BIN_DIR:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache
 ccache-source: $(DL_DIR)/$(CCACHE_SOURCE)
 ifneq ($(strip $(DL_DIR)/$(CCACHE_SOURCE)), $(strip $(DL_DIR)/$(CCACHE_KERNEL_SOURCE)))
 $(DL_DIR)/$(CCACHE_SOURCE): | $(DL_DIR)
-	$(DL_TOOL) $(DL_DIR) $(CCACHE_SOURCE) $(CCACHE_SITE) $(CCACHE_MD5)
+	$(DL_TOOL) $(DL_DIR) $(CCACHE_SOURCE) $(CCACHE_SITE) $(CCACHE_SHA256)
 endif
 
 ccache-unpacked: $(CCACHE_DIR)/.unpacked
