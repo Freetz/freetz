@@ -1,9 +1,9 @@
-$(call PKG_INIT_BIN, $(if $(FREETZ_PACKAGE_DNSMASQ_VERSION_ABANDON),2.80,2.85))
+$(call PKG_INIT_BIN, $(if $(FREETZ_PACKAGE_DNSMASQ_VERSION_ABANDON),2.80,2.86))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SOURCE_MD5_ABANDON:=e040e72e6f377a784493c36f9e788502
-$(PKG)_SOURCE_MD5_CURRENT:=f32403e94a657b93d7fbe0a9c07ebccf
+$(PKG)_SOURCE_MD5_CURRENT:=227fd0e81a5ed8134e1f60e175324c99
 $(PKG)_SOURCE_MD5:=$(DNSMASQ_SOURCE_MD5_$(if $(FREETZ_PACKAGE_DNSMASQ_VERSION_ABANDON),ABANDON,CURRENT))
-$(PKG)_SITE:=http://thekelleys.org.uk/dnsmasq
+$(PKG)_SITE:=https://thekelleys.org.uk/dnsmasq
 #$(PKG)_SITE:=git://thekelleys.org.uk/dnsmasq.git
 ### WEBSITE:=http://thekelleys.org.uk/dnsmasq/doc.html
 ### MANPAGE:=http://thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html

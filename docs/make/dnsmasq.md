@@ -1,4 +1,4 @@
-# Dnsmasq 2.80/2.85
+# Dnsmasq 2.80/2.86
  - Homepage: [http://thekelleys.org.uk/dnsmasq/doc.html](http://thekelleys.org.uk/dnsmasq/doc.html)
  - Manpage: [http://thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html](http://thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html)
  - Changelog: [http://thekelleys.org.uk/dnsmasq/CHANGELOG](http://thekelleys.org.uk/dnsmasq/CHANGELOG)
