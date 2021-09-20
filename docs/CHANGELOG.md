@@ -66,6 +66,7 @@ Latest changes
    * Added version 1.34.0
 
  - Updated tools and hooks:
+   * fakeroot 1.26
    * fitimg 0.6
    * pseudo 1.9.0 oe-core b988b0a
 

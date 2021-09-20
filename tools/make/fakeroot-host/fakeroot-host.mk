@@ -1,6 +1,6 @@
-FAKEROOT_HOST_VERSION:=1.25.3
+FAKEROOT_HOST_VERSION:=1.26
 FAKEROOT_HOST_SOURCE:=fakeroot_$(FAKEROOT_HOST_VERSION).orig.tar.gz
-FAKEROOT_HOST_SOURCE_SHA256:=8e903683357f7f5bcc31b879fd743391ad47691d4be33d24a76be3b6c21e956c
+FAKEROOT_HOST_SOURCE_SHA256:=480a578ffdc5592e73df4c086950d321b4adc78dbdaec56c82e4fe1fb68de8e9
 FAKEROOT_HOST_SITE:=http://ftp.debian.org/debian/pool/main/f/fakeroot
 ### WEBSITE:=https://wiki.debian.org/FakeRoot
 ### MANPAGE:=https://man.archlinux.org/man/fakeroot.1.en
