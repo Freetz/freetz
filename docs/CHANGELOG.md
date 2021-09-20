@@ -56,19 +56,17 @@ Latest changes
  - Updated tools and hooks:
    * busybox 1.33.1
    * dtc 1.6.1
-   * kconfig 5.14
-   * patchelf 0.13
-   * tar 1.34
-
- - BusyBox:
-   * Removed version 1.32.1
-   * Updated version 1.33.1
-   * Added version 1.34.0
-
- - Updated tools and hooks:
    * fakeroot 1.26
    * fitimg 0.6
+   * kconfig 5.14
+   * patchelf 0.13
    * pseudo 1.9.0 oe-core b988b0a
+   * tar 1.34
+
+ - BusyBox package:
+   * Version 1.32.1 removed
+   * Version 1.33.1 updated
+   * Version 1.34.0 added
 
  - Updated packages and libs:
    * ACME.sh 3.0.0 (letsencrypt)
