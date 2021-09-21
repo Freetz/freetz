@@ -32,6 +32,8 @@ feedzapper
 fidelio-dev
 flosch-dev
 forenuser
+FriederBluemle
+Greg57070
 GregoryAUZANNEAU
 Hadis
 harryboo
@@ -44,6 +46,7 @@ JasperMichalke
 JBBgameich
 johnbock
 kriegaex
+leo22
 M66B
 magenbrot
 Marcel
