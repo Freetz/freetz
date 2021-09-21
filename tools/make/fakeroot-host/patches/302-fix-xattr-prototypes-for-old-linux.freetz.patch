@@ -1,0 +1,31 @@
+--- wrapdef.h
++++ wrapdef.h
+@@ -145,22 +145,22 @@
+ ssize_t (*next_fgetxattr)(int fd, const char *name, void *value, size_t size)=tmp_fgetxattr;
+ #endif /* HAVE_FGETXATTR */
+ #ifdef HAVE_SETXATTR
+-ssize_t (*next_setxattr)(const char *path, const char *name, void *value, size_t size, int flags)=tmp_setxattr;
++int (*next_setxattr)(const char *path, const char *name, const void *value, size_t size, int flags)=tmp_setxattr;
+ #endif /* HAVE_SETXATTR */
+ #ifdef HAVE_LSETXATTR
+-ssize_t (*next_lsetxattr)(const char *path, const char *name, void *value, size_t size, int flags)=tmp_lsetxattr;
++int (*next_lsetxattr)(const char *path, const char *name, const void *value, size_t size, int flags)=tmp_lsetxattr;
+ #endif /* HAVE_LSETXATTR */
+ #ifdef HAVE_FSETXATTR
+-ssize_t (*next_fsetxattr)(int fd, const char *name, void *value, size_t size, int flags)=tmp_fsetxattr;
++int (*next_fsetxattr)(int fd, const char *name, const void *value, size_t size, int flags)=tmp_fsetxattr;
+ #endif /* HAVE_FSETXATTR */
+ #ifdef HAVE_REMOVEXATTR
+-ssize_t (*next_removexattr)(const char *path, const char *name)=tmp_removexattr;
++int (*next_removexattr)(const char *path, const char *name)=tmp_removexattr;
+ #endif /* HAVE_REMOVEXATTR */
+ #ifdef HAVE_LREMOVEXATTR
+-ssize_t (*next_lremovexattr)(const char *path, const char *name)=tmp_lremovexattr;
++int (*next_lremovexattr)(const char *path, const char *name)=tmp_lremovexattr;
+ #endif /* HAVE_LREMOVEXATTR */
+ #ifdef HAVE_FREMOVEXATTR
+-ssize_t (*next_fremovexattr)(int fd, const char *name)=tmp_fremovexattr;
++int (*next_fremovexattr)(int fd, const char *name)=tmp_fremovexattr;
+ #endif /* HAVE_FREMOVEXATTR */
+ 
+ #ifdef HAVE_FSTATAT
