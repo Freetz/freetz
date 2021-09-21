@@ -211,7 +211,7 @@ Currently supported devices and firmwares
   - 08.04.49 rev10836 {INT} (Annex B)
 
 * __Fritz!Box Fon WLAN 7050__
-  - 14.04.33 rev7238
+  - 14.04.33 rev7238 {GER}
 
 ### Fritz!Box Fon WLAN (71xx)
 
