@@ -42,6 +42,9 @@ Latest changes
    * Replace kernel does not work for most latest firmware versions.
    * Loading build kernel modules may work or do not. You'll notice.
 
+ - Build system:
+   * binutils 2.24.x/2.25.x/2.26.x/2.31.x/2.37.x
+
  - Firmware updates:
    * Please see [FIRMWARES](FIRMWARES.md) for the list of currently supported devices and firmwares.
 
