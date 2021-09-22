@@ -1,5 +1,12 @@
 # NEWS
 
+ * __[2021-09-22](#2021-09-22)__<a id='2021-09-22'></a><br>
+   Es wurde ein neuer [Tag](https://github.com/Freetz-NG/freetz-ng/tags) `ng21090` erstellt.<br>
+   Die automatisch angebotene und nicht deaktivierbare `.zip`-Datei darf auf keinen Fall verwendet werden, da<br>
+   darin keine Dateiberechtigungen enthalten sind! In der `.tar.gz` fehlt mindestens die Versionsinformation.<br>
+   Stattdessen sollte ein Tag wie in der [README](https://github.com/Freetz-NG/freetz-ng#or-clone-a-single-tag) beschrieben mit git ausgecheckt werden.<br>
+   Siehe [ng21090](https://github.com/Freetz-NG/freetz-ng/releases/tag/ng21090)<br>
+
  * __[2021-05-05](#2021-05-05)__<a id='2021-05-05'></a><br>
    Die libc und `SEPARATE_AVM_UCLIBC`<br>
    Bis zu Fritzos 7.0x hat AVM uClibc-ng 1.0.14 oder ältere uClibc verwendet. Beginnend mit 7.1x wurden dann<br>

@@ -3,6 +3,7 @@ Latest changes
 
 - Freetz-NG
   * [devel](#devel)
+  * [ng21090](#ng21090)
   * [ng21030](#ng21030)
   * [ng21010](#ng21010)
   * [ng20120](#ng20120)
@@ -36,6 +37,15 @@ Latest changes
 <br>
 
 ### devel
+
+ - Known problems:
+   * Replace kernel does not work for most latest firmware versions.
+   * Loading build kernel modules may work or do not. You'll notice.
+
+ - Firmware updates:
+   * Please see [FIRMWARES](FIRMWARES.md) for the list of currently supported devices and firmwares.
+
+### ng21090
 
  - Known problems:
    * Replace kernel does not work for most latest firmware versions.
