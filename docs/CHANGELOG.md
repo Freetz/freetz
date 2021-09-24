@@ -128,7 +128,7 @@ Latest changes
       + Show package version in header
 
  - Firmware updates:
-   * Please see [FIRMWARES](FIRMWARES.md) for the list of currently supported devices and firmwares.
+   * Please see [FIRMWARES](https://github.com/Freetz-NG/freetz-ng/blob/ng21090/docs/FIRMWARES.md) for the list of supported devices and firmwares.
 
 ### ng21030
 
@@ -170,7 +170,7 @@ Latest changes
    * lzma2 5.2.5
 
  - Firmware updates:
-   * Please see [FIRMWARES](FIRMWARES.md) for the list of currently supported devices and firmwares.
+   * Please see [FIRMWARES](https://github.com/Freetz-NG/freetz-ng/blob/ng21030/docs/FIRMWARES.md) for the list of supported devices and firmwares.
 
 ### ng21010
 
@@ -201,6 +201,9 @@ Latest changes
 
 - New tools and hooks:
   * fitimg: tool to pack/unpack FIT firmware files
+
+- Firmware updates:
+  * Please see [FIRMWARES](https://github.com/Freetz-NG/freetz-ng/blob/ng21010/docs/FIRMWARES.md) for the list of supported devices and firmwares.
 
 ### ng20120
 
@@ -506,7 +509,7 @@ Latest changes
     * wxWidgets
 
 - Firmware updates:
-    * Please see FIRMWARES for the list of currently supported boxes and firmwares.
+    * Please see [FIRMWARES](https://github.com/Freetz-NG/freetz-ng/blob/ng20120/docs/FIRMWARES.md) for the list of supported devices and firmwares.
 
 - BusyBox:
     * Updated to version 1.27.2/1.31.1/1.32.0
