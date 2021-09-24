@@ -175,35 +175,35 @@ Latest changes
 ### ng21010
 
 - Known problems:
-  * Replace kernel does not work for most latest firmware versions.
-  * Loading build kernel modules may work or do not. You'll notice.
+   * Replace kernel does not work for most latest firmware versions.
+   * Loading build kernel modules may work or do not. You'll notice.
 
 - Build system:
-  * kconfig 5.10
+   * kconfig 5.10
 
 - New packages, libs, modules:
-    * RPCBind 1.2.5
+   * RPCBind 1.2.5
 
 - Updated packages and libs:
-    * CA-bundle 2021-01-19
-    * dnsmasq 2.80/2.84
-    * jpeg 9d
-    * lighttpd 1.4.58
-    * shellinabox 2.21
-    * smartmontools 7.2
-    * socat 1.7.4.1
-    * Wget 1.21.1
+   * CA-bundle 2021-01-19
+   * dnsmasq 2.80/2.84
+   * jpeg 9d
+   * lighttpd 1.4.58
+   * shellinabox 2.21
+   * smartmontools 7.2
+   * socat 1.7.4.1
+   * Wget 1.21.1
 
 - BusyBox:
-    * Removed version 1.31.1
-    * Updated version 1.32.1
-    * Added version 1.33.0
+   * Removed version 1.31.1
+   * Updated version 1.32.1
+   * Added version 1.33.0
 
 - New tools and hooks:
-  * fitimg: tool to pack/unpack FIT firmware files
+   * fitimg: tool to pack/unpack FIT firmware files
 
 - Firmware updates:
-  * Please see [FIRMWARES](https://github.com/Freetz-NG/freetz-ng/blob/ng21010/docs/FIRMWARES.md) for the list of supported devices and firmwares.
+   * Please see [FIRMWARES](https://github.com/Freetz-NG/freetz-ng/blob/ng21010/docs/FIRMWARES.md) for the list of supported devices and firmwares.
 
 ### ng20120
 
