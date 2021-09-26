@@ -47,6 +47,7 @@ Latest changes
 
  - Updated packages and libs:
    * libexif 0.6.23
+   * libgcrypt 1.9.4
 
  - Firmware updates:
    * Please see [FIRMWARES](FIRMWARES.md) for the list of currently supported devices and firmwares.
