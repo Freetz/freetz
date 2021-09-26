@@ -2,7 +2,10 @@ $(call PKG_INIT_LIB, 1.42)
 $(PKG)_LIB_VERSION:=0.32.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_MD5:=133fed221ba8f63f5842858a1ff67cb3
-$(PKG)_SITE:=ftp://ftp.gnupg.org/gcrypt/libgpg-error
+$(PKG)_SITE:=https://gnupg.org/ftp/gcrypt/libgpg-error,ftp://ftp.gnupg.org/gcrypt/libgpg-error
+### WEBSITE:=https://gnupg.org/software/libgpg-error/
+### CHANGES:=https://git.gnupg.org/cgi-bin/gitweb.cgi?p=libgpg-error.git;a=blob;f=ChangeLog
+### CVSREPO:=https://git.gnupg.org/cgi-bin/gitweb.cgi?p=libgpg-error.git
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
