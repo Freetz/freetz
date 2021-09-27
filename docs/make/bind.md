@@ -1,4 +1,8 @@
-# BIND 9.11.32
+# BIND 9.11.35
+ - Homepage: [https://www.isc.org/bind/](https://www.isc.org/bind/)
+ - Manpage: [https://bind9.readthedocs.io/en/latest/](https://bind9.readthedocs.io/en/latest/)
+ - Changelog: [https://bind9.readthedocs.io/en/latest/notes.html](https://bind9.readthedocs.io/en/latest/notes.html)
+ - Repository: [https://gitlab.isc.org/isc-projects/bind9/](https://gitlab.isc.org/isc-projects/bind9/)
 
 Mit [bind](http://isc.org/software/bind) (Berkeley
 Internet Name Daemon) kann ein DNS-Server zur IP- und Namensauflösung

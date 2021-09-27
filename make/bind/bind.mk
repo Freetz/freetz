@@ -1,7 +1,11 @@
-$(call PKG_INIT_BIN, 9.11.32)
+$(call PKG_INIT_BIN, 9.11.35)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=cbf8cb4b74dd1452d97c3a2a8c625ea346df8516b4b3508ef07443121a591342
-$(PKG)_SITE:=http://ftp.isc.org/isc/bind9/$($(PKG)_VERSION)
+$(PKG)_SOURCE_SHA256:=1c882705827b6aafa45d917ae3b20eccccc8d5df3c4477df44b04382e6c47562
+$(PKG)_SITE:=https://downloads.isc.org/isc/bind9/$($(PKG)_VERSION),http://ftp.isc.org/isc/bind9/$($(PKG)_VERSION)
+### WEBSITE:=https://www.isc.org/bind/
+### MANPAGE:=https://bind9.readthedocs.io/en/latest/
+### CHANGES:=https://bind9.readthedocs.io/en/latest/notes.html
+### CVSREPO:=https://gitlab.isc.org/isc-projects/bind9/
 
 $(PKG)_STARTLEVEL=40 # multid-wrapper may start it earlier!
 
