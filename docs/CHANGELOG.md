@@ -49,6 +49,7 @@ Latest changes
    * BIND 9.11.35
    * libexif 0.6.23
    * libgcrypt 1.9.4
+   * OpenSSH 8.8p1
 
  - Firmware updates:
    * Please see [FIRMWARES](FIRMWARES.md) for the list of currently supported devices and firmwares.
