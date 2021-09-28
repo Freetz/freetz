@@ -420,7 +420,7 @@ Currently supported devices and firmwares
   - 154.07.13 rev74390 {INT} [MESH18 NL3]
   - 154.07.21 rev82154 {ALL} [PSQ19]
   - 154.07.28 rev89799 {ALL} [PSQ19P2NL3-Go0phie0]
-* __Fritz!Box Fon WLAN 7590 AX (DEVELOPER)__
+* __Fritz!Box Fon WLAN 7590 AX__
   - 259.07.28 rev89907 {ALL} [PSQ19P2NL3-Go0phie0]
 
 ### Fritz!Powerline
