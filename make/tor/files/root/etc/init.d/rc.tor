@@ -37,8 +37,8 @@ start() {
 	echo -n "Starting ${DAEMON_LONG_NAME} ... "
 	config
 	[ -f $DAEMON_STORAGE/secret_id_key ] && savetimer=no
-	[ ! "$TOR_SOFTLIMIT" == "0" ] && DAEMON="nice softlimit -m $TOR_SOFTLIMIT $DAEMON -maxmeminqueues $(($TOR_SOFTLIMIT * 2 / 3))"
-	$DAEMON --runasdaemon 1 >/dev/null 2>&1
+	[ "$TOR_SOFTLIMIT" != "0" ] && SOFTLIMIT_PRE="nice softlimit -m $TOR_SOFTLIMIT" && SOFTLIMIT_POST="-maxmeminqueues $(($TOR_SOFTLIMIT * 2 / 3))"
+	$SOFTLIMIT_PRE $DAEMON_BIN $SOFTLIMIT_POST --runasdaemon 1 >/dev/null 2>&1
 	exitval=$?
 	if [ "$exitval" -eq 0 ]; then
 		if [ "$savetimer" != "no" -a "$TOR_RELAY_ENABLED" == "yes" ]; then
