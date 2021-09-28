@@ -44,6 +44,7 @@ Latest changes
 
  - Build system:
    * binutils 2.24.x/2.25.x/2.26.x/2.31.x/2.37.x
+   * ccache 4.4.2
 
  - Updated packages and libs:
    * BIND 9.11.35
