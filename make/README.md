@@ -933,7 +933,7 @@ Index:
   * **<u>TIFF utils 4.0.7 (binary only)</u><a id='tiff'></a>**<br>
     Various utilities to manupulate/convert images to/from TIFF format.
 
-  * **[Tinc 1.0.36/1.1pre17](../docs/make/tinc.md)<a id='tinc'></a>**<br>
+  * **[Tinc 1.0.36/1.1pre18](../docs/make/tinc.md)<a id='tinc'></a>**<br>
     Tinc is a Virtual Private Network (VPN) daemon that uses tunneling and encryption to create a secure private network between hosts on the Internet.
      - [Features](../docs/make/tinc.md#features)
      - [Verwendete Bibliotheken](../docs/make/tinc.md#verwendete-bibliotheken)
