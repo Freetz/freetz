@@ -49,7 +49,7 @@ $(PKG)_NO_CIPHERS += $(if $(FREETZ_LIB_libcrypto_WITH_RC4),,no-rc4)
 
 $(PKG)_OPTIONS    := shared no-err no-sse2 no-capieng no-seed
 $(PKG)_OPTIONS    += $(if $(FREETZ_OPENSSL_VERSION_2_MAX),no-hw)
-$(PKG)_OPTIONS    += $(if $(FREETZ_OPENSSL_VERSION_1_MAX),no-fips no-engines,no-engine)
+$(PKG)_OPTIONS    += $(if $(FREETZ_OPENSSL_VERSION_1_MAX),no-fips no-engines)
 $(PKG)_OPTIONS    += $(if $(FREETZ_LIB_libcrypto_WITH_EC),,no-ec)
 $(PKG)_OPTIONS    += $(if $(FREETZ_LIB_libcrypto_WITH_ZLIB),zlib)
 $(PKG)_OPTIONS    += $(if $(FREETZ_OPENSSL_VERSION_0),no-perlasm no-cms)
