@@ -8,7 +8,6 @@ config FREETZ_PACKAGE_TINC
 	bool "Tinc 1.0.36/1.1pre17"
 	default n
 	depends on  (FREETZ_REPLACE_MODULE_AVAILABLE || !FREETZ_AVM_HAS_BUGON_IN_NET_CORE) &&  FREETZ_OPENSSL_VERSION_1_MIN
-	select FREETZ_LIB_libm      if !FREETZ_PACKAGE_TINC_STATIC && FREETZ_PACKAGE_TINC_VERSION_1_1
 	select FREETZ_LIB_liblzo2   if !FREETZ_PACKAGE_TINC_STATIC
 	select FREETZ_LIB_libz      if !FREETZ_PACKAGE_TINC_STATIC
 	select FREETZ_LIB_libcrypto if !FREETZ_PACKAGE_TINC_STATIC
@@ -20,33 +19,36 @@ config FREETZ_PACKAGE_TINC
 
 if FREETZ_PACKAGE_TINC
 
-choice
-	prompt "Version"
-	default FREETZ_PACKAGE_TINC_VERSION_1_0
+	choice
+		prompt "Version"
+			default FREETZ_PACKAGE_TINC_VERSION_1_0
 
-	config FREETZ_PACKAGE_TINC_VERSION_1_0
-	bool "1.0.36"
+		config FREETZ_PACKAGE_TINC_VERSION_1_0
+			bool "1.0.36"
 
-	config FREETZ_PACKAGE_TINC_VERSION_1_1
-	bool "1.1pre17 - EXPERIMENTAL"
-endchoice
+		config FREETZ_PACKAGE_TINC_VERSION_1_1
+			bool "1.1pre17 - EXPERIMENTAL"
+			select FREETZ_LIB_libm if !FREETZ_PACKAGE_TINC_STATIC && FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 
-config FREETZ_PACKAGE_TINC_tinc
-	bool "Include tinc control utility"
-	depends on FREETZ_PACKAGE_TINC_VERSION_1_1
-	default n
-	select FREETZ_LIB_libreadline if !FREETZ_PACKAGE_TINC_STATIC
-	select FREETZ_LIB_libncurses  if !FREETZ_PACKAGE_TINC_STATIC
+	endchoice
 
-config FREETZ_PACKAGE_TINC_STATIC
-	bool "Link statically"
-	default n
-	help
-		Tinc needs the following shared libraries which can be linked in statically
-		by activating this switch:
-		- liblzo2.so
-		- libcrypto.so
-		- libz.so
+	config FREETZ_PACKAGE_TINC_tinc
+		bool "Include tinc control utility"
+		depends on FREETZ_PACKAGE_TINC_VERSION_1_1
+		default n
+		select FREETZ_LIB_libreadline if !FREETZ_PACKAGE_TINC_STATIC
+		select FREETZ_LIB_libncurses  if !FREETZ_PACKAGE_TINC_STATIC
+
+	config FREETZ_PACKAGE_TINC_STATIC
+		bool "Link statically"
+		default n
+		help
+			Tinc needs the following shared libraries which can
+			be linked in statically by activating this switch:
+			- libm.so (version 1.1)
+			- liblzo2.so
+			- libcrypto.so
+			- libz.so
 
 endif # FREETZ_PACKAGE_TINC
 
