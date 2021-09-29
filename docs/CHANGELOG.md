@@ -52,6 +52,7 @@ Latest changes
    * libgcrypt 1.9.4
    * OpenSSH 8.8p1
    * tinc 1.0.36/1.1pre18
+   * wireguard-tools 1.0.20210914
 
  - Firmware updates:
    * Please see [FIRMWARES](FIRMWARES.md) for the list of currently supported devices and firmwares.
