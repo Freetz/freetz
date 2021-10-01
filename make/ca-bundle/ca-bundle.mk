@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2021-07-05)
+$(call PKG_INIT_BIN, 2021-09-30)
 $(PKG)_SOURCE:=cacert-$($(PKG)_VERSION).pem
-$(PKG)_SOURCE_SHA256:=a3b534269c6974631db35f952e8d7c7dbf3d81ab329a232df575c2661de1214a
+$(PKG)_SOURCE_SHA256:=f524fc21859b776e18df01a87880efa198112214e13494275dbcbd9bcb71d976
 $(PKG)_SITE:=https://www.curl.se/ca,https://curl.haxx.se/ca
 ### WEBSITE:=https://www.curl.se/ca
 

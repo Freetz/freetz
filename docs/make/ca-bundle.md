@@ -1,4 +1,4 @@
-# CA-bundle 2021-07-05
+# CA-bundle 2021-09-30
  - Homepage: [https://www.curl.se/ca](https://www.curl.se/ca)
 
 Das CA-bundle ist ein Paket von root CA (Certificate Authority) Zertifikaten.
