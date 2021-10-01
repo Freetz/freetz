@@ -48,6 +48,7 @@ Latest changes
 
  - Updated packages and libs:
    * BIND 9.11.35
+   * cifs-utils 6.14
    * libexif 0.6.23
    * libgcrypt 1.9.4
    * OpenSSH 8.8p1
