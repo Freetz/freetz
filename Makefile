@@ -291,8 +291,7 @@ package-list: package-list-clean $(PACKAGES_LIST)
 	@touch .packages
 
 package-list-clean:
-	@$(RM) .packages  .static .dynamic
-# compat: .static & .dynamic may be removed later
+	@$(RM) .packages
 
 firmware-nocompile: tools $(DL_IMAGE)
 ifneq ($(strip $(FREETZ_FWMOD_SKIP_ALL)),y)
