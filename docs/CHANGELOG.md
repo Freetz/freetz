@@ -56,6 +56,7 @@ Latest changes
    * libexif 0.6.23
    * libgcrypt 1.9.4
    * OpenSSH 8.8p1
+   * strace 4.9/5.0/5.14
    * tinc 1.0.36/1.1pre18
    * wireguard-tools 1.0.20210914
 

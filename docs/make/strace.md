@@ -1,4 +1,8 @@
-# strace 4.9/5.0 (binary only)
+# strace 4.9/5.0/5.14 (binary only)
+ - Homepage: [https://www.strace.io/](https://www.strace.io/)
+ - Manpage: [https://man7.org/linux/man-pages/man1/strace.1.html](https://man7.org/linux/man-pages/man1/strace.1.html)
+ - Changelog: [https://www.strace.io/files/](https://www.strace.io/files/)
+ - Repository: [https://github.com/strace/strace](https://github.com/strace/strace)
 
 **[strace](http://sourceforge.net/projects/strace/)**
 verfolgt System-Calls und Signale eines Prozesses. Dabei schaltet es

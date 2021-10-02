@@ -2,12 +2,17 @@
 # recent versions of strace do not support older kernel versions anymore,
 # that's the reason we have to stick to an older strace version for kernel-2.6.13
 #
-$(call PKG_INIT_BIN, $(if $(FREETZ_KERNEL_VERSION_2_6_13),4.9,5.0))
+$(call PKG_INIT_BIN, $(if $(FREETZ_KERNEL_VERSION_2_MAX),$(if $(FREETZ_KERNEL_VERSION_2_6_13),4.9,5.0),5.14))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SOURCE_MD5_4.9:=885eafadb10f6c60464a266d3929a2a4
 $(PKG)_SOURCE_MD5_5.0:=8499d66e5c467fd391c272dd82f0b691
-$(PKG)_SOURCE_MD5:=$($(PKG)_SOURCE_MD5_$($(PKG)_VERSION))
-$(PKG)_SITE:=@SF/$(pkg),https://strace.io/files/$($(PKG)_VERSION)
+$(PKG)_SOURCE_SHA256_5.14:=901bee6db5e17debad4530dd9ffb4dc9a96c4a656edbe1c3141b7cb307b11e73
+$(PKG)_SOURCE_CHECKSUM:=$($(PKG)_SOURCE_MD5_$($(PKG)_VERSION))$($(PKG)_SOURCE_SHA256_$($(PKG)_VERSION))
+$(PKG)_SITE:=https://www.strace.io/files/$($(PKG)_VERSION),@SF/$(pkg)
+### WEBSITE:=https://www.strace.io/
+### MANPAGE:=https://man7.org/linux/man-pages/man1/strace.1.html
+### CHANGES:=https://www.strace.io/files/
+### CVSREPO:=https://github.com/strace/strace
 
 $(PKG)_CONDITIONAL_PATCHES+=$($(PKG)_VERSION)
 
@@ -19,7 +24,7 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_KERNEL_VERSION
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_ADD_EXTRA_FLAGS,(C|CPP)FLAGS)
 $(PKG)_EXTRA_CPPFLAGS += $(if $(and $(FREETZ_SYSTEM_TYPE_IKS),$(FREETZ_AVM_VERSION_06_5X_MIN)),-D_AVM_WRONG_SOCKET_OPTIONS_CODES=1)
 
-$(PKG)_BINARY:=$($(PKG)_DIR)/strace
+$(PKG)_BINARY:=$($(PKG)_DIR)$(if $(FREETZ_KERNEL_VERSION_2_MAX),/,/src/)strace
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/strace
 $(PKG)_CATEGORY:=Debug helpers
 
