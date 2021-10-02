@@ -129,11 +129,9 @@ $(error The empty directory root/sys is missing! Please do a clean checkout)
 endif
 
 # Simple checking of build prerequisites
-ifneq ($(findstring menuconfig,$(MAKECMDGOALS)),menuconfig)
 ifneq ($(NO_PREREQ_CHECK),y)
 ifneq (OK,$(shell $(CHECK_PREREQ_TOOL) >&2 && echo OK))
 $(error Some build prerequisites are missing! Please install the missing packages before trying again. See https://freetz-ng.github.io/freetz-ng/PREREQUISITES for installation hints)
-endif
 endif
 endif
 
