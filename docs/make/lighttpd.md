@@ -1,6 +1,6 @@
-# lighttpd 1.4.59
- - Homepage: [http://www.lighttpd.net/](http://www.lighttpd.net/)
- - Changelog: [http://blog.lighttpd.net/](http://blog.lighttpd.net/)
+# lighttpd 1.4.60
+ - Homepage: [https://www.lighttpd.net/](https://www.lighttpd.net/)
+ - Changelog: [https://www.lighttpd.net/download/](https://www.lighttpd.net/download/)
  - Repository: [https://git.lighttpd.net/lighttpd/lighttpd1.4.git](https://git.lighttpd.net/lighttpd/lighttpd1.4.git)
 
 Mit diesem Paket ist es möglich, den lighttpd Webserver zu erstellen.

@@ -63,6 +63,7 @@ Latest changes
    * SQLite 3.36.0
    * strace 4.9/5.0/5.14
    * tinc 1.0.36/1.1pre18
+   * lighttpd 1.4.60
    * wireguard-tools 1.0.20210914
 
  - Firmware updates:
