@@ -54,7 +54,7 @@ Latest changes
    * Apache 2.4.50
    * BIND 9.11.35
    * CA-bundle 2021-09-30
-   * CCID driver 1.4.35
+   * CCID driver 1.4.36
    * cifs-utils 6.14
    * libexif 0.6.23
    * libgcrypt 1.9.4
