@@ -1,7 +1,11 @@
-$(call PKG_INIT_BIN, 2.4.48)
+$(call PKG_INIT_BIN, 2.4.50)
 $(PKG)_SOURCE:=httpd-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_SHA1:=834876db80fc290e531f0e088d255434828b81b5
+$(PKG)_SOURCE_SHA256:=6a2817c070c606682eb53ed963511407d3c3d7a379cdf855971467b00fb3890f
 $(PKG)_SITE:=@APACHE/httpd
+### WEBSITE:=https://httpd.apache.org/
+### MANPAGE:=https://httpd.apache.org/docs/2.4/
+### CHANGES:=https://downloads.apache.org/httpd/CHANGES_2.4
+### CVSREPO:=https://github.com/apache/httpd
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/$(pkg)

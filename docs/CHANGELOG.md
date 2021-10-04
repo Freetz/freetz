@@ -51,6 +51,7 @@ Latest changes
    
  - Updated packages and libs:
    * ACME.sh 3.0.1 (letsencrypt)
+   * Apache 2.4.50
    * BIND 9.11.35
    * CA-bundle 2021-09-30
    * cifs-utils 6.14
