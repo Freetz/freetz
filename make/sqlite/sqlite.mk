@@ -1,8 +1,8 @@
-$(call PKG_INIT_BIN, 3320300)
+$(call PKG_INIT_BIN, 3360000)
 $(PKG)_LIB_VERSION:=0.8.6
 $(PKG)_SOURCE:=$(pkg)-autoconf-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA1:=ea14ef2dc4cc7fcbc5ebbb018d3a03faa3a41cb4
-$(PKG)_SITE:=http://www.sqlite.org/2020
+$(PKG)_SOURCE_SHA256:=bd90c3eb96bee996206b83be7065c9ce19aef38c3f4fb53073ada0d0b69bbce3
+$(PKG)_SITE:=https://www.sqlite.org/2021
 
 ifeq ($(strip $(FREETZ_PACKAGE_SQLITE_WITH_READLINE)),y)
 $(PKG)_DEPENDS_ON += readline
