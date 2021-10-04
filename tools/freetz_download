@@ -264,7 +264,7 @@ if [ -n "$URLs" ]; then
 				# give sourceforge a few more tries, because it redirects to different mirrors
 				subpath=${url/@SF\//}
 				for (( n=0; n < 5; n++ )); do
-					sites[(( num_sites++ ))]=http://downloads.sourceforge.net/$subpath
+					sites[(( num_sites++ ))]=https://downloads.sourceforge.net/$subpath
 				done
 			elif [ ${url:0:4} == "@AVM" ]; then
 				subpath=${url/@AVM\//}
@@ -279,8 +279,8 @@ if [ -n "$URLs" ]; then
 				sites[(( num_sites++ ))]=ftp://ftp.avm.de/$subpath
 			elif [ ${url:0:4} == "@GNU" ]; then
 				subpath=${url/@GNU\//}
-				sites[(( num_sites++ ))]=http://ftpmirror.gnu.org/$subpath # automatically chooses a nearby and up-to-date mirror
-				sites[(( num_sites++ ))]=http://ftp.gnu.org/gnu/$subpath
+				sites[(( num_sites++ ))]=https://ftpmirror.gnu.org/$subpath # automatically chooses a nearby and up-to-date mirror
+				sites[(( num_sites++ ))]=https://ftp.gnu.org/gnu/$subpath
 			elif [ ${url:0:7} == "@KERNEL" ]; then
 				subpath=${url/@KERNEL\//}
 				sites[(( num_sites++ ))]=https://kernel.org/pub/$subpath
@@ -302,10 +302,8 @@ if [ -n "$URLs" ]; then
 				sites[(( num_sites++ ))]=http://www.m-net.de/fileadmin/downloads/Links/$subpath
 			elif [ ${url:0:7} == "@APACHE" ]; then
 				subpath=${url/@APACHE\//}
-				sites[(( num_sites++ ))]=http://www.eu.apache.org/dist/$subpath
-				sites[(( num_sites++ ))]=http://www.apache.org/dist/$subpath
-				sites[(( num_sites++ ))]=http://apache.openmirror.de/$subpath
-				sites[(( num_sites++ ))]=http://archive.apache.org/dist/$subpath
+				sites[(( num_sites++ ))]=https://www.apache.org/dist/$subpath
+				sites[(( num_sites++ ))]=https://archive.apache.org/dist/$subpath
 			elif [ ${url:0:6} == "@SAMBA" ]; then
 				subpath=${url/@SAMBA\//}
 				sites[(( num_sites++ ))]=https://download.samba.org/pub/$subpath
