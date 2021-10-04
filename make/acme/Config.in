@@ -1,35 +1,35 @@
 config FREETZ_PACKAGE_ACME
-	bool "ACME.sh 3.0.0 (letsencrypt)"
+	bool "ACME.sh 3.0.1 (letsencrypt)"
 	depends on !FREETZ_PATCH_FREETZMOUNT && !FREETZ_PACKAGE_OPENVPN_CGI && !FREETZ_PACKAGE_GW6
 	select FREETZ_BUSYBOX_DESKTOP
 	select FREETZ_PACKAGE_OPENSSL
-	select FREETZ_PACKAGE_WGET if !FREETZ_PACKAGE_CURL
-	select FREETZ_PACKAGE_WGET_WITH_SSL if !FREETZ_PACKAGE_CURL
 	select FREETZ_PACKAGE_CA_BUNDLE
+	select FREETZ_PACKAGE_WGET           if !FREETZ_PACKAGE_CURL
+	select FREETZ_PACKAGE_WGET_WITH_SSL  if !FREETZ_PACKAGE_CURL
 	default n
 	help
 		A pure Unix shell script implementing ACME client protocol.
 
 if FREETZ_PACKAGE_ACME
 
-config FREETZ_PACKAGE_ACME_deploy
-	bool "deploy"
-	default y
+	config FREETZ_PACKAGE_ACME_deploy
+		bool "deploy"
+		default y
 
-config FREETZ_PACKAGE_ACME_dnsapi
-	bool "dnsapi"
-	default y
+	config FREETZ_PACKAGE_ACME_dnsapi
+		bool "dnsapi"
+		default y
 
-config FREETZ_PACKAGE_ACME_notify
-	bool "notify"
-	default y
+	config FREETZ_PACKAGE_ACME_notify
+		bool "notify"
+		default y
 
-config FREETZ_PACKAGE_ACME_SOCAT
-	bool "Select socat"
-	select FREETZ_PACKAGE_SOCAT
-	default n
-	help
-		Needed only for standalone mode.
+	config FREETZ_PACKAGE_ACME_SOCAT
+		bool "Select socat"
+		select FREETZ_PACKAGE_SOCAT
+		default n
+		help
+			Needed only for standalone mode.
 
 endif # FREETZ_PACKAGE_ACME
 
