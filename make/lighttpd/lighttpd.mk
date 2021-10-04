@@ -12,14 +12,14 @@ $(PKG)_BINARY_TARGET_DIR := $($(PKG)_DEST_DIR)/usr/bin/lighttpd
 $(PKG)_MODULES_DIR := /usr/lib/lighttpd
 $(PKG)_MODULES_ALL := \
 	access accesslog ajp13 alias \
-	auth authn_dbi authn_file authn_gssapi authn_ldap authn_mysql authn_pam \
-	cgi cml \
+	auth authn_dbi authn_file authn_gssapi authn_ldap authn_pam \
+	cgi \
 	deflate dirlisting \
 	evasive evhost expire extforward \
-	fastcgi flv_streaming \
-	geoip gnutls \
+	fastcgi \
+	gnutls \
 	indexfile \
-	magnet maxminddb mbedtls mysql_vhost \
+	magnet maxminddb mbedtls \
 	nss \
 	openssl \
 	proxy \

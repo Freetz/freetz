@@ -39,7 +39,6 @@ if FREETZ_PACKAGE_LIGHTTPD
 		default n
 		help
 			This option enables LUA support for lighttpd.
-			mod_cml and mod_magnet modules depend on it.
 
 
 	config FREETZ_PACKAGE_LIGHTTPD_WITH_SSL
@@ -162,26 +161,12 @@ if FREETZ_PACKAGE_LIGHTTPD
 #		bool "mod_authn_ldap"
 #		default n
 
-#	requires mysql not available in freetz
-#	config FREETZ_PACKAGE_LIGHTTPD_MOD_AUTHN_MYSQL
-#		bool "mod_authn_mysql - DEPRECATED"
-#		default n
-
 	config FREETZ_PACKAGE_LIGHTTPD_MOD_CGI
 		bool "mod_cgi"
 		default y
 		help
 			This option adds mod_cgi.so to the image.
 			Please see https://redmine.lighttpd.net/wiki/1/Docs:ModCGI
-			for more information on this module.
-
-	config FREETZ_PACKAGE_LIGHTTPD_MOD_CML
-		bool "mod_cml"
-		depends on FREETZ_PACKAGE_LIGHTTPD_WITH_LUA
-		default y
-		help
-			This option adds mod_cml.so to the image.
-			Please see https://redmine.lighttpd.net/wiki/1/Docs:ModCML
 			for more information on this module.
 
 	config FREETZ_PACKAGE_LIGHTTPD_MOD_DEFLATE
@@ -242,19 +227,6 @@ if FREETZ_PACKAGE_LIGHTTPD
 			Please see https://redmine.lighttpd.net/wiki/1/Docs:ModFastCGI
 			for more information on this module.
 
-	config FREETZ_PACKAGE_LIGHTTPD_MOD_FLV_STREAMING
-		bool "mod_flv_streaming"
-		default y
-		help
-			This option adds mod_flv_streaming.so to the image.
-			Please see https://redmine.lighttpd.net/wiki/1/Docs:ModFLVStreaming
-			for more information on this module.
-
-#	requires libGeoIP not available in freetz
-#	config FREETZ_PACKAGE_LIGHTTPD_MOD_GEOIP
-#		bool "mod_geoip - DEPRECATED"
-#		default n
-
 	config FREETZ_PACKAGE_LIGHTTPD_MOD_INDEXFILE
 		bool "mod_indexfile (required module)"
 		default y
@@ -271,8 +243,8 @@ if FREETZ_PACKAGE_LIGHTTPD
 
 	config FREETZ_PACKAGE_LIGHTTPD_MOD_MAGNET
 		bool "mod_magnet"
-		depends on FREETZ_PACKAGE_LIGHTTPD_WITH_LUA
-		default y
+		select FREETZ_PACKAGE_LIGHTTPD_WITH_LUA
+		default n
 		help
 			This option adds mod_magnet.so to the image.
 			Please see https://redmine.lighttpd.net/wiki/1/Docs:ModMagnet
@@ -285,15 +257,6 @@ if FREETZ_PACKAGE_LIGHTTPD
 			This option adds mod_sockproxy.so to the image.
 			Please see https://redmine.lighttpd.net/wiki/1/Docs:ModSockProxy
 			for more information on this module.
-
-#	requires mysql not available in freetz
-#	config FREETZ_PACKAGE_LIGHTTPD_MOD_MYSQL_VHOST
-#		bool "mod_mysql_vhost"
-#		default y
-#		help
-#			This option adds mod_mysql_vhost.so to the image.
-#			Please see https://redmine.lighttpd.net/wiki/1/Docs:ModMySQLVhost
-#			for more information on this module.
 
 	config FREETZ_PACKAGE_LIGHTTPD_MOD_PROXY
 		bool "mod_proxy"
