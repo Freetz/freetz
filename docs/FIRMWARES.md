@@ -26,6 +26,7 @@ Currently supported devices and firmwares
 ### Not supported devices
 
   * Repeater N/G, 310, 600 v1+v2 & 1160: No LAN ports, so a recovery is not possible.
+  * Repeater 1200 AX is not supported yet by [fitimg](https://boxmatrix.info/wiki/FIT-Image#History)
 
 ### Newer firmware versions
 
@@ -478,8 +479,6 @@ Currently supported devices and firmwares
   - 172.07.14 rev73941 {ALL} [MESH18 NL4]
   - 172.07.21 rev83014 {ALL} [PSQ19]
   - 172.07.27 rev89577 {ALL} [PSQ19P2NL2-aM7Poh3a]
-* __Fritz!Repeater 1200 AX (DEVELOPER)__
-  - 268.07.27 rev90387 {ALL} [PSQ19P2NL3-Go0phie0] (Inhaus)
 * __Fritz!Repeater 2400 (UNTESTED)__
   - 169.07.12 rev71975 {ALL} [MESH18 NL2]
   - 169.07.21 rev83013 {ALL} [PSQ19]
