@@ -1,13 +1,14 @@
 
   https://github.com/openwrt/openwrt/tree/master/tools/fakeroot/patches/
 
---- a/Makefile.am
-+++ b/Makefile.am
-@@ -1,6 +1,6 @@
- AUTOMAKE_OPTIONS=foreign
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -424,7 +424,7 @@
+ top_srcdir = @top_srcdir@
+ AUTOMAKE_OPTIONS = foreign
  ACLOCAL_AMFLAGS = -I build-aux
--SUBDIRS=doc scripts test
-+SUBDIRS=scripts
- 
+-SUBDIRS = doc scripts test
++SUBDIRS =     scripts
  noinst_LTLIBRARIES = libcommunicate.la libmacosx.la
  libcommunicate_la_SOURCES = communicate.c
+ libmacosx_la_SOURCES = libfakeroot_inode64.c libfakeroot_unix2003.c patchattr.h
