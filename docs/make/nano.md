@@ -1,4 +1,8 @@
-# Nano 5.3 text editor (binary only)
+# Nano 5.9 text editor (binary only)
+ - Homepage: [https://www.nano-editor.org/](https://www.nano-editor.org/)
+ - Manpage: [https://www.nano-editor.org/docs.php](https://www.nano-editor.org/docs.php)
+ - Changelog: [https://www.nano-editor.org/dist/v5/NEWS](https://www.nano-editor.org/dist/v5/NEWS)
+ - Repository: [https://git.savannah.gnu.org/cgit/nano.git/](https://git.savannah.gnu.org/cgit/nano.git/)
 
 **Nano** ist ein kleiner Texteditor für die Konsole, der aber im
 Gegensatz zu (n)vi eine Bedienung wie ein normaler Editor (z.B. der

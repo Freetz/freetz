@@ -1,7 +1,11 @@
-$(call PKG_INIT_BIN, 5.3)
+$(call PKG_INIT_BIN, 5.9)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=1b55ef3a508d8eadcb561f763b0643cb
-$(PKG)_SITE:=http://www.nano-editor.org/dist/v5
+$(PKG)_SOURCE_SHA256:=cb6ac9edc7fb8f723b92a7e5626537e6d546b95abfaddd3f790f65dcdc43a95d
+$(PKG)_SITE:=https://www.nano-editor.org/dist/v5
+### WEBSITE:=https://www.nano-editor.org/
+### MANPAGE:=https://www.nano-editor.org/docs.php
+### CHANGES:=https://www.nano-editor.org/dist/v5/NEWS
+### CVSREPO:=https://git.savannah.gnu.org/cgit/nano.git/
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/nano
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/nano
@@ -43,6 +47,8 @@ $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NANO_WRAPPING),$(if $(FREETZ_P
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NANO_MULTIBUFFER),--enable-multibuffer,--disable-multibuffer)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NANO_COLOR_SYNTAX),--enable-color,--disable-color)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NANO_NANORC),--enable-nanorc,--disable-nanorc)
+
+$(PKG)_CONFIGURE_ENV += ac_cv_header_libintl_h=no
 
 $(PKG)_SYNTAX_FILES_LIST:=
 $(PKG)_SYNTAX_FILES_LIST += $(if $(FREETZ_PACKAGE_NANO_SYNTAX_FILE_SH),sh.nanorc)
