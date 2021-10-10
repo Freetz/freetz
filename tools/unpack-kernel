@@ -82,8 +82,8 @@ if [ "$METHOD" == "unpack" ]; then
 	[ -x "$UNLZMA" ] || { echo >&2 "ERROR: this script requires unlzma tool which is not found on your system, expected location of the tool is \"$UNLZMA\""; exit 1; }
 fi
 
-declare -x CKSUM
-CKSUM="${CKSUM:-$(dirname $SELF)/cksum}"
+declare -x CRC32
+CRC32="${CRC32:-$(dirname $SELF)/crc32}"
 
 declare -x SUM
 SUM="${SUM:-$(dirname $SELF)/sum}"
@@ -169,7 +169,7 @@ processLzmaRecord() {
 	local lzmaStreamOffset=$((lzmaRecordOffset + 16))
 
 	# verify checksum
-	local lzmaCompressedChecksumComputed=$(tail -c "+$(((lzmaStreamOffset + 1) + 8))" "$INPUT_FILE" 2>/dev/null | head -c $lzmaCompressedLen 2>/dev/null | $CKSUM -lp 2>/dev/null | cut -d ' ' -f 1)
+	local lzmaCompressedChecksumComputed=$(( 0x$(tail -c "+$(((lzmaStreamOffset + 1) + 8))" "$INPUT_FILE" 2>/dev/null | head -c $lzmaCompressedLen 2>/dev/null | $CRC32 2>/dev/null | cut -d ' ' -f 1) ))
 	if [ $((lzmaCompressedChecksumComputed)) -ne $((lzmaCompressedChecksum)) ]; then
 		echo >&2 "WARNING: calculated LZMA-stream checksum ($(print08X $lzmaCompressedChecksumComputed)) does not match the saved one ($(print08X $lzmaCompressedChecksum))"
 	fi

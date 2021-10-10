@@ -46,6 +46,9 @@ Latest changes
    * binutils 2.24.x/2.25.x/2.26.x/2.31.x/2.37.x
    * ccache 4.4.2
 
+ - Updated tools and hooks:
+   * BusyBox 1.34.1
+
  - BusyBox package:
    * Version 1.34.1 updated
    
