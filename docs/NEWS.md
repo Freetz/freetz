@@ -1,5 +1,22 @@
 # NEWS
 
+ * __[2021-10-15](#2021-10-15)__<a id='2021-10-15'></a><br>
+   AVM hat neue uralte Sicherheitsverbesserungen veröffentlicht:
+    - FRITZ!OS 7.25: von AVM angegebenes Veröffentlichungsdatum 25.02.2021
+    - FRITZ!OS 7.27: von AVM angegebenes Veröffentlichungsdatum 11.05.2021
+    - FRITZ!OS 7.01: von AVM angegebenes Veröffentlichungsdatum 12.09.2018
+    - FRITZ!OS 7.00: vom 22.11.2018 auf den 24.07.2018 umdatiert
+   
+   Auf die heimlichen Aktualisierung ohne Versionsveränderung von
+   [6820v3](https://github.com/Freetz-NG/freetz-ng/commit/9f4927aed8359f77b4cf9560c6dbafb521ee6573),
+   [6850](https://github.com/Freetz-NG/freetz-ng/commit/112dbe190fc2ceff9f160d2b4e9e0595b95ad842) und
+   [6890](https://github.com/Freetz-NG/freetz-ng/commit/cc5370ea83bee479a0f820b3365cf43d2ee0580f)
+   wird nicht eingegangen.<br>
+   Siehe
+   [AVM Sicherheitsinfos zu Updates](https://avm.de/service/sicherheitsinfos-zu-updates/),
+   [WayBack Machine 21.03.2021](http://web.archive.org/web/20210321215134/https://avm.de/service/sicherheitsinfos-zu-updates/) &
+   [WayBack Machine 14.10.2021](http://web.archive.org/web/20211014172420/https://avm.de/service/sicherheitsinfos-zu-updates/)<br>
+
  * __[2021-09-22](#2021-09-22)__<a id='2021-09-22'></a><br>
    Es wurde ein neuer [Tag](https://github.com/Freetz-NG/freetz-ng/tags) `ng21090` erstellt.<br>
    Die automatisch angebotene und nicht deaktivierbare `.zip`-Datei darf auf keinen Fall verwendet werden, da<br>
