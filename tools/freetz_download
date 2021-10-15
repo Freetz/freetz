@@ -19,6 +19,7 @@ CHECKSUM_ALGOS[128]="sha512"
 
 FREETZ_BASE_DIR_FOUND="${FREETZ_BASE_DIR:-.}"
 DOT_CONFIG="$FREETZ_BASE_DIR_FOUND/.config"
+#WGET_INSECURE_HTTPS="--no-check-certificate"
 FREETZ_DL_SITE_0="https://freetz-ng.dropfiles.net"
 FREETZ_DL_SITE_1="https://boxmatrix.info/hosted/freetz-dl"
 FREETZ_DL_SITE_2="https://freetz.magenbrot.net"
@@ -60,8 +61,8 @@ do_download()
 	[ "$opt_trap_delete" == y ] && trap 'echo "Deleting file: \"$outFile\""; rm "$outFile" 2>/dev/null; exit 1' TERM INT
 	echo
 	[ "$DEBUG" == "1" ] && echo \
-	"wget -nd -t3 --timeout=20 --progress=bar:force:noscroll --passive-ftp \"${fullURL}\" -O \"${outFile}\""
-	 wget -nd -t3 --timeout=20 --progress=bar:force:noscroll --passive-ftp  "${fullURL}"  -O  "${outFile}"
+	"wget $WGET_INSECURE_HTTPS -nd -t3 --timeout=20 --progress=bar:force:noscroll --passive-ftp \"${fullURL}\" -O \"${outFile}\""
+	 wget $WGET_INSECURE_HTTPS -nd -t3 --timeout=20 --progress=bar:force:noscroll --passive-ftp  "${fullURL}"  -O  "${outFile}"
 	wget_result=$?
 	[ "$opt_trap_delete" == y ] && trap - TERM INT
 	if [ "$wget_result" != "0" ]; then
