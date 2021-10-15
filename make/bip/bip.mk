@@ -1,11 +1,11 @@
-$(call PKG_INIT_BIN, $(if $(FREETZ_PACKAGE_BIP_VERSION_089),0.8.9,0.9.0-rc4))
+$(call PKG_INIT_BIN, 0.9.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_CHECKSUM_0.8:=04158ad020db221ed87cdc03660ef6c9
-$(PKG)_SOURCE_CHECKSUM_0.9:=c38c4508f17a11715cf3ed48d2cd80ac7226aadffb2aac6e41ffba9c30a2224b
-$(PKG)_SOURCE_CHECKSUM:=$($(PKG)_SOURCE_CHECKSUM_$(call GET_MAJOR_VERSION,$($(PKG)_VERSION)))
-$(PKG)_SITE_0.8:=61
-$(PKG)_SITE_0.9:=97
-$(PKG)_SITE:=http://projects.duckcorp.org/attachments/download/$($(PKG)_SITE_$(call GET_MAJOR_VERSION,$($(PKG)_VERSION)))
+$(PKG)_SOURCE_SHA256:=f643b39b7af2a0d5fe7c45c57ffe3e6710be33278455eab8aeefe5b2842764ea
+$(PKG)_SITE:=https://projects.duckcorp.org/attachments/download/103
+### WEBSITE:=https://projects.duckcorp.org/projects/bip
+### MANPAGE:=https://bip.milkypond.org/projects/bip/wiki
+### CHANGES:=https://projects.duckcorp.org/projects/bip/news
+### CVSREPO:=https://projects.duckcorp.org/projects/bip/repository
 
 $(PKG)_CONDITIONAL_PATCHES+=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 
@@ -31,8 +31,6 @@ $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BIP_WITH_SSL),--with-openssl,-
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BIP_WITH_OIDENTD),--enable-oidentd)
 $(PKG)_CONFIGURE_OPTIONS += --disable-pie
 
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_BIP_VERSION_089
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_BIP_VERSION_090
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_BIP_STATIC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_BIP_WITH_SSL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_BIP_WITH_OIDENTD

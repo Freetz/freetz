@@ -1,4 +1,8 @@
-# Bip 0.8.9/0.9.0-rc4
+# Bip 0.9.2
+ - Homepage: [https://projects.duckcorp.org/projects/bip](https://projects.duckcorp.org/projects/bip)
+ - Manpage: [https://bip.milkypond.org/projects/bip/wiki](https://bip.milkypond.org/projects/bip/wiki)
+ - Changelog: [https://projects.duckcorp.org/projects/bip/news](https://projects.duckcorp.org/projects/bip/news)
+ - Repository: [https://projects.duckcorp.org/projects/bip/repository](https://projects.duckcorp.org/projects/bip/repository)
 
 Der Bip
 [IRC](http://de.wikipedia.org/wiki/Internet_Relay_Chat)

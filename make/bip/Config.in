@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_BIP
-	bool "Bip 0.8.9/0.9.0-rc4"
+	bool "Bip 0.9.2"
 	default n
 	help
 		Bip is an IRC proxy, which means it keeps connected to your
@@ -10,53 +10,41 @@ config FREETZ_PACKAGE_BIP
 		workstations, or when you simply want to have a playback of what
 		was said while you were away.
 
-choice
-	depends on FREETZ_PACKAGE_BIP
-	prompt "version"
-	default FREETZ_PACKAGE_BIP_VERSION_089
+if FREETZ_PACKAGE_BIP
 
-	config FREETZ_PACKAGE_BIP_VERSION_089
-		bool "0.8.9 - 2013"
+	config FREETZ_PACKAGE_BIP_BIPMKPW
+		bool "build password hasher for Bip"
+		default n
+		help
+			bipmkpw converts a password into the double-hash used by bip.
+			Copy the generated output from bipmkpw into bip config file.
 
-	config FREETZ_PACKAGE_BIP_VERSION_090
-		bool "0.9.0-rc4 - 2020"
+	config FREETZ_PACKAGE_BIP_WITH_SSL
+		bool "build with SSL support"
+		select FREETZ_LIB_libcrypto if !FREETZ_PACKAGE_BIP_STATIC
+		select FREETZ_LIB_libssl    if !FREETZ_PACKAGE_BIP_STATIC
+		default n
+		help
+			This option enables SSL support for bip.
 
-endchoice
+		config FREETZ_PACKAGE_BIP_STATIC
+			bool "Link statically"
+			depends on FREETZ_PACKAGE_BIP_WITH_SSL
+			default n
+			help
+				Build bip binary with statically linked libraries.
 
-config FREETZ_PACKAGE_BIP_BIPMKPW
-	bool "build password hasher for Bip"
-	depends on FREETZ_PACKAGE_BIP
-	default n
-	help
-		bipmkpw converts a password into the double-hash used by bip.
-		Copy the generated output from bipmkpw into bip config file.
+	config FREETZ_PACKAGE_BIP_WITH_OIDENTD
+		bool "build with oidentd support"
+		default n
+		help
+			This option enables oidentd spoofing support for bip.
 
-config FREETZ_PACKAGE_BIP_WITH_SSL
-	bool "build with SSL support"
-	depends on FREETZ_PACKAGE_BIP
-	select FREETZ_LIB_libcrypto if !FREETZ_PACKAGE_BIP_STATIC
-	select FREETZ_LIB_libssl    if !FREETZ_PACKAGE_BIP_STATIC
-	default n
-	help
-		This option enables SSL support for bip.
+		config FREETZ_PACKAGE_BIP_OIDENTD
+			bool "select oidentd package"
+			depends on FREETZ_PACKAGE_BIP_WITH_OIDENTD
+			select FREETZ_PACKAGE_OIDENTD
+			default n
 
-config FREETZ_PACKAGE_BIP_STATIC
-	bool "Link statically"
-	depends on FREETZ_PACKAGE_BIP_WITH_SSL
-	default n
-	help
-		Build bip binary with statically linked libraries.
-
-config FREETZ_PACKAGE_BIP_WITH_OIDENTD
-	bool "build with oidentd support"
-	depends on FREETZ_PACKAGE_BIP
-	default n
-	help
-		This option enables oidentd spoofing support for bip.
-
-config FREETZ_PACKAGE_BIP_OIDENTD
-	bool "select oidentd package"
-	depends on FREETZ_PACKAGE_BIP_WITH_OIDENTD
-	select FREETZ_PACKAGE_OIDENTD
-	default n
+endif # FREETZ_PACKAGE_BIP
 

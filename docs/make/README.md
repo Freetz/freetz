@@ -77,7 +77,7 @@ Index:
   * **[BIND 9.11.35](bind.md)<a id='bind'></a>**<br>
     BIND is an implementation of the Domain Name System (DNS) protocols. The name BIND stands for "Berkeley Internet Name Daemon". You have to provide the config and needed zone files yourself.
 
-  * **[Bip 0.8.9/0.9.0-rc4](bip.md)<a id='bip'></a>**<br>
+  * **[Bip 0.9.2](bip.md)<a id='bip'></a>**<br>
     Bip is an IRC proxy, which means it keeps connected to your preferred IRC servers, can store the logs for you, and even send them back to your IRC client(s) upon connection. You may want to use bip to keep your logfiles (in a unique format and on a unique computer) whatever your client is, when you connect from multiple workstations, or when you simply want to have a playback of what was said while you were away.
 
   * **[Bird 1.6.4](bird.md)<a id='bird'></a>**<br>

@@ -92,7 +92,7 @@ Index:
     BIND is an implementation of the Domain Name System (DNS) protocols. The name BIND stands for "Berkeley Internet Name Daemon". You have to provide the config and needed zone files yourself.
      - [named.conf](../docs/make/bind.md#namedconf)
 
-  * **[Bip 0.8.9/0.9.0-rc4](../docs/make/bip.md)<a id='bip'></a>**<br>
+  * **[Bip 0.9.2](../docs/make/bip.md)<a id='bip'></a>**<br>
     Bip is an IRC proxy, which means it keeps connected to your preferred IRC servers, can store the logs for you, and even send them back to your IRC client(s) upon connection. You may want to use bip to keep your logfiles (in a unique format and on a unique computer) whatever your client is, when you connect from multiple workstations, or when you simply want to have a playback of what was said while you were away.
      - [Auswahl](../docs/make/bip.md#auswahl)
      - [Konfiguration](../docs/make/bip.md#konfiguration)
