@@ -49,6 +49,7 @@ Latest changes
 
  - Updated tools and hooks:
    * BusyBox 1.34.1
+   * pseudo 1.9.0 oe-core 0cda3ba
 
  - BusyBox package:
    * Version 1.34.1 updated
