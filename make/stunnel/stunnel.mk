@@ -1,7 +1,11 @@
-$(call PKG_INIT_BIN, 5.59)
+$(call PKG_INIT_BIN, 5.60)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=137776df6be8f1701f1cd590b7779932e123479fb91e5192171c16798815ce9f
+$(PKG)_SOURCE_SHA256:=c45d765b1521861fea9b03b425b9dd7d48b3055128c0aec673bba5ef9b8f787d
 $(PKG)_SITE:=https://www.stunnel.org/downloads/archive/5.x
+### WEBSITE:=https://www.stunnel.org/
+### MANPAGE:=https://www.stunnel.org/static/stunnel.html
+### CHANGES:=https://www.stunnel.org/NEWS.html
+### CVSREPO:=https://github.com/mtrojnar/stunnel
 
 $(PKG)_STARTLEVEL=81
 

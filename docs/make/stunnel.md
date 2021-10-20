@@ -1,4 +1,8 @@
-# Stunnel 5.59
+# Stunnel 5.60
+ - Homepage: [https://www.stunnel.org/](https://www.stunnel.org/)
+ - Manpage: [https://www.stunnel.org/static/stunnel.html](https://www.stunnel.org/static/stunnel.html)
+ - Changelog: [https://www.stunnel.org/NEWS.html](https://www.stunnel.org/NEWS.html)
+ - Repository: [https://github.com/mtrojnar/stunnel](https://github.com/mtrojnar/stunnel)
 
 [![Stunnel Webinterface](../screenshots/202_md.png)](../screenshots/202.png)
 
