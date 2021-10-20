@@ -62,6 +62,7 @@ Latest changes
    * CA-bundle 2021-09-30
    * CCID driver 1.4.36
    * cifs-utils 6.14
+   * git 2.33.1
    * libexif 0.6.23
    * libgcrypt 1.9.4
    * Nano 5.9
