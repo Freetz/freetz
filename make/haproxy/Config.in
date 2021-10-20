@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_HAPROXY
-	bool "HAProxy 2.4.4"
+	bool "HAProxy 2.4.7"
 	select FREETZ_LIB_libcrypt if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_BUSYBOX_START_STOP_DAEMON
 	default n
@@ -8,19 +8,22 @@ config FREETZ_PACKAGE_HAPROXY
 		availability, load balancing, and proxying for TCP and HTTP-based
 		applications.
 
-config FREETZ_PACKAGE_HAPROXY_WITH_OPENSSL
-	bool "with OpenSSL support"
-	depends on FREETZ_PACKAGE_HAPROXY
-	select FREETZ_LIB_libcrypto
-	select FREETZ_LIB_libssl
-	default n
-	help
-		This option enables SSL support in HAProxy.
+if FREETZ_PACKAGE_HAPROXY
 
-config FREETZ_PACKAGE_HAPROXY_WITH_PCRE
-	bool "with regex support (PCRE)"
-	depends on FREETZ_PACKAGE_HAPROXY
-	select FREETZ_LIB_libpcre
-	default n
-	help
-		This option enables use of libpcre for regex.
+	config FREETZ_PACKAGE_HAPROXY_WITH_OPENSSL
+		bool "with OpenSSL support"
+		select FREETZ_LIB_libcrypto
+		select FREETZ_LIB_libssl
+		default n
+		help
+			This option enables SSL support in HAProxy.
+
+	config FREETZ_PACKAGE_HAPROXY_WITH_PCRE
+		bool "with regex support (PCRE)"
+		select FREETZ_LIB_libpcre
+		default n
+		help
+			This option enables use of libpcre for regex.
+
+endif # FREETZ_PACKAGE_HAPROXY
+
