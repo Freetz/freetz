@@ -1,4 +1,4 @@
-# Wget GNU 1.21.1 (binary only)
+# Wget GNU 1.21.2 (binary only)
 
 GNU **[Wget](http://www.gnu.org/software/wget/)**
 ist ein freies Kommandozeilen-Programm zum Herunterladen von Ressourcen

@@ -75,6 +75,7 @@ Latest changes
    * Stunnel 5.60
    * tinc 1.0.36/1.1pre18
    * lighttpd 1.4.60
+   * Wget GNU 1.21.2
    * wireguard-tools 1.0.20210914
 
  - Firmware updates:
