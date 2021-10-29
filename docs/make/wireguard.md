@@ -38,18 +38,24 @@ Bei Ubuntu heisst der Paketmanager `apt-get`.
 sudo dnf install wireguard-tools qrencode
 ```
 
+##### MTU
+Die MTU sollte für Server und Clients gleich gesetzt werden. Die Zeilen sind optional.
+Möglich Werte liegen von 1280 bis 1420 Bytes. 1280 ist eine "sichere" Wahl, höhere Werte
+sind besser können aber abhängig vom Netzwerk und Internetanschluss Probleme verursachen.
+
 ##### Variablendefinition
-Diese Variabelen werden weiter unten genutzt und sollten angepasst werden.
+Diese Variablen werden weiter unten genutzt und sollten angepasst werden.
 ```
 NUMCLIENTS="9"
 HOSTNAME="mein.dyndns.host"
 UDPPORT="51820"
 IPBEREICH="10.0.0.1/24"
 DNSSERVER="192.168.178.1"
+MTUBYTES="1280"
 
 ```
 
-##### Schlüssel-Dateien erstellen
+##### Schlüsseldateien erstellen
 Es werden die Schlüsseldateien `*.prv`, `*.psk` und `*.pub` generiert. Mit diesen werden die Konfigurationsdateien erstellt.
 ```
 for x in SRV $(seq -f "CL%g" $NUMCLIENTS); do
@@ -64,18 +70,19 @@ done
 
 
 ##### Serverkonfiguration erstellen
-Es wird die Serverkonfiguration in `SRV.cfg` erstellt die auf der Fritzbox eingefügt werden kann.
+Es wird die Serverkonfiguration in `SRV.conf` erstellt die auf der Fritzbox eingefügt werden kann.
 ```
-touch      SRV.cfg
-chmod 640  SRV.cfg
-cat >  SRV.cfg << EOX
+touch      SRV.conf
+chmod 640  SRV.conf
+cat >  SRV.conf << EOX
 [Interface]
 ListenPort   = $UDPPORT
 PrivateKey   = $(cat SRV.prv)
+MTU          = $MTUBYTES
 
 EOX
 for x in $(seq -f "CL%g" $NUMCLIENTS); do
-cat >> SRV.cfg << EOX
+cat >> SRV.conf << EOX
 [Peer]
 PublicKey    = $(cat $x.pub)
 PresharedKey = $(cat $x.psk)
@@ -87,15 +94,16 @@ done
 ```
 
 ##### Clientkonfigurationen erstellen
-Die Clientkonfigurationen werden in `CL*.cfg` erstellt.
-Die QR-Codes zum scannen mit einer App befinden sich in `CL*.txt`.
+Die Clientkonfigurationen werden in `CL*.conf` erstellt.
+Die QR-Codes zum scannen mit einer App befinden sich in `CL*.txt` und `CL*.png`.
 ```
 for x in $(seq -f "CL%g" $NUMCLIENTS); do
-cat > $x.cfg << EOX
+cat > $x.conf << EOX
 [Interface]
 Address             = ${IPBEREICH%.*}.1${x#CL}/32
 DNS                 = $DNSSERVER
 PrivateKey          = $(cat $x.prv)
+MTU                 = $MTUBYTES
 
 [Peer]
 Endpoint            = $HOSTNAME:$UDPPORT
@@ -105,7 +113,8 @@ AllowedIPs          = 0.0.0.0/0
 PersistentKeepalive = 90
 
 EOX
-cat $x.cfg | qrencode -t ansiutf8 > $x.txt
+cat $x.conf | qrencode -t ansiutf8 > $x.txt
+cat $x.conf | qrencode -t png     -o $x.png
 done
 
 ```
