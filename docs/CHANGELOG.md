@@ -57,7 +57,7 @@ Latest changes
  - Updated packages and libs:
    * ACME.sh 3.0.1 (letsencrypt)
    * Apache 2.4.51
-   * BIND 9.11.35
+   * BIND 9.11.36
    * Bip 0.9.2
    * CA-bundle 2021-10-26
    * CCID driver 1.4.36

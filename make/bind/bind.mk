@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 9.11.35)
+$(call PKG_INIT_BIN, 9.11.36)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=1c882705827b6aafa45d917ae3b20eccccc8d5df3c4477df44b04382e6c47562
+$(PKG)_SOURCE_SHA256:=c953fcb6703b395aaa53e65ff8b2869b69a5303dd60507cba2201305e1811681
 $(PKG)_SITE:=https://downloads.isc.org/isc/bind9/$($(PKG)_VERSION),http://ftp.isc.org/isc/bind9/$($(PKG)_VERSION)
 ### WEBSITE:=https://www.isc.org/bind/
 ### MANPAGE:=https://bind9.readthedocs.io/en/latest/
