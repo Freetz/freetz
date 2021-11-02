@@ -41,6 +41,13 @@ $(PKG)_DEPENDS_ON += nettle
 $(PKG)_COPTS += -DHAVE_DNSSEC -DHAVE_DNSSEC_STATIC
 endif
 
+$(PKG)_CFLAGS := $(TARGET_CFLAGS)
+$(PKG)_CFLAGS += -ffunction-sections
+$(PKG)_CFLAGS += -fdata-sections
+ifeq ($(strip $(FREETZ_TARGET_GCC_4_MAX)),y)
+$(PKG)_CFLAGS += --std=c99
+endif
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
@@ -49,7 +56,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(DNSMASQ_DIR) \
 		CC="$(TARGET_CC)" \
 		COPTS="$(DNSMASQ_COPTS)" \
-		CFLAGS="$(TARGET_CFLAGS) -ffunction-sections -fdata-sections" \
+		CFLAGS="$(DNSMASQ_CFLAGS)" \
 		LDFLAGS="-Wl,--gc-sections" \
 		version=-DVERSION=\'\\\"$(DNSMASQ_VERSION)\\\"\' \
 		PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../lib/pkgconfig"
