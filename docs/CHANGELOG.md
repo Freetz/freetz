@@ -63,6 +63,7 @@ Latest changes
    * CA-bundle 2021-10-26
    * CCID driver 1.4.36
    * cifs-utils 6.14
+   * Curl 7.80.0
    * git 2.33.1
    * HAProxy 2.4.8
    * libexif 0.6.23
