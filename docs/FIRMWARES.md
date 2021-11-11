@@ -308,7 +308,7 @@ Currently supported devices and firmwares
   - 131.06.50 rev32505 {GER}
   - 131.06.83 rev43615 {GER}
   - 131.07.01 rev61708 {GER}
-  - 131.07.12 rev70349 {GER} [MESH18 NL2]
+  - 131.07.13 rev91727 {GER} [WU21 MESH18]
 * __Fritz!Box Fon WLAN 7369__
   - 119.06.32 rev33419 {INT}
 
