@@ -3,8 +3,6 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=792bdd8fce3a8a1db102988ef6a9a02f
 $(PKG)_SITE:=http://mosquitto.org/files/source
 
-$(PKG)_CATEGORY:=Unstable
-
 $(PKG)_BINARY_BROKER:=$($(PKG)_DIR)/src/mosquitto
 $(PKG)_BINARY_CLIENT_PUB:=$($(PKG)_DIR)/client/mosquitto_pub
 $(PKG)_BINARY_CLIENT_SUB:=$($(PKG)_DIR)/client/mosquitto_sub

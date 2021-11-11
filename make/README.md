@@ -510,6 +510,9 @@ Index:
   * **[module-init-tools 3.12 (binary only)](../docs/make/module-init-tools.md)<a id='module-init-tools'></a>**<br>
     The module-init-tools (m-i-t) package provides many of the utilities needed by Linux systems for managing loadable Linux Kernel Modules. This includes depmod, insmod, rmmod, modprobe and tools like modinfo.
 
+  * **<u>Mosquitto 1.6.15</u><a id='mosquitto'></a>**<br>
+    Eclipse Mosquitto™ is an open source (EPL/EDL licensed) message broker that implements the MQTT protocol versions 5.0, 3.1.1 and 3.1. MQTT provides a lightweight method of carrying out messaging using a publish/subscribe model. This makes it suitable for "Internet of Things" messaging such as with low power sensors or mobile devices such as phones, embedded computers or microcontrollers like the Arduino.
+
   * **[mtr 0.80/0.94 (binary only)](../docs/make/mtr.md)<a id='mtr'></a>**<br>
     mtr combines the functionality of the 'traceroute' and 'ping' programs in a single network diagnostic tool.
 
@@ -1150,9 +1153,6 @@ Index:
      - [Konfiguration (per Hand)](../docs/make/mini_fo.md#konfiguration-per-hand)
      - [Mögliche Nebeneffekte](../docs/make/mini_fo.md#mögliche-nebeneffekte)
      - [Restore original file](../docs/make/mini_fo.md#restore-original-file)
-
-  * **<u>Mosquitto 1.6.15</u><a id='mosquitto'></a>**<br>
-    Eclipse Mosquitto™ is an open source (EPL/EDL licensed) message broker that implements the MQTT protocol versions 5.0, 3.1.1 and 3.1. MQTT provides a lightweight method of carrying out messaging using a publish/subscribe model. This makes it suitable for "Internet of Things" messaging such as with low power sensors or mobile devices such as phones, embedded computers or microcontrollers like the Arduino.
 
   * **[MySQL 6.0.11-alpha](../docs/make/mysql.md)<a id='mysql'></a>**<br>
     MySQL is a very fast, multi-threaded, multi-user and robust SQL (Structured Query Language) database server. Unstable, as this version is quite old, but runs well on Fritzbox. Do not expose this daemon to the internet!

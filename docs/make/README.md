@@ -397,6 +397,9 @@ Index:
   * **[module-init-tools 3.12 (binary only)](module-init-tools.md)<a id='module-init-tools'></a>**<br>
     The module-init-tools (m-i-t) package provides many of the utilities needed by Linux systems for managing loadable Linux Kernel Modules. This includes depmod, insmod, rmmod, modprobe and tools like modinfo.
 
+  * **<u>Mosquitto 1.6.15</u><a id='mosquitto'></a>**<br>
+    Eclipse Mosquitto™ is an open source (EPL/EDL licensed) message broker that implements the MQTT protocol versions 5.0, 3.1.1 and 3.1. MQTT provides a lightweight method of carrying out messaging using a publish/subscribe model. This makes it suitable for "Internet of Things" messaging such as with low power sensors or mobile devices such as phones, embedded computers or microcontrollers like the Arduino.
+
   * **[mtr 0.80/0.94 (binary only)](mtr.md)<a id='mtr'></a>**<br>
     mtr combines the functionality of the 'traceroute' and 'ping' programs in a single network diagnostic tool.
 
@@ -858,9 +861,6 @@ Index:
 
   * **[mini_fo 0.3](mini_fo.md)<a id='mini-fo'></a>**<br>
     Makes the filesystem writeable. Changes are not reboot-persistent, unless stored on a hard disk or on flash storage media. The way mini_fo is configured here creates the overlay filesystem in the router's RAM disk, so they definitely are *not* reboot-persistent. Nonetheless, mini_fo is tremendously helpful, eliminating the need for tricks like 'mount -o bind' etc. Note: The mini_fo root filesystem will not be used if an NFS-root was mounted first (see NFS-root package). Still, both packages can be installed at the same time, because mini_fo is still useful if NFS-root is decativated. This package does not work with (at least) 7390 at the moment.
-
-  * **<u>Mosquitto 1.6.15</u><a id='mosquitto'></a>**<br>
-    Eclipse Mosquitto™ is an open source (EPL/EDL licensed) message broker that implements the MQTT protocol versions 5.0, 3.1.1 and 3.1. MQTT provides a lightweight method of carrying out messaging using a publish/subscribe model. This makes it suitable for "Internet of Things" messaging such as with low power sensors or mobile devices such as phones, embedded computers or microcontrollers like the Arduino.
 
   * **[MySQL 6.0.11-alpha](mysql.md)<a id='mysql'></a>**<br>
     MySQL is a very fast, multi-threaded, multi-user and robust SQL (Structured Query Language) database server. Unstable, as this version is quite old, but runs well on Fritzbox. Do not expose this daemon to the internet!
