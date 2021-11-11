@@ -12,7 +12,7 @@ config FREETZ_PACKAGE_MOSQUITTO
 if FREETZ_PACKAGE_MOSQUITTO
 
 	config FREETZ_PACKAGE_MOSQUITTO_BROKER
-		bool "include broker"
+		bool "include broker server"
 		select FREETZ_LIB_libdl  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 		select FREETZ_LIB_libm   if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 		select FREETZ_LIB_librt  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
@@ -21,34 +21,31 @@ if FREETZ_PACKAGE_MOSQUITTO
 			Adds the mosquitto broker to the image
 
 	config FREETZ_PACKAGE_MOSQUITTO_CLIENTS
-		bool "include clients"
-		# libmosquitto dependencies
+		bool # "libmosquitto"
 		select FREETZ_LIB_librt       if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 		select FREETZ_LIB_libpthread  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+		depends on FREETZ_PACKAGE_MOSQUITTO_CLIENT_PUB || FREETZ_PACKAGE_MOSQUITTO_CLIENT_SUB
+		default y
+
+	config FREETZ_PACKAGE_MOSQUITTO_CLIENT_PUB
+		bool "include publish client"
 		default n
+		help
+			Adds the mosquitto publish client to the image
 
-	if FREETZ_PACKAGE_MOSQUITTO
+	config FREETZ_PACKAGE_MOSQUITTO_CLIENT_SUB
+		bool "include subscribe client"
+		default n
+		help
+			Adds the mosquitto subscribe client to the image
 
-		config FREETZ_PACKAGE_MOSQUITTO_CLIENT_PUB
-			bool "include publish client"
-			default n
-			help
-				Adds the mosquitto publish client to the image
-
-		config FREETZ_PACKAGE_MOSQUITTO_CLIENT_SUB
-			bool "include subscribe client"
-			default n
-			help
-				Adds the mosquitto subscribe client to the image
-
-		config FREETZ_PACKAGE_MOSQUITTO_WITH_UUID
-			bool "enable uuid support in mosquitto"
-			select FREETZ_LIB_libuuid
-			default y
-			help
-				Build using libuuid for clientid generation.
-
-	endif # FREETZ_PACKAGE_MOSQUITTO
+	config FREETZ_PACKAGE_MOSQUITTO_WITH_UUID
+		bool "enable uuid support in mosquitto"
+		depends on FREETZ_PACKAGE_MOSQUITTO_CLIENTS
+		select FREETZ_LIB_libuuid
+		default y
+		help
+			Build using libuuid for clientid generation.
 
 	comment "SSL not available, needs OpenSSL 1.0 or newer"
 		depends on !FREETZ_OPENSSL_VERSION_1_MIN
