@@ -390,7 +390,7 @@ Currently supported devices and firmwares
   - 149.06.83 rev44010 {INT}
   - 149.07.01 rev61988 {INT}
   - 149.07.12 rev71227 {INT} [MESH18 NL2]
-  - 149.07.28 rev90132 {ALL} [PSQ19P2NL3-Go0phie0]
+  - 149.07.29 rev92246 {ALL} [PSQ19P2NL4]
 * __Fritz!Box Fon WLAN 7580__
   - 153.06.54 rev41655 {GER}
   - 153.06.83 rev44004 {GER}
