@@ -1,4 +1,8 @@
-# socat 1.7.4.1 (binary only)
+# socat 1.7.4.2 (binary only)
+ - Homepage: [http://www.dest-unreach.org/socat/](http://www.dest-unreach.org/socat/)
+ - Manpage: [http://www.dest-unreach.org/socat/doc/socat.html](http://www.dest-unreach.org/socat/doc/socat.html)
+ - Changelog: [http://www.dest-unreach.org/socat/doc/CHANGES](http://www.dest-unreach.org/socat/doc/CHANGES)
+ - Repository: [https://repo.or.cz/socat.git](https://repo.or.cz/socat.git)
 
 **[socat](http://www.dest-unreach.org/socat/)** ist
 eine Alternative zum [netcat Paket](netcat.md), welches mit
