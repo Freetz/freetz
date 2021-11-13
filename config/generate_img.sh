@@ -686,7 +686,7 @@ determine_() {
 
 	#NEXUS
 	X="%"
-	[ -e "$unpacked/bin/avmnexusd" ] && X="available" && in_b "FREETZ_AVM_HAS_NEXUS"
+	[ -e "$unpacked/bin/avmnexusd" -o -e "$unpacked/sbin/avmnexusd" ] && X="available" && in_b "FREETZ_AVM_HAS_NEXUS"
 	[ $DOSHOW -ge 2 ] && outp "nexus" "$X"
 
 	#UNTRUSTEDD
