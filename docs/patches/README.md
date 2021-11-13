@@ -52,6 +52,9 @@ Index:
   * **[REMOVE_AVM_VPN: Remove VPN](REMOVE_AVM_VPN.md)<a id='remove-avm-vpn'></a>**<br>
     Remove AVM's vpn and some other related files This patch removes the files and related Web UI entrys, but not the vpn settings. This will save about 120kB compressed size.
 
+  * **<u>REMOVE_AVM_WIREGUARD: Remove WireGuard - UNTESTED</u><a id='remove-avm-wireguard'></a>**<br>
+    Remove AVM's WireGuard executables, library and kernel module. This will save about 275kB compressed size.
+
 ### B
 
   * **<u>Remove brandings</u><a id='remove-branding'></a>**<br>

@@ -378,6 +378,14 @@ config FREETZ_REMOVE_AVM_VPN
 		This patch removes the files and related Web UI entrys, but not the
 		vpn settings. This will save about 120kB compressed size.
 
+config FREETZ_REMOVE_AVM_WIREGUARD
+	bool "Remove WireGuard - UNTESTED"
+	default n
+	depends on FREETZ_AVM_HAS_WIREGUARD
+	help
+		Remove AVM's WireGuard executables, library and kernel module.
+		This will save about 275kB compressed size.
+
 config FREETZ_REMOVE_WEBSRV
 	bool "Remove websrv"
 	depends on FREETZ_AVM_HAS_WEBSRV
