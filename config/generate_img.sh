@@ -307,7 +307,7 @@ determine_() {
 
 
 	#TTY
-	X="$(sed -rn 's/^([^#]+)::.*/\1/p' "$unpacked/etc/inittab" | sort -u)"
+	X="$(sed -rn 's/^(\/dev\/)*([^#]+)::.*/\/dev\/\2/p' "$unpacked/etc/inittab" | sort -u)"
 	case "$X" in
 		/dev/ttyAMA0)	X="$X"		Y="ARM" ;;
 		/dev/ttyS1)	X="$X"		Y="AR9" ;;
