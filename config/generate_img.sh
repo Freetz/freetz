@@ -664,6 +664,11 @@ determine_() {
 	[ -e "$unpacked/bin/avmike" ] && X="available" && in_b "FREETZ_AVM_HAS_VPN"
 	[ $DOSHOW -ge 2 ] && outp "vpn" "$X"
 
+	#WIREGUARD
+	X="%"
+	[ -e "$unpacked/bin/wg" ] && X="available" && in_b "FREETZ_AVM_HAS_WIREGUARD"
+	[ $DOSHOW -ge 2 ] && outp "wireguard" "$X"
+
 	#WEBSRV
 	X="%"
 	[ -e "$unpacked/sbin/websrv" ] && X="available" && in_b "FREETZ_AVM_HAS_WEBSRV"
