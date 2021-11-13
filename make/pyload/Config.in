@@ -21,57 +21,58 @@ config FREETZ_PACKAGE_PYLOAD
 		for many One-Click-Hoster, container formats like DLC, video sites
 		or just plain http/ftp links.
 
-choice
-	depends on FREETZ_PACKAGE_PYLOAD
-	prompt "Version"
-	default FREETZ_PACKAGE_PYLOAD_VERSION_LATEST_TESTED
+if FREETZ_PACKAGE_PYLOAD
 
-	config FREETZ_PACKAGE_PYLOAD_VERSION_LATEST_TESTED
-		bool "stable"
+	choice
+		prompt "Version"
+		default FREETZ_PACKAGE_PYLOAD_VERSION_LATEST_TESTED
 
-	config FREETZ_PACKAGE_PYLOAD_VERSION_LATEST_GIT
-		bool "latest"
+		config FREETZ_PACKAGE_PYLOAD_VERSION_LATEST_TESTED
+			bool "stable"
+
+		config FREETZ_PACKAGE_PYLOAD_VERSION_LATEST_GIT
+			bool "latest"
+			help
+				Note this increases build time by about 2 seconds
+				since the latest git-revision is determined anew
+				on each make invocation.
+
+	endchoice
+
+	config FREETZ_PACKAGE_PYLOAD_EXTRACT
+		bool "With unrar and unzip for file unpacking"
+		select FREETZ_PACKAGE_UNRAR
+		select FREETZ_BUSYBOX_UNZIP
 		help
-			Note this increases build time by about 2 seconds
-			since the latest git-revision is determined anew
-			on each make invocation.
+			This selects unrar and unzip packages for file unpacking.
 
-endchoice
+	config FREETZ_PACKAGE_PYLOAD_WITH_TESSERACT
+		bool "With Tesseract OCR for captcha recognition"
+		depends on FREETZ_PACKAGE_TESSERACT_AVAILABLE
+		select FREETZ_PACKAGE_TESSERACT
+		default n
+		help
+			Causes Tesseract OCR to be added to the image
+			for captcha recognition support in pyLoad.
 
-config FREETZ_PACKAGE_PYLOAD_EXTRACT
-	bool "With unrar and unzip for file unpacking"
-	depends on FREETZ_PACKAGE_PYLOAD
-	select FREETZ_PACKAGE_UNRAR
-	select FREETZ_BUSYBOX_UNZIP
-	help
-		This selects unrar and unzip packages for file unpacking.
+			Note:
+			 - Tesseract OCR is a huge package.
+			 - pyLoad support for captcha recognition
+			   is very limited even with Tesseract OCR.
 
-config FREETZ_PACKAGE_PYLOAD_WITH_TESSERACT
-	bool "With Tesseract OCR for captcha recognition"
-	depends on FREETZ_PACKAGE_PYLOAD && FREETZ_PACKAGE_TESSERACT_AVAILABLE
-	select FREETZ_PACKAGE_TESSERACT
-	default n
-	help
-		Causes Tesseract OCR to be added to the image
-		for captcha recognition support in pyLoad.
+			You most probably want to say 'no' here.
 
-		Note:
-		 - Tesseract OCR is a huge package.
-		 - pyLoad support for captcha recognition
-		   is very limited even with Tesseract OCR.
+	config FREETZ_PACKAGE_PYLOAD_WITH_LIGHTWEIGHT_WSGI_SERVER
+		bool "With support for lightweight WSGI server"
+		select FREETZ_PACKAGE_PYTHON_BJOERN
+		default n
+		help
+			This selects python-bjoern module - a module providing
+			an alternative WSGI server implementation for Python
+			pretending to be fast and ultra-lightweight.
+			Activating this option allows you to say 'lightweight'
+			while configuring pyLoad and answering the question
+			for the web-server backend.
 
-		You most probably want to say 'no' here.
-
-config FREETZ_PACKAGE_PYLOAD_WITH_LIGHTWEIGHT_WSGI_SERVER
-	bool "With support for lightweight WSGI server"
-	depends on FREETZ_PACKAGE_PYLOAD
-	select FREETZ_PACKAGE_PYTHON_BJOERN
-	default n
-	help
-		This selects python-bjoern module - a module providing
-		an alternative WSGI server implementation for Python
-		pretending to be fast and ultra-lightweight.
-		Activating this option allows you to say 'lightweight'
-		while configuring pyLoad and answering the question
-		for the web-server backend.
+endif # FREETZ_PACKAGE_PYLOAD
 
