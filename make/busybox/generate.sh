@@ -119,6 +119,11 @@ depends_on FEATURE_SECURETTY "!FREETZ_REPLACE_AR7LOGIN"
 depends_on WGET     "!FREETZ_PACKAGE_WGET \|\| FREETZ_WGET_ALWAYS_AVAILABLE"
 depends_on XZ       "!FREETZ_PACKAGE_XZ"
 depends_on LSOF     "!FREETZ_PACKAGE_LSOF"
+
+# only if nsswitch.conf exists
+depends_on USE_BB_PWD_GRP  "FREETZ_AVM_HAS_NSSWITCH"
+depends_on USE_BB_SHADOW   "FREETZ_AVM_HAS_NSSWITCH"
+
 # AVM uses KMOD since FOS 7.25 on GRX5 devices
 depends_on DEPMOD                             "!FREETZ_PACKAGE_MODULE_INIT_TOOLS_depmod"
 depends_on INSMOD   "!FREETZ_AVM_HAS_KMOD \&\& !FREETZ_PACKAGE_MODULE_INIT_TOOLS_insmod"

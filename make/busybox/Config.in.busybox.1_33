@@ -3612,6 +3612,7 @@ config FREETZ_BUSYBOX___V133_FEATURE_SHADOWPASSWDS
 	publicly readable.
 
 config FREETZ_BUSYBOX___V133_USE_BB_PWD_GRP
+	depends on FREETZ_AVM_HAS_NSSWITCH
 	bool "Use internal password and group functions rather than system functions"
 	default n
 	help
@@ -3637,6 +3638,7 @@ config FREETZ_BUSYBOX___V133_USE_BB_PWD_GRP
 	If you enable this option, it will add about 1.5k.
 
 config FREETZ_BUSYBOX___V133_USE_BB_SHADOW
+	depends on FREETZ_AVM_HAS_NSSWITCH
 	bool "Use internal shadow password functions"
 	default n
 	depends on FREETZ_BUSYBOX___V133_USE_BB_PWD_GRP && FREETZ_BUSYBOX___V133_FEATURE_SHADOWPASSWDS
