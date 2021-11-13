@@ -11,6 +11,7 @@ config FREETZ_PACKAGE_WIREGUARD
 	bool "wireguard-tools 1.0.20210914"
 	depends on FREETZ_KERNEL_VERSION_3_MIN && (FREETZ_AVM_HAS_CRYPTO_BLKCIPHER_BUILTIN || FREETZ_REPLACE_KERNEL) && FREETZ_REPLACE_MODULE_AVAILABLE
 	default n
+	select FREETZ_REMOVE_WIREGUARD if FREETZ_AVM_HAS_WIREGUARD
 	select FREETZ_BUSYBOX_IP
 	select FREETZ_PACKAGE_WIREGUARD_LINUX_COMPAT
 	help
@@ -26,3 +27,4 @@ config FREETZ_PACKAGE_WIREGUARD
 		heavy development, but already it might be regarded as the
 		most secure, easiest to use, and simplest VPN solution in
 		the industry.
+
