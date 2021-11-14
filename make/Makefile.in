@@ -93,6 +93,12 @@ TARGET_CFLAGS_mips:=-Wa,--trap
 # LFS flags
 TARGET_CFLAGS_LFS:=-D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 
+# GCC flags
+TARGET_CFLAGS_GCC :=
+ifeq ($(strip $(FREETZ_TARGET_GCC_4_MAX)),y)
+TARGET_CFLAGS_GCC += --std=gnu99
+endif
+
 # Loader
 ifeq ($(strip $(FREETZ_SEPARATE_AVM_UCLIBC)),y)
 #TARGET_CFLAGS_LD:=-Xlinker -I$(FREETZ_LIBRARY_DIR)/ld-uClibc.so.1
@@ -105,7 +111,7 @@ $(error Please remove any ARCH/CPU/FPU/FLOAT-ABI/MODE related flags (-march/-mcp
 	from target compiler flags (FREETZ_TARGET_CFLAGS variable in your .config). \
 	These flags are automatically set by Freetz build environment now)
 endif
-TARGET_CFLAGS:=$(strip $(TARGET_CFLAGS_HW_CAPABILITIES) $(call qstrip,$(FREETZ_TARGET_CFLAGS)) $(TARGET_CFLAGS_$(call qstrip,$(FREETZ_TARGET_ARCH))) $(TARGET_CFLAGS_LFS) $(TARGET_CFLAGS_LD))
+TARGET_CFLAGS:=$(strip $(TARGET_CFLAGS_HW_CAPABILITIES) $(call qstrip,$(FREETZ_TARGET_CFLAGS)) $(TARGET_CFLAGS_$(call qstrip,$(FREETZ_TARGET_ARCH))) $(TARGET_CFLAGS_LFS) $(TARGET_CFLAGS_GCC) $(TARGET_CFLAGS_LD))
 
 
 FPIC:=-fPIC
