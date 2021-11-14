@@ -1,0 +1,122 @@
+--- usr/www/all/internet/dsl_line_settings.lua
++++ usr/www/all/internet/dsl_line_settings.lua
+@@ -17,16 +17,16 @@
+ end
+ function InitMode()
+ g_data.marge_receive = read_if_possible("sar:settings/DownstreamMarginOffset")
+-g_data.marge_receive_all_values = {"0","1","2","3","4"}
++g_data.marge_receive_all_values = {"-4","-3","-2","-1","0","1","2","3","4"}
+ g_data.marge_receive_smart_dsl = box.query("sar:status/AdvisedDownstreamMarginOffset")
+ g_data.marge_send = read_if_possible("sar:settings/UsNoiseBits")
+-g_data.marge_send_all_values = {"0","1","2","3","4"}
++g_data.marge_send_all_values = {"-4","-3","-2","-1","0","1","2","3","4"}
+ g_data.marge_send_smart_dsl = box.query("sar:status/AdvisedUsNoiseBits")
+ g_data.rfi = read_if_possible("sar:settings/RFI_mode")
+-g_data.rfi_all_values = {"0","1","2","3","4"}
++g_data.rfi_all_values = {"-4","-3","-2","-1","0","1","2","3","4"}
+ g_data.rfi_smart_dsl = box.query("sar:status/AdvisedRFI_mode")
+ g_data.inp = read_if_possible("sar:settings/DsINP")
+-g_data.inp_all_values = {"0","1","2","3","4"}
++g_data.inp_all_values = {"-4","-3","-2","-1","0","1","2","3","4"}
+ g_data.inp_smart_dsl = box.query("sar:status/AdvisedDsINP")
+ g_data.limit_rate = box.query("sar:settings/LimitPhyToBookedRateEnable")
+ g_data.show_limit_rate = (tonumber(g_data.limit_rate) or -1) ~= -1
+@@ -142,6 +148,30 @@
+ result.add(html.tr{
+ html.td{class = "title", title},
+ html.td{class = "radio", html.div{
++html.input{type = "radio", name = val_name, checked = selected_id == all_values[9],
++value = all_values[9], id = val_id .. "8", onclick = click
++}
++}},
++html.td{class = "line", html.div{}},
++html.td{class = "radio", html.div{
++html.input{type = "radio", name = val_name, checked = selected_id == all_values[8],
++value = all_values[8], id = val_id .. "7", onclick = click
++}
++}},
++html.td{class = "line", html.div{}},
++html.td{class = "radio", html.div{
++html.input{type = "radio", name = val_name, checked = selected_id == all_values[7],
++value = all_values[7], id = val_id .. "6", onclick = click
++}
++}},
++html.td{class = "line", html.div{}},
++html.td{class = "radio", html.div{
++html.input{type = "radio", name = val_name, checked = selected_id == all_values[6],
++value = all_values[6], id = val_id .. "5", onclick = click
++}
++}},
++html.td{class = "line", html.div{}},
++html.td{class = "radio", html.div{
+ html.input{type = "radio", name = val_name, checked = selected_id == all_values[5],
+ value = all_values[5], id = val_id .. "4"
+ }
+@@ -174,6 +198,14 @@
+ if get_smart_style() ~= "" then
+ result.add(html.tr{
+ html.td{class = "title", " "},
++html.td{class = "radio", html.div{class = get_smart(smart_id, all_values[9]), " "}},
++html.td{class = "emptyline", html.div{}},
++html.td{class = "radio", html.div{class = get_smart(smart_id, all_values[8]), " "}},
++html.td{class = "emptyline", html.div{}},
++html.td{class = "radio", html.div{class = get_smart(smart_id, all_values[7]), " "}},
++html.td{class = "emptyline", html.div{}},
++html.td{class = "radio", html.div{class = get_smart(smart_id, all_values[6]), " "}},
++html.td{class = "emptyline", html.div{}},
+ html.td{class = "radio", html.div{class = get_smart(smart_id, all_values[5]), " "}},
+ html.td{class = "emptyline", html.div{}},
+ html.td{class = "radio", html.div{class = get_smart(smart_id, all_values[4]), " "}},
+@@ -286,14 +318,18 @@
+ html.td{colspan = "4", class = "left", html.div{html.span{class = "wrap",
+ [[{?5085:720?}]]
+ }}},
+-html.td{class = "smart_line", html.span{class = "range"}},
++html.td{colspan = "4", class = "left", html.div{html.span{class = "wrap",
++}}},
++html.td{colspan = "1", class = "smart_line", html.span{class = "range"},"Vorgabe"},
++html.td{colspan = "4", class = "right", html.div{html.span{class = "wrap",
++}}},
+ html.td{colspan = "4", class = "right", html.div{html.span{class = "wrap",
+ [[{?5085:580?}]]
+ }}}
+ },
+ html.tr{
+ html.td{},
+-html.td{colspan = "9", html.div{class = "smart_marker", html.span{class = "range"}}}
++html.td{colspan = "17", html.div{class = "smart_marker", html.span{class = "range"}}}
+ }
+ )
+ if show_down then
+@@ -666,13 +702,12 @@
+ <?include "templates/page_head.html" ?>
+ <form id="main_form" method="POST" action="<?lua href.write(box.glob.script) ?>">
+ <div>
+-<p>{?5085:828?}</p>
++<p>Auf dieser Seite kann man Parameter der DSL-Verbindung anpassen.</p>
+ <a class="textlink" id="uiOpenSettings">{?5085:322?}<img id="uiSettingsIcon" src="/css/rd/icons/ic_triangle_down_blue.svg"></a>
+ <div id="uiSettings" class="hide">
+ <?lua
+ if show_snr_table() then
+ box.out([[<hr>]])
+-box.out([[<p>]]) box.html([[{?5085:492?}]]) box.out([[</p>]])
+ box.out([[<div>]])
+ write_snrset_table()
+ box.out([[</div>]])
+--- usr/www/all/css/default/dsl_line_settings.css
++++ usr/www/all/css/default/dsl_line_settings.css
+@@ -29,11 +29,11 @@
+ background-image:url(/css/rd/images/img_dsl_smart_hint_good.gif)
+ }
+ div.smart_marker {
+-background-image:url(/css/rd/images/img_dsl_smart_marker.gif),url(/css/rd/images/img_dsl_smart_marker.gif);
++background-image:url(/css/rd/images/img_dsl_smart_marker.gif),url(/css/rd/images/img_dsl_smart_marker.gif),url(/css/rd/images/img_dsl_smart_marker.gif);
+ background-repeat:no-repeat;
+-background-position:0,100%;
++background-position:0,50%,100%;
+ background-size:.85rem;
+-width:25rem;
++width:50rem;
+ margin-left:.35rem
+ }
+ .smart_marker .range {
