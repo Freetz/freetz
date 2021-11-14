@@ -66,6 +66,12 @@ do_download()
 	wget_result=$?
 	[ "$opt_trap_delete" == y ] && trap - TERM INT
 	if [ "$wget_result" != "0" ]; then
+		if [ -e "/usr/share/ca-certificates/mozilla/DST_Root_CA_X3.crt" ]; then
+			# https://letsencrypt.org/docs/dst-root-ca-x3-expiration-september-2021/
+			local CAX3="/usr/share/ca-certificates/mozilla/DST_Root_CA_X3.crt"
+			for x in $(find /etc/ssl/certs/ ! -type d); do [ "$(realpath $x)" == "/usr/share/ca-certificates/mozilla/DST_Root_CA_X3.crt" ] && CAX3="$CAX3 $x"; done
+			echo -e "\nWARNING: Expired 'DST Root CA X3' certificate found. To remove file DST_Root_CA_X3.crt and links to it run:\nsudo rm -f $CAX3\n"
+		fi
 		echo "Download failed - \"${fullURL}\"  ->  error code $wget_result" >&2
 		rm -f "$outFile"
 		return $wget_result
