@@ -6,7 +6,7 @@ $(PKG)_SITE:=http://$(pkg).freedesktop.org/releases/$(pkg)
 
 $(PKG)_STARTLEVEL=90 # before avahi
 
-$(PKG)_BINARY:=$($(PKG)_DIR)/bus/dbus-daemon
+$(PKG)_BINARY:=$($(PKG)_DIR)/bus/.libs/dbus-daemon
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/dbus-daemon
 
 $(PKG)_TOOLS_ALL           := monitor send uuidgen
