@@ -1,4 +1,4 @@
-# davfs 1.5.2/1.6.0
+# davfs 1.5.2/1.6.1
 
 [![WebDAV: Konfiguration](../screenshots/62_md.jpg)](../screenshots/62.jpg)
 

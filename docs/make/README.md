@@ -144,7 +144,7 @@ Index:
   * **<u>dante 1.2.2 (binary only)</u><a id='dante'></a>**<br>
     socks proxy daemon
 
-  * **[davfs2: davfs 1.5.2/1.6.0](davfs2.md)<a id='davfs2'></a>**<br>
+  * **[davfs2: davfs 1.5.2/1.6.1](davfs2.md)<a id='davfs2'></a>**<br>
     davfs is a Linux file system driver that allows you to mount a WebDAV server as a disk drive. WebDAV is an extension to HTTP/1.1 that allows remote collaborative authoring of Web resources, defined in RFC 4918.
 
   * **<u>dbus: D-Bus 1.13.18</u><a id='dbus'></a>**<br>

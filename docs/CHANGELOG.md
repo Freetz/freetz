@@ -64,6 +64,7 @@ Latest changes
    * CCID driver 1.4.36
    * cifs-utils 6.14
    * Curl 7.80.0
+   * davfs2 1.5.2/1.6.1
    * git 2.33.1
    * HAProxy 2.4.8
    * libexif 0.6.23
