@@ -1,0 +1,190 @@
+This patch has been created from AVM's opensrc packages:
+
+    diff -durN --no-dereference 7590.07.27 7590.07.29 > this.patch
+
+--- linux-4.9/arch/Kconfig	2021-02-16 18:58:32.000000000 +0100
++++ linux-4.9/arch/Kconfig	2021-11-03 14:45:25.000000000 +0100
+@@ -471,6 +471,15 @@
+ 
+ endchoice
+ 
++config CC_STACKPROTECTOR_BUG_ON_FAIL
++	bool "Detection of stack-corruption will trigger BUG()"
++	default n
++	depends on CC_STACKPROTECTOR
++	help
++	  Detection of stack-corruption will trigger BUG().
++	  Depend on implementation of BUG() further info (backtrace,
++	  registerdump,stacktrace) possible.
++
+ config THIN_ARCHIVES
+ 	bool
+ 	help
+--- linux-4.9/arch/mips/boot/dts/lantiq/avm/grx350_common.dtsi	2021-02-16 18:58:32.000000000 +0100
++++ linux-4.9/arch/mips/boot/dts/lantiq/avm/grx350_common.dtsi	2021-11-03 14:45:25.000000000 +0100
+@@ -17,7 +17,7 @@
+ };
+ 
+ &lan1 {
+-	eee-adv = <0x0>;
++	avm,eee-adv = <0x0>;
+ };
+ 
+ &phy1 {
+--- linux-4.9/avm/conf/linux-4.9.grx5	2021-02-16 18:58:32.000000000 +0100
++++ linux-4.9/avm/conf/linux-4.9.grx5	2021-11-03 14:45:25.000000000 +0100
+@@ -432,6 +432,7 @@
+ # CONFIG_CC_STACKPROTECTOR_NONE is not set
+ CONFIG_CC_STACKPROTECTOR_REGULAR=y
+ # CONFIG_CC_STACKPROTECTOR_STRONG is not set
++CONFIG_CC_STACKPROTECTOR_BUG_ON_FAIL=y
+ CONFIG_HAVE_CONTEXT_TRACKING=y
+ CONFIG_HAVE_VIRT_CPU_ACCOUNTING_GEN=y
+ CONFIG_HAVE_IRQ_TIME_ACCOUNTING=y
+--- linux-4.9/drivers/net/ethernet/lantiq/switch-api/gsw_flow_core.c	2021-02-16 18:58:32.000000000 +0100
++++ linux-4.9/drivers/net/ethernet/lantiq/switch-api/gsw_flow_core.c	2021-11-03 14:45:26.000000000 +0100
+@@ -2797,6 +2797,10 @@
+ #ifdef __KERNEL__
+ 			gsw_r_init();
+ #endif
++			/* enable padding to 64 bytes */
++			gsw_w32(cdev, PMAC_CTRL_0_PADEN_OFFSET,
++				PMAC_CTRL_0_PADEN_SHIFT, PMAC_CTRL_0_PADEN_SIZE, 0x1);
++
+ 			gsw_w32(cdev, (GSWT_MDCCFG_0_PEN_1_OFFSET + GSW30_TOP_OFFSET),
+ 				GSWT_MDCCFG_0_PEN_1_SHIFT, 6, 0x1);
+ 			/*			gsw_w32(cdev, (GSWT_PHY_ADDR_1_LNKST_OFFSET + GSW30_TOP_OFFSET),
+--- linux-4.9/drivers/thermal/thermal_core.c	2021-02-16 18:58:32.000000000 +0100
++++ linux-4.9/drivers/thermal/thermal_core.c	2021-11-03 14:45:26.000000000 +0100
+@@ -427,6 +427,16 @@
+ 		       def_governor->throttle(tz, trip);
+ }
+ 
++static int thermal_reboot_print_thermal_zone(struct thermal_zone_device *tz, void *data)
++{
++	int temp;
++
++	if (!thermal_zone_get_temp(tz, &temp))
++		pr_emerg("%s(%s): %d.%01d °C\n", dev_name(&tz->device), tz->type, temp / 1000, (temp % 1000) / 100);
++
++	return 0;
++}
++
+ static void handle_critical_trips(struct thermal_zone_device *tz,
+ 				int trip, enum thermal_trip_type trip_type)
+ {
+@@ -448,7 +458,8 @@
+ 			  "critical temperature reached(%d C),shutting down\n",
+ 			  tz->temperature / 1000);
+ 		avm_set_reset_status(RS_TEMP_REBOOT);
+-		orderly_reboot();
++		for_each_thermal_zone(thermal_reboot_print_thermal_zone, NULL);
++		panic("OVERHEAT! Thermal shutdown to prevent damage: crash\n");
+ 	}
+ }
+ 
+@@ -643,6 +654,57 @@
+ 	thermal_zone_device_update(tz, THERMAL_EVENT_UNSPECIFIED);
+ }
+ 
++int for_each_thermal_governor(int (*cb)(struct thermal_governor *, void *),
++			      void *data)
++{
++	struct thermal_governor *gov;
++	int ret = 0;
++
++	mutex_lock(&thermal_governor_lock);
++	list_for_each_entry(gov, &thermal_governor_list, governor_list) {
++		ret = cb(gov, data);
++		if (ret)
++			break;
++	}
++	mutex_unlock(&thermal_governor_lock);
++
++	return ret;
++}
++
++int for_each_thermal_cooling_device(int (*cb)(struct thermal_cooling_device *,
++					      void *), void *data)
++{
++	struct thermal_cooling_device *cdev;
++	int ret = 0;
++
++	mutex_lock(&thermal_list_lock);
++	list_for_each_entry(cdev, &thermal_cdev_list, node) {
++		ret = cb(cdev, data);
++		if (ret)
++			break;
++	}
++	mutex_unlock(&thermal_list_lock);
++
++	return ret;
++}
++
++int for_each_thermal_zone(int (*cb)(struct thermal_zone_device *, void *),
++			  void *data)
++{
++	struct thermal_zone_device *tz;
++	int ret = 0;
++
++	mutex_lock(&thermal_list_lock);
++	list_for_each_entry(tz, &thermal_tz_list, node) {
++		ret = cb(tz, data);
++		if (ret)
++			break;
++	}
++	mutex_unlock(&thermal_list_lock);
++
++	return ret;
++}
++
+ /* sys I/F for thermal zone */
+ 
+ #define to_thermal_zone(_dev) \
+--- linux-4.9/drivers/thermal/thermal_core.h	2021-02-16 18:58:32.000000000 +0100
++++ linux-4.9/drivers/thermal/thermal_core.h	2021-11-03 14:45:26.000000000 +0100
+@@ -30,6 +30,14 @@
+ /* Initial state of a cooling device during binding */
+ #define THERMAL_NO_TARGET -1UL
+ 
++int for_each_thermal_zone(int (*cb)(struct thermal_zone_device *, void *),
++			  void *);
++
++int for_each_thermal_cooling_device(int (*cb)(struct thermal_cooling_device *,
++					      void *), void *);
++
++int for_each_thermal_governor(int (*cb)(struct thermal_governor *, void *),
++			      void *thermal_governor);
+ /*
+  * This structure is used to describe the behavior of
+  * a certain cooling device on a certain trip point
+--- linux-4.9/kernel/panic.c	2021-02-16 18:58:32.000000000 +0100
++++ linux-4.9/kernel/panic.c	2021-11-03 14:45:26.000000000 +0100
+@@ -609,6 +609,9 @@
+  */
+ __visible void __stack_chk_fail(void)
+ {
++#ifdef CONFIG_CC_STACKPROTECTOR_BUG_ON_FAIL
++	BUG();
++#endif
+ 	panic("stack-protector: Kernel stack is corrupted in: %p\n",
+ 		__builtin_return_address(0));
+ }
+--- linux-4.9/.kernelvariables	2021-11-17 11:21:19.816216663 +0100
++++ linux-4.9/.kernelvariables	2021-11-03 14:45:24.000000000 +0100
+@@ -1,12 +1,12 @@
+ # vim: set autoread filetype=make:
+ #
+-# Auto-generated at build-88300
+-# while generating for Fritz_Box_HW226
++# Auto-generated at 1.66.1.8-release_psq19p2-v1.66.8
++# while generating for grx5
+ #
+ ARCH = mips
+ export ARCH
+ 
+-ADD_FILE_PID = Fritz_Box_HW226
++ADD_FILE_PID = grx5
+ export ADD_FILE_PID
+ 
+ CROSS_COMPILE = mips-buildroot-linux-musl-
