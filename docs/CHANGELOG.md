@@ -67,7 +67,7 @@ Latest changes
    * davfs2 1.5.2/1.6.1
    * git 2.34.1
    * HAProxy 2.4.8
-   * libexif 0.6.23
+   * libexif 0.6.24
    * libgcrypt 1.9.4
    * Nano 5.9
    * OpenSSH 8.8p1
