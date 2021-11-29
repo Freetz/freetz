@@ -66,7 +66,7 @@ Latest changes
    * Curl 7.80.0
    * davfs2 1.5.2/1.6.1
    * git 2.34.1
-   * HAProxy 2.4.8
+   * HAProxy 2.4.9
    * libexif 0.6.24
    * libgcrypt 1.9.4
    * Nano 5.9
