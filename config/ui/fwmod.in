@@ -70,6 +70,19 @@ menu "Firmware packaging (fwmod) options"
 				you need to use for all the same password! Or you link/create
 				./.signature/ directory by yourself.
 
+		choice
+			prompt "Method for signing"
+			depends on FREETZ_SHOW_EXPERT
+			default FREETZ_FWMOD_SIGN_METHOD_OG
+
+			config FREETZ_FWMOD_SIGN_METHOD_OG
+				bool "Use tar --oldgnu"
+
+			config FREETZ_FWMOD_SIGN_METHOD_SI
+				bool "Use yf-signimage"
+
+		endchoice
+
 	endif # FREETZ_FWMOD_SIGN
 
 	config FREETZ_FWMOD_FORCE_PACK

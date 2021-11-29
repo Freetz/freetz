@@ -2094,12 +2094,23 @@ if [ "$DO_PACK" -gt 0 ]; then
 	# Sign firmware image
 	if [ "$DO_SIGN" -eq 1 ]; then
 		echo1 -l "signing packed .image file"
-		openssl md5 -sign "${SIGNATURE_SUBDIR}/prv" -passin "pass:$FREETZ_FWMOD_SIGN_PASSWORD" -out "${FIRMWARE_MOD_DIR}/var/signature" "${img_name}" || \
-			error 1 "could not create signature file for firmware image"
-		"$TAR_GNU" -f "${img_name}"  --owner=0 --group=0 --mode=0755 --format=oldgnu  -C "$FIRMWARE_MOD_DIR"  --append ./var/signature
-		if [ $? -ne 0 ] || ! is_valid_tarball "${img_name}"; then
+		if [ "$FREETZ_FWMOD_SIGN_METHOD_SI" == "y" ]; then
+			ln -fs "${SIGNATURE_SUBDIR}/prv" "sign-image.key"
+			FREETZ_IMAGE_SIGNING_PREFIX="sign-image" ${TOOLS_DIR}/yf/signimage/sign_image \
+			  "${img_name}" "$FREETZ_FWMOD_SIGN_PASSWORD" > "${img_name}.signed-temp" 2> "${img_name}.signed.debug-out"
+			RET=$?
+			[ $RET -ne 0 ] && cat "${img_name}.signed.debug-out"
+			rm -f "sign-image.key" "${img_name}.signed.debug-out"
+			mv -f "${img_name}.signed-temp" "${img_name}"
+		else
+			openssl md5 -sign "${SIGNATURE_SUBDIR}/prv" -passin "pass:$FREETZ_FWMOD_SIGN_PASSWORD" -out "${FIRMWARE_MOD_DIR}/var/signature" "${img_name}" || \
+				error 1 "could not create signature file for firmware image"
+			"$TAR_GNU" -f "${img_name}"  --owner=0 --group=0 --mode=0755 --format=oldgnu  -C "$FIRMWARE_MOD_DIR"  --append ./var/signature
+			RET=$?
+		fi
+		if [ $RET -ne 0 ] || ! is_valid_tarball "${img_name}"; then
 			mv "${img_name}" "${img_name}.signed.corrupted" 2>/dev/null
-			error 1 "adding signature to firmware image failed"
+			error $RET "adding signature to firmware image failed"
 		fi
 		echo1 "signed image file size: $(byte_to_mb $(wc -c < "${img_name}")) ($(wc -c < "${img_name}") bytes)"
 	fi
