@@ -1,5 +1,13 @@
 # NEWS
 
+ * __[2021-11-29](#2021-11-29)__<a id='2021-11-29'></a><br>
+   AVM bastelt am Format der GPL Sourcen herum.<br>
+   Bis Fritzos 07.27 der 7490 befanden sich die Kernelsourcen noch in einer eigenen `GPL/GPL-kernel.tar.gz`<br>
+   Datei. Bei 07.29 sind direkt alle Datein in der bereitgestellten `.tar`. Das bedeutet für deren Nutzung wieder<br>
+   unnötigen Mehraufwand. Noch nicht einmal das Namensschema der Sourcedateien ist bei AVM konsistent.<br>
+   Ein Diff zu den unmodifizierten Kernelquellen gibt es nach wie vor nicht bei AVM.<br>
+   Siehe [osp.avm.de/fritzbox/fritzbox-7490/](https://osp.avm.de/fritzbox/fritzbox-7490/)
+
  * __[2021-10-15](#2021-10-15)__<a id='2021-10-15'></a><br>
    AVM hat neue uralte Sicherheitsverbesserungen veröffentlicht:
     - FRITZ!OS 7.25: von AVM angegebenes Veröffentlichungsdatum 25.02.2021
