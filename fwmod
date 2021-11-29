@@ -291,6 +291,14 @@ validate_signature() {
 	local MOD="${3#*x}"
 	local EXP="${3%x*}"
 	[ "$EXP" == "$MOD" ] && EXP='010001'
+	if [ "$FREETZ_FWMOD_VALIDATE_METHOD_SI" == "y" ]; then
+		echo -e "$MOD\n$EXP" > "$TMP/sig"
+		${TOOLS_DIR}/yf/signimage/check_signed_image "$2" -a "$TMP/sig" 2> "$TMP/out"
+		RET=$?
+		[ $RET -ne 0 ] && echo -e "\033[0;31mfailed\033[0m" && cat "$TMP/out"
+		rm -rf "$TMP"
+		[ $RET -ne 0 ] && error $RET "image could not be verified with public key"
+	else
 	# img
 	cat "$2" > "$TMP/img"
 	# fix
@@ -314,6 +322,7 @@ validate_signature() {
 	rm -rf "$TMP"
 	# act
 	[ "$RET" != "0" ] && echo -e "\033[0;31mfailed\033[0m\nOpenSSL: $VAL" && error 1 "image could not be verified with public key"
+	fi
 	echo -e "\033[0;32mvalid\033[0m"
 }
 # validate_signature only
