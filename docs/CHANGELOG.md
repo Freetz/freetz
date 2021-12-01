@@ -53,6 +53,7 @@ Latest changes
    * pseudo 1.9.0 oe-core 0cda3ba
 
  - BusyBox package:
+   * Version 1.33.2 updated
    * Version 1.34.1 updated
    
  - Updated packages and libs:
