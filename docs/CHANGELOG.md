@@ -80,7 +80,7 @@ Latest changes
    * Stunnel 5.60
    * tinc 1.0.36/1.1pre18
    * Tor 0.4.6.8
-   * lighttpd 1.4.61
+   * lighttpd 1.4.62
    * Wget GNU 1.21.2
    * wireguard-tools 1.0.20210914
 
