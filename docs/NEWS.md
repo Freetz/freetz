@@ -1,5 +1,20 @@
 # NEWS
 
+ * __[2021-12-02](#2021-12-02)__<a id='2021-12-02'></a><br>
+   Die aktuelle Updaterunde bei AVM ist vermutlich abgeschlossen.<br>
+   Ob es sich bei den `PSQ19P2NL4` Updates wirklich um Sicherheitsupdates handelt werden wir spätestens in<br>
+   ein paar Jahren erfahren, vielleicht auch gar nicht. Auf Kompatibilitätsupdates deutet hin dass die 6850 und<br>
+   6890 noch bei `PSQ19P2NL3` stecken, aber kürzlich heimliche Updates ohne Versionsänderung erhielten. Zu<br>
+   den Updates gibt es diesbezüglich keine Stellungsnahme von AVM sondern nur diesen nebulösen Textblock<br>
+   ```Mit jedem neuen FRITZ!OS-Update aktualisiert AVM auch die Sicherheitsfunktionen```<br>
+   ```und empfiehlt daher grundsätzlich für alle Geräte, das Update durchzuführen.```<br>
+   Wer lieber Offenheit bei Updates hat könnte (falls kompatibel) zu OpenWrt wechseln.<br>
+   Siehe
+   [AVM: Sicherheitsinfos zu Updates](https://avm.de/service/sicherheitsinfos-zu-updates/),
+   [AVM: info_de.txt](https://ftp.avm.de/fritzbox/fritzbox-7490/deutschland/fritz.os/info_de.txt),
+   [IPPF: Sicherheitslücke bei AVM ?!](https://www.ip-phone-forum.de/threads/311646/),
+   [OpenWrt: AVM](https://openwrt.org/toh/hwdata/avm/start)
+
  * __[2021-11-29](#2021-11-29)__<a id='2021-11-29'></a><br>
    AVM bastelt am Format der GPL Sourcen herum.<br>
    Bis Fritzos 07.27 der 7490 befanden sich die Kernelsourcen noch in einer eigenen `GPL/GPL-kernel.tar.gz`<br>
