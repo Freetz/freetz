@@ -1,10 +1,10 @@
 # NEWS
 
  * __[2021-12-02](#2021-12-02)__<a id='2021-12-02'></a><br>
-   Die aktuelle Updaterunde bei AVM ist vermutlich abgeschlossen.<br>
+   Die aktuelle Updaterunde bei AVM ist ~~vermutlich~~ **offenbar noch nicht** abgeschlossen.<br>
    Ob es sich bei den `PSQ19P2NL4` Updates wirklich um Sicherheitsupdates handelt werden wir spätestens in<br>
-   ein paar Jahren erfahren, vielleicht auch gar nicht. Auf Kompatibilitätsupdates deutet hin dass die 6850 und<br>
-   6890 noch bei `PSQ19P2NL3` stecken, aber kürzlich heimliche Updates ohne Versionsänderung erhielten. Zu<br>
+   ein paar Jahren erfahren, vielleicht auch gar nicht. ~~Auf Kompatibilitätsupdates deutet hin dass die 6850 und<br>
+   6890 noch bei `PSQ19P2NL3` stecken, aber kürzlich heimliche Updates ohne Versionsänderung erhielten.~~ Zu<br>
    den Updates gibt es diesbezüglich keine Stellungsnahme von AVM sondern nur diesen nebulösen Textblock<br>
    ```Mit jedem neuen FRITZ!OS-Update aktualisiert AVM auch die Sicherheitsfunktionen```<br>
    ```und empfiehlt daher grundsätzlich für alle Geräte, das Update durchzuführen.```<br>
