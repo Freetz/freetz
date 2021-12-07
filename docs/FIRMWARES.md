@@ -317,7 +317,7 @@ Currently supported devices and firmwares
   - 84.06.04 rev28179 {GER}
   - 84.06.30 rev30889 {GER}
   - 84.06.51 rev33001 {GER}
-  - 84.06.86 rev70974 {GER}
+  - 84.06.87 rev92934 {GER}
   - 84.05.23 rev27631 {INT}
   - 84.06.06 rev27689 {INT}
   - 84.06.30 rev31156 {INT}
