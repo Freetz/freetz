@@ -296,7 +296,7 @@ Currently supported devices and firmwares
 * __Fritz!Box Fon WLAN 7360 v2__
   - 124.06.30 rev30889 {GER}
   - 124.06.50 rev32505 {GER}
-  - 124.06.86 rev70981 {GER}
+  - 124.06.87 rev92874 {GER}
   - 124.06.31 rev32500 {INT}
   - 124.06.52 rev33299 {INT}
   - 124.06.86 rev70983 {INT}
