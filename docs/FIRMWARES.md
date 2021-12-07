@@ -136,7 +136,7 @@ Currently supported devices and firmwares
 
 * __Fritz!Box 5530 Fiber (DEVELOPER)__
   - 257.07.21 rev83233 {GER} [AXKFW2]
-  - 257.07.27 rev89022 {ALL} [PSQ19P2NL2-aM7Poh3a]
+  - 257.07.29 rev93005 {ALL} [PSQ19P2NL4]
 
 ### Fritz!Box Cable (64xx/65xx/66xx)
 
