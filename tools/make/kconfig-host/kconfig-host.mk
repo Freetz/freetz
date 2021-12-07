@@ -5,6 +5,7 @@ KCONFIG_HOST_SITE:=git_archive@git://repo.or.cz/linux.git,scripts/basic,scripts/
 KCONFIG_HOST_DIR:=$(TOOLS_SOURCE_DIR)/kconfig-$(KCONFIG_HOST_VERSION)
 KCONFIG_HOST_MAKE_DIR:=$(TOOLS_DIR)/make/kconfig-host
 KCONFIG_HOST_TARGET_DIR:=$(TOOLS_DIR)/config
+KCONFIG_HOST_BUILD_PREREQ:=bison flex
 
 
 kconfig-host-source: $(DL_DIR)/$(KCONFIG_HOST_SOURCE)
@@ -18,10 +19,19 @@ $(KCONFIG_HOST_DIR)/.unpacked: $(DL_DIR)/$(KCONFIG_HOST_SOURCE) | $(TOOLS_SOURCE
 	$(if $(FREETZ_REAL_DEVELOPER_ONLY__BUTTONS),$(call APPLY_PATCHES,$(KCONFIG_HOST_MAKE_DIR)/patches/buttons,$(KCONFIG_HOST_DIR)))
 	touch $@
 
-$(KCONFIG_HOST_DIR)/scripts/kconfig/conf: $(KCONFIG_HOST_DIR)/.unpacked
+$(KCONFIG_HOST_DIR)/.prerequisites: $(KCONFIG_HOST_DIR)/.unpacked
+	@prmiss="";\
+	for prereq in $(KCONFIG_HOST_BUILD_PREREQ); do which $${prereq} &>/dev/null || prmiss="$${prmiss} $${prereq}"; done; \
+	if [ -n "$${prmiss}" ]; then \
+		for prereq in $${prmiss}; do echo "Prerequisite '$${prereq}' is missing!"; done; \
+		echo "See https://freetz-ng.github.io/freetz-ng/PREREQUISITES for installation hints" && exit 1; \
+	fi
+	touch $@
+
+$(KCONFIG_HOST_DIR)/scripts/kconfig/conf: $(KCONFIG_HOST_DIR)/.prerequisites
 	$(MAKE) -C $(KCONFIG_HOST_DIR) config
 
-$(KCONFIG_HOST_DIR)/scripts/kconfig/mconf: $(KCONFIG_HOST_DIR)/.unpacked
+$(KCONFIG_HOST_DIR)/scripts/kconfig/mconf: $(KCONFIG_HOST_DIR)/.prerequisites
 	$(MAKE) -C $(KCONFIG_HOST_DIR) menuconfig
 
 $(KCONFIG_HOST_TARGET_DIR)/conf: $(KCONFIG_HOST_DIR)/scripts/kconfig/conf
