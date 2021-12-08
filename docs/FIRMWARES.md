@@ -262,7 +262,7 @@ Currently supported devices and firmwares
 * __Fritz!Box Fon WLAN 7272__
   - 120.06.30 rev30889 {GER}
   - 120.06.50 rev33089 {GER}
-  - 120.06.87 rev70989 {GER}
+  - 120.06.88 rev93070 {GER}
   - 120.06.30 rev31156 {INT}
   - 120.06.52 rev33403 {INT}
   - 120.06.87 rev93072 {INT}
