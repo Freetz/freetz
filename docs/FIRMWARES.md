@@ -265,7 +265,7 @@ Currently supported devices and firmwares
   - 120.06.87 rev70989 {GER}
   - 120.06.30 rev31156 {INT}
   - 120.06.52 rev33403 {INT}
-  - 120.06.86 rev70993 {INT}
+  - 120.06.87 rev93072 {INT}
 
 ### Fritz!Box Fon WLAN (73xx)
 
