@@ -140,7 +140,7 @@ Currently supported devices and firmwares
 
 ### Fritz!Box Cable (64xx/65xx/66xx)
 
-* __Fritz!Box 6430 Cable (UNTESTED)__
+* __Fritz!Box 6430 Cable__
   - 159.07.12 rev72224 {GER} [MESH18 NL2]
 * __Fritz!Box 6490 Cable__
   - 141.06.87 rev48327 {GER}
