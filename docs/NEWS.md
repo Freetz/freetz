@@ -1,5 +1,23 @@
 # NEWS
 
+ * __[2021-12-10](#2021-12-10)__<a id='2021-12-10'></a><br>
+   Mal wieder fehlerhafter Sourcecode von AVM<br>
+   Beim von AVM neu veröffentlichten Quellcodepaket der [5530-07.29](http://osp.avm.de/fritzbox/fritzbox-5530-fiber/source-files-FRITZ.Box_5530-prxI-07.29.tar.gz) passt wieder der Quellcode des Kernels<br>
+   nicht zur .config des Kernels. Falls jemand Lust hat bei AVM nachzufragen: [fritzbox_info@avm.de](fritzbox_info@avm.de).<br>
+   Es gibt im Quellcode die Symbole `CONFIG_AVM_PA_SCH_TACK` und `CONFIG_PHY_ID0_JZ_66791_PANIC`, in<br>
+   der .config dagegen nicht. Wie diese korrekt gesetzt werden muss gewürfelt werden. Für "SCH_TACK" könnte<br>
+   `m` die korrekte Option sein, vielleicht. "JZ-66791"? Nach dem Lesen von [FritzBox 7590 hängt im BootLoop](https://www.ip-phone-forum.de/threads/311499/)<br>
+   lasse ich die Option lieber auf `n` da sie wohl die Fritzbox unbrauchbar machen könnte.<br>
+   Zum "Glück" können Kernel der (bei AVM) neuesten Kernelversion 4 eh nicht ersetzt, sondern nur Module<br>
+   hinzugefügt oder ersetzt werden. Weitere bedauerliche Einzelfälle bei denen auch "SCH_TACK" unklar ist:
+    - 1200_07.27
+    - 7530_07.25
+    - 1750_07.27
+    - 5491_07.27
+    - 7490_07.27
+   
+   Siehe [94930632](https://github.com/Freetz-NG/freetz-ng/commit/9493063213ca68c42126b78347a8fab23e5cd4a2)
+
  * __[2021-12-02](#2021-12-02)__<a id='2021-12-02'></a><br>
    Die aktuelle Updaterunde bei AVM ist ~~vermutlich~~ **offenbar noch nicht** abgeschlossen.<br>
    Ob es sich bei den `PSQ19P2NL4` Updates wirklich um Sicherheitsupdates handelt werden wir spätestens in<br>
