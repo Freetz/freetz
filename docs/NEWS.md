@@ -17,6 +17,7 @@
     - 7490_07.27
    
    Siehe [94930632](https://github.com/Freetz-NG/freetz-ng/commit/9493063213ca68c42126b78347a8fab23e5cd4a2)
+   und [2688d20d6](https://github.com/Freetz-NG/freetz-ng/commit/2688d20d65be847eef80fb98b593902b69ef8334)
 
  * __[2021-12-02](#2021-12-02)__<a id='2021-12-02'></a><br>
    Die aktuelle Updaterunde bei AVM ist ~~vermutlich~~ **offenbar noch nicht** abgeschlossen.<br>
