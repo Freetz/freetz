@@ -4,6 +4,10 @@ $(PKG)_SOURCE_MD5:=ddf679a5d4d80096a59f3affc64f16e5
 $(PKG)_SITE:=@SF/project/unfs3/unfs3/$($(PKG)_VERSION),https://github.com/unfs3/unfs3/releases/download/$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/unfsd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/unfsd
+### WEBSITE:=https://unfs3.github.io/
+### MANPAGE:=https://github.com/unfs3/unfs3/tree/master/doc
+### CHANGES:=https://github.com/unfs3/unfs3/blob/master/NEWS
+### CVSREPO:=https://github.com/unfs3/unfs3/commits
 
 $(PKG)_DEPENDS_ON += $(if $(FREETZ_TARGET_UCLIBC_SUPPORTS_rpc),portmap,rpcbind)
 $(PKG)_DEPENDS_ON += $(if $(FREETZ_TARGET_UCLIBC_SUPPORTS_rpc),,libtirpc)
