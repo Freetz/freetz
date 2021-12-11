@@ -2,6 +2,10 @@ $(call PKG_INIT_BIN, 3.2.3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=209f8326f5137d8817a6276d9577a2f1
 $(PKG)_SITE:=@SAMBA/rsync/src
+### WEBSITE:=https://rsync.samba.org/
+### MANPAGE:=https://rsync.samba.org/documentation.html
+### CHANGES:=https://download.samba.org/pub/rsync/NEWS
+### CVSREPO:=https://git.samba.org/?p=rsync.git
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/rsync
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/rsync
