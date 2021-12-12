@@ -27,6 +27,7 @@ echo "$PKGS" | sed 's/##.*//g' | uniq | while read cat; do
 		[ "${dsc//[ _]/-}" != "$(echo "${dsc//[ _]/-}" | sed "s/^${pkg//_/-}//I")" ] && itm="$dsc" || itm="$pkg: $dsc"
 
 		if [ -e "$MDPWD/$pkg.md" ]; then
+			while [ "$(awk 'END{print NR}' "$MDPWD/$pkg.md")" -lt 2 ]; do echo >> "$MDPWD/$pkg.md"; done
 			sed "1c# $dsc" -i "$MDPWD/$pkg.md"
 			for pair in CVSREPO°Repository CHANGES°Changelog MANPAGE°Manpage WEBSITE°Homepage; do
 				sed "/^ - ${pair#*°}: \[.*)$/d" -i "$MDPWD/$pkg.md"
