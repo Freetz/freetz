@@ -1,15 +1,15 @@
 --- configure
 +++ configure
-@@ -18630,6 +18630,7 @@
- done
+@@ -19648,6 +19648,7 @@
+ fi
  
  
 +if test "$enable_pcregrep_libz" = "yes"; then
  # Check for the availability of libz (aka zlib)
  
- for ac_header in zlib.h
-@@ -18683,8 +18684,10 @@
- if test "x$ac_cv_lib_z_gzopen" = xyes; then :
+        for ac_header in zlib.h
+@@ -19699,8 +19700,10 @@
+ then :
    HAVE_LIBZ=1
  fi
 +fi
@@ -19,8 +19,8 @@
  # Check for the availability of libbz2. Originally we just used AC_CHECK_LIB,
  # as for libz. However, this had the following problem, diagnosed and fixed by
  # a user:
-@@ -18746,6 +18749,7 @@
- rm -f core conftest.err conftest.$ac_objext \
+@@ -19761,6 +19764,7 @@
+ rm -f core conftest.err conftest.$ac_objext conftest.beam \
      conftest$ac_exeext conftest.$ac_ext
  LIBS="$OLD_LIBS"
 +fi

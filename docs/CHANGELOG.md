@@ -74,6 +74,7 @@ Latest changes
    * Nano 5.9
    * OpenSSH 8.8p1
    * OpenVPN 2.4.11/2.5.4
+   * pcre 8.45
    * PCSC-lite (pcscd) 1.9.4
    * socat 1.7.4.2
    * SQLite 3.36.0
