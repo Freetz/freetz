@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.4.62)
+$(call PKG_INIT_BIN, 1.4.63)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=36cf483cf34a06f7c75c724a4237d8779b0d88ce208a1742763793d317114ab7
+$(PKG)_SOURCE_SHA256:=2aef7f0102ebf54a1241a1c3ea8976892f8684bfb21697c9fffb8de0e2d6eab9
 $(PKG)_SITE:=https://download.lighttpd.net/lighttpd/releases-1.4.x
 ### WEBSITE:=https://www.lighttpd.net/
 ### CHANGES:=https://www.lighttpd.net/download/
@@ -98,7 +98,8 @@ $(PKG)_CONFIGURE_OPTIONS += --without-ldap
 $(PKG)_CONFIGURE_OPTIONS += --without-libev
 $(PKG)_CONFIGURE_OPTIONS += --without-maxminddb
 $(PKG)_CONFIGURE_OPTIONS += --without-memcached
-$(PKG)_CONFIGURE_OPTIONS += --with-pcre="yes"
+$(PKG)_CONFIGURE_OPTIONS += --with-pcre
+$(PKG)_CONFIGURE_OPTIONS += --without-pcre2
 $(PKG)_CONFIGURE_OPTIONS += --without-valgrind
 $(PKG)_CONFIGURE_OPTIONS += --without-mysql
 
