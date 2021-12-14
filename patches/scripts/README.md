@@ -19,7 +19,7 @@
 ### fixes
  - 090-var_install_fixes.sh         - all
  - 196-storage_fixes.sh             - all
- - 261-update_avm-rootca.sh         - non updated from FOS 6.30 - <07.29
+ - 261-update_avm-rootca.sh         - non updated from FOS 5.2x - <07.29
  - 521-fix_dect_update.sh           - FREETZ_TARGET_ARCH_X86
 
 ### other
