@@ -449,7 +449,7 @@ Currently supported devices and firmwares
   - 157.07.01 rev63181 {ALL}
   - 157.07.12 rev70670 {ALL} [MESH18 NL2]
   - 157.07.21 rev84898 {ALL} [PSQ19]
-  - 157.07.27 rev89426 {ALL} [PSQ19P2NL2-aM7Poh3a]
+  - 157.07.29 rev93269 {ALL} [PSQ19P2NL4]
 * __Fritz!Powerline 1260 v2 (UNTESTED)__
   - 249.07.27 rev89427 {ALL} [PSQ19P2NL2-aM7Poh3a]
 
