@@ -28,7 +28,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		USE_OPENSSL=$(if $(FREETZ_PACKAGE_HAPROXY_WITH_OPENSSL),1) \
 		USE_PCRE=$(if $(FREETZ_PACKAGE_HAPROXY_WITH_PCRE),1) \
 		CC="$(TARGET_CC)" \
-		CFLAGS="$(TARGET_CFLAGS) -ffunction-sections -fdata-sections" \
+		CFLAGS="$(TARGET_CFLAGS) -ffunction-sections -fdata-sections -fwrapv" \
 		LDFLAGS="-Wl,--gc-sections"
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
