@@ -70,6 +70,7 @@ Latest changes
    * HAProxy 2.5.0
    * libexif 0.6.24
    * libgcrypt 1.9.4
+   * libgpg-error 1.43
    * lighttpd 1.4.63
    * Nano 5.9
    * OpenSSH 8.8p1
