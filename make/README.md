@@ -637,7 +637,7 @@ Index:
   * **[OpenSSL 0.9.8zh/1.0.2u/1.1.1m/3.0.1 (binary only)](../docs/make/openssl.md)<a id='openssl'></a>**<br>
     This package contains the OpenSSL command-line utility.
 
-  * **[OpenVPN 2.4.11/2.5.4](../docs/make/openvpn.md)<a id='openvpn'></a>**<br>
+  * **[OpenVPN 2.4.11/2.5.5](../docs/make/openvpn.md)<a id='openvpn'></a>**<br>
     VPN Server
      - [Häufige Fragen / Howto](../docs/make/openvpn.md#häufige-fragen--howto)
      - [Konfigurationsanleitung](../docs/make/openvpn.md#konfigurationsanleitung)
