@@ -174,7 +174,12 @@ DLCHG:=$(shell echo 'y' ; sed 's/^FREETZ_HOSTTOOLS_DOWNLOAD=.*/# FREETZ_HOSTTOOL
 $(info You have no x86_64 CPU, precompiled (download) host-tools automatically disabled.)
 endif
 endif
-# change LAST_SYSTEM_ID: 999 -> 899
+# compat 2020/08: change FEATURE_CROND_DIR: /var/spool/cron -> /mod/var/spool/cron
+ifeq ($(shell sed -n 's/^FREETZ_BUSYBOX___V..._FEATURE_CROND_DIR=//p' $(TOPDIR)/.config),"/var/spool/cron")
+DLCHG:=$(shell echo 'y' ; sed 's/^\(FREETZ_BUSYBOX___V..._FEATURE_CROND_DIR\)=.*/\1=\"\/mod\/var\/spool\/cron\"/' -i $(TOPDIR)/.config)
+$(info BusyBox FEATURE_CROND_DIR automatically changed.)
+endif
+# compat 2021/04: change LAST_SYSTEM_ID: 999 -> 899
 ifeq ($(shell sed -n 's/^FREETZ_BUSYBOX___V..._LAST_SYSTEM_ID=//p' $(TOPDIR)/.config),999)
 DLCHG:=$(shell echo 'y' ; sed 's/^\(FREETZ_BUSYBOX___V..._LAST_SYSTEM_ID\)=.*/\1=899/' -i $(TOPDIR)/.config)
 $(info BusyBox LAST_SYSTEM_ID automatically changed.)
