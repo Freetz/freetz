@@ -28,233 +28,234 @@ menuconfig FREETZ_PACKAGE_NANO
 
 if FREETZ_PACKAGE_NANO
 
-config FREETZ_PACKAGE_NANO_UTF8
-	bool "With UTF8 support"
-	select FREETZ_LIB_libncursesw
-	default y
-	help
-		Use ncursesw for UTF8 support.
+	config FREETZ_PACKAGE_NANO_UTF8
+		bool "With UTF8 support"
+		select FREETZ_LIB_libncursesw
+		default y
+		help
+			Use ncursesw for UTF8 support.
 
-config FREETZ_PACKAGE_NANO_TINY
-	bool "Tiny binary"
-	default y
-	help
-		Strip whichever feature possible from the Nano binary and keep
-		everything small and simple, yet powerful and easy to use.
+	config FREETZ_PACKAGE_NANO_TINY
+		bool "Tiny binary"
+		default y
+		help
+			Strip whichever feature possible from the Nano binary and keep
+			everything small and simple, yet powerful and easy to use.
 
-		With this option enabled as the only one, Nano's binary has an
-		approximate size of 142 KB. NOTE that deselecting this option
-		already results in a 182 KB binary in size although no other
-		option has been selected. This is because nano compiler option
-		"--enable-tiny" also disables some larger internals like
-		marking and cutting to the end of a line.
+			With this option enabled as the only one, Nano's binary has an
+			approximate size of 142 KB. NOTE that deselecting this option
+			already results in a 182 KB binary in size although no other
+			option has been selected. This is because nano compiler option
+			"--enable-tiny" also disables some larger internals like
+			marking and cutting to the end of a line.
 
-config FREETZ_PACKAGE_NANO_HELP
-	bool "Online help"
-	depends on ! FREETZ_PACKAGE_NANO_TINY
-	select FREETZ_PACKAGE_NANO_MULTIBUFFER
-	default n
-	help
-		Show a list of available keyboard commands via Ctrl-G or F1. As the
-		name suggests, this is quite helpful. ;-)
+	config FREETZ_PACKAGE_NANO_HELP
+		bool "Online help"
+		depends on ! FREETZ_PACKAGE_NANO_TINY
+		select FREETZ_PACKAGE_NANO_MULTIBUFFER
+		default n
+		help
+			Show a list of available keyboard commands via Ctrl-G or F1. As the
+			name suggests, this is quite helpful. ;-)
 
-		This option adds about 8.4 KB to the minimum 182 KB of Nano's non-tiny binary.
+			This option adds about 8.4 KB to the minimum 182 KB of Nano's non-tiny binary.
 
-		If you are unfamiliar with Nano and Pico and have some space left
-		in the firmware image, you are recommended choosing this option anyway.
+			If you are unfamiliar with Nano and Pico and have some space left
+			in the firmware image, you are recommended choosing this option anyway.
 
-config FREETZ_PACKAGE_NANO_TABCOMP
-	bool "Tab completion for file names"
-	depends on ! FREETZ_PACKAGE_NANO_TINY
-	default n
-	help
-		When opening or saving files, you get tab completion for directory and
-		file names. Even with the file browser switched off, this is a
-		powerful tool to help you save time when typing in path names.
+	config FREETZ_PACKAGE_NANO_TABCOMP
+		bool "Tab completion for file names"
+		depends on ! FREETZ_PACKAGE_NANO_TINY
+		default n
+		help
+			When opening or saving files, you get tab completion for directory and
+			file names. Even with the file browser switched off, this is a
+			powerful tool to help you save time when typing in path names.
 
-		This option adds about 4.7 KB to the minimum 182 KB
-		of Nano's non-tiny binary.
+			This option adds about 4.7 KB to the minimum 182 KB
+			of Nano's non-tiny binary.
 
-config FREETZ_PACKAGE_NANO_BROWSER
-	bool "File browser"
-	depends on ! FREETZ_PACKAGE_NANO_TINY
-	default n
-	help
-		Browse the directory structure in a multi-line area showing
-		directories and files between which you can navigate with the
-		keyboard. The Browser is invoked by pressing ^T when entering
-		a file name to open/write.
+	config FREETZ_PACKAGE_NANO_BROWSER
+		bool "File browser"
+		depends on ! FREETZ_PACKAGE_NANO_TINY
+		default n
+		help
+			Browse the directory structure in a multi-line area showing
+			directories and files between which you can navigate with the
+			keyboard. The Browser is invoked by pressing ^T when entering
+			a file name to open/write.
 
-		This option adds about 9.7 KB to the minimum 182 KB
-		of Nano's non-tiny binary.
+			This option adds about 9.7 KB to the minimum 182 KB
+			of Nano's non-tiny binary.
 
-config FREETZ_PACKAGE_NANO_OPERATINGDIR
-	bool "Set operating directory"
-	depends on ! FREETZ_PACKAGE_NANO_TINY
-	default n
-	help
-		Set operating directory. Makes Nano set up something
-		similar to a chroot by using the '-o' command line option.
+	config FREETZ_PACKAGE_NANO_OPERATINGDIR
+		bool "Set operating directory"
+		depends on ! FREETZ_PACKAGE_NANO_TINY
+		default n
+		help
+			Set operating directory. Makes Nano set up something
+			similar to a chroot by using the '-o' command line option.
 
-		This option adds almost nothing to the minimum 182 KB
-		of Nano's non-tiny binary.
+			This option adds almost nothing to the minimum 182 KB
+			of Nano's non-tiny binary.
 
-config FREETZ_PACKAGE_NANO_JUSTIFY
-	bool "Justify/unjustify functions"
-	depends on ! FREETZ_PACKAGE_NANO_TINY
-	default n
-	help
-		Support for (un-)justifying paragraphs of text, e.g. program code.
+	config FREETZ_PACKAGE_NANO_JUSTIFY
+		bool "Justify/unjustify functions"
+		depends on ! FREETZ_PACKAGE_NANO_TINY
+		default n
+		help
+			Support for (un-)justifying paragraphs of text, e.g. program code.
 
-		This option adds about 9.4 KB to the minimum 182 KB
-		of Nano's non-tiny binary.
+			This option adds about 9.4 KB to the minimum 182 KB
+			of Nano's non-tiny binary.
 
-config FREETZ_PACKAGE_NANO_WRAPPING
-	depends on ! FREETZ_PACKAGE_NANO_TINY
-	bool "Long line wrapping"
-	default n
-	help
-		Enable long line wrapping. This also creates the -w command line
-		option which enables long line wrapping.
+	config FREETZ_PACKAGE_NANO_WRAPPING
+		depends on ! FREETZ_PACKAGE_NANO_TINY
+		bool "Long line wrapping"
+		default n
+		help
+			Enable long line wrapping. This also creates the -w command line
+			option which enables long line wrapping.
 
-		This option adds about 4.4 KB to the minimum 182 KB
-		of Nano's non-tiny binary.
+			This option adds about 4.4 KB to the minimum 182 KB
+			of Nano's non-tiny binary.
 
-config FREETZ_PACKAGE_NANO_WRAPPING_ROOT
-	depends on FREETZ_PACKAGE_NANO_WRAPPING
-	bool "Disable long line wrapping for root"
-	default n
-	help
-		Disable long line wrapping feature if nano is run as root.
+	config FREETZ_PACKAGE_NANO_WRAPPING_ROOT
+		depends on FREETZ_PACKAGE_NANO_WRAPPING
+		bool "Disable long line wrapping for root"
+		default n
+		help
+			Disable long line wrapping feature if nano is run as root.
 
-		This option adds almost nothing to the minimum 182 KB
-		of Nano's non-tiny binary.
+			This option adds almost nothing to the minimum 182 KB
+			of Nano's non-tiny binary.
 
-config FREETZ_PACKAGE_NANO_MULTIBUFFER
-	bool "Multiple file buffers"
-	default n
-	help
-		Edit multiple files at once and cycle through the different buffers
-		via simple keyboard commands.
+	config FREETZ_PACKAGE_NANO_MULTIBUFFER
+		bool "Multiple file buffers"
+		default n
+		help
+			Edit multiple files at once and cycle through the different buffers
+			via simple keyboard commands.
 
-		This option adds about 4.4 KB to the minimum 182 KB
-		of Nano's non-tiny binary.
+			This option adds about 4.4 KB to the minimum 182 KB
+			of Nano's non-tiny binary.
 
-config FREETZ_PACKAGE_NANO_MOUSE_CONTROL
-        bool "Mouse control"
-        default n
-        help
-                Nano has its own built-in mouse services, but they are limited.
-                They provide only the ability to move the cursor to the point
-                where you click, and to mark the beginning and end of a section
-                of text. Use the Alt-M key combination to toggle between using
-                the terminal's mouse services and nano's built-in mouse services.
+	config FREETZ_PACKAGE_NANO_MOUSE_CONTROL
+		bool "Mouse control"
+		default n
+		help
+			Nano has its own built-in mouse services, but they are limited.
+			They provide only the ability to move the cursor to the point
+			where you click, and to mark the beginning and end of a section
+			of text. Use the Alt-M key combination to toggle between using
+			the terminal's mouse services and nano's built-in mouse services.
 
-config FREETZ_PACKAGE_NANO_NANORC
-	bool "Nanorc startup file support"
-	default n
-	help
-		Enable support for reading the nanorc file at startup. You can store
-		custom settings in the nanorc file rather than having to pass command
-		line options to get desired behavior.
+	config FREETZ_PACKAGE_NANO_NANORC
+		bool "Nanorc startup file support"
+		default n
+		help
+			Enable support for reading the nanorc file at startup. You can store
+			custom settings in the nanorc file rather than having to pass command
+			line options to get desired behavior.
 
-		This option adds about 9.6 KB to the minimum 182 KB
-		of Nano's non-tiny binary.
+			This option adds about 9.6 KB to the minimum 182 KB
+			of Nano's non-tiny binary.
 
-		NOTE: A nanorc file with editing support is added to your firmware.
+			NOTE: A nanorc file with editing support is added to your firmware.
 
-config FREETZ_PACKAGE_NANO_COLOR_SYNTAX
-	bool "Coloured syntax highlighting support"
-	default n
-	select FREETZ_PACKAGE_NANO_NANORC
-	help
-		Enable support for syntax coloring of files using the nanorc file.
-		This enables nanorc support, but does NOT automatically copy any
-		syntax files to the target system.
+	config FREETZ_PACKAGE_NANO_COLOR_SYNTAX
+		bool "Coloured syntax highlighting support"
+		default n
+		select FREETZ_PACKAGE_NANO_NANORC
+		help
+			Enable support for syntax coloring of files using the nanorc file.
+			This enables nanorc support, but does NOT automatically copy any
+			syntax files to the target system.
 
-		This option adds about 21.4 KB plus possibly a few KB of your
-		syntax files to the minimum 182 KB of Nano's non-tiny binary,
-		including nanorc support.
+			This option adds about 21.4 KB plus possibly a few KB of your
+			syntax files to the minimum 182 KB of Nano's non-tiny binary,
+			including nanorc support.
 
-		IMPORTANT NOTES:
+			IMPORTANT NOTES:
 
-		If you want to include any syntax definition files by yourself
-		(look for *.nanorc in the nano source package (doc/systax), define
-		or download your own files), you are advised to copy them into
-		make/nano/files/root/usr/share/nano/ before compiling Freetz.
-		This way your snytax files are enabled automatically when saving
-		your customized nanorc via WebIf or on startup.
+			If you want to include any syntax definition files by yourself
+			(look for *.nanorc in the nano source package (doc/systax), define
+			or download your own files), you are advised to copy them into
+			make/nano/files/root/usr/share/nano/ before compiling Freetz.
+			This way your snytax files are enabled automatically when saving
+			your customized nanorc via WebIf or on startup.
 
-		You can select some of nano's default syntax highlighting files
-		to be integrated into the firmware image by the "Nano syntax
-		highlighting files" menu below (visible if this option is selected).
-		Files selected in the menu are also enabled automatically.
+			You can select some of nano's default syntax highlighting files
+			to be integrated into the firmware image by the "Nano syntax
+			highlighting files" menu below (visible if this option is selected).
+			Files selected in the menu are also enabled automatically.
 
-if FREETZ_PACKAGE_NANO_COLOR_SYNTAX
+	if FREETZ_PACKAGE_NANO_COLOR_SYNTAX
 
-config FREETZ_PACKAGE_NANO_SYNTAX_FILE_SH
-	bool "Syntax highlighting for .sh files"
-	default y
-	help
-		Adds sh.nanorc to /usr/share/nano so you can use it in nanorc to
-		enable syntax highlighting for .sh files.
+		config FREETZ_PACKAGE_NANO_SYNTAX_FILE_SH
+			bool "Syntax highlighting for .sh files"
+			default y
+			help
+				Adds sh.nanorc to /usr/share/nano so you can use it in nanorc to
+				enable syntax highlighting for .sh files.
 
-config FREETZ_PACKAGE_NANO_SYNTAX_FILE_NANORC
-	bool "Syntax highlighting for .nanorc files"
-	default y
-	help
-		Adds nanorc.nanorc to /usr/share/nano so you can use it in nanorc to
-		enable syntax highlighting for .nanorc files.
+		config FREETZ_PACKAGE_NANO_SYNTAX_FILE_NANORC
+			bool "Syntax highlighting for .nanorc files"
+			default y
+			help
+				Adds nanorc.nanorc to /usr/share/nano so you can use it in nanorc to
+				enable syntax highlighting for .nanorc files.
 
-config FREETZ_PACKAGE_NANO_SYNTAX_FILE_C
-	bool "Syntax highlighting for .c files"
-	default y
-	help
-		Adds c.nanorc to /usr/share/nano so you can use it in nanorc to
-		enable syntax highlighting for .c files.
+		config FREETZ_PACKAGE_NANO_SYNTAX_FILE_C
+			bool "Syntax highlighting for .c files"
+			default y
+			help
+				Adds c.nanorc to /usr/share/nano so you can use it in nanorc to
+				enable syntax highlighting for .c files.
 
-config FREETZ_PACKAGE_NANO_SYNTAX_FILE_CSS
-	bool "Syntax highlighting for .css files"
-	default y
-	help
-		Adds css.nanorc to /usr/share/nano so you can use it in nanorc to
-		enable syntax highlighting for .css files.
+		config FREETZ_PACKAGE_NANO_SYNTAX_FILE_CSS
+			bool "Syntax highlighting for .css files"
+			default y
+			help
+				Adds css.nanorc to /usr/share/nano so you can use it in nanorc to
+				enable syntax highlighting for .css files.
 
-config FREETZ_PACKAGE_NANO_SYNTAX_FILE_HTML
-	bool "Syntax highlighting for .html files"
-	default y
-	help
-		Adds html.nanorc to /usr/share/nano so you can use it in nanorc to
-		enable syntax highlighting for .html files.
+		config FREETZ_PACKAGE_NANO_SYNTAX_FILE_HTML
+			bool "Syntax highlighting for .html files"
+			default y
+			help
+				Adds html.nanorc to /usr/share/nano so you can use it in nanorc to
+				enable syntax highlighting for .html files.
 
-config FREETZ_PACKAGE_NANO_SYNTAX_FILE_PHP
-	bool "Syntax highlighting for .php files"
-	default y
-	help
-		Adds php.nanorc to /usr/share/nano so you can use it in nanorc to
-		enable syntax highlighting for .php files.
+		config FREETZ_PACKAGE_NANO_SYNTAX_FILE_PHP
+			bool "Syntax highlighting for .php files"
+			default y
+			help
+				Adds php.nanorc to /usr/share/nano so you can use it in nanorc to
+				enable syntax highlighting for .php files.
 
-config FREETZ_PACKAGE_NANO_SYNTAX_FILE_TEX
-	bool "Syntax highlighting for .tex files"
-	default y
-	help
-		Adds tex.nanorc to /usr/share/nano so you can use it in nanorc to
-		enable syntax highlighting for .tex files.
+		config FREETZ_PACKAGE_NANO_SYNTAX_FILE_TEX
+			bool "Syntax highlighting for .tex files"
+			default y
+			help
+				Adds tex.nanorc to /usr/share/nano so you can use it in nanorc to
+				enable syntax highlighting for .tex files.
 
-config FREETZ_PACKAGE_NANO_SYNTAX_FILE_PATCH
-	bool "Syntax highlighting for .patch files"
-	default y
-	help
-		Adds patch.nanorc to /usr/share/nano so you can use it in nanorc to
-		enable syntax highlighting for .patch files.
+		config FREETZ_PACKAGE_NANO_SYNTAX_FILE_PATCH
+			bool "Syntax highlighting for .patch files"
+			default y
+			help
+				Adds patch.nanorc to /usr/share/nano so you can use it in nanorc to
+				enable syntax highlighting for .patch files.
 
-config FREETZ_PACKAGE_NANO_SYNTAX_FILE_XML
-	bool "Syntax highlighting for .xml files"
-	default y
-	help
-		Adds xml.nanorc to /usr/share/nano so you can use it in nanorc to
-		enable syntax highlighting for .xml files.
+		config FREETZ_PACKAGE_NANO_SYNTAX_FILE_XML
+			bool "Syntax highlighting for .xml files"
+			default y
+			help
+				Adds xml.nanorc to /usr/share/nano so you can use it in nanorc to
+				enable syntax highlighting for .xml files.
 
-endif # FREETZ_PACKAGE_NANO_COLOR_SYNTAX
+	endif # FREETZ_PACKAGE_NANO_COLOR_SYNTAX
 
 endif # FREETZ_PACKAGE_NANO
+
