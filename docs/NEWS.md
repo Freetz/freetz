@@ -32,7 +32,7 @@
    [AVM: Sicherheitsinfos zu Updates](https://avm.de/service/sicherheitsinfos-zu-updates/),
    [AVM: info_de.txt](https://ftp.avm.de/fritzbox/fritzbox-7490/deutschland/fritz.os/info_de.txt),
    [IPPF: Sicherheitslücke bei AVM ?!](https://www.ip-phone-forum.de/threads/311646/),
-   [OpenWrt: AVM](https://openwrt.org/toh/hwdata/avm/start)
+   [OpenWrt: AVM](https://openwrt.org/toh/hwdata/avm/start),
    [Discussion: Stammzertifikatsupdate](https://github.com/Freetz-NG/freetz-ng/discussions/424)
 
  * __[2021-11-29](#2021-11-29)__<a id='2021-11-29'></a><br>
