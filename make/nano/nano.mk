@@ -1,10 +1,10 @@
-$(call PKG_INIT_BIN, 5.9)
+$(call PKG_INIT_BIN, 6.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=cb6ac9edc7fb8f723b92a7e5626537e6d546b95abfaddd3f790f65dcdc43a95d
-$(PKG)_SITE:=https://www.nano-editor.org/dist/v5
+$(PKG)_SOURCE_SHA256:=3c22971432503c0f84e1c0fbe8a04d35acc131034f8a03fdfdbca77a99208e81
+$(PKG)_SITE:=https://www.nano-editor.org/dist/v6
 ### WEBSITE:=https://www.nano-editor.org/
 ### MANPAGE:=https://www.nano-editor.org/docs.php
-### CHANGES:=https://www.nano-editor.org/dist/v5/NEWS
+### CHANGES:=https://www.nano-editor.org/dist/v6/NEWS
 ### CVSREPO:=https://git.savannah.gnu.org/cgit/nano.git/
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/nano
