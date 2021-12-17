@@ -72,6 +72,7 @@ Latest changes
    * libgcrypt 1.9.4
    * libgpg-error 1.43
    * lighttpd 1.4.63
+   * mbed TLS 2.7.19/2.28.0
    * Nano 6.0
    * OpenSSH 8.8p1
    * OpenSSL 0.9.8zh/1.0.2u/1.1.1m/3.0.1

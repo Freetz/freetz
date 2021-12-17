@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, $(if $(FREETZ_AVM_GCC_4_MAX),2.7.19,2.27.0))
+$(call PKG_INIT_LIB, $(if $(FREETZ_AVM_GCC_4_MAX),2.7.19,2.28.0))
 $(PKG)_SOURCE:=mbedtls-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_SHA1_ABANDON:=fbeffb7cb5a2e8cb881024b2f99a794a704f37ae
-$(PKG)_SOURCE_SHA1_CURRENT:=035843f9d4c9ce06bd10d55d8c31a328bfb8ef5d
+$(PKG)_SOURCE_SHA1_CURRENT:=a15013a8f32953aa8c429f911271b8c14d0375cf
 $(PKG)_SOURCE_SHA1:=$(MBEDTLS_SOURCE_SHA1_$(if $(FREETZ_AVM_GCC_4_MAX),ABANDON,CURRENT))
 $(PKG)_SITE:=https://github.com/ARMmbed/mbedtls/archive,https://tls.mbed.org/download
 
