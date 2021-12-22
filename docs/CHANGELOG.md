@@ -82,7 +82,7 @@ Latest changes
    * pcre 8.45
    * PCSC-lite (pcscd) 1.9.4
    * socat 1.7.4.2
-   * SQLite 3.36.0
+   * SQLite 3.37.0
    * strace 4.9/5.0/5.15
    * Stunnel 5.60
    * tinc 1.0.36/1.1pre18
