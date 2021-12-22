@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 0.31.2)
-$(PKG)_LIB_VERSION:=27.4.2
+$(call PKG_INIT_LIB, 0.32.1)
+$(PKG)_LIB_VERSION:=27.5.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=c871268f0ba365b71f1ec1bf068d6ab3
+$(PKG)_SOURCE_SHA256:=05c54bc115030c89e463a4fb28d3a3f8215879528ba5ca70d676d3d21bf3af52
 $(PKG)_SITE:=https://notroj.github.io/neon,http://www.webdav.org/neon
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libneon.so.$($(PKG)_LIB_VERSION)
