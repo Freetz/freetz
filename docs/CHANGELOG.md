@@ -55,6 +55,7 @@ Latest changes
  - BusyBox package:
    * Version 1.33.2 removed
    * Version 1.34.1 updated
+   * Version 1.35.0 added
    
  - Updated packages and libs:
    * ACME.sh 3.0.1 (letsencrypt)
