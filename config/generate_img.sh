@@ -879,13 +879,13 @@ determine_() {
 
 
 	#ENDIAN
-	X="$(readelf -h "$unpacked/bin/busybox" | grep -E 'Data:' | sed 's/.*complement, big endian/BE/;s/.*complement, little endian/LE/')"
+	X="$(readelf -h "$unpacked/bin/busybox" 2>/dev/null | grep -E 'Data:' | sed 's/.*complement, big endian/BE/;s/.*complement, little endian/LE/')"
 	[ -z "$X" -o -n "$(echo $X | sed 's/^BE$//;s/^LE$//')" ] && echo "ERROR-16" 1>&2 && X=ERROR
 	[ $DOSHOW -ge 1 ] && outp "endian" "$X"
 	in_b "FREETZ_AVM_PROP_ARCH_$X"
 
 	#ARCH
-	X="$(readelf -h "$unpacked/bin/busybox" | grep -E 'Machine:' | sed 's/ *Machine: *//;s/MIPS R3000/MIPS/;s/Intel 80386/X86/')"
+	X="$(readelf -h "$unpacked/bin/busybox" 2>/dev/null | grep -E 'Machine:' | sed 's/ *Machine: *//;s/MIPS R3000/MIPS/;s/Intel 80386/X86/')"
 	[ -z "$X" -o -n "$(echo $X | sed 's/^MIPS$//;s/^X86$//;s/^ARM$//g')" ] && echo "ERROR-17" 1>&2 && X=ERROR
 	[ $DOSHOW -ge 1 ] && outp "arch" "$X"
 	in_b "FREETZ_AVM_PROP_ARCH_$X"
