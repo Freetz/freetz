@@ -379,7 +379,7 @@ Index:
   * **[microperl 5.10.1 (binary only)](microperl.md)<a id='microperl'></a>**<br>
     Perl without operating-specific functions such as readdir.
 
-  * **<u>minicom 2.5 (binary only)</u><a id='minicom'></a>**<br>
+  * **[minicom 2.8 (binary only)](minicom.md)<a id='minicom'></a>**<br>
     Minicom is a menu driven communications program. It emulates ANSI and VT102 terminals. It has a dialing directory and auto zmodem download. NOTE: Minicom will expect its configurations in "/var/tmp/flash/minicom/" which has to be created before the first run of the binary by "mkdir -p  /var/tmp/flash/minicom/". To save this and after any change of minicom's configurations you will have to write it to flash with "modsave".
 
   * **[minidlna 1.3.0](minidlna.md)<a id='minidlna'></a>**<br>

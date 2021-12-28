@@ -1,7 +1,11 @@
-$(call PKG_INIT_BIN,2.5)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=a5117d4d21e2c9e825edb586ee2fe8d2
-$(PKG)_SITE:=http://alioth.debian.org/frs/download.php/3487
+$(call PKG_INIT_BIN,1fb24b4f)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE_SHA256:=X
+$(PKG)_SITE:=git@https://salsa.debian.org/minicom-team/minicom.git
+### WEBSITE:=https://salsa.debian.org/minicom-team/minicom
+### MANPAGE:=https://linux.die.net/man/1/minicom
+### CHANGES:=https://salsa.debian.org/minicom-team/minicom/-/releases
+### CVSREPO:=https://salsa.debian.org/minicom-team/minicom/-/commits/master/
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/minicom
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/minicom
@@ -41,3 +45,4 @@ $(pkg)-uninstall:
 	$(RM) $(MINICOM_TARGET_BINARY)
 
 $(PKG_FINISH)
+

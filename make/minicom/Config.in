@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_MINICOM
-	bool "minicom 2.5 (binary only)"
+	bool "minicom 2.8 (binary only)"
 	select FREETZ_LIB_libncurses
 	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_0_9_28
 	default n
@@ -16,94 +16,97 @@ config FREETZ_PACKAGE_MINICOM
 		have to write it to flash with "modsave".
 
 
-choice
-	prompt "Default port"
-	default FREETZ_PACKAGE_MINICOM_PORT_S0
-	depends on FREETZ_PACKAGE_MINICOM
+if FREETZ_PACKAGE_MINICOM
 
-config FREETZ_PACKAGE_MINICOM_PORT_S0
-	bool "/dev/ttyS0"
-	help
-		Use internal serial port (/dev/ttyS0) as default port
+	choice
+		prompt "Default port"
+		default FREETZ_PACKAGE_MINICOM_PORT_S0
 
-config FREETZ_PACKAGE_MINICOM_PORT_S1
-	bool "/dev/ttyS1"
-	help
-		Use internal serial port (/dev/ttyS0) as default port
+		config FREETZ_PACKAGE_MINICOM_PORT_S0
+			bool "/dev/ttyS0"
+			help
+				Use internal serial port /dev/ttyS0 as default port
 
-config FREETZ_PACKAGE_MINICOM_PORT_USB0
-	bool "/dev/ttyUSB0"
-	help
-		Use first USB serial port (/dev/ttyUSB0) as default port
+		config FREETZ_PACKAGE_MINICOM_PORT_S1
+			bool "/dev/ttyS1"
+			help
+				Use internal serial port /dev/ttyS0 as default port
 
-config FREETZ_PACKAGE_MINICOM_PORT_USB1
-	bool "/dev/ttyUSB1"
-	help
-		Use second USB serial port (/dev/ttyUSB1) as default port
+		config FREETZ_PACKAGE_MINICOM_PORT_USB0
+			bool "/dev/ttyUSB0"
+			help
+				Use 1st USB serial port /dev/ttyUSB0 as default port
 
-config FREETZ_PACKAGE_MINICOM_PORT_USB2
-	bool "/dev/ttyUSB2"
-	help
-		Use third USB serial port (/dev/ttyUSB2) as default port
+		config FREETZ_PACKAGE_MINICOM_PORT_USB1
+			bool "/dev/ttyUSB1"
+			help
+				Use 2nd USB serial port /dev/ttyUSB1 as default port
 
-endchoice
+		config FREETZ_PACKAGE_MINICOM_PORT_USB2
+			bool "/dev/ttyUSB2"
+			help
+				Use 3rd USB serial port /dev/ttyUSB2 as default port
 
-
-choice
-	prompt "Default baud"
-	default FREETZ_PACKAGE_MINICOM_BAUD_115200
-	depends on FREETZ_PACKAGE_MINICOM
-
-config FREETZ_PACKAGE_MINICOM_BAUD_300
-	bool "300"
-
-config FREETZ_PACKAGE_MINICOM_BAUD_1200
-	bool "1200"
-
-config FREETZ_PACKAGE_MINICOM_BAUD_2400
-	bool "2400"
-
-config FREETZ_PACKAGE_MINICOM_BAUD_4800
-	bool "4800"
-
-config FREETZ_PACKAGE_MINICOM_BAUD_9600
-	bool "9600"
-
-config FREETZ_PACKAGE_MINICOM_BAUD_19200
-	bool "19200"
-
-config FREETZ_PACKAGE_MINICOM_BAUD_38400
-	bool "38400"
-
-config FREETZ_PACKAGE_MINICOM_BAUD_57600
-	bool "57600"
-
-config FREETZ_PACKAGE_MINICOM_BAUD_115200
-	bool "115200"
-
-config FREETZ_PACKAGE_MINICOM_BAUD_230400
-	bool "230400"
-
-endchoice
+	endchoice
 
 
-config FREETZ_PACKAGE_MINICOM_BAUD
-	int
-	default 300		if FREETZ_PACKAGE_MINICOM_BAUD_300
-	default 1200	if FREETZ_PACKAGE_MINICOM_BAUD_1200
-	default 2400	if FREETZ_PACKAGE_MINICOM_BAUD_2400
-	default 4800	if FREETZ_PACKAGE_MINICOM_BAUD_4800
-	default 9600	if FREETZ_PACKAGE_MINICOM_BAUD_9600
-	default 19200	if FREETZ_PACKAGE_MINICOM_BAUD_19200
-	default 38400	if FREETZ_PACKAGE_MINICOM_BAUD_38400
-	default 57600	if FREETZ_PACKAGE_MINICOM_BAUD_57600
-	default 115200	if FREETZ_PACKAGE_MINICOM_BAUD_115200
-	default 230400	if FREETZ_PACKAGE_MINICOM_BAUD_230400
+	choice
+		prompt "Default baud"
+		default FREETZ_PACKAGE_MINICOM_BAUD_115200
 
-config FREETZ_PACKAGE_MINICOM_PORT
-	string
-	default "/dev/ttyS0"	if FREETZ_PACKAGE_MINICOM_PORT_S0
-	default "/dev/ttyS1"	if FREETZ_PACKAGE_MINICOM_PORT_S1
-	default "/dev/ttyUSB0"	if FREETZ_PACKAGE_MINICOM_PORT_USB0
-	default "/dev/ttyUSB1"	if FREETZ_PACKAGE_MINICOM_PORT_USB1
-	default "/dev/ttyUSB2"	if FREETZ_PACKAGE_MINICOM_PORT_USB2
+		config FREETZ_PACKAGE_MINICOM_BAUD_300
+			bool "300"
+
+		config FREETZ_PACKAGE_MINICOM_BAUD_1200
+			bool "1200"
+
+		config FREETZ_PACKAGE_MINICOM_BAUD_2400
+			bool "2400"
+
+		config FREETZ_PACKAGE_MINICOM_BAUD_4800
+			bool "4800"
+
+		config FREETZ_PACKAGE_MINICOM_BAUD_9600
+			bool "9600"
+
+		config FREETZ_PACKAGE_MINICOM_BAUD_19200
+			bool "19200"
+
+		config FREETZ_PACKAGE_MINICOM_BAUD_38400
+			bool "38400"
+
+		config FREETZ_PACKAGE_MINICOM_BAUD_57600
+			bool "57600"
+
+		config FREETZ_PACKAGE_MINICOM_BAUD_115200
+			bool "115200"
+
+		config FREETZ_PACKAGE_MINICOM_BAUD_230400
+			bool "230400"
+
+	endchoice
+
+
+	config FREETZ_PACKAGE_MINICOM_BAUD
+		int
+		default 300	if FREETZ_PACKAGE_MINICOM_BAUD_300
+		default 1200	if FREETZ_PACKAGE_MINICOM_BAUD_1200
+		default 2400	if FREETZ_PACKAGE_MINICOM_BAUD_2400
+		default 4800	if FREETZ_PACKAGE_MINICOM_BAUD_4800
+		default 9600	if FREETZ_PACKAGE_MINICOM_BAUD_9600
+		default 19200	if FREETZ_PACKAGE_MINICOM_BAUD_19200
+		default 38400	if FREETZ_PACKAGE_MINICOM_BAUD_38400
+		default 57600	if FREETZ_PACKAGE_MINICOM_BAUD_57600
+		default 115200	if FREETZ_PACKAGE_MINICOM_BAUD_115200
+		default 230400	if FREETZ_PACKAGE_MINICOM_BAUD_230400
+
+	config FREETZ_PACKAGE_MINICOM_PORT
+		string
+		default "/dev/ttyS0"	if FREETZ_PACKAGE_MINICOM_PORT_S0
+		default "/dev/ttyS1"	if FREETZ_PACKAGE_MINICOM_PORT_S1
+		default "/dev/ttyUSB0"	if FREETZ_PACKAGE_MINICOM_PORT_USB0
+		default "/dev/ttyUSB1"	if FREETZ_PACKAGE_MINICOM_PORT_USB1
+		default "/dev/ttyUSB2"	if FREETZ_PACKAGE_MINICOM_PORT_USB2
+
+endif # FREETZ_PACKAGE_MINICOM
+
