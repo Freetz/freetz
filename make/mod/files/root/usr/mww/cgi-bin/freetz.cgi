@@ -6,7 +6,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 cgi --id=freetz
 
-# (svn log --quiet | sed -rn 's/^r[^|]*.([^|]*).*/\1/p' ; echo -e 'hermann72pb\njohnbock\nM66B\nmagenbrot\nreiffert\nsf3978') | sort -u | sed 's/ //g' | grep -vE '^(root|administrator|fda77|oliver|sfritz)$'
+# (svn log --quiet | sed -rn 's/^r[^|]*.([^|]*).*/\1/p' ; echo -e 'hermann72pb\njohnbock\nM66B\nmagenbrot\nreiffert\nsf3978') | sort -u | sed 's/ //g' | grep -vE '^(root|administrator|fda77|oliver|derheimi|sfritz)$' 
 cgi_begin "$(lang de:"&Uuml;ber" en:"About")"
 cat << EOF | sed -r 's/(.+[^>])$/\1<br>/g'
 <center>
@@ -24,8 +24,8 @@ cinereous
 cm8
 Conan179
 cuma
-derheimi
 Dirk
+e6e7e8
 er13
 f-666
 feedzapper
@@ -42,6 +42,7 @@ hippie2000
 horle
 id1508
 idealist1508
+JanpieterSollie
 JasperMichalke
 JBBgameich
 johnbock
@@ -56,6 +57,7 @@ Maurits
 MaxMuster
 maz
 McNetic
+MichaelHeimpold
 mickey
 mike
 mrtnmtth
@@ -77,3 +79,4 @@ WileC
 </center>
 EOF
 cgi_end
+
