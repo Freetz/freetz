@@ -3,6 +3,10 @@ $(PKG)_LIB_VERSION:=4.7.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SOURCE_SHA256:=a067b688d1645183febc31309ec1f3cdce9213d02136b6a6de3d50f69c95a7d3
 $(PKG)_SITE:=https://curl.se/download,https://curl.haxx.se/download
+### WEBSITE:=https://curl.se/
+### MANPAGE:=https://curl.se/docs/manpage.html
+### CHANGES:=https://curl.se/changes.html
+### CVSREPO:=https://github.com/curl/curl
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/curl
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/curl
