@@ -93,6 +93,7 @@ Latest changes
    * Unbound 1.14.0
    * UnRAR 6.1.3
    * Wget GNU 1.21.2
+   * wireguard-linux-compat 1.0.20211208
    * wireguard-tools 1.0.20210914
 
  - Firmware updates:

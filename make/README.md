@@ -1038,7 +1038,7 @@ Index:
      - [Datendurchsatz](../docs/make/wireguard.md#datendurchsatz)
      - [Konfiguration für einen Wireguard-Server auf der Fritzbox mit einem PC erstellen](../docs/make/wireguard.md#konfiguration-für-einen-wireguard-server-auf-der-fritzbox-mit-einem-pc-erstellen)
 
-  * **[wireguard-linux-compat 1.0.20210606](../docs/make/wireguard-linux-compat.md)<a id='wireguard-linux-compat'></a>**<br>
+  * **[wireguard-linux-compat 1.0.20211208](../docs/make/wireguard-linux-compat.md)<a id='wireguard-linux-compat'></a>**<br>
     This package provides the kernel module required for Wireguard
 
   * **[WOL 0.7.1 (binary only)](../docs/make/wol.md)<a id='wol'></a>**<br>
