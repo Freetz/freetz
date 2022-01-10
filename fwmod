@@ -188,7 +188,7 @@ DEBUGFS="${TOOLS_DIR}/${DEBUGFS_TOOL}"
 FINDSQUASHFS="${TOOLS_DIR}/${FINDSQUASHFS_TOOL}"
 TICHKSUM="${TOOLS_DIR}/${TICHKSUM_TOOL}"
 MAKEDEVS="${TOOLS_DIR}/${MAKEDEVS_TOOL}"
-MAKEDEVS_FILE="${TOOLS_DIR}/device_table.txt"
+MAKEDEVS_FILE="${TOOLS_DIR}/device.table"
 TAR="${TOOLS_DIR}/${TAR_TOOL}"
 TAR_GNU="${TOOLS_DIR}/${TAR_GNU_TOOL}"
 MD5SUM="${TOOLS_DIR}/${MD5SUM_TOOL}"
@@ -1833,8 +1833,11 @@ if [ "$action_names" ]; then
 		error 1 "packing of var.tar failed"
 	fi
 
-	[ "$FREETZ_AVM_HAS_UDEV" == "y" ] || \
+	if [ "$FREETZ_AVM_HAS_UDEV" != "y" ]; then
+		[ -s "$MAKEDEVS_FILE" ] || error 1 "file $MAKEDEVS_FILE not found or empty"
 		$MAKEDEVS -d $MAKEDEVS_FILE $FILESYSTEM_MOD_DIR > $MOD_DIR/filesystem.log 2>&1
+		[ $? -ne 0 ] && cat $MOD_DIR/filesystem.log && error 1 "makedevs failed"
+	fi
 fi
 
 # -------------------------------------------
