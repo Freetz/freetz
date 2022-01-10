@@ -87,7 +87,7 @@ Latest changes
    * PCSC-lite (pcscd) 1.9.4
    * socat 1.7.4.2
    * SQLite 3.37.0
-   * strace 4.9/5.0/5.15
+   * strace 4.9/5.0/5.16
    * Stunnel 5.60
    * tinc 1.0.36/1.1pre18
    * Tor 0.4.6.8
