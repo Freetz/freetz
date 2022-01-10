@@ -444,7 +444,7 @@ Currently supported devices and firmwares
 * __Fritz!Powerline 1240E (UNTESTED)__
   - 150.06.92 rev47432 {ALL}
   - 150.07.01 rev63180 {ALL}
-  - 150.07.13 rev84270 {ALL} [MESH18 NL3]
+  - 150.07.14 rev93759 {ALL} [WU21 MESH18]
 * __Fritz!Powerline 1260E__
   - 157.07.01 rev63181 {ALL}
   - 157.07.12 rev70670 {ALL} [MESH18 NL2]
