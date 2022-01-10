@@ -97,7 +97,7 @@ Currently supported devices and firmwares
 
 * __Fritz!Box 4020__
   - 147.06.83 rev43440 {GER}
-  - 147.07.01 rev64348 {GER}
+  - 147.07.02 rev93867 {GER}
 * __Fritz!Box 4040__
   - 155.07.01 rev61489 {ALL}
   - 155.07.14 rev73181 {ALL} [MESH18 NL4]
