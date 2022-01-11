@@ -90,7 +90,7 @@ Latest changes
    * strace 4.9/5.0/5.16
    * Stunnel 5.60
    * tinc 1.0.36/1.1pre18
-   * Tor 0.4.6.8
+   * Tor 0.4.6.9
    * Unbound 1.14.0
    * UnRAR 6.1.3
    * Wget GNU 1.21.2
