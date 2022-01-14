@@ -47,6 +47,9 @@ Latest changes
    * ccache 4.5.1
    * precompiled host-tools 2021-12-30
 
+ - New packages and libs:
+   * libnfsidmap 0.27
+
  - Updated tools and hooks:
    * BusyBox 1.34.1
    * fakeroot 1.26-1.1
