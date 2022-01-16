@@ -72,7 +72,7 @@ Latest changes
    * cifs-utils 6.14
    * Curl 7.81.0
    * davfs2 1.5.2/1.6.1
-   * expat 2.4.2
+   * expat 2.4.3
    * git 2.34.1
    * HAProxy 2.5.0
    * libexif 0.6.24
