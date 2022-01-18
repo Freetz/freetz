@@ -142,6 +142,7 @@ Currently supported devices and firmwares
 
 * __Fritz!Box 6430 Cable__
   - 159.07.12 rev72224 {GER} [MESH18 NL2]
+  - 159.07.29 rev93977 {GER} [PSQ19P2NL4]
 * __Fritz!Box 6490 Cable__
   - 141.06.87 rev48327 {GER}
   - 141.07.02 rev65390 {GER}
