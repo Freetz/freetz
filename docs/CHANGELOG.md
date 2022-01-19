@@ -52,7 +52,7 @@ Latest changes
 
  - Updated tools and hooks:
    * BusyBox 1.34.1
-   * fakeroot 1.26-1.1
+   * fakeroot 1.27-1
    * kconfig 5.16
    * pseudo 1.9.0 oe-core 0cda3ba
 
