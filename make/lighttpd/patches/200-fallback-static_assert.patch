@@ -7,5 +7,5 @@
 -#  if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)    /* C11 */
 +#  if defined(__STDC_disabled_VERSION__) && (__STDC_VERSION__ >= 201112L)    /* C11 */
  #    include <assert.h>
- #    define XXH_STATIC_ASSERT_WITH_MESSAGE(c,m) do { static_assert((c),m); } while(0)
- #  elif defined(__cplusplus) && (__cplusplus >= 201103L)            /* C++11 */
+ #    ifndef static_assert /* uClibc does not define static_assert */
+ #      define static_assert _Static_assert

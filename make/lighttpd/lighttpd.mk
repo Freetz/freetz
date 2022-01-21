@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.4.63)
+$(call PKG_INIT_BIN, 1.4.64)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=2aef7f0102ebf54a1241a1c3ea8976892f8684bfb21697c9fffb8de0e2d6eab9
+$(PKG)_SOURCE_SHA256:=e1489d9fa7496fbf2e071c338b593b2300d38c23f1e5967e52c9ef482e1b0e26
 $(PKG)_SITE:=https://download.lighttpd.net/lighttpd/releases-1.4.x
 ### WEBSITE:=https://www.lighttpd.net/
 ### CHANGES:=https://www.lighttpd.net/download/
@@ -25,7 +25,6 @@ $(PKG)_MODULES_ALL := \
 	proxy \
 	redirect rewrite rrdtool \
 	scgi secdownload setenv simple_vhost sockproxy ssi staticfile status \
-	trigger_b4_dl \
 	uploadprogress userdir usertrack \
 	vhostdb vhostdb_dbi vhostdb_ldap vhostdb_mysql vhostdb_pgsql \
 	webdav wolfssl wstunnel
@@ -92,7 +91,6 @@ $(PKG)_CONFIGURE_OPTIONS += --without-brotli
 $(PKG)_CONFIGURE_OPTIONS += --without-bzip2
 $(PKG)_CONFIGURE_OPTIONS += --without-fam
 $(PKG)_CONFIGURE_OPTIONS += --without-gdbm
-$(PKG)_CONFIGURE_OPTIONS += --without-geoip
 $(PKG)_CONFIGURE_OPTIONS += --without-krb5
 $(PKG)_CONFIGURE_OPTIONS += --without-ldap
 $(PKG)_CONFIGURE_OPTIONS += --without-libev

@@ -78,7 +78,7 @@ Latest changes
    * libexif 0.6.24
    * libgcrypt 1.9.4
    * libgpg-error 1.43
-   * lighttpd 1.4.63
+   * lighttpd 1.4.64
    * libneon 0.32.1
    * mbed TLS 2.7.19/2.28.0
    * minicom 2.8

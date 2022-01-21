@@ -46,7 +46,7 @@
      return 0;
  }
  
-@@ -1087,9 +1095,10 @@
+@@ -1088,9 +1096,10 @@
      /* first set certificate!
       * setting private key checks whether certificate matches it */
      if (1 != SSL_use_certificate(ssl, pc->ssl_pemfile_x509)) {
@@ -58,7 +58,7 @@
          return 0;
      }
  
-@@ -1112,10 +1121,11 @@
+@@ -1113,10 +1122,11 @@
                                          SSL_BUILD_CHAIN_FLAG_NO_ROOT
                                        | SSL_BUILD_CHAIN_FLAG_IGNORE_ERROR
                                        | SSL_BUILD_CHAIN_FLAG_CLEAR_ERROR)) {
@@ -71,7 +71,7 @@
              return 0;
          }
          else { /* copy chain for future reuse */
-@@ -1129,9 +1139,10 @@
+@@ -1130,9 +1140,10 @@
    #endif
  
      if (1 != SSL_use_PrivateKey(ssl, pc->ssl_pemfile_pkey)) {
@@ -83,7 +83,7 @@
          return 0;
      }
  
-@@ -1141,9 +1152,10 @@
+@@ -1142,9 +1153,10 @@
      buffer *ocsp_resp = pc->ssl_stapling;
      if (NULL != ocsp_resp
          && !SSL_set_ocsp_response(ssl, (uint8_t *)BUF_PTR_LEN(ocsp_resp))) {
@@ -95,7 +95,7 @@
          return 0;
      }
    #endif
-@@ -1386,9 +1398,10 @@
+@@ -1387,9 +1399,10 @@
      BIO_free(in);
      free(data);
      if (NULL == x) {
@@ -107,7 +107,7 @@
          return NULL;
      }
  
-@@ -1664,9 +1677,10 @@
+@@ -1665,9 +1678,10 @@
      }
  
      if (!X509_check_private_key(ssl_pemfile_x509, ssl_pemfile_pkey)) {
@@ -119,7 +119,7 @@
            pemfile->ptr, privkey->ptr);
          EVP_PKEY_free(ssl_pemfile_pkey);
          X509_free(ssl_pemfile_x509);
-@@ -1770,10 +1784,11 @@
+@@ -1771,10 +1785,11 @@
  
        #if 0 /* redundant with below? */
          if (!X509_check_private_key(ssl_pemfile_x509, ssl_pemfile_pkey)) {
@@ -132,7 +132,7 @@
              break;
          }
        #endif
-@@ -1781,9 +1796,10 @@
+@@ -1782,9 +1797,10 @@
          /* first set certificate!
           * setting private key checks whether certificate matches it */
          if (1 != SSL_use_certificate(ssl, ssl_pemfile_x509)) {
@@ -144,7 +144,7 @@
              break;
          }
  
-@@ -1793,9 +1809,10 @@
+@@ -1794,9 +1810,10 @@
          }
  
          if (1 != SSL_use_PrivateKey(ssl, ssl_pemfile_pkey)) {
@@ -156,7 +156,7 @@
              break;
          }
  
-@@ -1947,18 +1964,20 @@
+@@ -1948,18 +1965,20 @@
          }
          ERR_clear_error();
          if (SSL_CONF_cmd(cctx, ds->key.ptr, ds->value.ptr) <= 0) {
@@ -179,7 +179,7 @@
          rc = -1;
      }
  
-@@ -2133,8 +2152,9 @@
+@@ -2134,8 +2153,9 @@
          s->ssl_ctx = SSL_CTX_new(SSLv23_server_method());
        #endif
          if (NULL == s->ssl_ctx) {
@@ -190,7 +190,7 @@
              return -1;
          }
  
-@@ -2147,9 +2167,10 @@
+@@ -2148,9 +2168,10 @@
           * required for client cert verification to work with sessions */
          if (0 == SSL_CTX_set_session_id_context(
                     s->ssl_ctx,(const unsigned char*)CONST_STR_LEN("lighttpd"))){
@@ -202,7 +202,7 @@
              return -1;
          }
  
-@@ -2181,8 +2202,9 @@
+@@ -2182,8 +2203,9 @@
              if ((SSL_OP_NO_SSLv2
                   & SSL_CTX_set_options(s->ssl_ctx, SSL_OP_NO_SSLv2))
                  != SSL_OP_NO_SSLv2) {
@@ -213,7 +213,7 @@
                  return -1;
              }
          }
-@@ -2192,8 +2214,9 @@
+@@ -2193,8 +2215,9 @@
              if ((SSL_OP_NO_SSLv3
                   & SSL_CTX_set_options(s->ssl_ctx, SSL_OP_NO_SSLv3))
                  != SSL_OP_NO_SSLv3) {
@@ -224,7 +224,7 @@
                  return -1;
              }
          }
-@@ -2201,8 +2224,9 @@
+@@ -2202,8 +2225,9 @@
          if (s->ssl_cipher_list) {
              /* Disable support for low encryption ciphers */
              if (SSL_CTX_set_cipher_list(s->ssl_ctx,s->ssl_cipher_list->ptr)!=1){
@@ -235,7 +235,7 @@
                  return -1;
              }
  
-@@ -2366,23 +2390,26 @@
+@@ -2367,23 +2391,26 @@
  
          if (1 != SSL_CTX_use_certificate_chain_file(s->ssl_ctx,
                                                      s->pc->ssl_pemfile->ptr)) {
@@ -265,7 +265,7 @@
                s->pc->ssl_pemfile->ptr, s->pc->ssl_privkey->ptr);
              return -1;
          }
-@@ -2811,8 +2838,9 @@
+@@ -2812,8 +2839,9 @@
                      ca_store = ((plugin_cacerts *)cpv->v.v)->certs;
                  }
                  else {
@@ -276,7 +276,7 @@
                        ssl_ca_file->ptr);
                      return HANDLER_ERROR;
                  }
-@@ -2829,8 +2857,9 @@
+@@ -2830,8 +2858,9 @@
                      cpv->vtype = T_CONFIG_LOCAL;
                  }
                  else {
@@ -287,7 +287,7 @@
                        ssl_ca_dn_file->ptr);
                      return HANDLER_ERROR;
                  }
-@@ -3055,8 +3084,9 @@
+@@ -3056,8 +3085,9 @@
                  /* perhaps we have error waiting in our error-queue */
                  if (0 != (err = ERR_get_error())) {
                      do {
@@ -298,7 +298,7 @@
                      } while((err = ERR_get_error()));
                  } else if (wr == -1) {
                      /* no, but we have errno */
-@@ -3084,8 +3114,9 @@
+@@ -3085,8 +3115,9 @@
                  __attribute_fallthrough__
              default:
                  while((err = ERR_get_error())) {
@@ -309,7 +309,7 @@
                  }
                  break;
              }
-@@ -3190,8 +3221,9 @@
+@@ -3192,8 +3223,9 @@
               */
              while((ssl_err = ERR_get_error())) {
                  /* get all errors from the error-queue */
@@ -320,18 +320,18 @@
              }
  
              switch(oerrno) {
-@@ -3244,8 +3276,9 @@
+@@ -3246,8 +3278,9 @@
                      break;
                  }
                  /* get all errors from the error-queue */
 +                char ssl_error_string_buf[256];
                  log_error(hctx->errh, __FILE__, __LINE__,
--                  "SSL: %d %s", rc, ERR_error_string(ssl_err, NULL));
-+                  "SSL: %d %s", rc, lighttpd_ERR_error_string_n(ssl_err, ssl_error_string_buf, sizeof(ssl_error_string_buf)));
+-                  "SSL: %d %s (%s)", rc, ERR_error_string(ssl_err, NULL),
++                  "SSL: %d %s (%s)", rc, lighttpd_ERR_error_string_n(ssl_err, ssl_error_string_buf, sizeof(ssl_error_string_buf)),
+                   con->dst_addr_buf.ptr);
              }
              break;
-         }
-@@ -3289,8 +3322,9 @@
+@@ -3292,8 +3325,9 @@
          return HANDLER_GO_ON;
      }
      else {
@@ -342,7 +342,7 @@
          return HANDLER_ERROR;
      }
  }
-@@ -3402,8 +3436,9 @@
+@@ -3405,8 +3439,9 @@
                  errh = hctx->r->conf.errh;
                  if (0 != (err = ERR_get_error())) {
                      do {
@@ -353,7 +353,7 @@
                      } while((err = ERR_get_error()));
                  } else if (errno != 0) {
                      /*ssl bug (see lighttpd ticket #2213): sometimes errno==0*/
-@@ -3422,8 +3457,9 @@
+@@ -3425,8 +3460,9 @@
              default:
                  errh = hctx->r->conf.errh;
                  while((err = ERR_get_error())) {
@@ -364,7 +364,7 @@
                  }
  
                  break;
-@@ -3845,8 +3881,9 @@
+@@ -3848,8 +3884,9 @@
      if (ciphersuites && !buffer_is_blank(ciphersuites)) {
        #if defined(LIBRESSL_VERSION_NUMBER) && defined(LIBRESSL_HAS_TLS1_3)
          if (SSL_CTX_set_ciphersuites(s->ssl_ctx, ciphersuites->ptr) != 1) {
@@ -375,7 +375,7 @@
              rc = -1;
          }
        #endif
-@@ -3857,8 +3894,9 @@
+@@ -3860,8 +3897,9 @@
          buffer_append_string_len(cipherstring,
                                   CONST_STR_LEN(":!aNULL:!eNULL:!EXP"));
          if (SSL_CTX_set_cipher_list(s->ssl_ctx, cipherstring->ptr) != 1) {

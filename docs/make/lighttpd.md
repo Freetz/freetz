@@ -1,4 +1,4 @@
-# lighttpd 1.4.63
+# lighttpd 1.4.64
  - Homepage: [https://www.lighttpd.net/](https://www.lighttpd.net/)
  - Changelog: [https://www.lighttpd.net/download/](https://www.lighttpd.net/download/)
  - Repository: [https://git.lighttpd.net/lighttpd/lighttpd1.4.git](https://git.lighttpd.net/lighttpd/lighttpd1.4.git)
