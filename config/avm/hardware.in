@@ -1,4 +1,5 @@
 # system type (the same variable name as in /proc/cpuinfo)
+# and also: readelf -A usr/bin/ctlmgr
 
 config FREETZ_SYSTEM_TYPE_AR7_SANGAM
 	bool
@@ -173,6 +174,7 @@ config FREETZ_SYSTEM_TYPE_QCAARMv8
 	depends on \
 		FREETZ_TYPE_1209 || \
 		FREETZ_TYPE_4060 || \
+		FREETZ_TYPE_7510 || \
 		FREETZ_TYPE_6000
 
 config FREETZ_SYSTEM_TYPE_UR8
