@@ -75,6 +75,7 @@ Latest changes
    * expat 2.4.3
    * git 2.34.1
    * HAProxy 2.5.0
+   * iksemel 3.1.1
    * libexif 0.6.24
    * libgcrypt 1.9.4
    * libgpg-error 1.43

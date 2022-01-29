@@ -2,7 +2,7 @@ $(call PKG_INIT_BIN, 3.1.1)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=v1.4.2.tar.gz
 $(PKG)_SOURCE_MD5:=04353ca58a5cc745fd1d4fc255a73f8d
-$(PKG)_SITE:=https://github.com/timothytylee/iksemel-1.4/archive/refs/tags/
+$(PKG)_SITE:=https://github.com/timothytylee/iksemel-1.4/archive/refs/tags
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/lib$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/lib$(pkg).so.$($(PKG)_LIB_VERSION)
