@@ -2,6 +2,7 @@
  - Homepage: [https://matt.ucc.asn.au/dropbear/dropbear.html](https://matt.ucc.asn.au/dropbear/dropbear.html)
  - Changelog: [https://matt.ucc.asn.au/dropbear/CHANGES](https://matt.ucc.asn.au/dropbear/CHANGES)
  - Repository: [https://hg.ucc.asn.au/dropbear/file/tip](https://hg.ucc.asn.au/dropbear/file/tip)
+ - Package: [master/make/dropbear/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/dropbear/)
 
 > "Dropbear is a relatively small SSH 2 server and client. [... ...]
 > Dropbear is particularly useful for "embedded"-type Linux (or other

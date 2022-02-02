@@ -1,4 +1,5 @@
 # Lynx 2.8.9 web browser
+ - Package: [master/make/lynx/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/lynx/)
 
 **[Lynx](http://lynx.isc.org/)** ist ein
 Web-Browser, der ohne grafische Oberfläche daherkommt - also von der

@@ -2,6 +2,7 @@
  - Homepage: [https://www.lighttpd.net/](https://www.lighttpd.net/)
  - Changelog: [https://www.lighttpd.net/download/](https://www.lighttpd.net/download/)
  - Repository: [https://git.lighttpd.net/lighttpd/lighttpd1.4.git](https://git.lighttpd.net/lighttpd/lighttpd1.4.git)
+ - Package: [master/make/lighttpd/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/lighttpd/)
 
 Mit diesem Paket ist es möglich, den lighttpd Webserver zu erstellen.
 

@@ -1,4 +1,5 @@
 # hp-utils 0.3.2
+ - Package: [master/make/hp-utils/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/hp-utils/)
 
 [hp-utils](http://www.michaeldenk.de/projects/hp-utils/)
 ist eine Portierung einiger Tools von

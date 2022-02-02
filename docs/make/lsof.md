@@ -1,4 +1,5 @@
 # lsof 4.89
+ - Package: [master/make/lsof/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/lsof/)
 
 Mit `lsof` lässt sich feststellen, welche Dateien wo und von wem gerade
 geöffnet sind. Dies kann sehr hilfreich sein, wenn man z.B. ein

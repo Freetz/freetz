@@ -1,4 +1,5 @@
 # Vpnc 0.5.3
+ - Package: [master/make/vpnc/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/vpnc/)
 
 Der **[VPNC-Client](http://www.vpnc.org/)** ist
 eine quelloffene Alternative zum Cisco-VPN-Client und dient zum

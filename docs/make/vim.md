@@ -1,4 +1,5 @@
 # Vim 8.2.0769 (binary only)
+ - Package: [master/make/vim/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/vim/)
 
 **[vim](http://www.vim.org/)** (**vi i**mproved)
 ist eine Variante des bekannten Unix-Editors *vi*. Wie sein "Parent",

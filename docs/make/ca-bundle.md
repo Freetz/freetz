@@ -1,5 +1,6 @@
 # CA-bundle 2022-02-01
  - Homepage: [https://www.curl.se/ca](https://www.curl.se/ca)
+ - Package: [master/make/ca-bundle/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/ca-bundle/)
 
 Das CA-bundle ist ein Paket von root CA (Certificate Authority) Zertifikaten.
 <br>

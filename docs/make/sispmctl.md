@@ -1,4 +1,5 @@
 # sispmctl 3.1
+ - Package: [master/make/sispmctl/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/sispmctl/)
 
 **[sispmctl](http://sispmctl.sourceforge.net/)**
 ermöglicht das Schalten von 230V-Steckdosen über den USB-Anschluss der

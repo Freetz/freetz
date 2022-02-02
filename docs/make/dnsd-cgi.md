@@ -1,4 +1,5 @@
 # dnsd-cgi
+ - Package: [master/make/dnsd-cgi/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/dnsd-cgi/)
 
 Schlanker DNS-Server für statische Namensauflösung (BusyBox Applet)
 

@@ -1,4 +1,5 @@
 # NFSD CGI 0.1
+ - Package: [master/make/nfsd-cgi/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/nfsd-cgi/)
 
 NFSD_CGI is the web-interface for the NFSD (Server) on Freetz.
 

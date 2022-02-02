@@ -1,4 +1,5 @@
 # trickle 1.07 (binary only)
+ - Package: [master/make/trickle/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/trickle/)
 
 **trickle** (Tröpfeln) ist ein leichtgewichtiger bandwidth shaper, der
 mit trickled oder im stand alone mode verwendet werden kann. Mit trickle

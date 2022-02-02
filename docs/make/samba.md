@@ -1,4 +1,5 @@
 # Samba 3.0.37/3.6.25
+ - Package: [master/make/samba/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/samba/)
 
 [![Samba Webinterface](../screenshots/204_md.png)](../screenshots/204.png)
 

@@ -1,4 +1,5 @@
 # FUSE 2.9.7 (binary only)
+ - Package: [master/make/fuse/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/fuse/)
 
 **[FUSE](http://de.wikipedia.org/wiki/Filesystem_in_Userspace)**
 ([Filesystem](http://de.wikipedia.org/wiki/Dateisystem)

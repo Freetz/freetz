@@ -1,4 +1,5 @@
 # Openntpd 3.9p1
+ - Package: [master/make/openntpd/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/openntpd/)
 
 *"OpenNTPD ist eine FREIE und einfach zu benutzende Implementierung des
 Network Time Protocol. OpenNTPD kann die lokale Uhr mit NTP-Servern

@@ -1,4 +1,5 @@
 # authorized_keys: Frontend for SSH keys
+ - Package: [master/make/authorized-keys/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/authorized-keys/)
 
 Mit dem authorized_keys Package können diese für SSH benötigte Dateien
 bearbeitet werden. Es ist im Webinterface unter "SSH" zu finden

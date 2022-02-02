@@ -1,4 +1,5 @@
 # getdns 1.5.2
+ - Package: [master/make/getdns/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/getdns/)
 
 Mit Getdns  kann die Namensauflösung via DNS-over-TLS erfolgen.<br>
 <br>

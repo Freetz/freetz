@@ -1,4 +1,5 @@
 # ser2net 2.7
+ - Package: [master/make/ser2net/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/ser2net/)
 
 Homepage:
 [http://ser2net.sourceforge.net/](http://ser2net.sourceforge.net/)

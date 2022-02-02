@@ -1,4 +1,5 @@
 # Streamripper 1.64.6
+ - Package: [master/make/streamripper/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/streamripper/)
 
 **[Streamripper](http://streamripper.sourceforge.net/)**
 ist eine freie, plattformunabhängige Software zum

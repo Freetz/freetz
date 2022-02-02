@@ -1,4 +1,5 @@
 # ncftp 3.2.6 (binaries only)
+ - Package: [master/make/ncftp/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/ncftp/)
 
 *"NcFTP Client (also known as just NcFTP) is a set of FREE application
 programs implementing the File Transfer Protocol (FTP)."*

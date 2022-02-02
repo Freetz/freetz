@@ -1,4 +1,5 @@
 # Wget GNU 1.21.2 (binary only)
+ - Package: [master/make/wget/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/wget/)
 
 GNU **[Wget](http://www.gnu.org/software/wget/)**
 ist ein freies Kommandozeilen-Programm zum Herunterladen von Ressourcen
