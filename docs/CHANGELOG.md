@@ -81,6 +81,7 @@ Latest changes
    * libgpg-error 1.43
    * lighttpd 1.4.64
    * libneon 0.32.1
+   * libusb1 1.0.23/1.0.25
    * mbed TLS 2.7.19/2.28.0
    * minicom 2.8
    * Nano 6.0
