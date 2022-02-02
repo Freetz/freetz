@@ -67,7 +67,7 @@ Latest changes
    * AutoFS 5.0.5/5.1.8
    * BIND 9.11.36
    * Bip 0.9.2
-   * CA-bundle 2021-10-26
+   * CA-bundle 2022-02-01
    * CCID driver 1.4.36
    * cifs-utils 6.14
    * Curl 7.81.0
