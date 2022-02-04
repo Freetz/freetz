@@ -31,7 +31,7 @@ Index:
 
 ### A
 
-  * **[ACME.sh 3.0.1 (letsencrypt)](../docs/make/acme.md)<a id='acme'></a>**<br>
+  * **[ACME.sh 3.0.2 (letsencrypt)](../docs/make/acme.md)<a id='acme'></a>**<br>
     A pure Unix shell script implementing ACME client protocol.
 
   * **[apache2: Apache HTTP Server 2.4.52 (binary only)](../docs/make/apache2.md)<a id='apache2'></a>**<br>

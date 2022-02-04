@@ -62,7 +62,7 @@ Latest changes
    * Version 1.35.0 added
    
  - Updated packages and libs:
-   * ACME.sh 3.0.1 (letsencrypt)
+   * ACME.sh 3.0.2 (letsencrypt)
    * Apache 2.4.52
    * AutoFS 5.0.5/5.1.8
    * BIND 9.11.36
