@@ -13,6 +13,9 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libusb-$($(PKG)_SHORT_VERSION).so.$($
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_KERNEL_VERSION_2_6_28_MIN
 
+# workaround for error in version 1.0.25: https://github.com/Freetz-NG/freetz-ng/issues/456
+$(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i 's~-Werror=uninitialized~~' ./configure;
+
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --disable-examples-build
