@@ -178,7 +178,7 @@ $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a: $(UCLIBC_DIR)/lib/libc.a
 	# Copy some files to make mklibs happy
 	# Note: uclibc 1.0.18+ has a single libc and does not build libpthread etc. anymore
 	# Ref.: https://github.com/wbx-github/uclibc-ng/commit/29ff9055c80efe77a7130767a9fcb3ab8c67e8ce
-ifeq  ($(strip $(UCLIBC_VERSION)),$(filter $(strip $(UCLIBC_VERSION)),0.9.29 0.9.32 0.9.33 1.0.14 1.0.15))
+ifeq ($(strip $(UCLIBC_VERSION)),$(filter $(strip $(UCLIBC_VERSION)),0.9.29 0.9.32 0.9.33 1.0.14))
 	for f in libc_pic.a libdl_pic.a libpthread_pic.a; do \
 		$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/$$f; \
 	done; \
