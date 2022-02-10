@@ -17,7 +17,7 @@ $(TOOLS_HOST_DIR)/.unpacked: $(DL_DIR)/$(TOOLS_HOST_SOURCE) | $(TOOLS_SOURCE_DIR
 	touch $@
 
 $(TOOLS_HOST_DIR)/.installed: $(TOOLS_HOST_DIR)/.unpacked
-	cp -a $(TOOLS_HOST_DIR)/tools $(FREETZ_BASE_DIR)/
+	cp -fa $(TOOLS_HOST_DIR)/tools $(FREETZ_BASE_DIR)/
 	touch $@
 
 tools-host-precompiled: $(TOOLS_HOST_DIR)/.installed
