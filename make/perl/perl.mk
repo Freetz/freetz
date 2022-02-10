@@ -479,7 +479,7 @@ endif
 ifeq ($(FREETZ_PACKAGE_SQLITE),y)
 $(PKG)_DEPENDS_ON += sqlite
 # following comand should be ecexute by build system automatically, but it does not ,therefore call it explicitely
-$(PKG)_CONFIGURE_PRE_CMDS += cat $(PERL_DBI_DIR)/Driver.xst | $(SED) 's/~DRIVER~/SQLite/g' > $(PERL_DBDSQLITE_DIR)/SQLite.xsi
+$(PKG)_CONFIGURE_PRE_CMDS += $(SED) 's/~DRIVER~/SQLite/g' $(PERL_DBI_DIR)/Driver.xst > $(PERL_DBDSQLITE_DIR)/SQLite.xsi;
 endif
 
 $(PKG)_CATEGORY:=Unstable
