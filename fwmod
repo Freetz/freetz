@@ -1781,7 +1781,7 @@ if [ "$action_names" ]; then
 		fi
 		#LANGUAGES
 		if [ "$FREETZ_IMAGE_NAME_LANGUAGES" == "y" ]; then
-			for x in $((sed -n 's/^language //p' $FILESYSTEM_DIR/etc/*.language && \
+			for x in $( (sed -n 's/^language //p' $FILESYSTEM_DIR/etc/*.language && \
 			  ls $FILESYSTEM_DIR/etc/htmltext_??.db 2>/dev/null | sed -rn 's/.*_(..)\.db/\1/p') | sort -u); do
 				[ "$(eval "echo \"\$FREETZ_REMOVE_LANGUAGE_$x\"")" != "y" ] && languages+="-$x"
 			done
