@@ -97,6 +97,7 @@ Latest changes
    * SQLite 3.37.0
    * strace 4.9/5.0/5.16
    * Stunnel 5.60
+   * Sundtek DVB driver 130210.134617/170310.204343/210803.071224
    * tinc 1.0.36/1.1pre18
    * Tor 0.4.6.9
    * Unbound 1.14.0
