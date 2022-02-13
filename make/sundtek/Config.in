@@ -36,8 +36,9 @@ if FREETZ_PACKAGE_SUNDTEK
 	config FREETZ_PACKAGE_SUNDTEK_ARCH
 		string
 		default "openwrtarm4"    if FREETZ_TARGET_ARCH_ARM
-		default "openwrtmipsr3"  if FREETZ_TARGET_ARCH_MIPS && FREETZ_TARGET_ARCH_BE &&  FREETZ_TARGET_UCLIBC_0_9_33
-		default "openwrtmipsr2"  if FREETZ_TARGET_ARCH_MIPS && FREETZ_TARGET_ARCH_BE && !FREETZ_TARGET_UCLIBC_0_9_33
+		default "openwrtmipsr2"  if FREETZ_TARGET_ARCH_MIPS && FREETZ_TARGET_ARCH_BE && (FREETZ_TARGET_UCLIBC_0_9_28 || FREETZ_TARGET_UCLIBC_0_9_29 || FREETZ_TARGET_UCLIBC_0_9_32)
+		default "openwrtmipsr3"  if FREETZ_TARGET_ARCH_MIPS && FREETZ_TARGET_ARCH_BE && (FREETZ_TARGET_UCLIBC_0_9_33 || FREETZ_TARGET_UCLIBC_1_0_14)
+		default "ddwrtmips2"     if FREETZ_TARGET_ARCH_MIPS && FREETZ_TARGET_ARCH_BE
 		default "mipselbcm"      if FREETZ_TARGET_ARCH_MIPS && FREETZ_TARGET_ARCH_LE
 
 	comment "Note: Try using older version if you experience any problems"
