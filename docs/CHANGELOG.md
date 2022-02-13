@@ -45,6 +45,8 @@ Latest changes
  - Build system:
    * binutils 2.24.x/2.25.x/2.26.x/2.31.x/2.37.x
    * ccache 4.5.1
+   * kernel-/target-toolchain:
+     + uClibc-ng 1.0.40
    * precompiled host-tools 2022-02-13
 
  - New packages and libs:
