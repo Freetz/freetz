@@ -55,7 +55,7 @@ Latest changes
    * fakeroot 1.27-1
    * kconfig 5.16
    * ncurses 6.3
-   * pseudo 1.9.0 oe-core 0cda3ba
+   * pseudo 1.9.0 oe-core 300d757
 
  - BusyBox package:
    * Version 1.33.2 removed
