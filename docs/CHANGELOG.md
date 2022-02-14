@@ -45,8 +45,6 @@ Latest changes
  - Build system:
    * binutils 2.24.x/2.25.x/2.26.x/2.31.x/2.37.x
    * ccache 4.5.1
-   * kernel-/target-toolchain:
-     + uClibc-ng 1.0.40
    * precompiled host-tools 2022-02-13
    * precompiled toolchains r18095/r18877
 
@@ -103,6 +101,7 @@ Latest changes
    * Sundtek DVB driver 130210.134617/170310.204343/210803.071224
    * tinc 1.0.36/1.1pre18
    * Tor 0.4.6.9
+   * uClibc-ng 1.0.40
    * Unbound 1.14.0
    * UnRAR 6.1.4
    * Wget GNU 1.21.2
