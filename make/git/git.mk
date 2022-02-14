@@ -1,7 +1,11 @@
-$(call PKG_INIT_BIN, 2.34.1)
+$(call PKG_INIT_BIN, 2.35.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=3a0755dd1cfab71a24dd96df3498c29cd0acd13b04f3d08bf933e81286db802c
+$(PKG)_SOURCE_SHA256:=d768528e6443f65a203036266f1ca50f9d127ba89751e32ead37117ed9191080
 $(PKG)_SITE:=@KERNEL/software/scm/git
+### WEBSITE:=https://www.git-scm.com/
+### MANPAGE:=https://www.git-scm.com/docs
+### CHANGES:=https://github.com/git/git/tree/master/Documentation/RelNotes
+### CVSREPO:=https://github.com/git/git
 
 # files to be moved from /usr/lib/git-core to /usr/bin
 $(PKG)_FILES_TO_MOVE := git-daemon

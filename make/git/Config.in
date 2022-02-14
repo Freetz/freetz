@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_GIT
-	bool "git 2.34.1"
+	bool "git 2.35.1"
 	select FREETZ_BUSYBOX_START_STOP_DAEMON
 	select FREETZ_LIB_libpthread if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libcurl
@@ -13,21 +13,24 @@ config FREETZ_PACKAGE_GIT
 		unusually rich command set that provides both high-level operations
 		and full access to internals.
 
-config FREETZ_PACKAGE_GIT_REMOVE_WEBIF
-	bool "remove webinterface"
-	depends on FREETZ_PACKAGE_GIT
-	default n
-	help
-		This option removes the webinterface
+if FREETZ_PACKAGE_GIT
 
-config FREETZ_PACKAGE_GIT_WITH_PCRE
-	bool "build with pcre support"
-	depends on FREETZ_PACKAGE_GIT
-	select FREETZ_LIB_libpcre
-	default n
-	help
-		With this option enabled git-grep will be able to use
-		Perl-compatible regular expressions (pcre).
+	config FREETZ_PACKAGE_GIT_REMOVE_WEBIF
+		bool "remove webinterface"
+		default n
+		help
+			This option removes the webinterface
 
-		Note: git supports all kinds of POSIX regular expressions
-		without libpcre. Most users want to say no here.
+	config FREETZ_PACKAGE_GIT_WITH_PCRE
+		bool "build with pcre support"
+		select FREETZ_LIB_libpcre
+		default n
+		help
+			With this option enabled git-grep will be able to use
+			Perl-compatible regular expressions (pcre).
+
+			Note: git supports all kinds of POSIX regular expressions
+			without libpcre. Most users want to say no here.
+
+endif # FREETZ_PACKAGE_GIT
+
