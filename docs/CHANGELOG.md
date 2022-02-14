@@ -48,6 +48,7 @@ Latest changes
    * kernel-/target-toolchain:
      + uClibc-ng 1.0.40
    * precompiled host-tools 2022-02-13
+   * precompiled toolchains r18095/r18877
 
  - New packages and libs:
    * libnfsidmap 0.27
