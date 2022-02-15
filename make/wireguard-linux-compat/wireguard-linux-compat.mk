@@ -5,16 +5,14 @@ $(PKG)_SITE:=https://git.zx2c4.com/wireguard-linux-compat/snapshot
 ### CHANGES:=https://git.zx2c4.com/wireguard-linux-compat/log/
 ### CVSREPO:=https://git.zx2c4.com/wireguard-linux-compat/
 
-$(PKG)_REBUILD_SUBOPTS += FREETZ_AVM_VERSION_07_2X
-$(PKG)_REBUILD_SUBOPTS += FREETZ_KERNEL_VERSION_4_4_60
-$(PKG)_CONDITIONAL_PATCHES+=$(if $(FREETZ_KERNEL_VERSION_4_4_60),$(if $(FREETZ_AVM_VERSION_07_2X),skb_put_data))
-
 $(PKG)_MODULE:=$($(PKG)_DIR)/src/wireguard.ko
 $(PKG)_TARGET_MODULE:=$(KERNEL_MODULES_DIR)/drivers/net/wireguard/wireguard.ko
 
 $(PKG)_DEPENDS_ON += kernel
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_KERNEL_VERSION
+$(PKG)_REBUILD_SUBOPTS += FREETZ_AVM_SOURCE_ID
+$(PKG)_CONDITIONAL_PATCHES+=$(if $(FREETZ_PACKAGE_WIREGUARD_LINUX_COMPAT_skb_put_data),skb_put_data)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

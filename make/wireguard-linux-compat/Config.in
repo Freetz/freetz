@@ -5,3 +5,18 @@ config FREETZ_PACKAGE_WIREGUARD_LINUX_COMPAT
 	select FREETZ_MODULE_wireguard
 	help
 		This package provides the kernel module required for Wireguard
+
+if FREETZ_PACKAGE_WIREGUARD_LINUX_COMPAT
+
+	config FREETZ_PACKAGE_WIREGUARD_LINUX_COMPAT_skb_put_data
+		bool
+		default y
+		depends on \
+			FREETZ_AVM_SOURCE_1200_07_20 || \
+			FREETZ_AVM_SOURCE_1200_07_27 || \
+			FREETZ_AVM_SOURCE_7530_07_20 || \
+			FREETZ_AVM_SOURCE_7530_07_25 || \
+			FREETZ_AVM_SOURCE_6000_07_27
+
+endif # FREETZ_PACKAGE_WIREGUARD_LINUX_COMPAT
+
