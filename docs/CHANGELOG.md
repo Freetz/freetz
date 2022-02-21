@@ -48,10 +48,7 @@ Latest changes
    * precompiled host-tools 2022-02-13
    * precompiled toolchains r18095/r18877
 
- - New packages and libs:
-   * libnfsidmap 0.27
-
- - Updated tools and hooks:
+ - Host tools:
    * BusyBox 1.34.1
    * fakeroot 1.27-1
    * fitimg 0.7
@@ -60,17 +57,14 @@ Latest changes
    * patchelf 0.14.5
    * pseudo 1.9.0 oe-core 300d757
 
- - BusyBox package:
-   * Version 1.33.2 removed
-   * Version 1.34.1 updated
-   * Version 1.35.0 added
-   
- - Updated packages and libs:
+ - Packages & libs:
    * ACME.sh 3.0.2 (letsencrypt)
    * Apache 2.4.52
    * AutoFS 5.0.5/5.1.8
    * BIND 9.11.36
    * Bip 0.9.2
+   * BusyBox 1.34.1
+   * BusyBox 1.35.0
    * CA-bundle 2022-02-01
    * CCID driver 1.4.36
    * cifs-utils 6.14
@@ -85,6 +79,7 @@ Latest changes
    * libgpg-error 1.43
    * lighttpd 1.4.64
    * libneon 0.32.1
+   * libnfsidmap 0.27
    * libusb1 1.0.23/1.0.25
    * LCD4linux e2cfdc5-git
    * mbed TLS 2.7.19/2.28.0
