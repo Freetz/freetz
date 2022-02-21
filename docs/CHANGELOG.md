@@ -57,6 +57,7 @@ Latest changes
    * fitimg 0.7
    * kconfig 5.16
    * ncurses 6.3
+   * patchelf 0.14.5
    * pseudo 1.9.0 oe-core 300d757
 
  - BusyBox package:
