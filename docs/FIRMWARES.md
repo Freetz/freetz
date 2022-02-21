@@ -497,7 +497,7 @@ Currently supported devices and firmwares
   - 174.07.14 rev73940 {ALL} [MESH18 NL4]
   - 174.07.21 rev83015 {ALL} [PSQ19]
   - 174.07.29 rev93268 {ALL} [PSQ19P2NL4]
-* __Fritz!Repeater 6000 (DEVELOPER)__
+* __Fritz!Repeater 6000__
   - 253.07.29 rev93257 {ALL} [PSQ19P2NL4]
 
 ### T-Com derivatives
