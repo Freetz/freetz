@@ -46,7 +46,7 @@ Latest changes
    * binutils 2.24.x/2.25.x/2.26.x/2.31.x/2.37.x
    * ccache 4.5.1
    * precompiled host-tools 2022-02-21
-   * precompiled toolchains r18095/r18877
+   * precompiled toolchains r18095/r18877/r18922
 
  - Host tools:
    * BusyBox 1.34.1
