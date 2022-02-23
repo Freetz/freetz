@@ -1,6 +1,8 @@
-PATCHELF_HOST_VERSION:=0.14.5
+PATCHELF_HOST_VERSION:=0.13.1
+# Versions since 0.14 require C++17 (eg Ubuntu 18)
+PATCHELF_HOST_VERSION_LONG:=0.13.1.20211127.72b6d44
 PATCHELF_HOST_SOURCE:=patchelf-$(PATCHELF_HOST_VERSION).tar.bz2
-PATCHELF_HOST_SOURCE_SHA256:=b9a46f2989322eb89fa4f6237e20836c57b455aa43a32545ea093b431d982f5c
+PATCHELF_HOST_SOURCE_SHA256:=39e8aeccd7495d54df094d2b4a7c08010ff7777036faaf24f28e07777d1598e2
 PATCHELF_HOST_SITE:=https://github.com/NixOS/patchelf/releases/download/$(PATCHELF_HOST_VERSION),https://releases.nixos.org/patchelf/patchelf-$(PATCHELF_HOST_VERSION)
 ### WEBSITE:=https://opencollective.com/nixos
 ### MANPAGE:=https://sources.debian.org/patches/patchelf/
@@ -8,7 +10,7 @@ PATCHELF_HOST_SITE:=https://github.com/NixOS/patchelf/releases/download/$(PATCHE
 ### CVSREPO:=https://github.com/NixOS/patchelf
 
 PATCHELF_HOST_MAKE_DIR:=$(TOOLS_DIR)/make/patchelf-host
-PATCHELF_HOST_DIR:=$(TOOLS_SOURCE_DIR)/patchelf-$(PATCHELF_HOST_VERSION)
+PATCHELF_HOST_DIR:=$(TOOLS_SOURCE_DIR)/patchelf-$(PATCHELF_HOST_VERSION_LONG)
 
 
 patchelf-host-source: $(DL_DIR)/$(PATCHELF_HOST_SOURCE)
