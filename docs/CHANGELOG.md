@@ -55,7 +55,7 @@ Latest changes
    * kconfig 5.16
    * ncurses 6.3
    * patchelf 0.13.1
-   * pseudo 1.9.0 oe-core 300d757
+   * pseudo 1.9.0 oe-core 0cda3ba
 
  - Packages & libs:
    * ACME.sh 3.0.2 (letsencrypt)
