@@ -1,4 +1,5 @@
 #!/bin/bash
+echo
 
 # push_firmware script
 #
@@ -9,6 +10,7 @@
 #		2011 extended for ALICE 7570 by MaxMuster
 #		2019 extended by ram-boot and dual-boot modes for freetz-ng
 #		2020 extended by uimg support (uses fesc2000's uimg tool)
+#		2021 extended by fitimg support
 #
 # Cygwin users note:
 #   1. There is NO guarantee whatsoever that this will work on Cygwin, even
@@ -316,7 +318,7 @@ prepare_image() {
 			fi
 		fi
 		if [ ! -s "$fitimage" ]; then
-			echo -e "\nError: file is not a valid fit-boot image to be written to the device.\n" >&2
+			echo -e "Error: file is not a valid fit-boot image to be written to the device.\n" >&2
 			exit 1
 		fi
 	elif [ $ISRAM ]; then
@@ -333,7 +335,7 @@ prepare_image() {
 			fi
 		fi
 		if [ ! -s "$mtdram1" ]; then
-			echo -e "\nError: file is not a valid ram-boot image to be written to the device.\n" >&2
+			echo -e "Error: file is not a valid ram-boot image to be written to the device.\n" >&2
 			exit 1
 		fi
 	elif [ $ISDUAL ]; then
@@ -349,7 +351,7 @@ prepare_image() {
 			mv "$tmpdir/var/remote/var/tmp/x86/kernel.image"     "$X86krn" 2>/dev/null
 		fi
 		if [ ! -s "$ARMsys" -o ! -s "$ARMkrn" -o ! -s "$X86sys" -o ! -s "$X86krn" ]; then
-			echo -e "\nError: file is not a valid dual-boot image to be written to the device.\n" >&2
+			echo -e "Error: file is not a valid dual-boot image to be written to the device.\n" >&2
 			exit 1
 		fi
 	elif [ $ISUIMG ]; then
@@ -369,7 +371,7 @@ prepare_image() {
 #			mv $tmpdir/var/*_GWFS.bin        "$ALLgwt" 2>/dev/null  # TODO
 		fi
 		if [ ! -s "$ARMsys" -o ! -s "$ARMkrn" -o ! -s "$X86sys" -o ! -s "$X86krn" ]; then
-			echo -e "\nError: file is not a valid uimg-boot image to be written to the device.\n" >&2
+			echo -e "Error: file is not a valid uimg-boot image to be written to the device.\n" >&2
 			exit 1
 		fi
 	elif [ $ISSINGLE ]; then
@@ -384,7 +386,7 @@ prepare_image() {
 					tar -Oxf "$work" ./var/tmp/kernel.image > $tmpimg
 					work=$tmpimg
 				else
-					echo -e "\nError: file is not a valid single-boot image to be written to the device.\n" >&2
+					echo -e "Error: file is not a valid single-boot image to be written to the device.\n" >&2
 					exit 1
 				fi
 			fi
@@ -416,7 +418,7 @@ Usage: $0 [image] [ -m<s|r|d|u|f> ] [ -f ] [ -ip <ip> ] [ -ram <mb> ] [ -lfs <0|
 -mu               Force mode uimg-boot (newer docsis devices, like 6591 & 6660)
                     See https://bitbucket.org/fesc2000/ffritz/src/6591/README-6591.md
 -mf               Force mode fit-boot (latest devices, like 5530 & 7530 AX)
-                    Experimental and not tested with real hardware!
+                    See https://boxmatrix.info/wiki/FIT-Image
 -f                Disable safety prompt.
 -ip <ip>          Bootloader IP address or hostname, default 192.168.178.1
 -map <hex>        Only ram-boot and fit-boot mode: Start of mapped memory (PHYS_OFFSET).
@@ -435,9 +437,11 @@ For ram-boot mode you may need to set a larger '-ram' value then the default of 
 You could use '-ram 0' to detect the size and use the maximum. The value AVM uses is
 hardcoded into the recovery file and does not always use all available memory. A smaller
 value is okay as long as the image in the ram has enough ram to boot and flash itsef.
-For Fritzbox 5490 and Repeater 3000 it is known that 128MB are to less, use: '-ram 256'
-To flash the Repeater 6000 you have to use like avm: '-ram 1024 -map 0x40000000'
-With Broadcom devices (7581+7582) you have to use like avm: '-ram 512 -map 0x00000000'
+Known working values:
+ - Fritzbox 5490 & Repeater 3000: -ram 256
+ - Repeater 6000: -ram 1024 -map 0x40000000
+ - Fritzbox 7530ax needs: -ram 512
+ - Fritzbox 7581 & 7582: -ram 512 -map 0x00000000
 
 EOX
 exit 1
@@ -522,8 +526,9 @@ done
 [ -r "$file" ] || { echo "Access denied: $file"             ; exit 1; }
 
 # img detect
+PRODUCT="$(tar -Oxf "$file" ./var/content 2>/dev/null | sed -n 's/^Product=//p')"
 if [ -z "$ISSINGLE$ISDUAL$ISRAM$ISUIMG$ISFIT" ]; then
-	echo -e "\n * Analyzing '$file' ... "
+	echo " * Analyzing '$file' ... "
 	if tar tf "$file" --wildcards '*/fit-image' &>/dev/null; then
 		ISFIT=true
 	elif tar tf "$file" --wildcards '*/firmware-update.uimg' &>/dev/null; then
@@ -608,7 +613,7 @@ fi
 [ -n "$FOUND_NCFTP" ] && UCMD="ncftpput" || UCMD="ftp"
 
 # logging
-echo
+[ -n "$PRODUCT" ] && echo " * Product: $PRODUCT"
 echo " * Using command: $UCMD"
 echo " * Target host: $ip"
 echo " * Outgoing IP: $oa"
@@ -632,10 +637,23 @@ if [ -n "$ISRAM$ISFIT" ]; then
 	if [ -z "$MAPSTART" ]; then
 		[ $ISRAM ] && MAPSTART=0x80000000
 		[ $ISFIT ] && MAPSTART=0x00000000
+		case "$PRODUCT" in
+			Fritz_Box_HW253*)	FULLSIZE=0x40000000 ;;  # 6000
+			Fritz_Box_HW224*)	FULLSIZE=0x00000000 ;;  # 7581
+			Fritz_Box_HW228*)	FULLSIZE=0x00000000 ;;  # 7582
+		esac
 	fi
 	if [ -z "$FULLSIZE" ]; then
 		[ $ISFIT ] && FULLSIZE="0x18000000"
 		[ $ISRAM ] && FULLSIZE="0x08000000"
+		case "$PRODUCT" in
+			Fritz_Box_HW246*)	FULLSIZE=0x10000000 ;;  # 3000 (256 MB)
+			Fritz_Box_HW223*)	FULLSIZE=0x10000000 ;;  # 5490 (256 MB)
+			Fritz_Box_HW256*)	FULLSIZE=0x20000000 ;;  # 7539 (512 MB)
+			Fritz_Box_HW224*)	FULLSIZE=0x20000000 ;;  # 7581 (512 MB)
+			Fritz_Box_HW228*)	FULLSIZE=0x20000000 ;;  # 7582 (512 MB)
+			Fritz_Box_HW253*)	FULLSIZE=0x40000000 ;;  # 6000 (1.0 GB)
+		esac
 	fi
 	[ "${FULLSIZE//0/}" == "x" ] && OUTVAL="<detect>" || OUTVAL="$(( $FULLSIZE /1024/1024 )) MB"
 	echo " * Allowed memory size: $OUTVAL"
