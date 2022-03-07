@@ -70,7 +70,7 @@ Latest changes
    * cifs-utils 6.14
    * Curl 7.82.0
    * davfs2 1.5.2/1.6.1
-   * expat 2.4.6
+   * expat 2.4.7
    * git 2.34.1
    * HAProxy 2.5.4
    * iksemel 3.1.1
