@@ -553,6 +553,7 @@ menu "Download options"
 		default "FRITZ.Repeater_2400-07.12.image"                                              if FREETZ_TYPE_2400 && FREETZ_TYPE_FIRMWARE_07_1X
 		default "FRITZ.Repeater_2400-07.21.image"                                              if FREETZ_TYPE_2400 && FREETZ_TYPE_FIRMWARE_07_2X
 		default "FRITZ.Repeater_2400-07.29.image"                                              if FREETZ_TYPE_2400 && FREETZ_TYPE_FIRMWARE_07_25
+		default "FRITZ.Repeater_2400-07.39-94804-Labor.image"                                  if FREETZ_TYPE_2400 && FREETZ_TYPE_FIRMWARE_07_4X_LABOR
 		#
 		default "fritz.box_sl_wlan.09.04.34.image"                                             if FREETZ_TYPE_3020
 		#
@@ -916,6 +917,7 @@ menu "Download options"
 		string "Downloaded container file"              if FREETZ_DL_OVERRIDE
 		depends                                         on FREETZ_TYPE_FIRMWARE_LABOR && !FREETZ_TYPE_FIRMWARE_DETECT_LATEST
 		#
+		default "fritz-repeater-2400-labor-94804.zip"   if FREETZ_TYPE_2400
 		default "fritzbox-7590-labor-94022.zip"         if FREETZ_TYPE_7590
 		default "fritzbox-7590_AX-labor-94093.zip"      if FREETZ_TYPE_7599
 #		default "xxxxxxxxxxxxxxxxxxxxxxxxx.zip"         if FREETZ_TYPE_xxxx
