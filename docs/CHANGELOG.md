@@ -45,7 +45,7 @@ Latest changes
  - Build system:
    * binutils 2.24.x/2.25.x/2.26.x/2.31.x/2.37.x
    * ccache 4.6
-   * precompiled host-tools 2022-02-23
+   * precompiled host-tools 2022-03-07
    * precompiled toolchains r18095/r18877/r18922
 
  - Host tools:
