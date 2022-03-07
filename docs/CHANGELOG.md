@@ -78,6 +78,7 @@ Latest changes
    * libgcrypt 1.9.4
    * libgpg-error 1.43
    * lighttpd 1.4.64
+   * libmaxminddb 1.6.0
    * libneon 0.32.1
    * libnfsidmap 0.27
    * libusb1 1.0.23/1.0.25
