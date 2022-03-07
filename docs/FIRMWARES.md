@@ -160,6 +160,7 @@ Currently supported devices and firmwares
   - 161.07.13 rev75441 {GER} [MESH18 NL3]
   - 161.07.22 rev84582 {GER} [PSQ19]
   - 161.07.29 rev92035 {GER} [PSQ19P2NL4]
+  - 161.07.39 rev94697 {GER} [MOVE21] (Labor)
 * __Fritz!Box 6660 Cable__
   - 252.07.15 rev78740 {GER} [6660 FCS]
   - 252.07.24 rev85910 {GER} [PSQ19]
