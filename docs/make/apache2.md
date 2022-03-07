@@ -199,6 +199,21 @@ ServerName freetz.meinedomain.at
 Das Location Element bewirkt, dass der Benutzer sich vor dem
 Seitenaufbau anmelden muss.
 
+### Geoblocking
+Bestimmte Länder können über eine `.htaccess`-Datei blockiert werden, `XX` entsprechend ersetzen:
+```
+<IfModule mod_geoip.c>
+    GeoIPEnable On
+#   SetEnvIf GEOIP_COUNTRY_CODE XX AllowCountry
+#   Require env AllowCountry
+    SetEnvIf GEOIP_COUNTRY_CODE XX BlockCountry
+    <RequireAll>
+        Require all granted
+        Require not env BlockCountry
+    </RequireAll>
+</IfModule>
+```
+
 ### Sonstiges
 
 Sollte jemand auf die Idee kommen, ein CMS auf der Fritzbox laufen zu

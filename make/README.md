@@ -39,6 +39,7 @@ Index:
      - [apache.conf](../docs/make/apache2.md#apacheconf)
      - [Passwortschutz mit .htaccess](../docs/make/apache2.md#passwortschutz-mit-htaccess)
      - [Apache als Proxy](../docs/make/apache2.md#apache-als-proxy)
+     - [Geoblocking](../docs/make/apache2.md#geoblocking)
      - [Sonstiges](../docs/make/apache2.md#sonstiges)
 
   * **<u>asterisk-chan-capi: chan_capi: ISDN API 2.0 module for asterisk</u><a id='asterisk-chan-capi'></a>**<br>
