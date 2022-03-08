@@ -426,7 +426,7 @@ Usage: $0 [image] [ -m<s|r|d|u|f> ] [ -f ] [ -ip <ip> ] [ -ram <mb> ] [ -lfs <0|
                     Without this parameter, the default of 128 MB (FIT: 384) will be used.
                     Some devices like Repeater 3000 need 256 MB to flash.
                     Use '0' to detect and use all available ram.
--lfs <0|1|9>      Not single-boot mode: Set linux_fs_start to 0 or 1 and flash into this.
+-lfs <0|1|9>      Not single- and fit-boot mode: Set linux_fs_start to 0 or 1 and flash this.
                     Without this parameter, the inactive linux_fs_start will be used.
                     Use '9' for the currently active linux_fs_start.
 -cmd <ftp|ncftp>  Force the prefered usage of ftp or ncftp command for upload.
@@ -548,6 +548,8 @@ fi
 # arg check
 [ ! $ISSINGLE ] && [ $ISALICE ]                && echo "Parameter '-hn' is only allowed for single-boot mode."             && exit 1
 [ $ISSINGLE ]   && [ $LFS ]                    && echo "Parameter '-lfs' is not allowed for single-boot mode."             && exit 1
+[ $ISFIT ]      && [ $LFS ]                    && echo "Parameter '-lfs' is not allowed for fit-boot mode."                && exit 1
+[ $ISFIT ]      && [ ! $LFS ]                  && LFS="9"
 [ $ISDUAL ]     && [ ! $LFS ]                  && LFS="1"
 [ $ISUIMG ]     && [ ! $LFS ]                  && LFS="1"
 [ $ISUIMG ]     && [ ! -x $UIMG_TOOL ]         && echo "File $UIMG_TOOL missing. Run 'make uimg-host' first."              && exit 1
@@ -663,6 +665,7 @@ if [ ! $ISSINGLE ]; then
 	[ -n "$LFS" ]     && OUTVAL="$LFS"
 	[ -z "$LFS" ]     && OUTVAL="<other>"
 	[ "$LFS" == "9" ] && OUTVAL="<current>"
+	[ $ISFIT ]        && OUTVAL="<other>"
 	echo " * Designated linux_fs_start: $OUTVAL"
 fi
 
