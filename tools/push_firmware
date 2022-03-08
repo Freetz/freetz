@@ -429,7 +429,7 @@ Usage: $0 [image] [ -m<s|r|d|u|f> ] [ -f ] [ -ip <ip> ] [ -ram <mb> ] [ -lfs <0|
 -lfs <0|1|9>      Not single- and fit-boot mode: Set linux_fs_start to 0 or 1 and flash this.
                     Without this parameter, the inactive linux_fs_start will be used.
                     Use '9' for the currently active linux_fs_start.
--cmd <ftp|ncftp>  Force the prefered usage of ftp or ncftp command for upload.
+-cmd <ftp|ncftp>  Force the prefered usage of ncftp (buggy) or ftp command for upload.
 -hn               Only single-boot mode: Flash to an 'Alice/HanseNet' version of 7570.
 
 If flashing ram-boot/nand/inmemory does not work...
@@ -437,11 +437,6 @@ For ram-boot mode you may need to set a larger '-ram' value then the default of 
 You could use '-ram 0' to detect the size and use the maximum. The value AVM uses is
 hardcoded into the recovery file and does not always use all available memory. A smaller
 value is okay as long as the image in the ram has enough ram to boot and flash itsef.
-Known working values:
- - Fritzbox 5490 & Repeater 3000: -ram 256
- - Repeater 6000: -ram 1024 -map 0x40000000
- - Fritzbox 7530ax needs: -ram 512
- - Fritzbox 7581 & 7582: -ram 512 -map 0x00000000
 
 EOX
 exit 1
