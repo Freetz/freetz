@@ -56,6 +56,10 @@ Latest changes
    * ncurses 6.3
    * patchelf 0.13.1
    * pseudo 1.9.0 oe-core 0cda3ba
+   * yourfritz 03cfc0a
+
+ - Patches:
+   * yf-bootmanager 0.8.3
 
  - Packages & libs:
    * ACME.sh 3.0.2 (letsencrypt)

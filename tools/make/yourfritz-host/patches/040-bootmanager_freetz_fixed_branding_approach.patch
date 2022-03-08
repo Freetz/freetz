@@ -8,13 +8,13 @@ Signed-off-by: Eugene Rudoy <gene.devel@gmail.com>
  bootmanager/gui_bootmanager | 1 +
  1 file changed, 1 insertion(+)
 
---- bootmanager/gui_bootmanager
-+++ bootmanager/gui_bootmanager
-@@ -708,6 +708,7 @@ get_fixed_branding()
+--- bootmanager/bootmanager
++++ bootmanager/bootmanager
+@@ -639,6 +639,7 @@
  (
  	path="${1:-/}${1:+/}$avm_rcconf"
- 	b="$(sed -n -e 's|^export OEM\(=\"\?\(.*\)\"\?\)\?$|\2|p' "$path")"
+ 	b="$(sed -n -e "s|^export OEM\(=\(['\"]\?\)\(.*\)\2\)\?\$|\3|p" "$path")"
 +	[ -z "$b" ] && b="$(sed -n -e 's|^OEM_tmp=\("\?\)\([A-Za-z0-9_-]\+\)\1$|\2|p' "$path")" # Freetz approach
- 	printf "%s" "$b"
+ 	printf -- '%s' "$b"
  	[ -z "$b" ] && exit 1 || exit 0
  )
