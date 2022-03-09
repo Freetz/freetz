@@ -31,6 +31,7 @@ config FREETZ_REPLACE_KERNEL_AVAILABLE
 config FREETZ_REPLACE_MODULE_AVAILABLE
 	bool
 	depends on !(FREETZ_SYSTEM_TYPE_BCM63138)                                 # no kernel 4.1.38 sources for 7581/7582 integrated
+	depends on !(FREETZ_SYSTEM_TYPE_BRCMA9)                                   # no kernel 4.1.52 sources for 7530 ax available
 	depends on !(FREETZ_SYSTEM_TYPE_GRX5 && FREETZ_AVM_VERSION_07_4X_MIN)     # no kernel 4.9.218 sources for 7590 ac+ax available
 	default y
 	help
