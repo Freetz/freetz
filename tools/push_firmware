@@ -173,7 +173,7 @@ function push_fw() {
 				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
 				-W "quote MEDIA SDRAM" \
 				-W "quote SETENV memsize ${FREESIZE}" \
-				-W "quote SETENV kernel_args_tmp \"avm_fwupdate mtdram1=${MTDSTART},${MAPLIMIT} mtdparts_ext=update-image.0:${FILESIZE}@0x0(fit-image)\"" \
+				-W "quote SETENV kernel_args_tmp \"${AFU}mtdram1=${MTDSTART},${MAPLIMIT} mtdparts_ext=update-image.0:${FILESIZE}@0x0(fit-image)\"" \
 				-X "$([ ! $LFS ] && echo "quote SYST" || echo "quote SETENV linux_fs_start $LFS")" \
 				-Y "quote QUIT" \
 				$ip ${fitimage} "${MTDSTART} ${MAPLIMIT}" || exit $?
@@ -239,7 +239,7 @@ debug
 bin
 quote MEDIA SDRAM
 quote SETENV memsize ${FREESIZE}
-quote SETENV kernel_args_tmp \"avm_fwupdate mtdram1=${MTDSTART},${MAPLIMIT} mtdparts_ext=update-image.0:${FILESIZE}@0x0(fit-image)\"
+quote SETENV kernel_args_tmp \"${AFU}mtdram1=${MTDSTART},${MAPLIMIT} mtdparts_ext=update-image.0:${FILESIZE}@0x0(fit-image)\"
 put ${fitimage} "${MTDSTART} ${MAPLIMIT}"
 $([ $LFS ] && echo quote SETENV linux_fs_start $LFS)
 quit
@@ -429,6 +429,7 @@ Usage: $0 [image] [ -m<s|r|d|u|f> ] [ -f ] [ -ip <ip> ] [ -ram <mb> ] [ -lfs <0|
 -lfs <0|1|9>      Not single- and fit-boot mode: Set linux_fs_start to 0 or 1 and flash this.
                     Without this parameter, the inactive linux_fs_start will be used.
                     Use '9' for the currently active linux_fs_start.
+-afu              Only fit-boot: No avm_fwupdate, run system from ram without flash it.
 -cmd <ftp|ncftp>  Force the prefered usage of ncftp (buggy) or ftp command for upload.
 -hn               Only single-boot mode: Flash to an 'Alice/HanseNet' version of 7570.
 
@@ -484,6 +485,10 @@ while [ $# -ge 1 ]; do
 		(-lfs)
 			[ "$2" != "0" -a "$2" != "1" -a "$2" != "9" ] && echo "Invalid linux_fs_start value" && usage
 			LFS=$2
+			shift
+			;;
+		(-afu)
+			NOAFU=true
 			shift
 			;;
 		(-cmd)
@@ -543,6 +548,7 @@ fi
 # arg check
 [ ! $ISSINGLE ] && [ $ISALICE ]                && echo "Parameter '-hn' is only allowed for single-boot mode."             && exit 1
 [ $ISSINGLE ]   && [ $LFS ]                    && echo "Parameter '-lfs' is not allowed for single-boot mode."             && exit 1
+[ ! $ISFIT ]    && [ $NOAFU ]                  && echo "Parameter '-afu' is only allowed for fit-boot mode."               && exit 1
 [ $ISFIT ]      && [ $LFS ]                    && echo "Parameter '-lfs' is not allowed for fit-boot mode."                && exit 1
 [ $ISFIT ]      && [ ! $LFS ]                  && LFS="9"
 [ $ISDUAL ]     && [ ! $LFS ]                  && LFS="1"
@@ -654,6 +660,10 @@ if [ -n "$ISRAM$ISFIT" ]; then
 	fi
 	[ "${FULLSIZE//0/}" == "x" ] && OUTVAL="<detect>" || OUTVAL="$(( $FULLSIZE /1024/1024 )) MB"
 	echo " * Allowed memory size: $OUTVAL"
+fi
+
+if [ $ISFIT ]; then
+	[ $NOAFU ] && AFU="" || AFU="avm_fwupdate "
 fi
 
 if [ ! $ISSINGLE ]; then
