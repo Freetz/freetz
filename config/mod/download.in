@@ -57,8 +57,8 @@ menu "Download options"
 		default "r18922"                                                              if FREETZ_SYSTEM_TYPE_BCM63138
 		default "r18095"
 
-	config FREETZ_DL_KERNEL_TOOLCHAIN_MD5
-		string "Kernel toolchain MD5"                                                 if FREETZ_DL_TOOLCHAIN_OVERRIDE
+	config FREETZ_DL_KERNEL_TOOLCHAIN_SHA256
+		string "Kernel toolchain SHA256"                                              if FREETZ_DL_TOOLCHAIN_OVERRIDE
 		default "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"    if FREETZ_REAL_DEVELOPER_ONLY__DLTCS
 		#
 		default "0badcbb3db1365f603990e40bf207e99a2987d45bbd0a546c46ed585f95ba873"    if FREETZ_TARGET_ARCH_MIPS && FREETZ_TARGET_ARCH_LE && FREETZ_KERNEL_GCC_3_4
@@ -85,8 +85,8 @@ menu "Download options"
 		default "r18095"
 
 
-	config FREETZ_DL_TARGET_TOOLCHAIN_MD5
-		string "Target toolchain MD5"                 if FREETZ_DL_TOOLCHAIN_OVERRIDE
+	config FREETZ_DL_TARGET_TOOLCHAIN_SHA256
+		string "Target toolchain SHA256"                                              if FREETZ_DL_TOOLCHAIN_OVERRIDE
 		default "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"    if FREETZ_REAL_DEVELOPER_ONLY__DLTCS
 		#
 		default "b79720b22dde2173c3300cf070e31645f52ab3e94c95721e19ac4203206ef891"    if FREETZ_TARGET_ARCH_MIPS && FREETZ_TARGET_ARCH_LE && FREETZ_TARGET_GCC_4_6 && FREETZ_TARGET_UCLIBC_0_9_28 && FREETZ_KERNEL_VERSION_2
