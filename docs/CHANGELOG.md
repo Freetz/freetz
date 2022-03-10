@@ -59,6 +59,7 @@ Latest changes
    * yourfritz 03cfc0a
 
  - Patches:
+   * remove smd-httpd: http server on port 81 without config (broadcom devices)
    * yf-bootmanager 0.8.3
 
  - Packages & libs:
