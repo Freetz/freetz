@@ -708,7 +708,7 @@ Index:
     Tinc is a Virtual Private Network (VPN) daemon that uses tunneling and encryption to create a secure private network between hosts on the Internet.
 
   * **[Tinyproxy 1.11.0](tinyproxy.md)<a id='tinyproxy'></a>**<br>
-    Tinyproxy is a lightweight HTTP and HTTPS proxy. http://tinyproxy.sourceforge.net
+    Tinyproxy is a lightweight HTTP and HTTPS proxy.
 
   * **<u>tmux 2.5 (binary only)</u><a id='tmux'></a>**<br>
     tmux, a BSD-licensed alternative to GNU screen. Uses ncurses.

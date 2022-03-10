@@ -2,6 +2,10 @@ $(call PKG_INIT_BIN, 1.11.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SOURCE_SHA256:=c1ec81cfc4c551d2c24e0227a5aeeaad8723bd9a39b61cd729e516b82eaa3f32
 $(PKG)_SITE:=https://github.com/tinyproxy/tinyproxy/releases/download/$($(PKG)_VERSION)
+### WEBSITE:=https://tinyproxy.github.io/
+### MANPAGE:=https://tinyproxy.github.io/#documentation
+### CHANGES:=https://github.com/tinyproxy/tinyproxy/releases
+### CVSREPO:=https://github.com/tinyproxy/tinyproxy
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/tinyproxy
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/tinyproxy
