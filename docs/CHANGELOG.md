@@ -51,7 +51,7 @@ Latest changes
  - Host tools:
    * BusyBox 1.34.1
    * fakeroot 1.28-1
-   * fitimg 0.7.1
+   * fitimg 0.7.2
    * kconfig 5.16
    * ncurses 6.3
    * patchelf 0.13.1
