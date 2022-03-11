@@ -101,7 +101,7 @@ Currently supported devices and firmwares
   - 155.07.01 rev61489 {ALL}
   - 155.07.14 rev73181 {ALL} [MESH18 NL4]
   - 155.07.29 rev92647 {ALL} [PSQ19P2NL4]
-* __Fritz!Box 4060 (UNTESTED)__
+* __Fritz!Box 4060__
   - 261.07.29 rev92827 {ALL} [PSQ19P2NL4]
 
 ### Fritz!Box Fon (50xx/51xx)
