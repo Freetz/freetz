@@ -66,9 +66,15 @@ sec_end
 sec_begin "$(lang de:"Konfigurationsserver Einstellungen" en:"Configure a HTTP server to deliver a PAC file")"
 
 cat << EOF
-<p><input id="confserver1" type="hidden" name="confserver" value="no" />
-<input id="confserver2" type="checkbox" name="confserver" value="yes"$confserver_chk><label for="confserver2">$(lang de:"Konfigurationsserver aktivieren" en:"Activate a configuration server")</label>
-&nbsp; &nbsp; &nbsp; &nbsp; $(lang de:"auf Port" en:"on port"): <input id="confserverport" type="text" name="confserverport" size="10" value="$TINYPROXY_CONFSERVERPORT"></p>
+<p>
+<input id="confserver1" type="hidden" name="confserver" value="no" />
+<input id="confserver2" type="checkbox" name="confserver" value="yes"$confserver_chk>
+<label for="confserver2">$(lang de:"Konfigurationsserver aktivieren" en:"Activate a configuration server")</label>
+&nbsp; &nbsp; &nbsp; &nbsp; $(lang de:"auf Port" en:"on port"): 
+<input id="confserverport" type="text" name="confserverport" size="5" value="$TINYPROXY_CONFSERVERPORT">
+&nbsp; &nbsp; &nbsp; &nbsp; $(lang de:"externer Hostname" en:"external hostname"): 
+<input id="confserverhost" type="text" name="confserverhost" size="12" value="$TINYPROXY_HOSTNAME">
+</p>
 EOF
 
 sec_end
