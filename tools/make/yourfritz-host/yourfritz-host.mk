@@ -1,7 +1,12 @@
-YOURFRITZ_HOST_VERSION:=03cfc0a1eafbdfec84f28d44958beab073da5b42
+YOURFRITZ_HOST_GIT_REPOSITORY:=https://github.com/PeterPawn/YourFritz.git
+YOURFRITZ_HOST_VERSION:=5e3342106f241f9378cb295fcccd41350a394ff6
 YOURFRITZ_HOST_SOURCE:=yourfritz-$(YOURFRITZ_HOST_VERSION).tar.xz
-YOURFRITZ_HOST_SOURCE_SHA256:=48e046992024e2eca7105af94c1efeff2b8090fae9b0c92041fc2c4214b8dc1a
-YOURFRITZ_HOST_SITE:=git_no_submodules@https://github.com/PeterPawn/YourFritz.git
+YOURFRITZ_HOST_SOURCE_SHA256:=X
+YOURFRITZ_HOST_SITE:=git_no_submodules@$(YOURFRITZ_HOST_GIT_REPOSITORY)
+### WEBSITE:=https://github.com/PeterPawn/YourFritz
+### MANPAGE:=https://github.com/PeterPawn/YourFritz#readme
+### CHANGES:=https://github.com/PeterPawn/YourFritz/tags
+### CVSREPO:=https://github.com/PeterPawn/YourFritz/commits/main
 
 YOURFRITZ_HOST_BASH_AS_SHEBANG += signimage/avm_pubkey_to_pkcs8
 YOURFRITZ_HOST_BASH_AS_SHEBANG += signimage/check_signed_image

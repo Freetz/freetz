@@ -56,7 +56,7 @@ Latest changes
    * ncurses 6.3
    * patchelf 0.13.1
    * pseudo 1.9.0 oe-core 0cda3ba
-   * yourfritz 03cfc0a
+   * yourfritz 5e33421
 
  - Patches:
    * remove smd-httpd: http server on port 81 without config (broadcom devices)
