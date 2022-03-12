@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 5e3342106f241f9378cb295fcccd41350a394ff6)
+$(call PKG_INIT_BIN, $(if $(FREETZ_REAL_DEVELOPER_ONLY__YOURFRITZ),$(call git-get-tag-revision,$(YOURFRITZ_HOST_GIT_REPOSITORY),freetz-ng-version),5e3342106f241f9378cb295fcccd41350a394ff6))
 $(PKG)_BINARY:=$($(PKG)_DIR)/juis/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
 
