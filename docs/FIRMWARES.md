@@ -165,6 +165,8 @@ Currently supported devices and firmwares
   - 252.07.15 rev78740 {GER} [6660 FCS]
   - 252.07.24 rev85910 {GER} [PSQ19]
   - 252.07.29 rev92037 {GER} [PSQ19P2NL4]
+* __Fritz!Box 6690 Cable (UNTESTED)__
+  - 267.07.28 rev91892 {GER} [PSQ19P2NL4] (Inhaus)
 
 ### Fritz!Box LTE (68xx)
 
