@@ -1295,12 +1295,20 @@ config FREETZ_PATCH_MODFS_ANNEX_SELECTION
 		Unhides Annex selection in Fritz!OS web interface.
 
 config FREETZ_PATCH_MODFS_BOOT_MANAGER
-	bool "Add boot manager"
+	bool "Add yf-bootmanager"
 	depends on FREETZ_AVM_VERSION_06_5X_MIN
 	depends on FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE && !FREETZ_AVM_HAS_FWLAYOUT_6
 	default n
 	help
 		Extends the "reboot" page of FRITZ!OS to select system version and branding.
+
+	config FREETZ_PATCH_MODFS_BOOT_MANAGER__TESTTAG
+		bool "Use freetz-ng-test tag - DEVELOPER"
+		depends on FREETZ_PATCH_MODFS_BOOT_MANAGER
+		depends on FREETZ_SHOW_DEVELOPER
+		default n
+		help
+			Uses the tag "freetz-ng-test" for yourfritz-host, -juis_check and -bootmanager.
 
 if FREETZ_AVM_HAS_USB_HOST
 comment "USB patches ----------------------------------------------"
