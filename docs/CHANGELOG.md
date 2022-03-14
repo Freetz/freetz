@@ -64,7 +64,7 @@ Latest changes
 
  - Packages & libs:
    * ACME.sh 3.0.2 (letsencrypt)
-   * Apache 2.4.52
+   * Apache 2.4.53
    * AutoFS 5.0.5/5.1.8
    * BIND 9.11.36
    * Bip 0.9.2
