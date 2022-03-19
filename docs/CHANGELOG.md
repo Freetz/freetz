@@ -71,7 +71,7 @@ Latest changes
    * BusyBox 1.34.1
    * BusyBox 1.35.0
    * CA-bundle 2022-03-18
-   * CCID driver 1.4.36
+   * CCID 1.5.0
    * cifs-utils 6.14
    * Curl 7.82.0
    * davfs2 1.5.2/1.6.1
