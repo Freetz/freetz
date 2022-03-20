@@ -69,11 +69,11 @@ cat << EOF
 <p>
 <input id="confserver1" type="hidden" name="confserver" value="no" />
 <input id="confserver2" type="checkbox" name="confserver" value="yes"$confserver_chk>
-<label for="confserver2">$(lang de:"Konfigurationsserver aktivieren" en:"Activate a configuration server")</label>
-&nbsp; &nbsp; &nbsp; &nbsp; $(lang de:"auf Port" en:"on port"): 
-<input id="confserverport" type="text" name="confserverport" size="5" value="$TINYPROXY_CONFSERVERPORT">
-&nbsp; &nbsp; &nbsp; &nbsp; $(lang de:"externer Hostname" en:"external hostname"): 
-<input id="confserverhost" type="text" name="confserverhost" size="12" value="$TINYPROXY_HOSTNAME">
+<label for="confserver2">Konfigurationsserver aktivieren</label>
+&nbsp; auf Port:
+<input id="confserverport" type="text" name="confserverport" size="3" value="$TINYPROXY_CONFSERVERPORT">
+&nbsp; externer Hostname:
+<input id="hostname" type="text" name="hostname" size="12" value="$TINYPROXY_HOSTNAME">
 </p>
 EOF
 
