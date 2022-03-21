@@ -1,6 +1,6 @@
-KCONFIG_HOST_VERSION:=v5.16
+KCONFIG_HOST_VERSION:=v5.17
 KCONFIG_HOST_SOURCE:=kconfig-$(KCONFIG_HOST_VERSION).tar.xz
-KCONFIG_HOST_SOURCE_SHA256:=f202ee6ad12411c0178368212423ae2553e4d29abdb14830c03141f099550583
+KCONFIG_HOST_SOURCE_SHA256:=152b350cbcfbec4586098be0647eb350fbd3c7e27e4bae153c66c19c07329379
 KCONFIG_HOST_SITE:=git_archive@git://repo.or.cz/linux.git,scripts/basic,scripts/kconfig,scripts/Kbuild.include,scripts/Makefile.compiler,scripts/Makefile.build,scripts/Makefile.host,scripts/Makefile.lib,Documentation/kbuild/kconfig-language.rst,Documentation/kbuild/kconfig-macro-language.rst,Documentation/kbuild/kconfig.rst
 KCONFIG_HOST_DIR:=$(TOOLS_SOURCE_DIR)/kconfig-$(KCONFIG_HOST_VERSION)
 KCONFIG_HOST_MAKE_DIR:=$(TOOLS_DIR)/make/kconfig-host

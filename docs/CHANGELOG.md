@@ -52,7 +52,7 @@ Latest changes
    * BusyBox 1.34.1
    * fakeroot 1.28-1
    * fitimg 0.7.2
-   * kconfig 5.16
+   * kconfig 5.17
    * ncurses 6.3
    * patchelf 0.13.1
    * pseudo 1.9.0 oe-core 0cda3ba
