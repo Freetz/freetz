@@ -105,7 +105,7 @@ Latest changes
    * Sundtek DVB driver 130210.134617/170310.204343/210803.071224
    * tinc 1.0.36/1.1pre18
    * tinyproxy 1.11.0
-   * Tor 0.4.6.9
+   * Tor 0.4.6.10
    * uClibc-ng 1.0.40
    * Unbound 1.14.0
    * UnRAR 6.1.4
