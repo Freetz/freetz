@@ -1,8 +1,12 @@
-$(call PKG_INIT_LIB, 1.2.11)
+$(call PKG_INIT_LIB, 1.2.12)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=4ff941449631ace0d4d203e3483be9dbc9da454084111f97ea0a2114e19bf066
-$(PKG)_SITE:=https://zlib.net
+$(PKG)_SOURCE_SHA256:=7db46b8d7726232a621befaab4a1c870f00a90805511c0e0090441dac57def18
+$(PKG)_SITE:=https://www.zlib.net
+### WEBSITE:=http://www.zlib.net/
+### MANPAGE:=http://www.zlib.net/manual.html
+### CHANGES:=http://www.zlib.net/
+### CVSREPO:=https://github.com/madler/zlib
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/libz.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libz.so.$($(PKG)_LIB_VERSION)

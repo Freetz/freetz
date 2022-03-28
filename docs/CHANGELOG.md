@@ -112,6 +112,7 @@ Latest changes
    * Wget GNU 1.21.2
    * wireguard-linux-compat 1.0.20211208
    * wireguard-tools 1.0.20210914
+   * zlib 1.2.12
 
  - Firmware updates:
    * Please see [FIRMWARES](FIRMWARES.md) for the list of currently supported devices and firmwares.
