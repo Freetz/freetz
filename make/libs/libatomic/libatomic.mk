@@ -1,6 +1,4 @@
-$(call PKG_INIT_LIB, $(if $(FREETZ_TARGET_GCC_8),1.2.0,$(if $(FREETZ_TARGET_GCC_5),1.1.0,1.0.0)))
-# Remove this later (when all .config are updated)
-#$(call PKG_INIT_LIB, $(call qstrip,$(FREETZ_GNULIBATOMIC_VERSION)))
+$(call PKG_INIT_LIB, $(call qstrip,$(FREETZ_GNULIBATOMIC_VERSION)))
 
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg).so.$($(PKG)_VERSION)
 $(PKG)_TARGET_BINARY:=$(if $(FREETZ_SEPARATE_AVM_UCLIBC),$($(PKG)_TARGET_DIR),$(TARGET_SPECIFIC_ROOT_DIR)/lib)/$(pkg).so.$($(PKG)_VERSION)
