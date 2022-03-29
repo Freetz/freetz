@@ -4,6 +4,7 @@ $(PKG)_SOURCE_SHA1_ABANDON:=fbeffb7cb5a2e8cb881024b2f99a794a704f37ae
 $(PKG)_SOURCE_SHA1_CURRENT:=a15013a8f32953aa8c429f911271b8c14d0375cf
 $(PKG)_SOURCE_SHA1:=$(MBEDTLS_SOURCE_SHA1_$(if $(FREETZ_AVM_GCC_4_MAX),ABANDON,CURRENT))
 $(PKG)_SITE:=https://github.com/ARMmbed/mbedtls/archive,https://tls.mbed.org/download
+### VERSION:=2.7.19/2.28.0
 
 $(PKG)_CONDITIONAL_PATCHES+=$(if $(FREETZ_AVM_GCC_4_MAX),abandon,current)
 

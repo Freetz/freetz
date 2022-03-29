@@ -5,6 +5,7 @@ $(PKG)_LIB_VERSION:=4.4.4
 $(PKG)_SOURCE:=$($(PKG)_DIR_COMPONENT).tar.$(if $(FREETZ_LIB_libusb_0_WITH_COMPAT),bz2,gz)
 $(PKG)_SOURCE_MD5:=$(if $(FREETZ_LIB_libusb_0_WITH_COMPAT),55fee3316a1a167a74f8017406cc598b,caf182cbc7565dac0fd72155919672e6)
 $(PKG)_SITE:=$(if $(FREETZ_LIB_libusb_0_WITH_COMPAT),https://github.com/libusb/libusb-compat-0.1/releases/download/v$($(PKG)_VERSION),@SF/$(pkg))
+### VERSION:=0.1.7/0.1.12
 
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$($(PKG)_DIR_COMPONENT)
 
