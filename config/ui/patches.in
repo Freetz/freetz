@@ -114,7 +114,7 @@ config FREETZ_REMOVE_DSLD
 	default n
 	depends on FREETZ_AVM_HAS_DSLD
 	select FREETZ_REMOVE_UPNP
-	select FREETZ_REMOVE_KIDS if ! \
+	select FREETZ_REMOVE_KIDS if FREETZ_AVM_HAS_KIDS && ! \
 		( \
 		FREETZ_TYPE_5140 || \
 		FREETZ_TYPE_7112 || \
