@@ -2,7 +2,6 @@
 
 DAEMON=wireguard
 DAEMON_LONG_NAME="WireGuard"
-DAEMON_CHECK=wg-crypt-wg0
 
 . /etc/init.d/modlibrc
 
@@ -17,6 +16,7 @@ start() {
 		ip -6 address add $WIREGUARD_IP6 dev $WIREGUARD_INTERFACE
 	fi
 	wg setconf $WIREGUARD_INTERFACE /tmp/flash/wireguard/wireguard.conf
+	grep "^wg-crypt-$WIREGUARD_INTERFACE$" /proc/*/comm | sed 's,^/proc/,,;s,/.*,,' > $PID_FILE
 	if [ -n "$WIREGUARD_MTU" ]; then
 		ip link set mtu "$WIREGUARD_MTU" up dev $WIREGUARD_INTERFACE
 	else
