@@ -3,6 +3,7 @@ $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_SHA256:=97fc51ac2b085d4cde31ef4d2c3122c21abc217e9090a43a30fc5ec21684e059
 $(PKG)_SITE:=@GNU/$(pkg)
+# run make/libs/ncurses/generate.sh after bump
 
 $(PKG)_HOST_DEPENDS_ON += ncurses-host
 

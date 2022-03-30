@@ -39,35 +39,35 @@ for O in `find toolchain/target/share/terminfo -type f -o -type l | sort`; do
 	DEFAULT="$(for I in $DEFAULTSET; do [ "$I" = "$FILE" ] && echo "y"; done)"
 	[ -z "$DEFAULT" ] && DEFAULT="n"
 
-	echo "config FREETZ_SHARE_terminfo_$ID"
-	echo "	bool \"$FILE ($SIZE Bytes)\""
+	echo -e "\tconfig FREETZ_SHARE_terminfo_$ID"
+	echo -e "\t\tbool \"$FILE ($SIZE Bytes)\""
 
 	if [ "$DEFAULT" = "y" ]; then
-		echo "	depends on FREETZ_SHARE_terminfo"
+		echo -e "\t\tdepends on FREETZ_SHARE_terminfo"
 	else
-		echo "	depends on FREETZ_SHARE_terminfo_showall"
+		echo -e "\t\tdepends on FREETZ_SHARE_terminfo_showall"
 	fi
 
 	if [ -n "$TARGET_ID" ]; then
-		echo "	select FREETZ_SHARE_terminfo_${TARGET_ID}"
+		echo -e "\t\tselect FREETZ_SHARE_terminfo_${TARGET_ID}"
 	fi
 
-	echo "	default $DEFAULT"
-	echo ""
+	echo -e "\t\tdefault $DEFAULT"
+	echo -e ""
 done
 
 cat <<"EOF"
-config FREETZ_SHARE_terminfo_showall
-	bool "Show all items"
-	default n
-	help
-		Terminfo is a library and database that enables programs to use display
-		terminals in a device-independent manner. This allows external programs
-		to be able to have character-based display output, independent of the
-		type of terminal.
+	config FREETZ_SHARE_terminfo_showall
+		bool "Show all items"
+		default n
+		help
+			Terminfo is a library and database that enables programs to use display
+			terminals in a device-independent manner. This allows external programs
+			to be able to have character-based display output, independent of the
+			type of terminal.
 
-		The default selection for the Freetz should be sufficient for most
-		cases. However, you can extend the selection to fit your own requirements.
+			The default selection for the Freetz should be sufficient for most
+			cases. However, you can extend the selection to fit your own requirements.
 
 endif # FREETZ_SHARE_terminfo
 
