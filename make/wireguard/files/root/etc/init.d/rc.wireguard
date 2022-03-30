@@ -10,19 +10,19 @@ start() {
 	echo -n "Starting ${DAEMON_LONG_NAME} ... "
 	[ -n "$WIREGUARD_PRE_UP" ] && eval "$WIREGUARD_PRE_UP"
 	modprobe wireguard
-	ip link add dev wg0 type wireguard
-	ip address add $WIREGUARD_IP dev wg0
+	ip link add dev $WIREGUARD_INTERFACE type wireguard
+	ip address add $WIREGUARD_IP dev $WIREGUARD_INTERFACE
 	if [ -n "$WIREGUARD_IP6" ]; then
-		sysctl -w net.ipv6.conf.wg0.disable_ipv6=0
-		ip -6 address add $WIREGUARD_IP6 dev wg0
+		sysctl -w net.ipv6.conf.$WIREGUARD_INTERFACE.disable_ipv6=0
+		ip -6 address add $WIREGUARD_IP6 dev $WIREGUARD_INTERFACE
 	fi
-	wg setconf wg0 /tmp/flash/wireguard/wireguard.conf
+	wg setconf $WIREGUARD_INTERFACE /tmp/flash/wireguard/wireguard.conf
 	if [ -n "$WIREGUARD_MTU" ]; then
-		ip link set mtu "$WIREGUARD_MTU" up dev wg0
+		ip link set mtu "$WIREGUARD_MTU" up dev $WIREGUARD_INTERFACE
 	else
-		ip link set wg0 up
+		ip link set $WIREGUARD_INTERFACE up
 	fi
-	wg show wg0 allowed-ips | while read peer ip; do for i in $ip; do [ "$i" != "0.0.0.0/0" ] && ip route add $i dev wg0 ; done ; done
+	wg show $WIREGUARD_INTERFACE allowed-ips | while read peer ip; do for i in $ip; do [ "$i" != "0.0.0.0/0" ] && ip route add $i dev $WIREGUARD_INTERFACE ; done ; done
 	[ -n "$WIREGUARD_POST_UP" ] && eval "$WIREGUARD_POST_UP"
 	modreg status $DAEMON $DAEMON_LONG_NAME peers
 	echo 'done.'
@@ -31,9 +31,9 @@ start() {
 stop() {
 	modunreg status $DAEMON peers
 	[ -n "$WIREGUARD_PRE_DOWN" ] && eval "$WIREGUARD_PRE_DOWN"
-	wg show wg0 allowed-ips | while read peer ip; do for i in $ip; do [ "$i" != "0.0.0.0/0" ] && ip route del $i dev wg0 ; done ; done
-	ip link set wg0 down
-	ip link delete dev wg0 type wireguard
+	wg show $WIREGUARD_INTERFACE allowed-ips | while read peer ip; do for i in $ip; do [ "$i" != "0.0.0.0/0" ] && ip route del $i dev $WIREGUARD_INTERFACE ; done ; done
+	ip link set $WIREGUARD_INTERFACE down
+	ip link delete dev $WIREGUARD_INTERFACE type wireguard
 	[ -n "$WIREGUARD_POST_DOWN" ] && eval "$WIREGUARD_POST_DOWN"
 	return
 }
