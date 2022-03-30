@@ -10,9 +10,10 @@ config FREETZ_LIB_libapr
 		library that provides a predictable and consistent interface to
 		underlying platform-specific implementations.
 
-config FREETZ_LIB_libapr_WITH_DSO
-	select FREETZ_LIB_libdl if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
-	bool "Build with DSO support" if FREETZ_LIB_libapr
-	default n
-	help
-		This option enables DSO support in libapr.
+	config FREETZ_LIB_libapr_WITH_DSO
+		select FREETZ_LIB_libdl if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+		bool "Build with DSO support" if FREETZ_LIB_libapr
+		default n
+		help
+			This option enables DSO support in libapr.
+

@@ -70,7 +70,7 @@ Index:
   * **<u>gettext: libintl (libintl.so)</u><a id='gettext'></a>**<br>
     GNU Internationalization library
 
-  * **<u>GLib2 (libglib-2.0.so)</u><a id='glib2'></a>**<br>
+  * **<u>GLib2 libglib (libglib-2.0.so)</u><a id='glib2'></a>**<br>
     GLib is a library containing many useful C routines for things such as trees, hashes, and lists.
 
   * **<u>gmp: GNU MP Bignum Library (libgmp.so)</u><a id='gmp'></a>**<br>
@@ -105,8 +105,8 @@ Index:
 
   * **<u>libavmacl2</u><a id='libavmacl2'></a>**<br>
 
-  * **<u>libavmhmac: Replace libavmhmac - EXPERIMENTAL</u><a id='libavmhmac'></a>**<br>
-    Our libavmhmac only forwards functions to openssl's libcrypto where AVM wrote their own implementations. We have no clue why they did this.
+  * **<u>libavmhmac (libavmhmac.so) - EXPERIMENTAL</u><a id='libavmhmac'></a>**<br>
+    Replaces AVM's libavmhmac. Our libavmhmac only forwards functions to openssl's libcrypto where AVM wrote their own implementations. We have no clue why they did this.
 
   * **<u>libcap (libcap.so)</u><a id='libcap'></a>**<br>
     A library for getting and setting POSIX.1e (formerly POSIX 6) draft 15 capabilities.
@@ -123,7 +123,7 @@ Index:
   * **<u>libdaemon (libdaemon.so)</u><a id='libdaemon'></a>**<br>
     Libdaemon is a lightweight C library that eases the writing of UNIX daemons.
 
-  * **<u>libdnet (libdnet)</u><a id='libdnet'></a>**<br>
+  * **<u>libdnet (libdnet.so)</u><a id='libdnet'></a>**<br>
     libdnet provides a simplified, portable interface to several low-level networking routines, including: * network address manipulation * kernel arp(4) cache and route(4) table lookup and manipulation * network firewalling (IP filter, ipfw, ipchains, pf, PktFilter, ...) * network interface lookup and manipulation * IP tunnelling (BSD/Linux tun, Universal TUN/TAP device) * raw IP packet and Ethernet frame transmission http://libdnet.sourceforge.net/ dnet is a simple test program for the dnet(3) library. It can be used to compose and transmit network datagrams as a Unix-style filter (e.g. reading from or writing to files and pipes) or modify the local system network configuration (including the ARP cache, firewall ruleset, network interfaces, and routing table). http://libdnet.sourceforge.net/dnet.8.txt
 
   * **<u>libdvbcsa (libdvbcsa.so)</u><a id='libdvbcsa'></a>**<br>
@@ -301,7 +301,7 @@ Index:
 
 ### R
 
-  * **<u>readline: libreadline.so</u><a id='readline'></a>**<br>
+  * **<u>readline: libreadline (libreadline.so)</u><a id='readline'></a>**<br>
     The Readline library provides a set of functions for use by applications that allow users to edit command lines as they are typed in. Both Emacs and vi editing modes are available. The Readline library includes additional functions to maintain a list of previously-entered command lines, to recall and perhaps reedit those lines, and perform csh-like history expansion on previous commands.
 
 ### S
@@ -328,7 +328,7 @@ Index:
 
 ### U
 
-  * **<u>uclibc: ld-uClibc-x.y.z.so</u><a id='uclibc'></a>**<br>
+  * **<u>uclibc: ld-uClibc (ld-uClibc-x.y.z.so)</u><a id='uclibc'></a>**<br>
     uClibc is a small C standard library intended for embedded Linux systems. uClibc was created to support uClinux, a version of Linux not requiring a memory management unit and thus suited for microcontrollers (hence the "uC" in the name - "u" is a replacement for the Greek character "miu" often used as an abbreviation for the prefix "micro"). uClibc is much smaller than GNU C Library (glibc), the C library normally used with Linux distributions. While glibc is intended to fully support all relevant C standards across a wide range of platforms, uClibc is specifically focused on embedded Linux. Features can be enabled or disabled according to space requirements.
 
   * **<u>uclibcxx: uClibc++ (libuClibc++.so.0.2.5)</u><a id='uclibcxx'></a>**<br>

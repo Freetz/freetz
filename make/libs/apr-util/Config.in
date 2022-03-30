@@ -8,9 +8,10 @@ config FREETZ_LIB_libaprutil
 		APR Util is a utilities library implemented on top of APR, providing
 		database access, xml parsing, and other useful functionality.
 
-config FREETZ_LIB_libaprutil_WITH_LIBDB
-	select FREETZ_LIB_libdb
-	bool "Build with Berkeley-DB support" if FREETZ_LIB_libaprutil
-	default n
-	help
-		This option enables Berkeley-DB support in libaprutil.
+	config FREETZ_LIB_libaprutil_WITH_LIBDB
+		select FREETZ_LIB_libdb
+		bool "Build with Berkeley-DB support" if FREETZ_LIB_libaprutil
+		default n
+		help
+			This option enables Berkeley-DB support in libaprutil.
+

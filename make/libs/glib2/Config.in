@@ -1,5 +1,5 @@
 config FREETZ_LIB_libglib_2
-	bool "GLib2 (libglib-2.0.so)"
+	bool "GLib2 libglib (libglib-2.0.so)"
 	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_0_9_28
 	select FREETZ_LIB_libpcre
 	select FREETZ_LIB_libpthread if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
@@ -9,7 +9,7 @@ config FREETZ_LIB_libglib_2
 		trees, hashes, and lists.
 
 config FREETZ_LIB_libgio_2
-	bool "libgio-2.0.so"
+	bool "GLib2 libgio (libgio-2.0.so)"
 	select FREETZ_LIB_libglib_2
 	select FREETZ_LIB_libgmodule_2
 	select FREETZ_LIB_libgobject_2
@@ -20,7 +20,7 @@ config FREETZ_LIB_libgio_2
 		Input, output and streaming API of GLib.
 
 config FREETZ_LIB_libgobject_2
-	bool "libgobject-2.0.so"
+	bool "GLib2 libgobject (libgobject-2.0.so)"
 	select FREETZ_LIB_libglib_2
 	select FREETZ_LIB_libgthread_2
 	select FREETZ_LIB_libffi
@@ -29,7 +29,7 @@ config FREETZ_LIB_libgobject_2
 		If your application uses Glib2 GObjects, select this library.
 
 config FREETZ_LIB_libgmodule_2
-	bool "libgmodule-2.0.so"
+	bool "GLib2 libgmodule (libgmodule-2.0.so)"
 	select FREETZ_LIB_libglib_2
 	select FREETZ_LIB_libdl if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	default n
@@ -37,8 +37,9 @@ config FREETZ_LIB_libgmodule_2
 		If your application uses Glib2 modules (plug-ins), select this library.
 
 config FREETZ_LIB_libgthread_2
-	bool "libgthread-2.0.so"
+	bool "GLib2 libgthread (libgthread-2.0.so)"
 	select FREETZ_LIB_libglib_2
 	default n
 	help
 		If your application uses Glib2 threads, select this library.
+

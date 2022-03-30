@@ -1,7 +1,9 @@
 config FREETZ_LIB_libavmhmac
-	bool "Replace libavmhmac - EXPERIMENTAL"
+	bool "libavmhmac (libavmhmac.so) - EXPERIMENTAL"
 	depends on FREETZ_REPLACE_OPENSSL
 	default n
 	help
+		Replaces AVM's libavmhmac.
 		Our libavmhmac only forwards functions to openssl's libcrypto where AVM
 		wrote their own implementations. We have no clue why they did this.
+

@@ -8,9 +8,10 @@ config FREETZ_LIB_libxml2
 	help
 		XML toolkit from the GNOME project
 
-config FREETZ_LIB_libxml2_WITH_HTML
-	bool "build libxml2 with html support" if FREETZ_LIB_libxml2
-	default n
-	help
-		Adds html parsing capability to libxml2. This increases the size of
-		libxml2 by 120kB. Html parsing is required to build libxslt.
+	config FREETZ_LIB_libxml2_WITH_HTML
+		bool "build libxml2 with html support" if FREETZ_LIB_libxml2
+		default n
+		help
+			Adds html parsing capability to libxml2. This increases the size of
+			libxml2 by 120kB. Html parsing is required to build libxslt.
+

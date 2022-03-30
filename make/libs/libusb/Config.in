@@ -5,14 +5,18 @@ config FREETZ_LIB_libusb_0
 	help
 		A library for accessing Linux USB devices (legacy API).
 
-choice
-	prompt "implemented using"
-		depends on FREETZ_LIB_libusb_0
-		default FREETZ_LIB_libusb_0_WITH_LEGACY
+if FREETZ_LIB_libusb_0
 
-	config FREETZ_LIB_libusb_0_WITH_LEGACY
-		bool "legacy library"
+	choice
+		prompt "implemented using"
+			default FREETZ_LIB_libusb_0_WITH_LEGACY
 
-	config FREETZ_LIB_libusb_0_WITH_COMPAT
-		bool "libusb-1.0 compat layer"
-endchoice
+		config FREETZ_LIB_libusb_0_WITH_LEGACY
+			bool "legacy library"
+
+		config FREETZ_LIB_libusb_0_WITH_COMPAT
+			bool "libusb-1.0 compat layer"
+	endchoice
+
+endif # FREETZ_LIB_libusb_0
+
