@@ -15,7 +15,7 @@ Mit Wireguard kann ein VPN aufgebaut werden. Es ist schneller als [OpenVPN](open
 
  - Ein Wireguard-Client auf der Fritzbox kann nicht als Default-Gateway verwendet werden, siehe [ip-phone-forum.de/threads/304914/](https://www.ip-phone-forum.de/threads/304914/).
  - Falls der Wireguard-Server nicht der Router ist muss auf dem Router eine Route zum IP-Bereich von Wireguard eingerichtet werden.
-
+ - Um AVM-VoIP über Wireguard nutzen zu können muss der Interfacename in "tun0" geändert werden.
 
 ### Datendurchsatz
 Erfahrungswerte mit verschiedener Hardware.
