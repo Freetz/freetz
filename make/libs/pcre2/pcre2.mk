@@ -47,7 +47,7 @@ $($(PKG)_STAGING_BINARY) $($(PKG)_POSIX_STAGING_BINARY): $($(PKG)_BINARY) $($(PK
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcre2-8.la \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libpcre2-posix.la \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/pcre2-config \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libpcre2-8.pc
+		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libpcre2-8.pc \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libpcre2-posix.pc
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
