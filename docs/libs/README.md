@@ -76,6 +76,9 @@ Index:
   * **<u>gmp: GNU MP Bignum Library (libgmp.so)</u><a id='gmp'></a>**<br>
     GNU MP Bignum Library The GMP library provides arbitrary precision arithmetic, operating on signed integers, rational numbers, and floating point numbers. It can be used to implement cryptographic algorithms.
 
+  * **<u>gsasl: libgsasl (libgsasl.so)</u><a id='gsasl'></a>**<br>
+    GNU SASL is an implementation of the Simple Authentication and Security Layer framework and a few common SASL mechanisms. SASL is used by network servers (e.g., IMAP, SMTP, XMPP) to request authentication from clients, and in clients to authenticate against servers.
+
 ### I
 
   * **<u>iksemel: libiksemel (libiksemel.so)</u><a id='iksemel'></a>**<br>
@@ -164,6 +167,9 @@ Index:
 
   * **<u>libid3tag (libid3tag.so)</u><a id='libid3tag'></a>**<br>
     ID3 tag manipulation library
+
+  * **<u>libidn (libidn.so)</u><a id='libidn'></a>**<br>
+    GNU Libidn is a fully documented implementation of the Stringprep, Punycode and IDNA 2003 specifications. Libidn's purpose is to encode and decode internationalized domain names.
 
   * **<u>libmad (libmad.so)</u><a id='libmad'></a>**<br>
     MAD is a high-quality MPEG audio decoder. It currently supports MPEG-1 and the MPEG-2 extension to Lower Sampling Frequencies, as well as the so-called MPEG 2.5 format. All three audio layers (Layer I, Layer II, and Layer III a.k.a. MP3) are fully implemented.
@@ -333,6 +339,9 @@ Index:
 
   * **<u>uclibcxx: uClibc++ (libuClibc++.so.0.2.5)</u><a id='uclibcxx'></a>**<br>
     An implementation of the Standard C++ Library optimized for embedded systems.
+
+  * **<u>udns: libudns (libudns.so)</u><a id='udns'></a>**<br>
+    UDNS is a stub DNS resolver library with ability to perform both syncronous and asyncronous DNS queries.
 
 ### Y
 

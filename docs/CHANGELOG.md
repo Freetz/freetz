@@ -80,13 +80,16 @@ Latest changes
    * HAProxy 2.5.4
    * iksemel 3.1.1
    * libexif 0.6.24
+   * libgsasl 1.10.0
    * libgcrypt 1.9.4
    * libgpg-error 1.43
-   * lighttpd 1.4.64
+   * libidn 1.38
    * libmaxminddb 1.6.0
    * libneon 0.32.1
    * libnfsidmap 0.27
+   * libudns 0.4
    * libusb1 1.0.23/1.0.25
+   * lighttpd 1.4.64
    * LCD4linux e2cfdc5-git
    * mbed TLS 2.7.19/2.28.0
    * minicom 2.8

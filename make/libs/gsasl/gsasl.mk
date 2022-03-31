@@ -19,7 +19,6 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(GSASL_DIR) all
-	file $(GSASL_BINARY)
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	$(SUBMAKE) -C $(GSASL_DIR) \
@@ -37,10 +36,10 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(GSASL_DIR) clean
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/$(GSASL_LIBNAME_SHORT).so
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/$(GSASL_LIBNAME_SHORT)*
 
 $(pkg)-uninstall:
-	$(RM) $(GSASL_DEST_LIB)/$(GSASL_LIBNAME_SHORT).so
+	$(RM) $(GSASL_DEST_LIB)/$(GSASL_LIBNAME_SHORT).so*
 
 $(PKG_FINISH)
 

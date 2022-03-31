@@ -18,7 +18,7 @@ $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(LIBIDN_DIR) all
-
+	@touch $@
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	$(SUBMAKE) -C $(LIBIDN_DIR) \
@@ -37,7 +37,7 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(LIBIDN_DIR) clean
-	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/$(LIBIDN_LIBNAME_SHORT).so*
+	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/lib/$(LIBIDN_LIBNAME_SHORT)*
 
 $(pkg)-uninstall:
 	$(RM) $(LIBIDN_DEST_LIB)/$(LIBIDN_LIBNAME_SHORT).so*
