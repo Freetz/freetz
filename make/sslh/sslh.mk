@@ -1,7 +1,11 @@
 $(call PKG_INIT_BIN,v1.19c)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_MD5:=a9bfd58cd3a51b8e1fa5277404c7041a
-$(PKG)_SITE:=http://rutschle.net/tech/sslh
+$(PKG)_SITE:=https://www.rutschle.net/tech/sslh
+### WEBSITE:=https://www.rutschle.net/tech/sslh/README.html
+### MANPAGE:=https://www.rutschle.net/tech/sslh/doc/config
+### CHANGES:=https://www.rutschle.net/tech/sslh/download.html
+### CVSREPO:=https://github.com/yrutschle/sslh
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/sslh-fork
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/sslh

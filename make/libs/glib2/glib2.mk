@@ -3,7 +3,11 @@ $(PKG)_LIB_VERSION:=0.3200.4
 $(PKG)_MAJOR_VERSION:=2.0
 $(PKG)_SOURCE:=glib-$($(PKG)_VERSION).tar.xz
 $(PKG)_SOURCE_MD5:=bf84fefd9c1a5b5a7a38736f4ddd674a
-$(PKG)_SITE:=ftp://ftp.gnome.org/pub/gnome/sources/glib/2.32
+$(PKG)_SITE:=https://download.gnome.org/sources/glib/$(call GET_MAJOR_VERSION,$($(PKG)_VERSION)),ftp://ftp.gnome.org/pub/gnome/sources/glib/$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
+### WEBSITE:=https://www.gtk.org/
+### MANPAGE:=https://docs.gtk.org/glib/
+### CHANGES:=https://gitlab.gnome.org/GNOME/glib/blob/main/NEWS
+### CVSREPO:=https://gitlab.gnome.org/GNOME/glib
 
 $(PKG)_LIBNAMES_SHORT := glib gobject gmodule gthread gio
 $(PKG)_LIBNAMES_LONG := $($(PKG)_LIBNAMES_SHORT:%=lib%-$($(PKG)_MAJOR_VERSION).so.$($(PKG)_LIB_VERSION))
