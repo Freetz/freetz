@@ -100,6 +100,7 @@ Latest changes
    * OpenSSL 0.9.8zh/1.0.2u/1.1.1n/3.0.2
    * OpenVPN 2.4.12/2.5.6
    * pcre 8.45
+   * pcre2 10.39
    * PCSC-lite 1.9.5
    * socat 1.7.4.2
    * SQLite 3.37.0

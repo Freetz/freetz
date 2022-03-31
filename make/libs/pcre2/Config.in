@@ -1,0 +1,14 @@
+config FREETZ_LIB_libpcre2
+	bool "libpcre2 (libpcre2-8.so)"
+	default n
+	help
+		A Perl Compatible Regular Expression library
+
+config FREETZ_LIB_libpcre2_posix
+	bool "libpcre2-posix (libpcre2-posix.so)"
+	select FREETZ_LIB_libpcre2
+	default n
+	help
+		A POSIX wrapper interface to the Perl Compatible Regular Expression
+		library
+
