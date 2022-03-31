@@ -11,11 +11,25 @@ for dir in $(find "$INPWD" -maxdepth 1 -mindepth 1 -type d | sort); do
 	lib="${dir##*/}"
 	[ "${lib:0:1}" != "$IDX" ] && IDX="${lib:0:1}" && echo -e "\n### ${IDX^^}"
 
+	ver="$(sed -rn "s/^### VERSION:= *(.*)/ \1/p" $dir/*.mk 2>/dev/null)"
+	[ -z "$ver" ] && ver="$(sed -n 's/^\$(call PKG_INIT_LIB, *v*\(.*\))/ \1/p' $dir/*.mk 2>/dev/null)"
 	dsc="$(sed -rn 's/[ \t]*bool "(.*)"[ \t]*/\1/p' "$INPWD/$lib/Config.in" 2>/dev/null | head -n1)"
 	[ -z "$dsc" ] && dsc="$lib" && echo "ignored: $lib" 1>&2
-	[ "$dsc" != "$(echo "$dsc" | sed "s/^$lib//I")" ] && itm="$dsc" || itm="$lib: $dsc"
+	[ "$dsc" != "$(echo "$dsc" | sed "s/^$lib//I")" ] && itm="$dsc$ver" || itm="$lib: $dsc$ver"
 	anc="${lib//_/-}"
-	echo -e "\n  * **<u>$itm</u><a id='${anc%-cgi}'></a>**<br>"
+	echo -e "\n  * **[$itm]($lib.md)<a id='${anc%-cgi}'></a>**<br>"
+
+	echo > "$MDPWD/$lib.md"
+	while [ "0$(awk 'END{print NR}' "$MDPWD/$lib.md" 2>/dev/null)" -lt 2 ]; do echo >> "$MDPWD/$lib.md"; done
+	sed "1c# $itm" -i "$MDPWD/$lib.md"
+	lnk="https://github.com/Freetz-NG/freetz-ng/tree/master/make/libs/$lib/"
+	sed "/^ - Library: \[.*)$/d" -i "$MDPWD/$lib.md"
+	sed "2i\ - Library: \[${lnk:44}\]($lnk)" -i "$MDPWD/$lib.md"
+	for pair in CVSREPO°Repository CHANGES°Changelog MANPAGE°Manpage WEBSITE°Homepage; do
+		sed "/^ - ${pair#*°}: \[.*)$/d" -i "$MDPWD/$lib.md"
+		lnk="$(sed -n "s/^### ${pair%%°*}:= *//p" $INPWD/$lib/*.mk 2>/dev/null)"
+		[ -n "$lnk" ] && sed "2i\ - ${pair#*°}: \[$lnk\]($lnk)" -i "$MDPWD/$lib.md"
+	done
 
 	L="$(grep -P '^[ \t]*help[ \t]*$' -nm1 "$INPWD/$lib/Config.in" 2>/dev/null | sed 's/:.*//')"
 	C="$(wc -l "$INPWD/$lib/Config.in" 2>/dev/null  | sed 's/ .*//')"
@@ -24,7 +38,7 @@ for dir in $(find "$INPWD" -maxdepth 1 -mindepth 1 -type d | sort); do
 	N="$(tail -n "$T" "$INPWD/$lib/Config.in" | grep -P "^[ \t]*(#|(end)*if|config|bool|string|int|depends on|(end)*menu|comment|menuconfig|(end)*choice|prompt|select|default|source|help)($|\t| )" -n | head -n1 | sed 's/:.*//')"
 	help="$(tail -n "$T" "$INPWD/$lib/Config.in" | head -n "$(( ${N:-99} - 1 ))" | grep -vP '^[ \t]*$' | sed 's/[ \t]*$//g;s/^[ \t]*//g;s/$/ /g' | tr -d '\n' | sed 's/ $//')"
 	[ -z "$help" ] && echo "nohelp2: $lib" 1>&2 && continue
-	echo "    $help"
+	echo "$help" | tee -a "$MDPWD/$lib.md" | sed 's/^/    /'
 
 done >> "$MDPWD/README.md"
 
