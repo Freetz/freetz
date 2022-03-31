@@ -1,4 +1,4 @@
-# sslh 1.19c
+# sslh 1.22c
  - Homepage: [https://www.rutschle.net/tech/sslh/README.html](https://www.rutschle.net/tech/sslh/README.html)
  - Manpage: [https://www.rutschle.net/tech/sslh/doc/config](https://www.rutschle.net/tech/sslh/doc/config)
  - Changelog: [https://www.rutschle.net/tech/sslh/download.html](https://www.rutschle.net/tech/sslh/download.html)

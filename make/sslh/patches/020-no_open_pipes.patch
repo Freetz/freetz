@@ -1,9 +1,9 @@
 --- sslh-main.c
 +++ sslh-main.c
-@@ -637,13 +637,10 @@
+@@ -215,13 +215,10 @@
  #endif
  
-    if (!foreground) {
+    if (!cfg.foreground) {
 -       if (fork() > 0) exit(0); /* Detach */
 -
 -       /* New session -- become group leader */
