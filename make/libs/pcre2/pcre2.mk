@@ -73,7 +73,6 @@ $(pkg)-clean:
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/pcre2test \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libpcre2-8.pc \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libpcre2-posix.pc \
-		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/man/man?/pcre2* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/doc/pcre2/
 
 $(pkg)-uninstall:
