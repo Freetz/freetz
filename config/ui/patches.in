@@ -114,20 +114,14 @@ config FREETZ_REMOVE_DSLD
 	default n
 	depends on FREETZ_AVM_HAS_DSLD
 	select FREETZ_REMOVE_UPNP
-	select FREETZ_REMOVE_KIDS if FREETZ_AVM_HAS_KIDS && ! \
-		( \
-		FREETZ_TYPE_5140 || \
-		FREETZ_TYPE_7112 || \
-		FREETZ_TYPE_7113 || \
-		FREETZ_TYPE_W501V \
-		)
+	select FREETZ_REMOVE_KIDS if FREETZ_AVM_HAS_KIDS
 	help
 		Remove DSL daemon (dsld), if you are planning to use your box as a simple
 		IP client ("Internet mitbenuten") without routing.
 		ATA ("via Lan1") and DSL mode will not work anymore.
 
 		ATTENTION: You won't be able to use your box as a modem nor a router anymore.
-		As well do *not* use this option if your ATA mode box uses PPoE passthrough,
+		As well do *not* use this option if your ATA mode box uses PPPoE passthrough,
 		because in this case dsld is still needed! Furthermore, selecting this patch
 		also selects the UPnP patch, because UPnP must be deactivated anyway for
 		IP clients, otherwise dsld will be used again.
