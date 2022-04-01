@@ -24,13 +24,13 @@ if FREETZ_PACKAGE_LIGHTTPD
 
 	choice
 		prompt "Use pcre"
-		default FREETZ_PACKAGE_LIGHTTPD_PCRE_V2
+		default FREETZ_PACKAGE_LIGHTTPD_WITH_PCRE2
 
-		config FREETZ_PACKAGE_LIGHTTPD_PCRE_V1
+		config FREETZ_PACKAGE_LIGHTTPD_WITH_PCRE1
 		bool "version 1"
 		select FREETZ_LIB_libpcre
 
-		config FREETZ_PACKAGE_LIGHTTPD_PCRE_V2
+		config FREETZ_PACKAGE_LIGHTTPD_WITH_PCRE2
 		bool "version 2"
 		select FREETZ_LIB_libpcre2
 	endchoice
@@ -55,7 +55,6 @@ if FREETZ_PACKAGE_LIGHTTPD
 
 	config FREETZ_PACKAGE_LIGHTTPD_WITH_SSL
 		bool "Build with SSL support"
-		select FREETZ_PACKAGE_LIGHTTPD_MOD_OPENSSL
 		default n
 		help
 			This option enables HTTPS support for lighttpd.
@@ -64,17 +63,17 @@ if FREETZ_PACKAGE_LIGHTTPD
 
 		choice
 			prompt "Provided by"
-			default FREETZ_PACKAGE_LIGHTTPD_MOD_OPENSSL
+			default FREETZ_PACKAGE_LIGHTTPD_WITH_OPENSSL
 				help
 					This option adds the selected file to the image.
 					Please see https://redmine.lighttpd.net/wiki/1/Docs:SSL
 					for more information on the module.
 
-			config FREETZ_PACKAGE_LIGHTTPD_MOD_OPENSSL
+			config FREETZ_PACKAGE_LIGHTTPD_WITH_OPENSSL
 				bool "mod_openssl"
 				select FREETZ_LIB_libcrypto
 
-			config FREETZ_PACKAGE_LIGHTTPD_MOD_MBEDTLS
+			config FREETZ_PACKAGE_LIGHTTPD_WITH_MBEDTLS
 				bool "mod_mbedtls - EXPERIMENTAL"
 				select FREETZ_LIB_libmbedcrypto
 
@@ -83,7 +82,7 @@ if FREETZ_PACKAGE_LIGHTTPD
 #				bool "mod_wolfssl - EXPERIMENTAL"
 #				select FREETZ_LIB_...
 
-			config FREETZ_PACKAGE_LIGHTTPD_MOD_GNUTLS
+			config FREETZ_PACKAGE_LIGHTTPD_WITH_GNUTLS
 				bool "mod_gnutls - EXPERIMENTAL"
 				select FREETZ_LIB_libgnutls
 
