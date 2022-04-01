@@ -1,7 +1,6 @@
 menuconfig FREETZ_PACKAGE_LIGHTTPD
 	bool "lighttpd 1.4.64"
 	select FREETZ_LIB_libpthread if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
-	select FREETZ_LIB_libpcre2
 	select FREETZ_PACKAGE_LIGHTTPD_MOD_ACCESS
 	select FREETZ_PACKAGE_LIGHTTPD_MOD_INDEXFILE
 	select FREETZ_PACKAGE_LIGHTTPD_MOD_STATICFILE
@@ -22,6 +21,19 @@ menuconfig FREETZ_PACKAGE_LIGHTTPD
 
 if FREETZ_PACKAGE_LIGHTTPD
 
+
+	choice
+		prompt "Use pcre"
+		default FREETZ_PACKAGE_LIGHTTPD_PCRE_V2
+
+		config FREETZ_PACKAGE_LIGHTTPD_PCRE_V1
+		bool "version 1"
+		select FREETZ_LIB_libpcre
+
+		config FREETZ_PACKAGE_LIGHTTPD_PCRE_V2
+		bool "version 2"
+		select FREETZ_LIB_libpcre2
+	endchoice
 
 	config FREETZ_PACKAGE_LIGHTTPD_LDD
 		bool "Include LDD support"
