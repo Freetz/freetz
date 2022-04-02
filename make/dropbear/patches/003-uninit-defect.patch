@@ -1,5 +1,5 @@
-If md5_done doesn't return CRYPT_OK then hs may be uninitialized in
-sign_key_md5_fingerprint().
+If sha256_done doesn't return CRYPT_OK then hs may be uninitialized in
+sign_key_sha256_fingerprint().
 
 It is unlikely, but listensocks may not have all of its fds filled in.
 Setting them to 0 early on makes sure that there is at least a known
@@ -17,23 +17,23 @@ diff --git signkey.c signkey.c
 index c1ef5e2..14cd8d8 100644
 --- signkey.c
 +++ signkey.c
-@@ -527,7 +527,8 @@
- 	/* skip the size int of the string - this is a bit messy */
- 	md5_process(&hs, keyblob, keybloblen);
+@@ -557,7 +557,8 @@
  
--	md5_done(&hs, hash);
-+	if (md5_done(&hs, hash) != CRYPT_OK)
+ 	sha256_init(&hs);
+ 	sha256_process(&hs, keyblob, keybloblen);
+-	sha256_done(&hs, hash);
++	if (sha256_done(&hs, hash) != CRYPT_OK)
 +		return NULL;
  
- 	/* "md5 hexfingerprinthere\0", each hex digit is "AB:" etc */
- 	buflen = 4 + 3*MD5_HASH_SIZE;
+ 	/* eg "SHA256:P9szN0L2ls6KxkVv7Bppv3asnZCn03rY7Msm/c8+ZgA"
+ 	 * 256/6 = 42.66 => 43 base64 chars. OpenSSH discards
 diff --git svr-main.c svr-main.c
 index f7ce221..76ace97 100644
 --- svr-main.c
 +++ svr-main.c
-@@ -128,6 +128,7 @@
- 	int childsock;
- 	int childpipe[2];
+@@ -145,6 +145,7 @@
+ 	(void)argv;
+ 	(void)multipath;
  
 +	memset(listensocks, 0, sizeof(listensocks));
  	/* Note: commonsetup() must happen before we daemon()ise. Otherwise

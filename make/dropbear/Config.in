@@ -2,7 +2,7 @@ comment "Dropbear (not available, needs replace kernel for pty-support)"
 	depends on !FREETZ_REPLACE_KERNEL && !FREETZ_AVM_HAS_PTY_SUPPORT && !FREETZ_SHOW_ADVANCED
 
 config FREETZ_PACKAGE_DROPBEAR
-	bool "Dropbear 2020.81"
+	bool "Dropbear 2022.82"
 	depends on FREETZ_REPLACE_KERNEL || FREETZ_AVM_HAS_PTY_SUPPORT || FREETZ_SHOW_ADVANCED
 	select FREETZ_LIB_libutil if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	default y
@@ -31,89 +31,89 @@ config FREETZ_PACKAGE_DROPBEAR
 
 if FREETZ_PACKAGE_DROPBEAR
 
-comment "Hint: Select replace kernel if need pty-support"
-	depends on !FREETZ_REPLACE_KERNEL && !FREETZ_AVM_HAS_PTY_SUPPORT && FREETZ_SHOW_ADVANCED
+	comment "Hint: Select replace kernel if need pty-support"
+		depends on !FREETZ_REPLACE_KERNEL && !FREETZ_AVM_HAS_PTY_SUPPORT && FREETZ_SHOW_ADVANCED
 
-config FREETZ_PACKAGE_DROPBEAR_SFTP_SERVER
-	bool "Add SFTP support"
-	select FREETZ_PACKAGE_OPENSSH
-	select FREETZ_PACKAGE_OPENSSH_sftp_server
-	default n
-	help
-		This option adds SFTP support to dropbear by using
-		OpenSSH's SFTP server.
+	config FREETZ_PACKAGE_DROPBEAR_SFTP_SERVER
+		bool "Add SFTP support"
+		select FREETZ_PACKAGE_OPENSSH
+		select FREETZ_PACKAGE_OPENSSH_sftp_server
+		default n
+		help
+			This option adds SFTP support to dropbear by using
+			OpenSSH's SFTP server.
 
-config FREETZ_PACKAGE_DROPBEAR_SERVER_ONLY
-	bool "Without scp & ssh client"
-	default n
+	config FREETZ_PACKAGE_DROPBEAR_SERVER_ONLY
+		bool "Without scp & ssh client"
+		default n
 
-config FREETZ_PACKAGE_DROPBEAR_WITH_ZLIB
-	bool "With zlib Compression"
-	select FREETZ_LIB_libz
-	default n
-	help
-		ZLIB Compression for SSH Traffic
+	config FREETZ_PACKAGE_DROPBEAR_WITH_ZLIB
+		bool "With zlib Compression"
+		select FREETZ_LIB_libz
+		default n
+		help
+			ZLIB Compression for SSH Traffic
 
-config FREETZ_PACKAGE_DROPBEAR_DISABLE_HOST_LOOKUP
-	bool "Disable DNS reverse-lookup of the client"
-	default y
-	help
-		With this option, a connection between the client and
-		the server is established faster.
+	config FREETZ_PACKAGE_DROPBEAR_DISABLE_HOST_LOOKUP
+		bool "Disable DNS reverse-lookup of the client"
+		default y
+		help
+			With this option, a connection between the client and
+			the server is established faster.
 
-		Without this option selected, the ssh server performs a DNS
-		reverse lookup of the client's IP address.
+			Without this option selected, the ssh server performs a DNS
+			reverse lookup of the client's IP address.
 
-config FREETZ_PACKAGE_DROPBEAR_ENABLE_MOTD
-	bool "Enable MOTD"
-	default y
-	help
-		This enables printing of MOTD on login.
+	config FREETZ_PACKAGE_DROPBEAR_ENABLE_MOTD
+		bool "Enable MOTD"
+		default y
+		help
+			This enables printing of MOTD on login.
 
-config FREETZ_PACKAGE_DROPBEAR_UTMP
-	bool "Enable utmp support"
-	select FREETZ_BUSYBOX_FEATURE_UTMP
-	select FREETZ_BUSYBOX_WHO
-	default n
-	help
-		With this option enabled, the logins are logged to /var/run/utmp.
+	config FREETZ_PACKAGE_DROPBEAR_UTMP
+		bool "Enable utmp support"
+		select FREETZ_BUSYBOX_FEATURE_UTMP
+		select FREETZ_BUSYBOX_WHO
+		default n
+		help
+			With this option enabled, the logins are logged to /var/run/utmp.
 
-config FREETZ_PACKAGE_DROPBEAR_WTMP
-	bool "Enable wtmp support"
-	select FREETZ_BUSYBOX_FEATURE_UTMP
-	select FREETZ_BUSYBOX_FEATURE_WTMP
-	select FREETZ_BUSYBOX_LAST
-	default n
-	help
-		With this option enabled, the logins are logged to /var/log/wtmp.
+	config FREETZ_PACKAGE_DROPBEAR_WTMP
+		bool "Enable wtmp support"
+		select FREETZ_BUSYBOX_FEATURE_UTMP
+		select FREETZ_BUSYBOX_FEATURE_WTMP
+		select FREETZ_BUSYBOX_LAST
+		default n
+		help
+			With this option enabled, the logins are logged to /var/log/wtmp.
 
-config FREETZ_PACKAGE_DROPBEAR_STATIC
-	bool "Link statically"
-	default n
-	help
-		With this option enabled, the resulting binary will be independ from libraries.
-		Usually used to build a binary for boxes without "freetz".
-		Newer firmwares (using uClibc >= 0.9.30) should work with dynamically linked
-		binary, if "non-freetz" is selected.
+	config FREETZ_PACKAGE_DROPBEAR_STATIC
+		bool "Link statically"
+		default n
+		help
+			With this option enabled, the resulting binary will be independ from libraries.
+			Usually used to build a binary for boxes without "freetz".
+			Newer firmwares (using uClibc >= 0.9.30) should work with dynamically linked
+			binary, if "non-freetz" is selected.
 
-config FREETZ_PACKAGE_DROPBEAR_AUTHORIZED_KEYS
-	bool "Select authorized_keys"
-	default y
-	select FREETZ_PACKAGE_AUTHORIZED_KEYS
-	help
-		Selects the "authorized_keys: Frontend for SSH keys" web
-		interface package to manage the authorized_keys file for
-		key-based authentication.
+	config FREETZ_PACKAGE_DROPBEAR_AUTHORIZED_KEYS
+		bool "Select authorized_keys"
+		default y
+		select FREETZ_PACKAGE_AUTHORIZED_KEYS
+		help
+			Selects the "authorized_keys: Frontend for SSH keys" web
+			interface package to manage the authorized_keys file for
+			key-based authentication.
 
-config FREETZ_PACKAGE_DROPBEAR_NONFREETZ
-	bool "Build for non-freetz box"
-	select FREETZ_PACKAGE_DROPBEAR_STATIC if FREETZ_AVM_UCLIBC_0_9_28 || FREETZ_AVM_UCLIBC_0_9_29
-	default n
-	help
-		With this option enabled, the resulting binary should also work
-		on non freetz boxes.
-		(Fix for missing devfs and changes to default paths)
-		Will select "static" on firmwares not supporting dynamically linked freetz binaries.
+	config FREETZ_PACKAGE_DROPBEAR_NONFREETZ
+		bool "Build for non-freetz box"
+		select FREETZ_PACKAGE_DROPBEAR_STATIC if FREETZ_AVM_UCLIBC_0_9_28 || FREETZ_AVM_UCLIBC_0_9_29
+		default n
+		help
+			With this option enabled, the resulting binary should also work
+			on non freetz boxes.
+			(Fix for missing devfs and changes to default paths)
+			Will select "static" on firmwares not supporting dynamically linked freetz binaries.
 
 endif # FREETZ_PACKAGE_DROPBEAR
 

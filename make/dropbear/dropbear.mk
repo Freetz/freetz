@@ -1,9 +1,10 @@
-$(call PKG_INIT_BIN, 2020.81)
+$(call PKG_INIT_BIN, 2022.82)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_SHA256:=48235d10b37775dbda59341ac0c4b239b82ad6318c31568b985730c788aac53b
+$(PKG)_SOURCE_SHA256:=3a038d2bbc02bf28bbdd20c012091f741a3ec5cbe460691811d714876aad75d1
 $(PKG)_SITE:=https://matt.ucc.asn.au/dropbear/releases,https://dropbear.nl/mirror/releases
 #$(PKG)_SITE:=hg@https://secure.ucc.asn.au/hg/dropbear
 ### WEBSITE:=https://matt.ucc.asn.au/dropbear/dropbear.html
+### MANPAGE:=https://linux.die.net/man/8/dropbear
 ### CHANGES:=https://matt.ucc.asn.au/dropbear/CHANGES
 ### CVSREPO:=https://hg.ucc.asn.au/dropbear/file/tip
 
@@ -72,6 +73,7 @@ $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_DROPBEAR_UTMP),,--disable-putu
 $(PKG)_CONFIGURE_OPTIONS += --disable-pututxline
 $(PKG)_CONFIGURE_OPTIONS += --enable-bundled-libtom
 
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -90,6 +92,7 @@ $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
+
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(DROPBEAR_DIR) clean
 	$(RM) $(DROPBEAR_FREETZ_CONFIG_FILE)
@@ -98,3 +101,4 @@ $(pkg)-uninstall:
 	$(RM) $(DROPBEAR_TARGET_BINARY)
 
 $(PKG_FINISH)
+

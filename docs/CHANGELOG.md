@@ -75,6 +75,7 @@ Latest changes
    * cifs-utils 6.14
    * Curl 7.82.0
    * davfs2 1.5.2/1.6.1
+   * dropbear 2022.82
    * expat 2.4.8
    * git 2.34.1
    * HAProxy 2.5.5
