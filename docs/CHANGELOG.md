@@ -66,7 +66,7 @@ Latest changes
    * ACME.sh 3.0.2 (letsencrypt)
    * Apache 2.4.53
    * AutoFS 5.0.5/5.1.8
-   * BIND 9.16.25
+   * BIND 9.16.27
    * Bip 0.9.2
    * BusyBox 1.34.1
    * BusyBox 1.35.0
