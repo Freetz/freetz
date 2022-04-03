@@ -231,6 +231,9 @@ Index:
   * **[libusb1: libusb-1.0 (libusb-1.0.so) 1.0.23/1.0.25](libusb1.md)<a id='libusb1'></a>**<br>
     A library for accessing Linux USB devices (current API).
 
+  * **[libuv (libuv.so) 1.30.1](libuv.md)<a id='libuv'></a>**<br>
+    libuv is a async IO library for various programs
+
   * **[libvorbis (libvorbis.so) 1.3.5](libvorbis.md)<a id='libvorbis'></a>**<br>
     Vorbis is the name of a specific audio compression scheme that's designed to be contained in Ogg. libvorbis is a BSD-style license software implementation of the Vorbis specification by the Xiph.Org Foundation.
 
