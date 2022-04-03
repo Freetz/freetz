@@ -222,7 +222,7 @@ Index:
   * **[libtirpc (libtirpc.so) 1.3.2](libtirpc.md)<a id='libtirpc'></a>**<br>
     Libtirpc is a port of Suns Transport-Independent RPC library to Linux. It's being developed by the Bull GNU/Linux NFSv4 project.
 
-  * **[libtool: libltdl (libltdl.so) 1.5.26](libtool.md)<a id='libtool'></a>**<br>
+  * **[libtool (libltdl.so) 1.5.26](libtool.md)<a id='libtool'></a>**<br>
     A generic dynamic object loading library
 
   * **[libusb-0.1 (libusb-0.1.so) 0.1.7/0.1.12](libusb.md)<a id='libusb'></a>**<br>
