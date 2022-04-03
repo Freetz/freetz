@@ -90,7 +90,7 @@ Latest changes
    * libnfsidmap 0.27
    * libudns 0.4
    * libusb1 1.0.23/1.0.25
-   * libuv 1.30.1
+   * libuv 1.44.1
    * lighttpd 1.4.64
    * LCD4linux e2cfdc5-git
    * mbed TLS 2.7.19/2.28.0
