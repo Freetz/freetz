@@ -136,7 +136,7 @@ Currently supported devices and firmwares
   - 257.07.21 rev83233 {GER} [AXKFW2]
   - 257.07.29 rev93005 {ALL} [PSQ19P2NL4]
 * __Fritz!Box 5590 Fiber (UNTESTED)__
-  - 272.07.27 rev94541 {ALL} [PSQ19P2NL4] (Inhaus)
+  - 272.07.29 rev95450 {ALL} [PSQ19P2NL4]
 
 ### Fritz!Box Cable (64xx/65xx/66xx)
 
