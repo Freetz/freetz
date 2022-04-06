@@ -1,8 +1,8 @@
 $(call PKG_INIT_LIB, 1.44.1)
 $(PKG)_SHLIB_VERSION:=1.0.0
-$(PKG)_SOURCE:=v$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=e91614e6dc2dd0bfdd140ceace49438882206b7a6fb00b8750914e67a9ed6d6b
-$(PKG)_SITE:=https://github.com/libuv/libuv/archive/refs/tags
+$(PKG)_SOURCE:=$(pkg)-v$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_SHA256:=9d37b63430fe3b92a9386b949bebd8f0b4784a39a16964c82c9566247a76f64a
+$(PKG)_SITE:=https://dist.libuv.org/dist/v$($(PKG)_VERSION)
 ### WEBSITE:=https://libuv.org/
 ### MANPAGE:=https://docs.libuv.org/en/v1.x/
 ### CHANGES:=https://github.com/libuv/libuv/releases
