@@ -2,12 +2,17 @@ $(call PKG_INIT_LIB, 2.63)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SOURCE_SHA256:=0c637b8f44fc7d8627787e9cf57f15ac06c1ddccb53e41feec5496be3466f77f
 $(PKG)_SITE:=@KERNEL/linux/libs/security/linux-privs/libcap2
+### WEBSITE:=https://sites.google.com/site/fullycapable/
+### MANPAGE:=https://pkg.go.dev/kernel.org/pub/linux/libs/security/libcap/cap
+### CHANGES:=https://pkg.go.dev/kernel.org/pub/linux/libs/security/libcap/cap?tab=versions
+### CVSREPO:=https://git.kernel.org/pub/scm/libs/libcap/libcap.git
 
 $(PKG)_DEPENDS_ON += attr
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)/$(pkg).so.$($(PKG)_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg).so.$($(PKG)_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$(pkg).so.$($(PKG)_VERSION)
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -40,6 +45,7 @@ $(pkg): $($(PKG)_STAGING_BINARY)
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
+
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(LIBCAP_DIR) clean
 	$(RM) -r \
@@ -52,3 +58,4 @@ $(pkg)-uninstall:
 	$(RM) $(LIBCAP_TARGET_DIR)/libcap.so*
 
 $(PKG_FINISH)
+

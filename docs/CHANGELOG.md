@@ -80,6 +80,7 @@ Latest changes
    * git 2.34.1
    * HAProxy 2.5.5
    * iksemel 3.1.1
+   * libcap 2.63
    * libexif 0.6.24
    * libgsasl 1.10.0
    * libgcrypt 1.9.4
