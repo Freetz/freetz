@@ -22,9 +22,9 @@ Without this patch libcap fails to compile with:
 
 --- libcap/include/uapi/linux/capability.h
 +++ libcap/include/uapi/linux/capability.h
-@@ -48,6 +48,8 @@
+@@ -49,6 +49,8 @@
          __u32 inheritable;
- } __user *cap_user_data_t;
+ } *cap_user_data_t;
  
 +#define XATTR_CAPS_SUFFIX "capability"
 +#define XATTR_NAME_CAPS XATTR_SECURITY_PREFIX XATTR_CAPS_SUFFIX

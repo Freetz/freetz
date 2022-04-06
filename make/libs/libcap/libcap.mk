@@ -4,7 +4,7 @@ $(PKG)_SOURCE_SHA256:=0c637b8f44fc7d8627787e9cf57f15ac06c1ddccb53e41feec5496be34
 $(PKG)_SITE:=@KERNEL/linux/libs/security/linux-privs/libcap2
 ### WEBSITE:=https://sites.google.com/site/fullycapable/
 ### MANPAGE:=https://pkg.go.dev/kernel.org/pub/linux/libs/security/libcap/cap
-### CHANGES:=https://pkg.go.dev/kernel.org/pub/linux/libs/security/libcap/cap?tab=versions
+### CHANGES:=https://sites.google.com/site/fullycapable/release-notes-for-libcap
 ### CVSREPO:=https://git.kernel.org/pub/scm/libs/libcap/libcap.git
 
 $(PKG)_DEPENDS_ON += attr
