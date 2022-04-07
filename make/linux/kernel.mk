@@ -171,6 +171,11 @@ avm_kernel_config: $(AVM_KERNEL_CONFIG_DIR)/avm_kernel_config_area.S
 endif
 endif
 
+kernel-autofix: kernel-dirclean
+	$(MAKE) AUTO_FIX_PATCHES=y kernel-unpacked
+kernel-recompile: kernel-dirclean kernel-precompiled
+.PHONY: kernel-autofix kernel-recompile
+
 $(KERNEL_SOURCE_DIR)$(KERNEL_IMAGE_BUILD_SUBDIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.prepared $(KERNEL_BUILD_DEPENDENCIES) | $(TOOLS_DIR)/lzma $(TOOLS_DIR)/lzma2eva
 	$(call _ECHO,image)
 	$(SUBMAKE) $(KERNEL_COMMON_MAKE_OPTIONS) $(KERNEL_IMAGE)
