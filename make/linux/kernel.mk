@@ -204,7 +204,7 @@ kernel-configured: $(KERNEL_DIR)/.prepared
 
 kernel-modules: $(KERNEL_DIR)/.modules-$(SYSTEM_TYPE)$(SYSTEM_TYPE_CORE_SUFFIX)
 
-kernel-help:
+kernel-help: $(KERNEL_DIR)/.unpacked
 	$(SUBMAKE) $(KERNEL_COMMON_MAKE_OPTIONS) help
 
 kernel-menuconfig: $(KERNEL_DIR)/.configured
