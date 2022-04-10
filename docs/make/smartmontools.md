@@ -1,4 +1,8 @@
 # smartmontools 7.2
+ - Homepage: [https://www.smartmontools.org/](https://www.smartmontools.org/)
+ - Manpage: [https://www.smartmontools.org/wiki/TocDoc](https://www.smartmontools.org/wiki/TocDoc)
+ - Changelog: [https://www.smartmontools.org/browser/trunk/smartmontools/NEWS](https://www.smartmontools.org/browser/trunk/smartmontools/NEWS)
+ - Repository: [https://www.smartmontools.org/timeline](https://www.smartmontools.org/timeline)
  - Package: [master/make/smartmontools/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/smartmontools/)
 
 Mit den Smartmontools (bzw. mit smartctl) können die
