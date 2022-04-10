@@ -1,21 +1,22 @@
-$(call PKG_INIT_LIB, $(if $(FREETZ_LIB_libusb_1_WITH_ABANDON),1.0.23,1.0.25))
+$(call PKG_INIT_LIB, $(if $(FREETZ_LIB_libusb_1_WITH_ABANDON),1.0.23,1.0.26))
 $(PKG)_SHORT_VERSION:=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 $(PKG)_LIB_VERSION:=$(if $(FREETZ_LIB_libusb_1_WITH_ABANDON),0.2.0,0.3.0)
 $(PKG)_SOURCE:=libusb-$($(PKG)_VERSION).tar.bz2
 $(PKG)_SOURCE_SHA256_ABANDON:=db11c06e958a82dac52cf3c65cb4dd2c3f339c8a988665110e0d24d19312ad8d
-$(PKG)_SOURCE_SHA256_CURRENT:=8a28ef197a797ebac2702f095e81975e2b02b2eeff2774fa909c78a74ef50849
+$(PKG)_SOURCE_SHA256_CURRENT:=12ce7a61fc9854d1d2a1ffe095f7b5fac19ddba095c259e6067a46500381b5a5
 $(PKG)_SOURCE_SHA256:=$(LIBUSB1_SOURCE_SHA256_$(if $(FREETZ_LIB_libusb_1_WITH_ABANDON),ABANDON,CURRENT))
 $(PKG)_SITE:=https://github.com/libusb/libusb/releases/download/v$($(PKG)_VERSION),@SF/libusb
-### VERSION:=1.0.23/1.0.25
+### VERSION:=1.0.23/1.0.26
+### WEBSITE:=https://libusb.info/
+### MANPAGE:=https://github.com/libusb/libusb/wiki
+### CHANGES:=https://github.com/libusb/libusb/milestones
+### CVSREPO:=https://github.com/libusb/libusb
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/libusb/.libs/libusb-$($(PKG)_SHORT_VERSION).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libusb-$($(PKG)_SHORT_VERSION).so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libusb-$($(PKG)_SHORT_VERSION).so.$($(PKG)_LIB_VERSION)
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_KERNEL_VERSION_2_6_28_MIN
-
-# workaround for error in version 1.0.25: https://github.com/Freetz-NG/freetz-ng/issues/456
-$(PKG)_CONFIGURE_PRE_CMDS += $(SED) -i 's~-Werror=uninitialized~~' ./configure;
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static

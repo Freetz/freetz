@@ -90,7 +90,7 @@ Latest changes
    * libneon 0.32.1
    * libnfsidmap 0.27
    * libudns 0.4
-   * libusb1 1.0.23/1.0.25
+   * libusb1 1.0.23/1.0.26
    * libuv 1.44.1
    * lighttpd 1.4.64
    * LCD4linux e2cfdc5-git
