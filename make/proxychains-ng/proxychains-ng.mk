@@ -3,6 +3,11 @@ $(call PKG_INIT_BIN, $(if $(FREETZ_PACKAGE_PROXYCHAINS_NG_VERSION_LATEST), $(cal
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_SOURCE_CHECKSUM:=X
 $(PKG)_SITE:=git@$($(PKG)_GIT_REPOSITORY)
+#$(PKG)_SITE:=https://github.com/haad/proxychains/archive/refs/tags
+### WEBSITE:=http://proxychains.sourceforge.net
+### MANPAGE:=https://github.com/haad/proxychains#readme
+### CHANGES:=https://github.com/haad/proxychains/tags
+### CVSREPO:=https://github.com/haad/proxychains
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/proxychains4
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/proxychains4
@@ -16,6 +21,7 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PROXYCHAINS_NG_VERSION_CUSTOM
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_PROXYCHAINS_NG_VERSION_COMMIT
 
 $(PKG)_CONFIGURE_OPTIONS += --libdir="$(FREETZ_RPATH)"
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -37,6 +43,7 @@ $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_MODULE)
 
+
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(PROXYCHAINS_NG_DIR) clean
 
@@ -44,3 +51,4 @@ $(pkg)-uninstall:
 	$(RM) $(PROXYCHAINS_NG_TARGET_BINARY) $(PROXYCHAINS_NG_TARGET_MODULE)
 
 $(PKG_FINISH)
+
