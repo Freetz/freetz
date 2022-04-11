@@ -2,8 +2,12 @@ $(call PKG_INIT_BIN, 1.2.30)
 $(PKG)_LIBRRD_VERSION:=2.0.15
 $(PKG)_LIBRRD_TH_VERSION:=2.0.13
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=19b24f7184a8dbf7b48c1bbb565ad9fb
-$(PKG)_SITE:=http://oss.oetiker.ch/rrdtool/pub
+$(PKG)_SOURCE_SHA256:=3190efea410a6dd035799717948b2df09910f608d72d23ee81adad4cd0184ae9
+$(PKG)_SITE:=https://oss.oetiker.ch/rrdtool/pub/archive
+### WEBSITE:=https://www.rrdtool.org
+### MANPAGE:=https://oss.oetiker.ch/rrdtool/doc
+### CHANGES:=https://github.com/oetiker/rrdtool-1.x/blob/master/CHANGES
+### CVSREPO:=https://github.com/oetiker/rrdtool-1.x
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/rrdtool
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/rrdtool
@@ -38,6 +42,7 @@ $(PKG)_CONFIGURE_OPTIONS += --without-x
 $(PKG)_LIBART_CPPFLAGS:="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/libart-2.0"
 $(PKG)_FREETYPE_CPPFLAGS:="-I$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/freetype2"
 
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -65,6 +70,7 @@ $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_LIBS_TARGET_DIR)
 
+
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(RRDTOOL_DIR) clean
 	$(RM) \
@@ -76,3 +82,4 @@ $(pkg)-uninstall:
 	$(RM) $(RRDTOOL_TARGET_LIBDIR)/librrd*.so*
 
 $(PKG_FINISH)
+
