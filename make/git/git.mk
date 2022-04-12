@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2.35.1)
+$(call PKG_INIT_BIN, 2.35.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=d768528e6443f65a203036266f1ca50f9d127ba89751e32ead37117ed9191080
+$(PKG)_SOURCE_SHA256:=c73d0c4fa5dcebdb2ccc293900952351cc5fb89224bb133c116305f45ae600f3
 $(PKG)_SITE:=@KERNEL/software/scm/git
 ### WEBSITE:=https://www.git-scm.com/
 ### MANPAGE:=https://www.git-scm.com/docs
@@ -63,6 +63,7 @@ $(PKG)_MAKE_PARAMS := V=1 NO_NSEC=1 STRIP="$(TARGET_STRIP)" NO_INSTALL_HARDLINKS
 $(PKG)_MAKE_PARAMS += NO_LIBPCRE1_JIT=1
 $(PKG)_MAKE_PARAMS += EXTRA_CFLAGS="-ffunction-sections -fdata-sections" EXTRA_LDFLAGS="-Wl,--gc-sections"
 
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -90,6 +91,7 @@ $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_BINARY_TARGET_DIR)
 
+
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(GIT_DIR) clean
 
@@ -97,3 +99,4 @@ $(pkg)-uninstall:
 	$(RM) -r $(GIT_DEST_DIR)/usr/{bin,lib}/git*
 
 $(PKG_FINISH)
+

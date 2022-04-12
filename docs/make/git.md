@@ -1,4 +1,4 @@
-# git 2.35.1
+# git 2.35.2
  - Homepage: [https://www.git-scm.com/](https://www.git-scm.com/)
  - Manpage: [https://www.git-scm.com/docs](https://www.git-scm.com/docs)
  - Changelog: [https://github.com/git/git/tree/master/Documentation/RelNotes](https://github.com/git/git/tree/master/Documentation/RelNotes)
