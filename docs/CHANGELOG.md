@@ -99,7 +99,7 @@ Latest changes
    * Nano 6.0
    * ncurses 6.3
    * ncursesw 6.3
-   * OpenSSH 8.9p1
+   * OpenSSH 9.0p1
    * OpenSSL 0.9.8zh/1.0.2u/1.1.1n/3.0.2
    * OpenVPN 2.4.12/2.5.6
    * pcre 8.45
