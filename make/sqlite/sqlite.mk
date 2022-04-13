@@ -1,8 +1,12 @@
-$(call PKG_INIT_BIN, 3370000)
+$(call PKG_INIT_BIN, 3380200)
 $(PKG)_LIB_VERSION:=0.8.6
 $(PKG)_SOURCE:=$(pkg)-autoconf-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=731a4651d4d4b36fc7d21db586b2de4dd00af31fd54fb5a9a4b7f492057479f7
-$(PKG)_SITE:=https://www.sqlite.org/2021
+$(PKG)_SOURCE_SHA256:=e7974aa1430bad690a5e9f79a6ee5c8492ada8269dc675875ad0fb747d7cada4
+$(PKG)_SITE:=https://www.sqlite.org/2022
+### WEBSITE:=https://www.sqlite.org
+### MANPAGE:=https://www.sqlite.org/docs.html
+### CHANGES:=https://www.sqlite.org/changes.html
+### CVSREPO:=https://www.sqlite.org/src/timeline
 
 ifeq ($(strip $(FREETZ_PACKAGE_SQLITE_WITH_READLINE)),y)
 $(PKG)_DEPENDS_ON += readline

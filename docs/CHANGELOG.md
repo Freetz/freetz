@@ -106,7 +106,7 @@ Latest changes
    * pcre2 10.39
    * PCSC-lite 1.9.5
    * socat 1.7.4.2
-   * SQLite 3.37.0
+   * SQLite 3.38.2
    * sslh 1.22c
    * strace 4.9/5.0/5.17
    * Stunnel 5.60
