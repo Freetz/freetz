@@ -9,7 +9,7 @@ $(PKG)_SITE:=git@https://github.com/JuliaStrings/utf8proc
 ### CHANGES:=https://juliastrings.github.io/utf8proc/releases/
 ### CVSREPO:=https://github.com/JuliaStrings/utf8proc
 
-$(PKG)_LIBNAME=$(pkg).so.$($(PKG)_SHLIB_VERSION)
+$(PKG)_LIBNAME=lib$(pkg).so.$($(PKG)_SHLIB_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/$($(PKG)_LIBNAME)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$($(PKG)_LIBNAME)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$($(PKG)_LIBNAME)
@@ -25,12 +25,12 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(LIBUTF8PROC_DIR) \
-		$(LIBUTF8PROC_MAKE_VARS)
+	$(SUBMAKE) -C $(UTF8PROC_DIR) \
+		$(UTF8PROC_MAKE_VARS)
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
-	$(SUBMAKE) -C $(LIBUTF8PROC_DIR) \
-		$(LIBUTF8PROC_MAKE_VARS) \
+	$(SUBMAKE) -C $(UTF8PROC_DIR) \
+		$(UTF8PROC_MAKE_VARS) \
 		DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(PKG_FIX_LIBTOOL_LA) \
@@ -45,14 +45,14 @@ $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 
 $(pkg)-clean:
-	-$(SUBMAKE) -C $(LIBUTF8PROC_DIR) clean
+	-$(SUBMAKE) -C $(UTF8PROC_DIR) clean
 	$(RM) -r \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libutf8proc.* \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/include/utf8proc.h \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/pkgconfig/libutf8proc.pc
 
 $(pkg)-uninstall:
-	$(RM) $(LIBUTF8PROC_TARGET_DIR)/libutf8proc.so*
+	$(RM) $(UTF8PROC_TARGET_DIR)/libutf8proc.so*
 
 $(PKG_FINISH)
 

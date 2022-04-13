@@ -231,9 +231,6 @@ Index:
   * **[libusb1: libusb-1.0 (libusb-1.0.so) 1.0.23/1.0.26](libusb1.md)<a id='libusb1'></a>**<br>
     A library for accessing Linux USB devices (current API).
 
-  * **[libutf8proc (libutf8proc.so) 2.7.0](libutf8proc.md)<a id='libutf8proc'></a>**<br>
-    a clean C library for processing UTF-8 Unicode data: normalization, case-folding, graphemes, and more
-
   * **[libuv (libuv.so) 1.44.1](libuv.md)<a id='libuv'></a>**<br>
     libuv is a async IO library for various programs
 
@@ -351,6 +348,9 @@ Index:
 
   * **[udns: libudns (libudns.so) 0.4](udns.md)<a id='udns'></a>**<br>
     UDNS is a stub DNS resolver library with ability to perform both syncronous and asyncronous DNS queries.
+
+  * **[utf8proc (libutf8proc.so) 2.7.0](utf8proc.md)<a id='utf8proc'></a>**<br>
+    a clean C library for processing UTF-8 Unicode data: normalization, case-folding, graphemes, and more
 
 ### Y
 

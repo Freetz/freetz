@@ -91,7 +91,6 @@ Latest changes
    * libnfsidmap 0.27
    * libudns 0.4
    * libusb1 1.0.23/1.0.26
-   * libutf8proc 2.7.0
    * libuv 1.44.1
    * lighttpd 1.4.64
    * LCD4linux e2cfdc5-git
@@ -119,6 +118,7 @@ Latest changes
    * uClibc-ng 1.0.40
    * Unbound 1.14.0
    * UnRAR 6.1.4
+   * utf8proc 2.7.0
    * Wget GNU 1.21.2
    * wireguard-linux-compat 1.0.20211208
    * wireguard-tools 1.0.20210914
