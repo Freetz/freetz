@@ -111,6 +111,7 @@ Latest changes
    * sslh 1.22c
    * strace 4.9/5.0/5.17
    * Stunnel 5.60
+   * Subversion 1.9.12/1.14.2
    * Sundtek DVB driver 130210.134617/170310.204343/210803.071224
    * tinc 1.0.36/1.1pre18
    * tinyproxy 1.11.0
