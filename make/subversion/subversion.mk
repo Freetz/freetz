@@ -5,6 +5,10 @@ $(PKG)_SOURCE_SHA1_1.8.19:=51d7e5329ad86a650f8fc806eb68e581055a3fd1
 $(PKG)_SOURCE_SHA1_1.9.12:=de406057b0a2201d4dddcd296020a2bbdc2c3833
 $(PKG)_SOURCE_SHA1:=$($(PKG)_SOURCE_SHA1_$($(PKG)_VERSION))
 $(PKG)_SITE:=@APACHE/subversion
+### WEBSITE:=https://subversion.apache.org/
+### MANPAGE:=https://subversion.apache.org/quick-start
+### CHANGES:=https://subversion.apache.org/docs/release-notes/release-history.html
+### CVSREPO:=https://svn.apache.org/viewvc/subversion/
 
 $(PKG)_CONDITIONAL_PATCHES+=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 
@@ -90,6 +94,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-kwallet=no
 $(PKG)_CONFIGURE_OPTIONS += --with-sasl=no
 $(PKG)_CONFIGURE_OPTIONS += --with-swig=no
 
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -146,6 +151,7 @@ $(pkg): $($(PKG)_TARGET_DIR)/.exclude-libraries
 
 $(pkg)-precompiled:
 
+
 $(pkg)-clean:
 	-$(SUBMAKE1) -C $(SUBVERSION_DIR) clean
 	$(RM) $(SUBVERSION_DIR)/{.configured,.compiled}
@@ -165,3 +171,4 @@ $(pkg)-uninstall:
 		$(SUBVERSION_MODULES_ALL:%=$(SUBVERSION_DEST_DIR)$(APACHE2_LIBEXECDIR)/%.so)
 
 $(PKG_FINISH)
+

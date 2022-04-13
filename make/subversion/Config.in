@@ -20,121 +20,114 @@ config FREETZ_PACKAGE_SUBVERSION
 		features of CVS, plus certain new features that CVS users often wish
 		they had.
 
-choice
-	depends on FREETZ_PACKAGE_SUBVERSION
-	prompt "Version"
-	default FREETZ_PACKAGE_SUBVERSION_VERSION_1_9
+if FREETZ_PACKAGE_SUBVERSION
 
-	config FREETZ_PACKAGE_SUBVERSION_VERSION_1_8
-		bool "1.8.19"
+	choice
+		prompt "Version"
+		default FREETZ_PACKAGE_SUBVERSION_VERSION_1_9
 
-	config FREETZ_PACKAGE_SUBVERSION_VERSION_1_9
-		bool "1.9.12"
-endchoice
+		config FREETZ_PACKAGE_SUBVERSION_VERSION_1_8
+			bool "1.8.19"
 
-config FREETZ_PACKAGE_SUBVERSION_WITH_LIBDB
-	bool "build with Berkeley-DB support"
-	depends on FREETZ_PACKAGE_SUBVERSION
-	select FREETZ_LIB_libaprutil_WITH_LIBDB
-	default n
-	help
-		Enables Berkeley-DB support in subversion.
+		config FREETZ_PACKAGE_SUBVERSION_VERSION_1_9
+			bool "1.9.12"
+	endchoice
 
-config FREETZ_PACKAGE_SUBVERSION_SVN
-	bool "Include svn"
-	depends on FREETZ_PACKAGE_SUBVERSION
-	default y
-	help
-		Include svn (subversion client tool) in the image.
+	config FREETZ_PACKAGE_SUBVERSION_WITH_LIBDB
+		bool "build with Berkeley-DB support"
+		select FREETZ_LIB_libaprutil_WITH_LIBDB
+		default n
+		help
+			Enables Berkeley-DB support in subversion.
 
-config FREETZ_PACKAGE_SUBVERSION_SVNADMIN
-	bool "Inlcude svnadmin"
-	depends on FREETZ_PACKAGE_SUBVERSION
-	default y
-	help
-		Include svnadmin (subversion repository administration tool) in the image.
+	config FREETZ_PACKAGE_SUBVERSION_SVN
+		bool "Include svn"
+		default y
+		help
+			Include svn (subversion client tool) in the image.
 
-config FREETZ_PACKAGE_SUBVERSION_SVNDUMPFILTER
-	bool "Include svndumpfilter"
-	depends on FREETZ_PACKAGE_SUBVERSION
-	default y
-	help
-		Include svndumpfilter (tool to filter subversion repository dumpfile) in the image.
+	config FREETZ_PACKAGE_SUBVERSION_SVNADMIN
+		bool "Inlcude svnadmin"
+		default y
+		help
+			Include svnadmin (subversion repository administration tool) in the image.
 
-config FREETZ_PACKAGE_SUBVERSION_SVNLOOK
-	bool "Include svnlook"
-	depends on FREETZ_PACKAGE_SUBVERSION
-	default y
-	help
-		Include svnlook (subversion repository examination tool) in the image.
+	config FREETZ_PACKAGE_SUBVERSION_SVNDUMPFILTER
+		bool "Include svndumpfilter"
+		default y
+		help
+			Include svndumpfilter (tool to filter subversion repository dumpfile) in the image.
 
-config FREETZ_PACKAGE_SUBVERSION_SVNRDUMP
-	bool "Include svnrdump"
-	depends on FREETZ_PACKAGE_SUBVERSION
-	default y
-	help
-		Include svnrdump (subversion remote repository dumper and loader utility) in the image.
+	config FREETZ_PACKAGE_SUBVERSION_SVNLOOK
+		bool "Include svnlook"
+		default y
+		help
+			Include svnlook (subversion repository examination tool) in the image.
 
-config FREETZ_PACKAGE_SUBVERSION_SVNSERVE
-	bool "Include svnserve"
-	depends on FREETZ_PACKAGE_SUBVERSION
-	default y
-	help
-		Include svnserve (server for the 'svn' repository access method) in the image.
+	config FREETZ_PACKAGE_SUBVERSION_SVNRDUMP
+		bool "Include svnrdump"
+		default y
+		help
+			Include svnrdump (subversion remote repository dumper and loader utility) in the image.
 
-config FREETZ_PACKAGE_SUBVERSION_SVNSYNC
-	bool "Inlcude svnsync"
-	depends on FREETZ_PACKAGE_SUBVERSION
-	default y
-	help
-		Include svnsync (repository synchronization tool) in the image.
+	config FREETZ_PACKAGE_SUBVERSION_SVNSERVE
+		bool "Include svnserve"
+		default y
+		help
+			Include svnserve (server for the 'svn' repository access method) in the image.
 
-config FREETZ_PACKAGE_SUBVERSION_SVNVERSION
-	bool "Include svnversion"
-	depends on FREETZ_PACKAGE_SUBVERSION
-	default y
-	help
-		Include svnversion (tool to produce a compact version number for a working copy) in the image.
+	config FREETZ_PACKAGE_SUBVERSION_SVNSYNC
+		bool "Inlcude svnsync"
+		default y
+		help
+			Include svnsync (repository synchronization tool) in the image.
 
-config FREETZ_PACKAGE_SUBVERSION_STATIC
-	bool "Link statically"
-	depends on FREETZ_PACKAGE_SUBVERSION
-	default n
-	help
-		Activating this switch causes all libraries subversion tools
-		depend on to be linked in statically.
+	config FREETZ_PACKAGE_SUBVERSION_SVNVERSION
+		bool "Include svnversion"
+		default y
+		help
+			Include svnversion (tool to produce a compact version number for a working copy) in the image.
 
-config FREETZ_PACKAGE_SUBVERSION_APACHE_MODULES
-	bool "apache modules"
-	depends on FREETZ_PACKAGE_SUBVERSION && !FREETZ_PACKAGE_SUBVERSION_STATIC \
-		&& FREETZ_PACKAGE_APACHE2 && !FREETZ_PACKAGE_APACHE2_COMPILEINMODS
-	select FREETZ_PACKAGE_SUBVERSION_mod_dav_svn
+	config FREETZ_PACKAGE_SUBVERSION_APACHE_MODULES
+		bool "Apache modules"
+		depends on FREETZ_PACKAGE_APACHE2 && !FREETZ_PACKAGE_APACHE2_COMPILEINMODS
+		select FREETZ_PACKAGE_SUBVERSION_mod_dav_svn
 
-config FREETZ_PACKAGE_SUBVERSION_mod_authz_svn
-	bool "mod_authz_svn"
-	depends on FREETZ_PACKAGE_SUBVERSION_APACHE_MODULES
-	default n
-	help
-		Subversion path-based authorization module for Apache
+	if FREETZ_PACKAGE_SUBVERSION_APACHE_MODULES
 
-config FREETZ_PACKAGE_SUBVERSION_mod_dav_svn
-	bool "mod_dav_svn"
-	depends on FREETZ_PACKAGE_SUBVERSION_APACHE_MODULES
-	default n
-	help
-		Subversion plug-in for the Apache DAV module
+		config FREETZ_PACKAGE_SUBVERSION_mod_authz_svn
+			bool "mod_authz_svn"
+			default n
+			help
+				Subversion path-based authorization module for Apache
 
-config FREETZ_PACKAGE_SUBVERSION_mod_dontdothat
-	bool "mod_dontdothat"
-	depends on FREETZ_PACKAGE_SUBVERSION_APACHE_MODULES
-	default n
-	help
-		Module to block certain kinds of Apache Subversion requests
+		config FREETZ_PACKAGE_SUBVERSION_mod_dav_svn
+			bool "mod_dav_svn"
+			default n
+			help
+				Subversion plug-in for the Apache DAV module
 
-config FREETZ_PACKAGE_SUBVERSION_REMOVE_WEBIF
-	bool "remove webinterface"
-	depends on FREETZ_PACKAGE_SUBVERSION
-	default n
-	help
-		This option removes the webinterface
+		config FREETZ_PACKAGE_SUBVERSION_mod_dontdothat
+			bool "mod_dontdothat"
+			default n
+			help
+				Module to block certain kinds of Apache Subversion requests
+
+	endif # FREETZ_PACKAGE_SUBVERSION_APACHE_MODULES
+
+	config FREETZ_PACKAGE_SUBVERSION_STATIC
+		bool "Link statically"
+		depends on !FREETZ_PACKAGE_SUBVERSION_APACHE_MODULES
+		default n
+		help
+			Activating this switch causes all libraries subversion tools
+			depend on to be linked in statically.
+
+	config FREETZ_PACKAGE_SUBVERSION_REMOVE_WEBIF
+		bool "Remove webinterface"
+		default n
+		help
+			This option removes the webinterface
+
+endif # FREETZ_PACKAGE_SUBVERSION
 
