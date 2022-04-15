@@ -77,7 +77,7 @@ Latest changes
    * davfs2 1.5.2/1.6.1
    * dropbear 2022.82
    * expat 2.4.8
-   * git 2.35.2
+   * git 2.35.3
    * HAProxy 2.5.5
    * iksemel 3.1.1
    * libcap 2.63
