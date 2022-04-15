@@ -2,8 +2,8 @@
 # generates everything with docs/*/generate.sh
 MYPWD="$(dirname $(realpath $0))"
 
-[ -z "$(locale charmap | grep -i '^Utf-*8$')" ] && echo "Setting 'locale' to EN" && LANG=en_US.utf8
-[ -z "$(locale charmap | grep -i '^Utf-*8$')" ] && echo "Setting 'locale' to DE" && LANG=de_DE.UTF-8
+[ -z "$(locale charmap | grep -i '^Utf-*8$')" ] && echo "Setting 'locale' to EN" && export LANG=en_US.utf8
+[ -z "$(locale charmap | grep -i '^Utf-*8$')" ] && echo "Setting 'locale' to DE" && export LANG=de_DE.UTF-8
 [ -z "$(locale charmap | grep -i '^Utf-*8$')" ] && echo "You have no UTF8 'locale' installed." && exit 1
 
 generate_info() {
