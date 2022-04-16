@@ -455,7 +455,7 @@ download_by_vcs() {
 		&& rm -rf "$SUBDIR" \
 		&& [ ! -d "$SUBDIR" ] \
 		&& do_checkout_"$VCS" "$URLs" "$SUBDIR" "$VERSION" \
-		&& echo "Packing checkout..." \
+		&& echo -e "\033[1;33mPacking checkout to $DL_DIR/$DL_FILE\033[0m" \
 		&& { \
 			find "$SUBDIR" -not -type d | LC_ALL=C sort > "$SUBDIR.list.sorted"; \
 			tar \
@@ -468,6 +468,8 @@ download_by_vcs() {
 	) \
 	&& mv "$TMP_DIR/$DL_FILE" "$DL_DIR/" \
 	&& rm -rf "$TMP_DIR" \
+	&& calculate_full_checksum \
+	&& echo -e "\033[1;33mChecksum of created file is$FULL_CHECKSUM\033[0m" \
 	&& exit 0
 
 	rm -f "$DL_DIR/$DL_FILE"
