@@ -1,7 +1,11 @@
-$(call PKG_INIT_BIN, 84e9555131)
-$(PKG)_SOURCE:=$(subst -,_,$(pkg))-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_CHECKSUM:=X
+$(call PKG_INIT_BIN, 84e9555131adb3c9d9bf49905bbb803e075c90b1)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE_SHA256:=667278bdb10e545d44b3e75adc745d7a2b80f94b7ba96d138f49cf06e93e50ed
 $(PKG)_SITE:=git@https://github.com/PeterPawn/decoder.git
+### WEBSITE:=https://github.com/PeterPawn/decoder
+### MANPAGE:=https://github.com/PeterPawn/decoder#readme
+### CHANGES:=https://github.com/PeterPawn/decoder/releases
+### CVSREPO:=https://github.com/PeterPawn/decoder/commits/master
 
 # silence format warnings
 $(PKG)_PATCH_POST_CMDS += $(SED) -i -r -e 's/(errorMessage|warningMessage)[(]([_a-zA-Z0-9]+)[)];/\1("%s", \2);/g' src/*.c;
@@ -30,6 +34,7 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_ALL_DYN
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_CRYPTO_STAT
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_DECRYPT_FRITZOS_CFG_ALL_STAT
 
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
@@ -54,6 +59,7 @@ $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_SYMLINKS_TARGET_DIR)
 
+
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(DECRYPT_FRITZOS_CFG_DIR)/src clean
 
@@ -61,3 +67,4 @@ $(pkg)-uninstall:
 	$(RM) $(DECRYPT_FRITZOS_CFG_TARGET_BINARY) $(DECRYPT_FRITZOS_CFG_SYMLINKS_ALL:%=$(DECRYPT_FRITZOS_CFG_DEST_DIR)/usr/bin/%)
 
 $(PKG_FINISH)
+
