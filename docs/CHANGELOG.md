@@ -56,6 +56,7 @@ Latest changes
    * ncurses 6.3
    * patchelf 0.13.1
    * pseudo 1.9.0 oe-core 0cda3ba
+   * yf-signimage 1.0.1 78a5689
    * yourfritz 5e33421
 
  - Patches:
