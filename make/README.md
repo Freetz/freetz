@@ -201,7 +201,7 @@ Index:
   * **[Deco 1.3.9 (binary only)](../docs/make/deco.md)<a id='deco'></a>**<br>
     Norton commander clone. Compared with Midnight Commander (mc) it is considerably smaller, but also significantly less powerful and less fancy-looking. Use it if you want to trade power for file and memory footprint, but still feel like requiring a file manager instead of a plain UNIX shell. Uses about 149K uncompressed space.
 
-  * **<u>decrypt-fritzos-cfg: decrypt FRITZ!OS configs 0.2</u><a id='decrypt-fritzos-cfg'></a>**<br>
+  * **[decrypt-fritzos-cfg: decrypt FRITZ!OS configs 0.2](../docs/make/decrypt-fritzos-cfg.md)<a id='decrypt-fritzos-cfg'></a>**<br>
     This package provides a set of tools making it possible to decrypt encrypted parts (usually credentials) of FRITZ!OS configuration files. See https://github.com/PeterPawn/decode_passwords, http://www.ip-phone-forum.de/showthread.php?t=276183, http://www.ip-phone-forum.de/showthread.php?t=295101 for usage details and technical background. NO RESPONSIBILITY DISCLAIMER: Adding easy usable tools like these (to emphasize it once more - tools providing password decryption capabilities) decreases the SECURITY of your box. Use it on YOUR OWN RISK, Freetz is not responsible for any potential losses or damages resulting/arising from adding these tools to your firmware.
 
   * **[dehydrated 0.7.0 (letsencrypt)](../docs/make/dehydrated.md)<a id='dehydrated'></a>**<br>
