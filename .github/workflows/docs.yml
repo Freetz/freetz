@@ -37,10 +37,12 @@ jobs:
         run: locale-gen en_US.utf8 && locale-gen de_DE.UTF-8 && update-locale
 
       - name: clone
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           umask 0022
           git config --global --add safe.directory $GITHUB_WORKSPACE
-          git clone https://github.com/$GITHUB_REPOSITORY.git $GITHUB_WORKSPACE --branch $GITHUB_REF_NAME
+          git clone https://$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git $GITHUB_WORKSPACE --branch $GITHUB_REF_NAME
 
       - name: generate
         run: docs/generate.sh
