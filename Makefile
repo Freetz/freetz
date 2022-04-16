@@ -184,6 +184,11 @@ ifeq ($(shell sed -n 's/^FREETZ_BUSYBOX___V..._LAST_SYSTEM_ID=//p' $(TOPDIR)/.co
 DLCHG:=$(shell echo 'y' ; sed 's/^\(FREETZ_BUSYBOX___V..._LAST_SYSTEM_ID\)=.*/\1=899/' -i $(TOPDIR)/.config)
 $(info BusyBox LAST_SYSTEM_ID automatically changed.)
 endif
+# compat 2022/04: remove orphan yourfritz link in tools
+ifeq ($(shell test -L $(TOPDIR)/tools/yf && echo y),y)
+DLCHG:=$(shell echo 'y' ; rm -f $(TOPDIR)/tools/yf $(TOPDIR)/source/host-tools/yf-*/.installed)
+$(info Orphan link automatically removed.)
+endif
 #
 $(if $(DLCHG),$(error Please re-run))
 endif
