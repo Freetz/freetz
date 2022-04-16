@@ -163,6 +163,24 @@ do_checkout_git_archive()
 	paths=$(echo "$1" | cut -d , -f 2- | tr , " ")
 	git archive --format=tar --remote="$repository" --prefix="$2/" "$3" $paths | tar -x
 }
+# $1 is expected to have the following format:
+#    repository_url,path
+# where
+#    repository_url - a repository url , e.g. https://github.com/user/repo
+#    path - a path to any file or directory within the repository
+# Not much more than path will be transmitted saving both bandwidth and processing power.
+do_checkout_git_sparse() {
+	local repo="${1%%,*}"
+	local sdir="${1##*,}"
+	git clone --no-checkout --depth 1 --filter=blob:none --sparse "$repo" "$2" \
+	&& pushd "$2" >/dev/null \
+	&& git sparse-checkout init --cone \
+	&& git sparse-checkout set $sdir \
+	&& git checkout "$3" \
+	&& LAST_COMMIT_TIMESTAMP=$(git log -1 --pretty=format:%cD) \
+	&& find . -maxdepth 1 ! -name "$sdir" -exec rm -rf {} ';' \
+	&& popd >/dev/null
+}
 do_checkout_bzr()
 {
 	bzr export -r"$3" "$2" "$1"
@@ -250,7 +268,7 @@ fi
 # Primary site and package specific mirrors (if specified)
 if [ -n "$URLs" ]; then
 	# check if URLs contains magic sequence corresponding to one of the supported VCSs
-	supportedVCSs="cvs|svn|git|git_no_submodules|git_archive|bzr|hg|darcs"
+	supportedVCSs="cvs|svn|git|git_no_submodules|git_archive|git_sparse|bzr|hg|darcs"
 	VCS="$(echo "${URLs}" | sed -nr -e "s,^(${supportedVCSs})(@|://).*,\1,p")"
 	if [ -n "${VCS}" ]; then
 		URLs="$(echo "${URLs}" | sed -r -e "s,^(${supportedVCSs})@(.*),\2,")"
