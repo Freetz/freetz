@@ -36,5 +36,5 @@ yf-juischeck-host-dirclean:
 	$(RM) -r $(YF_JUISCHECK_HOST_DIR)
 
 yf-juischeck-host-distclean: yf-juischeck-host-dirclean
-	$(RM) -rf $(TOOLS_DIR)/yf-juischeck
+	$(RM) -rf $(TOOLS_DIR)/yf-juischeck/
 

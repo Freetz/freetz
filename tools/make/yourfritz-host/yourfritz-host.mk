@@ -8,20 +8,8 @@ YOURFRITZ_HOST_SITE:=git_no_submodules@$(YOURFRITZ_HOST_GIT_REPOSITORY)
 ### CHANGES:=https://github.com/PeterPawn/YourFritz/tags
 ### CVSREPO:=https://github.com/PeterPawn/YourFritz/commits/main
 
-YOURFRITZ_HOST_BASH_AS_SHEBANG += signimage/avm_pubkey_to_pkcs8
-YOURFRITZ_HOST_BASH_AS_SHEBANG += signimage/check_signed_image
-YOURFRITZ_HOST_BASH_AS_SHEBANG += signimage/generate_signing_key
-YOURFRITZ_HOST_BASH_AS_SHEBANG += signimage/sign_image
-
 YOURFRITZ_HOST_BASH_AS_SHEBANG += bootmanager/add_change_oem.sh
 YOURFRITZ_HOST_BASH_AS_SHEBANG += bootmanager/add_to_system_reboot.sh
-
-YOURFRITZ_HOST_BASH_AS_SHEBANG += eva_tools/eva_discover
-YOURFRITZ_HOST_BASH_AS_SHEBANG += eva_tools/eva_get_environment
-YOURFRITZ_HOST_BASH_AS_SHEBANG += eva_tools/eva_store_tffs
-YOURFRITZ_HOST_BASH_AS_SHEBANG += eva_tools/eva_switch_system
-YOURFRITZ_HOST_BASH_AS_SHEBANG += eva_tools/eva_to_memory
-YOURFRITZ_HOST_BASH_AS_SHEBANG += eva_tools/image2ram
 
 YOURFRITZ_HOST_BASH_AS_SHEBANG += avm_kernel_config/unpack_kernel.sh
 
