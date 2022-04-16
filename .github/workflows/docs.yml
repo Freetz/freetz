@@ -54,7 +54,7 @@ jobs:
           git add .
           git config --local user.name github-actions
           git config --local user.email github-actions@github.com
-          git commit -m "docs: automatic update" || exit 0
+          git diff --cached --quiet && exit 0 || git commit -m "docs: automatic update"
           git config --local credential.helper '!x() { echo "password=$GITHUB_TOKEN"; };x'
           git push origin $GITHUB_REF_NAME
 
