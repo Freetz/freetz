@@ -23,7 +23,7 @@ $(YF_JUIS_HOST_DIR)/.unpacked: $(DL_DIR)/$(YF_JUIS_HOST_SOURCE) | $(TOOLS_SOURCE
 	touch $@
 
 $(YF_JUIS_HOST_DIR)/.installed: $(YF_JUIS_HOST_DIR)/.unpacked
-	mkdir -p $(TOOLS_DIR)/yf/juis/
+	mkdir -p $(TOOLS_DIR)/yf/
 	tar cf - -C $(YF_JUIS_HOST_DIR)/ juis/ | tar xf - -C $(TOOLS_DIR)/yf/
 	touch $@
 

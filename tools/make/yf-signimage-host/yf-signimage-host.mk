@@ -23,7 +23,7 @@ $(YF_SIGNIMAGE_HOST_DIR)/.unpacked: $(DL_DIR)/$(YF_SIGNIMAGE_HOST_SOURCE) | $(TO
 	touch $@
 
 $(YF_SIGNIMAGE_HOST_DIR)/.installed: $(YF_SIGNIMAGE_HOST_DIR)/.unpacked
-	mkdir -p $(TOOLS_DIR)/yf/signimage/
+	mkdir -p $(TOOLS_DIR)/yf/
 	tar cf - -C $(YF_SIGNIMAGE_HOST_DIR)/ signimage/ | tar xf - -C $(TOOLS_DIR)/yf/
 	touch $@
 
