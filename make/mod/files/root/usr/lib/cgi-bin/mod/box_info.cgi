@@ -142,6 +142,8 @@ if [ -e /proc/clocks -o -e /proc/sys/urlader/environment ]; then
 	else
 		_CPU_FRQ="$(sed -n 's/^cpufrequency\t//p' /proc/sys/urlader/environment | awk '{ printf "%.0f", $1 /1000/1000 }')"
 		_SYS_FRQ="$(sed -n 's/^sysfrequency\t//p' /proc/sys/urlader/environment | awk '{ printf "%.0f", $1 /1000/1000 }')"
+		[ -z "$_CPU_FRQ" ] && _CPU_FRQ="$(sed 's/000$//' /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq)"
+		[ -z "$_SYS_FRQ" ] && _SYS_FRQ="$(sed 's/000$//' /sys/devices/system/cpu/cpu1/cpufreq/cpuinfo_max_freq)"
 		echo "<dt>CPU</dt><dd>$_CPU_FRQ MHz</dd>"
 		echo "<dt>SYSTEM</dt><dd>$_SYS_FRQ MHz</dd>"
 	fi
