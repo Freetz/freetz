@@ -1,6 +1,6 @@
 YF_JUIS_HOST_VERSION:=049839bdf5811ed0c7d9b3036249c12a294ecffe
 YF_JUIS_HOST_SOURCE:=yf-juis-$(YF_JUIS_HOST_VERSION).tar.xz
-YF_JUIS_HOST_SOURCE_SHA256:=X
+YF_JUIS_HOST_SOURCE_SHA256:=9ba42eb23e1e71a6c235e37b2090a8ffba1d5103536f68a8ecf7dc94af816241
 YF_JUIS_HOST_SITE:=git_sparse@https://github.com/PeterPawn/YourFritz.git,juis
 ### VERSION:=0.5
 ### WEBSITE:=https://github.com/PeterPawn/YourFritz/tree/main/juis
