@@ -38,6 +38,18 @@ TOOLS_CONDITIONAL+=python-host
 TOOLS_CONDITIONAL+=scons-host
 TOOLS_CONDITIONAL+=tools-host
 TOOLS_CONDITIONAL+=xdelta-host
+ifneq ($(strip $(FREETZ_PATCH_MODFS_BOOT_MANAGER)),y)
+TOOLS_CONDITIONAL+=yf-bootmanager-host
+endif
+ifneq ($(strip $(FREETZ_TYPE_FIRMWARE_DETECT_LATEST)),y)
+TOOLS_CONDITIONAL+=yf-juischeck-host
+endif
+ifneq ($(strip $(FREETZ_FWMOD_VALIDATE_METHOD_SI)),y)
+ifneq ($(strip $(FREETZ_FWMOD_SIGN_METHOD_SI)),y)
+FREETZ_FWMOD_SIGN_METHOD_SI
+TOOLS_CONDITIONAL+=yf-signimage-host
+endif
+endif
 
 # tools not in dl-archive
 TOOLS_BUILD_LOCAL+=gmp-host
