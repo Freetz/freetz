@@ -57,7 +57,7 @@ Latest changes
    * patchelf 0.13.1
    * pseudo 1.9.0 oe-core 0cda3ba
    * yf-bootmanager 0.8.5 dd1e066
-   * yf-juischeck 0.5 049839b
+   * yf-juis 0.5 049839b
    * yf-signimage 1.0.1 78a5689
    * yourfritz 5e33421
 
