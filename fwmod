@@ -293,7 +293,7 @@ validate_signature() {
 	[ "$EXP" == "$MOD" ] && EXP='010001'
 	if [ "$FREETZ_FWMOD_VALIDATE_METHOD_SI" == "y" ]; then
 		echo -e "$MOD\n$EXP" > "$TMP/sig"
-		${TOOLS_DIR}/yf-signimage/yf_check_signature "$2" -a "$TMP/sig" 2> "$TMP/out"
+		${TOOLS_DIR}/yf/signimage/yf_check_signature "$2" -a "$TMP/sig" 2> "$TMP/out"
 		RET=$?
 		[ $RET -ne 0 ] && echo -e "\033[0;31mfailed\033[0m" && cat "$TMP/out"
 		rm -rf "$TMP"
@@ -2116,7 +2116,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 		echo1 -l "signing packed .image file"
 		if [ "$FREETZ_FWMOD_SIGN_METHOD_SI" == "y" ]; then
 			ln -fs "${SIGNATURE_SUBDIR}/prv" "sign-image.key"
-			FREETZ_IMAGE_SIGNING_PREFIX="sign-image" ${TOOLS_DIR}/yf-signimage/yf_sign \
+			FREETZ_IMAGE_SIGNING_PREFIX="sign-image" ${TOOLS_DIR}/yf/signimage/yf_sign \
 			  "${img_name}" "$FREETZ_FWMOD_SIGN_PASSWORD" > "${img_name}.signed-temp" 2> "${img_name}.signed.debug-out"
 			RET=$?
 			[ $RET -ne 0 ] && cat "${img_name}.signed.debug-out"

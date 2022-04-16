@@ -25,8 +25,8 @@ $(YF_BOOTMANAGER_HOST_DIR)/.unpacked: $(DL_DIR)/$(YF_BOOTMANAGER_HOST_SOURCE) | 
 	touch $@
 
 $(YF_BOOTMANAGER_HOST_DIR)/.installed: $(YF_BOOTMANAGER_HOST_DIR)/.unpacked
-	mkdir -p $(TOOLS_DIR)/yf-bootmanager/
-	tar cf - -C $(YF_BOOTMANAGER_HOST_DIR)/bootmanager/ . | tar xf - -C $(TOOLS_DIR)/yf-bootmanager/
+	mkdir -p $(TOOLS_DIR)/yf/bootmanager/
+	tar cf - -C $(YF_BOOTMANAGER_HOST_DIR)/ bootmanager/ | tar xf - -C $(TOOLS_DIR)/yf/
 	touch $@
 
 yf-bootmanager-host-precompiled: $(YF_BOOTMANAGER_HOST_DIR)/.installed
@@ -38,5 +38,5 @@ yf-bootmanager-host-dirclean:
 	$(RM) -r $(YF_BOOTMANAGER_HOST_DIR)
 
 yf-bootmanager-host-distclean: yf-bootmanager-host-dirclean
-	$(RM) -rf $(TOOLS_DIR)/yf-bootmanager/
+	$(RM) -rf $(TOOLS_DIR)/yf/bootmanager/
 

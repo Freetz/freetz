@@ -23,8 +23,8 @@ $(YF_SIGNIMAGE_HOST_DIR)/.unpacked: $(DL_DIR)/$(YF_SIGNIMAGE_HOST_SOURCE) | $(TO
 	touch $@
 
 $(YF_SIGNIMAGE_HOST_DIR)/.installed: $(YF_SIGNIMAGE_HOST_DIR)/.unpacked
-	mkdir -p $(TOOLS_DIR)/yf-signimage/
-	tar cf - -C $(YF_SIGNIMAGE_HOST_DIR)/signimage/ . | tar xf - -C $(TOOLS_DIR)/yf-signimage/
+	mkdir -p $(TOOLS_DIR)/yf/signimage/
+	tar cf - -C $(YF_SIGNIMAGE_HOST_DIR)/ signimage/ | tar xf - -C $(TOOLS_DIR)/yf/
 	touch $@
 
 yf-signimage-host-precompiled: $(YF_SIGNIMAGE_HOST_DIR)/.installed
@@ -36,5 +36,5 @@ yf-signimage-host-dirclean:
 	$(RM) -r $(YF_SIGNIMAGE_HOST_DIR)
 
 yf-signimage-host-distclean: yf-signimage-host-dirclean
-	$(RM) -rf $(TOOLS_DIR)/yf-signimage/
+	$(RM) -rf $(TOOLS_DIR)/yf/signimage/
 

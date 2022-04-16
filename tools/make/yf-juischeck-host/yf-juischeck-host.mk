@@ -23,8 +23,8 @@ $(YF_JUISCHECK_HOST_DIR)/.unpacked: $(DL_DIR)/$(YF_JUISCHECK_HOST_SOURCE) | $(TO
 	touch $@
 
 $(YF_JUISCHECK_HOST_DIR)/.installed: $(YF_JUISCHECK_HOST_DIR)/.unpacked
-	mkdir -p $(TOOLS_DIR)/yf-juischeck/
-	tar cf - -C $(YF_JUISCHECK_HOST_DIR)/juis/ . | tar xf - -C $(TOOLS_DIR)/yf-juischeck/
+	mkdir -p $(TOOLS_DIR)/yf/juischeck/
+	tar cf - -C $(YF_JUISCHECK_HOST_DIR)/ juis/ | tar xf - -C $(TOOLS_DIR)/yf/
 	touch $@
 
 yf-juischeck-host-precompiled: $(YF_JUISCHECK_HOST_DIR)/.installed
@@ -36,5 +36,5 @@ yf-juischeck-host-dirclean:
 	$(RM) -r $(YF_JUISCHECK_HOST_DIR)
 
 yf-juischeck-host-distclean: yf-juischeck-host-dirclean
-	$(RM) -rf $(TOOLS_DIR)/yf-juischeck/
+	$(RM) -rf $(TOOLS_DIR)/yf/juischeck/
 
