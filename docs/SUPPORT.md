@@ -36,7 +36,6 @@ Wie kann ich Freetz-NG unterstützen?
     - Hinweis: Libraries befinden sich nicht in ```make/$PKG/``` sondern: ```make/libs/$PKG/```
     - Die Datei ```docs/CHANGELOG.md``` anpassen.
     - Die Version in ```make/$PKG/Config.in``` anpassen.
-    - Das Wiki aktualisieren durch ausführen von: ```docs/generate.sh```
     - Die Version in ```make/$PKG/$PKG.mk``` anpassen.
     - Die Prüfsumme in ```make/$PKG/$PKG.mk``` anpassen.
     - Falls der Dateiname die Version enthält, ```make/$PKG/external.*``` anpassen.
@@ -47,6 +46,4 @@ Wie kann ich Freetz-NG unterstützen?
  * __[Wiki](#wiki)__<a id='wiki'></a><br>
     Viele Teile des unter [freetz-ng.github.io/](https://freetz-ng.github.io/) zu erreichenden Wikis sind veraltet und bedürfen einer<br>
     Überarbeitung. Alle Datein des Wikis sind im Checkout unter ```docs/wiki/``` zu finden.<br>
-    Wichtig: Nach Änderungen unter ```docs/``` oder von ```Config.in```-Dateien ```docs/generate.sh``` zum<br>
-    Aktualisieren des Indexes ausführen.<br>
 
