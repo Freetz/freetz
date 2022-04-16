@@ -2,9 +2,9 @@
 echo1 "adding yf-bootmanager"
 
 TEMPDIR=$(mktemp -d)
-pushd "${TOOLS_DIR}/yf/bootmanager" >/dev/null
+pushd "${TOOLS_DIR}/yf-bootmanager" >/dev/null
 TMP="$TEMPDIR" \
-  TARGET_SYSTEM_VERSION="autodetect" \
+  TARGET_SYSTEM_VERSION="${AVM_FW_MAJOR}.${AVM_FW_VERSION}" \
   TARGET_DIR="${ABS_BASE_DIR}/${FILESYSTEM_MOD_DIR}" \
   sh "./add_to_system_reboot.sh" 2>&1 | sed 's/^/    /g'  # >/dev/null
 popd >/dev/null
