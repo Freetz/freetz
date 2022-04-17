@@ -1,0 +1,52 @@
+name: kos
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - '.github/workflows/kos.yml'
+      - 'config/generate_kos.sh'
+      - 'make/linux/configs/avm/*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    container:
+      image: ubuntu:18.04
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: update
+        run: apt-get -y update && apt-get -y upgrade && apt-get -y dist-upgrade
+
+      - name: install
+        run: |
+          DEBIAN_FRONTEND=noninteractive apt-get -y install \
+            git
+
+      - name: clone
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          umask 0022
+          git config --global --add safe.directory $GITHUB_WORKSPACE
+          git clone https://$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git $GITHUB_WORKSPACE --branch $GITHUB_REF_NAME
+
+      - name: generate
+        run: config/generate_kos.sh
+
+      - name: commit
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git status
+          git config --global --add safe.directory $GITHUB_WORKSPACE
+          git add .
+          git config --local user.name github-actions
+          git config --local user.email github-actions@github.com
+          git diff --cached --quiet && exit 0 || git commit -m "kos: automatic update"
+          git config --local credential.helper '!x() { echo "password=$GITHUB_TOKEN"; };x'
+          git push origin $GITHUB_REF_NAME
+
+
