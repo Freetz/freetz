@@ -43,6 +43,9 @@ Latest changes
    * Replace kernel does not work for most latest firmware versions.
    * Loading build kernel modules may work or do not. You'll notice.
 
+ - Packages & libs:
+   * libcap 2.64
+
  - Firmware updates:
    * Please see [FIRMWARES](FIRMWARES.md) for the list of currently supported devices and firmwares.
 

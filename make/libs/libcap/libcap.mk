@@ -1,6 +1,6 @@
-$(call PKG_INIT_LIB, 2.63)
+$(call PKG_INIT_LIB, 2.64)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=0c637b8f44fc7d8627787e9cf57f15ac06c1ddccb53e41feec5496be3466f77f
+$(PKG)_SOURCE_SHA256:=c8465e1f0b068d5fc06199231135ccac7adb56d662b1de93589252e8cd071e13
 $(PKG)_SITE:=@KERNEL/linux/libs/security/linux-privs/libcap2
 ### WEBSITE:=https://sites.google.com/site/fullycapable/
 ### MANPAGE:=https://pkg.go.dev/kernel.org/pub/linux/libs/security/libcap/cap
