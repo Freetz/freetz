@@ -1,5 +1,12 @@
 # NEWS
 
+ * __[2022-04-17](#2022-04-17)__<a id='2022-04-17'></a><br>
+   Es wurde ein neuer [Tag](https://github.com/Freetz-NG/freetz-ng/tags) `ng22040` erstellt.<br>
+   Die automatisch angebotene und nicht deaktivierbare `.zip`-Datei darf auf keinen Fall verwendet werden, da<br>
+   darin keine Dateiberechtigungen enthalten sind! In der `.tar.gz` fehlt mindestens die Versionsinformation.<br>
+   Stattdessen sollte ein Tag wie in der [README](https://github.com/Freetz-NG/freetz-ng#or-clone-a-single-tag) beschrieben mit git ausgecheckt werden.<br>
+   Siehe [ng22040](https://github.com/Freetz-NG/freetz-ng/releases/tag/ng22040)<br>
+
  * __[2021-12-10](#2021-12-10)__<a id='2021-12-10'></a><br>
    Mal wieder fehlerhafter Sourcecode von AVM<br>
    Beim von AVM neu veröffentlichten Quellcodepaket der [5530-07.29](http://osp.avm.de/fritzbox/fritzbox-5530-fiber/source-files-FRITZ.Box_5530-prxI-07.29.tar.gz) passt wieder der Quellcode des Kernels<br>
