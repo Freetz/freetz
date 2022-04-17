@@ -1,0 +1,33 @@
+Restore #define's removed for unknown reason in http://git.kernel.org/cgit/linux/kernel/git/morgan/libcap.git/commit/?id=158b7732f139d12de955026074d594a8d9c84554
+
+Without this patch libcap fails to compile with:
+  cap_file.c: In function 'cap_get_fd':
+  cap_file.c:190:33: error: 'XATTR_NAME_CAPS' undeclared (first use in this function)
+    sizeofcaps = fgetxattr(fildes, XATTR_NAME_CAPS,
+                                   ^
+  cap_file.c:190:33: note: each undeclared identifier is reported only once for each function it appears in
+  cap_file.c: In function 'cap_get_file':
+  cap_file.c:220:34: error: 'XATTR_NAME_CAPS' undeclared (first use in this function)
+    sizeofcaps = getxattr(filename, XATTR_NAME_CAPS,
+                                    ^
+  cap_file.c: In function 'cap_set_fd':
+  cap_file.c:256:30: error: 'XATTR_NAME_CAPS' undeclared (first use in this function)
+    return fremovexattr(fildes, XATTR_NAME_CAPS);
+                                ^
+  cap_file.c: In function 'cap_set_file':
+  cap_file.c:288:31: error: 'XATTR_NAME_CAPS' undeclared (first use in this function)
+    return removexattr(filename, XATTR_NAME_CAPS);
+                                 ^
+  make[2]: *** [cap_file.o] Error 1
+
+--- libcap/include/uapi/linux/capability.h
++++ libcap/include/uapi/linux/capability.h
+@@ -48,6 +48,8 @@
+         __u32 inheritable;
+ } __user *cap_user_data_t;
+ 
++#define XATTR_CAPS_SUFFIX "capability"
++#define XATTR_NAME_CAPS XATTR_SECURITY_PREFIX XATTR_CAPS_SUFFIX
+ 
+ #define VFS_CAP_REVISION_MASK	0xFF000000
+ #define VFS_CAP_REVISION_SHIFT	24
