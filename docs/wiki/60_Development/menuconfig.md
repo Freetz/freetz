@@ -19,7 +19,7 @@ wichtiger Qualitäts-Baustein unseres Projektes.
 ### Einstieg
 
 Pflichtlektüre jedes Entwicklers, bevor er zum ersten Mal die MK anpaßt,
-sollte die tools/config/kconfig-language.txt
+sollte die tools/kconfig/kconfig-language.txt
 sein. Dort werden Syntax-Features und deren Gebrauch grundlegend
 erklärt. Die Beschreibung entstammt der Dokumentation des
 [Linux-Kernels](http://kernel.org), welchem wir
@@ -46,7 +46,7 @@ Folgenden zu tun haben werden, sind
     -   ist eines der primären Debugging-Werkzeuge, wenn Benutzer Fehler
         mit einer bestimmten Konfiguration melden
     -   kann, sollte aber nicht manuell editiert werden
--   *tools/config/mconf*
+-   *tools/kconfig/mconf*
     -   ist das Binary, welches von `make menuconfig` aufgerufen wird,
         um die MK anzuzeigen und zu speichern
     -   wird mittels `make tools` bzw. `make kconfig` automatisch
@@ -54,7 +54,7 @@ Folgenden zu tun haben werden, sind
     -   hat auch ein *Make*-Target `menuconfig-single`, welches die KM
         als Baumstruktur ohne Unterseiten darstellt (manchmal nett, wenn
         man die Gesamtstruktur sehen bzw. bearbeiten möchte)
--   *tools/config/conf*
+-   *tools/kconfig/conf*
     -   ist die Kommandozeilenversion von *mconf*
     -   hat mehr Features
     -   wird ebenfalls mittels `make tools` bzw. `make kconfig`
@@ -68,7 +68,7 @@ Folgenden zu tun haben werden, sind
         also frühestens ab *Freetz 1.2*):
 
         ```
-			Usage: tools/config/conf [option] <kconfig-file>
+			Usage: tools/kconfig/conf [option] <kconfig-file>
 			[option] is _one_ of the following:
 			  --listnewconfig         List new options
 			  --oldaskconfig          Start a new configuration using a line-oriented program

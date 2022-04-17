@@ -15,7 +15,7 @@ TOPDIR=.
 CONFIG_IN=config/Config.in
 CONFIG_IN_CACHE=config/.cache.in
 CONFIG_IN_CUSTOM=config/custom.in
-CONFIG=tools/config
+CONFIG=tools/kconfig
 
 SHELL:=/bin/bash
 IMAGE:=

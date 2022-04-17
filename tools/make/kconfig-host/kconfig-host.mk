@@ -4,7 +4,7 @@ KCONFIG_HOST_SOURCE_SHA256:=152b350cbcfbec4586098be0647eb350fbd3c7e27e4bae153c66
 KCONFIG_HOST_SITE:=git_archive@git://repo.or.cz/linux.git,scripts/basic,scripts/kconfig,scripts/Kbuild.include,scripts/Makefile.compiler,scripts/Makefile.build,scripts/Makefile.host,scripts/Makefile.lib,Documentation/kbuild/kconfig-language.rst,Documentation/kbuild/kconfig-macro-language.rst,Documentation/kbuild/kconfig.rst
 KCONFIG_HOST_DIR:=$(TOOLS_SOURCE_DIR)/kconfig-$(KCONFIG_HOST_VERSION)
 KCONFIG_HOST_MAKE_DIR:=$(TOOLS_DIR)/make/kconfig-host
-KCONFIG_HOST_TARGET_DIR:=$(TOOLS_DIR)/config
+KCONFIG_HOST_TARGET_DIR:=$(TOOLS_DIR)/kconfig
 KCONFIG_HOST_BUILD_PREREQ:=bison flex
 
 

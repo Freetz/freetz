@@ -26,7 +26,7 @@ function cleanup() {
 trap cleanup EXIT SIGTERM SIGINT
 mv .config .config.tmp 2>/dev/null
 
-TOOL_CONF=tools/config/conf
+TOOL_CONF=tools/kconfig/conf
 make distclean
 [ ! -d dl ] && ln -sf ~/.freetz-dl dl
 [ ! -d dl ] && mkdir -p dl
