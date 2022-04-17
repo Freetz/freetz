@@ -23,6 +23,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		CC="$(TARGET_CC)" \
 		AR="$(TARGET_AR)" \
 		RANLIB="$(TARGET_RANLIB)" \
+		OBJCOPY="$(TARGET_OBJCOPY)" \
 		CFLAGS="$(TARGET_CFLAGS) -fPIC" \
 		BUILD_CC="$(CC)" \
 		PAM_CAP=no \
