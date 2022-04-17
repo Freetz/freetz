@@ -23,7 +23,10 @@ jobs:
       - name: install
         run: |
           DEBIAN_FRONTEND=noninteractive apt-get -y install \
-            git
+            git locales
+
+      - name: locale
+        run: locale-gen en_US.utf8 && locale-gen de_DE.UTF-8 && update-locale
 
       - name: clone
         env:
@@ -34,7 +37,9 @@ jobs:
           git clone https://$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git $GITHUB_WORKSPACE --branch $GITHUB_REF_NAME
 
       - name: generate
-        run: config/generate_kos.sh
+        run: |
+          export LANG=en_US.utf8
+          config/generate_kos.sh
 
       - name: commit
         env:

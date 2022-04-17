@@ -46,7 +46,9 @@ jobs:
           git clone https://$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git $GITHUB_WORKSPACE --branch $GITHUB_REF_NAME
 
       - name: generate
-        run: docs/generate.sh
+        run: |
+          export LANG=en_US.utf8
+          docs/generate.sh
 
       - name: commit
         env:
