@@ -119,7 +119,7 @@ Latest changes
    * tinyproxy 1.11.0
    * Tor 0.4.6.10
    * uClibc-ng 1.0.40
-   * Unbound 1.14.0
+   * Unbound 1.15.0
    * UnRAR 6.1.4
    * utf8proc 2.7.0
    * Wget GNU 1.21.2
