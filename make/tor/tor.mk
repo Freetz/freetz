@@ -32,6 +32,7 @@ $(PKG)_CONFIGURE_ENV += tor_cv_cflags__Wstack_protector=no
 $(PKG)_CONFIGURE_ENV += tor_cv_cflags___param_ssp_buffer_size_1=no
 $(PKG)_CONFIGURE_ENV += tor_cv_cflags__fPIE=no
 $(PKG)_CONFIGURE_ENV += tor_cv_ldflags__pie=no
+$(PKG)_CONFIGURE_ENV += ac_cv_lib_cap_cap_init=no
 
 $(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/mod/etc
 $(PKG)_CONFIGURE_OPTIONS += --disable-tool-name-check
