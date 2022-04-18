@@ -44,7 +44,7 @@ Latest changes
    * Loading build kernel modules may work or do not. You'll notice.
 
  - Packages & libs:
-   * libcap 2.24/2.64
+   * libcap 2.49/2.64
 
  - Firmware updates:
    * Please see [FIRMWARES](FIRMWARES.md) for the list of currently supported devices and firmwares.

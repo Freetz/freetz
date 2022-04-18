@@ -1,10 +1,10 @@
-$(call PKG_INIT_LIB, $(if $(FREETZ_AVM_GCC_4_MAX),2.24,2.64))
+$(call PKG_INIT_LIB, $(if $(FREETZ_AVM_GCC_4_MAX),2.49,2.64))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256_ABANDON:=cee4568f78dc851d726fc93f25f4ed91cc223b1fe8259daa4a77158d174e6c65
+$(PKG)_SOURCE_SHA256_ABANDON:=e98bc4d93645082ec787730b0fd1a712b38882465c505777de17c338831ee181
 $(PKG)_SOURCE_SHA256_CURRENT:=c8465e1f0b068d5fc06199231135ccac7adb56d662b1de93589252e8cd071e13
 $(PKG)_SOURCE_SHA256:=$(LIBCAP_SOURCE_SHA256_$(if $(FREETZ_AVM_GCC_4_MAX),ABANDON,CURRENT))
 $(PKG)_SITE:=@KERNEL/linux/libs/security/linux-privs/libcap2
-### VERSION:=2.24/2.64
+### VERSION:=2.49/2.64
 ### WEBSITE:=https://sites.google.com/site/fullycapable/
 ### MANPAGE:=https://pkg.go.dev/kernel.org/pub/linux/libs/security/libcap/cap
 ### CHANGES:=https://sites.google.com/site/fullycapable/release-notes-for-libcap
