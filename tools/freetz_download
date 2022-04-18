@@ -272,7 +272,6 @@ if [ -n "$URLs" ]; then
 	VCS="$(echo "${URLs}" | sed -nr -e "s,^(${supportedVCSs})(@|://).*,\1,p")"
 	if [ -n "${VCS}" ]; then
 		URLs="$(echo "${URLs}" | sed -r -e "s,^(${supportedVCSs})@(.*),\2,")"
-		num_sites=0
 	else
 		URLs="${URLs//@1&1/@1u1}" # replace our 1&1 alias with a one containing no special shell characters
 
