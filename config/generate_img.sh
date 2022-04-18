@@ -2,10 +2,10 @@
 #by cuma, 2019
 
 # this generates config/.img/*.in
-# you need all (about 250) firmware image files
-# they will take unpacked about 16GB HDD space
-# initial unpack takes about 7 minutes
-# every analyze needs about 90 seconds
+# you need all (about 300) firmware image files
+# they will take unpacked about 21GB HDD space
+# initial unpack takes about 8 minutes
+# every analyze needs about 100 seconds
 
 # vars
 #DOSHOW=0 min, only images
@@ -23,8 +23,9 @@ DLIN="$MYPWD/config/mod/download.in"
 PROP="$MYPWD/$PDIR"
 CINTMP="$PROP/Config.in"
 UNPACK="$HOME/.freetz-props"
+IMAGES="$HOME/.freetz-dl/fw"
 FWLIST="$UNPACK/.fwlist"
-[ "$FREETZ_ENABLEG" != "true" ] && exit 1
+[ "$FREETZ_ENABLEG" != "true" ] && exit 9
 
 
 # path
@@ -101,9 +102,10 @@ fwlist() {
 ## unpack
 unpack_() {
 	line="$1"
-	
-	image="$HOME/.freetz-dl/fw/${line%% *}"
-	[ ! -f "${image}" ] && image="$HOME/Desktop/${line%% *}"
+	file="${line%% *}"
+	image="$IMAGES/$file"
+	[ -n "$ACTIONS_FWDLURL" ] && echo "SAVING       $file" && wget -q "${ACTIONS_FWDLURL}$file" -O $image >/dev/null 2>&1 || exit 1
+	[ ! -f "${image}" ] && image="$HOME/Desktop/$file"
 	[ ! -f "${image}" ] && echo "MISSED       ${image##*/}" && return
 	dirname="$UNPACK/${line%.image*}"
 	[ -e "$dirname" ] && return && echo "EXISTS    ${image##*/}" && return
