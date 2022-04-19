@@ -1,4 +1,5 @@
 #!/bin/bash
+#Arg $1: <fwmod|short>
 DIR="$(readlink -f ${0%/*}/..)"
 
 if [ -d $DIR/.svn ]; then
@@ -29,5 +30,5 @@ fi
 [ "$(grep -vE "^#|^ *$" $DIR/addon/*.pkg 2>/dev/null | wc -l)" != "0" ] && RC="${RC}A"
 R=" ${RC:+$RC-}${RH:-UNKNOWN}${RB:+ $RB}${RD:+ $RD}"
 [ "$1" ] && R="${R// /-}"
-echo "$(cat $DIR/.version)${R}"
+[ "$1" == "short" ] && echo "${RC//[ABCDEFGHIJKLMNOPQRSTUVWXYZ]/}-${RH}" || echo "$(cat $DIR/.version)${R}"
 
