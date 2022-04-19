@@ -347,7 +347,7 @@ Index:
 
 ### L
 
-  * **[LCD4linux e2cfdc5-git](lcd4linux.md)<a id='lcd4linux'></a>**<br>
+  * **[LCD4linux e691a4b-git](lcd4linux.md)<a id='lcd4linux'></a>**<br>
     LCD4Linux is a small program that grabs information from the kernel and some subsystems and displays it on an external liquid crystal display.
 
   * **<u>lftp 4.8.4 (binary only)</u><a id='lftp'></a>**<br>
