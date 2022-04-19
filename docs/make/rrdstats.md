@@ -214,7 +214,7 @@ Es wird ein Passwort für die AVM-Weboberfläche (API) benötigt, dies kann auch
 ### Script aha.sh
 
 Die Steuerung der SmartHome-Geräte geschieht mit aha.sh. Man kann z. B. per cron mit aha.sh entsprechende Schaltzeitpunkte einstellen.
-Derzeit unterstützt aha.sh nur Heizkörperregler wie Comet DECT, FRITZ!DECT 300 oder FRITZ!DECT 301 und ein/aus-Aktoren wie die Steckdosen FRITZ!DECT 200, FRITZ!DECT 210 oder FRITZ!Powerline 546E.
+Derzeit unterstützt aha.sh nur Heizkörperregler wie Comet DECT, FRITZ!DECT 300+301+302 und ein/aus-Aktoren wie die Steckdosen FRITZ!DECT 200, FRITZ!DECT 210 oder FRITZ!Powerline 546E.
 
 Parameter für den Aufruf von `aha.sh`
 
@@ -228,7 +228,8 @@ Ausgabe der grundlegenden Informationen aller SmartHome-Geräte
              productname = Comet DECT
                fwversion = 03.68
          functionbitmask = 320
-                           ---- ---- -1-1 ----- -
+                           --- ---- ---1 -1-- ----
+                           SRQ PONM LKJI HGFE DCBA
               identifier = 11111 0112314
                       id = 20
                     name = Heizung A
@@ -247,29 +248,31 @@ Ausgabe der grundlegenden Informationen aller SmartHome-Geräte
 
 ...
 
-                           HGFE DCBA 9876 54321 0 
-                           |||| |||| |||| ||||  | 
-                           |||| |||| |||| ||||  +- Bit  0: HANFUN Gerät
-                           |||| |||| |||| ||||    
-                           |||| |||| |||| |||+---- Bit  2: Lampe
-                           |||| |||| |||| ||+----- Bit  3: ?Action
-                           |||| |||| |||| |+------ Bit  4: Alarmsensor
-                           |||| |||| |||| +------- Bit  5: Taster
-                           |||| |||| ||||         
-                           |||| |||| |||+--------- Bit  6: Heizkörperregler
-                           |||| |||| ||+---------- Bit  7: Energiemessgerät
-                           |||| |||| |+----------- Bit  8: Temperatursensor
-                           |||| |||| +------------ Bit  9: Schaltsteckdose
-                           |||| ||||              
-                           |||| |||+-------------- Bit 10: DECT-Repeater
-                           |||| ||+--------------- Bit 11: Mikrofon
-                           |||| |+---------------- Bit 12: ?Bundle
-                           |||| +----------------- Bit 13: HANFUN Unit
-                           ||||                   
-                           |||+------------------- Bit 14: ?Template
-                           ||+-------------------- Bit 15: Schaltbar
-                           |+--------------------- Bit 16: Dimmbar
-                           +---------------------- Bit 17: Farbtemperatur
+                           SRQ PONM LKJI HGFE DCBA
+                           ||| |||| |||| |||| ||||
+                           ||| |||| |||| |||| |||+- Bit  0/A: HANFUN Gerät
+                           ||| |||| |||| |||| ||+-- Bit  1/B: ?Unused
+                           ||| |||| |||| |||| |+--- Bit  2/C: Lampe
+                           ||| |||| |||| |||| +---- Bit  3/D: ?Action
+                           ||| |||| |||| ||||
+                           ||| |||| |||| |||+------ Bit  4/E: Alarmsensor
+                           ||| |||| |||| ||+------- Bit  5/F: Taster
+                           ||| |||| |||| |+-------- Bit  6/G: Heizkörperregler
+                           ||| |||| |||| +--------- Bit  7/H: Energiemessgerät
+                           ||| |||| ||||
+                           ||| |||| |||+----------- Bit  8/I: Temperatursensor
+                           ||| |||| ||+------------ Bit  9/J: Schaltsteckdose
+                           ||| |||| |+------------- Bit 10/K: DECT-Repeater
+                           ||| |||| +-------------- Bit 11/L: Mikrofon
+                           ||| ||||
+                           ||| |||+---------------- Bit 12/M: ?Bundle
+                           ||| ||+----------------- Bit 13/N: HANFUN Unit
+                           ||| |+------------------ Bit 14/O: ?Template
+                           ||| +------------------- Bit 15/P: Schaltbar
+                           |||
+                           ||+--------------------- Bit 16/Q: Potentiometer
+                           |+---------------------- Bit 17/R: Farbtemperatur
+                           +----------------------- Bit 18/S: Rollladensteuerung
 ```
 **s** oder **small**
 Ausgabe von ain, Name, aktuelle Leistung, aktuelle Spannung, absoluter Verbrauch seit Zurücksetzen der Energiestatistik, Temperatur, Temperaturabweichung (Offset), Current, Factor
