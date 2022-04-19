@@ -1,11 +1,15 @@
-$(call PKG_INIT_LIB, $(if $(FREETZ_KERNEL_VERSION_2_MAX),0.30.2,0.32.1))
-$(PKG)_LIB_VERSION:=$(if $(FREETZ_KERNEL_VERSION_2_MAX),27.3.2,27.5.1)
+$(call PKG_INIT_LIB, $(if $(FREETZ_KERNEL_VERSION_2_MAX),0.30.2,0.32.2))
+$(PKG)_LIB_VERSION:=$(if $(FREETZ_KERNEL_VERSION_2_MAX),27.3.2,27.5.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_SHA256_ABANDON:=db0bd8cdec329b48f53a6f00199c92d5ba40b0f015b153718d1b15d3d967fbca
-$(PKG)_SOURCE_SHA256_CURRENT:=05c54bc115030c89e463a4fb28d3a3f8215879528ba5ca70d676d3d21bf3af52
+$(PKG)_SOURCE_SHA256_CURRENT:=986566468c6295fc5d0fb141a5981e31c9f82ee38e938374abed8471ef2fb286
 $(PKG)_SOURCE_SHA256:=$(NEON_SOURCE_SHA256_$(if $(FREETZ_KERNEL_VERSION_2_MAX),ABANDON,CURRENT))
 $(PKG)_SITE:=https://notroj.github.io/neon,http://www.webdav.org/neon
-### VERSION:=0.30.2/0.32.1
+### VERSION:=0.30.2/0.32.2
+### WEBSITE:=https://notroj.github.io/neon/
+### MANPAGE:=https://github.com/notroj/neon#readme
+### CHANGES:=https://notroj.github.io/neon/
+### CVSREPO:=https://github.com/notroj/neon
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libneon.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libneon.so.$($(PKG)_LIB_VERSION)
