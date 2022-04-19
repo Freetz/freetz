@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, e2cfdc5)
+$(call PKG_INIT_BIN, e691a4bdbb37627ee5feaeee8c0c2a24e5803473)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_CHECKSUM:=X
+$(PKG)_SOURCE_CHECKSUM:=c0a85417c668b34f6204b47d955e85df686573408010845b91e90afe78578a2f
 $(PKG)_SITE:=git@https://github.com/TangoCash/lcd4linux.git
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/lcd4linux
@@ -24,6 +24,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-plugins=all,!dbus,!gps,!mpd,!mpris_dbus,!mysq
 #$(PKG)_LDFLAGS += --static
 #endif
 
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -42,6 +43,7 @@ $(pkg):
 
 $(pkg)-precompiled: $(LCD4LINUX_TARGET_BINARY)
 
+
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(LCD4LINUX_DIR) clean
 	$(RM) $(LCD4LINUX_DIR)/.configured
@@ -50,3 +52,4 @@ $(pkg)-uninstall:
 	$(RM) $(LCD4LINUX_TARGET_BINARY)
 
 $(PKG_FINISH)
+
