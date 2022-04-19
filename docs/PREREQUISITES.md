@@ -94,7 +94,7 @@ sudo apt-get -y install imagemagick subversion git gcc g++ binutils autoconf aut
 
  - Ubuntu 14 64-Bit:
 ```
-sudo apt-get -y install gcc-multilib libc6-dev-i386 libsqlite3-dev lib32stdc++6 cmake execstack ccache pv rsync openssl inkscape git build-essential libtool graphicsmagick imagemagick subversion gcc g++ binutils autoconf automake automake1.9 libtool make bzip2 libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config ecj fastjar realpath perl libstring-crc32-perl ruby gawk python libusb-dev unzip intltool libacl1-dev libcap-dev
+sudo apt-get -y install gcc-multilib libc6-dev-i386 libsqlite3-dev lib32stdc++6 cmake ccache pv rsync kmod execstack openssl inkscape git build-essential libtool graphicsmagick imagemagick subversion gcc g++ binutils autoconf automake automake1.9 libtool make bzip2 libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config ecj fastjar realpath perl libstring-crc32-perl ruby gawk python libusb-dev unzip intltool libacl1-dev libcap-dev
 Zusätzlich muss manuell installiert werden:
 cmake min v3.4.3  https://ftp.osuosl.org/pub/blfs/conglomeration/cmake/cmake-3.4.3.tar.gz
 cpio min v2.12    https://ftp.gnu.org/gnu/cpio/cpio-2.12.tar.bz2
