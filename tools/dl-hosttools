@@ -1,5 +1,9 @@
 #!/bin/bash
-# packs host-tools to dl/tools-DATE.tar.xz in ~6min
+# packs host-tools to dl/tools-VERSION.tar.xz in ~6min
+
+VERSION="${1:-$(date '+%Y-%m-%d')}"
+FILE="tools-$VERSION"
+TOOL_CONF=tools/kconfig/conf
 
 miniconfig() {
 local i
@@ -14,7 +18,6 @@ EOF
 }
 
 SKIP="kconfig"
-FILE="tools-$(date '+%Y-%m-%d')"
 OUTP="dl/$FILE.tar.xz"
 [ -s "$OUTP" ] && echo "File $OUTP exists" && exit 1
 
@@ -22,7 +25,6 @@ TOOLS="$(ls tools/make/*/*.mk | sed 's!.*/!!;s/.mk$//g')"
 LOCAL="$(sed -n 's/^TOOLS_BUILD_LOCAL.=//p' tools/make/Makefile.in)"
 BUILD="$(echo "$TOOLS" | grep -vE "^$(echo $LOCAL | sed 's/ /|/g')$")"
 
-TOOL_CONF=tools/kconfig/conf
 make distclean
 rm -rf dl 2>/dev/null
 ln -sf ~/.freetz-dl dl

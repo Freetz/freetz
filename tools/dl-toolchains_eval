@@ -1,7 +1,10 @@
 #!/bin/bash
+# shows hashes of toolchains in dl/*freetz-VERSION-shared-glibc.tar.lzma
 
-VERSION="rLOCAL"
+VERSION="${1:-rLOCAL}"
+SUFFIX="freetz-${VERSION}-shared-glibc"
 TOOL_CONF=tools/kconfig/conf
+
 rm -f out.{raw,kernel,target}
 make $TOOL_CONF &>/dev/null
 
@@ -38,8 +41,8 @@ grep -v '^#' out.raw | sort -u | grep uClibc | while read l; do grep "^$l$" -m1 
 [ "${line:0:1}" == "#" -o "${line:0:1}" == "" ] && echo $line | tee -a out.kernel >> out.target && continue
 echo $line | grep 'uClibc-0.9.28' -q && line="$(echo $line | sed 's/gcc-3\..\../gcc-4.6.4/')"
 
-FK="dl/${line%_uCli*}-freetz-${VERSION}-shared-glibc.tar.lzma"
-FT="dl/$line-freetz-${VERSION}-shared-glibc.tar.lzma"
+FK="dl/${line%_uCli*}-${SUFFIX}.tar.lzma"
+FT="dl/$line-${SUFFIX}.tar.lzma"
 echo $FK >> out.kernel
 echo $FT >> out.target
 SK="$(sha256sum $FK 2>/dev/null || echo 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')"
