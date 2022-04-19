@@ -57,9 +57,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git status
           git config --global --add safe.directory $GITHUB_WORKSPACE
           git add .
+          git status
           git config --local user.name github-actions
           git config --local user.email github-actions@github.com
           git diff --cached --quiet && exit 0 || git commit -m "img: automatic update"
