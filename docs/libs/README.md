@@ -270,7 +270,7 @@ Index:
   * **[ncursesw (libncursesw.so) 6.3](ncursesw.md)<a id='ncursesw'></a>**<br>
     ncurses is a programming library providing an API, allowing the programmer to write text user interfaces in a terminal-independent manner. It also optimizes screen changes, in order to reduce the latency experienced when using remote shells. Ncurses stands for "new curses", and is a replacement for the discontinued 4.4 BSD classic curses. Ncursesw has additional wide-character (unicode) support. Ncurses and Ncursesw libraries are source-compatible, but not binary-compatible.
 
-  * **[neon: libneon (libneon.so) 0.32.1](neon.md)<a id='neon'></a>**<br>
+  * **[neon: libneon (libneon.so) 0.30.2/0.32.2](neon.md)<a id='neon'></a>**<br>
     neon is an HTTP and WebDAV client library, with a C language API.
 
   * **[nettle: libnettle (libnettle.so) 3.6](nettle.md)<a id='nettle'></a>**<br>
