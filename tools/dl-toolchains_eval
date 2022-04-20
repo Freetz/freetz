@@ -1,6 +1,7 @@
 #!/bin/bash
 # shows hashes of toolchains in dl/*freetz-VERSION-shared-glibc.tar.lzma
 #Arg $1: <VERSION>
+#Arg $2: <new|old|all>
 
 VERSION="${1:-rLOCAL}"
 SUFFIX="freetz-${VERSION}-shared-glibc"
@@ -22,9 +23,16 @@ evalconfig() {
 	) >> out.raw
 }
 
+case "$2" in
+	a|all)		ver=""    ;;
+	o|old)		ver="old" ;;
+	n|new|"")	ver="new" ;;
+	*)		ver="new" ;;
+esac
+
 #r
-#sed -nr 's/^#? *dltc "(.*)".*/\1/p' $(dirname $(readlink -f $0))/dl-toolchains_make | while read evalopts; do evalconfig $evalopts; done
-sed -nr 's/^ *dltc "(.*)".*/\1/p' $(dirname $(readlink -f $0))/dl-toolchains_make | while read evalopts; do evalconfig $evalopts; done
+#sed -nr "s/^#?.*$ver.* && dltc \"(.*)\".*/\1/p" $(dirname $(readlink -f $0))/dl-toolchains_make | while read evalopts; do evalconfig $evalopts; done
+sed -nr "s/^.*$ver.* && dltc \"(.*)\".*/\1/p" $(dirname $(readlink -f $0))/dl-toolchains_make | while read evalopts; do evalconfig $evalopts; done
 #FRITZBOX="$(cat config/ui/firmware.in | grep -A9999 '^### Hardware type' | grep -B9999 '^endchoice # "Hardware type"' | sed -rn 's/\t*config (FREETZ_TYPE_)/\1/p')"
 #FIRMWARE="$(sed -rn 's/^\tconfig (FREETZ_TYPE_FIRMWARE_[X_0-9]{5}).*/\1/p' config/ui/firmware.in)"
 #MUECLIBC="$(sed -rn 's/.* FREETZ_TARGET_UCLIBC_([0-1]_[0-9]_[0-9][0-9]*).*/FREETZ_TARGET_UCLIBC_\1/p' config/ui/toolchain.in | sort -u)"
@@ -86,9 +94,14 @@ echo | tee -a out.kernel >> out.target
 done
 
 #a
+echo -e "\n# kernel:"
 cat out.kernel | grep -v '^#' | sort -u
-cat out.target | grep -v '^#' | grep -iv gcc.3 | sort -u
+echo -e "\n# target:"
+cat out.target | grep -v '^#' | grep -iv gcc.3 | sort -u | grep '^dl/' -v
+echo -e "\n# files:\n"
+cat out.target | grep -v '^#' | grep -iv gcc.3 | sort -u | grep '^dl/'
 rm -f out.{raw,kernel,target}
+echo
 #grep -v '^#' out.raw | sort -u 
 #grep -v '^#' out.raw | sort -u | grep uClibc | while read l; do grep "^$l$" -m1 -B1 out.raw | head -n1; done | sort
 #grep -v '^#' out.raw | sort -u | grep uClibc | while read l; do grep "^$l$" -m1 -B1 out.raw           ; done
