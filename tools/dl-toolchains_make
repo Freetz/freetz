@@ -1,7 +1,7 @@
 #!/bin/bash
 # packs toolchains to dl/*freetz-VERSION-shared-glibc.tar.lzma in 20-25min each
 #Arg $1: <VERSION>
-#Arg $2: <FREETZ_TYPE_...>
+#Arg $2: <new|old|all|FREETZ_TYPE_...>
 
 VERSION="${1:-rLOCAL}"
 SUFFIX="freetz-${VERSION}-shared-glibc"
@@ -85,48 +85,56 @@ dltc() {
 	$TOOL_CONF --olddefconfig config/Config.in
 	cp -a .config tc-${options// /_}.conf
 	make KTV=${SUFFIX} TTV=${SUFFIX} toolchain 2>&1 | tee tc-${options// /_}.make
+	local c=""
+	for x in $(sed -n 's/^OUTPUT:=//p' tc-${options// /_}.make); do [ -s dl/$x ] && c="x$c"; done
+	[ "${#c}" != "2" ] && echo Failed && exit 1
 }
 
-if [ -n "$1" ]; then
-  dltc "$*"
-else
-
-# dltc "FREETZ_TYPE_WLAN    FREETZ_TYPE_FIRMWARE_04_XX"
-
-# dltc "FREETZ_TYPE_7270_V1 FREETZ_TYPE_FIRMWARE_04_XX FREETZ_TARGET_IPV6_SUPPORT"
-# dltc "FREETZ_TYPE_7270_V3 FREETZ_TYPE_FIRMWARE_06_0X"
-# dltc "FREETZ_TYPE_7270_V3 FREETZ_TYPE_FIRMWARE_06_0X FREETZ_TARGET_UCLIBC_0_9_33"
-
-# dltc "FREETZ_TYPE_7390    FREETZ_TYPE_FIRMWARE_05_2X"
-# dltc "FREETZ_TYPE_7390    FREETZ_TYPE_FIRMWARE_05_2X FREETZ_TARGET_UCLIBC_0_9_33"
-# dltc "FREETZ_TYPE_7390    FREETZ_TYPE_FIRMWARE_06_0X"
-# dltc "FREETZ_TYPE_7390    FREETZ_TYPE_FIRMWARE_06_2X"
-
-# dltc "FREETZ_TYPE_7490    FREETZ_TYPE_FIRMWARE_06_5X"
-  dltc "FREETZ_TYPE_7490    FREETZ_TYPE_FIRMWARE_07_2X"
-
-# dltc "FREETZ_TYPE_7580    FREETZ_TYPE_FIRMWARE_06_8X"
-# dltc "FREETZ_TYPE_7590    FREETZ_TYPE_FIRMWARE_07_0X"
-  dltc "FREETZ_TYPE_7590    FREETZ_TYPE_FIRMWARE_07_2X"
+case "$2" in
+	a|all)		old="old" new="new"       ;;
+	o|old)		old="old" new=""          ;;
+	n|new|"")	old=""    new="new"       ;;
+	*)		shift ; dltc "$*"; exit 0 ;;
+esac
 
 
-# dltc "FREETZ_TYPE_1750    FREETZ_TYPE_FIRMWARE_07_0X"
-  dltc "FREETZ_TYPE_1750    FREETZ_TYPE_FIRMWARE_07_2X"
+[ "$old" == "old" ] && dltc "FREETZ_TYPE_WLAN    FREETZ_TYPE_FIRMWARE_04_XX"
 
-  dltc "FREETZ_TYPE_7581    FREETZ_TYPE_FIRMWARE_07_1X"
-  dltc "FREETZ_TYPE_7539    FREETZ_TYPE_FIRMWARE_07_2X"
+[ "$old" == "old" ] && dltc "FREETZ_TYPE_7270_V1 FREETZ_TYPE_FIRMWARE_04_XX FREETZ_TARGET_IPV6_SUPPORT"
+[ "$old" == "old" ] && dltc "FREETZ_TYPE_7270_V3 FREETZ_TYPE_FIRMWARE_06_0X"
+[ "$old" == "old" ] && dltc "FREETZ_TYPE_7270_V3 FREETZ_TYPE_FIRMWARE_06_0X FREETZ_TARGET_UCLIBC_0_9_33"
 
-# dltc "FREETZ_TYPE_4040    FREETZ_TYPE_FIRMWARE_07_0X"
-  dltc "FREETZ_TYPE_1200    FREETZ_TYPE_FIRMWARE_07_2X"
+[ "$old" == "old" ] && dltc "FREETZ_TYPE_7390    FREETZ_TYPE_FIRMWARE_05_2X"
+[ "$old" == "old" ] && dltc "FREETZ_TYPE_7390    FREETZ_TYPE_FIRMWARE_05_2X FREETZ_TARGET_UCLIBC_0_9_33"
+[ "$old" == "old" ] && dltc "FREETZ_TYPE_7390    FREETZ_TYPE_FIRMWARE_06_0X"
+[ "$old" == "old" ] && dltc "FREETZ_TYPE_7390    FREETZ_TYPE_FIRMWARE_06_2X"
+
+[ "$old" == "old" ] && dltc "FREETZ_TYPE_7490    FREETZ_TYPE_FIRMWARE_06_5X"
+[ "$new" == "new" ] && dltc "FREETZ_TYPE_7490    FREETZ_TYPE_FIRMWARE_07_2X"
+
+[ "$old" == "old" ] && dltc "FREETZ_TYPE_7580    FREETZ_TYPE_FIRMWARE_06_8X"
+[ "$old" == "old" ] && dltc "FREETZ_TYPE_7590    FREETZ_TYPE_FIRMWARE_07_0X"
+[ "$new" == "new" ] && dltc "FREETZ_TYPE_7590    FREETZ_TYPE_FIRMWARE_07_2X"
 
 
-# dltc "FREETZ_TYPE_6490    FREETZ_TYPE_FIRMWARE_06_8X"
-# dltc "FREETZ_TYPE_6590    FREETZ_TYPE_FIRMWARE_07_0X"
-  dltc "FREETZ_TYPE_6590    FREETZ_TYPE_FIRMWARE_07_2X"
+[ "$old" == "old" ] && dltc "FREETZ_TYPE_1750    FREETZ_TYPE_FIRMWARE_07_0X"
+[ "$new" == "new" ] && dltc "FREETZ_TYPE_1750    FREETZ_TYPE_FIRMWARE_07_2X"
 
-  dltc "FREETZ_TYPE_6591    FREETZ_TYPE_FIRMWARE_07_0X"
-  dltc "FREETZ_TYPE_6660    FREETZ_TYPE_FIRMWARE_07_1X"
-  dltc "FREETZ_TYPE_6660    FREETZ_TYPE_FIRMWARE_07_2X"
+[ "$new" == "new" ] && dltc "FREETZ_TYPE_7581    FREETZ_TYPE_FIRMWARE_07_1X"
+[ "$new" == "new" ] && dltc "FREETZ_TYPE_7539    FREETZ_TYPE_FIRMWARE_07_2X"
 
-fi
+[ "$old" == "old" ] && dltc "FREETZ_TYPE_4040    FREETZ_TYPE_FIRMWARE_07_0X"
+[ "$new" == "new" ] && dltc "FREETZ_TYPE_1200    FREETZ_TYPE_FIRMWARE_07_2X"
+
+
+[ "$old" == "old" ] && dltc "FREETZ_TYPE_6490    FREETZ_TYPE_FIRMWARE_06_8X"
+[ "$old" == "old" ] && dltc "FREETZ_TYPE_6590    FREETZ_TYPE_FIRMWARE_07_0X"
+[ "$new" == "new" ] && dltc "FREETZ_TYPE_6590    FREETZ_TYPE_FIRMWARE_07_2X"
+
+[ "$new" == "new" ] && dltc "FREETZ_TYPE_6591    FREETZ_TYPE_FIRMWARE_07_0X"
+[ "$new" == "new" ] && dltc "FREETZ_TYPE_6660    FREETZ_TYPE_FIRMWARE_07_1X"
+[ "$new" == "new" ] && dltc "FREETZ_TYPE_6660    FREETZ_TYPE_FIRMWARE_07_2X"
+
+
 exit 0
+
