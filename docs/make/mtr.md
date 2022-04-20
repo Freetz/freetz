@@ -13,9 +13,5 @@ regelmäßig, gewöhnlich einmal pro Sekunde.
 
 ### Weiterführende Links
 
--   [Wikipedia
-    Artikel](http://en.wikipedia.org/wiki/Mtr_(My_traceroute))
-    (Englisch)
--   [BitWizard's MTR
-    page](http://www.bitwizard.nl/mtr/)
+-   [Wikipedia Artikel](http://en.wikipedia.org/wiki/Mtr_(My_traceroute)) (Englisch)
 
