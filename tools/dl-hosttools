@@ -38,8 +38,8 @@ cp -a .config "$FILE.conf"
 time for x in $BUILD; do make $x; done 2>&1 | tee "$FILE.make"  # 4min
 for x in $LOCAL; do [ "$x" != "tools-host" ] && make $x-distclean; done
 time sed -n 's,^/,tools/,p' tools/.gitignore | grep -vE "/(${SKIP// /|})$" | tar cvf - -T - | xz -9 - > "$OUTP"  # 1min
+echo "################################################################"
 du -h "$OUTP"
-sha256sum "$OUTP"
-ln -f "$OUTP"
-echo "Created ${OUTP##*/}"
+sha256sum "$OUTP" | sed 's/^/SHA256:=/;s/ .*//'
+echo "OUTPUT:=${OUTP##*/}"
 
