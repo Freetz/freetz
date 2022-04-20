@@ -1,4 +1,8 @@
-# mtr 0.80/0.94 (binary only)
+# MTR 0.80/0.95 (binary only)
+ - Homepage: [https://www.bitwizard.nl/mtr/](https://www.bitwizard.nl/mtr/)
+ - Manpage: [https://linux.die.net/man/8/mtr](https://linux.die.net/man/8/mtr)
+ - Changelog: [https://github.com/traviscross/mtr/blob/master/NEWS](https://github.com/traviscross/mtr/blob/master/NEWS)
+ - Repository: [https://github.com/traviscross/mtr](https://github.com/traviscross/mtr)
  - Package: [master/make/mtr/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/mtr/)
 
 **[mtr](http://www.bitwizard.nl/mtr/)** (**M**y
