@@ -170,6 +170,7 @@ do_checkout_git_archive()
 #    path - a path to any file or directory within the repository
 # Not much more than path will be transmitted saving both bandwidth and processing power.
 do_checkout_git_sparse() {
+	git clone 2>&1 | grep -q '\-\-filter ' || exit 1
 	local repo="${1%%,*}"
 	local sdir="${1##*,}"
 	git clone --no-checkout --depth 1 --filter=blob:none --sparse "$repo" "$2" \
