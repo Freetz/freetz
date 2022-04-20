@@ -124,7 +124,10 @@ define TOOLCHAIN_CREATE_TARBALL
 	tname="$${dname}$(if $(strip $(2)),-$(strip $(2)))"; \
 	$(RM) $(DL_DIR)/$${tname}.tar.lzma; \
 	$(TAR) -C $${droot} $(foreach f,$(TOOLCHAIN_EXCLUDE_FILES) $(addprefix include/,$(KERNEL_HEADERS_SUBDIRS)),--exclude $(f)) -c $${dname} | \
-	$(TOOLS_DIR)/lzma e -si $(DL_DIR)/$${tname}.tar.lzma -d25;
+	$(TOOLS_DIR)/lzma e -si $(DL_DIR)/$${tname}.tar.lzma -d25; \
+	du -h $(DL_DIR)/$${tname}.tar.lzma; \
+	sha256sum $(DL_DIR)/$${tname}.tar.lzma | sed 's/^/SHA256:=/;s/ .*//'; \
+	echo "OUTPUT:=$${tname}.tar.lzma ";
 endef
 
 # $1 - source dir

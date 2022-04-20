@@ -340,6 +340,7 @@ toolchain-depend: | $(TOOLCHAIN)
 # Use KTV and TTV variables to provide new toolchain versions, i.e.
 #   make KTV=freetz-0.4 TTV=freetz-0.5 toolchain
 toolchain: $(DL_DIR) $(SOURCE_DIR_ROOT) $(TOOLCHAIN) tools
+	@echo "################################################################"
 	@echo
 	@echo "Creating toolchain tarballs ... "
 	@$(call TOOLCHAIN_CREATE_TARBALL,$(KERNEL_TOOLCHAIN_STAGING_DIR),$(KTV))
