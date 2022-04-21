@@ -1,8 +1,8 @@
-YF_BOOTMANAGER_HOST_REPOSITORY:=https://github.com/PeterPawn/YourFritz.git
 YF_BOOTMANAGER_HOST_VERSION:=9a1d3b82435e09486a1c20acf44a1d2060ad7672
+# Versions after this commit have no vanilla GPL2
 YF_BOOTMANAGER_HOST_SOURCE:=yf-bootmanager-$(YF_BOOTMANAGER_HOST_VERSION).tar.xz
 YF_BOOTMANAGER_HOST_SOURCE_SHA256:=9bc13bbe05b0405fd730e5d9983bff17b97a8b2ad6ed8f4d1f3241ffb822edd7
-YF_BOOTMANAGER_HOST_SITE:=git_sparse@$(YF_BOOTMANAGER_HOST_REPOSITORY),bootmanager
+YF_BOOTMANAGER_HOST_SITE:=git_sparse@https://github.com/PeterPawn/YourFritz.git,bootmanager
 ### VERSION:=0.8.3
 ### WEBSITE:=https://github.com/PeterPawn/YourFritz/tree/main/bootmanager
 ### MANPAGE:=https://github.com/PeterPawn/YourFritz/tree/main/bootmanager#readme
