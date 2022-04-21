@@ -510,9 +510,6 @@ Index:
   * **<u>PATCH_MODFS_BOOT_MANAGER: Add yf-bootmanager</u><a id='patch-modfs-boot-manager'></a>**<br>
     Extends the "reboot" page of FRITZ!OS to select system version and branding.
 
-  * **<u>PATCH_MODFS_BOOT_MANAGER__TESTTAG: Use freetz-ng-test tag - DEVELOPER</u><a id='patch-modfs-boot-manager--testtag'></a>**<br>
-    Uses the tag "freetz-ng-test" for yf-bootmanager. Tools have no REBUILD_SUBOPTS, so run after this was changed: "make yf-bootmanager-host-recompile"
-
   * **[PATCH_MULTIPLE_PRINTERS: Add support for multiple printers](PATCH_MULTIPLE_PRINTERS.md)<a id='patch-multiple-printers'></a>**<br>
     Use this patch if you want to use more than one printer.
 
