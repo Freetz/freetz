@@ -17,7 +17,7 @@ menu "Firmware packaging (fwmod) options"
 			In 99,9% of all cases you want this option deactivated because usually
 			it makes a lot of sense to unpack a firmware before modifying it. ;-)
 
-	menuconfig FREETZ_FWMOD_VALIDATE
+	config FREETZ_FWMOD_VALIDATE
 		bool "Verify signature of image file" if FREETZ_SHOW_EXPERT
 		depends on FREETZ_AVM_HAS_SIGNATURE && ! FREETZ_FWMOD_SKIP_UNPACK
 		depends on !FREETZ_TYPE_3170_7170 && !FREETZ_TYPE_7150_7170
@@ -26,22 +26,6 @@ menu "Firmware packaging (fwmod) options"
 			Keep this enabled to check the signature of the image
 			file with AVM's device specific public key.
 			Some very old devices have no signed firmware yet.
-
-	if FREETZ_FWMOD_VALIDATE
-
-		choice
-			prompt "Method for verifying"
-			default FREETZ_FWMOD_VALIDATE_METHOD_OG
-
-			config FREETZ_FWMOD_VALIDATE_METHOD_OG
-				bool "Use tar --oldgnu"
-
-			config FREETZ_FWMOD_VALIDATE_METHOD_SI
-				bool "Use yf-signimage"
-
-		endchoice
-
-	endif # FREETZ_FWMOD_VALIDATE
 
 	config FREETZ_FWMOD_SKIP_MODIFY
 		bool "Skip modifying unpacked firmware, adding Freetz stuff"
@@ -61,7 +45,7 @@ menu "Firmware packaging (fwmod) options"
 			flash memory anyway if you have chosen a lot of packages. In that
 			case you want to activate this option.
 
-	menuconfig FREETZ_FWMOD_SIGN
+	config FREETZ_FWMOD_SIGN
 		bool "Sign image file"
 		depends on FREETZ_AVM_HAS_SIGNATURE && ! FREETZ_FWMOD_SKIP_PACK
 		default y
@@ -85,19 +69,6 @@ menu "Firmware packaging (fwmod) options"
 				As ~/.freetz-signature/ is used by all you Freetz checkouts,
 				you need to use for all the same password! Or you link/create
 				./.signature/ directory by yourself.
-
-		choice
-			prompt "Method for signing"
-			depends on FREETZ_SHOW_EXPERT
-			default FREETZ_FWMOD_SIGN_METHOD_OG
-
-			config FREETZ_FWMOD_SIGN_METHOD_OG
-				bool "Use tar --oldgnu"
-
-			config FREETZ_FWMOD_SIGN_METHOD_SI
-				bool "Use yf-signimage"
-
-		endchoice
 
 	endif # FREETZ_FWMOD_SIGN
 
