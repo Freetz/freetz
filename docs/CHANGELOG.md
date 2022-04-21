@@ -43,6 +43,9 @@ Latest changes
    * Replace kernel does not work for most latest firmware versions.
    * Loading build kernel modules may work or do not. You'll notice.
 
+ - Host tools:
+   * yf-bootmanager 0.8.3 9a1d3b8
+
  - Packages & libs:
    * BIND 9.16.28
    * libcap 2.49/2.64

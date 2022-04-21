@@ -1296,16 +1296,6 @@ config FREETZ_PATCH_MODFS_BOOT_MANAGER
 	help
 		Extends the "reboot" page of FRITZ!OS to select system version and branding.
 
-	config FREETZ_PATCH_MODFS_BOOT_MANAGER__TESTTAG
-		bool "Use freetz-ng-test tag - DEVELOPER"
-		depends on FREETZ_PATCH_MODFS_BOOT_MANAGER
-		depends on FREETZ_SHOW_DEVELOPER
-		default n
-		help
-			Uses the tag "freetz-ng-test" for yf-bootmanager.
-			Tools have no REBUILD_SUBOPTS, so run after this
-			was changed: "make yf-bootmanager-host-recompile"
-
 if FREETZ_AVM_HAS_USB_HOST
 comment "USB patches ----------------------------------------------"
 
