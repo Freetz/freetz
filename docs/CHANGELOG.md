@@ -44,6 +44,7 @@ Latest changes
    * Loading build kernel modules may work or do not. You'll notice.
 
  - Packages & libs:
+   * BIND 9.16.28
    * libcap 2.49/2.64
    * libneon 0.30.2/0.32.2
    * LCD4linux e691a4b-git
