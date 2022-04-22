@@ -1,0 +1,131 @@
+#!/bin/bash
+# Ask avm's update service for latest firmware infos like download url
+# Arg -i: [Prio 3] Computer
+# Arg -s: [Prio 2] Fritzbox
+# Arg -d: [Prio 1] RAW-out (or no -i and -s)
+# Example: env - tools/juis_check Version=154.07.35-80123 Serial=123456789012  Name=FRITZ\!Box 7590 HW=226 OEM=avm Lang=de Annex=B Country=049 Flag=empty Buildtype=1000 Nonce=XXXXXXXXXXXXXXXXXXXXXXXX -i -s -d 
+# Or just: tools/juis m  # f
+
+js() { [ -e "$1" ] && sed -rn "s/^<.:$2>(.*)<.*/\1/p" "$1" ; }
+
+main() {
+	local x jws dir soap flags body post cache info zwsp="$(printf '\342\200\212')"
+	local line='################################################################'
+
+	jws='185.jws.avm.de'
+	dir='/Jason/UpdateInfoService'
+	#jws='jws.avm.de'
+	#dir='/Jason/UpdateCheck'
+	#soap='SOAPAction: "http://jason.avm.de/updatecheck/BoxFirmwareUpdateCheck"'
+
+	Buildnumber="${Version#*-}"
+	x="${Version%-*}"
+	Major="${x%%.*}"
+	x="${x#*.}"
+	Minor="${x%.*}"
+	Patch="${x#*.}"
+
+	[ -e '/var/juis_boxinfo.xml' ] && info='/var/juis_boxinfo.xml' || info='/var/jason_boxinfo.xml'
+	[ -z "$Name"      ] &&      Name="$(js $info 'Name')"
+	[ -z "$HW"        ] &&        HW="$(js $info 'HW')"
+	[ -z "$OEM"       ] &&       OEM="$(js $info 'OEM')"
+	[ -z "$Lang"      ] &&      Lang="$(js $info 'Lang')"
+	[ -z "$Annex"     ] &&     Annex="$(js $info 'Annex')"
+	[ -z "$Country"   ] &&   Country="$(js $info 'Country')"
+	[ -z "$Flag"      ] &&      Flag="$(js $info 'Flag')"
+	[ -z "$Buildtype" ] && Buildtype="$(js $info 'Buildtype')"
+	[ -z "$Buildtype" ] && Buildtype="$(js $info 'Revision')"
+
+[ -z "${Flag// /}" ] && Flag='empty'
+for x in $Flag; do flags="<q:Flag>${x/empty/}</q:Flag>
+$flags"; done
+
+body=$(cat << EOX
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soap-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:e="http://juis.avm.de/updateinfo" xmlns:q="http://juis.avm.de/request">
+<soap:Header/>
+<soap:Body>
+<e:BoxFirmwareUpdateCheck>
+<e:RequestHeader>
+<q:Nonce>$Nonce</q:Nonce>
+<q:UserAgent>TestClient</q:UserAgent>
+<q:ManualRequest>true</q:ManualRequest></e:RequestHeader>
+<e:BoxInfo>
+<q:Name>${Name//$zwsp/ }</q:Name>
+<q:HW>$HW</q:HW>
+<q:Major>$Major</q:Major>
+<q:Minor>$Minor</q:Minor>
+<q:Patch>$Patch</q:Patch>
+<q:Buildnumber>$Buildnumber</q:Buildnumber>
+<q:Buildtype>$Buildtype</q:Buildtype>
+<q:Serial>$Serial</q:Serial>
+<q:OEM>$OEM</q:OEM>
+<q:Lang>$Lang</q:Lang>
+<q:Country>$Country</q:Country>
+<q:Annex>$Annex</q:Annex>
+$flags
+<q:UpdateConfig>1</q:UpdateConfig>
+<q:Provider></q:Provider>
+<q:ProviderName></q:ProviderName></e:BoxInfo></e:BoxFirmwareUpdateCheck></soap:Body></soap:Envelope>
+EOX
+)
+
+post=$(cat << EOX
+POST ${dir} HTTP/1.1
+Host: ${jws}:80
+Content-Length: ${#body}
+Content-Type: text/xml; charset="utf-8"
+${soap}
+
+${body}
+EOX
+)
+
+	cache='/tmp/.juis_check'
+	[ "$DEV" == 'i' ] && cache='/dev/null'
+	
+	resp="$(echo -e "$post" | nc ${jws} 80 2>/dev/null | tee $cache | sed 's,><,>\n<,g' | sed 's,</.*,,g;s/.*>$//g')"
+	[ -z "$resp" ] && echo 'Did not received an anser.' 1>&2 && exit 1
+
+	case "$DEV" in
+		i)
+			URL="$(echo "$resp" | sed -n "s/^<ns3:DownloadURL>//p")"
+			[ -n "$URL" ] && echo "URL=$URL"
+			;;
+		s)
+			VER="$(echo "$resp" | sed -n "s/^<ns3:Version>//p")"
+			[ -n "$VER" -a "$VER" != "$Version" ] && echo "Found newer version: $VER" 1>&2 || echo "No newer version found." 1>&2
+			;;
+		*)
+			echo -e "\nRequest:\n$line\n$post\n$line\nResponse:\n$line"
+			if command -v xmllint &>/dev/null; then
+				grep '^<' -v "$cache"
+				grep '^<' "$cache" | xmllint --format -
+			else
+				echo "$resp"
+			fi
+			echo -e "$line\n"
+			rm "$cache"
+			;;
+	esac
+}
+
+DEV=''
+args() {
+	local DEVI DEVS DEVD
+	for x in $*; do
+		l="${x%=*}"
+		r="${x#*=}"
+		[ "$x" == '-i' ] && DEVI='x'
+		[ "$x" == '-s' ] && DEVS='x'
+		[ "$x" == '-d' ] && DEVD='x'
+		[ "$x" == "$l" ] && continue
+		eval $l="$r"
+	done
+	[ -n "$DEVI" ] && DEV='i'
+	[ -n "$DEVS" ] && DEV='s'
+	[ -n "$DEVD" ] && DEV='d'
+}
+
+args "$@"
+main
+
