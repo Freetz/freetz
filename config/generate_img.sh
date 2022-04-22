@@ -15,6 +15,7 @@
 #DOSHOW=4 some of useless
 DOSHOW=1
 DOCONS=1
+TPID=$$
 PDIR="config/.img"
 SCRIPT="$(readlink -f $0)"
 MYPWD="$(dirname ${SCRIPT%/*})"
@@ -36,6 +37,11 @@ echo -n > "$UNPACK/out.txt"
 
 
 ## helpers
+
+die() {
+	kill $TPID
+	exit 1
+}
 
 # $1 key
 # $2 value
@@ -104,9 +110,9 @@ unpack_() {
 	line="$1"
 	file="${line%% *}"
 	image="$IMAGES/$file"
-	[ -n "$ACTIONS_FWDLURL" ] && echo "SAVING       $file" && wget -q "${ACTIONS_FWDLURL}$file" -O $image >/dev/null 2>&1 || exit 1
-	[ ! -f "${image}" ] && image="$HOME/Desktop/$file"
-	[ ! -f "${image}" ] && echo "MISSED       ${image##*/}" && return
+	[ -n "$ACTIONS_FWDLURL" ] && echo "SAVING       $file" && wget -q "${ACTIONS_FWDLURL}$file" -O $image >/dev/null 2>&1
+	[ ! -s "${image}" ] && image="$HOME/Desktop/$file"
+	[ ! -s "${image}" ] && echo "MISSED       ${image##*/}" && die && return 1
 	dirname="$UNPACK/${line%.image*}"
 	[ -e "$dirname" ] && return && echo "EXISTS    ${image##*/}" && return
 	[ $DOSHOW -ge 0 ] && echo -ne "UNPACK       "
@@ -162,7 +168,7 @@ determine_() {
 	echo "if ${line#* if }" > "${propin}"
 	[ "$DOCONS" != "1" ] && echo >> "$propin"
 	unpacked="$UNPACK/$dirname"
-	[ ! -d "$unpacked" ] && echo "Directory missing: $dirname" && return 1
+	[ ! -d "$unpacked" ] && echo "Directory missing: $dirname" && die && return 1
 
 
 	#NAME
@@ -1055,4 +1061,4 @@ determine $single                           | tee -a "$UNPACK/out.txt"
 [ "$DOCONS" == "1" ] && creatin_V2          | tee -a "$UNPACK/out.txt"
 [ $DOSHOW -ge 0 ] && echo                   | tee -a "$UNPACK/out.txt"
 
-
+exit 0
