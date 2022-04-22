@@ -48,6 +48,7 @@ Latest changes
 
  - Packages & libs:
    * BIND 9.16.28
+   * juis_check 1.0
    * libcap 2.49/2.64
    * libneon 0.30.2/0.32.2
    * LCD4linux e691a4b-git

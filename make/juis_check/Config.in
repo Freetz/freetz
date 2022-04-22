@@ -1,8 +1,10 @@
 config FREETZ_PACKAGE_JUIS_CHECK
-	bool "juis_check 0.5"
+	bool "juis_check 1.0"
 	select FREETZ_BUSYBOX_NC
 	select FREETZ_BUSYBOX_NC_110_COMPAT
 	default n
 	help
-		juis_check script from PeterPawn's YourFritz.
+		This integrates the juis_check script from tools/ dir into the image.
+		It run 23 time faster (0,3sec vs 7sec) than other bloated
+		implementations and needs only 4% of space (4kB vs 93kB).
 

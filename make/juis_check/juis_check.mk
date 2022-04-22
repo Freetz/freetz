@@ -1,23 +1,17 @@
-$(call PKG_INIT_BIN, 5e3342106f241f9378cb295fcccd41350a394ff6)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=1d0a25867a2b7e8f4bff3cca67155fc633d95a4f8f526d24295f276cf1cc56a0
-$(PKG)_SITE:=git_sparse@https://github.com/PeterPawn/YourFritz.git,juis
-### WEBSITE:=https://github.com/PeterPawn/YourFritz/tree/main/juis
-### MANPAGE:=https://github.com/PeterPawn/YourFritz/tree/main/juis#readme
-### CHANGES:=https://github.com/PeterPawn/YourFritz/commits/main/juis
-### CVSREPO:=https://github.com/PeterPawn/YourFritz/tree/main/juis
-
-$(PKG)_BINARY:=$($(PKG)_DIR)/juis/$(pkg)
+$(call PKG_INIT_BIN, 1.0)
+$(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
 
 
-$(PKG_SOURCE_DOWNLOAD)
-$(PKG_UNPACKED)
-$(PKG_CONFIGURED_NOP)
-
-
-$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
+$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
+$($(PKG)_DIR)/.unpacked:
+	mkdir -p $(JUIS_CHECK_DIR)
+	cp $(TOOLS_DIR)/juis_check $(JUIS_CHECK_DIR)/juis_check.sh
 	touch $@
+
+$($(PKG)_BINARY): $($(PKG)_DIR)/.unpacked
+	$(SED) '1c#!/bin/sh' $@.sh > $@
+	chmod +x $@
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_FILE)
