@@ -435,8 +435,8 @@ Index:
   * **<u>js OSSP 1.6.20070208 (binary only)</u><a id='js'></a>**<br>
     OSSP js is a stand-alone distribution of the JavaScript (JS) programming language reference implementation from Mozilla.
 
-  * **[juis_check 0.5](../docs/make/juis_check.md)<a id='juis-check'></a>**<br>
-    juis_check script from PeterPawn's YourFritz.
+  * **[juis_check 1.0](../docs/make/juis_check.md)<a id='juis-check'></a>**<br>
+    This integrates the juis_check script from tools/ dir into the image. It run 23 time faster (0,3sec vs 7sec) than other bloated implementations and needs only 4% of space (4kB vs 93kB).
 
 ### K
 
