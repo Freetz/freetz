@@ -12,11 +12,11 @@ single() {
 	NNC="$(dd if=/dev/urandom bs=16 count=1 2>/dev/null | base64 | sed 's/\//\\\//g')"
 	JUIS="$(echo "$JUIS" | sed "s/%REV%/$REV/;s/%OID%/$OID/;s/%SER%/$SER/;s/%NNC%/$NNC/;s/\!/\\\!/g")"
 	[ "$f" != "f" -a "$m" == "m" ] && echo -ne "\nJUIS: $JUIS\n" >&2
-#	echo                    "env - tools/yf/juis/juis_check --debug -i $JUIS" && return
-#	                         env - tools/yf/juis/juis_check --debug -i $JUIS >&2
-	[ "$f" != "f" ] &&       env - tools/yf/juis/juis_check         -i $JUIS 2>&1 | sed -n 's/^URL=//p'
-	[ "$f" == "f" ] && nohup env - tools/yf/juis/juis_check         -i $JUIS 2>&1 | grep -vE "^DelayDownload|Found newer version" &
-#	[ "$f" == "f" ] && nohup env - tools/yf/juis/juis_check         -i $JUIS 2>/dev/null &
+#	echo                    "env - tools/juis_check --debug -i $JUIS" && return
+#	                         env - tools/juis_check --debug -i $JUIS >&2
+	[ "$f" != "f" ] &&       env - tools/juis_check         -i $JUIS 2>&1 | sed -n 's/^URL=//p'
+	[ "$f" == "f" ] && nohup env - tools/juis_check         -i $JUIS 2>&1 | grep -vE "^DelayDownload|Found newer version" &
+#	[ "$f" == "f" ] && nohup env - tools/juis_check         -i $JUIS 2>/dev/null &
 }
 
 miniconfig() {
@@ -43,7 +43,6 @@ juisstring() {
 
 multi() {
 	make $TOOL_CONF >/dev/null
-	[ ! -x $PARENT/tools/yf/juis/juis_check ] && make yf-juis-host
 	for device in $(grep 'prompt "Hardware type"' $PARENT/config/ui/firmware.in -A999 | grep '^endchoice' -m1 -B999 | sed -rn 's/.*config //p' | tac); do
 		juisstring $device
 		grep -Eq '^FREETZ_TYPE_FIRMWARE_(LABOR|INHAUS)=y$' $PARENT/.config && continue
