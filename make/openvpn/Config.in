@@ -106,9 +106,11 @@ if FREETZ_PACKAGE_OPENVPN
 
 	config FREETZ_PACKAGE_OPENVPN_STATIC
 		bool "Link statically"
+		depends on ! (FREETZ_PACKAGE_OPENVPN_OPENSSL && FREETZ_OPENSSL_VERSION_2)
 		default n
 		help
 			Causes all libraries OpenVPN depends on to be linked in statically.
+			Does not work with OpenSSL 1.1: https://github.com/Freetz-NG/freetz-ng/issues/349
 
 	config FREETZ_PACKAGE_OPENVPN_WITH_LZO
 		bool "With LZO compression"
