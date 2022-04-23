@@ -722,6 +722,11 @@ determine_() {
 	[ -e "$unpacked/sbin/mediasrv" ] && X="available" && in_b "FREETZ_AVM_HAS_MEDIASRV"
 	[ $DOSHOW -ge 2 ] && outp "mediasrv" "$X"
 
+	#RPCBIND
+	X="%"
+	[ -e "$unpacked/usr/sbin/rpcbind" ] && X="available" && in_b "FREETZ_AVM_HAS_RPCBIND"
+	[ $DOSHOW -ge 2 ] && outp "rpcbind" "$X"
+
 	#NSSWITCH
 	X="%"
 	[ -e "$unpacked/etc/nsswitch.conf" ] && X="available" && in_b "FREETZ_AVM_HAS_NSSWITCH"
