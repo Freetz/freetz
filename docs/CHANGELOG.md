@@ -43,6 +43,9 @@ Latest changes
    * Replace kernel does not work for most latest firmware versions.
    * Loading build kernel modules may work or do not. You'll notice.
 
+ - Build system:
+   * precompiled host-tools 2022-04-24
+
  - Host tools:
    * yf-bootmanager 0.8.3 9a1d3b8
 
