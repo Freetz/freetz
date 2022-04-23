@@ -11,7 +11,7 @@ check_requisite() {
 			[ -n "$(find /usr/lib/pkgconfig/  /usr/local/lib/pkgconfig/  /usr/lib/*/pkgconfig/ -name "$1" 2>/dev/null | grep -v 'x86_64')" ]
 			;;
 		program)
-			[ -x "$(which $1 2>/dev/null)" ]
+			[ -x "$(command -v $1)" ]
 			;;
 		lib)
 			ldconfig -p | grep -Eq "^[[:space:]]*$1(\.[01])* "

@@ -368,7 +368,7 @@ fi
 calculate_full_checksum() {
 	local CHECKSUM_ALGO="${CHECKSUM_ALGOS[64]}"
 	local CHECKSUM_PROG="$(dirname $0)/${CHECKSUM_ALGO}sum"
-	[ ! -x "$CHECKSUM_PROG" ] && CHECKSUM_PROG="$(which ${CHECKSUM_ALGO}sum)"
+	[ ! -x "$CHECKSUM_PROG" ] && CHECKSUM_PROG="$(command -v ${CHECKSUM_ALGO}sum)"
 	[ -x "$CHECKSUM_PROG" ] && FILE_CHECKSUM=$($CHECKSUM_PROG "$DL_DIR/${opt_out_file:-$DL_FILE}" | sed 's/ .*//') || FILE_CHECKSUM=""
 	[ -n "$FILE_CHECKSUM" ] && FULL_CHECKSUM=": ${CHECKSUM_ALGO^^}:=$FILE_CHECKSUM" || FULL_CHECKSUM=""
 }
@@ -393,7 +393,7 @@ for i in ${sites[@]}; do
 			CHECKSUM_ALGO="${CHECKSUM_ALGOS[${#CHECKSUM}]}"
 			if [ -n "${CHECKSUM_ALGO}" ]; then
 				CHECKSUM_PROG="$(dirname $0)/${CHECKSUM_ALGO}sum"
-				[ ! -x "$CHECKSUM_PROG" ] && CHECKSUM_PROG="$(which ${CHECKSUM_ALGO}sum)"
+				[ ! -x "$CHECKSUM_PROG" ] && CHECKSUM_PROG="$(command -v ${CHECKSUM_ALGO}sum)"
 			else
 				calculate_full_checksum
 				[ "${CHECKSUM^^}" == "X" ] \

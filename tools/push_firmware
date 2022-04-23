@@ -142,7 +142,7 @@ function push_fw() {
 		if [ $ISALICE ]; then
 			basename=$(basename $0)
 			echo "$basename: Trying to flash an image to an \"Alice\" 7570 FritzBox."
-			[ $(which telnet) ] || { echo "$basename: Error finding required binary \"telnet\"." ; exit 1 ;}
+			[ $(command -v telnet) ] || { echo "$basename: Error finding required binary \"telnet\"." ; exit 1 ;}
 			VALUES="$(telnet_hn | telnet 2>/dev/null| grep -e '^mtd[1\|5]\|^HWRevision')" || { echo "$basename: Error trying to get values from \"Alice\" FritzBox."; exit 1; }
 			HWR=$(echo "$VALUES" | sed -n '/^HWRev/ s/HWRevision[^0-9]*//p')
 			[ "153" = "$HWR" ] || { echo "$basename: Error veryfing HWRevision=153 as required for \"Alice\" FritzBox. Found: HWRevision=$HWR." ; exit 1 ;}
@@ -589,8 +589,8 @@ elif [ "$(uname -o)" == "Cygwin" ]; then
 	CYGWIN=1
 	ping_params="-n 1 -w 500"
 fi
-[ -x "$(which ncftpput 2>/dev/null)" ] && FOUND_NCFTP=true
-[ "$(uname -s)" == "Linux" -a -x "$(which ftp 2>/dev/null)" ] && FOUND_FTP=true
+[ -x "$(command -v ncftpput)" ] && FOUND_NCFTP=true
+[ "$(uname -s)" == "Linux" -a -x "$(command -v ftp)" ] && FOUND_FTP=true
 if [ -z "$FOUND_NCFTP" -a -z "$FOUND_FTP" ]; then
 	echo "You have to install 'ncftp' or 'ftp' in order to use this script."
 	exit 1

@@ -114,7 +114,7 @@ source "${TOOLS_DIR}/freetz_functions" ||
 [ "$DO_SIGN" -gt 0 -a $(($DO_PACK + $DO_ZIP)) -eq 0 ] && \
 	error 1 "Firmware signing without packing is not supported. Please use PeterPawn's sign_image tool to sign an already existing .image file."
 
-[ $(($DO_SIGN + $DO_VALIDATE + $DO_VALIDATE2 + $DO_VALIDATE3 )) -gt 0 -a ! -x "$(which openssl 2>/dev/null)" ] && \
+[ $(($DO_SIGN + $DO_VALIDATE + $DO_VALIDATE2 + $DO_VALIDATE3 )) -gt 0 -a ! -x "$(command -v openssl)" ] && \
 	error 1 "OpenSSL is required to verify and create image signature. Please install it or disable the option(s) in menuconfig."
 
 # Initialise firmware image names
@@ -180,7 +180,7 @@ MD5SUM_TOOL="md5sum"
 BUSYBOX_TOOL="busybox"
 
 # Optional tools
-PV="$(which pv &>/dev/null && echo 'pv -rcb')"
+PV="$(command -v pv >/dev/null && echo 'pv -rcb')"
 
 # Absolute tools paths
 EXTERNAL="${TOOLS_DIR}/${EXTERNAL_TOOL}"
