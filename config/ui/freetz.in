@@ -220,6 +220,15 @@ menu "Additional informations"
 		help
 			Adds update check to webif, category 'system'.
 
+		config FREETZ_ADD_JUIS_CHECK__SSL
+			bool "Enable https"
+			depends on FREETZ_ADD_JUIS_CHECK
+			select FREETZ_PACKAGE_CURL
+			select FREETZ_PACKAGE_CURL_SELECT_SSL
+			default n
+			help
+				This selects curl and uses it for encrypted https connections.
+
 	# TODO: invert logic
 	config FREETZ_REMOVE_BOX_INFO
 		bool "Remove BOX-Info page"

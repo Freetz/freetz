@@ -1,22 +1,42 @@
 #!/bin/bash
 # Ask avm's update service for latest firmware infos like download url
-# Arg -i: [Prio 3] Computer
-# Arg -s: [Prio 2] Fritzbox
-# Arg -d: [Prio 1] RAW-out (or no -i and -s)
-# Example: env - tools/juis_check Version=154.07.35-80123 Serial=123456789012  Name=FRITZ\!Box 7590 HW=226 OEM=avm Lang=de Annex=B Country=049 Flag=empty Buildtype=1000 Nonce=XXXXXXXXXXXXXXXXXXXXXXXX -i -s -d 
-# Or just: tools/juis m  # f
+MYPWD="$(dirname $(realpath $0))"
+
+help() {
+cat << EOX
+
+$0 parameters:
+	<-i>: [Prio 3] Computer
+	<-s>: [Prio 2] Fritzbox
+	<-d>: [Prio 1] RAW-out (or no -i and -s)
+	<--plain>: Forces to use http. AVM uses this only.
+	<--https>: Forces to use https. Curl is mandatory for https.
+	Without --plain and --https, the default is https if curl is installed. But on fritzbox only if FREETZ_ADD_JUIS_CHECK__SSL is set.
+
+Example: env - tools/juis_check Version=154.07.35-80123 Serial=123456789012 Name=FRITZ\!Box 7590 HW=226 OEM=avm Lang=de Annex=B Country=049 Flag=empty Buildtype=1000 Nonce=XXXXXXXXXXXXXXXXXXXXXXXX -i -s -d 
+Or just: tools/juis m  # f
+
+EOX
+exit
+}
 
 js() { [ -e "$1" ] && sed -rn "s/^<.:$2>(.*)<.*/\1/p" "$1" ; }
 
 main() {
-	local x jws dir soap flags body post cache info zwsp="$(printf '\342\200\212')"
+	local x soap avmca url flags body post cache info zwsp="$(printf '\342\200\212')"
 	local line='################################################################'
-
-	jws='185.jws.avm.de'
-	dir='/Jason/UpdateInfoService'
-	#jws='jws.avm.de'
-	#dir='/Jason/UpdateCheck'
+	local type='text/xml; charset="utf-8"'
 	#soap='SOAPAction: "http://jason.avm.de/updatecheck/BoxFirmwareUpdateCheck"'
+
+	if [ "$SSL" == 'y' ]; then
+		avmca="$MYPWD/avm-rootca.pem"
+		[ -e "/etc/avm_root_ca.pem"     ] && avmca="/etc/avm_root_ca.pem"
+		[ -e "/etc/jasonii_root_ca.pem" ] && avmca="/etc/jasonii_root_ca.pem"
+		url='jws.avm.de/Jason/UpdateInfoService'      # https-cert matches hostname
+	else
+		url='185.jws.avm.de/Jason/UpdateInfoService'  # new
+		#url='jws.avm.de/Jason/UpdateCheck'           # old
+	fi
 
 	Buildnumber="${Version#*-}"
 	x="${Version%-*}"
@@ -70,10 +90,10 @@ EOX
 )
 
 post=$(cat << EOX
-POST ${dir} HTTP/1.1
-Host: ${jws}:80
+POST /${url#*/} HTTP/1.1
+Host: ${url%%/*}:80
 Content-Length: ${#body}
-Content-Type: text/xml; charset="utf-8"
+Content-Type: ${type}
 ${soap}
 
 ${body}
@@ -82,8 +102,14 @@ EOX
 
 	cache='/tmp/.juis_check'
 	[ "$DEV" == 'i' ] && cache='/dev/null'
-	
-	resp="$(echo -e "$post" | nc ${jws} 80 2>/dev/null | tee $cache | sed 's,><,>\n<,g' | sed 's,</.*,,g;s/.*>$//g')"
+
+	if [ "$SSL" == 'y' ]; then
+		resp="$(curl -s -X POST -H "${type}" ${soap:+-H $soap} -d "${body}" "https://${url}" --cacert "${avmca}" \
+		  | tee $cache | sed 's,><,>\n<,g' | sed 's,</.*,,g;s/.*>$//g')"
+	else
+		resp="$(echo -e "${post}" | nc ${url%%/*} 80 2>/dev/null \
+		  | tee $cache | sed 's,><,>\n<,g' | sed 's,</.*,,g;s/.*>$//g')"
+	fi
 	[ -z "$resp" ] && echo 'Did not received an anser.' 1>&2 && exit 1
 
 	case "$DEV" in
@@ -96,7 +122,9 @@ EOX
 			[ -n "$VER" -a "$VER" != "$Version" ] && echo "Found newer version: $VER" 1>&2 || echo "No newer version found." 1>&2
 			;;
 		*)
-			echo -e "\nRequest:\n$line\n$post\n$line\nResponse:\n$line"
+			echo -ne "Using SSL:=${SSL:-n}\n\nRequest:\n$line"
+			[ "$SSL" == 'y' ] && echo -ne "$body" || echo -ne "\n$post"
+			echo -e "\n$line\n\nResponse:\n$line"
 			if command -v xmllint &>/dev/null; then
 				grep '^<' -v "$cache"
 				grep '^<' "$cache" | xmllint --format -
@@ -110,7 +138,9 @@ EOX
 }
 
 DEV=''
+SSL=''
 args() {
+	[ "${#*}" == '0' ] && help
 	local DEVI DEVS DEVD
 	for x in $*; do
 		l="${x%=*}"
@@ -118,12 +148,21 @@ args() {
 		[ "$x" == '-i' ] && DEVI='x'
 		[ "$x" == '-s' ] && DEVS='x'
 		[ "$x" == '-d' ] && DEVD='x'
+		[ "$x" == '--plain' ] && SSL='n'
+		[ "$x" == '--https' ] && SSL='y'
 		[ "$x" == "$l" ] && continue
 		eval $l="$r"
 	done
 	[ -n "$DEVI" ] && DEV='i'
 	[ -n "$DEVS" ] && DEV='s'
 	[ -n "$DEVD" ] && DEV='d'
+	[ "$SSL" == 'y' ] && [ -z "$(command -v curl)" ] && echo 'Curl is mandatory for https.' 1>&2 && exit 1
+	if [ -z "$SSL" ]; then
+		command -v curl >/dev/null && SSL='y' || SSL='n'
+		if [ -e '/etc/.freetz-ng-version' ]; then
+			grep -q "^FREETZ_ADD_JUIS_CHECK__SSL='y'" /etc/options.cfg 2>/dev/null || SSL='n'
+		fi
+	fi
 }
 
 args "$@"
