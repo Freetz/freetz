@@ -17,154 +17,155 @@ config FREETZ_PACKAGE_OPENVPN
 if FREETZ_PACKAGE_OPENVPN
 
 
-#choice
-#	prompt "Version"
-#		default FREETZ_PACKAGE_OPENVPN_VERSION_CURRENT
+#	choice
+#		prompt "Version"
+#			default FREETZ_PACKAGE_OPENVPN_VERSION_CURRENT
 
-	config FREETZ_PACKAGE_OPENVPN_VERSION_ABANDON
-		bool #"2.4.x"
-		depends on FREETZ_KERNEL_VERSION_2_6_13
+		config FREETZ_PACKAGE_OPENVPN_VERSION_ABANDON
+			bool #"2.4.x"
+			depends on FREETZ_KERNEL_VERSION_2_6_13
+			default y
+
+		config FREETZ_PACKAGE_OPENVPN_VERSION_CURRENT
+			bool #"2.5.x"
+			depends on !FREETZ_KERNEL_VERSION_2_6_13
+			default y
+
+#	endchoice
+
+
+	choice
+		prompt "GUI"
+		default FREETZ_PACKAGE_OPENVPN_USE_V1_CGI
+
+		config FREETZ_PACKAGE_OPENVPN_USE_V0_CGI
+			bool "none - binary only"
+			depends on FREETZ_SHOW_ADVANCED
+			help
+				No configuration interface, just the binary.
+
+		config FREETZ_PACKAGE_OPENVPN_USE_V1_CGI
+			bool "v1 - old full featured"
+			select FREETZ_PACKAGE_OPENVPN_CGI
+			help
+				Old full featured OpenVPN configuration interface v1.
+
+				CAUTION: You have to delete configurations made with "new"/v2 GUI!
+				They share to save the same directory and are not compatible.
+
+		config FREETZ_PACKAGE_OPENVPN_USE_V2_CGI
+			bool "v2 - new simple-gui"
+			depends on FREETZ_SHOW_ADVANCED
+			select FREETZ_PACKAGE_OPENVPN_V2_CGI
+			help
+				New quite simple OpenVPN configuration interface v2.
+
+				It will not generate a configuration file based on GUI settings
+				but just ask for an existing configuration.
+
+				CAUTION: You have to delete configurations made with "old"/v1 GUI!
+				They share to save the same directory and are not compatible.
+
+	endchoice
+
+
+	choice
+		prompt "SSL library"
+		default FREETZ_PACKAGE_OPENVPN_OPENSSL
+
+		config FREETZ_PACKAGE_OPENVPN_OPENSSL
+			bool "OpenSSL"
+			select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_OPENVPN_STATIC
+			select FREETZ_LIB_libssl    if ! FREETZ_PACKAGE_OPENVPN_STATIC
+
+		config FREETZ_PACKAGE_OPENVPN_MBEDTLS
+		bool "mbed TLS"
+			select FREETZ_LIB_libmbedcrypto if ! FREETZ_PACKAGE_OPENVPN_STATIC
+			select FREETZ_LIB_libmbedtls    if ! FREETZ_PACKAGE_OPENVPN_STATIC
+			select FREETZ_LIB_libmbedx509   if ! FREETZ_PACKAGE_OPENVPN_STATIC
+			help
+				Leads to smaller binaries, but lacks support for some openssl features.
+
+	endchoice
+
+
+	config FREETZ_PACKAGE_OPENVPN_FORCE_BLOWFISH
+		bool "Include cipher blowfish in mbedTLS"
+		depends on FREETZ_PACKAGE_OPENVPN_MBEDTLS
+		select FREETZ_LIB_libmbedcrypto_WITH_BLOWFISH if FREETZ_PACKAGE_OPENVPN_MBEDTLS
+		default n
+		help
+			Compile mbedTLS with support for OpenVPN default cipher "blowfish" (BF-CBC).
+			Library/Binary size will increase approx. 7k (uncompressed).
+
+	config FREETZ_PACKAGE_OPENVPN_WITH_BLOWFISH
+		bool
+		depends on FREETZ_PACKAGE_OPENVPN_OPENSSL \
+			|| (FREETZ_PACKAGE_OPENVPN_MBEDTLS  && FREETZ_LIB_libmbedcrypto_WITH_BLOWFISH)
 		default y
 
-	config FREETZ_PACKAGE_OPENVPN_VERSION_CURRENT
-		bool #"2.5.x"
-		depends on !FREETZ_KERNEL_VERSION_2_6_13
+	config FREETZ_PACKAGE_OPENVPN_STATIC
+		bool "Link statically"
+		default n
+		help
+			Causes all libraries OpenVPN depends on to be linked in statically.
+
+	config FREETZ_PACKAGE_OPENVPN_WITH_LZO
+		bool "With LZO compression"
+		select FREETZ_LIB_liblzo2 if ! FREETZ_PACKAGE_OPENVPN_STATIC
 		default y
-
-#endchoice
-
-
-choice
-	prompt "GUI"
-	default FREETZ_PACKAGE_OPENVPN_USE_V1_CGI
-
-	config FREETZ_PACKAGE_OPENVPN_USE_V0_CGI
-		bool "none - binary only"
-		depends on FREETZ_SHOW_ADVANCED
 		help
-			No configuration interface, just the binary.
+			LZO compression for VPN traffic
 
-	config FREETZ_PACKAGE_OPENVPN_USE_V1_CGI
-		bool "v1 - old full featured"
-		select FREETZ_PACKAGE_OPENVPN_CGI
+	config FREETZ_PACKAGE_OPENVPN_WITH_LZ4
+		bool "With LZ4 compression"
+		select FREETZ_LIB_liblz4 if ! FREETZ_PACKAGE_OPENVPN_STATIC
+		default n
 		help
-			Old full featured OpenVPN configuration interface v1.
+			LZ4 compression for VPN traffic
 
-			CAUTION: You have to delete configurations made with "new"/v2 GUI!
-			They share to save the same directory and are not compatible.
-
-	config FREETZ_PACKAGE_OPENVPN_USE_V2_CGI
-		bool "v2 - new simple-gui"
-		depends on FREETZ_SHOW_ADVANCED
-		select FREETZ_PACKAGE_OPENVPN_V2_CGI
+	config FREETZ_PACKAGE_OPENVPN_WITH_TRAFFIC_OBFUSCATION
+		bool "With traffic obfuscation"
+		default n
 		help
-			New quite simple OpenVPN configuration interface v2.
+			Adds support for an additional configuration option 'scramble'
+			with the following possible values:
+			 * scramble xormask xor_string
+			 * scramble reverse
+			 * scramble xorptrpos
+			 * scramble obfuscate password
+			See https://tunnelblick.net/cOpenvpn_xorpatch.html
+			
+			WARNING:
+			scramble-option and SSLH are NOT compatible. SSLH is not
+			able to recognize OpenVPN traffic if 'scramble'-option
+			is enabled in OpenVPN config. Don't enable it if you plan
+			to use SSLH to demultiplex OpenVPN protocol.
 
-			It will not generate a configuration file based on GUI settings
-			but just ask for an existing configuration.
+		comment "Warning: OpenVPN traffic obfuscation and SSLH are not compatible"
+			depends on FREETZ_PACKAGE_OPENVPN_WITH_TRAFFIC_OBFUSCATION && FREETZ_PACKAGE_SSLH
 
-			CAUTION: You have to delete configurations made with "old"/v1 GUI!
-			They share to save the same directory and are not compatible.
-
-endchoice
-
-
-choice
-	prompt "SSL library"
-	default FREETZ_PACKAGE_OPENVPN_OPENSSL
-
-	config FREETZ_PACKAGE_OPENVPN_OPENSSL
-		bool "OpenSSL"
-		select FREETZ_LIB_libcrypto if ! FREETZ_PACKAGE_OPENVPN_STATIC
-		select FREETZ_LIB_libssl    if ! FREETZ_PACKAGE_OPENVPN_STATIC
-	config FREETZ_PACKAGE_OPENVPN_MBEDTLS
-	bool "mbed TLS"
-		select FREETZ_LIB_libmbedcrypto if ! FREETZ_PACKAGE_OPENVPN_STATIC
-		select FREETZ_LIB_libmbedtls    if ! FREETZ_PACKAGE_OPENVPN_STATIC
-		select FREETZ_LIB_libmbedx509   if ! FREETZ_PACKAGE_OPENVPN_STATIC
+	config FREETZ_PACKAGE_OPENVPN_WITH_MGMNT
+		bool "Enable Management Console"
+		default n
 		help
-			Leads to smaller binaries, but lacks support for some openssl features.
+			Enables OpenVPN's Management Console for administrative Tasks.
+			This feature is not configurable via Web-UI.
 
-endchoice
+	config FREETZ_PACKAGE_OPENVPN_ENABLE_SMALL
+		bool "Optimize for size"
+		default y
+		help
+			Enables binary optimiziation for size.
+			Must be disabled to use the config option "explicit-exit-notify".
 
-
-config FREETZ_PACKAGE_OPENVPN_FORCE_BLOWFISH
-	bool "Include cipher blowfish in mbedTLS"
-	depends on FREETZ_PACKAGE_OPENVPN_MBEDTLS
-	select FREETZ_LIB_libmbedcrypto_WITH_BLOWFISH if FREETZ_PACKAGE_OPENVPN_MBEDTLS
-	default n
-	help
-		Compile mbedTLS with support for OpenVPN default cipher "blowfish" (BF-CBC).
-		Library/Binary size will increase approx. 7k (uncompressed).
-
-config FREETZ_PACKAGE_OPENVPN_WITH_BLOWFISH
-	bool
-	depends on FREETZ_PACKAGE_OPENVPN_OPENSSL \
-		|| (FREETZ_PACKAGE_OPENVPN_MBEDTLS  && FREETZ_LIB_libmbedcrypto_WITH_BLOWFISH)
-	default y
-
-config FREETZ_PACKAGE_OPENVPN_STATIC
-	bool "Link statically"
-	default n
-	help
-		Causes all libraries OpenVPN depends on to be linked in statically.
-
-config FREETZ_PACKAGE_OPENVPN_WITH_LZO
-	bool "With LZO compression"
-	select FREETZ_LIB_liblzo2 if ! FREETZ_PACKAGE_OPENVPN_STATIC
-	default y
-	help
-		LZO compression for VPN traffic
-
-config FREETZ_PACKAGE_OPENVPN_WITH_LZ4
-	bool "With LZ4 compression"
-	select FREETZ_LIB_liblz4 if ! FREETZ_PACKAGE_OPENVPN_STATIC
-	default n
-	help
-		LZ4 compression for VPN traffic
-
-config FREETZ_PACKAGE_OPENVPN_WITH_TRAFFIC_OBFUSCATION
-	bool "With traffic obfuscation"
-	default n
-	help
-		Adds support for an additional configuration option 'scramble'
-		with the following possible values:
-		 * scramble xormask xor_string
-		 * scramble reverse
-		 * scramble xorptrpos
-		 * scramble obfuscate password
-		See https://tunnelblick.net/cOpenvpn_xorpatch.html
-		
-		WARNING:
-		scramble-option and SSLH are NOT compatible. SSLH is not
-		able to recognize OpenVPN traffic if 'scramble'-option
-		is enabled in OpenVPN config. Don't enable it if you plan
-		to use SSLH to demultiplex OpenVPN protocol.
-
-comment "Warning: OpenVPN traffic obfuscation and SSLH are not compatible"
-	depends on FREETZ_PACKAGE_OPENVPN_WITH_TRAFFIC_OBFUSCATION && FREETZ_PACKAGE_SSLH
-
-config FREETZ_PACKAGE_OPENVPN_WITH_MGMNT
-	bool "Enable Management Console"
-	default n
-	help
-		Enables OpenVPN's Management Console for administrative Tasks.
-		This feature is not configurable via Web-UI.
-
-config FREETZ_PACKAGE_OPENVPN_ENABLE_SMALL
-	bool "Optimize for size"
-	default y
-	help
-		Enables binary optimiziation for size.
-		Must be disabled to use the config option "explicit-exit-notify".
-
-config FREETZ_PACKAGE_OPENVPN_USE_IPROUTE
-	bool "Use 'ip' instead of 'ifconfig' and 'route'"
-	select FREETZ_BUSYBOX_IP
-	default n
-	help
-		Enables openvpn to use ip when setting IPs, link parameters and routes.
-		This selects busybox's 'IP' applet.
+	config FREETZ_PACKAGE_OPENVPN_USE_IPROUTE
+		bool "Use 'ip' instead of 'ifconfig' and 'route'"
+		select FREETZ_BUSYBOX_IP
+		default n
+		help
+			Enables openvpn to use ip when setting IPs, link parameters and routes.
+			This selects busybox's 'IP' applet.
 
 endif # FREETZ_PACKAGE_OPENVPN
 
