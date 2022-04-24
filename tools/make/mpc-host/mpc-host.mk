@@ -33,11 +33,12 @@ $(MPC_HOST_DIR)/.configured: $(MPC_HOST_DIR)/.unpacked $(MPC_HOST_BINARY_DEPS:%-
 		--with-gmp=$(GMP_HOST_DESTDIR) \
 		--with-mpfr=$(MPFR_HOST_DESTDIR) \
 		$(DISABLE_NLS) \
+		$(SILENT) \
 	)
 	touch $@
 
 $(MPC_HOST_BINARY): $(MPC_HOST_DIR)/.configured | $(HOST_TOOLS_DIR)
-	$(MAKE) -C $(MPC_HOST_DIR) install
+	$(MAKE) -C $(MPC_HOST_DIR) install $(SILENT)
 
 mpc-host-precompiled: $(MPC_HOST_BINARY)
 

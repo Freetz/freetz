@@ -28,12 +28,12 @@ $(TAR_HOST_DIR)/.configured: $(TAR_HOST_DIR)/.unpacked
 		--without-selinux \
 		--disable-acl \
 		$(DISABLE_NLS) \
-		$(QUIET) \
+		$(SILENT) \
 	);
 	touch $@
 
 $(TAR_HOST_DIR)/src/tar: $(TAR_HOST_DIR)/.configured
-	$(MAKE) -C $(TAR_HOST_DIR) all
+	$(MAKE) -C $(TAR_HOST_DIR) all $(SILENT)
 	touch -c $@
 
 $(TOOLS_DIR)/tar-gnu: $(TAR_HOST_DIR)/src/tar

@@ -47,10 +47,11 @@ $(FAKEROOT_HOST_MAINARCH_DIR)/.configured: $(FAKEROOT_HOST_DIR)/.unpacked
 		--enable-shared \
 		$(if $(findstring Microsoft,$(shell uname -r)),--with-ipc=tcp,--with-ipc=sysv) \
 		$(DISABLE_NLS) \
+		$(SILENT) \
 	);
 	touch $@
 $(FAKEROOT_HOST_TARGET_SCRIPT): $(FAKEROOT_HOST_MAINARCH_DIR)/.configured
-	$(MAKE) -C $(FAKEROOT_HOST_MAINARCH_DIR) install
+	$(MAKE) -C $(FAKEROOT_HOST_MAINARCH_DIR) install $(SILENT)
 	$(SED) -i 's,^FAKEROOT_PREFIX=.*,FAKEROOT_PREFIX="$$(readlink -f $$0 | sed "s!/bin/fakeroot\\$$!!")",'  $(FAKEROOT_HOST_TARGET_SCRIPT)
 	$(SED) -i 's,^FAKEROOT_BINDIR=.*,FAKEROOT_BINDIR=$${FAKEROOT_PREFIX}/bin,'                              $(FAKEROOT_HOST_TARGET_SCRIPT)
 	$(SED) -i 's,^PATHS=.*,PATHS=$${FAKEROOT_PREFIX}/lib:$${FAKEROOT_PREFIX}/lib32,'                        $(FAKEROOT_HOST_TARGET_SCRIPT)
@@ -67,11 +68,11 @@ $(FAKEROOT_HOST_BIARCH_DIR)/.configured: $(FAKEROOT_HOST_DIR)/.unpacked
 		$(if $(findstring Microsoft,$(shell uname -r)),--with-ipc=tcp,--with-ipc=sysv) \
 		$(if $(findstring Microsoft,$(shell uname -r)),--host=$(shell uname -m),) \
 		$(DISABLE_NLS) \
-		$(QUIET) \
+		$(SILENT) \
 	);
 	touch $@
 $(FAKEROOT_HOST_TARGET_BIARCH_LIB): $(FAKEROOT_HOST_BIARCH_DIR)/.configured
-	$(MAKE) -C $(FAKEROOT_HOST_BIARCH_DIR) libdir="$(FAKEROOT_HOST_BIARCH_LD_PRELOAD_PATH)" install-libLTLIBRARIES
+	$(MAKE) -C $(FAKEROOT_HOST_BIARCH_DIR) libdir="$(FAKEROOT_HOST_BIARCH_LD_PRELOAD_PATH)" install-libLTLIBRARIES $(SILENT)
 	touch $@
 
 fakeroot-host-precompiled: $(FAKEROOT_HOST_TARGET_SCRIPT) $(if $(BIARCH_BUILD_SYSTEM),$(FAKEROOT_HOST_TARGET_BIARCH_LIB))

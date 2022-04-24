@@ -29,10 +29,12 @@ $(KCONFIG_HOST_DIR)/.prerequisites: $(KCONFIG_HOST_DIR)/.unpacked
 	touch $@
 
 $(KCONFIG_HOST_DIR)/scripts/kconfig/conf: $(KCONFIG_HOST_DIR)/.prerequisites
-	$(MAKE) -C $(KCONFIG_HOST_DIR) config
+	$(MAKE) -C $(KCONFIG_HOST_DIR) config \
+		$(SILENT)
 
 $(KCONFIG_HOST_DIR)/scripts/kconfig/mconf: $(KCONFIG_HOST_DIR)/.prerequisites
-	$(MAKE) -C $(KCONFIG_HOST_DIR) menuconfig
+	$(MAKE) -C $(KCONFIG_HOST_DIR) menuconfig \
+		$(SILENT)
 
 $(KCONFIG_HOST_TARGET_DIR)/conf: $(KCONFIG_HOST_DIR)/scripts/kconfig/conf
 	$(INSTALL_FILE)

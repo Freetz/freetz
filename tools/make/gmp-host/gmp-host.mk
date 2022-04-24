@@ -31,11 +31,12 @@ $(GMP_HOST_DIR)/.configured: $(GMP_HOST_DIR)/.unpacked
 		--disable-shared \
 		--enable-static \
 		$(DISABLE_NLS) \
+		$(SILENT) \
 	)
 	touch $@
 
 $(GMP_HOST_BINARY): $(GMP_HOST_DIR)/.configured | $(HOST_TOOLS_DIR)
-	$(MAKE) -C $(GMP_HOST_DIR) install
+	$(MAKE) -C $(GMP_HOST_DIR) install $(SILENT)
 
 gmp-host-precompiled: $(GMP_HOST_BINARY)
 

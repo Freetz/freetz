@@ -53,10 +53,11 @@ $(PSEUDO_HOST_MAINARCH_DIR)/.configured: $(PSEUDO_HOST_DIR)/.unpacked
 		$(if $(BIARCH_BUILD_SYSTEM),--bits=32) \
 		--cflags="-Wno-cast-function-type -Wno-nonnull-compare -fcommon $(if $(BIARCH_BUILD_SYSTEM),$(HOST_CFLAGS_FORCE_32BIT_CODE))" \
 		--libdir=$(PSEUDO_HOST_MAINARCH_LD_PRELOAD_PATH) \
+		$(SILENT) \
 	);
 	touch $@
 $(PSEUDO_HOST_TARGET_MAINARCH_LIB): $(PSEUDO_HOST_MAINARCH_DIR)/.configured
-	$(MAKE) -C $(PSEUDO_HOST_MAINARCH_DIR) install-lib $(if $(BIARCH_BUILD_SYSTEM),,install-bin)
+	$(MAKE) -C $(PSEUDO_HOST_MAINARCH_DIR) install-lib $(if $(BIARCH_BUILD_SYSTEM),,install-bin) $(SILENT)
 	touch $@
 
 $(PSEUDO_HOST_BIARCH_DIR)/.configured: $(PSEUDO_HOST_DIR)/.unpacked
@@ -71,10 +72,11 @@ $(PSEUDO_HOST_BIARCH_DIR)/.configured: $(PSEUDO_HOST_DIR)/.unpacked
 		--bits=$(HOST_BITNESS) \
 		--cflags="-Wno-cast-function-type -Wno-nonnull-compare -fcommon" \
 		--libdir=$(PSEUDO_HOST_BIARCH_LD_PRELOAD_PATH) \
+		$(SILENT) \
 	);
 	touch $@
 $(PSEUDO_HOST_TARGET_BIARCH_LIB): $(PSEUDO_HOST_BIARCH_DIR)/.configured
-	$(MAKE) -C $(PSEUDO_HOST_BIARCH_DIR) install-lib install-bin
+	$(MAKE) -C $(PSEUDO_HOST_BIARCH_DIR) install-lib install-bin $(SILENT)
 	touch $@
 
 pseudo-host-precompiled: $(PSEUDO_HOST_TARGET_MAINARCH_LIB) $(if $(BIARCH_BUILD_SYSTEM),$(PSEUDO_HOST_TARGET_BIARCH_LIB))

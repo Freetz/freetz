@@ -23,14 +23,14 @@ $(LZMA1_HOST_DIR)/.unpacked: $(DL_DIR)/$(LZMA1_HOST_SOURCE) | $(TOOLS_SOURCE_DIR
 	touch $@
 
 $(LZMA1_HOST_ALONE_DIR)/lzma: $(LZMA1_HOST_DIR)/.unpacked
-	$(MAKE) CC="$(TOOLS_CC)" CXX="$(TOOLS_CXX)"  LDFLAGS="$(TOOLS_LDFLAGS)" -f makefile.gcc -C $(LZMA1_HOST_ALONE_DIR)
+	$(MAKE) CC="$(TOOLS_CC)" CXX="$(TOOLS_CXX)"  LDFLAGS="$(TOOLS_LDFLAGS)" -f makefile.gcc -C $(LZMA1_HOST_ALONE_DIR) $(SILENT)
 
 $(LZMA1_HOST_LIBC_DIR)/liblzma.a: $(LZMA1_HOST_DIR)/.unpacked
-	$(MAKE) -f makefile.gcc -C $(LZMA1_HOST_LIBC_DIR)
+	$(MAKE) -f makefile.gcc -C $(LZMA1_HOST_LIBC_DIR) $(SILENT)
 	touch -c $@
 
 $(LZMA1_HOST_LIBCXX_DIR)/liblzma++.a: $(LZMA1_HOST_DIR)/.unpacked
-	$(MAKE) -f makefile.gcc -C $(LZMA1_HOST_LIBCXX_DIR)
+	$(MAKE) -f makefile.gcc -C $(LZMA1_HOST_LIBCXX_DIR) $(SILENT)
 	touch -c $@
 
 $(LZMA1_HOST_DIR)/liblzma1.a: $(LZMA1_HOST_LIBC_DIR)/liblzma.a

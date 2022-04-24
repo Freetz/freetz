@@ -53,12 +53,12 @@ $(E2FSPROGS_HOST_DIR)/.configured: $(E2FSPROGS_HOST_DIR)/.unpacked
 		--disable-threads \
 		--disable-tls \
 		$(DISABLE_NLS) \
-		$(QUIET) \
+		$(SILENT) \
 	);
 	touch $@
 
 $(E2FSPROGS_HOST_DIR)/.compiled: $(E2FSPROGS_HOST_DIR)/.configured
-	$(MAKE) -C $(E2FSPROGS_HOST_DIR) INFO=true all
+	$(MAKE) -C $(E2FSPROGS_HOST_DIR) INFO=true all $(SILENT)
 	touch $@
 
 $(E2FSPROGS_HOST_E2FSCK_BINARY) $(E2FSPROGS_HOST_DEBUGFS_BINARY) $(E2FSPROGS_HOST_TUNE2FS_BINARY): $(E2FSPROGS_HOST_DIR)/.compiled

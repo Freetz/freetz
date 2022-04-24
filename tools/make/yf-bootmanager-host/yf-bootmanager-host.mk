@@ -37,5 +37,5 @@ yf-bootmanager-host-dirclean:
 	$(RM) -r $(YF_BOOTMANAGER_HOST_DIR)
 
 yf-bootmanager-host-distclean: yf-bootmanager-host-dirclean
-	$(RM) -rf $(TOOLS_DIR)/yf/bootmanager/
+	$(RM) -r $(TOOLS_DIR)/yf/bootmanager/
 

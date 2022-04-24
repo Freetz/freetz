@@ -32,11 +32,12 @@ $(MPFR_HOST_DIR)/.configured: $(MPFR_HOST_DIR)/.unpacked $(MPFR_HOST_BINARY_DEPS
 		--enable-static \
 		--with-gmp=$(GMP_HOST_DESTDIR) \
 		$(DISABLE_NLS) \
+		$(SILENT) \
 	)
 	touch $@
 
 $(MPFR_HOST_BINARY): $(MPFR_HOST_DIR)/.configured | $(HOST_TOOLS_DIR)
-	$(MAKE) -C $(MPFR_HOST_DIR)/src install
+	$(MAKE) -C $(MPFR_HOST_DIR)/src install $(SILENT)
 
 mpfr-host-precompiled: $(MPFR_HOST_BINARY)
 

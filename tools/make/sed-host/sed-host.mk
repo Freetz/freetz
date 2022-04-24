@@ -28,12 +28,12 @@ $(SED_HOST_DIR)/.configured: $(SED_HOST_DIR)/.unpacked
 		--without-selinux \
 		--disable-acl \
 		$(DISABLE_NLS) \
-		$(QUIET) \
+		$(SILENT) \
 	);
 	touch $@
 
 $(SED_HOST_DIR)/sed/sed: $(SED_HOST_DIR)/.configured
-	$(MAKE) -C $(SED_HOST_DIR) all
+	$(MAKE) -C $(SED_HOST_DIR) all $(SILENT)
 	touch -c $@
 
 $(TOOLS_DIR)/sed: $(SED_HOST_DIR)/sed/sed

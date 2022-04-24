@@ -23,7 +23,7 @@ $(GENEXT2FS_DIR)/.unpacked: $(DL_DIR)/$(GENEXT2FS_SOURCE) | $(TOOLS_SOURCE_DIR) 
 	touch $@
 
 $(GENEXT2FS_DIR)/.configured: $(GENEXT2FS_DIR)/.unpacked
-	(cd $(GENEXT2FS_DIR); autoreconf -f -i; \
+	(cd $(GENEXT2FS_DIR); autoreconf -f -i $(SILENT); \
 		CC="$(TOOLS_CC)" \
 		CXX="$(TOOLS_CXX)" \
 		CFLAGS="$(TOOLS_CFLAGS)" \
@@ -35,7 +35,7 @@ $(GENEXT2FS_DIR)/.configured: $(GENEXT2FS_DIR)/.unpacked
 	touch $@
 
 $(GENEXT2FS_DIR)/genext2fs: $(GENEXT2FS_DIR)/.configured
-	$(MAKE) -C $(GENEXT2FS_DIR) all
+	$(MAKE) -C $(GENEXT2FS_DIR) all $(SILENT)
 	touch -c $@
 
 genext2fs-host-test: $(GENEXT2FS_DIR)/.tests-passed

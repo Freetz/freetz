@@ -24,7 +24,8 @@ $(SCONS_HOST): $(SCONS_HOST_DIR)/.unpacked | python-host
 		$(SCONS_HOST_DIR)/setup.py install \
 		--prefix=$(abspath $(HOST_TOOLS_DIR)/usr) \
 		--symlink-scons \
-		--no-install-man
+		--no-install-man \
+		$(SILENT)
 	find $(dir $@) -maxdepth 1 -type f -name "scons*" -exec $(SED) -i -r -e 's,^#![ ]*/usr/bin/env[ ]*python,#!$(abspath $(HOST_TOOLS_DIR)/usr/bin/python),g' \{\} \+
 
 scons-host-precompiled: $(SCONS_HOST)

@@ -27,12 +27,12 @@ $(NCURSES_HOST_DIR)/.configured: $(NCURSES_HOST_DIR)/.unpacked
 		\
 		\
 		$(DISABLE_NLS) \
-		$(QUIET) \
+		$(SILENT) \
 	);
 	touch $@
 
 $(NCURSES_HOST_DIR)/progs/tic: $(NCURSES_HOST_DIR)/.configured
-	$(MAKE) -C $(NCURSES_HOST_DIR) all
+	$(MAKE) -C $(NCURSES_HOST_DIR) all $(SILENT)
 	touch -c $@
 
 $(TOOLS_DIR)/tic: $(NCURSES_HOST_DIR)/progs/tic

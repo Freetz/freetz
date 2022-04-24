@@ -27,11 +27,12 @@ $(SFK_HOST_DIR)/.configured: $(SFK_HOST_DIR)/.unpacked
 		./configure \
 		--prefix=$(SFK_HOST_DESTDIR) \
 		$(DISABLE_NLS) \
+		$(SILENT) \
 	);
 	touch $@
 
 $(SFK_HOST_DIR)/sfk: $(SFK_HOST_DIR)/.configured
-	$(MAKE) -C $(SFK_HOST_DIR) all
+	$(MAKE) -C $(SFK_HOST_DIR) all $(SILENT)
 
 $(TOOLS_DIR)/sfk: $(SFK_HOST_DIR)/sfk
 	$(INSTALL_FILE)

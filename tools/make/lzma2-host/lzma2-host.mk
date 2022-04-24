@@ -41,12 +41,12 @@ $(LZMA2_HOST_DIR)/.configured: $(LZMA2_HOST_DIR)/.unpacked
 		--enable-static=yes \
 		--without-libiconv-prefix \
 		--without-libintl-prefix \
-		$(QUIET) \
+		$(SILENT) \
 	);
 	touch $@
 
 $(LZMA2_HOST_LIB_DIR)/liblzma.a $(LZMA2_HOST_ALONE_DIR)/xz: $(LZMA2_HOST_DIR)/.configured
-	$(MAKE) -C $(LZMA2_HOST_DIR)
+	$(MAKE) -C $(LZMA2_HOST_DIR) $(SILENT)
 
 $(LZMA2_HOST_DIR)/liblzma.a: $(LZMA2_HOST_LIB_DIR)/liblzma.a
 	$(INSTALL_FILE)

@@ -19,7 +19,8 @@ $(YF_AKCAREA_HOST_TOOLS_BUILD_DIR): $(YF_AKCAREA_HOST_DIR)/.unpacked $(DTC_LIBFD
 		CC="$(TOOLS_CC)" \
 		BITNESS="$(HOST_CFLAGS_FORCE_32BIT_CODE)" \
 		LIBFDT_DIR=$(DTC_LIBFDT_HOST_DIR) \
-		$(YF_AKCAREA_HOST_TOOLS:%=avm_kernel_config.%)
+		$(YF_AKCAREA_HOST_TOOLS:%=avm_kernel_config.%) \
+		$(QUIET)
 	touch -c $@
 
 $(YF_AKCAREA_HOST_TOOLS_TARGET_DIR): $(TOOLS_DIR)/avm_kernel_config.%: $(YF_AKCAREA_HOST_DIR)/avm_kernel_config.%

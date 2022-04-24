@@ -32,20 +32,23 @@ $(PYTHON_HOST_DIR)/.configured: $(PYTHON_HOST_DIR)/.unpacked
 		--host=$(GNU_HOST_NAME) \
 		--target=$(GNU_HOST_NAME) \
 		--prefix=/usr \
+		$(SILENT) \
 	);
 	@touch $@
 
 $(PYTHON_HOST_BINARY): $(PYTHON_HOST_DIR)/.configured
 	PATH=$(TARGET_PATH) \
 		$(MAKE) -C $(PYTHON_HOST_DIR) \
-		all Parser/pgen
+		all Parser/pgen \
+		$(SILENT)
 	@touch -c $@
 
 $(PYTHON_HOST_TARGET_BINARY): $(PYTHON_HOST_BINARY) | $(HOST_TOOLS_DIR)
 	PATH=$(TARGET_PATH) \
 		$(MAKE) -C $(PYTHON_HOST_DIR) \
 		DESTDIR="$(HOST_TOOLS_DIR)" \
-		install
+		install \
+		$(SILENT)
 	cp -a $(PYTHON_HOST_BINARY) $(PYTHON_HOST_DIR)/Parser/pgen \
 		$(HOST_TOOLS_DIR)/usr/bin
 
