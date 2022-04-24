@@ -379,7 +379,7 @@ $(filter $(TOOLS_BUILD_LOCAL),$(TOOLS)): % : %-precompiled
 
 $(patsubst %,%-autofix,$(TOOLS)): %-autofix : %-dirclean
 	$(MAKE) AUTO_FIX_PATCHES=y $*-unpacked
-$(patsubst %,%-recompile,$(TOOLS)): %-recompile : %-dirclean %-precompiled
+$(patsubst %,%-recompile,$(TOOLS)): %-recompile : %-distclean %-precompiled
 
 tools: $(DL_DIR) $(SOURCE_DIR_ROOT) $(filter-out $(TOOLS_CONDITIONAL),$(TOOLS))
 tools-dirclean: $(TOOLS_DIRCLEAN)
