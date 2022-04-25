@@ -95,12 +95,12 @@ done
 
 #a
 echo -e "\n# kernel:"
-cat out.kernel | grep -v '^#' | sort -u | grep '^dl/' -v
+cat out.kernel | grep -v '^#' | sort -u -k4 | grep '^dl/' -v
 echo -e "\n# files:\n"
 cat out.kernel | grep -v '^#' | sort -u | grep '^dl/'
 
 echo -e "\n# target:"
-cat out.target | grep -v '^#' | grep -iv gcc.3 | sort -u | grep '^dl/' -v
+cat out.target | grep -v '^#' | grep -iv gcc.3 | sort -u -k4 | grep '^dl/' -v
 echo -e "\n# files:\n"
 cat out.target | grep -v '^#' | grep -iv gcc.3 | sort -u | grep '^dl/'
 
