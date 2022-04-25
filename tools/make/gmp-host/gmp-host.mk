@@ -36,7 +36,7 @@ $(GMP_HOST_DIR)/.configured: $(GMP_HOST_DIR)/.unpacked
 	touch $@
 
 $(GMP_HOST_BINARY): $(GMP_HOST_DIR)/.configured | $(HOST_TOOLS_DIR)
-	$(MAKE) -C $(GMP_HOST_DIR) install $(SILENT)
+	$(TOOL_SUBMAKE) -C $(GMP_HOST_DIR) install
 
 gmp-host-precompiled: $(GMP_HOST_BINARY)
 

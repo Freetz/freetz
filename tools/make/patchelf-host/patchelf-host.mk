@@ -36,7 +36,7 @@ $(PATCHELF_HOST_DIR)/.configured: $(PATCHELF_HOST_DIR)/.unpacked
 	touch $@
 
 $(PATCHELF_HOST_DIR)/src/patchelf: $(PATCHELF_HOST_DIR)/.configured
-	$(MAKE) -C $(PATCHELF_HOST_DIR) all $(SILENT)
+	$(TOOL_SUBMAKE) -C $(PATCHELF_HOST_DIR) all
 	touch -c $@
 
 $(TOOLS_DIR)/patchelf: $(PATCHELF_HOST_DIR)/src/patchelf

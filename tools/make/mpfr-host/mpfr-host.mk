@@ -37,7 +37,7 @@ $(MPFR_HOST_DIR)/.configured: $(MPFR_HOST_DIR)/.unpacked $(MPFR_HOST_BINARY_DEPS
 	touch $@
 
 $(MPFR_HOST_BINARY): $(MPFR_HOST_DIR)/.configured | $(HOST_TOOLS_DIR)
-	$(MAKE) -C $(MPFR_HOST_DIR)/src install $(SILENT)
+	$(TOOL_SUBMAKE) -C $(MPFR_HOST_DIR)/src install
 
 mpfr-host-precompiled: $(MPFR_HOST_BINARY)
 

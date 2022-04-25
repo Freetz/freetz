@@ -32,7 +32,7 @@ $(SFK_HOST_DIR)/.configured: $(SFK_HOST_DIR)/.unpacked
 	touch $@
 
 $(SFK_HOST_DIR)/sfk: $(SFK_HOST_DIR)/.configured
-	$(MAKE) -C $(SFK_HOST_DIR) all $(SILENT)
+	$(TOOL_SUBMAKE) -C $(SFK_HOST_DIR) all
 
 $(TOOLS_DIR)/sfk: $(SFK_HOST_DIR)/sfk
 	$(INSTALL_FILE)

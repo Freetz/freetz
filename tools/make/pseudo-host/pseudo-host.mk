@@ -57,7 +57,7 @@ $(PSEUDO_HOST_MAINARCH_DIR)/.configured: $(PSEUDO_HOST_DIR)/.unpacked
 	);
 	touch $@
 $(PSEUDO_HOST_TARGET_MAINARCH_LIB): $(PSEUDO_HOST_MAINARCH_DIR)/.configured
-	$(MAKE) -C $(PSEUDO_HOST_MAINARCH_DIR) install-lib $(if $(BIARCH_BUILD_SYSTEM),,install-bin) $(SILENT)
+	$(TOOL_SUBMAKE) -C $(PSEUDO_HOST_MAINARCH_DIR) install-lib $(if $(BIARCH_BUILD_SYSTEM),,install-bin)
 	touch $@
 
 $(PSEUDO_HOST_BIARCH_DIR)/.configured: $(PSEUDO_HOST_DIR)/.unpacked
@@ -76,7 +76,7 @@ $(PSEUDO_HOST_BIARCH_DIR)/.configured: $(PSEUDO_HOST_DIR)/.unpacked
 	);
 	touch $@
 $(PSEUDO_HOST_TARGET_BIARCH_LIB): $(PSEUDO_HOST_BIARCH_DIR)/.configured
-	$(MAKE) -C $(PSEUDO_HOST_BIARCH_DIR) install-lib install-bin $(SILENT)
+	$(TOOL_SUBMAKE) -C $(PSEUDO_HOST_BIARCH_DIR) install-lib install-bin
 	touch $@
 
 pseudo-host-precompiled: $(PSEUDO_HOST_TARGET_MAINARCH_LIB) $(if $(BIARCH_BUILD_SYSTEM),$(PSEUDO_HOST_TARGET_BIARCH_LIB))

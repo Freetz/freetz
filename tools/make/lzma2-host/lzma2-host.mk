@@ -46,7 +46,7 @@ $(LZMA2_HOST_DIR)/.configured: $(LZMA2_HOST_DIR)/.unpacked
 	touch $@
 
 $(LZMA2_HOST_LIB_DIR)/liblzma.a $(LZMA2_HOST_ALONE_DIR)/xz: $(LZMA2_HOST_DIR)/.configured
-	$(MAKE) -C $(LZMA2_HOST_DIR) $(SILENT)
+	$(TOOL_SUBMAKE) -C $(LZMA2_HOST_DIR)
 
 $(LZMA2_HOST_DIR)/liblzma.a: $(LZMA2_HOST_LIB_DIR)/liblzma.a
 	$(INSTALL_FILE)

@@ -35,7 +35,7 @@ $(GENEXT2FS_DIR)/.configured: $(GENEXT2FS_DIR)/.unpacked
 	touch $@
 
 $(GENEXT2FS_DIR)/genext2fs: $(GENEXT2FS_DIR)/.configured
-	$(MAKE) -C $(GENEXT2FS_DIR) all $(SILENT)
+	$(TOOL_SUBMAKE) -C $(GENEXT2FS_DIR) all
 	touch -c $@
 
 genext2fs-host-test: $(GENEXT2FS_DIR)/.tests-passed

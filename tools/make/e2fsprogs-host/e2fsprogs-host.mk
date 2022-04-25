@@ -58,7 +58,7 @@ $(E2FSPROGS_HOST_DIR)/.configured: $(E2FSPROGS_HOST_DIR)/.unpacked
 	touch $@
 
 $(E2FSPROGS_HOST_DIR)/.compiled: $(E2FSPROGS_HOST_DIR)/.configured
-	$(MAKE) -C $(E2FSPROGS_HOST_DIR) INFO=true all $(SILENT)
+	$(TOOL_SUBMAKE) -C $(E2FSPROGS_HOST_DIR) INFO=true all
 	touch $@
 
 $(E2FSPROGS_HOST_E2FSCK_BINARY) $(E2FSPROGS_HOST_DEBUGFS_BINARY) $(E2FSPROGS_HOST_TUNE2FS_BINARY): $(E2FSPROGS_HOST_DIR)/.compiled
@@ -76,7 +76,7 @@ E2FSPROGS_HOST_DEVEL_ROOT:=$(abspath $(E2FSPROGS_HOST_DIR)/_devel)
 e2fsprogs-host-devel: $(E2FSPROGS_HOST_DIR)/.devel
 $(E2FSPROGS_HOST_DIR)/.devel: $(E2FSPROGS_HOST_DIR)/.compiled
 	for i in blkid e2p et ext2fs quota ss uuid; do \
-		$(MAKE) -C $(E2FSPROGS_HOST_DIR)/lib/$$i \
+		$(TOOL_SUBMAKE) -C $(E2FSPROGS_HOST_DIR)/lib/$$i \
 			DESTDIR=$(E2FSPROGS_HOST_DEVEL_ROOT) install; \
 	done && \
 	$(RM) -r $(E2FSPROGS_HOST_DEVEL_ROOT)/{bin,share} && \

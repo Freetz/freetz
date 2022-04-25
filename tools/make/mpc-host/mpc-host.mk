@@ -38,7 +38,7 @@ $(MPC_HOST_DIR)/.configured: $(MPC_HOST_DIR)/.unpacked $(MPC_HOST_BINARY_DEPS:%-
 	touch $@
 
 $(MPC_HOST_BINARY): $(MPC_HOST_DIR)/.configured | $(HOST_TOOLS_DIR)
-	$(MAKE) -C $(MPC_HOST_DIR) install $(SILENT)
+	$(TOOL_SUBMAKE) -C $(MPC_HOST_DIR) install
 
 mpc-host-precompiled: $(MPC_HOST_BINARY)
 

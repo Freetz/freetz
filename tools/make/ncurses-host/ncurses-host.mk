@@ -32,7 +32,7 @@ $(NCURSES_HOST_DIR)/.configured: $(NCURSES_HOST_DIR)/.unpacked
 	touch $@
 
 $(NCURSES_HOST_DIR)/progs/tic: $(NCURSES_HOST_DIR)/.configured
-	$(MAKE) -C $(NCURSES_HOST_DIR) all $(SILENT)
+	$(TOOL_SUBMAKE) -C $(NCURSES_HOST_DIR) all
 	touch -c $@
 
 $(TOOLS_DIR)/tic: $(NCURSES_HOST_DIR)/progs/tic
