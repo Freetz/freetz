@@ -19,7 +19,7 @@ evalconfig() {
 		echo -e "\n# $*"
 		. ./.config
 		[ "${FREETZ_KERNEL_VERSION:0:1}" != "2" ] && kernel="_kernel-$FREETZ_KERNEL_VERSION_MAJOR"
-		echo ${FREETZ_TARGET_ARCH_ENDIANNESS_DEPENDENT}_gcc-${FREETZ_TARGET_GCC_VERSION}${FREETZ_SYSTEM_TYPE_BCM63138/y/-bcm}_uClibc-${FREETZ_TARGET_UCLIBC_VERSION}${FREETZ_AVM_UCLIBC_NPTL_ENABLED/y/-nptl}$kernel
+		echo ${FREETZ_TARGET_ARCH_ENDIANNESS_DEPENDENT}_gcc-${FREETZ_KERNEL_GCC_VERSION}${FREETZ_SYSTEM_TYPE_BCM63138/y/-bcm}_uClibc-${FREETZ_TARGET_UCLIBC_VERSION}${FREETZ_AVM_UCLIBC_NPTL_ENABLED/y/-nptl}$kernel
 	) >> out.raw
 }
 
@@ -48,10 +48,10 @@ echo
 #w
 grep -v '^#' out.raw | sort -u | grep uClibc | while read l; do grep "^$l$" -m1 -B2 out.raw; done | while read line; do
 [ "${line:0:1}" == "#" -o "${line:0:1}" == "" ] && echo $line | tee -a out.kernel >> out.target && continue
-echo $line | grep 'uClibc-0.9.28' -q && line="$(echo $line | sed 's/gcc-3\..\../gcc-4.6.4/')"
+linet="$(echo $line | sed 's/gcc-3\..\../gcc-4.6.4/')"
 
 FK="dl/${line%_uCli*}-${SUFFIX}.tar.lzma"
-FT="dl/$line-${SUFFIX}.tar.lzma"
+FT="dl/$linet-${SUFFIX}.tar.lzma"
 echo $FK >> out.kernel
 echo $FT >> out.target
 SK="$(sha256sum $FK 2>/dev/null || echo 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')"
@@ -79,7 +79,11 @@ case "${line#*gcc-}" in
 	5*|8*)  GCC="$(echo $line | sed -nr 's/.*gcc-(.).*/\1  /p')" ;;
 esac
 echo -n " && FREETZ_KERNEL_GCC_$GCC" >> out.kernel
-echo -n " && FREETZ_TARGET_GCC_$GCC" >> out.target
+case "${linet#*gcc-}" in
+	3*|4*)  GCCT="$(echo $linet | sed -nr 's/.*gcc-(.)\.(.).*/\1_\2/p')" ;;
+	5*|8*)  GCCT="$(echo $linet | sed -nr 's/.*gcc-(.).*/\1  /p')" ;;
+esac
+echo -n " && FREETZ_TARGET_GCC_$GCCT" >> out.target
 
 UCLI="$(echo $line | sed -nr 's/.*uClibc-(.).(.).(..).*/\1_\2_\3/p')"
 echo -n " && FREETZ_TARGET_UCLIBC_$UCLI" >> out.target
