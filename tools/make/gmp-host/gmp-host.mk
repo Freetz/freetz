@@ -1,25 +1,23 @@
-GMP_HOST_VERSION:=6.1.2
-GMP_HOST_SOURCE:=gmp-$(GMP_HOST_VERSION).tar.xz
-GMP_HOST_SOURCE_SHA256:=87b565e89a9a684fe4ebeeddb8399dce2599f9c9049854ca8c0dfbdea0e21912
-GMP_HOST_SITE:=@GNU/gmp
+$(call TOOL_INIT, 6.1.2)
+$(TOOL)_SOURCE:=gmp-$($(TOOL)_VERSION).tar.xz
+$(TOOL)_SOURCE_SHA256:=87b565e89a9a684fe4ebeeddb8399dce2599f9c9049854ca8c0dfbdea0e21912
+$(TOOL)_SITE:=@GNU/gmp
 
-GMP_HOST_DIR:=$(TOOLS_SOURCE_DIR)/gmp-$(GMP_HOST_VERSION)
-GMP_HOST_MAKE_DIR:=$(TOOLS_DIR)/make/gmp-host
-GMP_HOST_DESTDIR:=$(HOST_TOOLS_DIR)
-GMP_HOST_BINARY:=$(GMP_HOST_DESTDIR)/lib/libgmp.a
+$(TOOL)_DESTDIR:=$(HOST_TOOLS_DIR)
+$(TOOL)_BINARY:=$($(TOOL)_DESTDIR)/lib/libgmp.a
 
 
-gmp-host-source: $(DL_DIR)/$(GMP_HOST_SOURCE)
-$(DL_DIR)/$(GMP_HOST_SOURCE): | $(DL_DIR)
+$(tool)-source: $(DL_DIR)/$($(TOOL)_SOURCE)
+$(DL_DIR)/$($(TOOL)_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(GMP_HOST_SOURCE) $(GMP_HOST_SITE) $(GMP_HOST_SOURCE_SHA256)
 
-gmp-host-unpacked: $(GMP_HOST_DIR)/.unpacked
-$(GMP_HOST_DIR)/.unpacked: $(DL_DIR)/$(GMP_HOST_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
+$(tool)-unpacked: $($(TOOL)_DIR)/.unpacked
+$($(TOOL)_DIR)/.unpacked: $(DL_DIR)/$($(TOOL)_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(GMP_HOST_SOURCE),$(TOOLS_SOURCE_DIR))
 	$(call APPLY_PATCHES,$(GMP_HOST_MAKE_DIR)/patches,$(GMP_HOST_DIR))
 	touch $@
 
-$(GMP_HOST_DIR)/.configured: $(GMP_HOST_DIR)/.unpacked
+$($(TOOL)_DIR)/.configured: $($(TOOL)_DIR)/.unpacked
 	(cd $(GMP_HOST_DIR); $(RM) config.cache; \
 		CC="$(TOOLCHAIN_HOSTCC)" \
 		CFLAGS="$(TOOLCHAIN_HOST_CFLAGS)" \
@@ -35,18 +33,19 @@ $(GMP_HOST_DIR)/.configured: $(GMP_HOST_DIR)/.unpacked
 	)
 	touch $@
 
-$(GMP_HOST_BINARY): $(GMP_HOST_DIR)/.configured | $(HOST_TOOLS_DIR)
+$($(TOOL)_BINARY): $($(TOOL)_DIR)/.configured | $(HOST_TOOLS_DIR)
 	$(TOOL_SUBMAKE) -C $(GMP_HOST_DIR) install
 
-gmp-host-precompiled: $(GMP_HOST_BINARY)
+$(tool)-precompiled: $($(TOOL)_BINARY)
 
 
-gmp-host-clean:
+$(tool)-clean:
 	-$(MAKE) -C $(GMP_HOST_DIR) clean
 
-gmp-host-dirclean:
+$(tool)-dirclean:
 	$(RM) -r $(GMP_HOST_DIR)
 
-gmp-host-distclean: gmp-host-dirclean
+$(tool)-distclean: $(tool)-dirclean
 	$(RM) $(GMP_HOST_DESTDIR)/lib/libgmp* $(GMP_HOST_DESTDIR)/include/gmp*.h
 
+$(TOOL_FINISH)

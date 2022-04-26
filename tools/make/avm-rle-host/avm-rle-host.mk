@@ -1,32 +1,33 @@
-AVM_RLE_HOST_SRC:=$(TOOLS_DIR)/make/avm-rle-host/src
-AVM_RLE_HOST_DIR:=$(TOOLS_SOURCE_DIR)/avm-rle
+$(call TOOL_INIT, 0)
+$(TOOL)_SRC:=$(TOOLS_DIR)/make/avm-rle-host/src
 
 
-avm-rle-host-unpacked: $(AVM_RLE_HOST_DIR)/.unpacked
-$(AVM_RLE_HOST_DIR)/.unpacked: $(wildcard $(AVM_RLE_HOST_SRC)/*) | $(TOOLS_SOURCE_DIR) tar-host
+$(tool)-unpacked: $($(TOOL)_DIR)/.unpacked
+$($(TOOL)_DIR)/.unpacked: $(wildcard $($(TOOL)_SRC)/*) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	$(RM) -r $(AVM_RLE_HOST_DIR)
 	mkdir -p $(AVM_RLE_HOST_DIR)
 	$(call COPY_USING_TAR,$(AVM_RLE_HOST_SRC),$(AVM_RLE_HOST_DIR))
 	touch $@
 
-$(AVM_RLE_HOST_DIR)/avm-rle-decode: $(AVM_RLE_HOST_DIR)/.unpacked
+$($(TOOL)_DIR)/avm-rle-decode: $($(TOOL)_DIR)/.unpacked
 	$(TOOL_SUBMAKE) CC="$(TOOLS_CC)" CXX="$(TOOLS_CXX)" CFLAGS="$(TOOLS_CFLAGS)" LDFLAGS="$(TOOLS_LDFLAGS)" -C $(AVM_RLE_HOST_DIR)
 
-$(TOOLS_DIR)/avm-rle-decode: $(AVM_RLE_HOST_DIR)/avm-rle-decode
+$(TOOLS_DIR)/avm-rle-decode: $($(TOOL)_DIR)/avm-rle-decode
 	$(INSTALL_FILE)
 
 $(TOOLS_DIR)/avm-rle-stream-length: $(TOOLS_DIR)/avm-rle-decode
 	ln -sf $(notdir $<) $@
 
-avm-rle-host-precompiled: $(TOOLS_DIR)/avm-rle-decode $(TOOLS_DIR)/avm-rle-stream-length
+$(tool)-precompiled: $(TOOLS_DIR)/avm-rle-decode $(TOOLS_DIR)/avm-rle-stream-length
 
 
-avm-rle-host-clean:
+$(tool)-clean:
 	-$(MAKE) -C $(AVM_RLE_HOST_DIR) clean
 
-avm-rle-host-dirclean:
+$(tool)-dirclean:
 	$(RM) -r $(AVM_RLE_HOST_DIR)
 
-avm-rle-host-distclean: avm-rle-host-dirclean
+$(tool)-distclean: $(tool)-dirclean
 	$(RM) $(TOOLS_DIR)/avm-rle-*
 
+$(TOOL_FINISH)

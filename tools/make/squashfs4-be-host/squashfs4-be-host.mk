@@ -1,34 +1,34 @@
-SQUASHFS4_BE_HOST_VERSION:=4.3
-SQUASHFS4_BE_HOST_SOURCE:=squashfs$(SQUASHFS4_BE_HOST_VERSION).tar.gz
-SQUASHFS4_BE_HOST_SOURCE_MD5:=d92ab59aabf5173f2a59089531e30dbf
-SQUASHFS4_BE_HOST_SITE:=@SF/squashfs
+$(call TOOL_INIT, 4.3)
+$(TOOL)_SOURCE:=squashfs$($(TOOL)_VERSION).tar.gz
+$(TOOL)_SOURCE_MD5:=d92ab59aabf5173f2a59089531e30dbf
+$(TOOL)_SITE:=@SF/squashfs
 
 # Enable legacy SquashFS formats support (SquashFS-1/2/3, ZLIB/LZMA1 compressed)
 # 1 - to enable
 # 0 - to disable
-SQUASHFS4_BE_HOST_ENABLE_LEGACY_FORMATS_SUPPORT:=1
+$(TOOL)_ENABLE_LEGACY_FORMATS_SUPPORT:=1
 
-SQUASHFS4_BE_HOST_MAKE_DIR:=$(TOOLS_DIR)/make/squashfs4-be-host
-SQUASHFS4_BE_HOST_DIR:=$(TOOLS_SOURCE_DIR)/squashfs4-be-host-$(SQUASHFS4_BE_HOST_VERSION)
-SQUASHFS4_BE_HOST_BUILD_DIR:=$(SQUASHFS4_BE_HOST_DIR)/squashfs-tools
+$(TOOL)_BUILD_DIR:=$($(TOOL)_DIR)/squashfs-tools
 
-SQUASHFS4_BE_HOST_TOOLS:=mksquashfs unsquashfs
-SQUASHFS4_BE_HOST_TOOLS_BUILD_DIR:=$(addprefix $(SQUASHFS4_BE_HOST_BUILD_DIR)/,$(SQUASHFS4_BE_HOST_TOOLS))
-SQUASHFS4_BE_HOST_TOOLS_TARGET_DIR:=$(SQUASHFS4_BE_HOST_TOOLS:%=$(TOOLS_DIR)/%4-avm-be)
+$(TOOL)_TOOLS:=mksquashfs unsquashfs
+$(TOOL)_TOOLS_BUILD_DIR:=$(addprefix $($(TOOL)_BUILD_DIR)/,$($(TOOL)_TOOLS))
+$(TOOL)_TOOLS_TARGET_DIR:=$($(TOOL)_TOOLS:%=$(TOOLS_DIR)/%4-avm-be)
 
 
-squashfs4-be-host-source: $(DL_DIR)/$(SQUASHFS4_BE_HOST_SOURCE)
-$(DL_DIR)/$(SQUASHFS4_BE_HOST_SOURCE): | $(DL_DIR)
+$(tool)-source: $(DL_DIR)/$($(TOOL)_SOURCE)
+#
+$(DL_DIR)/$($(TOOL)_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(SQUASHFS4_BE_HOST_SOURCE) $(SQUASHFS4_BE_HOST_SITE) $(SQUASHFS4_BE_HOST_SOURCE_MD5)
+#
 
-squashfs4-be-host-unpacked: $(SQUASHFS4_BE_HOST_DIR)/.unpacked
-$(SQUASHFS4_BE_HOST_DIR)/.unpacked: $(DL_DIR)/$(SQUASHFS4_BE_HOST_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
+$(tool)-unpacked: $($(TOOL)_DIR)/.unpacked
+$($(TOOL)_DIR)/.unpacked: $(DL_DIR)/$($(TOOL)_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	mkdir -p $(SQUASHFS4_BE_HOST_DIR)
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(SQUASHFS4_BE_HOST_SOURCE),$(SQUASHFS4_BE_HOST_DIR),1)
 	$(call APPLY_PATCHES,$(SQUASHFS4_BE_HOST_MAKE_DIR)/patches,$(SQUASHFS4_BE_HOST_DIR))
 	touch $@
 
-$(SQUASHFS4_BE_HOST_TOOLS_BUILD_DIR): $(SQUASHFS4_BE_HOST_DIR)/.unpacked $(LZMA2_HOST_DIR)/liblzma.a
+$($(TOOL)_TOOLS_BUILD_DIR): $($(TOOL)_DIR)/.unpacked $(LZMA2_HOST_DIR)/liblzma.a
 	$(TOOL_SUBMAKE) -C $(SQUASHFS4_BE_HOST_BUILD_DIR) \
 		CC="$(TOOLS_CC)" \
 		CXX="$(TOOLS_CXX)" \
@@ -45,18 +45,19 @@ $(SQUASHFS4_BE_HOST_TOOLS_BUILD_DIR): $(SQUASHFS4_BE_HOST_DIR)/.unpacked $(LZMA2
 		$(SQUASHFS4_BE_HOST_TOOLS)
 	touch -c $@
 
-$(SQUASHFS4_BE_HOST_TOOLS_TARGET_DIR): $(TOOLS_DIR)/%4-avm-be: $(SQUASHFS4_BE_HOST_BUILD_DIR)/%
+$($(TOOL)_TOOLS_TARGET_DIR): $(TOOLS_DIR)/%4-avm-be: $($(TOOL)_BUILD_DIR)/%
 	$(INSTALL_FILE)
 
-squashfs4-be-host-precompiled: $(SQUASHFS4_BE_HOST_TOOLS_TARGET_DIR)
+$(tool)-precompiled: $($(TOOL)_TOOLS_TARGET_DIR)
 
 
-squashfs4-be-host-clean:
+$(tool)-clean:
 	-$(MAKE) -C $(SQUASHFS4_BE_HOST_BUILD_DIR) clean
 
-squashfs4-be-host-dirclean:
+$(tool)-dirclean:
 	$(RM) -r $(SQUASHFS4_BE_HOST_DIR)
 
-squashfs4-be-host-distclean: squashfs4-be-host-dirclean
+$(tool)-distclean: $(tool)-dirclean
 	$(RM) $(SQUASHFS4_BE_HOST_TOOLS_TARGET_DIR)
 
+$(TOOL_FINISH)

@@ -1,24 +1,22 @@
-PSEUDO_HOST_VERSION:=0cda3ba5f94aed8d50652a99ee9c502975aa2926
+$(call TOOL_INIT, 0cda3ba5f94aed8d50652a99ee9c502975aa2926)
 # Newer versions build with Ubuntu 14 and 18 cause problems on other systems with tar-host: https://github.com/Freetz-NG/freetz-ng/issues/468
-PSEUDO_HOST_SOURCE:=pseudo-$(PSEUDO_HOST_VERSION).tar.xz
-PSEUDO_HOST_SOURCE_SHA256:=405652c57ed80f9230c7be213350c0bf51aeb8a4d629778b338160dd25cbf642
-PSEUDO_HOST_SITE:=git@https://git.yoctoproject.org/git/pseudo
-#PSEUDO_HOST_SITE:=http://downloads.yoctoproject.org/releases/pseudo/
+$(TOOL)_SOURCE:=pseudo-$($(TOOL)_VERSION).tar.xz
+$(TOOL)_SOURCE_SHA256:=405652c57ed80f9230c7be213350c0bf51aeb8a4d629778b338160dd25cbf642
+$(TOOL)_SITE:=git@https://git.yoctoproject.org/git/pseudo
+#$(TOOL)_SITE:=http://downloads.yoctoproject.org/releases/pseudo/
 ### WEBSITE:=https://www.yoctoproject.org/software-item/pseudo/
 ### MANPAGE:=https://manpages.debian.org/testing/pseudo/pseudo.1.en.html
 ### CHANGES:=http://git.yoctoproject.org/cgit.cgi/pseudo/log/?h=oe-core
 ### CVSREPO:=http://git.yoctoproject.org/cgit.cgi/pseudo/
 
-PSEUDO_HOST_MAKE_DIR:=$(TOOLS_DIR)/make/pseudo-host
-PSEUDO_HOST_DIR:=$(TOOLS_SOURCE_DIR)/pseudo-$(PSEUDO_HOST_VERSION)
-PSEUDO_HOST_MAINARCH_DIR:=$(PSEUDO_HOST_DIR)/arch
-PSEUDO_HOST_BIARCH_DIR:=$(PSEUDO_HOST_DIR)/biarch
+$(TOOL)_MAINARCH_DIR:=$($(TOOL)_DIR)/arch
+$(TOOL)_BIARCH_DIR:=$($(TOOL)_DIR)/biarch
 
-PSEUDO_HOST_DESTDIR:=$(FREETZ_BASE_DIR)/$(TOOLS_DIR)/build
-PSEUDO_HOST_MAINARCH_LD_PRELOAD_PATH:=$(PSEUDO_HOST_DESTDIR)/lib
-PSEUDO_HOST_BIARCH_LD_PRELOAD_PATH:=$(PSEUDO_HOST_DESTDIR)/lib64
-PSEUDO_HOST_TARGET_MAINARCH_LIB:=$(PSEUDO_HOST_MAINARCH_LD_PRELOAD_PATH)/libpseudo.so
-PSEUDO_HOST_TARGET_BIARCH_LIB:=$(PSEUDO_HOST_BIARCH_LD_PRELOAD_PATH)/libpseudo.so
+$(TOOL)_DESTDIR:=$(FREETZ_BASE_DIR)/$(TOOLS_DIR)/build
+$(TOOL)_MAINARCH_LD_PRELOAD_PATH:=$($(TOOL)_DESTDIR)/lib
+$(TOOL)_BIARCH_LD_PRELOAD_PATH:=$($(TOOL)_DESTDIR)/lib64
+$(TOOL)_TARGET_MAINARCH_LIB:=$($(TOOL)_MAINARCH_LD_PRELOAD_PATH)/libpseudo.so
+$(TOOL)_TARGET_BIARCH_LIB:=$($(TOOL)_BIARCH_LD_PRELOAD_PATH)/libpseudo.so
 
 # BIARCH means 32-bit libraries on 64-bit hosts
 # We need 32-bit pseudo support if we use the 32-bit mips*-linux-strip during fwmod on a 64-bit host
@@ -27,12 +25,12 @@ PSEUDO_HOST_TARGET_BIARCH_LIB:=$(PSEUDO_HOST_BIARCH_LD_PRELOAD_PATH)/libpseudo.s
 BIARCH_BUILD_SYSTEM:=$(filter-out 32,$(HOST_BITNESS))
 
 
-pseudo-host-source: $(DL_DIR)/$(PSEUDO_HOST_SOURCE)
-$(DL_DIR)/$(PSEUDO_HOST_SOURCE): | $(DL_DIR)
+$(tool)-source: $(DL_DIR)/$($(TOOL)_SOURCE)
+$(DL_DIR)/$($(TOOL)_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(PSEUDO_HOST_SOURCE) $(PSEUDO_HOST_SITE) $(PSEUDO_HOST_SOURCE_SHA256)
 
-pseudo-host-unpacked: $(PSEUDO_HOST_DIR)/.unpacked
-$(PSEUDO_HOST_DIR)/.unpacked: $(DL_DIR)/$(PSEUDO_HOST_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
+$(tool)-unpacked: $($(TOOL)_DIR)/.unpacked
+$($(TOOL)_DIR)/.unpacked: $(DL_DIR)/$($(TOOL)_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	$(RM) -r $(PSEUDO_HOST_MAINARCH_DIR) $(PSEUDO_HOST_BIARCH_DIR)
 	mkdir -p $(PSEUDO_HOST_DIR)
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(PSEUDO_HOST_SOURCE),$(PSEUDO_HOST_DIR))
@@ -41,7 +39,7 @@ $(PSEUDO_HOST_DIR)/.unpacked: $(DL_DIR)/$(PSEUDO_HOST_SOURCE) | $(TOOLS_SOURCE_D
 	cp -a $(PSEUDO_HOST_MAINARCH_DIR) $(PSEUDO_HOST_BIARCH_DIR)
 	touch $@
 
-$(PSEUDO_HOST_MAINARCH_DIR)/.configured: $(PSEUDO_HOST_DIR)/.unpacked
+$($(TOOL)_MAINARCH_DIR)/.configured: $($(TOOL)_DIR)/.unpacked
 	(cd $(PSEUDO_HOST_MAINARCH_DIR); $(RM) Makefile; \
 		CC="$(TOOLS_CC)" \
 		CXX="$(TOOLS_CXX)" \
@@ -56,11 +54,11 @@ $(PSEUDO_HOST_MAINARCH_DIR)/.configured: $(PSEUDO_HOST_DIR)/.unpacked
 		$(SILENT) \
 	);
 	touch $@
-$(PSEUDO_HOST_TARGET_MAINARCH_LIB): $(PSEUDO_HOST_MAINARCH_DIR)/.configured
+$($(TOOL)_TARGET_MAINARCH_LIB): $($(TOOL)_MAINARCH_DIR)/.configured
 	$(TOOL_SUBMAKE) -C $(PSEUDO_HOST_MAINARCH_DIR) install-lib $(if $(BIARCH_BUILD_SYSTEM),,install-bin)
 	touch $@
 
-$(PSEUDO_HOST_BIARCH_DIR)/.configured: $(PSEUDO_HOST_DIR)/.unpacked
+$($(TOOL)_BIARCH_DIR)/.configured: $($(TOOL)_DIR)/.unpacked
 	(cd $(PSEUDO_HOST_BIARCH_DIR); $(RM) Makefile; \
 		CC="$(TOOLS_CC)" \
 		CXX="$(TOOLS_CXX)" \
@@ -75,20 +73,21 @@ $(PSEUDO_HOST_BIARCH_DIR)/.configured: $(PSEUDO_HOST_DIR)/.unpacked
 		$(SILENT) \
 	);
 	touch $@
-$(PSEUDO_HOST_TARGET_BIARCH_LIB): $(PSEUDO_HOST_BIARCH_DIR)/.configured
+$($(TOOL)_TARGET_BIARCH_LIB): $($(TOOL)_BIARCH_DIR)/.configured
 	$(TOOL_SUBMAKE) -C $(PSEUDO_HOST_BIARCH_DIR) install-lib install-bin
 	touch $@
 
-pseudo-host-precompiled: $(PSEUDO_HOST_TARGET_MAINARCH_LIB) $(if $(BIARCH_BUILD_SYSTEM),$(PSEUDO_HOST_TARGET_BIARCH_LIB))
+$(tool)-precompiled: $($(TOOL)_TARGET_MAINARCH_LIB) $(if $(BIARCH_BUILD_SYSTEM),$($(TOOL)_TARGET_BIARCH_LIB))
 
 
-pseudo-host-clean:
+$(tool)-clean:
 	-$(MAKE) -C $(PSEUDO_HOST_MAINARCH_DIR) clean
 	-$(MAKE) -C $(PSEUDO_HOST_BIARCH_DIR) clean
 
-pseudo-host-dirclean:
+$(tool)-dirclean:
 	$(RM) -r $(PSEUDO_HOST_DIR)
 
-pseudo-host-distclean: pseudo-host-dirclean
+$(tool)-distclean: $(tool)-dirclean
 	$(RM) -r $(PSEUDO_HOST_DESTDIR)/bin/pseudo* $(PSEUDO_HOST_TARGET_MAINARCH_LIB) $(PSEUDO_HOST_TARGET_BIARCH_LIB)
 
+$(TOOL_FINISH)

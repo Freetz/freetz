@@ -1,29 +1,29 @@
-FIND_SQUASHFS_HOST_SRC:=$(TOOLS_DIR)/make/find-squashfs-host/src
-FIND_SQUASHFS_HOST_DIR:=$(TOOLS_SOURCE_DIR)/find-squashfs
+$(call TOOL_INIT, 0)
 
 
-find-squashfs-host-unpacked: $(FIND_SQUASHFS_HOST_DIR)/.unpacked
-$(FIND_SQUASHFS_HOST_DIR)/.unpacked: $(wildcard $(FIND_SQUASHFS_HOST_SRC)/*) | $(TOOLS_SOURCE_DIR) tar-host
+$(tool)-unpacked: $($(TOOL)_DIR)/.unpacked
+$($(TOOL)_DIR)/.unpacked: $(wildcard $($(TOOL)_SRC)/*) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	$(RM) -r $(FIND_SQUASHFS_HOST_DIR)
 	mkdir -p $(FIND_SQUASHFS_HOST_DIR)
 	$(call COPY_USING_TAR,$(FIND_SQUASHFS_HOST_SRC),$(FIND_SQUASHFS_HOST_DIR))
 	touch $@
 
-$(FIND_SQUASHFS_HOST_DIR)/find-squashfs: $(FIND_SQUASHFS_HOST_DIR)/.unpacked
+$($(TOOL)_DIR)/find-squashfs: $($(TOOL)_DIR)/.unpacked
 	$(TOOL_SUBMAKE) CC="$(TOOLS_CC)" CXX="$(TOOLS_CXX)" CFLAGS="$(TOOLS_CFLAGS)" LDFLAGS="$(TOOLS_LDFLAGS)" -C $(FIND_SQUASHFS_HOST_DIR)
 
-$(TOOLS_DIR)/find-squashfs: $(FIND_SQUASHFS_HOST_DIR)/find-squashfs
+$(TOOLS_DIR)/find-squashfs: $($(TOOL)_DIR)/find-squashfs
 	$(INSTALL_FILE)
 
-find-squashfs-host-precompiled: $(TOOLS_DIR)/find-squashfs
+$(tool)-precompiled: $(TOOLS_DIR)/find-squashfs
 
 
-find-squashfs-host-clean:
+$(tool)-clean:
 	-$(MAKE) -C $(FIND_SQUASHFS_HOST_DIR) clean
 
-find-squashfs-host-dirclean:
+$(tool)-dirclean:
 	$(RM) -r $(FIND_SQUASHFS_HOST_DIR)
 
-find-squashfs-host-distclean: find-squashfs-host-dirclean
+$(tool)-distclean: $(tool)-dirclean
 	$(RM) $(TOOLS_DIR)/find-squashfs
 
+$(TOOL_FINISH)

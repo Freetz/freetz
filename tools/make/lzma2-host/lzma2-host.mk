@@ -1,27 +1,26 @@
-LZMA2_HOST_VERSION:=5.2.5
-LZMA2_HOST_SOURCE:=xz-$(LZMA2_HOST_VERSION).tar.xz
-LZMA2_HOST_SOURCE_MD5:=aa1621ec7013a19abab52a8aff04fe5b
-LZMA2_HOST_SITE:=http://tukaani.org/xz
+$(call TOOL_INIT, 5.2.5)
+$(TOOL)_SOURCE:=xz-$($(TOOL)_VERSION).tar.xz
+$(TOOL)_SOURCE_MD5:=aa1621ec7013a19abab52a8aff04fe5b
+$(TOOL)_SITE:=http://tukaani.org/xz
 
-LZMA2_HOST_DIR:=$(TOOLS_SOURCE_DIR)/xz-$(LZMA2_HOST_VERSION)
-LZMA2_HOST_MAKE_DIR:=$(TOOLS_DIR)/make/lzma2-host
+$(TOOL)_DIR:=$(TOOLS_SOURCE_DIR)/xz-$($(TOOL)_VERSION)
 
-LZMA2_HOST_ALONE_DIR:=$(LZMA2_HOST_DIR)/src/xz
-LZMA2_HOST_LIB_DIR:=$(LZMA2_HOST_DIR)/src/liblzma/.libs
+$(TOOL)_ALONE_DIR:=$($(TOOL)_DIR)/src/xz
+$(TOOL)_LIB_DIR:=$($(TOOL)_DIR)/src/liblzma/.libs
 
 
-lzma2-host-source: $(DL_DIR)/$(LZMA2_HOST_SOURCE)
-$(DL_DIR)/$(LZMA2_HOST_SOURCE): | $(DL_DIR)
+$(tool)-source: $(DL_DIR)/$($(TOOL)_SOURCE)
+$(DL_DIR)/$($(TOOL)_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(LZMA2_HOST_SOURCE) $(LZMA2_HOST_SITE) $(LZMA2_HOST_SOURCE_MD5)
 
-lzma2-host-unpacked: $(LZMA2_HOST_DIR)/.unpacked
-$(LZMA2_HOST_DIR)/.unpacked: $(DL_DIR)/$(LZMA2_HOST_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
+$(tool)-unpacked: $($(TOOL)_DIR)/.unpacked
+$($(TOOL)_DIR)/.unpacked: $(DL_DIR)/$($(TOOL)_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	mkdir -p $(LZMA2_HOST_DIR)
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(LZMA2_HOST_SOURCE),$(TOOLS_SOURCE_DIR))
 	$(call APPLY_PATCHES,$(LZMA2_HOST_MAKE_DIR)/patches/$(LZMA2_HOST_VERSION),$(LZMA2_HOST_DIR))
 	touch $@
 
-$(LZMA2_HOST_DIR)/.configured: $(LZMA2_HOST_DIR)/.unpacked
+$($(TOOL)_DIR)/.configured: $($(TOOL)_DIR)/.unpacked
 	(cd $(LZMA2_HOST_DIR); $(RM) config.cache; \
 		CC="$(TOOLS_CC)" \
 		CXX="$(TOOLS_CXX)" \
@@ -45,25 +44,26 @@ $(LZMA2_HOST_DIR)/.configured: $(LZMA2_HOST_DIR)/.unpacked
 	);
 	touch $@
 
-$(LZMA2_HOST_LIB_DIR)/liblzma.a $(LZMA2_HOST_ALONE_DIR)/xz: $(LZMA2_HOST_DIR)/.configured
+$($(TOOL)_LIB_DIR)/liblzma.a $($(TOOL)_ALONE_DIR)/xz: $($(TOOL)_DIR)/.configured
 	$(TOOL_SUBMAKE) -C $(LZMA2_HOST_DIR)
 
-$(LZMA2_HOST_DIR)/liblzma.a: $(LZMA2_HOST_LIB_DIR)/liblzma.a
+$($(TOOL)_DIR)/liblzma.a: $($(TOOL)_LIB_DIR)/liblzma.a
 	$(INSTALL_FILE)
 
-$(TOOLS_DIR)/xz: $(LZMA2_HOST_ALONE_DIR)/xz
+$(TOOLS_DIR)/xz: $($(TOOL)_ALONE_DIR)/xz
 	$(INSTALL_FILE)
 
-lzma2-host-precompiled: $(LZMA2_HOST_DIR)/liblzma.a $(TOOLS_DIR)/xz
+$(tool)-precompiled: $($(TOOL)_DIR)/liblzma.a $(TOOLS_DIR)/xz
 
 
-lzma2-host-clean:
+$(tool)-clean:
 	-$(MAKE) -C $(LZMA2_HOST_DIR) clean
 	$(RM) $(LZMA2_HOST_DIR)/liblzma.a
 
-lzma2-host-dirclean:
+$(tool)-dirclean:
 	$(RM) -r $(LZMA2_HOST_DIR)
 
-lzma2-host-distclean: lzma2-host-dirclean
+$(tool)-distclean: $(tool)-dirclean
 	$(RM) $(TOOLS_DIR)/xz
 
+$(TOOL_FINISH)

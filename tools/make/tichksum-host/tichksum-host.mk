@@ -1,29 +1,29 @@
-TICHKSUM_HOST_SRC:=$(TOOLS_DIR)/make/tichksum-host/src
-TICHKSUM_HOST_DIR:=$(TOOLS_SOURCE_DIR)/tichksum
+$(call TOOL_INIT, 0)
 
 
-tichksum-host-unpacked: $(TICHKSUM_HOST_DIR)/.unpacked
-$(TICHKSUM_HOST_DIR)/.unpacked: $(wildcard $(TICHKSUM_HOST_SRC)/*) | $(TOOLS_SOURCE_DIR) tar-host
+$(tool)-unpacked: $($(TOOL)_DIR)/.unpacked
+$($(TOOL)_DIR)/.unpacked: $(wildcard $($(TOOL)_SRC)/*) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	$(RM) -r $(TICHKSUM_HOST_DIR)
 	mkdir -p $(TICHKSUM_HOST_DIR)
 	$(call COPY_USING_TAR,$(TICHKSUM_HOST_SRC),$(TICHKSUM_HOST_DIR))
 	touch $@
 
-$(TICHKSUM_HOST_DIR)/tichksum: $(TICHKSUM_HOST_DIR)/.unpacked
+$($(TOOL)_DIR)/tichksum: $($(TOOL)_DIR)/.unpacked
 	$(TOOL_SUBMAKE) CC="$(TOOLS_CC)" CXX="$(TOOLS_CXX)" CFLAGS="$(TOOLS_CFLAGS)" LDFLAGS="$(TOOLS_LDFLAGS)" -C $(TICHKSUM_HOST_DIR)
 
-$(TOOLS_DIR)/tichksum: $(TICHKSUM_HOST_DIR)/tichksum
+$(TOOLS_DIR)/tichksum: $($(TOOL)_DIR)/tichksum
 	$(INSTALL_FILE)
 
-tichksum-host-precompiled: $(TOOLS_DIR)/tichksum
+$(tool)-precompiled: $(TOOLS_DIR)/tichksum
 
 
-tichksum-host-clean:
+$(tool)-clean:
 	-$(MAKE) -C $(TICHKSUM_HOST_DIR) clean
 
-tichksum-host-dirclean:
+$(tool)-dirclean:
 	$(RM) -r $(TICHKSUM_HOST_DIR)
 
-tichksum-host-distclean: tichksum-host-dirclean
+$(tool)-distclean: $(tool)-dirclean
 	$(RM) $(TOOLS_DIR)/tichksum
 
+$(TOOL_FINISH)

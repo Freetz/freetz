@@ -1,31 +1,31 @@
-LZMA2EVA_HOST_SRC:=$(TOOLS_DIR)/make/lzma2eva-host/src
-LZMA2EVA_HOST_DIR:=$(TOOLS_SOURCE_DIR)/lzma2eva
+$(call TOOL_INIT, 0)
 
-LZMA2EVA_HOST_TOOLS:=lzma2eva eva2lzma bzimage2eva eva2bzimage
+$(TOOL)_BINS:=lzma2eva eva2lzma bzimage2eva eva2bzimage
 
 
-lzma2eva-host-unpacked: $(LZMA2EVA_HOST_DIR)/.unpacked
-$(LZMA2EVA_HOST_DIR)/.unpacked: $(wildcard $(LZMA2EVA_HOST_SRC)/*) | $(TOOLS_SOURCE_DIR) tar-host
+$(tool)-unpacked: $($(TOOL)_DIR)/.unpacked
+$($(TOOL)_DIR)/.unpacked: $(wildcard $($(TOOL)_SRC)/*) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	$(RM) -r $(LZMA2EVA_HOST_DIR)
 	mkdir -p $(LZMA2EVA_HOST_DIR)
 	$(call COPY_USING_TAR,$(LZMA2EVA_HOST_SRC),$(LZMA2EVA_HOST_DIR))
 	touch $@
 
-$(LZMA2EVA_HOST_TOOLS:%=$(LZMA2EVA_HOST_DIR)/%): $(LZMA2EVA_HOST_DIR)/.unpacked
+$($(TOOL)_BINS:%=$($(TOOL)_DIR)/%): $($(TOOL)_DIR)/.unpacked
 	$(TOOL_SUBMAKE) CC="$(TOOLS_CC)" CXX="$(TOOLS_CXX)" CFLAGS="$(TOOLS_CFLAGS)" LDFLAGS="$(TOOLS_LDFLAGS)" -C $(LZMA2EVA_HOST_DIR)
 
-$(LZMA2EVA_HOST_TOOLS:%=$(TOOLS_DIR)/%): $(TOOLS_DIR)/%: $(LZMA2EVA_HOST_DIR)/%
+$($(TOOL)_BINS:%=$(TOOLS_DIR)/%): $(TOOLS_DIR)/%: $($(TOOL)_DIR)/%
 	$(INSTALL_FILE)
 
-lzma2eva-host-precompiled: $(LZMA2EVA_HOST_TOOLS:%=$(TOOLS_DIR)/%)
+$(tool)-precompiled: $($(TOOL)_BINS:%=$(TOOLS_DIR)/%)
 
 
-lzma2eva-host-clean:
+$(tool)-clean:
 	-$(MAKE) -C $(LZMA2EVA_HOST_DIR) clean
 
-lzma2eva-host-dirclean:
+$(tool)-dirclean:
 	$(RM) -r $(LZMA2EVA_HOST_DIR)
 
-lzma2eva-host-distclean: lzma2eva-host-dirclean
-	$(RM) $(LZMA2EVA_HOST_TOOLS:%=$(TOOLS_DIR)/%)
+$(tool)-distclean: $(tool)-dirclean
+	$(RM) $(LZMA2EVA_HOST_BINS:%=$(TOOLS_DIR)/%)
 
+$(TOOL_FINISH)

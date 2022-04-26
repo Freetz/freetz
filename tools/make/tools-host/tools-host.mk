@@ -1,13 +1,11 @@
-TOOLS_HOST_VERSION:=2022-04-24
-TOOLS_HOST_SOURCE:=tools-$(TOOLS_HOST_VERSION).tar.xz
-TOOLS_HOST_SOURCE_SHA256:=7819c23ba2d2a4117b76e301178df5d5cf94a6a621b7176af2a5e9f46d12df07
-TOOLS_HOST_SITE:=@MIRROR/
-
-TOOLS_HOST_DIR:=$(TOOLS_SOURCE_DIR)/tools-host-$(TOOLS_HOST_VERSION)
+$(call TOOL_INIT, 2022-04-24)
+$(TOOL)_SOURCE:=tools-$($(TOOL)_VERSION).tar.xz
+$(TOOL)_SOURCE_SHA256:=7819c23ba2d2a4117b76e301178df5d5cf94a6a621b7176af2a5e9f46d12df07
+$(TOOL)_SITE:=@MIRROR/
 
 
-tools-host-source: $(DL_DIR)/$(TOOLS_HOST_SOURCE)
-$(DL_DIR)/$(TOOLS_HOST_SOURCE): | $(DL_DIR)
+$(tool)-source: $(DL_DIR)/$($(TOOL)_SOURCE)
+$(DL_DIR)/$($(TOOL)_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(TOOLS_HOST_SOURCE) $(TOOLS_HOST_SITE) $(TOOLS_HOST_SOURCE_SHA256)
 #	$(info ERROR: File '$(DL_DIR)/$(TOOLS_HOST_SOURCE)' not found.)
 #	$(info There is and will no download source be available.)
@@ -15,23 +13,24 @@ $(DL_DIR)/$(TOOLS_HOST_SOURCE): | $(DL_DIR)
 #	$(info or create the file by yourself with 'tools/own-hosttools'.)
 #	$(error )
 
-tools-host-unpacked: $(TOOLS_HOST_DIR)/.unpacked
-$(TOOLS_HOST_DIR)/.unpacked: $(DL_DIR)/$(TOOLS_HOST_SOURCE) | $(TOOLS_SOURCE_DIR)
+$(tool)-unpacked: $($(TOOL)_DIR)/.unpacked
+$($(TOOL)_DIR)/.unpacked: $(DL_DIR)/$($(TOOL)_SOURCE) | $(TOOLS_SOURCE_DIR)
 	mkdir -p $(TOOLS_HOST_DIR)
 	tar -C $(TOOLS_HOST_DIR) $(VERBOSE) -xf $(DL_DIR)/$(TOOLS_HOST_SOURCE)
 	touch $@
 
-$(TOOLS_HOST_DIR)/.installed: $(TOOLS_HOST_DIR)/.unpacked
+$($(TOOL)_DIR)/.installed: $($(TOOL)_DIR)/.unpacked
 	cp -fa $(TOOLS_HOST_DIR)/tools $(FREETZ_BASE_DIR)/
 	touch $@
 
-tools-host-precompiled: $(TOOLS_HOST_DIR)/.installed
+$(tool)-precompiled: $($(TOOL)_DIR)/.installed
 
 
-tools-host-clean:
+$(tool)-clean:
 
-tools-host-dirclean:
+$(tool)-dirclean:
 	$(RM) -r $(TOOLS_HOST_DIR)
 
-tools-host-distclean: tools-host-dirclean $(patsubst %,%-distclean,$(filter-out $(TOOLS_BUILD_LOCAL),$(TOOLS)))
+$(tool)-distclean: $(tool)-dirclean $(patsubst %,%-distclean,$(filter-out $(TOOLS_BUILD_LOCAL),$(TOOLS)))
 
+$(TOOL_FINISH)

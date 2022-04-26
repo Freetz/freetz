@@ -56,3 +56,39 @@ TOOLS_BUILD_LOCAL+=tools-host
 
 TOOL_SUBMAKE=cmd() { $(MAKE) $(QUIET) "$$@" $(SILENT) || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } }; $(call _ECHO_TOOL_BUILD) cmd
 
+
+### TOOL_INIT
+#   $(1) = version (mandatory)
+#   $(2) = lower-case tool name (optional)
+#   $(3) = upper-case tool name (optional)
+define TOOL_INIT__INT
+
+TOOL_MAKEFILE:=$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
+TOOL_BASENAME:=$(basename $(notdir $(TOOL_MAKEFILE)))
+
+$(if $(strip $1),,$(error Undefined version for TOOL_INIT in $(TOOL_MAKEFILE)))
+tool:=$(if $(strip $2),$(strip $2),$(TOOL_BASENAME))
+TOOL:=$(if $(strip $3),$(strip $3),$(call TOUPPER_NAME,$(tool)))
+tool_short:=$(patsubst %-host,%,$(tool))
+
+$(TOOL)_VERSION:=$(strip $1)
+$(TOOL)_MAKE_DIR:=$(TOOLS_DIR)/make/$(tool)
+$(TOOL)_DIR:=$(TOOLS_SOURCE_DIR)/$(tool_short)-$($(TOOL)_VERSION)
+$(TOOL)_SRC:=$($(TOOL)_MAKE_DIR)/src
+
+endef
+define TOOL_INIT__INTV
+$(value TOOL_INIT__INT)
+endef
+define TOOL_INIT
+$(eval $(call TOOL_INIT__INTV,$1))
+endef
+
+
+### PKG_FINISH
+define TOOL_FINISH__INT
+
+endef
+TOOL_FINISH=$(eval $(TOOL_FINISH__INT))
+
+
