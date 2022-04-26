@@ -1,5 +1,4 @@
 $(call TOOL_INIT, 0)
-$(TOOL)_SRC:=$(TOOLS_DIR)/make/avm-rle-host/src
 
 
 $(tool)-unpacked: $($(TOOL)_DIR)/.unpacked
