@@ -527,7 +527,7 @@ common-distclean: common-dirclean
 	$(RM) -r $(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT)
 	$(RM) -r $(TOOLCHAIN_BUILD_DIR)
 	$(RM) -r $(TOOLS_BUILD_DIR)
-	$(RM)    $(DL_DIR)
+	-$(RM)   $(DL_DIR) 2>/dev/null
 	@echo "The files ./.config ./config/custom.in ./.fwmod_custom and the directories ~/.freetz-dl/ ~/.freetz-signature/ were not removed."
 
 release: distclean
