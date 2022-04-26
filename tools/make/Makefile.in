@@ -53,3 +53,6 @@ TOOLS_BUILD_LOCAL+=tools-host
 # until next host-tools update
 #TOOLS_BUILD_LOCAL+=...
 
+
+TOOL_SUBMAKE=cmd() { $(MAKE) $(QUIET) "$$@" $(SILENT) || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } }; $(call _ECHO_TOOL_BUILD) cmd
+
