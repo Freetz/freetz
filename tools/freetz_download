@@ -19,6 +19,7 @@ CHECKSUM_ALGOS[128]="sha512"
 
 FREETZ_BASE_DIR_FOUND="${FREETZ_BASE_DIR:-.}"
 DOT_CONFIG="$FREETZ_BASE_DIR_FOUND/.config"
+#SVN_INSECURE_CERT="--trust-server-cert"
 #WGET_INSECURE_HTTPS="--no-check-certificate"
 FREETZ_DL_SITE_0="https://freetz-ng.dropfiles.net"
 FREETZ_DL_SITE_1="https://boxmatrix.info/hosted/freetz-dl"
@@ -131,9 +132,7 @@ do_checkout_cvs()
 }
 do_checkout_svn()
 {
-	local extra_flags
-	svn help export | grep -q trust-server-cert && extra_flags="--trust-server-cert"
-	svn export --non-interactive $extra_flags -r$3 "$1" "$2"
+	svn export --non-interactive $SVN_INSECURE_CERT -r$3 "$1" "$2"
 }
 do_checkout_git()
 {
