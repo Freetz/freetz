@@ -456,6 +456,11 @@ reuseconfig: .config
 
 config-cache: $(CONFIG_IN_CACHE) kconfig-host
 
+config-cache-clean:
+	@$(RM) $(CONFIG_IN_CACHE)
+
+config-cache-refresh: config-cache-clean config-cache
+
 ifneq ($(findstring clean,$(MAKECMDGOALS)),clean)
 -include include/config/cache.conf.cmd
 
@@ -567,7 +572,7 @@ check-dot-config-uptodateness: $(CONFIG_IN_CACHE)
 help:
 	@sed 's/^# /\n/;/```/d' docs/wiki/20_Advanced/make_targets.en.md
 
-.PHONY: all world step $(KCONFIG_TARGETS) config-cache tools recover \
+.PHONY: all world step $(KCONFIG_TARGETS) config-cache config-cache-clean config-cache-refresh tools recover \
 	config-clean-deps-modules config-clean-deps-libs config-clean-deps-busybox config-clean-deps-terminfo config-clean-deps config-clean-deps-keep-busybox \
 	cacheclean clean dirclean distclean common-cacheclean common-clean common-dirclean common-distclean release \
 	$(TOOLS) $(TOOLS_CACHECLEAN) $(TOOLS_CLEAN) $(TOOLS_DIRCLEAN) $(TOOLS_DISTCLEAN) $(TOOLS_SOURCE) $(TOOLS_PRECOMPILED) $(TOOLS_RECOMPILE) $(TOOLS_AUTOFIX) \
