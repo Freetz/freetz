@@ -20,7 +20,7 @@ while ((r++ < rounds)); do
 
 	# Capture stderr (=warnings) in buffer
 	IFS=$'\n'
-	warn_buf=($(tools/kconfig/conf --randconfig config/.cache.in 2>&1 > /dev/null))
+	warn_buf=($(make randconfig 2>&1 > /dev/null))
 	unset IFS
 
 	# On error in 'conf --randconfig' skip this round

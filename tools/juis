@@ -1,7 +1,7 @@
 #!/bin/bash
 SCRIPT="$(readlink -f $0)"
 PARENT="$(dirname ${SCRIPT%/*})"
-TOOL_CONF=tools/kconfig/conf
+cd $PARENT
 
 single() {
 	local OID REV SER NNV JUIS="$*"
@@ -31,22 +31,22 @@ EOF
 
 juisstring() {
 	(
-		miniconfig "$@" > $PARENT/.config
-		$PARENT/$TOOL_CONF --olddefconfig $PARENT/config/Config.in >/dev/null
-		grep -q '^FREETZ_TYPE_FIRMWARE_DETECT_LATEST=y$' $PARENT/.config || return
+		miniconfig "$@" > .config
+		make olddefconfig >/dev/null
+		grep -q '^FREETZ_TYPE_FIRMWARE_DETECT_LATEST=y$' .config || return
 		env -
-		. $PARENT/.config
+		. .config
 		single "$FREETZ_DL_JUIS_STRING"
 #		echo " >>  $@" >&2
 	)
 }
 
 multi() {
-	make $TOOL_CONF >/dev/null
-	for device in $(grep 'prompt "Hardware type"' $PARENT/config/ui/firmware.in -A999 | grep '^endchoice' -m1 -B999 | sed -rn 's/.*config //p' | tac); do
+	make kconfig-host >/dev/null
+	for device in $(grep 'prompt "Hardware type"' config/ui/firmware.in -A999 | grep '^endchoice' -m1 -B999 | sed -rn 's/.*config //p' | tac); do
 		juisstring $device
-		grep -Eq '^FREETZ_TYPE_FIRMWARE_(LABOR|INHAUS)=y$' $PARENT/.config && continue
-		for nonfinal in $(sed -rn 's/^(FREETZ_AVM_HAS_FIRMWARE_[0-9_X]*_(LABOR|INHAUS))=y$/\1/p' $PARENT/.config); do
+		grep -Eq '^FREETZ_TYPE_FIRMWARE_(LABOR|INHAUS)=y$' .config && continue
+		for nonfinal in $(sed -rn 's/^(FREETZ_AVM_HAS_FIRMWARE_[0-9_X]*_(LABOR|INHAUS))=y$/\1/p' .config); do
 			juisstring $device ${nonfinal/AVM_HAS/TYPE}
 		done
 	done

@@ -5,7 +5,6 @@
 
 VERSION="${1:-rLOCAL}"
 SUFFIX="freetz-${VERSION}-shared-glibc"
-TOOL_CONF=tools/kconfig/conf
 
 #
 # required kernel compiler versions:
@@ -80,9 +79,9 @@ dltc() {
 	rm -rf dl 2>/dev/null
 	ln -sf ~/.freetz-dl dl
 	mkdir -p dl
-	make $TOOL_CONF
+	make kconfig-host
 	miniconfig $options > .config
-	$TOOL_CONF --olddefconfig config/Config.in
+	make olddefconfig
 	cp -a .config tc-${options// /_}.conf
 	make KTV=${SUFFIX} TTV=${SUFFIX} toolchain 2>&1 | tee tc-${options// /_}.make
 	local c=""

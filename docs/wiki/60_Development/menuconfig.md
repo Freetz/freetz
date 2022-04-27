@@ -49,7 +49,7 @@ Folgenden zu tun haben werden, sind
 -   *tools/kconfig/mconf*
     -   ist das Binary, welches von `make menuconfig` aufgerufen wird,
         um die MK anzuzeigen und zu speichern
-    -   wird mittels `make tools` bzw. `make kconfig` automatisch
+    -   wird mittels `make tools` bzw. `make kconfig-host` automatisch
         gebaut, sobald es benötigt wird
     -   hat auch ein *Make*-Target `menuconfig-single`, welches die KM
         als Baumstruktur ohne Unterseiten darstellt (manchmal nett, wenn
@@ -57,7 +57,7 @@ Folgenden zu tun haben werden, sind
 -   *tools/kconfig/conf*
     -   ist die Kommandozeilenversion von *mconf*
     -   hat mehr Features
-    -   wird ebenfalls mittels `make tools` bzw. `make kconfig`
+    -   wird ebenfalls mittels `make tools` bzw. `make kconfig-host`
         automatisch gebaut, sobald es benötigt wird
     -   wird von den *Make*-Targets `config`, `oldconfig`,
         `oldnoconfig`, `defconfig`, `allnoconfig`, `allyesconfig`,

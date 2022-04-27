@@ -426,35 +426,35 @@ recover:
 		done; \
 	fi
 
-menuconfig: config-cache $(CONFIG)/mconf
+menuconfig: config-cache
 	@$(CONFIG)/mconf $(CONFIG_IN_CACHE)
 
-menuconfig-single: config-cache $(CONFIG)/mconf
+menuconfig-single: config-cache
 	@MENUCONFIG_MODE="single_menu" $(CONFIG)/mconf $(CONFIG_IN_CACHE)
 
-menuconfig-nocache: $(CONFIG_IN_CUSTOM) $(CONFIG)/mconf
+menuconfig-nocache: $(CONFIG_IN_CUSTOM) kconfig-host
 	@$(CONFIG)/mconf $(CONFIG_IN)
 
-config: config-cache $(CONFIG)/conf
+config: config-cache
 	@$(CONFIG)/conf $(CONFIG_IN_CACHE)
 
 config-compress: .config.compressed
-.config.compressed: .config config-cache $(CONFIG)/conf
+.config.compressed: .config config-cache
 	@$(CONFIG)/conf --savedefconfig $@ $(CONFIG_IN_CACHE)
 	@sed -e "/^FREETZ_FWMOD_SIGN_PASSWORD=/d" -i $@ 2>/dev/null
 #	@echo "Compressed configuration written to $@."; \
 #	echo  "It is equivalent to .config, but contains only non-default user selections and no signing key password."
 
-listnewconfig: config-cache $(CONFIG)/conf
+listnewconfig: config-cache
 	@$(CONFIG)/conf --listnewconfig $(CONFIG_IN_CACHE)
 
-oldconfig olddefconfig allnoconfig allyesconfig randconfig: config-cache $(CONFIG)/conf
+oldconfig olddefconfig allnoconfig allyesconfig randconfig: config-cache
 	@$(CONFIG)/conf --$@ $(CONFIG_IN_CACHE) && touch .config
 
 reuseconfig: .config
 	@tools/reuseconfig
 
-config-cache: $(CONFIG_IN_CACHE)
+config-cache: $(CONFIG_IN_CACHE) kconfig-host
 
 ifneq ($(findstring clean,$(MAKECMDGOALS)),clean)
 -include include/config/cache.conf.cmd

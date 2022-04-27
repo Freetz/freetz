@@ -4,7 +4,6 @@
 
 VERSION="${1:-$(date '+%Y-%m-%d')}"
 FILE="tools-$VERSION"
-TOOL_CONF=tools/kconfig/conf
 
 miniconfig() {
 local i
@@ -31,9 +30,9 @@ make distclean
 rm -rf dl 2>/dev/null
 ln -sf ~/.freetz-dl dl
 mkdir -p dl
-make $TOOL_CONF
+make kconfig-host
 miniconfig > .config
-$TOOL_CONF --olddefconfig config/Config.in
+make olddefconfig
 cp -a .config "$FILE.conf"
 time for x in $BUILD; do make $x; done 2>&1 | tee "$FILE.make"  # 4min
 for x in $LOCAL; do [ "$x" != "tools-host" ] && make $x-distclean; done

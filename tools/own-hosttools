@@ -26,11 +26,10 @@ function cleanup() {
 trap cleanup EXIT SIGTERM SIGINT
 mv .config .config.tmp 2>/dev/null
 
-TOOL_CONF=tools/kconfig/conf
 make distclean
 [ ! -d dl ] && ln -sf ~/.freetz-dl dl
 [ ! -d dl ] && mkdir -p dl
-make $TOOL_CONF
+make kconfig-host
 cat << EOF > .config
 FREETZ_USER_LEVEL_EXPERT=y
 # FREETZ_TOOLCHAIN_32BIT is not set
@@ -38,7 +37,7 @@ FREETZ_USER_LEVEL_EXPERT=y
 # FREETZ_HOSTTOOLS_DOWNLOAD is not set
 FREETZ_JLEVEL=7
 EOF
-$TOOL_CONF --olddefconfig config/Config.in
+make olddefconfig
 for x in $BUILD; do make $x; done
 for x in $LOCAL; do [ "$x" != "tools-host" ] && make $x-distclean; done
 sed -n 's,^/,tools/,p' tools/.gitignore | grep -vE "/(${SKIP// /|})$" | tar cvf - -T - | xz -9 - > "$OUTP.tmp"
