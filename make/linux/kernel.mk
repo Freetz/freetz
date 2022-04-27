@@ -19,7 +19,6 @@ endif
 DL_KERNEL_SOURCE:=$(call qstrip,$(FREETZ_DL_KERNEL_SOURCE))
 
 $(DL_FW_DIR)/$(DL_KERNEL_SOURCE): | $(DL_FW_DIR)
-	@$(call _ECHO,downloading)
 	$(DL_TOOL) $(DL_FW_DIR) $(FREETZ_DL_KERNEL_SOURCE) $(FREETZ_DL_KERNEL_SITE) $(FREETZ_DL_KERNEL_SOURCE_SHA256) $(SILENT)
 
 # Make sure that a perfectly clean build is performed whenever Freetz package
