@@ -31,8 +31,7 @@ FREETZ_DL_SITES_COUNT=5
 FREETZ_DL_SITES_NORND_FIRST=2
 FREETZ_DL_SITES_NORND_LAST=1
 
-helpmsg()
-{
+helpmsg() {
 cat << 'EOF'
 freetz_download - download Freetz packages
 
@@ -54,16 +53,15 @@ Debugging: just set DEBUG=1, like this:
 EOF
 }
 
-do_download()
-{
+do_download() {
 	# $1 = target directory, $2 = download URL without file, $3 = (remote) file name
 	local outFile="${1%%/}/${opt_out_file:-$3}"
 	local fullURL="${2%%/}/$3"
 	[ "$opt_trap_delete" == y ] && trap 'echo "Deleting file: \"$outFile\""; rm "$outFile" 2>/dev/null; exit 1' TERM INT
-	echo
+	echo 1>&11
 	[ "$DEBUG" == "1" ] && echo \
-	"wget $WGET_INSECURE_HTTPS -nd -t3 --timeout=20 --progress=bar:force:noscroll --passive-ftp \"${fullURL}\" -O \"${outFile}\""
-	 wget $WGET_INSECURE_HTTPS -nd -t3 --timeout=20 --progress=bar:force:noscroll --passive-ftp  "${fullURL}"  -O  "${outFile}"
+	"wget $WGET_INSECURE_HTTPS -nd -t3 --timeout=20 --progress=bar:force:noscroll --passive-ftp '${fullURL}' -O '${outFile}' 1>&11 2>&12"
+	 wget $WGET_INSECURE_HTTPS -nd -t3 --timeout=20 --progress=bar:force:noscroll --passive-ftp "${fullURL}" -O "${outFile}" 1>&11 2>&12
 	wget_result=$?
 	[ "$opt_trap_delete" == y ] && trap - TERM INT
 	if [ "$wget_result" != "0" ]; then
@@ -73,19 +71,18 @@ do_download()
 			for x in $(find /etc/ssl/certs/ ! -type d); do [ "$(realpath $x)" == "/usr/share/ca-certificates/mozilla/DST_Root_CA_X3.crt" ] && CAX3="$CAX3 $x"; done
 			echo -e "\nWARNING: Expired 'DST Root CA X3' certificate found. To remove file DST_Root_CA_X3.crt and links to it run:\nsudo rm -f $CAX3\n"
 		fi
-		echo "Download failed - \"${fullURL}\"  ->  error code $wget_result" >&2
+		echo "Download failed - \"${fullURL}\"  ->  error code $wget_result" 1>&11
 		rm -f "$outFile"
 		return $wget_result
 	fi
-	echo "Download succeeded - \"${fullURL}\"  ->  saved to folder \"$1\""
+	echo "Download succeeded - \"${fullURL}\"  ->  saved to folder \"$1\"" 1>&11
 }
 
-do_check()
-{
+do_check() {
 	local mode wget_output wget_result
 	for mode in --spider --output-document=/dev/null; do
 		[ "$DEBUG" == "1" ] && \
-		echo         "LC_ALL=C wget -t3 --timeout=20 --passive-ftp -S $mode \"$1\" 2>&1"
+		echo         "LC_ALL=C wget -t3 --timeout=20 --passive-ftp -S $mode '$1' 2>&1"
 		wget_output=$(LC_ALL=C wget -t3 --timeout=20 --passive-ftp -S $mode "$1" 2>&1)
 		wget_result=$?
 		if [ "$wget_result" != "0" ]; then
@@ -124,28 +121,24 @@ do_check()
 # $1 - url
 # $2 - subdir
 # $3 - version
-do_checkout_cvs()
-{
+do_checkout_cvs() {
 	local module_name
 	module_name="${2/-$3/}"
-	(cvs -d:"$1" export -D "$3" "$module_name" || cvs -d:"$1" export -r "$3" "$module_name") && mv "$module_name" "$2"
+	(cvs -d:"$1" export -D "$3" "$module_name" 1>&11 2>&12 || cvs -d:"$1" export -r "$3" "$module_name" 1>&11 2>&12) && mv "$module_name" "$2"
 }
-do_checkout_svn()
-{
-	svn export --non-interactive $SVN_INSECURE_CERT -r$3 "$1" "$2"
+do_checkout_svn() {
+	svn export --non-interactive $SVN_INSECURE_CERT -r$3 "$1" "$2" 1>&11 2>&12
 }
-do_checkout_git()
-{
-	git clone "$1" "$2" \
+do_checkout_git() {
+	git clone "$1" "$2" 1>&11 2>&12 \
 	&& pushd "$2" >/dev/null \
-	&& git checkout "$3" \
+	&& git checkout "$3" 1>&11 2>&12 \
 	&& LAST_COMMIT_TIMESTAMP=$(git log -1 --pretty=format:%cD) \
-	&& if [ -f ".gitmodules" -a -z "$NO_SUBMODULES" ]; then git submodule init && git submodule update; fi \
+	&& if [ -f ".gitmodules" -a -z "$NO_SUBMODULES" ]; then git submodule init 1>&11 2>&12 && git submodule update 1>&11 2>&12; fi \
 	&& rm -rf .git \
 	&& popd >/dev/null
 }
-do_checkout_git_no_submodules()
-{
+do_checkout_git_no_submodules() {
 	NO_SUBMODULES=1 do_checkout_git "$@"
 }
 # Note: remote repository must support "git archive" command
@@ -155,12 +148,11 @@ do_checkout_git_no_submodules()
 #    repository_url - a repository url supporting archive command, e.g. git://repo.or.cz/git.git
 #    pathX - a path to any file or directory within the repository
 # Only path1,...,pathN will be transmitted saving both bandwidth and processing power.
-do_checkout_git_archive()
-{
+do_checkout_git_archive() {
 	local repository paths
 	repository=$(echo "$1" | cut -d , -f 1)
 	paths=$(echo "$1" | cut -d , -f 2- | tr , " ")
-	git archive --format=tar --remote="$repository" --prefix="$2/" "$3" $paths | tar -x
+	git archive --format=tar --remote="$repository" --prefix="$2/" "$3" $paths 2>&12 | tar -x 1>&11 2>&12
 }
 # $1 is expected to have the following format:
 #    repository_url,path
@@ -172,26 +164,23 @@ do_checkout_git_sparse() {
 	git clone 2>&1 | grep -q '\-\-filter ' || exit 1
 	local repo="${1%%,*}"
 	local sdir="${1##*,}"
-	git clone --no-checkout --depth 1 --filter=blob:none --sparse "$repo" "$2" \
+	git clone --no-checkout --depth 1 --filter=blob:none --sparse "$repo" "$2" 1>&11 2>&12 \
 	&& pushd "$2" >/dev/null \
-	&& git sparse-checkout init --cone \
-	&& git sparse-checkout set $sdir \
-	&& git checkout "$3" \
+	&& git sparse-checkout init --cone 1>&11 2>&12 \
+	&& git sparse-checkout set $sdir 1>&11 2>&12 \
+	&& git checkout "$3" 1>&11 2>&12 \
 	&& LAST_COMMIT_TIMESTAMP=$(git log -1 --pretty=format:%cD) \
-	&& find . -maxdepth 1 ! -name "$sdir" -exec rm -rf {} ';' \
+	&& find . -maxdepth 1 ! -name "$sdir" -exec rm -rf {} ';' 2>/dev/null \
 	&& popd >/dev/null
 }
-do_checkout_bzr()
-{
-	bzr export -r"$3" "$2" "$1"
+do_checkout_bzr() {
+	bzr export -r"$3" "$2" "$1" 1>&11 2>&12
 }
-do_checkout_hg()
-{
-	hg clone -r "$3" "$1" "$2" && (cd "$2" && rm -rf .hg .hgignore .hgtags)
+do_checkout_hg() {
+	hg clone -r "$3" "$1" "$2" 1>&11 2>&12 && (cd "$2" && rm -rf .hg .hgignore .hgtags)
 }
-do_checkout_darcs()
-{
-	darcs get -t "$3" "$1" "$2" && (cd "$2" && rm -rf _darcs)
+do_checkout_darcs() {
+	darcs get -t "$3" "$1" "$2" 1>&11 2>&12 && (cd "$2" && rm -rf _darcs)
 }
 
 
@@ -253,6 +242,17 @@ if [ "$DEBUG" == "1" ]; then
 	echo "    OUT-FILE=$opt_out_file"
 	echo "    URLs=$URLs"
 	echo "    CHECKSUM=$CHECKSUM"
+fi
+
+echo -ne "\e[48;5;56mdownloading\e[49m ... "
+
+# Mute on verbose 0
+if [ "$FREETZ_VERBOSITY_LEVEL" == "0" ]; then
+	exec 11>/dev/null
+	exec 12>/dev/null
+else
+	exec 11>&1
+	exec 12>&2
 fi
 
 # Array 'sites' will be filled with all download server URLs
@@ -405,11 +405,11 @@ for i in ${sites[@]}; do
 			if [ -x "$CHECKSUM_PROG" ]; then
 				FILE_CHECKSUM=$($CHECKSUM_PROG "$DL_DNF" | sed 's/ .*//')
 				if [ "$CHECKSUM" != "$FILE_CHECKSUM" ]; then
-					echo -e "\033[0;31mChecksum mismatch for $DL_DNF: ${CHECKSUM_ALGO^^}:=$FILE_CHECKSUM (expected: $CHECKSUM)\033[0m" 1>&1
+					echo -e "\033[0;31mChecksum mismatch for $DL_DNF: ${CHECKSUM_ALGO^^}:=$FILE_CHECKSUM (expected: $CHECKSUM)\033[0m" 1>&11
 					rm -f "$DL_DNF"
 					continue;
 				else
-					echo -e "\033[0;32mChecksum verified for $DL_DNF: ${CHECKSUM_ALGO^^}:=$FILE_CHECKSUM\033[0m"
+					echo -e "\033[0;32mChecksum verified for $DL_DNF: ${CHECKSUM_ALGO^^}:=$FILE_CHECKSUM\033[0m" 1>&11
 				fi
 			else
 				echo -e "\033[1;33mERROR: Can not find '${CHECKSUM_ALGO}sum' to check $CHECKSUM_ALGO\033[0m"
@@ -421,7 +421,7 @@ for i in ${sites[@]}; do
 				calculate_full_checksum
 				echo -e "\033[1;33mChecksum unavailable for $DL_DNF$FULL_CHECKSUM\033[0m"
 			else
-				echo -e "\033[1;34mChecksum disabled for $DL_DNF\033[0m"
+				echo -e "\033[1;34mChecksum disabled for $DL_DNF\033[0m" 1>&11
 			fi
 		fi
 	fi
@@ -434,7 +434,7 @@ unset IFS
 download_by_vcs() {
 	[ -z "$VCS" ] && return
 
-	echo
+	echo 1>&11
 	case "$DL_FILE" in
 		*.tar.gz) COMPRESSION_FLAG=z ;;
 		*.tar.bz2) COMPRESSION_FLAG=j ;;
@@ -448,13 +448,13 @@ download_by_vcs() {
 	[ -n "$VERSION" ] || { echo "Failed to detect version from $DL_FILE"; exit 1; }
 
 	TMP_DIR=$(mktemp -d -t freetzXXX) || { echo "Error creating temporary dir."; exit 1; }
-	echo "Checking out from $VCS repository: $URLs @$VERSION" \
+	echo "Checking out from $VCS repository: $URLs @$VERSION" 1>&11 \
 	&& ( \
 		cd "$TMP_DIR" \
 		&& rm -rf "$SUBDIR" \
 		&& [ ! -d "$SUBDIR" ] \
 		&& do_checkout_"$VCS" "$URLs" "$SUBDIR" "$VERSION" \
-		&& echo -e "\033[1;33mPacking checkout to $DL_DIR/$DL_FILE\033[0m" \
+		&& echo -e "\033[1;33mPacking checkout to $DL_DIR/$DL_FILE\033[0m" 1>&11 \
 		&& { \
 			find "$SUBDIR" -not -type d | LC_ALL=C sort > "$SUBDIR.list.sorted"; \
 			tar \
@@ -468,7 +468,7 @@ download_by_vcs() {
 	&& mv "$TMP_DIR/$DL_FILE" "$DL_DIR/" \
 	&& rm -rf "$TMP_DIR" \
 	&& calculate_full_checksum \
-	&& echo -e "\033[1;33mChecksum of created file is$FULL_CHECKSUM\033[0m" \
+	&& echo -e "\033[1;33mChecksum of created file is$FULL_CHECKSUM\033[0m" 1>&11 \
 	&& exit 0
 
 	rm -f "$DL_DIR/$DL_FILE"
