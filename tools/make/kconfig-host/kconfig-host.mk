@@ -60,6 +60,6 @@ $(tool)-dirclean:
 $(tool)-distclean: $(tool)-dirclean
 	$(RM) -r $(KCONFIG_HOST_TARGET_DIR)/
 
-.PHONY: $(tool)-source $(tool)-unpacked kconfig-host $(tool)-clean $(tool)-dirclean $(tool)-distclean
+.PHONY: $(tool)-source $(tool)-unpacked $(tool) $(tool)-clean $(tool)-dirclean $(tool)-distclean
 
 $(TOOL_FINISH)
