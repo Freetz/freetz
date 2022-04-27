@@ -57,6 +57,7 @@ Latest changes
    * libneon 0.30.2/0.32.2
    * LCD4linux e691a4b-git
    * MTR 0.80/0.95
+   * Tor 0.4.7.7
 
  - Firmware updates:
    * Please see [FIRMWARES](FIRMWARES.md) for the list of currently supported devices and firmwares.
