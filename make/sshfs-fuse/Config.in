@@ -1,5 +1,12 @@
+comment "sshfs-fuse (not available, needs kernel modules)"
+	depends on !FREETZ_REPLACE_MODULE_AVAILABLE
+
+comment "sshfs-fuse (not available, needs OpenSSL 1.0 or newer)"
+	depends on FREETZ_REPLACE_MODULE_AVAILABLE && !FREETZ_OPENSSL_VERSION_1_MIN
+
 config FREETZ_PACKAGE_SSHFS_FUSE
 	bool "sshfs-fuse 2.4 (binary only)"
+	depends on FREETZ_REPLACE_MODULE_AVAILABLE && FREETZ_OPENSSL_VERSION_1_MIN
 	select FREETZ_PACKAGE_FUSE
 	select FREETZ_PACKAGE_DROPBEAR_SERVER_ONLY if FREETZ_PACKAGE_DROPBEAR
 	select FREETZ_PACKAGE_OPENSSH

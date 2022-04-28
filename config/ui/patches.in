@@ -991,7 +991,7 @@ config FREETZ_REMOVE_TELEPHONY
 	depends on FREETZ_AVM_HAS_PHONE && !FREETZ_AVM_VERSION_06_5X_MIN
 	select FREETZ_REMOVE_DECT if FREETZ_AVM_HAS_DECT
 	select FREETZ_REMOVE_VOIPD
-	select FREETZ_REMOVE_DTRACE
+	select FREETZ_REMOVE_DTRACE if FREETZ_AVM_HAS_DTRACE
 	select FREETZ_REMOVE_CAPIOVERTCP
 	select FREETZ_REMOVE_MINID if FREETZ_AVM_HAS_MINID
 	default n
@@ -1329,7 +1329,8 @@ if FREETZ_PATCH_UDEVMOUNT
 		bool "Select Fat"
 		depends on !FREETZ_AVM_HAS_FAT_MODULE || FREETZ_REMOVE_FAT
 		depends on FREETZ_REPLACE_MODULE_AVAILABLE
-		select FREETZ_MODULE_fat
+		select FREETZ_MODULE_fat if !FREETZ_AVM_HAS_FAT_FS_BUILTIN || \
+			(FREETZ_REPLACE_KERNEL && ( FREETZ_AVM_SOURCE_7270_05_21 || FREETZ_AVM_SOURCE_7270_05_51 || FREETZ_AVM_SOURCE_7270_06_05 ))
 		default n
 		help
 			This adds fat module to your firmware.
@@ -1370,7 +1371,7 @@ if FREETZ_PATCH_UDEVMOUNT
 	config FREETZ_UDEVMOUNT_HFS
 		bool "Select HFS"
 		depends on FREETZ_REPLACE_MODULE_AVAILABLE
-		select FREETZ_MODULE_hfs
+		select FREETZ_MODULE_hfs if !FREETZ_AVM_HAS_HFS_FS_BUILTIN
 		default n
 		help
 			This adds hfs module to your firmware.
@@ -1378,7 +1379,7 @@ if FREETZ_PATCH_UDEVMOUNT
 	config FREETZ_UDEVMOUNT_HFS_PLUS
 		bool "Select HFS+"
 		depends on FREETZ_REPLACE_MODULE_AVAILABLE
-		select FREETZ_MODULE_hfsplus
+		select FREETZ_MODULE_hfsplus if !FREETZ_AVM_HAS_HFSPLUS_FS_BUILTIN
 		default n
 		help
 			This adds hfs+ module to your firmware.
@@ -1386,7 +1387,7 @@ if FREETZ_PATCH_UDEVMOUNT
 	config FREETZ_UDEVMOUNT_REISER_FS
 		bool "Select ReiserFS"
 		depends on FREETZ_REPLACE_MODULE_AVAILABLE
-		select FREETZ_MODULE_reiserfs
+		select FREETZ_MODULE_reiserfs if !FREETZ_AVM_HAS_REISERFS_FS_BUILTIN
 		default n
 		help
 			This adds reiserfs module to your firmware.
@@ -1469,7 +1470,7 @@ config FREETZ_AUTOMOUNT_HFS
 	bool "HFS"
 	depends on FREETZ_REPLACE_MODULE_AVAILABLE
 	select FREETZ_BUSYBOX_FEATURE_VOLUMEID_HFS
-	select FREETZ_MODULE_hfs
+	select FREETZ_MODULE_hfs if !FREETZ_AVM_HAS_HFS_FS_BUILTIN
 	default n
 	help
 		This adds hfs module to your firmware.
@@ -1478,7 +1479,7 @@ config FREETZ_AUTOMOUNT_HFS_PLUS
 	bool "HFS+"
 	depends on FREETZ_REPLACE_MODULE_AVAILABLE
 	select FREETZ_BUSYBOX_FEATURE_VOLUMEID_HFS
-	select FREETZ_MODULE_hfsplus
+	select FREETZ_MODULE_hfsplus if !FREETZ_AVM_HAS_HFSPLUS_FS_BUILTIN
 	default n
 	help
 		This adds hfs+ module to your firmware.
@@ -1504,7 +1505,7 @@ config FREETZ_AUTOMOUNT_REISER_FS
 	bool "ReiserFS"
 	depends on FREETZ_REPLACE_MODULE_AVAILABLE
 	select FREETZ_BUSYBOX_FEATURE_VOLUMEID_REISERFS
-	select FREETZ_MODULE_reiserfs
+	select FREETZ_MODULE_reiserfs if !FREETZ_AVM_HAS_REISERFS_FS_BUILTIN
 	default n
 	help
 		This adds reiserfs module to your firmware.

@@ -1,5 +1,9 @@
+comment "owfs (not available, needs kernel modules)"
+	depends on !FREETZ_REPLACE_MODULE_AVAILABLE
+
 config FREETZ_PACKAGE_OWFS
 	bool "owfs 2.7p32 (binary only)"
+	depends on FREETZ_REPLACE_MODULE_AVAILABLE
 	select FREETZ_PACKAGE_FUSE
 	select FREETZ_LIB_libusb_0
 	select FREETZ_LIB_libm        if FREETZ_TARGET_UCLIBC_HAS_multiple_libs

@@ -967,7 +967,7 @@ choice
 	config FREETZ_TYPE_7150_7170
 		bool "7150"
 		depends on FREETZ_TYPE_7170
-		select FREETZ_REMOVE_MINID
+		select FREETZ_REMOVE_MINID if FREETZ_AVM_HAS_MINID
 		help
 			Enable this to compile a mod image for FritzFON 7150 based
 			on a 7170 image.
