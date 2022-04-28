@@ -1,6 +1,8 @@
-$(call PKG_INIT_BIN, 9.16.28)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=332e34dcbd723a2569efbaf4e79b62e6d56c9abd5bb8411df01533f984d1a370
+$(call PKG_INIT_BIN, $(if $(FREETZ_PACKAGE_BIND_VERSION_ABANDON),9.11.37,9.16.28))
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.$(if $(FREETZ_PACKAGE_BIND_VERSION_ABANDON),gz,xz)
+$(PKG)_SOURCE_SHA256_ABANDON:=0d8efbe7ec166ada90e46add4267b7e7c934790cba9bd5af6b8380a4fbfb5aff
+$(PKG)_SOURCE_SHA256_CURRENT:=332e34dcbd723a2569efbaf4e79b62e6d56c9abd5bb8411df01533f984d1a370
+$(PKG)_SOURCE_SHA256:=$(BIND_SOURCE_SHA256_$(if $(FREETZ_PACKAGE_BIND_VERSION_ABANDON),ABANDON,CURRENT))
 $(PKG)_SITE:=https://downloads.isc.org/isc/bind9/$($(PKG)_VERSION),http://ftp.isc.org/isc/bind9/$($(PKG)_VERSION)
 ### WEBSITE:=https://www.isc.org/bind/
 ### MANPAGE:=https://bind9.readthedocs.io/en/v9_16/
@@ -23,13 +25,24 @@ $(eval $(call $(PKG)_DEFS,bin,nsupdate dig))
 
 $(PKG)_EXCLUDED+=$(if $(FREETZ_PACKAGE_BIND_NAMED),,usr/lib/bind usr/lib/cgi-bin/bind.cgi etc/default.bind etc/init.d/rc.bind)
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_BIND_VERSION_ABANDON
+
+ifneq ($(strip $(FREETZ_PACKAGE_BIND_VERSION_ABANDON)),y)
 $(PKG)_DEPENDS_ON += libatomic libuv openssl libcap
+endif
+
+$(PKG)_CONDITIONAL_PATCHES+=$(if $(FREETZ_PACKAGE_BIND_VERSION_ABANDON),abandon,current)
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure) 
 
 $(PKG)_CONFIGURE_OPTIONS += BUILD_CC="$(HOSTCC)"
 $(PKG)_CONFIGURE_OPTIONS += --disable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
+ifeq ($(strip $(FREETZ_PACKAGE_BIND_VERSION_ABANDON)),y)
+$(PKG)_CONFIGURE_OPTIONS += --enable-atomic=no
+$(PKG)_CONFIGURE_OPTIONS += --without-openssl
+endif
 $(PKG)_CONFIGURE_OPTIONS += --enable-epoll=no
 $(PKG)_CONFIGURE_OPTIONS += --with-lmdb=no
 $(PKG)_CONFIGURE_OPTIONS += --with-randomdev="/dev/random"
@@ -47,8 +60,6 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-threads
 $(PKG)_CONFIGURE_OPTIONS += --disable-backtrace
 $(PKG)_CONFIGURE_OPTIONS += --disable-symtable
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
-
-$(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 
 $(PKG)_MAKE_FLAGS += EXTRA_CFLAGS="-ffunction-sections -fdata-sections" EXTRA_BINARY_LDFLAGS="-Wl,--gc-sections"
 

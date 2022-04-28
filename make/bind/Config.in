@@ -1,10 +1,10 @@
 config FREETZ_PACKAGE_BIND
-	bool "BIND 9.16.28"
+	bool "BIND 9.11.36/9.16.28"
 	select FREETZ_LIB_libpthread if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
-	select FREETZ_LIB_libcrypto
-	select FREETZ_LIB_libcrypto_WITH_EC
-	select FREETZ_LIB_libuv
-	select FREETZ_LIB_libatomic
+	select FREETZ_LIB_libcrypto          if !FREETZ_PACKAGE_BIND_VERSION_ABANDON
+	select FREETZ_LIB_libcrypto_WITH_EC  if !FREETZ_PACKAGE_BIND_VERSION_ABANDON
+	select FREETZ_LIB_libuv              if !FREETZ_PACKAGE_BIND_VERSION_ABANDON
+	select FREETZ_LIB_libatomic          if !FREETZ_PACKAGE_BIND_VERSION_ABANDON
 	default n
 	help
 		BIND is an implementation of the Domain Name System (DNS) protocols.
@@ -13,10 +13,19 @@ config FREETZ_PACKAGE_BIND
 
 if FREETZ_PACKAGE_BIND
 
+	config FREETZ_PACKAGE_BIND_VERSION_ABANDON
+		bool
+		default y
+		depends on !FREETZ_TARGET_GCC_4_8_MIN || (FREETZ_TARGET_UCLIBC_0_9_28 || FREETZ_TARGET_UCLIBC_0_9_29)
+		help
+			libatomic needs uclibc >0.9.29
+			libcap needs gcc 4.8+
+			libuc needs  4.8+
+
 	config FREETZ_PACKAGE_BIND_NAMED
 		bool "named"
 		default y
-		select FREETZ_LIB_libcap
+		select FREETZ_LIB_libcap     if !FREETZ_PACKAGE_BIND_VERSION_ABANDON
 		help
 			Adds named, a internet domain name server.
 

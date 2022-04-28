@@ -50,7 +50,7 @@ Latest changes
    * yf-bootmanager 0.8.3 9a1d3b8
 
  - Packages & libs:
-   * BIND 9.16.28
+   * BIND 9.11.37/9.16.28
    * CA-bundle 2022-04-26
    * Curl 7.83.0
    * juis_check 1.1
