@@ -21,12 +21,17 @@ endif
 
 BINUTILS_KERNEL_EXTRA_MAKE_OPTIONS := MAKEINFO=true
 
+BINUTILS_KERNEL_ECHO_TYPE:=KTC
+BINUTILS_KERNEL_ECHO_MAKE:=binutils
+
+
 binutils-kernel-source: $(DL_DIR)/$(BINUTILS_KERNEL_SOURCE)
 $(DL_DIR)/$(BINUTILS_KERNEL_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(BINUTILS_KERNEL_SOURCE) $(BINUTILS_KERNEL_SITE) $(BINUTILS_KERNEL_MD5)
 
 binutils-kernel-unpacked: $(BINUTILS_KERNEL_DIR)/.unpacked
 $(BINUTILS_KERNEL_DIR)/.unpacked: $(DL_DIR)/$(BINUTILS_KERNEL_SOURCE) | $(KERNEL_TOOLCHAIN_DIR) $(UNPACK_TARBALL_PREREQUISITES)
+	@$(call _ECHO,unpacking,$(BINUTILS_KERNEL_ECHO_TYPE),$(BINUTILS_KERNEL_ECHO_MAKE))
 	$(RM) -r $(BINUTILS_KERNEL_DIR)
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(BINUTILS_KERNEL_SOURCE),$(KERNEL_TOOLCHAIN_DIR))
 	$(call APPLY_PATCHES,$(BINUTILS_KERNEL_MAKE_DIR)/$(call GET_MAJOR_VERSION,$(BINUTILS_KERNEL_VERSION)),$(BINUTILS_KERNEL_DIR))
@@ -35,6 +40,7 @@ $(BINUTILS_KERNEL_DIR)/.unpacked: $(DL_DIR)/$(BINUTILS_KERNEL_SOURCE) | $(KERNEL
 	touch $@
 
 $(BINUTILS_KERNEL_DIR1)/.configured: $(BINUTILS_KERNEL_DIR)/.unpacked
+	@$(call _ECHO,configuring,$(BINUTILS_KERNEL_ECHO_TYPE),$(BINUTILS_KERNEL_ECHO_MAKE))
 	mkdir -p $(BINUTILS_KERNEL_DIR1)
 	(cd $(BINUTILS_KERNEL_DIR1); \
 		CC="$(TOOLCHAIN_HOSTCC)" \
@@ -48,34 +54,25 @@ $(BINUTILS_KERNEL_DIR1)/.configured: $(BINUTILS_KERNEL_DIR)/.unpacked
 		$(DISABLE_NLS) \
 		--disable-werror \
 		--without-headers \
-		$(QUIET) \
+		$(SILENT) \
 	);
 	touch $@
 
 $(BINUTILS_KERNEL_DIR1)/.compiled: $(BINUTILS_KERNEL_DIR1)/.configured
-	$(MAKE) $(BINUTILS_KERNEL_EXTRA_MAKE_OPTIONS) -C $(BINUTILS_KERNEL_DIR1) configure-host
-	$(MAKE) $(BINUTILS_KERNEL_EXTRA_MAKE_OPTIONS) -C $(BINUTILS_KERNEL_DIR1) all
+	@$(call _ECHO,building,$(BINUTILS_KERNEL_ECHO_TYPE),$(BINUTILS_KERNEL_ECHO_MAKE))
+	$(MAKE) $(BINUTILS_KERNEL_EXTRA_MAKE_OPTIONS) -C $(BINUTILS_KERNEL_DIR1) configure-host $(SILENT)
+	$(MAKE) $(BINUTILS_KERNEL_EXTRA_MAKE_OPTIONS) -C $(BINUTILS_KERNEL_DIR1) all $(SILENT)
 	touch $@
 
 $(KERNEL_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_KERNEL_NAME)/bin/ld: $(BINUTILS_KERNEL_DIR1)/.compiled
-	$(MAKE1) $(BINUTILS_KERNEL_EXTRA_MAKE_OPTIONS) -C $(BINUTILS_KERNEL_DIR1) install
+	@$(call _ECHO,installing,$(BINUTILS_KERNEL_ECHO_TYPE),$(BINUTILS_KERNEL_ECHO_MAKE))
+	$(MAKE1) $(BINUTILS_KERNEL_EXTRA_MAKE_OPTIONS) -C $(BINUTILS_KERNEL_DIR1) install $(SILENT)
 	$(RM) $(KERNEL_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_KERNEL_NAME)/bin/ld.bfd $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin/$(REAL_GNU_KERNEL_NAME)-ld.bfd
 	$(call STRIP_TOOLCHAIN_BINARIES,$(KERNEL_TOOLCHAIN_STAGING_DIR),$(BINUTILS_BINARIES_BIN),$(REAL_GNU_KERNEL_NAME),$(HOST_STRIP))
 	$(call REMOVE_DOC_NLS_DIRS,$(KERNEL_TOOLCHAIN_STAGING_DIR))
 
-binutils-dependencies:
-	@MISSING_PREREQ=""; \
-	for f in bison flex; do \
-		if ! which $$f >/dev/null 2>&1; then MISSING_PREREQ="$$MISSING_PREREQ $$f"; fi; \
-	done; \
-	if [ -n "$$MISSING_PREREQ" ]; then \
-		echo -n -e "$(_Y)"; \
-		echo -e \
-			"ERROR: The following commands required for building of binutils-kernel are missing on your system:" \
-			`echo $$MISSING_PREREQ | sed -e 's| |, |g'`; \
-		echo -n -e "$(_N)"; \
-		exit 1; \
-	fi;
+binutils-kernel: $(KERNEL_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_KERNEL_NAME)/bin/ld
+
 
 binutils-kernel-uninstall:
 	$(RM) $(call TOOLCHAIN_BINARIES_LIST,$(KERNEL_TOOLCHAIN_STAGING_DIR),$(BINUTILS_BINARIES_BIN),$(REAL_GNU_KERNEL_NAME))
@@ -87,6 +84,9 @@ binutils-kernel-clean: binutils-kernel-uninstall
 binutils-kernel-dirclean: binutils-kernel-clean
 	$(RM) -r $(BINUTILS_KERNEL_DIR)
 
-binutils-kernel: binutils-dependencies $(KERNEL_TOOLCHAIN_STAGING_DIR)/$(REAL_GNU_KERNEL_NAME)/bin/ld
+binutils-kernel-distclean: binutils-kernel-dirclean
 
-.PHONY: binutils-kernel binutils-kernel-source binutils-kernel-unpacked binutils-dependencies binutils-kernel-uninstall binutils-kernel-clean binutils-kernel-dirclean
+
+.PHONY: binutils-kernel-source binutils-kernel-unpacked
+.PHONY: binutils-kernel binutils-kernel-uninstall binutils-kernel-clean binutils-kernel-dirclean binutils-kernel-distclean
+

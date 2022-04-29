@@ -10,6 +10,9 @@ CCACHE_KERNEL_TARGET_BINARY:=bin/ccache
 
 CCACHE_KERNEL_BIN_DIR:=$(KERNEL_TOOLCHAIN_STAGING_DIR)/bin-ccache
 
+CCACHE_KERNEL_ECHO_TYPE:=KTC
+CCACHE_KERNEL_ECHO_MAKE:=ccache
+
 
 ccache-kernel-source: $(DL_DIR)/$(CCACHE_KERNEL_SOURCE)
 #
@@ -19,6 +22,7 @@ $(DL_DIR)/$(CCACHE_KERNEL_SOURCE): | $(DL_DIR)
 
 ccache-kernel-unpacked: $(CCACHE_KERNEL_DIR)/.unpacked
 $(CCACHE_KERNEL_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_KERNEL_SOURCE) | $(KERNEL_TOOLCHAIN_DIR) $(UNPACK_TARBALL_PREREQUISITES)
+	@$(call _ECHO,unpacking,$(CCACHE_KERNEL_ECHO_TYPE),$(CCACHE_KERNEL_ECHO_MAKE))
 	$(RM) -r $(CCACHE_KERNEL_DIR)
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(CCACHE_KERNEL_SOURCE),$(KERNEL_TOOLCHAIN_DIR))
 	#$(call APPLY_PATCHES,$(CCACHE_KERNEL_MAKE_DIR)/patches,$(CCACHE_KERNEL_DIR))
@@ -28,6 +32,7 @@ $(CCACHE_KERNEL_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_KERNEL_SOURCE) | $(KERNEL_TOO
 	touch $@
 
 $(CCACHE_KERNEL_DIR)/.configured: $(CCACHE_KERNEL_DIR)/.unpacked
+	@$(call _ECHO,configuring,$(CCACHE_KERNEL_ECHO_TYPE),$(CCACHE_KERNEL_ECHO_MAKE))
 	(cd $(CCACHE_KERNEL_DIR); $(RM) CMakeCache.txt; \
 		CC="$(TOOLCHAIN_HOSTCC)" \
 		CXX="$(TOOLCHAIN_HOSTCXX)" \
@@ -41,13 +46,16 @@ $(CCACHE_KERNEL_DIR)/.configured: $(CCACHE_KERNEL_DIR)/.unpacked
 		-DENABLE_TESTING=OFF \
 		-DREDIS_STORAGE_BACKEND=OFF \
 		$(QUIETCMAKE) \
+		$(SILENT) \
 	);
 	touch $@
 
 $(CCACHE_KERNEL_DIR)/$(CCACHE_KERNEL_BINARY): $(CCACHE_KERNEL_DIR)/.configured
-	$(MAKE) -C $(CCACHE_KERNEL_DIR)
+	@$(call _ECHO,building,$(CCACHE_KERNEL_ECHO_TYPE),$(CCACHE_KERNEL_ECHO_MAKE))
+	$(MAKE) -C $(CCACHE_KERNEL_DIR) $(SILENT)
 
 $(KERNEL_TOOLCHAIN_STAGING_DIR)/$(CCACHE_KERNEL_TARGET_BINARY): $(CCACHE_KERNEL_DIR)/$(CCACHE_KERNEL_BINARY)
+	@$(call _ECHO,installing,$(CCACHE_KERNEL_ECHO_TYPE),$(CCACHE_KERNEL_ECHO_MAKE))
 	mkdir -p $(KERNEL_TOOLCHAIN_STAGING_DIR)/bin
 	cp $(CCACHE_KERNEL_DIR)/$(CCACHE_KERNEL_BINARY) $(KERNEL_TOOLCHAIN_STAGING_DIR)/$(CCACHE_KERNEL_TARGET_BINARY)
 	# Keep the actual toolchain binaries in a directory at the same level.
@@ -86,10 +94,13 @@ ccache-kernel-clean:
 	done
 	$(RM) -r $(CCACHE_KERNEL_BIN_DIR)
 	$(RM) $(KERNEL_TOOLCHAIN_STAGING_DIR)/$(CCACHE_KERNEL_TARGET_BINARY)
-	-$(MAKE) -C $(CCACHE_KERNEL_DIR) clean
+	-[ -d "$(CCACHE_KERNEL_DIR)" ] && $(MAKE) -C $(CCACHE_KERNEL_DIR) clean $(QUIET)
 
 ccache-kernel-dirclean: ccache-kernel-clean
 	$(RM) -r $(CCACHE_KERNEL_DIR)
 
-.PHONY: ccache-kernel ccache-kernel-source ccache-kernel-unpacked ccache-kernel-clean ccache-kernel-dirclean
+ccache-kernel-distclean: ccache-kernel-dirclean
+
+
+.PHONY: ccache-kernel ccache-kernel-source ccache-kernel-unpacked ccache-kernel-clean ccache-kernel-dirclean ccache-kernel-distclean
 

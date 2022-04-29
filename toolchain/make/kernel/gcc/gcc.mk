@@ -14,6 +14,10 @@ GCC_KERNEL_MD5_5.5.0 := 0f70424213b4a1113c04ba66ddda0c1f
 GCC_KERNEL_MD5_8.3.0 := 65b210b4bfe7e060051f799e0f994896
 GCC_KERNEL_MD5       := $(GCC_KERNEL_MD5_$(GCC_KERNEL_VERSION))
 
+GCC_KERNEL_ECHO_TYPE:=KTC
+GCC_KERNEL_ECHO_MAKE:=gcc
+
+
 GCC_KERNEL_INITIAL_PREREQ=
 
 ifndef KERNEL_TOOLCHAIN_NO_MPFR
@@ -32,18 +36,21 @@ endif
 
 GCC_KERNEL_EXTRA_MAKE_OPTIONS := MAKEINFO=true
 
+
 gcc-kernel-source: $(DL_DIR)/$(GCC_KERNEL_SOURCE)
 $(DL_DIR)/$(GCC_KERNEL_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(GCC_KERNEL_SOURCE) $(GCC_KERNEL_SITE) $(GCC_KERNEL_MD5)
 
 gcc-kernel-unpacked: $(GCC_KERNEL_DIR)/.unpacked
 $(GCC_KERNEL_DIR)/.unpacked: $(DL_DIR)/$(GCC_KERNEL_SOURCE) | $(KERNEL_TOOLCHAIN_DIR) $(UNPACK_TARBALL_PREREQUISITES)
+	@$(call _ECHO,unpacking,$(GCC_KERNEL_ECHO_TYPE),$(GCC_KERNEL_ECHO_MAKE))
 	$(RM) -r $(GCC_KERNEL_DIR)
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(GCC_KERNEL_SOURCE),$(KERNEL_TOOLCHAIN_DIR))
 	$(call APPLY_PATCHES,$(GCC_KERNEL_MAKE_DIR)/$(GCC_KERNEL_MAJOR_VERSION),$(GCC_KERNEL_DIR))
 	touch $@
 
 $(GCC_KERNEL_BUILD_DIR)/.configured: $(GCC_KERNEL_DIR)/.unpacked $(GCC_KERNEL_INITIAL_PREREQ) | binutils-kernel
+	@$(call _ECHO,configuring,$(GCC_KERNEL_ECHO_TYPE),$(GCC_KERNEL_ECHO_MAKE))
 	mkdir -p $(GCC_KERNEL_BUILD_DIR)
 	(cd $(GCC_KERNEL_BUILD_DIR); PATH=$(KERNEL_TOOLCHAIN_PATH) \
 		CC="$(TOOLCHAIN_HOSTCC)" \
@@ -71,20 +78,23 @@ $(GCC_KERNEL_BUILD_DIR)/.configured: $(GCC_KERNEL_DIR)/.unpacked $(GCC_KERNEL_IN
 		$(GCC_KERNEL_WITH_HOST_MPC) \
 		$(GCC_KERNEL_WITH_HOST_ISL) \
 		--disable-nls \
-		$(QUIET) \
+		$(SILENT) \
 	);
 	touch $@
 
 $(GCC_KERNEL_BUILD_DIR)/.compiled: $(GCC_KERNEL_BUILD_DIR)/.configured
-	PATH=$(KERNEL_TOOLCHAIN_PATH) $(MAKE) $(GCC_KERNEL_EXTRA_MAKE_OPTIONS) -C $(GCC_KERNEL_BUILD_DIR) all-gcc
+	@$(call _ECHO,building,$(GCC_KERNEL_ECHO_TYPE),$(GCC_KERNEL_ECHO_MAKE))
+	PATH=$(KERNEL_TOOLCHAIN_PATH) $(MAKE) $(GCC_KERNEL_EXTRA_MAKE_OPTIONS) -C $(GCC_KERNEL_BUILD_DIR) all-gcc $(SILENT)
 	touch $@
 
 $(KERNEL_CROSS_COMPILER): $(GCC_KERNEL_BUILD_DIR)/.compiled
-	PATH=$(KERNEL_TOOLCHAIN_PATH) $(MAKE1) $(GCC_KERNEL_EXTRA_MAKE_OPTIONS) -C $(GCC_KERNEL_BUILD_DIR) install-gcc
+	@$(call _ECHO,installing,$(GCC_KERNEL_ECHO_TYPE),$(GCC_KERNEL_ECHO_MAKE))
+	PATH=$(KERNEL_TOOLCHAIN_PATH) $(MAKE1) $(GCC_KERNEL_EXTRA_MAKE_OPTIONS) -C $(GCC_KERNEL_BUILD_DIR) install-gcc $(SILENT)
 	$(call GCC_INSTALL_COMMON,$(KERNEL_TOOLCHAIN_STAGING_DIR),$(GCC_KERNEL_MAJOR_VERSION),$(REAL_GNU_KERNEL_NAME),$(HOST_STRIP))
 	$(call REMOVE_DOC_NLS_DIRS,$(KERNEL_TOOLCHAIN_STAGING_DIR))
 
 gcc-kernel: binutils-kernel $(KERNEL_CROSS_COMPILER)
+
 
 gcc-kernel-uninstall:
 	$(RM) $(call TOOLCHAIN_BINARIES_LIST,$(KERNEL_TOOLCHAIN_STAGING_DIR),$(GCC_BINARIES_BIN),$(REAL_GNU_KERNEL_NAME))
@@ -96,4 +106,9 @@ gcc-kernel-clean: gcc-kernel-uninstall
 gcc-kernel-dirclean: gcc-kernel-clean
 	$(RM) -r $(GCC_KERNEL_DIR)
 
-.PHONY: gcc-kernel gcc-kernel-source gcc-kernel-unpacked gcc-kernel-uninstall gcc-kernel-clean gcc-kernel-dirclean
+gcc-kernel-distclean: gcc-kernel-dirclean
+
+
+.PHONY: gcc-kernel gcc-kernel-source gcc-kernel-unpacked
+.PHONY: gcc-kernel-uninstall gcc-kernel-clean gcc-kernel-dirclean gcc-kernel-distclean
+
