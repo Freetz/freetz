@@ -8,6 +8,7 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/ldd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/ldd
 $(PKG)_CATEGORY:=Debug helpers
 
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
@@ -17,7 +18,8 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		$(TARGET_CC) \
 		$(TARGET_CFLAGS) \
 		-DUCLIBC_RUNTIME_PREFIX=\"/\" \
-		$(LDD_SOURCE_FILE) -o $@
+		$(LDD_SOURCE_FILE) -o $@ \
+		$(SILENT)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
@@ -25,6 +27,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(LDD_DIR) clean
