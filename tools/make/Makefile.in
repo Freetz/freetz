@@ -19,28 +19,29 @@ $(TOOLS_SOURCE_DIR) $(HOST_TOOLS_DIR):
 TOOLS:=$(sort $(basename $(notdir $(wildcard $(TOOLS_DIR)/make/*/*.mk))))
 
 # tools not built by default
-ifneq ($(strip $(FREETZ_ROOTEMU_FAKEROOT)),y)
-TOOLS_CONDITIONAL+=fakeroot-host
-endif
+TOOLS_CONDITIONAL+=avm-rle-host
 TOOLS_CONDITIONAL+=gmp-host
 TOOLS_CONDITIONAL+=mpc-host
 TOOLS_CONDITIONAL+=mpfr-host
-ifneq ($(strip $(FREETZ_STRIP_LIBRARIES)),y)
-TOOLS_CONDITIONAL+=mklibs-host
-endif
-ifneq ($(strip $(FREETZ_SHARE_terminfo)),y)
-TOOLS_CONDITIONAL+=ncurses-host
-endif
-ifneq ($(strip $(FREETZ_ROOTEMU_PSEUDO)),y)
-TOOLS_CONDITIONAL+=pseudo-host
-endif
+TOOLS_CONDITIONAL+=lzma1-host
+TOOLS_CONDITIONAL+=lzma2-host
 TOOLS_CONDITIONAL+=python-host
 TOOLS_CONDITIONAL+=scons-host
-TOOLS_CONDITIONAL+=tools-host
 TOOLS_CONDITIONAL+=xdelta-host
-ifneq ($(strip $(FREETZ_PATCH_MODFS_BOOT_MANAGER)),y)
-TOOLS_CONDITIONAL+=yf-bootmanager-host
-endif
+TOOLS_CONDITIONAL+=$(if $(FREETZ_STRIP_LIBRARIES),,mklibs-host)
+TOOLS_CONDITIONAL+=$(if $(FREETZ_SHARE_terminfo),,ncurses-host)
+TOOLS_CONDITIONAL+=$(if $(FREETZ_ROOTEMU_FAKEROOT),,fakeroot-host)
+TOOLS_CONDITIONAL+=$(if $(FREETZ_ROOTEMU_PSEUDO),,pseudo-host)
+TOOLS_CONDITIONAL+=$(if $(FREETZ_AVM_PROP_OUTER_FILESYSTEM_TYPE_EXT2),,e2fsprogs-host)
+TOOLS_CONDITIONAL+=$(if $(FREETZ_AVM_PROP_OUTER_FILESYSTEM_TYPE_EXT2),,genext2fs-host)
+TOOLS_CONDITIONAL+=$(if $(FREETZ_SEPARATE_AVM_UCLIBC),,patchelf-host)
+TOOLS_CONDITIONAL+=$(if $(FREETZ_AVM_HAS_NMI_VECTOR),,sfk-host)
+TOOLS_CONDITIONAL+=$(if $(FREETZ_AVM_HAS_FWLAYOUT_5),,uimg-host)
+TOOLS_CONDITIONAL+=$(if $(FREETZ_AVM_HAS_FWLAYOUT_6),,fitimg-host)
+TOOLS_CONDITIONAL+=$(if $(FREETZ_KERNEL_VERSION_3_10_MIN),,dtc-host)
+TOOLS_CONDITIONAL+=$(if $(FREETZ_KERNEL_VERSION_3_10_MIN),,yf-akcarea-host)
+TOOLS_CONDITIONAL+=$(if $(FREETZ_PATCH_MODFS_BOOT_MANAGER),,yf-bootmanager-host)
+TOOLS_CONDITIONAL+=tools-host
 
 # tools not in dl-archive
 TOOLS_BUILD_LOCAL+=gmp-host
