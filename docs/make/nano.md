@@ -1,4 +1,4 @@
-# Nano 6.0 text editor (binary only)
+# Nano 6.3 text editor (binary only)
  - Homepage: [https://www.nano-editor.org/](https://www.nano-editor.org/)
  - Manpage: [https://www.nano-editor.org/docs.php](https://www.nano-editor.org/docs.php)
  - Changelog: [https://www.nano-editor.org/dist/v6/NEWS](https://www.nano-editor.org/dist/v6/NEWS)
