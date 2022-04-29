@@ -16,7 +16,7 @@ echo -n "Content: " >> "$INPWD/README.md"
 echo "$PKGS" | sed 's/##.*//g' | uniq | sed 's/^000//' | while read cat; do echo -n "[$cat](#$(echo ${cat,,} | sed 's/ /-/g')) - "; done | sed 's/...$//' >> "$INPWD/README.md"
 echo "$PKGS" | sed 's/##.*//g' | uniq | while read cat; do
 	echo -e "\n# ${cat//0}"
-	[ -z "$CTN" ] && echo "Index:" && for CTN in $(echo {A..Z}); do echo "[$CTN](#${CTN,,})"; done
+	[ -z "$CTN" ] && CTN="Index: " && for x in $(echo {A..Z}); do CTN="$CTN[$x](#${x,,}) - "; done && echo ${CTN:0:-3}
 	echo "$PKGS" | sed -n "s/^${cat}##//p" | while read pkg; do
 		[ "${cat:0:3}" == "000" ] && [ "${pkg:0:1}" != "$IDX" ] && IDX="${pkg:0:1}" && echo -e "\n### ${IDX^^}"
 
