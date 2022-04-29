@@ -154,7 +154,7 @@ endif
 endif
 
 all: step
-world: check-dot-config-uptodateness $(DL_DIR) $(BUILD_DIR) $(KERNEL_TARGET_DIR) $(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT) $(TOOLCHAIN_BUILD_DIR)
+world: check-dot-config-uptodateness clear-echo-temporary $(DL_DIR) $(BUILD_DIR) $(KERNEL_TARGET_DIR) $(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT) $(TOOLCHAIN_BUILD_DIR)
 
 KCONFIG_TARGETS:=menuconfig menuconfig-single config oldconfig olddefconfig allnoconfig allyesconfig randconfig listnewconfig config-compress
 
@@ -557,6 +557,9 @@ release: distclean
 	)
 	$(RM) .exclude-release-tmp
 
+clear-echo-temporary:
+	@$(RM) $(ECHO_ITEM_1ST) $(ECHO_ITEM_TMP) $(ECHO_ITEM_NEW) $(ECHO_ITEM_END)
+
 # Check .config is up-to-date. Any change to any of the menuconfig configuration files (either manual or one caused by 'svn up') require .config to be updated.
 check-dot-config-uptodateness: $(CONFIG_IN_CACHE)
 	@if [ -e .config -a $(CONFIG_IN_CACHE) -nt .config ]; then \
@@ -576,5 +579,5 @@ help:
 	config-clean-deps-modules config-clean-deps-libs config-clean-deps-busybox config-clean-deps-terminfo config-clean-deps config-clean-deps-keep-busybox \
 	cacheclean clean dirclean distclean common-cacheclean common-clean common-dirclean common-distclean release \
 	$(TOOLS) $(TOOLS_CACHECLEAN) $(TOOLS_CLEAN) $(TOOLS_DIRCLEAN) $(TOOLS_DISTCLEAN) $(TOOLS_SOURCE) $(TOOLS_PRECOMPILED) $(TOOLS_RECOMPILE) $(TOOLS_AUTOFIX) \
-	check-dot-config-uptodateness
+	clear-echo-temporary check-dot-config-uptodateness
 

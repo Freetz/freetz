@@ -5,8 +5,8 @@ ifneq ($(strip $(FREETZ_VERBOSITY_LEVEL)),2)
 BUILD_FAIL_MSG += Please re-run make with verbose level set to 2 to see what's going on.
 endif
 
-SUBMAKE1=cmd() { $(MAKE_ENV) $(MAKE1) $(QUIET) "$$@" $(SILENT) || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } }; $(call _ECHO_BUILD) cmd
-SUBMAKE=cmd() { $(MAKE_ENV) $(MAKE) $(QUIET) "$$@" $(SILENT) || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } }; $(call _ECHO_BUILD) cmd
+SUBMAKE1=cmd() { $(MAKE_ENV) $(MAKE1) $(QUIET) "$$@" $(SILENT) || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } }; $(call _ECHO_BUILD_INT) cmd
+SUBMAKE=cmd() { $(MAKE_ENV) $(MAKE) $(QUIET) "$$@" $(SILENT) || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } }; $(call _ECHO_BUILD_INT) cmd
 CONFIGURE=conf_cmd() { ./configure $(QUIET) "$$$$@" $(SILENT) || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } };
 AUTORECONF=autoreconf -f -i || { $(call ERROR,1,autoreconf failed) };
 
@@ -374,46 +374,59 @@ endef
 # We want build output like:
 # "---> package/lynx: downloading... preparing... configuring... building... done."
 # Actually there are two problems:
-# 1. We can't use _ECHO_START in $(SUBMAKE) context.
+# 1. We can't use _ECHO_START_INT in $(SUBMAKE) context.
 # 2. Dot files are deleted within every package. But once at start would be enough.
 # Usage:
 # $(call _ECHO,text)
-# $(call _ECHO_BUILD)
-ECHO_ITEM_START:=$(SOURCE_DIR_ROOT)/.echo_item_start
-ECHO_ITEM_BUILD:=$(SOURCE_DIR_ROOT)/.echo_item_build
+ECHO_ITEM_1ST:=$(SOURCE_DIR_ROOT)/.echo_item_1st
+ECHO_ITEM_OLD:=$(SOURCE_DIR_ROOT)/.echo_item_old
+ECHO_ITEM_TMP:=$(SOURCE_DIR_ROOT)/.echo_item_tmp
+ECHO_ITEM_NEW:=$(SOURCE_DIR_ROOT)/.echo_item_new
+ECHO_ITEM_END:=$(SOURCE_DIR_ROOT)/.echo_item_end
 
-define _ECHO_START
-	echo -ne "\e[48;5;90m---> "; \
-	case "$(PKG_TYPE)" in \
-		BIN)	echo -n "package/$(pkg)" ;; \
-		LIB)	echo -n "library/$(pkg)" ;; \
-		TOOL)	echo -n "tool/$(pkg)" ;; \
-		*)	echo -n "kernel" ;; \
-	esac; \
-	echo -ne "\e[49m ... "; \
-	$(RM) $(ECHO_ITEM_BUILD); \
-	touch $(ECHO_ITEM_START);
+define _ECHO_START_ARG
+	[ -n "$2" ] && step="/$2" || step=""; \
+	[ -n "$3" ] && step="$$step/$3"; \
+	case "$1$(PKG_TYPE)" in \
+		BIN)	echo -n "package/$(pkg)"         >$(ECHO_ITEM_TMP) ;; \
+		LIB)	echo -n "library/$(pkg)"         >$(ECHO_ITEM_TMP) ;; \
+		TOOL)	echo -n "tool/$(tool)"           >$(ECHO_ITEM_TMP) ;; \
+		KTC)	echo -n "toolchain/kernel$$step" >$(ECHO_ITEM_TMP) ;; \
+		TTC)	echo -n "toolchain/target$$step" >$(ECHO_ITEM_TMP) ;; \
+		KRN)	echo -n "kernel"                 >$(ECHO_ITEM_TMP) ;; \
+	esac;
 endef
 
-define _ECHO
-	if [ ! -e $(ECHO_ITEM_START) ]; then \
-		$(call _ECHO_START) \
-	fi; \
-	echo -ne "\e[48;5;56m$(1)\e[49m ... ";
-endef
-
-define _ECHO_BUILD
-	if [ -e $(ECHO_ITEM_START) -a ! -e $(ECHO_ITEM_BUILD) ]; then \
-		echo -ne "\e[48;5;56mbuilding\e[49m ... "; \
-		touch $(ECHO_ITEM_BUILD); \
+define _ECHO_START_INT
+	$(call _ECHO_START_ARG,$(2),$(3),$(4)) \
+	if ! diff -q $(ECHO_ITEM_TMP) $(ECHO_ITEM_NEW) >/dev/null 2>&1 || [ ! -e $(ECHO_ITEM_1ST) ]; then \
+		$(call _ECHO_DONE_INT) \
+		[ -s $(ECHO_ITEM_TMP) ] && cat $(ECHO_ITEM_TMP) > $(ECHO_ITEM_NEW) 2>/dev/null; \
+		[ -s $(ECHO_ITEM_NEW) ] || cat $(ECHO_ITEM_OLD) > $(ECHO_ITEM_NEW) 2>/dev/null; \
+		if [ -s "$(ECHO_ITEM_NEW)" ]; then \
+			echo -ne "\e[48;5;90m---> "; \
+			cat $(ECHO_ITEM_NEW) 2>/dev/null | tee $(ECHO_ITEM_OLD); \
+			echo -ne "\e[49m ... "; \
+			touch $(ECHO_ITEM_END); \
+			touch $(ECHO_ITEM_1ST); \
+		fi; \
 	fi;
 endef
 
-define _ECHO_DONE
-	if [ -e $(ECHO_ITEM_START) ]; then \
-		echo -e "\e[48;5;56mdone\e[49m."; \
-	fi; \
-	$(RM) $(ECHO_ITEM_START) $(ECHO_ITEM_BUILD);
+define _ECHO
+	$(call _ECHO_START_INT,$(1),$(2),$(3),$(4)) \
+	echo -ne "\e[48;5;56m$(1)\e[49m ... ";
+endef
+
+define _ECHO_BUILD_INT
+	$(call _ECHO,building,$(1),$(2),$(3))
+endef
+
+define _ECHO_DONE_INT
+	if [ -e $(ECHO_ITEM_END) -a -e $(ECHO_ITEM_NEW) -a -e $(ECHO_ITEM_1ST) ]; then \
+		echo -e "\e[48;5;26mdone\e[49m."; \
+		$(RM) $(ECHO_ITEM_END); \
+	fi;
 endef
 
 ### PKG_INIT - initialise package. See also PKG_FINISH.
@@ -451,10 +464,8 @@ $(PKG)_EXCLUDED:=
 $(PKG)_CONFIGURE_DEFOPTS:=y
 #
 # $(pkg)-precompiled--int must be the first target, it will depend on DEPENDS_ON
-$(pkg)-precompiled: $(pkg)-precompiled--int $(pkg)-clean-echo-item $(pkg)
-$(pkg)-clean-echo-item:
-	@$(RM) $(ECHO_ITEM_START) $(ECHO_ITEM_BUILD)
-.PHONY: $(pkg)-clean-echo-item $(pkg)-precompiled $(pkg)-precompiled--int $(pkg)
+$(pkg)-precompiled: $(pkg)-precompiled--int clear-echo-temporary $(pkg)
+.PHONY: $(pkg)-precompiled $(pkg)-precompiled--int $(pkg)
 endef
 
 # Stage 2a: initialise other package-specific variables for binary packages
@@ -591,7 +602,7 @@ endef
 define PKG_FINISH__INT
 $(pkg)-precompiled--int: $(pkg)-build-prereq $(TOOLCHAIN) $($(PKG)_HOST_DEPENDS_ON) $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON))
 $(pkg)-precompiled:
-	@$(call _ECHO_DONE)
+	@$(call _ECHO_DONE_INT)
 
 .PHONY: $(pkg)-build-prereq
 $(pkg)-build-prereq: $($(PKG)_DIR)/.build-prereq-checked
