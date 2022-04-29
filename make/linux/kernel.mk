@@ -18,6 +18,9 @@ endif
 
 DL_KERNEL_SOURCE:=$(call qstrip,$(FREETZ_DL_KERNEL_SOURCE))
 
+KERNEL_ECHO_TYPE:=KRN
+
+
 $(DL_FW_DIR)/$(DL_KERNEL_SOURCE): | $(DL_FW_DIR)
 	$(DL_TOOL) $(DL_FW_DIR) $(FREETZ_DL_KERNEL_SOURCE) $(FREETZ_DL_KERNEL_SITE) $(FREETZ_DL_KERNEL_SOURCE_SHA256) $(SILENT)
 
@@ -28,15 +31,15 @@ kernel-unpacked: $(KERNEL_DIR)/.unpacked
 $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(DL_KERNEL_SOURCE) | $(UNPACK_TARBALL_PREREQUISITES) gcc-kernel
 	$(RM) -r $(KERNEL_DIR)
 	mkdir -p $(KERNEL_SOURCE_DIR)
-	@$(call _ECHO,unpacking)
+	@$(call _ECHO,unpacking,$(KERNEL_ECHO_TYPE))
 	@$(call UNPACK_TARBALL,$(DL_FW_DIR)/$(DL_KERNEL_SOURCE),$(KERNEL_SOURCE_DIR),1)
-	@$(call _ECHO,patching)
+	@$(call _ECHO,patching,$(KERNEL_ECHO_TYPE))
 	#
 	#kernel version specific patches
 	@$(call APPLY_PATCHES,$(KERNEL_PATCHES_DIR),$(KERNEL_DIR))
 	#firmware version specific patches
 	@$(call APPLY_PATCHES,$(KERNEL_PATCHES_DIR)/$(AVM_SOURCE_ID),$(KERNEL_DIR))
-	@$(call _ECHO,preparing)
+	@$(call _ECHO,fixing,$(KERNEL_ECHO_TYPE))
 	@for i in $(KERNEL_LINKING_FILES); do \
 		f="$${i%%,*}"; symlink_location="$${i##*,}"; \
 		if [ -e "$(KERNEL_SOURCE_DIR)/$${f}" ] && [ -d "$(KERNEL_SOURCE_DIR)/$$(dirname $${symlink_location})" ]; then \
@@ -120,16 +123,18 @@ $(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(DL_KERNEL_SOURCE) | $(UNPACK_TARBALL_PRE
 	touch $@
 
 $(KERNEL_DIR)/.configured: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
-	$(call _ECHO,configuring)
+	$(call _ECHO,configuring,$(KERNEL_ECHO_TYPE))
 	cp $(KERNEL_CONFIG_FILE) $(KERNEL_SOURCE_DIR)/.config
 	$(SUBMAKE) $(KERNEL_COMMON_MAKE_OPTIONS) oldconfig
 	touch $@
 
 $(KERNEL_DIR)/.prepared: $(KERNEL_DIR)/.configured
+	@$(call _ECHO,preparing,$(KERNEL_ECHO_TYPE))
 	$(SUBMAKE) $(KERNEL_COMMON_MAKE_OPTIONS) prepare
 	touch $@
 
 $(KERNEL_HEADERS_DEVEL_DIR)/include/linux/version.h: $(KERNEL_DIR)/.prepared
+	$(call _ECHO,headers,$(KERNEL_ECHO_TYPE))
 ifeq ($(strip $(FREETZ_KERNEL_VERSION_2_6_13)),y)
 	$(call COPY_KERNEL_HEADERS,$(KERNEL_SOURCE_DIR),$(KERNEL_HEADERS_DEVEL_DIR),{asm$(_comma)asm-generic$(_comma)linux$(_comma)mtd$(_comma)scsi$(_comma)video})
 else
@@ -172,11 +177,11 @@ endif
 
 kernel-autofix: kernel-dirclean
 	$(MAKE) AUTO_FIX_PATCHES=y kernel-unpacked
-kernel-recompile: kernel-dirclean kernel-precompiled
+kernel-recompile: kernel-distclean kernel-precompiled
 .PHONY: kernel-autofix kernel-recompile
 
 $(KERNEL_SOURCE_DIR)$(KERNEL_IMAGE_BUILD_SUBDIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.prepared $(KERNEL_BUILD_DEPENDENCIES) | $(TOOLS_DIR)/lzma $(TOOLS_DIR)/lzma2eva
-	$(call _ECHO,image)
+	$(call _ECHO,image,$(KERNEL_ECHO_TYPE))
 	$(SUBMAKE) $(KERNEL_COMMON_MAKE_OPTIONS) $(KERNEL_IMAGE)
 	touch -c $@
 
@@ -186,7 +191,7 @@ $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY): $(KERNEL_SOURCE_DIR)$(KERNEL_IMAGE
 	touch -c $@
 
 $(KERNEL_DIR)/.modules-$(SYSTEM_TYPE)$(SYSTEM_TYPE_CORE_SUFFIX): $(KERNEL_SOURCE_DIR)$(KERNEL_IMAGE_BUILD_SUBDIR)/$(KERNEL_IMAGE)
-	@$(call _ECHO,modules)
+	@$(call _ECHO,modules,$(KERNEL_ECHO_TYPE))
 	$(SUBMAKE) $(KERNEL_COMMON_MAKE_OPTIONS) modules
 	$(SUBMAKE) $(KERNEL_COMMON_MAKE_OPTIONS) modules_install
 	touch $@
@@ -197,7 +202,7 @@ $(KERNEL_MODULES_DIR)/.modules-$(SYSTEM_TYPE)$(SYSTEM_TYPE_CORE_SUFFIX): $(KERNE
 	$(call COPY_USING_TAR,$(KERNEL_DIR)/lib/modules/$(call qstrip,$(FREETZ_KERNEL_VERSION_MODULES_SUBDIR))/kernel,$(KERNEL_MODULES_DIR))
 	touch $@
 
-kernel-precompiled: pkg-echo-start $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY) $(KERNEL_MODULES_DIR)/.modules-$(SYSTEM_TYPE)$(SYSTEM_TYPE_CORE_SUFFIX) pkg-echo-done
+kernel-precompiled: $(KERNEL_TARGET_DIR)/$(KERNEL_TARGET_BINARY) $(KERNEL_MODULES_DIR)/.modules-$(SYSTEM_TYPE)$(SYSTEM_TYPE_CORE_SUFFIX)
 
 kernel-configured: $(KERNEL_DIR)/.prepared
 
@@ -222,6 +227,7 @@ kernel-oldconfig: $(KERNEL_DIR)/.configured
 
 kernel-source: $(KERNEL_DIR)/.unpacked
 
+
 kernel-clean:
 	-$(SUBMAKE) $(KERNEL_COMMON_MAKE_OPTIONS) clean
 
@@ -240,10 +246,6 @@ kernel-dirclean:
 
 kernel-distclean: kernel-dirclean
 
-pkg-echo-start:
-	@$(RM) $(ECHO_ITEM_START) $(ECHO_ITEM_BUILD)
-
-pkg-echo-done:
-	@$(call _ECHO_DONE)
 
 .PHONY: kernel-unpacked kernel-configured kernel-modules kernel-menuconfig kernel-oldconfig target-toolchain-kernel-headers
+
