@@ -16,6 +16,10 @@ BINUTILS_MD5        := $(BINUTILS_MD5_$(BINUTILS_VERSION))
 
 BINUTILS_EXTRA_MAKE_OPTIONS := MAKEINFO=true
 
+BINUTILS_ECHO_TYPE:=TTC
+BINUTILS_ECHO_MAKE:=binutils
+
+
 binutils-source: $(DL_DIR)/$(BINUTILS_SOURCE)
 ifneq ($(strip $(DL_DIR)/$(BINUTILS_SOURCE)), $(strip $(DL_DIR)/$(BINUTILS_KERNEL_SOURCE)))
 $(DL_DIR)/$(BINUTILS_SOURCE): | $(DL_DIR)
@@ -24,6 +28,7 @@ endif
 
 binutils-unpacked: $(BINUTILS_DIR)/.unpacked
 $(BINUTILS_DIR)/.unpacked: $(DL_DIR)/$(BINUTILS_SOURCE) | $(TARGET_TOOLCHAIN_DIR) $(UNPACK_TARBALL_PREREQUISITES)
+	@$(call _ECHO,unpacking,$(BINUTILS_ECHO_TYPE),$(BINUTILS_ECHO_MAKE))
 	$(RM) -r $(BINUTILS_DIR)
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(BINUTILS_SOURCE),$(TARGET_TOOLCHAIN_DIR))
 	$(call APPLY_PATCHES,$(BINUTILS_MAKE_DIR)/$(call GET_MAJOR_VERSION,$(BINUTILS_VERSION)),$(BINUTILS_DIR))
@@ -31,7 +36,9 @@ $(BINUTILS_DIR)/.unpacked: $(DL_DIR)/$(BINUTILS_SOURCE) | $(TARGET_TOOLCHAIN_DIR
 	sed -i -r -e 's,(zlibVersion)([ \t]*[(][)]),\1WeDontWantZlib\2,g' $$(find $(BINUTILS_DIR) -name "configure" -type f)
 	touch $@
 
+
 $(BINUTILS_DIR1)/.configured: $(BINUTILS_DIR)/.unpacked
+	@$(call _ECHO,configuring,$(BINUTILS_ECHO_TYPE),$(BINUTILS_ECHO_MAKE))
 	mkdir -p $(BINUTILS_DIR1)
 	(cd $(BINUTILS_DIR1); $(RM) config.cache; \
 		CC="$(TOOLCHAIN_HOSTCC)" \
@@ -46,21 +53,26 @@ $(BINUTILS_DIR1)/.configured: $(BINUTILS_DIR)/.unpacked
 		--disable-libssp \
 		$(DISABLE_NLS) \
 		--disable-werror \
-		$(QUIET) \
+		$(SILENT) \
 	);
 	touch $@
 
 $(BINUTILS_DIR1)/.compiled: $(BINUTILS_DIR1)/.configured
-	$(MAKE) $(BINUTILS_EXTRA_MAKE_OPTIONS) -C $(BINUTILS_DIR1) configure-host
-	$(MAKE) $(BINUTILS_EXTRA_MAKE_OPTIONS) -C $(BINUTILS_DIR1) all
+	@$(call _ECHO,building,$(BINUTILS_ECHO_TYPE),$(BINUTILS_ECHO_MAKE))
+	$(MAKE) $(BINUTILS_EXTRA_MAKE_OPTIONS) -C $(BINUTILS_DIR1) configure-host $(SILENT)
+	$(MAKE) $(BINUTILS_EXTRA_MAKE_OPTIONS) -C $(BINUTILS_DIR1) all $(SILENT)
 	touch $@
 
 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/ld: $(BINUTILS_DIR1)/.compiled
-	$(MAKE1) $(BINUTILS_EXTRA_MAKE_OPTIONS) -C $(BINUTILS_DIR1) install
+	@$(call _ECHO,installing,$(BINUTILS_ECHO_TYPE),$(BINUTILS_ECHO_MAKE))
+	$(MAKE1) $(BINUTILS_EXTRA_MAKE_OPTIONS) -C $(BINUTILS_DIR1) install $(SILENT)
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/ld.bfd $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/$(REAL_GNU_TARGET_NAME)-ld.bfd
 	$(call STRIP_TOOLCHAIN_BINARIES,$(TARGET_TOOLCHAIN_STAGING_DIR)/usr,$(BINUTILS_BINARIES_BIN),$(REAL_GNU_TARGET_NAME),$(HOST_STRIP))
 	$(call REMOVE_DOC_NLS_DIRS,$(TARGET_TOOLCHAIN_STAGING_DIR))
 	$(call CREATE_TARGET_NAME_SYMLINKS,$(TARGET_TOOLCHAIN_STAGING_DIR)/usr,$(BINUTILS_BINARIES_BIN),$(REAL_GNU_TARGET_NAME),$(GNU_TARGET_NAME))
+
+binutils: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/ld
+
 
 binutils-uninstall:
 	$(RM) $(call TOOLCHAIN_BINARIES_LIST,$(TARGET_TOOLCHAIN_STAGING_DIR)/usr,$(BINUTILS_BINARIES_BIN),$(REAL_GNU_TARGET_NAME))
@@ -73,7 +85,8 @@ binutils-clean: binutils-uninstall
 binutils-dirclean: binutils-clean binutils_target-dirclean
 	$(RM) -r $(BINUTILS_DIR)
 
-binutils: binutils-dependencies $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/ld
+binutils-distclean: binutils-dirclean
+
 
 #############################################################
 #
@@ -82,6 +95,7 @@ binutils: binutils-dependencies $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_T
 #############################################################
 BINUTILS_DIR2:=$(BINUTILS_DIR)-target
 $(BINUTILS_DIR2)/.configured: $(BINUTILS_DIR)/.unpacked
+	@$(call _ECHO,configuring,$(BINUTILS_ECHO_TYPE),$(BINUTILS_ECHO_MAKE),target)
 	mkdir -p $(BINUTILS_DIR2)
 	(cd $(BINUTILS_DIR2); $(RM) config.cache; \
 		CFLAGS_FOR_BUILD="-O2 $(TOOLCHAIN_HOST_CFLAGS)" \
@@ -98,23 +112,27 @@ $(BINUTILS_DIR2)/.configured: $(BINUTILS_DIR)/.unpacked
 		--without-zlib \
 		$(DISABLE_NLS) \
 		--disable-werror \
+		$(SILENT) \
 	)
 	touch $@
 
 $(BINUTILS_DIR2)/.compiled: $(BINUTILS_DIR2)/.configured
-	$(MAKE_ENV) $(MAKE) $(BINUTILS_EXTRA_MAKE_OPTIONS) -C $(BINUTILS_DIR2) all
+	@$(call _ECHO,building,$(BINUTILS_ECHO_TYPE),$(BINUTILS_ECHO_MAKE),target)
+	$(MAKE_ENV) $(MAKE) $(BINUTILS_EXTRA_MAKE_OPTIONS) -C $(BINUTILS_DIR2) all $(SILENT)
 	touch $@
 
 $(TARGET_UTILS_DIR)/usr/bin/ld: $(BINUTILS_DIR2)/.compiled
+	@$(call _ECHO,installing,$(BINUTILS_ECHO_TYPE),$(BINUTILS_ECHO_MAKE),target)
 	$(MAKE_ENV) $(MAKE1) $(BINUTILS_EXTRA_MAKE_OPTIONS) -C $(BINUTILS_DIR2) \
 		tooldir=/usr \
 		build_tooldir=/usr \
-		DESTDIR=$(TARGET_UTILS_DIR) install
+		DESTDIR=$(TARGET_UTILS_DIR) install $(SILENT)
 	$(RM) $(TARGET_UTILS_DIR)/usr/bin/ld.bfd
 	$(call STRIP_TOOLCHAIN_BINARIES,$(TARGET_UTILS_DIR)/usr,$(BINUTILS_BINARIES_BIN),$(REAL_GNU_TARGET_NAME),$(TARGET_STRIP))
 	$(call REMOVE_DOC_NLS_DIRS,$(TARGET_UTILS_DIR))
 
 binutils_target: $(TARGET_UTILS_DIR)/usr/bin/ld
+
 
 binutils_target-uninstall:
 	$(RM) $(call TOOLCHAIN_BINARIES_LIST,$(TARGET_UTILS_DIR)/usr,$(BINUTILS_BINARIES_BIN),$(REAL_GNU_TARGET_NAME))
@@ -124,4 +142,10 @@ binutils_target-clean: binutils_target-uninstall
 
 binutils_target-dirclean: binutils_target-clean
 
-.PHONY: binutils binutils-source binutils-unpacked binutils-uninstall binutils-clean binutils-dirclean binutils_target binutils_target-uninstall binutils_target-clean binutils_target-dirclean
+binutils_target-distclean: binutils_target-dirclean
+
+
+.PHONY: binutils-source binutils-unpacked 
+.PHONY: binutils        binutils-uninstall        binutils-clean        binutils-dirclean        binutils-distclean
+.PHONY: binutils_target binutils_target-uninstall binutils_target-clean binutils_target-dirclean binutils_target-distclean
+

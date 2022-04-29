@@ -10,6 +10,9 @@ CCACHE_TARGET_BINARY:=usr/bin/ccache
 
 CCACHE_BIN_DIR:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache
 
+CCACHE_ECHO_TYPE:=TTC
+CCACHE_ECHO_MAKE:=ccache
+
 
 ccache-source: $(DL_DIR)/$(CCACHE_SOURCE)
 ifneq ($(strip $(DL_DIR)/$(CCACHE_SOURCE)), $(strip $(DL_DIR)/$(CCACHE_KERNEL_SOURCE)))
@@ -19,6 +22,7 @@ endif
 
 ccache-unpacked: $(CCACHE_DIR)/.unpacked
 $(CCACHE_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_SOURCE) | $(TARGET_TOOLCHAIN_DIR) $(UNPACK_TARBALL_PREREQUISITES)
+	@$(call _ECHO,unpacking,$(CCACHE_ECHO_TYPE),$(CCACHE_ECHO_MAKE))
 	$(RM) -r $(CCACHE_DIR)
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(CCACHE_SOURCE),$(TARGET_TOOLCHAIN_DIR))
 	#$(call APPLY_PATCHES,$(CCACHE_MAKE_DIR)/patches,$(CCACHE_DIR))
@@ -28,6 +32,7 @@ $(CCACHE_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_SOURCE) | $(TARGET_TOOLCHAIN_DIR) $(
 	touch $@
 
 $(CCACHE_DIR)/.configured: $(CCACHE_DIR)/.unpacked
+	@$(call _ECHO,configuring,$(CCACHE_ECHO_TYPE),$(CCACHE_ECHO_MAKE))
 	(cd $(CCACHE_DIR); $(RM) CMakeCache.txt; \
 		CC="$(TOOLCHAIN_HOSTCC)" \
 		CXX="$(TOOLCHAIN_HOSTCXX)" \
@@ -41,13 +46,16 @@ $(CCACHE_DIR)/.configured: $(CCACHE_DIR)/.unpacked
 		-DENABLE_TESTING=OFF \
 		-DREDIS_STORAGE_BACKEND=OFF \
 		$(QUIETCMAKE) \
+		$(SILENT) \
 	);
 	touch $@
 
 $(CCACHE_DIR)/$(CCACHE_BINARY): $(CCACHE_DIR)/.configured
-	$(MAKE) -C $(CCACHE_DIR)
+	@$(call _ECHO,building,$(CCACHE_ECHO_TYPE),$(CCACHE_ECHO_MAKE))
+	$(MAKE) -C $(CCACHE_DIR) $(SILENT)
 
 $(TARGET_TOOLCHAIN_STAGING_DIR)/$(CCACHE_TARGET_BINARY): $(CCACHE_DIR)/$(CCACHE_BINARY)
+	@$(call _ECHO,installing,$(CCACHE_ECHO_TYPE),$(CCACHE_ECHO_MAKE))
 	mkdir -p $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin
 	cp $(CCACHE_DIR)/$(CCACHE_BINARY) $(TARGET_TOOLCHAIN_STAGING_DIR)/$(CCACHE_TARGET_BINARY)
 	# Keep the actual toolchain binaries in a directory at the same level.
@@ -86,10 +94,13 @@ ccache-clean:
 	done
 	$(RM) -r $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin-ccache
 	$(RM) $(TARGET_TOOLCHAIN_STAGING_DIR)/$(CCACHE_TARGET_BINARY)
-	-$(MAKE) -C $(CCACHE_DIR) clean
+	-[ -d "$(CCACHE_DIR)" ] && $(MAKE) -C $(CCACHE_DIR) clean $(QUIET)
 
 ccache-dirclean: ccache-clean
 	$(RM) -r $(CCACHE_DIR)
 
-.PHONY: ccache ccache-source ccache-unpacked ccache-clean ccache-dirclean
+ccache-distclean: ccache-dirclean
+
+
+.PHONY: ccache ccache-source ccache-unpacked ccache-clean ccache-dirclean ccache-distclean
 

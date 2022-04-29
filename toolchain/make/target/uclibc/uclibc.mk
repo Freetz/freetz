@@ -14,6 +14,9 @@ UCLIBC_SHA256_1.0.14 = 3c63d9f8c8b98b65fa5c4040d1c8ab1b36e99a16e1093810cedad51ac
 UCLIBC_SHA256_1.0.40 = d863f01815a64174d5019c73475e8aff5b60848a13876e79daf5d3d83ce7f889
 UCLIBC_SOURCE_CHECKSUM=$(or $(UCLIBC_SHA256_$(UCLIBC_VERSION)),$(UCLIBC_MD5_$(UCLIBC_VERSION)))
 
+UCLIBC_ECHO_TYPE:=TTC
+UCLIBC_ECHO_MAKE:=uclibc
+
 UCLIBC_KERNEL_HEADERS_DIR:=$(KERNEL_HEADERS_DEVEL_DIR)
 
 UCLIBC_DEVEL_SUBDIR:=uClibc_dev
@@ -59,6 +62,7 @@ endif
 
 UCLIBC_HOST_CFLAGS:=$(TOOLCHAIN_HOST_CFLAGS) -U_GNU_SOURCE -fno-strict-aliasing
 
+
 $(DL_DIR)/$(UCLIBC_LOCALE_DATA_FILENAME): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(UCLIBC_LOCALE_DATA_FILENAME) $(UCLIBC_LOCALE_DATA_SITE) $(UCLIBC_LOCALE_DATA_MD5)
 
@@ -68,6 +72,7 @@ $(DL_DIR)/$(UCLIBC_SOURCE): | $(DL_DIR)
 
 uclibc-unpacked: $(UCLIBC_DIR)/.unpacked
 $(UCLIBC_DIR)/.unpacked: $(DL_DIR)/$(UCLIBC_SOURCE) $(DL_DIR)/$(UCLIBC_LOCALE_DATA_FILENAME) | $(TARGET_TOOLCHAIN_DIR) $(UNPACK_TARBALL_PREREQUISITES)
+	@$(call _ECHO,unpacking,$(UCLIBC_ECHO_TYPE),$(UCLIBC_ECHO_MAKE))
 	$(RM) -r $(UCLIBC_DIR)
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(UCLIBC_SOURCE),$(TARGET_TOOLCHAIN_DIR))
 	$(call APPLY_PATCHES,$(UCLIBC_MAKE_DIR)/$(UCLIBC_VERSION)/avm $(UCLIBC_MAKE_DIR)/$(UCLIBC_VERSION),$(UCLIBC_DIR))
@@ -88,6 +93,7 @@ endif
 
 uclibc-config: $(UCLIBC_DIR)/.config
 $(UCLIBC_DIR)/.config: $(UCLIBC_DIR)/.unpacked | $(UCLIBC_PREREQ_GCC_INITIAL)
+	@$(call _ECHO,configuring,$(UCLIBC_ECHO_TYPE),$(UCLIBC_ECHO_MAKE))
 	cp $(UCLIBC_CONFIG_FILE) $(UCLIBC_DIR)/.config
 	$(call PKG_EDIT_CONFIG,CROSS=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)) $(UCLIBC_DIR)/Rules.mak
 	$(call PKG_EDIT_CONFIG, \
@@ -127,17 +133,19 @@ $(UCLIBC_DIR)/.config: $(UCLIBC_DIR)/.unpacked | $(UCLIBC_PREREQ_GCC_INITIAL)
 		DEVEL_PREFIX=/usr/ \
 		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/ \
 		HOSTCC="$(TOOLCHAIN_HOSTCC) $(UCLIBC_HOST_CFLAGS)" \
-		oldconfig < /dev/null > /dev/null
+		oldconfig < /dev/null $(SILENT)
 	touch $@
 
 $(UCLIBC_DIR)/.configured: $(UCLIBC_DIR)/.config | $(UCLIBC_KERNEL_HEADERS_DIR)/include/linux/version.h $(UCLIBC_PREREQ_GCC_INITIAL)
+	@$(call _ECHO,headers,$(UCLIBC_ECHO_TYPE),$(UCLIBC_ECHO_MAKE))
 	$(UCLIBC_MAKE) -C $(UCLIBC_DIR) \
 		$(UCLIBC_COMMON_BUILD_FLAGS) \
 		PREFIX=$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/ \
 		DEVEL_PREFIX=/usr/ \
 		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/ \
 		HOSTCC="$(TOOLCHAIN_HOSTCC) $(UCLIBC_HOST_CFLAGS)" headers \
-		$(if $(FREETZ_TARGET_UCLIBC_0_9_28),install_dev,install_headers)
+		$(if $(FREETZ_TARGET_UCLIBC_0_9_28),install_dev,install_headers) \
+		$(SILENT)
 	touch $@
 
 uclibc-menuconfig: $(UCLIBC_DIR)/.config
@@ -152,13 +160,14 @@ uclibc-menuconfig: $(UCLIBC_DIR)/.config
 	touch $^
 
 $(UCLIBC_DIR)/lib/libc.a: $(UCLIBC_DIR)/.configured | $(UCLIBC_PREREQ_GCC_INITIAL)
+	@$(call _ECHO,building,$(UCLIBC_ECHO_TYPE),$(UCLIBC_ECHO_MAKE))
 	$(UCLIBC_MAKE) -C $(UCLIBC_DIR) \
 		$(UCLIBC_COMMON_BUILD_FLAGS) \
 		PREFIX= \
 		DEVEL_PREFIX=/ \
 		RUNTIME_PREFIX=/ \
 		HOSTCC="$(TOOLCHAIN_HOSTCC) $(UCLIBC_HOST_CFLAGS)" \
-		all
+		all $(SILENT)
 ifneq ($(or $(FREETZ_TARGET_UCLIBC_0_9_28),$(FREETZ_TARGET_UCLIBC_0_9_29)),y)
 	# At this point uClibc is compiled and there is no reason for us to recompile it.
 	# Remove some FORCE rule dependencies causing parts of uClibc to be recompiled (without a need)
@@ -173,12 +182,13 @@ endif
 
 ifeq ($(strip $(FREETZ_BUILD_TOOLCHAIN)),y)
 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a: $(UCLIBC_DIR)/lib/libc.a
+	@$(call _ECHO,installing,$(UCLIBC_ECHO_TYPE),$(UCLIBC_ECHO_MAKE))
 	$(UCLIBC_MAKE) -C $(UCLIBC_DIR) \
 		$(UCLIBC_COMMON_BUILD_FLAGS) \
 		PREFIX=/ \
 		DEVEL_PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/ \
 		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/ \
-		install_runtime install_dev
+		install_runtime install_dev $(SILENT)
 	# Copy some files to make mklibs happy
 	# Note: uclibc 1.0.18+ has a single libc and does not build libpthread etc. anymore
 	# Ref.: https://github.com/wbx-github/uclibc-ng/commit/29ff9055c80efe77a7130767a9fcb3ab8c67e8ce
@@ -201,7 +211,7 @@ endif
 		PREFIX=$(TARGET_TOOLCHAIN_STAGING_DIR) \
 		HOSTCC="$(TOOLCHAIN_HOSTCC) $(UCLIBC_HOST_CFLAGS) $(if $(or $(FREETZ_TARGET_UCLIBC_0_9_29),$(FREETZ_TARGET_UCLIBC_0_9_32)),-DARCH_NATIVE_BIT=32)" \
 		BUILD_LDFLAGS="" \
-		hostutils
+		hostutils $(SILENT)
 	for i in ldd ldconfig; do \
 		install -c $(UCLIBC_DIR)/utils/$$i.host $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/$$i; \
 		$(HOST_STRIP) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/$(REAL_GNU_TARGET_NAME)/bin/$$i; \
@@ -211,12 +221,13 @@ endif
 	touch -c $@
 
 $(TARGET_SPECIFIC_ROOT_DIR)$(UCLIBC_TARGET_SUBDIR)/libc.so.$(TARGET_TOOLCHAIN_UCLIBC_MAJOR_VERSION): $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a
+	@$(call _ECHO,runtime,$(UCLIBC_ECHO_TYPE),$(UCLIBC_ECHO_MAKE))
 	$(UCLIBC_MAKE) -C $(UCLIBC_DIR) \
 		$(UCLIBC_COMMON_BUILD_FLAGS) \
 		PREFIX="$(FREETZ_BASE_DIR)/$(TARGET_SPECIFIC_ROOT_DIR)" \
 		DEVEL_PREFIX=/usr/ \
 		RUNTIME_PREFIX=/ \
-		install_runtime
+		install_runtime $(SILENT)
 	touch -c $@
 else
 $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a: $(TARGET_CROSS_COMPILER)
@@ -237,12 +248,16 @@ uclibc-configured: kernel-configured $(UCLIBC_DIR)/.configured
 
 uclibc: $(UCLIBC_PREREQ_GCC_INITIAL) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a $(TARGET_SPECIFIC_ROOT_DIR)$(UCLIBC_TARGET_SUBDIR)/libc.so.$(TARGET_TOOLCHAIN_UCLIBC_MAJOR_VERSION)
 
+
 uclibc-clean:
 	-$(MAKE1) -C $(UCLIBC_DIR) clean
 	$(RM) $(UCLIBC_DIR)/.config
 
 uclibc-dirclean:
 	$(RM) -r $(UCLIBC_DIR)
+
+uclibc-distclean: uclibc-dirclean
+
 
 #############################################################
 #
@@ -251,13 +266,14 @@ uclibc-dirclean:
 #############################################################
 
 $(TARGET_UTILS_DIR)/usr/lib/libc.a: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a
+	@$(call _ECHO,headers,$(UCLIBC_ECHO_TYPE),$(UCLIBC_ECHO_MAKE),target)
 	$(UCLIBC_MAKE) -C $(UCLIBC_DIR) \
 		$(UCLIBC_COMMON_BUILD_FLAGS) \
 		PREFIX=$(TARGET_UTILS_DIR) \
 		DEVEL_PREFIX=/usr/ \
 		RUNTIME_PREFIX=/ \
 		RUNTIME_PREFIX_LIB_FROM_DEVEL_PREFIX_LIB=/lib/ \
-		install_dev
+		install_dev $(SILENT)
 	# create two additional symlinks, required because libc.so is not really
 	# a shared lib, but a GNU ld script referencing the libs below
 	for f in libc.so.$(TARGET_TOOLCHAIN_UCLIBC_MAJOR_VERSION) $(sort ld-uClibc.so.0 ld-uClibc.so.$(TARGET_TOOLCHAIN_UCLIBC_MAJOR_VERSION)); do \
@@ -269,12 +285,17 @@ $(TARGET_UTILS_DIR)/usr/lib/libc.a: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc
 
 uclibc_target: gcc uclibc $(TARGET_UTILS_DIR)/usr/lib/libc.a
 
+
 uclibc_target-clean: uclibc_target-dirclean
 	$(RM) $(TARGET_UTILS_DIR)/lib/libc.a
 
 uclibc_target-dirclean:
 	$(RM) -r $(TARGET_UTILS_DIR)/usr/include
 
-.PHONY: uclibc-source uclibc-unpacked uclibc-menuconfig \
-	uclibc-configured uclibc uclibc-clean uclibc-dirclean \
-	uclibc_target uclibc_target-clean uclibc_target-dirclean
+uclibc_target-distclean: uclibc_target-dirclean
+
+
+.PHONY: uclibc-source uclibc-unpacked uclibc-menuconfig uclibc-configured
+.PHONY: uclibc        uclibc-clean        uclibc-dirclean        uclibc-distclean
+.PHONY: uclibc_target uclibc_target-clean uclibc_target-dirclean uclibc_target-distclean
+
