@@ -156,7 +156,7 @@ endif
 all: step
 world: check-dot-config-uptodateness clear-echo-temporary $(DL_DIR) $(BUILD_DIR) $(KERNEL_TARGET_DIR) $(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT) $(TOOLCHAIN_BUILD_DIR)
 
-KCONFIG_TARGETS:=menuconfig menuconfig-single config oldconfig olddefconfig allnoconfig allyesconfig randconfig listnewconfig config-compress
+KCONFIG_TARGETS:=config menuconfig menuconfig-single nconfig nconfig-single gconfig xconfig oldconfig olddefconfig allnoconfig allyesconfig randconfig listnewconfig config-compress
 
 # load user configuration file
 -include $(TOPDIR)/.config
@@ -426,35 +426,47 @@ recover:
 		done; \
 	fi
 
-menuconfig: config-cache
+xconfig: config-cache kconfig-host-qconf
+	@$(CONFIG)/qconf $(CONFIG_IN_CACHE)
+
+gconfig: config-cache kconfig-host-gconf
+	@$(CONFIG)/gconf $(CONFIG_IN_CACHE)
+
+nconfig: config-cache kconfig-host-nconf
+	@$(CONFIG)/nconf $(CONFIG_IN_CACHE)
+
+nconfig-single: config-cache kconfig-host-nconf
+	@MENUCONFIG_MODE="single_menu" $(CONFIG)/nconf $(CONFIG_IN_CACHE)
+
+menuconfig: config-cache kconfig-host
 	@$(CONFIG)/mconf $(CONFIG_IN_CACHE)
 
-menuconfig-single: config-cache
+menuconfig-single: config-cache kconfig-host
 	@MENUCONFIG_MODE="single_menu" $(CONFIG)/mconf $(CONFIG_IN_CACHE)
 
 menuconfig-nocache: $(CONFIG_IN_CUSTOM) kconfig-host
 	@$(CONFIG)/mconf $(CONFIG_IN)
 
-config: config-cache
+config: config-cache kconfig-host
 	@$(CONFIG)/conf $(CONFIG_IN_CACHE)
 
 config-compress: .config.compressed
-.config.compressed: .config config-cache
+.config.compressed: .config config-cache kconfig-host
 	@$(CONFIG)/conf --savedefconfig $@ $(CONFIG_IN_CACHE)
 	@sed -e "/^FREETZ_FWMOD_SIGN_PASSWORD=/d" -i $@ 2>/dev/null
 #	@echo "Compressed configuration written to $@."; \
 #	echo  "It is equivalent to .config, but contains only non-default user selections and no signing key password."
 
-listnewconfig: config-cache
+listnewconfig: config-cache kconfig-host
 	@$(CONFIG)/conf --listnewconfig $(CONFIG_IN_CACHE)
 
-oldconfig olddefconfig allnoconfig allyesconfig randconfig: config-cache
+oldconfig olddefconfig allnoconfig allyesconfig randconfig: config-cache kconfig-host
 	@$(CONFIG)/conf --$@ $(CONFIG_IN_CACHE) && touch .config
 
 reuseconfig: .config
 	@tools/reuseconfig
 
-config-cache: $(CONFIG_IN_CACHE) kconfig-host
+config-cache: $(CONFIG_IN_CACHE)
 
 config-cache-clean:
 	@$(RM) $(CONFIG_IN_CACHE)

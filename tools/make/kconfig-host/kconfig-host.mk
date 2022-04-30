@@ -6,6 +6,10 @@ $(TOOL)_SITE:=git_archive@git://repo.or.cz/linux.git,scripts/basic,scripts/kconf
 $(TOOL)_TARGET_DIR:=$(TOOLS_DIR)/kconfig
 $(TOOL)_PREREQ:=bison flex
 
+$(TOOL)_TARGET_DEF := conf   mconf
+$(TOOL)_TARGET_PRG := conf   mconf      nconf   gconf   gconf.glade qconf
+$(TOOL)_TARGET_ARG := config menuconfig nconfig gconfig gconfig     xconfig
+$(TOOL)_TARGET_ALL := $(join $(KCONFIG_HOST_TARGET_ARG),$(patsubst %,--%,$(KCONFIG_HOST_TARGET_PRG)))
 
 $(tool)-source: $(DL_DIR)/$($(TOOL)_SOURCE)
 $(DL_DIR)/$($(TOOL)_SOURCE): | $(DL_DIR)
@@ -27,19 +31,16 @@ $($(TOOL)_DIR)/.prerequisites: $($(TOOL)_DIR)/.unpacked
 	fi
 	touch $@
 
-$($(TOOL)_DIR)/scripts/kconfig/conf: $($(TOOL)_DIR)/.prerequisites
-	$(TOOL_SUBMAKE) -C $(KCONFIG_HOST_DIR) config
+$($(TOOL)_TARGET_PRG:%=$($(TOOL)_DIR)/scripts/kconfig/%): $($(TOOL)_DIR)/.prerequisites
+	$(TOOL_SUBMAKE) -C $(KCONFIG_HOST_DIR) $(subst --$(notdir $@),,$(filter %--$(notdir $@),$(KCONFIG_HOST_TARGET_ALL)))
 
-$($(TOOL)_DIR)/scripts/kconfig/mconf: $($(TOOL)_DIR)/.prerequisites
-	$(TOOL_SUBMAKE) -C $(KCONFIG_HOST_DIR) menuconfig
-
-$($(TOOL)_TARGET_DIR)/conf: $($(TOOL)_DIR)/scripts/kconfig/conf
+$(patsubst %,$($(TOOL)_TARGET_DIR)/%,$($(TOOL)_TARGET_PRG)): $($(TOOL)_TARGET_DIR)/% : $($(TOOL)_DIR)/scripts/kconfig/%
 	$(INSTALL_FILE)
 
-$($(TOOL)_TARGET_DIR)/mconf: $($(TOOL)_DIR)/scripts/kconfig/mconf
-	$(INSTALL_FILE)
+$(patsubst %,$(tool)-%,$($(TOOL)_TARGET_PRG)): $(tool)-% : $($(TOOL)_TARGET_DIR)/%
+$(tool)-gconf: $(tool)-gconf.glade
 
-$(tool)-precompiled: $($(TOOL)_TARGET_DIR)/conf $($(TOOL)_TARGET_DIR)/mconf
+$(tool)-precompiled: $(patsubst %,$($(TOOL)_TARGET_DIR)/%,$($(TOOL)_TARGET_DEF))
 
 
 $(tool)-clean:
@@ -52,6 +53,10 @@ $(tool)-clean:
 		$(KCONFIG_HOST_DIR)/scripts/kconfig/zconf.*.c \
 		$(KCONFIG_HOST_DIR)/scripts/basic/fixdep \
 		$(KCONFIG_HOST_DIR)/scripts/kconfig/conf \
+		$(KCONFIG_HOST_DIR)/scripts/kconfig/gconf.glade \
+		$(KCONFIG_HOST_DIR)/scripts/kconfig/qconf \
+		$(KCONFIG_HOST_DIR)/scripts/kconfig/gconf \
+		$(KCONFIG_HOST_DIR)/scripts/kconfig/nconf \
 		$(KCONFIG_HOST_DIR)/scripts/kconfig/mconf
 
 $(tool)-dirclean:
@@ -60,6 +65,9 @@ $(tool)-dirclean:
 $(tool)-distclean: $(tool)-dirclean
 	$(RM) -r $(KCONFIG_HOST_TARGET_DIR)/
 
-.PHONY: $(tool)-source $(tool)-unpacked $(tool) $(tool)-clean $(tool)-dirclean $(tool)-distclean
+
+.PHONY: $(tool)-source $(tool)-unpacked
+.PHONY: $(tool) $(tool)-conf $(tool)-gconf $(tool)-qconf
+.PHONY: $(tool)-clean $(tool)-dirclean $(tool)-distclean
 
 $(TOOL_FINISH)
