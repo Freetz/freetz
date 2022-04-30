@@ -4,14 +4,22 @@
 ```
 help                                    Shows docs/wiki/20_Advanced/make_targets.en.md
 
-menuconfig                              Configuration of Freetz
-menuconfig-nocache                      Configuration without caching of .in files
-menuconfig-single                       Alternative configuration
-oldconfig                               Updates existing .config file interactive
+menuconfig                              Configuration with Ncurses (needs ncurses-devel)
+menuconfig-single                       Configuration with Ncurses (single-menu)
+menuconfig-nocache                      Configuration with Ncurses (without caching of .in files)
+nconfig                                 Alternative configuration (needs ncurses-devel)
+nconfig-single                          Alternative configuration (single-menu)
+gconfig                                 Configuration with GTK+2 (needs libglade2-devel)
+xconfig                                 Configuration with QT5 (needs qt5-qtbase-devel)
+config                                  Configuration (Dialog)
+
 olddefconfig                            Updates existing .config file automatically
+oldconfig                               Updates existing .config file interactive
 reuseconfig                             Removes device and toolchain related settings from .config file
 allnoconfig                             Sets everything to (n)o
 allyesconfig                            Sets everything to (y)es
+listnewconfig                           Shows a list of any new config symbols, one per line
+config-compress                         Keeps only non-default selections and no signing key password
 
 config-clean-deps                       Deselects everything not mandatory
 config-clean-deps-keep-busybox          Deselects all except BusyBox applets
@@ -46,7 +54,7 @@ mirror                                  Downloads all selected package sources f
 release                                 Creates a release file (change .version before)
 
 push-firmware                           Calls tools/push_firmware with images/latest.image
-                                        For more options, use tools/push_firmware directly
+                                        For more options, run: tools/push_firmware -h
 recover                                 Calls tools/recover-eva with configured firmware
 ```
 
