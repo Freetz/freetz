@@ -1,6 +1,6 @@
 include $(TOOLCHAIN_DIR)/make/kernel/ccache/ccache.mk
 include $(TOOLCHAIN_DIR)/make/target/ccache/ccache.mk
-include $(TOOLCHAIN_DIR)/make/target/libtool-host/libtool-host.mk
+include $(TOOLCHAIN_DIR)/make/target/libtool-staging/libtool-staging.mk
 include $(TOOLCHAIN_DIR)/make/target/uclibc/uclibc.mk
 
 ifeq ($(strip $(FREETZ_TOOLCHAIN_CCACHE)),y)
@@ -38,7 +38,7 @@ download-toolchain: \
 		$(TARGET_CROSS_COMPILER) target-toolchain-kernel-headers $(TARGET_SPECIFIC_ROOT_DIR)$(UCLIBC_TARGET_SUBDIR)/libc.so.$(TARGET_TOOLCHAIN_UCLIBC_MAJOR_VERSION) \
 		$(CCACHE) \
 		$(STDCXXLIB) $(TARGET_CXX_CROSS_COMPILER_SYMLINK_TIMESTAMP) \
-		libtool-host \
+		libtool-staging \
 		$(if $(FREETZ_PACKAGE_GDB_HOST),gdbhost)
 
 gcc-kernel: $(KERNEL_CROSS_COMPILER)

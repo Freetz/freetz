@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 1.5.26)
 $(PKG)_LIB_VERSION:=3.1.6
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=aa9c5107f3ec9ef4200eb6556f3b3c29
+$(PKG)_SOURCE_SHA256:=1c35ae34fe85aa167bd7ab4bc9f477fe019138e1af62678d952fc43c0b7e2f09
 $(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/libltdl/.libs/libltdl.so.$($(PKG)_LIB_VERSION)

@@ -1,40 +1,41 @@
-LIBTOOL_HOST_VERSION:=1.5.26
-LIBTOOL_HOST_SOURCE:=libtool-$(LIBTOOL_HOST_VERSION).tar.gz
-LIBTOOL_HOST_SOURCE_MD5:=aa9c5107f3ec9ef4200eb6556f3b3c29
-LIBTOOL_HOST_SITE:=@GNU/libtool
-LIBTOOL_HOST_DIR:=$(TARGET_TOOLCHAIN_DIR)/libtool-$(LIBTOOL_HOST_VERSION)
-LIBTOOL_HOST_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/libtool-host
-LIBTOOL_HOST_SCRIPT:=$(LIBTOOL_HOST_DIR)/libtool
-LIBTOOL_HOST_TARGET_SCRIPT:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/libtool
+LIBTOOL_STAGING_VERSION:=1.5.26
+LIBTOOL_STAGING_SOURCE:=libtool-$(LIBTOOL_STAGING_VERSION).tar.gz
+LIBTOOL_STAGING_SOURCE_SHA256:=1c35ae34fe85aa167bd7ab4bc9f477fe019138e1af62678d952fc43c0b7e2f09
+LIBTOOL_STAGING_SITE:=@GNU/libtool
+
+LIBTOOL_STAGING_DIR:=$(TARGET_TOOLCHAIN_DIR)/libtool-$(LIBTOOL_STAGING_VERSION)
+LIBTOOL_STAGING_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/libtool-staging
+LIBTOOL_STAGING_SCRIPT:=$(LIBTOOL_STAGING_DIR)/libtool
+LIBTOOL_STAGING_TARGET_SCRIPT:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/libtool
 
 GLOBAL_LIBDIR=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib
 
-LIBTOOL_HOST_ECHO_TYPE:=TTC
-LIBTOOL_HOST_ECHO_MAKE:=libtool
+LIBTOOL_STAGING_ECHO_TYPE:=TTC
+LIBTOOL_STAGING_ECHO_MAKE:=libtool
 
 
-libtool-host-source: $(DL_DIR)/$(LIBTOOL_HOST_SOURCE)
-ifneq ($(strip $(DL_DIR)/$(LIBTOOL_HOST_SOURCE)), $(strip $(DL_DIR)/$(LIBTOOL_SOURCE)))
-$(DL_DIR)/$(LIBTOOL_HOST_SOURCE): | $(DL_DIR)
-	$(DL_TOOL) $(DL_DIR) $(LIBTOOL_HOST_SOURCE) $(LIBTOOL_HOST_SITE) $(LIBTOOL_HOST_SOURCE_MD5)
+libtool-staging-source: $(DL_DIR)/$(LIBTOOL_STAGING_SOURCE)
+ifneq ($(strip $(DL_DIR)/$(LIBTOOL_STAGING_SOURCE)), $(strip $(DL_DIR)/$(LIBTOOL_SOURCE)))
+$(DL_DIR)/$(LIBTOOL_STAGING_SOURCE): | $(DL_DIR)
+	$(DL_TOOL) $(DL_DIR) $(LIBTOOL_STAGING_SOURCE) $(LIBTOOL_STAGING_SITE) $(LIBTOOL_STAGING_SOURCE_SHA256)
 endif
 
-libtool-host-unpacked: $(LIBTOOL_HOST_DIR)/.unpacked
-$(LIBTOOL_HOST_DIR)/.unpacked: $(DL_DIR)/$(LIBTOOL_HOST_SOURCE) | $(TARGET_TOOLCHAIN_DIR) $(UNPACK_TARBALL_PREREQUISITES)
-	@$(call _ECHO,unpacking,$(LIBTOOL_HOST_ECHO_TYPE),$(LIBTOOL_HOST_ECHO_MAKE))
-	$(RM) -r $(LIBTOOL_HOST_DIR)
-	$(call UNPACK_TARBALL,$(DL_DIR)/$(LIBTOOL_HOST_SOURCE),$(TARGET_TOOLCHAIN_DIR))
-	$(call APPLY_PATCHES,$(LIBTOOL_HOST_MAKE_DIR)/patches,$(LIBTOOL_HOST_DIR))
+libtool-staging-unpacked: $(LIBTOOL_STAGING_DIR)/.unpacked
+$(LIBTOOL_STAGING_DIR)/.unpacked: $(DL_DIR)/$(LIBTOOL_STAGING_SOURCE) | $(TARGET_TOOLCHAIN_DIR) $(UNPACK_TARBALL_PREREQUISITES)
+	@$(call _ECHO,unpacking,$(LIBTOOL_STAGING_ECHO_TYPE),$(LIBTOOL_STAGING_ECHO_MAKE))
+	$(RM) -r $(LIBTOOL_STAGING_DIR)
+	$(call UNPACK_TARBALL,$(DL_DIR)/$(LIBTOOL_STAGING_SOURCE),$(TARGET_TOOLCHAIN_DIR))
+	$(call APPLY_PATCHES,$(LIBTOOL_STAGING_MAKE_DIR)/patches,$(LIBTOOL_STAGING_DIR))
 # touch some patched files to ensure no file except for ltmain.sh gets regenerated
-	for i in $$(find $(LIBTOOL_HOST_DIR) -type f \( \( -name "*.m4" -o -name "*.am" \) -a ! -name "aclocal.m4" \)); do \
+	for i in $$(find $(LIBTOOL_STAGING_DIR) -type f \( \( -name "*.m4" -o -name "*.am" \) -a ! -name "aclocal.m4" \)); do \
 		touch -t 200001010000.00 $$i; \
 	done; \
 	touch $@
 
-libtool-host-configured: $(LIBTOOL_HOST_DIR)/.configured
-$(LIBTOOL_HOST_DIR)/.configured: $(LIBTOOL_HOST_DIR)/.unpacked | $(TARGET_CXX_CROSS_COMPILER_SYMLINK_TIMESTAMP)
-	@$(call _ECHO,configuring,$(LIBTOOL_HOST_ECHO_TYPE),$(LIBTOOL_HOST_ECHO_MAKE))
-	(cd $(LIBTOOL_HOST_DIR); $(RM) config.cache; \
+libtool-staging-configured: $(LIBTOOL_STAGING_DIR)/.configured
+$(LIBTOOL_STAGING_DIR)/.configured: $(LIBTOOL_STAGING_DIR)/.unpacked | $(TARGET_CXX_CROSS_COMPILER_SYMLINK_TIMESTAMP)
+	@$(call _ECHO,configuring,$(LIBTOOL_STAGING_ECHO_TYPE),$(LIBTOOL_STAGING_ECHO_MAKE))
+	(cd $(LIBTOOL_STAGING_DIR); $(RM) config.cache; \
 		CC=$(TARGET_CC) \
 		CXX=$(TARGET_CXX) \
 		CFLAGS="$(TARGET_CFLAGS)" \
@@ -52,40 +53,40 @@ $(LIBTOOL_HOST_DIR)/.configured: $(LIBTOOL_HOST_DIR)/.unpacked | $(TARGET_CXX_CR
 	);
 	touch $@
 
-$(LIBTOOL_HOST_SCRIPT): $(LIBTOOL_HOST_DIR)/.configured
-	@$(call _ECHO,building,$(LIBTOOL_HOST_ECHO_TYPE),$(LIBTOOL_HOST_ECHO_MAKE))
+$(LIBTOOL_STAGING_SCRIPT): $(LIBTOOL_STAGING_DIR)/.configured
+	@$(call _ECHO,building,$(LIBTOOL_STAGING_ECHO_TYPE),$(LIBTOOL_STAGING_ECHO_MAKE))
 	PATH=$(TARGET_PATH) \
-		$(MAKE) -C $(LIBTOOL_HOST_DIR) \
+		$(MAKE) -C $(LIBTOOL_STAGING_DIR) \
 		GLOBAL_LIBDIR=$(GLOBAL_LIBDIR) \
 		all $(SILENT)
 	touch -c $@
 
-$(LIBTOOL_HOST_TARGET_SCRIPT): $(LIBTOOL_HOST_SCRIPT)
-	@$(call _ECHO,installing,$(LIBTOOL_HOST_ECHO_TYPE),$(LIBTOOL_HOST_ECHO_MAKE))
+$(LIBTOOL_STAGING_TARGET_SCRIPT): $(LIBTOOL_STAGING_SCRIPT)
+	@$(call _ECHO,installing,$(LIBTOOL_STAGING_ECHO_TYPE),$(LIBTOOL_STAGING_ECHO_MAKE))
 	$(MAKE) DESTDIR="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr" \
 		MAKEINFO=true \
-		-C $(LIBTOOL_HOST_DIR) \
+		-C $(LIBTOOL_STAGING_DIR) \
 		install $(SILENT)
 	$(call REMOVE_DOC_NLS_DIRS,$(TARGET_TOOLCHAIN_STAGING_DIR))
 
-libtool-host: $(LIBTOOL_HOST_TARGET_SCRIPT) | $(STDCXXLIB)
+libtool-staging: $(LIBTOOL_STAGING_TARGET_SCRIPT) | $(STDCXXLIB)
 
 
-libtool-host-clean:
-	-$(MAKE) -C $(LIBTOOL_HOST_DIR) clean
+libtool-staging-clean:
+	-$(MAKE) -C $(LIBTOOL_STAGING_DIR) clean
 
-libtool-host-dirclean:
+libtool-staging-dirclean:
 	$(RM) -r \
-		$(LIBTOOL_HOST_DIR) \
-		$(LIBTOOL_HOST_TARGET_SCRIPT) \
+		$(LIBTOOL_STAGING_DIR) \
+		$(LIBTOOL_STAGING_TARGET_SCRIPT) \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/libtoolize \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/aclocal/libtool.m4 \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/aclocal/ltdl.m4 \
 		$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/libtool/
 
-libtool-host-distclean: libtool-host-dirclean
+libtool-staging-distclean: libtool-staging-dirclean
 
 
-.PHONY: libtool-host libtool-host-source libtool-host-unpacked
-.PHONY: libtool-host-clean libtool-host-dirclean libtool-host-distclean
+.PHONY: libtool-staging libtool-staging-source libtool-staging-unpacked
+.PHONY: libtool-staging-clean libtool-staging-dirclean libtool-staging-distclean
 

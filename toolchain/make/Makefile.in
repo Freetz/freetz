@@ -83,8 +83,8 @@ $(TARGET_CXX_CROSS_COMPILER_SYMLINK_TIMESTAMP): $(TOPDIR)/.config | gcc $(if $(F
 kernel-toolchain-clean: ccache-kernel-clean
 kernel-toolchain-dirclean: ccache-kernel-dirclean
 
-target-toolchain-clean: ccache-clean libtool-host-clean
-target-toolchain-dirclean: ccache-dirclean libtool-host-dirclean
+target-toolchain-clean: ccache-clean libtool-staging-clean
+target-toolchain-dirclean: ccache-dirclean libtool-staging-dirclean
 
 toolchain-dirclean: kernel-toolchain-dirclean target-toolchain-dirclean
 
