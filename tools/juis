@@ -42,7 +42,7 @@ juisstring() {
 }
 
 multi() {
-	make kconfig-host >/dev/null
+	make kconfig-host-conf >/dev/null
 	for device in $(grep 'prompt "Hardware type"' config/ui/firmware.in -A999 | grep '^endchoice' -m1 -B999 | sed -rn 's/.*config //p' | tac); do
 		juisstring $device
 		grep -Eq '^FREETZ_TYPE_FIRMWARE_(LABOR|INHAUS)=y$' .config && continue

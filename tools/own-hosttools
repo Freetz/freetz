@@ -29,7 +29,7 @@ mv .config .config.tmp 2>/dev/null
 make distclean
 [ ! -d dl ] && ln -sf ~/.freetz-dl dl
 [ ! -d dl ] && mkdir -p dl
-make kconfig-host
+make kconfig-host-conf
 cat << EOF > .config
 FREETZ_USER_LEVEL_EXPERT=y
 # FREETZ_TOOLCHAIN_32BIT is not set

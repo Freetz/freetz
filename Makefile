@@ -438,29 +438,29 @@ nconfig: config-cache kconfig-host-nconf
 nconfig-single: config-cache kconfig-host-nconf
 	@MENUCONFIG_MODE="single_menu" $(CONFIG)/nconf $(CONFIG_IN_CACHE)
 
-menuconfig: config-cache kconfig-host
+menuconfig: config-cache kconfig-host-mconf
 	@$(CONFIG)/mconf $(CONFIG_IN_CACHE)
 
-menuconfig-single: config-cache kconfig-host
+menuconfig-single: config-cache kconfig-host-mconf
 	@MENUCONFIG_MODE="single_menu" $(CONFIG)/mconf $(CONFIG_IN_CACHE)
 
-menuconfig-nocache: $(CONFIG_IN_CUSTOM) kconfig-host
+menuconfig-nocache: $(CONFIG_IN_CUSTOM) kconfig-host-mconf
 	@$(CONFIG)/mconf $(CONFIG_IN)
 
-config: config-cache kconfig-host
+config: config-cache kconfig-host-conf
 	@$(CONFIG)/conf $(CONFIG_IN_CACHE)
 
 config-compress: .config.compressed
-.config.compressed: .config config-cache kconfig-host
+.config.compressed: .config config-cache kconfig-host-conf
 	@$(CONFIG)/conf --savedefconfig $@ $(CONFIG_IN_CACHE)
 	@sed -e "/^FREETZ_FWMOD_SIGN_PASSWORD=/d" -i $@ 2>/dev/null
 #	@echo "Compressed configuration written to $@."; \
 #	echo  "It is equivalent to .config, but contains only non-default user selections and no signing key password."
 
-listnewconfig: config-cache kconfig-host
+listnewconfig: config-cache kconfig-host-conf
 	@$(CONFIG)/conf --listnewconfig $(CONFIG_IN_CACHE)
 
-oldconfig olddefconfig allnoconfig allyesconfig randconfig: config-cache kconfig-host
+oldconfig olddefconfig allnoconfig allyesconfig randconfig: config-cache kconfig-host-conf
 	@$(CONFIG)/conf --$@ $(CONFIG_IN_CACHE) && touch .config
 
 reuseconfig: .config

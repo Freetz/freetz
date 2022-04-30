@@ -79,7 +79,7 @@ dltc() {
 	rm -rf dl 2>/dev/null
 	ln -sf ~/.freetz-dl dl
 	mkdir -p dl
-	make kconfig-host
+	make kconfig-host-conf
 	miniconfig $options > .config
 	make olddefconfig
 	cp -a .config tc-${options// /_}.conf

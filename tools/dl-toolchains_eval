@@ -7,7 +7,7 @@ VERSION="${1:-rLOCAL}"
 SUFFIX="freetz-${VERSION}-shared-glibc"
 
 rm -f out.{raw,kernel,target}
-make kconfig-host &>/dev/null
+make kconfig-host-conf &>/dev/null
 
 evalconfig() {
 	echo -n .

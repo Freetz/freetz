@@ -10,6 +10,7 @@ warn_dir=kconfig-warnings
 conf_file=.config
 warn_file=conf-warnings.log
 
+make kconfig-host-conf &>/dev/null
 # Create output directory and refresh config cache
 mkdir -p $warn_dir
 make config-cache-refresh > /dev/null
