@@ -400,7 +400,7 @@ endef
 define _ECHO_START_INT
 	$(call _ECHO_START_ARG,$(2),$(3),$(4)) \
 	if ! diff -q $(ECHO_ITEM_TMP) $(ECHO_ITEM_NEW) >/dev/null 2>&1 || [ ! -e $(ECHO_ITEM_1ST) ]; then \
-		$(call _ECHO_DONE_INT) \
+		$(call _ECHO_DONE) \
 		[ -s $(ECHO_ITEM_TMP) ] && cat $(ECHO_ITEM_TMP) > $(ECHO_ITEM_NEW) 2>/dev/null; \
 		[ -s $(ECHO_ITEM_NEW) ] || cat $(ECHO_ITEM_OLD) > $(ECHO_ITEM_NEW) 2>/dev/null; \
 		if [ -s "$(ECHO_ITEM_NEW)" ]; then \
@@ -422,7 +422,7 @@ define _ECHO_BUILD_INT
 	$(call _ECHO,building,$(1),$(2),$(3))
 endef
 
-define _ECHO_DONE_INT
+define _ECHO_DONE
 	if [ -e $(ECHO_ITEM_END) -a -e $(ECHO_ITEM_NEW) -a -e $(ECHO_ITEM_1ST) ]; then \
 		echo -e "\e[48;5;26mdone\e[49m."; \
 		$(RM) $(ECHO_ITEM_END); \
@@ -602,7 +602,7 @@ endef
 define PKG_FINISH__INT
 $(pkg)-precompiled--int: $(pkg)-build-prereq $(TOOLCHAIN) $($(PKG)_HOST_DEPENDS_ON) $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON))
 $(pkg)-precompiled:
-	@$(call _ECHO_DONE_INT)
+	@$(call _ECHO_DONE)
 
 .PHONY: $(pkg)-build-prereq
 $(pkg)-build-prereq: $($(PKG)_DIR)/.build-prereq-checked
