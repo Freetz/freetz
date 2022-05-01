@@ -1368,26 +1368,35 @@ if FREETZ_PATCH_UDEVMOUNT
 		help
 			This adds ext4 module to your firmware.
 
+	comment "Intern HFS"
+		depends on FREETZ_AVM_HAS_HFS_FS_BUILTIN
 	config FREETZ_UDEVMOUNT_HFS
 		bool "Select HFS"
+		depends on !FREETZ_AVM_HAS_HFS_FS_BUILTIN
 		depends on FREETZ_REPLACE_MODULE_AVAILABLE
-		select FREETZ_MODULE_hfs if !FREETZ_AVM_HAS_HFS_FS_BUILTIN
+		select FREETZ_MODULE_hfs
 		default n
 		help
 			This adds hfs module to your firmware.
 
+	comment "Intern HFS+"
+		depends on FREETZ_AVM_HAS_HFSPLUS_FS_BUILTIN
 	config FREETZ_UDEVMOUNT_HFS_PLUS
 		bool "Select HFS+"
+		depends on !FREETZ_AVM_HAS_HFSPLUS_FS_BUILTIN
 		depends on FREETZ_REPLACE_MODULE_AVAILABLE
-		select FREETZ_MODULE_hfsplus if !FREETZ_AVM_HAS_HFSPLUS_FS_BUILTIN
+		select FREETZ_MODULE_hfsplus
 		default n
 		help
 			This adds hfs+ module to your firmware.
 
+	comment "Intern ReiserFS"
+		depends on FREETZ_AVM_HAS_REISERFS_FS_BUILTIN
 	config FREETZ_UDEVMOUNT_REISER_FS
 		bool "Select ReiserFS"
+		depends on !FREETZ_AVM_HAS_REISERFS_FS_BUILTIN
 		depends on FREETZ_REPLACE_MODULE_AVAILABLE
-		select FREETZ_MODULE_reiserfs if !FREETZ_AVM_HAS_REISERFS_FS_BUILTIN
+		select FREETZ_MODULE_reiserfs
 		default n
 		help
 			This adds reiserfs module to your firmware.
