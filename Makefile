@@ -261,7 +261,7 @@ step: image world tools firmware
 -include .config.cmd
 
 include $(TOOLCHAIN_DIR)/make/Makefile.in
-include $(MAKE_DIR)/Makefile.image.in
+include $(INCLUDE_DIR)/Makefile/image.mk
 include $(MAKE_DIR)/Makefile.in
 include $(call sorted-wildcard,$(MAKE_DIR)/libs/*/Makefile.in)
 include $(call sorted-wildcard,$(MAKE_DIR)/*/Makefile.in)
