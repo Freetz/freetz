@@ -715,7 +715,7 @@ choice
 	config FREETZ_TYPE_FIRMWARE_07_4X_INHAUS
 		bool "FRITZ!OS 07.39 Inhaus - UNTESTED"
 		select FREETZ_AVM_VERSION_07_4X
-		select FREETZ_TYPE_FIRMWARE_DETECT_LATEST
+		select FREETZ_TYPE_FIRMWARE_DETECT_LATEST if !FREETZ_TYPE_7490
 		depends on FREETZ_AVM_HAS_FIRMWARE_07_4X_INHAUS && FREETZ_SHOW_EXPERT
 		help
 			Enable this to use an AVM Inhaus firmware as base for modding.
