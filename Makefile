@@ -217,6 +217,8 @@ endif
 export FREETZ_VERBOSITY_LEVEL
 export VERBOSE
 
+include $(INCLUDE_DIR)/Makefile/echo.mk
+
 include $(TOOLS_DIR)/make/Makefile.in
 include $(call sorted-wildcard,$(TOOLS_DIR)/make/*/*.mk)
 
