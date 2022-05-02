@@ -44,8 +44,11 @@ kernel-menuconfig                       Configuration of selected kernel
 kernel-precompiled                      Compiles the selected kernel
 kernel-dirclean                         Cleans everything of the selected kernel
 
-tools                                   Builds some tools required by Freetz
-tools-dirclean                          Cleans everything of the Freetz tools
+tools                                   Builds the tools required by current selection
+tools-all                               Builds all available tools of Freetz
+tools-allexcept-local                   Builds all non-local tools of Freetz (dl-tools)
+tools-distclean-local                   Cleans everything of local tools (dl-tools)
+tools-dirclean                          Cleans everything of all Freetz tools
 
 uclibc-menuconfig                       Configuration of selected uClibc
 

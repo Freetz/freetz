@@ -3,7 +3,6 @@
 #Arg $1: <VERSION>
 
 VERSION="${1:-$(date '+%Y-%m-%d')}"
-FILE="tools-$VERSION"
 
 miniconfig() {
 local i
@@ -19,12 +18,8 @@ EOF
 }
 
 SKIP="kconfig"
-OUTP="dl/$FILE.tar.xz"
+OUTP="dl/tools-$VERSION.tar.xz"
 [ -s "$OUTP" ] && echo "File $OUTP exists" && exit 1
-
-TOOLS="$(ls tools/make/*/*.mk | sed 's!.*/!!;s/.mk$//g')"
-LOCAL="$(sed -n 's/^TOOLS_BUILD_LOCAL.=//p' tools/make/Makefile.in)"
-BUILD="$(echo "$TOOLS" | grep -vE "^$(echo $LOCAL | sed 's/ /|/g')$")"
 
 make distclean
 rm -rf dl 2>/dev/null
@@ -33,9 +28,8 @@ mkdir -p dl
 make kconfig-host-conf
 miniconfig > .config
 make olddefconfig
-cp -a .config "$FILE.conf"
-time for x in $BUILD; do make $x; done 2>&1 | tee "$FILE.make"  # 4min
-for x in $LOCAL; do [ "$x" != "tools-host" ] && make $x-distclean; done
+time make tools-allexcept-local  # 5min
+make tools-distclean-local
 time sed -n 's,^/,tools/,p' tools/.gitignore | grep -vE "/(${SKIP// /|})$" | tar cvf - -T - | xz -9 - > "$OUTP"  # 1min
 echo "################################################################"
 du -h "$OUTP"
