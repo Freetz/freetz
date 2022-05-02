@@ -240,7 +240,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
   * **<u>html2text 1.3.2a (binary only)</u><a id='html2text'></a>**<br>
     html2text is a command line utility, written in C++, that converts HTML documents into plain text.
 
-  * **<u>htop 1.0.3/3.2.0 (binary only)</u><a id='htop'></a>**<br>
+  * **[htop 1.0.3/3.2.0 (binary only)](htop.md)<a id='htop'></a>**<br>
     htop is a more powerful alternative to top, using ncurses.
 
   * **[htpdate 1.0.4](htpdate.md)<a id='htpdate'></a>**<br>
