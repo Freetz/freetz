@@ -53,6 +53,7 @@ Latest changes
    * BIND 9.11.37/9.16.28
    * CA-bundle 2022-04-26
    * Curl 7.83.0
+   * htop 1.0.3/2.3.0
    * juis_check 1.1
    * libcap 2.49/2.64
    * libneon 0.30.2/0.32.2

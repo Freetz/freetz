@@ -1,13 +1,24 @@
-$(call PKG_INIT_BIN, 1.0.3)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=e768b9b55c033d9c1dffda72db3a6ac7
-$(PKG)_SITE:=http://hisham.hm/htop/releases/$($(PKG)_VERSION)
+$(call PKG_INIT_BIN, $(if $(FREETZ_PACKAGE_HTOP_VERSION_ABANDON),1.0.3,3.2.0))
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.$(if $(FREETZ_PACKAGE_HTOP_VERSION_ABANDON),gz,xz)
+$(PKG)_SOURCE_SHA256_ABANDON:=055c57927f75847fdc222b5258b079a9542811a9dcf5421c615c7e17f55d1829
+$(PKG)_SOURCE_SHA256_CURRENT:=e0f645d4ac324f2c4c48aaa7a3a96d007b95516559550be0b56e423fc5b6d783
+$(PKG)_SOURCE_SHA256:=$(HTOP_SOURCE_SHA256_$(if $(FREETZ_PACKAGE_HTOP_VERSION_ABANDON),ABANDON,CURRENT))
+$(PKG)_SITE:=https://github.com/htop-dev/htop/releases/download/$($(PKG)_VERSION),https://hisham.hm/htop/releases/$($(PKG)_VERSION)
+### WEBSITE:=https://htop.dev/
+### MANPAGE:=https://linux.die.net/man/1/htop
+### CHANGES:=https://github.com/htop-dev/htop/blob/main/ChangeLog
+### CVSREPO:=https://github.com/htop-dev/htop 
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/htop
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/htop
 
 $(PKG)_DEPENDS_ON += ncurses
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_HTOP_VERSION_ABANDON
+
+$(PKG)_CONDITIONAL_PATCHES+=$(if $(FREETZ_PACKAGE_HTOP_VERSION_ABANDON),abandon,current)
+
+ifeq ($(FREETZ_PACKAGE_HTOP_VERSION_ABANDON),y)
 $(PKG)_CONFIGURE_ENV += ac_cv_file__proc_stat=yes
 $(PKG)_CONFIGURE_ENV += ac_cv_file__proc_meminfo=yes
 
@@ -15,6 +26,23 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-unicode
 ifeq ($(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),y)
 $(PKG)_CONFIGURE_OPTIONS += --disable-native-affinity
 endif
+
+else
+
+$(PKG)_CONFIGURE_PRE_CMDS += ./autogen.sh $(SILENT);
+
+$(PKG)_CONFIGURE_OPTIONS += --disable-debug
+$(PKG)_CONFIGURE_OPTIONS += --disable-unicode
+$(PKG)_CONFIGURE_OPTIONS += --disable-hwloc
+$(PKG)_CONFIGURE_OPTIONS += --disable-pcp
+$(PKG)_CONFIGURE_OPTIONS += --disable-sensors
+$(PKG)_CONFIGURE_OPTIONS += --disable-capabilities
+$(PKG)_CONFIGURE_OPTIONS += --disable-openvz
+$(PKG)_CONFIGURE_OPTIONS += --disable-vserver
+$(PKG)_CONFIGURE_OPTIONS += --disable-ancient-vserver
+$(PKG)_CONFIGURE_OPTIONS += --disable-delayacct
+endif
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -29,6 +57,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(HTOP_DIR) clean
