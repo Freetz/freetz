@@ -58,7 +58,7 @@ CHECK_PREREQ_TOOL:=$(TOOLS_DIR)/prerequisites
 GENERATE_IN_TOOL:=$(TOOLS_DIR)/genin
 
 # do not use sorted-wildcard here, it's first defined in files included here
-include $(sort $(wildcard include/make/*.mk))
+include $(sort $(wildcard $(INCLUDE_DIR)/make/*.mk))
 
 # Use echo -e "$(_Y)message$(_N)" if you want to print a yellow message
 IS_TTY=$(shell tty -s && echo 1 || echo 0)
@@ -477,10 +477,10 @@ config-cache-clean:
 config-cache-refresh: config-cache-clean config-cache
 
 ifneq ($(findstring clean,$(MAKECMDGOALS)),clean)
--include include/config/cache.conf.cmd
+-include $(INCLUDE_DIR)/config/cache.conf.cmd
 
-$(CONFIG_IN_CACHE) include/config/cache.conf.cmd: $(CONFIG_IN_CUSTOM) $(PARSE_CONFIG_TOOL) $(deps_config_cache)
-	@mkdir -p include/config
+$(CONFIG_IN_CACHE) $(INCLUDE_DIR)/config/cache.conf.cmd: $(CONFIG_IN_CUSTOM) $(PARSE_CONFIG_TOOL) $(deps_config_cache)
+	@mkdir -p $(INCLUDE_DIR)/config
 	@$(PARSE_CONFIG_TOOL) $(CONFIG_IN) > $(CONFIG_IN_CACHE)
 endif
 
@@ -541,7 +541,7 @@ common-dirclean: common-clean $(if $(FREETZ_HAVE_DOT_CONFIG),kernel-dirclean)
 
 common-distclean: common-dirclean
 	$(RM)    .config.cmd .tmpconfig.h *.log
-	$(RM) -r include/config
+	$(RM) -r $(INCLUDE_DIR)/config
 	$(RM) -r $(FW_IMAGES_DIR)
 	$(RM) -r $(KERNEL_TARGET_DIR)
 	$(RM) -r $(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT)
