@@ -218,21 +218,13 @@ status "done" "$(lang \
   en:"Installation script return code" \
 ): <B>$result (<FONT COLOR=$color>$result_txt</FONT>)</B>"
 
-if [ "$FREETZ_TYPE_CABLE" != "y" ]; then
+if [ -x /var/post_install ]; then
 	echo "<p>$(lang de:"Von" en:"Generated content of") /var/post_install$(lang de:" generierter Inhalt:" en:":")</p>"
-	if [ ! -x /var/post_install ]; then
-		print_error "$(lang \
-		  de:"Nach-Installationsskript nicht gefunden oder nicht ausf&uuml;hrbar." \
-		  en:"Post-installation script not found or not executable." \
-		)"
-		do_exit 1
-	fi
 	pre_begin
 	html < /var/post_install
 	pre_end
-fi
 
-[ "$FREETZ_TYPE_CABLE" != "y" ] && cat << EOF
+cat << EOF
 <p>
 $(lang \
   de:"Das Nach-Installationsskript l&auml;uft beim Neustart (reboot) und f&uuml;hrt die darin definierten Aktionen aus, z.B. das tats&auml;chliche Flashen der Firmware. Sie k&ouml;nnen immer noch entscheiden, diesen Vorgang abzubrechen, indem Sie das Skript und den Rest der extrahierten Firmware-Komponenten l&ouml;schen." \
@@ -240,6 +232,16 @@ $(lang \
 )
 </p>
 EOF
+else
+cat << EOF
+<p>
+$(lang \
+  de:"HINWEIS: Es gibt kein ausf&uuml;hrbares Nach-Installationsskript." \
+  en:"NOTE: There is no executable post-installation script." \
+)
+</p>
+EOF
+fi
 
 if $rebootbox; then
 	echo "<b>$(lang de:"Das Ger&auml;t startet automatisch neu" en:"The device will reboot automatically") ... </b>"
