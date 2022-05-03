@@ -1,6 +1,7 @@
 config FREETZ_PACKAGE_LTRACE
 	bool "ltrace 0.7.3checkpoint1-git (binary only)"
 	default n
+	depends on FREETZ_TARGET_GCC_4_7_MIN
 	select FREETZ_LIB_libelf
 	help
 		ltrace - library call tracer
