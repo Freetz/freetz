@@ -58,6 +58,7 @@ Latest changes
    * libcap 2.49/2.64
    * libneon 0.30.2/0.32.2
    * LCD4linux e691a4b-git
+   * ltrace 0.7.3checkpoint1-git
    * MTR 0.80/0.95
    * Nano 6.3
    * Tor 0.4.7.7

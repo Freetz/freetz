@@ -1,7 +1,11 @@
-$(call PKG_INIT_BIN, c22d359433)
+$(call PKG_INIT_BIN, 82c66409c7a93ca6ad2e4563ef030dfb7e6df4d4)
 $(PKG)_SOURCE:=ltrace-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=aab15b5a24feb952221cb195854fafeacc08a26564bb922184e1bb29ad57dd1e
+$(PKG)_SOURCE_SHA256:=10b15c33ad2e5ee8ab87210f536a66586532ac5c0bec445d8e4e2089c518c935
 $(PKG)_SITE:=git@https://github.com/dkogan/ltrace.git
+### WEBSITE:=https://www.ltrace.org/
+### MANPAGE:=https://linux.die.net/man/1/ltrace
+### CHANGES:=https://github.com/dkogan/ltrace/commits/master
+### CVSREPO:=https://github.com/dkogan/ltrace
 
 $(PKG)_CATEGORY:=Debug helpers
 
@@ -14,7 +18,7 @@ $(PKG)_CONFIGS_TARGET_DIR := $($(PKG)_CONFIGS:%=$($(PKG)_DEST_DIR)/usr/share/ltr
 
 $(PKG)_DEPENDS_ON += libelf
 
-$(PKG)_CONFIGURE_PRE_CMDS += ./autogen.sh;
+$(PKG)_CONFIGURE_PRE_CMDS += ./autogen.sh $(SILENT);
 
 # disable demangling support
 $(PKG)_CONFIGURE_ENV += ac_cv_lib_iberty_cplus_demangle=no
@@ -23,6 +27,7 @@ $(PKG)_CONFIGURE_ENV += ac_cv_lib_supcpp___cxa_demangle=no
 
 $(PKG)_CONFIGURE_OPTIONS += --with-libelf="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --with-libunwind=no
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -41,6 +46,7 @@ $($(PKG)_CONFIGS_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/share/ltrace/%: $($(PKG)_DI
 	$(INSTALL_FILE)
 
 $(pkg):
+
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_CONFIGS_TARGET_DIR)
 
