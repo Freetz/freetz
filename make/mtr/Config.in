@@ -6,3 +6,12 @@ config FREETZ_PACKAGE_MTR
 		MTR combines the functionality of the 'traceroute' and 'ping' programs
 		in a single network diagnostic tool.
 
+if FREETZ_PACKAGE_MTR
+
+	config FREETZ_PACKAGE_MTR_VERSION_ABANDON
+		bool
+		default y
+		depends on !FREETZ_TARGET_GCC_4_8_MIN
+
+endif # FREETZ_PACKAGE_MTR
+

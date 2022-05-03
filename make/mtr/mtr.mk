@@ -1,11 +1,11 @@
-$(call PKG_INIT_BIN, $(if $(FREETZ_TARGET_UCLIBC_0),0.80,852e5617fbf331cf292723702161f0ac9afe257c))
+$(call PKG_INIT_BIN, $(if $(FREETZ_PACKAGE_MTR_VERSION_ABANDON),0.80,852e5617fbf331cf292723702161f0ac9afe257c))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SOURCE_SHA256_ABANDON:=76bbdd97faf3b805933a50858549ddba895911d6891c6cc51db472567cff0ec0
 $(PKG)_SOURCE_SHA256_CURRENT:=3f4d97830d87b613b1040645e7c5188520e681fc01866cbfa4825de8d72f7723
-$(PKG)_SOURCE_SHA256:=$(MTR_SOURCE_SHA256_$(if $(FREETZ_TARGET_UCLIBC_0),ABANDON,CURRENT))
+$(PKG)_SOURCE_SHA256:=$(MTR_SOURCE_SHA256_$(if $(FREETZ_PACKAGE_MTR_VERSION_ABANDON),ABANDON,CURRENT))
 $(PKG)_SITE_ABANDON:=https://www.bitwizard.nl/mtr/files
 $(PKG)_SITE_CURRENT:=git@https://github.com/traviscross/mtr.git
-$(PKG)_SITE:=$(MTR_SITE_$(if $(FREETZ_TARGET_UCLIBC_0),ABANDON,CURRENT))
+$(PKG)_SITE:=$(MTR_SITE_$(if $(FREETZ_PACKAGE_MTR_VERSION_ABANDON),ABANDON,CURRENT))
 ### WEBSITE:=https://www.bitwizard.nl/mtr/
 ### MANPAGE:=https://linux.die.net/man/8/mtr
 ### CHANGES:=https://github.com/traviscross/mtr/blob/master/NEWS
@@ -15,20 +15,20 @@ $(PKG)_DEPENDS_ON += ncurses
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 
-$(PKG)_CONDITIONAL_PATCHES+=$(if $(FREETZ_TARGET_UCLIBC_0),abandon,current)
+$(PKG)_CONDITIONAL_PATCHES+=$(if $(FREETZ_PACKAGE_MTR_VERSION_ABANDON),abandon,current)
 
-$(PKG)_BINARY:=mtr $(if $(FREETZ_TARGET_UCLIBC_0),,mtr-packet)
+$(PKG)_BINARY:=mtr $(if $(FREETZ_PACKAGE_MTR_VERSION_ABANDON),,mtr-packet)
 $(PKG)_BINARY_BUILD_DIR:=$($(PKG)_BINARY:%=$($(PKG)_DIR)/%)
 $(PKG)_BINARY_TARGET_DIR:=$($(PKG)_BINARY:%=$($(PKG)_DEST_DIR)/usr/sbin/%)
 
 # new versions have no release-tar but only a git tag
-$(PKG)_CONFIGURE_PRE_CMDS += $(if $(FREETZ_TARGET_UCLIBC_0),,./bootstrap.sh;)
+$(PKG)_CONFIGURE_PRE_CMDS += $(if $(FREETZ_PACKAGE_MTR_VERSION_ABANDON),,./bootstrap.sh $(SILENT);)
 
 $(PKG)_CONFIGURE_ENV += ac_cv_lib_cap_cap_set_proc=no
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --disable-static
-ifeq ($(FREETZ_TARGET_UCLIBC_0),y)
+ifeq ($(FREETZ_PACKAGE_MTR_VERSION_ABANDON),y)
 $(PKG)_CONFIGURE_OPTIONS += --with-ncurses
 #$(PKG)_CONFIGURE_OPTIONS += --with-ipinfo
 #$(PKG)_CONFIGURE_OPTIONS += --without-libasan
@@ -44,7 +44,7 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY_BUILD_DIR): $($(PKG)_DIR)/.configured
-	$(SUBMAKE) -C $(MTR_DIR)
+	$(SUBMAKE) -C $(MTR_DIR) $(SILENT)
 
 $($(PKG)_BINARY_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/sbin/%: $($(PKG)_DIR)/$($(PKG)_BUILD_SUBDIR)%
 	$(INSTALL_BINARY_STRIP)
