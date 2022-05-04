@@ -1,24 +1,40 @@
 #!/bin/bash
-# Ask avm's update service for latest firmware infos like download url
 MYPWD="$(dirname $(realpath $0))"
 
 help() {
 cat << EOX
+$0: Ask avm's JUIS update service for latest firmware infos like download url
 
-$0 parameters:
-	<-i>: [Prio 3] Computer
-	<-s>: [Prio 2] Fritzbox
-	<-d>: [Prio 1] RAW-out (or no -i and -s)
-	<--dect>: Searches for a firmware for an dect device
-	<--bpjm>: Searches for the encrypted BPjM-Modul file
-	<--plain>: Forces to use http. AVM uses this only.
-	<--https>: Forces to use https. Curl is mandatory for https.
-	Without --plain and --https, the default is https if curl is installed. But on fritzbox only if FREETZ_ADD_JUIS_CHECK__SSL is set.
+Parameters:
+	-i:	[Prio 3] Computer, shows the URL if there is a newer version.
+	-s:	[Prio 2] Fritzbox, shows if a new version is available. Response is cached in: "/tmp/.juis_check"
+	-d:	[Prio 1] RAW-output of the response (or no -i and -s).
 
-Example: env - tools/juis_check --dect DHW=06.03 DSW=04.90 Version=154.07.35-80123 Serial=123456789012 Name=FRITZ\!Box 7590 HW=226 OEM=avm Lang=de Annex=B Country=049 Flag=empty Buildtype=1000 Nonce=XXXXXXXXXXXXXXXXXXXXXXXX -i -s -d 
-Example: env - tools/juis_check --bpjm                     Version=154.07.35-80123 Serial=123456789012 Name=FRITZ\!Box 7590 HW=226 OEM=avm Lang=de Annex=B Country=049 Flag=empty Buildtype=1000 Nonce=XXXXXXXXXXXXXXXXXXXXXXXX -i -s -d 
-Example: env - tools/juis_check                            Version=154.07.35-80123 Serial=123456789012 Name=FRITZ\!Box 7590 HW=226 OEM=avm Lang=de Annex=B Country=049 Flag=empty Buildtype=1000 Nonce=XXXXXXXXXXXXXXXXXXXXXXXX -i -s -d 
-Or just: tools/juis m  # f
+	--dect:		Searches for a firmware for an dect device.
+	--bpjm:		Searches for the encrypted BPjM-Modul file.
+	Without --dect and --bpjm, a firmware for a Fritzbox is searched.
+
+	--plain:	Forces to use http. AVM uses this only.
+	--https:	Forces to use https. Curl is mandatory for https.
+	Without --plain and --https, the default is https if curl is installed. But on fritzbox only if "FREETZ_ADD_JUIS_CHECK__SSL" is set.
+
+Variables:
+	On Fritzbox no variables are needed and missing will be read from the device.
+	On Computer you have to provide at least "Name", "Version" and "HW".
+	For Dect "DHW" and "DSW" are mandatory.
+	All available: Version Name HW Buildtype OEM Lang Annex Country Flag Serial Provider ProviderName Nonce UserAgent ManualRequest UpdateConfig
+
+	Name:		There is no space in the name but a zero-width space: "printf '\342\200\212'". Or copy & paste examples below.
+	Annex:		Extender use "Ohne", docsis devices "Kabel".
+	Buildtype:	Common values: "1"=retail, "1000"=labor, "1001"=inhaus, see also https://boxmatrix.info/wiki/Property:CONFIG_BUILDTYPE
+	Flag:		If you do not want to set a flag use "empty", docsis devices need the flag "cable_retail".
+
+Examples:
+	env - tools/juis_check --dect Version=154.07.35-80123 Name=FRITZ\!Box 7590 HW=226  DHW=06.03 DSW=04.90            -i -s -d
+	env - tools/juis_check --bpjm Version=154.07.35-80123 Name=FRITZ\!Box 7590 HW=226  OEM=avm Lang=de Country=049    -i -s -d
+	env - tools/juis_check        Version=154.07.35-80123 Name=FRITZ\!Box 7590 HW=226  Annex=B Buildtype=1000         -i -s -d
+	env - tools/juis_check        Version=252.07.20-80123 Name=FRITZ\!Box 6660 HW=252  Annex=Kabel Flag=cable_retail  -i -s -d
+	Or just: tools/juis m  # f
 
 EOX
 exit
@@ -30,7 +46,6 @@ main() {
 	local x soap avmca url flags body post cache info payload day ser zwsp="$(printf '\342\200\212')"
 	local line='################################################################'
 	local type='text/xml; charset="utf-8"'
-	local UserAgent='TestClient BoxInternetCheck'
 	#soap='SOAPAction: "http://jason.avm.de/updatecheck/BoxFirmwareUpdateCheck"'
 
 	if [ "$SSL" == 'y' ]; then
@@ -43,7 +58,25 @@ main() {
 		#url='jws.avm.de/Jason/UpdateCheck'           # old
 	fi
 
-	UserAgent="$(echo $UserAgent | sed 's/ /\n/g' | sort -R | head -n1)"
+	[ -z "$Nonce" ] && Nonce="$(dd if=/dev/urandom bs=16 count=1 2>/dev/null | base64)"
+
+	[ -z "$UserAgent" ] && UserAgent="$(echo 'TestClient BoxInternetCheck' | sed 's/ /\n/g' | shuf | head -n1)"
+
+	[ -z "$ManualRequest" ] && ManualRequest='true'
+
+	[ -z "$UpdateConfig" ] && UpdateConfig='1'
+
+	[ -z "$Provider" ] && Provider="$(echo 'null oma_ipclient oma_lan vodafone2_vdsl' | sed 's/ /\n/g' | shuf | head -n1 | grep -v '^null$')"
+
+	[ -z "$Serial" ] && while [ "${#Serial}" != "12" ]; do Serial="$(hexdump -n6 -e '/1 "%02X"' /dev/urandom | sed 's/[^0-9A-F]//g')"; done
+
+	if [ -z "$Version" ]; then
+		Version="$(js $info 'Version')"
+		if [ -n "$Version" ]; then
+			Buildnumber="$(js $info 'Buildnumber')"
+			[ -n "$Buildnumber" ] && Version="$Version-$Buildnumber"
+		fi
+	fi
 
 	Buildnumber="${Version#*-}"
 	x="${Version%-*}"
@@ -56,12 +89,17 @@ main() {
 	[ -z "$Name"      ] &&      Name="$(js $info 'Name')"
 	[ -z "$HW"        ] &&        HW="$(js $info 'HW')"
 	[ -z "$OEM"       ] &&       OEM="$(js $info 'OEM')"
+	[ -z "$OEM"       ] &&       OEM="avm"
 	[ -z "$Lang"      ] &&      Lang="$(js $info 'Lang')"
+	[ -z "$Lang"      ] &&      Lang="de"
 	[ -z "$Annex"     ] &&     Annex="$(js $info 'Annex')"
+	[ -z "$Annex"     ] &&     Annex="B"
 	[ -z "$Country"   ] &&   Country="$(js $info 'Country')"
+	[ -z "$Country"   ] &&   Country="049"
 	[ -z "$Flag"      ] &&      Flag="$(js $info 'Flag')"
 	[ -z "$Buildtype" ] && Buildtype="$(js $info 'Buildtype')"
 	[ -z "$Buildtype" ] && Buildtype="$(js $info 'Revision')"
+	[ -z "$Buildtype" ] && Buildtype="1"
 
 	if [ "$CHK" == "BPjMUpdateCheck" ]; then
 		while [ "${#day}" != "1" ]; do day="$day$(hexdump -n4 -e '/1 "%02X"' /dev/urandom | sed -rn 's/.*([012]).*/\1/p')"; done
@@ -70,7 +108,7 @@ main() {
 	fi
 
 	if [ "$CHK" == "DeviceFirmwareUpdateCheck" ]; then
-		[ -z "DHW" -o -z "DSW" ] && echo "For --dect you have to provide DHW and DSW." && exit
+		[ -z "$DHW" -o -z "$DSW" ] && echo "For --dect you have to provide DHW and DSW." 1>&2 && exit 1
 		while [ "${#ser}" != "12" ]; do ser="$ser$(hexdump -n1 -e '/1 "%02X"' /dev/urandom | sed -rn 's/.*([0-9]).*/\1/p')"; done
 		payload="
 <e:DeviceInfo>
@@ -81,9 +119,15 @@ main() {
 <q:Lang>$Lang</q:Lang></e:DeviceInfo>"
 	fi
 
-[ -z "${Flag// /}" ] && Flag='empty'
-for x in $Flag; do flags="<q:Flag>${x/empty/}</q:Flag>
+	if [ -z "${Flag// /}" ]; then
+		Flag="$(echo 'null mesh_master mesh_master_no_trusted mesh_repeater mesh_repeater_no_trusted' | sed 's/ /\n/g' | shuf | head -n1)"
+		Flag="$Flag $(echo 'null medium_lan medium_dsl' | sed 's/ /\n/g' | shuf | head -n1)"
+		Flag="$Flag $(echo 'null null crashreport myfritz_letsencrypt botnet_detection avm_acs prov_acs' | sed 's/ /\n/g' | shuf | head -n3)"
+		[ -z "${Flag// /}" ] && Flag='empty'
+	fi
+for x in ${Flag//null/}; do flags="<q:Flag>${x/empty/}</q:Flag>
 $flags"; done
+flags="$(echo "$flags" | grep -v '^$')"
 
 body=$(cat << EOX
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soap-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:e="http://juis.avm.de/updateinfo" xmlns:q="http://juis.avm.de/request">
@@ -93,7 +137,7 @@ body=$(cat << EOX
 <e:RequestHeader>
 <q:Nonce>$Nonce</q:Nonce>
 <q:UserAgent>$UserAgent</q:UserAgent>
-<q:ManualRequest>true</q:ManualRequest></e:RequestHeader>
+<q:ManualRequest>$ManualRequest</q:ManualRequest></e:RequestHeader>
 <e:BoxInfo>
 <q:Name>${Name//$zwsp/ }</q:Name>
 <q:HW>$HW</q:HW>
@@ -108,9 +152,9 @@ body=$(cat << EOX
 <q:Country>$Country</q:Country>
 <q:Annex>$Annex</q:Annex>
 $flags
-<q:UpdateConfig>1</q:UpdateConfig>
-<q:Provider></q:Provider>
-<q:ProviderName></q:ProviderName></e:BoxInfo>$payload</e:$CHK></soap:Body></soap:Envelope>
+<q:UpdateConfig>$UpdateConfig</q:UpdateConfig>
+<q:Provider>$Provider</q:Provider>
+<q:ProviderName>$ProviderName</q:ProviderName></e:BoxInfo>$payload</e:$CHK></soap:Body></soap:Envelope>
 EOX
 )
 
