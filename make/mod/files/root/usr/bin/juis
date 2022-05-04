@@ -23,8 +23,8 @@ if [ "$REV" -gt 0 2>/dev/null ]; then
 fi
 echo "Using version: $MAJOR.$VER-$REV"
 
-while [ "${#MAC}" != "6" ]; do MAC="$(hexdump -n3 -e '/1 "%02X"' /dev/urandom | sed 's/[^0-9A-F]//')"; done
-MAC="$MAC$(sed -nr 's/^maca[ \t]*(..):(..):(..):.*/\1\2\3/p' /proc/sys/urlader/environment)"
+while [ "${#MAC}" != "6" ]; do MAC="$(hexdump -n3 -e '/1 "%02X"' /dev/urandom | sed 's/[^0-9A-F]//g')"; done
+MAC="$(sed -nr 's/^maca[ \t]*(..):(..):(..):.*/\1\2\3/p' /proc/sys/urlader/environment)$MAC"
 
 NONCE="$(dd if=/dev/urandom bs=16 count=1 2>/dev/null | base64)"
 
