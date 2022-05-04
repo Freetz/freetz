@@ -27,6 +27,7 @@ main() {
 	local x soap avmca url flags body post cache info zwsp="$(printf '\342\200\212')"
 	local line='################################################################'
 	local payload day type='text/xml; charset="utf-8"'
+	local UserAgent='TestClient BoxInternetCheck'
 	#soap='SOAPAction: "http://jason.avm.de/updatecheck/BoxFirmwareUpdateCheck"'
 
 	if [ "$SSL" == 'y' ]; then
@@ -38,6 +39,8 @@ main() {
 		url='185.jws.avm.de/Jason/UpdateInfoService'  # new
 		#url='jws.avm.de/Jason/UpdateCheck'           # old
 	fi
+
+	UserAgent="$(echo $UserAgent | sed 's/ /\n/g' | sort -R | head -n1)"
 
 	Buildnumber="${Version#*-}"
 	x="${Version%-*}"
@@ -74,7 +77,7 @@ body=$(cat << EOX
 <e:$CHK>
 <e:RequestHeader>
 <q:Nonce>$Nonce</q:Nonce>
-<q:UserAgent>TestClient</q:UserAgent>
+<q:UserAgent>$UserAgent</q:UserAgent>
 <q:ManualRequest>true</q:ManualRequest></e:RequestHeader>
 <e:BoxInfo>
 <q:Name>${Name//$zwsp/ }</q:Name>
