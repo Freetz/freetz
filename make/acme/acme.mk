@@ -1,7 +1,11 @@
-$(call PKG_INIT_BIN, 3.0.2)
+$(call PKG_INIT_BIN, 3.0.3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_CHECKSUM:=X
+$(PKG)_SOURCE_CHECKSUM:=aa96a5750fd416270905313a5d8bf611c7b11376d65832180390377face13b0a
 $(PKG)_SITE:=git@https://github.com/Neilpang/acme.sh.git
+### WEBSITE:=https://www.acme.sh
+### MANPAGE:=https://github.com/acmesh-official/acme.sh/wiki
+### CHANGES:=https://github.com/acmesh-official/acme.sh/releases
+### CVSREPO:=https://github.com/acmesh-official/acme.sh
 
 $(PKG)_ALL_ADDS:=deploy dnsapi notify acme.sh
 $(PKG)_ADDS:=$(addprefix $($(PKG)_DIR)/,$($(PKG)_ALL_ADDS))
