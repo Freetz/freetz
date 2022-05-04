@@ -9,12 +9,15 @@ $0 parameters:
 	<-i>: [Prio 3] Computer
 	<-s>: [Prio 2] Fritzbox
 	<-d>: [Prio 1] RAW-out (or no -i and -s)
+	<--dect>: Searches for a firmware for an dect device
 	<--bpjm>: Searches for the encrypted BPjM-Modul file
 	<--plain>: Forces to use http. AVM uses this only.
 	<--https>: Forces to use https. Curl is mandatory for https.
 	Without --plain and --https, the default is https if curl is installed. But on fritzbox only if FREETZ_ADD_JUIS_CHECK__SSL is set.
 
-Example: env - tools/juis_check Version=154.07.35-80123 Serial=123456789012 Name=FRITZ\!Box 7590 HW=226 OEM=avm Lang=de Annex=B Country=049 Flag=empty Buildtype=1000 Nonce=XXXXXXXXXXXXXXXXXXXXXXXX -i -s -d 
+Example: env - tools/juis_check --dect DHW=06.03 DSW=04.90 Version=154.07.35-80123 Serial=123456789012 Name=FRITZ\!Box 7590 HW=226 OEM=avm Lang=de Annex=B Country=049 Flag=empty Buildtype=1000 Nonce=XXXXXXXXXXXXXXXXXXXXXXXX -i -s -d 
+Example: env - tools/juis_check --bpjm                     Version=154.07.35-80123 Serial=123456789012 Name=FRITZ\!Box 7590 HW=226 OEM=avm Lang=de Annex=B Country=049 Flag=empty Buildtype=1000 Nonce=XXXXXXXXXXXXXXXXXXXXXXXX -i -s -d 
+Example: env - tools/juis_check                            Version=154.07.35-80123 Serial=123456789012 Name=FRITZ\!Box 7590 HW=226 OEM=avm Lang=de Annex=B Country=049 Flag=empty Buildtype=1000 Nonce=XXXXXXXXXXXXXXXXXXXXXXXX -i -s -d 
 Or just: tools/juis m  # f
 
 EOX
@@ -24,9 +27,9 @@ exit
 js() { [ -e "$1" ] && sed -rn "s/^<.:$2>(.*)<.*/\1/p" "$1" ; }
 
 main() {
-	local x soap avmca url flags body post cache info zwsp="$(printf '\342\200\212')"
+	local x soap avmca url flags body post cache info payload day ser zwsp="$(printf '\342\200\212')"
 	local line='################################################################'
-	local payload day type='text/xml; charset="utf-8"'
+	local type='text/xml; charset="utf-8"'
 	local UserAgent='TestClient BoxInternetCheck'
 	#soap='SOAPAction: "http://jason.avm.de/updatecheck/BoxFirmwareUpdateCheck"'
 
@@ -64,6 +67,18 @@ main() {
 		while [ "${#day}" != "1" ]; do day="$day$(hexdump -n4 -e '/1 "%02X"' /dev/urandom | sed -rn 's/.*([012]).*/\1/p')"; done
 		while [ "${#day}" != "2" ]; do day="$day$(hexdump -n1 -e '/1 "%02X"' /dev/urandom | sed -rn 's/.*([0-9]).*/\1/p')"; done
 		payload="<e:BPjMVersion>$(( $(date +%Y%m) - 100 ))$day</e:BPjMVersion>"
+	fi
+
+	if [ "$CHK" == "DeviceFirmwareUpdateCheck" ]; then
+		[ -z "DHW" -o -z "DSW" ] && echo "For --dect you have to provide DHW and DSW." && exit
+		while [ "${#ser}" != "12" ]; do ser="$ser$(hexdump -n1 -e '/1 "%02X"' /dev/urandom | sed -rn 's/.*([0-9]).*/\1/p')"; done
+		payload="
+<e:DeviceInfo>
+<q:Type>2</q:Type>
+<q:MHW>$DHW</q:MHW>
+<q:Version>$DSW</q:Version>
+<q:Serial>$ser</q:Serial>
+<q:Lang>$Lang</q:Lang></e:DeviceInfo>"
 	fi
 
 [ -z "${Flag// /}" ] && Flag='empty'
@@ -160,6 +175,7 @@ args() {
 		[ "$x" == '-s' ] && DEVS='x'
 		[ "$x" == '-d' ] && DEVD='x'
 		[ "$x" == '--bpjm' ] && CHK='BPjMUpdateCheck'
+		[ "$x" == '--dect' ] && CHK='DeviceFirmwareUpdateCheck'
 		[ "$x" == '--plain' ] && SSL='n'
 		[ "$x" == '--https' ] && SSL='y'
 		[ "$x" == "$l" ] && continue
