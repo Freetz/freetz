@@ -21,11 +21,11 @@ Parameters:
 Variables:
 	On Fritzbox no variables are needed and missing will be read from the device.
 	On Computer the hardware-recision "HW" is mandatory and for very old (HWR<150) devices you have to set (at least the "Major" part of) "Version".
-	With Dect: The hardware number "DHW" is mandatory additional, the software version "DSW" is optional.
+	With Dect: The hardware number "DHW" is mandatory additional, the software version "DSW" and type "DTP" are optional.
 
 	Name		Default if not set
 	----------------------------------
-	HW:		[mandatory]
+	HW:		[mandatory]		The HWR code of the device, eg "226" for Fritzbox 7590
 	Version:	[HW].00.00-00000	The "HW" as "Major" does not work with HW<150
 	Name:		[random]		There is no space in the name but a zero-width space: "printf '\342\200\212'". Or copy & paste examples below.
 	OEM:		avm
@@ -33,16 +33,17 @@ Variables:
 	Annex		B			Extender use "Ohne", docsis devices "Kabel".
 	Country		049
 	Buildtype	1			Common values: "1"=retail, "1000"=labor, "1001"=inhaus, see also https://boxmatrix.info/wiki/Property:CONFIG_BUILDTYPE
-	Serial		[random]
-	Nonce		[random]
+	Serial		[random]		Example: "123456789ABC"
+	Nonce		[random]		Example: "123456789aBcDeEfGhIjkL=="
 	Flag		[shuffle]		If you do not want to set a flag use "empty", docsis devices need the flag "cable_retail".
 	UserAgent	[shuffle]
 	Provider	[shuffle]
 	ProviderName	[empty]
 	ManualRequest	true
 	UpdateConfig	1
-	DHW (dect)	[mandatory]
+	DHW (dect)	[mandatory]		The MHW code of the device, eg "06.08" for Dect 302
 	DSW (dect)	00.00 
+	DTP (dect)	2			Seems always to be 2
 
 Examples:
 	env - tools/juis_check --dect Version=154.07.25-80000 Name=FRITZ\!Box 7590 HW=226  DHW=06.03                      -i -s -d
@@ -53,7 +54,7 @@ Examples:
 	env - tools/juis_check        Version=67                                   HW=137                                 -i -s -d
 	env - tools/juis_check                                                     HW=156                                 -i -s -d
 	env - tools/juis_check                                                     HW=259                                 -i -s -d
-	for x in $(seq 150 300); do echo $x; env - tools/juis_check                HW=$x                                  -i; done
+	for x in $(seq 150 300); do echo $x; env - tools/juis_check                HW=$x   Flag=cable_retail Annex=Kabel  -i; done
 	for x in $(seq 200 300); do echo $x; env - tools/juis_check                HW=$x   Buildtype=1000                 -i; done
 	Or just: tools/juis m  # f
 
@@ -151,10 +152,11 @@ main() {
 	if [ "$CHK" == "DeviceFirmwareUpdateCheck" ]; then
 		[ -z "$DHW" ] && echo "For --dect you have to provide 'DHW'." 1>&2 && exit 1
 		[ -z "$DSW" ] && DSW="00.00"
+		[ -z "$DTP" ] && DTP="2"
 		while [ "${#ser}" != "12" ]; do ser="$ser$(hexdump -n1 -e '/1 "%02X"' /dev/urandom | sed -rn 's/.*([0-9]).*/\1/p')"; done
 		payload="
 <e:DeviceInfo>
-<q:Type>2</q:Type>
+<q:Type>$DTP</q:Type>
 <q:MHW>$DHW</q:MHW>
 <q:Version>$DSW</q:Version>
 <q:Serial>$ser</q:Serial>
