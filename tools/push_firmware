@@ -636,6 +636,12 @@ else
 fi
 echo " * Flash mode: $OUTVAL-boot"
 
+if [ -n "$ISUIMG" ]; then
+	case "$PRODUCT" in
+		Fritz_Box_HW267*) echo -e "\n\tThis device 6690 is not yet tested. Remove this warning only if you know what you are doing. Abort.\n"; exit 1 ;;
+	esac
+fi
+
 if [ -n "$ISRAM$ISFIT" ]; then
 	if [ -z "$MAPSTART" ]; then
 		case "$PRODUCT" in
