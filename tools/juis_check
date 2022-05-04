@@ -9,6 +9,7 @@ $0 parameters:
 	<-i>: [Prio 3] Computer
 	<-s>: [Prio 2] Fritzbox
 	<-d>: [Prio 1] RAW-out (or no -i and -s)
+	<--bpjm>: Searches for the encrypted BPjM-Modul file
 	<--plain>: Forces to use http. AVM uses this only.
 	<--https>: Forces to use https. Curl is mandatory for https.
 	Without --plain and --https, the default is https if curl is installed. But on fritzbox only if FREETZ_ADD_JUIS_CHECK__SSL is set.
@@ -25,7 +26,7 @@ js() { [ -e "$1" ] && sed -rn "s/^<.:$2>(.*)<.*/\1/p" "$1" ; }
 main() {
 	local x soap avmca url flags body post cache info zwsp="$(printf '\342\200\212')"
 	local line='################################################################'
-	local type='text/xml; charset="utf-8"'
+	local payload day type='text/xml; charset="utf-8"'
 	#soap='SOAPAction: "http://jason.avm.de/updatecheck/BoxFirmwareUpdateCheck"'
 
 	if [ "$SSL" == 'y' ]; then
@@ -56,6 +57,12 @@ main() {
 	[ -z "$Buildtype" ] && Buildtype="$(js $info 'Buildtype')"
 	[ -z "$Buildtype" ] && Buildtype="$(js $info 'Revision')"
 
+	if [ "$CHK" == "BPjMUpdateCheck" ]; then
+		while [ "${#day}" != "1" ]; do day="$day$(hexdump -n4 -e '/1 "%02X"' /dev/urandom | sed -rn 's/.*([012]).*/\1/p')"; done
+		while [ "${#day}" != "2" ]; do day="$day$(hexdump -n1 -e '/1 "%02X"' /dev/urandom | sed -rn 's/.*([0-9]).*/\1/p')"; done
+		payload="<e:BPjMVersion>$(( $(date +%Y%m) - 100 ))$day</e:BPjMVersion>"
+	fi
+
 [ -z "${Flag// /}" ] && Flag='empty'
 for x in $Flag; do flags="<q:Flag>${x/empty/}</q:Flag>
 $flags"; done
@@ -64,7 +71,7 @@ body=$(cat << EOX
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soap-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:e="http://juis.avm.de/updateinfo" xmlns:q="http://juis.avm.de/request">
 <soap:Header/>
 <soap:Body>
-<e:BoxFirmwareUpdateCheck>
+<e:$CHK>
 <e:RequestHeader>
 <q:Nonce>$Nonce</q:Nonce>
 <q:UserAgent>TestClient</q:UserAgent>
@@ -85,7 +92,7 @@ body=$(cat << EOX
 $flags
 <q:UpdateConfig>1</q:UpdateConfig>
 <q:Provider></q:Provider>
-<q:ProviderName></q:ProviderName></e:BoxInfo></e:BoxFirmwareUpdateCheck></soap:Body></soap:Envelope>
+<q:ProviderName></q:ProviderName></e:BoxInfo>$payload</e:$CHK></soap:Body></soap:Envelope>
 EOX
 )
 
@@ -139,6 +146,7 @@ EOX
 
 DEV=''
 SSL=''
+CHK='BoxFirmwareUpdateCheck'
 args() {
 	[ "${#*}" == '0' ] && help
 	local DEVI DEVS DEVD
@@ -148,6 +156,7 @@ args() {
 		[ "$x" == '-i' ] && DEVI='x'
 		[ "$x" == '-s' ] && DEVS='x'
 		[ "$x" == '-d' ] && DEVD='x'
+		[ "$x" == '--bpjm' ] && CHK='BPjMUpdateCheck'
 		[ "$x" == '--plain' ] && SSL='n'
 		[ "$x" == '--https' ] && SSL='y'
 		[ "$x" == "$l" ] && continue
