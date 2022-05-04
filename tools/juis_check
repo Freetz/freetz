@@ -20,20 +20,38 @@ Parameters:
 
 Variables:
 	On Fritzbox no variables are needed and missing will be read from the device.
-	On Computer you have to provide at least "Name", "Version" and "HW".
+	On Computer the hardware-recision "HW" is mandatory and for older (most) devices you should also set (the "Major" part of) "Version".
 	With Dect: The hardware number "DHW" is mandatory additional, the software version "DSW" is optional.
-	All available: Version Name HW Buildtype OEM Lang Annex Country Flag Serial Provider ProviderName Nonce UserAgent ManualRequest UpdateConfig
 
-	Name:		There is no space in the name but a zero-width space: "printf '\342\200\212'". Or copy & paste examples below.
-	Annex:		Extender use "Ohne", docsis devices "Kabel".
-	Buildtype:	Common values: "1"=retail, "1000"=labor, "1001"=inhaus, see also https://boxmatrix.info/wiki/Property:CONFIG_BUILDTYPE
-	Flag:		If you do not want to set a flag use "empty", docsis devices need the flag "cable_retail".
+	Name		Default if not set
+	----------------------------------
+	HW:		[mandatory]
+	Version:	[HW].00.00-00000	The "HW" as "Major" works only with newest devices.
+	Name:		[random]		There is no space in the name but a zero-width space: "printf '\342\200\212'". Or copy & paste examples below.
+	OEM:		avm
+	Lang		de
+	Annex		B			Extender use "Ohne", docsis devices "Kabel".
+	Country		049
+	Buildtype	1			Common values: "1"=retail, "1000"=labor, "1001"=inhaus, see also https://boxmatrix.info/wiki/Property:CONFIG_BUILDTYPE
+	Serial		[random]
+	Nonce		[random]
+	Flag		[shuffle]		If you do not want to set a flag use "empty", docsis devices need the flag "cable_retail".
+	UserAgent	[shuffle]
+	Provider	[shuffle]
+	ProviderName	[empty]
+	ManualRequest	true
+	UpdateConfig	1
+	DHW (dect)	[mandatory]
+	DSW (dect)	00.00 
 
 Examples:
-	env - tools/juis_check --dect Version=154.07.35-80123 Name=FRITZ\!Box 7590 HW=226  DHW=06.03                      -i -s -d
-	env - tools/juis_check --bpjm Version=154.07.35-80123 Name=FRITZ\!Box 7590 HW=226  OEM=avm Lang=de Country=049    -i -s -d
-	env - tools/juis_check        Version=154.07.35-80123 Name=FRITZ\!Box 7590 HW=226  Annex=B Buildtype=1000         -i -s -d
-	env - tools/juis_check        Version=252.07.20-80123 Name=FRITZ\!Box 6660 HW=252  Annex=Kabel Flag=cable_retail  -i -s -d
+	env - tools/juis_check --dect Version=154.07.25-80000 Name=FRITZ\!Box 7590 HW=226  DHW=06.03                      -i -s -d
+	env - tools/juis_check --bpjm Version=154.07.25-80000 Name=FRITZ\!Box 7590 HW=226  OEM=avm Lang=de Country=049    -i -s -d
+	env - tools/juis_check        Version=154.07.39-90000 Name=FRITZ\!Box 7590 HW=226  Buildtype=1001    Annex=B      -i -s -d
+	env - tools/juis_check        Version=252.07.20       Name=FRITZ\!Box 6660 HW=252  Flag=cable_retail Annex=Kabel  -i -s -d
+	env - tools/juis_check        Version=84                                   HW=156                                 -i -s -d
+	env - tools/juis_check                                                     HW=259                                 -i -s -d
+	for x in $(seq 200 300); do echo $x; env - tools/juis_check                HW=$x   Buildtype=1000                 -i; done
 	Or just: tools/juis m  # f
 
 EOX
@@ -70,21 +88,6 @@ main() {
 
 	[ -z "$Serial" ] && while [ "${#Serial}" != "12" ]; do Serial="$(hexdump -n6 -e '/1 "%02X"' /dev/urandom | sed 's/[^0-9A-F]//g')"; done
 
-	if [ -z "$Version" ]; then
-		Version="$(js $info 'Version')"
-		if [ -n "$Version" ]; then
-			Buildnumber="$(js $info 'Buildnumber')"
-			[ -n "$Buildnumber" ] && Version="$Version-$Buildnumber"
-		fi
-	fi
-
-	Buildnumber="${Version#*-}"
-	x="${Version%-*}"
-	Major="${x%%.*}"
-	x="${x#*.}"
-	Minor="${x%.*}"
-	Patch="${x#*.}"
-
 	[ -e '/var/juis_boxinfo.xml' ] && info='/var/juis_boxinfo.xml' || info='/var/jason_boxinfo.xml'
 	[ -z "$Name"      ] &&      Name="$(js $info 'Name')"
 	[ -z "$HW"        ] &&        HW="$(js $info 'HW')"
@@ -101,6 +104,32 @@ main() {
 	[ -z "$Buildtype" ] && Buildtype="$(js $info 'Revision')"
 	[ -z "$Buildtype" ] && Buildtype="1"
 
+	if [ -z "$Name" ]; then
+		while [ "${#Name}" != "4" ]; do Name="$Name$(hexdump -n1 -e '/1 "%02X"' /dev/urandom | sed -rn 's/.*([0-9]).*/\1/p')"; done
+		Name="FRITZ\!Box$zwsp$Name"
+	fi
+
+	if [ -z "$Version" ]; then
+		Version="$(js $info 'Version')"
+		if [ -n "$Version" ]; then
+			Buildnumber="$(js $info 'Buildnumber')"
+			[ -n "$Buildnumber" ] && Version="$Version-$Buildnumber"
+		fi
+		[ -z "$Version" ] && Version="$HW"
+	fi
+
+	Buildnumber="${Version#*-}"
+	x="${Version%-*}"
+	Major="${x%%.*}"
+	x="${x#*.}"
+	Minor="${x%.*}"
+	Patch="${x#*.}"
+	[ "$Buildnumber" == "$Version" ] && Buildnumber="00000"
+	[ "$Minor" == "$x" ] && Minor="00"
+	[ "$Patch" == "$x" ] && Patch="00"
+
+	[ -z "$HW" ] && echo "You have to provide 'HW' and should provide 'Version' and 'Name'." 1>&2 && exit 1
+
 	if [ "$CHK" == "BPjMUpdateCheck" ]; then
 		while [ "${#day}" != "1" ]; do day="$day$(hexdump -n4 -e '/1 "%02X"' /dev/urandom | sed -rn 's/.*([012]).*/\1/p')"; done
 		while [ "${#day}" != "2" ]; do day="$day$(hexdump -n1 -e '/1 "%02X"' /dev/urandom | sed -rn 's/.*([0-9]).*/\1/p')"; done
@@ -108,8 +137,8 @@ main() {
 	fi
 
 	if [ "$CHK" == "DeviceFirmwareUpdateCheck" ]; then
-		[ -z "$DHW" ] && echo "For --dect you have to provide DHW." 1>&2 && exit 1
-		[ -z "$DSW" ] && DSW="0.00"
+		[ -z "$DHW" ] && echo "For --dect you have to provide 'DHW'." 1>&2 && exit 1
+		[ -z "$DSW" ] && DSW="00.00"
 		while [ "${#ser}" != "12" ]; do ser="$ser$(hexdump -n1 -e '/1 "%02X"' /dev/urandom | sed -rn 's/.*([0-9]).*/\1/p')"; done
 		payload="
 <e:DeviceInfo>
