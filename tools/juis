@@ -8,7 +8,7 @@ single() {
 #	echo -e "\nJuis: $JUIS" >&2
 	OID="$(echo '00040E 00150C 001A4F 001C4A 001F3F 0024FE 0896D7 246511 2C3AFD 2C91AB 3431C4 3481C4 3810D5 3CA62F 444E6D 5C4979 74427F 7CFF4D 989BCB 9CC7A6 BC0500 BC0543 C02506 C80E14 CCCE1E DC396F E0286D E8DF70 F0B014' | sed 's/ /\n/g' | shuf -n1)"
 	while [ "${#REV}" != "3" ]; do REV="$(echo $(( RANDOM % 10 ))$(( RANDOM % 10 ))$(( RANDOM % 10 )) | sed 's/[^0-9]//')"; done
-	while [ "${#SER}" != "7" ]; do SER="$(hexdump -n3 -e '/1 "%02X"' /dev/urandom | sed 's/[^0-9A-F]//') "; done
+	while [ "${#SER}" != "7" ]; do SER="$(hexdump -n3 -e '/1 "%02X"' /dev/urandom | sed 's/[^0-9A-F]//g') "; done
 	NNC="$(dd if=/dev/urandom bs=16 count=1 2>/dev/null | base64 | sed 's/\//\\\//g')"
 	JUIS="$(echo "$JUIS" | sed "s/%REV%/$REV/;s/%OID%/$OID/;s/%SER%/$SER/;s/%NNC%/$NNC/;s/\!/\\\!/g")"
 	[ "$f" != "f" -a "$m" == "m" ] && echo -ne "\nJUIS: $JUIS\n" >&2
