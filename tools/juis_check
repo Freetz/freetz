@@ -20,13 +20,13 @@ Parameters:
 
 Variables:
 	On Fritzbox no variables are needed and missing will be read from the device.
-	On Computer the hardware-recision "HW" is mandatory and for older (most) devices you should also set (the "Major" part of) "Version".
+	On Computer the hardware-recision "HW" is mandatory and for very old (HWR<150) devices you have to set (at least the "Major" part of) "Version".
 	With Dect: The hardware number "DHW" is mandatory additional, the software version "DSW" is optional.
 
 	Name		Default if not set
 	----------------------------------
 	HW:		[mandatory]
-	Version:	[HW].00.00-00000	The "HW" as "Major" works only with newest devices.
+	Version:	[HW].00.00-00000	The "HW" as "Major" does not work with HW<150
 	Name:		[random]		There is no space in the name but a zero-width space: "printf '\342\200\212'". Or copy & paste examples below.
 	OEM:		avm
 	Lang		de
@@ -49,8 +49,11 @@ Examples:
 	env - tools/juis_check --bpjm Version=154.07.25-80000 Name=FRITZ\!Box 7590 HW=226  OEM=avm Lang=de Country=049    -i -s -d
 	env - tools/juis_check        Version=154.07.39-90000 Name=FRITZ\!Box 7590 HW=226  Buildtype=1001    Annex=B      -i -s -d
 	env - tools/juis_check        Version=252.07.20       Name=FRITZ\!Box 6660 HW=252  Flag=cable_retail Annex=Kabel  -i -s -d
-	env - tools/juis_check        Version=84                                   HW=156                                 -i -s -d
+	env - tools/juis_check        Version=29.04.87                             HW=94                                  -i -s -d
+	env - tools/juis_check        Version=67                                   HW=137                                 -i -s -d
+	env - tools/juis_check                                                     HW=156                                 -i -s -d
 	env - tools/juis_check                                                     HW=259                                 -i -s -d
+	for x in $(seq 150 300); do echo $x; env - tools/juis_check                HW=$x                                  -i; done
 	for x in $(seq 200 300); do echo $x; env - tools/juis_check                HW=$x   Buildtype=1000                 -i; done
 	Or just: tools/juis m  # f
 
@@ -115,7 +118,15 @@ main() {
 			Buildnumber="$(js $info 'Buildnumber')"
 			[ -n "$Buildnumber" ] && Version="$Version-$Buildnumber"
 		fi
-		[ -z "$Version" ] && Version="$HW"
+		if [ -z "$Version" ]; then
+			if [ "$HW" -ge 150 2>/dev/null ]; then
+				if [ "$HW" -lt 248 2>/dev/null ]; then
+					Version="$(( $HW - 72 ))"
+				else
+					Version="$HW"
+				fi
+			fi
+		fi
 	fi
 
 	Buildnumber="${Version#*-}"
@@ -128,7 +139,8 @@ main() {
 	[ "$Minor" == "$x" ] && Minor="00"
 	[ "$Patch" == "$x" ] && Patch="00"
 
-	[ -z "$HW" ] && echo "You have to provide 'HW' and should provide 'Version' and 'Name'." 1>&2 && exit 1
+	[ -z "$Version" ] && echo "You have to provide 'HW' and 'Version'." 1>&2 && exit 1
+	[ -z "$HW"      ] && echo "You have to provide 'HW'." 1>&2 && exit 1
 
 	if [ "$CHK" == "BPjMUpdateCheck" ]; then
 		while [ "${#day}" != "1" ]; do day="$day$(hexdump -n4 -e '/1 "%02X"' /dev/urandom | sed -rn 's/.*([012]).*/\1/p')"; done
