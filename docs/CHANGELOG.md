@@ -54,7 +54,7 @@ Latest changes
    * CA-bundle 2022-04-26
    * Curl 7.83.0
    * htop 1.0.3/2.3.0
-   * juis_check 1.1
+   * juis_check 1.2
    * libcap 2.49/2.64
    * libneon 0.30.2/0.32.2
    * LCD4linux e691a4b-git
