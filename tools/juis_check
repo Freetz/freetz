@@ -21,7 +21,7 @@ Parameters:
 Variables:
 	On Fritzbox no variables are needed and missing will be read from the device.
 	On Computer you have to provide at least "Name", "Version" and "HW".
-	For Dect "DHW" and "DSW" are mandatory.
+	With Dect: The hardware number "DHW" is mandatory additional, the software version "DSW" is optional.
 	All available: Version Name HW Buildtype OEM Lang Annex Country Flag Serial Provider ProviderName Nonce UserAgent ManualRequest UpdateConfig
 
 	Name:		There is no space in the name but a zero-width space: "printf '\342\200\212'". Or copy & paste examples below.
@@ -30,7 +30,7 @@ Variables:
 	Flag:		If you do not want to set a flag use "empty", docsis devices need the flag "cable_retail".
 
 Examples:
-	env - tools/juis_check --dect Version=154.07.35-80123 Name=FRITZ\!Box 7590 HW=226  DHW=06.03 DSW=04.90            -i -s -d
+	env - tools/juis_check --dect Version=154.07.35-80123 Name=FRITZ\!Box 7590 HW=226  DHW=06.03                      -i -s -d
 	env - tools/juis_check --bpjm Version=154.07.35-80123 Name=FRITZ\!Box 7590 HW=226  OEM=avm Lang=de Country=049    -i -s -d
 	env - tools/juis_check        Version=154.07.35-80123 Name=FRITZ\!Box 7590 HW=226  Annex=B Buildtype=1000         -i -s -d
 	env - tools/juis_check        Version=252.07.20-80123 Name=FRITZ\!Box 6660 HW=252  Annex=Kabel Flag=cable_retail  -i -s -d
@@ -108,7 +108,8 @@ main() {
 	fi
 
 	if [ "$CHK" == "DeviceFirmwareUpdateCheck" ]; then
-		[ -z "$DHW" -o -z "$DSW" ] && echo "For --dect you have to provide DHW and DSW." 1>&2 && exit 1
+		[ -z "$DHW" ] && echo "For --dect you have to provide DHW." 1>&2 && exit 1
+		[ -z "$DSW" ] && DSW="0.00"
 		while [ "${#ser}" != "12" ]; do ser="$ser$(hexdump -n1 -e '/1 "%02X"' /dev/urandom | sed -rn 's/.*([0-9]).*/\1/p')"; done
 		payload="
 <e:DeviceInfo>
