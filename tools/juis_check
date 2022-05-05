@@ -11,7 +11,8 @@ Parameters:
 	-d:	[Prio 1] RAW-output of the response (or no -i and -s).
 
 	--dect:		Searches for a firmware for an dect device.
-	--bpjm:		Searches for the encrypted BPjM-Modul file.
+	--bpjm:		Searches for the encrypted BPjM-Modul file. To format the bpjm file and remove hashes for empty strings:
+			cat $RAWFILE | hexdump -s 64 -v -e '16/1 "%02x" " " 16/1 "%02x" " " 1/1 "%02x\n"' | sed 's/d41d8cd98f00b204e9800998ecf8427e 00$//'
 	--info:		Searcher for very important infos by avm.
 	Without --dect, --bpjm and --info, a firmware for a Fritzbox is searched.
 
@@ -43,7 +44,7 @@ Variables:
 	ManualRequest	[shuffle]		Values: "true" or "false"
 	UpdateConfig	1
 	DHW (dect)	[mandatory]		The MHW code of the device, eg "06.08" for Dect 302
-	DSW (dect)	00.00 
+	DSW (dect)	00.00
 	DTP (dect)	1			Values: "1"=Dect, "2"=PLC, "3"=LTE
 
 Examples:
