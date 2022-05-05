@@ -12,7 +12,8 @@ Parameters:
 
 	--dect:		Searches for a firmware for an dect device.
 	--bpjm:		Searches for the encrypted BPjM-Modul file.
-	Without --dect and --bpjm, a firmware for a Fritzbox is searched.
+	--info:		Searcher for very important infos by avm.
+	Without --dect, --bpjm and --info, a firmware for a Fritzbox is searched.
 
 	--plain:	Forces to use http. AVM uses this only.
 	--https:	Forces to use https. Curl is mandatory for https.
@@ -28,34 +29,36 @@ Variables:
 	HW:		[mandatory]		The HWR code of the device, eg "226" for Fritzbox 7590
 	Version:	[HW].00.00-00000	The "HW" as "Major" does not work with HW<150
 	Name:		[random]		There is no space in the name but a zero-width space: "printf '\342\200\212'". Or copy & paste examples below.
-	OEM:		avm
-	Lang		de
+	OEM:		avm			Examples: "avm", "avme", "kdg", "1und1", "lgi", "otwo"	
+	Lang		de			Examples: "de", "en", "es", "it", "fr", "pl"
 	Annex		B			Extender use "Ohne", docsis devices "Kabel".
 	Country		049
 	Buildtype	1			Common values: "1"=retail, "1000"=labor, "1001"=inhaus, see also https://boxmatrix.info/wiki/Property:CONFIG_BUILDTYPE
 	Serial		[random]		Example: "123456789ABC"
 	Nonce		[random]		Example: "123456789aBcDeEfGhIjkL=="
 	Flag		[shuffle]		If you do not want to set a flag use "empty", docsis devices need the flag "cable_retail".
-	UserAgent	[shuffle]
-	Provider	[shuffle]
-	ProviderName	[empty]
-	ManualRequest	true
+	UserAgent	[shuffle]		Values: "Box", "TestClient" or "BoxInternetCheck"
+	Provider	[shuffle]		Use "empty" if you want no value
+	ProviderName	[empty]			This is not added if not set
+	ManualRequest	[shuffle]		Values: "true" or "false"
 	UpdateConfig	1
 	DHW (dect)	[mandatory]		The MHW code of the device, eg "06.08" for Dect 302
 	DSW (dect)	00.00 
-	DTP (dect)	2			Seems always to be 2
+	DTP (dect)	1			Values: "1"=Dect, "2"=PLC, "3"=LTE
 
 Examples:
-	env - tools/juis_check --dect Version=154.07.25-80000 Name=FRITZ\!Box 7590 HW=226  DHW=06.03                      -i -s -d
-	env - tools/juis_check --bpjm Version=154.07.25-80000 Name=FRITZ\!Box 7590 HW=226  OEM=avm Lang=de Country=049    -i -s -d
-	env - tools/juis_check        Version=154.07.39-90000 Name=FRITZ\!Box 7590 HW=226  Buildtype=1001    Annex=B      -i -s -d
-	env - tools/juis_check        Version=252.07.20       Name=FRITZ\!Box 6660 HW=252  Flag=cable_retail Annex=Kabel  -i -s -d
-	env - tools/juis_check        Version=29.04.87                             HW=94                                  -i -s -d
-	env - tools/juis_check        Version=67                                   HW=137                                 -i -s -d
-	env - tools/juis_check                                                     HW=156                                 -i -s -d
-	env - tools/juis_check                                                     HW=259                                 -i -s -d
-	for x in $(seq 150 300); do echo $x; env - tools/juis_check                HW=$x   Flag=cable_retail Annex=Kabel  -i; done
-	for x in $(seq 200 300); do echo $x; env - tools/juis_check                HW=$x   Buildtype=1000                 -i; done
+	env - tools/juis_check --dect Version=154.07.25-80000 Name=FRITZ\!Box 7590           HW=226  DHW=06.03                      -i -s -d
+	env - tools/juis_check --bpjm Version=154.07.25-80000 Name=FRITZ\!Box 7590           HW=226  OEM=avm Lang=de Country=049    -i -s -d
+	env - tools/juis_check --info Version=84.06.87-92934  Name=FRITZ\!Box Fon WLAN 7390  HW=156                                 -i -s -d
+	env - tools/juis_check        Version=154.07.39-90000 Name=FRITZ\!Box 7590           HW=226  Buildtype=1001    Annex=B      -i -s -d
+	env - tools/juis_check        Version=252.07.20       Name=FRITZ\!Box 6660 Cable     HW=252  Flag=cable_retail Annex=Kabel  -i -s -d
+	env - tools/juis_check        Version=29.04.87                                       HW=94                                  -i -s -d
+	env - tools/juis_check        Version=67                                             HW=137                                 -i -s -d
+	env - tools/juis_check                                                               HW=156                                 -i -s -d
+	env - tools/juis_check                                                               HW=259                                 -i -s -d
+	for x in $(seq 150 300); do echo $x; env - tools/juis_check                          HW=$x   Flag=cable_retail Annex=Kabel  -i; done
+	for x in $(seq 200 300); do echo $x; env - tools/juis_check                          HW=$x   Buildtype=1001                 -i; done
+	for x in $(seq  10  99); do          env - tools/juis_check --dect                   HW=259  DHW=0${x::-1}.0${x:1}          -i; done
 	Or just: tools/juis m  # f
 
 EOX
@@ -65,30 +68,23 @@ exit
 js() { [ -e "$1" ] && sed -rn "s/^<.:$2>(.*)<.*/\1/p" "$1" ; }
 
 main() {
-	local x soap avmca url flags body post cache info payload day ser zwsp="$(printf '\342\200\212')"
+	local x soap avmca url host sdir flags Envelope body post cache info payload day ser
 	local line='################################################################'
 	local type='text/xml; charset="utf-8"'
+	local zwsp="$(printf '\342\200\212')"
 	#soap='SOAPAction: "http://jason.avm.de/updatecheck/BoxFirmwareUpdateCheck"'
 
-	if [ "$SSL" == 'y' ]; then
-		avmca="$MYPWD/avm-rootca.pem"
-		[ -e "/etc/avm_root_ca.pem"     ] && avmca="/etc/avm_root_ca.pem"
-		[ -e "/etc/jasonii_root_ca.pem" ] && avmca="/etc/jasonii_root_ca.pem"
-		url='jws.avm.de/Jason/UpdateInfoService'      # https-cert matches hostname
-	else
-		url='185.jws.avm.de/Jason/UpdateInfoService'  # new
-		#url='jws.avm.de/Jason/UpdateCheck'           # old
-	fi
 
 	[ -z "$Nonce" ] && Nonce="$(dd if=/dev/urandom bs=16 count=1 2>/dev/null | base64)"
 
-	[ -z "$UserAgent" ] && UserAgent="$(echo 'TestClient BoxInternetCheck' | sed 's/ /\n/g' | shuf | head -n1)"
+	[ -z "$UserAgent" ] && UserAgent="$(echo 'Box TestClient BoxInternetCheck' | sed 's/ /\n/g' | shuf | head -n1)"
 
-	[ -z "$ManualRequest" ] && ManualRequest='true'
+	[ -z "$ManualRequest" ] && ManualRequest="$(echo 'true false' | sed 's/ /\n/g' | shuf | head -n1)"
 
 	[ -z "$UpdateConfig" ] && UpdateConfig='1'
 
 	[ -z "$Provider" ] && Provider="$(echo 'null oma_ipclient oma_lan vodafone2_vdsl' | sed 's/ /\n/g' | shuf | head -n1 | grep -v '^null$')"
+	[ "$Provider" == "empty" ] && Provider=''
 
 	[ -z "$Serial" ] && while [ "${#Serial}" != "12" ]; do Serial="$(hexdump -n6 -e '/1 "%02X"' /dev/urandom | sed 's/[^0-9A-F]//g')"; done
 
@@ -135,6 +131,7 @@ main() {
 	Major="${x%%.*}"
 	x="${x#*.}"
 	Minor="${x%.*}"
+	Minor="${Minor#0}"
 	Patch="${x#*.}"
 	[ "$Buildnumber" == "$Version" ] && Buildnumber="00000"
 	[ "$Minor" == "$x" ] && Minor="00"
@@ -142,6 +139,26 @@ main() {
 
 	[ -z "$Version" ] && echo "You have to provide 'HW' and 'Version'." 1>&2 && exit 1
 	[ -z "$HW"      ] && echo "You have to provide 'HW'." 1>&2 && exit 1
+
+	if [ "$SSL" == 'y' ]; then
+		avmca="$MYPWD/avm-rootca.pem"
+		[ -e "/etc/avm_root_ca.pem"     ] && avmca="/etc/avm_root_ca.pem"
+		[ -e "/etc/jasonii_root_ca.pem" ] && avmca="/etc/jasonii_root_ca.pem"
+		host="jws.avm.de"      # https-cert matches hostname
+	else
+		host="$HW.jws.avm.de"  # no wirldcard certificate
+	fi
+
+	#old: /Jason/UpdateCheck
+	sdir='/Jason/UpdateInfoService'
+	Envelope='xmlns:e="http://juis.avm.de/updateinfo" xmlns:q="http://juis.avm.de/request">'
+
+	if [ "$CHK" == "BoxMessageCheck" ]; then
+		sdir='/Jason/MessageInfoService'
+		Envelope='xmlns:e="http://juis.avm.de/messageinfo" xmlns:q="http://juis.avm.de/request" xmlns:s="http://juis.avm.de/response">'
+	fi
+	
+	url="$host$sdir"
 
 	if [ "$CHK" == "BPjMUpdateCheck" ]; then
 		while [ "${#day}" != "1" ]; do day="$day$(hexdump -n4 -e '/1 "%02X"' /dev/urandom | sed -rn 's/.*([012]).*/\1/p')"; done
@@ -152,7 +169,7 @@ main() {
 	if [ "$CHK" == "DeviceFirmwareUpdateCheck" ]; then
 		[ -z "$DHW" ] && echo "For --dect you have to provide 'DHW'." 1>&2 && exit 1
 		[ -z "$DSW" ] && DSW="00.00"
-		[ -z "$DTP" ] && DTP="2"
+		[ -z "$DTP" ] && DTP="1"
 		while [ "${#ser}" != "12" ]; do ser="$ser$(hexdump -n1 -e '/1 "%02X"' /dev/urandom | sed -rn 's/.*([0-9]).*/\1/p')"; done
 		payload="
 <e:DeviceInfo>
@@ -162,6 +179,11 @@ main() {
 <q:Serial>$ser</q:Serial>
 <q:Lang>$Lang</q:Lang></e:DeviceInfo>"
 	fi
+
+if [ -n "$ProviderName" ]; then
+ProviderName="
+<q:ProviderName>$ProviderName</q:ProviderName>"
+fi
 
 	if [ -z "${Flag// /}" ]; then
 		Flag="$(echo 'null mesh_master mesh_master_no_trusted mesh_repeater mesh_repeater_no_trusted' | sed 's/ /\n/g' | shuf | head -n1)"
@@ -174,7 +196,7 @@ $flags"; done
 flags="$(echo "$flags" | grep -v '^$')"
 
 body=$(cat << EOX
-<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soap-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:e="http://juis.avm.de/updateinfo" xmlns:q="http://juis.avm.de/request">
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soap-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" $Envelope
 <soap:Header/>
 <soap:Body>
 <e:$CHK>
@@ -197,8 +219,7 @@ body=$(cat << EOX
 <q:Annex>$Annex</q:Annex>
 $flags
 <q:UpdateConfig>$UpdateConfig</q:UpdateConfig>
-<q:Provider>$Provider</q:Provider>
-<q:ProviderName>$ProviderName</q:ProviderName></e:BoxInfo>$payload</e:$CHK></soap:Body></soap:Envelope>
+<q:Provider>$Provider</q:Provider>$ProviderName</e:BoxInfo>$payload</e:$CHK></soap:Body></soap:Envelope>
 EOX
 )
 
@@ -235,8 +256,8 @@ EOX
 			[ -n "$VER" -a "$VER" != "$Version" ] && echo "Found newer version: $VER" 1>&2 || echo "No newer version found." 1>&2
 			;;
 		*)
-			echo -ne "Using SSL:=${SSL:-n}\n\nRequest:\n$line"
-			[ "$SSL" == 'y' ] && echo -ne "$body" || echo -ne "\n$post"
+			echo -e "Using SSL:=${SSL:-n}\n\nRequest:\n$line"
+			[ "$SSL" == 'y' ] && echo -ne "$body" || echo -ne "$post"
 			echo -e "\n$line\n\nResponse:\n$line"
 			if command -v xmllint &>/dev/null; then
 				grep '^<' -v "$cache"
@@ -262,6 +283,7 @@ args() {
 		[ "$x" == '-i' ] && DEVI='x'
 		[ "$x" == '-s' ] && DEVS='x'
 		[ "$x" == '-d' ] && DEVD='x'
+		[ "$x" == '--info' ] && CHK='BoxMessageCheck'
 		[ "$x" == '--bpjm' ] && CHK='BPjMUpdateCheck'
 		[ "$x" == '--dect' ] && CHK='DeviceFirmwareUpdateCheck'
 		[ "$x" == '--plain' ] && SSL='n'
