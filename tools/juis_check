@@ -10,6 +10,8 @@ Parameters:
 	-s	[Prio2]	Fritzbox, shows if a new version is available. Response is cached in: "/tmp/.juis_check"
 	-d	[Prio1]	RAW-output of the response (or no -i and -s).
 
+	--nofb		Do not try to read values from the local Fritzbox in juis_boxinfo.xml or older jason_boxinfo.xml files but use random if not set.
+
 	--dect		Dect-Update: Searches for a firmware for an dect device.
 	--bpjm		BPjM-Update: Searches for the encrypted BPjM-Modul file. To format the bpjm file and remove hashes for empty strings:
 			             cat $RAWFILE | hexdump -s 64 -v -e '16/1 "%02x" " " 16/1 "%02x" " " 1/1 "%02x\n"' | sed 's/d41d8cd98f00b204e9800998ecf8427e 00$//'
@@ -91,7 +93,10 @@ main() {
 
 	[ -z "$Serial" ] && while [ "${#Serial}" != "12" ]; do Serial="$(hexdump -n6 -e '/1 "%02X"' /dev/urandom | sed 's/[^0-9A-F]//g')"; done
 
-	[ -e '/var/juis_boxinfo.xml' ] && info='/var/juis_boxinfo.xml' || info='/var/jason_boxinfo.xml'
+	if [ "$BIX" != "n" ]; then
+		[ -e '/var/juis_boxinfo.xml'  ] && info='/var/juis_boxinfo.xml'
+		[ -e '/var/jason_boxinfo.xml' ] && info='/var/jason_boxinfo.xml'
+	fi
 	[ -z "$Name"      ] &&      Name="$(js $info 'Name')"
 	[ -z "$HW"        ] &&        HW="$(js $info 'HW')"
 	[ -z "$OEM"       ] &&       OEM="$(js $info 'OEM')"
@@ -278,6 +283,7 @@ EOX
 
 DEV=''
 SSL=''
+BIX=''
 CHK='BoxFirmwareUpdateCheck'
 args() {
 	[ "${#*}" == '0' ] && help
@@ -288,6 +294,7 @@ args() {
 		[ "$x" == '-i' ] && DEVI='x'
 		[ "$x" == '-s' ] && DEVS='x'
 		[ "$x" == '-d' ] && DEVD='x'
+		[ "$x" == '--nofb' ] && BIX='n'
 		[ "$x" == '--down' ] && CHK='BoxFirmwareDowngradeCheck'
 		[ "$x" == '--info' ] && CHK='BoxMessageCheck'
 		[ "$x" == '--bpjm' ] && CHK='BPjMUpdateCheck'
