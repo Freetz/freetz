@@ -6,18 +6,19 @@ echo "$0: Ask avm's JUIS update service for latest firmware infos like download 
 cat << 'EOX'
 
 Parameters:
-	-i:	[Prio 3] Computer, shows the URL if there is a newer version.
-	-s:	[Prio 2] Fritzbox, shows if a new version is available. Response is cached in: "/tmp/.juis_check"
-	-d:	[Prio 1] RAW-output of the response (or no -i and -s).
+	-i	[Prio3]	Computer, shows the URL if there is a newer version.
+	-s	[Prio2]	Fritzbox, shows if a new version is available. Response is cached in: "/tmp/.juis_check"
+	-d	[Prio1]	RAW-output of the response (or no -i and -s).
 
-	--dect:		Searches for a firmware for an dect device.
-	--bpjm:		Searches for the encrypted BPjM-Modul file. To format the bpjm file and remove hashes for empty strings:
-			cat $RAWFILE | hexdump -s 64 -v -e '16/1 "%02x" " " 16/1 "%02x" " " 1/1 "%02x\n"' | sed 's/d41d8cd98f00b204e9800998ecf8427e 00$//'
-	--info:		Searcher for very important infos by avm.
-	Without --dect, --bpjm and --info, a firmware for a Fritzbox is searched.
+	--dect		Dect-Update: Searches for a firmware for an dect device.
+	--bpjm		BPjM-Update: Searches for the encrypted BPjM-Modul file. To format the bpjm file and remove hashes for empty strings:
+			             cat $RAWFILE | hexdump -s 64 -v -e '16/1 "%02x" " " 16/1 "%02x" " " 1/1 "%02x\n"' | sed 's/d41d8cd98f00b204e9800998ecf8427e 00$//'
+	--info		InfoMessage: Searches for a very important info message by avm.
+	--down		Downgrade:   Searches for latest release firmware, like "Zurück zum offiziellen FRITZ!OS". "Buildtype" should not be "1".
+	Without --dect, --bpjm, --info and --down, a firmware for a Fritzbox is searched.
 
-	--plain:	Forces to use http. AVM uses this only.
-	--https:	Forces to use https. Curl is mandatory for https.
+	--plain		Forces to use http. AVM uses this only.
+	--https		Forces to use https. Curl is mandatory for https.
 	Without --plain and --https, the default is https if curl is installed. But on fritzbox only if "FREETZ_ADD_JUIS_CHECK__SSL" is set.
 
 Variables:
@@ -25,16 +26,16 @@ Variables:
 	On Computer the hardware-recision "HW" is mandatory and for very old (HWR<150) devices you have to set (at least the "Major" part of) "Version".
 	With Dect: The hardware number "DHW" is mandatory additional, the software version "DSW" and type "DTP" are optional.
 
-	Name		Default if not set
-	----------------------------------
-	HW:		[mandatory]		The HWR code of the device, eg "226" for Fritzbox 7590
-	Version:	[HW].00.00-00000	The "HW" as "Major" does not work with HW<150
-	Name:		[random]		There is no space in the name but a zero-width space: "printf '\342\200\212'". Or copy & paste examples below.
-	OEM:		avm			Examples: "avm", "avme", "kdg", "1und1", "lgi", "otwo"	
+	Name		Default if not set      Comment
+	----------------------------------------------------------------------------------------------------------------------------------------------------------
+	HW		[mandatory]		The HWR code of the device, eg "226" for Fritzbox 7590
+	Version		[HW].00.00-00000	The "HW" as "Major" does not work with HW<150
+	Name		[random]		There is no space in the name but a zero-width space: "printf '\342\200\212'". Or copy & paste examples below.
+	OEM		avm			Examples: "avm", "avme", "kdg", "1und1", "lgi", "otwo"	
 	Lang		de			Examples: "de", "en", "es", "it", "fr", "pl"
 	Annex		B			Extender use "Ohne", docsis devices "Kabel".
 	Country		049
-	Buildtype	1			Common values: "1"=retail, "1000"=labor, "1001"=inhaus, see also https://boxmatrix.info/wiki/Property:CONFIG_BUILDTYPE
+	Buildtype	1 (1000 for --down)	Common values: "1"=retail, "1000"=labor, "1001"=inhaus, see also https://boxmatrix.info/wiki/Property:CONFIG_BUILDTYPE
 	Serial		[random]		Example: "123456789ABC"
 	Nonce		[random]		Example: "123456789aBcDeEfGhIjkL=="
 	Flag		[shuffle]		If you do not want to set a flag use "empty", docsis devices need the flag "cable_retail".
@@ -51,6 +52,7 @@ Examples:
 	env - tools/juis_check --dect Version=154.07.25-80000 Name=FRITZ\!Box 7590           HW=226  DHW=06.03                      -i -s -d
 	env - tools/juis_check --bpjm Version=154.07.25-80000 Name=FRITZ\!Box 7590           HW=226  OEM=avm Lang=de Country=049    -i -s -d
 	env - tools/juis_check --info Version=84.06.87-92934  Name=FRITZ\!Box Fon WLAN 7390  HW=156                                 -i -s -d
+	env - tools/juis_check --down                                                        HW=267  Flag=cable_retail Annex=Kabel  -i -s -d
 	env - tools/juis_check        Version=154.07.39-90000 Name=FRITZ\!Box 7590           HW=226  Buildtype=1001    Annex=B      -i -s -d
 	env - tools/juis_check        Version=252.07.20       Name=FRITZ\!Box 6660 Cable     HW=252  Flag=cable_retail Annex=Kabel  -i -s -d
 	env - tools/juis_check        Version=29.04.87                                       HW=94                                  -i -s -d
@@ -103,7 +105,9 @@ main() {
 	[ -z "$Flag"      ] &&      Flag="$(js $info 'Flag')"
 	[ -z "$Buildtype" ] && Buildtype="$(js $info 'Buildtype')"
 	[ -z "$Buildtype" ] && Buildtype="$(js $info 'Revision')"
-	[ -z "$Buildtype" ] && Buildtype="1"
+	if [ -z "$Buildtype" ]; then
+		[ "$CHK" == "BoxFirmwareDowngradeCheck" ] && Buildtype="1000" || Buildtype="1"
+	fi
 
 	if [ -z "$Name" ]; then
 		while [ "${#Name}" != "4" ]; do Name="$Name$(hexdump -n1 -e '/1 "%02X"' /dev/urandom | sed -rn 's/.*([0-9]).*/\1/p')"; done
@@ -284,6 +288,7 @@ args() {
 		[ "$x" == '-i' ] && DEVI='x'
 		[ "$x" == '-s' ] && DEVS='x'
 		[ "$x" == '-d' ] && DEVD='x'
+		[ "$x" == '--down' ] && CHK='BoxFirmwareDowngradeCheck'
 		[ "$x" == '--info' ] && CHK='BoxMessageCheck'
 		[ "$x" == '--bpjm' ] && CHK='BPjMUpdateCheck'
 		[ "$x" == '--dect' ] && CHK='DeviceFirmwareUpdateCheck'
