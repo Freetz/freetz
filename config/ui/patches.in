@@ -5,10 +5,12 @@ config FREETZ_SELECT_HARDENING
 	depends on FREETZ_SHOW_ADVANCED
 	depends on \
 		FREETZ_AVM_HAS_TR069 || \
+		FREETZ_AVM_HAS_KIDS || \
 		FREETZ_AVM_HAS_MYFRITZ || \
 		FREETZ_AVM_HAS_SIGNATURE
 	default n
 	select FREETZ_REMOVE_TR069 if FREETZ_AVM_HAS_TR069
+	select FREETZ_REMOVE_KIDS if FREETZ_AVM_HAS_KIDS
 	select FREETZ_REMOVE_MYFRITZ if FREETZ_AVM_HAS_MYFRITZ
 	select FREETZ_REMOVE_PUBKEY if FREETZ_AVM_HAS_SIGNATURE
 	select FREETZ_REMOVE_PUBKEY_INHAUS if FREETZ_AVM_HAS_SIGNATURE && FREETZ_TYPE_FIRMWARE_INHAUS
@@ -16,6 +18,10 @@ config FREETZ_SELECT_HARDENING
 		This selects some patches to remove unsecure files/services:
 		 - TR069: Your provider is able to create user accounts
 		   and could then login to your device remotely.
+		 - KIDS: BPjM lists used by contfiltd get updates by download.
+		   Juis provides these unsecure http:// urls. The lists
+		   itself contain only a crc32 which could be calulated
+		   easily and any site could be blocked by attacker.
 		 - MYFRITZ: AVM has wildcard certificates for *.myfritz.net
 		   and can attack your HTTPS sessions as man-in-the-middle.
 		 - PUBKEY: Removing the public key of AVM prevents unwanted
