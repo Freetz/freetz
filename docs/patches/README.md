@@ -539,7 +539,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
     Running telefon daemon in "inhaus mode" restores: - Processing of /var/flash/calllog on incoming calls. In case you added telnetd, this patch also restores: - Support for telnetd on/off by phone (#96*7* / #96*8*). - Processing of /var/flash/fx_conf attributes responsible for automatic start of telnetd.
 
   * **<u>Select hardening</u><a id='select-hardening'></a>**<br>
-    This selects some patches to remove unsecure files/services: - TR069: Your provider is able to create user accounts and could then login to your device remotely. - MYFRITZ: AVM has wildcard certificates for *.myfritz.net and can attack your HTTPS sessions as man-in-the-middle. - PUBKEY: Removing the public key of AVM prevents unwanted firmware updates which could occur spontaneousily.
+    This selects some patches to remove unsecure files/services: - TR069: Your provider is able to create user accounts and could then login to your device remotely. - KIDS: BPjM lists used by contfiltd get updates by download. Juis provides these unsecure http:// urls. The lists itself contain only a crc32 which could be calulated easily and any site could be blocked by attacker. - MYFRITZ: AVM has wildcard certificates for *.myfritz.net and can attack your HTTPS sessions as man-in-the-middle. - PUBKEY: Removing the public key of AVM prevents unwanted firmware updates which could occur spontaneousily.
 
   * **<u>UDEVMOUNT_EXT2: Select Ext2</u><a id='udevmount-ext2'></a>**<br>
     This adds ext2 module to your firmware.
