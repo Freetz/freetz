@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 3380200)
+$(call PKG_INIT_BIN, 3380400)
 $(PKG)_LIB_VERSION:=0.8.6
 $(PKG)_SOURCE:=$(pkg)-autoconf-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=e7974aa1430bad690a5e9f79a6ee5c8492ada8269dc675875ad0fb747d7cada4
+$(PKG)_SOURCE_SHA256:=1935751066c2fd447404caa78cfb8b2b701fad3f6b1cf40b3d658440f6cc7563
 $(PKG)_SITE:=https://www.sqlite.org/2022
 ### WEBSITE:=https://www.sqlite.org
 ### MANPAGE:=https://www.sqlite.org/docs.html
