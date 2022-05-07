@@ -6,9 +6,10 @@ echo "$0: Ask avm's JUIS update service for latest firmware infos like download 
 cat << 'EOX'
 
 Parameters:
+	-a	[Prio4]	Actions, shows the URL if there is a newer version, prepended with the HWR.
 	-i	[Prio3]	Computer, shows the URL if there is a newer version.
 	-s	[Prio2]	Fritzbox, shows if a new version is available. Response is cached in: "/tmp/.juis_check"
-	-d	[Prio1]	RAW-output of the response (or no -i and -s).
+	-d	[Prio1]	RAW-output of the response (or no -a, -i and -s).
 
 	--nofb		Do not try to read values from the local Fritzbox in juis_boxinfo.xml or older jason_boxinfo.xml files, but use random if vaiable is not set.
 
@@ -65,9 +66,9 @@ Examples:
 	env - tools/juis_check        Version=67                                             HW=137                                 -i -s -d
 	env - tools/juis_check                                                               HW=156                                 -i -s -d
 	env - tools/juis_check                                                               HW=259                                 -i -s -d
-	for x in $(seq 150 300); do echo $x; env - tools/juis_check                          HW=$x   Flag=cable_retail Annex=Kabel  -i; done
-	for x in $(seq 200 300); do echo $x; env - tools/juis_check                          HW=$x   Buildtype=1001                 -i; done
-	for x in $(seq  10  99); do          env - tools/juis_check --dect                   HW=259  DHW=0${x::-1}.0${x:1}          -i; done
+	for x in $(seq 150 300); do                            env - tools/juis_check        HW=$x   Flag=cable_retail Annex=Kabel  -a; done
+	for x in $(seq 200 300); do                            env - tools/juis_check        HW=$x   Buildtype=1001                 -a; done
+	for x in $(seq  10 109); do [ ${#x} != 3 ] && x="0$x"; env - tools/juis_check --dect HW=259  DHW=${x::-1}.0${x:2}           -a; done
 	Or just: tools/juis m  # f
 
 EOX
@@ -249,7 +250,7 @@ EOX
 )
 
 	cache='/tmp/.juis_check'
-	[ "$DEV" == 'i' ] && cache='/dev/null'
+	[ "$DEV" == 'i' -o "$DEV" == 'a' ] && cache='/dev/null'
 
 	if [ "$SSL" == 'y' ]; then
 		resp="$(curl -s -X POST -H "${type}" ${soap:+-H $soap} -d "${body}" "https://${url}" --cacert "${avmca}" \
@@ -261,6 +262,10 @@ EOX
 	[ -z "$resp" ] && echo 'Did not received an anser.' 1>&2 && exit 1
 
 	case "$DEV" in
+		a)
+			URL="$(echo "$resp" | sed -n "s/^<ns3:DownloadURL>//p")"
+			[ -n "$URL" ] && ( [ "$CHK" == "DeviceFirmwareUpdateCheck" ] && echo "$DHW=$URL" || echo "$HW=$URL" )
+			;;
 		i)
 			URL="$(echo "$resp" | sed -n "s/^<ns3:DownloadURL>//p")"
 			[ -n "$URL" ] && echo "URL=$URL"
@@ -291,10 +296,11 @@ BIX=''
 CHK='BoxFirmwareUpdateCheck'
 args() {
 	[ "${#*}" == '0' ] && help
-	local DEVI DEVS DEVD
+	local DEVA DEVI DEVS DEVD
 	for x in $*; do
 		l="${x%=*}"
 		r="${x#*=}"
+		[ "$x" == '-a' ] && DEVA='x'
 		[ "$x" == '-i' ] && DEVI='x'
 		[ "$x" == '-s' ] && DEVS='x'
 		[ "$x" == '-d' ] && DEVD='x'
@@ -308,6 +314,7 @@ args() {
 		[ "$x" == "$l" ] && continue
 		eval $l="$r"
 	done
+	[ -n "$DEVA" ] && DEV='a'
 	[ -n "$DEVI" ] && DEV='i'
 	[ -n "$DEVS" ] && DEV='s'
 	[ -n "$DEVD" ] && DEV='d'
