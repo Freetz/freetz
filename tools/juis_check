@@ -40,12 +40,12 @@ Variables:
 	Name		[random]		There is no space in the name but a zero-width space: "printf '\342\200\212'". Or copy & paste examples below.
 	OEM		avm			Examples: "avm", "avme", "kdg", "1und1", "lgi", "otwo"
 	Lang		de			Examples: "de", "en", "es", "it", "fr", "pl", "nl"
-	Annex		B			Extender use "Ohne", docsis devices "Kabel".
+	Annex		B (Kabel for docsis)	Extender use "Ohne", docsis devices "Kabel".
 	Country		049			Examples: "049", "99", "041", "0420", "0421", "043", "044", "045", "046", "047", "048", "061", "064", "066", "0972"
 	Buildtype	1 (1000 for --down)	Common values: "1"=retail, "1000"=labor, "1001"=inhaus, see also https://boxmatrix.info/wiki/Property:CONFIG_BUILDTYPE
 	Serial		[random]		Example: "123456789ABC"
 	Nonce		[random]		Example: "123456789aBcDeEfGhIjkL=="
-	Flag		[shuffle]		If you do not want to set a flag use "empty", docsis devices need the flag "cable_retail".
+	Flag		[shuffle]		If you do not want to set a flag use "empty", for docsis devices "cable_retail" is added.
 	UserAgent	[shuffle]		Values: "Box", "TestClient" or "BoxInternetCheck"
 	Provider	[shuffle]		Use "empty" if you want no value
 	ProviderName	[empty]			This is not added if not set
@@ -59,14 +59,14 @@ Examples:
 	env - tools/juis_check --dect Version=154.07.25-80000 Name=FRITZ\!Box 7590           HW=226  DHW=06.03                      -i -s -d
 	env - tools/juis_check --bpjm Version=154.07.25-80000 Name=FRITZ\!Box 7590           HW=226  OEM=avm Lang=de Country=049    -i -s -d
 	env - tools/juis_check --info Version=84.06.87-92934  Name=FRITZ\!Box Fon WLAN 7390  HW=156                                 -i -s -d
-	env - tools/juis_check --down                                                        HW=267  Flag=cable_retail Annex=Kabel  -i -s -d
+	env - tools/juis_check --down                                                        HW=267                                 -i -s -d
 	env - tools/juis_check        Version=154.07.39-90000 Name=FRITZ\!Box 7590           HW=226  Buildtype=1001    Annex=B      -i -s -d
 	env - tools/juis_check        Version=252.07.20       Name=FRITZ\!Box 6660 Cable     HW=252  Flag=cable_retail Annex=Kabel  -i -s -d
 	env - tools/juis_check        Version=29.04.87                                       HW=94                                  -i -s -d
 	env - tools/juis_check        Version=67                                             HW=137                                 -i -s -d
 	env - tools/juis_check                                                               HW=156                                 -i -s -d
 	env - tools/juis_check                                                               HW=259                                 -i -s -d
-	for x in $(seq 150 300); do                            env - tools/juis_check        HW=$x   Flag=cable_retail Annex=Kabel  -a; done
+	for x in $(seq 150 300); do                            env - tools/juis_check        HW=$x                                  -a; done
 	for x in $(seq 200 300); do                            env - tools/juis_check        HW=$x   Buildtype=1001                 -a; done
 	for x in $(seq  10 109); do [ ${#x} != 3 ] && x="0$x"; env - tools/juis_check --dect HW=259  DHW=${x::-1}.0${x:2}           -a; done
 	Or just: tools/juis m  # f
@@ -78,7 +78,7 @@ exit
 js() { [ -e "$1" ] && sed -rn "s/^<.:$2>(.*)<.*/\1/p" "$1" ; }
 
 main() {
-	local x soap avmca url host sdir flags Envelope body post cache info payload day ser
+	local x soap avmca url host sdir docsis flags Envelope body post cache info payload day ser
 	local line='################################################################'
 	local type='text/xml; charset="utf-8"'
 	local zwsp="$(printf '\342\200\212')"
@@ -104,12 +104,15 @@ main() {
 	fi
 	[ -z "$Name"      ] &&      Name="$(js $info 'Name')"
 	[ -z "$HW"        ] &&        HW="$(js $info 'HW')"
+	case "$HW" in 175|176|182|187|213|220|231|233|252|267) docsis='y' ;; esac
 	[ -z "$OEM"       ] &&       OEM="$(js $info 'OEM')"
 	[ -z "$OEM"       ] &&       OEM="avm"
 	[ -z "$Lang"      ] &&      Lang="$(js $info 'Lang')"
 	[ -z "$Lang"      ] &&      Lang="de"
 	[ -z "$Annex"     ] &&     Annex="$(js $info 'Annex')"
-	[ -z "$Annex"     ] &&     Annex="B"
+	if [ -z "$Annex"  ]; then
+		[ -n "$docsis" ] && Annex="Kabel" || Annex="B"
+	fi
 	[ -z "$Country"   ] &&   Country="$(js $info 'Country')"
 	[ -z "$Country"   ] &&   Country="049"
 	[ -z "$Flag"      ] &&      Flag="$(js $info 'Flag')"
@@ -204,6 +207,7 @@ fi
 		Flag="$(echo 'null mesh_master mesh_master_no_trusted mesh_repeater mesh_repeater_no_trusted' | sed 's/ /\n/g' | shuf | head -n1)"
 		Flag="$Flag $(echo 'null medium_lan medium_dsl' | sed 's/ /\n/g' | shuf | head -n1)"
 		Flag="$Flag $(echo 'null null crashreport myfritz_letsencrypt botnet_detection avm_acs prov_acs' | sed 's/ /\n/g' | shuf | head -n3)"
+		[ -n "$docsis" ] && Flag="$Flag cable_retail"
 		[ -z "${Flag// /}" ] && Flag='empty'
 	fi
 for x in ${Flag//null/}; do flags="<q:Flag>${x/empty/}</q:Flag>
