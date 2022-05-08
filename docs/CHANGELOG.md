@@ -59,7 +59,7 @@ Latest changes
    * juis_check 1.2
    * libcap 2.49/2.64
    * libneon 0.30.2/0.32.2
-   * LCD4linux e691a4b-git
+   * LCD4linux 887bbe5-git
    * ltrace 0.7.3checkpoint1-git
    * MTR 0.80/0.95
    * Nano 6.3
