@@ -8,8 +8,8 @@ assignees: ''
 ---
 
  - Write in german or english
+ - Attach your .config after renaming to config.txt
  - Describe steps to reproduce the behavior
- - Tell everything required or just add the .config
  - "Error 1" is not an error description
  - Add logs, in most cases this are more 10 lines
  - Embed images by dragging them into this text box
