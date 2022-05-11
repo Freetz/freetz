@@ -53,7 +53,7 @@ Latest changes
    * ACME.sh 3.0.4 (letsencrypt)
    * BIND 9.11.37/9.16.28
    * CA-bundle 2022-04-26
-   * Curl 7.83.0
+   * Curl 7.83.1
    * git 2.36.1
    * htop 1.0.3/2.3.0
    * juis_check 1.2
