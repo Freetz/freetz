@@ -58,6 +58,7 @@ Latest changes
    * htop 1.0.3/2.3.0
    * juis_check 1.2
    * libcap 2.49/2.64
+   * libgpg-error 1.45
    * libneon 0.30.2/0.32.2
    * LCD4linux 887bbe5-git
    * ltrace 0.7.3checkpoint1-git
