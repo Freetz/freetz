@@ -49,7 +49,7 @@ cat dect-lab | while read -s x; do sed "/\/${x##*/}$/d" -i          dect-inh; do
 #bpjm
 echo -e '\n### BPjM #######################################################'
                              env - $TOOLS/juis_check --bpjm HW=252                                    -a       | tee bpjm
-[ ! -s bpjm ] || curl "$(sed -n 's/.*=//p' bpjm)" -o bpjm.out
+[ ! -s bpjm ] || curl -sS "$(sed -n 's/.*=//p' bpjm)" -o bpjm.out
 read="$(head -c4 bpjm.out | xxd -p)"
 calc="$(crc32 <( tail -c +$((1 + 4)) bpjm.out ))"
 [ "$read" != "$calc" ] && comp="mismatch $read/$calc" || comp="$read"
