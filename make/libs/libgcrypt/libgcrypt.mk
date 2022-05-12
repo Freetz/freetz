@@ -1,10 +1,10 @@
-$(call PKG_INIT_LIB, 1.9.4)
-$(PKG)_LIB_VERSION:=20.3.4
+$(call PKG_INIT_LIB, 1.10.1)
+$(PKG)_LIB_VERSION:=20.4.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_SHA256:=ea849c83a72454e3ed4267697e8ca03390aee972ab421e7df69dfe42b65caaf7
+$(PKG)_SOURCE_SHA256:=ef14ae546b0084cd84259f61a55e07a38c3b53afc0f546bffcef2f01baffe9de
 $(PKG)_SITE:=https://gnupg.org/ftp/gcrypt/libgcrypt,ftp://ftp.gnupg.org/gcrypt/libgcrypt
 ### WEBSITE:=https://gnupg.org/software/libgcrypt/
-### CHANGES:=https://git.gnupg.org/cgi-bin/gitweb.cgi?p=libgcrypt.git;a=blob;f=ChangeLog
+### CHANGES:=https://git.gnupg.org/cgi-bin/gitweb.cgi?p=libgcrypt.git;a=blob;f=NEWS
 ### CVSREPO:=https://git.gnupg.org/cgi-bin/gitweb.cgi?p=libgcrypt.git
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)
