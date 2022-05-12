@@ -1,6 +1,6 @@
-# libgcrypt: GnuPG crypto library (libgcrypt.so) 1.9.4
+# libgcrypt: GnuPG crypto library (libgcrypt.so) 1.10.1
  - Homepage: [https://gnupg.org/software/libgcrypt/](https://gnupg.org/software/libgcrypt/)
- - Changelog: [https://git.gnupg.org/cgi-bin/gitweb.cgi?p=libgcrypt.git;a=blob;f=ChangeLog](https://git.gnupg.org/cgi-bin/gitweb.cgi?p=libgcrypt.git;a=blob;f=ChangeLog)
+ - Changelog: [https://git.gnupg.org/cgi-bin/gitweb.cgi?p=libgcrypt.git;a=blob;f=NEWS](https://git.gnupg.org/cgi-bin/gitweb.cgi?p=libgcrypt.git;a=blob;f=NEWS)
  - Repository: [https://git.gnupg.org/cgi-bin/gitweb.cgi?p=libgcrypt.git](https://git.gnupg.org/cgi-bin/gitweb.cgi?p=libgcrypt.git)
  - Library: [master/make/libs/libgcrypt/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/libs/libgcrypt/)
 

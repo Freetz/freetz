@@ -127,7 +127,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
   * **[libgcc_s (libgcc_s.so) 1](libgcc_s.md)<a id='libgcc-s'></a>**<br>
     GCC low-level runtime library GCC provides a low-level runtime library, `libgcc.a' or `libgcc_s.so.1' on some platforms. GCC generates calls to routines in this library automatically, whenever it needs to perform some operation that is too complicated to emit inline code for. Most of the routines in libgcc handle arithmetic operations that the target processor cannot perform directly. This includes integer multiply and divide on some machines, and all floating-point operations on other machines. libgcc also includes routines for exception handling, and a handful of miscellaneous operations.
 
-  * **[libgcrypt: GnuPG crypto library (libgcrypt.so) 1.9.4](libgcrypt.md)<a id='libgcrypt'></a>**<br>
+  * **[libgcrypt: GnuPG crypto library (libgcrypt.so) 1.10.1](libgcrypt.md)<a id='libgcrypt'></a>**<br>
     Libgcrypt is a general-purpose cryptographic library based on the code from GnuPG. It provides functions for all cryptographic building blocks: symmetric ciphers (AES, DES, Blowfish, CAST5, Twofish, and Arcfour), hash algorithms (MD4, MD5, RIPE-MD160, SHA-1, and TIGER-192), MACs (HMAC for all hash algorithms), public key algorithms (RSA, ElGamal, and DSA), large integer functions, random numbers, and a lot of supporting functions.
 
   * **[libgd (libgd.so) 2.3.3](libgd.md)<a id='libgd'></a>**<br>
