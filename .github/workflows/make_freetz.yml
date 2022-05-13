@@ -1,0 +1,121 @@
+name: make_freetz
+
+on:
+# push:
+#   branches: [ master ]
+#   paths:
+#     - '.github/workflows/make_freetz.yml'
+#     - 'config/mod/download.in'
+#     - 'make/*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    container:
+#     image: ubuntu:20.04
+      image: freetzng/firmware
+    runs-on: ubuntu-latest
+
+    steps:
+
+#     - name: update
+#       run: apt-get -y update && apt-get -y upgrade && apt-get -y dist-upgrade
+#
+#     - name: install
+#       run: |
+#         DEBIAN_FRONTEND=noninteractive apt-get -y install \
+#           locales \
+#           pv cpio rsync kmod execstack imagemagick inkscape graphicsmagick subversion git bc unar wget sudo gcc g++ binutils autoconf automake \
+#           autopoint libtool-bin make bzip2 libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config ecj \
+#           fastjar perl libstring-crc32-perl ruby gawk python libusb-dev unzip intltool libacl1-dev libcap-dev libc6-dev-i386 lib32ncurses5-dev \
+#           gcc-multilib bsdmainutils lib32stdc++6 libglib2.0-dev ccache cmake lib32z1-dev libsqlite3-dev sqlite3 libzstd-dev netcat curl
+#
+#     - name: locale
+#       run: locale-gen en_US.utf8 && locale-gen de_DE.UTF-8 && update-locale
+
+      - name: clone
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          umask 0022
+          git config --global --add safe.directory $GITHUB_WORKSPACE
+          git clone https://github-actions:$GITHUB_TOKEN@${GITHUB_SERVER_URL##*/}/$GITHUB_REPOSITORY.git $GITHUB_WORKSPACE --branch $GITHUB_REF_NAME
+
+      - name: config
+        run: |
+          truncate -s0 .config
+          for x in  TYPE_7490 TYPE_FIRMWARE_07_25 TYPE_FIRMWARE_DETECT_LATEST; do echo "FREETZ_$x=y"  >> .config; done
+          for x in  PACKAGE_LDD PACKAGE_STRACE                               ; do echo "FREETZ_$x=y"  >> .config; done
+          for x in  PACKAGE_DROPBEAR                              ; do echo "# FREETZ_$x is not set"  >> .config; done
+          echo '# FREETZ_TOOLCHAIN_CCACHE is not set'                                                 >> .config
+          echo 'FREETZ_USER_LEVEL_APTGURU=y'                                                          >> .config
+          echo 'FREETZ_VERBOSITY_LEVEL=2'                                                             >> .config
+          echo 'FREETZ_JLEVEL=9'                                                                      >> .config
+          echo 'FREETZ_DL_SITE_USER="https://raw.githubusercontent.com/Freetz-NG/dl-mirror/master"'   >> .config
+          wget -q "${{ secrets.ACTIONS_CUSTOM }}cfg" -O cfg 2>/dev/null && mv cfg .config || rm -f cfg
+          echo "################################################################" && du .config && wc -l .config
+
+      - name: addon
+        run: |
+          echo "################################################################"
+          wget -q "${{ secrets.ACTIONS_CUSTOM }}add" -O - 2>/dev/null | tar xj 2>/dev/null && echo Done || echo Null
+
+      - name: signature
+        run: |
+          mkdir -p $HOME/.freetz-signature
+          for x in prv pub; do wget -q "${{ secrets.ACTIONS_CUSTOM }}$x" -O $HOME/.freetz-signature/$x >/dev/null 2>&1 || rm -f $HOME/.freetz-signature/$x; done
+          echo "################################################################" && ls -l $HOME/.freetz-signature/
+
+      - name: generate
+        run: |
+          mkdir -p $HOME/.freetz-dl && useradd -m freetz -s $(which bash) && chown freetz . $HOME/.freetz-dl $HOME/.freetz-signature -R
+          su freetz -c "umask 0022 && make olddefconfig && make && rm -f images/latest.image"
+
+      - name: result
+        run: |
+          echo "################################################################"
+          ls -l images/
+          sha256sum images/*
+
+      - name: vars
+        id: vars
+        run: |
+          LINK="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          LAST="$(ls images/*.image | sed 's,.*/,,;s,\.image$,,')"
+          NAME="$(ls images/*.image | sed 's,.*/,,;s,_[0-9].*,,')"
+          [ -n "$LINK" ] && echo "::set-output name=link::$LINK"
+          [ -n "$LAST" ] && echo "::set-output name=last::$LAST"
+          [ -n "$NAME" ] && echo "::set-output name=name::$NAME"
+          echo "################################################################"
+          echo "LINK=$LINK"
+          echo "LAST=$LAST"
+          echo "NAME=$NAME"
+          test -n "$NAME"
+
+      - name: cleanup
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACTIONS_NAME: ${{ steps.vars.outputs.name }}
+        run: |
+          git config --global --add safe.directory $GITHUB_WORKSPACE
+          git config --local credential.helper '!x() { echo "password=$GITHUB_TOKEN"; };x'
+          git tag -d $ACTIONS_NAME && git push --delete origin $ACTIONS_NAME || true
+
+      - name: release
+        uses: ncipollo/release-action@v1.10.0
+        with:
+          tag: ${{ steps.vars.outputs.name }}
+          name: ${{ steps.vars.outputs.name }}
+          body: |
+            ${{ steps.vars.outputs.last }}
+            ${{ steps.vars.outputs.link }}
+          prerelease: false
+          allowUpdates: true
+          removeArtifacts: false
+          replacesArtifacts: false
+          artifactErrorsFailBuild: true
+          artifacts: "images/*"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          draft: true
+
+

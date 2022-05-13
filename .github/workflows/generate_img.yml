@@ -12,24 +12,25 @@ on:
 jobs:
   build:
     container:
-      image: ubuntu:18.04
+#     image: ubuntu:18.04
+      image: freetzng/dl-packs
     runs-on: ubuntu-latest
 
     steps:
 
-      - name: update
-        run: apt-get -y update && apt-get -y upgrade && apt-get -y dist-upgrade
-
-      - name: install
-        run: |
-          DEBIAN_FRONTEND=noninteractive apt-get -y install \
-            locales bash \
-            cpio rsync kmod execstack sqlite3 libsqlite3-dev libzstd-dev cmake lib32z1-dev unar subversion git bc wget sudo gcc g++ binutils autoconf automake autopoint \
-            libtool-bin make bzip2 libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config ecj fastjar perl libstring-crc32-perl \
-            ruby gawk python libusb-dev unzip intltool libacl1-dev libcap-dev libc6-dev-i386 lib32ncurses5-dev gcc-multilib lib32stdc++6 libglib2.0-dev
-
-      - name: locale
-        run: locale-gen en_US.utf8 && locale-gen de_DE.UTF-8 && update-locale
+#     - name: update
+#       run: apt-get -y update && apt-get -y upgrade && apt-get -y dist-upgrade
+#
+#     - name: install
+#       run: |
+#         DEBIAN_FRONTEND=noninteractive apt-get -y install \
+#           locales bash \
+#           cpio rsync kmod execstack sqlite3 libsqlite3-dev libzstd-dev cmake lib32z1-dev unar subversion git bc wget sudo gcc g++ binutils autoconf automake autopoint \
+#           libtool-bin make bzip2 libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config ecj fastjar perl libstring-crc32-perl \
+#           ruby gawk python libusb-dev unzip intltool libacl1-dev libcap-dev libc6-dev-i386 lib32ncurses5-dev gcc-multilib lib32stdc++6 libglib2.0-dev
+#
+#     - name: locale
+#       run: locale-gen en_US.utf8 && locale-gen de_DE.UTF-8 && update-locale
 
       - name: clone
         env:

@@ -12,7 +12,8 @@ on:
 jobs:
   build:
     container:
-      image: ubuntu:14.04
+#     image: ubuntu:14.04
+      image: freetzng/dl-packs
     runs-on: ubuntu-latest
 
     steps:
@@ -24,55 +25,55 @@ jobs:
           echo "::set-output name=split::$SPLIT"
           echo "################################################################" && bash -c "echo SPLIT=$SPLIT"
 
-      - name: update
-        run: apt-get -y update && apt-get -y upgrade && apt-get -y dist-upgrade
-
-      - name: install
-        run: |
-          DEBIAN_FRONTEND=noninteractive apt-get -y install \
-            locales \
-            pv cpio rsync kmod execstack imagemagick inkscape graphicsmagick subversion git bc unar wget sudo gcc g++ binutils autoconf automake \
-            libtool make bzip2 libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config ecj fastjar realpath \
-            perl libstring-crc32-perl ruby ruby1.9 gawk python libusb-dev unzip intltool libacl1-dev libcap-dev libc6-dev-i386 lib32ncurses5-dev \
-            gcc-multilib lib32stdc++6 libglib2.0-dev ccache cmake lib32z1-dev libsqlite3-dev sqlite3 openssl build-essential automake1.9 autopoint
-
-      - name: locale
-        run: locale-gen en_US.utf8 && locale-gen de_DE.UTF-8 && update-locale
-
-      - name: certs
-        run: |
-          CAX3="/usr/share/ca-certificates/mozilla/DST_Root_CA_X3.crt"
-          for x in $(find /etc/ssl/certs/ ! -type d); do [ "$(realpath $x)"  = "/usr/share/ca-certificates/mozilla/DST_Root_CA_X3.crt" ] && CAX3="$CAX3 $x"; done
-          echo "################################################################" && ls -al $CAX3 || true
-          rm -f $CAX3
-
-      - name: zstd
-        run: |
-          URL="https://github.com/facebook/zstd/releases/download/v1.4.9/zstd-1.4.9.tar.gz"
-          DIR="$(mktemp -d)"
-          [ -d "$DIR" ] && cd "$DIR" && wget "$URL" && tar xvf "${URL##*/}" --strip-components=1 &&                make && make install
-          echo "################################################################" && ldconfig -v 2>&1 | grep -B1 " libzstd.so\..*"
-
-      - name: cpio
-        run: |
-          URL="https://ftp.gnu.org/gnu/cpio/cpio-2.12.tar.bz2"
-          DIR="$(mktemp -d)"
-          [ -d "$DIR" ] && cd "$DIR" && wget "$URL" && tar xvf "${URL##*/}" --strip-components=1 && ./configure && make && make install
-          echo "################################################################" && bash -c "cpio --version"
-
-      - name: make
-        run: |
-          URL="https://ftp.gnu.org/gnu/make/make-3.82.tar.bz2"
-          DIR="$(mktemp -d)"
-          [ -d "$DIR" ] && cd "$DIR" && wget "$URL" && tar xvf "${URL##*/}" --strip-components=1 && ./configure && make && make install
-          echo "################################################################" && bash -c "make --version"
-
-      - name: cmake
-        run: |
-          URL="https://ftp.osuosl.org/pub/blfs/conglomeration/cmake/cmake-3.4.3.tar.gz"
-          DIR="$(mktemp -d)"
-          [ -d "$DIR" ] && cd "$DIR" && wget "$URL" && tar xvf "${URL##*/}" --strip-components=1 && ./configure && make && make install
-          echo "################################################################" && bash -c "cmake --version"
+#     - name: update
+#       run: apt-get -y update && apt-get -y upgrade && apt-get -y dist-upgrade
+#
+#     - name: install
+#       run: |
+#         DEBIAN_FRONTEND=noninteractive apt-get -y install \
+#           locales \
+#           pv cpio rsync kmod execstack imagemagick inkscape graphicsmagick subversion git bc unar wget sudo gcc g++ binutils autoconf automake \
+#           libtool make bzip2 libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config ecj fastjar realpath \
+#           perl libstring-crc32-perl ruby ruby1.9 gawk python libusb-dev unzip intltool libacl1-dev libcap-dev libc6-dev-i386 lib32ncurses5-dev \
+#           gcc-multilib lib32stdc++6 libglib2.0-dev ccache cmake lib32z1-dev libsqlite3-dev sqlite3 openssl build-essential automake1.9 autopoint
+#
+#     - name: locale
+#       run: locale-gen en_US.utf8 && locale-gen de_DE.UTF-8 && update-locale
+#
+#     - name: certs
+#       run: |
+#         CAX3="/usr/share/ca-certificates/mozilla/DST_Root_CA_X3.crt"
+#         for x in $(find /etc/ssl/certs/ ! -type d); do [ "$(realpath $x)"  = "/usr/share/ca-certificates/mozilla/DST_Root_CA_X3.crt" ] && CAX3="$CAX3 $x"; done
+#         echo "################################################################" && ls -al $CAX3 || true
+#         rm -f $CAX3
+#
+#     - name: zstd
+#       run: |
+#         URL="https://github.com/facebook/zstd/releases/download/v1.4.9/zstd-1.4.9.tar.gz"
+#         DIR="$(mktemp -d)"
+#         [ -d "$DIR" ] && cd "$DIR" && wget "$URL" && tar xvf "${URL##*/}" --strip-components=1 &&                make && make install
+#         echo "################################################################" && ldconfig -v 2>&1 | grep -B1 " libzstd.so\..*"
+#
+#     - name: cpio
+#       run: |
+#         URL="https://ftp.gnu.org/gnu/cpio/cpio-2.12.tar.bz2"
+#         DIR="$(mktemp -d)"
+#         [ -d "$DIR" ] && cd "$DIR" && wget "$URL" && tar xvf "${URL##*/}" --strip-components=1 && ./configure && make && make install
+#         echo "################################################################" && bash -c "cpio --version"
+#
+#     - name: make
+#       run: |
+#         URL="https://ftp.gnu.org/gnu/make/make-3.82.tar.bz2"
+#         DIR="$(mktemp -d)"
+#         [ -d "$DIR" ] && cd "$DIR" && wget "$URL" && tar xvf "${URL##*/}" --strip-components=1 && ./configure && make && make install
+#         echo "################################################################" && bash -c "make --version"
+#
+#     - name: cmake
+#       run: |
+#         URL="https://ftp.osuosl.org/pub/blfs/conglomeration/cmake/cmake-3.4.3.tar.gz"
+#         DIR="$(mktemp -d)"
+#         [ -d "$DIR" ] && cd "$DIR" && wget "$URL" && tar xvf "${URL##*/}" --strip-components=1 && ./configure && make && make install
+#         echo "################################################################" && bash -c "cmake --version"
 
       - name: clone
         env:
@@ -86,7 +87,7 @@ jobs:
         id: version
         run: |
           export VERSION="r$(tools/freetz_revision short)"
-          [ -n "$VERSION" ] && echo "::set-output name=version::$VERSION"
+          [ -n "$VERSION" ] && echo "::set-output name=version::$VERSION" || exit 1
           echo "################################################################" && bash -c "echo VERSION=$VERSION"
 
       - name: generate
@@ -103,24 +104,28 @@ jobs:
           echo "################################################################"
           su freetz -c "umask 0022 && tools/dl-toolchains_eval $ACTIONS_VERSION ${{ steps.split.outputs.split }}"
 
-      - name: cleanup
-        uses: dev-drprasad/delete-older-releases@v0.2.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          delete_tag_pattern: dl-toolchains_${{ steps.split.outputs.split }}
-          delete_tags: true
-          keep_latest: 0
+#     - name: cleanup
+#       env:
+#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         ACTIONS_VERSION: ${{ steps.version.outputs.version }}
+#       run: |
+#         git config --global --add safe.directory $GITHUB_WORKSPACE
+#         git config --local credential.helper '!x() { echo "password=$GITHUB_TOKEN"; };x'
+#         for x in $(git tag | grep -v "_$ACTIONS_VERSION$" | grep 'dl-toolchains_'); do git tag -d $x && git push --delete origin $x || true; done
 
       - name: release
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@v1.10.0
         with:
-          tag: dl-toolchains_${{ steps.split.outputs.split }}
-          name: dl-toolchains_${{ steps.split.outputs.split }}-${{ steps.version.outputs.version }}
+          tag: dl-toolchains_${{ steps.version.outputs.version }}
+          name: dl-toolchains-${{ steps.version.outputs.version }}
           body: These files are internally used!
           prerelease: true
+          allowUpdates: true
+          removeArtifacts: false
+          replacesArtifacts: false
           artifactErrorsFailBuild: true
           artifacts: "dl/*freetz-${{ steps.version.outputs.version }}-shared-glibc.tar.lzma"
           token: ${{ secrets.GITHUB_TOKEN }}
+          draft: false
 
 

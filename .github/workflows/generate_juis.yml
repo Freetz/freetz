@@ -1,34 +1,35 @@
 name: generate_juis
 
 on:
-  push:
-    branches: [ master ]
-    paths:
-      - '.github/workflows/generate_juis.yml'
-      - 'docs/generate_juis.sh'
-      - 'config/mod/download.in'
+# push:
+#   branches: [ master ]
+#   paths:
+#     - '.github/workflows/generate_juis.yml'
+#     - 'docs/generate_juis.sh'
+#     - 'config/mod/download.in'
   schedule:
-    - cron: '30 18 * * 1-5'
+    - cron: '00 16 * * 1-5'
   workflow_dispatch:
 
 jobs:
   build:
     container:
-      image: ubuntu:20.04
+#     image: ubuntu:18.04
+      image: freetzng/generate
     runs-on: ubuntu-latest
 
     steps:
 
-      - name: update
-        run: apt-get -y update && apt-get -y upgrade && apt-get -y dist-upgrade
-
-      - name: install
-        run: |
-          DEBIAN_FRONTEND=noninteractive apt-get -y install \
-            git locales netcat curl bsdmainutils xxd libarchive-zip-perl
-
-      - name: locale
-        run: locale-gen en_US.utf8 && locale-gen de_DE.UTF-8 && update-locale
+#     - name: update
+#       run: apt-get -y update && apt-get -y upgrade && apt-get -y dist-upgrade
+#
+#     - name: install
+#       run: |
+#         DEBIAN_FRONTEND=noninteractive apt-get -y install \
+#           git locales netcat curl bsdmainutils xxd libarchive-zip-perl
+#
+#     - name: locale
+#       run: locale-gen en_US.utf8 && locale-gen de_DE.UTF-8 && update-locale
 
       - name: clone
         env:
