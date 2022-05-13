@@ -55,6 +55,7 @@ Latest changes
    * CA-bundle 2022-04-26
    * Curl 7.83.1
    * git 2.36.1
+   * HAProxy 2.5.7
    * htop 1.0.3/2.3.0
    * juis_check 1.2
    * libcap 2.49/2.64
