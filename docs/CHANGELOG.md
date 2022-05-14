@@ -67,6 +67,7 @@ Latest changes
    * MTR 0.80/0.95
    * Nano 6.3
    * OpenSSL 0.9.8zh/1.0.2u/1.1.1o/3.0.3
+   * pcre2 10.40
    * SQLite 3.38.5
    * Tor 0.4.7.7
 
