@@ -1,4 +1,4 @@
-# pcre2: libpcre2 (libpcre2-8.so) 10.39
+# pcre2: libpcre2 (libpcre2-8.so) 10.40
  - Homepage: [https://www.pcre.org/](https://www.pcre.org/)
  - Manpage: [https://www.pcre.org/current/doc/html/](https://www.pcre.org/current/doc/html/)
  - Changelog: [https://www.pcre.org/changelog.txt](https://www.pcre.org/changelog.txt)
