@@ -1,14 +1,14 @@
 --- GNUmakefile.in
 +++ GNUmakefile.in
-@@ -275,7 +275,7 @@
+@@ -282,7 +282,7 @@
  # Add your flags here
  OTHER_CFLAGS =
  
--CFLAGS = @CFLAGS@ @CPPFLAGS@ $(OTHER_CFLAGS) $(SPECIAL_CFLAGS) -Wall \
-+CFLAGS = @CFLAGS@ @CPPFLAGS@ -D_GNU_SOURCE $(OTHER_CFLAGS) $(SPECIAL_CFLAGS) -Wall \
-          @STATIC_PCRE_ONLY@ -Ipcre
+-CFLAGS = @CFLAGS@ @CPPFLAGS@ $(OTHER_CFLAGS) $(SPECIAL_CFLAGS) -Wall
++CFLAGS = @CFLAGS@ @CPPFLAGS@ -D_GNU_SOURCE $(OTHER_CFLAGS) $(SPECIAL_CFLAGS) -Wall
  
  LDFLAGS = @LDFLAGS@ $(DEBUG_CFLAGS) $(SPECIAL_CFLAGS)
+ 
 --- parsers.c
 +++ parsers.c
 @@ -44,12 +44,6 @@

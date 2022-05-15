@@ -1,13 +1,17 @@
-$(call PKG_INIT_BIN, 3.0.28)
+$(call PKG_INIT_BIN, 3.0.33)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-stable-src.tar.gz
-$(PKG)_SOURCE_MD5:=c7e8900d5aff33d9a5fc37ac28154f21
+$(PKG)_SOURCE_SHA256:=04b104e70dac61561b9dd110684b250fafc8c13dbe437a60fae18ddd9a881fae
 $(PKG)_SITE:=@SF/ijbswa
+### WEBSITE:=https://www.privoxy.org
+### MANPAGE:=https://www.privoxy.org/user-manual/
+### CHANGES:=https://www.privoxy.org/gitweb/?p=privoxy.git;a=blob;f=ChangeLog
+### CVSREPO:=https://www.privoxy.org/gitweb/?p=privoxy.git
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/privoxy
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/privoxy
 
-$(PKG)_CONFIGURE_PRE_CMDS += autoheader;
-$(PKG)_CONFIGURE_PRE_CMDS += autoconf;
+$(PKG)_CONFIGURE_PRE_CMDS += autoheader $(SILENCE);
+$(PKG)_CONFIGURE_PRE_CMDS += autoconf $(SILENCE);
 
 ifeq ($(strip $(FREETZ_PACKAGE_PRIVOXY_WITH_SHARED_PCRE)),y)
 $(PKG)_DEPENDS_ON += pcre
@@ -24,9 +28,13 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 $(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/mod/etc
 $(PKG)_CONFIGURE_OPTIONS += --with-docbook=no
 $(PKG)_CONFIGURE_OPTIONS += --disable-stats
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_PRIVOXY_WITH_SHARED_PCRE),,--disable-dynamic-pcre)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_PRIVOXY_WITH_SHARED_PCRE),--enable-dynamic-pcre,--disable-dynamic-pcre)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_PRIVOXY_WITH_ZLIB),--enable-zlib,--disable-zlib)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6-support,--disable-ipv6-support)
+$(PKG)_CONFIGURE_OPTIONS += --without-mbedtls
+$(PKG)_CONFIGURE_OPTIONS += --without-openssl
+$(PKG)_CONFIGURE_OPTIONS += --without-brotli
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -56,6 +64,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(PRIVOXY_DIR) clean

@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_PRIVOXY
-	bool "Privoxy 3.0.28"
+	bool "Privoxy 3.0.33"
 	default n
 	help
 		Privoxy is a web proxy with advanced filtering capabilities for protecting privacy, modifying web page
@@ -9,30 +9,33 @@ config FREETZ_PACKAGE_PRIVOXY
 		It can also be used together with Tor Proxy to forward HTTP traffic to Tor as described in the Tor
 		documentation.
 
-config FREETZ_PACKAGE_PRIVOXY_WITH_ADBLOCK
-	bool "With AdBlock filter list downloader"
-	depends on FREETZ_PACKAGE_PRIVOXY
-	select FREETZ_PACKAGE_WGET
-	select FREETZ_PACKAGE_WGET_WITH_SSL
-	default n
-	help
-		This option enables automatic filter list downloads from adblock.org.
-		Requires and selects GNU wget (busybox wget does not support https).
+		Open http://config.privoxy.org/show-status for details.
 
-config FREETZ_PACKAGE_PRIVOXY_WITH_SHARED_PCRE
-	bool "With shared libpcre"
-	depends on FREETZ_PACKAGE_PRIVOXY
-	select FREETZ_LIB_libpcre
-	select FREETZ_LIB_libpcreposix
-	default y
-	help
-		Causes libpcre to be linked in dynamically.
+if FREETZ_PACKAGE_PRIVOXY
 
-config FREETZ_PACKAGE_PRIVOXY_WITH_ZLIB
-	bool "With zlib Compression"
-	depends on FREETZ_PACKAGE_PRIVOXY
-	select FREETZ_LIB_libz
-	default n
-	help
-		ZLIB Compression for privoxy
+	config FREETZ_PACKAGE_PRIVOXY_WITH_ADBLOCK
+		bool "With AdBlock filter list downloader"
+		select FREETZ_PACKAGE_WGET
+		select FREETZ_PACKAGE_WGET_WITH_SSL
+		default n
+		help
+			This option enables automatic filter list downloads from adblock.org.
+			Requires and selects GNU wget (busybox wget does not support https).
+
+	config FREETZ_PACKAGE_PRIVOXY_WITH_SHARED_PCRE
+		bool "With shared libpcre"
+		select FREETZ_LIB_libpcre
+		select FREETZ_LIB_libpcreposix
+		default y
+		help
+			Causes libpcre to be linked in dynamically.
+
+	config FREETZ_PACKAGE_PRIVOXY_WITH_ZLIB
+		bool "With zlib Compression"
+		select FREETZ_LIB_libz
+		default n
+		help
+			ZLIB Compression for privoxy
+
+endif # FREETZ_PACKAGE_PRIVOXY
 
