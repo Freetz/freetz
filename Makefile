@@ -40,29 +40,29 @@ MIRROR_DIR:=$(DL_DIR)/mirror
 TOOLCHAIN_BUILD_DIR:=$(TOOLCHAIN_DIR)/$(BUILD_DIR)
 TOOLS_BUILD_DIR:=$(TOOLS_DIR)/$(BUILD_DIR)
 
-SED:=sed
-TAR:=$(TOOLS_DIR)/tar-gnu
+# do not use sorted-wildcard here, it's first defined in files included here
+include $(sort $(wildcard $(INCLUDE_DIR)/make/*.mk))
 
-# Don't go parallel
-.NOTPARALLEL:
-# We don't use suffixes in the main make, don't waste time searching for files
-.SUFFIXES:
-
-MAKE1=make
-MAKE=make -j$(FREETZ_JLEVEL)
+# load user configuration file
+-include $(TOPDIR)/.config
 
 DL_TOOL:=$(TOOLS_DIR)/freetz_download
 PATCH_TOOL:=$(TOOLS_DIR)/freetz_patch
 PARSE_CONFIG_TOOL:=$(TOOLS_DIR)/parse-config
 CHECK_PREREQ_TOOL:=$(TOOLS_DIR)/prerequisites
 GENERATE_IN_TOOL:=$(TOOLS_DIR)/genin
+TAR:=$(TOOLS_DIR)/tar-gnu
+SED:=sed
+MAKE1=make
+MAKE=make -j$(FREETZ_JLEVEL)
 
-# do not use sorted-wildcard here, it's first defined in files included here
-include $(sort $(wildcard $(INCLUDE_DIR)/make/*.mk))
+# Don't go parallel
+.NOTPARALLEL:
+# We don't use suffixes in the main make, don't waste time searching for files
+.SUFFIXES:
 
 # Use echo -e "$(_Y)message$(_N)" if you want to print a yellow message
 IS_TTY=$(shell tty -s && echo 1 || echo 0)
-
 ifeq ($(IS_TTY),1)
 _Y:=\\033[33m
 __Y:=\033[33m
@@ -157,9 +157,6 @@ all: step
 world: check-dot-config-uptodateness clear-echo-temporary $(DL_DIR) $(BUILD_DIR) $(KERNEL_TARGET_DIR) $(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT) $(TOOLCHAIN_BUILD_DIR)
 
 KCONFIG_TARGETS:=config menuconfig menuconfig-single nconfig nconfig-single gconfig xconfig oldconfig olddefconfig allnoconfig allyesconfig randconfig listnewconfig config-compress
-
-# load user configuration file
--include $(TOPDIR)/.config
 
 ifneq ($(findstring menuconfig,$(MAKECMDGOALS)),menuconfig)
 # check cpu for x86_64
