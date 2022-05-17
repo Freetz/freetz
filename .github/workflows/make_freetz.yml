@@ -1,12 +1,12 @@
 name: make_freetz
 
 on:
-# push:
-#   branches: [ master ]
-#   paths:
-#     - '.github/workflows/make_freetz.yml'
-#     - 'config/mod/download.in'
-#     - 'make/*'
+  push:
+    branches: [ master ]
+    paths:
+      - '.github/workflows/make_freetz.yml'
+  schedule:
+    - cron: '00 16 * * 0'
   workflow_dispatch:
 
 jobs:
