@@ -29,9 +29,10 @@ menu "Build system options"
 
 	config FREETZ_JLEVEL
 		int "Number of jobs to run simultaneously"
-		default 2
+		default 0
 		help
-			Number of jobs to run simultanesouly, at least 1
+			Number of jobs make runs simultanesouly.
+			Use 0 for automatic detection (nproc+1).
 
 	config FREETZ_CHECK_CHANGED
 		bool "Force package clean if it has changed"

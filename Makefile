@@ -54,7 +54,11 @@ GENERATE_IN_TOOL:=$(TOOLS_DIR)/genin
 TAR:=$(TOOLS_DIR)/tar-gnu
 SED:=sed
 MAKE1=make
+ifeq ($(FREETZ_JLEVEL),0)
+MAKE=make -j$(shell echo $$(( $$(nproc || echo 1) +1 )) )
+else
 MAKE=make -j$(FREETZ_JLEVEL)
+endif
 
 # Don't go parallel
 .NOTPARALLEL:
