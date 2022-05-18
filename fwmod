@@ -574,6 +574,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	elif [ -e "$FIRMWARE_DIR/var/tmp/fit-image" ]; then
 		"${TOOLS_DIR}/fitimg" -x $FIRMWARE_DIR/var/tmp/fit-image -d $FIRMWARE_DIR/var/tmp/ -n -f -q
 		rm -f $FIRMWARE_DIR/var/tmp/*2.image
+		rm -f $FIRMWARE_DIR/var/tmp/*3.image
 	fi
 
 	# Do the images exist ?
