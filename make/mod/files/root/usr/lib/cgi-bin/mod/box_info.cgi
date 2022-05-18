@@ -92,8 +92,9 @@ fi
 if [ -z "$flash_size" -a "${CONFIG_ROMSIZE#*=}" == "${CONFIG_ROMSIZE%=*}" ]; then
 	flash_size="$CONFIG_ROMSIZE"
 fi
-_CONFIG_NAND="$(echo $CONFIG_ROMSIZE | sed -ne "s/^.*nand_size=\([0-9]*\).*/\1/p")"
-_CONFIG_TFFS="$(echo $CONFIG_ROMSIZE | sed -ne "s/^.*sflash_size=\([0-9]*\).*/\1/p")"
+_CONFIG_TFFS="$(echo $CONFIG_ROMSIZE | sed -ne "s/^.*sflash_size=\([0-9BKMG]*\).*/\1/p" | sed -r 's/([0-9]*)/\1 /' | grep -v '^0 ')"
+_CONFIG_NAND="$(echo $CONFIG_ROMSIZE | sed -ne   "s/^.*nand_size=\([0-9BKMG]*\).*/\1/p" | sed -r 's/([0-9]*)/\1 /' | grep -v '^0 ')"
+_CONFIG_EMMC="$(echo $CONFIG_ROMSIZE | sed -ne   "s/^.*emmc_size=\([0-9BKMG]*\).*/\1/p" | sed -r 's/([0-9]*)/\1 /' | grep -v '^0 ')"
 [ $(which run_clock) ] && run_clock=$(run_clock | sed 's/.*: //')
 reboot_status="$(cat /proc/sys/urlader/reboot_status 2>/dev/null)"
 
@@ -112,8 +113,9 @@ echo "</dl>"
 
 echo "<dl class='info'>"
 echo "<dt>RAM</dt><dd>$CONFIG_RAMSIZE MB</dd>"
-[ -n "$_CONFIG_NAND" ] && echo "<dt>NAND</dt><dd>$_CONFIG_NAND MB</dd>"
-[ -n "$_CONFIG_TFFS" ] && echo "<dt>TFFS</dt><dd>$_CONFIG_TFFS MB</dd>"
+[ -n "$_CONFIG_TFFS" ] && echo "<dt>TFFS</dt><dd>$_CONFIG_TFFS</dd>"
+[ -n "$_CONFIG_NAND" ] && echo "<dt>NAND</dt><dd>$_CONFIG_NAND</dd>"
+[ -n "$_CONFIG_EMMC" ] && echo "<dt>EMMC</dt><dd>$_CONFIG_EMMC</dd>"
 echo "</dl>"
 
 echo "<dl class='info'>"
