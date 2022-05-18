@@ -190,7 +190,11 @@ install() {
 		# unset jffs2_size env var
 		echo jffs2_size > /proc/sys/urlader/environment
 	fi
-	cd / && /var/install 2>&1
+	(
+		. /var/env.cache
+		cd /
+		/var/install 2>&1
+	)
 }
 html_do install
 result=$?
