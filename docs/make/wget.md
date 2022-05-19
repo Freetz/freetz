@@ -1,4 +1,8 @@
-# Wget GNU 1.21.2 (binary only)
+# Wget GNU 1.21.3 (binary only)
+ - Homepage: [https://www.gnu.org/software/wget/](https://www.gnu.org/software/wget/)
+ - Manpage: [https://www.gnu.org/software/wget/manual/](https://www.gnu.org/software/wget/manual/)
+ - Changelog: [https://git.savannah.gnu.org/cgit/wget.git/tree/NEWS](https://git.savannah.gnu.org/cgit/wget.git/tree/NEWS)
+ - Repository: [https://git.savannah.gnu.org/cgit/wget.git/](https://git.savannah.gnu.org/cgit/wget.git/)
  - Package: [master/make/wget/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/wget/)
 
 GNU Wget ist ein freies Kommandozeilen-Programm zum Herunterladen von Ressourcen

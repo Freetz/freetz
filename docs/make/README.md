@@ -741,7 +741,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
 
 ### W
 
-  * **[Wget GNU 1.21.2 (binary only)](wget.md)<a id='wget'></a>**<br>
+  * **[Wget GNU 1.21.3 (binary only)](wget.md)<a id='wget'></a>**<br>
     GNU Wget is a free software package for retrieving files using HTTP, HTTPS and FTP, the most widely-used Internet protocols. It is a non-interactive commandline tool, so it may easily be called from scripts, cron jobs, terminals, etc.
 
   * **[wireguard-tools 1.0.20210914](wireguard.md)<a id='wireguard'></a>**<br>
