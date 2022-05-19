@@ -69,6 +69,7 @@ Latest changes
    * MTR 0.80/0.95
    * Nano 6.3
    * OpenSSL 0.9.8zh/1.0.2u/1.1.1o/3.0.3
+   * PCSC-lite 1.9.7
    * pcre2 10.40
    * Privoxy 3.0.33
    * SQLite 3.38.5
