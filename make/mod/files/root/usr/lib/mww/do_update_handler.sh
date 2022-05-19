@@ -191,10 +191,16 @@ install() {
 		echo jffs2_size > /proc/sys/urlader/environment
 	fi
 	(
+		set -o pipefail
 		. /var/env.cache
 		cd /
-		/var/install 2>&1
+		/var/install 2>&1 | tee /tmp/var-install.out
 	)
+	local rv=$?
+	[ ! -s /tmp/var-install.out ] \
+	  && echo "$(lang de:"Das Script hat keine Ausgabe generiert" en:"The script has not generated any output")." \
+	  && echo "$(lang de:"Dies ist KEIN Fehler" en:"This is NOT an error")."
+	return $rv
 }
 html_do install
 result=$?
