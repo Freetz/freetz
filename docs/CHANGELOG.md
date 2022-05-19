@@ -74,6 +74,7 @@ Latest changes
    * Privoxy 3.0.33
    * SQLite 3.38.5
    * Tor 0.4.7.7
+   * Wget GNU 1.21.3
 
  - Firmware updates:
    * Please see [FIRMWARES](FIRMWARES.md) for the list of currently supported devices and firmwares.

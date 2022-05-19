@@ -1,7 +1,11 @@
-$(call PKG_INIT_BIN, 1.21.2)
+$(call PKG_INIT_BIN, 1.21.3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.lz
-$(PKG)_SOURCE_SHA256:=1727a330a86acacb3e57615ce268f5f29978bf7adec4abe6a30d370207bc91b3
+$(PKG)_SOURCE_SHA256:=dbd2fb5e47149d4752d0eaa0dac68cc49cf20d46df4f8e326ffc8f18b2af4ea5
 $(PKG)_SITE:=@GNU/$(pkg)
+### WEBSITE:=https://www.gnu.org/software/wget/
+### MANPAGE:=https://www.gnu.org/software/wget/manual/
+### CHANGES:=https://git.savannah.gnu.org/cgit/wget.git/tree/NEWS
+### CVSREPO:=https://git.savannah.gnu.org/cgit/wget.git/
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/wget
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/wget-gnu
@@ -60,6 +64,7 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_WGET_GNUTLS
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_WGET_STATIC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -76,6 +81,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(WGET_DIR) clean
