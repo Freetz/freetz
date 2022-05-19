@@ -23,7 +23,8 @@ EOF
 	touch /tmp/fw_update.done
 }
 pre_begin() {
-	echo "<pre class='log'>"
+	local id="${1:+ id='$1'}"
+	echo "<pre class='log'$id>"
 	exec 3>&2 2>&1
 }
 pre_end() {
@@ -179,7 +180,7 @@ EOF
 	do_exit 1
 fi
 
-pre_begin
+pre_begin "var-install"
 install() {
 	# Remove no-op original from var.tar
 	rm -f /var/post_install
@@ -196,15 +197,15 @@ install() {
 		cd /
 		/var/install 2>&1 | tee /tmp/var-install.out
 	)
-	local rv=$?
-	[ ! -s /tmp/var-install.out ] \
-	  && echo "$(lang de:"Das Script hat keine Ausgabe generiert" en:"The script has not generated any output")." \
-	  && echo "$(lang de:"Dies ist KEIN Fehler" en:"This is NOT an error")."
-	return $rv
 }
 html_do install
 result=$?
 pre_end
+
+if [ ! -s /tmp/var-install.out ]; then
+	echo '<script>document.getElementById("var-install").setAttribute("hidden","hidden")</script>'
+	echo '<p>$(lang de:"HINWEIS: Das Script hat keine Ausgabe generiert." en:"NOTE: The script has not generated any output.")</p>'
+fi
 
 case $result in
 	0) result_txt="INSTALL_SUCCESS_NO_REBOOT" ;;
