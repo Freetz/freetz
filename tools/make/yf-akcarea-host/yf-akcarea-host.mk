@@ -4,7 +4,7 @@ $(TOOL)_BINS:=extract bin2asm
 $(TOOL)_BUILD_DIR:=$($(TOOL)_BINS:%=$($(TOOL)_DIR)/avm_kernel_config.%)
 $(TOOL)_TARGET_DIR:=$($(TOOL)_BINS:%=$(TOOLS_DIR)/avm_kernel_config.%)
 
-$(TOOL)_DEPENDS:=sfk-host
+$(TOOL)_DEPENDS:=sfk-host dtc-host
 
 
 $(tool)-unpacked: $($(TOOL)_DIR)/.unpacked
@@ -14,7 +14,7 @@ $($(TOOL)_DIR)/.unpacked: $(wildcard $($(TOOL)_SRC)/*) | $(TOOLS_SOURCE_DIR) $(U
 	$(call COPY_USING_TAR,$(YF_AKCAREA_HOST_SRC),$(YF_AKCAREA_HOST_DIR))
 	touch $@
 
-$($(TOOL)_BUILD_DIR): $($(TOOL)_DIR)/.unpacked $(DTC_HOST_LIBFDT_DIR)/libfdt.a | $($(TOOL)_DEPENDS)
+$($(TOOL)_BUILD_DIR): $($(TOOL)_DIR)/.unpacked | $($(TOOL)_DEPENDS)
 	$(TOOL_SUBMAKE) -C $(YF_AKCAREA_HOST_DIR) \
 		OPT="-O0" \
 		CC="$(TOOLS_CC)" \
