@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 5.60)
+$(call PKG_INIT_BIN, 5.64)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=c45d765b1521861fea9b03b425b9dd7d48b3055128c0aec673bba5ef9b8f787d
+$(PKG)_SOURCE_SHA256:=eebe53ed116ba43b2e786762b0c2b91511e7b74857ad4765824e7199e6faf883
 $(PKG)_SITE:=https://www.stunnel.org/downloads/archive/5.x
 ### WEBSITE:=https://www.stunnel.org/
 ### MANPAGE:=https://www.stunnel.org/static/stunnel.html
@@ -47,6 +47,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-threads=pthread
 $(PKG)_CONFIGURE_OPTIONS += --with-ssl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
 
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -63,6 +64,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(STUNNEL_DIR) clean

@@ -72,6 +72,7 @@ Latest changes
    * PCSC-lite 1.9.7
    * pcre2 10.40
    * Privoxy 3.0.33
+   * Stunnel 5.64
    * SQLite 3.38.5
    * Tor 0.4.7.7
    * Wget GNU 1.21.3
