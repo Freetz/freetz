@@ -86,6 +86,7 @@ endef
 
 # Print yellow error message and exit
 define ERROR
+kill $$$$; \
 printf "\n$(_Y)%s$(_N)\n" "ERROR: $(2)";  exit $(1);
 endef
 
