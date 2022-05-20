@@ -865,7 +865,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
     Streamripper records mp3 and ogg streams. For shoutcast style streams it finds the "meta data" or track separation data, and uses that as a marker for where the track should be separated.
      - [Verwendete Bibliotheken](../docs/make/streamripper.md#verwendete-bibliotheken)
 
-  * **[Stunnel 5.60](../docs/make/stunnel.md)<a id='stunnel'></a>**<br>
+  * **[Stunnel 5.64](../docs/make/stunnel.md)<a id='stunnel'></a>**<br>
     Stunnel universal SSL proxy
      - [Konfiguration](../docs/make/stunnel.md#konfiguration)
 
