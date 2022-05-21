@@ -723,8 +723,6 @@ choice
 	config FREETZ_TYPE_FIRMWARE_07_4X_LABOR
 		bool "FRITZ!OS 07.39 Labor - UNTESTED"
 		select FREETZ_AVM_VERSION_07_4X
-#		select FREETZ_DL_DETECT_IMAGE_NAME
-#		select FREETZ_TYPE_FIRMWARE_DETECT_LATEST
 		depends on FREETZ_AVM_HAS_FIRMWARE_07_4X_LABOR && FREETZ_SHOW_ADVANCED
 		help
 			Enable this to use an AVM Labor firmware as base for modding.
@@ -756,12 +754,11 @@ config FREETZ_AVM_VERSION_LATEST_MAJOR
 
 config FREETZ_TYPE_FIRMWARE_DETECT_LATEST
 	bool "Detect the latest firmware version"
-	depends on FREETZ_SHOW_EXPERT
+	depends on FREETZ_SHOW_ADVANCED
 	depends on FREETZ_AVM_HAS_JUIS_SUPPORT
 	depends on !FREETZ_TYPE_ALIEN_HARDWARE
 	depends on !FREETZ_TYPE_FIRMWARE_FINAL || FREETZ_AVM_VERSION_LATEST_MAJOR
 	select FREETZ_DL_DETECT_IMAGE_NAME
-	default y if !FREETZ_TYPE_FIRMWARE_FINAL && FREETZ_SHOW_DEVELOPER
 	default n
 	help
 		Automatically detect the latest firmware version by using AVM's juis.
