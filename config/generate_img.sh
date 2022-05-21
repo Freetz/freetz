@@ -107,10 +107,11 @@ fwlist() {
 
 ## unpack
 unpack_() {
+	local rmdl='n'
 	line="$1"
 	file="${line%% *}"
 	image="$IMAGES/$file"
-	[ -n "$ACTIONS_FWDLURL" ] && echo "SAVING       $file" && wget -q "${ACTIONS_FWDLURL}$file" -O $image >/dev/null 2>&1
+	[ -n "$ACTIONS_FWDLURL" ] && echo "SAVING       $file" && wget -q "${ACTIONS_FWDLURL}$file" -O $image >/dev/null 2>&1 && rmdl='y'
 	[ ! -s "${image}" ] && image="$HOME/Desktop/$file"
 	[ ! -s "${image}" ] && echo "MISSED       ${image##*/}" && die && return 1
 	dirname="$UNPACK/${line%.image*}"
@@ -119,6 +120,7 @@ unpack_() {
 	"$FWDU" nfo unpack ${image} 2>&1 | sed -r 's/-a.?.m$//g;s/^[0-9]*\t*//g' | uniq
 	[ -e "${dirname}-atom" ] && rm -rf "${dirname}-arm" "${dirname}-arm.nfo"
 	for x in ${dirname}-*; do [ -d "$x" ] && mv "$x" "${dirname}" && mv "$x.nfo" "${dirname}.nfo"; done
+	[ "$rmdl" == 'y' ] && echo "DELETE       $file" && rm -f $image
 }
 unpack() {
 	cd "$UNPACK"
