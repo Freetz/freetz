@@ -75,6 +75,7 @@ Latest changes
    * Stunnel 5.64
    * SQLite 3.38.5
    * Tor 0.4.7.7
+   * uClibc-ng 1.0.41
    * Wget GNU 1.21.3
 
  - Firmware updates:
