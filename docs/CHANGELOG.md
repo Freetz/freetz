@@ -46,7 +46,7 @@ Latest changes
  - Build system:
    * ccache 4.6.1
    * precompiled host-tools 2022-04-24
-   * precompiled toolchains r19231
+   * precompiled toolchains r19231/r19417
 
  - Host tools:
    * yf-bootmanager 0.8.3 9a1d3b8
