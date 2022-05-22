@@ -49,6 +49,7 @@ Latest changes
    * precompiled toolchains r19231/r19417
 
  - Host tools:
+   * fitimg 0.8
    * yf-bootmanager 0.8.3 9a1d3b8
 
  - Packages & libs:
