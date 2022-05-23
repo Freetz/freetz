@@ -50,6 +50,7 @@ Latest changes
 
  - Host tools:
    * fitimg 0.8
+   * kconfig 5.18
    * yf-bootmanager 0.8.3 9a1d3b8
 
  - Packages & libs:
