@@ -45,7 +45,7 @@ Latest changes
 
  - Build system:
    * ccache 4.6.1
-   * precompiled host-tools 2022-04-24
+   * precompiled host-tools 2022-05-23
    * precompiled toolchains r19231/r19417
 
  - Host tools:
