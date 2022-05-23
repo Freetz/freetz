@@ -1,28 +1,28 @@
-$(call TOOL_INIT, 0.1.34)
-$(TOOL)_SOURCE:=mklibs_$($(TOOL)_VERSION).tar.gz
-$(TOOL)_SOURCE_MD5:=afe0ed527ba96b8a882b5de350603007
-$(TOOL)_SITE:=http://archive.debian.org/debian/pool/main/m/mklibs
+$(call TOOLS_INIT, 0.1.34)
+$(PKG)_SOURCE:=mklibs_$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_MD5:=afe0ed527ba96b8a882b5de350603007
+$(PKG)_SITE:=http://archive.debian.org/debian/pool/main/m/mklibs
 
-$(TOOL)_DESTDIR:=$(FREETZ_BASE_DIR)/$(TOOLS_DIR)/build/bin
-$(TOOL)_SCRIPT:=$($(TOOL)_DIR)/src/mklibs
-$(TOOL)_TARGET_SCRIPT:=$($(TOOL)_DESTDIR)/mklibs
-$(TOOL)_READELF_BINARY:=$($(TOOL)_DIR)/src/mklibs-readelf/mklibs-readelf
-$(TOOL)_READELF_TARGET_BINARY:=$($(TOOL)_DESTDIR)/mklibs-readelf
+$(PKG)_DESTDIR:=$(FREETZ_BASE_DIR)/$(TOOLS_DIR)/build/bin
+$(PKG)_SCRIPT:=$($(PKG)_DIR)/src/mklibs
+$(PKG)_TARGET_SCRIPT:=$($(PKG)_DESTDIR)/mklibs
+$(PKG)_READELF_BINARY:=$($(PKG)_DIR)/src/mklibs-readelf/mklibs-readelf
+$(PKG)_READELF_TARGET_BINARY:=$($(PKG)_DESTDIR)/mklibs-readelf
 
 
-$(tool)-source: $(DL_DIR)/$($(TOOL)_SOURCE)
-$(DL_DIR)/$($(TOOL)_SOURCE): | $(DL_DIR)
+$(pkg)-source: $(DL_DIR)/$($(PKG)_SOURCE)
+$(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(MKLIBS_HOST_SOURCE) $(MKLIBS_HOST_SITE) $(MKLIBS_HOST_SOURCE_MD5)
 
-$(tool)-unpacked: $($(TOOL)_DIR)/.unpacked
-$($(TOOL)_DIR)/.unpacked: $(DL_DIR)/$($(TOOL)_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
+$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
+$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(MKLIBS_HOST_SOURCE),$(TOOLS_SOURCE_DIR))
 	$(call APPLY_PATCHES,$(MKLIBS_HOST_MAKE_DIR)/patches,$(MKLIBS_HOST_DIR))
 	touch $@
 
-$($(TOOL)_SCRIPT): $($(TOOL)_DIR)/.unpacked
+$($(PKG)_SCRIPT): $($(PKG)_DIR)/.unpacked
 
-$($(TOOL)_DIR)/.configured: $($(TOOL)_DIR)/.unpacked
+$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	(cd $(MKLIBS_HOST_DIR); $(RM) config.cache; \
 		./configure \
 		--prefix=/ \
@@ -31,25 +31,25 @@ $($(TOOL)_DIR)/.configured: $($(TOOL)_DIR)/.unpacked
 	);
 	touch $@
 
-$($(TOOL)_READELF_BINARY): $($(TOOL)_DIR)/.configured
-	$(TOOL_SUBMAKE) CC="$(TOOLS_CC)" CXX="$(TOOLS_CXX)" CFLAGS="$(TOOLS_CFLAGS)" LDFLAGS="$(TOOLS_LDFLAGS)" -C $(MKLIBS_HOST_DIR) all
+$($(PKG)_READELF_BINARY): $($(PKG)_DIR)/.configured
+	$(TOOLS_SUBMAKE) CC="$(TOOLS_CC)" CXX="$(TOOLS_CXX)" CFLAGS="$(TOOLS_CFLAGS)" LDFLAGS="$(TOOLS_LDFLAGS)" -C $(MKLIBS_HOST_DIR) all
 
-$($(TOOL)_TARGET_SCRIPT): $($(TOOL)_SCRIPT)
+$($(PKG)_TARGET_SCRIPT): $($(PKG)_SCRIPT)
 	$(INSTALL_FILE)
 
-$($(TOOL)_READELF_TARGET_BINARY): $($(TOOL)_READELF_BINARY)
+$($(PKG)_READELF_TARGET_BINARY): $($(PKG)_READELF_BINARY)
 	$(INSTALL_FILE)
 
-$(tool)-precompiled: $($(TOOL)_TARGET_SCRIPT) $($(TOOL)_READELF_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_SCRIPT) $($(PKG)_READELF_TARGET_BINARY)
 
 
-$(tool)-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(MKLIBS_HOST_DIR) clean
 
-$(tool)-dirclean:
+$(pkg)-dirclean:
 	$(RM) -r $(MKLIBS_HOST_DIR)
 
-$(tool)-distclean: $(tool)-dirclean
+$(pkg)-distclean: $(pkg)-dirclean
 	$(RM) -r $(MKLIBS_HOST_TARGET_SCRIPT) $(MKLIBS_HOST_READELF_TARGET_BINARY)
 
-$(TOOL_FINISH)
+$(TOOLS_FINISH)

@@ -1,26 +1,26 @@
-$(call TOOL_INIT, 2.7.18)
-$(TOOL)_SOURCE:=Python-$($(TOOL)_VERSION).tar.xz
-$(TOOL)_MD5:=fd6cc8ec0a78c44036f825e739f36e5a
-$(TOOL)_SITE:=http://www.python.org/ftp/python/$($(TOOL)_VERSION)
+$(call TOOLS_INIT, 2.7.18)
+$(PKG)_SOURCE:=Python-$($(PKG)_VERSION).tar.xz
+$(PKG)_MD5:=fd6cc8ec0a78c44036f825e739f36e5a
+$(PKG)_SITE:=http://www.python.org/ftp/python/$($(PKG)_VERSION)
 
-$(TOOL)_DIR:=$(TOOLS_SOURCE_DIR)/Python-$($(TOOL)_VERSION)
-$(TOOL)_BINARY:=$($(TOOL)_DIR)/python
-$(TOOL)_TARGET_BINARY:=$(HOST_TOOLS_DIR)/usr/bin/python2.7
+$(PKG)_DIR:=$(TOOLS_SOURCE_DIR)/Python-$($(PKG)_VERSION)
+$(PKG)_BINARY:=$($(PKG)_DIR)/python
+$(PKG)_TARGET_BINARY:=$(HOST_TOOLS_DIR)/usr/bin/python2.7
 
 
-$(tool)-source: $(DL_DIR)/$($(TOOL)_SOURCE)
-$(DL_DIR)/$($(TOOL)_SOURCE): | $(DL_DIR)
+$(pkg)-source: $(DL_DIR)/$($(PKG)_SOURCE)
+$(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(PYTHON_HOST_SOURCE) $(PYTHON_HOST_SITE) $(PYTHON_HOST_MD5)
 
-$(tool)-unpacked: $($(TOOL)_DIR)/.unpacked
-$($(TOOL)_DIR)/.unpacked: $(DL_DIR)/$($(TOOL)_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
+$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
+$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(PYTHON_HOST_SOURCE),$(TOOLS_SOURCE_DIR))
 	@touch $@
 
 # python quirk:
 #  CFLAGS and OPT flags passed here are then used while cross-compiling -> use some target neutral flags
-$(tool)-configured: $($(TOOL)_DIR)/.configured
-$($(TOOL)_DIR)/.configured: $($(TOOL)_DIR)/.unpacked
+$(pkg)-configured: $($(PKG)_DIR)/.configured
+$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	(cd $(PYTHON_HOST_DIR); $(RM) config.cache; \
 		CC="$(TOOLS_CC)" \
 		CXX="$(TOOLS_CXX)" \
@@ -36,30 +36,30 @@ $($(TOOL)_DIR)/.configured: $($(TOOL)_DIR)/.unpacked
 	);
 	@touch $@
 
-$($(TOOL)_BINARY): $($(TOOL)_DIR)/.configured
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	(PATH=$(TARGET_PATH); \
-		$(TOOL_SUBMAKE) -C $(PYTHON_HOST_DIR) \
+		$(TOOLS_SUBMAKE) -C $(PYTHON_HOST_DIR) \
 		all Parser/pgen )
 	@touch -c $@
 
-$($(TOOL)_TARGET_BINARY): $($(TOOL)_BINARY) | $(HOST_TOOLS_DIR)
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY) | $(HOST_TOOLS_DIR)
 	(PATH=$(TARGET_PATH); \
-		$(TOOL_SUBMAKE) -C $(PYTHON_HOST_DIR) \
+		$(TOOLS_SUBMAKE) -C $(PYTHON_HOST_DIR) \
 		DESTDIR="$(HOST_TOOLS_DIR)" \
 		install )
 	cp -a $(PYTHON_HOST_BINARY) $(PYTHON_HOST_DIR)/Parser/pgen \
 		$(HOST_TOOLS_DIR)/usr/bin
 
-$(tool)-precompiled: $($(TOOL)_TARGET_BINARY)
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 
-$(tool)-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(PYTHON_HOST_DIR) clean
 
-$(tool)-dirclean:
+$(pkg)-dirclean:
 	$(RM) -r $(PYTHON_HOST_DIR)
 
-$(tool)-distclean: $(tool)-dirclean
+$(pkg)-distclean: $(pkg)-dirclean
 	$(RM) -r \
 		$(PYTHON_HOST_TARGET_BINARY) \
 		$(HOST_TOOLS_DIR)/usr/bin/2to3 \
@@ -76,4 +76,4 @@ $(tool)-distclean: $(tool)-dirclean
 		$(HOST_TOOLS_DIR)/usr/share/python2.7 \
 		$(HOST_TOOLS_DIR)/usr/share/man/man1/python*
 
-$(TOOL_FINISH)
+$(TOOLS_FINISH)

@@ -2,7 +2,7 @@
 # We want build output like:
 # "---> package/lynx: downloading... preparing... configuring... building... done."
 # Actually there are two problems:
-# 1. We can't use _ECHO_START_INT in $([TOOL_]SUBMAKE) context.
+# 1. We can't use _ECHO_START_INT in $(SUBMAKE) / $(TOOLS_SUBMAKE) context.
 # 2. Dot files are deleted within every package. But once at start would be enough.
 # Usage:
 # $(call _ECHO,text)
@@ -18,7 +18,7 @@ define _ECHO_START_ARG
 	case "$1$(PKG_TYPE)" in \
 		BIN)	echo -n "package/$(pkg)"         >$(ECHO_ITEM_TMP) ;; \
 		LIB)	echo -n "library/$(pkg)"         >$(ECHO_ITEM_TMP) ;; \
-		TOOL)	echo -n "tool/$(tool)"           >$(ECHO_ITEM_TMP) ;; \
+		HTL)	echo -n "tools/$(pkg)"           >$(ECHO_ITEM_TMP) ;; \
 		KTC)	echo -n "toolchain/kernel$$step" >$(ECHO_ITEM_TMP) ;; \
 		TTC)	echo -n "toolchain/target$$step" >$(ECHO_ITEM_TMP) ;; \
 		KRN)	echo -n "kernel"                 >$(ECHO_ITEM_TMP) ;; \
@@ -44,10 +44,6 @@ endef
 define _ECHO
 	$(call _ECHO_START_INT,$(1),$(2),$(3),$(4)) \
 	echo -ne "\e[48;5;56m$(1)\e[49m ... ";
-endef
-
-define _ECHO_BUILD_INT
-	$(call _ECHO,building,$(1),$(2),$(3))
 endef
 
 define _ECHO_DONE

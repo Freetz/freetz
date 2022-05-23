@@ -1,50 +1,51 @@
-$(call TOOL_INIT, 1.34.1)
-$(TOOL)_SOURCE:=busybox-$($(TOOL)_VERSION).tar.bz2
-$(TOOL)_SOURCE_SHA256:=415fbd89e5344c96acf449d94a6f956dbed62e18e835fc83e064db33a34bd549
-$(TOOL)_SITE:=https://www.busybox.net/downloads
+$(call TOOLS_INIT, 1.34.1)
+$(PKG)_SOURCE:=busybox-$($(PKG)_VERSION).tar.bz2
+$(PKG)_SOURCE_SHA256:=415fbd89e5344c96acf449d94a6f956dbed62e18e835fc83e064db33a34bd549
+$(PKG)_SITE:=https://www.busybox.net/downloads
 
-$(TOOL)_BINARY:=$($(TOOL)_DIR)/busybox
-$(TOOL)_CONFIG_FILE:=$($(TOOL)_MAKE_DIR)/Config.busybox
-$(TOOL)_TARGET_DIR:=$(TOOLS_DIR)
-$(TOOL)_TARGET_BINARY:=$(TOOLS_DIR)/busybox
-$(TOOL)_DEPENDS:=tar-host
+$(PKG)_BINARY:=$($(PKG)_DIR)/busybox
+$(PKG)_CONFIG_FILE:=$($(PKG)_MAKE_DIR)/Config.busybox
+$(PKG)_TARGET_DIR:=$(TOOLS_DIR)
+$(PKG)_TARGET_BINARY:=$(TOOLS_DIR)/busybox
+
+$(PKG)_DEPENDS_ON:=tar-host
 
 
-$(tool)-source: $(DL_DIR)/$($(TOOL)_SOURCE)
-$(DL_DIR)/$($(TOOL)_SOURCE): | $(DL_DIR)
+$(pkg)-source: $(DL_DIR)/$($(PKG)_SOURCE)
+$(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(BUSYBOX_HOST_SOURCE) $(BUSYBOX_HOST_SITE) $(BUSYBOX_HOST_SOURCE_SHA256)
 
-$(tool)-unpacked: $($(TOOL)_DIR)/.unpacked
-$($(TOOL)_DIR)/.unpacked: $(DL_DIR)/$($(TOOL)_SOURCE) | $(TOOLS_SOURCE_DIR) $($(TOOL)_DEPENDS)
+$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
+$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(TOOLS_SOURCE_DIR)
 	$(TAR) -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xf $(DL_DIR)/$(BUSYBOX_HOST_SOURCE)
 	$(call APPLY_PATCHES,$(BUSYBOX_HOST_MAKE_DIR)/patches,$(BUSYBOX_HOST_DIR))
 	touch $@
 
-$($(TOOL)_DIR)/.configured: $($(TOOL)_DIR)/.unpacked $($(TOOL)_CONFIG_FILE)
+$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked $($(PKG)_CONFIG_FILE)
 	cp $(BUSYBOX_HOST_CONFIG_FILE) $(BUSYBOX_HOST_DIR)/.config
-	$(TOOL_SUBMAKE) -C $(BUSYBOX_HOST_DIR) oldconfig
+	$(TOOLS_SUBMAKE) -C $(BUSYBOX_HOST_DIR) oldconfig
 	touch $@
 
-$($(TOOL)_BINARY): $($(TOOL)_DIR)/.configured
-	$(TOOL_SUBMAKE) CC="$(TOOLS_CC)" CXX="$(TOOLS_CXX)" CFLAGS="$(TOOLS_CFLAGS)" LDFLAGS="$(TOOLS_LDFLAGS)" -C $(BUSYBOX_HOST_DIR)
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured
+	$(TOOLS_SUBMAKE) CC="$(TOOLS_CC)" CXX="$(TOOLS_CXX)" CFLAGS="$(TOOLS_CFLAGS)" LDFLAGS="$(TOOLS_LDFLAGS)" -C $(BUSYBOX_HOST_DIR)
 
-$($(TOOL)_TARGET_BINARY): $($(TOOL)_BINARY)
+$($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_FILE)
 	find $(BUSYBOX_HOST_TARGET_DIR) -lname busybox -delete
 	for i in $$($(BUSYBOX_HOST_TARGET_BINARY) --list); do \
 		ln -fs busybox $(BUSYBOX_HOST_TARGET_DIR)/$$i; \
 	done
 
-$(tool)-precompiled: $(BUSYBOX_HOST_TARGET_BINARY)
+$(pkg)-precompiled: $(BUSYBOX_HOST_TARGET_BINARY)
 
 
-$(tool)-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(BUSYBOX_HOST_DIR) clean
 
-$(tool)-dirclean:
+$(pkg)-dirclean:
 	$(RM) -r $(BUSYBOX_HOST_DIR)
 
-$(tool)-distclean: $(tool)-dirclean
+$(pkg)-distclean: $(pkg)-dirclean
 	find $(BUSYBOX_HOST_TARGET_DIR) \( -lname busybox -o -name busybox \) -delete
 
-$(TOOL_FINISH)
+$(TOOLS_FINISH)

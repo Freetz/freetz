@@ -1,20 +1,22 @@
-$(call TOOL_INIT, 1.34)
-$(TOOL)_SOURCE:=tar-$($(TOOL)_VERSION).tar.xz
-$(TOOL)_SOURCE_MD5:=9a08d29a9ac4727130b5708347c0f5cf
-$(TOOL)_SITE:=@GNU/tar
+$(call TOOLS_INIT, 1.34)
+$(PKG)_SOURCE:=tar-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE_MD5:=9a08d29a9ac4727130b5708347c0f5cf
+$(PKG)_SITE:=@GNU/tar
+
+$(PKG)_DEPENDS_ON:=
 
 
-$(tool)-source: $(DL_DIR)/$($(TOOL)_SOURCE)
-$(DL_DIR)/$($(TOOL)_SOURCE): | $(DL_DIR)
+$(pkg)-source: $(DL_DIR)/$($(PKG)_SOURCE)
+$(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(TAR_HOST_SOURCE) $(TAR_HOST_SITE) $(TAR_HOST_SOURCE_MD5)
 
-$(tool)-unpacked: $($(TOOL)_DIR)/.unpacked
-$($(TOOL)_DIR)/.unpacked: $(DL_DIR)/$($(TOOL)_SOURCE) | $(TOOLS_SOURCE_DIR)
+$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
+$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(TOOLS_SOURCE_DIR)
 	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xf $(DL_DIR)/$(TAR_HOST_SOURCE)
 	$(call APPLY_PATCHES,$(TAR_HOST_MAKE_DIR)/patches,$(TAR_HOST_DIR))
 	touch $@
 
-$($(TOOL)_DIR)/.configured: $($(TOOL)_DIR)/.unpacked
+$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	(cd $(TAR_HOST_DIR); $(RM) config.cache; \
 		CC="$(TOOLS_CC)" \
 		CXX="$(TOOLS_CXX)" \
@@ -29,23 +31,23 @@ $($(TOOL)_DIR)/.configured: $($(TOOL)_DIR)/.unpacked
 	);
 	touch $@
 
-$($(TOOL)_DIR)/src/tar: $($(TOOL)_DIR)/.configured
-	$(TOOL_SUBMAKE) -C $(TAR_HOST_DIR) all
+$($(PKG)_DIR)/src/tar: $($(PKG)_DIR)/.configured
+	$(TOOLS_SUBMAKE) -C $(TAR_HOST_DIR) all
 	touch -c $@
 
-$(TOOLS_DIR)/tar-gnu: $($(TOOL)_DIR)/src/tar
+$(TOOLS_DIR)/tar-gnu: $($(PKG)_DIR)/src/tar
 	$(INSTALL_FILE)
 
-$(tool)-precompiled: $(TOOLS_DIR)/tar-gnu
+$(pkg)-precompiled: $(TOOLS_DIR)/tar-gnu
 
 
-$(tool)-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(TAR_HOST_DIR) clean
 
-$(tool)-dirclean:
+$(pkg)-dirclean:
 	$(RM) -r $(TAR_HOST_DIR)
 
-$(tool)-distclean: $(tool)-dirclean
+$(pkg)-distclean: $(pkg)-dirclean
 	$(RM) $(TOOLS_DIR)/tar-gnu
 
-$(TOOL_FINISH)
+$(TOOLS_FINISH)

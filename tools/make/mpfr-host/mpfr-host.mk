@@ -1,24 +1,24 @@
-$(call TOOL_INIT, 3.1.6)
-$(TOOL)_SOURCE:=mpfr-$($(TOOL)_VERSION).tar.xz
-$(TOOL)_SOURCE_SHA256:=7a62ac1a04408614fccdc506e4844b10cf0ad2c2b1677097f8f35d3a1344a950
-$(TOOL)_SITE:=http://www.mpfr.org/mpfr-$($(TOOL)_VERSION)
+$(call TOOLS_INIT, 3.1.6)
+$(PKG)_SOURCE:=mpfr-$($(PKG)_VERSION).tar.xz
+$(PKG)_SOURCE_SHA256:=7a62ac1a04408614fccdc506e4844b10cf0ad2c2b1677097f8f35d3a1344a950
+$(PKG)_SITE:=http://www.mpfr.org/mpfr-$($(PKG)_VERSION)
 
-$(TOOL)_DESTDIR:=$(HOST_TOOLS_DIR)
-$(TOOL)_BINARY:=$($(TOOL)_DESTDIR)/lib/libmpfr.a
-$(TOOL)_DEPENDS:=gmp-host
+$(PKG)_DESTDIR:=$(HOST_TOOLS_DIR)
+$(PKG)_BINARY:=$($(PKG)_DESTDIR)/lib/libmpfr.a
+$(PKG)_DEPENDS:=gmp-host
 
 
-$(tool)-source: $(DL_DIR)/$($(TOOL)_SOURCE)
-$(DL_DIR)/$($(TOOL)_SOURCE): | $(DL_DIR)
+$(pkg)-source: $(DL_DIR)/$($(PKG)_SOURCE)
+$(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(MPFR_HOST_SOURCE) $(MPFR_HOST_SITE) $(MPFR_HOST_SOURCE_SHA256)
 
-$(tool)-unpacked: $($(TOOL)_DIR)/.unpacked
-$($(TOOL)_DIR)/.unpacked: $(DL_DIR)/$($(TOOL)_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
+$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
+$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(MPFR_HOST_SOURCE),$(TOOLS_SOURCE_DIR))
 	$(call APPLY_PATCHES,$(MPFR_HOST_MAKE_DIR)/patches,$(MPFR_HOST_DIR))
 	touch $@
 
-$($(TOOL)_DIR)/.configured: $($(TOOL)_DIR)/.unpacked $($(TOOL)_DEPENDS:%-host=$($(TOOL)_DESTDIR)/lib/lib%.a)
+$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked $($(PKG)_DEPENDS:%-host=$($(PKG)_DESTDIR)/lib/lib%.a)
 	(cd $(MPFR_HOST_DIR); $(RM) config.cache; \
 		CC="$(TOOLCHAIN_HOST_CC)" \
 		CFLAGS="$(TOOLCHAIN_HOST_CFLAGS)" \
@@ -34,19 +34,19 @@ $($(TOOL)_DIR)/.configured: $($(TOOL)_DIR)/.unpacked $($(TOOL)_DEPENDS:%-host=$(
 	)
 	touch $@
 
-$($(TOOL)_BINARY): $($(TOOL)_DIR)/.configured | $(HOST_TOOLS_DIR)
-	$(TOOL_SUBMAKE) -C $(MPFR_HOST_DIR)/src install
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured | $(HOST_TOOLS_DIR)
+	$(TOOLS_SUBMAKE) -C $(MPFR_HOST_DIR)/src install
 
-$(tool)-precompiled: $($(TOOL)_BINARY)
+$(pkg)-precompiled: $($(PKG)_BINARY)
 
 
-$(tool)-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(MPFR_HOST_DIR) clean
 
-$(tool)-dirclean:
+$(pkg)-dirclean:
 	$(RM) -r $(MPFR_HOST_DIR)
 
-$(tool)-distclean: $(tool)-dirclean
+$(pkg)-distclean: $(pkg)-dirclean
 	$(RM) $(MPFR_HOST_DESTDIR)/lib/libmpfr* $(MPFR_HOST_DESTDIR)/include/*mpfr*.h
 
-$(TOOL_FINISH)
+$(TOOLS_FINISH)

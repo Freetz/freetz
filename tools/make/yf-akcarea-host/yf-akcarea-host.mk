@@ -1,21 +1,21 @@
-$(call TOOL_INIT, 0)
+$(call TOOLS_INIT, 0)
 
-$(TOOL)_BINS:=extract bin2asm
-$(TOOL)_BUILD_DIR:=$($(TOOL)_BINS:%=$($(TOOL)_DIR)/avm_kernel_config.%)
-$(TOOL)_TARGET_DIR:=$($(TOOL)_BINS:%=$(TOOLS_DIR)/avm_kernel_config.%)
+$(PKG)_BINS:=extract bin2asm
+$(PKG)_BUILD_DIR:=$($(PKG)_BINS:%=$($(PKG)_DIR)/avm_kernel_config.%)
+$(PKG)_TARGET_DIR:=$($(PKG)_BINS:%=$(TOOLS_DIR)/avm_kernel_config.%)
 
-$(TOOL)_DEPENDS:=sfk-host dtc-host
+$(PKG)_DEPENDS:=sfk-host dtc-host
 
 
-$(tool)-unpacked: $($(TOOL)_DIR)/.unpacked
-$($(TOOL)_DIR)/.unpacked: $(wildcard $($(TOOL)_SRC)/*) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
+$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
+$($(PKG)_DIR)/.unpacked: $(wildcard $($(PKG)_SRC)/*) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	$(RM) -r $(YF_AKCAREA_HOST_DIR)
 	mkdir -p $(YF_AKCAREA_HOST_DIR)
 	$(call COPY_USING_TAR,$(YF_AKCAREA_HOST_SRC),$(YF_AKCAREA_HOST_DIR))
 	touch $@
 
-$($(TOOL)_BUILD_DIR): $($(TOOL)_DIR)/.unpacked | $($(TOOL)_DEPENDS)
-	$(TOOL_SUBMAKE) -C $(YF_AKCAREA_HOST_DIR) \
+$($(PKG)_BUILD_DIR): $($(PKG)_DIR)/.unpacked | $($(PKG)_DEPENDS)
+	$(TOOLS_SUBMAKE) -C $(YF_AKCAREA_HOST_DIR) \
 		OPT="-O0" \
 		CC="$(TOOLS_CC)" \
 		BITNESS="$(HOST_CFLAGS_FORCE_32BIT_CODE)" \
@@ -23,19 +23,19 @@ $($(TOOL)_BUILD_DIR): $($(TOOL)_DIR)/.unpacked | $($(TOOL)_DEPENDS)
 		$(YF_AKCAREA_HOST_BINS:%=avm_kernel_config.%)
 	touch -c $@
 
-$($(TOOL)_TARGET_DIR): $(TOOLS_DIR)/avm_kernel_config.%: $($(TOOL)_DIR)/avm_kernel_config.%
+$($(PKG)_TARGET_DIR): $(TOOLS_DIR)/avm_kernel_config.%: $($(PKG)_DIR)/avm_kernel_config.%
 	$(INSTALL_FILE)
 
-$(tool)-precompiled: $($(TOOL)_TARGET_DIR)
+$(pkg)-precompiled: $($(PKG)_TARGET_DIR)
 
 
-$(tool)-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(YF_AKCAREA_HOST_DIR) clean
 
-$(tool)-dirclean:
+$(pkg)-dirclean:
 	$(RM) -r $(YF_AKCAREA_HOST_DIR)
 
-$(tool)-distclean: $(tool)-dirclean
+$(pkg)-distclean: $(pkg)-dirclean
 	$(RM) $(YF_AKCAREA_HOST_TARGET_DIR)
 
-$(TOOL_FINISH)
+$(TOOLS_FINISH)

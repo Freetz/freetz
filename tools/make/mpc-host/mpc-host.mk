@@ -1,24 +1,24 @@
-$(call TOOL_INIT, 1.1.0)
-$(TOOL)_SOURCE:=mpc-$($(TOOL)_VERSION).tar.gz
-$(TOOL)_SOURCE_SHA1:=b019d9e1d27ec5fb99497159d43a3164995de2d0
-$(TOOL)_SITE:=@GNU/mpc
+$(call TOOLS_INIT, 1.1.0)
+$(PKG)_SOURCE:=mpc-$($(PKG)_VERSION).tar.gz
+$(PKG)_SOURCE_SHA1:=b019d9e1d27ec5fb99497159d43a3164995de2d0
+$(PKG)_SITE:=@GNU/mpc
 
-$(TOOL)_DESTDIR:=$(HOST_TOOLS_DIR)
-$(TOOL)_BINARY:=$($(TOOL)_DESTDIR)/lib/libmpc.a
-$(TOOL)_DEPENDS:=gmp-host mpfr-host
+$(PKG)_DESTDIR:=$(HOST_TOOLS_DIR)
+$(PKG)_BINARY:=$($(PKG)_DESTDIR)/lib/libmpc.a
+$(PKG)_DEPENDS:=gmp-host mpfr-host
 
 
-$(tool)-source: $(DL_DIR)/$($(TOOL)_SOURCE)
-$(DL_DIR)/$($(TOOL)_SOURCE): | $(DL_DIR)
+$(pkg)-source: $(DL_DIR)/$($(PKG)_SOURCE)
+$(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(MPC_HOST_SOURCE) $(MPC_HOST_SITE) $(MPC_HOST_SOURCE_SHA1)
 
-$(tool)-unpacked: $($(TOOL)_DIR)/.unpacked
-$($(TOOL)_DIR)/.unpacked: $(DL_DIR)/$($(TOOL)_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
+$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
+$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(MPC_HOST_SOURCE),$(TOOLS_SOURCE_DIR))
 	$(call APPLY_PATCHES,$(MPC_HOST_MAKE_DIR)/patches,$(MPC_HOST_DIR))
 	touch $@
 
-$($(TOOL)_DIR)/.configured: $($(TOOL)_DIR)/.unpacked $($(TOOL)_DEPENDS:%-host=$($(TOOL)_DESTDIR)/lib/lib%.a)
+$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked $($(PKG)_DEPENDS:%-host=$($(PKG)_DESTDIR)/lib/lib%.a)
 	(cd $(MPC_HOST_DIR); $(RM) config.cache; \
 		CC="$(TOOLCHAIN_HOSTCC)" \
 		CFLAGS="$(TOOLCHAIN_HOST_CFLAGS)" \
@@ -35,19 +35,19 @@ $($(TOOL)_DIR)/.configured: $($(TOOL)_DIR)/.unpacked $($(TOOL)_DEPENDS:%-host=$(
 	)
 	touch $@
 
-$($(TOOL)_BINARY): $($(TOOL)_DIR)/.configured | $(HOST_TOOLS_DIR)
-	$(TOOL_SUBMAKE) -C $(MPC_HOST_DIR) install
+$($(PKG)_BINARY): $($(PKG)_DIR)/.configured | $(HOST_TOOLS_DIR)
+	$(TOOLS_SUBMAKE) -C $(MPC_HOST_DIR) install
 
-$(tool)-precompiled: $($(TOOL)_BINARY)
+$(pkg)-precompiled: $($(PKG)_BINARY)
 
 
-$(tool)-clean:
+$(pkg)-clean:
 	-$(MAKE) -C $(MPC_HOST_DIR) clean
 
-$(tool)-dirclean:
+$(pkg)-dirclean:
 	$(RM) -r $(MPC_HOST_DIR)
 
-$(tool)-distclean: $(tool)-dirclean
+$(pkg)-distclean: $(pkg)-dirclean
 	$(RM) $(MPC_HOST_DESTDIR)/lib/libmpc* $(MPC_HOST_DESTDIR)/include/*mpc*.h
 
-$(TOOL_FINISH)
+$(TOOLS_FINISH)
