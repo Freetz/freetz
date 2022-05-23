@@ -49,6 +49,7 @@ Latest changes
    * precompiled toolchains r19231/r19417
 
  - Host tools:
+   * fakeroot 1.29
    * fitimg 0.8
    * kconfig 5.18
    * yf-bootmanager 0.8.3 9a1d3b8

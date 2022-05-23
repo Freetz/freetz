@@ -1,6 +1,6 @@
-$(call TOOL_INIT, 1.28)
+$(call TOOL_INIT, 1.29)
 $(TOOL)_SOURCE:=fakeroot_$($(TOOL)_VERSION).orig.tar.gz
-$(TOOL)_SOURCE_SHA256:=56d405e36ff685f83879be08fdd654255ab9aa38632b4605a98e896ad63990c2
+$(TOOL)_SOURCE_SHA256:=8fbbafb780c9173e3ace4a04afbc1d900f337f3216883939f5c7db3431be7c20
 $(TOOL)_SITE:=https://ftp.debian.org/debian/pool/main/f/fakeroot
 ### WEBSITE:=https://wiki.debian.org/FakeRoot
 ### MANPAGE:=https://man.archlinux.org/man/fakeroot.1.en
