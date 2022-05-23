@@ -693,7 +693,7 @@ endef
 
 ## Unpack and patch package
 define PKG_UNPACKED__INT
-$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) $(if $($(PKG)_CUSTOM_UNPACK),$($(PKG)_DIR)/.build-prereq-checked) | $(PKG)_SOURCE_DIR $(UNPACK_TARBALL_PREREQUISITES)
+$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) $(if $($(PKG)_CUSTOM_UNPACK),$($(PKG)_DIR)/.build-prereq-checked) | $($(PKG)_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
 	@$(call _ECHO,preparing)
 	@$(call RMDIR_KEEP_FILES__INT,$($(PKG)_DIR),.build-prereq-checked)
 	$(call PKG_UNPACK)
@@ -708,7 +708,7 @@ endef
 
 ## "unpack" (actually copy) local source package
 define PKG_UNPACKED_LOCALSOURCE_PACKAGE__INT
-$($(PKG)_DIR)/.unpacked: $(wildcard $($(PKG)_MAKE_DIR)/src/*) | $(PKG)_SOURCE_DIR
+$($(PKG)_DIR)/.unpacked: $(wildcard $($(PKG)_MAKE_DIR)/src/*) | $($(PKG)_SOURCE_DIR)
 	@$(call _ECHO,preparing)
 	@$(call RMDIR_KEEP_FILES__INT,$($(PKG)_DIR),.build-prereq-checked)
 	mkdir -p $($(PKG)_DIR)
@@ -737,7 +737,7 @@ $(PKG)_FREETZ_CHANGES_RECOMPILE_SEARCH:=patches/.*\|src/.*\|$(pkg)\.mk\|$(pkg).*
 $(PKG)_FREETZ_CHANGES_REPACK_SEARCH:=files/.*
 endef
 define PKG_UNPACKED_CHECK_CHANGES__INT2
-$(PKG)_FREETZ_CHANGES_CHECK: $(PKG)_SOURCE_DIR
+$(PKG)_FREETZ_CHANGES_CHECK: $($(PKG)_SOURCE_DIR)
 	@find $($(PKG)_MAKE_DIR) \
 		-regex "^$($(PKG)_MAKE_DIR)/\($($(PKG)_FREETZ_CHANGES_RECOMPILE_SEARCH)\|$($(PKG)_FREETZ_CHANGES_REPACK_SEARCH)\)" \
 		-printf '%TY-%Tm-%Td %TH:%TM:%TS\t%P\n' 2>/dev/null | sort -k 3 >$($(PKG)_FREETZ_CHANGES_FILE).temp
