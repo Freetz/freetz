@@ -1,5 +1,5 @@
 # Welcome to Freetz-NG
-[![Freetz-NG](screenshots/000-XXX_Freetz-NG_trans.png "Freetz-NG")](#)<br>
+[![Freetz-NG](screenshots/000-XXX_Freetz-NG_screens_md.gif "Freetz-NG")](screenshots/000-XXX_Freetz-NG_screens.gif)<br>
 <br>
 Watch important changes and [NEWS](NEWS.md) about Freetz-NG.<br>
 Talk about everything around Freetz-NG at [DISCUSSIONS](https://github.com/Freetz-NG/freetz-ng/discussions).<br>
