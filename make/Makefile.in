@@ -719,12 +719,6 @@ $(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
 .PHONY: $(pkg)-source $(pkg)-unpacked
 endef
 
-define PKG_UNPACKED_SOURCE__INT
-$(PKG)_SOURCE_DIR:
-	@mkdir -p $($(PKG)_SOURCE_DIR)
-.PHONY: $(PKG)_SOURCE_DIR
-endef
-
 ## check for changed suboptions, should only be called if $(PKG)_REBUILD_SUBOPTS is defined
 define PKG_UNPACKED_CHECK_REBUILD_SUBOPTS
 $($(PKG)_DIR)/.unpacked: $($(PKG)_FREETZ_CONFIG_FILE)
@@ -764,8 +758,8 @@ $(pkg)-build-prereq: $(PKG)_FREETZ_CHANGES_CHECK
 .PHONY: $(PKG)_FREETZ_CHANGES_CHECK
 endef
 
-PKG_UNPACKED           =$(eval $(PKG_UNPACKED_SOURCE__INT))
-PKG_LOCALSOURCE_PACKAGE=$(eval $(PKG_UNPACKED_SOURCE__INT))
+PKG_UNPACKED           =
+PKG_LOCALSOURCE_PACKAGE=
 #
 ifeq ($(strip $(FREETZ_CHECK_CHANGED)),y)
 PKG_UNPACKED           +=$(eval $(PKG_UNPACKED_CHECK_CHANGES__INT1))$(eval $(PKG_UNPACKED_CHECK_CHANGES__INT2))
