@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN, 0.98)
 $(PKG)_LIB_VERSION:=0.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=90c6571b8b0309e372faa0f9f6255ea9
+$(PKG)_HASH:=501b5acd4dff79b6100da22cef15080f31071821ce3cea6f1b739bc1b56fac3f
 $(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_CLASSES_FILE_FULL:=glibj.zip

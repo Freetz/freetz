@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 5.1)
 $(PKG)_SOURCE:=gw6c-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=eeac7292a622681651ec3bd9b2e5b061
+$(PKG)_HASH:=f34bbfd595fb2c0711f524c748b9279137a9e84367b6ad9470fa07c13043afd1
 #$(PKG)_SITE:=http://go6.net/4105/file.asp?file_id=150
 $(PKG)_SITE:=@MIRROR/
 

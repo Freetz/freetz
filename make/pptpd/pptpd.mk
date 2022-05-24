@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN,1.4.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=36f9f45c6ffa92bc3b6e24ae2d053505
+$(PKG)_HASH:=8fcd8b8a42de2af59e9fe8cbaa9f894045c977f4d038bbd6346a8522bb7f06c0
 $(PKG)_SITE:=@SF/poptop
 
 $(PKG)_BINARIES:=bcrelay pptpctrl pptpd

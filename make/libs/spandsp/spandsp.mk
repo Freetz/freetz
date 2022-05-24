@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 0.0.6)
 $(PKG)_LIB_VERSION:=2.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)pre21.tgz
-$(PKG)_SOURCE_MD5:=492f3790439891c07d8c06e97ccbfcf1
+$(PKG)_HASH:=bd152152bf0b204661ab9439c5a649098bcb8cefebcbfa959dd602442739aa50
 $(PKG)_SITE:=http://www.soft-switch.org/downloads/spandsp
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libspandsp.so.$($(PKG)_LIB_VERSION)

@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.15.2b)
 $(PKG)_SOURCE:=madplay-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=6814b47ceaa99880c754c5195aa1aac1
+$(PKG)_HASH:=5a79c7516ff7560dffc6a14399a389432bc619c905b13d3b73da22fa65acede0
 $(PKG)_SITE:=@SF/mad
 $(PKG)_BINARY:=$($(PKG)_DIR)/madplay
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/madplay

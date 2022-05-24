@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN, 6.0.11-alpha)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://mirror.cogentco.com/pub/$(pkg)/MySQL-6.0/
-$(PKG)_SOURCE_MD5:=516b0695b97102508811f2c4d6e8e683
+$(PKG)_HASH:=94164a295b7f020edd7b95ae236e196b69e3c27e782a864ec2c6f5f9cec1ecac
 
 $(PKG)_BINARY_BUILD_DIR := $($(PKG)_DIR)/sql/$(pkg)d
 $(PKG)_BINARY_TARGET_DIR := $($(PKG)_DEST_DIR)/usr/bin/$(pkg)d

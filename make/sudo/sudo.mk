@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.7.10p8)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=4620e31c28b387dd9582dfd42e930cfb
+$(PKG)_HASH:=8e1df217dc7f32eb770c3b6fba88953263bdca28ce45439eb8527c6c3c959abd
 $(PKG)_SITE:=http://www.sudo.ws/sudo/dist
 
 $(PKG)_BINARY_BUILD_DIR:=$($(PKG)_DIR)/$(pkg)

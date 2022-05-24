@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 5.8)
 $(PKG)_SOURCE:=net-snmp-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=63bfc65fbb86cdb616598df1aff6458a
+$(PKG)_HASH:=b2fc3500840ebe532734c4786b0da4ef0a5f67e51ef4c86b3345d697e4976adf
 $(PKG)_SITE:=@SF/net-snmp
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/agent/.libs/snmpd

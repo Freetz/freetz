@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 3.1)
 $(PKG)_SOURCE:=sispmctl-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=24693cae30d77c957f34cfb2c8159661
+$(PKG)_HASH:=e9a99cc81ef0a93f3484e5093efd14d93cc967221fcd22c151f0bea32eb91da7
 $(PKG)_SITE:=@SF/sispmctl
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/sispmctl

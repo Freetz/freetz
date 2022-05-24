@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 2.4.4)
 $(PKG)_SOURCE:=Cheetah-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=853917116e731afbc8c8a43c37e6ddba
+$(PKG)_HASH:=be308229f0c1e5e5af4f27d7ee06d90bb19e6af3059794e5fd536a6f29a9b550
 $(PKG)_SITE:=https://pypi.python.org/packages/source/C/Cheetah
 
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)$(PYTHON_SITE_PKG_DIR)/Cheetah/_namemapper.so

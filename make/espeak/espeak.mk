@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.48.04)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-source.zip
-$(PKG)_SOURCE_MD5:=cadd7482eaafe9239546bdc09fa244c3
+$(PKG)_HASH:=bf9a17673adffcc28ff7ea18764f06136547e97bbd9edf2ec612f09b207f0659
 $(PKG)_SITE:=@SF/espeak
 
 $(PKG)_PATCH_POST_CMDS += $(RM) -r linux_32bit;

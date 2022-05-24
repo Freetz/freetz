@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 3.9p1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=afc34175f38d08867c1403d9008600b3
+$(PKG)_HASH:=83dd7c1e8ec8b4567afe49af539271b5a73562fb7a3ca51df73eccba89ec8c49
 $(PKG)_SITE:=ftp://ftp.openbsd.org/pub/OpenBSD/OpenNTPD
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/ntpd

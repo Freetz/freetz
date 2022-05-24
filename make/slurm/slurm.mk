@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.3.3)
 $(PKG)_SOURCE:=slurm-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=e68d09202b835c644f7f6b7f070f29a2
+$(PKG)_HASH:=b25889aa1910b1bb48e4eafdac0c810bc02e8b98ddb2ade0aed2ec64672d6834
 $(PKG)_SITE:=http://www.wormulon.net/slurm
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/slurm

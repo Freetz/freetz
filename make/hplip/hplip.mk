@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 3.14.6)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=ec14b3bf3ac17a7c00b96e51d4c38114
+$(PKG)_HASH:=a57233cd0e2db1dcf1d34d8b90c6a9d3e027e522695aada6c3c411a839868b8e
 $(PKG)_SITE:=@SF/hplip
 
 $(PKG)_LIB_IP_VERSION=0.0.1

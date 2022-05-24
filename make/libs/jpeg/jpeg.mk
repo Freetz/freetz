@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 9d)
 $(PKG)_LIB_VERSION:=9.4.0
 $(PKG)_SOURCE:=jpegsrc.v$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=ad7e40dedc268f97c44e7ee3cd54548a
+$(PKG)_HASH:=6c434a3be59f8f62425b2e3c077e785c9ce30ee5874ea1c270e843f273ba71ee
 $(PKG)_SITE:=http://ijg.org/files
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libjpeg.so.$($(PKG)_LIB_VERSION)

@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.8.15)
 $(PKG)_SOURCE:=irssi-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=870db8e319f640c2bf446c30d0c24ef6
+$(PKG)_HASH:=c15957cd898cc71eeae389b5a71055693b95794667e637da3327553661e4c6de
 $(PKG)_SITE:=http://irssi.org/files
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/fe-text/irssi

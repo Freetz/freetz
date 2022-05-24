@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.3.2a)
 $(PKG)_SOURCE:=html2text-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=6097fe07b948e142315749e6620c9cfc
+$(PKG)_HASH:=000b39d5d910b867ff7e087177b470a1e26e2819920dcffd5991c33f6d480392
 $(PKG)_SITE:=http://www.mbayer.de/html2text/downloads
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/html2text

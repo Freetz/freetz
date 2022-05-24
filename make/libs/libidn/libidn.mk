@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 1.38)
 $(PKG)_LIB_VERSION:=12.6.3
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA1:=f59995a07e06864b1f385dc91bd4b08bb5ea88cc
+$(PKG)_HASH:=de00b840f757cd3bb14dd9a20d5936473235ddcba06d4bc2da804654b8bbf0f6
 $(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)

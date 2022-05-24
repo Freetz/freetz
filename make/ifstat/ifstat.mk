@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=b655642c33a626cfe976792fbcd9b6e1
+$(PKG)_HASH:=8599063b7c398f9cfef7a9ec699659b25b1c14d2bc0f535aed05ce32b7d9f507
 $(PKG)_SITE:=http://gael.roualland.free.fr/ifstat
 $(PKG)_BINARIES:=$(pkg)
 $(PKG)_BINARIES_BUILD_DIR:=$($(PKG)_BINARIES:%=$($(PKG)_DIR)/%)

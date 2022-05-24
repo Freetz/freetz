@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 0.10.0)
 $(PKG)_LIB_VERSION:=0.0.0
 $(PKG)_SOURCE:=synce-$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=e46c72219bff559f4bb1615613671942
+$(PKG)_HASH:=bf774f77850f06dc235c5d52f0940802ad635316b967cc0fca598ca5b45fe45f
 $(PKG)_SITE:=@SF/synce
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/lib/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)

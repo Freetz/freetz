@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 3.0.1)
 $(PKG)_SOURCE:=iptraf-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=004c2c005a1b78739e22bc49d33e244d
+$(PKG)_HASH:=95a069af8c4d22206985f6ce69acc27cfcfef1d58ad6ab8dbb10c698642ac08a
 $(PKG)_SITE:=ftp://iptraf.seul.org/pub/iptraf
 
 $(PKG)_PATCH_POST_CMDS += $(SED) -i -r -e 's,<linux/(if_(tr|ether)[.]h)>,<netinet/\1>,g' src/*.h src/*.c;

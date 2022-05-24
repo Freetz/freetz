@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 2.0.8)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=c3d9a56255819ef8904b867284386911
+$(PKG)_HASH:=a54cbed187281f8d5a301d1d8fd5cb0f30bfb13a5a8e9ab752ace76c1010fb6f
 $(PKG)_SITE:=@SF/ojnk
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)

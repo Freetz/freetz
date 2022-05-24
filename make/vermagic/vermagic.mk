@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1ac45e08d4)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=85f77d02d9ffc29a2fea24c44ad783ab
+$(PKG)_HASH:=479e49c10b92e65ae1a8aa72724218878576eb0d02d06dc26d72823f855f8079
 $(PKG)_SITE:=git@https://github.com/D1W0U/vermagic
 
 $(PKG)_SOURCE_FILE:=$($(PKG)_DIR)/$(pkg).c

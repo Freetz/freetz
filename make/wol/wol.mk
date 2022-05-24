@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.7.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=c2fa9d7e771134ac8c89d56b8197d4ca
+$(PKG)_HASH:=e0086c9b9811df2bdf763ec9016dfb1bcb7dba9fa6d7858725b0929069a12622
 $(PKG)_SITE:=@SF/wake-on-lan
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)

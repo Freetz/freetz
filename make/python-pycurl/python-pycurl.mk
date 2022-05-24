@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 7.43.0)
 $(PKG)_SOURCE:=pycurl-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=c94bdba01da6004fa38325e9bd6b9760
+$(PKG)_HASH:=aa975c19b79b6aa6c0518c0cc2ae33528900478f0b500531dbcdbf05beec584c
 $(PKG)_SITE:=https://pypi.python.org/packages/source/p/pycurl
 
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)$(PYTHON_SITE_PKG_DIR)/pycurl.so

@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 4.15)
 $(PKG)_SHLIB_VERSION:=4.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=3a73f247e790e2590c01f3492136ed31
+$(PKG)_HASH:=b2dd43a073556f5350cbed05b6ef444dcc4b563f4e0b1009d7bf448261606feb
 $(PKG)_SITE:=http://dist.schmorp.de/libev
 
 $(PKG)_LIBNAME=$(pkg).so.$($(PKG)_SHLIB_VERSION)

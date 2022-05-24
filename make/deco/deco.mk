@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 39)
 $(PKG)_SOURCE:=deco$($(PKG)_VERSION).tgz
-$(PKG)_SOURCE_MD5:=f77f60e8be0cae1f814cba1ef61bf4d0
+$(PKG)_HASH:=30d4cfa1ed2eb318c6e31fd6c5bc2fe4831d7ba6e0325e08d34783d043e00c65
 $(PKG)_SITE:=@SF/deco
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/deco

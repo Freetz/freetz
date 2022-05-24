@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.7.9)
 $(PKG)_SOURCE:=$(pkg).$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=cb18cc056eedb10a0decd1797c803dfe
+$(PKG)_HASH:=f6b1854f931ddbac096015ac253fc6d2b481f98783ab5ebfbdb89ff4f49da0b5
 $(PKG)_SITE:=http://www.bsdmon.com/download/
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)

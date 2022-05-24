@@ -1,9 +1,9 @@
 $(call PKG_INIT_BIN, $(if $(FREETZ_KERNEL_VERSION_2_MAX),$(if $(FREETZ_KERNEL_VERSION_2_6_13),4.9,5.0),5.17))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5_4.9:=885eafadb10f6c60464a266d3929a2a4
-$(PKG)_SOURCE_MD5_5.0:=8499d66e5c467fd391c272dd82f0b691
-$(PKG)_SOURCE_SHA256_5.17:=5fb298dbd1331fd1e1bc94c5c32395860d376101b87c6cd3d1ba9f9aa15c161f
-$(PKG)_SOURCE_CHECKSUM:=$($(PKG)_SOURCE_MD5_$($(PKG)_VERSION))$($(PKG)_SOURCE_SHA256_$($(PKG)_VERSION))
+$(PKG)_HASH_4.9:=095bfea5c540b91d297ccac73b21b92fd54a24599fd70395db87ff9eb7fd6f65
+$(PKG)_HASH_5.0:=3b7ad77eb2b81dc6078046a9cc56eed5242b67b63748e7fc28f7c2daf4e647da
+$(PKG)_HASH_5.17:=5fb298dbd1331fd1e1bc94c5c32395860d376101b87c6cd3d1ba9f9aa15c161f
+$(PKG)_HASH:=$($(PKG)_HASH_$($(PKG)_VERSION))
 $(PKG)_SITE:=https://www.strace.io/files/$($(PKG)_VERSION),@SF/$(pkg)
 ### WEBSITE:=https://www.strace.io/
 ### MANPAGE:=https://man7.org/linux/man-pages/man1/strace.1.html

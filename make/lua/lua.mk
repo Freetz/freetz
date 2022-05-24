@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 5.1.5)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=2e115fe26e435e33b0d5c022e4490567
+$(PKG)_HASH:=2640fc56a795f29d28ef15e13c34a47e223960b0240e8cb0a82d9b0738695333
 $(PKG)_SITE:=http://www.lua.org/ftp
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/lua

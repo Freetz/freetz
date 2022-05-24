@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 1.0.4)
 $(PKG)_LIB_VERSION:=0.2.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_SHA1:=2db40dea612e88c62fd321906be40ab5f8f1685a
+$(PKG)_HASH:=171f89699f286a5854b72b91d06e8f8e3683064c5901fb09d954a9ab6f551f81
 $(PKG)_SITE:=https://www.netfilter.org/projects/libmnl/files
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)

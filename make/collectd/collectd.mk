@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 4.10.3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=5f17bfd7342af4f97f78c608f1d1eb1d
+$(PKG)_HASH:=ffd1959273301b302c144057baf68128e62c42bcff156ba941336e7389439b65
 $(PKG)_SITE:=http://collectd.org/files
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)

@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN,1.99)
 $(PKG)_SOURCE:=inadyn.source.v$($(PKG)_VERSION).zip
-$(PKG)_SOURCE_MD5:=0f2cf9c3ea3482c03e1c42f8480f1c55
+$(PKG)_HASH:=0360fbe8fd4bd184d015d577361ef2a93226648a2bb7b60546b385025eceaf88
 $(PKG)_SITE:=http://www.opendns.com/support/ddns_files
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/bin/linux/inadyn

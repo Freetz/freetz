@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 2.25)
 $(PKG)_LIB_VERSION:=1.0.25
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=ebc8408c9a74c785786a2ef7185fe628
+$(PKG)_HASH:=0acce2bac854588d2597cbcdb60a6ec4de5fe3e16d224bdfab8f2dd96ad242fb
 $(PKG)_SITE:=@SF/bluez
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libbluetooth.so.$($(PKG)_LIB_VERSION)

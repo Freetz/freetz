@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN, 3.02.02)
 $(PKG)_LIB_VERSION:=3.0.2
 $(PKG)_SOURCE:=$(pkg)-ocr-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=26adc8154f0e815053816825dde246e6
+$(PKG)_HASH:=26cd39cb3f2a6f6f1bf4050d1cc0aae35edee49eb49a92df3cb7f9487caa013d
 $(PKG)_SITE:=http://tesseract-ocr.googlecode.com/files
 
 $(PKG)_BINARY_BUILD_DIR:=$($(PKG)_DIR)/api/.libs/$(pkg)

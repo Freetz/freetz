@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 4.8.4)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=b75c43797e817529d486be640232d708
+$(PKG)_HASH:=4ebc271e9e5cea84a683375a0f7e91086e5dac90c5d51bb3f169f75386107a62
 $(PKG)_SITE:=http://lftp.yar.ru/ftp
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/lftp

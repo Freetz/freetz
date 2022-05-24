@@ -1,9 +1,10 @@
 $(call PKG_INIT_BIN, 20837)
 #$(call PKG_INIT_BIN, 5.9)
-#$(PKG)_SOURCE_MD5:=7d77cf7f8a93eb00fae494bafddf1546
 #$(PKG)_SITE:=http://fhem.de
 $(PKG)_SOURCE:=fhem-$($(PKG)_VERSION).tar.gz
+$(PKG)_HASH:=X
 $(PKG)_SITE:=svn@https://svn.fhem.de/fhem/trunk/fhem
+
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/lib/fhem
 
 $(PKG)_CATEGORY:=Unstable

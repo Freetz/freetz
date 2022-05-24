@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 2.1.9-1)
 $(PKG)_SOURCE:=noip-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=3b0f5f2ff8637c73ab337be403252a60
+$(PKG)_HASH:=82b9bafab96a0c53b21aaef688bf70b3572e26217b5e2072bdb09da3c4a6f593
 $(PKG)_SITE:=http://www.no-ip.com/client/linux
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/noip2

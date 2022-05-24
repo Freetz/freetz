@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 0.4)
 $(PKG)_LIB_VERSION:=0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA1:=115108dc791a2f9e99e150012bcb459d9095da2dd7d80699b584ac0ac3768710
+$(PKG)_HASH:=115108dc791a2f9e99e150012bcb459d9095da2dd7d80699b584ac0ac3768710
 $(PKG)_SITE:=https://www.corpit.ru/mjt/$(pkg)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/lib$(pkg).so.$($(PKG)_LIB_VERSION)

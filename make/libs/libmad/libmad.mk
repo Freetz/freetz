@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 0.15.1b)
 $(PKG)_LIB_VERSION:=0.2.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=1be543bc30c56fb6bea1d7bf6a64e66c
+$(PKG)_HASH:=bbfac3ed6bfbc2823d3775ebb931087371e142bb0e9bb1bee51a76a6e0078690
 $(PKG)_SITE:=@SF/mad
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)

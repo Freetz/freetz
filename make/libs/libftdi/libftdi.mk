@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 0.20)
 $(PKG)_LIB_VERSION:=1.20.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=355d4474e3faa81b485d6a604b06951f
+$(PKG)_HASH:=3176d5b5986438f33f5208e690a8bfe90941be501cc0a72118ce3d338d4b838e
 $(PKG)_SITE:=https://www.intra2net.com/en/developer/libftdi/download
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)

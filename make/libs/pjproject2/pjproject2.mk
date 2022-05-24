@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 2.2.1)
 $(PKG)_LIB_VERSION:=2
 $(PKG)_SOURCE:=pjproject-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=6ed4bb7750c827dc1d881e209a3b62db
+$(PKG)_HASH:=da1933336b38b65ff2254bed05ea1076531b16915777a252ea999cf7f3284cb3
 $(PKG)_SITE:=http://www.pjsip.org/release/$($(PKG)_VERSION)
 
 $(PKG)_INSTALL_SUBDIR:=_install

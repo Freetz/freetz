@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.1.7)
 $(PKG)_SOURCE:=Imaging-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=fc14a54e1ce02a0225be8854bfba478e
+$(PKG)_HASH:=895bc7c2498c8e1f9b99938f1a40dc86b3f149741f105cf7c7bd2e0725405211
 $(PKG)_SITE:=http://effbot.org/downloads
 
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)$(PYTHON_SITE_PKG_DIR)/PIL/_imaging.so

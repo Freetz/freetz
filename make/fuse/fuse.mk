@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 2.9.7)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=9bd4ce8184745fd3d000ca2692adacdb
+$(PKG)_HASH:=832432d1ad4f833c20e13b57cf40ce5277a9d33e483205fc63c78111b3358874
 $(PKG)_SITE:=https://github.com/libfuse/libfuse/releases/download/fuse-$($(PKG)_VERSION)
 
 $(PKG)_PATCH_POST_CMDS += $(SED) -i -r -e 's| -D_FILE_OFFSET_BITS=64||g;' fuse.pc.in {example,lib,util}/Makefile.{am,in};

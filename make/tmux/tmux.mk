@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 2.5)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=4a5d73d96d8f11b0bdf9b6f15ab76d15
+$(PKG)_HASH:=ae135ec37c1bf6b7750a84e3a35e93d91033a806943e034521c8af51b12d95df
 $(PKG)_SITE:=https://github.com/$(pkg)/$(pkg)/releases/download/$($(PKG)_VERSION)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/tmux

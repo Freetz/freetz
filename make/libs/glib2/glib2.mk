@@ -2,7 +2,7 @@ $(call PKG_INIT_LIB, 2.32.4)
 $(PKG)_LIB_VERSION:=0.3200.4
 $(PKG)_MAJOR_VERSION:=2.0
 $(PKG)_SOURCE:=glib-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=bf84fefd9c1a5b5a7a38736f4ddd674a
+$(PKG)_HASH:=a5d742a4fda22fb6975a8c0cfcd2499dd1c809b8afd4ef709bda4d11b167fae2
 $(PKG)_SITE:=https://download.gnome.org/sources/glib/$(call GET_MAJOR_VERSION,$($(PKG)_VERSION)),ftp://ftp.gnome.org/pub/gnome/sources/glib/$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 ### WEBSITE:=https://www.gtk.org/
 ### MANPAGE:=https://docs.gtk.org/glib/

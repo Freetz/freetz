@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 4.8.30)
 $(PKG)_LIB_VERSION:=4.8
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=f80022099c5742cd179343556179aa8c
+$(PKG)_HASH:=e0491a07cdb21fb9aa82773bbbedaeb7639cbd0e7f96147ab46141e0045db72a
 $(PKG)_SITE:=http://download.oracle.com/berkeley-db
 
 $(PKG)_LIBNAME:=lib$(pkg)-$($(PKG)_LIB_VERSION).so

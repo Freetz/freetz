@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 1.1.0)
 $(PKG)_LIB_VERSION:=1.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA1:=20bfcf3663ae56b125a5bfc3b4dca8c7f0ef1e48
+$(PKG)_HASH:=9a973fc04aac003f9cf2b5a90ac4b8fa294cacb4e3f0796d3b5a789a5ad46c07
 $(PKG)_SITE:=https://github.com/$(pkg)/$(pkg)/releases/download/v$($(PKG)_VERSION)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/protobuf-c/.libs/libprotobuf-c.so.$($(PKG)_LIB_VERSION)

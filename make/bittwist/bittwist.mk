@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.1)
 $(PKG)_SOURCE:=$(pkg)-linux-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=d79f0181c5b1f14707542674fb747fb7
+$(PKG)_HASH:=3f42f057845c1d1a9c9d10e4e50cf89666f13cdace932f064b25ef47235a8c6e
 $(PKG)_SITE:=@SF/$(pkg)
 
 $(PKG)_BINARIES:=bittwist bittwiste bittwistb

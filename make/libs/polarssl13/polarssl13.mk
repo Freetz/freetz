@@ -1,6 +1,6 @@
 $(call PKG_INIT_LIB, 1.3.22)
 $(PKG)_SOURCE:=mbedtls-$($(PKG)_VERSION)-gpl.tgz
-$(PKG)_SOURCE_SHA1:=52702f9a559fcbb2d249f59f8599e35682bda54a
+$(PKG)_HASH:=ded041aa4acf9a3e4d0c85bf334b0860135da996e75afdcc3abf22f403d14457
 $(PKG)_SITE:=http://polarssl.org/code/releases
 
 $(PKG)_LIBNAME:=lib$(pkg).so.$($(PKG)_VERSION)

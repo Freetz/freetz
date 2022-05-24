@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 1.69)
 $(PKG)_LIB_VERSION:=3.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=3c442f4edaf0be25dc92dc0012f94a37
+$(PKG)_HASH:=e8a4e327f0402073c967bf2da976dc914b9086b6bd2b48558307c928a0960b6d
 $(PKG)_SITE:=http://leptonica.googlecode.com/files
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/liblept.so.$($(PKG)_LIB_VERSION)

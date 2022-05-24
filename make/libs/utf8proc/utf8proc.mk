@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 8ca6144c85c165987cb1c5d8395c7314e13d4cd7)
 $(PKG)_SHLIB_VERSION:=2.5.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_CHECKSUM:=X
+$(PKG)_HASH:=X
 $(PKG)_SITE:=git@https://github.com/JuliaStrings/utf8proc
 ### VERSION:=2.7.0
 ### WEBSITE:=https://juliastrings.github.io/utf8proc/

@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-20110904.tar.gz
-$(PKG)_SOURCE_MD5:=3dbe93a59d85bf89f9c1d20d54f5e983
+$(PKG)_HASH:=a34d18438da510eea3e6ee711c0398ff87101d6932b06986e99ef17d54b671c6
 $(PKG)_SITE:=http://fowsr.googlecode.com/files
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/fowsr

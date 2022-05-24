@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN, 1.6.20070208)
 $(PKG)_LIB_VERSION:=1.0.6
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=07f6cad7e03fd74a949588c3d4b333de
+$(PKG)_HASH:=b33014be72cd1030e171b1801a5cc90f8f727f03b197c7cc0d506c30c991ed44
 $(PKG)_SITE:=ftp://ftp.ossp.org/pkg/lib/js
 
 $(PKG)_BINARY_BUILD_DIR:=$($(PKG)_DIR)/.libs/js

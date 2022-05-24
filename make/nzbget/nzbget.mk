@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 21.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-src.tar.gz
-$(PKG)_SOURCE_SHA1:=df1b43fbca6c0696006b60a45b3e03ebc915f0c4
+$(PKG)_HASH:=65a5d58eb8f301e62cf086b72212cbf91de72316ffc19182ae45119ddd058d53
 $(PKG)_SITE:=https://github.com/nzbget/nzbget/releases/download/v$($(PKG)_VERSION)
 
 $(PKG)_PATCH_POST_CMDS += $(call PKG_ADD_EXTRA_FLAGS,(CXX|LD)FLAGS)

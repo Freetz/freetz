@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 1.3)
 $(PKG)_LIB_VERSION:=1.3.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=feaa5dfe5151c0e70e8f868fa4648a43
+$(PKG)_HASH:=3a80ba2524c66a46db3ac17a788a759015a1f79de6a495fcdf3a316e19fe7c23
 $(PKG)_SITE:=@SF/openobex
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/lib/.libs/libopenobex.so.$($(PKG)_LIB_VERSION)

@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 3.5.0)
 $(PKG)_LIB_VERSION:=6.2.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=7691546f6b3349d10007fc1aaff0f4e0
+$(PKG)_HASH:=dd955daa24d9ce2de6709b8c13e7c04ebc3afa8ac094d6a15a02a075be719a91
 $(PKG)_SITE:=@GNU/osip
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/osip2/.libs/libosip2.so.$($(PKG)_LIB_VERSION)

@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.6.31)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=2f22745b8f7368ad5a0a3fddac343f2d
+$(PKG)_HASH:=8372719b24e2dd75de6f59bb1315e600db4fd092805bd1201ed0cb651a2dab48
 $(PKG)_SITE:=http://avahi.org/download
 
 $(PKG)_BINARIES := avahi-daemon $(if $(FREETZ_PACKAGE_AVAHI_WITH_DNSCONFD),avahi-dnsconfd)

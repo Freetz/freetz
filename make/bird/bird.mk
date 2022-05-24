@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.6.4)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=d62ec2547338e8d3dfb934b4c7b2faa4
+$(PKG)_HASH:=c26b8caae988dba81a9dbbee93502463d4326d1b749d728d62aa5529c605afc0
 $(PKG)_SITE:=ftp://bird.network.cz/pub/bird
 $(PKG)_STARTLEVEL=82
 

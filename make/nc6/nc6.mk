@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=97fb6d871d804eabbc0ec6552d46b6b0
+$(PKG)_HASH:=db7462839dd135ff1215911157b666df8512df6f7343a075b2f9a2ef46fe5412
 $(PKG)_SITE:=http://ftp.deepspace6.net/pub/ds6/sources/nc6/
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/nc6
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/nc6

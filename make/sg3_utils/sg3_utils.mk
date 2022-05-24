@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.26, sg3_utils, SG3UTILS)
 $(PKG)_SOURCE:=sg3_utils-$($(PKG)_VERSION).tgz
-$(PKG)_SOURCE_MD5:=9a7aa8d954d75dc6c91e066e215867f2
+$(PKG)_HASH:=9b93c43aafb9e353b7860150eb777c1c63fb7f28e7f31890add9e4fb3eabb814
 $(PKG)_SITE:=http://sg.danny.cz/sg/p
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/sg_start

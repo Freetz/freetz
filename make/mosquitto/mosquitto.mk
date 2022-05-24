@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.6.15)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=792bdd8fce3a8a1db102988ef6a9a02f
+$(PKG)_HASH:=5ff2271512f745bf1a451072cd3768a5daed71e90c5179fae12b049d6c02aa0f
 $(PKG)_SITE:=http://mosquitto.org/files/source
 
 $(PKG)_BINARY_BROKER:=$($(PKG)_DIR)/src/mosquitto

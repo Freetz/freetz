@@ -7,7 +7,7 @@ $(call PKG_INIT_BIN, 1.0.56)
 # writing this comment this is version 1.0.56
 #
 #$(PKG)_SOURCE:=debootstrap_$(DEBOOTSTRAP_VERSION).tar.gz
-#$(PKG)_SOURCE_MD5:=f8172809afe7cfdcdc6745229f024d9d
+#$(PKG)_HASH:=6df5b6b4af51b49040e9b59323e7a84f8c17a3a324f337b2820de689ac4f8ee3
 #$(PKG)_SITE:=http://ftp.de.debian.org/debian/pool/main/d/debootstrap
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/pkgdetails

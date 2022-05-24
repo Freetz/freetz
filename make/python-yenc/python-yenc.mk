@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.4.0)
 $(PKG)_SOURCE:=yenc-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=f8bd9eff020c0352fdd4c25c20900007
+$(PKG)_HASH:=075f6c4e4f43b7c6dafac579eabb17287b62d80e9147cbea0b046bc3ee8edd2f
 $(PKG)_SITE:=http://www.golug.it/pub/yenc
 
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)$(PYTHON_SITE_PKG_DIR)/_yenc.so

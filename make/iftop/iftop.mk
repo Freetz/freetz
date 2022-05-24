@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.17)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=062bc8fb3856580319857326e0b8752d
+$(PKG)_HASH:=d032547c708307159ff5fd0df23ebd3cfa7799c31536fa0aea1820318a8e0eac
 $(PKG)_SITE:=http://www.ex-parrot.com/pdw/$(pkg)/download
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)

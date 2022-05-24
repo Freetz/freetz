@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.49)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=4e527bc4bdd97c2be15fdd818857507f
+$(PKG)_HASH:=cc29931d50b3be11608dc79d1c7d8a20919dbe6313b1ba5dc88ecf99cffd171a
 $(PKG)_SITE:=http://www-e.uni-magdeburg.de/jschulen/ocr
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)

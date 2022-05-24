@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 3.04)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=3bc86c69c8ff444db52461270bef3f44
+$(PKG)_HASH:=11390c74733abcb262aaca4db68710f13ffffd42bfe2a0861a5dfc912b2977e5
 $(PKG)_SITE:=ftp://ftp.foolabs.com/pub/$(pkg)
 
 $(PKG)_BINARIES_ALL := pdftops pdftotext pdfinfo pdffonts pdfimages

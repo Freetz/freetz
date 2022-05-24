@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 2.3.21)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=08559ff3c67fd95d57b0c5e91a6b4302
+$(PKG)_HASH:=fdc11e74c10fc9ffe4188537e2b370c0abacca7d89021d4d303afdf7fd7476fa
 $(PKG)_SITE:=http://ftp.gnome.org/pub/gnome/sources/libart_lgpl/2.3
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libart_lgpl_2.so.$($(PKG)_LIB_VERSION)

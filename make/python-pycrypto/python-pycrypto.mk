@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 2.6.1)
 $(PKG)_SOURCE:=pycrypto-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=55a61a054aa66812daf5161a0d5d7eda
+$(PKG)_HASH:=f2ce1e989b272cfcb677616763e0a2e7ec659effa67a88aa92b3a65528f60a3c
 $(PKG)_SITE:=http://ftp.dlitz.net/pub/dlitz/crypto/pycrypto
 
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)$(PYTHON_SITE_PKG_DIR)/Crypto/PublicKey/_fastmath.so

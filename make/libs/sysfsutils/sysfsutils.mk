@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 2.1.0)
 $(PKG)_LIB_VERSION:=2.0.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=14e7dcd0436d2f49aa403f67e1ef7ddc
+$(PKG)_HASH:=e865de2c1f559fff0d3fc936e660c0efaf7afe662064f2fb97ccad1ec28d208a
 $(PKG)_SITE:=@SF/linux-diag
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/lib/.libs/libsysfs.so.$($(PKG)_LIB_VERSION)

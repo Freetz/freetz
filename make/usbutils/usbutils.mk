@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN,007)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=c9df5107ae9d26b10a1736a261250139
+$(PKG)_HASH:=7593a01724bbc0fd9fe48e62bc721ceb61c76654f1d7b231b3c65f6dfbbaefa4
 $(PKG)_SITE:=https://www.kernel.org/pub/linux/utils/usb/usbutils
 
 $(PKG)_CATEGORY:=Debug helpers

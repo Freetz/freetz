@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, fa8646daeb)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_CHECKSUM:=X
+$(PKG)_HASH:=X
 $(PKG)_SITE:=git://git.ffmpeg.org/rtmpdump.git
 
 $(PKG)_BINARIES_ALL := rtmpdump rtmpgw

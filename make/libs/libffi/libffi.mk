@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 3.2.1)
 $(PKG)_LIB_VERSION:=6.0.4
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=83b89587607e3eb65c70d361f13bab43
+$(PKG)_HASH:=d06ebb8e1d9a22d19e38d63fdb83954253f39bedc5d46232a05645685722ca37
 $(PKG)_SITE:=ftp://sourceware.org/pub/libffi
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(TARGET_GNU_TRIPLET)/.libs/libffi.so.$($(PKG)_LIB_VERSION)

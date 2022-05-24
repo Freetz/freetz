@@ -1,6 +1,6 @@
 $(call PKG_INIT_LIB, 1.0.13)
 $(PKG)_SOURCE:=$(pkg)_$($(PKG)_VERSION).orig.tar.gz
-$(PKG)_SOURCE_MD5:=c1ba392ce61dc4aff1c29ea4e92f6df4
+$(PKG)_HASH:=52c518244d428c2e56c543b98c9135f4a76ff780c32455580b793f60a0a092ad
 $(PKG)_SITE:=http://ftp.de.debian.org/debian/pool/main/libg/libgsm
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/lib/$(pkg).so.$($(PKG)_VERSION)

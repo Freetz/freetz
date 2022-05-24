@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 1.1.0)
 $(PKG)_LIB_VERSION:=1.0.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA1:=5f4640a7e93ae6494f24a881414e5c343f803365
+$(PKG)_HASH:=4db78af5cdb2641dfb1136fe3531960a477c9e3e3b6ba19a2754d046af3f456d
 $(PKG)_SITE:=https://download.videolan.org/pub/videolan/libdvbcsa/$($(PKG)_VERSION)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/libdvbcsa.so.$($(PKG)_LIB_VERSION)

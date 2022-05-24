@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, v1.9.3)
 $(PKG)_LIB_VERSION:=1.9.3
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_CHECKSUM:=X
+$(PKG)_HASH:=X
 $(PKG)_SITE:=git@https://github.com/lz4/lz4.git
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/lib/liblz4.so.$($(PKG)_LIB_VERSION)

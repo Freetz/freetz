@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 3.3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=493cc0f5f21e9955db27ee9cd9a976d5
+$(PKG)_HASH:=142f82b204876c2aa90f19193c7ff78d90bb4c2cba99dfd4ef625864aed1c556
 $(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/hts

@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.7.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=088def25efe04dcdd1f8369d8926ab34
+$(PKG)_HASH:=30719c9a4ffbcf15676b8f528233ccc54ee6cba96cb4590975f5fd60c68a066f
 $(PKG)_SITE:=@SF/netcat
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/netcat
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/netcat

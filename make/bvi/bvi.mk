@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.4.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).src.tar.gz
-$(PKG)_SOURCE_SHA1:=7b3c0760f0779dba920e08eafcf2fe23a09d70da
+$(PKG)_HASH:=015a3c2832c7c097d98a5527deef882119546287ba8f2a70c736227d764ef802
 $(PKG)_SITE:=@SF/bvi
 
 $(PKG)_DEPENDS_ON += ncurses

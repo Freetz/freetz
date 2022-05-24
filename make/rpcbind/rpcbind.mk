@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN,1.2.5)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=ed46f09b9c0fa2d49015f6431bc5ea7b
+$(PKG)_HASH:=2ce360683963b35c19c43f0ee2c7f18aa5b81ef41c3fdbd15ffcb00b8bffda7a
 $(PKG)_SITE:=@SF/rpcbind
 
 $(PKG)_BINARY:=rpcbind rpcinfo

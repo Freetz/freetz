@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.2.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=69b9d6234154d7d6a91fcbd98c68e62a
+$(PKG)_HASH:=f1ad05951bc0069d40123d2eca55fff7e922bced9161090a5ef25de5b6947034
 $(PKG)_SITE:=http://www.inet.no/dante/files
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/sockd/sockd

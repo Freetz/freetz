@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN,0.8)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=ec5999f3b6bb67da19754fcb2e5221f3
+$(PKG)_HASH:=16614ebddf8ab2811d3dc0e7f329c7de88929ac6a9632d4cb4aef7fe11b8f2a9
 $(PKG)_SITE:=@SF/dtach
 $(PKG)_BINARY:=$($(PKG)_DIR)/dtach
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/dtach

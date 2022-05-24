@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.13)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=18a7c1a92b0748a206f9767a76a6b3bb
+$(PKG)_HASH:=bcda3aa3efb30fef3ef61c7bbabdb262f92a2d22649d187a06a28ddecc3b93b9
 $(PKG)_SITE:=@SF/sablevm
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/sablevm/src/sablevm/.libs/sablevm

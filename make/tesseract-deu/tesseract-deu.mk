@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 3.02)
 $(PKG)_SOURCE:=tesseract-ocr-$($(PKG)_VERSION).deu.tar.gz
-$(PKG)_SOURCE_MD5:=57bdb26ec7c767e126ff97776d8bfb10
+$(PKG)_HASH:=d03cdd0b00d368ff49ebaf77b8758bcf2ff1b0d39331368987e622ac261443ca
 $(PKG)_SITE:=http://tesseract-ocr.googlecode.com/files
 
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/share/tessdata/deu.traineddata

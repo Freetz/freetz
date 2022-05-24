@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 2.11)
 $(PKG)_SOURCE:=nagios-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=058c1f4829de748b42da1b584cccc941
+$(PKG)_HASH:=0c4425401e0b9a8ba1d2e689fc8dd9a5016ee35ac5c66285d02eca393dd6cda5
 $(PKG)_SITE:=@SF/nagios
 $(PKG)_BINARY:=$($(PKG)_DIR)/base/nagios
 $(PKG)_STATS_BINARY:=$($(PKG)_DIR)/base/nagiostats

@@ -1,6 +1,6 @@
 $(call PKG_INIT_LIB, 1.3.5)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=28cb28097c07a735d6af56e598e1c90f
+$(PKG)_HASH:=54f94a9527ff0a88477be0a71c0bab09a4c3febe0ed878b24824906cd4b0e1d1
 $(PKG)_SITE:=http://downloads.xiph.org/releases/vorbis
 
 $(PKG)_LIBVERSIONS      := 0.4.8 2.0.11 3.3.7

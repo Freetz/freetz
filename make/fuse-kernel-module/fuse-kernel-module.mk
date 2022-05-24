@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 2.7.6)
 $(PKG)_SOURCE:=fuse-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=319f12dffd6f7073628fefc980254f4a
+$(PKG)_HASH:=e33b435b57ec3558e1009511dc20561c1a0f58d2d29f8ed79128d535c0db1bfd
 $(PKG)_SITE:=https://github.com/libfuse/libfuse/releases/download/fuse_2_9_4
 
 $(PKG)_TARBALL_STRIP_COMPONENTS:=2

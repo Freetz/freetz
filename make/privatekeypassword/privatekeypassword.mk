@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 221a16bf47)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_CHECKSUM:=X
+$(PKG)_HASH:=X
 $(PKG)_SITE:=git@https://github.com/PeterPawn/$(pkg).git
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)

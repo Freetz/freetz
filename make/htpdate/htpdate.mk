@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.0.4)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=a13ec89839c33965794ebf53c4e690db
+$(PKG)_HASH:=2e1a4c0cc3a2f489b73b2f15f009067eb41af5a865e3d5701ba00f5cfb70ab57
 $(PKG)_SITE:=http://www.clevervest.com/htp/archive/c/
 $(PKG)_BINARIES:=$(pkg)
 $(PKG)_BINARIES_BUILD_DIR:=$($(PKG)_BINARIES:%=$($(PKG)_DIR)/%)

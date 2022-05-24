@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, v8.2.0769)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_CHECKSUM:=X
+$(PKG)_HASH:=X
 $(PKG)_SITE:=git@https://github.com/vim/vim.git
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)

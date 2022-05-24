@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 0.8.13)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=4136d7b4c04df68b686570afa26988ac
+$(PKG)_HASH:=591a9b4ec81c1f2042a97aa60564e0cb79d041c52faa7416acb38bc95bd2c76d
 $(PKG)_SITE:=http://www.mr511.de/software
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/lib/$(pkg).so.$($(PKG)_LIB_VERSION)

@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.1)
 $(PKG)_SOURCE:=rcapid-cm.tar.gz
-$(PKG)_SOURCE_MD5:=83fbe8c37760ce29ce221320c3189dba
+$(PKG)_HASH:=ed734e2bd98011edb561b3ee7282ab969d7552c2389661c7057960a2c241b1e5
 $(PKG)_SITE:=ftp://ftp.melware.de/capi-utils
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/rcapid

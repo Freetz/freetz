@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.7)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=02fae838fe8f5dc5b4e3a2e4da0182b8
+$(PKG)_HASH:=56ce434639d69817dd667d5243c49045f46101583ca9e0983f176d8b92eca301
 $(PKG)_SITE:=@GNU/$(pkg)
 $(PKG)_BINARIES:=$(pkg) $(pkg)last $(pkg)who
 $(PKG)_BINARIES_BUILD_DIR:=$($(PKG)_BINARIES:%=$($(PKG)_DIR)/src/%)

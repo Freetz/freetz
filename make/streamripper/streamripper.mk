@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.64.6)
 $(PKG)_SOURCE:=streamripper-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=a37a1a8b8f9228522196a122a1c2dd32
+$(PKG)_HASH:=c1d75f2e9c7b38fd4695be66eff4533395248132f3cc61f375196403c4d8de42
 $(PKG)_SITE:=@SF/streamripper
 $(PKG)_BINARY:=$($(PKG)_DIR)/streamripper
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/streamripper

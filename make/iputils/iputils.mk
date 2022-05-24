@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, s20071127)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=12245e9927d60ff5cf4a99d265bcb7d3
+$(PKG)_HASH:=dbbd87554d66e438245487ac31aa4a542a1c6c1ec8273cfacbbfeda09eb44a93
 $(PKG)_SITE:=http://www.skbuff.net/iputils
 $(PKG)_BINARY:=$($(PKG)_DIR)/traceroute6
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/traceroute6

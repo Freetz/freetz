@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, v3.0.28)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=c0b88eea1a95d1cb5339f584b73496b4
+$(PKG)_HASH:=93b5581c5fd223cc5a3d7de2a567083e4fac9e2b416489119a1a51b6c42be5ce
 $(PKG)_SITE:=git://github.com/dosfstools/dosfstools.git
 
 $(PKG)_BINARIES_ALL := fsck.fat fatlabel mkfs.fat

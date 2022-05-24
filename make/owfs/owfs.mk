@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 2.7p32)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=be75552a4f9908d5196331571d7b6ce6
+$(PKG)_HASH:=f2c6bf195d9574aafedb9ba5eb1ae33f884ac70fa980098c0da377feb1efe53a
 $(PKG)_SITE:=@SF/owfs
 
 # Library

@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.7.2)
 $(PKG)_SOURCE:=ipsec-tools-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=8a1f3648db1bb06ee7f3d0419508c2fd
+$(PKG)_HASH:=cebbd8db189fcb665a55b6821ced9a9dd13d5f2ca7e5702f81378332619e1757
 $(PKG)_SITE:=@SF/ipsec-tools
 
 ifneq ($(strip $(FREETZ_PACKAGE_IPSEC_TOOLS_STATIC)),y)

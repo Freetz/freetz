@@ -6,7 +6,7 @@
 #
 $(call PKG_INIT_LIB, 2.20)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=232bde228c7af1960f8ef5df6ff19fbb
+$(PKG)_HASH:=e3d567522c08da2aec0c4dd95c0504817b8e9b7b499c0154da8b0d5c4e623daa
 $(PKG)_SITE:=@MIRROR/
 
 $(PKG)_HEADER:=$($(PKG)_DIR)/$(pkg).h

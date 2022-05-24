@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 2.1.0-rc1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA1:=51282c0d174974c0314e68d8ad8214af7e3fb7a6
+$(PKG)_HASH:=aaabcb7d6e71c60e1c960ebb7f9499b2a55a2960ab65cfe2cbce5db57c1dec10
 $(PKG)_SITE:=http://downloads.asterisk.org/pub/telephony/asterisk-gui
 
 $(PKG)_BUILD_PREREQ += uudecode

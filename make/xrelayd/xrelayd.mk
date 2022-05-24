@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.2.1pre2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=05f242295fa864bb3b0b7f0712b4dfa3
+$(PKG)_HASH:=f5eb4c393ce883b7f8dc8db2eebba50f3b97b3e7cb48d19aaee402417150142c
 $(PKG)_SITE:=http://znerol.ch/files
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/xrelayd

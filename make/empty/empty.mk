@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.6.15b)
 $(PKG)_SOURCE:=empty-$($(PKG)_VERSION).tgz
-$(PKG)_SOURCE_MD5:=e56d0d81e5e40b1c41c4b9ed74a1edd8
+$(PKG)_HASH:=eef58b0db16801358f0aeb37a9c3bf4f5caf0f8afc2ccb4b0ba3fd8307a9ab69
 $(PKG)_SITE:=@SF/empty
 $(PKG)_BINARY:=$($(PKG)_DIR)/empty
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/empty

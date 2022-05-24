@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.6)
 $(PKG)_SOURCE:=cpmaccfg-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=d5f0c71600479a1c58b931eb99e592cf
+$(PKG)_HASH:=2ca85490b3674ef64124440c66dc29d1e52353b0226e129897ee21362002f4f0
 $(PKG)_SITE:=http://www.heimpold.de/freetz
 $(PKG)_BINARY:=$($(PKG)_DIR)/cpmaccfg
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/sbin/cpmaccfg

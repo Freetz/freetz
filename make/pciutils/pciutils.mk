@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN,3.1.7)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=35222edb86b50a6641352c66fe829b2e
+$(PKG)_HASH:=d8fe23b6966c1abf29b3b38b08b0cf33f731cd6e6a89d9b8d2b8d5e982c3f544
 $(PKG)_SITE:=@KERNEL/software/utils/$(pkg)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/lspci

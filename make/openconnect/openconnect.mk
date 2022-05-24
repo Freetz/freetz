@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 7.04)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=828fe81388b7ea1155419b8be64a350f
+$(PKG)_HASH:=baac1fdf8f5f9debe1f91a2f3ca6895cf24ef0f8b2d8c2c67f5ce6789f28663b
 $(PKG)_SITE:=ftp://ftp.infradead.org/pub/$(pkg)
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/$(pkg)

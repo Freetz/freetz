@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 2.2-3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=034dc1544f2ec4e4d2c739d320dc326d
+$(PKG)_HASH:=c785b8a2355be28b3de6b58a8ea4c4fcab8fadeaa57a99afeb03c66fac8e055d
 $(PKG)_SITE:=http://www.atoptool.nl/download
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/atop

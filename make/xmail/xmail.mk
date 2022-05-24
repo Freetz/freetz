@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.27)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=73c9d95012709d7b11511dfb6dd6ab3d
+$(PKG)_HASH:=e91341b779ffd3d70af6f00028bcd7f65ae664fedf947a27c42311102a84784e
 $(PKG)_SITE:=http://www.xmailserver.org
 
 $(PKG)_BINARIES := compartment sendmail XMail XMCrypt CtrlClnt MkUsers

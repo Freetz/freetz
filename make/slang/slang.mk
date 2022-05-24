@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN, 2.3.1a)
 $(PKG)_LIB_VERSION:=2.3.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_SHA1:=a8ea7f1b5736160a94efb67b137a0f5b9916bdf2
+$(PKG)_HASH:=54f0c3007fde918039c058965dffdfd6c5aec0bad0f4227192cc486021f08c36
 $(PKG)_SITE:=http://www.jedsoft.org/releases/slang
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/elfobjs/lib$(pkg).so.$($(PKG)_LIB_VERSION)

@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.1.0)
 $(PKG)_SOURCE:=PyRRD-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=c33a0760b42a23e45e423b8b9f2cd0b0
+$(PKG)_HASH:=103b3a6f855e38946e0fc100a54ec46be69c37cc349ceb95decad35424f629a9
 $(PKG)_SITE:=https://pyrrd.googlecode.com/files
 
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)$(PYTHON_SITE_PKG_DIR)/pyrrd/__init__.py

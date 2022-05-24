@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 2.7)
 $(PKG)_LIB_VERSION:=4.7.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=3a106a465bbb77637550b422f5b262ef
+$(PKG)_HASH:=7905e6590fb316c0ff943df3dc6a21cd81a59cff7a6d12514054c359d04d78d7
 $(PKG)_SITE:=http://www.digip.org/jansson/releases
 
 $(PKG)_LIBNAME:=lib$(pkg).so.$($(PKG)_LIB_VERSION)

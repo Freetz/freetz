@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 1.5.2)
 $(PKG)_LIB_VERSION:=1.5.2
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=c41772c30fb1c272358b3707233134a1
+$(PKG)_HASH:=15df7b194a5d8dba0052cd21c17a4dc761149a770a907d73fffb972078c28a87
 $(PKG)_SITE:=http://openjpeg.googlecode.com/files,@SF/openjpeg.mirror
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/libopenjpeg/.libs/libopenjpeg.so.$($(PKG)_LIB_VERSION)

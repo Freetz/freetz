@@ -3,7 +3,9 @@ $(PKG)_DIR_COMPONENT:=$(pkg)$(if $(FREETZ_LIB_libusb_0_WITH_COMPAT),-compat)-$($
 $(PKG)_SHORT_VERSION:=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 $(PKG)_LIB_VERSION:=4.4.4
 $(PKG)_SOURCE:=$($(PKG)_DIR_COMPONENT).tar.$(if $(FREETZ_LIB_libusb_0_WITH_COMPAT),bz2,gz)
-$(PKG)_SOURCE_MD5:=$(if $(FREETZ_LIB_libusb_0_WITH_COMPAT),55fee3316a1a167a74f8017406cc598b,caf182cbc7565dac0fd72155919672e6)
+$(PKG)_HASH_0.1.7:=8259f8d5b084fe43c47823a939e955e0ba21942b8d112266c39d228cc14764d6
+$(PKG)_HASH_0.1.12:=37f6f7d9de74196eb5fc0bbe0aea9b5c939de7f500acba3af6fd643f3b538b44
+$(PKG)_HASH:=$($(PKG)_HASH_$($(PKG)_VERSION))
 $(PKG)_SITE:=$(if $(FREETZ_LIB_libusb_0_WITH_COMPAT),https://github.com/libusb/libusb-compat-0.1/releases/download/v$($(PKG)_VERSION),@SF/$(pkg))
 ### VERSION:=0.1.7/0.1.12
 

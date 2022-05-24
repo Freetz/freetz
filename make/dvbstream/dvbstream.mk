@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.5)
 $(PKG)_SOURCE:=dvbstream-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=34eb1053beb918843bedd903647f93da
+$(PKG)_HASH:=f9abb29d0df53abb46fa25828d39362f9d751f2bd136df0cb88824ed57b3f3b6
 $(PKG)_SITE:=@SF/dvbtools
 $(PKG)_BINARY:=$($(PKG)_DIR)/dvbstream
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/dvbstream

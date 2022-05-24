@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.5)
 $(PKG)_SOURCE:=dvbtune-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=5212564c786f2538db753214e0e21473
+$(PKG)_HASH:=e6113080ca8a07202584edea0ac15d5a0948fc30361b7002d39bcb439ef79378
 $(PKG)_SITE:=@SF/dvbtools
 $(PKG)_BINARY:=$($(PKG)_DIR)/dvbtune
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/dvbtune

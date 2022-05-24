@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.1.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=86939e331e656f638271f578b6e3f893
+$(PKG)_HASH:=a259750793ab79c491d05fcee5a917faf7d9030fb5d15e05b3704e9c9e4ee015
 $(PKG)_SITE:=http://www.pps.univ-paris-diderot.fr/~jch/software/files/$(pkg)
 $(PKG)_BINARY:=$($(PKG)_DIR)/polipo
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/polipo

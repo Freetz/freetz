@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.4.50)
 $(PKG)_SOURCE:=dvbsnoop-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=68a5618c95b4372eea9ac5ec5005f299
+$(PKG)_HASH:=7658498b26a5d2a0242e81f0cfafa0e43a2bec56f8674e7ac197dfc310866ec6
 $(PKG)_SITE:=@SF/dvbsnoop
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/dvbsnoop

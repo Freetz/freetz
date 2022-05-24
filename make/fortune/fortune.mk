@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.2)
 $(PKG)_SOURCE:=fortune-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=d71df18a04625addfc53743b978ec184
+$(PKG)_HASH:=cbb246a500366db39ce035632eb4954e09f1e03b28f2c4688864bfa8661b236a
 $(PKG)_SITE:=http://dl.fefe.de
 $(PKG)_BINARY:=$($(PKG)_DIR)/fortune
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/fortune.bin

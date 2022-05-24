@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.2.5)
 $(PKG)_SOURCE:=mechanize-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=32657f139fc2fb75bcf193b63b8c60b2
+$(PKG)_HASH:=2e67b20d107b30c00ad814891a095048c35d9d8cb9541801cebe85684cc84766
 $(PKG)_SITE:=https://pypi.python.org/packages/source/m/mechanize
 
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)$(PYTHON_SITE_PKG_DIR)/mechanize/__init__.py

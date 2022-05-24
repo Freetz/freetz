@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN,0.23)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=f20762061b68bc921e80be4aebc349eb
+$(PKG)_HASH:=44a74ff288d38c0f75354d6bc2efe7d6dec10112eaff2e7b10e292b0d2105b36
 $(PKG)_SITE:=http://triq.net/obexftp
 $(PKG)_BINARY:=$($(PKG)_DIR)/apps/obexftpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/obexftpd

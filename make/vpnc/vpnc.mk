@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.5.3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=4378f9551d5b077e1770bbe09995afb3
+$(PKG)_HASH:=46cea3bd02f207c62c7c6f2f22133382602baeda1dc320747809e94881414884
 $(PKG)_SITE:=http://www.unix-ag.uni-kl.de/~massar/vpnc
 $(PKG)_BINARY:=$($(PKG)_DIR)/vpnc
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/sbin/vpnc

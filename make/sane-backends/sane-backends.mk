@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN,1.0.27)
 $(PKG)_LIB_VERSION:=1.0.27
 $(PKG)_SOURCE:=$(pkg)_$($(PKG)_VERSION).orig.tar.gz
-$(PKG)_SOURCE_MD5:=b10a08785f92a4c07ad961f4d843c934
+$(PKG)_HASH:=293747bf37275c424ebb2c833f8588601a60b2f9653945d5a3194875355e36c9
 $(PKG)_SITE:=http://ftp.de.debian.org/debian/pool/main/s/$(pkg)
 
 # saned

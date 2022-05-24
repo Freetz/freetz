@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.5)
 $(PKG)_SOURCE:=$(pkg)$($(PKG)_VERSION).zip
-$(PKG)_SOURCE_MD5:=97ca3f2f9805dbc54d6ad763435cd9fd
+$(PKG)_HASH:=08d814070d645dcbcb167d149b303c53fd66126c9880b247b8116256e1c77a88
 $(PKG)_SITE:=@SF/$(pkg)
 
 $(PKG)_CATEGORY:=Web interfaces

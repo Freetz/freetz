@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 4f0ecc31ac6f985e0dd3f5a52cbfc0e9251f6361)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_CHECKSUM:=X
+$(PKG)_HASH:=X
 $(PKG)_SITE:=git@https://github.com/shellinabox/shellinabox.git
 ### WEBSITE:=https://code.google.com/archive/p/shellinabox/
 ### CHANGES:=https://github.com/shellinabox/shellinabox/releases

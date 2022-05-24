@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.4.7)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=0a32db8fa9d7407049cac3574c09a6d9
+$(PKG)_HASH:=b589e44ebf35e07d36dbae7eb1da807c891cc79d5fd88a733171e879ce3252ce
 $(PKG)_SITE:=@MIRROR/
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/checkmaild

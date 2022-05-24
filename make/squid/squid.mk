@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 3.0.STABLE26)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=f48c2b58b05715f40be0d29ab72fed34
+$(PKG)_HASH:=3e54ae3ad09870203862f0856c7d0cca16a85f62d5012085009003ee3d5467b4
 $(PKG)_SITE:=http://www.squid-cache.org/Versions/v3/$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/squid

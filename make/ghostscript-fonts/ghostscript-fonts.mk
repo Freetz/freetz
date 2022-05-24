@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 8.11)
 $(PKG)_SOURCE:=ghostscript-fonts-std-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=6865682b095f8c4500c54b285ff05ef6
+$(PKG)_HASH:=0eb6f356119f2e49b2563210852e17f57f9dcc5755f350a69a46a0d641a0c401
 $(PKG)_SITE:=@SF/gs-fonts
 
 $(PKG)_RUNTIME_DIR:=/usr/share/fonts/gs-fonts

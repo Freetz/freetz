@@ -1,7 +1,7 @@
 # partly taken from www.buildroot.org
 $(call PKG_INIT_BIN, 5.10.1)
 $(PKG)_SOURCE:=perl-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=82400c6d34f7b7b43d0196c76cd2bbb1
+$(PKG)_HASH:=9385f2c8c2ca8b1dc4a7c31903f1f8dc8f2ba867dc2a9e5c93012ed6b564e826
 $(PKG)_SITE:=ftp://ftp.mpi-sb.mpg.de/pub/perl/CPAN/src/5.0
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/microperl

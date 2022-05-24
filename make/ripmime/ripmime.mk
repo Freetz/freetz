@@ -4,10 +4,7 @@ $(PKG)_SOURCE:=ripmime-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://www.pldaniels.com/ripmime
 $(PKG)_BINARY:=$($(PKG)_DIR)/ripmime
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/ripmime
-#1.2.16.21
-$(PKG)_SOURCE_MD5:=c57e4891cb6a73aed810f69d00414f1e
-#1.4.0.9
-#$(PKG)_SOURCE_MD5:=25761b8a533bc935f75902724fb73244
+$(PKG)_HASH:=3ac7b547aa2073e01fc77d14df736b7979a0500b619d56ef39cf5a2b06a37d7b
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)

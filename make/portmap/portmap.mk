@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN,6.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tgz
-$(PKG)_SOURCE_MD5:=ac108ab68bf0f34477f8317791aaf1ff
+$(PKG)_HASH:=02c820d39f3e6e729d1bea3287a2d8a6c684f1006fb9612f97dcad4a281d41de
 $(PKG)_SITE:=http://neil.brown.name/portmap
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/portmap

@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN,0.12.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=e927dd5dc52d3cfcebd8ca1af6f0d3c2
+$(PKG)_HASH:=31163c34a7b9d1c9735181737cb31306f29f1f2a0335fb4f53ecccf8f62f11cd
 $(PKG)_SITE:=@SF/mediatomb
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/build/mediatomb

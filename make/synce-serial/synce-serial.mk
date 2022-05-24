@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.10.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=3a155a770cc2e05fc3af452731d48954
+$(PKG)_HASH:=1f24c33fff642bfedb9bd3f1c7cd616e535c60c23b7fd750f02a2a27769bb81b
 $(PKG)_SITE:=@SF/synce
 
 $(PKG)_INSTALL_DIR:=/usr/sbin

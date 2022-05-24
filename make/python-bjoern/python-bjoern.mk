@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 37d28e5645)
 $(PKG)_SOURCE:=bjoern-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_CHECKSUM:=X
+$(PKG)_HASH:=X
 $(PKG)_SITE:=git@https://github.com/jonashaag/bjoern.git
 
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)$(PYTHON_SITE_PKG_DIR)/bjoern.so

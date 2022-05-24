@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 2.4.44)
 $(PKG)_LIB_VERSION:=1.1.0
 $(PKG)_SOURCE:=$(pkg)_$($(PKG)_VERSION).orig.tar.gz
-$(PKG)_SOURCE_MD5:=d132c119831c27350e10b9f885711adc
+$(PKG)_HASH:=9f6214b8e53f4bba651ac5a72c0f6193b12aa21fbf1d675d89a7b4bc45264498
 $(PKG)_SITE:=http://ftp.de.debian.org/debian/pool/main/a/attr
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/libattr/.libs/lib$(pkg).so.$($(PKG)_LIB_VERSION)

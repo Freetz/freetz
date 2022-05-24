@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 0.14)
 $(PKG)_LIB_VERSION:=0.5.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=509dc27107c21bcd9fbf2f95f5669563
+$(PKG)_HASH:=fd23eb5f6f986dcc7e708307355ba3289abe03cc381fc47a80bca4a50aa6b834
 $(PKG)_SITE:=http://0pointer.de/lennart/projects/libdaemon/
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/libdaemon/.libs/libdaemon.so.$($(PKG)_LIB_VERSION)

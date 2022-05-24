@@ -1,7 +1,7 @@
 PROXYCHAINS_NG_GIT_REPOSITORY:=https://github.com/rofl0r/proxychains-ng.git
 $(call PKG_INIT_BIN, $(if $(FREETZ_PACKAGE_PROXYCHAINS_NG_VERSION_LATEST), $(call git-get-latest-revision,$(PROXYCHAINS_NG_GIT_REPOSITORY),), $(if $(FREETZ_PACKAGE_PROXYCHAINS_NG_VERSION_CUSTOM), $(shell echo "$(FREETZ_PACKAGE_PROXYCHAINS_NG_VERSION_COMMIT)"), e895fb713a) ))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_CHECKSUM:=X
+$(PKG)_HASH:=X
 $(PKG)_SITE:=git@$($(PKG)_GIT_REPOSITORY)
 #$(PKG)_SITE:=https://github.com/haad/proxychains/archive/refs/tags
 ### WEBSITE:=http://proxychains.sourceforge.net

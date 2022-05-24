@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN,0.5.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=51c5dc69f5814c2936ce6832217d292d
+$(PKG)_HASH:=ea9ef59002b86519a43fca320982ae971e2df54cdc54cdb35562c751704278d9
 $(PKG)_SITE:=http://www.hsc.fr/ressources/outils/dns2tcp/download
 $(PKG)_BINARY:=$($(PKG)_DIR)/server/dns2tcpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/dns2tcpd

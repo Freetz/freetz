@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.9.3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA1:=14b025bdcec77ea7278cd8ee2a32af3f81d26f4d
+$(PKG)_HASH:=054fbd9c9823e04663b2a79966b8a061b65e6c508150dc225afcce242cbb2cd7
 $(PKG)_SITE:=http://www.litech.org/radvd/dist
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)

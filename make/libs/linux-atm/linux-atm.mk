@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 2.5.2)
 $(PKG)_LIB_VERSION:=1.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=d49499368c3cf15f73a05d9bce8824a8
+$(PKG)_HASH:=9645481a2b16476b59220aa2d6bc5bc41043f291326c9b37581018fbd16dd53a
 $(PKG)_SITE:=@SF/linux-atm
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/lib/.libs/libatm.so.$($(PKG)_LIB_VERSION)

@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 2b58f77ee27c60842054fd0e5dd67f5d00e89eb8)
 $(PKG)_LIB_VERSION:=0.2.5
 $(PKG)_SOURCE:=uClibc++-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=daae72bdeb99b6b0c81b090091160717
+$(PKG)_HASH:=3d0a08bdad8942154ec49edec1274b2d942cf80b74bd5d4dbd2d81970a57e441
 $(PKG)_SITE:=http://git.uclibc.org/uClibc++/snapshot
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/libuClibc++.so.$($(PKG)_LIB_VERSION)

@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 1.1.4)
 $(PKG)_LIB_VERSION:=1.5.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=c5e06418a89cc4209f677a776a798fd9
+$(PKG)_HASH:=de98229d9eca00b66c26cb368e582901cf768456321703bc38235e3b347b512d
 $(PKG)_SITE:=@SF/$(pkg)-dev
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/.libs/$(pkg).so.$($(PKG)_LIB_VERSION)

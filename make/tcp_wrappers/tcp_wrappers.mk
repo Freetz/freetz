@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN,7.6)
 $(PKG)_LIB_VERSION:=0.7.6
 $(PKG)_SOURCE:=$(pkg)_$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=e6fa25f71226d090f34de3f6b122fb5a
+$(PKG)_HASH:=9543d7adedf78a6de0b221ccbbd1952e08b5138717f4ade814039bb489a4315d
 $(PKG)_SITE:=ftp://ftp.porcupine.org/pub/security
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/tcpd

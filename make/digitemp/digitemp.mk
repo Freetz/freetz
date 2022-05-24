@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, v3.7.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_CHECKSUM:=X
+$(PKG)_HASH:=X
 $(PKG)_SITE:=git@https://github.com/bcl/digitemp.git
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/digitemp

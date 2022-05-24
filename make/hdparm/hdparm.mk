@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 9.58)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=4652c49cf096a64683c05f54b4fa4679
+$(PKG)_HASH:=9ae78e883f3ce071d32ee0f1b9a2845a634fc4dd94a434e653fdbef551c5e10f
 $(PKG)_SITE:=@SF/$(pkg)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/hdparm

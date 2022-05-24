@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 665)
 $(PKG)_LIB_VERSION:=1.0.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=66b935e6a4a3fdb6e77b3717e94ebed3
+$(PKG)_HASH:=139daed4c5158b20c1fd65d5152d48c4414bb9947b48f1961084e8409c4c8fb4
 # release URL
 # $(PKG)_SITE:=http://libdnet.googlecode.com/files
 $(PKG)_SITE:=svn@http://libdnet.googlecode.com/svn/trunk

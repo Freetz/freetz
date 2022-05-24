@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.1)
 $(PKG)_SOURCE:=ldd-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=d9910f5828f325cca92e4072c69d7caf
+$(PKG)_HASH:=b0b2c4edee81ac65c9706f8982b15d3a798be7c2d3865d9a7abff1e493dfadb1
 $(PKG)_SITE:=@MIRROR/
 
 $(PKG)_SOURCE_FILE:=$($(PKG)_DIR)/ldd.c

@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=05ea6ba0244df54ab2edba1f61734a32
+$(PKG)_HASH:=4669b0014a9b29a7e63d80141c2d85fe44b8d6f6fbc1d77feb557888c33c281c
 $(PKG)_SITE:=http://mkp.net/code/fstyp
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/fstyp

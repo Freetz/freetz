@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 1.6.3)
 $(PKG)_LIB_VERSION:=1.9.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=ddf02f4e1d2dc30f76734df806e613eb
+$(PKG)_HASH:=a9ba089cc2c6d26d266bad492de31cadaeb878dea858e22ae3196091718f284b
 $(PKG)_SITE:=http://developer.kde.org/~wheeler/files/src
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/taglib/.libs/libtag.so.$($(PKG)_LIB_VERSION)

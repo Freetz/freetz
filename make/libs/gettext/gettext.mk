@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 0.18.1.1)
 $(PKG)_LIB_VERSION:=8.1.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=3dd55b952826d2b32f51308f2f91aa89
+$(PKG)_HASH:=93ac71a7afa5b70c1b1032516663658c51e653087f42a3fc8044752c026443e9
 $(PKG)_SITE:=@GNU/$(pkg)
 
 # we only want libintl

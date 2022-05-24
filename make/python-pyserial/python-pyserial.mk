@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 2.6)
 $(PKG)_SOURCE:=pyserial-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=cde799970b7c1ce1f7d6e9ceebe64c98
+$(PKG)_HASH:=049dbcda0cd475d3be903e721d60889ee2cc4ec3b62892a81ecef144196413ed
 $(PKG)_SITE:=https://pypi.python.org/packages/source/p/pyserial
 
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)$(PYTHON_SITE_PKG_DIR)/serial/__init__.py

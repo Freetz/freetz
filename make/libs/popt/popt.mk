@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 1.16)
 $(PKG)_LIB_VERSION:=0.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=3743beefa3dd6247a73f8f7a32c14c33
+$(PKG)_HASH:=e728ed296fe9f069a0e005003c3d6b2dde3d9cad453422a10d6558616d304cc8
 $(PKG)_SITE:=http://rpm5.org/files/popt
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libpopt.so.$($(PKG)_LIB_VERSION)

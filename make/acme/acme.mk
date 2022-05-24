@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 3.0.4)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_CHECKSUM:=058d980b63e23a914e65adc41b7fbdc481fd0f9c40675ed05a447e5e9ed310b6
+$(PKG)_HASH:=058d980b63e23a914e65adc41b7fbdc481fd0f9c40675ed05a447e5e9ed310b6
 $(PKG)_SITE:=git@https://github.com/Neilpang/acme.sh.git
 ### WEBSITE:=https://www.acme.sh
 ### MANPAGE:=https://github.com/acmesh-official/acme.sh/wiki

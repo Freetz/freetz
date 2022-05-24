@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN,1.2b)
 $(PKG)_SOURCE:=mini_snmpd-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=9e432c50ba8216d7fab0983b11b7112a
+$(PKG)_HASH:=6fab95fcf62d7aff5314ba707947ba28880ab8625d9e77ec67fa20c1176e6dfd
 $(PKG)_SITE:=http://members.aon.at/linuxfreak/linux
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/mini_snmpd

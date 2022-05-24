@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.9.10)
 $(PKG)_SOURCE:=mcabber-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=887415d16c32af58eab2ec2d9bb17fa6
+$(PKG)_HASH:=431e47ba3095c1cc6c11931bab9034c42ba0911dfadcc137ba765803e4460cb5
 $(PKG)_SITE:=http://mirror.mcabber.com/files
 
 $(PKG)_PATCH_POST_CMDS += $(call PKG_ADD_EXTRA_FLAGS,LDFLAGS|LIBS,src)

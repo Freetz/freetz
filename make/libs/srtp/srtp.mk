@@ -1,6 +1,6 @@
 $(call PKG_INIT_LIB, 1.4.4)
 $(PKG)_SOURCE:=$(pkg)_$($(PKG)_VERSION)+20100615~dfsg.orig.tar.gz
-$(PKG)_SOURCE_MD5:=debe7fe729d1122f0d22f682a9f27be8
+$(PKG)_HASH:=ddcd1e84129e611bedad7f23b94ed8c446dc762a627543d59c38b5f048d7dcb1
 $(PKG)_SITE:=http://ftp.de.debian.org/debian/pool/main/s/srtp
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/lib$(pkg).so.$($(PKG)_VERSION)

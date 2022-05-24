@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 2.10.1)
 $(PKG)_LIB_VERSION:=6.17.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=bd42e75127f8431923679480efb5ba8f
+$(PKG)_HASH:=16dbfa488a21fe827dc27eaf708f42f7aa3bb997d745d31a19781628c36ba26f
 $(PKG)_SITE:=@SF/freetype
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/objs/.libs/libfreetype.so.$($(PKG)_LIB_VERSION)

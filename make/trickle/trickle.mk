@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.07)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=860ebc4abbbd82957c20a28bd9390d7d
+$(PKG)_HASH:=9d36507e0b7afdfb87533244f7d75daa1c17f2768982674f4c9add5ae6c03868
 $(PKG)_SITE:=http://www.monkey.org/~marius/trickle
 
 $(PKG)_BINARIES:=$(pkg) $(pkg)ctl $(pkg)d

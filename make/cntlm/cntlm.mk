@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.93beta5)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=c144e8b34faeabe573045deaeeba2791
+$(PKG)_HASH:=97d0d7162e1c782a74958af3b7f48f61ae72b49d2f608d21155f804583a6a754
 $(PKG)_SITE:=http://ftp.awk.cz/pub
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/cntlm

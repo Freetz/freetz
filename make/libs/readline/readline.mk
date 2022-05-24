@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 6.3)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=33c8fb279e981274f485fd91da77e94a
+$(PKG)_HASH:=56ba6071b9462f980c5a72ab0023893b65ba6debb4eeb475d7a563dc65cafd43
 $(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_$(PKG)_BINARY:=$($(PKG)_DIR)/shlib/libreadline.so.$($(PKG)_LIB_VERSION)

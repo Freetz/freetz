@@ -2,7 +2,7 @@ $(call PKG_INIT_BIN, 0.2.3.cvs20090713.orig)
 $(PKG)_LIB_VERSION:=1.0.0
 $(PKG)_SOURCE:=$(pkg)_$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=http://ftp.de.debian.org/debian/pool/main/s/scanbuttond
-$(PKG)_SOURCE_MD5:=a117534dab22c2a7a9a1e5a64b2b0c25
+$(PKG)_HASH:=1cf06323b76bdb263dc1eed98460d0a33ca92a27a48d8dfd3ed56bda2b3654c5
 
 $(PKG)_INSTALL_SUBDIR:=_install
 

@@ -1,6 +1,6 @@
 $(call PKG_INIT_LIB, 0.27)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=27cfb22f1ee85e51b863b71858a97da0
+$(PKG)_HASH:=25a285b649e519e7437571f3437b837b7d2d51d6da8d6b5770950812235be22d
 $(PKG)_SITE:=https://fedorapeople.org/~steved/libnfsidmap/$($(PKG)_VERSION)
 $(PKG)_SHLIB_VERSION:=1.0.0
 

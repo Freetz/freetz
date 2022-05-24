@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.6.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tgz
-$(PKG)_SOURCE_MD5:=92b41efed4db8eb4f3443c23bf7ceecf
+$(PKG)_HASH:=67125acab1d520e5d2a0429cd9cf7fc379987f30d5bbed0b0e97b92b554fcc13
 $(PKG)_SITE:=@SF/wput
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/wput
