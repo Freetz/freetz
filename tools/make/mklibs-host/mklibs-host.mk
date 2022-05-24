@@ -9,20 +9,14 @@ $(PKG)_TARGET_SCRIPT:=$($(PKG)_DESTDIR)/mklibs
 $(PKG)_READELF_BINARY:=$($(PKG)_DIR)/src/mklibs-readelf/mklibs-readelf
 $(PKG)_READELF_TARGET_BINARY:=$($(PKG)_DESTDIR)/mklibs-readelf
 
+$(PKG)_CONFIGURE_OPTIONS += --prefix=/
+
 
 $(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
+$(TOOLS_CONFIGURED_CONFIGURE)
 
 $($(PKG)_SCRIPT): $($(PKG)_DIR)/.unpacked
-
-$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
-	(cd $(MKLIBS_HOST_DIR); $(RM) config.cache; \
-		./configure \
-		--prefix=/ \
-		$(DISABLE_NLS) \
-		$(SILENT) \
-	);
-	touch $@
 
 $($(PKG)_READELF_BINARY): $($(PKG)_DIR)/.configured
 	$(TOOLS_SUBMAKE) CC="$(TOOLS_CC)" CXX="$(TOOLS_CXX)" CFLAGS="$(TOOLS_CFLAGS)" LDFLAGS="$(TOOLS_LDFLAGS)" -C $(MKLIBS_HOST_DIR) all

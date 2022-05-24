@@ -5,6 +5,10 @@ $(PKG)_SITE:=@GNU/tar
 
 $(PKG)_DEPENDS_ON:=
 
+$(PKG)_CONFIGURE_OPTIONS += --prefix=/usr
+$(PKG)_CONFIGURE_OPTIONS += --without-selinux
+$(PKG)_CONFIGURE_OPTIONS += --disable-acl
+
 
 define $(PKG)_CUSTOM_UNPACK
 	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xf $(DL_DIR)/$($(PKG)_SOURCE)
@@ -12,21 +16,7 @@ endef
 
 $(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
-
-$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
-	(cd $(TAR_HOST_DIR); $(RM) config.cache; \
-		CC="$(TOOLS_CC)" \
-		CXX="$(TOOLS_CXX)" \
-		CFLAGS="$(TOOLS_CFLAGS)" \
-		LDFLAGS="$(TOOLS_LDFLAGS)" \
-		./configure \
-		--prefix=/usr \
-		--without-selinux \
-		--disable-acl \
-		$(DISABLE_NLS) \
-		$(SILENT) \
-	);
-	touch $@
+$(TOOLS_CONFIGURED_CONFIGURE)
 
 $($(PKG)_DIR)/src/tar: $($(PKG)_DIR)/.configured
 	$(TOOLS_SUBMAKE) -C $(TAR_HOST_DIR) all

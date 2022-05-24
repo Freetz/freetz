@@ -8,33 +8,24 @@ $(PKG)_DIR:=$(TOOLS_SOURCE_DIR)/xz-$($(PKG)_VERSION)
 $(PKG)_ALONE_DIR:=$($(PKG)_DIR)/src/xz
 $(PKG)_LIB_DIR:=$($(PKG)_DIR)/src/liblzma/.libs
 
+$(PKG)_CONFIGURE_OPTIONS += --enable-encoders=lzma1,lzma2,delta
+$(PKG)_CONFIGURE_OPTIONS += --enable-decoders=lzma1,lzma2,delta
+$(PKG)_CONFIGURE_OPTIONS += --disable-lzmadec
+$(PKG)_CONFIGURE_OPTIONS += --disable-lzmainfo
+$(PKG)_CONFIGURE_OPTIONS += --disable-lzma-links
+$(PKG)_CONFIGURE_OPTIONS += --disable-scripts
+$(PKG)_CONFIGURE_OPTIONS += --disable-doc
+$(PKG)_CONFIGURE_OPTIONS += --disable-nls
+$(PKG)_CONFIGURE_OPTIONS += --disable-rpath
+$(PKG)_CONFIGURE_OPTIONS += --enable-shared=no
+$(PKG)_CONFIGURE_OPTIONS += --enable-static=yes
+$(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
+$(PKG)_CONFIGURE_OPTIONS += --without-libintl-prefix
+
 
 $(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
-
-$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
-	(cd $(LZMA2_HOST_DIR); $(RM) config.cache; \
-		CC="$(TOOLS_CC)" \
-		CXX="$(TOOLS_CXX)" \
-		CFLAGS="$(TOOLS_CFLAGS)" \
-		LDFLAGS="$(TOOLS_LDFLAGS)" \
-		./configure \
-		--enable-encoders=lzma1,lzma2,delta \
-		--enable-decoders=lzma1,lzma2,delta \
-		--disable-lzmadec \
-		--disable-lzmainfo \
-		--disable-lzma-links \
-		--disable-scripts \
-		--disable-doc \
-		--disable-nls \
-		--disable-rpath \
-		--enable-shared=no \
-		--enable-static=yes \
-		--without-libiconv-prefix \
-		--without-libintl-prefix \
-		$(SILENT) \
-	);
-	touch $@
+$(TOOLS_CONFIGURED_CONFIGURE)
 
 $($(PKG)_LIB_DIR)/liblzma.a $($(PKG)_ALONE_DIR)/xz: $($(PKG)_DIR)/.configured
 	$(TOOLS_SUBMAKE) -C $(LZMA2_HOST_DIR)

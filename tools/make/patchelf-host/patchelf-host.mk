@@ -11,21 +11,12 @@ $(PKG)_SITE:=https://github.com/NixOS/patchelf/releases/download/$($(PKG)_VERSIO
 
 $(PKG)_DIR:=$(TOOLS_SOURCE_DIR)/$(pkg_short)-$($(PKG)_VERSION_LONG)
 
+$(PKG)_CONFIGURE_OPTIONS += --prefix=/usr
+
 
 $(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
-
-$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
-	(cd $(PATCHELF_HOST_DIR); $(RM) config.cache; \
-		CC="$(TOOLS_CC)" \
-		CXX="$(TOOLS_CXX)" \
-		CFLAGS="$(TOOLS_CFLAGS)" \
-		LDFLAGS="$(TOOLS_LDFLAGS)" \
-		./configure \
-		--prefix=/usr \
-		$(QUIET) \
-	);
-	touch $@
+$(TOOLS_CONFIGURED_CONFIGURE)
 
 $($(PKG)_DIR)/src/patchelf: $($(PKG)_DIR)/.configured
 	$(TOOLS_SUBMAKE) -C $(PATCHELF_HOST_DIR) all

@@ -7,28 +7,18 @@ $(PKG)_DIR:=$(TOOLS_SOURCE_DIR)/Python-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/python
 $(PKG)_TARGET_BINARY:=$(HOST_TOOLS_DIR)/usr/bin/python2.7
 
+# python quirk: CFLAGS and OPT flags passed here are then used while cross-compiling -> use some target neutral flags
+$(PKG)_CONFIGURE_ENV += OPT="-fno-inline"
+
+$(PKG)_CONFIGURE_OPTIONS += --build=$(GNU_HOST_NAME)
+$(PKG)_CONFIGURE_OPTIONS += --host=$(GNU_HOST_NAME)
+$(PKG)_CONFIGURE_OPTIONS += --target=$(GNU_HOST_NAME)
+$(PKG)_CONFIGURE_OPTIONS += --prefix=/usr
+
 
 $(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
-
-# python quirk:
-#  CFLAGS and OPT flags passed here are then used while cross-compiling -> use some target neutral flags
-$(pkg)-configured: $($(PKG)_DIR)/.configured
-$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
-	(cd $(PYTHON_HOST_DIR); $(RM) config.cache; \
-		CC="$(TOOLS_CC)" \
-		CXX="$(TOOLS_CXX)" \
-		CFLAGS="$(TOOLS_CFLAGS)" \
-		LDFLAGS="$(TOOLS_LDFLAGS)" \
-		OPT="-fno-inline" \
-		./configure \
-		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_HOST_NAME) \
-		--target=$(GNU_HOST_NAME) \
-		--prefix=/usr \
-		$(SILENT) \
-	);
-	@touch $@
+$(TOOLS_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	(PATH=$(TARGET_PATH); \

@@ -6,20 +6,7 @@ $(PKG)_SITE:=@GNU/ncurses
 
 $(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
-
-$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
-	(cd $(NCURSES_HOST_DIR); $(RM) config.cache; \
-		CC="$(TOOLS_CC)" \
-		CXX="$(TOOLS_CXX)" \
-		CFLAGS="$(TOOLS_CFLAGS)" \
-		LDFLAGS="$(TOOLS_LDFLAGS)" \
-		./configure \
-		\
-		\
-		$(DISABLE_NLS) \
-		$(SILENT) \
-	);
-	touch $@
+$(TOOLS_CONFIGURED_CONFIGURE)
 
 $($(PKG)_DIR)/progs/tic: $($(PKG)_DIR)/.configured
 	$(TOOLS_SUBMAKE) -C $(NCURSES_HOST_DIR) all

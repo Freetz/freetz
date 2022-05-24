@@ -8,22 +8,13 @@ $(PKG)_SITE:=git@https://github.com/bestouff/genext2fs.git
 #$(PKG)_SITE:=cvs@pserver:anonymous@genext2fs.cvs.sourceforge.net:/cvsroot/genext2fs
 
 $(PKG)_PATCH_POST_CMDS := mv configure.in configure.ac;
+$(PKG)_CONFIGURE_PRE_CMDS += $(AUTORECONF)
+$(PKG)_CONFIGURE_OPTIONS += --prefix=$(FREETZ_BASE_DIR)/$(TOOLS_DIR)
 
 
 $(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
-
-$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
-	(cd $(GENEXT2FS_HOST_DIR); autoreconf -f -i $(SILENT); \
-		CC="$(TOOLS_CC)" \
-		CXX="$(TOOLS_CXX)" \
-		CFLAGS="$(TOOLS_CFLAGS)" \
-		LDFLAGS="$(TOOLS_LDFLAGS)" \
-		./configure \
-		--prefix=$(FREETZ_BASE_DIR)/$(TOOLS_DIR) \
-		$(QUIET) \
-	);
-	touch $@
+$(TOOLS_CONFIGURED_CONFIGURE)
 
 $($(PKG)_DIR)/genext2fs: $($(PKG)_DIR)/.configured
 	$(TOOLS_SUBMAKE) -C $(GENEXT2FS_HOST_DIR) all

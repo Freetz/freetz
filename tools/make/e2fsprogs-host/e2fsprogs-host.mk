@@ -7,45 +7,35 @@ $(PKG)_E2FSCK_BINARY:=$($(PKG)_DIR)/e2fsck/e2fsck
 $(PKG)_DEBUGFS_BINARY:=$($(PKG)_DIR)/debugfs/debugfs
 $(PKG)_TUNE2FS_BINARY:=$($(PKG)_DIR)/misc/tune2fs
 
+$(PKG)_CONFIGURE_OPTIONS += --prefix=/
+$(PKG)_CONFIGURE_OPTIONS += --disable-bsd-shlibs
+$(PKG)_CONFIGURE_OPTIONS += --disable-elf-shlibs
+$(PKG)_CONFIGURE_OPTIONS += --disable-rpath
+$(PKG)_CONFIGURE_OPTIONS += --without-libpth-prefix
+$(PKG)_CONFIGURE_OPTIONS += --without-libintl-prefix
+$(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
+$(PKG)_CONFIGURE_OPTIONS += --disable-backtrace
+$(PKG)_CONFIGURE_OPTIONS += --disable-blkid-debug
+$(PKG)_CONFIGURE_OPTIONS += --disable-compression
+$(PKG)_CONFIGURE_OPTIONS += --enable-debugfs
+$(PKG)_CONFIGURE_OPTIONS += --disable-defrag
+$(PKG)_CONFIGURE_OPTIONS += --disable-e2initrd-helper
+$(PKG)_CONFIGURE_OPTIONS += --disable-fsck
+$(PKG)_CONFIGURE_OPTIONS += --disable-htree
+$(PKG)_CONFIGURE_OPTIONS += --disable-imager
+$(PKG)_CONFIGURE_OPTIONS += --disable-jbd-debug
+$(PKG)_CONFIGURE_OPTIONS += --disable-profile
+$(PKG)_CONFIGURE_OPTIONS += --disable-quota
+$(PKG)_CONFIGURE_OPTIONS += --disable-resizer
+$(PKG)_CONFIGURE_OPTIONS += --disable-testio-debug
+$(PKG)_CONFIGURE_OPTIONS += --disable-uuidd
+$(PKG)_CONFIGURE_OPTIONS += --disable-threads
+$(PKG)_CONFIGURE_OPTIONS += --disable-tls
+
 
 $(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
-
-$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
-	(cd $(E2FSPROGS_HOST_DIR); $(RM) config.cache; \
-		CC="$(TOOLS_CC)" \
-		CXX="$(TOOLS_CXX)" \
-		CFLAGS="$(TOOLS_CFLAGS)" \
-		LDFLAGS="$(TOOLS_LDFLAGS)" \
-		./configure \
-		--prefix=/ \
-		--disable-bsd-shlibs \
-		--disable-elf-shlibs \
-		--disable-rpath \
-		--without-libpth-prefix \
-		--without-libintl-prefix \
-		--without-libiconv-prefix \
-		--disable-backtrace \
-		--disable-blkid-debug \
-		--disable-compression \
-		--enable-debugfs \
-		--disable-defrag \
-		--disable-e2initrd-helper \
-		--disable-fsck \
-		--disable-htree \
-		--disable-imager \
-		--disable-jbd-debug \
-		--disable-profile \
-		--disable-quota \
-		--disable-resizer \
-		--disable-testio-debug \
-		--disable-uuidd \
-		--disable-threads \
-		--disable-tls \
-		$(DISABLE_NLS) \
-		$(SILENT) \
-	);
-	touch $@
+$(TOOLS_CONFIGURED_CONFIGURE)
 
 $($(PKG)_DIR)/.compiled: $($(PKG)_DIR)/.configured
 	$(TOOLS_SUBMAKE) -C $(E2FSPROGS_HOST_DIR) INFO=true all

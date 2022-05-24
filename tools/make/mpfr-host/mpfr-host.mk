@@ -7,25 +7,20 @@ $(PKG)_DESTDIR:=$(HOST_TOOLS_DIR)
 $(PKG)_BINARY:=$($(PKG)_DESTDIR)/lib/libmpfr.a
 $(PKG)_DEPENDS:=gmp-host
 
+$(PKG)_CONFIGURE_ENV += CC="$(TOOLCHAIN_HOST_CC)"
+$(PKG)_CONFIGURE_ENV += CFLAGS="$(TOOLCHAIN_HOST_CFLAGS)"
+
+$(PKG)_CONFIGURE_OPTIONS += --prefix=$(MPFR_HOST_DESTDIR)
+$(PKG)_CONFIGURE_OPTIONS += --build=$(GNU_HOST_NAME)
+$(PKG)_CONFIGURE_OPTIONS += --host=$(GNU_HOST_NAME)
+$(PKG)_CONFIGURE_OPTIONS += --disable-shared
+$(PKG)_CONFIGURE_OPTIONS += --enable-static
+$(PKG)_CONFIGURE_OPTIONS += --with-gmp=$(GMP_HOST_DESTDIR)
+
 
 $(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
-
-$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
-	(cd $(MPFR_HOST_DIR); $(RM) config.cache; \
-		CC="$(TOOLCHAIN_HOST_CC)" \
-		CFLAGS="$(TOOLCHAIN_HOST_CFLAGS)" \
-		./configure \
-		--prefix=$(MPFR_HOST_DESTDIR) \
-		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_HOST_NAME) \
-		--disable-shared \
-		--enable-static \
-		--with-gmp=$(GMP_HOST_DESTDIR) \
-		$(DISABLE_NLS) \
-		$(SILENT) \
-	)
-	touch $@
+$(TOOLS_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured | $(HOST_TOOLS_DIR)
 	$(TOOLS_SUBMAKE) -C $(MPFR_HOST_DIR)/src install

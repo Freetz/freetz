@@ -6,25 +6,21 @@ $(PKG)_SITE:=@GNU/gmp
 $(PKG)_DESTDIR:=$(HOST_TOOLS_DIR)
 $(PKG)_BINARY:=$($(PKG)_DESTDIR)/lib/libgmp.a
 
+$(PKG)_CONFIGURE_ENV += CC="$(TOOLCHAIN_HOSTCC)"
+$(PKG)_CONFIGURE_ENV += CFLAGS="$(TOOLCHAIN_HOST_CFLAGS)"
+$(PKG)_CONFIGURE_ENV += $(if $(strip $(FREETZ_TOOLCHAIN_32BIT)),ABI=32)
+
+$(PKG)_CONFIGURE_OPTIONS += --prefix=$(GMP_HOST_DESTDIR)
+$(PKG)_CONFIGURE_OPTIONS += --build=$(GNU_HOST_NAME)
+$(PKG)_CONFIGURE_OPTIONS += --host=$(GNU_HOST_NAME)
+$(PKG)_CONFIGURE_OPTIONS += --disable-shared
+$(PKG)_CONFIGURE_OPTIONS += --enable-static
+
 
 $(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
+$(TOOLS_CONFIGURED_CONFIGURE)
 
-$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
-	(cd $(GMP_HOST_DIR); $(RM) config.cache; \
-		CC="$(TOOLCHAIN_HOSTCC)" \
-		CFLAGS="$(TOOLCHAIN_HOST_CFLAGS)" \
-		$(if $(strip $(FREETZ_TOOLCHAIN_32BIT)),ABI=32) \
-		./configure \
-		--prefix=$(GMP_HOST_DESTDIR) \
-		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_HOST_NAME) \
-		--disable-shared \
-		--enable-static \
-		$(DISABLE_NLS) \
-		$(SILENT) \
-	)
-	touch $@
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured | $(HOST_TOOLS_DIR)
 	$(TOOLS_SUBMAKE) -C $(GMP_HOST_DIR) install
