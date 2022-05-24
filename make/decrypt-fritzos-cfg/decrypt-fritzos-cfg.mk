@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 84e9555131adb3c9d9bf49905bbb803e075c90b1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=667278bdb10e545d44b3e75adc745d7a2b80f94b7ba96d138f49cf06e93e50ed
+$(PKG)_HASH:=667278bdb10e545d44b3e75adc745d7a2b80f94b7ba96d138f49cf06e93e50ed
 $(PKG)_SITE:=git@https://github.com/PeterPawn/decoder.git
 ### WEBSITE:=https://github.com/PeterPawn/decoder
 ### MANPAGE:=https://github.com/PeterPawn/decoder#readme

@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 1.2.12)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=7db46b8d7726232a621befaab4a1c870f00a90805511c0e0090441dac57def18
+$(PKG)_HASH:=7db46b8d7726232a621befaab4a1c870f00a90805511c0e0090441dac57def18
 $(PKG)_SITE:=https://www.zlib.net
 ### WEBSITE:=https://www.zlib.net/
 ### MANPAGE:=https://www.zlib.net/manual.html

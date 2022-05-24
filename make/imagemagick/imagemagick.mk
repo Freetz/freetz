@@ -2,7 +2,7 @@ $(call PKG_INIT_BIN, 7.0.10-10)
 $(PKG)_MAJOR_VERSION:=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION),1)
 $(PKG)_ABI_SUFFIX:=Q16
 $(PKG)_SOURCE:=ImageMagick-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=df1a37b73aa49423abb422c2150a0e1436920ba50dfc4377c6a3793f9826e5f1
+$(PKG)_HASH:=df1a37b73aa49423abb422c2150a0e1436920ba50dfc4377c6a3793f9826e5f1
 $(PKG)_SITE:=@SF/$(pkg),http://www.imagemagick.org/download
 
 $(PKG)_BINARY := magick

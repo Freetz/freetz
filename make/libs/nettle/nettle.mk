@@ -1,6 +1,6 @@
 $(call PKG_INIT_LIB, 3.6)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=d24c0d0f2abffbc8f4f34dcf114b0f131ec3774895f3555922fe2f40f3d5e3f1
+$(PKG)_HASH:=d24c0d0f2abffbc8f4f34dcf114b0f131ec3774895f3555922fe2f40f3d5e3f1
 $(PKG)_SITE:=@GNU/nettle,http://www.lysator.liu.se/~nisse/archive
 
 $(PKG)_LIBNAMES         := nettle hogweed

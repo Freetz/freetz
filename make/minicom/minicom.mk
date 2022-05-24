@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN,1fb24b4f)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=X
+$(PKG)_HASH:=X
 $(PKG)_SITE:=git@https://salsa.debian.org/minicom-team/minicom.git
 ### WEBSITE:=https://salsa.debian.org/minicom-team/minicom
 ### MANPAGE:=https://linux.die.net/man/1/minicom

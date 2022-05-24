@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 2.8.9rel.1)
 $(PKG)_SOURCE:=$(pkg)$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_SHA256:=387f193d7792f9cfada14c60b0e5c0bff18f227d9257a39483e14fa1aaf79595
+$(PKG)_HASH:=387f193d7792f9cfada14c60b0e5c0bff18f227d9257a39483e14fa1aaf79595
 $(PKG)_SITE:=http://invisible-mirror.net/archives/lynx/tarballs,ftp://invisible-island.net/pub/lynx/tarballs
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)

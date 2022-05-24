@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1aaf88acd0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=ac2818452b6ff1d24eb4c631938a7a7eb85b213fd8ad9baeaf0a6adf9b874871
+$(PKG)_HASH:=ac2818452b6ff1d24eb4c631938a7a7eb85b213fd8ad9baeaf0a6adf9b874871
 $(PKG)_SITE:=git@https://github.com/iocellnetworks/ndas4linux.git
 
 $(PKG)_KERNEL_VERSION:=$(KERNEL_VERSION_MAJOR)

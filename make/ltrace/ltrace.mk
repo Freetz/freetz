@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 82c66409c7a93ca6ad2e4563ef030dfb7e6df4d4)
 $(PKG)_SOURCE:=ltrace-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=10b15c33ad2e5ee8ab87210f536a66586532ac5c0bec445d8e4e2089c518c935
+$(PKG)_HASH:=10b15c33ad2e5ee8ab87210f536a66586532ac5c0bec445d8e4e2089c518c935
 $(PKG)_SITE:=git@https://github.com/dkogan/ltrace.git
 ### WEBSITE:=https://www.ltrace.org/
 ### MANPAGE:=https://linux.die.net/man/1/ltrace

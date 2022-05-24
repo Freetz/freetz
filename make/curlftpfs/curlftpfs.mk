@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN, 0.9.2)
 $(PKG)_LIB_VERSION:=4.1.1
 $(PKG)_SOURCE:=curlftpfs-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=4eb44739c7078ba0edde177bdd266c4cfb7c621075f47f64c85a06b12b3c6958
+$(PKG)_HASH:=4eb44739c7078ba0edde177bdd266c4cfb7c621075f47f64c85a06b12b3c6958
 $(PKG)_SITE:=@SF/curlftpfs
 $(PKG)_BINARY:=$($(PKG)_DIR)/curlftpfs
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/curlftpfs

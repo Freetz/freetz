@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN, 2017.3.23)
 $(PKG)_LIB_VERSION:=88.0.0
 $(PKG)_SOURCE:=ntfs-3g_ntfsprogs-$($(PKG)_VERSION).tgz
-$(PKG)_SOURCE_SHA256:=3e5a021d7b761261836dcb305370af299793eedbded731df3d6943802e1262d5
+$(PKG)_HASH:=3e5a021d7b761261836dcb305370af299793eedbded731df3d6943802e1262d5
 $(PKG)_SITE:=http://tuxera.com/opensource
 
 $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/libntfs-3g/.libs/libntfs-3g.so.$($(PKG)_LIB_VERSION)

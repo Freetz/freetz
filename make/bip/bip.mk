@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 0.9.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=f643b39b7af2a0d5fe7c45c57ffe3e6710be33278455eab8aeefe5b2842764ea
+$(PKG)_HASH:=f643b39b7af2a0d5fe7c45c57ffe3e6710be33278455eab8aeefe5b2842764ea
 $(PKG)_SITE:=https://projects.duckcorp.org/attachments/download/103
 ### WEBSITE:=https://projects.duckcorp.org/projects/bip
 ### MANPAGE:=https://bip.milkypond.org/projects/bip/wiki

@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 1.3.2)
 $(PKG)_LIB_VERSION:=8.3.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=91cfc3ed61dc40f47f050a109b08610667d73477af6ef36dcad31c31a4a8d53f
+$(PKG)_HASH:=91cfc3ed61dc40f47f050a109b08610667d73477af6ef36dcad31c31a4a8d53f
 $(PKG)_SITE:=http://downloads.xiph.org/releases/flac
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/libFLAC/.libs/libFLAC.so.$($(PKG)_LIB_VERSION)

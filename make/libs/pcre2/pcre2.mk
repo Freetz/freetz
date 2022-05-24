@@ -1,6 +1,6 @@
 $(call PKG_INIT_LIB, 10.40)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_SHA256:=14e4b83c4783933dc17e964318e6324f7cae1bc75d8f3c79bc6969f00c159d68
+$(PKG)_HASH:=14e4b83c4783933dc17e964318e6324f7cae1bc75d8f3c79bc6969f00c159d68
 $(PKG)_SITE:=https://github.com/PhilipHazel/pcre2/releases/download/pcre2-$($(PKG)_VERSION)
 ### WEBSITE:=https://www.pcre.org/
 ### MANPAGE:=https://www.pcre.org/current/doc/html/

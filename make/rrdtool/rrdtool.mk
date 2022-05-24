@@ -2,7 +2,7 @@ $(call PKG_INIT_BIN, 1.2.30)
 $(PKG)_LIBRRD_VERSION:=2.0.15
 $(PKG)_LIBRRD_TH_VERSION:=2.0.13
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=3190efea410a6dd035799717948b2df09910f608d72d23ee81adad4cd0184ae9
+$(PKG)_HASH:=3190efea410a6dd035799717948b2df09910f608d72d23ee81adad4cd0184ae9
 $(PKG)_SITE:=https://oss.oetiker.ch/rrdtool/pub/archive
 ### WEBSITE:=https://www.rrdtool.org
 ### MANPAGE:=https://oss.oetiker.ch/rrdtool/doc

@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 8241d46903)
 $(PKG)_SOURCE := $(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=a8e81da289b569007bd8e7b3972310f07badd1a0c83b94156ebc330d793651b9
+$(PKG)_HASH:=a8e81da289b569007bd8e7b3972310f07badd1a0c83b94156ebc330d793651b9
 $(PKG)_SITE := git@https://github.com/mattn/gntp-send.git
 
 $(PKG)_BINARY := $($(PKG)_DIR)/gntp-send

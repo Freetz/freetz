@@ -1,6 +1,6 @@
 $(call PKG_INIT_LIB, 8.45)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_SHA256:=4dae6fdcd2bb0bb6c37b5f97c33c2be954da743985369cddac3546e3218bffb8
+$(PKG)_HASH:=4dae6fdcd2bb0bb6c37b5f97c33c2be954da743985369cddac3546e3218bffb8
 $(PKG)_SITE:=@SF/pcre,ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre
 ### WEBSITE:=https://www.pcre.org/
 ### MANPAGE:=https://www.pcre.org/original/doc/html/

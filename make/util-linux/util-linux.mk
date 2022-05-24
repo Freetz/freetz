@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 2.27.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=0a818fcdede99aec43ffe6ca5b5388bff80d162f2f7bd4541dca94fecb87a290
+$(PKG)_HASH:=0a818fcdede99aec43ffe6ca5b5388bff80d162f2f7bd4541dca94fecb87a290
 $(PKG)_SITE:=@KERNEL/linux/utils/$(pkg)/v$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 
 $(PKG)_BINARIES:=blkid

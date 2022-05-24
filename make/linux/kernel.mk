@@ -22,7 +22,7 @@ KERNEL_ECHO_TYPE:=KRN
 
 
 $(DL_FW_DIR)/$(DL_KERNEL_SOURCE): | $(DL_FW_DIR)
-	$(DL_TOOL) $(DL_FW_DIR) $(FREETZ_DL_KERNEL_SOURCE) $(FREETZ_DL_KERNEL_SITE) $(FREETZ_DL_KERNEL_SOURCE_SHA256) $(SILENT)
+	$(DL_TOOL) $(DL_FW_DIR) $(FREETZ_DL_KERNEL_SOURCE) $(FREETZ_DL_KERNEL_SITE) $(FREETZ_DL_KERNEL_HASH) $(SILENT)
 
 # Make sure that a perfectly clean build is performed whenever Freetz package
 # options have changed. The safest way to achieve this is by starting over

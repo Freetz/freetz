@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN, 28a46567a8)
 $(PKG)_NAME_NO_HYPHEN:=$(subst -,,$(pkg))
 $(PKG)_SOURCE:=$($(PKG)_NAME_NO_HYPHEN)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=3ef0959ce163b2e9f809b36edd724fdac0333fe69fe9e1bf2d556b689b2d01fa
+$(PKG)_HASH:=3ef0959ce163b2e9f809b36edd724fdac0333fe69fe9e1bf2d556b689b2d01fa
 $(PKG)_SITE:=git@https://github.com/jstasiak/asterisk-chan-dongle.git
 
 $(PKG)_BINARY := $($(PKG)_DIR)/chan_dongle.so

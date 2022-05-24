@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 1.7.1)
 $(PKG)_LIB_VERSION:=3.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=8ac84c16bdca60e710eea75782356f3ac3b55680d40e1530d7cea474ac208229
+$(PKG)_HASH:=8ac84c16bdca60e710eea75782356f3ac3b55680d40e1530d7cea474ac208229
 $(PKG)_SITE:=https://www.nlnetlabs.nl/downloads/$(pkg)/
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/lib$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/lib$(pkg).so.$($(PKG)_LIB_VERSION)

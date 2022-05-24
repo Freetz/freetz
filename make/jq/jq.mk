@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.6)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=5de8c8e29aaa3fb9cc6b47bb27299f271354ebb72514e3accadc7d38b5bbaa72
+$(PKG)_HASH:=5de8c8e29aaa3fb9cc6b47bb27299f271354ebb72514e3accadc7d38b5bbaa72
 $(PKG)_SITE:=https://github.com/stedolan/jq/releases/download/jq-$($(PKG)_VERSION)
 
 $(PKG)_BINARY := $($(PKG)_DIR)/jq

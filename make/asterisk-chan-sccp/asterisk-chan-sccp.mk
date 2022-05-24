@@ -1,7 +1,7 @@
 $(call PKG_INIT_BIN, 5393)
 $(PKG)_NAME_NO_HYPHEN:=$(subst -,,$(pkg))
 $(PKG)_SOURCE:=$($(PKG)_NAME_NO_HYPHEN)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=d414f25d02990d51121718ff16343c3cad40f03f77fa31b0ee415b5982743482
+$(PKG)_HASH:=d414f25d02990d51121718ff16343c3cad40f03f77fa31b0ee415b5982743482
 $(PKG)_SITE:=svn@https://svn.code.sf.net/p/chan-sccp-b/code/branches/V4.1
 
 $(PKG)_BINARY := $($(PKG)_DIR)/src/.libs/chan_sccp.so

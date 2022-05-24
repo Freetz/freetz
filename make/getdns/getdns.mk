@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.5.2)
 $(PKG)_SOURCE:=getdns-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=1826a6a221ea9e9301f2c1f5d25f6f5588e841f08b967645bf50c53b970694c0
+$(PKG)_HASH:=1826a6a221ea9e9301f2c1f5d25f6f5588e841f08b967645bf50c53b970694c0
 $(PKG)_SITE:=https://getdnsapi.net/releases/getdns-$(subst .,-,$($(PKG)_VERSION))
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/stubby

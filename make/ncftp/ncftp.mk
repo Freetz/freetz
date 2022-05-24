@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 3.2.6)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-src.tar.xz
-$(PKG)_SOURCE_SHA256:=5f200687c05d0807690d9fb770327b226f02dd86155b49e750853fce4e31098d
+$(PKG)_HASH:=5f200687c05d0807690d9fb770327b226f02dd86155b49e750853fce4e31098d
 $(PKG)_SITE:=ftp://ftp.ncftp.com/ncftp
 
 $(PKG)_BINARIES_ALL := ncftp ncftpget ncftpput ncftpbatch ncftpls

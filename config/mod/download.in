@@ -18,7 +18,7 @@ menu "Download options"
 		help
 			Detect the .image file name automatically.
 			For archive files it is not needed anymore to
-			define FREETZ_DL_SOURCE and FREETZ_DL_SOURCE_SHA256
+			define FREETZ_DL_SOURCE and FREETZ_DL_SOURCE_HASH
 
 	config FREETZ_DL_VCS_REPO_FIRST
 		bool "Search first on repository for VCS downloads" if FREETZ_SHOW_EXPERT
@@ -57,7 +57,7 @@ menu "Download options"
 		default "r19417"                                                              if FREETZ_SEPARATE_AVM_UCLIBC
 		default "r19231"
 
-	config FREETZ_DL_KERNEL_TOOLCHAIN_SHA256
+	config FREETZ_DL_KERNEL_TOOLCHAIN_HASH
 		string "Kernel toolchain SHA256"                                              if FREETZ_DL_TOOLCHAIN_OVERRIDE
 		default "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"    if FREETZ_REAL_DEVELOPER_ONLY__DLTCS
 		#
@@ -84,7 +84,7 @@ menu "Download options"
 		default "r19231"
 
 
-	config FREETZ_DL_TARGET_TOOLCHAIN_SHA256
+	config FREETZ_DL_TARGET_TOOLCHAIN_HASH
 		string "Target toolchain SHA256"                                              if FREETZ_DL_TOOLCHAIN_OVERRIDE
 		default "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"    if FREETZ_REAL_DEVELOPER_ONLY__DLTCS
 		#
@@ -174,7 +174,7 @@ menu "Download options"
 		string "Kernel source"                     if FREETZ_DL_OVERRIDE
 		default "${FREETZ_DL_KERNEL_SOURCE_ID}${FREETZ_SYSTEM_TYPE_CORE_SUFFIX}-release_kernel.tar.xz"
 
-	config FREETZ_DL_KERNEL_SOURCE_SHA256
+	config FREETZ_DL_KERNEL_HASH
 		string "SHA256 checksum for downloaded Kernel source file"                  if FREETZ_DL_OVERRIDE
 		default "128e868b50d30464e05101387b2ef810909c1dafdee92718b4984792a0a969b2"  if FREETZ_AVM_SOURCE_04_30
 		default "ee3789e11d54d476285a563426987c8ba2b709fe5ef6f85d7cfaea388cea6121"  if FREETZ_AVM_SOURCE_04_33
@@ -893,7 +893,7 @@ menu "Download options"
 		#
 		default "fw_Speedport_W501V_v_28.04.38.image"                                          if FREETZ_TYPE_W501V
 
-	config FREETZ_DL_SOURCE_SHA256
+	config FREETZ_DL_SOURCE_HASH
 		string "SHA256 checksum for downloaded Image"                                          if FREETZ_DL_OVERRIDE
 		depends                                                                                on !FREETZ_AVM_HAS_SIGNATURE
 		#
@@ -942,7 +942,7 @@ menu "Download options"
 		#
 		default ""
 
-#	config FREETZ_DL_SOURCE_CONTAINER_SHA256
+#	config FREETZ_DL_SOURCE_CONTAINER_HASH
 #		string "SHA256 checksum for container"          if FREETZ_DL_OVERRIDE
 #		depends                                         on FREETZ_TYPE_FIRMWARE_LABOR && !FREETZ_TYPE_FIRMWARE_DETECT_LATEST
 #		#
@@ -1034,7 +1034,7 @@ menu "Download options"
 		default "fw_speedport_w900v_v34.04.57.image"                                    if FREETZ_TYPE_W900V_7170
 		default "Firmware_Speedport_W_920V.AnnexB.65.04.79.image"                       if FREETZ_TYPE_W920V_7570
 
-	config FREETZ_DL_SOURCE2_SHA256
+	config FREETZ_DL_SOURCE2_HASH
 		string "AVM alien web interface SHA256"                                         if FREETZ_DL_OVERRIDE
 		depends on FREETZ_DL_ALIEN && !FREETZ_AVM_HAS_SIGNATURE
 		#

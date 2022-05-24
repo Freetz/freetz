@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 182)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=4632654349aada3c4775e4d0aa844d6185ad232aef04666cf48e6bc727779751
+$(PKG)_HASH:=4632654349aada3c4775e4d0aa844d6185ad232aef04666cf48e6bc727779751
 $(PKG)_SITE:=svn://svn.code.sf.net/p/usbip/code/obsolete/linux/tags/usbip-0.1.8
 
 $(PKG)_CATEGORY:=Unstable

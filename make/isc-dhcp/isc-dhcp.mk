@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 4.3.6-P1)
 $(PKG)_SOURCE:=dhcp-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=2fd177bef02856f05fe17713ced9bfcc7d94f14c933c15f2f2fbedc9cc57a3c3
+$(PKG)_HASH:=2fd177bef02856f05fe17713ced9bfcc7d94f14c933c15f2f2fbedc9cc57a3c3
 $(PKG)_SITE:=http://ftp.isc.org/isc/dhcp/$($(PKG)_VERSION)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/server/dhcpd

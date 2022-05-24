@@ -1,7 +1,7 @@
 $(call PKG_INIT_LIB, 0.6.24)
 $(PKG)_LIB_VERSION:=12.3.4
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_SHA256:=d47564c433b733d83b6704c70477e0a4067811d184ec565258ac563d8223f6ae
+$(PKG)_HASH:=d47564c433b733d83b6704c70477e0a4067811d184ec565258ac563d8223f6ae
 $(PKG)_SITE:=https://github.com/libexif/libexif/releases/download/v$($(PKG)_VERSION)
 ### WEBSITE:=https://libexif.github.io/
 ### CHANGES:=https://github.com/libexif/libexif/releases

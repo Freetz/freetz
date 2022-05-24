@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.7.4.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_SHA256:=6690a9f9990457b505097a272bbf2cbf4cc35576176f76646e3524b0e91c1763
+$(PKG)_HASH:=6690a9f9990457b505097a272bbf2cbf4cc35576176f76646e3524b0e91c1763
 $(PKG)_SITE:=http://www.dest-unreach.org/socat/download
 ### WEBSITE:=http://www.dest-unreach.org/socat/
 ### MANPAGE:=http://www.dest-unreach.org/socat/doc/socat.html

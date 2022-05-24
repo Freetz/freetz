@@ -2,7 +2,7 @@ $(call PKG_INIT_BIN, 3.6.16)
 $(PKG)_LIB_VERSION:=30.28.2
 $(PKG)_OPENSSL_LIB_VERSION:=27.0.2
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=1b79b381ac283d8b054368b335c408fedcb9b7144e0c07f531e3537d4328f3b3
+$(PKG)_HASH:=1b79b381ac283d8b054368b335c408fedcb9b7144e0c07f531e3537d4328f3b3
 $(PKG)_SITE:=https://www.gnupg.org/ftp/gcrypt/gnutls/v$(call GET_MAJOR_VERSION,$($(PKG)_VERSION)),ftp://ftp.gnutls.org/gcrypt/gnutls/v$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 ### WEBSITE:=https://www.gnutls.org/
 ### MANPAGE:=https://www.gnutls.org/documentation.html

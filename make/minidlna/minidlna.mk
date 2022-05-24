@@ -1,6 +1,6 @@
 $(call PKG_INIT_BIN, 1.3.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_SHA256:=47d9b06b4c48801a4c1112ec23d24782728b5495e95ec2195bbe5c81bc2d3c63
+$(PKG)_HASH:=47d9b06b4c48801a4c1112ec23d24782728b5495e95ec2195bbe5c81bc2d3c63
 $(PKG)_SITE:=@SF/minidlna
 ### WEBSITE:=https://sourceforge.net/projects/minidlna/
 ### MANPAGE:=https://manpages.debian.org/testing/minidlna/minidlnad.1.en.html
