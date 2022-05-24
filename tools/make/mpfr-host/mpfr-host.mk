@@ -11,7 +11,7 @@ $(PKG)_DEPENDS:=gmp-host
 $(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
 
-$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked $($(PKG)_DEPENDS:%-host=$($(PKG)_DESTDIR)/lib/lib%.a)
+$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	(cd $(MPFR_HOST_DIR); $(RM) config.cache; \
 		CC="$(TOOLCHAIN_HOST_CC)" \
 		CFLAGS="$(TOOLCHAIN_HOST_CFLAGS)" \
