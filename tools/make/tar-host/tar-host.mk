@@ -3,7 +3,7 @@ $(PKG)_SOURCE:=tar-$($(PKG)_VERSION).tar.xz
 $(PKG)_HASH:=63bebd26879c5e1eea4352f0d03c991f966aeb3ddeb3c7445c902568d5411d28
 $(PKG)_SITE:=@GNU/tar
 
-$(PKG)_DEPENDS_ON:=
+$(PKG)_DEPENDS_ON:=kconfig-host
 
 $(PKG)_CONFIGURE_OPTIONS += --prefix=/usr
 $(PKG)_CONFIGURE_OPTIONS += --without-selinux
