@@ -35,10 +35,12 @@ $(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
 
 $($(PKG)_MAINARCH_DIR)/.configured: $($(PKG)_DIR)/.unpacked
-	(cd $(PSEUDO_HOST_MAINARCH_DIR); $(RM) Makefile; \
+	@$(call _ECHO,configuring)
+	(cd $(PSEUDO_HOST_MAINARCH_DIR); $(RM) config.cache Makefile; \
 		CC="$(TOOLS_CC)" \
 		CXX="$(TOOLS_CXX)" \
 		CFLAGS="$(TOOLS_CFLAGS)" \
+		CXXFLAGS="$(TOOLS_CXXFLAGS)" \
 		LDFLAGS="$(TOOLS_LDFLAGS)" \
 		./configure \
 		--prefix=$(PSEUDO_HOST_DESTDIR) \
@@ -46,6 +48,8 @@ $($(PKG)_MAINARCH_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 		$(if $(BIARCH_BUILD_SYSTEM),--bits=32) \
 		--cflags="-Wno-cast-function-type -Wno-nonnull-compare -fcommon $(if $(BIARCH_BUILD_SYSTEM),$(HOST_CFLAGS_FORCE_32BIT_CODE))" \
 		--libdir=$(PSEUDO_HOST_MAINARCH_LD_PRELOAD_PATH) \
+		$(DISABLE_NLS) \
+		$(QUIET) \
 		$(SILENT) \
 	);
 	touch $@
@@ -54,10 +58,12 @@ $($(PKG)_TARGET_MAINARCH_LIB): $($(PKG)_MAINARCH_DIR)/.configured
 	touch $@
 
 $($(PKG)_BIARCH_DIR)/.configured: $($(PKG)_DIR)/.unpacked
-	(cd $(PSEUDO_HOST_BIARCH_DIR); $(RM) Makefile; \
+	@$(call _ECHO,configuring)
+	(cd $(PSEUDO_HOST_BIARCH_DIR); $(RM) config.cache Makefile; \
 		CC="$(TOOLS_CC)" \
 		CXX="$(TOOLS_CXX)" \
 		CFLAGS="$(TOOLS_CFLAGS) $(HOST_CFLAGS_FORCE_32BIT_CODE)" \
+		CXXFLAGS="$(TOOLS_CXXFLAGS) $(HOST_CFLAGS_FORCE_32BIT_CODE)" \
 		LDFLAGS="$(TOOLS_LDFLAGS)" \
 		./configure \
 		--prefix=$(PSEUDO_HOST_DESTDIR) \
@@ -65,6 +71,8 @@ $($(PKG)_BIARCH_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 		--bits=$(HOST_BITNESS) \
 		--cflags="-Wno-cast-function-type -Wno-nonnull-compare -fcommon" \
 		--libdir=$(PSEUDO_HOST_BIARCH_LD_PRELOAD_PATH) \
+		$(DISABLE_NLS) \
+		$(QUIET) \
 		$(SILENT) \
 	);
 	touch $@

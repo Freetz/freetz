@@ -28,16 +28,19 @@ $(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
 
 $($(PKG)_MAINARCH_DIR)/.configured: $($(PKG)_DIR)/.unpacked
+	@$(call _ECHO,configuring)
 	(mkdir -p $(FAKEROOT_HOST_MAINARCH_DIR); cd $(FAKEROOT_HOST_MAINARCH_DIR); $(RM) config.cache; \
 		CC="$(TOOLS_CC)" \
 		CXX="$(TOOLS_CXX)" \
 		CFLAGS="$(TOOLS_CFLAGS)" \
+		CXXFLAGS="$(TOOLS_CXXFLAGS)" \
 		LDFLAGS="$(TOOLS_LDFLAGS)" \
 		../../configure \
 		--prefix=$(FAKEROOT_HOST_DESTDIR) \
 		--enable-shared \
 		$(if $(findstring Microsoft,$(shell uname -r)),--with-ipc=tcp,--with-ipc=sysv) \
 		$(DISABLE_NLS) \
+		$(QUIET) \
 		$(SILENT) \
 	);
 	touch $@
@@ -48,10 +51,12 @@ $($(PKG)_TARGET_SCRIPT): $($(PKG)_MAINARCH_DIR)/.configured
 	$(SED) -i 's,^PATHS=.*,PATHS=$${FAKEROOT_PREFIX}/lib:$${FAKEROOT_PREFIX}/lib32,'                        $(FAKEROOT_HOST_TARGET_SCRIPT)
 
 $($(PKG)_BIARCH_DIR)/.configured: $($(PKG)_DIR)/.unpacked
+	@$(call _ECHO,configuring)
 	(mkdir -p $(FAKEROOT_HOST_BIARCH_DIR); cd $(FAKEROOT_HOST_BIARCH_DIR); $(RM) config.cache; \
 		CC="$(TOOLS_CC)" \
 		CXX="$(TOOLS_CXX)" \
 		CFLAGS="$(TOOLS_CFLAGS) $(HOST_CFLAGS_FORCE_32BIT_CODE)" \
+		CXXFLAGS="$(TOOLS_CXXFLAGS) $(HOST_CFLAGS_FORCE_32BIT_CODE)" \
 		LDFLAGS="$(TOOLS_LDFLAGS)" \
 		../../configure \
 		--prefix=$(FAKEROOT_HOST_DESTDIR) \
@@ -59,6 +64,7 @@ $($(PKG)_BIARCH_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 		$(if $(findstring Microsoft,$(shell uname -r)),--with-ipc=tcp,--with-ipc=sysv) \
 		$(if $(findstring Microsoft,$(shell uname -r)),--host=$(shell uname -m),) \
 		$(DISABLE_NLS) \
+		$(QUIET) \
 		$(SILENT) \
 	);
 	touch $@
