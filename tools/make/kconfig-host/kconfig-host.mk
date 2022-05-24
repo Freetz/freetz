@@ -9,7 +9,7 @@ $(PKG)_TARGET_PRG := conf   mconf      nconf   gconf   gconf.glade qconf
 $(PKG)_TARGET_ARG := config menuconfig nconfig gconfig gconfig     xconfig
 $(PKG)_TARGET_ALL := $(join $(KCONFIG_HOST_TARGET_ARG),$(patsubst %,--%,$(KCONFIG_HOST_TARGET_PRG)))
 
-$(PKG)_PREREQ:=bison flex
+$(PKG)_BUILD_PREREQ:=bison flex
 $(PKG)_DEPENDS_ON:=
 
 $(PKG)_CONDITIONAL_PATCHES+=$(if $(FREETZ_REAL_DEVELOPER_ONLY__BUTTONS),buttons)
@@ -23,16 +23,7 @@ endef
 $(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
 
-$($(PKG)_DIR)/.prerequisites: $($(PKG)_DIR)/.unpacked
-	@prmiss="";\
-	for prereq in $(KCONFIG_HOST_PREREQ); do which $${prereq} &>/dev/null || prmiss="$${prmiss} $${prereq}"; done; \
-	if [ -n "$${prmiss}" ]; then \
-		for prereq in $${prmiss}; do echo "Prerequisite '$${prereq}' is missing!"; done; \
-		echo "See https://freetz-ng.github.io/freetz-ng/PREREQUISITES for installation hints" && exit 1; \
-	fi
-	touch $@
-
-$($(PKG)_TARGET_PRG:%=$($(PKG)_DIR)/scripts/kconfig/%): $($(PKG)_DIR)/.prerequisites
+$($(PKG)_TARGET_PRG:%=$($(PKG)_DIR)/scripts/kconfig/%): $($(PKG)_DIR)/.unpacked
 	$(TOOLS_SUBMAKE) -C $(KCONFIG_HOST_DIR) $(subst --$(notdir $@),,$(filter %--$(notdir $@),$(KCONFIG_HOST_TARGET_ALL)))
 
 $(patsubst %,$($(PKG)_TARGET_DIR)/%,$($(PKG)_TARGET_PRG)): $($(PKG)_TARGET_DIR)/% : $($(PKG)_DIR)/scripts/kconfig/%
