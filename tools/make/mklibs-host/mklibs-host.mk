@@ -14,11 +14,7 @@ $(pkg)-source: $(DL_DIR)/$($(PKG)_SOURCE)
 $(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(MKLIBS_HOST_SOURCE) $(MKLIBS_HOST_SITE) $(MKLIBS_HOST_SOURCE_MD5)
 
-$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
-$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
-	$(call UNPACK_TARBALL,$(DL_DIR)/$(MKLIBS_HOST_SOURCE),$(TOOLS_SOURCE_DIR))
-	$(call APPLY_PATCHES,$(MKLIBS_HOST_MAKE_DIR)/patches,$(MKLIBS_HOST_DIR))
-	touch $@
+$(TOOLS_UNPACKED)
 
 $($(PKG)_SCRIPT): $($(PKG)_DIR)/.unpacked
 

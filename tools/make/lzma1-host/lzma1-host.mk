@@ -7,17 +7,14 @@ $(PKG)_ALONE_DIR:=$($(PKG)_DIR)/CPP/7zip/Compress/LZMA_Alone
 $(PKG)_LIBC_DIR:=$($(PKG)_DIR)/C/LzmaLib
 $(PKG)_LIBCXX_DIR:=$($(PKG)_DIR)/CPP/7zip/Compress/LZMA_Lib
 
+$(PKG)_TARBALL_STRIP_COMPONENTS:=0
+
 
 $(pkg)-source: $(DL_DIR)/$($(PKG)_SOURCE)
 $(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(LZMA1_HOST_SOURCE) $(LZMA1_HOST_SITE) $(LZMA1_HOST_SOURCE_MD5)
 
-$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
-$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
-	mkdir -p $(LZMA1_HOST_DIR)
-	$(call UNPACK_TARBALL,$(DL_DIR)/$(LZMA1_HOST_SOURCE),$(LZMA1_HOST_DIR))
-	$(call APPLY_PATCHES,$(LZMA1_HOST_MAKE_DIR)/patches,$(LZMA1_HOST_DIR))
-	touch $@
+$(TOOLS_UNPACKED)
 
 $($(PKG)_ALONE_DIR)/lzma: $($(PKG)_DIR)/.unpacked
 	$(TOOLS_SUBMAKE) CC="$(TOOLS_CC)" CXX="$(TOOLS_CXX)" LDFLAGS="$(TOOLS_LDFLAGS)" -f makefile.gcc -C $(LZMA1_HOST_ALONE_DIR)

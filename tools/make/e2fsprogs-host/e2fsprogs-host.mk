@@ -12,11 +12,7 @@ $(pkg)-source: $(DL_DIR)/$($(PKG)_SOURCE)
 $(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(E2FSPROGS_HOST_SOURCE) $(E2FSPROGS_HOST_SITE) $(E2FSPROGS_HOST_SOURCE_MD5)
 
-$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
-$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
-	$(call UNPACK_TARBALL,$(DL_DIR)/$(E2FSPROGS_HOST_SOURCE),$(TOOLS_SOURCE_DIR))
-	$(call APPLY_PATCHES,$(E2FSPROGS_HOST_MAKE_DIR)/patches,$(E2FSPROGS_HOST_DIR))
-	touch $@
+$(TOOLS_UNPACKED)
 
 $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	(cd $(E2FSPROGS_HOST_DIR); $(RM) config.cache; \

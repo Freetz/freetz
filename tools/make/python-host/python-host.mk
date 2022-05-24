@@ -12,10 +12,7 @@ $(pkg)-source: $(DL_DIR)/$($(PKG)_SOURCE)
 $(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(PYTHON_HOST_SOURCE) $(PYTHON_HOST_SITE) $(PYTHON_HOST_MD5)
 
-$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
-$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
-	$(call UNPACK_TARBALL,$(DL_DIR)/$(PYTHON_HOST_SOURCE),$(TOOLS_SOURCE_DIR))
-	@touch $@
+$(TOOLS_UNPACKED)
 
 # python quirk:
 #  CFLAGS and OPT flags passed here are then used while cross-compiling -> use some target neutral flags

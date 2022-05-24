@@ -8,11 +8,7 @@ $(pkg)-source: $(DL_DIR)/$($(PKG)_SOURCE)
 $(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(SED_HOST_SOURCE) $(SED_HOST_SITE) $(SED_HOST_SOURCE_SHA256)
 
-$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
-$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
-	$(call UNPACK_TARBALL,$(DL_DIR)/$(SED_HOST_SOURCE),$(TOOLS_SOURCE_DIR))
-	$(call APPLY_PATCHES,$(SED_HOST_MAKE_DIR)/patches,$(SED_HOST_DIR))
-	touch $@
+$(TOOLS_UNPACKED)
 
 $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	(cd $(SED_HOST_DIR); $(RM) config.cache; \

@@ -7,17 +7,14 @@ $(PKG)_SITE:=git@https://github.com/bestouff/genext2fs.git
 #$(PKG)_SOURCE_SHA256:=492052c02f774fa15e8d2dc0a49d0749d97ababbaf40ac7d3e93eda99b6fc777
 #$(PKG)_SITE:=cvs@pserver:anonymous@genext2fs.cvs.sourceforge.net:/cvsroot/genext2fs
 
+$(PKG)_PATCH_POST_CMDS := mv configure.in configure.ac;
+
 
 $(pkg)-source: $(DL_DIR)/$($(PKG)_SOURCE)
 $(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(GENEXT2FS_HOST_SOURCE) $(GENEXT2FS_HOST_SITE) $(GENEXT2FS_HOST_SOURCE_SHA256)
 
-$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
-$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
-	$(call UNPACK_TARBALL,$(DL_DIR)/$(GENEXT2FS_HOST_SOURCE),$(TOOLS_SOURCE_DIR))
-	$(call APPLY_PATCHES,$(GENEXT2FS_HOST_MAKE_DIR)/patches,$(GENEXT2FS_HOST_DIR))
-	(cd $(GENEXT2FS_HOST_DIR); mv configure.in configure.ac)
-	touch $@
+$(TOOLS_UNPACKED)
 
 $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	(cd $(GENEXT2FS_HOST_DIR); autoreconf -f -i $(SILENT); \

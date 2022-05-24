@@ -9,8 +9,11 @@ $(PKG)_SITE:=git@https://git.yoctoproject.org/git/pseudo
 ### CHANGES:=http://git.yoctoproject.org/cgit.cgi/pseudo/log/?h=oe-core
 ### CVSREPO:=http://git.yoctoproject.org/cgit.cgi/pseudo/
 
-$(PKG)_MAINARCH_DIR:=$($(PKG)_DIR)/arch
-$(PKG)_BIARCH_DIR:=$($(PKG)_DIR)/biarch
+$(PKG)_MAINARCH_NAME:=arch
+$(PKG)_BIARCH_NAME:=biarch
+
+$(PKG)_MAINARCH_DIR:=$($(PKG)_DIR)/$($(PKG)_MAINARCH_NAME)
+$(PKG)_BIARCH_DIR:=$($(PKG)_DIR)/$($(PKG)_BIARCH_NAME)
 
 $(PKG)_DESTDIR:=$(FREETZ_BASE_DIR)/$(TOOLS_DIR)/build
 $(PKG)_MAINARCH_LD_PRELOAD_PATH:=$($(PKG)_DESTDIR)/lib
@@ -24,20 +27,15 @@ $(PKG)_TARGET_BIARCH_LIB:=$($(PKG)_BIARCH_LD_PRELOAD_PATH)/libpseudo.so
 # (using 32-bit [tools/toolchains] [own/dl]) AND (any of the STRIP-options is selected) AND (host is 64-bit)
 BIARCH_BUILD_SYSTEM:=$(filter-out 32,$(HOST_BITNESS))
 
+$(PKG)_TARBALL_STRIP_COMPONENTS:=0
+$(PKG)_PATCH_POST_CMDS := mv $(pkg_short)-* $($(PKG)_MAINARCH_NAME);
+$(PKG)_PATCH_POST_CMDS += cp -a $($(PKG)_MAINARCH_NAME) $($(PKG)_BIARCH_NAME);
 
 $(pkg)-source: $(DL_DIR)/$($(PKG)_SOURCE)
 $(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(PSEUDO_HOST_SOURCE) $(PSEUDO_HOST_SITE) $(PSEUDO_HOST_SOURCE_SHA256)
 
-$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
-$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
-	$(RM) -r $(PSEUDO_HOST_MAINARCH_DIR) $(PSEUDO_HOST_BIARCH_DIR)
-	mkdir -p $(PSEUDO_HOST_DIR)
-	$(call UNPACK_TARBALL,$(DL_DIR)/$(PSEUDO_HOST_SOURCE),$(PSEUDO_HOST_DIR))
-	mv $(PSEUDO_HOST_DIR)/pseudo-* $(PSEUDO_HOST_MAINARCH_DIR)
-	$(call APPLY_PATCHES,$(PSEUDO_HOST_MAKE_DIR)/patches,$(PSEUDO_HOST_MAINARCH_DIR))
-	cp -a $(PSEUDO_HOST_MAINARCH_DIR) $(PSEUDO_HOST_BIARCH_DIR)
-	touch $@
+$(TOOLS_UNPACKED)
 
 $($(PKG)_MAINARCH_DIR)/.configured: $($(PKG)_DIR)/.unpacked
 	(cd $(PSEUDO_HOST_MAINARCH_DIR); $(RM) Makefile; \

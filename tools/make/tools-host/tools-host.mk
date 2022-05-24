@@ -4,7 +4,12 @@ $(PKG)_SOURCE_SHA256:=8ea529871b82e9bdeceb787409cfb080b3162d5a3c69a3dd22bc520fd6
 $(PKG)_SITE:=@MIRROR/
 
 $(PKG)_DEPENDS_ON:=
+$(PKG)_TARBALL_STRIP_COMPONENTS:=0
 
+
+define $(PKG)_CUSTOM_UNPACK
+	tar -C $($(PKG)_DIR) $(VERBOSE) -xf $(DL_DIR)/$($(PKG)_SOURCE)
+endef
 
 $(pkg)-source: $(DL_DIR)/$($(PKG)_SOURCE)
 $(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
@@ -15,11 +20,7 @@ $(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
 #	$(info or create the file by yourself with 'tools/own-hosttools'.)
 #	$(error )
 
-$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
-$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(TOOLS_SOURCE_DIR)
-	mkdir -p $(TOOLS_HOST_DIR)
-	tar -C $(TOOLS_HOST_DIR) $(VERBOSE) -xf $(DL_DIR)/$(TOOLS_HOST_SOURCE)
-	touch $@
+$(TOOLS_UNPACKED)
 
 $($(PKG)_DIR)/.installed: $($(PKG)_DIR)/.unpacked
 	cp -fa $(TOOLS_HOST_DIR)/tools $(FREETZ_BASE_DIR)/

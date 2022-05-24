@@ -7,12 +7,7 @@ $(PKG)_TARGET_DIR:=$($(PKG)_BINS:%=$(TOOLS_DIR)/avm_kernel_config.%)
 $(PKG)_DEPENDS:=sfk-host dtc-host
 
 
-$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
-$($(PKG)_DIR)/.unpacked: $(wildcard $($(PKG)_SRC)/*) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
-	$(RM) -r $(YF_AKCAREA_HOST_DIR)
-	mkdir -p $(YF_AKCAREA_HOST_DIR)
-	$(call COPY_USING_TAR,$(YF_AKCAREA_HOST_SRC),$(YF_AKCAREA_HOST_DIR))
-	touch $@
+$(TOOLS_LOCALSOURCE_PACKAGE)
 
 $($(PKG)_BUILD_DIR): $($(PKG)_DIR)/.unpacked | $($(PKG)_DEPENDS)
 	$(TOOLS_SUBMAKE) -C $(YF_AKCAREA_HOST_DIR) \

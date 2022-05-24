@@ -12,17 +12,15 @@ $(PKG)_TARGET_ALL := $(join $(KCONFIG_HOST_TARGET_ARG),$(patsubst %,--%,$(KCONFI
 $(PKG)_PREREQ:=bison flex
 $(PKG)_DEPENDS_ON:=
 
+$(PKG)_CONDITIONAL_PATCHES+=$(if $(FREETZ_REAL_DEVELOPER_ONLY__BUTTONS),buttons)
+$(PKG)_REBUILD_SUBOPTS += FREETZ_REAL_DEVELOPER_ONLY__BUTTONS
+
 
 $(pkg)-source: $(DL_DIR)/$($(PKG)_SOURCE)
 $(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(KCONFIG_HOST_SOURCE) $(KCONFIG_HOST_SITE) $(KCONFIG_HOST_SOURCE_SHA256)
 
-$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
-$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(TOOLS_SOURCE_DIR)
-	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xf $(DL_DIR)/$(KCONFIG_HOST_SOURCE)
-	$(call APPLY_PATCHES,$(KCONFIG_HOST_MAKE_DIR)/patches,$(KCONFIG_HOST_DIR))
-	$(if $(FREETZ_REAL_DEVELOPER_ONLY__BUTTONS),$(call APPLY_PATCHES,$(KCONFIG_HOST_MAKE_DIR)/patches/buttons,$(KCONFIG_HOST_DIR)))
-	touch $@
+$(TOOLS_UNPACKED)
 
 $($(PKG)_DIR)/.prerequisites: $($(PKG)_DIR)/.unpacked
 	@prmiss="";\

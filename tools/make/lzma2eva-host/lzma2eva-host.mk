@@ -3,12 +3,7 @@ $(call TOOLS_INIT, 0)
 $(PKG)_BINS:=lzma2eva eva2lzma bzimage2eva eva2bzimage
 
 
-$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
-$($(PKG)_DIR)/.unpacked: $(wildcard $($(PKG)_SRC)/*) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
-	$(RM) -r $(LZMA2EVA_HOST_DIR)
-	mkdir -p $(LZMA2EVA_HOST_DIR)
-	$(call COPY_USING_TAR,$(LZMA2EVA_HOST_SRC),$(LZMA2EVA_HOST_DIR))
-	touch $@
+$(TOOLS_LOCALSOURCE_PACKAGE)
 
 $($(PKG)_BINS:%=$($(PKG)_DIR)/%): $($(PKG)_DIR)/.unpacked
 	$(TOOLS_SUBMAKE) CC="$(TOOLS_CC)" CXX="$(TOOLS_CXX)" CFLAGS="$(TOOLS_CFLAGS)" LDFLAGS="$(TOOLS_LDFLAGS)" -C $(LZMA2EVA_HOST_DIR)

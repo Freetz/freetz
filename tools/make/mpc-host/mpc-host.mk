@@ -12,11 +12,7 @@ $(pkg)-source: $(DL_DIR)/$($(PKG)_SOURCE)
 $(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
 	$(DL_TOOL) $(DL_DIR) $(MPC_HOST_SOURCE) $(MPC_HOST_SITE) $(MPC_HOST_SOURCE_SHA1)
 
-$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
-$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) | $(TOOLS_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
-	$(call UNPACK_TARBALL,$(DL_DIR)/$(MPC_HOST_SOURCE),$(TOOLS_SOURCE_DIR))
-	$(call APPLY_PATCHES,$(MPC_HOST_MAKE_DIR)/patches,$(MPC_HOST_DIR))
-	touch $@
+$(TOOLS_UNPACKED)
 
 $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked $($(PKG)_DEPENDS:%-host=$($(PKG)_DESTDIR)/lib/lib%.a)
 	(cd $(MPC_HOST_DIR); $(RM) config.cache; \
