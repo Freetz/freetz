@@ -35,6 +35,7 @@ define _ECHO_START_INT
 			echo -ne "\e[48;5;90m---> "; \
 			cat $(ECHO_ITEM_NEW) 2>/dev/null | tee $(ECHO_ITEM_OLD); \
 			echo -ne "\e[49m ... "; \
+			[ "$(FREETZ_VERBOSITY_LEVEL)" != "0" ] && echo; \
 			touch $(ECHO_ITEM_END); \
 			touch $(ECHO_ITEM_1ST); \
 		fi; \
