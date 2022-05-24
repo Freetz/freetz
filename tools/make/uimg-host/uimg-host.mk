@@ -6,6 +6,7 @@ $(PKG)_SITE:=git@https://bitbucket.org/fesc2000/uimg-tool.git
 
 $(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
+$(TOOLS_CONFIGURED_NOP)
 
 $($(PKG)_DIR)/uimg: $($(PKG)_DIR)/.unpacked
 	$(TOOLS_SUBMAKE) CC="$(TOOLS_CC)" CXX="$(TOOLS_CXX)" CFLAGS="$(TOOLS_CFLAGS)" LDFLAGS="$(TOOLS_LDFLAGS)" -C $(UIMG_HOST_DIR) all

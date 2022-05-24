@@ -4,6 +4,7 @@ $(PKG)_BINS:=lzma2eva eva2lzma bzimage2eva eva2bzimage
 
 
 $(TOOLS_LOCALSOURCE_PACKAGE)
+$(TOOLS_CONFIGURED_NOP)
 
 $($(PKG)_BINS:%=$($(PKG)_DIR)/%): $($(PKG)_DIR)/.unpacked
 	$(TOOLS_SUBMAKE) CC="$(TOOLS_CC)" CXX="$(TOOLS_CXX)" CFLAGS="$(TOOLS_CFLAGS)" LDFLAGS="$(TOOLS_LDFLAGS)" -C $(LZMA2EVA_HOST_DIR)

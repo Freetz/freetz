@@ -12,6 +12,7 @@ $(PKG)_SITE:=git_sparse@https://github.com/PeterPawn/YourFritz.git,bootmanager
 
 $(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
+$(TOOLS_CONFIGURED_NOP)
 
 $($(PKG)_DIR)/.installed: $($(PKG)_DIR)/.unpacked
 	mkdir -p $(TOOLS_DIR)/yf/

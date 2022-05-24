@@ -8,6 +8,7 @@ $(PKG)_DEPENDS:=sfk-host dtc-host
 
 
 $(TOOLS_LOCALSOURCE_PACKAGE)
+$(TOOLS_CONFIGURED_NOP)
 
 $($(PKG)_BUILD_DIR): $($(PKG)_DIR)/.unpacked | $($(PKG)_DEPENDS)
 	$(TOOLS_SUBMAKE) -C $(YF_AKCAREA_HOST_DIR) \

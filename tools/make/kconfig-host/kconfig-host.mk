@@ -22,6 +22,7 @@ endef
 
 $(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
+$(TOOLS_CONFIGURED_NOP)
 
 $($(PKG)_TARGET_PRG:%=$($(PKG)_DIR)/scripts/kconfig/%): $($(PKG)_DIR)/.unpacked
 	$(TOOLS_SUBMAKE) -C $(KCONFIG_HOST_DIR) $(subst --$(notdir $@),,$(filter %--$(notdir $@),$(KCONFIG_HOST_TARGET_ALL)))

@@ -9,6 +9,7 @@ $(PKG)_SITE:=https://boxmatrix.info/hosted/hippie2000
 
 $(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
+$(TOOLS_CONFIGURED_NOP)
 
 $($(PKG)_DIR)/fitimg: $($(PKG)_DIR)/.unpacked
 

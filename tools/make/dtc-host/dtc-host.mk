@@ -8,6 +8,7 @@ $(PKG)_LIBFDT_DIR:=$($(PKG)_DIR)/libfdt
 
 $(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
+$(TOOLS_CONFIGURED_NOP)
 
 $($(PKG)_LIBFDT_DIR)/libfdt.a: $($(PKG)_DIR)/.unpacked
 	$(TOOLS_SUBMAKE) -f Makefile.freetz -C $(DTC_HOST_LIBFDT_DIR) all \

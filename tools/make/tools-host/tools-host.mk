@@ -20,6 +20,7 @@ endef
 #	$(error )
 $(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
+$(TOOLS_CONFIGURED_NOP)
 
 $($(PKG)_DIR)/.installed: $($(PKG)_DIR)/.unpacked
 	cp -fa $(TOOLS_HOST_DIR)/tools $(FREETZ_BASE_DIR)/

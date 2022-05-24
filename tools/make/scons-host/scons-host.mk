@@ -8,6 +8,7 @@ $(PKG)_DEPENDS:=python-host
 
 $(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
+$(TOOLS_CONFIGURED_NOP)
 
 $(HOST_TOOLS_DIR)/usr/bin/scons: $($(PKG)_DIR)/.unpacked | $($(PKG)_DEPENDS)
 	$(abspath $(HOST_TOOLS_DIR)/usr/bin/python) \
