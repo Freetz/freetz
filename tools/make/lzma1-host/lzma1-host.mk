@@ -15,6 +15,7 @@ $(TOOLS_UNPACKED)
 
 $($(PKG)_ALONE_DIR)/lzma: $($(PKG)_DIR)/.unpacked
 	$(TOOLS_SUBMAKE) CC="$(TOOLS_CC)" CXX="$(TOOLS_CXX)" LDFLAGS="$(TOOLS_LDFLAGS)" -f makefile.gcc -C $(LZMA1_HOST_ALONE_DIR)
+	touch -c $@
 
 $($(PKG)_LIBC_DIR)/liblzma.a: $($(PKG)_DIR)/.unpacked
 	$(TOOLS_SUBMAKE) -f makefile.gcc -C $(LZMA1_HOST_LIBC_DIR)
