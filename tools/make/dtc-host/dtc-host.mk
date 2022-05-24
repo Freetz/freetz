@@ -6,10 +6,7 @@ $(PKG)_SITE:=@KERNEL/software/utils/dtc
 $(PKG)_LIBFDT_DIR:=$($(PKG)_DIR)/libfdt
 
 
-$(pkg)-source: $(DL_DIR)/$($(PKG)_SOURCE)
-$(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
-	$(DL_TOOL) $(DL_DIR) $(DTC_HOST_SOURCE) $(DTC_HOST_SITE) $(DTC_HOST_SOURCE_SHA256)
-
+$(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
 
 $($(PKG)_LIBFDT_DIR)/libfdt.a: $($(PKG)_DIR)/.unpacked

@@ -10,10 +10,7 @@ $(PKG)_SITE:=git_sparse@https://github.com/PeterPawn/YourFritz.git,bootmanager
 ### CVSREPO:=https://github.com/PeterPawn/YourFritz/tree/main/bootmanager
 
 
-$(pkg)-source: $(DL_DIR)/$($(PKG)_SOURCE)
-$(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
-	$(DL_TOOL) $(DL_DIR) $(YF_BOOTMANAGER_HOST_SOURCE) $(YF_BOOTMANAGER_HOST_SITE) $(YF_BOOTMANAGER_HOST_SOURCE_SHA256)
-
+$(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
 
 $($(PKG)_DIR)/.installed: $($(PKG)_DIR)/.unpacked

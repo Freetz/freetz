@@ -10,10 +10,7 @@ $(PKG)_SITE:=git@https://github.com/bestouff/genext2fs.git
 $(PKG)_PATCH_POST_CMDS := mv configure.in configure.ac;
 
 
-$(pkg)-source: $(DL_DIR)/$($(PKG)_SOURCE)
-$(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
-	$(DL_TOOL) $(DL_DIR) $(GENEXT2FS_HOST_SOURCE) $(GENEXT2FS_HOST_SITE) $(GENEXT2FS_HOST_SOURCE_SHA256)
-
+$(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
 
 $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked

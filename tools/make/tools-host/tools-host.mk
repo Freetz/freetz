@@ -11,15 +11,14 @@ define $(PKG)_CUSTOM_UNPACK
 	tar -C $($(PKG)_DIR) $(VERBOSE) -xf $(DL_DIR)/$($(PKG)_SOURCE)
 endef
 
-$(pkg)-source: $(DL_DIR)/$($(PKG)_SOURCE)
-$(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
-	$(DL_TOOL) $(DL_DIR) $(TOOLS_HOST_SOURCE) $(TOOLS_HOST_SITE) $(TOOLS_HOST_SOURCE_SHA256)
+#$(pkg)-source: $(DL_DIR)/$($(PKG)_SOURCE)
+#$(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
 #	$(info ERROR: File '$(DL_DIR)/$(TOOLS_HOST_SOURCE)' not found.)
 #	$(info There is and will no download source be available.)
 #	$(info Either disable 'FREETZ_HOSTTOOLS_DOWNLOAD' in menuconfig)
 #	$(info or create the file by yourself with 'tools/own-hosttools'.)
 #	$(error )
-
+$(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
 
 $($(PKG)_DIR)/.installed: $($(PKG)_DIR)/.unpacked

@@ -7,10 +7,7 @@ $(PKG)_SITE:=https://boxmatrix.info/hosted/hippie2000
 ### CHANGES:=https://boxmatrix.info/wiki/FIT-Image#History
 
 
-$(pkg)-source: $(DL_DIR)/$($(PKG)_SOURCE)
-$(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
-	$(DL_TOOL) $(DL_DIR) $(FITIMG_HOST_SOURCE) $(FITIMG_HOST_SITE) $(FITIMG_HOST_SOURCE_SHA256)
-
+$(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
 
 $($(PKG)_DIR)/fitimg: $($(PKG)_DIR)/.unpacked

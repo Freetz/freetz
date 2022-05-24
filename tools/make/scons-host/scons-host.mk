@@ -6,10 +6,7 @@ $(PKG)_SITE:=@SF/scons
 $(PKG)_DEPENDS:=python-host
 
 
-$(pkg)-source: $(DL_DIR)/$($(PKG)_SOURCE)
-$(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
-	$(DL_TOOL) $(DL_DIR) $(SCONS_HOST_SOURCE) $(SCONS_HOST_SITE) $(SCONS_HOST_SOURCE_MD5)
-
+$(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
 
 $(HOST_TOOLS_DIR)/usr/bin/scons: $($(PKG)_DIR)/.unpacked | $($(PKG)_DEPENDS)

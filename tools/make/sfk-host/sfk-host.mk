@@ -4,10 +4,7 @@ $(PKG)_SOURCE_MD5:=99225c1ab3fe87af6c275724ab635ae0
 $(PKG)_SITE:=@SF/swissfileknife
 
 
-$(pkg)-source: $(DL_DIR)/$($(PKG)_SOURCE)
-$(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
-	$(DL_TOOL) $(DL_DIR) $(SFK_HOST_SOURCE) $(SFK_HOST_SITE) $(SFK_HOST_SOURCE_MD5)
-
+$(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
 
 $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.unpacked

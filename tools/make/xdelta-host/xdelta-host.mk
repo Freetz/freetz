@@ -6,10 +6,7 @@ $(PKG)_SITE:=http://xdelta.googlecode.com/files
 $(PKG)_DIR:=$(TOOLS_SOURCE_DIR)/xdelta$($(PKG)_VERSION)
 
 
-$(pkg)-source: $(DL_DIR)/$($(PKG)_SOURCE)
-$(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
-	$(DL_TOOL) $(DL_DIR) $(XDELTA_HOST_SOURCE) $(XDELTA_HOST_SITE) $(XDELTA_HOST_SOURCE_MD5)
-
+$(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
 
 $($(PKG)_DIR)/xdelta3: $($(PKG)_DIR)/.unpacked

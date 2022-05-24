@@ -4,10 +4,7 @@ $(PKG)_SOURCE_SHA256:=1f5b3b473f50c6ff79a7859be336245c39fc1d2b6c89baf862de6de1f7
 $(PKG)_SITE:=git@https://bitbucket.org/fesc2000/uimg-tool.git
 
 
-$(pkg)-source: $(DL_DIR)/$($(PKG)_SOURCE)
-$(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
-	$(DL_TOOL) $(DL_DIR) $(UIMG_HOST_SOURCE) $(UIMG_HOST_SITE) $(UIMG_HOST_SOURCE_SHA256)
-
+$(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
 
 $($(PKG)_DIR)/uimg: $($(PKG)_DIR)/.unpacked
