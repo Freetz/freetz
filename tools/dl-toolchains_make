@@ -79,8 +79,8 @@ dltc() {
 	rm -rf dl 2>/dev/null
 	ln -sf ~/.freetz-dl dl
 	mkdir -p dl
-	make kconfig-host-conf
 	miniconfig $options > .config
+	make kconfig-host-conf
 	make olddefconfig
 	cp -a .config tc-${options// /_}.conf
 	make KTV=${SUFFIX} TTV=${SUFFIX} toolchain 2>&1 | tee tc-${options// /_}.make
