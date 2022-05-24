@@ -192,6 +192,7 @@ define COPY_USING_TAR
 		--exclude=.build-prereq-checked \
 		--exclude=.unpacked \
 		--exclude=.configured \
+		--exclude=.prepared \
 		--exclude=.compiled \
 		--exclude=.installed \
 		$(if $(strip $(3)),$(strip $(3)),.) \
