@@ -11,6 +11,10 @@ $(PKG)_TARGET_BINARY:=$(TOOLS_DIR)/busybox
 $(PKG)_DEPENDS_ON:=tar-host
 
 
+define $(PKG)_CUSTOM_UNPACK
+	tar -C $(TOOLS_SOURCE_DIR) $(VERBOSE) -xf $(DL_DIR)/$($(PKG)_SOURCE)
+endef
+
 $(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
 
