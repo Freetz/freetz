@@ -100,7 +100,7 @@ par2cmdline, and \$(PKG) with be PAR2CMDLINE.
 ```
 $(call PKG_INIT_BIN, 0.4)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=1551b63e57e3c232254dc62073b723a9
+$(PKG)_HASH:=1551b63e57e3c232254dc62073b723a9
 $(PKG)_SITE:=http://sourceforge.net/projects/parchive/files/$(pkg)/$($(PKG)_VERSION)/
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/par2
@@ -162,11 +162,11 @@ PAR2CMDLINE_SOURCE:=par2cmdline-0.4.tar.gz\
 
 
 ```
-$(PKG)_SOURCE_MD5:=1551b63e57e3c232254dc62073b723a9
+$(PKG)_HASH:=1551b63e57e3c232254dc62073b723a9
 ```
 
 This is the md5 hash value to verify successful download.
-PAR2CMDLINE_SOURCE_MD5:=1551b63e57e3c232254dc62073b723a9\
+PAR2CMDLINE_HASH:=1551b63e57e3c232254dc62073b723a9\
 
 
 ```

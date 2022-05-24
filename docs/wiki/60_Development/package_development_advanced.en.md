@@ -47,7 +47,7 @@ FREETZ_PACKAGE_FOO_BINARYN
 ```
 $(call PKG_INIT_BIN, 0.0.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=0123456789abcdef0123456789abcdef
+$(PKG)_HASH:=0123456789abcdef0123456789abcdef
 $(PKG)_SITE:=http://www.foo.net/
 
 $(PKG)_BINARY1 := $($(PKG)_DIR)/binary1
@@ -121,7 +121,7 @@ make/dosfstools/dosfstools.mk
 ```
 $(call PKG_INIT_BIN, 3.0.5)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=d48177cde9c6ce64333133424bf32912
+$(PKG)_HASH:=d48177cde9c6ce64333133424bf32912
 $(PKG)_SITE:=http://www.daniel-baumann.ch/software/dosfstools
 
 $(PKG)_BINARIES_ALL := dosfsck dosfslabel mkdosfs

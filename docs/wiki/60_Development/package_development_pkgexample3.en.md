@@ -143,7 +143,7 @@ The indents should be replaced with tabs.
 ```
 $(call PKG_INIT_BIN, 11.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=4f00039cc36e50fe68fc75e37b5a0406
+$(PKG)_HASH:=4f00039cc36e50fe68fc75e37b5a0406
 $(PKG)_SITE:=http://sourceforge.net/projects/$(pkg)/files/
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/nzbget
