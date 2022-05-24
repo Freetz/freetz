@@ -15,7 +15,7 @@ $(TOOLS_UNPACKED)
 
 $($(PKG)_DIR)/.installed: $($(PKG)_DIR)/.unpacked
 	mkdir -p $(TOOLS_DIR)/yf/
-	tar cf - -C $(YF_BOOTMANAGER_HOST_DIR)/ bootmanager/ | tar xf - -C $(TOOLS_DIR)/yf/
+	$(call COPY_USING_TAR,$(YF_BOOTMANAGER_HOST_DIR)/,$(TOOLS_DIR)/yf/,bootmanager/)
 	touch $@
 
 $(pkg)-precompiled: $($(PKG)_DIR)/.installed
