@@ -13,6 +13,7 @@ ECHO_ITEM_NEW:=$(SOURCE_DIR_ROOT)/.echo_item_new
 ECHO_ITEM_END:=$(SOURCE_DIR_ROOT)/.echo_item_end
 
 define _ECHO_START_ARG
+	mkdir -p $(SOURCE_DIR_ROOT); \
 	[ -n "$2" ] && step="/$2" || step=""; \
 	[ -n "$3" ] && step="$$step/$3"; \
 	case "$1$(PKG_TYPE)" in \
