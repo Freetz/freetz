@@ -3,11 +3,8 @@ $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
 
 
-$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
-$($(PKG)_DIR)/.unpacked:
-	mkdir -p $(JUIS_CHECK_DIR)
-	cp $(TOOLS_DIR)/juis_check $(JUIS_CHECK_DIR)/juis_check.sh
-	touch $@
+$(PKG_LOCALSOURCE_PACKAGE)
+$(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.unpacked
 	$(SED) '1c#!/bin/sh' $@.sh > $@
