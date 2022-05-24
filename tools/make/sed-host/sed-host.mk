@@ -1,6 +1,6 @@
 $(call TOOLS_INIT, 4.8)
 $(PKG)_SOURCE:=sed-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=f79b0cfea71b37a8eeec8490db6c5f7ae7719c35587f21edb0617f370eeff633
+$(PKG)_HASH:=f79b0cfea71b37a8eeec8490db6c5f7ae7719c35587f21edb0617f370eeff633
 $(PKG)_SITE:=@GNU/sed
 
 $(PKG)_CONFIGURE_OPTIONS += --prefix=/usr

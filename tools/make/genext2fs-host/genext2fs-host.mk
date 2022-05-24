@@ -1,10 +1,10 @@
 $(call TOOLS_INIT, 4c1cc9468980448ca3e86db1cbe9600a4a084f5e)
 $(PKG)_SOURCE:=genext2fs-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=a59f657ce6d12013d7343c7b84928723f0b8dec4a89e9542802c1257dce26ba6
+$(PKG)_HASH:=a59f657ce6d12013d7343c7b84928723f0b8dec4a89e9542802c1257dce26ba6
 $(PKG)_SITE:=git@https://github.com/bestouff/genext2fs.git
 # see http://genext2fs.cvs.sourceforge.net/viewvc/genext2fs/genext2fs/genext2fs.c?view=log for more info
 #$(PKG)_VERSION:=20131004
-#$(PKG)_SOURCE_SHA256:=492052c02f774fa15e8d2dc0a49d0749d97ababbaf40ac7d3e93eda99b6fc777
+#$(PKG)_HASH:=492052c02f774fa15e8d2dc0a49d0749d97ababbaf40ac7d3e93eda99b6fc777
 #$(PKG)_SITE:=cvs@pserver:anonymous@genext2fs.cvs.sourceforge.net:/cvsroot/genext2fs
 
 $(PKG)_PATCH_POST_CMDS := mv configure.in configure.ac;

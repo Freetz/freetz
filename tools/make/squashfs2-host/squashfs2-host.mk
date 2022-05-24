@@ -1,6 +1,6 @@
 $(call TOOLS_INIT, 2.2-r2)
 $(PKG)_SOURCE:=squashfs$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=a8d09a217240127ae4d339e8368d2de1
+$(PKG)_HASH:=750a7a4896d782698a0f531ca30582f0ddd365fe317a04c4dd4fa1ce2eb053eb
 $(PKG)_SITE:=@SF/squashfs
 
 $(PKG)_DIR:=$(TOOLS_SOURCE_DIR)/squashfs$($(PKG)_VERSION)

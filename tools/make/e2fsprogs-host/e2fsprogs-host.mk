@@ -1,6 +1,6 @@
 $(call TOOLS_INIT, 1.42.13)
 $(PKG)_SOURCE:=e2fsprogs-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=ce8e4821f5f53d4ebff4195038e38673
+$(PKG)_HASH:=e16474b5a3a30f9197160c4b91bd48d5a463583049c0fcc405b6f0f7075aa0c7
 $(PKG)_SITE:=@SF/e2fsprogs,@KERNEL/linux/kernel/people/tytso/e2fsprogs/v$($(PKG)_VERSION)
 
 $(PKG)_E2FSCK_BINARY:=$($(PKG)_DIR)/e2fsck/e2fsck

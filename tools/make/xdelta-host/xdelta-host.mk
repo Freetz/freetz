@@ -1,6 +1,6 @@
 $(call TOOLS_INIT, 30q)
 $(PKG)_SOURCE:=xdelta$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=633717fb1b3fa77374dc1f3549cc7b59
+$(PKG)_HASH:=750ab5f9e0b8f5f85c396f5005439503cc4b7f7d006e6c30814064d64dd3a494
 $(PKG)_SITE:=http://xdelta.googlecode.com/files
 
 $(PKG)_DIR:=$(TOOLS_SOURCE_DIR)/xdelta$($(PKG)_VERSION)

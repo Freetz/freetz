@@ -1,7 +1,7 @@
 $(call TOOLS_INIT, 9a1d3b82435e09486a1c20acf44a1d2060ad7672)
 # Versions after this commit have no vanilla GPL2
 $(PKG)_SOURCE:=yf-bootmanager-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=9bc13bbe05b0405fd730e5d9983bff17b97a8b2ad6ed8f4d1f3241ffb822edd7
+$(PKG)_HASH:=9bc13bbe05b0405fd730e5d9983bff17b97a8b2ad6ed8f4d1f3241ffb822edd7
 $(PKG)_SITE:=git_sparse@https://github.com/PeterPawn/YourFritz.git,bootmanager
 ### VERSION:=0.8.3
 ### WEBSITE:=https://github.com/PeterPawn/YourFritz/tree/main/bootmanager

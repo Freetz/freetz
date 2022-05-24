@@ -1,6 +1,6 @@
 $(call TOOLS_INIT, 465)
 $(PKG)_SOURCE:=lzma$($(PKG)_VERSION).tar.bz2
-$(PKG)_SOURCE_MD5:=29d5ffd03a5a3e51aef6a74e9eafb759
+$(PKG)_HASH:=c935fd04dd8e0e8c688a3078f3675d699679a90be81c12686837e0880aa0fa1e
 $(PKG)_SITE:=@SF/sevenzip
 
 $(PKG)_ALONE_DIR:=$($(PKG)_DIR)/CPP/7zip/Compress/LZMA_Alone

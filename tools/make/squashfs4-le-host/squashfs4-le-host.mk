@@ -1,6 +1,6 @@
 $(call TOOLS_INIT, 4.3)
 $(PKG)_SOURCE:=squashfs$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=d92ab59aabf5173f2a59089531e30dbf
+$(PKG)_HASH:=0d605512437b1eb800b4736791559295ee5f60177e102e4d4ccd0ee241a5f3f6
 $(PKG)_SITE:=@SF/squashfs
 
 # Enable legacy SquashFS formats support (SquashFS-1/2/3, ZLIB/LZMA1 compressed)

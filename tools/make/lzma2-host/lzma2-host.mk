@@ -1,6 +1,6 @@
 $(call TOOLS_INIT, 5.2.5)
 $(PKG)_SOURCE:=xz-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_MD5:=aa1621ec7013a19abab52a8aff04fe5b
+$(PKG)_HASH:=3e1e518ffc912f86608a8cb35e4bd41ad1aec210df2a47aaa1f95e7f5576ef56
 $(PKG)_SITE:=http://tukaani.org/xz
 
 $(PKG)_DIR:=$(TOOLS_SOURCE_DIR)/xz-$($(PKG)_VERSION)

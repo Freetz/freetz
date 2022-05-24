@@ -1,7 +1,7 @@
 $(call TOOLS_INIT, 0cda3ba5f94aed8d50652a99ee9c502975aa2926)
 # Newer versions build with Ubuntu 14 and 18 cause problems on other systems with tar-host: https://github.com/Freetz-NG/freetz-ng/issues/468
 $(PKG)_SOURCE:=pseudo-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=405652c57ed80f9230c7be213350c0bf51aeb8a4d629778b338160dd25cbf642
+$(PKG)_HASH:=405652c57ed80f9230c7be213350c0bf51aeb8a4d629778b338160dd25cbf642
 $(PKG)_SITE:=git@https://git.yoctoproject.org/git/pseudo
 #$(PKG)_SITE:=http://downloads.yoctoproject.org/releases/pseudo/
 ### WEBSITE:=https://www.yoctoproject.org/software-item/pseudo/

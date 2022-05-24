@@ -1,6 +1,6 @@
 $(call TOOLS_INIT, v5.18)
 $(PKG)_SOURCE:=kconfig-$($(PKG)_VERSION).tar.xz
-$(PKG)_SOURCE_SHA256:=5d2f909fa479710e83fc0f66e87ee53c9b34033abc5f2401479ca8bd0924e87a
+$(PKG)_HASH:=5d2f909fa479710e83fc0f66e87ee53c9b34033abc5f2401479ca8bd0924e87a
 $(PKG)_SITE:=git_archive@git://repo.or.cz/linux.git,scripts/basic,scripts/kconfig,scripts/Kbuild.include,scripts/Makefile.compiler,scripts/Makefile.build,scripts/Makefile.host,scripts/Makefile.lib,Documentation/kbuild/kconfig-language.rst,Documentation/kbuild/kconfig-macro-language.rst,Documentation/kbuild/kconfig.rst
 
 $(PKG)_TARGET_DIR:=$(TOOLS_DIR)/kconfig

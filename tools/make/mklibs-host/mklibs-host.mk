@@ -1,6 +1,6 @@
 $(call TOOLS_INIT, 0.1.34)
 $(PKG)_SOURCE:=mklibs_$($(PKG)_VERSION).tar.gz
-$(PKG)_SOURCE_MD5:=afe0ed527ba96b8a882b5de350603007
+$(PKG)_HASH:=0c13c314f5c397529f58a5a02d57d83aeb4463d6a0d80b9374c6576ec37ed39f
 $(PKG)_SITE:=http://archive.debian.org/debian/pool/main/m/mklibs
 
 $(PKG)_DESTDIR:=$(FREETZ_BASE_DIR)/$(TOOLS_DIR)/build/bin
