@@ -10,8 +10,8 @@ $(PKG)_SITE:=@SF/ijbswa
 $(PKG)_BINARY:=$($(PKG)_DIR)/privoxy
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/privoxy
 
-$(PKG)_CONFIGURE_PRE_CMDS += autoheader $(SILENCE);
-$(PKG)_CONFIGURE_PRE_CMDS += autoconf $(SILENCE);
+$(PKG)_CONFIGURE_PRE_CMDS += autoheader $(SILENT);
+$(PKG)_CONFIGURE_PRE_CMDS += autoconf $(SILENT);
 
 ifeq ($(strip $(FREETZ_PACKAGE_PRIVOXY_WITH_SHARED_PCRE)),y)
 $(PKG)_DEPENDS_ON += pcre
