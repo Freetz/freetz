@@ -49,7 +49,7 @@ endef
 define _ECHO_DONE
 	if [ -e $(ECHO_ITEM_END) -a -e $(ECHO_ITEM_NEW) -a -e $(ECHO_ITEM_1ST) ]; then \
 		echo -e "\e[48;5;26mdone\e[49m."; \
-		$(RM) $(ECHO_ITEM_END); \
+		$(RM) $(ECHO_ITEM_END) $(ECHO_ITEM_1ST); \
 	fi;
 endef
 
