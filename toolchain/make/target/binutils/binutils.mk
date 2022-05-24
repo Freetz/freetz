@@ -100,7 +100,7 @@ $(BINUTILS_DIR2)/.configured: $(BINUTILS_DIR)/.unpacked
 	(cd $(BINUTILS_DIR2); $(RM) config.cache; \
 		CFLAGS_FOR_BUILD="-O2 $(TOOLCHAIN_HOST_CFLAGS)" \
 		$(TARGET_CONFIGURE_ENV) \
-		CONFIG_SITE=$(CONFIG_SITE) \
+		CONFIG_SITE=$(TARGET_SITE) \
 		$(BINUTILS_DIR)/configure \
 		--prefix=/usr \
 		--with-sysroot=/ \

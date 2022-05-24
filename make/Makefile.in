@@ -134,7 +134,7 @@ $(PACKAGES_DIR):
 
 # If CONFIG_SITE is exported, it can cause errors in the host builds
 unexport CONFIG_SITE
-CONFIG_SITE:=$(FREETZ_BASE_DIR)/$(INCLUDE_DIR)/config.site/$(call qstrip,$(FREETZ_TARGET_UCLIBC_TRIPLET))
+TARGET_SITE:=$(FREETZ_BASE_DIR)/$(INCLUDE_DIR)/config.site/$(call qstrip,$(FREETZ_TARGET_UCLIBC_TRIPLET))
 
 TARGET_AR:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ar
 TARGET_AS:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)as
@@ -790,7 +790,7 @@ $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.build-prereq-checked $($(PKG)_DIR)/.un
 		$(if $(strip $($(PKG)_BUILD_SUBDIR)),cd $(strip $($(PKG)_BUILD_SUBDIR));,) \
 		$(TARGET_CONFIGURE_ENV) \
 		$($(PKG)_CONFIGURE_ENV) \
-		CONFIG_SITE=$(CONFIG_SITE) \
+		CONFIG_SITE=$(TARGET_SITE) \
 		conf_cmd \
 		$(if $(findstring y,$($(PKG)_CONFIGURE_DEFOPTS)), $(TARGET_CONFIGURE_OPTIONS)) \
 		$($(PKG)_CONFIGURE_OPTIONS) \

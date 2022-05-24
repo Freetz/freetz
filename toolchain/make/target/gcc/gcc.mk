@@ -271,7 +271,7 @@ $(GCC_BUILD_DIR3)/.configured: $(GCC_BUILD_DIR2)/.installed $(GCC_TARGET_PREREQ)
 	mkdir -p $(GCC_BUILD_DIR3)
 	(cd $(GCC_BUILD_DIR3); $(RM) config.cache; \
 		$(TARGET_CONFIGURE_ENV) \
-		CONFIG_SITE=$(CONFIG_SITE) \
+		CONFIG_SITE=$(TARGET_SITE) \
 		\
 		CXX="$(TARGET_MAKE_PATH)/$(TARGET_CROSS)g++" \
 		\
