@@ -75,11 +75,11 @@ EOF
 dltc() {
 	local options="$(echo $* | sed 's/  */ /g')"
 	echo "Building toolchains for ${options// /, }"
+	miniconfig $options > .config
 	make distclean
 	rm -rf dl 2>/dev/null
 	ln -sf ~/.freetz-dl dl
 	mkdir -p dl
-	miniconfig $options > .config
 	make kconfig-host-conf
 	make olddefconfig
 	cp -a .config tc-${options// /_}.conf
