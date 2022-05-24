@@ -8,7 +8,7 @@ endif
 SUBMAKE1=cmd() { $(MAKE_ENV) $(MAKE1) $(QUIET) "$$@" $(SILENT) || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } }; $(call _ECHO,building) cmd
 SUBMAKE=cmd() { $(MAKE_ENV) $(MAKE) $(QUIET) "$$@" $(SILENT) || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } }; $(call _ECHO,building) cmd
 CONFIGURE=conf_cmd() { ./configure $(QUIET) "$$$$@" $(SILENT) || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } };
-AUTORECONF=autoreconf -f -i || { $(call ERROR,1,autoreconf failed) };
+AUTORECONF=autoreconf -f -i $(SILENT) || { $(call ERROR,1,autoreconf failed) };
 
 HOSTCC:=gcc
 HOST_STRIP:=strip --strip-all -R .note -R .comment
