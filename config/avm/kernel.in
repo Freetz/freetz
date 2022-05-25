@@ -262,6 +262,26 @@ config FREETZ_KERNEL_VERSION_MAJOR
 	default "4.9"       if FREETZ_KERNEL_VERSION_4_9
 	default "4.19"      if FREETZ_KERNEL_VERSION_4_19
 
+# vanilla kernel dldir
+config FREETZ_KERNEL_VANILLA_DLDIR
+	string
+	default "2.6"       if FREETZ_KERNEL_VERSION_2
+	default "3.x"       if FREETZ_KERNEL_VERSION_3
+	default "4.x"       if FREETZ_KERNEL_VERSION_4
+	help
+		The subdirectory for downloads, eg
+		https://kernel.org/pub/linux/kernel/v*/
+
+# vanilla kernel version
+config FREETZ_KERNEL_VANILLA_VERSION
+	string
+	default "2.6.19"    if FREETZ_KERNEL_VERSION_2_6_19
+	default "2.6.32.27" if FREETZ_KERNEL_VERSION_2_6_32
+	default "${FREETZ_KERNEL_VERSION}"
+	help
+		Download of 2.6.32.41, 2.6.32.60, 2.6.32.61
+		and 2.6.19.2 are not on the official mirrors.
+
 # the name of the directory kernel modules are installed in
 # this directory contains the kernel version in its name
 config FREETZ_KERNEL_VERSION_MODULES_SUBDIR
