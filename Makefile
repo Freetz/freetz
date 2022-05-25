@@ -87,6 +87,7 @@ endef
 
 # Print yellow error message and exit
 define ERROR
+[ "$$FREETZ_VERBOSITY_LEVEL" = "0" ] && echo && cat .build.log 2>/dev/null; \
 kill $$$$; \
 printf "\n$(_Y)%s$(_N)\n" "ERROR: $(2)";  exit $(1);
 endef
@@ -206,7 +207,8 @@ ifeq ($(strip $(FREETZ_VERBOSITY_LEVEL)),0)
 # Don't be silent when a menuconfig target is called
 ifneq ($(findstring menuconfig,$(MAKECMDGOALS)),menuconfig)
 #SILENT:= >>build.log 2>&1
-SILENT:= > /dev/null 2>&1
+SILENT:= > .build.log 2>&1
+#SILENT:= > /dev/null 2>&1
 endif
 endif
 
