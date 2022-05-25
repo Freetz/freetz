@@ -202,6 +202,19 @@ config FREETZ_KERNEL_VERSION_4_9
 		FREETZ_KERNEL_VERSION_4_9_250 || \
 		FREETZ_KERNEL_VERSION_4_9_279
 
+
+config FREETZ_KERNEL_VERSION_4_19_183
+	bool
+	default y
+	depends on FREETZ_AVM_PROP_KERNEL_4_19_183
+
+config FREETZ_KERNEL_VERSION_4_19
+	bool
+	default y
+	depends on \
+		FREETZ_KERNEL_VERSION_4_19_183
+
+
 # full kernel version
 config FREETZ_KERNEL_VERSION
 	string
@@ -232,6 +245,7 @@ config FREETZ_KERNEL_VERSION
 	default "4.9.240"   if FREETZ_KERNEL_VERSION_4_9_240
 	default "4.9.250"   if FREETZ_KERNEL_VERSION_4_9_250
 	default "4.9.279"   if FREETZ_KERNEL_VERSION_4_9_279
+	default "4.19.183"  if FREETZ_KERNEL_VERSION_4_19_183
 
 # major kernel version
 config FREETZ_KERNEL_VERSION_MAJOR
@@ -246,6 +260,7 @@ config FREETZ_KERNEL_VERSION_MAJOR
 	default "4.1"       if FREETZ_KERNEL_VERSION_4_1
 	default "4.4"       if FREETZ_KERNEL_VERSION_4_4
 	default "4.9"       if FREETZ_KERNEL_VERSION_4_9
+	default "4.19"      if FREETZ_KERNEL_VERSION_4_19
 
 # the name of the directory kernel modules are installed in
 # this directory contains the kernel version in its name
@@ -337,7 +352,14 @@ config FREETZ_KERNEL_VERSION_4_9_MIN
 	bool
 	default y
 	depends on \
-		FREETZ_KERNEL_VERSION_4_9
+		FREETZ_KERNEL_VERSION_4_9 || \
+		FREETZ_KERNEL_VERSION_4_19_MIN
+		
+config FREETZ_KERNEL_VERSION_4_19_MIN
+	bool
+	default y
+	depends on \
+		FREETZ_KERNEL_VERSION_4_19
 
 
 config FREETZ_KERNEL_VERSION_2_6_13_MAX
@@ -422,6 +444,13 @@ config FREETZ_KERNEL_VERSION_4_9_MAX
 	depends on \
 		FREETZ_KERNEL_VERSION_4_4_MAX || \
 		FREETZ_KERNEL_VERSION_4_9
+
+config FREETZ_KERNEL_VERSION_4_19_MAX
+	bool
+	default y
+	depends on \
+		FREETZ_KERNEL_VERSION_4_9_MAX || \
+		FREETZ_KERNEL_VERSION_4_19
 
 
 config FREETZ_KERNEL_VERSION_2
