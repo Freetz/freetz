@@ -2,7 +2,10 @@
 # packs host-tools to dl/tools-VERSION.tar.xz in ~6min
 #Arg $1: <VERSION>
 
-VERSION="${1:-$(date '+%Y-%m-%d')}"
+MYPWD="$(dirname $(realpath $0))"
+VERSION="$(sed -n 's/^$(call TOOLS_INIT, *\(.*\))/\1/p' "$MYPWD/../tools/make/tools-host/tools-host.mk")"
+VERSION="${1:-$VERSION}"
+#VERSION="${1:-$(date '+%Y-%m-%d')}"
 
 miniconfig() {
 local i

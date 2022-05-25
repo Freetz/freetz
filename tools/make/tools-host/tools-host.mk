@@ -16,7 +16,7 @@ endef
 #	$(info ERROR: File '$(DL_DIR)/$(TOOLS_HOST_SOURCE)' not found.)
 #	$(info There is and will no download source be available.)
 #	$(info Either disable 'FREETZ_HOSTTOOLS_DOWNLOAD' in menuconfig)
-#	$(info or create the file by yourself with 'tools/own-hosttools'.)
+#	$(info or create the file by yourself with 'tools/dl-hosttools'.)
 #	$(error )
 $(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
