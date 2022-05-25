@@ -67,7 +67,7 @@ Latest changes
    * libgcrypt 1.10.1
    * libgpg-error 1.45
    * libneon 0.30.2/0.32.2
-   * LCD4linux 887bbe5-git
+   * LCD4linux 9d4e4b7-git
    * ltrace 0.7.3checkpoint1-git
    * MTR 0.80/0.95
    * Nano 6.3
