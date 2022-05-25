@@ -203,6 +203,7 @@ Currently supported devices and firmwares
   - 262.07.39 rev96343 {ALL} [MOVE21] (Labor)
 * __Fritz!Box 6850 5G (UNTESTED)__
   - 258.07.30 rev94600 {ALL} [PSQ19P2NL4]
+  - 258.07.39 rev00000 {ALL} [MOVE21] (Inhaus)
 
 * __Fritz!Box 6890 LTE__
   - 162.06.87 rev59283 {ALL}
@@ -393,6 +394,7 @@ Currently supported devices and firmwares
 * __Fritz!Box Fon WLAN 7530 AX (UNTESTED)__
   - 256.07.22 rev85878 {ALL} [PSQ19]
   - 256.07.31 rev94779 {ALL} [PSQ19P2NL4]
+  - 256.07.39 rev00000 {ALL} [MOVE21] (Inhaus)
 * __Fritz!Box Fon WLAN 7560__
   - 149.06.53 rev41227 {GER}
   - 149.06.83 rev43670 {GER}
@@ -507,6 +509,7 @@ Currently supported devices and firmwares
   - 174.07.14 rev73940 {ALL} [MESH18 NL4]
   - 174.07.21 rev83015 {ALL} [PSQ19]
   - 174.07.29 rev93268 {ALL} [PSQ19P2NL4]
+  - 174.07.39 rev00000 {ALL} [MOVE21] (Inhaus)
 * __Fritz!Repeater 6000__
   - 253.07.29 rev93257 {ALL} [PSQ19P2NL4]
 
