@@ -507,10 +507,11 @@ $(PKG)_CONFIGURE_OPTIONS += -Accflags="$(PERL_EXTRA_CFLAGS) $(PERL_EXTRA_LDFLAGS
 
 $(pkg)-download:  $(DL_DIR)/$($(PKG)_SOURCE) $($(PKG)_SOURCES)
 $($(PKG)_SOURCES):
-	$(foreach mod,$(subst $(DL_DIR)/PERL_,,$(subst _SOURCE,,$@)),$(DL_TOOL) $(DL_DIR) $(PERL_$(mod)_SOURCE) $(PERL_$(mod)_SITE) $(PERL_$(mod)_HASH))
+	$(foreach mod,$(subst $(DL_DIR)/PERL_,,$(subst _SOURCE,,$@)),$(call _ECHO,downloading) $(DL_TOOL) $(DL_DIR) $(PERL_$(mod)_SOURCE) $(PERL_$(mod)_SITE) $(PERL_$(mod)_HASH) $(SILENT))
 
 $(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR) $($(PKG)_SOURCES)
-	$(DL_TOOL) $(DL_DIR) $(PERL_SOURCE) $(PERL_SITE) $(PERL_HASH)
+	$(call _ECHO,downloading)
+	$(DL_TOOL) $(DL_DIR) $(PERL_SOURCE) $(PERL_SITE) $(PERL_HASH) $(SILENT)
 
 
 $($(PKG)_DIR)/configure: $($(PKG)_DIR)/.unpacked

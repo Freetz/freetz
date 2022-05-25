@@ -17,7 +17,8 @@ CCACHE_ECHO_MAKE:=ccache
 ccache-source: $(DL_DIR)/$(CCACHE_SOURCE)
 ifneq ($(strip $(DL_DIR)/$(CCACHE_SOURCE)), $(strip $(DL_DIR)/$(CCACHE_KERNEL_SOURCE)))
 $(DL_DIR)/$(CCACHE_SOURCE): | $(DL_DIR)
-	$(DL_TOOL) $(DL_DIR) $(CCACHE_SOURCE) $(CCACHE_SITE) $(CCACHE_HASH)
+	@$(call _ECHO,downloading,$(CCACHE_ECHO_TYPE),$(CCACHE_ECHO_MAKE))
+	$(DL_TOOL) $(DL_DIR) $(CCACHE_SOURCE) $(CCACHE_SITE) $(CCACHE_HASH) $(SILENT)
 endif
 
 ccache-unpacked: $(CCACHE_DIR)/.unpacked
