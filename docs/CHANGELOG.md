@@ -53,6 +53,7 @@ Latest changes
    * fakeroot 1.29
    * fitimg 0.8
    * kconfig 5.18
+   * patchelf 0.14.5
    * yf-bootmanager 0.8.3 9a1d3b8
 
  - Packages & libs:

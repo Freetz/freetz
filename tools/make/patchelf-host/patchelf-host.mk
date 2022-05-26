@@ -1,15 +1,11 @@
-$(call TOOLS_INIT, 0.13.1)
-# Versions since 0.14 require C++17 (eg Ubuntu 18)
-$(PKG)_VERSION_LONG:=0.13.1.20211127.72b6d44
+$(call TOOLS_INIT, 0.14.5)
 $(PKG)_SOURCE:=patchelf-$($(PKG)_VERSION).tar.bz2
-$(PKG)_HASH:=39e8aeccd7495d54df094d2b4a7c08010ff7777036faaf24f28e07777d1598e2
+$(PKG)_HASH:=b9a46f2989322eb89fa4f6237e20836c57b455aa43a32545ea093b431d982f5c
 $(PKG)_SITE:=https://github.com/NixOS/patchelf/releases/download/$($(PKG)_VERSION),https://releases.nixos.org/patchelf/patchelf-$($(PKG)_VERSION)
 ### WEBSITE:=https://opencollective.com/nixos
 ### MANPAGE:=https://sources.debian.org/patches/patchelf/
 ### CHANGES:=https://github.com/NixOS/patchelf/commits/master
 ### CVSREPO:=https://github.com/NixOS/patchelf
-
-$(PKG)_DIR:=$(TOOLS_SOURCE_DIR)/$(pkg_short)-$($(PKG)_VERSION_LONG)
 
 $(PKG)_CONFIGURE_OPTIONS += --prefix=/usr
 
