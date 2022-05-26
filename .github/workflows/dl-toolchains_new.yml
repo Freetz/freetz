@@ -83,6 +83,14 @@ jobs:
           git config --global --add safe.directory $GITHUB_WORKSPACE
           git clone https://github-actions:$GITHUB_TOKEN@${GITHUB_SERVER_URL##*/}/$GITHUB_REPOSITORY.git $GITHUB_WORKSPACE --branch $GITHUB_REF_NAME
 
+      - name: cache
+        uses: actions/cache@v3.0.2
+        with:
+          path: |
+            dl/
+            !dl/*-freetz-*-shared-glibc.tar.lzma
+          key: ${{ github.workflow }}
+
       - name: version
         id: version
         run: |
@@ -124,7 +132,7 @@ jobs:
           removeArtifacts: false
           replacesArtifacts: false
           artifactErrorsFailBuild: true
-          artifacts: "dl/*freetz-${{ steps.version.outputs.version }}-shared-glibc.tar.lzma"
+          artifacts: "dl/*-freetz-${{ steps.version.outputs.version }}-shared-glibc.tar.lzma"
           token: ${{ secrets.GITHUB_TOKEN }}
           draft: false
 

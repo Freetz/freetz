@@ -76,6 +76,14 @@ jobs:
           git config --global --add safe.directory $GITHUB_WORKSPACE
           git clone https://github-actions:$GITHUB_TOKEN@${GITHUB_SERVER_URL##*/}/$GITHUB_REPOSITORY.git $GITHUB_WORKSPACE --branch $GITHUB_REF_NAME
 
+      - name: cache
+        uses: actions/cache@v3.0.2
+        with:
+          path: |
+            dl/
+            !dl/tools-*.tar.xz
+          key: ${{ github.workflow }}
+
       - name: version
         id: version
         run: |
