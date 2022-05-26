@@ -94,7 +94,7 @@ jobs:
         env:
           ACTIONS_VERSION: ${{ steps.version.outputs.version }}
         run: |
-          mkdir -p $HOME/.freetz-dl && useradd -m freetz -s $(which bash) && chown freetz . $HOME/.freetz-dl -R
+          mkdir -p $HOME/.freetz-dl && useradd freetz -s $(which bash) -d $(pwd) -M && chown freetz . $HOME/.freetz-dl -R
           su freetz -c "umask 0022 && tools/dl-toolchains_make $ACTIONS_VERSION ${{ steps.split.outputs.split }}"
 
       - name: result
