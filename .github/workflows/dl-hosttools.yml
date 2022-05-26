@@ -12,7 +12,7 @@ on:
 jobs:
   build:
     container:
-#     image: ubuntu:14.04
+#     image: ubuntu:18.04
       image: freetzng/dl-packs
     runs-on: ubuntu-latest
 
@@ -32,41 +32,6 @@ jobs:
 #
 #     - name: locale
 #       run: locale-gen en_US.utf8 && locale-gen de_DE.UTF-8 && update-locale
-#
-#     - name: certs
-#       run: |
-#         CAX3="/usr/share/ca-certificates/mozilla/DST_Root_CA_X3.crt"
-#         for x in $(find /etc/ssl/certs/ ! -type d); do [ "$(realpath $x)"  = "/usr/share/ca-certificates/mozilla/DST_Root_CA_X3.crt" ] && CAX3="$CAX3 $x"; done
-#         echo "################################################################" && ls -al $CAX3 || true
-#         rm -f $CAX3
-#
-#     - name: zstd
-#       run: |
-#         URL="https://github.com/facebook/zstd/releases/download/v1.4.9/zstd-1.4.9.tar.gz"
-#         DIR="$(mktemp -d)"
-#         [ -d "$DIR" ] && cd "$DIR" && wget "$URL" && tar xvf "${URL##*/}" --strip-components=1 &&                make && make install
-#         echo "################################################################" && ldconfig -v 2>&1 | grep -B1 " libzstd.so\..*"
-#
-#     - name: cpio
-#       run: |
-#         URL="https://ftp.gnu.org/gnu/cpio/cpio-2.12.tar.bz2"
-#         DIR="$(mktemp -d)"
-#         [ -d "$DIR" ] && cd "$DIR" && wget "$URL" && tar xvf "${URL##*/}" --strip-components=1 && ./configure && make && make install
-#         echo "################################################################" && bash -c "cpio --version"
-#
-#     - name: make
-#       run: |
-#         URL="https://ftp.gnu.org/gnu/make/make-3.82.tar.bz2"
-#         DIR="$(mktemp -d)"
-#         [ -d "$DIR" ] && cd "$DIR" && wget "$URL" && tar xvf "${URL##*/}" --strip-components=1 && ./configure && make && make install
-#         echo "################################################################" && bash -c "make --version"
-#
-#     - name: cmake
-#       run: |
-#         URL="https://ftp.osuosl.org/pub/blfs/conglomeration/cmake/cmake-3.4.3.tar.gz"
-#         DIR="$(mktemp -d)"
-#         [ -d "$DIR" ] && cd "$DIR" && wget "$URL" && tar xvf "${URL##*/}" --strip-components=1 && ./configure && make && make install
-#         echo "################################################################" && bash -c "cmake --version"
 
       - name: clone
         env:
