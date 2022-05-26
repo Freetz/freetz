@@ -3,9 +3,8 @@
 #Arg $1: <VERSION>
 
 MYPWD="$(dirname $(realpath $0))"
-VERSION="$(sed -n 's/^$(call TOOLS_INIT, *\(.*\))/\1/p' "$MYPWD/../tools/make/tools-host/tools-host.mk")"
-VERSION="${1:-$VERSION}"
-#VERSION="${1:-$(date '+%Y-%m-%d')}"
+VERSION="${1:-$(date '+%Y-%m-%d')}"
+[ "$1" == "own" ] && VERSION="$(sed -n 's/^$(call TOOLS_INIT, *\(.*\))/\1/p' "$MYPWD/../tools/make/tools-host/tools-host.mk")"
 
 miniconfig() {
 local i

@@ -3,7 +3,9 @@
 #Arg $1: <VERSION>
 #Arg $2: <new|old|all>
 
-VERSION="${1:-rLOCAL}"
+VERSION="$(tools/freetz_revision short)"
+VERSION="${1:-r${VERSION%-*}}"
+[ "$1" == "own" ] && VERSION="rLOCAL"
 SUFFIX="freetz-${VERSION}-shared-glibc"
 
 rm -f out.{raw,kernel,target}
