@@ -44,6 +44,7 @@ Latest changes
    * Loading build kernel modules may work or do not. You'll notice.
 
  - Build system:
+   * binutils 2.24.x/2.25.x/2.26.x/2.31.x/2.38.x
    * ccache 4.6.1
    * precompiled host-tools 2022-05-23
    * precompiled toolchains r19231/r19417
