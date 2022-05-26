@@ -70,13 +70,13 @@ jobs:
 
       - name: signature
         run: |
-          [ -d .signature/ ] || mkdir -p .signature/
+          mkdir -p .signature/ 2>/dev/null || true
           for x in prv pub; do wget -q "${{ secrets.ACTIONS_CUSTOM }}$x" -O .signature/$x >/dev/null 2>&1 || rm -f .signature/$x; done
           echo "################################################################" && ls -l .signature/
 
       - name: generate
         run: |
-          [ -d dl/ ] || mkdir -p dl/
+          mkdir -p dl/ 2>/dev/null || true
           useradd freetz -s $(which bash) -d $(pwd) -M && chown freetz . -R
           su freetz -c "umask 0022 && make olddefconfig && make && rm -f images/latest.image"
 

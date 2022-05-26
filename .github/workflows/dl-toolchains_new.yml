@@ -67,7 +67,7 @@ jobs:
         env:
           ACTIONS_VERSION: ${{ steps.version.outputs.version }}
         run: |
-          [ -d dl/ ] || mkdir -p dl/
+          mkdir -p dl/ 2>/dev/null || true
           useradd freetz -s $(which bash) -d $(pwd) -M && chown freetz . -R
           su freetz -c "umask 0022 && tools/dl-toolchains_make $ACTIONS_VERSION ${{ steps.split.outputs.split }}"
 
