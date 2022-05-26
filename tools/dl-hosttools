@@ -25,9 +25,6 @@ OUTP="dl/tools-$VERSION.tar.xz"
 
 miniconfig > .config
 make distclean
-rm -rf dl 2>/dev/null
-ln -sf ~/.freetz-dl dl
-mkdir -p dl 2>/dev/null
 make kconfig-host-conf
 make olddefconfig
 time make tools-allexcept-local  # 5min
