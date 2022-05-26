@@ -87,7 +87,7 @@ jobs:
         env:
           ACTIONS_VERSION: ${{ steps.version.outputs.version }}
         run: |
-          mkdir -p $HOME/.freetz-dl && useradd freetz -s $(which bash) -d $(pwd) -M && chown freetz . $HOME/.freetz-dl -R
+          mkdir -p dl/ && useradd freetz -s $(which bash) -d $(pwd) -M && chown freetz . -R
           su freetz -c "umask 0022 && tools/dl-hosttools $ACTIONS_VERSION && rm -f tools-$ACTIONS_VERSION.*"
 
       - name: cleanup
