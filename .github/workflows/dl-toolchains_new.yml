@@ -4,7 +4,7 @@ on:
 # push:
 #   branches: [ master ]
 #   paths:
-#     - '.github/workflows/dl-toolchains_new.yml'
+#     - '.github/workflows/dl-toolchains_*.yml'
 #     - 'tools/dl-toolchains_make'
 #     - 'toolchain/make/'
   workflow_dispatch:
@@ -21,7 +21,7 @@ jobs:
       - name: split
         id: split
         run: |
-          export SPLIT="new"
+          export SPLIT="${GITHUB_WORKFLOW#*_}"
           echo "::set-output name=split::$SPLIT"
           echo "################################################################" && bash -c "echo SPLIT=$SPLIT"
 
