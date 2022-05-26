@@ -43,7 +43,8 @@ jobs:
       - name: tools
         run: |
           echo 'FREETZ_USER_LEVEL_APTGURU=y\nFREETZ_HOSTTOOLS_DOWNLOAD=y\nFREETZ_DL_SITE_USER="https://raw.githubusercontent.com/Freetz-NG/dl-mirror/master"' > .config
-          mkdir -p dl/ && useradd freetz -s $(which bash) -d $(pwd) -M && chown freetz . -R
+          [ -d dl/ ] || mkdir -p dl/
+          useradd freetz -s $(which bash) -d $(pwd) -M && chown freetz . -R
           su freetz -c "umask 0022 && make olddefconfig && make tools"
 
       - name: generate
@@ -51,7 +52,8 @@ jobs:
           ACTIONS_FWDLURL: ${{ secrets.ACTIONS_FWDLURL }}
         run: |
           export LANG=en_US.utf8
-          mkdir -p ~/.freetz-props ~/.freetz-dl/fw
+          [ -d ~/.freetz-props/ ] || mkdir -p ~/.freetz-props/
+          [ -d ~/.freetz-dl/fw/ ] || mkdir -p ~/.freetz-dl/fw/
           FREETZ_ENABLEG=true config/generate_img.sh
 
       - name: commit
