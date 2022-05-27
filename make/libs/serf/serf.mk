@@ -12,8 +12,8 @@ $(PKG)_DEPENDS_ON += apr apr-util openssl zlib
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
 
-$(PKG)_SCONS_OPTIONS += CC="$(FREETZ_LD_RUN_PATH) $(TARGET_CC)"
-$(PKG)_SCONS_OPTIONS += CFLAGS="$(TARGET_CFLAGS)"
+$(PKG)_SCONS_OPTIONS += CC="PATH=$(TARGET_PATH) $(FREETZ_LD_RUN_PATH) $(TARGET_CC)"
+$(PKG)_SCONS_OPTIONS += CFLAGS="$(TARGET_CFLAGS) -fPIC"
 $(PKG)_SCONS_OPTIONS += AR="$(TARGET_AR)"
 $(PKG)_SCONS_OPTIONS += RANLIB="$(TARGET_RANLIB)"
 $(PKG)_SCONS_OPTIONS += PREFIX="/usr"
@@ -27,11 +27,11 @@ $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured | scons-host
-	$(SCONS_HOST) -C $(SERF_DIR) $(SERF_SCONS_OPTIONS)
+	$(SCONS_HOST_TARGET_BINARY) -C $(SERF_DIR) $(SERF_SCONS_OPTIONS)
 
 $($(PKG)_STAGING_BINARY): $($(PKG)_BINARY)
 	$(SUBMAKE) serf-clean-staging
-	$(SCONS_HOST) -C $(SERF_DIR) \
+	$(SCONS_HOST_TARGET_BINARY) -C $(SERF_DIR) \
 		--install-sandbox="$(TARGET_TOOLCHAIN_STAGING_DIR)" \
 		install
 	$(call PKG_FIX_LIBTOOL_LA,prefix libdir) \
@@ -46,7 +46,7 @@ $(pkg): $($(PKG)_STAGING_BINARY)
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 $(pkg)-clean: $(pkg)-clean-staging
-	-$(SCONS_HOST) -C $(SERF_DIR) -c
+	-$(SCONS_HOST_TARGET_BINARY) -C $(SERF_DIR) -c
 
 $(pkg)-clean-staging:
 	$(RM) -r \
