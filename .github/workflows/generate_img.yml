@@ -55,6 +55,7 @@ jobs:
           mkdir -p ~/.freetz-props/ 2>/dev/null || true
           mkdir -p ~/.freetz-dl/fw/ 2>/dev/null || true
           FREETZ_ENABLEG=true config/generate_img.sh
+          rm -f ".wget-hsts" || true
 
       - name: commit
         env:
