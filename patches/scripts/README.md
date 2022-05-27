@@ -20,6 +20,8 @@
 ### fixes
  - 090-var_install_fixes.sh         - all
  - 196-storage_fixes.sh             - all
+ - 219-fix_busybox_syntax_7539.sh   - 7539 FREETZ_AVM_VERSION_07_25_MAX
+ - 220-fix_chronyd_7570.sh          - 7570
  - 261-update_avm-rootca.sh         - non updated from FOS 5.2x - <07.29
  - 521-fix_dect_update.sh           - FREETZ_TARGET_ARCH_X86
 
