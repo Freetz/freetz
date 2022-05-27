@@ -3,6 +3,8 @@ $(PKG)_SOURCE:=scons-$($(PKG)_VERSION).tar.gz
 $(PKG)_HASH:=0b25218ae7b46a967db42f2a53721645b3d42874a65f9552ad16ce26d30f51f2
 $(PKG)_SITE:=@SF/scons
 
+$(PKG)_TARGET_BINARY:=$(HOST_TOOLS_DIR)/usr/bin/scons
+
 $(PKG)_DEPENDS:=python-host
 
 
@@ -10,7 +12,7 @@ $(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
 $(TOOLS_CONFIGURED_NOP)
 
-$(HOST_TOOLS_DIR)/usr/bin/scons: $($(PKG)_DIR)/.unpacked | $($(PKG)_DEPENDS)
+$($(PKG)_TARGET_BINARY): $($(PKG)_DIR)/.unpacked | $($(PKG)_DEPENDS)
 	$(abspath $(HOST_TOOLS_DIR)/usr/bin/python) \
 		$(SCONS_HOST_DIR)/setup.py install \
 		--prefix=$(abspath $(HOST_TOOLS_DIR)/usr) \
@@ -19,7 +21,7 @@ $(HOST_TOOLS_DIR)/usr/bin/scons: $($(PKG)_DIR)/.unpacked | $($(PKG)_DEPENDS)
 		$(SILENT)
 	find $(dir $@) -maxdepth 1 -type f -name "scons*" -exec $(SED) -i -r -e 's,^#![ ]*/usr/bin/env[ ]*python,#!$(abspath $(HOST_TOOLS_DIR)/usr/bin/python),g' \{\} \+
 
-$(pkg)-precompiled: $(HOST_TOOLS_DIR)/usr/bin/scons
+$(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 
 $(pkg)-clean:
