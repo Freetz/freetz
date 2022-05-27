@@ -70,6 +70,5 @@ Test:
 
 ### Weiterführende Links
 
--   [Homepage](http://haserl.sourceforge.net/)
 -   [Patch for LUA support](https://trac.boxmatrix.info/freetz-ng/ticket/1326)
 
