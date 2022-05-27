@@ -26,10 +26,7 @@ $(CCACHE_KERNEL_DIR)/.unpacked: $(DL_DIR)/$(CCACHE_KERNEL_SOURCE) | $(KERNEL_TOO
 	@$(call _ECHO,preparing,$(CCACHE_KERNEL_ECHO_TYPE),$(CCACHE_KERNEL_ECHO_MAKE))
 	$(RM) -r $(CCACHE_KERNEL_DIR)
 	$(call UNPACK_TARBALL,$(DL_DIR)/$(CCACHE_KERNEL_SOURCE),$(KERNEL_TOOLCHAIN_DIR))
-	#$(call APPLY_PATCHES,$(CCACHE_KERNEL_MAKE_DIR)/patches,$(CCACHE_KERNEL_DIR))
-	# WARNING - this will break if the toolchain is moved.
-	# Should probably patch things to use a relative path.
-	$(SED) -i 's,ctx.config.path(),"$(CCACHE_KERNEL_BIN_DIR)",' $(CCACHE_KERNEL_DIR)/src/execute.cpp
+	$(call APPLY_PATCHES,$(CCACHE_KERNEL_MAKE_DIR)/patches,$(CCACHE_KERNEL_DIR))
 	touch $@
 
 $(CCACHE_KERNEL_DIR)/.configured: $(CCACHE_KERNEL_DIR)/.unpacked
