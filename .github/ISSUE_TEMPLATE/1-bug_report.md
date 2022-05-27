@@ -7,15 +7,15 @@ assignees: ''
 
 ---
 
- - Write in german or english
- - Attach your .config after renaming to config.txt
- - Describe steps to reproduce the behavior
- - "Error 1" is not an error description
- - Add logs, in most cases this are more than 10 lines
- - Embed images by dragging them into this text box
- - Github does not allow to attach all file types, append .txt
+ - §1 Write in german or english
+ - §2 Attach your .config after renaming to config.txt
+ - §3 Describe steps to reproduce the behavior
+ - §4 "Error 1" is not an error description
+ - §5 Add logs, in most cases this are more than 10 lines
+ - §6 Embed images by dragging them into this text box
+ - §7 Github does not allow to attach all file types, append .txt
 ```
- - Format code and logs by wrapping it with ``` like this line
+ - §8 Format code and logs by wrapping it with ``` like this line
 ```
 
 
