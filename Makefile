@@ -178,6 +178,18 @@ DLCHG:=$(shell echo 'y' ; sed 's/^FREETZ_HOSTTOOLS_DOWNLOAD=.*/# FREETZ_HOSTTOOL
 $(info You have no x86_64 CPU, precompiled (download) host-tools automatically disabled.)
 endif
 endif
+# check debian for <11
+ifeq ($([ "$(sed 's/\..*//' /etc/debian_version 2>/dev/null)" -lt 11 2>/dev/null ] && echo n),n)
+ifeq ($(FREETZ_DOWNLOAD_TOOLCHAIN),y)
+DLCHG:=$(shell echo 'y' ; sed 's/^# FREETZ_BUILD_TOOLCHAIN .*/FREETZ_BUILD_TOOLCHAIN=y/' -i $(TOPDIR)/.config)
+DLCHG:=$(shell echo 'y' ; sed 's/^FREETZ_DOWNLOAD_TOOLCHAIN=.*/# FREETZ_DOWNLOAD_TOOLCHAIN is not set/' -i $(TOPDIR)/.config)
+$(info Debian version before 11-bullseye are too old, precompiled (download) toolchains automatically disabled.)
+endif
+ifeq ($(FREETZ_HOSTTOOLS_DOWNLOAD),y)
+DLCHG:=$(shell echo 'y' ; sed 's/^FREETZ_HOSTTOOLS_DOWNLOAD=.*/# FREETZ_HOSTTOOLS_DOWNLOAD is not set/' -i $(TOPDIR)/.config)
+$(info Debian version before 11-bullseye are too old, precompiled (download) host-tools automatically disabled.)
+endif
+endif
 # compat 2020/08: change FEATURE_CROND_DIR: /var/spool/cron -> /mod/var/spool/cron
 ifeq ($(shell sed -n 's/^FREETZ_BUSYBOX___V..._FEATURE_CROND_DIR=//p' $(TOPDIR)/.config 2>/dev/null),"/var/spool/cron")
 DLCHG:=$(shell echo 'y' ; sed 's/^\(FREETZ_BUSYBOX___V..._FEATURE_CROND_DIR\)=.*/\1=\"\/mod\/var\/spool\/cron\"/' -i $(TOPDIR)/.config)
