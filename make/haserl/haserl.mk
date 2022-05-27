@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 0.9.35)
+$(call PKG_INIT_BIN, 0.9.36)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_HASH:=a1b633e80f3e2638e7f8f850786e95072cfd9877f88780092996fd6aaf7ae2da
+$(PKG)_HASH:=8f6048bfc77dfe8d1032aec2e708fddfa36d225c25d14b474f70ba7d6eefabc1
 $(PKG)_SITE:=@SF/haserl
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/haserl
