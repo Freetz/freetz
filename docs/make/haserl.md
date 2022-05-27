@@ -1,4 +1,4 @@
-# haserl 0.9.35 (binary only)
+# haserl 0.9.36 (binary only)
  - Package: [master/make/haserl/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/haserl/)
 
 "*Haserl is a small program that uses shell or Lua script to create cgi

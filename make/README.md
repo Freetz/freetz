@@ -314,7 +314,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
   * **[HAProxy 2.5.7](../docs/make/haproxy.md)<a id='haproxy'></a>**<br>
     HAProxy is a free, very fast and reliable solution offering high availability, load balancing, and proxying for TCP and HTTP-based applications.
 
-  * **[haserl 0.9.35 (binary only)](../docs/make/haserl.md)<a id='haserl'></a>**<br>
+  * **[haserl 0.9.36 (binary only)](../docs/make/haserl.md)<a id='haserl'></a>**<br>
     Haserl is a small program that uses shell or Lua script to create cgi web scripts. It is intended for environments where PHP or ruby are too big. A typical use is to run cgi scripts in an embedded environment, using a small web server, such as mini-httpd, lighty, or the server built into busybox. This package is mandatory
      - [Using busybox httpd / inet](../docs/make/haserl.md#using-busybox-httpd--inet)
 
