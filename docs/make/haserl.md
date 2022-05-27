@@ -1,4 +1,8 @@
-# haserl 0.9.36 (binary only)
+# Haserl 0.9.36 (binary only)
+ - Homepage: [http://haserl.sourceforge.net/](http://haserl.sourceforge.net/)
+ - Manpage: [http://haserl.sourceforge.net/manpage.html](http://haserl.sourceforge.net/manpage.html)
+ - Changelog: [https://sourceforge.net/p/haserl/mailman/haserl-users/](https://sourceforge.net/p/haserl/mailman/haserl-users/)
+ - Repository: [https://sourceforge.net/projects/haserl/files/](https://sourceforge.net/projects/haserl/files/)
  - Package: [master/make/haserl/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/haserl/)
 
 "*Haserl is a small program that uses shell or Lua script to create cgi
