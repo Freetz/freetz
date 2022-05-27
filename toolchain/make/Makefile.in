@@ -53,6 +53,8 @@ STDCXXLIB:=$(call qstrip,$(FREETZ_STDCXXLIB))
 # Use this paths to search for our compilers
 KERNEL_MAKE_PATH:=$(KERNEL_TOOLCHAIN_STAGING_DIR)/bin
 TARGET_MAKE_PATH:=$(TARGET_TOOLCHAIN_STAGING_DIR)/bin
+KERNEL_CCACHE_PATH:=$(KERNEL_TOOLCHAIN_STAGING_DIR)/bin-ccache
+TARGET_CCACHE_PATH:=$(TARGET_TOOLCHAIN_STAGING_DIR)/bin-ccache
 
 ifeq ($(strip $(FREETZ_BUILD_TOOLCHAIN)),y)
 TOOLCHAIN:=kernel-toolchain target-toolchain
