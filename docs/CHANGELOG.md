@@ -47,7 +47,7 @@ Latest changes
    * binutils 2.24.x/2.25.x/2.26.x/2.31.x/2.38.x
    * ccache 4.6.1
    * precompiled host-tools 2022-05-27
-   * precompiled toolchains r19231/r19417
+   * precompiled toolchains r19511
 
  - Host tools:
    * fakeroot 1.29
