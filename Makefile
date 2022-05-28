@@ -52,6 +52,7 @@ PATCH_TOOL:=$(TOOLS_DIR)/freetz_patch
 PARSE_CONFIG_TOOL:=$(TOOLS_DIR)/parse-config
 CHECK_PREREQ_TOOL:=$(TOOLS_DIR)/prerequisites
 GENERATE_IN_TOOL:=$(TOOLS_DIR)/genin
+XZ:=$(TOOLS_DIR)/xz
 TAR:=$(TOOLS_DIR)/tar-gnu
 SED:=sed
 MAKE1=make
