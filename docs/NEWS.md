@@ -1,5 +1,17 @@
 # NEWS
 
+ * __[2022-05-27](#2022-05-27)__<a id='2022-05-27'></a><br>
+   Die precompiled dl-Tooolchains und dl-Hosttool werden nun nicht mehr mit Ubuntu 14 x64 erstellt sondern<br>
+   sondern mit Ubuntu 18 x64. Der Aufwand für die Wartung dieses 8 Jahre alten Linuxes ist zu gross. Daher<br>
+   werden diese auf sehr alten Systemen nicht mehr funktionieren da dort zB die glibc zu alt ist. Von Debian 9<br>
+   wurde dies bereits gemeldet.<br>
+   Alternativen:<br>
+    - Die Toolchains selbst bauen, dazu im menuconfig keinen "APTguru" sondern höchstens "Experte" auswählen<br>
+    - Ein Docker Image verwenden, auf [Docker-Hub](https://hub.docker.com/search?q=freetz) gibt es eine recht grosse Auswahl<br>
+    - Endlich mal das Betriebsystem aktualisieren<br>
+   
+   Siehe [8e6c52a3](https://github.com/Freetz-NG/freetz-ng/commit/8e6c52a39c8e61a869b73d0d8ad20f1a1ef3e623)<br>
+
  * __[2022-04-17](#2022-04-17)__<a id='2022-04-17'></a><br>
    Es wurde ein neuer [Tag](https://github.com/Freetz-NG/freetz-ng/tags) `ng22040` erstellt.<br>
    Die automatisch angebotene und nicht deaktivierbare `.zip`-Datei darf auf keinen Fall verwendet werden, da<br>
@@ -24,7 +36,7 @@
     - 7490_07.27
    
    Siehe [94930632](https://github.com/Freetz-NG/freetz-ng/commit/9493063213ca68c42126b78347a8fab23e5cd4a2)
-   und [2688d20d6](https://github.com/Freetz-NG/freetz-ng/commit/2688d20d65be847eef80fb98b593902b69ef8334)
+   und [2688d20d6](https://github.com/Freetz-NG/freetz-ng/commit/2688d20d65be847eef80fb98b593902b69ef8334)<br>
 
  * __[2021-12-02](#2021-12-02)__<a id='2021-12-02'></a><br>
    Die aktuelle Updaterunde bei AVM ist ~~vermutlich~~ **offenbar noch nicht** abgeschlossen.<br>
@@ -48,7 +60,7 @@
    Datei. Bei 07.29 sind direkt alle Datein in der bereitgestellten `.tar`. Das bedeutet für deren Nutzung wieder<br>
    unnötigen Mehraufwand. Noch nicht einmal das Namensschema der Sourcedateien ist bei AVM konsistent.<br>
    Ein Diff zu den unmodifizierten Kernelquellen gibt es nach wie vor nicht bei AVM.<br>
-   Siehe [osp.avm.de/fritzbox/fritzbox-7490/](https://osp.avm.de/fritzbox/fritzbox-7490/)
+   Siehe [osp.avm.de/fritzbox/fritzbox-7490/](https://osp.avm.de/fritzbox/fritzbox-7490/)<br>
 
  * __[2021-10-15](#2021-10-15)__<a id='2021-10-15'></a><br>
    AVM hat neue uralte Sicherheitsverbesserungen veröffentlicht:
@@ -81,7 +93,7 @@
    ausschliesslich eine neuere Version von uClibc-ng. Diese wird von den AVM-Binaries nicht gefunden und bei<br>
    den Freetz-Binaries wird der Pfad nach `/usr/lib/freetz/` fest vorgegeben.<br>
    Falls man nur mit Freetz erstellte Binaries nutzen möchte, muss die libc Library auch kopiert werden! Der<br>
-   Pfad kann gegebenenfalls mit `FREETZ_RPATH` angepasst werden.
+   Pfad kann gegebenenfalls mit `FREETZ_RPATH` angepasst werden.<br>
 
  * __[2021-04-10](#2021-04-10)__<a id='2021-04-10'></a><br>
    Neue Linux-Benutzer werden jetzt mit IDs ab 900 angelegt. Dadurch werden sie nicht mehr von AVM gelöscht.<br>
