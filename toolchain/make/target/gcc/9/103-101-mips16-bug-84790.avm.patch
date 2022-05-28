@@ -1,0 +1,15 @@
+--- gcc/config/mips/mips.c
++++ gcc/config/mips/mips.c
+@@ -3131,6 +3131,12 @@
+       emit_insn (gen_update_got_version ());
+     }
+ 
++  if (TARGET_MIPS16 && TARGET_USE_GOT)
++    {
++      clobber_reg (&CALL_INSN_FUNCTION_USAGE (insn), MIPS16_PIC_TEMP);
++      clobber_reg (&CALL_INSN_FUNCTION_USAGE (insn), MIPS_PROLOGUE_TEMP (word_mode));
++    }
++
+   if (TARGET_MIPS16
+       && TARGET_EXPLICIT_RELOCS
+       && TARGET_CALL_CLOBBERED_GP)
