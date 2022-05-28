@@ -1,5 +1,18 @@
 # NEWS
 
+ * __[2022-05-28](#2022-05-28)__<a id='2022-05-28'></a><br>
+   Der Kernel wird nun nicht mehr direkt aus den AVM-Sourcen gebaut sondern mit einem Download von<br>
+   kernel.org und anschliessend gepatcht. Dies erspart das ständige Warten auf AVM bis Sourcen verfügbar<br>
+   sind, ausserdem werden für Laborversionen nur sporadisch Sourcen veröffentlich, für Inhaus überhaupt<br>
+   nicht. Für eine solche Firmware stehen  keine Kernelmodule zur Verfügung.<br>
+   Dies kann mit den Inhaus 7.39 dieser Geräte getestet werden:<br>
+    - 4.4.271  - 3000 + 7530 + 6850-4G + 6850-5G<br>
+    - 4.4.271  - 2400<br>
+    - 4.9.218  - 7590(ac) + 7590ax<br>
+    - 4.19.183 - 7530ax<br>
+   
+   Siehe [4d29c10d](https://github.com/Freetz-NG/freetz-ng/commit/4d29c10d54154be99b61cf7dc95acf751d3b4303)<br>
+
  * __[2022-05-27](#2022-05-27)__<a id='2022-05-27'></a><br>
    Die precompiled dl-Tooolchains und dl-Hosttool werden nun nicht mehr mit Ubuntu 14 x64 erstellt sondern<br>
    sondern mit Ubuntu 18 x64. Der Aufwand für die Wartung dieses 8 Jahre alten Linuxes ist zu gross. Daher<br>
