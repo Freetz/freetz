@@ -149,7 +149,11 @@ TARGET_READELF:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)readelf
 TARGET_STRIP:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)strip --remove-section={.comment,.note,.pdr}
 
 # Don't use TARGET_TOOLCHAIN_PATH here because it's not set
+ifeq ($(strip $(FREETZ_TOOLCHAIN_CCACHE)),y)
 TARGET_PATH="$(TARGET_MAKE_PATH):$(KERNEL_MAKE_PATH):$(TARGET_CCACHE_PATH):$(KERNEL_CCACHE_PATH):$(PATH_DIR):$(PATH)"
+else
+TARGET_PATH="$(TARGET_CCACHE_PATH):$(KERNEL_CCACHE_PATH):$(TARGET_MAKE_PATH):$(KERNEL_MAKE_PATH):$(PATH_DIR):$(PATH)"
+endif
 
 
 # commands to run before calling configure
