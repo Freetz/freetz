@@ -132,7 +132,7 @@ Currently supported devices and firmwares
   - 171.07.12 rev71193 {ALL} [MESH18 NL2]
   - 171.07.29 rev92216 {ALL} [PSQ19P2NL4]
 
-* __Fritz!Box 5530 Fiber (UNTESTED)__
+* __Fritz!Box 5530 Fiber (BROKEN)__
   - 257.07.21 rev83233 {GER} [AXKFW2]
   - 257.07.29 rev93005 {ALL} [PSQ19P2NL4]
 * __Fritz!Box 5590 Fiber__
@@ -394,7 +394,7 @@ Currently supported devices and firmwares
   - 164.07.29 rev92062 {ALL} [PSQ19P2NL4]
   - 164.07.39 rev94937 {ALL} [MOVE21] (Labor)
   - 164.07.39 rev00000 {ALL} [MOVE21] (Inhaus)
-* __Fritz!Box Fon WLAN 7530 AX (UNTESTED)__
+* __Fritz!Box Fon WLAN 7530 AX (BROKEN)__
   - 256.07.22 rev85878 {ALL} [PSQ19]
   - 256.07.31 rev94779 {ALL} [PSQ19P2NL4]
   - 256.07.39 rev00000 {ALL} [MOVE21] (Inhaus)
