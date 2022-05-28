@@ -76,13 +76,13 @@ esac
 echo -n " $ENDI" | tee -a out.kernel >> out.target
 
 case "${line#*gcc-}" in
-	3*|4*)  GCC="$(echo $line | sed -nr 's/.*gcc-(.)\.(.).*/\1_\2/p')" ;;
-	5*|8*)  GCC="$(echo $line | sed -nr 's/.*gcc-(.).*/\1  /p')" ;;
+	3*|4*)    GCC="$(echo $line | sed -nr 's/.*gcc-(.)\.(.).*/\1_\2/p')" ;;
+	5*|8*|9*) GCC="$(echo $line | sed -nr 's/.*gcc-(.).*/\1  /p')" ;;
 esac
 echo -n " && FREETZ_KERNEL_GCC_$GCC" >> out.kernel
 case "${linet#*gcc-}" in
-	3*|4*)  GCCT="$(echo $linet | sed -nr 's/.*gcc-(.)\.(.).*/\1_\2/p')" ;;
-	5*|8*)  GCCT="$(echo $linet | sed -nr 's/.*gcc-(.).*/\1  /p')" ;;
+	3*|4*)    GCCT="$(echo $linet | sed -nr 's/.*gcc-(.)\.(.).*/\1_\2/p')" ;;
+	5*|8*|9*) GCCT="$(echo $linet | sed -nr 's/.*gcc-(.).*/\1  /p')" ;;
 esac
 echo -n " && FREETZ_TARGET_GCC_$GCCT" >> out.target
 
