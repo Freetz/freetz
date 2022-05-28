@@ -184,7 +184,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
   * **[libssh2 (libssh2.so) 1.10.0](libssh2.md)<a id='libssh2'></a>**<br>
     libssh2 is a client-side C library implementing the SSH2 protocol.
 
-  * **[libstdcxx: libstdc++ (libstdc++-6.0.x.so) 6.0.16/6.0.17/6.0.19/6.0.20/6.0.21/6.0.25](libstdcxx.md)<a id='libstdcxx'></a>**<br>
+  * **[libstdcxx: libstdc++ (libstdc++-6.0.x.so) 6.0.16/6.0.17/6.0.19/6.0.20/6.0.21/6.0.25/6.0.28](libstdcxx.md)<a id='libstdcxx'></a>**<br>
     GNU implementation of the Standard C++ Library.
 
   * **[libsynce (libsynce.so) 0.10.0](libsynce.md)<a id='libsynce'></a>**<br>
