@@ -31,11 +31,20 @@ config FREETZ_REPLACE_KERNEL_AVAILABLE
 # "kernel version used by Freetz" == "kernel version used by AVM"
 config FREETZ_REPLACE_MODULE_AVAILABLE
 	bool
-	depends on !(FREETZ_SYSTEM_TYPE_BRCMA9 && FREETZ_AVM_VERSION_07_4X_MIN)   # no kernel 4.19.183 sources for 7530 ax available
 	depends on !(FREETZ_SYSTEM_TYPE_BCM63138)                                 # no kernel 4.1.38 sources for 7581/7582 integrated
-	depends on !(FREETZ_SYSTEM_TYPE_GRX5 && FREETZ_AVM_VERSION_07_4X_MIN)     # no kernel 4.9.218 sources for 7590 ac+ax available
+	depends on FREETZ_REPLACE_SOURCE_AVAILABLE
 	default y
 	help
 		Select this if only source code from a previous firmware version is available for your box.
-		Note: Loading of the modules built by Freetz may work or may not!
+		Note: Loading of the modules built by Freetz may work or may not! Ask fritzbox_info@avm.de!
+
+config FREETZ_REPLACE_SOURCE_AVAILABLE
+	bool
+	depends on !FREETZ_KERNEL_VERSION_4_1_38    # 07_1X-stable 7581/7582
+	depends on !FREETZ_KERNEL_VERSION_4_4_271   # 07_4X-inhaus 3000/7530/6850_4G/6850_5G + 2400
+	depends on !FREETZ_KERNEL_VERSION_4_9_218   # 07_4X-inhaus 7590/7599
+	depends on !FREETZ_KERNEL_VERSION_4_19_183  # 07_4X-inhaus 7539
+	default y
+	help
+		No avm sources at all of this kernel version, so unpatched vanilla is used. Ask fritzbox_info@avm.de!
 
