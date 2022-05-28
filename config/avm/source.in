@@ -47,7 +47,7 @@ config FREETZ_AVM_SOURCE_3272_06_86
 	bool
 
 # BCM63138
-config FREETZ_AVM_SOURCE_7581_07_13
+config FREETZ_AVM_SOURCE_7582_07_15
 	bool
 
 # BRCMA9
@@ -232,7 +232,7 @@ config FREETZ_AVM_SOURCE_ID
 	default "7272_06.87"    if FREETZ_AVM_SOURCE_7272_06_87
 	default "3272_06.86"    if FREETZ_AVM_SOURCE_3272_06_86
 # BCM63138
-	default "7581_07.13"    if FREETZ_AVM_SOURCE_7581_07_13
+	default "7582_07.15"    if FREETZ_AVM_SOURCE_7582_07_15
 # BRCMA9
 	default "7539_07.22"    if FREETZ_AVM_SOURCE_7539_07_22
 	default "7539_07.29"    if FREETZ_AVM_SOURCE_7539_07_29
@@ -346,15 +346,13 @@ config FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_AR10
 
 config FREETZ_AVM_SOURCE_FOR_SYSTEM_TYPE_BCM63138
 	depends on FREETZ_SYSTEM_TYPE_BCM63138
-	select FREETZ_AVM_SOURCE_7530_07_02
+	select FREETZ_AVM_SOURCE_7582_07_15
 	bool
 	help
 		TODO:
-		 - select FREETZ_AVM_SOURCE_7581_07_13
-		 - del make/linux/configs/freetz/config-bcm63138-7530_07.02
-		 - add make/linux/configs/avm/config-bcm63138-7581_07.13
+		 - update make/linux/configs/*/config-bcm63138-7582_07.15
 		 - run config/generate_kos.sh
-		 - add make/linux/patches/4.1.38
+		 - update make/linux/patches/4.1.38/
 		 - change FREETZ_REPLACE_MODULE_AVAILABLE
 		 - special unpack
 
