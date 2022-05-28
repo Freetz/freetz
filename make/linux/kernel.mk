@@ -40,20 +40,20 @@ $(DL_DIR)/$(DL_KERNEL_AVMDIFF_SOURCE): | $(DL_DIR)
 # with the source directory.
 kernel-unpacked: $(KERNEL_DIR)/.unpacked
 $(KERNEL_DIR)/.unpacked: $(DL_DIR)/$(DL_KERNEL_VANILLA_SOURCE) $(if $(FREETZ_REPLACE_SOURCE_AVAILABLE),$(DL_DIR)/$(DL_KERNEL_AVMDIFF_SOURCE)) | $(UNPACK_TARBALL_PREREQUISITES) gcc-kernel
-	@echo "Using kernel version: $(FREETZ_KERNEL_VERSION)"
+	@echo "Using kernel version: $(call qstrip,$(FREETZ_KERNEL_VERSION))" $(SILENT)
 	$(RM) -r $(KERNEL_DIR)
 	mkdir -p $(KERNEL_SOURCE_DIR)
 	@$(call _ECHO,preparing,$(KERNEL_ECHO_TYPE))
 	@$(call UNPACK_TARBALL,$(DL_DIR)/$(DL_KERNEL_VANILLA_SOURCE),$(KERNEL_SOURCE_DIR),1)
 	@$(call _ECHO,patching,$(KERNEL_ECHO_TYPE))
-	@echo ""
+	@echo "" $(SILENT)
 ifeq ($(strip $(FREETZ_REPLACE_SOURCE_AVAILABLE)),y)
-	@echo "#vanilla to avm patch: $(DL_DIR)/$(DL_KERNEL_AVMDIFF_SOURCE)"
+	@echo "#vanilla to avm patch: $(DL_DIR)/$(DL_KERNEL_AVMDIFF_SOURCE)" $(SILENT)
 	@$(call APPLY_PATCHES,$(DL_DIR),$(KERNEL_SOURCE_DIR),$(DL_KERNEL_AVMDIFF_SOURCE))
 endif
-	@echo "#kernel version specific patches: $(KERNEL_PATCHES_DIR)"
+	@echo "#kernel version specific patches: $(KERNEL_PATCHES_DIR)" $(SILENT)
 	@$(call APPLY_PATCHES,$(KERNEL_PATCHES_DIR),$(KERNEL_DIR))
-	@echo "#firmware version specific patches: $(KERNEL_PATCHES_DIR)/$(AVM_SOURCE_ID)"
+	@echo "#firmware version specific patches: $(KERNEL_PATCHES_DIR)/$(AVM_SOURCE_ID)" $(SILENT)
 	@$(call APPLY_PATCHES,$(KERNEL_PATCHES_DIR)/$(AVM_SOURCE_ID),$(KERNEL_DIR))
 	@$(call _ECHO,fixing,$(KERNEL_ECHO_TYPE))
 ifeq ($(strip $(FREETZ_REPLACE_SOURCE_AVAILABLE)),y)
