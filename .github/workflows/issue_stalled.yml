@@ -1,0 +1,27 @@
+name: issue_stalled
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: release
+        uses: actions/stale@v4.1.0
+        with:
+          stale-issue-message: 'stalled'
+          close-issue-message: 'stalled'
+          stale-issue-label: 'stalled'
+          labels-to-remove-when-unstale: 'stalled'
+          exempt-issue-labels: 'task'
+          days-before-stale: 10
+          days-before-pr-stale: -1
+          remove-stale-when-updated: true
+          enable-statistics: true
+
+
