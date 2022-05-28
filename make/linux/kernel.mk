@@ -149,7 +149,11 @@ endif
 $(KERNEL_DIR)/.configured: $(KERNEL_DIR)/.unpacked $(KERNEL_CONFIG_FILE)
 	$(call _ECHO,configuring,$(KERNEL_ECHO_TYPE))
 	cp $(KERNEL_CONFIG_FILE) $(KERNEL_SOURCE_DIR)/.config
+ifeq ($(strip $(FREETZ_REPLACE_SOURCE_AVAILABLE)),y)
 	$(SUBMAKE) $(KERNEL_COMMON_MAKE_OPTIONS) oldconfig
+else
+	$(SUBMAKE) $(KERNEL_COMMON_MAKE_OPTIONS) olddefconfig
+endif
 	touch $@
 
 $(KERNEL_DIR)/.prepared: $(KERNEL_DIR)/.configured
