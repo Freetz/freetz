@@ -16,39 +16,54 @@ ifeq ($(strip $(FREETZ_VERBOSITY_LEVEL)),2)
 KERNEL_COMMON_MAKE_OPTIONS += V=1
 endif
 
-KERNEL_VANILLA_SOURCE:=linux-$(call qstrip,$(FREETZ_KERNEL_VANILLA_VERSION)).tar.xz
-KERNEL_VANILLA_HASH:=$(call qstrip,$(FREETZ_KERNEL_VANILLA_HASH))
-KERNEL_VANILLA_SITE:=@KERNEL/linux/kernel/v$(call qstrip,$(FREETZ_KERNEL_VANILLA_DLDIR))
+DL_KERNEL_VANILLA_SOURCE:=$(call qstrip,$(FREETZ_DL_KERNEL_VANILLA_SOURCE))
+DL_KERNEL_VANILLA_HASH:=$(call qstrip,$(FREETZ_DL_KERNEL_VANILLA_HASH))
+DL_KERNEL_VANILLA_SITE:=@KERNEL/linux/kernel/v$(call qstrip,$(FREETZ_KERNEL_VANILLA_DLDIR))
 
-DL_KERNEL_SOURCE:=$(call qstrip,$(FREETZ_DL_KERNEL_SOURCE))
+DL_KERNEL_AVMDIFF_SOURCE:=$(call qstrip,$(FREETZ_DL_KERNEL_AVMDIFF_SOURCE))
+DL_KERNEL_AVMDIFF_HASH:=$(call qstrip,$(FREETZ_DL_KERNEL_AVMDIFF_HASH))
+DL_KERNEL_AVMDIFF_SITE:=@MIRROR/
 
 KERNEL_ECHO_TYPE:=KRN
 
 
-$(DL_DIR)/$(KERNEL_VANILLA_SOURCE): | $(DL_DIR)
+$(DL_DIR)/$(DL_KERNEL_VANILLA_SOURCE): | $(DL_DIR)
 	@$(call _ECHO,downloading,$(KERNEL_ECHO_TYPE))
-	$(DL_TOOL) $(DL_DIR) $(KERNEL_VANILLA_SOURCE) $(KERNEL_VANILLA_SITE) $(KERNEL_VANILLA_HASH) $(SILENT)
+	$(DL_TOOL) $(DL_DIR) $(DL_KERNEL_VANILLA_SOURCE) $(DL_KERNEL_VANILLA_SITE) $(DL_KERNEL_VANILLA_HASH) $(SILENT)
 
-$(DL_FW_DIR)/$(DL_KERNEL_SOURCE): | $(DL_FW_DIR)
+$(DL_DIR)/$(DL_KERNEL_AVMDIFF_SOURCE): | $(DL_DIR)
 	@$(call _ECHO,downloading,$(KERNEL_ECHO_TYPE))
-	$(DL_TOOL) $(DL_FW_DIR) $(FREETZ_DL_KERNEL_SOURCE) $(FREETZ_DL_KERNEL_SITE) $(FREETZ_DL_KERNEL_HASH) $(SILENT)
+	$(DL_TOOL) $(DL_DIR) $(DL_KERNEL_AVMDIFF_SOURCE) $(DL_KERNEL_AVMDIFF_SITE) $(DL_KERNEL_AVMDIFF_HASH) $(SILENT)
 
 # Make sure that a perfectly clean build is performed whenever Freetz package
 # options have changed. The safest way to achieve this is by starting over
 # with the source directory.
 kernel-unpacked: $(KERNEL_DIR)/.unpacked
-$(KERNEL_DIR)/.unpacked: $(DL_FW_DIR)/$(DL_KERNEL_SOURCE) | $(UNPACK_TARBALL_PREREQUISITES) gcc-kernel
+$(KERNEL_DIR)/.unpacked: $(DL_DIR)/$(DL_KERNEL_VANILLA_SOURCE) $(if $(FREETZ_REPLACE_SOURCE_AVAILABLE),$(DL_DIR)/$(DL_KERNEL_AVMDIFF_SOURCE)) | $(UNPACK_TARBALL_PREREQUISITES) gcc-kernel
+	@echo "Using kernel version: $(FREETZ_KERNEL_VERSION)"
 	$(RM) -r $(KERNEL_DIR)
 	mkdir -p $(KERNEL_SOURCE_DIR)
 	@$(call _ECHO,preparing,$(KERNEL_ECHO_TYPE))
-	@$(call UNPACK_TARBALL,$(DL_FW_DIR)/$(DL_KERNEL_SOURCE),$(KERNEL_SOURCE_DIR),1)
+	@$(call UNPACK_TARBALL,$(DL_DIR)/$(DL_KERNEL_VANILLA_SOURCE),$(KERNEL_SOURCE_DIR),1)
 	@$(call _ECHO,patching,$(KERNEL_ECHO_TYPE))
-	#
-	#kernel version specific patches
+	@echo ""
+ifeq ($(strip $(FREETZ_REPLACE_SOURCE_AVAILABLE)),y)
+	@echo "#vanilla to avm patch: $(DL_DIR)/$(DL_KERNEL_AVMDIFF_SOURCE)"
+	@$(call APPLY_PATCHES,$(DL_DIR),$(KERNEL_SOURCE_DIR),$(DL_KERNEL_AVMDIFF_SOURCE))
+endif
+	@echo "#kernel version specific patches: $(KERNEL_PATCHES_DIR)"
 	@$(call APPLY_PATCHES,$(KERNEL_PATCHES_DIR),$(KERNEL_DIR))
-	#firmware version specific patches
+	@echo "#firmware version specific patches: $(KERNEL_PATCHES_DIR)/$(AVM_SOURCE_ID)"
 	@$(call APPLY_PATCHES,$(KERNEL_PATCHES_DIR)/$(AVM_SOURCE_ID),$(KERNEL_DIR))
 	@$(call _ECHO,fixing,$(KERNEL_ECHO_TYPE))
+ifeq ($(strip $(FREETZ_REPLACE_SOURCE_AVAILABLE)),y)
+	@find $(KERNEL_SOURCE_DIR) -type l -exec rm -f {} ';'
+	@$(XZ) -d $(DL_DIR)/$(DL_KERNEL_AVMDIFF_SOURCE) -c | grep -E '^    (Link|Exec)# .*' | while read a b c d; do \
+	  [ "$$a" == "Link#" ] && mkdir -p $(KERNEL_SOURCE_DIR)/$${b%/*};  \
+	  [ "$$a" == "Link#" ] && ln -sf $$d $(KERNEL_SOURCE_DIR)/$$b; \
+	  [ "$$a" == "Exec#" ] && chmod +x $(KERNEL_SOURCE_DIR)/$$b; \
+	done
+endif
 	@for i in $(KERNEL_LINKING_FILES); do \
 		f="$${i%%,*}"; symlink_location="$${i##*,}"; \
 		if [ -e "$(KERNEL_SOURCE_DIR)/$${f}" ] && [ -d "$(KERNEL_SOURCE_DIR)/$$(dirname $${symlink_location})" ]; then \
