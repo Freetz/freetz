@@ -77,7 +77,7 @@ endif
 ifeq ($(strip $(FREETZ_REPLACE_SOURCE_AVAILABLE)),y)
 	@find $(KERNEL_SOURCE_DIR) -type l -exec rm -f {} ';'
 	@$(TOOLS_DIR)/unxz $(DL_DIR)/$(DL_KERNEL_AVMDIFF_SOURCE) -c | grep -E '^    (Dirs|Link|Exec)# .*' | while read a b c d; do \
-	  [ "$$a" == "Dirs#" ] && mkdir -p $(KERNEL_SOURCE_DIR)/$${b%/*}; \
+	  [ "$$a" == "Dirs#" ] && mkdir -p $(KERNEL_SOURCE_DIR)/$$b; \
 	  [ "$$a" == "Link#" ] && mkdir -p $(KERNEL_SOURCE_DIR)/$${b%/*}; \
 	  [ "$$a" == "Link#" ] && ln -sf $$d $(KERNEL_SOURCE_DIR)/$$b; \
 	  [ "$$a" == "Exec#" ] && chmod +x $(KERNEL_SOURCE_DIR)/$$b; \
