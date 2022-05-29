@@ -62,8 +62,9 @@ endif
 	@$(call _ECHO,fixing,$(KERNEL_ECHO_TYPE))
 ifeq ($(strip $(FREETZ_REPLACE_SOURCE_AVAILABLE)),y)
 	@find $(KERNEL_SOURCE_DIR) -type l -exec rm -f {} ';'
-	@$(XZ) -d $(DL_DIR)/$(DL_KERNEL_AVMDIFF_SOURCE) -c | grep -E '^    (Link|Exec)# .*' | while read a b c d; do \
-	  [ "$$a" == "Link#" ] && mkdir -p $(KERNEL_SOURCE_DIR)/$${b%/*};  \
+	@$(XZ) -d $(DL_DIR)/$(DL_KERNEL_AVMDIFF_SOURCE) -c | grep -E '^    (Dirs|Link|Exec)# .*' | while read a b c d; do \
+	  [ "$$a" == "Dirs#" ] && mkdir -p $(KERNEL_SOURCE_DIR)/$${b%/*}; \
+	  [ "$$a" == "Link#" ] && mkdir -p $(KERNEL_SOURCE_DIR)/$${b%/*}; \
 	  [ "$$a" == "Link#" ] && ln -sf $$d $(KERNEL_SOURCE_DIR)/$$b; \
 	  [ "$$a" == "Exec#" ] && chmod +x $(KERNEL_SOURCE_DIR)/$$b; \
 	done
