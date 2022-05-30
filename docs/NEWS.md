@@ -25,6 +25,11 @@
    
    Siehe [8e6c52a3](https://github.com/Freetz-NG/freetz-ng/commit/8e6c52a39c8e61a869b73d0d8ad20f1a1ef3e623)<br>
 
+ * __[2022-05-24](#2022-05-24)__<a id='2022-05-24'></a><br>
+   Da es für MD5 und SHA1 günstige Kollisionsangriffe gib gelten diese als unsicher und Freetz nutzt deshalb<br>
+   jetzt für alle Downloads SHA256-Hashes. Wem fehlende oder alte Hashes auffallen möge diese korrigieren.<br>
+   Siehe [2b11ebd6](https://github.com/Freetz-NG/freetz-ng/commit/2b11ebd6abf8720d3097406347e7c7e46f18f377)<br>
+
  * __[2022-04-17](#2022-04-17)__<a id='2022-04-17'></a><br>
    Es wurde ein neuer [Tag](https://github.com/Freetz-NG/freetz-ng/tags) `ng22040` erstellt.<br>
    Die automatisch angebotene und nicht deaktivierbare `.zip`-Datei darf auf keinen Fall verwendet werden, da<br>
