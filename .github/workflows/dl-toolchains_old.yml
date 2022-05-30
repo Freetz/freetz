@@ -97,10 +97,10 @@ jobs:
           prerelease: true
           allowUpdates: true
           removeArtifacts: false
-          replacesArtifacts: true
-          artifactErrorsFailBuild: true
           artifacts: "dl/*-freetz-${{ steps.version.outputs.version }}-shared-glibc.tar.lzma"
           token: ${{ secrets.GITHUB_TOKEN }}
-          draft: false
+          replacesArtifacts: true
+          artifactErrorsFailBuild: true
+          draft: true
 
 

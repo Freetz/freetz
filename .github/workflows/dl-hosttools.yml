@@ -82,11 +82,11 @@ jobs:
           prerelease: true
           allowUpdates: true
           removeArtifacts: false
-          replacesArtifacts: false
-          artifactErrorsFailBuild: false
           artifacts: "dl/tools-${{ steps.version.outputs.version }}.tar.xz"
           token: ${{ secrets.GITHUB_TOKEN }}
-          draft: false
+          replacesArtifacts: false
+          artifactErrorsFailBuild: false
+          draft: true
 
       - name: bump
         env:
