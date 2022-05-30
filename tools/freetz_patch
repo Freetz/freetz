@@ -114,6 +114,7 @@ modpatch()
 	[ ! -e $patch_file ] && error 2 "modpatch: Could not find patch-file $patch_file"
 
 	local uncompress_tool
+	local reverse
 	case "$patch_file" in
 		*.gz)
 			uncompress_tool="gunzip"
@@ -133,6 +134,9 @@ modpatch()
 		*.Z)
 			uncompress_tool="uncompress"
 			;;
+		*.diff)
+			reverse='-R'
+			;;
 	esac
 
 	local read_patch_cmd
@@ -149,7 +153,7 @@ modpatch()
 
 	# detect patch-level
 	for p in 0 1 2 3 4 5 6 7 8 9; do
-		$read_patch_cmd "$patch_file" | patch -f -p$p -d "$target_dir" --dry-run &>/dev/null && break || p=0
+		$read_patch_cmd "$patch_file" | patch $reverse -f -p$p -d "$target_dir" --dry-run &>/dev/null && break || p=0
 	done
 
 	local backup
@@ -160,7 +164,7 @@ modpatch()
 			which $tool > /dev/null || error 1 "$freetz_patch_name: tool $tool needed for auto-fix mode, please install"
 		done
 
-		local output=$(patch --dry-run -d "$target_dir" -p$p < "$patch_file" 2> /dev/null)
+		local output=$(patch $reverse --dry-run -d "$target_dir" -p$p < "$patch_file" 2> /dev/null)
 		if [ $? -eq 0 ] && echo "$output" | grep -sqE '^Hunk '; then
 			# Is any target file patched more than once per patch? -> skip auto-fix
 			local multi_patch_files="$(lsdiff "$patch_file" | sort | uniq -cd)"
@@ -182,10 +186,10 @@ modpatch()
 	local APPLY_PATCH_STATUS
 	if [ "$is_verbose" ]; then
 		echo2 "applying patch${p#0} file $patch_file"
-		$read_patch_cmd "$patch_file" | patch --force ${backup}-d "$target_dir" -p$p --no-backup-if-mismatch 2>&1 | sed -e "s/^/${L2}/g"
+		$read_patch_cmd "$patch_file" | patch $reverse --force ${backup}-d "$target_dir" -p$p --no-backup-if-mismatch 2>&1 | sed -e "s/^/${L2}/g"
 		READ_PATCH_STATUS=${PIPESTATUS[0]} APPLY_PATCH_STATUS=${PIPESTATUS[1]}
 	else
-		$read_patch_cmd "$patch_file" | patch --force ${backup}-d "$target_dir" -p$p --no-backup-if-mismatch >/dev/null
+		$read_patch_cmd "$patch_file" | patch $reverse --force ${backup}-d "$target_dir" -p$p --no-backup-if-mismatch >/dev/null
 		READ_PATCH_STATUS=${PIPESTATUS[0]} APPLY_PATCH_STATUS=${PIPESTATUS[1]}
 	fi
 	if [ $READ_PATCH_STATUS -gt 0 ]; then
@@ -244,6 +248,7 @@ modpatch()
 		done
 		cd - > /dev/null
 		rm "$patch_file.orig"
+		[ -n "$reverse" ] && mv $patch_file ${patch_file%.diff}
 	fi
 	[ "$is_verbose" == "y" -o "$do_fix" == "y" ] && echo2 -- "----------------------------------------------------------------------"
 	return 0
