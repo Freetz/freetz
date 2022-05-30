@@ -167,9 +167,10 @@ menu "Download options"
 		default FREETZ_AVM_SOURCE_ID
 
 	config FREETZ_DL_KERNEL_KONGLOMERAT
-		bool "Use old AVM konglomerat"
+		bool "Use old AVM konglomerat - DEVELOPER"
 		default n
 		depends on FREETZ_AVM_VERSION_07_25_MAX
+		depends on FREETZ_SHOW_DEVELOPER
 		help
 			By enabling this you use avm's gpl konglomerat and not a file from kernel.org with a patch.
 			This is not available for newer firmware versions and download will fail.
