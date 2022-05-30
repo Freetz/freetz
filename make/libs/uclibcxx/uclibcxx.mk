@@ -3,6 +3,10 @@ $(PKG)_LIB_VERSION:=0.2.5
 $(PKG)_SOURCE:=uClibc++-$($(PKG)_VERSION).tar.xz
 $(PKG)_HASH:=3d0a08bdad8942154ec49edec1274b2d942cf80b74bd5d4dbd2d81970a57e441
 $(PKG)_SITE:=http://git.uclibc.org/uClibc++/snapshot
+### WEBSITE:=https://cxx.uclibc.org/
+### MANPAGE:=https://cxx.uclibc.org/faq.html
+### CHANGES:=https://git.busybox.net/uClibc++/log/
+### CVSREPO:=https://git.busybox.net/uClibc++/
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/libuClibc++.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libuClibc++.so.$($(PKG)_LIB_VERSION)
