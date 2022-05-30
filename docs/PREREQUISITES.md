@@ -111,11 +111,22 @@ sudo apt-get -y install pv cpio rsync kmod execstack imagemagick inkscape graphi
  - Ubuntu 14 64-Bit:
 ```
 sudo apt-get -y install pv cpio rsync kmod execstack imagemagick inkscape graphicsmagick subversion git bc unar wget sudo gcc g++ binutils autoconf automake autopoint libtool     make bzip2 libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config ecj fastjar realpath perl libstring-crc32-perl ruby ruby1.9 gawk python libusb-dev unzip intltool libacl1-dev libcap-dev libc6-dev-i386 lib32ncurses5-dev gcc-multilib bsdmainutils lib32stdc++6 libglib2.0-dev ccache cmake lib32z1-dev libsqlite3-dev sqlite3 netcat curl openssl build-essential automake1.9
+```
 Zusätzlich muss manuell installiert werden:
+```
 cmake min v3.4.3  https://ftp.osuosl.org/pub/blfs/conglomeration/cmake/cmake-3.4.3.tar.gz
 cpio min v2.12    https://ftp.gnu.org/gnu/cpio/cpio-2.12.tar.bz2
 make min v3.82    https://ftp.gnu.org/gnu/make/make-3.82.tar.bz2
 libzstd min v0    https://github.com/facebook/zstd/releases/download/v1.4.9/zstd-1.4.9.tar.gz
+```
+Und ausserdem falls ccache gebaut werden soll:
+```
+cmake min v3.10   https://ftp.osuosl.org/pub/blfs/conglomeration/cmake/cmake-3.10.3.tar.gz
+gmp min v4.2      https://ftp.gnu.org/gnu/gmp/gmp-4.2.4.tar.bz2
+mpfr min v2.4     https://ftp.gnu.org/gnu/mpfr/mpfr-2.4.2.tar.xz
+mpc min v0.8      https://gcc.gnu.org/pub/gcc/infrastructure/mpc-0.8.1.tar.gz
+gcc min v6        https://ftp.gnu.org/gnu/gcc/gcc-6.5.0/gcc-6.5.0.tar.xz
+# export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib:/usr/local/lib64:/usr/local/lib32"
 ```
 
  - Falls auf den folgenden Systemen ein 64-Bit Linux installiert ist wird zusätzlich benötigt:
