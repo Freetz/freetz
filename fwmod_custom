@@ -51,11 +51,17 @@ all_no_freetz() {
 	# restore debug.cfg support
 	source "${patches_scripts}/114-debug_cfg_support.sh"
 
+	# patch away / hide "Nicht empfohlene Einstellungen"
+	source "${patches_scripts}/194-patch_webmenu_secure.sh"
+
 	# patch away / hide "vom Hersteller nicht unterstützte Änderungen"
 	source "${patches_scripts}/195-patch_webmenu_signed.sh"
 
 	# restore volume counter support, 7412 only
 	source "${patches_scripts}/241-restore_vol_counter.sh"
+
+	# enable multiple fax pages
+	source "${patches_scripts}/383-enable-faxpages.sh"
 
 	# add yf-bootmanager
 	source "${patches_scripts}/800-yf_bootmanager.sh"
