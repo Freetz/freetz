@@ -76,12 +76,14 @@ endif
 	@$(call _ECHO,fixing,$(KERNEL_ECHO_TYPE))
 ifeq ($(strip $(FREETZ_REPLACE_SOURCE_AVAILABLE)),y)
 	@find $(KERNEL_SOURCE_DIR) -type l -exec rm -f {} ';'
-	@$(TOOLS_DIR)/unxz $(DL_DIR)/$(DL_KERNEL_AVMDIFF_SOURCE) -c | grep -E '^    (Dirs|Link|Exec)# .*' | while read a b c d; do \
-	  [ "$$a" == "Dirs#" ] && mkdir -p $(KERNEL_SOURCE_DIR)/$$b; \
-	  [ "$$a" == "Link#" ] && mkdir -p $(KERNEL_SOURCE_DIR)/$${b%/*}; \
-	  [ "$$a" == "Link#" ] && ln -sf $$d $(KERNEL_SOURCE_DIR)/$$b; \
-	  [ "$$a" == "Exec#" ] && chmod +x $(KERNEL_SOURCE_DIR)/$$b; \
-	done
+	@$(TOOLS_DIR)/unxz $(DL_DIR)/$(DL_KERNEL_AVMDIFF_SOURCE) -c | grep -E '^    #FREETZ# (mkdir|chmod|slink|touch) .*' | while read x a b c; do \
+	  [ "$$a" == "mkdir" ] && mkdir -p    "$(KERNEL_SOURCE_DIR)/$${b}"; \
+	  [ "$$a" == "chmod" ] && chmod +x    "$(KERNEL_SOURCE_DIR)/$${b}"; \
+	  [ "$$a" == "slink" ] && mkdir -p    "$(KERNEL_SOURCE_DIR)/$${b%/*}"; \
+	  [ "$$a" == "slink" ] && ln -s "$$c" "$(KERNEL_SOURCE_DIR)/$${b}"; \
+	  [ "$$a" == "touch" ] && mkdir -p    "$(KERNEL_SOURCE_DIR)/$${b%/*}"; \
+	  [ "$$a" == "touch" ] && touch       "$(KERNEL_SOURCE_DIR)/$${b}"; \
+	done || true
 endif
 	@for i in $(KERNEL_LINKING_FILES); do \
 		f="$${i%%,*}"; symlink_location="$${i##*,}"; \
