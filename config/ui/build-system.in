@@ -7,12 +7,36 @@ menu "Build system options"
 		help
 			Show revision info in menuconfig
 
-	config FREETZ_VERBOSITY_LEVEL
-		int "Verbosity level (0-2)"
-		default 2
+	choice
+		prompt "Verbosity level"
+		default FREETZ_VERBOSITY_LEVEL_2
 		help
 			Verbosity level of the fwmod script and tar.
 			0 is the least and 2 the most information.
+
+		config FREETZ_VERBOSITY_LEVEL_0
+			bool "0 - quiet"
+
+		config FREETZ_VERBOSITY_LEVEL_1
+			bool "1 - basics"
+
+		config FREETZ_VERBOSITY_LEVEL_2
+			bool "2 - verbose"
+
+		config FREETZ_VERBOSITY_LEVEL_3
+			bool "3 - DEVELOPER"
+			depends on FREETZ_SHOW_DEVELOPER
+			help
+				buggy and confusing
+
+	endchoice # "Verbosity level"
+
+	config FREETZ_VERBOSITY_LEVEL
+		int
+		default 0 if FREETZ_VERBOSITY_LEVEL_0
+		default 1 if FREETZ_VERBOSITY_LEVEL_1
+		default 2 if FREETZ_VERBOSITY_LEVEL_2
+		default 3 if FREETZ_VERBOSITY_LEVEL_3
 
 	config FREETZ_SIZEINFO_COMPRESSED
 		bool "Show compressed sizes during build"

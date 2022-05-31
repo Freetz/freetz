@@ -41,7 +41,7 @@ Wie kann ich Freetz-NG unterstützen?
     - Falls der Dateiname die Version enthält, ```make/$PKG/external.*``` anpassen.
     - Vorhandene Patches in ```make/$PKG/patches/``` aktualisieren durch<br>
       ausführen von: ```make $PKG-autofix```
-    - Compilieren testen mit: ```make $PKG-precompiled FREETZ_VERBOSITY_LEVEL=2```
+    - Compilieren testen mit: ```make $PKG-recompile```
     - Am besten noch auf eine Fritzbox flashen und testen.
  * __[Wiki](#wiki)__<a id='wiki'></a><br>
     Viele Teile des unter [freetz-ng.github.io/](https://freetz-ng.github.io/) zu erreichenden Wikis sind veraltet und bedürfen einer<br>
