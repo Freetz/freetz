@@ -971,7 +971,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
   * **[unfs3 0.9.22](../docs/make/unfs3.md)<a id='unfs3'></a>**<br>
     Userspace NFS v3 Server.
 
-  * **<u>UnRAR 6.1.7 (binary only)</u><a id='unrar'></a>**<br>
+  * **[UnRAR 6.1.7 (binary only)](../docs/make/unrar.md)<a id='unrar'></a>**<br>
     Unarchiver for .rar files
 
   * **<u>usbids: USB IDs 0.0</u><a id='usbids'></a>**<br>
