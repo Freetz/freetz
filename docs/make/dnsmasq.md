@@ -1,8 +1,8 @@
 # Dnsmasq 2.80/2.86
- - Homepage: [http://thekelleys.org.uk/dnsmasq/doc.html](http://thekelleys.org.uk/dnsmasq/doc.html)
- - Manpage: [http://thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html](http://thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html)
- - Changelog: [http://thekelleys.org.uk/dnsmasq/CHANGELOG](http://thekelleys.org.uk/dnsmasq/CHANGELOG)
- - Repository: [http://thekelleys.org.uk/gitweb/?p=dnsmasq.git;a=summary](http://thekelleys.org.uk/gitweb/?p=dnsmasq.git;a=summary)
+ - Homepage: [https://thekelleys.org.uk/dnsmasq/doc.html](https://thekelleys.org.uk/dnsmasq/doc.html)
+ - Manpage: [https://thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html](https://thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html)
+ - Changelog: [https://thekelleys.org.uk/dnsmasq/CHANGELOG](https://thekelleys.org.uk/dnsmasq/CHANGELOG)
+ - Repository: [https://thekelleys.org.uk/gitweb/?p=dnsmasq.git;a=summary](https://thekelleys.org.uk/gitweb/?p=dnsmasq.git;a=summary)
  - Package: [master/make/dnsmasq/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/dnsmasq/)
 
 [![Konfiguration](../screenshots/200_md.png)](../screenshots/200.png)
