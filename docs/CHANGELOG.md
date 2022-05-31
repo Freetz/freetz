@@ -83,6 +83,7 @@ Latest changes
    * SQLite 3.38.5
    * Tor 0.4.7.7
    * uClibc-ng 1.0.41
+   * UnRAR 6.1.7
    * Wget GNU 1.21.3
 
  - Firmware updates:

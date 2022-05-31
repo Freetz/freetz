@@ -1,7 +1,10 @@
-$(call PKG_INIT_BIN, 6.1.4)
+$(call PKG_INIT_BIN, 6.1.7)
 $(PKG)_SOURCE:=unrarsrc-$($(PKG)_VERSION).tar.gz
-$(PKG)_HASH:=c0ed58629243961c3f1ec90c08b11ff93261e568dbfdce2bf3b759ee7a4a3b7c
+$(PKG)_HASH:=de75b6136958173fdfc530d38a0145b72342cf0d3842bf7bb120d336602d88ed
 $(PKG)_SITE:=https://www.rarlab.com/rar
+### WEBSITE:=https://www.rarlab.com/rar_add.htm
+### MANPAGE:=https://linux.die.net/man/1/unrar
+### CHANGES:=https://www.rarlab.com/rarnew.htm
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/unrar
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/unrar
@@ -19,6 +22,7 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_UCLIBC_0_9_29
 ifeq ($(strip $(or $(FREETZ_TARGET_UCLIBC_0_9_28),$(FREETZ_TARGET_UCLIBC_0_9_29))),y)
 $(PKG)_DEFINES += -DVFWPRINTF_WORKAROUND_REQUIRED
 endif
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -38,6 +42,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(UNRAR_DIR) -f makefile clean
