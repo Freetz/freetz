@@ -5,10 +5,10 @@ $(PKG)_HASH_CURRENT:=28d52cfc9e2004ac4f85274f52b32e1647b4dbc9761b82e7de1e41c4990
 $(PKG)_HASH:=$($(PKG)_HASH_$(if $(FREETZ_PACKAGE_DNSMASQ_VERSION_ABANDON),ABANDON,CURRENT))
 $(PKG)_SITE:=https://thekelleys.org.uk/dnsmasq
 #$(PKG)_SITE:=git://thekelleys.org.uk/dnsmasq.git
-### WEBSITE:=http://thekelleys.org.uk/dnsmasq/doc.html
-### MANPAGE:=http://thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html
-### CHANGES:=http://thekelleys.org.uk/dnsmasq/CHANGELOG
-### CVSREPO:=http://thekelleys.org.uk/gitweb/?p=dnsmasq.git;a=summary
+### WEBSITE:=https://thekelleys.org.uk/dnsmasq/doc.html
+### MANPAGE:=https://thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html
+### CHANGES:=https://thekelleys.org.uk/dnsmasq/CHANGELOG
+### CVSREPO:=https://thekelleys.org.uk/gitweb/?p=dnsmasq.git;a=summary
 
 $(PKG)_STARTLEVEL=40 # multid-wrapper may start it earlier!
 
