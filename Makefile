@@ -66,7 +66,6 @@ include $(sort $(wildcard $(INCLUDE_DIR)/make/*.mk))
 # load user configuration file
 -include $(TOPDIR)/.config
 
-PATH_DIR=$(TOOLS_DIR)/path
 DL_TOOL:=$(TOOLS_DIR)/freetz_download
 PATCH_TOOL:=$(TOOLS_DIR)/freetz_patch
 PARSE_CONFIG_TOOL:=$(TOOLS_DIR)/parse-config

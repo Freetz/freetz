@@ -65,8 +65,7 @@ AUTORECONF=autoreconf -f -i $(SILENT) || { $(call ERROR,1,autoreconf failed) };
 unexport CONFIG_SITE
 TOOLS_SITE:="$(CONFIG_SITE)"
 
-# Don't use TOOLS_PATH here because it's named TOOLS_DIR ;-)
-TOOLS_PATH="$(PATH_DIR):$(PATH)"
+TOOLS_PATH="$(PATH)"
 
 # commands to run before calling configure
 # each command has to be terminated by ';'

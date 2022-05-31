@@ -100,10 +100,6 @@ BASE_DIR="$(dirname "$0")"
 ABS_BASE_DIR="$(readlink -f "$BASE_DIR")"
 TOOLS_DIR="${ABS_BASE_DIR}/tools"
 
-# Prepend PATH with own directory (containing links)
-PATH_DIR="${TOOLS_DIR}/path"
-PATH="${PATH_DIR}:${PATH}"
-
 # Include common helper functions (isFreetzType, echo*, error, modunsqfs* etc.)
 source "${TOOLS_DIR}/freetz_functions" ||
 	(echo "cannot find script freetz_functions" >&2; exit 1)
