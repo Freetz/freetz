@@ -11,6 +11,26 @@
 # Just run 'make menuconfig', configure stuff, then run 'make'.
 # You shouldn't need to mess with anything beyond this point...
 #--------------------------------------------------------------
+
+# Envira: Custom environment and arguments
+ENVIRA_MARK:=ENVIRA
+ifneq ($($(ENVIRA_MARK)),y)
+ENVIRA_PATH_REL:=tools/path
+ENVIRA_PATH_ABS:=$(shell realpath $(ENVIRA_PATH_REL))
+ENVIRA_MAKE_ARGS:=--no-print-directory
+ENVIRA_MAKE_ARGS+=$(ENVIRA_MARK)=y
+
+envira:
+	@tools/freetz_revision make
+	@PATH="$(ENVIRA_PATH_ABS):$(PATH)" $(MAKE) $(ENVIRA_MAKE_ARGS) $(MAKECMDGOALS)
+.PHONY: envira
+
+$(MAKECMDGOALS): envira
+	@:
+.PHONY: $(MAKECMDGOALS)
+
+else # Envira
+
 TOPDIR=.
 CONFIG_IN=config/Config.in
 CONFIG_IN_CACHE=config/.cache.in
@@ -616,4 +636,6 @@ help:
 	cacheclean clean dirclean distclean common-cacheclean common-clean common-dirclean common-distclean release \
 	$(TOOLS) $(TOOLS_CACHECLEAN) $(TOOLS_CLEAN) $(TOOLS_DIRCLEAN) $(TOOLS_DISTCLEAN) $(TOOLS_SOURCE) $(TOOLS_PRECOMPILED) $(TOOLS_RECOMPILE) $(TOOLS_AUTOFIX) \
 	clear-echo-temporary check-dot-config-uptodateness
+
+endif # Envira
 
