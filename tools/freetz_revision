@@ -6,10 +6,10 @@ DIR="$(readlink -f ${0%/*}/..)"
 if [ -d $DIR/.svn ]; then
 	RB="$(LC_ALL=C svn info $DIR | sed -n 's/^Relative URL: .*\///p')"
 	RC="$(svnversion $DIR | tr ":" "_")"
-	[ "${RB}" != "trunk" -a "${RC}" == "${RC/_/}" -a "$1" ] && RC="$(LC_ALL=C svn info $DIR | sed -n 's/^Last Changed Rev: //p')"
-	[ "${RB}" != "trunk" -o "${RC}" != "${RC/_/}" -o "$1" ] && [ "$(svn status $DIR | wc -l)" != "0" ] && RC="${RC%M}M"
+	[ "${RB}" != "trunk" -a "${RC}" == "${RC/_/}" -a "${1:0:1}" == "f" ] && RC="$(LC_ALL=C svn info $DIR | sed -n 's/^Last Changed Rev: //p')"
+	[ "${RB}" != "trunk" -o "${RC}" != "${RC/_/}" -o "${1:0:1}" == "f" ] && [ "$(svn status $DIR | wc -l)" != "0" ] && RC="${RC%M}M"
 	RH="$(svn log $DIR -l9 | sed -n 's/^commit [0-9a-z]* -- https:\/\/github\.com\/freetz-ng\/freetz-ng\/commit\///p' | head -n1)"
-	[ "$1" ] && RB="${RB/trunk/}" || RD="$(LC_ALL=C svn info $DIR | sed -rn 's/^Last Changed Date: ([^ ]*).*/\1/p')"
+	[ "${1:0:1}" == "f" ] && RB="${RB/trunk/}" || RD="$(LC_ALL=C svn info $DIR | sed -rn 's/^Last Changed Date: ([^ ]*).*/\1/p')"
 elif [ -d $DIR/.git ]; then
 	GDB="$DIR/.git"
 	RB="$(git --git-dir=$GDB rev-parse --abbrev-ref @)"
@@ -24,12 +24,17 @@ elif [ -d $DIR/.git ]; then
 	[ "$RB" == "HEAD" -o "$RB" == "master" ] && RC="$(( $(git --git-dir=$GDB rev-list --no-merges --count HEAD) +10#0$(cat $DIR/.revdiff) ))${RM}"
 	[ "$RB" == "HEAD" ] && RB="$(git --git-dir=$GDB describe --tags --abbrev=0)" && RC="${RC%$RM}"
 	RH="$(git --git-dir=$GDB rev-parse --verify --short @)"
-	[ "$1" ] && RB="${RB/master/}" || RD="$(TZ=UTC date --date @"$(git --git-dir=$GDB log --pretty='format:%cd' --format='%at' -1 @)" '+%Y-%m-%d')"
+	[ "${1:0:1}" == "f" ] && RB="${RB/master/}" || RD="$(TZ=UTC date --date @"$(git --git-dir=$GDB log --pretty='format:%cd' --format='%at' -1 @)" '+%Y-%m-%d')"
 fi
 [ -s config/custom.in ] && RC="${RC}O"
 [ -s .fwmod_custom ] && RC="${RC}F"
 [ "$(grep -vE "^#|^ *$" $DIR/addon/*.pkg 2>/dev/null | wc -l)" != "0" ] && RC="${RC}A"
 R=" ${RC:+$RC-}${RH:-UNKNOWN}${RB:+ $RB}${RD:+ $RD}"
-[ "$1" ] && R="${R// /-}"
-[ "$1" == "short" ] && echo "${RC//[ABCDEFGHIJKLMNOPQRSTUVWXYZ]/}-${RH}" || echo "$(cat $DIR/.version)${R}"
+[ "${1:0:1}" == "f" ] && R="${R// /-}"
+case "${1}" in
+	s|short)	echo "${RC//[ABCDEFGHIJKLMNOPQRSTUVWXYZ]/}-${RH}" ;;
+	m|make)		echo "Freetz-NG${R#-}" ;;
+#	f|fwmod)	;&
+	*)		echo "$(cat $DIR/.version)${R}" ;;
+esac
 
