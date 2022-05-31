@@ -224,7 +224,7 @@ endif
 
 kernel-autofix: kernel-dirclean
 	$(MAKE) AUTO_FIX_PATCHES=y kernel-unpacked
-kernel-recompile: kernel-distclean kernel-precompiled
+kernel-recompile: kernel-dirclean kernel-precompiled
 .PHONY: kernel-autofix kernel-recompile
 
 $(KERNEL_SOURCE_DIR)$(KERNEL_IMAGE_BUILD_SUBDIR)/$(KERNEL_IMAGE): $(KERNEL_DIR)/.prepared $(KERNEL_BUILD_DEPENDENCIES) | $(TOOLS_DIR)/lzma $(TOOLS_DIR)/lzma2eva

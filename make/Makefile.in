@@ -590,7 +590,7 @@ $(pkg)-distclean: $(pkg)-dirclean $(pkg)-clean $(pkg)-uninstall
 
 $(pkg)-autofix: $(pkg)-dirclean
 	$(MAKE) AUTO_FIX_PATCHES=y $(pkg)-unpacked
-$(pkg)-recompile: $(pkg)-distclean $(pkg)-precompiled
+$(pkg)-recompile: $(pkg)-dirclean $(pkg)-precompiled
 .PHONY: $(pkg)-autofix $(pkg)-recompile
 
 PKG:=
