@@ -4,7 +4,7 @@ comment "OpenVPN (not available, needs kernel modules)"
 		!( FREETZ_REPLACE_MODULE_AVAILABLE || !FREETZ_AVM_HAS_BUGON_IN_NET_CORE )
 
 config FREETZ_PACKAGE_OPENVPN
-	bool "OpenVPN 2.4.12/2.5.6"
+	bool "OpenVPN 2.4.12/2.5.7"
 	depends on FREETZ_REPLACE_MODULE_AVAILABLE || FREETZ_AVM_HAS_TUN_BUILTIN
 	depends on FREETZ_REPLACE_MODULE_AVAILABLE || !FREETZ_AVM_HAS_BUGON_IN_NET_CORE
 	select FREETZ_BUSYBOX_BRCTL         if !FREETZ_PACKAGE_BRIDGE_UTILS
@@ -17,21 +17,19 @@ config FREETZ_PACKAGE_OPENVPN
 if FREETZ_PACKAGE_OPENVPN
 
 
-#	choice
-#		prompt "Version"
-#			default FREETZ_PACKAGE_OPENVPN_VERSION_CURRENT
+	choice
+		prompt "Version"
+			default FREETZ_PACKAGE_OPENVPN_VERSION_CURRENT
 
 		config FREETZ_PACKAGE_OPENVPN_VERSION_ABANDON
-			bool #"2.4.x"
+			bool "2.4.x"
 			depends on FREETZ_KERNEL_VERSION_2_6_13
-			default y
 
 		config FREETZ_PACKAGE_OPENVPN_VERSION_CURRENT
-			bool #"2.5.x"
+			bool "2.5.x"
 			depends on !FREETZ_KERNEL_VERSION_2_6_13
-			default y
 
-#	endchoice
+	endchoice
 
 
 	choice

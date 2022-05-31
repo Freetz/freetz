@@ -1,7 +1,6 @@
-diff -Naur openvpn-2.5.5-orig/src/openvpn/lladdr.c openvpn-2.5.5/src/openvpn/lladdr.c
---- openvpn-2.5.5/src/openvpn/lladdr.c	2021-12-15 07:33:53.000000000 +0100
-+++ openvpn-2.5.5/src/openvpn/lladdr.c	2021-12-31 18:00:07.213566775 +0100
-@@ -25,6 +25,10 @@
+--- src/openvpn/lladdr.c
++++ src/openvpn/lladdr.c
+@@ -26,6 +26,10 @@
          return -1;
      }
  
@@ -10,12 +9,11 @@ diff -Naur openvpn-2.5.5-orig/src/openvpn/lladdr.c openvpn-2.5.5/src/openvpn/lla
 +#endif
 +
  #if defined(TARGET_LINUX)
-     uint8_t addr[ETH_ALEN];
+     uint8_t addr[OPENVPN_ETH_ALEN];
  
-diff -Naur openvpn-2.5.5-orig/src/openvpn/networking_sitnl.c openvpn-2.5.5/src/openvpn/networking_sitnl.c
---- openvpn-2.5.5/src/openvpn/networking_sitnl.c	2021-12-15 07:33:53.000000000 +0100
-+++ openvpn-2.5.5/src/openvpn/networking_sitnl.c	2021-12-31 17:59:20.053721136 +0100
-@@ -55,6 +55,10 @@
+--- src/openvpn/networking_sitnl.c
++++ src/openvpn/networking_sitnl.c
+@@ -56,6 +56,10 @@
  #define NLMSG_TAIL(nmsg) \
      ((struct rtattr *)(((uint8_t *)(nmsg)) + NLMSG_ALIGN((nmsg)->nlmsg_len)))
  
