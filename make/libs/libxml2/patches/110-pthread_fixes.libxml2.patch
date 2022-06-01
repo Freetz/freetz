@@ -1,6 +1,6 @@
 --- configure
 +++ configure
-@@ -15510,12 +15510,12 @@
+@@ -15439,12 +15439,12 @@
  	       if test "${THREAD_LIBS}" = "-lpthread" ; then
  	           if expr ${GCC_MEDIUM} \> 2 \& ${GCC_MAJOR} = 3 > /dev/null
  		   then
@@ -40,8 +40,8 @@
  	;;
  
      --cflags)
--       	echo @XML_INCLUDEDIR@ @XML_CFLAGS@
-+       	echo @THREAD_CFLAGS@ @XML_INCLUDEDIR@ @XML_CFLAGS@
+-        cflags="@XML_INCLUDEDIR@ @XML_CFLAGS@"
++        cflags="@THREAD_CFLAGS@ @XML_INCLUDEDIR@ @XML_CFLAGS@"
         	;;
  
      --libtool-libs)
