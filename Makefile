@@ -12,17 +12,18 @@
 # You shouldn't need to mess with anything beyond this point...
 #--------------------------------------------------------------
 
+MAKEFLAGS+=--no-print-directory
+
 # Envira: Custom environment and arguments
 ENVIRA_MARK:=ENVIRA
 ifneq ($($(ENVIRA_MARK)),y)
 ENVIRA_PATH_REL:=tools/path
 ENVIRA_PATH_ABS:=$(shell realpath $(ENVIRA_PATH_REL))
-ENVIRA_MAKE_ARGS:=--no-print-directory
-ENVIRA_MAKE_ARGS+=$(ENVIRA_MARK)=y
+ENVIRA_MAKE_VARS:=$(ENVIRA_MARK)=y
 
 envira:
 	@tools/freetz_revision make
-	@PATH="$(ENVIRA_PATH_ABS):$(PATH)" $(MAKE) $(ENVIRA_MAKE_ARGS) $(MAKECMDGOALS)
+	@PATH="$(ENVIRA_PATH_ABS):$(PATH)" $(MAKE) $(MAKECMDGOALS) -- $(ENVIRA_MAKE_VARS)
 .PHONY: envira
 
 $(MAKECMDGOALS): envira
