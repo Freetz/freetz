@@ -16,9 +16,10 @@
 DOSHOW=1
 DOCONS=1
 TPID=$$
-PDIR="config/.img"
 SCRIPT="$(readlink -f $0)"
 MYPWD="$(dirname ${SCRIPT%/*})"
+PDIR="config/.img"
+PBIG="$MYPWD/config/img.in"
 FWDU="$MYPWD/tools/fwdu"
 DLIN="$MYPWD/config/mod/download.in"
 PROP="$MYPWD/$PDIR"
@@ -1067,5 +1068,6 @@ determine $single                           | tee -a "$UNPACK/out.txt"
 [ "$DOCONS" == "1" ] && consolidate         | tee -a "$UNPACK/out.txt"
 [ "$DOCONS" == "1" ] && creatin_V2          | tee -a "$UNPACK/out.txt"
 [ $DOSHOW -ge 0 ] && echo                   | tee -a "$UNPACK/out.txt"
+grep -vE "^($|source )" $PROP/* -h > $PBIG
 
 exit 0

@@ -4,6 +4,7 @@
 SCRIPT="$(readlink -f $0)"
 PARENT="$(dirname ${SCRIPT%/*})"
 PDIR="config/.kos"
+PBIG="$PARENT/config/kos.in"
 PROP="$PARENT/$PDIR"
 CINTMP="$PROP/Config.in"
 SYMS="
@@ -59,5 +60,6 @@ for src in $PARENT/make/linux/configs/avm/*; do
 	done | sort > "$out"
 	sed -i "s/$/\n\tdef_bool y\n/g;1s/^/if FREETZ_AVM_SOURCE_$box\n\n/;$ s/$/\nendif/g" "$out"
 done
+grep -vE "^($|source )" $PROP/* -h > $PBIG
 echo " done."
 
