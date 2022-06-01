@@ -1,36 +1,22 @@
---- configure.ac
-+++ configure.ac
-@@ -284,6 +284,7 @@
- 	AC_MSG_RESULT(no)
- 
- 	AC_MSG_CHECKING(for b64_ntop with -lresolv)
-+	b64_ntop_save_LIBS="$LIBS"
- 	LIBS="$LIBS -lresolv"
- 	AC_TRY_LINK(
- 		[
-@@ -296,6 +297,7 @@
- 		found_b64_ntop=no
- 	)
- 	if test "x$found_b64_ntop" = xno; then
-+		LIBS="$b64_ntop_save_LIBS"
- 		AC_MSG_RESULT(no)
- 	fi
- fi
 --- configure
 +++ configure
-@@ -6132,6 +6132,7 @@
- 
+@@ -6665,7 +6665,7 @@
+ { $as_echo "$as_me:${as_lineno-$LINENO}: result: $found_b64_ntop" >&5
+ $as_echo "$found_b64_ntop" >&6; }
+ OLD_LIBS="$LIBS"
+-if test "x$found_b64_ntop" = xno; then
++if test "x$found_b64_ntop" = xno_DISABLED; then
  	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for b64_ntop with -lresolv" >&5
  $as_echo_n "checking for b64_ntop with -lresolv... " >&6; }
-+	b64_ntop_save_LIBS="$LIBS"
- 	LIBS="$LIBS -lresolv"
- 	cat confdefs.h - <<_ACEOF >conftest.$ac_ext
- /* end confdefs.h.  */
-@@ -6157,6 +6158,7 @@
- rm -f core conftest.err conftest.$ac_objext \
-     conftest$ac_exeext conftest.$ac_ext
- 	if test "x$found_b64_ntop" = xno; then
-+		LIBS="$b64_ntop_save_LIBS"
- 		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
- $as_echo "no" >&6; }
- 	fi
+ 	LIBS="$OLD_LIBS -lresolv"
+--- configure.ac
++++ configure.ac
+@@ -431,7 +431,7 @@
+ )
+ AC_MSG_RESULT($found_b64_ntop)
+ OLD_LIBS="$LIBS"
+-if test "x$found_b64_ntop" = xno; then
++if test "x$found_b64_ntop" = xno_DISABLED; then
+ 	AC_MSG_CHECKING(for b64_ntop with -lresolv)
+ 	LIBS="$OLD_LIBS -lresolv"
+ 	AC_LINK_IFELSE([AC_LANG_PROGRAM(

@@ -83,6 +83,7 @@ Latest changes
    * Privoxy 3.0.33
    * Stunnel 5.64
    * SQLite 3.38.5
+   * tmux 3.3
    * Tor 0.4.7.7
    * uClibc-ng 1.0.41
    * UnRAR 6.1.7
