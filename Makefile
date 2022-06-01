@@ -12,6 +12,13 @@
 # You shouldn't need to mess with anything beyond this point...
 #--------------------------------------------------------------
 
+# builtin-rules are not used but .SUFFIXES get overwritten, so:
+%: %,v
+%: RCS/%,v
+%: RCS/%
+%: s.%
+%: SCCS/s.%
+
 MAKEFLAGS+=--no-print-directory
 
 # Envira: Custom environment and arguments
