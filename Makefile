@@ -24,13 +24,32 @@ MAKEFLAGS+=--no-print-directory
 # Envira: Custom environment and arguments
 ENVIRA_MARK:=ENVIRA
 ifneq ($($(ENVIRA_MARK)),y)
+ENVIRA_UMASK:=0022
+ENVIRA_MODE_EXEC:=0755
+ENVIRA_MODE_FILE:=0644
+ENVIRA_CVS_DIRS:=.github addon config docs graphics include make patches toolchain tools
+ENVIRA_LAST_REV:=.envira.log
+ENVIRA_REV_TOOL:=tools/freetz_revision
 ENVIRA_PATH_REL:=tools/path
 ENVIRA_PATH_ABS:=$(shell realpath $(ENVIRA_PATH_REL))
 ENVIRA_MAKE_VARS:=$(ENVIRA_MARK)=y
 
 envira:
-	@tools/freetz_revision make
-	@PATH="$(ENVIRA_PATH_ABS):$(PATH)" $(MAKE) $(MAKECMDGOALS) -- $(ENVIRA_MAKE_VARS)
+ifneq ($(shell umask),$(ENVIRA_UMASK))
+ifneq ($(shell grep -q "$$($(ENVIRA_REV_TOOL))" $(ENVIRA_LAST_REV) 2>/dev/null && echo y),y)
+	@echo -n "Fixing checkout permissions " && \
+	echo -n "." && find .     -maxdepth  0 -type d               | xargs chmod $(ENVIRA_MODE_EXEC) && \
+	echo -n "." && find .     -maxdepth  1 -type f   -executable | xargs chmod $(ENVIRA_MODE_EXEC) && \
+	echo -n "." && find .     -maxdepth  1 -type f ! -executable | xargs chmod $(ENVIRA_MODE_FILE) && \
+	echo -n "." && find $(ENVIRA_CVS_DIRS) -type d               | xargs chmod $(ENVIRA_MODE_EXEC) && \
+	echo -n "." && find $(ENVIRA_CVS_DIRS) -type f   -executable | xargs chmod $(ENVIRA_MODE_EXEC) && \
+	echo -n "." && find $(ENVIRA_CVS_DIRS) -type f ! -executable | xargs chmod $(ENVIRA_MODE_FILE) && \
+	echo " done." && \
+	$(ENVIRA_REV_TOOL) > $(ENVIRA_LAST_REV)
+endif
+endif
+	@$(ENVIRA_REV_TOOL) make
+	@umask $(ENVIRA_UMASK) && PATH="$(ENVIRA_PATH_ABS):$(PATH)" $(MAKE) $(MAKECMDGOALS) $(ENVIRA_MAKE_VARS)
 .PHONY: envira
 
 $(MAKECMDGOALS): envira
