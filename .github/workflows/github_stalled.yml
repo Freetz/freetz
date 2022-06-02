@@ -15,10 +15,12 @@ jobs:
         uses: actions/stale@v5.0.0
         with:
           stale-message: 'stalled'
-          close-message: 'stalled'
-          stale-label: 'stalled'
+          close-issue-message: 'stalled'
+          close-pr-message: 'stalled'
+          stale-issue-label: 'stalled'
+          stale-pr-label: 'stalled'
           labels-to-remove-when-unstale: 'stalled'
-          exempt-labels: 'task'
+          exempt-issue-labels: 'task'
           days-before-stale: 10
           remove-stale-when-updated: true
           enable-statistics: true
