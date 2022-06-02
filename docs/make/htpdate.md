@@ -1,4 +1,8 @@
-# htpdate 1.0.4
+# htpdate 1.3.4
+ - Homepage: [http://www.vervest.org/htp/](http://www.vervest.org/htp/)
+ - Manpage: [https://www.vervest.org/htp/?FAQ](https://www.vervest.org/htp/?FAQ)
+ - Changelog: [https://github.com/twekkel/htpdate/blob/master/Changelog](https://github.com/twekkel/htpdate/blob/master/Changelog)
+ - Repository: [https://github.com/twekkel/htpdate](https://github.com/twekkel/htpdate)
  - Package: [master/make/htpdate/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/htpdate/)
 
 Dieses Paket kann dazu genutzt werden die Uhrzeit der Fritzbox zu
