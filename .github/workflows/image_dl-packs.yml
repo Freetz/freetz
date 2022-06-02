@@ -1,0 +1,47 @@
+name: image_dl-packs
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - '.github/workflows/image_dl-packs.yml'
+      - '.github/docker/dl-packs/*'
+  workflow_dispatch:
+
+
+jobs:
+  build:
+    permissions:
+      contents: read
+      packages: write
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: checkout
+        uses: actions/checkout@v3.0.2
+
+      - name: prepare
+        id: prepare
+        run: |
+          IMAGE="$(echo "${{ github.workflow }}" | sed 's/.*_//')"
+          [ -n "$IMAGE" ] && echo "::set-output name=image::$IMAGE" || exit 1
+          for x in Dockerfile entrypoint.sh; do ln -s .github/docker/$IMAGE/$x; done
+          echo "################################################################" && echo "IMAGE=$IMAGE"
+
+      - name: login
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2.0.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: docker
+        uses: docker/build-push-action@v3.0.0
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ghcr.io/${{ github.actor }}/${{ steps.prepare.outputs.image }}:latest
+
+
