@@ -1,0 +1,57 @@
+name: generate_link
+
+on:
+  push:
+    branches: [ master ]
+# workflow_dispatch:
+
+jobs:
+  build:
+    container:
+#     image: ubuntu:18.04
+      image: freetzng/generate
+    runs-on: ubuntu-latest
+
+    steps:
+
+#     - name: update
+#       run: apt-get -y update && apt-get -y upgrade && apt-get -y dist-upgrade
+#
+#     - name: install
+#       run: |
+#         DEBIAN_FRONTEND=noninteractive apt-get -y install \
+#           git locales netcat curl bsdmainutils xxd libarchive-zip-perl
+#
+#     - name: locale
+#       run: locale-gen en_US.utf8 && locale-gen de_DE.UTF-8 && update-locale
+
+      - name: clone
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          umask 0022
+          git config --global --add safe.directory $GITHUB_WORKSPACE
+          git clone https://github-actions:$GITHUB_TOKEN@${GITHUB_SERVER_URL##*/}/$GITHUB_REPOSITORY.git $GITHUB_WORKSPACE --branch $GITHUB_REF_NAME
+
+      - name: generate
+        id: generate
+        run: |
+          PKG="$(git log --format=%B -n1 ${{ github.sha }} | sed -nr 's/^bump ([^ ]*).*/\1/p')"
+          [ -z "$PKG" ] && echo "No bump." && exit
+          PKG="$(echo "$PKG" | tr '[:upper:]' '[:lower:]')"
+          TYPE=""
+          for x in make libs; do [ -e docs/$x/$PKG.md ] && TYPE=$x; done
+          [ -z "$TYPE" ] && echo "No page." && exit
+          LINK="https://freetz-ng.github.io/freetz-ng/$TYPE/#$PKG"
+          LINK="https://freetz-ng.github.io/freetz-ng/$TYPE/$PKG"
+          echo "::set-output name=link::$LINK"
+          echo "################################################################" && bash -c "echo LINK=$LINK"
+
+      - name: comment
+        if: "contains(steps.generate.outputs.link, 'http')"
+        uses: peter-evans/commit-comment@v2.0.0
+        with:
+          sha: ${{ github.sha }}
+          body: See for changelog link: ${{ steps.generate.outputs.link }}
+
+

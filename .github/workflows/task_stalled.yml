@@ -1,16 +1,16 @@
-name: issue_stalled
+name: task_stalled
 
 on:
   push:
     branches: [ master ]
     paths:
-      - '.github/workflows/github_stalled.yml'
+      - '.github/workflows/task_stalled.yml'
   schedule:
     - cron: '0 0 * * *'
   workflow_dispatch:
 
 jobs:
-  stale:
+  build:
     runs-on: ubuntu-latest
 
     steps:
