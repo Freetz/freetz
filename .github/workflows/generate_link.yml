@@ -38,6 +38,7 @@ jobs:
         run: |
           PKG="$(git log --format=%B -n1 ${{ github.sha }} | sed -nr 's/^bump ([^ ]*).*/\1/p')"
           [ -z "$PKG" ] && echo "No bump." && exit
+          echo "::set-output name=pkg::$PKG"
           PKG="$(echo "$PKG" | tr '[:upper:]' '[:lower:]')"
           TYPE=""
           for x in make libs; do [ -e docs/$x/$PKG.md ] && TYPE=$x; done
@@ -52,6 +53,6 @@ jobs:
         uses: peter-evans/commit-comment@v2.0.0
         with:
           sha: ${{ github.sha }}
-          body: 'See for changelog link: ${{ steps.generate.outputs.link }}'
+          body: 'See for infos about ${{ steps.generate.outputs.pkg }} and maybe a changelog link: ${{ steps.generate.outputs.link }}'
 
 
