@@ -1,5 +1,10 @@
 # NEWS
 
+ * __[2022-06-02](#2022-06-02)__<a id='2022-06-02'></a><br>
+   Zum Auschecken und wärend des Buildvorgangs ist keine `umask 0022` mehr notwendig, die Berechtigungen<br>
+   werden angepasst falls es notwendig ist. Dies wird nach jedem `update`/`pull` des Checkouts geprüft.<br>
+   Siehe [6b8dc635](https://github.com/Freetz-NG/freetz-ng/commit/6b8dc6359781248dc73b65757f22d6083401ceec)<br>
+
  * __[2022-05-28](#2022-05-28)__<a id='2022-05-28'></a><br>
    Der Kernel wird nun nicht mehr direkt aus den AVM-Sourcen gebaut sondern mit einem Download von<br>
    kernel.org und anschliessend gepatcht. Dies erspart das ständige Warten auf AVM bis Sourcen verfügbar<br>
