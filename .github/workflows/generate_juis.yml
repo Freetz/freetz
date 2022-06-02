@@ -1,12 +1,11 @@
 name: generate_juis
 
 on:
-# push:
-#   branches: [ master ]
-#   paths:
-#     - '.github/workflows/generate_juis.yml'
-#     - 'docs/generate_juis.sh'
-#     - 'config/mod/download.in'
+  push:
+    branches: [ master ]
+    paths:
+      - '.github/workflows/generate_juis.yml'
+      - 'docs/generate_juis.sh'
   schedule:
     - cron: '00 16 * * 1-5'
   workflow_dispatch:
