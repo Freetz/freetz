@@ -1,5 +1,5 @@
 menuconfig FREETZ_PACKAGE_MC
-	bool "mc (Midnight Commander) 4.8.27 (binary only)"
+	bool "mc (Midnight Commander) 4.8.28 (binary only)"
 	select FREETZ_SHARE_terminfo
 	select FREETZ_LIB_libiconv if FREETZ_TARGET_UCLIBC_0_9_28
 	select FREETZ_LIB_libglib_2
@@ -7,102 +7,102 @@ menuconfig FREETZ_PACKAGE_MC
 
 if FREETZ_PACKAGE_MC
 
-choice
-	prompt "Widget library"
-	default FREETZ_PACKAGE_MC_WITH_NCURSESW
+	choice
+		prompt "Widget library"
+		default FREETZ_PACKAGE_MC_WITH_NCURSESW
 
-	config FREETZ_PACKAGE_MC_WITH_NCURSES
-	bool "Ncurses"
-	select FREETZ_LIB_libncurses
+		config FREETZ_PACKAGE_MC_WITH_NCURSES
+		bool "Ncurses"
+		select FREETZ_LIB_libncurses
 
-	config FREETZ_PACKAGE_MC_WITH_NCURSESW
-	bool "Ncursesw"
-	select FREETZ_LIB_libncursesw
+		config FREETZ_PACKAGE_MC_WITH_NCURSESW
+		bool "Ncursesw"
+		select FREETZ_LIB_libncursesw
 
-	config FREETZ_PACKAGE_MC_WITH_SLANG
-	bool "S-Lang"
-	select FREETZ_LIB_libslang
-endchoice
+		config FREETZ_PACKAGE_MC_WITH_SLANG
+		bool "S-Lang"
+		select FREETZ_LIB_libslang
+	endchoice
 
-config FREETZ_PACKAGE_MC_WITH_BACKGROUND
-	bool "Background file operations support"
-	default n
+	config FREETZ_PACKAGE_MC_WITH_BACKGROUND
+		bool "Background file operations support"
+		default n
 
-config FREETZ_PACKAGE_MC_WITH_CHARSET
-	bool "Charset selection and conversion support"
-	default n
+	config FREETZ_PACKAGE_MC_WITH_CHARSET
+		bool "Charset selection and conversion support"
+		default n
 
-config FREETZ_PACKAGE_MC_WITH_INTERNAL_EDIT
-	bool "Internal editor support"
-	default y
+	config FREETZ_PACKAGE_MC_WITH_INTERNAL_EDIT
+		bool "Internal editor support"
+		default y
 
-config FREETZ_PACKAGE_MC_WITH_DIFF_VIEWER
-	bool "Diff-viewer support"
-	default n
+	config FREETZ_PACKAGE_MC_WITH_DIFF_VIEWER
+		bool "Diff-viewer support"
+		default n
 
-config FREETZ_PACKAGE_MC_WITH_SUBSHELL
-	bool "Subshell support"
-	default y
-	select FREETZ_LIB_libutil if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
-	help
-		Subshell support means you can press Ctrl-O to hide the mc panels and
-		have a real subshell. Both Bash (if package is installed) and BusyBox
-		Ash can be used, depending which one is defined as your login shell.
+	config FREETZ_PACKAGE_MC_WITH_SUBSHELL
+		bool "Subshell support"
+		default y
+		select FREETZ_LIB_libutil if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+		help
+			Subshell support means you can press Ctrl-O to hide the mc panels and
+			have a real subshell. Both Bash (if package is installed) and BusyBox
+			Ash can be used, depending which one is defined as your login shell.
 
-		ATTENTION: You should *not* use CONFIG_FEATURE_BASH_IS_ASH in BusyBox
-		or otherwise symlink /bin/bash to /bin/busybox because MC must
-		differentiate handling between Ash and real Bash.
+			ATTENTION: You should *not* use CONFIG_FEATURE_BASH_IS_ASH in BusyBox
+			or otherwise symlink /bin/bash to /bin/busybox because MC must
+			differentiate handling between Ash and real Bash.
 
-		This feature adds about 8 KB (uncompressed) to the mc binary.
+			This feature adds about 8 KB (uncompressed) to the mc binary.
 
-config FREETZ_PACKAGE_MC_WITH_VFS
-	bool "Virtual filesystem support"
-	default n
+	config FREETZ_PACKAGE_MC_WITH_VFS
+		bool "Virtual filesystem support"
+		default n
 
-if FREETZ_PACKAGE_MC_WITH_VFS
+	if FREETZ_PACKAGE_MC_WITH_VFS
 
-config FREETZ_PACKAGE_MC_WITH_VFS_CPIO
-	bool "cpio"
+	config FREETZ_PACKAGE_MC_WITH_VFS_CPIO
+		bool "cpio"
 
-config FREETZ_PACKAGE_MC_WITH_VFS_EXTFS
-	bool "extfs"
-	default y
+	config FREETZ_PACKAGE_MC_WITH_VFS_EXTFS
+		bool "extfs"
+		default y
 
-config FREETZ_PACKAGE_MC_WITH_VFS_FTP
-	bool "ftp"
-	default n
+	config FREETZ_PACKAGE_MC_WITH_VFS_FTP
+		bool "ftp"
+		default n
 
-config FREETZ_PACKAGE_MC_WITH_VFS_SFS
-	bool "sfs"
-	default n
+	config FREETZ_PACKAGE_MC_WITH_VFS_SFS
+		bool "sfs"
+		default n
 
-config FREETZ_PACKAGE_MC_WITH_VFS_TAR
-	bool "tar"
-	default y
+	config FREETZ_PACKAGE_MC_WITH_VFS_TAR
+		bool "tar"
+		default y
 
 # TODO
-#config FREETZ_PACKAGE_MC_WITH_VFS_FISH
-#	bool "fish"
-#	default n
-#config FREETZ_PACKAGE_MC_WITH_VFS_SFTP
-#	bool "sftp"
-#	default n
-#config FREETZ_PACKAGE_MC_WITH_VFS_SMB
-#	bool "smb"
-#	default n
-#config FREETZ_PACKAGE_MC_WITH_VFS_UNDELFS
-#	bool "undelfs"
-#	default n
+#	config FREETZ_PACKAGE_MC_WITH_VFS_FISH
+#		bool "fish"
+#		default n
+#	config FREETZ_PACKAGE_MC_WITH_VFS_SFTP
+#		bool "sftp"
+#		default n
+#	config FREETZ_PACKAGE_MC_WITH_VFS_SMB
+#		bool "smb"
+#		default n
+#	config FREETZ_PACKAGE_MC_WITH_VFS_UNDELFS
+#		bool "undelfs"
+#		default n
 
-endif # FREETZ_PACKAGE_MC_WITH_VFS
+	endif # FREETZ_PACKAGE_MC_WITH_VFS
 
-config FREETZ_PACKAGE_MC_WITH_HELP
-	bool "Include online help"
-	default y
+	config FREETZ_PACKAGE_MC_WITH_HELP
+		bool "Include online help"
+		default y
 
-config FREETZ_PACKAGE_MC_WITH_SYNTAX
-	bool "Include syntax files"
-	default y
+	config FREETZ_PACKAGE_MC_WITH_SYNTAX
+		bool "Include syntax files"
+		default y
 
 endif # FREETZ_PACKAGE_MC
 

@@ -1,7 +1,11 @@
-$(call PKG_INIT_BIN, 4.8.27)
+$(call PKG_INIT_BIN, 4.8.28)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_HASH:=31be59225ffa9920816e9a8b3be0ab225a16d19e4faf46890f25bdffa02a4ff4
-$(PKG)_SITE:=ftp://ftp.midnight-commander.org/pub/midnightcommander
+$(PKG)_HASH:=e994d9be9a7172e9ac4a4ad62107921f6aa312e668b056dfe5b8bcebbaf53803
+$(PKG)_SITE:=http://ftp.midnight-commander.org,ftp://ftp.midnight-commander.org/pub/midnightcommander
+### WEBSITE:=http://midnight-commander.org/
+### MANPAGE:=http://midnight-commander.org/wiki/doc
+### CHANGES:=https://github.com/MidnightCommander/mc/blob/master/doc/NEWS
+### CVSREPO:=https://github.com/MidnightCommander/mc
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/mc
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/mc
@@ -74,6 +78,7 @@ $(PKG)_EXCLUDED+=$(if $(FREETZ_PACKAGE_MC_WITH_HELP),,usr/share/mc/help/mc.hlp)
 $(PKG)_EXCLUDED+=$(if $(FREETZ_PACKAGE_MC_WITH_HELP),,usr/share/mc/hints)
 $(PKG)_EXCLUDED+=$(if $(FREETZ_PACKAGE_MC_WITH_SYNTAX),,usr/share/mc/syntax)
 
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -90,6 +95,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(MC_DIR) clean
