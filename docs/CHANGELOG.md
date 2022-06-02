@@ -75,7 +75,7 @@ Latest changes
    * libxml 2.9.14
    * LCD4linux 9d4e4b7-git
    * ltrace 0.7.3checkpoint1-git
-   * mc (Midnight Commander) 4.8.287
+   * mc (Midnight Commander) 4.8.28
    * MTR 0.80/0.95
    * Nano 6.3
    * OpenSSL 0.9.8zh/1.0.2u/1.1.1o/3.0.3
