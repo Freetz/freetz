@@ -4,7 +4,6 @@ $(PKG)_HASH_ABANDON:=cdaba2785e92665cf090646cba6f94812760b9d7d8c8d0cfb07ac819377
 $(PKG)_HASH_CURRENT:=28d52cfc9e2004ac4f85274f52b32e1647b4dbc9761b82e7de1e41c49907eb08
 $(PKG)_HASH:=$($(PKG)_HASH_$(if $(FREETZ_PACKAGE_DNSMASQ_VERSION_ABANDON),ABANDON,CURRENT))
 $(PKG)_SITE:=https://thekelleys.org.uk/dnsmasq
-#$(PKG)_SITE:=git://thekelleys.org.uk/dnsmasq.git
 ### WEBSITE:=https://thekelleys.org.uk/dnsmasq/doc.html
 ### MANPAGE:=https://thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html
 ### CHANGES:=https://thekelleys.org.uk/dnsmasq/CHANGELOG
