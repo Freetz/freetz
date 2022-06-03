@@ -1,0 +1,825 @@
+MAKE_ENV=PATH=$(TARGET_PATH) $(FREETZ_LD_RUN_PATH)
+
+BUILD_FAIL_MSG:= Build failed.
+ifneq ($(strip $(FREETZ_VERBOSITY_LEVEL)),2)
+BUILD_FAIL_MSG += Please re-run make with verbose level set to 2 to see what's going on.
+endif
+
+SUBMAKE1=cmd() { $(MAKE_ENV) $(MAKE1) $(QUIET) "$$@" $(SILENT) || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } }; $(call _ECHO,building) cmd
+SUBMAKE=cmd() { $(MAKE_ENV) $(MAKE) $(QUIET) "$$@" $(SILENT) || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } }; $(call _ECHO,building) cmd
+CONFIGURE=conf_cmd() { ./configure $(QUIET) "$$$$@" $(SILENT) || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } };
+AUTORECONF=autoreconf -f -i $(SILENT) || { $(call ERROR,1,autoreconf failed) };
+
+HOSTCC:=gcc
+HOST_STRIP:=strip --strip-all -R .note -R .comment
+
+HOST_ARCH:=$(shell $(HOSTCC) -dumpmachine | sed -e s'/-.*//' \
+	-e 's/sparc.*/sparc/' \
+	-e 's/arm.*/arm/g' \
+	-e 's/m68k.*/m68k/' \
+	-e 's/ppc/powerpc/g' \
+	-e 's/v850.*/v850/g' \
+	-e 's/sh[234]/sh/' \
+	-e 's/mips-.*/mips/' \
+	-e 's/mipsel-.*/mipsel/' \
+	-e 's/cris.*/cris/' \
+	-e 's/i[3-9]86/i386/' \
+	)
+GNU_HOST_NAME:=$(HOST_ARCH)-pc-linux-gnu
+
+ifeq ($(strip $(FREETZ_TARGET_NLS)),y)
+DISABLE_NLS:=
+else
+DISABLE_NLS:=--disable-nls
+endif
+
+TARGET_CROSS:=$(call qstrip,$(FREETZ_TARGET_CROSS))
+KERNEL_CROSS:=$(call qstrip,$(FREETZ_KERNEL_CROSS))
+
+
+# s. uclibc-${version}/ldso/ldso/dl-elf.c::_dl_load_shared_library
+STANDARD_LIBRARY_DIRS:=/lib /usr/lib
+
+FREETZ_RPATH_SPACE_SEPARATED:=$(patsubst %/,%,$(subst :,$(_space),$(call qstrip,$(FREETZ_RPATH))))
+FREETZ_RPATH:=$(subst $(_space),:,$(FREETZ_RPATH_SPACE_SEPARATED))
+
+ifneq (,$(if $(MAKECMDGOALS),$(filter-out $(KCONFIG_TARGETS),$(MAKECMDGOALS)),do-validate-FREETZ_RPATH))
+# check if FREETZ_RPATH contains a valid value
+ifneq (1,$(words $(FREETZ_RPATH)))
+$(error FREETZ_RPATH (="$(FREETZ_RPATH)") must not be empty and must not contain spaces)
+endif
+$(foreach entry,$(FREETZ_RPATH_SPACE_SEPARATED), \
+$(if $(filter /%,$(entry)),,$(error FREETZ_RPATH (="$(FREETZ_RPATH)" contains invalid entry "$(entry)", each entry must be an absolute path))) \
+)
+ifneq (,$(filter     $(STANDARD_LIBRARY_DIRS),$(FREETZ_RPATH_SPACE_SEPARATED)))
+ifneq (,$(filter-out $(STANDARD_LIBRARY_DIRS),$(FREETZ_RPATH_SPACE_SEPARATED)))
+$(error FREETZ_RPATH (="$(FREETZ_RPATH)") contains both standard and non-standard search paths. This is NOT supported)
+endif
+endif
+ifeq (,$(filter-out $(STANDARD_LIBRARY_DIRS),$(FREETZ_RPATH_SPACE_SEPARATED)))
+$(info )
+$(warning FREETZ_RPATH (="$(FREETZ_RPATH)") contains only standard search paths. The only use-case for such a configuration (and this is the only reason we support it) is to create binaries using the Freetz toolchain and run them on a non-freetz'ed box.)
+$(info )
+endif
+endif
+
+FREETZ_LIBRARY_DIR:=$(firstword $(FREETZ_RPATH_SPACE_SEPARATED))
+FREETZ_LD_RUN_PATH:=$(if $(filter-out $(STANDARD_LIBRARY_DIRS),$(FREETZ_RPATH_SPACE_SEPARATED)),LD_RUN_PATH="$(FREETZ_RPATH)")
+MAKE_ENV+=FREETZ_LIBRARY_DIR="$(FREETZ_LIBRARY_DIR)"
+
+
+TARGET_CFLAGS_HW_CAPABILITIES :=
+ifeq ($(strip $(FREETZ_TARGET_ARCH_ARM)),y)
+ifeq ($(strip $(FREETZ_SYSTEM_TYPE_BCM63138)),y)
+TARGET_CFLAGS_HW_CAPABILITIES += $(if $(call qstrip,$(FREETZ_GCC_ARCH)),-march=$(call qstrip,$(FREETZ_GCC_ARCH)))
+TARGET_CFLAGS_HW_CAPABILITIES += $(if $(call qstrip,$(FREETZ_GCC_CPU)),-mtune=$(call qstrip,$(FREETZ_GCC_CPU)))
+else
+TARGET_CFLAGS_HW_CAPABILITIES += $(if $(call qstrip,$(FREETZ_GCC_CPU)),-mcpu=$(call qstrip,$(FREETZ_GCC_CPU)))
+endif
+else
+TARGET_CFLAGS_HW_CAPABILITIES += $(if $(call qstrip,$(FREETZ_GCC_CPU)),-march=$(call qstrip,$(FREETZ_GCC_CPU)))
+TARGET_CFLAGS_HW_CAPABILITIES += $(if $(call qstrip,$(FREETZ_GCC_CPU)),-mtune=$(call qstrip,$(FREETZ_GCC_CPU)))
+endif
+ifneq ($(strip $(FREETZ_SYSTEM_TYPE_BCM63138)),y)
+TARGET_CFLAGS_HW_CAPABILITIES += $(if $(call qstrip,$(FREETZ_GCC_FPU)),-mfpu=$(call qstrip,$(FREETZ_GCC_FPU)))
+endif
+ifeq ($(strip $(FREETZ_TARGET_ARCH_ARM)),y)
+# ARM is the only ARCH using -mfloat-abi=%
+TARGET_CFLAGS_HW_CAPABILITIES += $(if $(call qstrip,$(FREETZ_GCC_FLOAT_ABI)),-mfloat-abi=$(call qstrip,$(FREETZ_GCC_FLOAT_ABI)))
+else
+# all other ARCHs use -m%-float
+TARGET_CFLAGS_HW_CAPABILITIES += $(if $(call qstrip,$(FREETZ_GCC_FLOAT_ABI)),-m$(call qstrip,$(FREETZ_GCC_FLOAT_ABI))-float)
+endif
+TARGET_CFLAGS_HW_CAPABILITIES += $(if $(call qstrip,$(FREETZ_GCC_MODE)),-m$(call qstrip,$(FREETZ_GCC_MODE)))
+
+# additional Freetz controlled and $(FREETZ_TARGET_ARCH) dependent flags
+TARGET_CFLAGS_arm:=
+TARGET_CFLAGS_i686:=
+TARGET_CFLAGS_mips:=-Wa,--trap
+
+# LFS flags
+TARGET_CFLAGS_LFS:=-D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+
+# GCC flags
+TARGET_CFLAGS_GCC :=
+ifeq ($(strip $(FREETZ_TARGET_GCC_4_MAX)),y)
+TARGET_CFLAGS_GCC += --std=gnu99
+endif
+
+# Loader
+ifeq ($(strip $(FREETZ_SEPARATE_AVM_UCLIBC)),y)
+#TARGET_CFLAGS_LD:=-Xlinker -I$(FREETZ_LIBRARY_DIR)/ld-uClibc.so.1
+TARGET_CFLAGS_LD:=-Wl,-I$(FREETZ_LIBRARY_DIR)/ld-uClibc.so.1
+endif
+
+
+ifneq ($(filter -march=% -mcpu=% -mtune=% -mfpu=% -mfloat-abi=% -m%-float -Wa$(_comma)--trap,$(call qstrip,$(FREETZ_TARGET_CFLAGS))),)
+$(error Please remove any ARCH/CPU/FPU/FLOAT-ABI/MODE related flags (-march/-mcpu/-mtune/-mfpu/-mfloat-abi/-m*-float/-Wa$(_comma)--trap) \
+	from target compiler flags (FREETZ_TARGET_CFLAGS variable in your .config). \
+	These flags are automatically set by Freetz build environment now)
+endif
+TARGET_CFLAGS:=$(strip $(TARGET_CFLAGS_HW_CAPABILITIES) $(call qstrip,$(FREETZ_TARGET_CFLAGS)) $(TARGET_CFLAGS_$(call qstrip,$(FREETZ_TARGET_ARCH))) $(TARGET_CFLAGS_LFS) $(TARGET_CFLAGS_GCC) $(TARGET_CFLAGS_LD))
+
+
+FPIC:=-fPIC
+
+TARGET_SPECIFIC_SUBDIR:=target-$(TARGET_TOOLCHAIN_COMPILER)
+SOURCE_DIR:=$(SOURCE_DIR_ROOT)/$(TARGET_SPECIFIC_SUBDIR)
+PACKAGES_DIR:=$(PACKAGES_DIR_ROOT)/$(TARGET_SPECIFIC_SUBDIR)
+TARGET_SPECIFIC_ROOT_DIR:=$(PACKAGES_DIR)/root
+
+$(SOURCE_DIR) \
+$(PACKAGES_DIR):
+	@mkdir -p $@
+
+# If CONFIG_SITE is exported, it can cause errors in the host builds
+unexport CONFIG_SITE
+TARGET_SITE:=$(FREETZ_BASE_DIR)/$(INCLUDE_DIR)/config.site/$(call qstrip,$(FREETZ_TARGET_UCLIBC_TRIPLET))
+
+TARGET_AR:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ar
+TARGET_AS:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)as
+TARGET_CC:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)gcc
+TARGET_CXX:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)g++-wrapper
+TARGET_LD:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ld
+TARGET_LDCONFIG:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ldconfig
+TARGET_NM:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)nm
+TARGET_RANLIB:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)ranlib
+TARGET_OBJCOPY:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)objcopy
+TARGET_READELF:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)readelf
+TARGET_STRIP:=$(TARGET_MAKE_PATH)/$(TARGET_CROSS)strip --remove-section={.comment,.note,.pdr}
+
+ifeq ($(strip $(FREETZ_TOOLCHAIN_CCACHE)),y)
+TARGET_PATH="$(TARGET_MAKE_PATH):$(KERNEL_MAKE_PATH):$(TARGET_CCACHE_PATH):$(KERNEL_CCACHE_PATH):$(PATH)"
+else
+TARGET_PATH="$(TARGET_CCACHE_PATH):$(KERNEL_CCACHE_PATH):$(TARGET_MAKE_PATH):$(KERNEL_MAKE_PATH):$(PATH)"
+endif
+
+
+# commands to run before calling configure
+# each command has to be terminated by ';'
+TARGET_CONFIGURE_PRE_CMDS:=
+TARGET_CONFIGURE_PRE_CMDS += $(RM) config.{cache,status};
+
+# setup environment for configure
+TARGET_CONFIGURE_ENV:=
+TARGET_CONFIGURE_ENV += PATH=$(TARGET_PATH)
+TARGET_CONFIGURE_ENV += FREETZ_LIBRARY_DIR="$(FREETZ_LIBRARY_DIR)"
+TARGET_CONFIGURE_ENV += FREETZ_KERNEL_VERSION_MAJOR="$(call qstrip,$(FREETZ_KERNEL_VERSION_MAJOR))"
+TARGET_CONFIGURE_ENV += FREETZ_TARGET_ARCH="$(call qstrip,$(FREETZ_TARGET_ARCH))"
+TARGET_CONFIGURE_ENV += FREETZ_TARGET_ARCH_ENDIANNESS_DEPENDENT="$(call qstrip,$(FREETZ_TARGET_ARCH_ENDIANNESS_DEPENDENT))"
+
+# Set compiler/linker flags here, not in TARGET_CONFIGURE_OPTIONS,
+# because this way they do not disturb old configure scripts
+TARGET_CONFIGURE_ENV += CC="$(TARGET_CC)"
+TARGET_CONFIGURE_ENV += CXX="$(TARGET_CXX)"
+TARGET_CONFIGURE_ENV += CFLAGS="$(TARGET_CFLAGS)"
+TARGET_CONFIGURE_ENV += CXXFLAGS="$(TARGET_CFLAGS)"
+TARGET_CONFIGURE_ENV += LDFLAGS=""
+TARGET_CONFIGURE_ENV += PKG_CONFIG_PATH="$(TARGET_MAKE_PATH)/../lib/pkgconfig"
+TARGET_CONFIGURE_ENV += PKG_CONFIG_LIBDIR="$(TARGET_MAKE_PATH)/../lib/pkgconfig"
+
+# Common options for configure
+TARGET_CONFIGURE_OPTIONS:=
+TARGET_CONFIGURE_OPTIONS += --cache-file=/dev/null
+TARGET_CONFIGURE_OPTIONS += --target=$(GNU_TARGET_NAME)
+TARGET_CONFIGURE_OPTIONS += --host=$(GNU_TARGET_NAME)
+TARGET_CONFIGURE_OPTIONS += --build=$(GNU_HOST_NAME)
+TARGET_CONFIGURE_OPTIONS += --program-prefix=""
+TARGET_CONFIGURE_OPTIONS += --program-suffix=""
+TARGET_CONFIGURE_OPTIONS += --prefix=/usr
+TARGET_CONFIGURE_OPTIONS += --exec-prefix=/usr
+TARGET_CONFIGURE_OPTIONS += --bindir=/usr/bin
+TARGET_CONFIGURE_OPTIONS += --datadir=/usr/share
+TARGET_CONFIGURE_OPTIONS += --includedir=/usr/include
+TARGET_CONFIGURE_OPTIONS += --infodir=/usr/share/info
+TARGET_CONFIGURE_OPTIONS += --libdir=/usr/lib
+TARGET_CONFIGURE_OPTIONS += --libexecdir=/usr/lib
+TARGET_CONFIGURE_OPTIONS += --localstatedir=/var
+TARGET_CONFIGURE_OPTIONS += --mandir=/usr/share/man
+TARGET_CONFIGURE_OPTIONS += --sbindir=/usr/sbin
+TARGET_CONFIGURE_OPTIONS += --sysconfdir=/etc
+TARGET_CONFIGURE_OPTIONS += --with-gnu-ld
+TARGET_CONFIGURE_OPTIONS += $(DISABLE_NLS)
+
+### Convenience macros
+# Since the makefiles for the packages contain many similar parts, we define some macros to simplify
+# the creation and maintenance of the makefiles.
+# macro names containing _INT are for internal use only and should not be called outside of this file
+# For details of the required targets, see the documentation in README.Makefiles
+
+define SELECTED_SUBOPTIONS__INT
+$(strip \
+	$(foreach suboption, $(1), \
+		$(if \
+			$(or \
+				$(FREETZ_$(3)_$(if $(2),$(2)_,)$(call LEGAL_VARNAME,$(suboption))), \
+				$(FREETZ_$(3)_$(if $(2),$(2)_,)$(call TOUPPER_NAME,$(suboption))) \
+			), \
+			$(suboption) \
+		) \
+	) \
+)
+endef
+# For each SUFFIX from a given list of menuconfig-option-suffixes evaluates FREETZ_PACKAGE_$(PKG)_$(OPTIONAL_INFIX)_$(SUFFIX) variable
+# and in case it evaluates to non-empty value (i.e. selected) appends the suffix to the list being returned.
+# $(1) - list of package suboptions (suffixes) to be evaluated
+# $(2) - optional infix
+PKG_SELECTED_SUBOPTIONS = $(call SELECTED_SUBOPTIONS__INT,$(1),$(2),PACKAGE_$(PKG))
+# For each SUFFIX from a given list of menuconfig-option-suffixes evaluates FREETZ_LIB_lib$(pkg)_$(OPTIONAL_INFIX)_$(SUFFIX) variable
+# and in case it evaluates to non-empty value (i.e. selected) appends the suffix to the list being returned.
+# $(1) - list of package suboptions (suffixes) to be evaluated
+# $(2) - optional infix
+LIB_SELECTED_SUBOPTIONS = $(call SELECTED_SUBOPTIONS__INT,$(1),$(2),LIB_lib$(patsubst lib%,%,$(pkg)))
+
+# SED helper macros
+# single quote sign within sed script quoted with single quote sign
+_SQ:='"'"'
+# double quote sign within sed script quoted with double quote sign
+_DQ:="'"'"
+
+# PKG_EDIT_CONFIG
+# update a config file
+#   $(1) = list of assignments CONFIG_VAR=value
+PKG_EDIT_CONFIG__INT0 = -e 's%^(\# )?($1)[ =].*%$(if $(patsubst n,,$2),\2=$2,\# \2 is not set)%g'
+PKG_EDIT_CONFIG__INT1 = $(call PKG_EDIT_CONFIG__INT0,$(word 1,$(subst =, ,$1)),$(word 2,$(subst =, ,$1)))
+PKG_EDIT_CONFIG = $(SED) -i -r $(foreach asg,$1,$(call PKG_EDIT_CONFIG__INT1,$(asg)))
+
+# PKG_FIX_LIBTOOL_LA
+#   fix directories is libtool .la files and .pc files
+PKG_FIX_LIBTOOL_LA__INT = -e "s,^($1=)(['$(_DQ)]?)([^'$(_DQ)]*)(\2)$$,\1\2$(TARGET_TOOLCHAIN_STAGING_DIR)\3\4,g"
+PKG_FIX_LIBTOOL_LA__INT_DEPENDENCY_LIBS = -e "/^dependency_libs/s,[ \t],  ,g;s,([ '])((/usr)?/lib/[^ /]+[.]la)([ ']),\1$(TARGET_TOOLCHAIN_STAGING_DIR)\2\4,g;s, +, ,g"
+PKG_FIX_LIBTOOL_LA = $(SED) -i -r \
+	$(foreach key,$(if $(strip $1),$(strip $1),libdir includedir prefix exec_prefix),$(call PKG_FIX_LIBTOOL_LA__INT,$(key))) \
+	$(if $(strip $1),,$(PKG_FIX_LIBTOOL_LA__INT_DEPENDENCY_LIBS))
+
+# Fix configure and/or libtool scripts to prevent RPATH from being hardcoded.
+# Based on ideas provided on http://wiki.debian.org/RpathIssue.
+#
+# Whether RPATH has been hardcoded or not could be tested using the following command:
+#   readelf -d <binary/library> | grep RPATH
+#
+# The macro is intended to be used in $(PKG)_CONFIGURE_PRE_CMDS variable in the following way:
+# $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
+#
+# Replace runpath_var=$runpath_var with runpath_var=
+PKG_FIX_RUNPATH_VAR__INT = -e "s|(runpath_var=)[$$$$]runpath_var|\1|g"
+#
+# Replace hardcode_into_libs=something with hardcode_into_libs=no
+PKG_FIX_HARDCODE_INTO_LIBS__INT = -e "s|(hardcode_into_libs=).+$$$$|\1no|g"
+#
+# In all lines matching the pattern hardcode_libdir_flag_spec[_A-Za-z0-9]*=
+# replace
+#   ${wl}-rpath,$libdir
+#   ${wl}--rpath,$libdir
+#   ${wl}-rpath ${wl}$libdir
+#   ${wl}--rpath ${wl}$libdir
+# with
+#   -D__SOMETHING_NON_EMPTY_TO_FOOL_LIBTOOL__
+PKG_FIX_HARDCODE_LIBDIR_FLAG_SPEC__INT1 = -e '/hardcode_libdir_flag_spec[_A-Za-z0-9]*=/s/[$$$$][{]wl[}]-?-rpath(,| [$$$$][{]wl[}])[$$$$]libdir/-D__SOMETHING_NON_EMPTY_TO_FOOL_LIBTOOL__/g'
+# Replace
+#   hardcode_libdir_flag_spec(_ld)?=$lt_hardcode_libdir_flag_spec...
+#   or
+#   hardcode_libdir_flag_spec(_ld)?=$lt_[]_LT_AC_TAGVAR(hardcode_libdir_flag_spec..., $1)
+# with
+#   hardcode_libdir_flag_spec(_ld)?=
+PKG_FIX_HARDCODE_LIBDIR_FLAG_SPEC__INT2 = -e 's/(hardcode_libdir_flag_spec(_ld)?=)[$$$$]lt_([[][]]_LT_AC_TAGVAR[(])?hardcode_libdir_flag_spec[_A-Za-z0-9]*(, *[$$$$]1[)])?/\1/g'
+#
+PKG_PREVENT_RPATH_HARDCODING__INT = \
+	cp -a $1 $1.before_rpath_fix; \
+	$(SED) -i -r \
+		$(PKG_FIX_RUNPATH_VAR__INT) \
+		$(PKG_FIX_HARDCODE_INTO_LIBS__INT) \
+		$(PKG_FIX_HARDCODE_LIBDIR_FLAG_SPEC__INT1) \
+		$(PKG_FIX_HARDCODE_LIBDIR_FLAG_SPEC__INT2) \
+	$1;
+PKG_PREVENT_RPATH_HARDCODING = $(foreach f,$1,$(call PKG_PREVENT_RPATH_HARDCODING__INT,$(f)))
+# 1st level PKG_PREVENT_RPATH_HARDCODING
+PKG_PREVENT_RPATH_HARDCODING1 = $(subst $$$$,$$,$(call PKG_PREVENT_RPATH_HARDCODING,$1))
+
+# Changes a typical Makefile.in line from "FOO = @FOO@" to "FOO = @FOO@ $(EXTRA_FOO)", i.e. adds $(EXTRA_FOO) at the end
+# $1 - variable name or variable names separated by |, i.e. regex OR pattern
+# $2 - optional $($(PKG)_DIR) subdir
+PKG_ADD_EXTRA_FLAGS = find $(abspath $($(PKG)_DIR))$(if $(strip $2),/$(strip $2)) -name Makefile.in -type f -exec $(SED) -i -r -e 's,^($(strip $1))[ \t]*=[ \t]*@\1@,& $$$$(EXTRA_\1),' \{\} \+;
+
+# Usage:
+# $(call REPLACE_LIBTOOL,$1,$2,$3)
+# $1 - Relative path to libtool-script, usually ./ (NB: libtool is often generated by configure, i.e. doesn't exist in the tarball)
+# $2 - Relative path to ltmain.sh, varies from package to package. The following locations are the most often used ones:
+#      ./, ./build/, ./builds/unix/, ./auto/, ./autoconf/, ./conftools/
+# $3 - Relative path to libtool.m4, varies from package to package. The following locations are the most often used ones:
+#      ./, ./m4/, ./build/, ./conftools/
+# Each parameter defaults to ./ if omitted
+# NB: all libtool-related macros are heavily based on the openwrt macros provided in autotools.mk
+define REPLACE_FILE_WITH_SYMLINK
+if [ -f "$(abspath $($(PKG)_DIR)/$(3)/$(1))" -a -e "$(2)/$(if $(4),$(4),$(1))" ]; then \
+	$(call MESSAGE, Replacing $(3)/$(if $(4),$(4),$(1)) with symlink to $(2)/$(if $(4),$(4),$(1))); \
+	$(RM) "$(abspath $($(PKG)_DIR)/$(3)/$(1))"; \
+	ln -s "$(2)/$(if $(4),$(4),$(1))" "$(abspath $($(PKG)_DIR)/$(3)/$(1))"; \
+fi;
+endef
+define REPLACE_LIBTOOL__INT
+$(call REPLACE_FILE_WITH_SYMLINK,libtool,$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin,$(if $(1),$(1),.)) \
+$(call REPLACE_FILE_WITH_SYMLINK,ltmain.sh,$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/libtool,$(if $(2),$(2),.)) \
+$(call REPLACE_FILE_WITH_SYMLINK,libtool.m4,$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/share/aclocal,$(if $(3),$(3),.))
+endef
+define REPLACE_LIBTOOL__INT2
+$(PKG)_CONFIGURE_PRE_CMDS += $(call REPLACE_LIBTOOL__INT,$(1),$(2),$(3))
+$(PKG)_CONFIGURE_POST_CMDS += $(call REPLACE_LIBTOOL__INT,$(1),$(2),$(3))
+endef
+define REPLACE_LIBTOOL
+$(eval $(call REPLACE_LIBTOOL__INT2,$(1),$(2),$(3)))
+endef
+
+define INSTALL_BINARY_STRIP
+$(INSTALL_FILE) \
+[ "$(FREETZ_SEPARATE_AVM_UCLIBC)" == "y" ] && $(TOOLS_DIR)/patchelf --set-interpreter $(FREETZ_LIBRARY_DIR)/ld-uClibc.so.1 $@ || true; \
+$(TARGET_STRIP) $@;
+endef
+define INSTALL_LIBRARY__INT
+chmod 755 $<; \
+mkdir -p $(dir $@); \
+$(RM) $(addprefix $(dir $@),$(call LIBRARY_NAME_TO_SHELL_PATTERN,$(notdir $@),$(if $(1),-$(1)),$(2))); \
+cp -a $(addprefix $(dir $<),$(call LIBRARY_NAME_TO_SHELL_PATTERN,$(notdir $<),$(1),$(2))) $(dir $@);
+endef
+INSTALL_LIBRARY = $(call INSTALL_LIBRARY__INT)
+INSTALL_LIBRARY_INCLUDE_STATIC = $(call INSTALL_LIBRARY__INT,,a)
+INSTALL_LIBRARY_WILDCARD_BEFORE_SO = $(call INSTALL_LIBRARY__INT,*)
+INSTALL_LIBRARY_WILDCARD_BEFORE_SO_INCLUDE_STATIC = $(call INSTALL_LIBRARY__INT,*,a)
+define INSTALL_LIBRARY_STRIP
+$(INSTALL_LIBRARY) \
+$(TARGET_STRIP) $@;
+endef
+define INSTALL_LIBRARY_STRIP_WILDCARD_BEFORE_SO
+$(INSTALL_LIBRARY_WILDCARD_BEFORE_SO) \
+$(TARGET_STRIP) $@;
+endef
+
+# $1 - binary to be installed
+# $2 - directory binary to be installed in
+# $3 (optional) - DESTDIR binary to be installed in, defaults to $(PKG)_DEST_DIR if omitted
+define INSTALL_BINARY_STRIP_RULE
+$(if $(strip $(3)),$(strip $(3)),$($(PKG)_DEST_DIR))$(strip $(2))/$(notdir $(strip $(1))): $(strip $(1))
+	$(value INSTALL_BINARY_STRIP)
+endef
+
+# $1 - library to be installed
+# $2 - directory library to be installed in
+# $3 (optional) - DESTDIR library to be installed in, defaults to $(PKG)_DEST_DIR if omitted
+define INSTALL_LIBRARY_STRIP_RULE
+$(if $(strip $(3)),$(strip $(3)),$($(PKG)_DEST_DIR))$(strip $(2))/$(notdir $(strip $(1))): $(strip $(1))
+	$(value INSTALL_LIBRARY_STRIP)
+endef
+
+define REMOVE_DOC_NLS_DIRS
+$(if $(strip $(1)),$(RM) -r $(addprefix $(strip $(1)),$(foreach p,/ /usr /share /usr/share,$(foreach d,info man doc locale,$(subst //,/,$(p)/$(d))))))
+endef
+
+### PKG_INIT - initialise package. See also PKG_FINISH.
+
+# Stage 1: initialise package names
+#   $(1) = version (mandatory)
+#   $(2) = lower-case package name (optional)
+#   $(3) = upper-case package name (optional)
+define PKG_INIT__INT
+#PKG_MAKEFILE:=$(lastword $(MAKEFILE_LIST))
+PKG_MAKEFILE:=$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
+PKG_BASENAME:=$(basename $(notdir $(PKG_MAKEFILE)))
+$(if $(strip $1),,$(error Undefined version for PKG_INIT in $(PKG_MAKEFILE)))
+pkg:=$(if $(strip $2),$(strip $2),$(PKG_BASENAME))
+PKG:=$(if $(strip $3),$(strip $3),$(call TOUPPER_NAME,$(pkg)))
+ALL_PACKAGES+=$(pkg)
+#
+$(PKG)_VERSION:=$(strip $1)
+#
+$(PKG)_BUILD_PREREQ:=
+$(PKG)_BUILD_PREREQ_HINT:=
+$(PKG)_DEPENDS_ON:=
+$(PKG)_HOST_DEPENDS_ON:=
+#
+$(PKG)_REBUILD_SUBOPTS=FREETZ_RPATH
+#
+$(PKG)_SOURCE_DIR:=$(SOURCE_DIR)
+$(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg)-$($(PKG)_VERSION)
+#
+$(PKG)_TARBALL_STRIP_COMPONENTS:=1
+$(PKG)_TARBALL_INCLUDE_FILTER:=
+#
+$(PKG)_EXCLUDED:=
+#
+$(PKG)_CONFIGURE_DEFOPTS:=y
+#
+# $(pkg)-precompiled--int must be the first target, it will depend on DEPENDS_ON
+$(pkg)-precompiled: $(pkg)-precompiled--int clear-echo-temporary $(pkg)
+.PHONY: $(pkg)-precompiled $(pkg)-precompiled--int $(pkg)
+endef
+
+# Stage 2a: initialise other package-specific variables for binary packages
+define PKG_INIT_BIN__INT
+PKG_TYPE:=BIN
+# level 99 for packages that are not actually started
+$(PKG)_STARTLEVEL=99
+$(PKG)_MAKE_DIR:=$(MAKE_DIR)/$(pkg)
+$(PKG)_TARGET_DIR:=$(PACKAGES_DIR)/$(pkg)-$($(PKG)_VERSION)
+$(PKG)_TARGET_LIBDIR:=$(TARGET_SPECIFIC_ROOT_DIR)$(FREETZ_LIBRARY_DIR)
+$(PKG)_DEST_DIR:=$($(PKG)_TARGET_DIR)/root
+$(PKG)_DEST_LIBDIR:=$($(PKG)_TARGET_DIR)/root$(FREETZ_LIBRARY_DIR)
+$(PKG)_CLEAN_TARGET_DIR__INT:=$(RM) -r $($(PKG)_TARGET_DIR); $(RM) $(PACKAGES_DIR)/.$(pkg) $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION);
+$(pkg)-precompiled $(pkg): | $(PKG)_TARGET_DIR
+endef
+
+# Stage 2b: initialise other package-specific variables for library packages
+define PKG_INIT_LIB__INT
+PKG_TYPE:=LIB
+$(PKG)_MAKE_DIR:=$(MAKE_DIR)/libs/$(pkg)
+$(PKG)_TARGET_DIR:=$(TARGET_SPECIFIC_ROOT_DIR)$(FREETZ_LIBRARY_DIR)
+$(PKG)_TARGET_LIBDIR:=$($(PKG)_TARGET_DIR)
+$(PKG)_DEST_DIR:=$(TARGET_SPECIFIC_ROOT_DIR)
+endef
+
+# Stage 3: Common definitions after BIN/LIB specific definitions
+define PKG_INIT__INT3
+$(PKG)_DEST_BIN:=$($(PKG)_DEST_DIR)/bin
+$(PKG)_DEST_SBIN:=$($(PKG)_DEST_DIR)/sbin
+$(PKG)_DEST_LIB:=$($(PKG)_DEST_DIR)/lib
+$(PKG)_DEST_USR_BIN:=$($(PKG)_DEST_DIR)/usr/bin
+$(PKG)_DEST_USR_SBIN:=$($(PKG)_DEST_DIR)/usr/sbin
+$(PKG)_DEST_USR_LIB:=$($(PKG)_DEST_DIR)/usr/lib
+$(PKG)_CLEAN_STAGING_DIR__INT:=$(MAKE_ENV) $(MAKE) --quiet --ignore-errors $(pkg)-clean >/dev/null 2>&1;
+endef
+
+define PKG_INIT_BIN__INTV
+$(value PKG_INIT__INT)
+$(value PKG_INIT_BIN__INT)
+$(value PKG_INIT__INT3)
+endef
+# Call & evaluate stages 1,2a,3 for binary packages
+define PKG_INIT_BIN
+$(eval $(call PKG_INIT_BIN__INTV,$1,$2,$3))
+endef
+
+define PKG_INIT_LIB__INTV
+$(value PKG_INIT__INT)
+$(value PKG_INIT_LIB__INT)
+$(value PKG_INIT__INT3)
+endef
+# Call & evaluate stages 1,2b,3 for library packages
+define PKG_INIT_LIB
+$(eval $(call PKG_INIT_LIB__INTV,$1,$2,$3))
+endef
+
+# PKG_ADD_BIN
+#  $1 PKG FREETZ_PACKAGE_ Config Symbol
+#  $2 pkg Name (optional)
+define PKG_ADD_BIN__INT
+ifeq ($(FREETZ_PACKAGE_$1),y)
+PACKAGES+=$(if $(strip $2),$2,$(pkg))
+endif
+endef
+define PKG_ADD_BIN
+$(eval $(call PKG_ADD_BIN__INT,$1,$2))
+endef
+
+# PKG_ADD_LIB
+#  $1 PKG FREETZ_LIB_ Config Symbol
+#  $2 pkg Name (optional)
+define PKG_ADD_LIB__INT
+ifeq ($(FREETZ_LIB_$1),y)
+LIBS+=$(if $(strip $2),$2,$(pkg))
+endif
+endef
+define PKG_ADD_LIB
+$(eval $(call PKG_ADD_LIB__INT,$1,$2))
+endef
+
+### PKG_FINISH - package finalisation
+
+# Finalise binary packages
+define PKG_FINISH_BIN__INT
+$(PKG)_TARGET_DIR:
+	@mkdir -p $($(PKG)_TARGET_DIR)
+.PHONY: $(PKG)_TARGET_DIR
+
+# create marker containing package version
+$(PACKAGES_DIR)/.$(pkg): | $(PACKAGES_DIR)
+	@echo "$($(PKG)_VERSION)" > $$@
+
+# copy files under make/$(pkg)/files to the package target dir
+$(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION): | $(PACKAGES_DIR)
+	mkdir -p $($(PKG)_TARGET_DIR)/root
+	if test -d $($(PKG)_MAKE_DIR)/files; then \
+		$(call COPY_USING_TAR,$($(PKG)_MAKE_DIR)/files,$($(PKG)_TARGET_DIR)) \
+	fi
+	@touch $$@
+
+$(pkg) $(pkg)-precompiled: $(PACKAGES_DIR)/.$(pkg) $(PACKAGES_DIR)/.$(pkg)-$($(PKG)_VERSION)
+
+$($(PKG)_TARGET_DIR)/.exclude: $(TOPDIR)/.config | $(PKG)_TARGET_DIR
+	@$(call write-list-to-file,$(patsubst /%,%,$(patsubst $($(PKG)_DEST_DIR)/%,%,$(strip $($(PKG)_EXCLUDED)))),$$@)
+
+$(pkg): $($(PKG)_TARGET_DIR)/.exclude
+
+$(PKG_LIST)
+$(call PKG_ADD_BIN__INT,$(PKG))
+endef
+
+# Finalise library packages
+define PKG_FINISH_LIB__INT
+endef
+
+# check for changed suboptions, should only be called if $(PKG)_REBUILD_SUBOPTS is defined
+define PKG_FINISH_CHECK_REBUILD_SUBOPTS__INT1
+$(PKG)_FREETZ_CONFIG_FILE:=$(FREETZ_BASE_DIR)/$(SOURCE_DIR)/.$(pkg)_config
+endef
+define PKG_FINISH_CHECK_REBUILD_SUBOPTS__INT2
+$($(PKG)_FREETZ_CONFIG_FILE): $(TOPDIR)/.config | $(SOURCE_DIR)
+	@($(foreach OPT,$($(PKG)_REBUILD_SUBOPTS),echo "$(if $($(OPT)),$(OPT)=$($(OPT)),$(_hash) $(OPT) is not set)";):) > $($(PKG)_FREETZ_CONFIG_FILE).temp
+	@if ! diff -q $($(PKG)_FREETZ_CONFIG_FILE).temp $($(PKG)_FREETZ_CONFIG_FILE) 2>/dev/null $(SILENT); then \
+		$(RM) -r $($(PKG)_DIR); \
+		$($(PKG)_CLEAN_TARGET_DIR__INT) \
+		mv $($(PKG)_FREETZ_CONFIG_FILE).temp $($(PKG)_FREETZ_CONFIG_FILE); \
+	else \
+		$(RM) $($(PKG)_FREETZ_CONFIG_FILE).temp; \
+	fi
+$(pkg)-build-prereq: $($(PKG)_FREETZ_CONFIG_FILE)
+endef
+
+# Finalise packages (general functionality + call to type specifics)
+define PKG_FINISH__INT
+$(pkg)-precompiled--int: $(pkg)-build-prereq $(TOOLCHAIN) $($(PKG)_HOST_DEPENDS_ON) $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON))
+$(pkg)-precompiled:
+	@$(call _ECHO_DONE)
+
+.PHONY: $(pkg)-build-prereq
+$(pkg)-build-prereq: $($(PKG)_DIR)/.build-prereq-checked
+$($(PKG)_DIR)/.build-prereq-checked:
+ifneq ($($(PKG)_BUILD_PREREQ),)
+	@MISSING_PREREQ=""; \
+	for fv in $($(PKG)_BUILD_PREREQ); do \
+		f=$$$$(echo $$$$fv | cut -d ':' -f 1); \
+		v=$$$$(echo $$$$fv | cut -d ':' -sf 2 | sed -e 's,[.],[.],g'); \
+		if ! which $$$$f >/dev/null 2>&1; then \
+			MISSING_PREREQ="$$$$MISSING_PREREQ $$$$f"; \
+		elif [ -n "$$$$v" ] && ! $$$$f --version 2>&1 | grep -q "$$$$v"; then \
+			MISSING_PREREQ="$$$$MISSING_PREREQ $$$$fv"; \
+		fi; \
+	done; \
+	if [ -n "$$$$MISSING_PREREQ" ]; then \
+		echo -n -e "$(_Y)"; \
+		echo -e \
+			"ERROR: The following command(s) required for building '$(pkg)' are missing on your system:" \
+			`echo $$$$MISSING_PREREQ | sed -e 's| |, |g'`; \
+		echo "See https://freetz-ng.github.io/freetz-ng/PREREQUISITES for installation hints"; \
+		if [ -n "$(strip $($(PKG)_BUILD_PREREQ_HINT))" ]; then \
+			echo "$($(PKG)_BUILD_PREREQ_HINT)"; \
+		fi; \
+		echo -n -e "$(_N)"; \
+		exit 1; \
+	fi;
+endif
+	@mkdir -p $$(dir $$@); touch $$@;
+
+$(pkg)-dirclean--int:
+	$(RM) -r $($(PKG)_DIR)
+	$($(PKG)_CLEAN_TARGET_DIR__INT)
+#	$($(PKG)_CLEAN_STAGING_DIR__INT)
+
+$(pkg)-dirclean: $(pkg)-dirclean--int
+$(pkg)-distclean: $(pkg)-dirclean $(pkg)-clean $(pkg)-uninstall
+.PHONY: $(pkg)-dirclean $(pkg)-dirclean--int $(pkg)-distclean $(pkg)-clean $(pkg)-uninstall
+
+$(pkg)-autofix: $(pkg)-dirclean
+	$(MAKE) AUTO_FIX_PATCHES=y $(pkg)-unpacked
+$(pkg)-recompile: $(pkg)-dirclean $(pkg)-precompiled
+.PHONY: $(pkg)-autofix $(pkg)-recompile
+
+PKG:=
+PKG_TYPE:=
+PKG_MAKEFILE:=
+PKG_BASENAME:=
+pkg:=
+endef
+
+PKG_FINISH=$(eval $(PKG_FINISH_$(PKG_TYPE)__INT))
+PKG_FINISH+=$(if $($(PKG)_REBUILD_SUBOPTS),$(eval $(PKG_FINISH_CHECK_REBUILD_SUBOPTS__INT1))$(eval $(PKG_FINISH_CHECK_REBUILD_SUBOPTS__INT2)))
+PKG_FINISH+=$(eval $(PKG_FINISH__INT))
+
+### PKG_SOURCE_DOWNLOAD - download source packages
+
+define PKG_SOURCE_DOWNLOAD__INT
+NON_LOCALSOURCE_PACKAGES+=$(pkg)
+$(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
+	$(call _ECHO,downloading)
+	@if [ -e $(MIRROR_DIR)/$($(PKG)_SOURCE) -a ! -e $(DL_DIR)/$($(PKG)_SOURCE) ]; then \
+		$(call MESSAGE, Found $($(PKG)_SOURCE) in $(MIRROR_DIR), creating hard link); \
+		ln $(MIRROR_DIR)/$($(PKG)_SOURCE) $(DL_DIR); \
+	else \
+		$(DL_TOOL) \
+			$(DL_DIR) \
+			$(if $($(PKG)_SOURCE_DOWNLOAD_NAME),$($(PKG)_SOURCE_DOWNLOAD_NAME),$($(PKG)_SOURCE)) \
+			$($(PKG)_SITE) \
+			$(or $($(PKG)_SOURCE_SHA512),$($(PKG)_SOURCE_SHA256),$($(PKG)_SOURCE_SHA1),$($(PKG)_SOURCE_MD5),$($(PKG)_SOURCE_CHECKSUM),$($(PKG)_HASH)) \
+			$(SILENT) \
+			$(if $($(PKG)_SOURCE_DOWNLOAD_NAME),&& mv -f $(DL_DIR)/$($(PKG)_SOURCE_DOWNLOAD_NAME) $(DL_DIR)/$($(PKG)_SOURCE)); \
+	fi
+
+$(pkg)-download: $(DL_DIR)/$($(PKG)_SOURCE)
+
+$(MIRROR_DIR)/$($(PKG)_SOURCE): | $(MIRROR_DIR)
+	@if [ -e $(DL_DIR)/$($(PKG)_SOURCE) ]; then \
+		$(call MESSAGE, Found $($(PKG)_SOURCE) in $(DL_DIR), creating hard link); \
+		ln $(DL_DIR)/$($(PKG)_SOURCE) $(MIRROR_DIR); \
+	else \
+		$(DL_TOOL) \
+			$(MIRROR_DIR) \
+			$(if $($(PKG)_SOURCE_DOWNLOAD_NAME),$($(PKG)_SOURCE_DOWNLOAD_NAME),$($(PKG)_SOURCE)) \
+			$($(PKG)_SITE) \
+			$(or $($(PKG)_SOURCE_SHA512),$($(PKG)_SOURCE_SHA256),$($(PKG)_SOURCE_SHA1),$($(PKG)_SOURCE_MD5),$($(PKG)_SOURCE_CHECKSUM),$($(PKG)_HASH)) \
+			$(SILENT) \
+			$(if $($(PKG)_SOURCE_DOWNLOAD_NAME),&& mv -f $(DL_DIR)/$($(PKG)_SOURCE_DOWNLOAD_NAME) $(DL_DIR)/$($(PKG)_SOURCE)); \
+	fi
+
+$(pkg)-download-mirror: $(MIRROR_DIR)/$($(PKG)_SOURCE)
+
+$(pkg)-check-download:
+	@echo -n "Checking download for package $(pkg)..."
+	@if $(DL_TOOL) check $($(PKG)_SOURCE) $($(PKG)_SITE); then \
+		echo "ok."; \
+	else \
+		echo "ERROR: NOT FOUND!"; \
+	fi
+
+.PHONY: $(pkg)-download $(pkg)-check-download $(pkg)-download-mirror
+endef
+PKG_SOURCE_DOWNLOAD=$(eval $(PKG_SOURCE_DOWNLOAD__INT))
+
+
+### PKG_UNPACK - unpack source archive & apply patches
+# Unpack, without patch, but only if source package is defined
+define PKG_UNPACK
+	$(if $($(PKG)_SOURCE), \
+		$(strip \
+			mkdir -p $($(PKG)_DIR); \
+			$(call \
+				$(if $($(PKG)_CUSTOM_UNPACK),$(PKG)_CUSTOM_UNPACK,UNPACK_TARBALL), \
+				$(DL_DIR)/$($(PKG)_SOURCE), \
+				$($(PKG)_DIR), \
+				$(strip $(filter-out 0,$($(PKG)_TARBALL_STRIP_COMPONENTS))), \
+				$(strip $($(PKG)_TARBALL_INCLUDE_FILTER)) \
+			) \
+		) \
+	)
+endef
+
+### PKG_PATCH - apply patches
+define PKG_PATCH
+	$(subst $(_dollar),$(_dollar)$(_dollar), \
+		$(call \
+			APPLY_PATCHES, \
+			$($(PKG)_MAKE_DIR)/patches \
+			$(if $(strip $($(PKG)_CONDITIONAL_PATCHES)),$(addprefix $($(PKG)_MAKE_DIR)/patches/,$(strip $($(PKG)_CONDITIONAL_PATCHES)))), \
+			$($(PKG)_DIR) \
+		) \
+	)
+endef
+
+# $1: commands to execute
+# $2: optional directory $1 to be executed within, default $($(PKG)_DIR)
+define PKG_EXECUTE_WITHIN__INT
+	$(if $(strip $(1)),(cd $(if $(strip $(2)),$(strip $(2)),$($(PKG)_DIR)); $(strip $(1))))
+endef
+
+# Removes all files under $1 except for those in $2
+define RMDIR_KEEP_FILES__INT
+	$(if $2,if [ -d "$1" ]; then TMPFILE=`mktemp`; $(TAR) -C $1 -cf $$$$TMPFILE $2; fi;) \
+	$(RM) -r $1; \
+	$(if $2,if [ -n "$$$$TMPFILE" ]; then mkdir -p $1; $(TAR) -C $1 -xf $$$$TMPFILE; rm -f $$$$TMPFILE; fi;)
+endef
+
+## Unpack and patch package
+define PKG_UNPACKED__INT
+$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) $(if $($(PKG)_CUSTOM_UNPACK),$($(PKG)_DIR)/.build-prereq-checked) | $($(PKG)_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
+	@$(call _ECHO,preparing)
+	@$(call RMDIR_KEEP_FILES__INT,$($(PKG)_DIR),.build-prereq-checked)
+	$(call PKG_UNPACK)
+	$(call PKG_EXECUTE_WITHIN__INT,$($(PKG)_PATCH_PRE_CMDS))
+	$(call PKG_PATCH)
+	$(call PKG_EXECUTE_WITHIN__INT,$($(PKG)_PATCH_POST_CMDS))
+	@touch $$@
+$(pkg)-source: $($(PKG)_DIR)/.unpacked
+$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
+.PHONY: $(pkg)-source $(pkg)-unpacked
+endef
+
+## "unpack" (actually copy) local source package
+define PKG_UNPACKED_LOCALSOURCE_PACKAGE__INT
+$($(PKG)_DIR)/.unpacked: $(wildcard $($(PKG)_MAKE_DIR)/src/*) | $($(PKG)_SOURCE_DIR)
+	@$(call _ECHO,preparing)
+	@$(call RMDIR_KEEP_FILES__INT,$($(PKG)_DIR),.build-prereq-checked)
+	mkdir -p $($(PKG)_DIR)
+	cp -a $$^ $($(PKG)_DIR)
+	@touch $$@
+$(pkg)-source: $($(PKG)_DIR)/.unpacked
+$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
+.PHONY: $(pkg)-source $(pkg)-unpacked
+endef
+
+## check for changed suboptions, should only be called if $(PKG)_REBUILD_SUBOPTS is defined
+define PKG_UNPACKED_CHECK_REBUILD_SUBOPTS
+$($(PKG)_DIR)/.unpacked: $($(PKG)_FREETZ_CONFIG_FILE)
+endef
+
+## check for changed files in files and patches folder
+define PKG_UNPACKED_CHECK_CHANGES__INT1
+$(PKG)_FREETZ_CHANGES_FILE:=$(FREETZ_BASE_DIR)/$(SOURCE_DIR)/.$(pkg)_changes
+$(PKG)_FREETZ_CHANGES_RECOMPILE_SEARCH:=patches/.*\|src/.*\|$(pkg)\.mk\|$(pkg).*\.mk\.in\|Makefile\.in\|Config\.in\|Config\.in\.libs\|Config\.in\.modules
+$(PKG)_FREETZ_CHANGES_REPACK_SEARCH:=files/.*
+endef
+define PKG_UNPACKED_CHECK_CHANGES__INT2
+$(PKG)_FREETZ_CHANGES_CHECK: $($(PKG)_SOURCE_DIR)
+	@find $($(PKG)_MAKE_DIR) \
+		-regex "^$($(PKG)_MAKE_DIR)/\($($(PKG)_FREETZ_CHANGES_RECOMPILE_SEARCH)\|$($(PKG)_FREETZ_CHANGES_REPACK_SEARCH)\)" \
+		-printf '%TY-%Tm-%Td %TH:%TM:%TS\t%P\n' 2>/dev/null | sort -k 3 >$($(PKG)_FREETZ_CHANGES_FILE).temp
+	@if [ -e $($(PKG)_FREETZ_CHANGES_FILE) ]; then \
+		for i in 1 2; do \
+			PATTERN=; \
+			[ $$$$i = 1 ] && PATTERN='$($(PKG)_FREETZ_CHANGES_RECOMPILE_SEARCH)'; \
+			[ $$$$i = 2 ] && PATTERN='$($(PKG)_FREETZ_CHANGES_REPACK_SEARCH)'; \
+			if [ ! -z "$$$$PATTERN" ]; then \
+				if [ "`grep -e "$$$$PATTERN" $($(PKG)_FREETZ_CHANGES_FILE)`" != "`grep -e "$$$$PATTERN" $($(PKG)_FREETZ_CHANGES_FILE).temp`" ]; then \
+					mv $($(PKG)_FREETZ_CHANGES_FILE).temp $($(PKG)_FREETZ_CHANGES_FILE); \
+					[ $$$$i == 1 ] && $(RM) -r $($(PKG)_DIR); \
+					$($(PKG)_CLEAN_TARGET_DIR__INT) \
+					$($(PKG)_CLEAN_STAGING_DIR__INT) \
+					break; \
+				fi \
+			fi \
+		done \
+	else \
+		mv $($(PKG)_FREETZ_CHANGES_FILE).temp $($(PKG)_FREETZ_CHANGES_FILE); \
+	fi
+	@$(RM) $($(PKG)_FREETZ_CHANGES_FILE).temp
+$(pkg)-build-prereq: $(PKG)_FREETZ_CHANGES_CHECK
+.PHONY: $(PKG)_FREETZ_CHANGES_CHECK
+endef
+
+PKG_UNPACKED           =
+PKG_LOCALSOURCE_PACKAGE=
+#
+ifeq ($(strip $(FREETZ_CHECK_CHANGED)),y)
+PKG_UNPACKED           +=$(eval $(PKG_UNPACKED_CHECK_CHANGES__INT1))$(eval $(PKG_UNPACKED_CHECK_CHANGES__INT2))
+PKG_LOCALSOURCE_PACKAGE+=$(eval $(PKG_UNPACKED_CHECK_CHANGES__INT1))$(eval $(PKG_UNPACKED_CHECK_CHANGES__INT2))
+endif
+#
+PKG_UNPACKED           +=$(eval $(PKG_UNPACKED__INT))
+PKG_LOCALSOURCE_PACKAGE+=$(eval $(PKG_UNPACKED_LOCALSOURCE_PACKAGE__INT))
+#
+PKG_UNPACKED           +=$(if $($(PKG)_REBUILD_SUBOPTS),$(eval $(PKG_UNPACKED_CHECK_REBUILD_SUBOPTS)))
+PKG_LOCALSOURCE_PACKAGE+=$(if $($(PKG)_REBUILD_SUBOPTS),$(eval $(PKG_UNPACKED_CHECK_REBUILD_SUBOPTS)))
+
+### Configure package
+define PKG_CONFIGURED_COMMON__INT
+$(pkg)-configured: $($(PKG)_DIR)/.configured
+.PHONY: $(pkg)-configured
+endef
+## Configure package, using ./configure
+define PKG_CONFIGURED_CONFIGURE__INT
+# Must be first
+$(PKG_CONFIGURED_COMMON__INT)
+$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.build-prereq-checked $($(PKG)_DIR)/.unpacked
+	@$(call _ECHO,configuring)
+	($(CONFIGURE) \
+		cd $($(PKG)_DIR); \
+		$(TARGET_CONFIGURE_PRE_CMDS) \
+		$($(PKG)_CONFIGURE_PRE_CMDS) \
+		$(if $(strip $($(PKG)_BUILD_SUBDIR)),cd $(strip $($(PKG)_BUILD_SUBDIR));,) \
+		$(TARGET_CONFIGURE_ENV) \
+		$($(PKG)_CONFIGURE_ENV) \
+		CONFIG_SITE=$(TARGET_SITE) \
+		conf_cmd \
+		$(if $(findstring y,$($(PKG)_CONFIGURE_DEFOPTS)), $(TARGET_CONFIGURE_OPTIONS)) \
+		$($(PKG)_CONFIGURE_OPTIONS) \
+		$(if $(strip $($(PKG)_BUILD_SUBDIR)),&& { cd $(abspath $($(PKG)_DIR)); },) \
+		$(if $($(PKG)_CONFIGURE_POST_CMDS),&& { $($(PKG)_CONFIGURE_POST_CMDS) },) \
+	)
+	@touch $$@
+endef
+PKG_CONFIGURED_CONFIGURE=$(eval $(PKG_CONFIGURED_CONFIGURE__INT))
+
+## Package needs no configuration
+define PKG_CONFIGURED_NOP__INT
+# Must be first
+$(PKG_CONFIGURED_COMMON__INT)
+$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.build-prereq-checked $($(PKG)_DIR)/.unpacked
+	@touch $$@
+endef
+PKG_CONFIGURED_NOP=$(eval $(PKG_CONFIGURED_NOP__INT))
+
+
+## Add package to list files
+define PKG_LIST__INT
+$(pkg)-list:
+	@echo "S$(strip $($(PKG)_STARTLEVEL)) $(pkg) $($(PKG)_VERSION) FREETZ_PACKAGE_$(PKG)" >> .packages
+.PHONY: $(pkg)-list
+endef
+PKG_LIST=$(eval $(PKG_LIST__INT))
+
