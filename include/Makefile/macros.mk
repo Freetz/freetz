@@ -148,9 +148,33 @@ $(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
 endef
 
 
-#
-### PKG_CONFIGURED: Configure package (todo)
-#
+### PKG_CONFIGURED: Configure package
+define PKG_CONFIGURED_COMMON__INT
+$(pkg)-configured: $($(PKG)_DIR)/.configured
+.PHONY: $(pkg)-configured
+endef
+## Configure package, using ./configure
+define PKG_CONFIGURED_CONFIGURE__INT
+# Must be first
+$(PKG_CONFIGURED_COMMON__INT)
+$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.build-prereq-checked $($(PKG)_DIR)/.unpacked
+	@$(call _ECHO,configuring)
+	($(CONFIGURE) \
+		cd $($(PKG)_DIR); \
+		$($($(PKG)_CONFIGURE_DEST)_CONFIGURE_PRE_CMDS) \
+		$($(PKG)_CONFIGURE_PRE_CMDS) \
+		$(if $(strip $($(PKG)_BUILD_SUBDIR)),cd $(strip $($(PKG)_BUILD_SUBDIR));,) \
+		$($($(PKG)_CONFIGURE_DEST)_CONFIGURE_ENV) \
+		$($(PKG)_CONFIGURE_ENV) \
+		CONFIG_SITE=$($($(PKG)_CONFIGURE_DEST)_SITE) \
+		conf_cmd \
+		$(if $(findstring y,$($(PKG)_CONFIGURE_DEFOPTS)), $($($(PKG)_CONFIGURE_DEST)_CONFIGURE_OPTIONS)) \
+		$($(PKG)_CONFIGURE_OPTIONS) \
+		$(if $(strip $($(PKG)_BUILD_SUBDIR)),&& { cd $(abspath $($(PKG)_DIR)); },) \
+		$(if $($(PKG)_CONFIGURE_POST_CMDS),&& { $($(PKG)_CONFIGURE_POST_CMDS) },) \
+	)
+	@touch $$@
+endef
 
 
 ## Package needs no configuration

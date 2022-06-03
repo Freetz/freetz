@@ -412,6 +412,7 @@ $(PKG)_TARBALL_INCLUDE_FILTER:=
 $(PKG)_EXCLUDED:=
 #
 $(PKG)_CONFIGURE_DEFOPTS:=y
+$(PKG)_CONFIGURE_DEST:=TARGET
 #
 # $(pkg)-precompiled--int must be the first target, it will depend on DEPENDS_ON
 $(pkg)-precompiled: $(pkg)-precompiled--int clear-echo-temporary $(pkg)
@@ -662,33 +663,7 @@ PKG_UNPACKED           +=$(if $($(PKG)_REBUILD_SUBOPTS),$(eval $(PKG_UNPACKED_CH
 PKG_LOCALSOURCE_PACKAGE+=$(if $($(PKG)_REBUILD_SUBOPTS),$(eval $(PKG_UNPACKED_CHECK_REBUILD_SUBOPTS)))
 
 
-### PKG_CONFIGURED: Configure package (todo)
-define PKG_CONFIGURED_COMMON__INT
-$(pkg)-configured: $($(PKG)_DIR)/.configured
-.PHONY: $(pkg)-configured
-endef
-## Configure package, using ./configure
-define PKG_CONFIGURED_CONFIGURE__INT
-# Must be first
-$(PKG_CONFIGURED_COMMON__INT)
-$($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.build-prereq-checked $($(PKG)_DIR)/.unpacked
-	@$(call _ECHO,configuring)
-	($(CONFIGURE) \
-		cd $($(PKG)_DIR); \
-		$(TARGET_CONFIGURE_PRE_CMDS) \
-		$($(PKG)_CONFIGURE_PRE_CMDS) \
-		$(if $(strip $($(PKG)_BUILD_SUBDIR)),cd $(strip $($(PKG)_BUILD_SUBDIR));,) \
-		$(TARGET_CONFIGURE_ENV) \
-		$($(PKG)_CONFIGURE_ENV) \
-		CONFIG_SITE=$(TARGET_SITE) \
-		conf_cmd \
-		$(if $(findstring y,$($(PKG)_CONFIGURE_DEFOPTS)), $(TARGET_CONFIGURE_OPTIONS)) \
-		$($(PKG)_CONFIGURE_OPTIONS) \
-		$(if $(strip $($(PKG)_BUILD_SUBDIR)),&& { cd $(abspath $($(PKG)_DIR)); },) \
-		$(if $($(PKG)_CONFIGURE_POST_CMDS),&& { $($(PKG)_CONFIGURE_POST_CMDS) },) \
-	)
-	@touch $$@
-endef
+### PKG_CONFIGURED: Configure package
 PKG_CONFIGURED_CONFIGURE=$(eval $(PKG_CONFIGURED_CONFIGURE__INT))
 
 ## Package needs no configuration
