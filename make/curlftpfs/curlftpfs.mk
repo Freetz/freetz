@@ -10,7 +10,7 @@ $(PKG)_EXCLUDED+=$(if $(FREETZ_PACKAGE_CURLFTPFS_REMOVE_WEBIF),usr/lib/cgi-bin/c
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_CURLFTPFS_STATIC
 
-$(PKG)_DEPENDS_ON := fuse glib2 curl
+$(PKG)_DEPENDS_ON += fuse glib2 curl
 ifeq ($(strip $(FREETZ_TARGET_UCLIBC_0_9_28)),y)
 $(PKG)_DEPENDS_ON += iconv
 $(PKG)_CONFIGURE_ENV += am_cv_func_iconv=yes

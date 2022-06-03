@@ -11,7 +11,7 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libcrypto_WITH_EC
 $(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_VERSION_1_MAX
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
-$(PKG)_DEPENDS_ON := openssl libpcap
+$(PKG)_DEPENDS_ON += openssl libpcap
 
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libcrypto_WITH_EC),--enable-ecdsa,--disable-ecdsa)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_OPENSSL_VERSION_1_MAX),--enable-gost,--disable-gost)
