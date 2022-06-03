@@ -129,9 +129,20 @@ define RMDIR_KEEP_FILES__INT
 endef
 
 
-#
-## PKG_UNPACKED: Unpack and patch package (todo)
-#
+## PKG_UNPACKED: Unpack and patch package
+define PKG_UNPACKED__ALL_INT
+$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) $(if $($(PKG)_CUSTOM_UNPACK),$($(PKG)_DIR)/.build-prereq-checked) | $($(PKG)_SOURCE_DIR)
+	@$(call _ECHO,preparing)
+	@$(call RMDIR_KEEP_FILES__INT,$($(PKG)_DIR),.build-prereq-checked)
+	$(call PKG_UNPACK)
+	$(call PKG_EXECUTE_WITHIN__INT,$($(PKG)_PATCH_PRE_CMDS))
+	$(call PKG_PATCH)
+	$(call PKG_EXECUTE_WITHIN__INT,$($(PKG)_PATCH_POST_CMDS))
+	@touch $$@
+$(pkg)-source: $($(PKG)_DIR)/.unpacked
+$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
+.PHONY: $(pkg)-source $(pkg)-unpacked
+endef
 
 
 ## "unpack" (actually copy) local source package

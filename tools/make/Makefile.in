@@ -170,23 +170,17 @@ TOOLS_FINISH=$(eval $(TOOLS_FINISH__INT))
 TOOLS_SOURCE_DOWNLOAD=$(eval $(PKG_SOURCE_DOWNLOAD__INT))
 
 
-## PKG_UNPACKED: Unpack and patch package (todo)
+## PKG_UNPACKED: Unpack and patch package
 define TOOLS_UNPACKED__INT
-$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) $(if $($(PKG)_CUSTOM_UNPACK),$($(PKG)_DIR)/.build-prereq-checked) | $($(PKG)_SOURCE_DIR) $($(PKG)_DEPENDS_ON)
-	@$(call _ECHO,preparing)
-	@$(call RMDIR_KEEP_FILES__INT,$($(PKG)_DIR),.build-prereq-checked)
-	$(call PKG_UNPACK)
-	$(call PKG_EXECUTE_WITHIN__INT,$($(PKG)_PATCH_PRE_CMDS))
-	$(call PKG_PATCH)
-	$(call PKG_EXECUTE_WITHIN__INT,$($(PKG)_PATCH_POST_CMDS))
-	@touch $$@
-$(pkg)-source: $($(PKG)_DIR)/.unpacked
-$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
-.PHONY: $(pkg)-source $(pkg)-unpacked
+$($(PKG)_DIR)/.unpacked: | $($(PKG)_DEPENDS_ON)
 endef
 
-TOOLS_UNPACKED           =$(eval $(TOOLS_UNPACKED__INT))
-TOOLS_LOCALSOURCE_PACKAGE=$(eval $(PKG_UNPACKED_LOCALSOURCE_PACKAGE__INT))
+TOOLS_UNPACKED           =
+TOOLS_LOCALSOURCE_PACKAGE=
+#
+TOOLS_UNPACKED           +=$(eval $(TOOLS_UNPACKED__INT))
+TOOLS_UNPACKED           +=$(eval $(PKG_UNPACKED__ALL_INT))
+TOOLS_LOCALSOURCE_PACKAGE+=$(eval $(PKG_UNPACKED_LOCALSOURCE_PACKAGE__INT))
 
 
 ### PKG_CONFIGURED: Configure package

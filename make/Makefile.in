@@ -594,19 +594,9 @@ PKG_FINISH+=$(eval $(PKG_FINISH__INT))
 PKG_SOURCE_DOWNLOAD=$(eval $(PKG_SOURCE_DOWNLOAD__INT))
 
 
-## PKG_UNPACKED: Unpack and patch package (todo)
+## PKG_UNPACKED: Unpack and patch package
 define PKG_UNPACKED__INT
-$($(PKG)_DIR)/.unpacked: $(DL_DIR)/$($(PKG)_SOURCE) $(if $($(PKG)_CUSTOM_UNPACK),$($(PKG)_DIR)/.build-prereq-checked) | $($(PKG)_SOURCE_DIR) $(UNPACK_TARBALL_PREREQUISITES)
-	@$(call _ECHO,preparing)
-	@$(call RMDIR_KEEP_FILES__INT,$($(PKG)_DIR),.build-prereq-checked)
-	$(call PKG_UNPACK)
-	$(call PKG_EXECUTE_WITHIN__INT,$($(PKG)_PATCH_PRE_CMDS))
-	$(call PKG_PATCH)
-	$(call PKG_EXECUTE_WITHIN__INT,$($(PKG)_PATCH_POST_CMDS))
-	@touch $$@
-$(pkg)-source: $($(PKG)_DIR)/.unpacked
-$(pkg)-unpacked: $($(PKG)_DIR)/.unpacked
-.PHONY: $(pkg)-source $(pkg)-unpacked
+$($(PKG)_DIR)/.unpacked: | $(UNPACK_TARBALL_PREREQUISITES)
 endef
 
 ## check for changed suboptions, should only be called if $(PKG)_REBUILD_SUBOPTS is defined
@@ -657,6 +647,7 @@ PKG_LOCALSOURCE_PACKAGE+=$(eval $(PKG_UNPACKED_CHECK_CHANGES__INT1))$(eval $(PKG
 endif
 #
 PKG_UNPACKED           +=$(eval $(PKG_UNPACKED__INT))
+PKG_UNPACKED           +=$(eval $(PKG_UNPACKED__ALL_INT))
 PKG_LOCALSOURCE_PACKAGE+=$(eval $(PKG_UNPACKED_LOCALSOURCE_PACKAGE__INT))
 #
 PKG_UNPACKED           +=$(if $($(PKG)_REBUILD_SUBOPTS),$(eval $(PKG_UNPACKED_CHECK_REBUILD_SUBOPTS)))
