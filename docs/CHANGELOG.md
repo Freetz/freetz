@@ -66,7 +66,7 @@ Latest changes
    * git 2.36.1
    * HAProxy 2.5.7
    * htpdate 1.3.4
-   * htop 1.0.3/2.3.0
+   * htop 1.0.3/2.3.1
    * juis_check 1.2
    * libcap 2.49/2.64
    * libgcrypt 1.10.1
