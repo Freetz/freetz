@@ -276,6 +276,7 @@ endif
 export FREETZ_VERBOSITY_LEVEL
 export VERBOSE
 
+include $(INCLUDE_DIR)/Makefile/host.mk
 include $(INCLUDE_DIR)/Makefile/echo.mk
 include $(INCLUDE_DIR)/Makefile/macros.mk
 
