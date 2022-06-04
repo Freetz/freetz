@@ -76,11 +76,13 @@ $($(PKG)_SCRIPTS_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/bin/%: $($(PKG)_DIR)/%
 	$(INSTALL_FILE)
 
 $($(PKG)_LIBRARIES_TARGET_DIR): $($(PKG)_TARGET_LIBDIR)/%: $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%
-	$(INSTALL_LIBRARIES_STRIP)
+	$(INSTALL_LIBRARY_STRIP)
 
 $(pkg): $($(PKG)_LIBRARIES_STAGING_DIR)
+$($(PKG)_LIBRARIES_SHORT): $(pkg)
 
 $(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR) $($(PKG)_WRAPPED_TARGET_DIR) $($(PKG)_SCRIPTS_TARGET_DIR) $($(PKG)_LIBRARIES_TARGET_DIR)
+$(patsubst %,%-precompiled,$($(PKG)_LIBRARIES_SHORT)): $(pkg)-precompiled
 
 
 $(pkg)-clean:
