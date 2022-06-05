@@ -43,6 +43,8 @@ jobs:
           PKG="$(echo "$PKG" | tr '[:upper:]' '[:lower:]')"
           TYPE=""
           for x in make libs; do [ -e docs/$x/$PKG.md ] && TYPE=$x; done
+          [ -z "$TYPE" ] && echo -n 'Waiting ' && for x in $(seq 60); do echo -n '.' && sleep 1; done && echo ' done.' && git pull
+          for x in make libs; do [ -e docs/$x/$PKG.md ] && TYPE=$x; done
           [ -z "$TYPE" ] && echo "No page." && exit
           LINK="https://freetz-ng.github.io/freetz-ng/$TYPE/#$PKG"
           LINK="https://freetz-ng.github.io/freetz-ng/$TYPE/$PKG"
