@@ -669,6 +669,21 @@ config FREETZ_BUSYBOX__DEVELOPER
 		lsof, md5sum with sum-check, modinfo, patch, strings,
 		sha1sum, sha256sum, sha512sum and time.
 
+config FREETZ_BUSYBOX__ADDITIONAL
+	bool "additional binary - DEVELOPER"
+	depends on FREETZ_SHOW_DEVELOPER
+	default n
+	select FREETZ_BUSYBOX__KEEP_BINARIES
+	help
+		Installs the binary as busybox-freetz, adds only
+		new applet-links with default name and does not
+		replace existing links but creates $NAME-freetz.
+		If the target link is a file see 'keep binaries'.
+		This option is to check for busybox problems and
+		should only be used with attached serial console
+		as errors are expected.
+		This 2nd busybox needs about 1MB additional.
+
 comment ""
 
 source "make/busybox/Config.in.symbools"

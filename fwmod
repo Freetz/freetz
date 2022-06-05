@@ -1244,38 +1244,39 @@ if [ "$DO_MOD" -gt 0 ]; then
 		[ "$FREETZ_REPLACE_BUSYBOX" != "y" ] && error 1 "installation of busybox replacement is mandatory"
 
 		echo0 "installing busybox"
+		[ "$FREETZ_BUSYBOX__ADDITIONAL" == "y" ] && BBBIN='busybox-freetz' || BBBIN='busybox'
 
 		DIRS_BUSYBOX_TO_REPLACE_WITHIN="${FILESYSTEM_MOD_DIR}"
 		[ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" -a "$FREETZ_REPLACE_OUTER_UCLIBC_AND_BUSYBOX" == "y" ] && DIRS_BUSYBOX_TO_REPLACE_WITHIN+=" ${FILESYSTEM_OUTER_MOD_DIR}"
 
 		echo1 "replacing busybox"
 		[ ! -r "${PACKAGES_DIR}/busybox/busybox" ] && error 1 "cannot find busybox replacement"
-		for d in ${DIRS_BUSYBOX_TO_REPLACE_WITHIN}; do cp -pf "${PACKAGES_DIR}/busybox/busybox" "${d}/bin/busybox"; done
+		for d in ${DIRS_BUSYBOX_TO_REPLACE_WITHIN}; do cp -pf "${PACKAGES_DIR}/busybox/busybox" "${d}/bin/$BBBIN"; done
 
 		echo1 "installing symlinks"
 		[ ! -r "${PACKAGES_DIR}/busybox/busybox.links" ] && error 1 "cannot find busybox links"
 
 		# Remove old busybox links
 		# be compatible: do not use -delete (not found in older versions of find)
-		find ${DIRS_BUSYBOX_TO_REPLACE_WITHIN} \( -lname "busybox" -or -lname "*/busybox" \) -print0 | xargs -0 rm
+		find ${DIRS_BUSYBOX_TO_REPLACE_WITHIN} \( -lname "$BBBIN" -or -lname "*/$BBBIN" \) -print0 | xargs -0r rm
 
-		# Install new busybox links
-		for link in $(cat "${PACKAGES_DIR}/busybox/busybox.links"); do
+		# Install new busybox links - sorted by applet name
+		for link in $(cat "${PACKAGES_DIR}/busybox/busybox.links" | sed -nr 's,(.*)/(.*)$,\2 \1,p'|sort|sed -nr 's,(.*) (.*),\2/\1,p'); do
 			LINK_DIR="$(dirname "$link")"
 			LINK_NAME="$(basename "$link")"
 
 			case "$LINK_DIR" in
 				/)
-					BUSYBOX_PATH="bin/busybox"
+					BUSYBOX_PATH="bin/$BBBIN"
 					;;
 				/bin)
-					BUSYBOX_PATH="busybox"
+					BUSYBOX_PATH="$BBBIN"
 					;;
 				/sbin)
-					BUSYBOX_PATH="../bin/busybox"
+					BUSYBOX_PATH="../bin/$BBBIN"
 					;;
 				/usr/bin|/usr/sbin)
-					BUSYBOX_PATH="../../bin/busybox"
+					BUSYBOX_PATH="../../bin/$BBBIN"
 					;;
 				*)
 					error 1 "unknown installation directory: $link"
@@ -1284,11 +1285,14 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 			for d in ${DIRS_BUSYBOX_TO_REPLACE_WITHIN}; do
 				mkdir -p "${d}${LINK_DIR}"
-				if [ -f "${d}${LINK_DIR}/$LINK_NAME" ]; then
+				if [ -L "${d}${LINK_DIR}/$LINK_NAME" -a "$FREETZ_BUSYBOX__ADDITIONAL" == "y" ]; then
+						echo2 "additional -freetz link: $LINK_NAME"
+						LINK_NAME="${LINK_NAME}-freetz"
+				elif [ -f "${d}${LINK_DIR}/$LINK_NAME" ]; then
 					if [ "$FREETZ_BUSYBOX__KEEP_BINARIES" != "y" ]; then
-						echo2 "overwriting file ${d}${LINK_DIR}/$LINK_NAME"
+						echo2 "overwriting binary file: $LINK_NAME"
 					else
-						echo2 "renaming applet ${d}${LINK_DIR}/$LINK_NAME"
+						echo2 "renamed -busybox applet: $LINK_NAME"
 						LINK_NAME="${LINK_NAME}-busybox"
 					fi
 				fi
@@ -1298,7 +1302,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 		echo1 "checking BusyBox version"
 		echo2 "... used by AVM ...... $(strings ${FILESYSTEM_DIR}/bin/busybox | sed 's/ ()//g' | sed -n 's/^BusyBox v//p')"
-		echo2 "... used by Freetz ... $(strings ${FILESYSTEM_MOD_DIR}/bin/busybox | sed -n 's/^BusyBox v//p')"
+		echo2 "... used by Freetz ... $(strings ${FILESYSTEM_MOD_DIR}/bin/$BBBIN | sed -n 's/^BusyBox v//p')"
 	fi
 
 	echo0 "installing packages"
