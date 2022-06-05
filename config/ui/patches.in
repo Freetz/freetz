@@ -266,6 +266,7 @@ config FREETZ_REMOVE_UNTRUSTEDD
 	bool "Remove UNTRUSTEDD - DEVELOPER"
 	depends on FREETZ_SHOW_DEVELOPER
 	depends on FREETZ_AVM_HAS_UNTRUSTEDD
+	default y if FREETZ_TYPE_5530
 	default n
 	help
 		This removes the untrustedd daemon (10kB uncompressed) and related
