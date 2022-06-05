@@ -1256,9 +1256,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 		echo1 "installing symlinks"
 		[ ! -r "${PACKAGES_DIR}/busybox/busybox.links" ] && error 1 "cannot find busybox links"
 
-		# Remove old busybox links
-		# be compatible: do not use -delete (not found in older versions of find)
-		find ${DIRS_BUSYBOX_TO_REPLACE_WITHIN} \( -lname "$BBBIN" -or -lname "*/$BBBIN" \) -print0 | xargs -0r rm
+#		### Disabled as in case of non default location and hardcoded path by avm
+#		# Remove old busybox links
+#		# be compatible: do not use -delete (not found in older versions of find)
+#		find ${DIRS_BUSYBOX_TO_REPLACE_WITHIN} \( -lname "$BBBIN" -or -lname "*/$BBBIN" \) -print0 | xargs -0r rm
 
 		# Install new busybox links - sorted by applet name
 		for link in $(cat "${PACKAGES_DIR}/busybox/busybox.links" | sed -nr 's,(.*)/(.*)$,\2 \1,p'|sort|sed -nr 's,(.*) (.*),\2/\1,p'); do
