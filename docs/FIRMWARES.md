@@ -132,7 +132,7 @@ Currently supported devices and firmwares
   - 171.07.12 rev71193 {ALL} [MESH18 NL2]
   - 171.07.29 rev92216 {ALL} [PSQ19P2NL4]
 
-* __Fritz!Box 5530 Fiber (BROKEN)__
+* __Fritz!Box 5530 Fiber (DEVELOPER)__
   - 257.07.21 rev83233 {GER} [AXKFW2]
   - 257.07.29 rev93005 {ALL} [PSQ19P2NL4]
 * __Fritz!Box 5590 Fiber__
