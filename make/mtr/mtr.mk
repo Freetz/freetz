@@ -22,7 +22,7 @@ $(PKG)_BINARY_BUILD_DIR:=$($(PKG)_BINARY:%=$($(PKG)_DIR)/%)
 $(PKG)_BINARY_TARGET_DIR:=$($(PKG)_BINARY:%=$($(PKG)_DEST_DIR)/usr/sbin/%)
 
 # new versions have no release-tar but only a git tag
-$(PKG)_CONFIGURE_PRE_CMDS += $(if $(FREETZ_PACKAGE_MTR_VERSION_ABANDON),,./bootstrap.sh $(SILENT);)
+$(PKG)_CONFIGURE_PRE_CMDS += $(if $(FREETZ_PACKAGE_MTR_VERSION_ABANDON),,./bootstrap.sh;)
 
 $(PKG)_CONFIGURE_ENV += ac_cv_lib_cap_cap_set_proc=no
 

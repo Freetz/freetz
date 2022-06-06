@@ -29,7 +29,7 @@ endif
 
 else
 
-$(PKG)_CONFIGURE_PRE_CMDS += ./autogen.sh $(SILENT);
+$(PKG)_CONFIGURE_PRE_CMDS += ./autogen.sh;
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-debug
 $(PKG)_CONFIGURE_OPTIONS += --disable-unicode

@@ -172,8 +172,8 @@ $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.build-prereq-checked $($(PKG)_DIR)/.un
 	@$(call _ECHO,configuring)
 	($(CONFIGURE) \
 		cd $($(PKG)_DIR); \
-		$($($(PKG)_CONFIGURE_DEST)_CONFIGURE_PRE_CMDS) \
-		$($(PKG)_CONFIGURE_PRE_CMDS) \
+		$(if $($($(PKG)_CONFIGURE_DEST)_CONFIGURE_PRE_CMDS),{ $($($(PKG)_CONFIGURE_DEST)_CONFIGURE_PRE_CMDS) } $(SILENT);,) \
+		$(if $($(PKG)_CONFIGURE_PRE_CMDS),{ $($(PKG)_CONFIGURE_PRE_CMDS) } $(SILENT);,) \
 		$(if $(strip $($(PKG)_BUILD_SUBDIR)),cd $(strip $($(PKG)_BUILD_SUBDIR));,) \
 		$($($(PKG)_CONFIGURE_DEST)_CONFIGURE_ENV) \
 		$($(PKG)_CONFIGURE_ENV) \
@@ -182,7 +182,7 @@ $($(PKG)_DIR)/.configured: $($(PKG)_DIR)/.build-prereq-checked $($(PKG)_DIR)/.un
 		$(if $(findstring y,$($(PKG)_CONFIGURE_DEFOPTS)), $($($(PKG)_CONFIGURE_DEST)_CONFIGURE_OPTIONS)) \
 		$($(PKG)_CONFIGURE_OPTIONS) \
 		$(if $(strip $($(PKG)_BUILD_SUBDIR)),&& { cd $(abspath $($(PKG)_DIR)); },) \
-		$(if $($(PKG)_CONFIGURE_POST_CMDS),&& { $($(PKG)_CONFIGURE_POST_CMDS) },) \
+		$(if $($(PKG)_CONFIGURE_POST_CMDS),&& { $($(PKG)_CONFIGURE_POST_CMDS) } $(SILENT),) \
 	)
 	@touch $$@
 endef

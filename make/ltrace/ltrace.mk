@@ -18,7 +18,7 @@ $(PKG)_CONFIGS_TARGET_DIR := $($(PKG)_CONFIGS:%=$($(PKG)_DEST_DIR)/usr/share/ltr
 
 $(PKG)_DEPENDS_ON += libelf
 
-$(PKG)_CONFIGURE_PRE_CMDS += ./autogen.sh $(SILENT);
+$(PKG)_CONFIGURE_PRE_CMDS += ./autogen.sh;
 
 # disable demangling support
 $(PKG)_CONFIGURE_ENV += ac_cv_lib_iberty_cplus_demangle=no
