@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 7.2)
+$(call PKG_INIT_BIN, 7.3)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
+$(PKG)_HASH:=a544f8808d0c58cfb0e7424ca1841cb858a974922b035d505d4e4c248be3a22b
 $(PKG)_SITE:=@SF/smartmontools
-$(PKG)_HASH:=5cd98a27e6393168bc6aaea070d9e1cd551b0f898c52f66b2ff2e5d274118cd6
 ### WEBSITE:=https://www.smartmontools.org/
 ### MANPAGE:=https://www.smartmontools.org/wiki/TocDoc
 ### CHANGES:=https://www.smartmontools.org/browser/trunk/smartmontools/NEWS
