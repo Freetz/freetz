@@ -1,7 +1,11 @@
-$(call PKG_INIT_BIN, v8.2.0769)
+$(call PKG_INIT_BIN, v8.2.5052)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_HASH:=X
+$(PKG)_HASH:=a12fc9d59c3b9637ecdb4b3ae228c4689c5454bc73af252dd0b7b4ce4f502bc1
 $(PKG)_SITE:=git@https://github.com/vim/vim.git
+### WEBSITE:=https://www.vim.org/
+### MANPAGE:=https://www.vim.org/docs.php
+### CHANGES:=https://www.arp242.net/vimlog/
+### CVSREPO:=https://github.com/vim/vim
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
@@ -31,6 +35,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-netbeans
 $(PKG)_CONFIGURE_OPTIONS += --disable-gpm
 $(PKG)_CONFIGURE_OPTIONS += --with-tlib=ncurses
 
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -44,6 +49,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(VIM_DIR) clean
