@@ -53,6 +53,7 @@ config FREETZ_BUSYBOX__MANDATORY
 	select FREETZ_BUSYBOX__MANDATORY_06_5X if FREETZ_AVM_VERSION_06_5X_MIN
 	select FREETZ_BUSYBOX__MANDATORY_07_0X if FREETZ_AVM_VERSION_07_0X_MIN && FREETZ_BUSYBOX__RECOMMENDED
 	select FREETZ_BUSYBOX__MANDATORY_07_2X if FREETZ_AVM_VERSION_07_2X_MIN && FREETZ_BUSYBOX__RECOMMENDED
+	select FREETZ_BUSYBOX__MANDATORY_07_25 if FREETZ_AVM_VERSION_07_25_MIN && FREETZ_BUSYBOX__RECOMMENDED
 	select FREETZ_BUSYBOX_ADDGROUP
 	select FREETZ_BUSYBOX_ADDUSER
 	select FREETZ_BUSYBOX_ASH_ALIAS
@@ -324,7 +325,7 @@ config FREETZ_BUSYBOX__MANDATORY
 		Selects everything Freetz needs to run properly
 
 config FREETZ_BUSYBOX__MANDATORY_05_2X
-	bool # mandatory (since Fritz!OS 5.2)"
+	bool # mandatory (since Fritz!OS 5.20)"
 	depends on FREETZ_AVM_VERSION_05_2X_MIN
 	select FREETZ_BUSYBOX_ARP
 	select FREETZ_BUSYBOX_ARPING
@@ -424,10 +425,10 @@ config FREETZ_BUSYBOX__MANDATORY_05_2X
 	select FREETZ_BUSYBOX_UNZIP
 	select FREETZ_BUSYBOX_XZ if !FREETZ_PACKAGE_XZ
 	help
-		Selects everything Freetz needs to run properly (with Fritz!OS 5.2 and up)
+		Selects everything Freetz needs to run properly (with Fritz!OS 5.20 and up)
 
 config FREETZ_BUSYBOX__MANDATORY_06_5X
-	bool # mandatory (since Fritz!OS 6.5)"
+	bool # mandatory (since Fritz!OS 6.50)"
 	depends on FREETZ_AVM_VERSION_06_5X_MIN
 	select FREETZ_BUSYBOX_BASE64 # used for extended support data in supportdata.tffs
 	select FREETZ_BUSYBOX_FEATURE_MODPROBE_BLACKLIST if !FREETZ_PACKAGE_MODULE_INIT_TOOLS_modprobe && !FREETZ_AVM_HAS_KMOD
@@ -436,10 +437,10 @@ config FREETZ_BUSYBOX__MANDATORY_06_5X
 	select FREETZ_BUSYBOX_FEATURE_RTMINMAX
 	select FREETZ_BUSYBOX_LSOF if !FREETZ_PACKAGE_LSOF
 	help
-		Selects everything Freetz needs to run properly (with Fritz!OS 6.5 and up)
+		Selects everything Freetz needs to run properly (with Fritz!OS 6.50 and up)
 
 config FREETZ_BUSYBOX__MANDATORY_07_0X
-	bool # mandatory (since Fritz!OS 7.0)"
+	bool # mandatory (since Fritz!OS 7.00)"
 	depends on FREETZ_AVM_VERSION_07_0X_MIN
 	select FREETZ_BUSYBOX_AR
 	select FREETZ_BUSYBOX_CPIO
@@ -518,10 +519,10 @@ config FREETZ_BUSYBOX__MANDATORY_07_0X
 	# select FREETZ_BUSYBOX_UBIUPDATEVOL
 	#
 	help
-		Selects everything Freetz needs to run properly (with Fritz!OS 7.0 and up)
+		Selects everything Freetz needs to run properly (with Fritz!OS 7.00 and up)
 
 config FREETZ_BUSYBOX__MANDATORY_07_2X
-	bool # mandatory (since Fritz!OS 7.2)"
+	bool # mandatory (since Fritz!OS 7.20)"
 	depends on FREETZ_AVM_VERSION_07_2X_MIN
 	select FREETZ_BUSYBOX_STACK_OPTIMIZATION_386           if !FREETZ_BUSYBOX__VERSION_V127
 	select FREETZ_BUSYBOX_FEATURE_EDITING_WINCH            if !FREETZ_BUSYBOX__VERSION_V127
@@ -541,7 +542,16 @@ config FREETZ_BUSYBOX__MANDATORY_07_2X
 	select FREETZ_BUSYBOX_FEATURE_SH_READ_FRAC             if !FREETZ_BUSYBOX__VERSION_V127
 	select FREETZ_BUSYBOX_FEATURE_SH_HISTFILESIZE
 	help
-		Selects everything Freetz needs to run properly (with Fritz!OS 7.2 and up)
+		Selects everything Freetz needs to run properly (with Fritz!OS 7.20 and up)
+
+config FREETZ_BUSYBOX__MANDATORY_07_25
+	bool # mandatory (since Fritz!OS 7.25)"
+	depends on FREETZ_AVM_VERSION_07_25_MIN
+	select FREETZ_BUSYBOX_NETCAT
+	select FREETZ_BUSYBOX_TCPSVD
+	select FREETZ_BUSYBOX_TIMEOUT
+	help
+		Selects everything Freetz needs to run properly (with Fritz!OS 7.25 and up)
 
 #config FREETZ_BUSYBOX__NOEXEC_NOFORK_OPTIMIZATIONS
 #	bool "enable NOEXEC/NOFORK performance optimizations"

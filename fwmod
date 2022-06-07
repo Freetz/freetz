@@ -1257,7 +1257,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		[ ! -r "${PACKAGES_DIR}/busybox/busybox.links" ] && error 1 "cannot find busybox links"
 
 		# check avm's busybox links to warn about missing freetz applets
-		# this does not detect applets without links, like netcat & tcpsvd
+		# this does not detect applets without links, like netcat, tcpsvd & timeout
 		find ${DIRS_BUSYBOX_TO_REPLACE_WITHIN} \( -lname "busybox" -or -lname "*/busybox" \) -exec basename {} ';' | sort -u | \
 		  while read -r LINK_NAME; do
 			grep -q "/${LINK_NAME//[/\\[}$" "${PACKAGES_DIR}/busybox/busybox.links" || echo2 -bc "missing applet detected: $LINK_NAME"
