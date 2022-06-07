@@ -1256,6 +1256,13 @@ if [ "$DO_MOD" -gt 0 ]; then
 		echo1 "installing symlinks"
 		[ ! -r "${PACKAGES_DIR}/busybox/busybox.links" ] && error 1 "cannot find busybox links"
 
+		# check avm's busybox links to warn about missing freetz applets
+		# this does not detect applets without links, like netcat & tcpsvd
+		find ${DIRS_BUSYBOX_TO_REPLACE_WITHIN} \( -lname "busybox" -or -lname "*/busybox" \) -exec basename {} ';' | sort -u | \
+		  while read -r LINK_NAME; do
+			grep -q "/${LINK_NAME//[/\\[}$" "${PACKAGES_DIR}/busybox/busybox.links" || echo2 -bc "missing applet detected: $LINK_NAME"
+		done
+
 #		### Disabled as in case of non default location and hardcoded path by avm
 #		# Remove old busybox links
 #		# be compatible: do not use -delete (not found in older versions of find)
