@@ -5,7 +5,7 @@ $(PKG)_SITE:=http://www.mpfr.org/mpfr-$($(PKG)_VERSION)
 
 $(PKG)_DESTDIR:=$(HOST_TOOLS_DIR)
 $(PKG)_BINARY:=$(HOST_TOOLS_DIR)/lib/libmpfr.a
-$(PKG)_DEPENDS:=gmp-host
+$(PKG)_DEPENDS+=gmp-host
 
 $(PKG)_CONFIGURE_ENV += CC="$(TOOLCHAIN_HOST_CC)"
 $(PKG)_CONFIGURE_ENV += CFLAGS="$(TOOLCHAIN_HOST_CFLAGS)"

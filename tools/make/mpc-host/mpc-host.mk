@@ -5,7 +5,7 @@ $(PKG)_SITE:=@GNU/mpc
 
 $(PKG)_DESTDIR:=$(HOST_TOOLS_DIR)
 $(PKG)_BINARY:=$(HOST_TOOLS_DIR)/lib/libmpc.a
-$(PKG)_DEPENDS:=gmp-host mpfr-host
+$(PKG)_DEPENDS+=gmp-host mpfr-host
 
 $(PKG)_CONFIGURE_ENV += CC="$(TOOLCHAIN_HOSTCC)"
 $(PKG)_CONFIGURE_ENV += CFLAGS="$(TOOLCHAIN_HOST_CFLAGS)"
