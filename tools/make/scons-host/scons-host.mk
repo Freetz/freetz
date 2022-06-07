@@ -12,7 +12,7 @@ $(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
 $(TOOLS_CONFIGURED_NOP)
 
-$($(PKG)_TARGET_BINARY): $($(PKG)_DIR)/.unpacked | $($(PKG)_DEPENDS)
+$($(PKG)_TARGET_BINARY): $($(PKG)_DIR)/.unpacked
 	$(abspath $(HOST_TOOLS_DIR)/usr/bin/python) \
 		$(SCONS_HOST_DIR)/setup.py install \
 		--prefix=$(abspath $(HOST_TOOLS_DIR)/usr) \
