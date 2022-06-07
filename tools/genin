@@ -1,10 +1,11 @@
 #!/bin/bash
 
-CFILE=make/Config.in.generated
-EFILE=make/external.in.generated
+PKGDIR=make
+CFILE=$PKGDIR/Config.in.generated
+EFILE=$PKGDIR/external.in.generated
 SUBCATS=tools/genin.cat
 
-[ ! -d make/mod ] && exit 1
+[ ! -d $PKGDIR/mod ] && exit 1
 
 # collect categories & their packages
 #echo -n "genin "
@@ -13,8 +14,8 @@ CATTABLE=""
 NONHIDDEN="#"
 [ "$1" != "legacy" ] && CATMARK="0123456789"
 
-for PKG_DIR in $(find -L make -mindepth 2 -maxdepth 2 -type f -name Config.in -printf "%h\n" | sort); do
-	PKG="${PKG_DIR#make/}"
+for PKG_DIR in $(find -L $PKGDIR -mindepth 2 -maxdepth 2 -type f -name Config.in -printf "%h\n" | sort); do
+	PKG="${PKG_DIR#$PKGDIR/}"
 
 	# ignore libs
 	[ "$PKG" == "libs" ] && continue
@@ -139,9 +140,9 @@ for CAT in $CATs; do
 	fi
 	echo -e "\nmenu \"${CATREAL}\""                                                                 >> $CFILE
 	for PKG in $(echo -e "${CATTABLE}"| sed "/^${CATONLY/\//\\/}##/ !d ; s/^[^#]*##// "); do
-		[ -e "make/$PKG/external.in" ] && echo "source \"make/$PKG/external.in\""               >> $EFILE
+		[ -e "$PKGDIR/$PKG/external.in" ] && echo "source \"$PKGDIR/$PKG/external.in\""         >> $EFILE
 		case "$PKG" in asterisk-*|nhipt|sg3_utils|busybox|ruby-fcgi|iptables-cgi|python-*) continue ;; esac
-		[ -e "make/$PKG/Config.in" ] && echo -e "\tsource \"make/$PKG/Config.in\""              >> $CFILE
+		[ -e "$PKGDIR/$PKG/Config.in" ] && echo -e "\tsource \"$PKGDIR/$PKG/Config.in\""        >> $CFILE
 	done
 	SAVEMENU="$SAVEMENU%%$CAT"
 done
