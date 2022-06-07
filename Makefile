@@ -12,7 +12,7 @@
 # You shouldn't need to mess with anything beyond this point...
 #--------------------------------------------------------------
 
-include include/Makefile/suffixes.mk
+include include/make/100-suffixes.mk
 MAKEFLAGS+=--no-print-directory
 
 # Envira: Custom environment and arguments
@@ -81,8 +81,8 @@ MIRROR_DIR:=$(DL_DIR)/mirror
 TOOLCHAIN_BUILD_DIR:=$(TOOLCHAIN_DIR)/$(BUILD_DIR)
 TOOLS_BUILD_DIR:=$(TOOLS_DIR)/$(BUILD_DIR)
 
-# do not use sorted-wildcard here, it's first defined in files included here
-include $(sort $(wildcard $(INCLUDE_DIR)/make/*.mk))
+include $(INCLUDE_DIR)/make/200-aliases.mk
+include $(INCLUDE_DIR)/make/300-helper.mk
 
 # load user configuration file
 -include $(TOPDIR)/.config
@@ -276,9 +276,9 @@ endif
 export FREETZ_VERBOSITY_LEVEL
 export VERBOSE
 
-include $(INCLUDE_DIR)/Makefile/host.mk
-include $(INCLUDE_DIR)/Makefile/echo.mk
-include $(INCLUDE_DIR)/Makefile/macros.mk
+include $(INCLUDE_DIR)/make/400-host.mk
+include $(INCLUDE_DIR)/make/500-echo.mk
+include $(INCLUDE_DIR)/make/600-macros.mk
 
 include $(TOOLS_DIR)/make/Makefile.in
 include $(call sorted-wildcard,$(TOOLS_DIR)/make/*/*.mk)
@@ -324,7 +324,7 @@ step: image world tools firmware
 -include .config.cmd
 
 include $(TOOLCHAIN_DIR)/make/Makefile.in
-include $(INCLUDE_DIR)/Makefile/image.mk
+include $(INCLUDE_DIR)/make/700-image.mk
 include $(MAKE_DIR)/Makefile.in
 include $(call sorted-wildcard,$(MAKE_DIR)/libs/*/Makefile.in)
 include $(call sorted-wildcard,$(MAKE_DIR)/*/Makefile.in)
