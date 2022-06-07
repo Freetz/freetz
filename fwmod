@@ -1286,9 +1286,11 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 			for d in ${DIRS_BUSYBOX_TO_REPLACE_WITHIN}; do
 				mkdir -p "${d}${LINK_DIR}"
-				if [ -L "${d}${LINK_DIR}/$LINK_NAME" -a "$FREETZ_BUSYBOX__ADDITIONAL" == "y" ]; then
+				if [ -L "${d}${LINK_DIR}/$LINK_NAME" ]; then
+					if [ "$FREETZ_BUSYBOX__ADDITIONAL" == "y" ]; then
 						echo2 "additional -freetz link: $LINK_NAME"
 						LINK_NAME="${LINK_NAME}-freetz"
+					fi
 				elif [ -f "${d}${LINK_DIR}/$LINK_NAME" ]; then
 					if [ "$FREETZ_BUSYBOX__KEEP_BINARIES" != "y" ]; then
 						echo2 "overwriting binary file: $LINK_NAME"
