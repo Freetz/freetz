@@ -25,9 +25,9 @@ ifndef KERNEL_TOOLCHAIN_NO_MPFR
 GCC_KERNEL_DECIMAL_FLOAT  := --disable-decimal-float
 
 GCC_KERNEL_INITIAL_PREREQ += $(GMP_HOST_BINARY) $(MPFR_HOST_BINARY) $(MPC_HOST_BINARY)
-GCC_KERNEL_WITH_HOST_GMP   = --with-gmp=$(GMP_HOST_DESTDIR)
-GCC_KERNEL_WITH_HOST_MPFR  = --with-mpfr=$(MPFR_HOST_DESTDIR)
-GCC_KERNEL_WITH_HOST_MPC   = --with-mpc=$(MPC_HOST_DESTDIR)
+GCC_KERNEL_WITH_HOST_GMP   = --with-gmp=$(HOST_TOOLS_DIR)
+GCC_KERNEL_WITH_HOST_MPFR  = --with-mpfr=$(HOST_TOOLS_DIR)
+GCC_KERNEL_WITH_HOST_MPC   = --with-mpc=$(HOST_TOOLS_DIR)
 endif
 
 # --with-isl is available since gcc-4.8.x, exclude all versions before
