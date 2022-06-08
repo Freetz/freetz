@@ -31,7 +31,7 @@ config FREETZ_BUSYBOX__VERSION_STRING
 	default "1.35.0" if FREETZ_BUSYBOX__VERSION_V135
 
 config FREETZ_BUSYBOX__RECOMMENDED
-	bool "recommended"
+	bool "recommended - DEVELOPER" if FREETZ_SHOW_DEVELOPER
 	default y
 	help
 		Deselecting this option in itself doesn't change anything, it allows
@@ -578,7 +578,7 @@ config FREETZ_BUSYBOX__BUILD_TIMESTAMP
 		no build timestamp allows reproducible binary
 
 config FREETZ_BUSYBOX__KEEP_BINARIES
-	bool "keep binaries"
+	bool "keep binaries - DEVELOPER" if FREETZ_SHOW_DEVELOPER
 	default y
 	help
 		Rename applet links to $NAME-busybox if a file $NAME exists.
