@@ -1,6 +1,6 @@
 --- /dev/null
 +++ libfdt/Makefile.freetz
-@@ -0,0 +1,27 @@
+@@ -0,0 +1,31 @@
 +CC = gcc
 +RM = rm -f
 +AR = ar
@@ -21,6 +21,10 @@
 +	-$(RM) $@
 +	$(AR) rcu $@ $?
 +	$(RANLIB) $@
++
++install: $(LIBFDT_a)
++	cp *fdt*.h $(PREFIX)/include/
++	cp $(LIBFDT_a) $(PREFIX)/lib/
 +
 +$(LIBFDT_SRCS): $(LIBFDT_INCLUDES)
 +
