@@ -84,6 +84,7 @@ Latest changes
    * PCSC-lite 1.9.7
    * pcre2 10.40
    * Privoxy 3.0.33
+   * radvd 1.9.3/2.19
    * Smartmontools 7.3
    * Stunnel 5.64
    * SQLite 3.38.5

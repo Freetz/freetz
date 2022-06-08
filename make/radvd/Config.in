@@ -1,9 +1,30 @@
-config FREETZ_PACKAGE_RADVD
-	bool "radvd 1.9.3"
+comment "radvd (not available, needs IPv6 support of the kernel)"
+	depends on !FREETZ_TARGET_IPV6_SUPPORT
+
+menuconfig FREETZ_PACKAGE_RADVD
+	bool "radvd 1.9.3/2.19"
 	depends on FREETZ_TARGET_IPV6_SUPPORT
 	select FREETZ_BUSYBOX_IP
-	select FREETZ_LIB_libdaemon
 	default n
 	help
 		The "router advertisement daemon" (radvd) is used for host autoconfiguration in ipv6 networks.
+
+if FREETZ_PACKAGE_RADVD
+
+	choice
+		prompt "Version"
+			default FREETZ_PACKAGE_RADVD_VERSION_CURRENT
+
+		config FREETZ_PACKAGE_RADVD_VERSION_ABANDON
+			bool "1.x"
+			depends on FREETZ_KERNEL_VERSION_2_6_13
+			select FREETZ_LIB_libdaemon
+
+		config FREETZ_PACKAGE_RADVD_VERSION_CURRENT
+			bool "2.x"
+			depends on !FREETZ_KERNEL_VERSION_2_6_13
+
+	endchoice
+
+endif # FREETZ_PACKAGE_RADVD
 
