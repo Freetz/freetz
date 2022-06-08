@@ -15,7 +15,7 @@ $($(PKG)_BUILD_DIR): $($(PKG)_DIR)/.unpacked
 		OPT="-O0" \
 		CC="$(TOOLS_CC)" \
 		BITNESS="$(HOST_CFLAGS_FORCE_32BIT_CODE)" \
-		LIBFDT_DIR=$(DTC_HOST_LIBFDT_DIR) \
+		LIBFDT_DIR=$(HOST_TOOLS_DIR) \
 		$(YF_AKCAREA_HOST_BINS:%=avm_kernel_config.%)
 	touch -c $@
 

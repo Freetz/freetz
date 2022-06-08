@@ -1,6 +1,6 @@
 ifneq ($(findstring clean,$(MAKECMDGOALS)),clean)
 ifeq ($(LIBFDT_DIR),)
-	$(error this Makefile expects the location of libfdt to be provided by setting the variable LIBFDT_DIR)
+	$(error this Makefile expects the location prefix of libfdt to be provided by setting the variable LIBFDT_DIR)
 endif
 endif
 
@@ -10,9 +10,9 @@ RM = rm -f
 OPT = -O2
 BITNESS = -m32
 override CFLAGS   += $(OPT) $(BITNESS) -std=c99 -W -Wall
-override CPPFLAGS += -I$(LIBFDT_DIR) -DUSE_STRIPPED_AVM_KERNEL_CONFIG_H
+override CPPFLAGS += -I$(LIBFDT_DIR)/include -DUSE_STRIPPED_AVM_KERNEL_CONFIG_H
 override LDFLAGS  += $(BITNESS)
-override LDLIBS   += -L$(LIBFDT_DIR) -lfdt
+override LDLIBS   += -L$(LIBFDT_DIR)/lib -lfdt
 
 BASENAME = avm_kernel_config
 
