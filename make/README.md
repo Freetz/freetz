@@ -741,7 +741,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
 
 ### R
 
-  * **[radvd 1.9.3](../docs/make/radvd.md)<a id='radvd'></a>**<br>
+  * **[radvd 1.9.3/2.19](../docs/make/radvd.md)<a id='radvd'></a>**<br>
     The "router advertisement daemon" (radvd) is used for host autoconfiguration in ipv6 networks.
      - [Request a subnet from SixXS](../docs/make/radvd.md#request-a-subnet-from-sixxs)
      - [Creating a Feetz Image with Radvd](../docs/make/radvd.md#creating-a-feetz-image-with-radvd)
