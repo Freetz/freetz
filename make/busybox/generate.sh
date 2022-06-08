@@ -1,7 +1,7 @@
 #!/bin/bash
 # Generates a Config.in(.busybox) of Busybox for Freetz
 BBDIR="$(dirname $(readlink -f $0))"
-[ -z "$1" ] && rm -f $BBDIR/*.?_?? && for x in $(sed -rn 's/^\$\(PKG\)_SOURCE_.*_([0-9\.]{6}*):=.*/\1/p' $BBDIR/busybox.mk); do $0 $x; done && exit
+[ -z "$1" ] && rm -f $BBDIR/*.?_?? && for x in $(sed -rn 's/^\$\(PKG\)_HASH_([0-9\.]{6}*):=.*/\1/p' $BBDIR/busybox.mk); do $0 $x; done && exit
 BBVER="${1:-$(sed -n 's/^$(call PKG_INIT_BIN,[^)]*),\([^,]*\),.*/\1/p' $BBDIR/busybox.mk)}"
 BBMAJ="${BBVER%.*}"
 BBOUT="$BBDIR/Config.in.busybox.${BBMAJ//\./_}"
