@@ -1446,16 +1446,16 @@ config FREETZ_BUSYBOX___V127_LZOP_COMPR_HIGH
 	  High levels (7,8,9) of lzop compression. These levels
 	  are actually slower than gzip at equivalent compression ratios
 	  and take up 3.2K of code.
-config FREETZ_BUSYBOX___V127_RPM2CPIO
-	bool "rpm2cpio"
-	default n
-	help
-	  Converts a RPM file into a CPIO archive.
 config FREETZ_BUSYBOX___V127_RPM
 	bool "rpm"
 	default n
 	help
 	  Mini RPM applet - queries and extracts RPM packages.
+config FREETZ_BUSYBOX___V127_RPM2CPIO
+	bool "rpm2cpio"
+	default n
+	help
+	  Converts a RPM file into a CPIO archive.
 config FREETZ_BUSYBOX___V127_TAR
 	bool "tar"
 	default n
@@ -2469,12 +2469,6 @@ config FREETZ_BUSYBOX___V127_FEATURE_WC_LARGE
 	depends on FREETZ_BUSYBOX___V127_WC
 	help
 	  Use "unsigned long long" for counter variables.
-config FREETZ_BUSYBOX___V127_WHOAMI
-	bool "whoami"
-	default n
-	help
-	  whoami is used to print the username of the current
-	  user id (same as id -un).
 config FREETZ_BUSYBOX___V127_WHO
       bool "who"
       default n
@@ -2495,6 +2489,12 @@ config FREETZ_BUSYBOX___V127_USERS
       depends on FREETZ_BUSYBOX___V127_FEATURE_UTMP
       help
         Print users currently logged on.
+config FREETZ_BUSYBOX___V127_WHOAMI
+	bool "whoami"
+	default n
+	help
+	  whoami is used to print the username of the current
+	  user id (same as id -un).
 config FREETZ_BUSYBOX___V127_YES
 	bool "yes"
 	default n
@@ -3551,6 +3551,17 @@ config FREETZ_BUSYBOX___V127_USE_BB_CRYPT_SHA
 	  With this option off, login will fail password check for any
 	  user which has password encrypted with these algorithms.
 
+config FREETZ_BUSYBOX___V127_ADD_SHELL
+       bool "add-shell"
+       default n if FREETZ_BUSYBOX___V127_DESKTOP
+       help
+         Add shells to /etc/shells.
+
+config FREETZ_BUSYBOX___V127_REMOVE_SHELL
+       bool "remove-shell"
+       default n if FREETZ_BUSYBOX___V127_DESKTOP
+       help
+         Remove shells from /etc/shells.
 config FREETZ_BUSYBOX___V127_ADDGROUP
 	bool "addgroup"
 	default n
@@ -3570,17 +3581,6 @@ config FREETZ_BUSYBOX___V127_FEATURE_ADDUSER_TO_GROUP
 	  If called with two non-option arguments,
 	  addgroup will add an existing user to an
 	  existing group.
-config FREETZ_BUSYBOX___V127_ADD_SHELL
-       bool "add-shell"
-       default n if FREETZ_BUSYBOX___V127_DESKTOP
-       help
-         Add shells to /etc/shells.
-
-config FREETZ_BUSYBOX___V127_REMOVE_SHELL
-       bool "remove-shell"
-       default n if FREETZ_BUSYBOX___V127_DESKTOP
-       help
-         Remove shells from /etc/shells.
 config FREETZ_BUSYBOX___V127_ADDUSER
 	bool "adduser"
 	default n
@@ -5560,12 +5560,6 @@ config FREETZ_BUSYBOX___V127_FBSPLASH
 	  - commands for fifo:
 	    "NN" (ASCII decimal number) - percentage to show on progress bar
 	    "exit" - well you guessed it
-config FREETZ_BUSYBOX___V127_FLASHCP
-	bool "flashcp"
-	default n  # doesn't build on Ubuntu 8.04
-	help
-	  The flashcp binary, inspired by mtd-utils as of git head 5eceb74f7.
-	  This utility is used to copy images into a MTD device.
 config FREETZ_BUSYBOX___V127_FLASH_ERASEALL
 	bool "flash_eraseall"
 	default n  # doesn't build on Ubuntu 8.04
@@ -5585,6 +5579,12 @@ config FREETZ_BUSYBOX___V127_FLASH_UNLOCK
 	help
 	  The flash_unlock binary from mtd-utils as of git head 5ec0c10d0. This
 	  utility unlocks part or all of the flash device.
+config FREETZ_BUSYBOX___V127_FLASHCP
+	bool "flashcp"
+	default n  # doesn't build on Ubuntu 8.04
+	help
+	  The flashcp binary, inspired by mtd-utils as of git head 5eceb74f7.
+	  This utility is used to copy images into a MTD device.
 config FREETZ_BUSYBOX___V127_HDPARM
 	bool "hdparm"
 	default n
@@ -5913,13 +5913,6 @@ config FREETZ_BUSYBOX___V127_TTYSIZE
 	  only height, or both, in any order. It also does not complain on
 	  error, but returns default 80x24.
 	  Usage in shell scripts: width=`ttysize w`.
-config FREETZ_BUSYBOX___V127_UBIRENAME
-	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
-	bool "ubirename"
-	default n
-	select FREETZ_BUSYBOX___V127_PLATFORM_LINUX
-	help
-	  Utility to rename UBI volumes
 config FREETZ_BUSYBOX___V127_UBIATTACH
 	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
 	bool "ubiattach"
@@ -5967,6 +5960,13 @@ config FREETZ_BUSYBOX___V127_UBIUPDATEVOL
 	select FREETZ_BUSYBOX___V127_PLATFORM_LINUX
 	help
 	  Update a UBI volume.
+config FREETZ_BUSYBOX___V127_UBIRENAME
+	depends on FREETZ_DISABLE_OPTION_BY_MAKING_IT_DEPEND_ON_NONEXISTING_SYMBOL
+	bool "ubirename"
+	default n
+	select FREETZ_BUSYBOX___V127_PLATFORM_LINUX
+	help
+	  Utility to rename UBI volumes
 config FREETZ_BUSYBOX___V127_VOLNAME
 	bool "volname"
 	default n
