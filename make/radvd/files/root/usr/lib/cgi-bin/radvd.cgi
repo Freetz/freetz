@@ -38,6 +38,7 @@ cat << EOF
 <input id="c1" type="checkbox" name="forward" value="yes"$forward_chk>
 <label for="c1">$(lang de:"IPv6 Forwarding im Kernel aktivieren beim Starten bzw deaktivieren beim Stoppen." en:"Activate on start resp. deactivate on stop the IPv6 forwarding.")</label>
 </p>
+EOF
 
 if [ "$FREETZ_KERNEL_VERSION_2_MAX" = "y" ]; then
 cat << EOF
