@@ -75,6 +75,7 @@ Latest changes
    * libneon 0.30.2/0.32.2
    * libxml 2.9.14
    * LCD4linux 9d4e4b7-git
+   * lighttpd 1.4.65
    * ltrace 0.7.3checkpoint1-git
    * mc (Midnight Commander) 4.8.28
    * MTR 0.80/0.95

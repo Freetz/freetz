@@ -1,13 +1,13 @@
 --- src/network.c
 +++ src/network.c
-@@ -266,10 +266,6 @@
+@@ -382,10 +382,6 @@
  
  	host = host_token->ptr;
- 	if ((s->use_ipv6 && (*host == '\0' || *host == ':')) || (host[0] == '[' && host[1] == ']')) {
+ 	if ((use_ipv6 && (*host == '\0' || *host == ':')) || (host[0] == '[' && host[1] == ']')) {
 -		log_error(srv->errh, __FILE__, __LINE__,
 -		  "warning: please use server.use-ipv6 only for hostnames, "
 -		  "not without server.bind / empty address; your config will "
 -		  "break if the kernel default for IPV6_V6ONLY changes");
  	}
- 	if (*host == '[') s->use_ipv6 = 1;
+ 	if (*host == '[') use_ipv6 = 1;
  
