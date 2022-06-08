@@ -3,6 +3,9 @@
 DAEMON=radvd
 . /etc/init.d/modlibrc
 
+[ -r /etc/options.cfg ] && . /etc/options.cfg
+
+
 config() {
 	modlib_config
 }
@@ -14,7 +17,7 @@ start_ipv6_interface() {
 		echo 0 > $disable_ipv6
 		ifconfig ${RADVD_INTERFACE} up
 	fi
-	if [ "$RADVD_SETIPV6" == "yes" ]; then
+	if [ "$RADVD_SETIPV6" == "yes" -a "$FREETZ_KERNEL_VERSION_2_MAX" = "y" ]; then
 		ip -6 addr show dev $RADVD_INTERFACE | grep $RADVD_ADDRESS > /dev/null 2>&1
 		if [ $? -eq 0 ]; then
 			echo 'Set IPv6 address: $RADVD_ADDRESS ... already set.'
@@ -26,7 +29,7 @@ start_ipv6_interface() {
 }
 
 stop_ipv6_interface() {
-	if [ "$RADVD_SETIPV6" == "yes" ]; then
+	if [ "$RADVD_SETIPV6" == "yes" -a "$FREETZ_KERNEL_VERSION_2_MAX" = "y" ]; then
 		ip -6 addr show dev $RADVD_INTERFACE | grep $RADVD_ADDRESS > /dev/null 2>&1
 		if [ $? -eq 0 ]; then
 			ip -6 addr del $RADVD_ADDRESS dev $RADVD_INTERFACE

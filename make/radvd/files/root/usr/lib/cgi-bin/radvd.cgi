@@ -1,6 +1,7 @@
 #!/bin/sh
 
 . /usr/lib/libmodcgi.sh
+[ -r /etc/options.cfg ] && . /etc/options.cfg
 
 check "$RADVD_FORWARD" yes:forward
 check "$RADVD_SETIPV6" yes:setipv6
@@ -37,11 +38,18 @@ cat << EOF
 <input id="c1" type="checkbox" name="forward" value="yes"$forward_chk>
 <label for="c1">$(lang de:"IPv6 Forwarding im Kernel aktivieren beim Starten bzw deaktivieren beim Stoppen." en:"Activate on start resp. deactivate on stop the IPv6 forwarding.")</label>
 </p>
+
+if [ "$FREETZ_KERNEL_VERSION_2_MAX" = "y" ]; then
+cat << EOF
 <p>
 <input type="hidden" name="setipv6" value="no">
 <input id="c2" type="checkbox" name="setipv6" value="yes"$setipv6_chk>
 <label for="c2">$(lang de:"IPv6 Adresse der Schnittstelle setzen beim Starten bzw. entfernen beim Stoppen." en:"Set on start resp. unset on stop the IPv6 address of the interface.")</label>
 </p>
+EOF
+fi
+
+cat << EOF
 <p>
 <input type="hidden" name="setmanaged" value="no">
 <input id="c3" type="checkbox" name="setmanaged" value="yes"$setmanaged_chk>
