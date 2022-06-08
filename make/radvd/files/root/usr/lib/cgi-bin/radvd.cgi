@@ -40,7 +40,7 @@ cat << EOF
 </p>
 EOF
 
-if [ "$FREETZ_KERNEL_VERSION_2_MAX" = "y" ]; then
+if [ "$FREETZ_PACKAGE_RADVD_VERSION_ABANDON" = "y" ]; then
 cat << EOF
 <p>
 <input type="hidden" name="setipv6" value="no">

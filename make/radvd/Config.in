@@ -17,12 +17,12 @@ if FREETZ_PACKAGE_RADVD
 
 		config FREETZ_PACKAGE_RADVD_VERSION_ABANDON
 			bool "1.x"
-			depends on FREETZ_KERNEL_VERSION_2_6_13
+			depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
 			select FREETZ_LIB_libdaemon
 
 		config FREETZ_PACKAGE_RADVD_VERSION_CURRENT
 			bool "2.x"
-			depends on !FREETZ_KERNEL_VERSION_2_6_13
+			depends on !FREETZ_KERNEL_VERSION_2_6_19_MAX
 
 	endchoice
 
