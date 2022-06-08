@@ -60,6 +60,7 @@ Latest changes
 
  - Packages & libs:
    * ACME.sh 3.0.4 (letsencrypt)
+   * Apache 2.4.54
    * BIND 9.11.37/9.16.29
    * CA-bundle 2022-04-26
    * Curl 7.83.1
