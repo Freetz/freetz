@@ -1,4 +1,4 @@
-# Apache HTTP Server 2.4.53 (binary only)
+# Apache HTTP Server 2.4.54 (binary only)
  - Homepage: [https://httpd.apache.org/](https://httpd.apache.org/)
  - Manpage: [https://httpd.apache.org/docs/2.4/](https://httpd.apache.org/docs/2.4/)
  - Changelog: [https://downloads.apache.org/httpd/CHANGES_2.4](https://downloads.apache.org/httpd/CHANGES_2.4)
