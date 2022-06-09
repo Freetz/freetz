@@ -89,7 +89,7 @@ Latest changes
    * Smartmontools 7.3
    * Stunnel 5.64
    * SQLite 3.38.5
-   * tmux 3.3
+   * tmux 3.3a
    * Tinyproxy 1.11.0
    * Tor 0.4.7.7
    * uClibc-ng 1.0.41
