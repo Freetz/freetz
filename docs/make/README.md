@@ -684,7 +684,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
   * **[Tinyproxy 1.11.1](tinyproxy.md)<a id='tinyproxy'></a>**<br>
     Tinyproxy is a lightweight HTTP and HTTPS proxy.
 
-  * **[tmux 3.3 (binary only)](tmux.md)<a id='tmux'></a>**<br>
+  * **[tmux 3.3a (binary only)](tmux.md)<a id='tmux'></a>**<br>
     tmux, a BSD-licensed alternative to GNU screen. Uses ncurses.
 
   * **[Tor 0.4.7.7](tor.md)<a id='tor'></a>**<br>

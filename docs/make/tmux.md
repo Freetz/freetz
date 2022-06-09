@@ -1,4 +1,4 @@
-# tmux 3.3 (binary only)
+# tmux 3.3a (binary only)
  - Homepage: [https://tmux.github.io](https://tmux.github.io)
  - Manpage: [http://man.openbsd.org/OpenBSD-current/man1/tmux.1](http://man.openbsd.org/OpenBSD-current/man1/tmux.1)
  - Changelog: [https://github.com/tmux/tmux/blob/master/CHANGES](https://github.com/tmux/tmux/blob/master/CHANGES)
