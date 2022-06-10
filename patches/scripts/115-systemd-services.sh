@@ -12,8 +12,8 @@ After=tffs.service environment.service
 WantedBy=environment.target
 EOF
 
-echo2 "adding rcmod.service"
-cat << 'EOF' > "${FILESYSTEM_MOD_DIR}/lib/systemd/system/rcmod.service"
+echo2 "adding zzz-rcmod.service"
+cat << 'EOF' > "${FILESYSTEM_MOD_DIR}/lib/systemd/system/zzz-rcmod.service"
 [Unit]
 ExecStart=/etc/boot.d/core/99-zzz-rcmod
 Type=oneshot
