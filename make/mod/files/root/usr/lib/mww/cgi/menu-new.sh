@@ -97,7 +97,7 @@ new_menu_deliver() {
 
 	echo "<ul class='menu new'>"
 
-	[ "$MOD_HTTPD_NEWLOGIN" = yes ] && echo "<li><a id='logout' href='/cgi-bin/logout.cgi'>Logout</a></li>"
+	echo "<li><a id='logout' href='/cgi-bin/logout.cgi'>Logout</a></li>"
 	new_menu_tree "$dir/status"
 	new_menu_tree "$dir/system"
 

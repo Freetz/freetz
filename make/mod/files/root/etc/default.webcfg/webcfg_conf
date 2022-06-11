@@ -6,6 +6,8 @@ if [ "$MOD_HTTPD_NEWLOGIN" = yes ]; then
 	[ -e /tmp/flash/mod/webmd5 ] || echo -n "freetz" | md5sum | sed 's/[ ]*-.*//' > /tmp/flash/mod/webmd5
 else
 	echo "/:$MOD_HTTPD_USER:$MOD_HTTPD_PASSWD"
+	# account to force logout
+	echo "/cgi-bin/invalidate.cgi:$(date +%s):freetz"
 fi
 # protect file servers.php to be viewed in clear text via URL with a fantasy password
 [ -h /usr/mww/phpxmail/servers.php ] && echo "/phpxmail/servers.php:$MOD_HTTPD_USER:76advw6djc734hwh"
