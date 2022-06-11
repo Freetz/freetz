@@ -1,43 +1,52 @@
-#
-# Try to determine hostname (without port!) used in the HTTP request; guess if
-# necessary.
-#
+
+# Try to determine protocol
+self_prot() {
+	local TARGET_PROT="${HTTP_REFERER%%://*}"
+	echo "${TARGET_PROT:-http}"
+}
+
+# Try to determine hostname (without port)
 self_host() {
-	local TARGET_HOST
-
-	# Use HTTP_REFERER to determine target host (could be a name, an
-	# IP(v4), or an IPv6 literal in brackets)
-	TARGET_HOST=$(echo "$HTTP_REFERER" |
-		sed -n -r 's#^[^:]+://(\[[0-9a-fA-F:.]+\]|[^[/:]*).*$#\1#p')
-
+	# Use HTTP_REFERER to determine target host (could be a name, an IP(v4), or an IPv6 literal in brackets)
+	local TARGET_HOST="$(echo "$HTTP_REFERER" | sed -n -r 's#^[^:]+://(\[[0-9a-fA-F:.]+\]|[^[/:]*)(.*)$#\1#p')"
 	# Try HTTP_HOST
 	if [ -z "$TARGET_HOST" ]; then
 		case $HTTP_HOST in
-			"["*) # IPv6 literal
-				TARGET_HOST="${HTTP_HOST%]*}]" ;;
-			*) # decimal IPv4 or name
-				TARGET_HOST=${HTTP_HOST%:*} ;;
+			"["*)	TARGET_HOST="${HTTP_HOST%]*}]" ;;  # IPv6 literal
+			*)	TARGET_HOST="${HTTP_HOST%:*}"  ;;  # decimal IPv4 or name
 		esac
 	fi
-
 	# Use fritz.box as fallback
-	if [ -z "$TARGET_HOST" ]; then
-		TARGET_HOST=fritz.box
-	fi
-
-	echo "$TARGET_HOST"
+	echo "${TARGET_HOST:-fritz.box}"
 }
 
-#
-# Redirect: Header 'Status' works with busybox's httpd; for AVM's websrv, we
-# send a small HTML page. $3 is a function that may produce additional BODY
-# contents.
-#
-redirect() {
-	local location=$1 title=${2:-Redirect} body_func=${3:-true}
+# Try to determine port
+self_port() {
+	local TARGET_PORT
+	if [ -n "$HTTP_REFERER" ]; then
+		TARGET_PORT="$(echo "$HTTP_REFERER" | sed -n -r 's#^[^:]+://(\[[0-9a-fA-F:.]+\]|[^[/:]*)(.*)$#\2#p')"
+	elif [ -n "$HTTP_HOST" ]; then
+		case $HTTP_HOST in
+			"["*)	TARGET_PORT="${HTTP_HOST#*]:}" ;;  # IPv6 literal
+			*)	TARGET_PORT="${HTTP_HOST#*:}"  ;;  # decimal IPv4 or name
+		esac
+		[ "$TARGET_PORT" == "$HTTP_HOST" ] && TARGET_PORT="" || TARGET_PORT=":$TARGET_PORT"
+	else
+		TARGET_PORT=":81"
+	fi
+	echo "${TARGET_PORT%%/*}"
+}
+
+# Redirect: Header 'Status' works with busybox's httpd; for AVM's websrv, we send a small HTML page.
+# $1 status code 30x + message
+# $2 redirect location
+# $3 page title
+# $4 function that may produce additional BODY contents.
+redirect__int() {
+	local status="$1" location="$2" title="${3:-Redirect}" body_func="${4:-true}"
 	local CR=$'\r'
 	cat << EOF
-Status: 301 Moved Permanently${CR}
+Status: $status${CR}
 Location: $location${CR}
 Content-type: text/html; charset=iso-8859-1${CR}
 ${CR}
@@ -53,3 +62,7 @@ $("$body_func")
 </html>
 EOF
 }
+redirect_302() { redirect__int "302 Found (Moved Temporarily)" "$@" ; }
+redirect_301() { redirect__int "301 Moved Permanently"         "$@" ; }
+redirect    () { redirect_301                                  "$@" ; }
+
