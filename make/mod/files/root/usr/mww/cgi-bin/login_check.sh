@@ -19,4 +19,9 @@ else
 fi
 # still default-PW "freetz"? Change
 [ "$UPWHASH" = "465d0ff27bb239292778dc3a0c2f28d9" ] && . /usr/mww/cgi-bin/pwchange.cgi && exit
-. $PWD/index.cgi
+#. $PWD/index.cgi
+
+subpage="$(echo "${QUERY_STRING}" | sed -n 's/.*\?subpage=//p' | sed 's/^\/*//;s/&.*//;s/[^-_a-zA-Z0-9\.\/]//g;s/\.\.//g')"
+. /usr/lib/libmodredir.sh
+redirect "/${subpage%cgi-bin/logout.cgi}"
+
