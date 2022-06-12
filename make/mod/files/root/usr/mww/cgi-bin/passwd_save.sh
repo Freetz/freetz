@@ -8,19 +8,20 @@ eval "$(modcgi oldpassword:password:replay mod_cgi)"
 result=$?
 
 cgi --id=password
-cgi_begin 'Passwort'
+cgi_begin "$(lang de:"Passwort" en:"Password")"
 
 if [ "$result" -ne 0 ]; then
-	echo "<h1>$(lang de:"Passwort wurde nicht ge&auml;ndert." en:"Password unchanged.")</h1>"
+	echo "<h1>$(lang de:"Das Passwort wurde nicht ge&auml;ndert." en:"The password was not changed.")</h1>"
 	if [ "$result" -eq 2 ]; then
-		echo "<p>$(lang de:"Falsches (altes) Passwort." en:"Wrong (old) password.")</p>"
+		echo "<p><b><font color=red>$(lang de:"Das alte Passwort war falsch!" en:"The old password was wrong!")</font></b></p>"
 	fi
+	echo "<input type='button' value='$(lang de:"Zur&uuml;ck" en:"Back")' onclick='window.location.href=\"/cgi-bin/conf/mod/webcfg\"'>"
 else
 	echo "<h1>$(lang de:"Passwort erfolgreich ge&auml;ndert." en:"New password set.")</h1>"
 	echo -n "$MOD_HTTPD_USER$MOD_CGI_PASSWORD" | md5sum | sed 's/[ ]*-.*//' > /tmp/flash/mod/webmd5
 	rm /tmp/*.webcfg
 	echo "<p>$(lang de:"Starte Weboberfl&auml;che neu ..." en:"Restarting webcfg ...")</p>"
-	/mod/etc/init.d/rc.webcfg restart > /dev/null 2>&1
+	nohup /mod/etc/init.d/rc.webcfg restart >/dev/null 2>&1 &
 
 	#XMail admin account
 	if [ -x /usr/lib/MailRoot/bin/XMCrypt ]; then
@@ -48,9 +49,9 @@ else
 			fi
 		fi
 	fi
-fi
 
-back_button mod status
+	back_button mod status
+fi
 
 cgi_end
 

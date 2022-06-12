@@ -11,16 +11,22 @@ sec_begin "$(lang de:"Weboberfl&auml;che" en:"Web interface")"
 cgi_print_radiogroup_service_starttype \
 	"httpd" "$MOD_HTTPD" "$(lang de:"Starttyp der Weboberfl&auml;che" en:"Web interface start type")" "" 1
 
-if [ "$MOD_HTTPD_NEWLOGIN" = yes ]; then
-echo "<input type='button' value='$(lang de:"Passwort &auml;ndern" en:"change password")' onclick='window.open(\"/cgi-bin/pwchange.cgi\",\"_self\")'>"
-else
-cgi_print_textline "httpd_user" "$MOD_HTTPD_USER" 15 "$(lang de:"Benutzername" en:"Username"):" \
-	" &nbsp;  <a href="/cgi-bin/passwd.cgi" target="_blank">$(lang de:"Passwort &auml;ndern" en:"change password")</a>"
-fi
-cgi_print_textline_p "httpd_port" "$MOD_HTTPD_PORT" 5 "$(lang de:"Port" en:"Port"):"
+cgi_print_textline_p "httpd_port" "$MOD_HTTPD_PORT" 5 "$(lang de:"Port" en:"Port"): "
 
-cgi_print_checkbox "httpd_newlogin" "$MOD_HTTPD_NEWLOGIN" "$(lang de:"Neue Loginversion mit Session-ID" en:"New login with session id")" "&nbsp; &nbsp;"
-cgi_print_textline "httpd_sessiontimeout" "$MOD_HTTPD_SESSIONTIMEOUT" 5 "$(lang de:"Session-ID Timeout:" en:"Session id timeout:")" "$(lang de:"sek " en:" sec")"
+if [ "$MOD_HTTPD_NEWLOGIN" != yes ]; then
+	cgi_print_textline "httpd_user" "$MOD_HTTPD_USER" 15 "$(lang de:"Benutzername" en:"Username"): "
+	echo "<p>$(lang de:"Passwort" en:"Password"): <input type='button' value='$(lang de:"&auml;ndern" en:"change")' onclick='window.open(\"/cgi-bin/passwd.cgi\",\"_self\")'></p>"
+else
+	echo "<p>$(lang de:"Passwort" en:"Password"): <input type='button' value='$(lang de:"&auml;ndern" en:"change")' onclick='window.open(\"/cgi-bin/pwchange.cgi\",\"_self\")'></p>"
+fi
+
+sec_end
+sec_begin "$(lang de:"Authentifizierung" en:"Authentification")"
+
+cgi_print_checkbox "httpd_newlogin" "$MOD_HTTPD_NEWLOGIN" "$(lang de:"Neue Loginversion mit Session-ID" en:"New login with session id")"
+echo "<p>"
+cgi_print_textline "httpd_sessiontimeout" "$MOD_HTTPD_SESSIONTIMEOUT" 5 "$(lang de:"Session-ID Timeout:" en:"Session id timeout:") " " $(lang de:"Sekunden" en:"seconds")"
+echo "</p>"
 
 cat << EOF
 <script >
@@ -30,7 +36,12 @@ var eltime=document.getElementById('httpd_sessiontimeout');
 $([ "$MOD_HTTPD_NEWLOGIN" = yes ] || echo "eltime.disabled = true;")
 el.onchange=function(){eltime.disabled = this.checked ? false : true; if (this.checked){ this.checked = confirm(conftext) ? true : false;}; };
 </script>
-<h2>$(lang de:"Erweiterte Einstellungen" en:"Advanced settings")</h2>
+EOF
+
+sec_end
+sec_begin "$(lang de:"Erweiterte Einstellungen" en:"Advanced settings")"
+
+cat << EOF
 <p>
 $(lang de:"Eingeh&auml;ngte Partitionen auf" en:"Mounted partitions on"):
 EOF

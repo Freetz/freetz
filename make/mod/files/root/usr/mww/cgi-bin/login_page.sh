@@ -6,13 +6,13 @@
 # Schicken wir dem Browser eine SessionID, gueltig fuer alle Pfade
 echo "Set-Cookie: SID=$SENDSID;Path=/"
 
-cgi_begin 'login'
+cgi_begin "$(lang de:"Anmelden" en:"Login")"
 
 . /usr/mww/cgi-bin/md5hash.sh
 
 cat << EOF
 <br><br>
-$(lang de:"Passwort" en:"Password"): <input  type="password" id="inp_pw" maxlength="45"  onkeydown="if (event.keyCode == 13) document.getElementById('id_go').click()">
+$(lang de:"Passwort" en:"Password"): <input  type="password" id="inp_pw" maxlength="45" onkeydown="if (event.keyCode == 13) document.getElementById('id_go').click()">
 &nbsp;
 <input type="button" name="go" id="id_go" value="$(lang de:"Anmelden" en:"Login")"
 EOF

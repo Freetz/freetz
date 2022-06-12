@@ -1,26 +1,26 @@
-cgi --id=password
-cgi_begin 'Passwort'
+cgi_begin "$(lang de:"Passwort &auml;ndern" en:"Change password")"
 
 cat << EOF
 <script type=text/javascript>
 function CheckInput(form) {
-	password=form.password;
-	replay=form.replay;
-	if (password.value=="") {
-		alert("$(lang de:"Passwort leer!" en:"Empty password!")");
-		password.focus();
+	pw1=form.password;
+	pw2=form.replay;
+	if (pw1.value == "freetz") {
+		alert("$(lang de:"Bitte nicht das Standardpasswort nutzen!" en:"Please don't use the default password!")");
+		pw1.focus();
 		return false;
-	} else if (replay.value=="") {
-		alert("$(lang de:"Passwort leer!" en:"Empty password!")");
-		replay.focus();
-		return false;
-	} else if (password.value != replay.value) {
-		alert("$(lang de:"Passw&ouml;rter stimmen nicht &uuml;berein!" en:"Passwords do not match!")");
-		password.focus();
-		return false;
-	} else {
-		return true;
 	}
+	if (pw1.value == "") {
+		alert("$(lang de:"Das Passwort ist leer!" en:"The password is empty!")");
+		pw1.focus();
+		return false;
+	}
+	if (pw1.value != pw2.value) {
+		alert("$(lang de:"Die Passw&ouml;rter stimmen nicht &uuml;berein!" en:"Passwords do not match!")");
+		pw2.focus();
+		return false;
+	}
+	return true;
 }
 </script>
 
@@ -28,11 +28,11 @@ function CheckInput(form) {
 
 <form method=POST onsubmit="return CheckInput(this)">
 <table>
-<tr><td><label for="oldpassword">$(lang de:"Altes Passwort: " en:"Old password ")</label></td><td><input type="password" size=20 name="oldpassword" id="oldpassword"></td></tr>
-<tr><td><label for="password">$(lang de:"Neues Passwort: " en:"New password ")</label></td><td><input type="password" size=20 name="password" id="password"></td></tr>
-<tr><td><label for="replay">$(lang de:"Wiederholung: " en:"new password ")</label></td><td><input type="password" size=20 name="replay" id="replay"></td></tr>
+<tr><td><label for="oldpassword">$(lang de:"Altes Passwort" en:"Old password"):&nbsp;</label></td><td><input type="password" size=20 name="oldpassword" id="oldpassword"></td></tr>
+<tr><td><label for="password">$(lang de:"Neues Passwort" en:"New password"):&nbsp;</label></td><td><input type="password" size=20 name="password" id="password"></td></tr>
+<tr><td><label for="replay">$(lang de:"Wiederholung" en:"Retype password"):&nbsp;</label></td><td><input type="password" size=20 name="replay" id="replay"></td></tr>
+<tr><td><input type="button" value="$(lang de:"Zur&uuml;ck" en:"Back")" onclick="history.back()"></td><td><input type="submit" value="$(lang de:"Speichern" en:"Save")"></td></tr>
 </table>
-<input type="submit" value="$(lang de:"Speichern" en:"Save")">
 </form>
 EOF
 
