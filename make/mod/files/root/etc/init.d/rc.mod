@@ -68,7 +68,7 @@ ar7lite() {
 	[ -e /var/media/ftp/fit-image ] && return
 	echo "For the fiber module you need a unmodified fit-image."
 	echo "Extract this file from an matching AVM firmware"
-	echo "and place it on the root of the internal storage.
+	echo "and place it on the root of the internal storage."
 }
 
 start() {
