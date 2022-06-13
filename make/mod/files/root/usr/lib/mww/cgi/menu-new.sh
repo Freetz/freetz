@@ -97,13 +97,14 @@ new_menu_deliver() {
 
 	echo "<ul class='menu new'>"
 
-	echo "<li><a id='logout' onclick='return confirm(\"Logout?\")' href='/cgi-bin/logout.cgi'>Logout</a></li>"
 	new_menu_tree "$dir/status"
 	new_menu_tree "$dir/system"
 
 	while read -r pkg; do
 		new_menu_package_tree "$pkg"
 	done < "$dir/packages"
+
+	echo "<li><a id='logout' onclick='return confirm(\"Logout?\")' href='/cgi-bin/logout.cgi'>Logout</a></li>"
 
 	echo "</ul>"
 }
