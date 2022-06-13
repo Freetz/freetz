@@ -22,6 +22,7 @@ fi
 #. $PWD/index.cgi
 
 subpage="$(echo "${QUERY_STRING}" | sed -n 's/.*\?subpage=//p' | sed 's/^\/*//;s/&.*//;s/[^-_a-zA-Z0-9\.\/]//g;s/\.\.//g')"
+[ "$subpage" == "cgi-bin/login.cgi" -o "$subpage" == "cgi-bin/logout.cgi" ] && subpage=''
 . /usr/lib/libmodredir.sh
-redirect "/${subpage%cgi-bin/logout.cgi}"
+redirect "/$subpage"
 

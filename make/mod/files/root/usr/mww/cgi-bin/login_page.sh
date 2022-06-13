@@ -16,7 +16,9 @@ $(lang de:"Passwort" en:"Password"): <input  type="password" id="inp_pw" maxleng
 &nbsp;
 <input type="button" name="go" id="id_go" value="$(lang de:"Anmelden" en:"Login")"
 EOF
-echo "onclick='location.href=\"/cgi-bin/login.cgi?subpage=${REQUEST_URI%%\?*}&hash=\"+makemd5(document.getElementById(\"inp_pw\").value, \"$SENDSID\")'>"
+subpage="$(echo "${REQUEST_URI}" | sed -n 's/.*\?subpage=//p' | sed 's/^\/*//;s/&.*//;s/[^-_a-zA-Z0-9\.\/]//g;s/\.\.//g')"
+[ -z "$subpage" ] && subpage="${REQUEST_URI%%\?*}" || subpage="/$subpage"
+echo "onclick='location.href=\"/cgi-bin/login.cgi?subpage=$subpage&hash=\"+makemd5(document.getElementById(\"inp_pw\").value, \"$SENDSID\")'>"
 echo "<script> document.getElementById(\"inp_pw\").focus(); </script>"
 echo '<br><br>'
 
