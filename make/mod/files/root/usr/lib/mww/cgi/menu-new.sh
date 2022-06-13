@@ -99,12 +99,16 @@ new_menu_deliver() {
 
 	new_menu_tree "$dir/status"
 	new_menu_tree "$dir/system"
+	new_menu_package_tree "mod"
+	new_menu_package_tree "avm"
+	echo "<li><a id='logout' onclick='return confirm(\"Logout?\")' href='/cgi-bin/logout.cgi'>Logout</a></li>"
+	echo "<hr>"
 
 	while read -r pkg; do
+		# ignore "internal" mod and avm packages
+		[ "$pkg" = mod -o "$pkg" = avm ] && continue
 		new_menu_package_tree "$pkg"
 	done < "$dir/packages"
-
-	echo "<li><a id='logout' onclick='return confirm(\"Logout?\")' href='/cgi-bin/logout.cgi'>Logout</a></li>"
 
 	echo "</ul>"
 }
