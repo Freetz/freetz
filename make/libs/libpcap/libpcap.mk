@@ -3,6 +3,10 @@ $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_HASH:=508cca15547e55d1318498b838456a21770c450beb2dc7d7d4a96d90816e5a85
 $(PKG)_SITE:=http://www.tcpdump.org/release/
+### WEBSITE:=https://www.tcpdump.org
+### MANPAGE:=https://www.tcpdump.org/manpages/pcap-filter.7.html
+### CHANGES:=https://git.tcpdump.org/libpcap/blob/HEAD:/CHANGES
+### CVSREPO:=https://github.com/the-tcpdump-group/libpcap
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
@@ -20,6 +24,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-build-cc="$(HOSTCC)"
 $(PKG)_CONFIGURE_OPTIONS += --without-septel
 $(PKG)_CONFIGURE_OPTIONS += --without-dag
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -42,6 +47,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 $(pkg): $($(PKG)_STAGING_BINARY)
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(LIBPCAP_DIR) clean
