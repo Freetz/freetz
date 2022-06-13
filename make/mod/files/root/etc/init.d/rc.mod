@@ -63,6 +63,14 @@ motd() {
 	( [ -e /tmp/flash/mod/motd ] && sh /tmp/flash/mod/motd || sh /mod/etc/default.mod/motd )> /etc/motd
 }
 
+ar7lite() {
+	[ -e /bin/upx-hwk-boot-prx ] || return
+	[ -e /var/media/ftp/fit-image ] && return
+	echo "For the fiber module you need a unmodified fit-image."
+	echo "Extract this file from an matching AVM firmware"
+	echo "and place it on the root of the internal storage.
+}
+
 start() {
 	echo "Freetz version $(sed 's/^freetz-//' /etc/.freetz-version)"
 
@@ -137,6 +145,7 @@ start() {
 	utmp_wtmp
 	wlan_up
 	motd
+	ar7lite
 
 	if [ -s /tmp/flash/mod/rc.custom ]; then
 		echo -n "Starting rc.custom ... "
