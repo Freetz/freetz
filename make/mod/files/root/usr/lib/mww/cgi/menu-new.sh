@@ -100,7 +100,7 @@ new_menu_deliver() {
 	new_menu_tree "$dir/status"
 	new_menu_tree "$dir/system"
 	new_menu_package_tree "mod"
-	new_menu_package_tree "avm"
+	ls /usr/lib/cgi-bin/conf.avm/* &>/dev/null && new_menu_package_tree "avm"
 	echo "<li><a id='logout' onclick='return confirm(\"Logout?\")' href='/cgi-bin/logout.cgi'>Logout</a></li>"
 	echo "<hr>"
 
