@@ -1,4 +1,8 @@
 # Tcpdump 4.1.1 (binary only)
+ - Homepage: [https://www.tcpdump.org](https://www.tcpdump.org)
+ - Manpage: [https://www.tcpdump.org/manpages/tcpdump.1.html](https://www.tcpdump.org/manpages/tcpdump.1.html)
+ - Changelog: [https://git.tcpdump.org/tcpdump/blob/HEAD:/CHANGES](https://git.tcpdump.org/tcpdump/blob/HEAD:/CHANGES)
+ - Repository: [https://github.com/the-tcpdump-group/tcpdump](https://github.com/the-tcpdump-group/tcpdump)
  - Package: [master/make/tcpdump/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/tcpdump/)
 
 **[tcpdump](http://www.tcpdump.org/)** ist ein
