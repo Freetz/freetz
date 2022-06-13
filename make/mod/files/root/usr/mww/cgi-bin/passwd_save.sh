@@ -7,7 +7,6 @@ eval "$(modcgi oldpassword:password:replay mod_cgi)"
 } | modwebpw freetz > /dev/null 2>&1
 result=$?
 
-cgi --id=password
 cgi_begin "$(lang de:"Passwort" en:"Password")"
 
 if [ "$result" -ne 0 ]; then
