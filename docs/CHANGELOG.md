@@ -139,7 +139,7 @@ Latest changes
    * BusyBox 1.35.0
    * CA-bundle 2022-03-29
    * CCID 1.5.0
-   * cifs-utils 6.14
+   * cifs-utils 6.15
    * Curl 7.82.0
    * davfs2 1.5.2/1.6.1
    * dropbear 2022.82

@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 6.14)
+$(call PKG_INIT_BIN, 6.15)
 $(PKG)_SOURCE:=cifs-utils-$($(PKG)_VERSION).tar.bz2
-$(PKG)_HASH:=6609e8074b5421295ff012a31f02ccd9a058415c619c81362ebb788dbf0756b8
+$(PKG)_HASH:=a7b6940e93250c1676a6fa66b6ead91b78cd43a5fee99cc462459c8b9cf1e6f4
 $(PKG)_SITE:=@SAMBA/linux-cifs/cifs-utils
 ### WEBSITE:=https://wiki.samba.org/index.php/LinuxCIFS_utils
 ### CHANGES:=https://wiki.samba.org/index.php/LinuxCIFS_utils#News
