@@ -1,7 +1,9 @@
-$(call PKG_INIT_BIN, 4.1.1)
+$(call PKG_INIT_BIN, $(if $(FREETZ_PACKAGE_TCPDUMP_VERSION_ABANDON),4.1.1,4.99.1))
 $(PKG)_SOURCE:=tcpdump-$($(PKG)_VERSION).tar.gz
-$(PKG)_HASH:=e6cd4bbd61ec7adbb61ba8352c4b4734f67b8caaa845d88cb826bc0b9f1e7f0a
-$(PKG)_SITE:=http://www.tcpdump.org/release
+$(PKG)_HASH_ABANDON:=e6cd4bbd61ec7adbb61ba8352c4b4734f67b8caaa845d88cb826bc0b9f1e7f0a
+$(PKG)_HASH_CURRENT:=79b36985fb2703146618d87c4acde3e068b91c553fb93f021a337f175fd10ebe
+$(PKG)_HASH:=$($(PKG)_HASH_$(if $(FREETZ_PACKAGE_TCPDUMP_VERSION_ABANDON),ABANDON,CURRENT))
+$(PKG)_SITE:=https://www.tcpdump.org/release
 ### WEBSITE:=https://www.tcpdump.org
 ### MANPAGE:=https://www.tcpdump.org/manpages/tcpdump.1.html
 ### CHANGES:=https://git.tcpdump.org/tcpdump/blob/HEAD:/CHANGES
@@ -17,13 +19,23 @@ $(PKG)_CFLAGS := -DTCPDUMP_MINI
 $(PKG)_CONFIGURE_OPTIONS += --disable-smb
 endif
 
+$(PKG)_CONDITIONAL_PATCHES+=$(if $(FREETZ_PACKAGE_TCPDUMP_VERSION_ABANDON),abandon,current)
+
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_TCPDUMP_VERSION_ABANDON
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_TCPDUMP_VERSION_CURRENT
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_TCPDUMP_MINI
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 
-$(PKG)_CONFIGURE_ENV += td_cv_buggygetaddrinfo="no"
 $(PKG)_CONFIGURE_ENV += ac_cv_path_PCAP_CONFIG=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/bin/pcap-config
-
+ifeq ($(FREETZ_PACKAGE_TCPDUMP_VERSION_ABANDON),y)
+$(PKG)_CONFIGURE_ENV += td_cv_buggygetaddrinfo="no"
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
+else
+$(PKG)_CONFIGURE_OPTIONS += --disable-local-libpcap
+$(PKG)_CONFIGURE_OPTIONS += --without-smi
+$(PKG)_CONFIGURE_OPTIONS += --without-sandbox-capsicum
+$(PKG)_CONFIGURE_OPTIONS += --without-cap-ng
+endif
 $(PKG)_CONFIGURE_OPTIONS += --without-crypto
 
 

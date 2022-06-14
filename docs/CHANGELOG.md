@@ -90,6 +90,7 @@ Latest changes
    * Smartmontools 7.3
    * Stunnel 5.64
    * SQLite 3.38.5
+   * tcpdump 4.1.1/4.99.1
    * tmux 3.3a
    * Tinyproxy 1.11.0
    * Tor 0.4.7.7

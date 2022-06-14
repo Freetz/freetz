@@ -1,17 +1,35 @@
-config FREETZ_PACKAGE_TCPDUMP
-	bool "Tcpdump 4.1.1 (binary only)"
+menuconfig FREETZ_PACKAGE_TCPDUMP
+	bool "tcpdump 4.1.1/4.99.1 (binary only)"
 	select FREETZ_LIB_libpcap
 	default n
 	help
 		Network monitoring and data acquisition tool
 
-config FREETZ_PACKAGE_TCPDUMP_MINI
-	bool "build minimal version"
-	depends on FREETZ_PACKAGE_TCPDUMP
-	default n
-	help
-		By enabling this option tcpdump will be built without
-		runtime recognition and parsing capabilities for a whole
-		lot of protocols and services. It will save 98KB of
-		compressed squashfs.
+if FREETZ_PACKAGE_TCPDUMP
+
+	choice
+		prompt "Version"
+			default FREETZ_PACKAGE_TCPDUMP_VERSION_CURRENT
+
+		config FREETZ_PACKAGE_TCPDUMP_VERSION_ABANDON
+			bool "4.1.1"
+			depends on FREETZ_TARGET_GCC_4_MAX
+
+		config FREETZ_PACKAGE_TCPDUMP_VERSION_CURRENT
+			bool "4.99.1"
+			depends on FREETZ_TARGET_GCC_5_MIN
+
+	endchoice
+
+	config FREETZ_PACKAGE_TCPDUMP_MINI
+		bool "build minimal version"
+		depends on FREETZ_PACKAGE_TCPDUMP_VERSION_ABANDON
+		default n
+		help
+			By enabling this option tcpdump will be built without
+			runtime recognition and parsing capabilities for a whole
+			lot of protocols and services. It will save 98KB of
+			compressed squashfs.
+
+endif # FREETZ_PACKAGE_TCPDUMP
 
