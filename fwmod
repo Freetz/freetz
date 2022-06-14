@@ -1142,6 +1142,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 			found=0
 			conf=${i%%=*}
 			[ "$conf" != "${conf%%_WITH_*}" ] && continue # skip suboptions
+			[ "$conf" != "${conf%%_VERSION_*}" ] && continue # skip version
 
 			bn=${conf#FREETZ_LIB_}
 
