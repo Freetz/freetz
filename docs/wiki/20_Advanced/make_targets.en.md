@@ -56,7 +56,7 @@ firmware-nocompile                      Creates firmware without packages and li
 mirror                                  Downloads all selected package sources files
 release                                 Creates a release file (change .version before)
 
-push-firmware                           Calls tools/push_firmware with images/latest.image
+push_firmware                           Calls tools/push_firmware with images/latest.image
                                         For more options, run: tools/push_firmware -h
 recover                                 Calls tools/recover-eva with configured firmware
 ```

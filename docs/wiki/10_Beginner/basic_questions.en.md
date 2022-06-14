@@ -6,7 +6,7 @@
     Open menuconfig and then input the ```/``` character to search.
   * Flash an (avm or modified) image by bootloader?<br>
     Run ```tools/push_firmware```, use ```tools/push_firmware -h``` for help.
-    Or just ```make push-firmware``` after ```make```.
+    Or just ```make push_firmware``` after ```make```.
   * Flash with Raspberry?<br>
     Put the created image onto the raspberry. Download the current push\_firmware script:
     ```wget https://raw.githubusercontent.com/Freetz-NG/freetz-ng/master/tools/push_firmware```

@@ -452,7 +452,7 @@ tools-distclean-local: $(patsubst %,%-distclean,$(filter-out $(TOOLS_TARXZBUNDLE
 tools-dirclean: $(TOOLS_DIRCLEAN)
 tools-distclean: $(TOOLS_DISTCLEAN)
 
-push-firmware:
+push_firmware push-firmware:
 	@if [ ! -e "images/latest.image" ]; then \
 		echo "Please run 'make' first."; exit 1; \
 	else \
