@@ -73,6 +73,7 @@ Latest changes
    * libgcrypt 1.10.1
    * libgpg-error 1.45
    * libneon 0.30.2/0.32.2
+   * libpcap 1.1.1/1.10.1
    * libxml 2.9.14
    * LCD4linux 9d4e4b7-git
    * lighttpd 1.4.65

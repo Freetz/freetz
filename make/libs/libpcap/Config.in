@@ -1,4 +1,4 @@
-config FREETZ_LIB_libpcap
+menuconfig FREETZ_LIB_libpcap
 	bool "libpcap (libpcap.so)"
 	default n
 	help
@@ -6,4 +6,22 @@ config FREETZ_LIB_libpcap
 		libpcap provides a portable framework for low-level network monitoring.
 		Applications include network statistics collection, security monitoring,
 		network debugging, etc.
+
+if FREETZ_LIB_libpcap
+
+	choice
+		prompt "Version"
+			default FREETZ_LIB_libpcap_VERSION_CURRENT
+
+		config FREETZ_LIB_libpcap_VERSION_ABANDON
+			bool "1.1.1"
+			depends on FREETZ_TARGET_GCC_4_MAX
+
+		config FREETZ_LIB_libpcap_VERSION_CURRENT
+			bool "1.10.1"
+			depends on FREETZ_TARGET_GCC_5_MIN
+
+	endchoice
+
+endif # FREETZ_LIB_libpcap
 
