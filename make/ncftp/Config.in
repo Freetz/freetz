@@ -12,33 +12,32 @@ config FREETZ_PACKAGE_NCFTP
 		automatically so you can do what you expect to do with a
 		file transfer program, which is transfer files between two
 		interconnected systems.
-		WWW: http://www.ncftp.com/ncftp/
 
-config FREETZ_PACKAGE_NCFTP_WITH_NCFTPGET
-	bool "ncftpget (binary only)"
-	depends on FREETZ_PACKAGE_NCFTP
-	default n
-	help
-		This option adds ncftpget
+if FREETZ_PACKAGE_NCFTP
 
-config FREETZ_PACKAGE_NCFTP_WITH_NCFTPPUT
-	bool "ncftpput (binary only)"
-	depends on FREETZ_PACKAGE_NCFTP
-	default n
-	help
-		This option adds ncftpput
+	config FREETZ_PACKAGE_NCFTP_WITH_NCFTPGET
+		bool "ncftpget (binary only)"
+		default n
+		help
+			This option adds ncftpget
 
-config FREETZ_PACKAGE_NCFTP_WITH_NCFTPBATCH
-	bool "ncftpbatch (binary only)"
-	depends on FREETZ_PACKAGE_NCFTP
-	default n
-	help
-		This option adds ncftpbatch
+	config FREETZ_PACKAGE_NCFTP_WITH_NCFTPPUT
+		bool "ncftpput (binary only)"
+		default n
+		help
+			This option adds ncftpput
 
-config FREETZ_PACKAGE_NCFTP_WITH_NCFTPLS
-	bool "ncftpls (binary only)"
-	depends on FREETZ_PACKAGE_NCFTP
-	default n
-	help
-		This option adds ncftpls
+	config FREETZ_PACKAGE_NCFTP_WITH_NCFTPBATCH
+		bool "ncftpbatch (binary only)"
+		default n
+		help
+			This option adds ncftpbatch
+
+	config FREETZ_PACKAGE_NCFTP_WITH_NCFTPLS
+		bool "ncftpls (binary only)"
+		default n
+		help
+			This option adds ncftpls
+
+endif # FREETZ_PACKAGE_NCFTP
 
