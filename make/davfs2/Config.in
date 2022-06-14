@@ -16,6 +16,20 @@ config FREETZ_PACKAGE_DAVFS2
 
 if FREETZ_PACKAGE_DAVFS2
 
+	choice
+		prompt "Version"
+			default FREETZ_PACKAGE_DAVFS2_VERSION_CURRENT
+
+		config FREETZ_PACKAGE_DAVFS2_VERSION_ABANDON
+			bool "1.5.2"
+			depends on FREETZ_KERNEL_VERSION_2_MAX
+
+		config FREETZ_PACKAGE_DAVFS2_VERSION_CURRENT
+			bool "1.6.1"
+			depends on !FREETZ_KERNEL_VERSION_2_MAX
+
+	endchoice
+
 	config FREETZ_PACKAGE_DAVFS2_REMOVE_WEBIF
 		bool "remove webinterface"
 		default n
