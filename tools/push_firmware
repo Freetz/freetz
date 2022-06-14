@@ -87,17 +87,21 @@ function push_fw() {
 			echo
 		fi
 
-		[ $ISRAM ] && FILESIZE="0x$(printf '%.8x' $(stat --printf='%s' "$mtdram1"))"
-		[ $ISFIT ] && FILESIZE="0x$(printf '%.8x' $(stat --printf='%s' "$fitimage"))"
-		MAPSTART="0x$(printf '%.8x' $(( $MAPSTART )))"
-		MAPLIMIT="0x$(printf '%.8x' $(( $MAPSTART + $FULLSIZE )))"
-		FREESIZE="0x$(printf '%.8x' $(( $FULLSIZE - $FILESIZE )))"
-		MTDSTART="0x$(printf '%.8x' $(( $MAPSTART + $FULLSIZE - $FILESIZE )))"
+		[ $ISRAM ] && FILESIZE="$(stat --printf='%s' "$mtdram1")"
+		[ $ISFIT ] && FILESIZE="$(stat --printf='%s' "$fitimage")"
+		ALIBYTES="$(( $ALIBYTES - ( $FILESIZE % $ALIBYTES ) ))"
+		FILESIZE="0x$(printf '%.8x' $(( $FILESIZE )) )"
+		ALIBYTES="0x$(printf '%.8x' $(( $ALIBYTES )) )"
+		MAPSTART="0x$(printf '%.8x' $(( $MAPSTART )) )"
+		MAPLIMIT="0x$(printf '%.8x' $(( $MAPSTART + $FULLSIZE                         )) )"
+		FREESIZE="0x$(printf '%.8x' $((             $FULLSIZE - $FILESIZE - $ALIBYTES )) )"
+		MTDSTART="0x$(printf '%.8x' $(( $MAPSTART + $FULLSIZE - $FILESIZE - $ALIBYTES )) )"
 
 		echo -e " * MAPSTART=$MAPSTART"
 		echo -e " * FULLSIZE=$FULLSIZE\t ($(($FULLSIZE/1024/1024)) MB)"
 		echo -e " * MAPLIMIT=$MAPLIMIT"
 		echo -e " * FILESIZE=$FILESIZE\t (~$(($FILESIZE/1024/1024)) MB)"
+		echo -e " * ALIBYTES=$ALIBYTES\t (~$(($ALIBYTES/1024     )) kB)"
 		echo -e " * FREESIZE=$FREESIZE\t (~$(($FREESIZE/1024/1024)) MB)"
 		echo -e " * MTDSTART=$MTDSTART"
 		echo -e
@@ -422,6 +426,8 @@ Usage: $0 [image] [ -m<s|r|d|u|f> ] [ -f ] [ -ip <ip> ] [ -ram <mb> ] [ -lfs <0|
 -f                Disable safety prompt.
 -ip <ip>          Bootloader IP address or hostname, default 192.168.178.1
 -map <hex>        Only ram-boot and fit-boot mode: Start of mapped memory (PHYS_OFFSET).
+-ali <kb>         Only ram-boot and fit-boot mode: Alignment in kB of the uploaded file.
+                    Without this parameter, the default for fit-boot is 64 and ram-boot 0.
 -ram <mb>         Only ram-boot and fit-boot mode: Usable ram size in MB of your device.
                     Without this parameter, the default of 128 MB (FIT: 384) will be used.
                     Some devices like Repeater 3000 need 256 MB to flash.
@@ -474,6 +480,14 @@ while [ $# -ge 1 ]; do
 			[ "x" != "$(echo $2 | sed 's/[0-9a-fA-F]//g')" ] && MAPSTART=''
 			[ "$MAPSTART" == "0" -a "${MAPSTART//0/}" != "x" ] && MAPSTART=''
 			[ -z "$MAPSTART" ] && echo "Invalid value for map start" && usage
+			shift
+			;;
+		(-ali)
+			ALIBYTES="$2"
+			[ -n "$ALIBYTES" -a -z "${ALIBYTES##0}" ] && ALIBYTES="0"
+			[ "$ALIBYTES" != "0" ] && ALIBYTES="${ALIBYTES##0}"
+			[ "$(( $ALIBYTES % 4 ))" != "0" ] && ALIBYTES='' || ALIBYTES="$(( $ALIBYTES * 1024 ))"
+			[ -z "$ALIBYTES" ] && echo "Invalid value for alignment" && usage
 			shift
 			;;
 		(-ram)
@@ -557,6 +571,7 @@ fi
 [ $ISRAM ]      && [ ! -x $TSUM_TOOL ]         && echo "File $TSUM_TOOL missing. Run 'make tichksum-host' first."          && exit 1
 [ ! $ISRAM ] && [ ! $ISFIT ] && [ $FULLSIZE ]  && echo "Parameter '-ram' is only allowed for ram-boot and fit-boot mode."  && exit 1
 [ ! $ISRAM ] && [ ! $ISFIT ] && [ $MAPSTART ]  && echo "Parameter '-map' is only allowed for ram-boot and fit-boot mode."  && exit 1
+[ ! $ISRAM ] && [ ! $ISFIT ] && [ $ALIBYTES ]  && echo "Parameter '-ali' is only allowed for ram-boot and fit-boot mode."  && exit 1
 
 prepare_image
 
@@ -690,6 +705,10 @@ if [ -n "$ISRAM$ISFIT" ]; then
 		esac
 	fi
 	[ "${FULLSIZE//0/}" == "x" ] && OUTVAL="<detect>" || OUTVAL="$(( $FULLSIZE /1024/1024 )) MB"
+	if [ -z "$ALIBYTES" ]; then
+		[ $ISRAM ] && ALIBYTES="$(( 1024 *  0 ))"
+		[ $ISFIT ] && ALIBYTES="$(( 1024 * 64 ))"
+	fi
 	echo " * Allowed memory size: $OUTVAL"
 fi
 
