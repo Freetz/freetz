@@ -6,48 +6,57 @@ config FREETZ_PACKAGE_DNSMASQ
 
 if FREETZ_PACKAGE_DNSMASQ
 
-config FREETZ_PACKAGE_DNSMASQ_VERSION_ABANDON
-	bool
-	default y
-	depends on !FREETZ_TARGET_IPV6_SUPPORT
-	help
-		Version 2.80 is the last with IPv4-only support. If
-		you want to use a newer version, enable IPv6 support.
+	choice
+		prompt "Version"
+			default FREETZ_PACKAGE_DNSMASQ_VERSION_CURRENT
 
-config FREETZ_PACKAGE_DNSMASQ_WITH_DNSSEC
-	bool "Enable DNSSEC support"
-	default n
-	help
-		Build with DNSSEC support enabled.
+		config FREETZ_PACKAGE_DNSMASQ_VERSION_ABANDON
+			bool "2.80"
+			depends on !FREETZ_TARGET_IPV6_SUPPORT
+			help
+				Version 2.80 is the last with IPv4-only support. If
+				you want to use a newer version, enable IPv6 support.
 
-config FREETZ_PACKAGE_DNSMASQ_ADDHOLE
-	bool "Select Addhole"
-	select FREETZ_PACKAGE_ADDHOLE
-	default n
-	help
-		Selects Addhole package.
+		config FREETZ_PACKAGE_DNSMASQ_VERSION_CURRENT
+			bool "2.86"
+			depends on FREETZ_TARGET_IPV6_SUPPORT
 
-comment "HINT: Don't forget to enable a dns/dhcp server."
-	depends on FREETZ_AVMDAEMON_DISABLE_DNS || FREETZ_AVMDAEMON_DISABLE_DHCP
+	endchoice
 
-config FREETZ_PACKAGE_DNSMASQ_DISABLE_DNS
-	bool "Disable multid's DNS"
-	depends on FREETZ_AVM_HAS_AVMDAEMON_PRELOAD
-	select FREETZ_AVMDAEMON_DISABLE_MULTIDPORTS
-	select FREETZ_AVMDAEMON_DISABLE_DNS
-	select FREETZ_AVMDAEMON_DISABLE_LLMNR
-	default y
-	help
-		This selects the remapping of multid's DNS (and LLMNR) ports.
+	config FREETZ_PACKAGE_DNSMASQ_WITH_DNSSEC
+		bool "Enable DNSSEC support"
+		default n
+		help
+			Build with DNSSEC support enabled.
 
-config FREETZ_PACKAGE_DNSMASQ_DISABLE_DHCP
-	bool "Disable multid's DHCP"
-	depends on FREETZ_AVM_HAS_AVMDAEMON_PRELOAD
-	select FREETZ_AVMDAEMON_DISABLE_MULTIDPORTS
-	select FREETZ_AVMDAEMON_DISABLE_DHCP
-	default y
-	help
-		This selects the remapping of multid's DHCP port.
+	config FREETZ_PACKAGE_DNSMASQ_ADDHOLE
+		bool "Select Addhole"
+		select FREETZ_PACKAGE_ADDHOLE
+		default n
+		help
+			Selects Addhole package.
+
+	comment "HINT: Don't forget to enable a dns/dhcp server."
+		depends on FREETZ_AVMDAEMON_DISABLE_DNS || FREETZ_AVMDAEMON_DISABLE_DHCP
+
+	config FREETZ_PACKAGE_DNSMASQ_DISABLE_DNS
+		bool "Disable multid's DNS"
+		depends on FREETZ_AVM_HAS_AVMDAEMON_PRELOAD
+		select FREETZ_AVMDAEMON_DISABLE_MULTIDPORTS
+		select FREETZ_AVMDAEMON_DISABLE_DNS
+		select FREETZ_AVMDAEMON_DISABLE_LLMNR
+		default y
+		help
+			This selects the remapping of multid's DNS (and LLMNR) ports.
+
+	config FREETZ_PACKAGE_DNSMASQ_DISABLE_DHCP
+		bool "Disable multid's DHCP"
+		depends on FREETZ_AVM_HAS_AVMDAEMON_PRELOAD
+		select FREETZ_AVMDAEMON_DISABLE_MULTIDPORTS
+		select FREETZ_AVMDAEMON_DISABLE_DHCP
+		default y
+		help
+			This selects the remapping of multid's DHCP port.
 
 endif # FREETZ_PACKAGE_DNSMASQ
 
