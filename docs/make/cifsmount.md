@@ -1,4 +1,4 @@
-# Cifsmount 6.14
+# Cifsmount 6.15
  - Homepage: [https://wiki.samba.org/index.php/LinuxCIFS_utils](https://wiki.samba.org/index.php/LinuxCIFS_utils)
  - Changelog: [https://wiki.samba.org/index.php/LinuxCIFS_utils#News](https://wiki.samba.org/index.php/LinuxCIFS_utils#News)
  - Repository: [https://git.samba.org/?p=cifs-utils.git;a=summary](https://git.samba.org/?p=cifs-utils.git;a=summary)
