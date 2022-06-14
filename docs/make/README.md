@@ -389,7 +389,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
     A netcat clone with ipv6 support.
 
   * **[ncftp 3.2.6 (binaries only)](ncftp.md)<a id='ncftp'></a>**<br>
-    NcFTP is a free program that use the File Transfer Protocol. The purpose of ncftp is to provide a powerful and flexible interface to the Internet standard File Transfer Protocol. Although the program appears to be rather spartan, you'll find that ncftp has a wealth of valuable performance and usage features. The program was designed with an emphasis on usability, and it does as much as it can for you automatically so you can do what you expect to do with a file transfer program, which is transfer files between two interconnected systems. WWW: http://www.ncftp.com/ncftp/
+    NcFTP is a free program that use the File Transfer Protocol. The purpose of ncftp is to provide a powerful and flexible interface to the Internet standard File Transfer Protocol. Although the program appears to be rather spartan, you'll find that ncftp has a wealth of valuable performance and usage features. The program was designed with an emphasis on usability, and it does as much as it can for you automatically so you can do what you expect to do with a file transfer program, which is transfer files between two interconnected systems.
 
   * **[ndas](ndas.md)<a id='ndas'></a>**<br>
     Network Direct Attached Storage (NDAS)
