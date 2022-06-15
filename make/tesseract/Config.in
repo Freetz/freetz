@@ -1,5 +1,6 @@
 config FREETZ_PACKAGE_TESSERACT
 	bool "Tesseract OCR 3.02.02 (binary only)"
+	select FREETZ_LIB_libtesseract
 	select FREETZ_PACKAGE_TESSERACT_tesseract
 	select FREETZ_PACKAGE_TESSERACT_ENG
 	default n
@@ -11,66 +12,48 @@ config FREETZ_PACKAGE_TESSERACT
 		 a lot of RAM at run-time. It is NOT recommended to use it on boxes
 		 having less than 64MB RAM.
 
-comment "You need a box with at least 64MB RAM to run Tesseract"
-	depends on FREETZ_PACKAGE_TESSERACT
+if FREETZ_PACKAGE_TESSERACT
 
-menu "Languages"
-	depends on FREETZ_PACKAGE_TESSERACT
+	comment "You need a box with at least 64MB RAM to run Tesseract"
 
-	config FREETZ_PACKAGE_TESSERACT_ENG
-		bool "English"
+	menu "Languages"
 
-	config FREETZ_PACKAGE_TESSERACT_DEU
-		bool "German"
-endmenu
+		config FREETZ_PACKAGE_TESSERACT_ENG
+			bool "English"
 
-config FREETZ_PACKAGE_TESSERACT_tesseract
-	bool "tesseract"
-	depends on FREETZ_PACKAGE_TESSERACT
-	select FREETZ_LIB_libtesseract
+		config FREETZ_PACKAGE_TESSERACT_DEU
+			bool "German"
+	endmenu
 
-config FREETZ_PACKAGE_TESSERACT_ambiguous_words
-	bool "ambiguous_words"
-	depends on FREETZ_PACKAGE_TESSERACT
-	select FREETZ_LIB_libtesseract
+	config FREETZ_PACKAGE_TESSERACT_tesseract
+		bool "tesseract"
 
-config FREETZ_PACKAGE_TESSERACT_classifier_tester
-	bool "classifier_tester"
-	depends on FREETZ_PACKAGE_TESSERACT
-	select FREETZ_LIB_libtesseract
+	config FREETZ_PACKAGE_TESSERACT_ambiguous_words
+		bool "ambiguous_words"
 
-config FREETZ_PACKAGE_TESSERACT_cntraining
-	bool "cntraining"
-	depends on FREETZ_PACKAGE_TESSERACT
-	select FREETZ_LIB_libtesseract
+	config FREETZ_PACKAGE_TESSERACT_classifier_tester
+		bool "classifier_tester"
 
-config FREETZ_PACKAGE_TESSERACT_combine_tessdata
-	bool "combine_tessdata"
-	depends on FREETZ_PACKAGE_TESSERACT
-	select FREETZ_LIB_libtesseract
+	config FREETZ_PACKAGE_TESSERACT_cntraining
+		bool "cntraining"
 
-config FREETZ_PACKAGE_TESSERACT_dawg2wordlist
-	bool "dawg2wordlist"
-	depends on FREETZ_PACKAGE_TESSERACT
-	select FREETZ_LIB_libtesseract
+	config FREETZ_PACKAGE_TESSERACT_combine_tessdata
+		bool "combine_tessdata"
 
-config FREETZ_PACKAGE_TESSERACT_mftraining
-	bool "mftraining"
-	depends on FREETZ_PACKAGE_TESSERACT
-	select FREETZ_LIB_libtesseract
+	config FREETZ_PACKAGE_TESSERACT_dawg2wordlist
+		bool "dawg2wordlist"
 
-config FREETZ_PACKAGE_TESSERACT_shapeclustering
-	bool "shapeclustering"
-	depends on FREETZ_PACKAGE_TESSERACT
-	select FREETZ_LIB_libtesseract
+	config FREETZ_PACKAGE_TESSERACT_mftraining
+		bool "mftraining"
 
-config FREETZ_PACKAGE_TESSERACT_unicharset_extractor
-	bool "unicharset_extractor"
-	depends on FREETZ_PACKAGE_TESSERACT
-	select FREETZ_LIB_libtesseract
+	config FREETZ_PACKAGE_TESSERACT_shapeclustering
+		bool "shapeclustering"
 
-config FREETZ_PACKAGE_TESSERACT_wordlist2dawg
-	bool "wordlist2dawg"
-	depends on FREETZ_PACKAGE_TESSERACT
-	select FREETZ_LIB_libtesseract
+	config FREETZ_PACKAGE_TESSERACT_unicharset_extractor
+		bool "unicharset_extractor"
+
+	config FREETZ_PACKAGE_TESSERACT_wordlist2dawg
+		bool "wordlist2dawg"
+
+endif # FREETZ_PACKAGE_TESSERACT
 
