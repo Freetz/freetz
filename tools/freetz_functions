@@ -5,6 +5,7 @@ supervisor_remove_dependency() {
 	local service="${1%.service}.service"
 	for file in $(grep -lP "(=| )${service}( |$)" ${FILESYSTEM_MOD_DIR}/lib/systemd/system/* 2>/dev/null); do
 		modsed -r "s/([= ])${service}( |$)/\1/g" "$file"
+		modsed '/^[Bb]efore= *$/d;/^[Aa]fter= *$/d' "$file"
 	done
 }
 
