@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_NZBGET
-	bool "NZBGet 21.0"
+	bool "NZBGet 21.1"
 	select FREETZ_STDCXXLIB_FORCE_GNULIBSTDCXX
 	select FREETZ_LIB_libxml2            if !FREETZ_PACKAGE_NZBGET_STATIC
 	select FREETZ_LIB_libpthread         if !FREETZ_PACKAGE_NZBGET_STATIC && FREETZ_TARGET_UCLIBC_HAS_multiple_libs
@@ -15,37 +15,37 @@ config FREETZ_PACKAGE_NZBGET
 		low system resources and runs great on routers,
 		NAS-devices and media players.
 
-config FREETZ_PACKAGE_NZBGET_WITH_CURSES
-	bool "With curses user interface"
-	depends on FREETZ_PACKAGE_NZBGET
-	select FREETZ_LIB_libncurses if ! FREETZ_PACKAGE_NZBGET_STATIC
-	default n
-	help
-		Enables a more comfortable curses-based user interface.
+if FREETZ_PACKAGE_NZBGET
 
-config FREETZ_PACKAGE_NZBGET_WITH_TLS
-	bool "With SSL/TLS encryption support"
-	depends on FREETZ_PACKAGE_NZBGET
-	select FREETZ_LIB_libcrypto_WITH_EC if !FREETZ_PACKAGE_NZBGET_STATIC
-	select FREETZ_LIB_libcrypto         if !FREETZ_PACKAGE_NZBGET_STATIC
-	select FREETZ_LIB_libssl            if !FREETZ_PACKAGE_NZBGET_STATIC
-	select FREETZ_LIB_libdl             if !FREETZ_PACKAGE_NZBGET_STATIC && FREETZ_TARGET_UCLIBC_HAS_multiple_libs
-	default n
-	help
-		Enables SSL/TLS-encrypted connection support.
+	config FREETZ_PACKAGE_NZBGET_WITH_CURSES
+		bool "With curses user interface"
+		select FREETZ_LIB_libncurses if ! FREETZ_PACKAGE_NZBGET_STATIC
+		default n
+		help
+			Enables a more comfortable curses-based user interface.
 
-config FREETZ_PACKAGE_NZBGET_DISABLE_PAR_CHECK
-	bool "Disable parity-check and -repair support"
-	depends on FREETZ_PACKAGE_NZBGET
-	default n
-	help
-		Disables parity checking and automatic
-		repairing of downloaded files.
+	config FREETZ_PACKAGE_NZBGET_WITH_TLS
+		bool "With SSL/TLS encryption support"
+		select FREETZ_LIB_libcrypto_WITH_EC if !FREETZ_PACKAGE_NZBGET_STATIC
+		select FREETZ_LIB_libcrypto         if !FREETZ_PACKAGE_NZBGET_STATIC
+		select FREETZ_LIB_libssl            if !FREETZ_PACKAGE_NZBGET_STATIC
+		select FREETZ_LIB_libdl             if !FREETZ_PACKAGE_NZBGET_STATIC && FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+		default n
+		help
+			Enables SSL/TLS-encrypted connection support.
 
-config FREETZ_PACKAGE_NZBGET_STATIC
-	bool "Link statically"
-	depends on FREETZ_PACKAGE_NZBGET
-	default n
-	help
-		Link all libraries into the binary.
+	config FREETZ_PACKAGE_NZBGET_DISABLE_PAR_CHECK
+		bool "Disable parity-check and -repair support"
+		default n
+		help
+			Disables parity checking and automatic
+			repairing of downloaded files.
+
+	config FREETZ_PACKAGE_NZBGET_STATIC
+		bool "Link statically"
+		default n
+		help
+			Link all libraries into the binary.
+
+endif # FREETZ_PACKAGE_NZBGET
 

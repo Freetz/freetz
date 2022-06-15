@@ -1,7 +1,11 @@
-$(call PKG_INIT_BIN, 21.0)
+$(call PKG_INIT_BIN, 21.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION)-src.tar.gz
-$(PKG)_HASH:=65a5d58eb8f301e62cf086b72212cbf91de72316ffc19182ae45119ddd058d53
+$(PKG)_HASH:=4e8fc1beb80dc2af2d6a36a33a33f44dedddd4486002c644f4c4793043072025
 $(PKG)_SITE:=https://github.com/nzbget/nzbget/releases/download/v$($(PKG)_VERSION)
+### WEBSITE:=https://nzbget.net/
+### MANPAGE:=https://nzbget.net/documentation
+### CHANGES:=https://github.com/nzbget/nzbget/releases
+### CVSREPO:=https://github.com/nzbget/nzbget
 
 $(PKG)_PATCH_POST_CMDS += $(call PKG_ADD_EXTRA_FLAGS,(CXX|LD)FLAGS)
 
@@ -27,6 +31,7 @@ $(PKG)_CONFIGURE_ENV += LIBPREF="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NZBGET_WITH_CURSES),,--disable-curses)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NZBGET_WITH_TLS),--with-tlslib=OpenSSL,--disable-tls)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NZBGET_DISABLE_PAR_CHECK),--disable-parcheck,)
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -54,6 +59,7 @@ $($(PKG)_TARGET_NZBGET_CONF): $($(PKG)_STAGING_BINARY)
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_NZBGET_CONF)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(NZBGET_DIR) clean
