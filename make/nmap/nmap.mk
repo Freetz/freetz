@@ -1,16 +1,20 @@
-$(call PKG_INIT_BIN, $(if $(FREETZ_PACKAGE_NMAP_VERSION_5),5.51,4.68))
+$(call PKG_INIT_BIN, $(if $(FREETZ_PACKAGE_NMAP_VERSION_4),4.68,5.51))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_HASH_4.68:=1866be3d8d397ea7721c08f520d033c208492d3e1551311805d18efbe6cef161
-$(PKG)_HASH_5.51:=15b3e134a74fa9b54aba2c3a53d6701c7ad221dc4051657ef95465a5a5a8687e
-$(PKG)_HASH:=$($(PKG)_HASH_$($(PKG)_VERSION))
-$(PKG)_SITE:=http://nmap.org/dist
+$(PKG)_HASH_4:=1866be3d8d397ea7721c08f520d033c208492d3e1551311805d18efbe6cef161
+$(PKG)_HASH_5:=15b3e134a74fa9b54aba2c3a53d6701c7ad221dc4051657ef95465a5a5a8687e
+$(PKG)_HASH:=$($(PKG)_HASH_$(call GET_MAJOR_VERSION,$($(PKG)_VERSION),1))
+$(PKG)_SITE:=https://nmap.org/dist
+### WEBSITE:=https://nmap.org/
+### MANPAGE:=https://nmap.org/docs.html
+### CHANGES:=https://nmap.org/changelog.html
+### CVSREPO:=https://github.com/nmap/nmap
 
-$(PKG)_CONDITIONAL_PATCHES+=$($(PKG)_VERSION)
+$(PKG)_CONDITIONAL_PATCHES+=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION),1)
 
 # make sure nmap never fallbacks to using the bundled libraries by deleting them
 $(PKG)_PATCH_POST_CMDS += $(RM) -r libpcap libdnet-stripped $(if $(FREETZ_PACKAGE_NMAP_WITH_SHARED_LUA),liblua) $(if $(FREETZ_PACKAGE_NMAP_WITH_SHARED_PCRE),libpcre);
 
-ifeq ($(strip $(FREETZ_PACKAGE_NMAP_VERSION_5)),y)
+ifneq ($(strip $(FREETZ_PACKAGE_NMAP_VERSION_4)),y)
 $(PKG)_BINARIES5_ALL       := ncat nping
 $(PKG)_BINARIES5           := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_BINARIES5_ALL))
 $(PKG)_BINARIES5_BUILD_DIR := $(addprefix $($(PKG)_DIR)/, $(join $($(PKG)_BINARIES5), $(addprefix /,$($(PKG)_BINARIES5))))
@@ -57,7 +61,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-libpcre=$(if $(FREETZ_PACKAGE_NMAP_WITH_SHARE
 $(PKG)_CONFIGURE_OPTIONS += --without-openssl
 $(PKG)_CONFIGURE_OPTIONS += --without-zenmap
 
-ifeq ($(strip $(FREETZ_PACKAGE_NMAP_VERSION_5)),y)
+ifneq ($(strip $(FREETZ_PACKAGE_NMAP_VERSION_4)),y)
 $(PKG)_CONFIGURE_OPTIONS += --with-ncat
 $(PKG)_CONFIGURE_OPTIONS += --without-ndiff
 $(PKG)_CONFIGURE_OPTIONS += --with-nping
@@ -71,6 +75,7 @@ endif
 
 # libnbase & libnsock:
 # no extra configure options are required in order to use bundled versions of these libraries.
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -90,6 +95,7 @@ $($(PKG)_DBS_TARGET_DIR): $($(PKG)_DEST_DIR)$($(PKG)_DATADIR)/nmap-%: $($(PKG)_D
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR) $($(PKG)_DBS_TARGET_DIR)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(NMAP_DIR) clean

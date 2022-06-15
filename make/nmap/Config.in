@@ -6,7 +6,7 @@ config FREETZ_PACKAGE_NMAP
 	select FREETZ_LIB_libm      if ! FREETZ_PACKAGE_NMAP_STATIC && FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libdl     if ! FREETZ_PACKAGE_NMAP_STATIC && FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_PACKAGE_NMAP_services if ! FREETZ_ADD_ETCSERVICES
-	select FREETZ_PACKAGE_NMAP_payloads if FREETZ_PACKAGE_NMAP_VERSION_5
+	select FREETZ_PACKAGE_NMAP_payloads if ! FREETZ_PACKAGE_NMAP_VERSION_4
 	default n
 	help
 		Nmap ("Network Mapper") is a free and open source (license) utility for network
@@ -22,86 +22,86 @@ config FREETZ_PACKAGE_NMAP
 
 if FREETZ_PACKAGE_NMAP
 
-choice
-	depends on FREETZ_PACKAGE_NMAP
-	prompt "version"
-	default FREETZ_PACKAGE_NMAP_VERSION_4
+	choice
+		depends on FREETZ_PACKAGE_NMAP
+		prompt "Version"
+		default FREETZ_PACKAGE_NMAP_VERSION_4
 
-	config FREETZ_PACKAGE_NMAP_VERSION_4
-		bool "nmap 4.68"
+		config FREETZ_PACKAGE_NMAP_VERSION_4
+			bool "4.68"
 
-	config FREETZ_PACKAGE_NMAP_VERSION_5
-		bool "nmap 5.51"
-		depends on FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
-endchoice
+		config FREETZ_PACKAGE_NMAP_VERSION_5
+			bool "5.51"
+			depends on FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
+	endchoice
 
-menu "databases"
-	config FREETZ_PACKAGE_NMAP_mac_prefixes
-	bool "MAC-address to manufacturer mapping"
-	default n
+	menu "databases"
+		config FREETZ_PACKAGE_NMAP_mac_prefixes
+			bool "MAC-address to manufacturer mapping"
+			default n
 
-	config FREETZ_PACKAGE_NMAP_os_db
-	bool "OS fingerprinting DB"
-	default n
+		config FREETZ_PACKAGE_NMAP_os_db
+			bool "OS fingerprinting DB"
+			default n
 
-	config FREETZ_PACKAGE_NMAP_payloads
-	depends on FREETZ_PACKAGE_NMAP_VERSION_5
-	bool "Payload DB"
-	default y
+		config FREETZ_PACKAGE_NMAP_payloads
+			depends on ! FREETZ_PACKAGE_NMAP_VERSION_4
+			bool "Payload DB"
+			default y
 
-	config FREETZ_PACKAGE_NMAP_protocols
-	bool "Protocol list"
-	default n
+		config FREETZ_PACKAGE_NMAP_protocols
+			bool "Protocol list"
+			default n
 
-	config FREETZ_PACKAGE_NMAP_rpc
-	bool "RPC grinding DB"
-	default n
+		config FREETZ_PACKAGE_NMAP_rpc
+			bool "RPC grinding DB"
+			default n
 
-	config FREETZ_PACKAGE_NMAP_service_probes
-	bool "Service detection probe list"
-	default n
+		config FREETZ_PACKAGE_NMAP_service_probes
+			bool "Service detection probe list"
+			default n
 
-	config FREETZ_PACKAGE_NMAP_services
-	bool "Service list"
-	default y
-endmenu
+		config FREETZ_PACKAGE_NMAP_services
+			bool "Service list"
+			default y
+	endmenu
 
-config FREETZ_PACKAGE_NMAP_ncat
-	bool "include ncat"
-	depends on FREETZ_PACKAGE_NMAP && FREETZ_PACKAGE_NMAP_VERSION_5
-	default n
-	help
-		Include ncat (a much-improved reimplementation of Netcat)
+	config FREETZ_PACKAGE_NMAP_ncat
+		bool "include ncat"
+		depends on FREETZ_PACKAGE_NMAP && FREETZ_PACKAGE_NMAP_VERSION_5
+		default n
+		help
+			Include ncat (a much-improved reimplementation of Netcat)
 
-config FREETZ_PACKAGE_NMAP_nping
-	bool "include nping"
-	depends on FREETZ_PACKAGE_NMAP && FREETZ_PACKAGE_NMAP_VERSION_5
-	default n
-	help
-		Include nping (a network packet generation tool / ping utility)
+	config FREETZ_PACKAGE_NMAP_nping
+		bool "include nping"
+		depends on FREETZ_PACKAGE_NMAP && FREETZ_PACKAGE_NMAP_VERSION_5
+		default n
+		help
+			Include nping (a network packet generation tool / ping utility)
 
-config FREETZ_PACKAGE_NMAP_WITH_SHARED_LUA
-	bool "Use system (shared) liblua"
-	depends on FREETZ_PACKAGE_NMAP
-	select FREETZ_LIB_liblua if ! FREETZ_PACKAGE_NMAP_STATIC
-	default y
-	help
-		Causes system (dynamic) liblua to be used instead of the bundled one.
+	config FREETZ_PACKAGE_NMAP_WITH_SHARED_LUA
+		bool "Use system (shared) liblua"
+		depends on FREETZ_PACKAGE_NMAP
+		select FREETZ_LIB_liblua if ! FREETZ_PACKAGE_NMAP_STATIC
+		default y
+		help
+			Causes system (dynamic) liblua to be used instead of the bundled one.
 
-config FREETZ_PACKAGE_NMAP_WITH_SHARED_PCRE
-	bool "Use system (shared) libpcre"
-	depends on FREETZ_PACKAGE_NMAP
-	select FREETZ_LIB_libpcre if ! FREETZ_PACKAGE_NMAP_STATIC
-	default y
-	help
-		Causes system (dynamic) libpcre to be used instead of the bundled one.
+	config FREETZ_PACKAGE_NMAP_WITH_SHARED_PCRE
+		bool "Use system (shared) libpcre"
+		depends on FREETZ_PACKAGE_NMAP
+		select FREETZ_LIB_libpcre if ! FREETZ_PACKAGE_NMAP_STATIC
+		default y
+		help
+			Causes system (dynamic) libpcre to be used instead of the bundled one.
 
-config FREETZ_PACKAGE_NMAP_STATIC
-	bool "Link statically"
-	depends on FREETZ_PACKAGE_NMAP
-	default n
-	help
-		Causes all libraries to be linked in statically.
+	config FREETZ_PACKAGE_NMAP_STATIC
+		bool "Link statically"
+		depends on FREETZ_PACKAGE_NMAP
+		default n
+		help
+			Causes all libraries to be linked in statically.
 
 endif # FREETZ_PACKAGE_NMAP
 
