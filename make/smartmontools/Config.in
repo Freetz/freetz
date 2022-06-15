@@ -1,9 +1,6 @@
-comment "Smartmontools (not available, needs libstdc++ as Standard C++ Library)"
-	depends on !FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
-
 config FREETZ_PACKAGE_SMARTMONTOOLS
 	bool "Smartmontools 7.3"
-	depends on FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
+	select FREETZ_STDCXXLIB_FORCE_GNULIBSTDCXX
 	select FREETZ_LIB_STDCXXLIB
 	default n
 	help

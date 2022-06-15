@@ -1,9 +1,6 @@
-comment "NZBGet (not available, needs libstdc++ as Standard C++ Library)"
-	depends on !FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
-
 config FREETZ_PACKAGE_NZBGET
 	bool "NZBGet 21.0"
-	depends on FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
+	select FREETZ_STDCXXLIB_FORCE_GNULIBSTDCXX
 	select FREETZ_LIB_libxml2            if !FREETZ_PACKAGE_NZBGET_STATIC
 	select FREETZ_LIB_libpthread         if !FREETZ_PACKAGE_NZBGET_STATIC && FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libz               if !FREETZ_PACKAGE_NZBGET_STATIC

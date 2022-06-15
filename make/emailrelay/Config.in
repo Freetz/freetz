@@ -1,9 +1,6 @@
-comment "E-MailRelay (not available, needs libstdc++ as Standard C++ Library)"
-	depends on !FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
-
 config FREETZ_PACKAGE_EMAILRELAY
 	bool "E-MailRelay 1.9"
-	depends on FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
+	select FREETZ_STDCXXLIB_FORCE_GNULIBSTDCXX
 	select FREETZ_LIB_libcrypto
 	select FREETZ_LIB_libssl
 	select FREETZ_LIB_libz

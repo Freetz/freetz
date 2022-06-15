@@ -32,7 +32,7 @@ if FREETZ_PACKAGE_NMAP
 
 		config FREETZ_PACKAGE_NMAP_VERSION_5
 			bool "5.51"
-			depends on FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
+			select FREETZ_STDCXXLIB_FORCE_GNULIBSTDCXX
 	endchoice
 
 	menu "databases"

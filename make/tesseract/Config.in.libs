@@ -1,6 +1,6 @@
 config FREETZ_LIB_libtesseract
 	bool "libtesseract (libtesseract.so)"
-	depends on FREETZ_PACKAGE_TESSERACT_AVAILABLE
+	select FREETZ_STDCXXLIB_FORCE_GNULIBSTDCXX
 	select FREETZ_LIB_STDCXXLIB
 	select FREETZ_LIB_libpthread if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_liblept

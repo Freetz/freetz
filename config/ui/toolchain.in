@@ -515,14 +515,32 @@ config FREETZ_TARGET_GCC_DEFAULT_AS_NEEDED
 	help
 		Enabling this option changes linker default from '--no-as-needed' to '--as-needed'.
 
+config FREETZ_STDCXXLIB_FORCE_GNULIBSTDCXX
+	bool "Forced GNU libstdc++ as standard C++ Library"
+	default n
+	help
+		This disables uClibc++ and forces to use GNU libstdc++
+		as the implementation of the Standard C++ Library.
+
+config FREETZ_STDCXXLIB_USE_UCLIBCXX
+	bool
+	default y
+	depends on FREETZ_STDCXXLIB_USE_UCLIBCXX_CHOICE
+
+config FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
+	bool
+	default y
+	depends on FREETZ_STDCXXLIB_USE_GNULIBSTDCXX_CHOICE || FREETZ_STDCXXLIB_FORCE_GNULIBSTDCXX
+
 choice
 
 	prompt "Standard C++ Library"
-	default FREETZ_STDCXXLIB_USE_UCLIBCXX
+	depends on !FREETZ_STDCXXLIB_FORCE_GNULIBSTDCXX
+	default FREETZ_STDCXXLIB_USE_UCLIBCXX_CHOICE
 	help
 		Library to be used as the implementation of the Standard C++ Library.
 
-	config FREETZ_STDCXXLIB_USE_UCLIBCXX
+	config FREETZ_STDCXXLIB_USE_UCLIBCXX_CHOICE
 		bool "uClibc++"
 		help
 			uClibc++ is an implementation of the Standard C++ Library optimized
@@ -531,7 +549,7 @@ choice
 			performance deficiencies, e.g. std::map::find requires O(n), bubble
 			sort O(n^2) is used as sort algorithm, and etc.
 
-	config FREETZ_STDCXXLIB_USE_GNULIBSTDCXX
+	config FREETZ_STDCXXLIB_USE_GNULIBSTDCXX_CHOICE
 		bool "GNU libstdc++"
 		help
 			GNU libstdc++ is an implementation of the Standard C++ Library from
