@@ -1,4 +1,8 @@
 # Nmap 4.68/5.51 (binary only)
+ - Homepage: [https://nmap.org/](https://nmap.org/)
+ - Manpage: [https://nmap.org/docs.html](https://nmap.org/docs.html)
+ - Changelog: [https://nmap.org/changelog.html](https://nmap.org/changelog.html)
+ - Repository: [https://github.com/nmap/nmap](https://github.com/nmap/nmap)
  - Package: [master/make/nmap/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/nmap/)
 
 "*Nmap ("Network Mapper") is a free and open source (license) utility
