@@ -580,7 +580,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
   * **[NTFS-3G 2017.3.23 (binary only)](../docs/make/ntfs.md)<a id='ntfs'></a>**<br>
     The NTFS-3G driver is an open source, freely available read/write NTFS driver for Linux, FreeBSD, OS X, and NetBSD. It provides safe and fast handling of the Windows XP, Windows Server 2003, Windows 2000 and Windows Vista file systems. Most POSIX file system operations are supported, with the exception of full file ownership and access right support. This binary is needed for ntfs automount feature thus there is no webinterface.
 
-  * **<u>NZBGet 21.0</u><a id='nzbget'></a>**<br>
+  * **[NZBGet 21.1](../docs/make/nzbget.md)<a id='nzbget'></a>**<br>
     NZBGet is a command-line based binary news grabber for nzb files, written in C++. It supports client/server mode, automatic par-check/-repair and web-interface (via additional package). NZBGet requires low system resources and runs great on routers, NAS-devices and media players.
 
 ### O
