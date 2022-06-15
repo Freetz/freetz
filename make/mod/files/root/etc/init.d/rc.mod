@@ -65,10 +65,11 @@ motd() {
 
 ar7lite() {
 	[ -e /bin/upx-hwk-boot-prx ] || return
-	[ -e /var/media/ftp/fit-image ] && return
-	echo "For the fiber module you need a unmodified fit-image."
-	echo "Extract this file from an matching AVM firmware"
-	echo "and place it on the root of the internal storage."
+	local fit="/var/media/ftp/fit-image/${CONFIG_VERSION//\./-}-$(/etc/version --project 2>/dev/null).fit"
+	[ -e "$fit" ] && return
+	echo "For the fiber module you need a unmodified fit-image. Extract this"
+	echo "file from an AVM firmware and place it on the internal storage as:"
+	echo "$fit"
 }
 
 start() {
