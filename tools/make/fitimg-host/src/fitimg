@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-our $VERSION = "0.2";
+our $VERSION = "0.3";
 
 # fitimg - (C) 2021 Ralf Steines aka Hippie2000 - <metamonk@yahoo.com>
 # Handle and manipulate firmware images in AVM /var/tmp/fit-image format.
@@ -25,34 +25,41 @@ use String::CRC32; # May need 'cpan install String::CRC32'
 
 # Freetz filenames
 my %fname = (
-	# 7530ax
-	'brcma9_HW256_kernel' => 'kernel.image',
-	'brcma9_HW256_squashFS_filesystem' => 'filesystem.image',
-	'brcma9_HW256_flat_dt_1' => 'flatdt_1.image',
-	'brcma9_HW256_flat_dt_0' => 'flatdt_0.image',
-	'brcma9TZ_HW256_kernel' => 'kernel2.image',
-	'brcma9TZ_HW256_flat_dt_0' => 'flatdt2_0.image',
-	# 5530
-	'prxI_HW257_kernel' => 'kernel.image',
-	'prxI_HW257_ramdisk' => 'filesystem.image',
-	'prxI_HW257_flat_dt_0_aon' => 'flatdt_0_aon.image',
-	'prxI_HW257_flat_dt_0_pon' => 'flatdt_0_pon.image',
-	'prxB_HW0257_kernel' => 'kernel2.image',
-	'prxB_HW0257_ramdisk' => 'filesystem2.image',
-	'prxB_HW0257_flat_dt_0' => 'flatdt2_0.image',
-	# 6000
-	'qcaarmv8_HW253_kernel' => 'kernel.image', 
-	'qcaarmv8_HW253_squashFS_filesystem' => 'filesystem.image',
-	'qcaarmv8_HW253_flat_dt_0' => 'flatdt_0.image',
-	'qcaarmv8_HW253_flat_dt_2' => 'flatdt_2.image',
+	# HWR 257 - 5530
+	257 => {
+		'prxI_HW257_kernel' => 'kernel.image',
+		'prxI_HW257_ramdisk' => 'filesystem.image',
+		'prxI_HW257_flat_dt_0_aon' => 'flatdt_0_aon.image',
+		'prxI_HW257_flat_dt_0_pon' => 'flatdt_0_pon.image',
+		'prxB_HW0257_kernel' => 'kernel2.image',
+		'prxB_HW0257_ramdisk' => 'filesystem2.image',
+		'prxB_HW0257_flat_dt_0' => 'flatdt2_0.image',
+	},
+	# HWR 256 - 7530ax
+	256 => {
+		'brcma9_HW256_kernel' => 'kernel.image',
+		'brcma9_HW256_squashFS_filesystem' => 'filesystem.image',
+		'brcma9_HW256_flat_dt_1' => 'flatdt_1.image',
+		'brcma9_HW256_flat_dt_0' => 'flatdt_0.image',
+		'brcma9TZ_HW256_kernel' => 'kernel2.image',
+		'brcma9TZ_HW256_flat_dt_0' => 'flatdt2_0.image',
+	},
+	# HWR 253 - 6000
+	253 => {
+		'qcaarmv8_HW253_kernel' => 'kernel.image', 
+		'qcaarmv8_HW253_squashFS_filesystem' => 'filesystem.image',
+		'qcaarmv8_HW253_flat_dt_0' => 'flatdt_0.image',
+		'qcaarmv8_HW253_flat_dt_2' => 'flatdt_2.image',
+	},
 );
+my %missing = %fname;
 
 # string hunk names
 our %strname = (
 	# all models
 	0 => {
 		0 => 'info',
-		65 => 'data',
+		65 => 'data', # blob
 		70 => 'type',
 		75 => 'arch',
 		80 => 'os',
@@ -93,7 +100,9 @@ our %wordname = (
 		22 => 'avm,gu-version',
 		37 => 'avm,variants',
 		50 => '#address-cells',
+		95 => 'loadaddr',
 		100 => 'entryaddr',
+		111 => 'hashvalue',
 	},
 	# HWR 257 - 5530
 	257 => {
@@ -132,6 +141,22 @@ our %wordname = (
 	},
 );
 
+# per model hunk config
+my %hunkcfg = (
+	# HWR 257 - 5530
+	257 => {
+	},
+	# HWR 256 - 7530ax
+	256 => {
+		'kernel-args' => 117,
+	},
+	# HWR 253 - 6000
+	253 => {
+		'kernel-args' => 267,
+	},
+);
+
+
 # catch the terminating funktions
 if (defined($ARGV[0])) {
 	help() if $ARGV[0] =~ /^(-\?|--help)$/;
@@ -144,7 +169,7 @@ my %opts;
 getopts('l:t:x:r:c:s:o:d:nfhq', \%opts) or abort("Invalid arguments\nSee 'fitimg --help'");
 abort("nothing to do - you need to pass one of -l -t -x -r or -s\nSee 'fitimg --help'") if !$opts{l} && !$opts{t} && !$opts{x} && !$opts{r} && !$opts{c} && !$opts{s};
 abort("don't mix -l -t -x -r -c and -s - only use one of them\nSee 'fitimg --help'") if defined($opts{l}) + defined($opts{t}) + defined($opts{x}) + defined($opts{r}) + defined($opts{c}) + defined($opts{s}) > 1;
-abort("replace (-r) and copy (-c) requires an output file (-o)\nSee 'fitimg --help'") if ($opts{r} || $opts{c}) && !$opts{o};
+abort("replace (-r) and copy (-c) require an output file (-o)\nSee 'fitimg --help'") if ($opts{r} || $opts{c}) && !$opts{o};
 abort("input and output file must not be the same\nSee 'fitimg --help'") if ($opts{r} && ($opts{o} eq $opts{r})) || ($opts{c} && ($opts{o} eq $opts{c}));
 
 # read the source file into inbuf
@@ -158,7 +183,7 @@ $insize = -s $infile;
 read(INFILE, $inbuf, $insize);
 close(INFILE);
 
-# find the signatore in inbuf
+# find the signature in inbuf
 my $pos;
 my $offset;
 if ($inbuf =~ /\x0D\x00\xED\xFE.{76}\x00\x00\x00\x38/ms) { # 0x0d00edfe AVM fit signature + 0x00000038 @ offset 0x50
@@ -170,7 +195,7 @@ if ($inbuf =~ /\x0D\x00\xED\xFE.{76}\x00\x00\x00\x38/ms) { # 0x0d00edfe AVM fit 
 		abort("fit-image size mismatch ($fitsize vs $fitsize), can't recover: $infile") if $fitsize != $fitsize2;
 		abort("Truncated fit-image: $infile") if ($insize - $offset) < $fitsize;
 		$insize = $fitsize + $offset;
-		printf("found $fitsize bytes fit-image at offset 0x%08x\n", $offset) unless $opts{q};
+		report(sprintf("found $fitsize bytes fit-image at offset 0x%08x", $offset));
 	} else {
 		abort("Truncated fit-image: $infile") if $insize < $fitsize;
 	}
@@ -188,12 +213,13 @@ if ((defined($opts{x}) || defined($opts{r})) && defined($opts{d})) {
 }
 
 # now parse the inbuf
-my ($head, $type, $body, $strbuf, $string, $name, $len, $status, $blob, $blobsize, $loadaddr, $outbuf, %replaced);
+my ($head, $type, $body, $strbuf, $string, $name, $len, $status, $blob, $blobsize, $loadaddr, $outbuf, %replaced, $didend);
 my $errors = 0;
 my $files = 0;
 my $lastpos = $pos;
 my $oldpos;
 my $section = '';
+my $realsect = '';
 my $hwr = '';
 
 while ($pos < $insize) {
@@ -201,19 +227,21 @@ while ($pos < $insize) {
 	$head = unpack('N', substr($inbuf, $pos, 4));
 
 	if ($head == 0) {
-		$type = unpack('N', substr($inbuf, $pos+4, 4));
-		print "\n" if $opts{s} && !$opts{q};
+		$type = unpack('N', substr($inbuf, $pos + 4, 4));
+		report('') if $opts{s};
 		if ($type == 0) {
 			show($oldpos, 8, $head, 'hunk end');
 			$pos += 8;
+			$didend = 1;
 		} else {
 			show($oldpos, 8, $head, '???');
-			abort(sprintf("unknown hunk end $type @ %08x\n", $pos));
+			abort(sprintf("unknown hunk end $type @ 0x%08x", $pos));
 		}
 		if (defined($opts{r}) || defined($opts{c})) {
 			$outbuf .= substr($inbuf, $lastpos, $pos - $lastpos);
 			$lastpos = $pos;
 		}
+		last if $didend;
 
 	} elsif ($head == 1) {
 		$string = $strbuf = '';
@@ -224,7 +252,7 @@ while ($pos < $insize) {
 		} until $strbuf =~ "\0";
 		$string =~ s/\0//g;
 		show($oldpos, $pos - $oldpos, $head, "string = '$string'");
-		$section = $string if $string !~ /^hash_/;
+		$realsect = $section = $string if $string !~ /^hash_/;
 		$hwr = $1 if $section =~ /_HW0*(\d{3})_/;
 		if (defined($opts{r}) || defined($opts{c})) {
 			$outbuf .= substr($inbuf, $lastpos, $pos - $lastpos);
@@ -244,10 +272,10 @@ while ($pos < $insize) {
 		} until $strbuf =~ "\0";
 		$string =~ s/\0//g;
 		show($oldpos, $pos - $oldpos, $head, "string = '$string'");
-		$section = $string if $string !~ /^hash_/;
+		$realsect = $section = $string if $string !~ /^hash_/;
 		$hwr = $1 if $section =~ /_HW0*(\d{3})_/;
 		if ($section eq 'description') {
-			print "\n" if $opts{s} && !$opts{q};
+			report('') if $opts{s};
 			$strbuf = substr($inbuf, $pos, $insize - $pos - 8);
 			$strbuf =~ s/\0$//g;
 			my @desc = split(/\0/, $strbuf);
@@ -262,22 +290,22 @@ while ($pos < $insize) {
 		}
 
 	} elsif ($head == 3) {
-		$body = unpack('N', substr($inbuf, $pos+4, 4));
-		$type = unpack('N', substr($inbuf, $pos+8, 4));
+		$body = unpack('N', substr($inbuf, $pos + 4, 4));
+		$type = unpack('N', substr($inbuf, $pos + 8, 4));
 
 		if ($type == 65) { # blob
 			show($oldpos, $body, "$head #$type", "data = <binary blob>");
-			print "...\n" if $opts{h} && !$opts{q};
-			$section = $fname{$section} if defined($opts{f}) && defined($fname{$section});
+			report('...') if $opts{h};
+			$section = $fname{$hwr}{$section} if defined($opts{f}) && defined($fname{$hwr}{$section});
 			$blobsize = $body;
-			$blob = substr($inbuf, $pos+12, $body) if defined($opts{t}) || defined($opts{x}) || defined($opts{c});
+			$blob = substr($inbuf, $pos + 12, $body) if defined($opts{t}) || defined($opts{x}) || defined($opts{c});
 			if (defined($opts{r})) {
 				if (open(BLOB, "$dir$section")) { # fail silently
 					binmode BLOB;
 					$blobsize = -s "$dir$section";
 					read(BLOB, $blob, $blobsize);
 					close BLOB;
-					print sprintf("Replacing: %8d->%8d $section\n", $body, $blobsize) unless defined($opts{q});
+					report(sprintf("Replacing: %08d->%08d $section", $body, $blobsize));
 					$outbuf .= pack('N', $head);
 					$outbuf .= pack('N', $blobsize);
 					$outbuf .= pack('N', $type);
@@ -287,16 +315,15 @@ while ($pos < $insize) {
 					$files++;
 				}
 			}
+			delete $missing{$hwr}{$realsect} if $blobsize + $pos < $insize;
 
 		} elsif ($type == 95) { # loadaddr
-			$loadaddr = unpack('N', substr($inbuf, $pos+12, $body));
+			$loadaddr = unpack('N', substr($inbuf, $pos + 12, $body));
 			show($oldpos, $body, "$head #$type", sprintf("loadaddr = 0x%08x", $loadaddr));
-			if (defined($opts{l}) && !defined($opts{q})) {
-				print sprintf("%08x-%08x %8d $section\n", $loadaddr, $loadaddr + $blobsize, $blobsize);
-			}
+			report(sprintf("%08x-%08x %8d $section", $loadaddr, $loadaddr + $blobsize, $blobsize)) if defined($opts{l});
 
-		} elsif ($type == 111) { # crc
-			my $crc1 = unpack('N', substr($inbuf, $pos+12, $body));
+		} elsif ($type == 111) { # hashvalue (crc)
+			my $crc1 = unpack('N', substr($inbuf, $pos + 12, $body));
 			show($oldpos, $body, "$head #$type", sprintf("hashvalue = 0x%08x", $crc1));
 			if (defined($opts{t}) || defined($opts{x}) || defined($opts{c})) {
 				if (defined($opts{x})) {
@@ -313,36 +340,54 @@ while ($pos < $insize) {
 				my $crc2 = crc32($blob);
 				$status = $crc1 == $crc2 ? 'OK' : 'BAD';
 				if (!defined($opts{n}) || $section !~ /flat_dt|flatdt/) {
-					print sprintf("$status: %08x %08x %8d $section\n", $crc1, $crc2, $blobsize) unless defined($opts{q});
+					report(sprintf("$status: %08x %08x %8d $section", $crc1, $crc2, $blobsize));
 				}
-				$errors++ if $status eq 'BAD';
+				$errors++ if $crc1 != $crc2;
 			} elsif (defined($opts{r}) && defined($replaced{$section})) {
 					$outbuf .= pack('N', $head);
 					$outbuf .= pack('N', 4);
 					$outbuf .= pack('N', $type);
 					$outbuf .= pack('N', crc32($blob));
 			}
+
 		} elsif (($name = $strname{0}{$type}) || ($name = $strname{$hwr}{$type})) { # string
 			$string = substr($inbuf, $pos + 12, $body);
 			$string =~ s/\0//g;
 			show($oldpos, $body, "$head #$type", "$name = '$string'");
+
+			if (defined($opts{r}) && defined($replaced{$section}) && ($type == $hunkcfg{$hwr}{'kernel-args'})) { # kernel-args
+				my $newstring;
+				if (($string =~ /^(.*)0x([0-9a-fA-F]{8}),0x([0-9a-fA-F]{8})(.*:)(\d+)(\@.*)$/)) {
+					my $endaddr = hex($2) + $blobsize + ($blobsize % 0x100000 ? (0x100000 - $blobsize % 0x100000) : 0); # 1MB padding
+					$newstring = sprintf($1."0x$2,0x%08x$4%d$6", $endaddr, $blobsize); 
+				} else {
+					$newstring = $string;
+				}
+				my $newlen = length($newstring) + 1;
+				$outbuf .= pack('N', $head);
+				$outbuf .= pack('N', $newlen);
+				$outbuf .= pack('N', $type);
+				$outbuf .= $newstring . "\0";
+				$outbuf .= "\0" x (4 - $newlen % 4) if $newlen % 4; # padding
+			}
+
 		} elsif (($name = $wordname{0}{$type}) || ($name = $wordname{$hwr}{$type})) { # word
 			my $word = unpack('N', substr($inbuf, $pos + 12, $body));
 			show($oldpos, $body, "$head #$type", sprintf("$name = 0x%08x", defined($word) ? $word : 0xBADC0DE));
+
 		} else {
 			show($oldpos, $body, "$head #$type", 'todo');
 		}
 
-		$len = $body + 12 + ($body %4 ? (4 - $body % 4) : 0); # add head + padding
+		$len = $body + 12 + ($body % 4 ? (4 - $body % 4) : 0); # add hunk head + padding
 		$pos += $len;
 		if (defined($opts{r}) || defined($opts{c})) {
-			$outbuf .= substr($inbuf, $lastpos, $pos - $lastpos) unless ($type == 65 || $type == 111) && defined($replaced{$section});
+			$outbuf .= substr($inbuf, $lastpos, $pos - $lastpos) unless defined($replaced{$section}) && ($type == 65 || $type == 111 || $type == $hunkcfg{$hwr}{'kernel-args'});
 			$lastpos = $pos;
 		}
 
 	} else {
-		abort(sprintf("unknown hunk head $head @ %08x\n", $pos));
-		last;
+		abort(sprintf("unknown hunk head $head @ %08x", $pos));
 	}
 
 }
@@ -363,6 +408,17 @@ if (defined($opts{r}) || defined($opts{c})) {
 	print OUTFILE substr($inbuf, 0x70 + $offset, 0x80 - 0x70);
 	print OUTFILE $outbuf;
 	close OUTFILE;
+}
+
+# check for truncated files or images with wrong EOF pointers
+if ($hwr) {
+	my $errs = 0;
+	$errs++ unless $didend;
+	foreach my $item (sort keys %{$missing{$hwr}}) { 
+		print STDERR "### fitimg ### - missing blob '$item'\n";
+		$errs++; 
+	}
+	abort("truncated fit image" . ($offset ? ' or wrong size info' : '')) if $errs;
 }
 
 # status reports
@@ -433,10 +489,16 @@ ENDHELP
 	exit;
 }
 
+# quietable print
+sub report {
+	return if defined($opts{q});
+	print "$_[0]\n";
+}
+
 # error handling
 sub abort {
-  print STDERR "fitimg: $_[0]\n";
-  exit 1;
+	print STDERR "### fitimg ### - $_[0]\n";
+	exit 1;
 }
 
 # create release archive
