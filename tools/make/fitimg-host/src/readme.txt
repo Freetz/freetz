@@ -1,4 +1,4 @@
-fitimg version 0.7 - (C) 2021 Ralf Steines aka Hippie2000 - <hippie2000@webnmail.de>
+fitimg version 0.7.1 - (C)  2021-2022 Ralf Steines aka Hippie2000 - <hippie2000@webnmail.de>
 Handle and manipulate firmware images in AVM /var/tmp/fit-image format. GPLv2+.
 Docs and latest version can be found at https://boxmatrix.info/wiki/FIT-Image
 
@@ -13,6 +13,7 @@ Usage:
 
   fitimg -x <infile> [-d <dir>] [-n] [-f] [-q]
     Extract all contents of fit-image <infile> or just <file> to current directory or <dir>.
+    Option -i appends a .fit extension to the filename for inner fit images  (fitimg 0.7.1+)
     Option -n suppresses extracting device tree files.
     Option -q suppresses listing which files were extracted.
 

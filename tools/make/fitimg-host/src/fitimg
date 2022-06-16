@@ -1,7 +1,7 @@
 #!/usr/bin/perl
-our $VERSION = "0.7";
+our $VERSION = "0.7.1";
 
-# fitimg - (C) 2021 Ralf Steines aka Hippie2000 - <hippie2000@webnmail.de>
+# fitimg - (C)  2021-2022 Ralf Steines aka Hippie2000 - <hippie2000@webnmail.de>
 # Handle and manipulate firmware images in AVM /var/tmp/fit-image format.
 # Docs and latest version can be found at https://boxmatrix.info/wiki/FIT-Image
 
@@ -52,21 +52,21 @@ my %fname = (
 		'prxB_HW0257_ramdisk' => 'filesystem2.image',
 		'prxB_HW0257_flat_dt_0' => 'flatdt2_0.image',
 	},
-	# HWR 273 - 5590 ARM
+	# HWR 272 - 5590 ARM
 	272 => {
-		'qcaarmv8_HW272_kernel' => 'kernel3.image',
-		'qcaarmv8_HW272_flat_dt_0' => 'flatdt3_0.image',
-		'qcaarmv8_HW272_squashFS_filesystem' => 'filesystem3.image',
+		'qcaarmv8_HW272_kernel' => 'kernel.image',
+		'qcaarmv8_HW272_flat_dt_0' => 'flatdt_0.image',
+		'qcaarmv8_HW272_squashFS_filesystem' => 'filesystem.image',
 	},
 	# HWR 273 - 5590 PRX
 	273 => {
-		'prxI_HW273_kernel' => 'kernel.image',
-		'prxI_HW273_squashFS_filesystem' => 'filesystem.image',
-		'prxI_HW273_flat_dt_0_aon' => 'flatdt_0_aon.image',
-		'prxI_HW273_flat_dt_0_pon' => 'flatdt_0_pon.image',
-		'prxB_HW0273_kernel' => 'kernel2.image',
-		'prxB_HW0273_ramdisk' => 'filesystem2.image',
-		'prxB_HW0273_flat_dt_0' => 'flatdt2_0.image',
+		'prxI_HW273_kernel' => 'kernel2.image',
+		'prxI_HW273_squashFS_filesystem' => 'filesystem2.image',
+		'prxI_HW273_flat_dt_0_aon' => 'flatdt2_0_aon.image',
+		'prxI_HW273_flat_dt_0_pon' => 'flatdt2_0_pon.image',
+		'prxB_HW0273_kernel' => 'kernel3.image',
+		'prxB_HW0273_ramdisk' => 'filesystem3.image',
+		'prxB_HW0273_flat_dt_0' => 'flatdt3_0.image',
 	},
 	# HWR 256 - 7530ax
 	256 => {
@@ -435,7 +435,7 @@ while ($pos < $insize) {
 			}
 
 			if ($name eq 'type' && $string eq 'avm,fit') { # inner fit image without crc
-				$section .= '.fit' unless $section =~ /\.fit$/;
+				$section .= '.fit' if defined($opts{i}) && ($section !~ /\.fit$/);
 				if (defined($opts{t}) || defined($opts{x}) || defined($opts{c})) {
 					if (defined($opts{x})) {
 						open(BLOB, ">$dir$section") || abort("Can't write to $dir$section");
@@ -525,7 +525,7 @@ if (defined($opts{t}) || defined($opts{x}) || defined($opts{r}) || defined($opts
 
 # version or help options
 sub version {
-	print "fitimg version $VERSION - (C) 2021 Ralf Steines aka Hippie2000 - <hippie2000\@webnmail.de>\n";
+	print "fitimg version $VERSION - (C)  2021-2022 Ralf Steines aka Hippie2000 - <hippie2000\@webnmail.de>\n";
 	print "Handle and manipulate firmware images in AVM /var/tmp/fit-image format. GPLv2+.\n";
 	print "Docs and latest version can be found at https://boxmatrix.info/wiki/FIT-Image\n";
 	exit unless $_[0];
@@ -547,6 +547,7 @@ Usage:
 
   fitimg -x <infile> [-d <dir>] [-n] [-f] [-q]
     Extract all contents of fit-image <infile> or just <file> to current directory or <dir>.
+    Option -i appends a .fit extension to the filename for inner fit images  (fitimg 0.7.1+)
     Option -n suppresses extracting device tree files.
     Option -q suppresses listing which files were extracted.
 
