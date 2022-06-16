@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-our $VERSION = "0.5";
+our $VERSION = "0.6";
 
 # fitimg - (C) 2021 Ralf Steines aka Hippie2000 - <metamonk@yahoo.com>
 # Handle and manipulate firmware images in AVM /var/tmp/fit-image format.
@@ -25,6 +25,14 @@ use String::CRC32; # May need 'cpan install String::CRC32'
 
 # Freetz filenames
 my %fname = (
+	# HWR 261 - 4060
+	261 => {
+		'qcaarmv8_HW261_kernel' => 'kernel.image',
+		'qcaarmv8_HW261_squashFS_filesystem' => 'filesystem.image',
+		'qcaarmv8_HW261_flat_dt_0' => 'flatdt_0.image',
+		'qcaarmv8_HW261_flat_dt_1' => 'flatdt_1.image',
+		'qcaarmv8_HW261_flat_dt_2' => 'flatdt_2.image',
+	},
 	# HWR 257 - 5530
 	257 => {
 		'prxI_HW257_kernel' => 'kernel.image',
@@ -67,6 +75,14 @@ our %strname = (
 		83 => 'compression',
 		106 => 'hashalgo',
 	},
+	# HWR 261 - 4060
+	261 => {
+		117 => 'avm,endianess',
+		267 => 'avm,kernel-args',
+		283 => 'kernel',
+		290 => 'flatdt',
+		294 => 'squashfs',
+	},
 	# HWR 257 - 5530
 	257 => {
 		117 => 'avm,endianess',
@@ -102,6 +118,18 @@ our %wordname = (
 		95 => 'loadaddr',
 		100 => 'entryaddr',
 		111 => 'hashvalue',
+	},
+	# HWR 261 - 4060
+	261 => {
+		131 => 'avm,kernel_text_start',
+		153 => 'avm,names',
+		163 => 'avm,token_table',
+		179 => 'avm,token_index',
+		195 => 'avm,num_syms',
+		208 => 'avm,addresses',
+		222 => 'avm,relative_base',
+		240 => 'avm,offsets',
+		252 => 'avm,data-align',
 	},
 	# HWR 257 - 5530
 	257 => {
@@ -142,6 +170,10 @@ our %wordname = (
 
 # per model hunk config
 my %hunkcfg = (
+	# HWR 261 - 4060
+	261 => {
+		'kernel-args' => 267,
+	},
 	# HWR 257 - 5530
 	257 => {
 	},
@@ -159,7 +191,7 @@ my %hunkcfg = (
 if (defined($ARGV[0])) {
 	help() if $ARGV[0] =~ /^(-\?|--help)$/;
 	version() if $ARGV[0] =~ /^(-v|--version)$/;
-	release() if $ARGV[0] eq '--release'; # create release archive - BUMP $VERSION IN SECOND LINE AFTER!
+	release() if $ARGV[0] eq '--release'; # [--public] create release archive - BUMP $VERSION IN SECOND LINE AFTER!
 }
 
 # read the arguments: -l -t -x -r -c -s -h -o -d -p require an argument, -n -f and -q do not

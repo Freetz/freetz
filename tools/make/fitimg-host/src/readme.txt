@@ -1,4 +1,4 @@
-fitimg version 0.5 - (C) 2021 Ralf Steines aka Hippie2000 - <metamonk@yahoo.com>
+fitimg version 0.6 - (C) 2021 Ralf Steines aka Hippie2000 - <metamonk@yahoo.com>
 Handle and manipulate firmware images in AVM /var/tmp/fit-image format. GPLv2+.
 Docs and latest version can be found at https://boxmatrix.info/wiki/FIT-Image
 
