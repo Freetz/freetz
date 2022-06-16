@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-our $VERSION = "0.7.2";
+our $VERSION = "0.8";
 
 # fitimg - (C) 2021-2022 Ralf Steines aka Hippie2000 - <hippie2000@webnmail.de>
 # Handle and manipulate firmware images in AVM /var/tmp/fit-image format.
@@ -22,6 +22,19 @@ use strict;
 use warnings; # requires perl 5.6
 use Getopt::Std; # Perl core module (part of Perl package)
 use String::CRC32; # May need 'cpan install String::CRC32'
+
+# find unlzma solutions - fail silently
+# external unlzma is *not supported yet*, perl module required for now
+my $unlzma;
+if (defined($ENV{'TOOLS_DIR'})) { # freetz host tools
+	$unlzma = "$ENV{'TOOLS_DIR'}/unlzma";
+} elsif (open(WHICH, "-|", "which", "unlzma")) { 
+	$unlzma = <WHICH>; 
+	close WHICH; 
+	chomp $unlzma;
+}
+eval { require Compress::Raw::Lzma }; 
+my $rawlzma = $@ ? 0 : 1;
 
 # These are tools for trying to find out which sigature is in the FIT header.
 # see a fitimg hexdump of a FIT image to see where the signature is located.
@@ -108,6 +121,30 @@ my %fname = (
 );
 my %missing = %fname;
 
+# blob size limits where they apply
+my %maxblobsize = (
+	# HWR 268 - 1200ax - outer fit image
+	"268.o" => {
+		'maple_HW268_kernel' => 8 * 1024 * 1024, # inner fit image
+		'maple_HW268_squashFS_filesystem' => 28 * 1024 * 1024,
+	},
+	# HWR 271 - 7510 - outer fit image
+	"271.o" => {
+		'maple_HW271_kernel' => 8 * 1024 * 1024, # inner fit image
+		'maple_HW271_squashFS_filesystem' => 42 * 1024 * 1024,
+	},
+);
+
+# fit size limits where they apply
+my %maxfitsize = (
+	256 => 50 * 1024 * 1024, # HWR 256 - 7530ax
+	257 => 50 * 1024 * 1024, # HWR 257 - 5530
+	253 => 80 * 1024 * 1024, # HWR 253 - 6000
+	261 => 80 * 1024 * 1024, # HWR 261 - 4060
+	272 => 80 * 1024 * 1024, # HWR 272 - 5590 ARM
+	273 => 80 * 1024 * 1024, # HWR 273 - 5590 PRX
+);
+
 # hunk types - word = 32bit, blob = binary
 my %hunktype = (
 	'#address-cells' => 'word',
@@ -126,6 +163,7 @@ my %hunktype = (
 	'avm,token_index' => 'word',
 	'avm,token_table' => 'word',
 	'avm,variants' => 'string',
+	'avm,image-version' => 'word',
 	'compression' => 'string',
 	'data' => 'blob',
 	'entry' => 'word',
@@ -148,24 +186,31 @@ if (defined($ARGV[0])) {
 	release() if $ARGV[0] eq '--release'; # [--public] create release archive - BUMP $VERSION IN SECOND LINE AFTER!
 }
 
-# read the arguments: -l -t -x -r -c -s -h -o -d -p require an argument, -i -n -f -e and -q do not
+# read the arguments: -l -t -x -r -c -s -h -o -d -p require an argument, -i -n -f -e -k -m -u and -q do not
 my %opts;
-my $see = "\nSee 'fitimg --help'";
-getopts('l:t:x:r:c:s:h:o:d:p:infeq', \%opts) or abort('invalid arguments' . $see);
+my $see = "\nSee 'fitimg --help'"; # getopts chars used: cdefhiklmnopqrstux free: agjvwyz
+getopts('l:t:x:r:c:s:h:o:d:p:b:infekmuq', \%opts) or abort('invalid arguments' . $see);
 abort('nothing to do - you need to pass one of -l -t -x -r -s or -h' . $see) if !$opts{l} && !$opts{t} && !$opts{x} && !$opts{r} && !$opts{c} && !$opts{s} && !$opts{h};
 abort('don\'t mix -l -t -x -r -c -s and -h - only use one of them' . $see) if defined($opts{l}) + defined($opts{t}) + defined($opts{x}) + defined($opts{r}) + defined($opts{c}) + defined($opts{s}) + defined($opts{h}) > 1;
 abort('replace (-r) and copy (-c) require an output file (-o)' . $see) if ($opts{r} || $opts{c}) && !$opts{o};
 abort('input and output file must not be the same' . $see) if ($opts{r} && ($opts{o} eq $opts{r})) || ($opts{c} && ($opts{o} eq $opts{c}));
 abort('padding can only be 0-1024 (kB)' . $see) if defined($opts{p}) && ($opts{p} > 1024 || $opts{p} < 0);
+abort('clipping bytes can only be a positive integer, not 0' . $see) if defined($opts{b}) && $opts{b} < 1;
+$opts{q} = 1 if defined($opts{o}) && $opts{o} eq '-'; # force quiet mode if <outfile> is stdout
 
 # read the source file into inbuf
 my ($inbuf, $opt, $infile, $insize);
+my $dstamp = time();
 foreach $opt ('l', 't', 'x', 'r', 'c', 's', 'h') {
-	$infile = $opts{$opt} if defined($opts{$opt});
+	if (defined($opts{$opt})) {
+		$infile = $opts{$opt};
+		last;
+	}
 }
 open(INFILE, $infile) || abort("Can't open $infile");
 binmode INFILE;
 $insize = -s $infile;
+$dstamp = (stat($infile))[9];
 read(INFILE, $inbuf, $insize);
 close(INFILE);
 
@@ -212,7 +257,7 @@ my $dpos = 12; # add hunk header size
 my $dbuf = substr($inbuf, $dbase + $dpos + $offset, $insize - $dbase - $dpos - $offset - 8); 
 $dbuf =~ s/\0$//g;
 my $dlen = length($dbuf);
-abort("String table too long ($dlen)") if $dlen > 512;
+abort("Description string table too long ($dlen)") if $dlen > 1024;
 my @desc = split(/\0/, $dbuf);
 my ($dstr, %hunkname);
 $hunkname{0} = 'info';
@@ -277,7 +322,16 @@ my $files = 0;
 my $lastpos = $pos;
 my $section = '';
 my $realsect = '';
+my $platform = '';
 my $hwr = '';
+my $kernelbase = -1;
+my $kernelsize = 0;
+my $kernelsize2 = 0;
+my $kernelpos = 0;
+my $lastkernel = '';
+my $lastbase = 0;
+my $lastblobsize = 0;
+my $orgblobsize = 0;
 
 while ($pos < $insize) {
 	$oldpos = $pos;
@@ -310,8 +364,9 @@ while ($pos < $insize) {
 		$string =~ s/\0//g;
 		show($oldpos, $pos - $oldpos, 0, $head, "string = '$string'");
 		$realsect = $section = $string if $string !~ /^hash_/;
-		if ($section =~ /_HW0*(\d{3})_/) {
-			$hwr = $1;
+		if ($section =~ /^([^_]+)_HW0*(\d{3})_/) {
+			$platform = $1;
+			$hwr = $2;
 			if (unpack('N', substr($inbuf, $offset + 0x68, 4)) == 0x9e) {
 				$hwr .= '.o' if $hwr eq "268"; # outer fit image (1200ax)
 				$hwr .= '.o' if $hwr eq "271"; # outer fit image (7510)
@@ -340,8 +395,9 @@ while ($pos < $insize) {
 			report('# Devicetree Blob (DTB) strings');
 		}
 		show($oldpos, $pos - $oldpos, 0, $head, "string = '$string'");
-		if ($section =~ /_HW0*(\d{3})_/) {
-			$hwr = $1;
+		if ($section =~ /^([^_]+)_HW0*(\d{3})_/) {
+			$platform = $1;
+			$hwr = $2;
 			if (unpack('N', substr($inbuf, $offset + 0x68, 4)) == 0x9e) {
 				$hwr .= '.o' if $hwr eq "268"; # outer fit image (1200ax)
 				$hwr .= '.o' if $hwr eq "271"; # outer fit image (7510)
@@ -367,11 +423,16 @@ while ($pos < $insize) {
 		$type = unpack('N', substr($inbuf, $pos + 8, 4));
 		$name = defined($hunkname{$type}) ? $hunkname{$type} : 'todo';
 
-		if ($hunktype{$name} eq 'blob') { # blob
+		if (defined($hunktype{$name}) && $hunktype{$name} eq 'blob') { # blob
 			show($oldpos, $body, 12, "$head #$type", "$name = <binary blob>");
-			report('.... <snip> ....') if $opts{h};
+			if ($opts{h}) {
+				report('.... <snip> ....');
+				my $tailsize = defined($opts{b}) ? $opts{b} : 128;
+				my $blobtail = $oldpos + $body + ($body % 4 ? (4 - $body % 4) : 0) + 12 - $tailsize;
+				show($blobtail, $tailsize, 12, "", "");
+			}
 			$section = $fname{$hwr}{$section} if defined($opts{f}) && defined($fname{$hwr}{$section});
-			$blobsize = $body;
+			$orgblobsize = $blobsize = $body;
 			$blob = substr($inbuf, $pos + 12, $body) if defined($opts{t}) || defined($opts{x}) || defined($opts{c});
 			if (defined($opts{r})) {
 				# the next line avoids a 2 pass interpreter since the info "type = 'avm,fit'" comes after the blob
@@ -391,23 +452,56 @@ while ($pos < $insize) {
 					$files++;
 				}
 			}
+			if ($realsect =~ /_kernel/) {
+				$kernelsize = $kernelsize2 = $blobsize;
+				$kernelpos = $pos + 12;
+			}
+			$lastblobsize = $blobsize;
 			delete $missing{$hwr}{$realsect} if $body + $pos < $insize;
 
+		} elsif ($name eq 'timestamp') { # unix timestamp
+			$dstamp = unpack('N', substr($inbuf, $pos + 12, $body)) unless defined($opts{u});
+			show($oldpos, $body, 12, "$head #$type", defined($dstamp) ? sprintf("$name = 0x%08x = %d", $dstamp, $dstamp) : "$name = <empty>");
+
 		} elsif ($name eq 'load') { # loadaddr
-			$loadaddr = unpack('N', substr($inbuf, $pos + 12, $body));
+			$lastbase = $loadaddr = unpack('N', substr($inbuf, $pos + 12, $body));
+			if ($realsect =~ /_kernel/ && $platform ne 'brcma9TZ') { # kernel size check
+				$kernelbase = $loadaddr;
+				$lastkernel = $section;
+			} elsif ($kernelbase >= 0 && $realsect =~ /_flat/) {
+				report(sprintf("%08x-%08x %8d * max size, %d%% used *", $kernelbase, $loadaddr, $loadaddr - $kernelbase, $kernelsize2 / ($loadaddr - $kernelbase) * 100 + 0.5)) if defined($opts{l}) && defined($opts{m});
+				if ($kernelsize > ($loadaddr - $kernelbase)) {
+					abort(sprintf("$lastkernel too large - %d of %d used - %d bytes too much", $kernelsize, ($loadaddr - $kernelbase), $kernelsize - ($loadaddr - $kernelbase)));
+				}
+				$kernelbase = -1;
+			}
 			show($oldpos, $body, 12, "$head #$type", sprintf("$name = 0x%08x", $loadaddr));
 			report(sprintf("%08x-%08x %8d $section", $loadaddr, $loadaddr + $blobsize, $blobsize)) if defined($opts{l});
+			if (defined($maxblobsize{$hwr}{$realsect})) {
+				report(sprintf("%08x-%08x %8d * max size, %d%% used *", $loadaddr, $loadaddr + $maxblobsize{$hwr}{$realsect}, $maxblobsize{$hwr}{$realsect}, $lastblobsize / $maxblobsize{$hwr}{$realsect} * 100 + 0.5)) if defined($opts{l}) && defined($opts{m});
+				if ($lastblobsize > $maxblobsize{$hwr}{$realsect}) {
+					abort(sprintf("$section too large - %d of %d used - %d bytes too much", $lastblobsize, $maxblobsize{$hwr}{$realsect}, $lastblobsize - $maxblobsize{$hwr}{$realsect}));
+				}
+			}
+
+		} elsif ($name eq 'entry') { # entryaddr
+			my $entry = unpack('N', substr($inbuf, $pos + 12, $body));
+			show($oldpos, $body, 12, "$head #$type", defined($entry) ? sprintf("$name = 0x%08x = %d", $entry, $entry) : "$name = <empty>");
+			if (defined($opts{r}) && $entry != $lastbase) {
+				abort("PRX kernel $section could not be replaced (yet)") if $blobsize != $orgblobsize;
+			}
 
 		} elsif ($name eq 'value') { # hashvalue (crc)
 			my $crc1 = unpack('N', substr($inbuf, $pos + 12, $body));
 			show($oldpos, $body, 12, "$head #$type", sprintf("$name = 0x%08x", $crc1));
 			if (defined($opts{t}) || defined($opts{x}) || defined($opts{c})) {
 				if (defined($opts{x})) {
-					if (!defined($opts{n}) || $section !~ /flat_dt|flatdt/) {
+					if (!defined($opts{n}) || ($realsect !~ /_flat/ && $platform ne 'brcma9TZ')) {
 						open(BLOB, ">$dir$section") || abort("Can't write to $dir$section");
 						binmode BLOB;
 						print BLOB $blob;
 						close BLOB;
+						utime($dstamp, $dstamp, "$dir$section");
 						$files++;
 					}
 				} else {
@@ -415,7 +509,7 @@ while ($pos < $insize) {
 				}
 				my $crc2 = crc32($blob);
 				$status = $crc1 == $crc2 ? 'OK' : 'BAD';
-				if (!defined($opts{n}) || $section !~ /flat_dt|flatdt/) {
+				if (!defined($opts{n}) || ($realsect !~ /_flat/ && $platform ne 'brcma9TZ')) {
 					report(sprintf("$status: %08x %08x %8d $section", $crc1, $crc2, $blobsize));
 				}
 				$errors++ if $crc1 != $crc2;
@@ -426,7 +520,7 @@ while ($pos < $insize) {
 					$outbuf .= pack('N', crc32($blob));
 			}
 
-		} elsif ($hunktype{$name} eq 'string') { # string
+		} elsif (defined($hunktype{$name}) && $hunktype{$name} eq 'string') { # string
 			$string = substr($inbuf, $pos + 12, $body);
 			$string =~ s/\0//g;
 			show($oldpos, $body, 12, "$head #$type", "$name = '$string'");
@@ -434,9 +528,9 @@ while ($pos < $insize) {
 			if ($name eq 'avm,kernel-args') { # kernel-args
 				if (defined($opts{l})) {
 					if (($string =~ /^(.*)0x([0-9a-fA-F]{8}),0x([0-9a-fA-F]{8})(.*:)(\d+)(\@.*)$/)) {
-						report(sprintf("%08x-%08x %8d * kernel-args *", hex($2), hex($3), $5));
+						report(sprintf("%08x-%08x %8d * kernel-args *", hex($2), hex($3), $5)) if defined($opts{k});
 					} elsif (($string =~ /^(.*)0x([0-9a-fA-F]{8}),0x([0-9a-fA-F]{8})$/)) { # 5590
-						report(sprintf("%08x-%08x %8d * kernel-args *", hex($2), hex($3), $blobsize));
+						report(sprintf("%08x-%08x %8d * kernel-args *", hex($2), hex($3), $blobsize)) if defined($opts{k});
 					} elsif ($string) {
 						warning("Can't list kernel-args '$string'\nPlease report this!");
 					}
@@ -444,11 +538,11 @@ while ($pos < $insize) {
 				if (defined($opts{r}) && defined($replaced{$section})) {
 					my $newstring = '';
 					if (($string =~ /^(.*)0x([0-9a-fA-F]{8}),0x([0-9a-fA-F]{8})(.*:)(\d+)(\@.*)$/)) {
-						my $endaddr = hex($2) + $blobsize + ($blobsize % 0x100000 ? (0x100000 - $blobsize % 0x100000) : 0); # 1MB padding
-						$newstring = sprintf($1."0x$2,0x%08x$4%d$6", $endaddr, $blobsize); 
+						my $endaddr = hex($2) + $blobsize + ($blobsize % 0x100000 ? (0x100000 - $blobsize % 0x100000) : 0x100000); # 1MB padding
+						$newstring = sprintf($1 ."0x$2,0x%08x$4%d$6", $endaddr, $blobsize); 
 					} elsif (($string =~ /^(.*)0x([0-9a-fA-F]{8}),0x([0-9a-fA-F]{8})$/)) { # 5590
-						my $endaddr = hex($2) + $blobsize + ($blobsize % 0x100000 ? (0x100000 - $blobsize % 0x100000) : 0); # 1MB padding
-						$newstring = sprintf($1."0x$2,0x%08x", $endaddr); 
+						my $endaddr = hex($2) + $blobsize + ($blobsize % 0x100000 ? (0x100000 - $blobsize % 0x100000) : 0x100000); # 1MB padding
+						$newstring = sprintf($1 ."0x$2,0x%08x", $endaddr); 
 					} elsif ($string) {
 						warning("Can't adapt kernel-args '$string'\nThis image will not work, please report this!");
 						$newstring = $string;
@@ -470,6 +564,7 @@ while ($pos < $insize) {
 						binmode BLOB;
 						print BLOB $blob;
 						close BLOB;
+						utime($dstamp, $dstamp, "$dir$section");
 						$files++;
 					} else {
 						$files++;
@@ -481,7 +576,20 @@ while ($pos < $insize) {
 				}
 			}
 
-		} elsif ($hunktype{$name} eq 'word') { # 32-bit word
+			if ($name eq 'compression' && $kernelbase != -1 && $string eq 'lzma') { # lzma kernel
+				if ($rawlzma) {
+					if (my $z = new Compress::Raw::Lzma::AutoDecoder) {
+						my $inbuf2 = substr($inbuf, $kernelpos, $kernelsize);
+						my $outbuf2;
+						my $status = $z->code($inbuf2, $outbuf2);
+						$kernelsize2 = length($outbuf2);
+						$inbuf2 = $outbuf2 = '';
+						report(sprintf("%08x-%08x %8d * decompressed lzma *", $lastbase, $lastbase + $kernelsize2, $kernelsize2)) if defined($opts{l}) && defined($opts{m});
+					}
+				}
+			}
+
+		} elsif (defined($hunktype{$name}) && $hunktype{$name} eq 'word') { # 32-bit word
 			my $word = unpack('N', substr($inbuf, $pos + 12, $body));
 			show($oldpos, $body, 12, "$head #$type", defined($word) ? sprintf("$name = 0x%08x = %d", $word, $word) : "$name = <empty>");
 
@@ -500,6 +608,17 @@ while ($pos < $insize) {
 		abort(sprintf("unknown hunk head $head @ %08x", $pos));
 	}
 
+}
+
+# check the fit size limit
+if ($hwr ne '' && defined($maxfitsize{$hwr})) {
+	my $fitlen = defined($outbuf) ? length($outbuf) + 0x80 : $fitsize;
+	my $blobmax = $maxfitsize{$hwr} - $fitlen + $lastblobsize;
+	$blobmax -= $blobmax % 4;
+	report(sprintf("%08x-%08x %8d * max size, %d%% used *", $lastbase, $lastbase + $blobmax, $blobmax, $lastblobsize / $blobmax * 100 + 0.5)) if defined($opts{l}) && defined($opts{m});
+	if ($fitlen > $maxfitsize{$hwr}) {
+		abort(sprintf("fit-image too large - %d of %d used - %d bytes too much", $fitlen, $maxfitsize{$hwr}, $fitlen - $maxfitsize{$hwr}));
+	}
 }
 
 # write the header and outbuf and padding
@@ -525,6 +644,7 @@ if (defined($opts{r}) || defined($opts{c})) {
 	print OUTFILE substr($inbuf, 0x70 + $offset, 0x80 - 0x70);
 	print OUTFILE $outbuf;
 	close OUTFILE;
+	utime($dstamp, $dstamp, $opts{o}) unless defined($opts{r}) || $opts{o} eq '-';
 }
 
 # check for truncated files or images with wrong EOF pointers
@@ -565,44 +685,50 @@ sub help {
 	print <<ENDHELP;
 
 Usage:
-  fitimg -l <infile> [-i] [-f] [-e] [-q]
+  fitimg -l <infile> [-i] [-f] [-e] [-k] [-m] [-q]
     List all binaries contained in fit-image <infile>, including their load addresses.
+    Option -k also lists memory regions specified in kernel args.  (fitimg 0.8+)
+    Option -m also list the maximum size of regions where limits apply.  (fitimg 0.8+)
     Option -q could be used to silently test the image structure.
 
   fitimg -t <infile> [-i] [-f] [-e] [-q]
     Test the integrity of all binaries contained in fit-image <infile>. Performs CRC32 validation.
     Option -q could be used to silently test the image structure and checksum integrity.
 
-  fitimg -x <infile> [-d <dir>] [-i] [-n] [-f] [-e] [-q]
-    Extract all contents of fit-image <infile> or just <file> to current directory or <dir>.
-    Option -n suppresses extracting device tree files.
+  fitimg -x <infile> [-d <dir>] [-i] [-n] [-f] [-e] [-u] [-q]
+    Extract all contents of fit-image <infile> to current directory or <dir>.
+    Option -n suppresses extracting device tree and TrustZone files.
+    Ootion -u (utime) uses the datestamp of <infile> for extracted files  (fitimg 0.8+)
     Option -q suppresses listing which files were extracted.
 
   fitimg -r <infile> -o <outfile> [-d <dir>] [-i] [-f] [-e] [-p <num>] [-q]
-    Replace all contens of fit-image <infile> which exist in current directory or <dir> and write it to <outfile>.
+    Replace all contents of fit-image <infile> which exist in cd or <dir> and write it to <outfile>.
     Files which do not exist in current directory or <dir> will not be replaced.
     Option -p ovverrides the default padding size of 64 (0 - 1024) in kB  (fitimg 0.5+)
     Option -q suppresses listing which files were replaced.
 
-  fitimg -c <infile> -o <outfile> [-i] [-f] [-e] [-p <num>] [-q]  (fitimg 0.2+)
+  fitimg -c <infile> -o <outfile> [-i] [-f] [-e] [-p <num>] [-u] [-q]  (fitimg 0.2+)
     Copy an unaltered fit-image from <infile> to <outfile> while testing its integrity.
     This is mainly useful to extract and validate a fit-image from a recovery.exe or firmware.image.
     Option -p ovverrides the default padding size of 64 (0 - 1024) in kB  (fitimg 0.5+)
+    Ootion -u (utime) uses the datestamp of <infile> for the copied file  (fitimg 0.8+)
     Option -q could be used to silently copy and test the image structure and checksum integrity.
 
   fitimg -s <infile> [-i] [-q]  (fitimg 0.2+)
     Show the complete hunk structure of the fit-image <infile>.
     Option -q could be used to silently test the image structure
 
-  fitimg -h <infile> [-i] [-q]  (fitimg 0.5+)
+  fitimg -h <infile> [-i] [-b <num>] [-q]  (fitimg 0.5+)
     Hexdump and show the complete structure of the fit-image <infile>.
-    Hunk payload like binaries are clipped to 128 bytes, enough bytes to not clip kernel-args.
+    Hunk payload like binary blobs are clipped to show 128 bytes of their head and their tail.
+    Option -b overrides the default clipping of 128 bytes.  (fitimg 0.8+)
     Option -q could be used to silently test the image structure
 
 Options:
   <infile> can be a fit-image, a firmware.image or a recovery.exe.  (fitimg 0.2+)
+  <outfile> can be '-' (stdout) in which case quiet mode is forced.  (fitimg 0.8+)
   -i processes the inner image for nested fit-image files.  (fitimg 0.7.2+)
-  -f activates Freetz mode using filesystem[2].image and kernel[2].image etc instead of the stored names.
+  -f uses Freetz names like filesystem[2].image and kernel[2].image etc instead of the stored names.
   -e activates a .fit file extension for inner fit images  (fitimg 0.7.2+)
 
   -? (fitimg 0.2+) or --help print this help text and terminates.
@@ -655,12 +781,16 @@ sub show {
 	return if (!$opts{s} && !$opts{h}) || $opts{q};
 	my ($pos, $len, $len2, $hunk, $funct, $ishead) = @_;
 	my $info = $ishead ? "  head [$len] - $funct\n" : "  hunk $hunk [$len] - $funct\n";
+	$info = "\n" if $hunk eq '';
+	my $clip = defined($opts{b}) ? $opts{b} : 128;
 	my $count = 0;
-	my $str = '';
+	my $hex = '';
+	my $ascii = '';
+	my $char;
 	print "\n" if $funct =~ /string/ && $funct !~ /hash_/;
 	$len += $len2;
 	$len += 4 - $len % 4 if $len % 4 && $len2 != 1;
-	$len = 128 if $len > 128;
+	$len = $clip if $len > $clip;
 	my $pre = ($pos - $offset) % 4;
 
 	if (!$opts{h}) { 
@@ -668,23 +798,28 @@ sub show {
 
 	} else { # hexdump
 		print sprintf("%08x ", $pos - $pos % 4);
-		if ($pos %4) {
-			for my $i (1 .. $pos % 4) { $str .= '..'; }
+		if ($pos % 4) {
+			for my $i (1 .. $pos % 4) { $hex .= '..'; $ascii .= '.'; }
 		}
 		while ($count < $len)  {
-			$str .= sprintf("%02x", unpack('C', substr($inbuf, $pos + $count, 1)));
+			$char = substr($inbuf, $pos + $count, 1);
+			$hex .= sprintf("%02x", unpack('C', $char));
+			$char =~ s/[^[:print:]]/./;
+			$ascii .= $char;
 			$count++;
 			if (($pos + $count) % 4 == 0 && $count <= $len) {
-				$str .= $info;
-				$str .= sprintf("%08x ", $pos + $count) unless $count == $len;
+				$hex .= " " . $ascii . $info;
+				$ascii = '';
+				$hex .= sprintf("%08x ", $pos + $count) unless $count == $len;
 				$info = "\n";
 			}
 		}
 		if (($pos + $len) % 4) {
-			for my $i (1 .. 4 - ($pos + $len) % 4) { $str .= '..'; }
+			for my $i (1 .. 4 - ($pos + $len) % 4) { $hex .= '..'; $ascii .= '.'; }
 		}
-		$str .= "\n" if $str !~ /\n$/;
-		print $str;
+		$hex =~ s/\n$//;
+		$hex .= " $ascii\n";
+		print $hex;
 	}
 }
 
