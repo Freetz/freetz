@@ -66,15 +66,17 @@ EOT
 function push_fw() {
 	trap 'echo ; echo "aborted" ; exit 1' TERM INT
 
-	echo
-	echo    " * You should now reboot your box ($ip). Waiting for shut down."
-	echo    "   Switch off, if reboot is not detected because it happens too quickly."
-	echo    "   Some newer bootloader versions allow to flash on power-cycle only."
-	echo -n "   "
-	while ping $ping_params $ip > /dev/null; do
-		echo -n "."
-		sleep 0.2
-	done
+	if [ $ISWAITS ]; then
+		echo
+		echo    " * You should now reboot your box ($ip). Waiting for shut down."
+		echo    "   Switch off, if reboot is not detected because it happens too quickly."
+		echo    "   Some newer bootloader versions allow to flash on power-cycle only."
+		echo -n "   "
+		while  ping $ping_params $ip > /dev/null; do
+			echo -n "."
+			sleep 0.2
+		done
+	fi
 	echo
 
 	if [ -n "$ISRAM$ISFIT" ]; then
@@ -413,7 +415,7 @@ trap cleanup EXIT SIGTERM SIGINT
 usage() {
 cat << EOX
 
-Usage: $0 [image] [ -m<s|r|d|u|f> ] [ -f ] [ -ip <ip> ] [ -ram <mb> ] [ -lfs <0|1|9> ] [ -cmd <ftp|ncftp> ] [ -hn ]
+Usage: $0 [image] [ -m<s|r|d|u|f> ] [ -f ] [ -w ] [ -ip <ip> ] [ -map <hex> ] [ -ali <kb> ] [ -ram <mb> ] [ -lfs <0|1|9> ] [ -cmd <ftp|ncftp> ] [ -hn ]
 
 [image]           When no 'image' file is given, images/latest.image will be tried.
 -ms               Force mode single-boot (classic devices, like 7270 & 7390)
@@ -423,7 +425,8 @@ Usage: $0 [image] [ -m<s|r|d|u|f> ] [ -f ] [ -ip <ip> ] [ -ram <mb> ] [ -lfs <0|
                     See https://bitbucket.org/fesc2000/ffritz/src/6591/README-6591.md
 -mf               Force mode fit-boot (latest devices, like 5530 & 7530 AX)
                     See https://boxmatrix.info/wiki/FIT-Image
--f                Disable safety prompt.
+-f                Disable safety prompt, force instant flash.
+-w                The device is yet halted in the bootloader, don't wait for shutdown.
 -ip <ip>          Bootloader IP address or hostname, default 192.168.178.1
 -map <hex>        Only ram-boot and fit-boot mode: Start of mapped memory (PHYS_OFFSET).
 -ali <kb>         Only ram-boot and fit-boot mode: Alignment in kB of the uploaded file.
@@ -468,6 +471,9 @@ while [ $# -ge 1 ]; do
 			;;
 		(-f|-force)
 			ISFORCE=true
+			;;
+		(-w|-waits)
+			ISWAITS=true
 			;;
 		(-ip)
 			[ -z "$2" -o "$2" != "${2#\-}" ] && usage
@@ -529,6 +535,7 @@ done
 
 # environment
 [ "$FREETZ_FORCEPF" == "true" ] && ISFORCE=true
+[ "$FREETZ_WAITSPF" == "true" ] && ISWAITS=true
 
 # file checks
 [ -z "$file" ] && [ -e images/latest.image ] && file="images/latest.image"
