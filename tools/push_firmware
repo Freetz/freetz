@@ -66,7 +66,7 @@ EOT
 function push_fw() {
 	trap 'echo ; echo "aborted" ; exit 1' TERM INT
 
-	if [ $ISWAITS ]; then
+	if [ ! $ISWAITS ]; then
 		echo
 		echo    " * You should now reboot your box ($ip). Waiting for shut down."
 		echo    "   Switch off, if reboot is not detected because it happens too quickly."
