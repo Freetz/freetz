@@ -1,7 +1,7 @@
 #!/usr/bin/perl
-our $VERSION = "0.6";
+our $VERSION = "0.7";
 
-# fitimg - (C) 2021 Ralf Steines aka Hippie2000 - <metamonk@yahoo.com>
+# fitimg - (C) 2021 Ralf Steines aka Hippie2000 - <hippie2000@webnmail.de>
 # Handle and manipulate firmware images in AVM /var/tmp/fit-image format.
 # Docs and latest version can be found at https://boxmatrix.info/wiki/FIT-Image
 
@@ -23,6 +23,15 @@ use warnings; # requires perl 5.6
 use Getopt::Std; # Perl core module (part of Perl package)
 use String::CRC32; # May need 'cpan install String::CRC32'
 
+# These are tools for trying to find out which sigature is in the FIT header.
+# see a hexdump of a FIT image to see where the signature is located.
+#use Crypt::Digest::MD5 qw(md5_hex);
+#use Crypt::Digest::SHA256 qw(sha256_hex);
+#use Crypt::Digest::SHA3_256 qw(sha3_256_hex);
+#use Crypt::Digest::SHA512 qw(sha512_hex);
+#use Crypt::Digest::SHA3_512 qw(sha3_512_hex);
+#use Crypt::Digest::Whirlpool qw(whirlpool_hex);
+
 # Freetz filenames
 my %fname = (
 	# HWR 261 - 4060
@@ -43,6 +52,22 @@ my %fname = (
 		'prxB_HW0257_ramdisk' => 'filesystem2.image',
 		'prxB_HW0257_flat_dt_0' => 'flatdt2_0.image',
 	},
+	# HWR 273 - 5590 ARM
+	272 => {
+		'qcaarmv8_HW272_kernel' => 'kernel3.image',
+		'qcaarmv8_HW272_flat_dt_0' => 'flatdt3_0.image',
+		'qcaarmv8_HW272_squashFS_filesystem' => 'filesystem3.image',
+	},
+	# HWR 273 - 5590 PRX
+	273 => {
+		'prxI_HW273_kernel' => 'kernel.image',
+		'prxI_HW273_squashFS_filesystem' => 'filesystem.image',
+		'prxI_HW273_flat_dt_0_aon' => 'flatdt_0_aon.image',
+		'prxI_HW273_flat_dt_0_pon' => 'flatdt_0_pon.image',
+		'prxB_HW0273_kernel' => 'kernel2.image',
+		'prxB_HW0273_ramdisk' => 'filesystem2.image',
+		'prxB_HW0273_flat_dt_0' => 'flatdt2_0.image',
+	},
 	# HWR 256 - 7530ax
 	256 => {
 		'brcma9_HW256_kernel' => 'kernel.image',
@@ -59,132 +84,61 @@ my %fname = (
 		'qcaarmv8_HW253_flat_dt_0' => 'flatdt_0.image',
 		'qcaarmv8_HW253_flat_dt_2' => 'flatdt_2.image',
 	},
+	# HWR 268 - 1200ax - outer fit image
+	"268.o" => {
+		'maple_HW268_kernel' => 'kernel.image', # gets .fit extension
+		'maple_HW268_squashFS_filesystem' => 'filesystem.image',
+	},
+	# HWR 268 - 1200ax - inner fit image
+	268 => {
+		'maple_HW268_kernel' => 'kernel.image', 
+		'maple_HW268_flat_dt_0' => 'flatdt_0.image',
+	},
+	# HWR 271 - 7510 - outer fit image
+	"271.o" => {
+		'maple_HW271_kernel' => 'kernel.image', # gets .fit extension
+		'maple_HW271_squashFS_filesystem' => 'filesystem.image',
+	},
+	# HWR 271 - 7510 - inner fit image
+	271 => {
+		'maple_HW271_kernel' => 'kernel.image', 
+		'maple_HW271_flat_dt_0' => 'flatdt_0.image',
+		'maple_HW271_flat_dt_2' => 'flatdt_2.image',
+	},
 );
 my %missing = %fname;
 
-# string hunk names
-our %strname = (
-	# all models
-	0 => {
-		0 => 'info',
-		37 => 'avm,variants',
-		65 => 'data', # blob
-		70 => 'type',
-		75 => 'arch',
-		80 => 'os',
-		83 => 'compression',
-		106 => 'hashalgo',
-	},
-	# HWR 261 - 4060
-	261 => {
-		117 => 'avm,endianess',
-		267 => 'avm,kernel-args',
-		283 => 'kernel',
-		290 => 'flatdt',
-		294 => 'squashfs',
-	},
-	# HWR 257 - 5530
-	257 => {
-		117 => 'avm,endianess',
-		252 => 'kernel',
-		259 => 'flatdt',
-		263 => 'ramdisk',
-	},
-	# HWR 256 - 7530ax
-	256 => {
-		117 => 'avm,kernel-args',
-		133 => 'avm,endianess',
-		283 => 'kernel',
-		290 => 'flatdt',
-		294 => 'squashfs',
-	},
-	# HWR 253 - 6000
-	253 => {
-		117 => 'avm,endianess',
-		267 => 'avm,kernel-args',
-		283 => 'kernel',
-		290 => 'flatdt',
-		294 => 'squashfs',
-	},
-);
-
-# 32-bit word hunk names
-our %wordname = (
-	# global
-	0 => {
-		12 => 'timestamp',
-		22 => 'avm,gu-version',
-		50 => '#address-cells',
-		95 => 'loadaddr',
-		100 => 'entryaddr',
-		111 => 'hashvalue',
-	},
-	# HWR 261 - 4060
-	261 => {
-		131 => 'avm,kernel_text_start',
-		153 => 'avm,names',
-		163 => 'avm,token_table',
-		179 => 'avm,token_index',
-		195 => 'avm,num_syms',
-		208 => 'avm,addresses',
-		222 => 'avm,relative_base',
-		240 => 'avm,offsets',
-		252 => 'avm,data-align',
-	},
-	# HWR 257 - 5530
-	257 => {
-		131 => 'avm,kernel_text_start',
-		153 => 'avm,names',
-		163 => 'avm,token_table',
-		179 => 'avm,token_index',
-		195 => 'avm,num_syms',
-		208 => 'avm,addresses',
-		222 => 'avm,relative_base',
-		240 => 'avm,offsets',
-	},
-	# HWR 256 - 7530ax
-	256 => {
-		147 => 'avm,kernel_text_start',
-		169 => 'avm,names',
-		179 => 'avm,token_table',
-		195 => 'avm,token_index',
-		211 => 'avm,num_syms',
-		224 => 'avm,addresses',
-		238 => 'avm,relative_base',
-		256 => 'avm,offsets',
-		268 => 'avm,data-align',
-	},
-	# HWR 253 - 6000
-	253 => {
-		131 => 'avm,kernel_text_start',
-		153 => 'avm,names',
-		163 => 'avm,token_table',
-		179 => 'avm,token_index',
-		195 => 'avm,num_syms',
-		208 => 'avm,addresses',
-		222 => 'avm,relative_base',
-		240 => 'avm,offsets',
-		252 => 'avm,data-align',
-	},
-);
-
-# per model hunk config
-my %hunkcfg = (
-	# HWR 261 - 4060
-	261 => {
-		'kernel-args' => 267,
-	},
-	# HWR 257 - 5530
-	257 => {
-	},
-	# HWR 256 - 7530ax
-	256 => {
-		'kernel-args' => 117,
-	},
-	# HWR 253 - 6000
-	253 => {
-		'kernel-args' => 267,
-	},
+# hunk types - word = 32bit, blob = binary
+my %hunktype = (
+	'#address-cells' => 'word',
+	'algo' => 'string',
+	'arch' => 'string',
+	'avm,addresses' => 'word',
+	'avm,data-align' => 'word',
+	'avm,endianess' => 'string',
+	'avm,gu-version' => 'word',
+	'avm,kernel-args' => 'string',
+	'avm,kernel_text_start' => 'word',
+	'avm,names' => 'word',
+	'avm,num_syms' => 'word',
+	'avm,offsets' => 'word',
+	'avm,relative_base' => 'word',
+	'avm,token_index' => 'word',
+	'avm,token_table' => 'word',
+	'avm,variants' => 'string',
+	'compression' => 'string',
+	'data' => 'blob',
+	'entry' => 'word',
+	'fdt' => 'string',
+	'info' => 'string',
+	'kernel' => 'string',
+	'load' => 'word',
+	'os' => 'string',
+	'ramdisk' => 'string',
+	'squashFS' => 'string',
+	'timestamp' => 'word',
+	'type' => 'string',
+	'value' => 'word',
 );
 
 # catch the terminating funktions
@@ -197,7 +151,7 @@ if (defined($ARGV[0])) {
 # read the arguments: -l -t -x -r -c -s -h -o -d -p require an argument, -n -f and -q do not
 my %opts;
 my $see = "\nSee 'fitimg --help'";
-getopts('l:t:x:r:c:s:h:o:d:p:nfq', \%opts) or abort('invalid arguments' . $see);
+getopts('l:t:x:r:c:s:h:o:d:p:nfqi', \%opts) or abort('invalid arguments' . $see);
 abort('nothing to do - you need to pass one of -l -t -x -r -s or -h' . $see) if !$opts{l} && !$opts{t} && !$opts{x} && !$opts{r} && !$opts{c} && !$opts{s} && !$opts{h};
 abort('don\'t mix -l -t -x -r -c -s and -h - only use one of them' . $see) if defined($opts{l}) + defined($opts{t}) + defined($opts{x}) + defined($opts{r}) + defined($opts{c}) + defined($opts{s}) + defined($opts{h}) > 1;
 abort('replace (-r) and copy (-c) require an output file (-o)' . $see) if ($opts{r} || $opts{c}) && !$opts{o};
@@ -218,7 +172,7 @@ close(INFILE);
 # find the signature in inbuf
 my $pos;
 my $offset;
-if ($inbuf =~ /\x0D\x00\xED\xFE.{76}\x00\x00\x00\x38/ms) { # 0x0d00edfe AVM fit signature + 0x00000038 @ offset 0x50
+if ($inbuf =~ /\x0D\x00\xED\xFE.{76}\x00\x00\x00\x38/ms) { # 0x0d00edfe AVM signature + 0x00000038 @ offset 0x50
 	$offset = $-[0];
 	$pos = $offset + 0x80;
 	my $fitsize = unpack('V', substr($inbuf, $offset + 4, 4)) + 0x50;
@@ -242,6 +196,68 @@ if ((defined($opts{x}) || defined($opts{r})) && defined($opts{d})) {
 	abort("Can't find directory: $dir") if !-e $dir;
 	abort("Not a directory: $dir") if !-d $dir;
 	$dir =~ s|([^/])$|$1/|g; # add trailing slash if missing
+}
+
+# get the hunk names from the description table
+my $dbase = unpack('N', substr($inbuf, 0x54 + $offset, 4)) + 0x48;
+my $dpos = 12; # add hunk header size
+my $dbuf = substr($inbuf, $dbase + $dpos + $offset, $insize - $dbase - $dpos - 8); 
+$dbuf =~ s/\0$//g;
+my @desc = split(/\0/, $dbuf);
+my ($dstr, %hunkname);
+$hunkname{0} = 'info';
+foreach $dstr (@desc) { 
+	$hunkname{$dpos} = $dstr;
+	$dpos += length($dstr) + 1; 
+	print STDERR "### fitimg ### - unknown hunk type: $dstr, please report this!\n" if !$hunktype{$dstr};
+}
+
+# list the FIT headers in hexdump mode
+if (defined($opts{h})) {
+	report('# AVM Flattened Image Tree (FIT) header');
+	report('');
+	show($offset + 0x00, 4, 0, 0, "magic - always 0x0d00edfe", 1);
+	show($offset + 0x04, 4, 0, 0, "totalsize - BE size of FIT - 0x50", 1);
+	show($offset + 0x08, 4, 0, 0, "signature 0 - unknown - todo", 1);
+	show($offset + 0x0C, 4, 0, 0, "signature 1 - unknown - todo", 1);
+	show($offset + 0x10, 4, 0, 0, "signature 2 - unknown - todo", 1);
+	show($offset + 0x14, 4, 0, 0, "signature 3 - unknown - todo", 1);
+	show($offset + 0x18, 4, 0, 0, "signature 4 - unknown - todo", 1);
+	show($offset + 0x1C, 4, 0, 0, "signature 5 - unknown - todo", 1);
+	show($offset + 0x20, 4, 0, 0, "signature 6 - unknown - todo", 1);
+	show($offset + 0x24, 4, 0, 0, "signature 7 - unknown - todo", 1);
+	show($offset + 0x28, 4, 0, 0, "signature 8 - unknown - todo", 1);
+	show($offset + 0x2C, 4, 0, 0, "signature 9 - unknown - todo", 1);
+	show($offset + 0x30, 4, 0, 0, "signature 10 - unknown - todo", 1);
+	show($offset + 0x34, 4, 0, 0, "signature 11 - unknown - todo", 1);
+	show($offset + 0x38, 4, 0, 0, "signature 12 - unknown - todo", 1);
+	show($offset + 0x3C, 4, 0, 0, "signature 13 - unknown - todo", 1);
+	show($offset + 0x40, 4, 0, 0, "signature 14 - unknown - todo", 1);
+	show($offset + 0x44, 4, 0, 0, "signature 15 - unknown - todo", 1);
+#my $l = $insize;
+#$l = unpack('N', substr($inbuf, 0x6C + $offset, 4));
+#for my $i (0 .. 0x88) { 
+#print "$i: " . md5_hex(substr($inbuf, $i + $offset, $l - $i)) . "\n";
+#}
+	report('');
+	report('# Devicetree Blob (DTB) header');
+	report('');
+	show($offset + 0x48, 4, 0, 0, "magic - always 0xd00dfeed", 1);
+	show($offset + 0x4C, 4, 0, 0, "totalsize - LE size of FIT - 0x50", 1);
+	show($offset + 0x50, 4, 0, 0, "off_dt_struct - 0x80 - 0x48 = always 0x00000038", 1);
+	show($offset + 0x54, 4, 0, 0, "off_dt_strings - LE pointer to descriptions base - 0x48", 1);
+	show($offset + 0x58, 4, 0, 0, "off_mem_rsvmap - always 0x00000028", 1);
+	show($offset + 0x5C, 4, 0, 0, "fdt version - always 0x00000011 = 17", 1);
+	show($offset + 0x60, 4, 0, 0, "last compatible version - always 0x00000010 = 16", 1);
+	show($offset + 0x64, 4, 0, 0, "boot_cpuid - always 0x00000000", 1);
+	show($offset + 0x68, 4, 0, 0, "size_dt_strings - size of descriptions array", 1);
+	show($offset + 0x6C, 4, 0, 0, "size_dt_struct - size of FIT body structure", 1);
+	show($offset + 0x70, 4, 0, 0, "padding/reserved 0 - always 0x00000000", 1);
+	show($offset + 0x74, 4, 0, 0, "padding/reserved 1 - always 0x00000000", 1);
+	show($offset + 0x78, 4, 0, 0, "padding/reserved 2 - always 0x00000000", 1);
+	show($offset + 0x7C, 4, 0, 0, "padding/reserved 3 - always 0x00000000", 1);
+	report('');
+	report('# Devicetree Blob (DTB) structure');
 }
 
 # now parse the inbuf
@@ -284,7 +300,11 @@ while ($pos < $insize) {
 		$string =~ s/\0//g;
 		show($oldpos, $pos - $oldpos, 0, $head, "string = '$string'");
 		$realsect = $section = $string if $string !~ /^hash_/;
-		$hwr = $1 if $section =~ /_HW0*(\d{3})_/;
+		if ($section =~ /_HW0*(\d{3})_/) {
+			$hwr = $1;
+			$hwr .= '.o' if $hwr eq "268" && unpack('N', substr($inbuf, $offset + 0x68, 4)) == 0x9e; # outer fit image (1200ax)
+			$hwr .= '.o' if $hwr eq "271" && unpack('N', substr($inbuf, $offset + 0x68, 4)) == 0x9e; # outer fit image (7510)
+		}
 		if (defined($opts{r}) || defined($opts{c})) {
 			$outbuf .= substr($inbuf, $lastpos, $pos - $lastpos);
 			$lastpos = $pos;
@@ -302,9 +322,17 @@ while ($pos < $insize) {
 			$pos += 4;
 		} until $strbuf =~ "\0";
 		$string =~ s/\0//g;
-		show($oldpos, $pos - $oldpos, 0, $head, "string = '$string'");
 		$realsect = $section = $string if $string !~ /^hash_/;
-		$hwr = $1 if $section =~ /_HW0*(\d{3})_/;
+		if (($string eq 'description') && ($opts{s} || $opts{h})) {
+			report('');
+			report('# Devicetree Blob (DTB) strings');
+		}
+		show($oldpos, $pos - $oldpos, 0, $head, "string = '$string'");
+		if ($section =~ /_HW0*(\d{3})_/) {
+			$hwr = $1;
+			$hwr .= '.o' if $hwr eq "268" && unpack('N', substr($inbuf, $offset + 0x68, 4)) == 0x9e; # outer fit image (1200ax)
+			$hwr .= '.o' if $hwr eq "271" && unpack('N', substr($inbuf, $offset + 0x68, 4)) == 0x9e; # outer fit image (7510)
+		}
 		if ($section eq 'description') {
 			report('') if $opts{s};
 			$strbuf = substr($inbuf, $pos, $insize - $pos - 8);
@@ -323,14 +351,17 @@ while ($pos < $insize) {
 	} elsif ($head == 3) {
 		$body = unpack('N', substr($inbuf, $pos + 4, 4));
 		$type = unpack('N', substr($inbuf, $pos + 8, 4));
+		$name = defined($hunkname{$type}) ? $hunkname{$type} : 'todo';
 
-		if ($type == 65) { # blob
-			show($oldpos, $body, 12, "$head #$type", "data = <binary blob>");
+		if ($hunktype{$name} eq 'blob') { # blob
+			show($oldpos, $body, 12, "$head #$type", "$name = <binary blob>");
 			report('.... <snip> ....') if $opts{h};
 			$section = $fname{$hwr}{$section} if defined($opts{f}) && defined($fname{$hwr}{$section});
 			$blobsize = $body;
 			$blob = substr($inbuf, $pos + 12, $body) if defined($opts{t}) || defined($opts{x}) || defined($opts{c});
 			if (defined($opts{r})) {
+				# the next line avoids a 2 pass interpreter since the info "type = 'avm,fit'" comes after the blob
+				$section .= '.fit' if defined($opts{i}) && -s "$dir$section.fit";
 				if (open(BLOB, "$dir$section")) { # fail silently
 					binmode BLOB;
 					$blobsize = -s "$dir$section";
@@ -348,14 +379,14 @@ while ($pos < $insize) {
 			}
 			delete $missing{$hwr}{$realsect} if $body + $pos < $insize;
 
-		} elsif ($type == 95) { # loadaddr
+		} elsif ($name eq 'load') { # loadaddr
 			$loadaddr = unpack('N', substr($inbuf, $pos + 12, $body));
-			show($oldpos, $body, 12, "$head #$type", sprintf("loadaddr = 0x%08x", $loadaddr));
+			show($oldpos, $body, 12, "$head #$type", sprintf("$name = 0x%08x", $loadaddr));
 			report(sprintf("%08x-%08x %8d $section", $loadaddr, $loadaddr + $blobsize, $blobsize)) if defined($opts{l});
 
-		} elsif ($type == 111) { # hashvalue (crc)
+		} elsif ($name eq 'value') { # hashvalue (crc)
 			my $crc1 = unpack('N', substr($inbuf, $pos + 12, $body));
-			show($oldpos, $body, 12, "$head #$type", sprintf("hashvalue = 0x%08x", $crc1));
+			show($oldpos, $body, 12, "$head #$type", sprintf("$name = 0x%08x", $crc1));
 			if (defined($opts{t}) || defined($opts{x}) || defined($opts{c})) {
 				if (defined($opts{x})) {
 					if (!defined($opts{n}) || $section !~ /flat_dt|flatdt/) {
@@ -381,12 +412,12 @@ while ($pos < $insize) {
 					$outbuf .= pack('N', crc32($blob));
 			}
 
-		} elsif (($name = $strname{0}{$type}) || ($name = $strname{$hwr}{$type})) { # string
+		} elsif ($hunktype{$name} eq 'string') { # string
 			$string = substr($inbuf, $pos + 12, $body);
 			$string =~ s/\0//g;
 			show($oldpos, $body, 12, "$head #$type", "$name = '$string'");
 
-			if (defined($opts{r}) && defined($replaced{$section}) && defined($hunkcfg{$hwr}{'kernel-args'}) && ($type == $hunkcfg{$hwr}{'kernel-args'})) { # kernel-args
+			if (defined($opts{r}) && defined($replaced{$section}) && ($name eq 'avm,kernel-args')) { # kernel-args
 				my $newstring = '';
 				if (($string =~ /^(.*)0x([0-9a-fA-F]{8}),0x([0-9a-fA-F]{8})(.*:)(\d+)(\@.*)$/)) {
 					my $endaddr = hex($2) + $blobsize + ($blobsize % 0x100000 ? (0x100000 - $blobsize % 0x100000) : 0); # 1MB padding
@@ -403,9 +434,28 @@ while ($pos < $insize) {
 				$outbuf .= "\0" x (4 - $newlen % 4) if $newlen % 4; # padding
 			}
 
-		} elsif (($name = $wordname{0}{$type}) || ($name = $wordname{$hwr}{$type})) { # 32-bit word
+			if ($name eq 'type' && $string eq 'avm,fit') { # inner fit image without crc
+				$section .= '.fit' unless $section =~ /\.fit$/;
+				if (defined($opts{t}) || defined($opts{x}) || defined($opts{c})) {
+					if (defined($opts{x})) {
+						open(BLOB, ">$dir$section") || abort("Can't write to $dir$section");
+						binmode BLOB;
+						print BLOB $blob;
+						close BLOB;
+						$files++;
+					} else {
+						$files++;
+					}
+					my $crc2 = crc32($blob);
+					if (!defined($opts{n}) || $section !~ /flat_dt|flatdt/) {
+						report(sprintf("??: ???????? %08x %8d $section ### inner fit-image without crc ###", $crc2, $blobsize));
+					}
+				}
+			}
+
+		} elsif ($hunktype{$name} eq 'word') { # 32-bit word
 			my $word = unpack('N', substr($inbuf, $pos + 12, $body));
-			show($oldpos, $body, 12, "$head #$type", defined($word) ? sprintf("$name = 0x%08x", $word) : "$name = <empty>");
+			show($oldpos, $body, 12, "$head #$type", defined($word) ? sprintf("$name = 0x%08x = %d", $word, $word) : "$name = <empty>");
 
 		} else {
 			show($oldpos, $body, 12, "$head #$type", 'todo');
@@ -414,7 +464,7 @@ while ($pos < $insize) {
 		$len = $body + 12 + ($body % 4 ? (4 - $body % 4) : 0); # add hunk head + padding
 		$pos += $len;
 		if (defined($opts{r}) || defined($opts{c})) {
-			$outbuf .= substr($inbuf, $lastpos, $pos - $lastpos) unless defined($replaced{$section}) && ($type == 65 || $type == 111 || (defined($hunkcfg{$hwr}{'kernel-args'}) && ($type == $hunkcfg{$hwr}{'kernel-args'})));
+			$outbuf .= substr($inbuf, $lastpos, $pos - $lastpos) unless defined($replaced{$section}) && ($name = $hunkname{$type}) && (($name eq 'data') || ($name eq 'value') || ($name eq 'avm,kernel-args'));
 			$lastpos = $pos;
 		}
 
@@ -475,7 +525,7 @@ if (defined($opts{t}) || defined($opts{x}) || defined($opts{r}) || defined($opts
 
 # version or help options
 sub version {
-	print "fitimg version $VERSION - (C) 2021 Ralf Steines aka Hippie2000 - <metamonk\@yahoo.com>\n";
+	print "fitimg version $VERSION - (C) 2021 Ralf Steines aka Hippie2000 - <hippie2000\@webnmail.de>\n";
 	print "Handle and manipulate firmware images in AVM /var/tmp/fit-image format. GPLv2+.\n";
 	print "Docs and latest version can be found at https://boxmatrix.info/wiki/FIT-Image\n";
 	exit unless $_[0];
@@ -503,6 +553,7 @@ Usage:
   fitimg -r <infile> -o <outfile> [-d <dir>] [-f] [-p <num>] [-q]
     Replace all contens of fit-image <infile> which exist in current directory or <dir> and write it to <outfile>.
     Files which do not exist in current directory or <dir> will not be replaced.
+    Option -i includes inner image when creating outer FIT for nested FIT images (fitimg 0.7+)
     Option -p ovverrides the default padding size of 64 (0 - 1024) in kB  (fitimg 0.5+)
     Option -q suppresses listing which files were replaced.
 
@@ -569,11 +620,11 @@ sub release {
 	exit;
 }
 
-# show hunk - optionally with hexdump (todo)
+# show hunk - optionally with hexdump
 sub show {
 	return if (!$opts{s} && !$opts{h}) || $opts{q};
-	my ($pos, $len, $len2, $hunk, $funct) = @_;
-	my $info = "  hunk $hunk [$len] - $funct\n";
+	my ($pos, $len, $len2, $hunk, $funct, $ishead) = @_;
+	my $info = $ishead ? "  head [$len] - $funct\n" : "  hunk $hunk [$len] - $funct\n";
 	my $count = 0;
 	my $str = '';
 	print "\n" if $funct =~ /string/ && $funct !~ /hash_/;

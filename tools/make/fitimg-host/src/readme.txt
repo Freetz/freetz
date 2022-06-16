@@ -1,4 +1,4 @@
-fitimg version 0.6 - (C) 2021 Ralf Steines aka Hippie2000 - <metamonk@yahoo.com>
+fitimg version 0.7 - (C) 2021 Ralf Steines aka Hippie2000 - <hippie2000@webnmail.de>
 Handle and manipulate firmware images in AVM /var/tmp/fit-image format. GPLv2+.
 Docs and latest version can be found at https://boxmatrix.info/wiki/FIT-Image
 
@@ -19,6 +19,7 @@ Usage:
   fitimg -r <infile> -o <outfile> [-d <dir>] [-f] [-p <num>] [-q]
     Replace all contens of fit-image <infile> which exist in current directory or <dir> and write it to <outfile>.
     Files which do not exist in current directory or <dir> will not be replaced.
+    Option -i includes inner image when creating outer FIT for nested FIT images (fitimg 0.7+)
     Option -p ovverrides the default padding size of 64 (0 - 1024) in kB  (fitimg 0.5+)
     Option -q suppresses listing which files were replaced.
 
