@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-our $VERSION = "0.3";
+our $VERSION = "0.4";
 
 # fitimg - (C) 2021 Ralf Steines aka Hippie2000 - <metamonk@yahoo.com>
 # Handle and manipulate firmware images in AVM /var/tmp/fit-image format.
@@ -156,12 +156,11 @@ my %hunkcfg = (
 	},
 );
 
-
 # catch the terminating funktions
 if (defined($ARGV[0])) {
 	help() if $ARGV[0] =~ /^(-\?|--help)$/;
 	version() if $ARGV[0] =~ /^(-v|--version)$/;
-	release() if $ARGV[0] eq '--release'; # create release archive - BUMP $VERSION IN SECOND LINE BEFORE!
+	release() if $ARGV[0] eq '--release'; # create release archive - BUMP $VERSION IN SECOND LINE AFTER!
 }
 
 # read the arguments: -l -t -x -r -c -s -o -d require an argument, -n -f -h and -q do not
@@ -207,7 +206,7 @@ if ($inbuf =~ /\x0D\x00\xED\xFE.{76}\x00\x00\x00\x38/ms) { # 0x0d00edfe AVM fit 
 my $dir = '';
 if ((defined($opts{x}) || defined($opts{r})) && defined($opts{d})) {
 	$dir = $opts{d};
-	abort("Can't find directory: $dir") if !-x $dir;
+	abort("Can't find directory: $dir") if !-e $dir;
 	abort("Not a directory: $dir") if !-d $dir;
 	$dir =~ s|([^/])$|$1/|g; # add trailing slash if missing
 }
@@ -280,7 +279,7 @@ while ($pos < $insize) {
 			$strbuf =~ s/\0$//g;
 			my @desc = split(/\0/, $strbuf);
 			foreach $string (@desc) { 
-				show($pos,  length($string) + 1, '->', "array[] = '$string'");
+				show($pos, length($string) + 1, '->', "array[] = '$string'");
 				$pos += length($string) + 1; 
 			}
 		}
@@ -310,12 +309,12 @@ while ($pos < $insize) {
 					$outbuf .= pack('N', $blobsize);
 					$outbuf .= pack('N', $type);
 					$outbuf .= $blob;
-					$outbuf .= "\0" x (4 - $body % 4) if $blobsize % 4; # padding
+					$outbuf .= "\0" x (4 - $blobsize % 4) if $blobsize % 4; # padding
 					$replaced{$section}++;
 					$files++;
 				}
 			}
-			delete $missing{$hwr}{$realsect} if $blobsize + $pos < $insize;
+			delete $missing{$hwr}{$realsect} if $body + $pos < $insize;
 
 		} elsif ($type == 95) { # loadaddr
 			$loadaddr = unpack('N', substr($inbuf, $pos + 12, $body));
@@ -355,7 +354,7 @@ while ($pos < $insize) {
 			$string =~ s/\0//g;
 			show($oldpos, $body, "$head #$type", "$name = '$string'");
 
-			if (defined($opts{r}) && defined($replaced{$section}) && ($type == $hunkcfg{$hwr}{'kernel-args'})) { # kernel-args
+			if (defined($opts{r}) && defined($replaced{$section}) && defined($hunkcfg{$hwr}{'kernel-args'}) && ($type == $hunkcfg{$hwr}{'kernel-args'})) { # kernel-args
 				my $newstring;
 				if (($string =~ /^(.*)0x([0-9a-fA-F]{8}),0x([0-9a-fA-F]{8})(.*:)(\d+)(\@.*)$/)) {
 					my $endaddr = hex($2) + $blobsize + ($blobsize % 0x100000 ? (0x100000 - $blobsize % 0x100000) : 0); # 1MB padding
@@ -382,7 +381,7 @@ while ($pos < $insize) {
 		$len = $body + 12 + ($body % 4 ? (4 - $body % 4) : 0); # add hunk head + padding
 		$pos += $len;
 		if (defined($opts{r}) || defined($opts{c})) {
-			$outbuf .= substr($inbuf, $lastpos, $pos - $lastpos) unless defined($replaced{$section}) && ($type == 65 || $type == 111 || $type == $hunkcfg{$hwr}{'kernel-args'});
+			$outbuf .= substr($inbuf, $lastpos, $pos - $lastpos) unless defined($replaced{$section}) && ($type == 65 || $type == 111 || (defined($hunkcfg{$hwr}{'kernel-args'}) && ($type == $hunkcfg{$hwr}{'kernel-args'})));
 			$lastpos = $pos;
 		}
 
