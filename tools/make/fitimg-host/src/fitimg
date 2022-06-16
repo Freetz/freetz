@@ -1,7 +1,7 @@
 #!/usr/bin/perl
-our $VERSION = "0.7.1";
+our $VERSION = "0.7.2";
 
-# fitimg - (C)  2021-2022 Ralf Steines aka Hippie2000 - <hippie2000@webnmail.de>
+# fitimg - (C) 2021-2022 Ralf Steines aka Hippie2000 - <hippie2000@webnmail.de>
 # Handle and manipulate firmware images in AVM /var/tmp/fit-image format.
 # Docs and latest version can be found at https://boxmatrix.info/wiki/FIT-Image
 
@@ -24,7 +24,7 @@ use Getopt::Std; # Perl core module (part of Perl package)
 use String::CRC32; # May need 'cpan install String::CRC32'
 
 # These are tools for trying to find out which sigature is in the FIT header.
-# see a hexdump of a FIT image to see where the signature is located.
+# see a fitimg hexdump of a FIT image to see where the signature is located.
 #use Crypt::Digest::MD5 qw(md5_hex);
 #use Crypt::Digest::SHA256 qw(sha256_hex);
 #use Crypt::Digest::SHA3_256 qw(sha3_256_hex);
@@ -86,7 +86,7 @@ my %fname = (
 	},
 	# HWR 268 - 1200ax - outer fit image
 	"268.o" => {
-		'maple_HW268_kernel' => 'kernel.image', # gets .fit extension
+		'maple_HW268_kernel' => 'kernel.image', # inner fit image
 		'maple_HW268_squashFS_filesystem' => 'filesystem.image',
 	},
 	# HWR 268 - 1200ax - inner fit image
@@ -96,7 +96,7 @@ my %fname = (
 	},
 	# HWR 271 - 7510 - outer fit image
 	"271.o" => {
-		'maple_HW271_kernel' => 'kernel.image', # gets .fit extension
+		'maple_HW271_kernel' => 'kernel.image', # inner fit image
 		'maple_HW271_squashFS_filesystem' => 'filesystem.image',
 	},
 	# HWR 271 - 7510 - inner fit image
@@ -148,10 +148,10 @@ if (defined($ARGV[0])) {
 	release() if $ARGV[0] eq '--release'; # [--public] create release archive - BUMP $VERSION IN SECOND LINE AFTER!
 }
 
-# read the arguments: -l -t -x -r -c -s -h -o -d -p require an argument, -n -f and -q do not
+# read the arguments: -l -t -x -r -c -s -h -o -d -p require an argument, -i -n -f -e and -q do not
 my %opts;
 my $see = "\nSee 'fitimg --help'";
-getopts('l:t:x:r:c:s:h:o:d:p:nfqi', \%opts) or abort('invalid arguments' . $see);
+getopts('l:t:x:r:c:s:h:o:d:p:infeq', \%opts) or abort('invalid arguments' . $see);
 abort('nothing to do - you need to pass one of -l -t -x -r -s or -h' . $see) if !$opts{l} && !$opts{t} && !$opts{x} && !$opts{r} && !$opts{c} && !$opts{s} && !$opts{h};
 abort('don\'t mix -l -t -x -r -c -s and -h - only use one of them' . $see) if defined($opts{l}) + defined($opts{t}) + defined($opts{x}) + defined($opts{r}) + defined($opts{c}) + defined($opts{s}) + defined($opts{h}) > 1;
 abort('replace (-r) and copy (-c) require an output file (-o)' . $see) if ($opts{r} || $opts{c}) && !$opts{o};
@@ -169,25 +169,33 @@ $insize = -s $infile;
 read(INFILE, $inbuf, $insize);
 close(INFILE);
 
-# find the signature in inbuf
-my $pos;
-my $offset;
-if ($inbuf =~ /\x0D\x00\xED\xFE.{76}\x00\x00\x00\x38/ms) { # 0x0d00edfe AVM signature + 0x00000038 @ offset 0x50
-	$offset = $-[0];
-	$pos = $offset + 0x80;
-	my $fitsize = unpack('V', substr($inbuf, $offset + 4, 4)) + 0x50;
-	my $fitsize2 = unpack('N', substr($inbuf, $offset + 0x4C, 4)) + 0x50;
-	if ($offset > 0) {
-		abort("fit-image size mismatch ($fitsize vs $fitsize), can't recover: $infile") if $fitsize != $fitsize2;
-		abort("Truncated fit-image: $infile") if ($insize - $offset) < $fitsize;
-		$insize = $fitsize + $offset;
-		report(sprintf("found $fitsize bytes fit-image at offset 0x%08x", $offset));
-	} else {
-		abort("Truncated fit-image: $infile") if $insize < $fitsize;
-	}
-} else {
+# find the signature(s) in inbuf
+my ($offset, $pos);
+my $inner = '';
+if ($inbuf !~ /\x0D\x00\xED\xFE.{76}\x00\x00\x00\x38/ms) { # 0x0d00edfe AVM signature + 0x00000038 @ offset 0x50
 	abort("Signature not found - not an AVM fit-image: $infile");
 }
+$offset = $-[0];
+if (defined($opts{i})) {
+	my $inbuf2 = substr($inbuf, $offset + 0x80);
+	if ($inbuf2 !~ /\x0D\x00\xED\xFE.{76}\x00\x00\x00\x38/ms) { # inner fit image
+		abort("Inner signature not found - not a nested AVM fit-image: $infile");
+	}
+	$offset += $-[0] + 0x80;
+	$inner = 'inner ';
+	undef $inbuf2;
+}
+my $fitsize = unpack('V', substr($inbuf, $offset + 4, 4)) + 0x50;
+my $fitsize2 = unpack('N', substr($inbuf, $offset + 0x4C, 4)) + 0x50;
+if ($offset > 0) {
+	abort("fit-image size mismatch ($fitsize vs $fitsize), can't recover: $infile") if $fitsize != $fitsize2;
+	abort("Truncated fit-image: $infile") if ($insize - $offset) < $fitsize;
+	$insize = $fitsize + $offset; # clip to end of fit
+	report(sprintf("found $fitsize bytes ${inner}fit-image at offset 0x%08x (%d)", $offset, $offset));
+} else {
+	abort("Truncated fit-image: $infile") if $insize < $fitsize;
+}
+$pos = $offset + 0x80;
 
 # verify the passed source/target directory
 my $dir = '';
@@ -201,8 +209,10 @@ if ((defined($opts{x}) || defined($opts{r})) && defined($opts{d})) {
 # get the hunk names from the description table
 my $dbase = unpack('N', substr($inbuf, 0x54 + $offset, 4)) + 0x48;
 my $dpos = 12; # add hunk header size
-my $dbuf = substr($inbuf, $dbase + $dpos + $offset, $insize - $dbase - $dpos - 8); 
+my $dbuf = substr($inbuf, $dbase + $dpos + $offset, $insize - $dbase - $dpos - $offset - 8); 
 $dbuf =~ s/\0$//g;
+my $dlen = length($dbuf);
+abort("String table too long ($dlen)") if $dlen > 512;
 my @desc = split(/\0/, $dbuf);
 my ($dstr, %hunkname);
 $hunkname{0} = 'info';
@@ -302,8 +312,10 @@ while ($pos < $insize) {
 		$realsect = $section = $string if $string !~ /^hash_/;
 		if ($section =~ /_HW0*(\d{3})_/) {
 			$hwr = $1;
-			$hwr .= '.o' if $hwr eq "268" && unpack('N', substr($inbuf, $offset + 0x68, 4)) == 0x9e; # outer fit image (1200ax)
-			$hwr .= '.o' if $hwr eq "271" && unpack('N', substr($inbuf, $offset + 0x68, 4)) == 0x9e; # outer fit image (7510)
+			if (unpack('N', substr($inbuf, $offset + 0x68, 4)) == 0x9e) {
+				$hwr .= '.o' if $hwr eq "268"; # outer fit image (1200ax)
+				$hwr .= '.o' if $hwr eq "271"; # outer fit image (7510)
+			}
 		}
 		if (defined($opts{r}) || defined($opts{c})) {
 			$outbuf .= substr($inbuf, $lastpos, $pos - $lastpos);
@@ -330,8 +342,10 @@ while ($pos < $insize) {
 		show($oldpos, $pos - $oldpos, 0, $head, "string = '$string'");
 		if ($section =~ /_HW0*(\d{3})_/) {
 			$hwr = $1;
-			$hwr .= '.o' if $hwr eq "268" && unpack('N', substr($inbuf, $offset + 0x68, 4)) == 0x9e; # outer fit image (1200ax)
-			$hwr .= '.o' if $hwr eq "271" && unpack('N', substr($inbuf, $offset + 0x68, 4)) == 0x9e; # outer fit image (7510)
+			if (unpack('N', substr($inbuf, $offset + 0x68, 4)) == 0x9e) {
+				$hwr .= '.o' if $hwr eq "268"; # outer fit image (1200ax)
+				$hwr .= '.o' if $hwr eq "271"; # outer fit image (7510)
+			}
 		}
 		if ($section eq 'description') {
 			report('') if $opts{s};
@@ -361,7 +375,7 @@ while ($pos < $insize) {
 			$blob = substr($inbuf, $pos + 12, $body) if defined($opts{t}) || defined($opts{x}) || defined($opts{c});
 			if (defined($opts{r})) {
 				# the next line avoids a 2 pass interpreter since the info "type = 'avm,fit'" comes after the blob
-				$section .= '.fit' if defined($opts{i}) && -s "$dir$section.fit";
+				$section .= '.fit' if defined($opts{e}) && -s "$dir$section.fit";
 				if (open(BLOB, "$dir$section")) { # fail silently
 					binmode BLOB;
 					$blobsize = -s "$dir$section";
@@ -417,25 +431,39 @@ while ($pos < $insize) {
 			$string =~ s/\0//g;
 			show($oldpos, $body, 12, "$head #$type", "$name = '$string'");
 
-			if (defined($opts{r}) && defined($replaced{$section}) && ($name eq 'avm,kernel-args')) { # kernel-args
-				my $newstring = '';
-				if (($string =~ /^(.*)0x([0-9a-fA-F]{8}),0x([0-9a-fA-F]{8})(.*:)(\d+)(\@.*)$/)) {
-					my $endaddr = hex($2) + $blobsize + ($blobsize % 0x100000 ? (0x100000 - $blobsize % 0x100000) : 0); # 1MB padding
-					$newstring = sprintf($1."0x$2,0x%08x$4%d$6", $endaddr, $blobsize); 
-				} elsif ($string) {
-					warning("Can't adapt kernel-args '$string'\nThis image will not work, please report this!");
-					$newstring = $string;
+			if ($name eq 'avm,kernel-args') { # kernel-args
+				if (defined($opts{l})) {
+					if (($string =~ /^(.*)0x([0-9a-fA-F]{8}),0x([0-9a-fA-F]{8})(.*:)(\d+)(\@.*)$/)) {
+						report(sprintf("%08x-%08x %8d * kernel-args *", hex($2), hex($3), $5));
+					} elsif (($string =~ /^(.*)0x([0-9a-fA-F]{8}),0x([0-9a-fA-F]{8})$/)) { # 5590
+						report(sprintf("%08x-%08x %8d * kernel-args *", hex($2), hex($3), $blobsize));
+					} elsif ($string) {
+						warning("Can't list kernel-args '$string'\nPlease report this!");
+					}
 				}
-				my $newlen = length($newstring) + 1;
-				$outbuf .= pack('N', $head);
-				$outbuf .= pack('N', $newlen);
-				$outbuf .= pack('N', $type);
-				$outbuf .= $newstring . "\0";
-				$outbuf .= "\0" x (4 - $newlen % 4) if $newlen % 4; # padding
+				if (defined($opts{r}) && defined($replaced{$section})) {
+					my $newstring = '';
+					if (($string =~ /^(.*)0x([0-9a-fA-F]{8}),0x([0-9a-fA-F]{8})(.*:)(\d+)(\@.*)$/)) {
+						my $endaddr = hex($2) + $blobsize + ($blobsize % 0x100000 ? (0x100000 - $blobsize % 0x100000) : 0); # 1MB padding
+						$newstring = sprintf($1."0x$2,0x%08x$4%d$6", $endaddr, $blobsize); 
+					} elsif (($string =~ /^(.*)0x([0-9a-fA-F]{8}),0x([0-9a-fA-F]{8})$/)) { # 5590
+						my $endaddr = hex($2) + $blobsize + ($blobsize % 0x100000 ? (0x100000 - $blobsize % 0x100000) : 0); # 1MB padding
+						$newstring = sprintf($1."0x$2,0x%08x", $endaddr); 
+					} elsif ($string) {
+						warning("Can't adapt kernel-args '$string'\nThis image will not work, please report this!");
+						$newstring = $string;
+					}
+					my $newlen = length($newstring) + 1;
+					$outbuf .= pack('N', $head);
+					$outbuf .= pack('N', $newlen);
+					$outbuf .= pack('N', $type);
+					$outbuf .= $newstring . "\0";
+					$outbuf .= "\0" x (4 - $newlen % 4) if $newlen % 4; # padding
+				}
 			}
 
 			if ($name eq 'type' && $string eq 'avm,fit') { # inner fit image without crc
-				$section .= '.fit' if defined($opts{i}) && ($section !~ /\.fit$/);
+				$section .= '.fit' if defined($opts{e});
 				if (defined($opts{t}) || defined($opts{x}) || defined($opts{c})) {
 					if (defined($opts{x})) {
 						open(BLOB, ">$dir$section") || abort("Can't write to $dir$section");
@@ -448,7 +476,7 @@ while ($pos < $insize) {
 					}
 					my $crc2 = crc32($blob);
 					if (!defined($opts{n}) || $section !~ /flat_dt|flatdt/) {
-						report(sprintf("??: ???????? %08x %8d $section ### inner fit-image without crc ###", $crc2, $blobsize));
+						report(sprintf("XX: XXXXXXXX %08x %8d $section ### inner fit-image without crc ###", $crc2, $blobsize));
 					}
 				}
 			}
@@ -537,45 +565,45 @@ sub help {
 	print <<ENDHELP;
 
 Usage:
-  fitimg -l <infile> [-f] [-q]
-    List all binaries contained in fit-image <infile>.
+  fitimg -l <infile> [-i] [-f] [-e] [-q]
+    List all binaries contained in fit-image <infile>, including their load addresses.
     Option -q could be used to silently test the image structure.
 
-  fitimg -t <infile> [-f] [-q]
+  fitimg -t <infile> [-i] [-f] [-e] [-q]
     Test the integrity of all binaries contained in fit-image <infile>. Performs CRC32 validation.
     Option -q could be used to silently test the image structure and checksum integrity.
 
-  fitimg -x <infile> [-d <dir>] [-n] [-f] [-q]
+  fitimg -x <infile> [-d <dir>] [-i] [-n] [-f] [-e] [-q]
     Extract all contents of fit-image <infile> or just <file> to current directory or <dir>.
-    Option -i appends a .fit extension to the filename for inner fit images  (fitimg 0.7.1+)
     Option -n suppresses extracting device tree files.
     Option -q suppresses listing which files were extracted.
 
-  fitimg -r <infile> -o <outfile> [-d <dir>] [-f] [-p <num>] [-q]
+  fitimg -r <infile> -o <outfile> [-d <dir>] [-i] [-f] [-e] [-p <num>] [-q]
     Replace all contens of fit-image <infile> which exist in current directory or <dir> and write it to <outfile>.
     Files which do not exist in current directory or <dir> will not be replaced.
-    Option -i includes inner image when creating outer FIT for nested FIT images (fitimg 0.7+)
     Option -p ovverrides the default padding size of 64 (0 - 1024) in kB  (fitimg 0.5+)
     Option -q suppresses listing which files were replaced.
 
-  fitimg -c <infile> -o <outfile> [-f] [-p <num>] [-q]  (fitimg 0.2+)
+  fitimg -c <infile> -o <outfile> [-i] [-f] [-e] [-p <num>] [-q]  (fitimg 0.2+)
     Copy an unaltered fit-image from <infile> to <outfile> while testing its integrity.
     This is mainly useful to extract and validate a fit-image from a recovery.exe or firmware.image.
     Option -p ovverrides the default padding size of 64 (0 - 1024) in kB  (fitimg 0.5+)
     Option -q could be used to silently copy and test the image structure and checksum integrity.
 
-  fitimg -s <infile> [-q]  (fitimg 0.2+)
+  fitimg -s <infile> [-i] [-q]  (fitimg 0.2+)
     Show the complete hunk structure of the fit-image <infile>.
     Option -q could be used to silently test the image structure
 
-  fitimg -h <infile> [-q]  (fitimg 0.5+)
+  fitimg -h <infile> [-i] [-q]  (fitimg 0.5+)
     Hexdump and show the complete structure of the fit-image <infile>.
-    Hunk payload like binaries is clipped to 128 bytes, enough bytes to not clip kernel-args.
+    Hunk payload like binaries are clipped to 128 bytes, enough bytes to not clip kernel-args.
     Option -q could be used to silently test the image structure
 
 Options:
   <infile> can be a fit-image, a firmware.image or a recovery.exe.  (fitimg 0.2+)
+  -i processes the inner image for nested fit-image files.  (fitimg 0.7.2+)
   -f activates Freetz mode using filesystem[2].image and kernel[2].image etc instead of the stored names.
+  -e activates a .fit file extension for inner fit images  (fitimg 0.7.2+)
 
   -? (fitimg 0.2+) or --help print this help text and terminates.
   -v (fitimg 0.2+) or --version print this program's version and terminates.
@@ -614,6 +642,7 @@ sub release {
 	if (defined($ARGV[1]) && $ARGV[1] eq '--public') {
 		system "chmod 644 ~/hosted/hippie2000/$release.tar.gz";
 		system "ln -s -f $release.tar.gz ~/hosted/hippie2000/fitimg-latest.tar.gz";
+		system "ls -lh ~/hosted/hippie2000/$release.tar.gz";
 		system "md5sum ~/hosted/hippie2000/$release.tar.gz";
 	} else {
 		system "chmod 600 ~/hosted/hippie2000/$release.tar.gz";
