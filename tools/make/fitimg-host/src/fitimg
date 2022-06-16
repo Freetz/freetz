@@ -1,0 +1,304 @@
+#!/usr/bin/perl
+our $VERSION = "0.1";
+
+# fitimg - (C) 2021 Ralf Steines aka Hippie2000 - <metamonk\@yahoo.com>
+# Handle and manipulate firmware images in AVM /var/tmp/fit-image format.
+# Docs and latest version can be found at https://boxmatrix.info/wiki/FIT-Image
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+use strict;
+use warnings; # requires perl 5.6
+use Getopt::Std;
+use String::CRC32;
+
+# Freetz output filename table
+my %fname = (
+	# 7530ax
+	'brcma9_HW256_kernel' => 'kernel.image',
+	'brcma9_HW256_squashFS_filesystem' => 'filesystem.image',
+	'brcma9_HW256_flat_dt_1' => 'flatdt_1.image',
+	'brcma9_HW256_flat_dt_0' => 'flatdt_0.image',
+	'brcma9TZ_HW256_kernel' => 'kernel2.image',
+	'brcma9TZ_HW256_flat_dt_0' => 'flatdt2_0.image',
+	# 5530
+	'prxI_HW257_kernel' => 'kernel.image',
+	'prxI_HW257_ramdisk' => 'filesystem.image',
+	'prxI_HW257_flat_dt_0_aon' => 'flatdt_0_aon.image',
+	'prxI_HW257_flat_dt_0_pon' => 'flatdt_0_pon.image',
+	'prxB_HW0257_kernel' => 'kernel2.image',
+	'prxB_HW0257_ramdisk' => 'filesystem2.image',
+	'prxB_HW0257_flat_dt_0' => 'flatdt2_0.image',
+	# 6000
+	'qcaarmv8_HW253_kernel' => 'kernel.image', 
+	'qcaarmv8_HW253_squashFS_filesystem' => 'filesystem.image',
+	'qcaarmv8_HW253_flat_dt_0' => 'flatdt_0.image',
+	'qcaarmv8_HW253_flat_dt_2' => 'flatdt_2.image',
+);
+
+# create release archive - BUMP $VERSION BEFORE!
+release() if $ARGV[0] eq '--release';
+
+# getopts: preparation
+$Getopt::Std::STANDARD_HELP_VERSION = 1; # --help and --version terminate after print
+my %opts;
+
+# getopts: read the arguments: -l -t -x -r -o -d require an argument, -n -f -v and -q do not
+getopts('l:t:x:r:o:d:nfvq', \%opts) or abort("Invalid arguments\nSee 'fitimg --help'");
+
+# getopts: error check
+abort("nothing to do - you need to pass one of -l -t -x or -r\nSee 'fitimg --help'") if !$opts{l} && !$opts{t} && !$opts{x} && !$opts{r};
+abort("don't mix -l -t -x and -r - only use one of them\nSee 'fitimg --help'") if defined($opts{l}) + defined($opts{t}) + defined($opts{x}) + defined($opts{r}) > 1;
+abort("replace (-r) requires an output file (-o)\nSee 'fitimg --help'") if $opts{r} && !$opts{o};
+abort("input and output file must not be the same\nSee 'fitimg --help'") if $opts{r} && ($opts{o} eq $opts{r});
+
+# read the source file into inbuf
+my ($inbuf, $opt, $infile, $insize);
+foreach $opt ('l', 't', 'x', 'r') {
+	$infile = $opts{$opt} if defined($opts{$opt});
+}
+open(INFILE, $infile) || abort("Can't open $infile");
+binmode INFILE;
+$insize = -s $infile;
+read(INFILE, $inbuf, $insize);
+close(INFILE);
+abort("Not an AVM fit-image: $infile") if $inbuf !~ /^\x0D\x00\xED\xFE/; # AVM fit signature
+
+# verify the passed source/target directory
+my $dir = '';
+if ((defined($opts{x}) || defined($opts{r})) && defined($opts{d})) {
+	$dir = $opts{d};
+	abort("Can't find directory: $dir") if !-x $dir;
+	abort("Not a directory: $dir") if !-d $dir;
+	$dir =~ s|([^/])$|$1/|g; # add trailing slash if missing
+}
+
+# now parse the inbuf
+my ($head, $type, $body, $strbuf, $string, $len, $status, $blob, $blobsize, $loadaddr, $outbuf, %replaced);
+my $errors = 0;
+my $files = 0;
+my $pos = 0x80;
+my $lastpos = $pos;
+my $section = '';
+
+while ($pos < $insize) {
+	$head = unpack('N', substr($inbuf, $pos, 4));
+
+	if ($head == 0) {
+		$type = unpack('N', substr($inbuf, $pos+4, 4));
+		if ($type == 0) {
+			$pos += 8;
+		} else {
+			abort(sprintf("unknown hunk end $type @ %08x\n", $pos));
+		}
+		if (defined($opts{r})) {
+			$outbuf .= substr($inbuf, $lastpos, $pos - $lastpos);
+			$lastpos = $pos;
+		}
+
+	} elsif ($head == 1) {
+		$string = $strbuf = '';
+		$pos += 4;
+		do {	$strbuf = substr($inbuf, $pos, 4);
+			$string .= $strbuf;
+			$pos += 4;
+		} until $strbuf =~ "\0";
+		$string =~ s/\0//g;
+		$section = $string if $string !~ /^hash_/;
+		if (defined($opts{r})) {
+			$outbuf .= substr($inbuf, $lastpos, $pos - $lastpos);
+			$lastpos = $pos;
+		}
+
+	} elsif ($head == 2) {
+		$string = $strbuf = '';
+		$type = unpack('N', substr($inbuf, $pos+4, 4));
+		for my $i (0 .. $type-1) { $pos += 4; }
+		$pos += 4;
+		$pos += 4 if unpack('N', substr($inbuf, $pos, 4)) == 1; # la    st before configurations
+		$pos += 4 if unpack('N', substr($inbuf, $pos, 4)) == 9; # last before description
+		do {	$strbuf = substr($inbuf, $pos, 4);
+			$string .= $strbuf;
+			$pos += 4;
+		} until $strbuf =~ "\0";
+		$string =~ s/\0//g;
+		$section = $string if $string !~ /^hash_/;
+		if ($section eq 'description') {
+			$strbuf = substr($inbuf, $pos, $insize - $pos - 8);
+			$strbuf =~ s/\0$//g;
+			my @desc = split(/\0/, $strbuf);
+			foreach $string (@desc) { $pos += length($string) + 1; }
+		}
+		if (defined($opts{r})) {
+			$outbuf .= substr($inbuf, $lastpos, $pos - $lastpos)    ;
+			$lastpos = $pos;
+		}
+
+	} elsif ($head == 3) {
+		$body = unpack('N', substr($inbuf, $pos+4, 4));
+		$type = unpack('N', substr($inbuf, $pos+8, 4));
+
+		if ($type == 65) { # blob
+			$section = $fname{$section} if defined($opts{f}) && defined($fname{$section});
+			$blobsize = $body;
+			$blob = substr($inbuf, $pos+12, $body) if defined($opts{t}) || defined($opts{x});
+			if (defined($opts{r})) {
+				if (open(BLOB, "$dir$section")) { # fail silently
+					binmode BLOB;
+					$blobsize = -s "$dir$section";
+					read(BLOB, $blob, $blobsize);
+					close BLOB;
+					print sprintf("Replacing: %8d->%8d $section\n", $body, $blobsize) unless defined($opts{q});
+					$outbuf .= pack('N', $head);
+					$outbuf .= pack('N', $blobsize);
+					$outbuf .= pack('N', $type);
+					$outbuf .= $blob;
+					$outbuf .= "\0" x (4 - $body % 4) if $blobsize % 4; # padding
+					$replaced{$section}++;
+					$files++;
+				}
+			}
+
+		} elsif ($type == 95) { # loadaddr
+			$loadaddr = unpack('N', substr($inbuf, $pos+12, $body));
+			if (defined($opts{l}) && !defined($opts{q})) {
+				print sprintf("%08x-%08x %8d $section\n", $loadaddr, $loadaddr + $blobsize, $blobsize);
+			}
+
+		} elsif ($type == 111) { # crc
+			if (defined($opts{t}) || defined($opts{x})) {
+				if (defined($opts{x})) {
+					if (!defined($opts{n}) || $section !~ /flat_dt|flatdt/) {
+						open(BLOB, ">$dir$section") || abort("Can't write to $dir$section");
+						binmode BLOB;
+						print BLOB $blob;
+						close BLOB;
+						$files++;
+					}
+				} else {
+					$files++;
+				}
+				my $crc1 = unpack('N', substr($inbuf, $pos+12, $body));
+				my $crc2 = crc32($blob);
+				$status = $crc1 == $crc2 ? 'OK' : 'BAD';
+				if (!defined($opts{n}) || $section !~ /flat_dt|flatdt/) {
+					print sprintf("$status: %08x %08x %8d $section\n", $crc1, $crc2, $blobsize) unless defined($opts{q});
+				}
+				$errors++ if $status eq 'BAD';
+			} elsif (defined($opts{r}) && defined($replaced{$section})) {
+					$outbuf .= pack('N', $head);
+					$outbuf .= pack('N', 4);
+					$outbuf .= pack('N', $type);
+					$outbuf .= pack('N', crc32($blob));
+			}
+		}
+
+		$len = $body + 12 + ($body %4 ? (4 - $body % 4) : 0); # add head + padding
+		$pos += $len;
+		if (defined($opts{r})) {
+			$outbuf .= substr($inbuf, $lastpos, $pos - $lastpos) unless ($type == 65 || $type == 111) && defined($replaced{$section});
+			$lastpos = $pos;
+		}
+
+	} else {
+		abort(sprintf("unknown hunk head $head @ %08x\n", $pos));
+		last;
+	}
+
+}
+
+if (defined($opts{r})) {
+	my $offset = length($outbuf) + 0x80 - $pos;
+	open(OUTFILE, ">$opts{o}") || abort("Can't write to $opts{o}");
+	binmode OUTFILE;
+	print OUTFILE "\x0D\x00\xED\xFE"; # signature
+	print OUTFILE pack('V', $pos - 0x50);
+	print OUTFILE substr($inbuf, 0x08, 0x4C - 0x08);
+	print OUTFILE pack('N', $pos - 0x50);
+	print OUTFILE substr($inbuf, 0x50, 4);
+	print OUTFILE pack('N', unpack('N', substr($inbuf, 0x54, 4)) + $offset);
+	print OUTFILE substr($inbuf, 0x58, 0x6C - 0x58);
+	print OUTFILE pack('N', unpack('N', substr($inbuf, 0x6C, 4)) + $offset);
+	print OUTFILE substr($inbuf, 0x70, 0x80 - 0x70);
+	print OUTFILE $outbuf;
+	close OUTFILE;
+}
+
+if (defined($opts{t}) || defined($opts{x}) || defined($opts{r})) {
+	abort("BROKEN fit image") if $errors;
+	if (!defined($opts{q})) {
+		print "no errors in $files files\n" if defined($opts{t});
+		print "extracted $files files\n" if defined($opts{x});
+		print "replaced $files files\n" if defined($opts{r});
+	}
+}
+
+######## subroutines ########
+
+# getopts --version or --help
+sub VERSION_MESSAGE {
+	print "fitimg version $VERSION - (C) 2021 Ralf Steines aka Hippie2000 - <metamonk\@yahoo.com>\n";
+	print "Handle and manipulate firmware images in AVM /var/tmp/fit-image format. GPLv2+.\n";
+	print "Docs and latest version can be found at https://boxmatrix.info/wiki/FIT-Image\n";
+}
+
+# getopts --help option
+sub HELP_MESSAGE {
+	print <<ENDHELP;
+
+Usage:
+  fitimg -l <infile> [-f] [-q]
+    List all binaries contained in fit-image <infile>.
+    Option -q could be used to silently test the image structure.
+
+  fitimg -t <infile> [-f] [-q]
+    Test the integrity of all binaries contained in fit-image <infile>. Performs CRC32 validation.
+    Option -q could be used to silently test the image structure and checksum integrity.
+
+  fitimg -x <infile> [-d <dir>] [<file>] [-n] [-f] [-q]
+    Extract all contents of fit-image <infile> or just <file> to current directory or <dir>.
+    Option -n suppresses extracting device tree files.
+    Option -q suppresses listing which files were extracted.
+
+  fitimg -r <infile> -o <outfile> [-d <dir>] [-f] [-q]
+    Replace all contens of fit-image <infile> which exist in current directory or <dir> and write it to <outfile>.
+    Files which do not exist in current directory or <dir> will not be replaced.
+    Option -q suppresses listing which files were replaced.
+
+Options:
+  -f activates Freetz mode using filesystem[2].image and kernel[2].image etc instead of the fit names.
+
+  --help prints this help text and terminates.
+  --version prints this program's version and terminates.
+
+Result:
+	Returns 1 on error, otherwise 0.
+ENDHELP
+}
+
+# error handling
+sub abort {
+  print STDERR "fitimg: $_[0]\n";
+  exit 1;
+}
+
+# create release archive
+sub release {
+  my $release = "fitimg_$VERSION.tar.gz";
+  print "Creating release archive $release\n";
+  system "tar cfvz hosted/hippie2000/$release bin/fitimg bin/COPYING";
+  system "ln -s -f $release hosted/hippie2000/fitimg_latest.tar.gz";
+  exit;
+}
+
