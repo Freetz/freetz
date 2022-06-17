@@ -80,6 +80,7 @@ Latest changes
    * lighttpd 1.4.65
    * ltrace 0.7.3checkpoint1-git
    * mc (Midnight Commander) 4.8.28
+   * mini-snmpd 1.6
    * MTR 0.80/0.95
    * Nano 6.3
    * NZBGet 21.1
