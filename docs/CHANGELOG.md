@@ -96,7 +96,7 @@ Latest changes
    * tcpdump 4.1.1/4.99.1
    * tmux 3.3a
    * Tinyproxy 1.11.0
-   * Tor 0.4.7.7
+   * Tor 0.4.7.8
    * uClibc-ng 1.0.41
    * UnRAR 6.1.7
    * Vim 8.2.5052
