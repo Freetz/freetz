@@ -1,7 +1,11 @@
-$(call PKG_INIT_BIN, 5.8)
+$(call PKG_INIT_BIN, 5.9.1)
 $(PKG)_SOURCE:=net-snmp-$($(PKG)_VERSION).tar.gz
-$(PKG)_HASH:=b2fc3500840ebe532734c4786b0da4ef0a5f67e51ef4c86b3345d697e4976adf
+$(PKG)_HASH:=eb7fd4a44de6cddbffd9a92a85ad1309e5c1054fb9d5a7dd93079c8953f48c3f
 $(PKG)_SITE:=@SF/net-snmp
+### WEBSITE:=http://www.net-snmp.org/
+### MANPAGE:=http://www.net-snmp.org/docs/man/
+### CHANGES:=http://www.net-snmp.org/download.html
+### CVSREPO:=https://github.com/net-snmp/net-snmp
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/agent/.libs/snmpd
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/sbin/snmpd
@@ -13,7 +17,7 @@ $(PKG)_APPS_BUILD_DIR   := $(addprefix $($(PKG)_DIR)/apps/.libs/,$($(PKG)_APPS_I
 $(PKG)_APPS_TARGET_DIR  := $(addprefix $($(PKG)_DEST_DIR)/usr/bin/,$($(PKG)_APPS_INCLUDED))
 
 # Libraries
-$(PKG)_LIB_VERISON:=35.0.0
+$(PKG)_LIB_VERISON:=40.1.0
 $(PKG)_LIB_SUFFIX:=so.$($(PKG)_LIB_VERISON)
 $(PKG)_LIBNAMES_SHORT:=snmp snmpagent snmpmibs snmphelpers
 ifneq ($(filter snmptrap%,$(NETSNMP_APPS_INCLUDED)),)
@@ -132,6 +136,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-perl-cc-checks
 $(PKG)_CONFIGURE_OPTIONS += --disable-embedded-perl
 $(PKG)_CONFIGURE_OPTIONS += --without-perl-modules
 
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -149,6 +154,7 @@ $(foreach app,$(NETSNMP_APPS_BUILD_DIR),$(eval $(call INSTALL_BINARY_STRIP_RULE,
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_LIBS_TARGET_DIR) $($(PKG)_APPS_TARGET_DIR)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(NETSNMP_DIR) clean
