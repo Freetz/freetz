@@ -1,6 +1,6 @@
-$(call TOOLS_INIT, 21e6d8692d91cdaf01f755550232e6e74ae06299)
+$(call TOOLS_INIT, fb983be2faae2ebbba012c82a5650c198b89b818)
 $(PKG)_SOURCE:=yf-fit_tools-$($(PKG)_VERSION).tar.xz
-$(PKG)_HASH:=155e66119f4d6a84448087e1237bc4553fd9cfbef9924b30eb4a9c4919387712
+$(PKG)_HASH:=7f9f177f46d995ff973aac018833e3f47e0d19fa2f526a297e03bcde53a98d1d
 $(PKG)_SITE:=git_sparse@https://github.com/PeterPawn/YourFritz.git,fit_tools
 ### VERSION:=0.2
 ### WEBSITE:=https://github.com/PeterPawn/YourFritz/tree/main/fit_tools
