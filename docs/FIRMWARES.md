@@ -103,6 +103,7 @@ Currently supported devices and firmwares
   - 155.07.29 rev92647 {ALL} [PSQ19P2NL4]
 * __Fritz!Box 4060__
   - 261.07.30 rev95826 {ALL} [PSQ19P2NL4]
+  - 261.07.39 rev00000 {ALL} [MOVE21] (Inhaus)
 
 ### Fritz!Box Fon (50xx/51xx)
 
