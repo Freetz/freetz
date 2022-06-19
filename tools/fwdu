@@ -138,10 +138,6 @@ image() {
 		FLV_FIT='1'
 #		$FTOOLS/fitimg -x var/tmp/fit-image -d var/tmp/ -n -f -q
 		$FTOOLS/yf/fit_tools/fitdump.sh var/tmp/fit-image >/dev/null
-# WA: removeme after fix
-[ ! -e fit-dump/kernel.image ] \
-  && ln -s $(ls -S fit-dump/ | sed -n 2p) fit-dump/kernel.image \
-  && ln -s $(ls -S fit-dump/ | sed -n 1p) fit-dump/filesystem.image
 		mv fit-dump/ramdisk.image fit-dump/filesystem.image 2>/dev/null
 		for x in kernel filesystem; do mv $(realpath fit-dump/$x.image) var/tmp/$x.image; done
 		rm -rf fit-dump/
