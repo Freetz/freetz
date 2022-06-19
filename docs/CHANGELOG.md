@@ -57,7 +57,7 @@ Latest changes
    * kconfig 5.18
    * patchelf 0.14.5
    * yf-bootmanager 0.8.3 9a1d3b8
-   * yf-fit_tools 0.2 fb983be
+   * yf-fit_tools 0.2 399b791
 
  - Packages & libs:
    * ACME.sh 3.0.4 (letsencrypt)
