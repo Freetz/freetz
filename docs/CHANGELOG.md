@@ -92,6 +92,7 @@ Latest changes
    * Privoxy 3.0.33
    * radvd 1.9.3/2.19
    * Smartmontools 7.3
+   * strace 4.9/5.0/5.18
    * Stunnel 5.64
    * SQLite 3.38.5
    * tcpdump 4.1.1/4.99.1
