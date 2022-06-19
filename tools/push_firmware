@@ -91,7 +91,7 @@ function push_fw() {
 
 		[ $ISRAM ] && FILESIZE="$(stat --printf='%s' "$mtdram1")"
 		[ $ISFIT ] && FILESIZE="$(stat --printf='%s' "$fitimage")"
-		ALIBYTES="$(( $ALIBYTES - ( $FILESIZE % $ALIBYTES ) ))"
+		[ "$ALIBYTES" != "0" ] && ALIBYTES="$(( $ALIBYTES - ( $FILESIZE % $ALIBYTES ) ))"
 		FILESIZE="0x$(printf '%.8x' $(( $FILESIZE )) )"
 		ALIBYTES="0x$(printf '%.8x' $(( $ALIBYTES )) )"
 		MAPSTART="0x$(printf '%.8x' $(( $MAPSTART )) )"
