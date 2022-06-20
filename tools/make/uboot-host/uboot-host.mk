@@ -5,7 +5,7 @@ $(PKG)_SITE:=git@https://github.com/u-boot/u-boot.git
 ### CHANGES:=https://github.com/u-boot/u-boot/tags
 ### CVSREPO:=https://github.com/u-boot/u-boot
 
-$(PKG)_BINARIES            := dumpimage mkimage
+$(PKG)_BINARIES            := dumpimage fdtgrep mkimage
 $(PKG)_BINARIES_BUILD_DIR  := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/tools/%)
 $(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$(TOOLS_DIR)/%)
 
