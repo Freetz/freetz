@@ -43,7 +43,6 @@ TOOLS_CONDITIONAL+=$(if $(FREETZ_AVM_HAS_NMI_VECTOR),,sfk-host)
 TOOLS_CONDITIONAL+=$(if $(FREETZ_AVM_HAS_FWLAYOUT_5),,uimg-host)
 TOOLS_CONDITIONAL+=$(if $(FREETZ_AVM_HAS_FWLAYOUT_6),,dtc-host)
 TOOLS_CONDITIONAL+=$(if $(FREETZ_AVM_HAS_FWLAYOUT_6),,yf-fit_tools-host)
-TOOLS_CONDITIONAL+=$(if $(FREETZ_AVM_HAS_FWLAYOUT_6),,uboot-host)
 TOOLS_CONDITIONAL+=$(if $(FREETZ_AVM_KERNEL_CONFIG_AREA_KNOWN),,yf-akcarea-host)
 TOOLS_CONDITIONAL+=$(if $(FREETZ_PATCH_MODFS_BOOT_MANAGER),,yf-bootmanager-host)
 
@@ -57,7 +56,6 @@ TOOLS_BUILD_LOCAL+=scons-host
 
 # until next host-tools update
 #TOOLS_BUILD_LOCAL+=...
-TOOLS_BUILD_LOCAL+=uboot-host
 
 
 TOOLS_SUBMAKE=cmd() { $(MAKE) $(QUIET) "$$@" $(SILENT) || { $(call ERROR,1,$(BUILD_FAIL_MSG)) } }; $(call _ECHO,building) cmd
