@@ -1,10 +1,10 @@
 #!/bin/bash
 # fitimg unpacker & scanner
-# uses: fdtdump dtc fdtget dumpimage and diff
+# uses: [fdtdump] dtc fdtget dumpimage and [diff}
 MYPWD="$(dirname $(realpath $0))"
 
 # $1: .itb-file to scan
-# $2: create kernel/filesystem/kernel-args links in this dir
+# $2: create kernel & filesystem links and args & date files in this dir
 analyze() {
 	local PART COUNT=0 FILE="$1" LINK="$2"
 	KPART= FPART= KTYPE= FTYPE= KNAME= FNAME= XARGS=
@@ -28,12 +28,12 @@ analyze() {
 		echo -n "$XARGS" > "$LINK/args.txt"
 		fdtget "$FILE" / 'timestamp' > "$LINK/date.txt"
 		# root
-		[ $FPART -le 9 ] && image="image.00$FPART" || image="image.0$FPART"
+		image="$(printf 'image.%03u' "$FPART")"
 		echo -n "$image"  >  "$LINK/filesystem.txt"
 		mv "$LINK/$image" "$LINK/filesystem.image"
 		ln -sf "filesystem.image" "$LINK/$image"
 		# kern
-		[ $KPART -le 9 ] && image="image.00$KPART" || image="image.0$KPART"
+		image="$(printf 'image.%03u' "$KPART")"
 		echo -n "$image"  >  "$LINK/kernel.txt"
 		mv "$LINK/$image" "$LINK/kernel.image"
 		ln -sf "kernel.image" "$LINK/$image"
@@ -51,7 +51,7 @@ unpack() {
 	dtc -I dtb -O dts "$FILE" | tee "$OUTP/image.dts" | sed "s/^[ \t]*data = .*/XDATAXSEQUENCEX/g" > "$OUTP/image.its"
 	[ ! -s  "$OUTP/image.its" ] && rm -f "$OUTP"/image.* && exit 1
 	while grep -q "XDATAXSEQUENCEX" "$OUTP/image.its"; do
-		[ "$c" -lt 9 ] && image="image.00$(($c+1))" || image="image.0$(($c+1))"
+		image="$(printf 'image.%03u' "$(($c+1))")"
 		sed "0,/XDATAXSEQUENCEX/s//\t\t\tdata = \/incbin\/(\"$image\");/" -i "$OUTP/image.its"
 		dumpimage "$FILE" -T flat_dt -p "$c" -o "$OUTP/$image" >/dev/null
 		let c++
