@@ -52,7 +52,6 @@ Latest changes
 
  - Host tools:
    * fakeroot 1.29
-   * fitimg 0.8
    * Haserl 0.9.36
    * kconfig 5.18
    * patchelf 0.14.5
