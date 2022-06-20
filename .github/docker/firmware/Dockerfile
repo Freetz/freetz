@@ -9,7 +9,7 @@ RUN \
     autopoint libtool-bin make bzip2 libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config ecj \
     fastjar perl libstring-crc32-perl ruby gawk python2 python-is-python3 libusb-dev unzip intltool libacl1-dev libcap-dev libc6-dev-i386 \
     lib32ncurses5-dev gcc-multilib bsdmainutils lib32stdc++6 libglib2.0-dev ccache cmake lib32z1-dev libsqlite3-dev sqlite3 libzstd-dev \
-    netcat curl \
+    netcat curl u-boot-tools device-tree-compiler \
  && DEBIAN_FRONTEND=noninteractive apt-get -y clean \
  && rm -rf /var/lib/apt/lists/* \
  && locale-gen en_US.utf8 && locale-gen de_DE.UTF-8 && update-locale \
