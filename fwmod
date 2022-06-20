@@ -145,6 +145,7 @@ FIRMWARE_EXTENSION="${FIRMWARE_EXTENSION,,}"
 # Relative subdirectories
 SOURCE_SUBDIR="source"
 FIRMWARE_SUBDIR="firmware"
+FITIMAGE_SUBDIR="fit-image"
 FILESYSTEM_SUBDIR="filesystem"
 FILESYSTEM_OUTER_SUBDIR="filesystem.outer"
 AVMPLUGINS_SUBDIR="plugins.image"
@@ -408,6 +409,7 @@ fi
 
 ORG_DIR="${DIR}/original"
 FIRMWARE_DIR="${ORG_DIR}/${FIRMWARE_SUBDIR}"
+FITIMAGE_DIR="${ORG_DIR}/${FITIMAGE_SUBDIR}"
 FILESYSTEM_DIR="${ORG_DIR}/${FILESYSTEM_SUBDIR}"
 FILESYSTEM_OUTER_DIR="${ORG_DIR}/${FILESYSTEM_OUTER_SUBDIR}"
 KERNEL_DIR="${ORG_DIR}/${KERNEL_SUBDIR}"
@@ -568,9 +570,11 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		ln $FIRMWARE_DIR/var/*_ATOM_ROOTFS.bin "$FIRMWARE_DIR/var/remote/var/tmp/x86/filesystem.image"
 		ln $FIRMWARE_DIR/var/*_ATOM_KERNEL.bin "$FIRMWARE_DIR/var/remote/var/tmp/x86/kernel.image"
 	elif [ -e "$FIRMWARE_DIR/var/tmp/fit-image" ]; then
-		"${TOOLS_DIR}/fitimg" -x $FIRMWARE_DIR/var/tmp/fit-image -d $FIRMWARE_DIR/var/tmp/ -n -f -q
-		rm -f $FIRMWARE_DIR/var/tmp/*2.image
-		rm -f $FIRMWARE_DIR/var/tmp/*3.image
+		echo0 "dumping fit-image file"
+#		"${TOOLS_DIR}/fitimg" -x $FIRMWARE_DIR/var/tmp/fit-image -d $FIRMWARE_DIR/var/tmp/ -n -f -q
+#		rm -f $FIRMWARE_DIR/var/tmp/*2.image $FIRMWARE_DIR/var/tmp/*3.image
+		$TOOLS_DIR/fit.sh unpack "$FIRMWARE_DIR/var/tmp/fit-image" "$FITIMAGE_DIR" || exit 1
+		for x in kernel filesystem; do ln $FITIMAGE_DIR/$x.image $FIRMWARE_DIR/var/tmp/; done
 	fi
 
 	# Do the images exist ?
@@ -701,6 +705,7 @@ FREETZ_LIBRARY_DIR=$(stripTrailingSlash "${FREETZ_RPATH%%:*}")
 
 MOD_DIR="${DIR}/modified"
 FIRMWARE_MOD_DIR="${MOD_DIR}/${FIRMWARE_SUBDIR}"
+FITIMAGE_MOD_DIR="${MOD_DIR}/${FITIMAGE_SUBDIR}"
 FILESYSTEM_MOD_DIR="${MOD_DIR}/${FILESYSTEM_SUBDIR}"
 FILESYSTEM_OUTER_MOD_DIR="${MOD_DIR}/${FILESYSTEM_OUTER_SUBDIR}"
 EXTERNAL_MOD_DIR="${MOD_DIR}/${EXTERNAL_SUBDIR}"
@@ -2112,9 +2117,24 @@ if [ "$DO_PACK" -gt 0 ]; then
 		"${TOOLS_DIR}/uimg" -p "$FIRMWARE_MOD_DIR/var/firmware-update.uimg" >/dev/null
 		rm $FIRMWARE_MOD_DIR/var/firmware-update_*.bin
 	elif [ -e "$FIRMWARE_MOD_DIR/var/tmp/fit-image" ]; then
-		"${TOOLS_DIR}/fitimg" -r $FIRMWARE_MOD_DIR/var/tmp/fit-image -o $FIRMWARE_MOD_DIR/var/tmp/fit-image.tmp -d $FIRMWARE_MOD_DIR/var/tmp/ -f -q -p 0
-		mv $FIRMWARE_MOD_DIR/var/tmp/fit-image.tmp $FIRMWARE_MOD_DIR/var/tmp/fit-image
-		rm -f $FIRMWARE_MOD_DIR/var/tmp/kernel.image $FIRMWARE_MOD_DIR/var/tmp/filesystem.image
+#		"${TOOLS_DIR}/fitimg" -r $FIRMWARE_MOD_DIR/var/tmp/fit-image -o $FIRMWARE_MOD_DIR/var/tmp/fit-image.tmp -d $FIRMWARE_MOD_DIR/var/tmp/ -f -q -p 0
+#		mv $FIRMWARE_MOD_DIR/var/tmp/fit-image.tmp $FIRMWARE_MOD_DIR/var/tmp/fit-image
+#		rm -f $FIRMWARE_MOD_DIR/var/tmp/kernel.image $FIRMWARE_MOD_DIR/var/tmp/filesystem.image
+		OLD_SIZE="$(stat -L -c %s $FITIMAGE_MOD_DIR/filesystem.image)"
+		for x in kernel filesystem; do mv "$FIRMWARE_MOD_DIR/var/tmp/$x.image" "$FITIMAGE_MOD_DIR/$x.image"; done
+		NEW_SIZE="$(stat -L -c %s $FITIMAGE_MOD_DIR/filesystem.image)"
+		# padding @1MB for "filesystems"
+		XXX_LOAD="$(sed -rn "s/.*mtdram=(ram-filesystem|rootfs_ram),([^,]*),.*/\2/p" "$FITIMAGE_MOD_DIR/args.txt")"
+		if [ -n "$XXX_LOAD" ]; then
+			OLD_ADDR="$(printf '%.8x' $(( $XXX_LOAD + $OLD_SIZE + (1024*1024) - $OLD_SIZE % (1024*1024) )) )"
+			NEW_ADDR="$(printf '%.8x' $(( $XXX_LOAD + $NEW_SIZE + (1024*1024) - $NEW_SIZE % (1024*1024) )) )"
+			OLD_ARGS="$(cat "$FITIMAGE_MOD_DIR/args.txt")"
+			NEW_ARGS="$(cat "$FITIMAGE_MOD_DIR/args.txt" | sed "s/$OLD_SIZE/$NEW_SIZE/;s/$OLD_ADDR/$NEW_ADDR/")"
+			sed -i "s/$OLD_ARGS/$NEW_ARGS/" "$FITIMAGE_MOD_DIR/image.its"
+		fi
+		# make fit image with avm-magic
+		SOURCE_DATE_EPOCH="$(cat "$FITIMAGE_MOD_DIR/date.txt")" $TOOLS_DIR/mkimage -f "$FITIMAGE_MOD_DIR/image.its" "$FITIMAGE_MOD_DIR/image.itb" >/dev/null || exit 1
+		$TOOLS_DIR/yf/fit_tools/fit-add-avm-header.sh "$FITIMAGE_MOD_DIR/image.itb" > "$FIRMWARE_MOD_DIR/var/tmp/fit-image" || exit 1
 	fi
 	"$TAR_GNU" -f "${img_name}"  --owner=0 --group=0 --mode=0755 --format=oldgnu  -C "$FIRMWARE_MOD_DIR"  --create ./var
 	if [ $? -ne 0 ] || ! is_valid_tarball "${img_name}"; then
