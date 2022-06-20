@@ -31,12 +31,12 @@ analyze() {
 		[ $FPART -le 9 ] && image="image.00$FPART" || image="image.0$FPART"
 		echo -n "$image"  >  "$LINK/filesystem.txt"
 		mv "$LINK/$image" "$LINK/filesystem.image"
-		ln -s "filesystem.image" "$LINK/$image"
+		ln -sf "filesystem.image" "$LINK/$image"
 		# kern
 		[ $KPART -le 9 ] && image="image.00$KPART" || image="image.0$KPART"
 		echo -n "$image"  >  "$LINK/kernel.txt"
 		mv "$LINK/$image" "$LINK/kernel.image"
-		ln -s "kernel.image" "$LINK/$image"
+		ln -sf "kernel.image" "$LINK/$image"
 	fi
 }
 
