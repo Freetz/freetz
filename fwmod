@@ -2133,7 +2133,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 			sed -i "s/$OLD_ARGS/$NEW_ARGS/" "$FITIMAGE_MOD_DIR/image.its"
 		fi
 		# make fit image with avm-magic
-		SOURCE_DATE_EPOCH="$(cat "$FITIMAGE_MOD_DIR/date.txt")" $TOOLS_DIR/mkimage -f "$FITIMAGE_MOD_DIR/image.its" "$FITIMAGE_MOD_DIR/image.itb" >/dev/null || exit 1
+		SOURCE_DATE_EPOCH="$(cat "$FITIMAGE_MOD_DIR/date.txt")" mkimage -f "$FITIMAGE_MOD_DIR/image.its" "$FITIMAGE_MOD_DIR/image.itb" >/dev/null || exit 1
 		$TOOLS_DIR/yf/fit_tools/fit-add-avm-header.sh "$FITIMAGE_MOD_DIR/image.itb" > "$FIRMWARE_MOD_DIR/var/tmp/fit-image" || exit 1
 	fi
 	"$TAR_GNU" -f "${img_name}"  --owner=0 --group=0 --mode=0755 --format=oldgnu  -C "$FIRMWARE_MOD_DIR"  --create ./var
