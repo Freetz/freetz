@@ -56,6 +56,7 @@ Latest changes
    * Haserl 0.9.36
    * kconfig 5.18
    * patchelf 0.14.5
+   * U-Boot 2022.04
    * yf-bootmanager 0.8.3 9a1d3b8
    * yf-fit_tools 0.2 399b791
 
