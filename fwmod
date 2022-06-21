@@ -530,7 +530,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	if [ "$FIRMWARE_EXTENSION" == "exe" ] || [ "$untar_failed" ]; then
 		# Unpack Windows recover.exe file or mtdblock dump
 		exe_images=($("${TOOLS_DIR}/extract-images" "$ABS_BASE_DIR" "$FIRMWARE" | sed -nr 's/^ *(.*\.image) - .*/\1/p'))
-		[ "$exe_images" ] || exit 1
+		[ "$exe_images" ] || error 1 "unpacking failed"
 		mkdir -p "$FIRMWARE_DIR/${FREETZ_AVM_IMAGES_SUBDIR}"
 		mkdir "$KERNEL_DIR"
 		unset exe_hr_mode
@@ -572,7 +572,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		ln $FIRMWARE_DIR/var/*_ATOM_KERNEL.bin "$FIRMWARE_DIR/var/remote/var/tmp/x86/kernel.image"
 	elif [ -e "$FIRMWARE_DIR/var/tmp/fit-image" ]; then
 		echo0 "unpacking fitimg file"
-		$TOOLS_DIR/fit.sh unpack "$FIRMWARE_DIR/var/tmp/fit-image" "$FITIMAGE_DIR" || exit 1
+		$TOOLS_DIR/fit.sh unpack "$FIRMWARE_DIR/var/tmp/fit-image" "$FITIMAGE_DIR" || error 1 "unpacking failed"
 		for x in kernel filesystem; do ln $FITIMAGE_DIR/$x.image $FIRMWARE_DIR/var/tmp/; done
 	fi
 
@@ -641,7 +641,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 	if [ -r "$AVMPLUGINS" ]; then
 		echo0 "unpacking AVM plugins"
 		mkdir -p "$AVMPLUGINS_DIR"
-		"$TAR_GNU" -xif "$AVMPLUGINS" -C "$AVMPLUGINS_DIR" || exit 1
+		"$TAR_GNU" -xif "$AVMPLUGINS" -C "$AVMPLUGINS_DIR" || error 1 "tar failed"
 
 		for i in "${AVMPLUGINS_DIR}/var/"*.image; do
 			AVMPLUGIN="${i##*/plugin-}"
@@ -662,7 +662,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 
 	echo "unpacking var.tar"
 	mkdir "$VARTAR_DIR"
-	"$TAR_GNU" -xipf "$VARTAR" -C "$VARTAR_DIR" || exit 1
+	"$TAR_GNU" -xipf "$VARTAR" -C "$VARTAR_DIR" || error 1 "tar failed"
 
 	image_details
 	echo2 -lc "detected firmware version: ${SOURCE_IMAGE_DETAILS}"
@@ -676,7 +676,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		[ $DO_VALIDATE2 -eq 1 ] && UNPACK_VALIDATE2="-v $FIRMWARE2_PUB"
 		( set -o pipefail; "$0" -u $UNPACK_VALIDATE2 -d "${DIR}/.tk" "$FIRMWARE2" |
 			sed "s/STEP 1: UNPACK/STEP 1B: UNPACK 2ND${FORCE_UNPACK}/" )
-		[ $? -ne 0 ] && exit 1
+		[ $? -ne 0 ] && error 1 "unpacking failed"
 	fi
 
 	# Unpack auxiliary firmware image
@@ -686,7 +686,7 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		[ $DO_VALIDATE3 -eq 1 ] && UNPACK_VALIDATE3="-v $FIRMWARE3_PUB"
 		( set -o pipefail; "$0" -u $UNPACK_VALIDATE3 -d "${DIR}/.aux" "$FIRMWARE3" |
 			sed "s/STEP 1: UNPACK/STEP 1C: UNPACK 3RD${FORCE_UNPACK}/" )
-		[ $? -ne 0 ] && exit 1
+		[ $? -ne 0 ] && error 1 "unpacking failed"
 	fi
 
 	# Create "unpacked" marker, recording exactly *what* was unpacked (MD5)
@@ -842,7 +842,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	[ -n "$PV" ] && echo0 "preparing directory build/modified/"
 	mkdir -p "$MOD_DIR"
 	[ "$FREETZ_AVM_HAS_UDEV" == y ] || exclude_dev="--exclude=./filesystem/dev"
-	"$TAR_GNU" -c -C "$ORG_DIR" $exclude_dev  --exclude='*.log' . | ${PV:-cat} | "$TAR" -x -C "$MOD_DIR" || exit 1
+	"$TAR_GNU" -c -C "$ORG_DIR" $exclude_dev  --exclude='*.log' . | ${PV:-cat} | "$TAR" -x -C "$MOD_DIR" || error 1 "tar failed"
 
 	# Fix some permissions
 	chmod -R u+w "$FILESYSTEM_MOD_DIR"
@@ -1263,10 +1263,14 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 		# check avm's busybox links to warn about missing freetz applets
 		# this does not detect applets without links, like netcat, tcpsvd & timeout
+		MISSING_APPLETS="n"
 		find ${DIRS_BUSYBOX_TO_REPLACE_WITHIN} \( -lname "busybox" -or -lname "*/busybox" \) -exec basename {} ';' | sort -u | \
 		  while read -r LINK_NAME; do
-			grep -q "/${LINK_NAME//[/\\[}$" "${PACKAGES_DIR}/busybox/busybox.links" || echo2 -bc "missing applet detected: $LINK_NAME"
+			grep -q "/${LINK_NAME//[/\\[}$" "${PACKAGES_DIR}/busybox/busybox.links" && continue
+			echo2 -bc "missing applet detected: $LINK_NAME"
+			MISSING_APPLETS="y"
 		done
+		[ "$MISSING_APPLETS" != "n" ] && error 1 "busybox failed"
 
 #		### Disabled as in case of non default location and hardcoded path by avm
 #		# Remove old busybox links
@@ -1313,7 +1317,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 				fi
 				ln -sf "$BUSYBOX_PATH" "${d}${LINK_DIR}/$LINK_NAME" || error 1 "could not create link for $link"
 			done
-		done || exit 1
+		done || error 1 "busybox failed"
 
 		echo1 "checking BusyBox version"
 		echo2 "... used by AVM ...... $(strings ${FILESYSTEM_DIR}/bin/busybox | sed 's/ ()//g' | sed -n 's/^BusyBox v//p')"
@@ -1326,10 +1330,10 @@ if [ "$DO_MOD" -gt 0 ]; then
 		pkg_name=$(pkg_name "$pkg")
 
 		"$TAR_GNU" $(find "${PACKAGES_DIR}/${pkg}/" -maxdepth 1 -type f -name ".exclude*" -printf '--exclude-from=%p ') \
-		  -c -C "${PACKAGES_DIR}/${pkg}/root" . | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
+		  -c -C "${PACKAGES_DIR}/${pkg}/root" . | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || error 1 "tar failed"
 
 		if [ -d "${PACKAGES_DIR}/${pkg}/${VARTAR_SUBDIR}" ]; then
-			"$TAR_GNU" -c -C "${PACKAGES_DIR}/${pkg}/${VARTAR_SUBDIR}" . | "$TAR" -x -C ${VARTAR_MOD_DIR} || exit 1
+			"$TAR_GNU" -c -C "${PACKAGES_DIR}/${pkg}/${VARTAR_SUBDIR}" . | "$TAR" -x -C ${VARTAR_MOD_DIR} || error 1 "tar failed"
 		fi
 
 		[ -r "${PACKAGES_DIR}/${pkg}/.language" ] && \
@@ -1355,15 +1359,15 @@ if [ "$DO_MOD" -gt 0 ]; then
 
 		if [ -e "${ADDON_DIR}/${pkg}/etc/init.d/rc.${pkg_name}" ]; then
 			echo "NOTICE: addon '$pkg' is in old-style format (no language support)." 1>&2
-			"$TAR_GNU" -c -C "${ADDON_DIR}/${pkg}" . | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
+			"$TAR_GNU" -c -C "${ADDON_DIR}/${pkg}" . | "$TAR" -x -C "$FILESYSTEM_MOD_DIR" || error 1 "tar failed"
 		elif [ "$(echo ${pkg^^}-corrupt | sed -r 's/([^.-_-]*).*/\LfLawed-\1-Addon/' | md5sum | sed 's/ .*//')" != "80d00cf16e1a48ec11801feed60a2be7" ]; then
 			"$TAR"  $(find "${ADDON_DIR}/${pkg}/" -maxdepth 1 -type f -name ".exclude*" -printf '--exclude-from=%p ') \
 				-c -C "${ADDON_DIR}/${pkg}/root" \
 				. | \
-			"$TAR" -x -C "$FILESYSTEM_MOD_DIR" || exit 1
+			"$TAR" -x -C "$FILESYSTEM_MOD_DIR" || error 1 "tar failed"
 
 			if [ -d "${ADDON_DIR}/${pkg}/${VARTAR_SUBDIR}" ]; then
-				"$TAR_GNU" -c -C "${ADDON_DIR}/${pkg}/${VARTAR_SUBDIR}" . | "$TAR" -x -C ${VARTAR_MOD_DIR} || exit 1
+				"$TAR_GNU" -c -C "${ADDON_DIR}/${pkg}/${VARTAR_SUBDIR}" . | "$TAR" -x -C ${VARTAR_MOD_DIR} || error 1 "tar failed"
 			fi
 
 			[ -r "${ADDON_DIR}/${pkg}/.language" ] && \
@@ -2133,8 +2137,8 @@ if [ "$DO_PACK" -gt 0 ]; then
 			sed -i "s/$OLD_ARGS/$NEW_ARGS/" "$FITIMAGE_MOD_DIR/image.its"
 		fi
 		# make fit image with avm-magic
-		SOURCE_DATE_EPOCH="$(cat "$FITIMAGE_MOD_DIR/date.txt")" mkimage -f "$FITIMAGE_MOD_DIR/image.its" "$FITIMAGE_MOD_DIR/image.itb" >/dev/null || exit 1
-		$TOOLS_DIR/yf/fit_tools/fit-add-avm-header.sh "$FITIMAGE_MOD_DIR/image.itb" > "$FIRMWARE_MOD_DIR/var/tmp/fit-image" || exit 1
+		SOURCE_DATE_EPOCH="$(cat "$FITIMAGE_MOD_DIR/date.txt")" mkimage -f "$FITIMAGE_MOD_DIR/image.its" "$FITIMAGE_MOD_DIR/image.itb" >/dev/null || error 1 "packing failed"
+		$TOOLS_DIR/yf/fit_tools/fit-add-avm-header.sh "$FITIMAGE_MOD_DIR/image.itb" > "$FIRMWARE_MOD_DIR/var/tmp/fit-image" || error 1 "packing failed"
 		# size info
 		FITIMAGE_LIMIT="$(( $FREETZ_AVM_HAS_FIT_SIZE *1024*1024 ))"
 		FITIMAGE_SIZE="$(wc -c < "$FIRMWARE_MOD_DIR/var/tmp/fit-image")"
