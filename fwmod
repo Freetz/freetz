@@ -571,8 +571,6 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		ln $FIRMWARE_DIR/var/*_ATOM_KERNEL.bin "$FIRMWARE_DIR/var/remote/var/tmp/x86/kernel.image"
 	elif [ -e "$FIRMWARE_DIR/var/tmp/fit-image" ]; then
 		echo0 "dumping fit-image file"
-#		"${TOOLS_DIR}/fitimg" -x $FIRMWARE_DIR/var/tmp/fit-image -d $FIRMWARE_DIR/var/tmp/ -n -f -q
-#		rm -f $FIRMWARE_DIR/var/tmp/*2.image $FIRMWARE_DIR/var/tmp/*3.image
 		$TOOLS_DIR/fit.sh unpack "$FIRMWARE_DIR/var/tmp/fit-image" "$FITIMAGE_DIR" || exit 1
 		for x in kernel filesystem; do ln $FITIMAGE_DIR/$x.image $FIRMWARE_DIR/var/tmp/; done
 	fi
@@ -2117,9 +2115,6 @@ if [ "$DO_PACK" -gt 0 ]; then
 		"${TOOLS_DIR}/uimg" -p "$FIRMWARE_MOD_DIR/var/firmware-update.uimg" >/dev/null
 		rm $FIRMWARE_MOD_DIR/var/firmware-update_*.bin
 	elif [ -e "$FIRMWARE_MOD_DIR/var/tmp/fit-image" ]; then
-#		"${TOOLS_DIR}/fitimg" -r $FIRMWARE_MOD_DIR/var/tmp/fit-image -o $FIRMWARE_MOD_DIR/var/tmp/fit-image.tmp -d $FIRMWARE_MOD_DIR/var/tmp/ -f -q -p 0
-#		mv $FIRMWARE_MOD_DIR/var/tmp/fit-image.tmp $FIRMWARE_MOD_DIR/var/tmp/fit-image
-#		rm -f $FIRMWARE_MOD_DIR/var/tmp/kernel.image $FIRMWARE_MOD_DIR/var/tmp/filesystem.image
 		OLD_SIZE="$(stat -L -c %s $FITIMAGE_MOD_DIR/filesystem.image)"
 		for x in kernel filesystem; do mv "$FIRMWARE_MOD_DIR/var/tmp/$x.image" "$FITIMAGE_MOD_DIR/$x.image"; done
 		NEW_SIZE="$(stat -L -c %s $FITIMAGE_MOD_DIR/filesystem.image)"
