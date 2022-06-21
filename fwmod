@@ -564,13 +564,14 @@ if [ "$DO_UNPACK" -gt 0 ]; then
 		rm -r "$(dirname "$exe_image")"
 	fi
 	if [ -e "$FIRMWARE_DIR/var/firmware-update.uimg" ]; then
+		echo0 "unpacking uimg file"
 		"${TOOLS_DIR}/uimg" -u "$FIRMWARE_DIR/var/firmware-update.uimg" >/dev/null
 		chmod +w $FIRMWARE_DIR/var/*.bin
 		mkdir -p "$FIRMWARE_DIR/var/remote/var/tmp/x86"
 		ln $FIRMWARE_DIR/var/*_ATOM_ROOTFS.bin "$FIRMWARE_DIR/var/remote/var/tmp/x86/filesystem.image"
 		ln $FIRMWARE_DIR/var/*_ATOM_KERNEL.bin "$FIRMWARE_DIR/var/remote/var/tmp/x86/kernel.image"
 	elif [ -e "$FIRMWARE_DIR/var/tmp/fit-image" ]; then
-		echo0 "dumping fit-image file"
+		echo0 "unpacking fitimg file"
 		$TOOLS_DIR/fit.sh unpack "$FIRMWARE_DIR/var/tmp/fit-image" "$FITIMAGE_DIR" || exit 1
 		for x in kernel filesystem; do ln $FITIMAGE_DIR/$x.image $FIRMWARE_DIR/var/tmp/; done
 	fi
@@ -2107,14 +2108,18 @@ if [ "$DO_PACK" -gt 0 ]; then
 	img_name="${FW_IMAGES_DIR:-$DIR}/${modstring}.image"
 
 	# Pack firmware image
-	echo0 "packing ${img_name}"
 	if [ -e "$FIRMWARE_MOD_DIR/var/firmware-update.uimg" ]; then
+		echo0 "packing uimg file"
 		mv "$FIRMWARE_MOD_DIR/var/remote/var/tmp/x86/filesystem.image" $FIRMWARE_MOD_DIR/var/*_ATOM_ROOTFS.bin
 		mv "$FIRMWARE_MOD_DIR/var/remote/var/tmp/x86/kernel.image" $FIRMWARE_MOD_DIR/var/*_ATOM_KERNEL.bin
 		rm "$FIRMWARE_MOD_DIR/var/remote" "$FIRMWARE_MOD_DIR/var/firmware-update.uimg" -r
 		"${TOOLS_DIR}/uimg" -p "$FIRMWARE_MOD_DIR/var/firmware-update.uimg" >/dev/null
 		rm $FIRMWARE_MOD_DIR/var/firmware-update_*.bin
+		# size info
+		UIMG_SIZE="$(wc -c < "$FIRMWARE_MOD_DIR/var/firmware-update.uimg")"
+		echo1 "uimg file size: $(byte_to_mb $((UIMG_SIZE))) ($((UIMG_SIZE)) bytes)"
 	elif [ -e "$FIRMWARE_MOD_DIR/var/tmp/fit-image" ]; then
+		echo0 "packing fitimg file"
 		OLD_SIZE="$(stat -L -c %s $FITIMAGE_MOD_DIR/filesystem.image)"
 		for x in kernel filesystem; do mv "$FIRMWARE_MOD_DIR/var/tmp/$x.image" "$FITIMAGE_MOD_DIR/$x.image"; done
 		NEW_SIZE="$(stat -L -c %s $FITIMAGE_MOD_DIR/filesystem.image)"
@@ -2130,7 +2135,13 @@ if [ "$DO_PACK" -gt 0 ]; then
 		# make fit image with avm-magic
 		SOURCE_DATE_EPOCH="$(cat "$FITIMAGE_MOD_DIR/date.txt")" mkimage -f "$FITIMAGE_MOD_DIR/image.its" "$FITIMAGE_MOD_DIR/image.itb" >/dev/null || exit 1
 		$TOOLS_DIR/yf/fit_tools/fit-add-avm-header.sh "$FITIMAGE_MOD_DIR/image.itb" > "$FIRMWARE_MOD_DIR/var/tmp/fit-image" || exit 1
+		# size info
+		FITIMAGE_LIMIT="$(( $FREETZ_AVM_HAS_FIT_SIZE *1024*1024 ))"
+		FITIMAGE_SIZE="$(wc -c < "$FIRMWARE_MOD_DIR/var/tmp/fit-image")"
+		let FITIMAGE_DIFF="FITIMAGE_SIZE-FITIMAGE_LIMIT"
+		echo1 "fitimg file size: $(byte_to_mb $FITIMAGE_SIZE), max $(byte_to_mb $FITIMAGE_LIMIT), free $(byte_to_mb $((-FITIMAGE_DIFF))) ($((-FITIMAGE_DIFF)) bytes)"
 	fi
+	echo0 "packing ${img_name}"
 	"$TAR_GNU" -f "${img_name}"  --owner=0 --group=0 --mode=0755 --format=oldgnu  -C "$FIRMWARE_MOD_DIR"  --create ./var
 	if [ $? -ne 0 ] || ! is_valid_tarball "${img_name}"; then
 		mv "${img_name}" "${img_name}.packed.corrupted" 2>/dev/null
