@@ -10,17 +10,17 @@ These [PREREQUISITES](PREREQUISITES.md) are mandatory to build an image.<br>
 Things you could do to [SUPPORT](SUPPORT.md) Freetz-NG.<br>
 Why the [ADDONS](ADDONS.md) of the "Digitale Elite" are not supported here.
 
-### Timeline
-[GitHub](https://github.com/Freetz-NG/freetz-ng/commits/master)<br>
-[GitLab](https://gitlab.com/Freetz-NG/freetz-ng/commits/master) (Mirror)<br>
-[Bitbucket](https://bitbucket.org/Freetz-NG/freetz-ng/commits/branch/master) (Mirror)<br>
-[Boxmatrix](https://trac.boxmatrix.info/freetz-ng/timeline) (Mirror)<br>
-
 ### Listings
 [Packages](make/README.md)<br>
 [Libraries](libs/README.md)<br>
 [Patches](patches/README.md)<br>
 [Themes](themes/README.md)<br>
+
+### Timeline
+[GitHub](https://github.com/Freetz-NG/freetz-ng/commits/master)<br>
+[GitLab](https://gitlab.com/Freetz-NG/freetz-ng/commits/master) (Mirror)<br>
+[Bitbucket](https://bitbucket.org/Freetz-NG/freetz-ng/commits/branch/master) (Mirror)<br>
+[Boxmatrix](https://trac.boxmatrix.info/freetz-ng/timeline) (Mirror, sluggish)<br>
 
 ### [Wiki](wiki/README.md) (abandon)
 
