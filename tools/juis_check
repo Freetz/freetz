@@ -117,7 +117,6 @@ main() {
 	[ -z "$Country"   ] &&   Country="049"
 	[ -z "$Flag"      ] &&      Flag="$(js $info 'Flag')"
 	[ -z "$Buildtype" ] && Buildtype="$(js $info 'Buildtype')"
-	[ -z "$Buildtype" ] && Buildtype="$(js $info 'Revision')"
 	if [ -z "$Buildtype" ]; then
 		[ "$CHK" == "BoxFirmwareDowngradeCheck" ] && Buildtype="1000" || Buildtype="1"
 	fi
@@ -131,6 +130,7 @@ main() {
 		Version="$(js $info 'Version')"
 		if [ -n "$Version" ]; then
 			Buildnumber="$(js $info 'Buildnumber')"
+			[ -z "$Buildnumber" ] && Buildnumber="$(js $info 'Revision')"
 			[ -n "$Buildnumber" ] && Version="$Version-$Buildnumber"
 		fi
 		if [ -z "$Version" ]; then
