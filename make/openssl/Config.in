@@ -11,6 +11,27 @@ config FREETZ_PACKAGE_OPENSSL
 
 if FREETZ_PACKAGE_OPENSSL
 
+	choice
+		prompt "Version"
+
+		config FREETZ_PACKAGE_OPENSSL_VERSION_0
+			bool "0.9.8 - DEPRECATED"
+			depends on FREETZ_OPENSSL_VERSION_0
+
+		config FREETZ_PACKAGE_OPENSSL_VERSION_1
+			bool "1.0.2 - DEPRECATED"
+			depends on FREETZ_OPENSSL_VERSION_1
+
+		config FREETZ_PACKAGE_OPENSSL_VERSION_2
+			bool "1.1.1"
+			depends on FREETZ_OPENSSL_VERSION_2
+
+		config FREETZ_PACKAGE_OPENSSL_VERSION_3
+			bool "3.0 - EXPERIMENTAL"
+			depends on FREETZ_OPENSSL_VERSION_3
+
+	endchoice
+
 	config FREETZ_PACKAGE_OPENSSL_TRACE
 		bool "With trace output support"
 		depends on FREETZ_OPENSSL_VERSION_1_MIN
