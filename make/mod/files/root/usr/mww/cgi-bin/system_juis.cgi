@@ -20,7 +20,7 @@ if [ -n "$LAST" ]; then
 		[ "$BLDT" == "1001" ] && BLDT='Labor'
 		[ "$BLDT" == "1000" ] && BLDT='Inhaus'
 		[ "$BLDT" == "1" ] && BLDT=''
-		echo "$(lang de:"Installierte Version" en:"Installierte version"): $IVER${IREV:+ rev$IREV}${BLDT:+ $BLDT}"
+		echo "$(lang de:"Installierte Version" en:"Installierte version"): ${IVER%%,*}${IREV:+ rev$IREV}${BLDT:+ $BLDT}"
 		echo '</pre><pre>'
 		echo -n "$(lang de:"Neueste Version" en:"Latest version"): "
 		VERS="$(vfromk Version | sed 's/-/ rev/')"
