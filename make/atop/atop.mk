@@ -1,12 +1,16 @@
-$(call PKG_INIT_BIN, 2.2-3)
+$(call PKG_INIT_BIN, 2.7.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_HASH:=c785b8a2355be28b3de6b58a8ea4c4fcab8fadeaa57a99afeb03c66fac8e055d
-$(PKG)_SITE:=http://www.atoptool.nl/download
+$(PKG)_HASH:=ca48d2f17e071deead5e6e9cc9e388bf6a3270d695e61976b3794d4d927b5c4e
+$(PKG)_SITE:=https://www.atoptool.nl/download
+### WEBSITE:=https://www.atoptool.nl/
+### MANPAGE:=https://linux.die.net/man/1/atop
+### CHANGES:=https://www.atoptool.nl/downloadatop.php
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/atop
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/atop
 
-$(PKG)_DEPENDS_ON += zlib ncurses
+$(PKG)_DEPENDS_ON += zlib ncursesw
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -24,6 +28,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(ATOP_DIR) clean
