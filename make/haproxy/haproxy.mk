@@ -1,10 +1,10 @@
-$(call PKG_INIT_BIN, 2.5.7)
+$(call PKG_INIT_BIN, 2.6.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_HASH:=e29f6334c6bdb521f63ddf335e2621bd2164503b99cf1f495b6f56ff9f3c164e
-$(PKG)_SITE:=https://www.haproxy.org/download/2.5/src
+$(PKG)_HASH:=915b351e6450d183342c4cdcda7771eac4f0f72bf90582adcd15a01c700d29b1
+$(PKG)_SITE:=https://www.haproxy.org/download/2.6/src
 ### WEBSITE:=https://www.haproxy.org/
 ### MANPAGE:=https://linux.die.net/man/1/haproxy
-### CHANGES:=https://www.haproxy.org/download/2.5/src/CHANGELOG
+### CHANGES:=https://www.haproxy.org/download/2.6/src/CHANGELOG
 ### CVSREPO:=https://git.haproxy.org/
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/haproxy
