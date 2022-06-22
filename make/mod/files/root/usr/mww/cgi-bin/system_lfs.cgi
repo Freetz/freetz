@@ -42,6 +42,22 @@ get_partition_by_name() {
 	fi
 }
 
+fitinfo() {
+	[ -e /tmp/bootmanager.data ] && . /tmp/bootmanager.data
+	VER="${inactive_version#*.}"
+	VER="${inactive_version%-*}"
+	REV="${inactive_version#*-}"
+	DAT="$(date -d @$inactive_date_epoch +'%d.%m.%Y %H:%M:%S')"
+	echo "FritzOS ${VER:-UNKNOWN}${REV:+ rev$REV}${DAT:+ ($DAT)}"
+
+	if [ -n "$inactive_modified_by" ]; then
+		WHO="${inactive_modified_by/Freetz-NG/Freetz}"
+		SUB="${inactive_modified_version:-ng}"
+		FMD="$(date -d @$inactive_modified_at_epoch +'%d.%m.%Y %H:%M:%S')"
+		echo "$WHO ${SUB##*freetz-} ($FMD)"
+	fi
+}
+
 imginfo() {
 	DIR=${1:-/}
 
@@ -89,28 +105,40 @@ resunm() {
 	done
 }
 
-NEXT="$(sed -n 's/^linux_fs_start[ \t]*//p' /proc/sys/urlader/environment)"
-[ -z "$NEXT" ] && NEXT=0
+SWITCHABLE="y"
+if [ -x "$(which bootslotctl)" ]; then
+	. /var/env.mod.daemon  # CONFIG_ENVIRONMENT_PATH
+	LFS_LIVE="$(bootslotctl get_active)"
+	LFS_DEAD="$(bootslotctl get_other)"
+	NEXT="$LFS_LIVE"
+	[ "$LFS_LIVE" == "$LFS_DEAD" ] && LFS_LIVE="$(( ($LFS_LIVE+1) %2 ))" && SWITCHABLE="n"
+	PRIB="$(imginfo /)"
+	SECB="$(fitinfo)"
+else
+	NEXT="$(sed -n 's/^linux_fs_start[ \t]*//p' /proc/sys/urlader/environment)"
+	[ -z "$NEXT" ] && NEXT=0
 
-LIVE="$(get_partition_by_name filesystem)"
-DEAD="$(get_partition_by_name filesystem reserved)"
+	LIVE="$(get_partition_by_name filesystem)"
+	DEAD="$(get_partition_by_name filesystem reserved)"
 
-PRIB="$(imginfo /)"
-find "${CACHE%/*}/" -maxdepth 1 -name "${CACHE##*/}" -mmin +9 -exec rm -f {} ';'
-SECB="$(cat $CACHE 2>/dev/null)"
-if [ -z "$SECB" ]; then
-	resmnt
-	SECB="$(imginfo $MNT | tee $CACHE)"
+	PRIB="$(imginfo /)"
+	find "${CACHE%/*}/" -maxdepth 1 -name "${CACHE##*/}" -mmin +9 -exec rm -f {} ';'
+	SECB="$(cat $CACHE 2>/dev/null)"
+	if [ -z "$SECB" ]; then
+		resmnt
+		SECB="$(imginfo $MNT | tee $CACHE)"
+	fi
+	resunm
+
+	[ $LIVE -gt $DEAD ] && LFS_LIVE=1 || LFS_LIVE=0
+	[ $LIVE -gt $DEAD ] && LFS_DEAD=0 || LFS_DEAD=1
 fi
-resunm
 
-[ $LIVE -gt $DEAD ] && LFS=1 || LFS=0
-[ "$LFS" != "$NEXT" ] && RUN="$(lang de:"deaktiviert" en:"disabled")" || RUN="$(lang de:"aktiviert" en:"enabled")"
-PRIH="$(lang de:"Momentan in" en:"Running at") linux_fs_start=$LFS, $RUN $(lang de:"beim n&auml;chsten Systemstart" en:"on next system start")"
+[ "$LFS_LIVE" != "$NEXT" ] && RUN="$(lang de:"deaktiviert" en:"disabled")" || RUN="$(lang de:"aktiviert" en:"enabled")"
+PRIH="$(lang de:"Momentan in" en:"Running at") linux_fs_start=$LFS_LIVE, $RUN $(lang de:"beim n&auml;chsten Systemstart" en:"on next system start")"
 
-[ $LIVE -gt $DEAD ] && LFS=0 || LFS=1
-[ "$LFS" != "$NEXT" ] && RUN="$(lang de:"deaktiviert" en:"disabled")" || RUN="$(lang de:"aktiviert" en:"enabled")"
-SECH="$(lang de:"Reserve in" en:"Reserve at") linux_fs_start=$LFS, $RUN $(lang de:"beim n&auml;chsten Systemstart" en:"on next system start")"
+[ "$LFS_DEAD" != "$NEXT" ] && RUN="$(lang de:"deaktiviert" en:"disabled")" || RUN="$(lang de:"aktiviert" en:"enabled")"
+SECH="$(lang de:"Reserve in" en:"Reserve at") linux_fs_start=$LFS_DEAD, $RUN $(lang de:"beim n&auml;chsten Systemstart" en:"on next system start")"
 
 
 cat << EOF | sed -r 's#(Running|Momentan| enabled| aktiviert)#<span class="success">\1</span>#g;s#(Reserve| disabled| deaktiviert)#<span class="failure">\1</span>#g'
@@ -121,5 +149,6 @@ cat << EOF | sed -r 's#(Running|Momentan| enabled| aktiviert)#<span class="succe
 <pre>$SECB</pre>
 EOF
 
+# [ "$SWITCHABLE" != "n" ] && \
 stat_button linux_fs_start "$(lang de:"Firmwarepartition wechseln" en:"Toggle firmware partition")"
 
