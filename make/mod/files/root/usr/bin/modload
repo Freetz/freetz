@@ -43,6 +43,7 @@ mod_load() {
 		echo  "export PATH='/mod/sbin:/mod/bin:/mod/usr/sbin:/mod/usr/bin:/mod/etc/init.d:$PATH'"
 		echo  "export LD_LIBRARY_PATH='/mod/lib:/mod/usr/lib'"
 		grep "^export LANG=" /var/env.mod.rcconf
+		grep "^export CONFIG_ENVIRONMENT_PATH=" /var/env.mod.rcconf
 	) > /var/env.mod.daemon
 	echo "done."
 
