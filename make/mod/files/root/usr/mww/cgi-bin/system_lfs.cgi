@@ -105,7 +105,7 @@ resunm() {
 	done
 }
 
-SWITCHABLE="y"
+# SWITCHABLE="y"
 if [ -x "$(which bootslotctl)" ]; then
 	. /var/env.mod.daemon  # CONFIG_ENVIRONMENT_PATH
 	LFS_LIVE="$(bootslotctl get_active)"
@@ -113,6 +113,13 @@ if [ -x "$(which bootslotctl)" ]; then
 	NEXT="$LFS_LIVE"
 	[ "$LFS_LIVE" == "$LFS_DEAD" ] && LFS_LIVE="$(( ($LFS_LIVE+1) %2 ))" && SWITCHABLE="n"
 	PRIB="$(imginfo /)"
+#	MTD_DEAD="$(sed -n "s,:.*fit$LFS_DEAD.*,,p" /proc/mtd)"
+#	OFF_DEAD="$(sed -nr 's,^rootfs_type.*rootfs_offset=([0-9]*).*,\1,p' /tmp/bootmanager.inactive.fit)"
+#	#rootfs_type=squashfs rootfs_offset=X rootfs_size=Y
+#	cat /dev/$MTD_DEAD > $OUTER
+#	modprobe loop 2>/dev/null
+#	mount -o loop,offset=$OFF_DEAD $OUTER $INNER
+#	SECB="$(imginfo $OUTER)"
 	SECB="$(fitinfo)"
 else
 	NEXT="$(sed -n 's/^linux_fs_start[ \t]*//p' /proc/sys/urlader/environment)"
