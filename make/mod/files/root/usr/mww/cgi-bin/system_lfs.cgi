@@ -111,7 +111,7 @@ if [ -x "$(which bootslotctl)" ]; then
 	LFS_LIVE="$(bootslotctl get_active)"
 	LFS_DEAD="$(bootslotctl get_other)"
 	NEXT="$LFS_LIVE"
-	[ "$LFS_LIVE" == "$LFS_DEAD" ] && LFS_LIVE="$(( ($LFS_LIVE+1) %2 ))" && SWITCHABLE="n"
+	[ "$LFS_LIVE" == "$LFS_DEAD" ] && LFS_LIVE="$(( ($LFS_LIVE+1) %2 ))"  # && SWITCHABLE="n"
 	PRIB="$(imginfo /)"
 #	MTD_DEAD="$(sed -n "s,:.*fit$LFS_DEAD.*,,p" /proc/mtd)"
 #	OFF_DEAD="$(sed -nr 's,^rootfs_type.*rootfs_offset=([0-9]*).*,\1,p' /tmp/bootmanager.inactive.fit)"
