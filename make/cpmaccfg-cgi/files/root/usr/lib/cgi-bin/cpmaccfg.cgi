@@ -85,7 +85,7 @@ cat << EOF
 EOF
 
 # Dropdown für Einstellungen anzeigen
-. /var/env.mod.rcconf
+. /bin/env.mod.rcconf
 BOXTYPE=${CONFIG_PRODUKT#Fritz_Box_}
 if [ "$BOXTYPE" != "7170" ]; then drop="disabled"; fi
 

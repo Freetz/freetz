@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. /var/env.mod.rcconf
+. /bin/env.mod.rcconf
 
 # Make sure that no command accidentally writes stdout or stderr stuff into
 # the output stream = tar archive. File descriptor 3 is the real output.

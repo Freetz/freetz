@@ -2,7 +2,7 @@ get_env() {
 	sed -n "s/^$1	//p" /proc/sys/urlader/environment
 }
 
-. /var/env.mod.rcconf
+. /bin/env.mod.rcconf
 
 sec_begin "$CONFIG_PRODUKT_NAME"
 

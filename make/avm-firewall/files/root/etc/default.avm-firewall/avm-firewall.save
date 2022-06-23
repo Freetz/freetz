@@ -22,7 +22,7 @@ pkg_post_save() {
 	fi
 	if echo "$AVM_FIREWALL_DO_ACTIVATE" | grep -q ctlmgr; then
 		echo -n "Restarting ctlmgr ... "
-		. /var/env.mod.rcconf
+		. /bin/env.mod.rcconf
 		ctlmgr -s
 		sleep 1
 		killall -9 ctlmgr 2> /dev/null

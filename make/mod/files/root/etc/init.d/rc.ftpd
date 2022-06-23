@@ -24,7 +24,7 @@ start() {
 	echo -n "Starting ${DAEMON_LONG_NAME} ... "
 
 	# include environment variables
-	. /var/env.mod.rcconf
+	. /bin/env.mod.rcconf
 
 	# redirect is needed to allow start by webif
 	ftpd -D --pidfile=$PID_FILE -m 15 $(get_options) >/dev/null 2>&1

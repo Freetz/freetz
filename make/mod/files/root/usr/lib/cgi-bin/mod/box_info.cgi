@@ -3,7 +3,7 @@
 
 
 # include environment variables
-. /var/env.mod.rcconf
+. /bin/env.mod.rcconf
 
 notdefined="$(lang de:"unbekannt" en:"unknown")"
 divstyle="style='margin-top:6px;'"
@@ -249,7 +249,7 @@ sec_end
 
 sec_begin "$(lang de:"Eigenschaften" en:"Properties")"
 	echo -n '<div class="textwrapper"><textarea style="margin-top:6px;" name="content" rows="5" cols="10" wrap="off" readonly>'
-	sed -e "s/^export //g" /var/env.mod.rcconf | html
+	sed -e "s/^export //g. /bin/env.mod.rcconf | html
 	echo -n '</textarea></div>'
 sec_end
 

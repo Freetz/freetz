@@ -1,6 +1,6 @@
 #!/bin/sh
 # include environment variables
-. /var/env.mod.rcconf
+. /bin/env.mod.rcconf
 
 fname=$(echo ${CONFIG_PRODUKT_NAME}_${CONFIG_VERSION_MAJOR}.${CONFIG_VERSION}-$(cat /etc/.freetz-version)$(date '+_%Y-%m-%d_%H%M_support.tgz') | tr ' !' '_.')
 CR=$'\r'
