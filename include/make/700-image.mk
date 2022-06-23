@@ -49,7 +49,7 @@ else
 	@ \
 	if [ "$$(call qstrip,$(FREETZ_TYPE_FIRMWARE_DETECT_LATEST))" == "y" ]; then \
 		echo -n "JUIS: "; \
-		find $$(DL_FW_DIR) -maxdepth 1 -name $$(DL_SOURCE$(1)_LOCAL).url -mmin +60 -exec rm -f {} ';'; \
+		find $$(DL_FW_DIR) -maxdepth 1 -name $$(DL_SOURCE$(1)_LOCAL).url -mmin +360 -exec rm -f {} ';'; \
 		DL_URL_FIRMWARE="$$$$(cat $$(IMAGE$(1)).url.own 2>/dev/null)"; \
 		if [ -n "$$$$DL_URL_FIRMWARE" ]; then \
 			echo -n "Using custom value ... "; \
