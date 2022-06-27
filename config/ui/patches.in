@@ -1295,7 +1295,7 @@ config FREETZ_PATCH_MODFS_ANNEX_SELECTION
 	help
 		Unhides Annex selection in Fritz!OS web interface.
 
-config FREETZ_PATCH_MODFS_BOOT_MANAGER
+menuconfig FREETZ_PATCH_MODFS_BOOT_MANAGER
 	bool "Add yf-bootmanager"
 	depends on FREETZ_AVM_VERSION_06_5X_MIN
 	depends on ( FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE && !FREETZ_AVM_HAS_FWLAYOUT_6 ) || \
@@ -1304,6 +1304,36 @@ config FREETZ_PATCH_MODFS_BOOT_MANAGER
 	default n
 	help
 		Extends the "reboot" page of FRITZ!OS to select system version and branding.
+
+	if FREETZ_PATCH_MODFS_BOOT_MANAGER
+
+		comment "To view other versions, disable precompiled host-tools"
+			depends on FREETZ_HOSTTOOLS_DOWNLOAD
+
+		choice
+			prompt "Version"
+				default FREETZ_PATCH_MODFS_BOOT_MANAGER_latest
+
+			config FREETZ_PATCH_MODFS_BOOT_MANAGER_tested
+				bool "tested"
+
+			config FREETZ_PATCH_MODFS_BOOT_MANAGER_latest
+				bool "latest"
+				depends on FREETZ_HOSTTOOLS_BUILD
+				help
+					This uses the stable Github-Tag: freetz-ng-version
+					https://github.com/PeterPawn/YourFritz/commits/freetz-ng-version
+
+			config FREETZ_PATCH_MODFS_BOOT_MANAGER_labor
+				bool "labor - EXPERIMENTAL"
+				depends on FREETZ_HOSTTOOLS_BUILD
+				help
+					This uses the experimental Github-Tag: freetz-ng-test
+					https://github.com/PeterPawn/YourFritz/commits/freetz-ng-test
+
+		endchoice
+
+	endif # FREETZ_PATCH_MODFS_BOOT_MANAGER
 
 if FREETZ_AVM_HAS_USB_HOST
 comment "USB patches ----------------------------------------------"
