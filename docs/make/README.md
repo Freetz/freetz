@@ -154,6 +154,9 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
   * **[dtach 0.8 (binary only)](dtach.md)<a id='dtach'></a>**<br>
     dtach is a tiny program that emulates the detach feature of screen, allowing you to run a program in an environment that is protected from the controlling terminal and attach to it later.
 
+  * **[dtc 1.6.1](dtc.md)<a id='dtc'></a>**<br>
+    Device  Tree  Compiler,  dtc, takes as input a device-tree in a given format and outputs a device-tree in another format for booting kernels on  embedded  systems.   Typically,  the input  format  is  "dts",  a  human readable source format, and creates a "dtb", or binary format as output.
+
   * **<u>dvbsnoop 1.4.50 (binary only)</u><a id='dvbsnoop'></a>**<br>
     DVB analyzer / MPEG analyzer program to monitor, analyze, debug, dump or view dvb/mpeg/dsm-cc/mhp stream information (TS, PES, SECTION) (e.g. digital television) send via satellite, cable or terrestrial.
 
