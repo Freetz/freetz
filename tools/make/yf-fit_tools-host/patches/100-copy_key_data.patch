@@ -1,0 +1,64 @@
+--- fit_tools/fit-add-avm-header.sh
++++ fit_tools/fit-add-avm-header.sh
+@@ -30,6 +30,7 @@
+ # This script takes a FIT image built with U-boot's 'mkimage' command and adds a header using AVM's   #
+ # extension format.                                                                                   #
+ # The data part, which looks like a cryptographic signature to me, will be filled with zeros.         #
++### [cuma] optional copy this data part from given source file [cuma]                               ###
+ #                                                                                                     #
+ #######################################################################################################
+ #                                                                                                     #
+@@ -149,6 +150,7 @@
+ 		printf -- "Usage: %s [ options ] <standard-fit-image>\n\n" "$0"
+ 		printf -- "Options:\n\n"
+ 		printf -- "-d or --debug - show some extra info on STDERR\n"
++		printf -- "-k or --key FILE - extract 512bit key from FILE\n"
+ 		printf -- "\n"
+ 		exec 1>&2
+ 	}
+@@ -159,12 +161,20 @@
+ 	fdt32_size=4
+ 
+ 	dbg=0
++	key=
+ 	while [ "$(expr "$1" : "\(.\).*")" = "-" ]; do
+ 		[ "$1" = "--" ] && shift && break
+ 
+ 		if [ "$1" = "-d" ] || [ "$1" = "--debug" ]; then
+ 			dbg=1
+ 			shift
++		elif [ "$1" = "-k" ] || [ "$1" = "--key" ]; then
++			shift
++			key=$1
++			! [ -n "$key" ] && printf -- "A file is mandatory for key parameter\a\n" 1>&2 && exit 1
++			! [ -e "$key" ] && printf -- "File not found: %s\a\n" "$key" 1>&2 && exit 1
++			! [ -s "$key" ] && printf -- "File is empty: %s\a\n" "$key" 1>&2 && exit 1
++			shift
+ 		elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+ 			usage
+ 			exit 0
+@@ -215,6 +225,16 @@
+ 	fi
+ 
+ 	# TODO: further investigations to find the algorithm used to fill this area
++	# UNTIL THEN: just copy from given source file, in case its something magic
++if [ "$key" != "" ]; then
++	debug "Copying so called signature area ..."
++	if dd if="$key" bs=1 skip=8 count=64 iflag=skip_bytes,count_bytes 2>"$null"; then
++		result 0 " OK"
++	else
++		result 1 " failed"
++		exit 1
++	fi
++else
+ 	debug "Writing zeros to (assumed) signature area ..."
+ 	if dd if="$zeros" bs=64 count=1 2>"$null"; then
+ 		result 0 " OK"
+@@ -222,6 +242,7 @@
+ 		result 1 " failed"
+ 		exit 1
+ 	fi
++fi
+ 
+ 	debug "Copying standard FIT data ..."
+ 	if dd if="$img" bs=$(( 1024 * 1024 )) 2>"$null"; then
