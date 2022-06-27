@@ -72,6 +72,15 @@ ar7lite() {
 	echo "$fit"
 }
 
+update_lfs() {
+	[ "$FREETZ_AVM_PROP_INNER_FILESYSTEM_TYPE_CPIO" == "y" ] && return
+	[ -e /usr/mww/cgi-bin/system_lfs.cgi ] || return
+	[ "$MOD_UPDATE_LFS" != "yes" ] && return
+	echo -n "Updating lfs cache ... "
+	nohup /usr/mww/cgi-bin/system_lfs.cgi startup 0</dev/null 1>/dev/null 2>&1 &
+	echo "asynchronous."
+}
+
 start() {
 	echo "Freetz version $(sed 's/^freetz-//' /etc/.freetz-version)"
 
@@ -147,6 +156,7 @@ start() {
 	wlan_up
 	motd
 	ar7lite
+	update_lfs
 
 	if [ -s /tmp/flash/mod/rc.custom ]; then
 		echo -n "Starting rc.custom ... "

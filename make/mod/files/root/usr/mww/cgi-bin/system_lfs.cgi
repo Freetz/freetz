@@ -31,6 +31,7 @@
 ##############################################################################
 
 [ -r /etc/options.cfg ] && . /etc/options.cfg
+[ "$1" == "startup" ] && VISUALIZE='no' || VISUALIZE='yes'
 
 get_partition_by_name() {
 	if [ "$FREETZ_TYPE_CABLE" != "y" ]; then
@@ -132,7 +133,7 @@ if [ -x "$(which bootslotctl)" ]; then
 	LFS_DEAD="$(bootslotctl get_other)"
 	NEXT="$LFS_LIVE"
 	[ "$LFS_LIVE" == "$LFS_DEAD" ] && LFS_LIVE="$(( ($LFS_LIVE+1) %2 ))"  # && SWITCHABLE="n"
-	PRIB="$(imginfo /)"
+	[ "$VISUALIZE" != "yes" ] || PRIB="$(imginfo /)"
 	if [ -x /usr/bin/bootmanager ]; then
 		SECB="$(fitinfo)"
 	else
@@ -150,8 +151,8 @@ else
 	LIVE="$(get_partition_by_name filesystem)"
 	DEAD="$(get_partition_by_name filesystem reserved)"
 
-	PRIB="$(imginfo /)"
-	find "${CACHE%/*}/" -maxdepth 1 -name "${CACHE##*/}" -mmin +9 -exec rm -f {} ';'
+	[ "$VISUALIZE" != "yes" ] || PRIB="$(imginfo /)"
+#	find "${CACHE%/*}/" -maxdepth 1 -name "${CACHE##*/}" -mmin +9 -exec rm -f {} ';'
 	SECB="$(cat $CACHE 2>/dev/null)"
 	if [ -z "$SECB" ]; then
 		resmnt
@@ -163,12 +164,12 @@ else
 	[ $LIVE -gt $DEAD ] && LFS_DEAD=0 || LFS_DEAD=1
 fi
 
-[ "$LFS_LIVE" != "$NEXT" ] && RUN="$(lang de:"deaktiviert" en:"disabled")" || RUN="$(lang de:"aktiviert" en:"enabled")"
-PRIH="$(lang de:"Momentan in" en:"Running at") linux_fs_start=$LFS_LIVE, $RUN $(lang de:"beim n&auml;chsten Systemstart" en:"on next system start")"
+visualize() {
+	[ "$LFS_LIVE" != "$NEXT" ] && RUN="$(lang de:"deaktiviert" en:"disabled")" || RUN="$(lang de:"aktiviert" en:"enabled")"
+	PRIH="$(lang de:"Momentan in" en:"Running at") linux_fs_start=$LFS_LIVE, $RUN $(lang de:"beim n&auml;chsten Systemstart" en:"on next system start")"
 
-[ "$LFS_DEAD" != "$NEXT" ] && RUN="$(lang de:"deaktiviert" en:"disabled")" || RUN="$(lang de:"aktiviert" en:"enabled")"
-SECH="$(lang de:"Reserve in" en:"Reserve at") linux_fs_start=$LFS_DEAD, $RUN $(lang de:"beim n&auml;chsten Systemstart" en:"on next system start")"
-
+	[ "$LFS_DEAD" != "$NEXT" ] && RUN="$(lang de:"deaktiviert" en:"disabled")" || RUN="$(lang de:"aktiviert" en:"enabled")"
+	SECH="$(lang de:"Reserve in" en:"Reserve at") linux_fs_start=$LFS_DEAD, $RUN $(lang de:"beim n&auml;chsten Systemstart" en:"on next system start")"
 
 cat << EOF | sed -r 's#(Running|Momentan| enabled| aktiviert)#<span class="success">\1</span>#g;s#(Reserve| disabled| deaktiviert)#<span class="failure">\1</span>#g'
 <h1>$(lang de:"Vorhandene Firmwareversionen" en:"Available firmware versions")</h1>
@@ -178,6 +179,8 @@ cat << EOF | sed -r 's#(Running|Momentan| enabled| aktiviert)#<span class="succe
 <pre>$SECB</pre>
 EOF
 
-# [ "$SWITCHABLE" != "n" ] && \
-stat_button linux_fs_start "$(lang de:"Firmwarepartition wechseln" en:"Toggle firmware partition")"
+#	[ "$SWITCHABLE" != "n" ] && \
+	stat_button linux_fs_start "$(lang de:"Firmwarepartition wechseln" en:"Toggle firmware partition")"
+}
+[ "$VISUALIZE" != "yes" ] || visualize
 
