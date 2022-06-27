@@ -4,7 +4,12 @@
 . /usr/lib/libmodcgi.sh
 
 stat_button() {
-	[ "$1" != "reboot" ] && CHECK="" || CHECK="onsubmit='return window.confirm(\"Reboot?\")'"
+	local CHECK=""
+	if [ "$1" == "reboot" ]; then
+		CHECK="onsubmit='return window.confirm(\"Reboot?\")'"
+	elif [ "$1" == "linux_fs_start" ] && [ -x "$(which bootslotctl)" ]; then
+		CHECK="onsubmit='return window.confirm(\"Toggle?\")'"
+	fi
 	echo "<form action='/cgi-bin/exec.cgi/$1' $CHECK method='post'><p><input type='submit' value='$2'></p></form>"
 }
 
