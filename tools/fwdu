@@ -353,7 +353,7 @@ if [ "$unpack" == "y" ]; then
 		done
 		[ -n "$do_verbose" ] && echo -e "Using 'tools' of ${FTOOLS%/*}\n"
 	fi
-	if [ ! -e $FTOOLS/find-squashfs -o ! -e $FTOOLS/uimg -o ! -e $FTOOLS/fit/fitdump -o ! -e $FTOOLS/yf/fit_tools/fit-remove-avm-header.sh ]; then
+	if [ ! -e $FTOOLS/find-squashfs -o ! -e $FTOOLS/uimg -o ! -e $FTOOLS/fit/fitdump -o ]; then
 		echo "You have to run 'make tools-all' first."
 		exit 1
 	fi

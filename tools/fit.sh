@@ -47,8 +47,9 @@ unpack() {
 	local c='0' FILE="$1" OUTP="${2:-.}"
 	[ ! -e "$FILE" ] && echo "File $FILE does not exist" && exit 1
 	mkdir -p "$OUTP"
-	$MYPWD/yf/fit_tools/fit-remove-avm-header.sh "$FILE" > "$OUTP/image.itb" 2>/dev/null || cat "$FILE" > "$OUTP/image.itb"
-	$FTDIR/fitdump --output="$OUTP" "$OUTP/image.itb"
+#	$MYPWD/yf/fit_tools/fit-remove-avm-header.sh "$FILE" > "$OUTP/image.itb" 2>/dev/null || cat "$FILE" > "$OUTP/image.itb"
+#	$FTDIR/fitdump --output="$OUTP" "$OUTP/image.itb"
+	tail -c +73 "$FILE" | tee "$OUTP/image.itb" | $FTDIR/fitdump --output="$OUTP" -
 #	$FTDIR/dtc -I dtb -O dts "$OUTP/image.itb" | tee "$OUTP/image.dts" | sed "s/^[ \t]*data = .*/XDATAXSEQUENCEX/g" > "$OUTP/image.its"
 #	[ ! -s  "$OUTP/image.its" ] && rm -f "$OUTP"/image.* && exit 1
 #	while grep -q "XDATAXSEQUENCEX" "$OUTP/image.its"; do
