@@ -18,6 +18,36 @@ choice
 
 endchoice # "Toolchains" #
 
+config FREETZ_TOOLCHAIN_32BIT
+	bool "Build 32-bit tools and toolchains"
+	depends on FREETZ_SHOW_APTGURU
+	depends on !FREETZ_DOWNLOAD_TOOLCHAIN
+	depends on !FREETZ_HOSTTOOLS_DOWNLOAD
+	default n
+	help
+		This option causes 32-bit tools and toolchains to be built on a 64-bit systems.
+
+config FREETZ_TOOLCHAIN_CCACHE
+	bool "Build ccache for kernel and target"
+	depends on FREETZ_SHOW_APTGURU
+	default y if FREETZ_SHOW_APTGURU
+	default n
+	help
+		ccache is a compiler cache. It acts as a caching pre-processor to C/C++
+		compilers, using the -E compiler switch and a hash to detect when a
+		compilation can be satisfied from cache. This often results in a 5 to 10
+		times speedup in common compilations.
+
+		The idea came from Erik Thiele wrote the original compilercache program
+		as a bourne shell script. ccache is a re-implementation of Erik's idea
+		in C with more features and better performance.
+
+config FREETZ_TOOLCHAIN_MINIMIZE_REQUIRED_GLIBC_VERSION
+#	bool "Minimize required GLIBC version" if FREETZ_BUILD_TOOLCHAIN
+	bool
+	default y
+
+
 comment "Kernel toolchain options ----------------------------------------"
 
 config FREETZ_KERNEL_BINUTILS_2_18_DEFAULT
@@ -165,6 +195,7 @@ config FREETZ_KERNEL_GCC_VERSION
 	default "5.5.0" if FREETZ_KERNEL_GCC_5
 	default "8.3.0" if FREETZ_KERNEL_GCC_8
 	default "9.3.0" if FREETZ_KERNEL_GCC_9
+
 
 comment "Target toolchain options ----------------------------------------"
 
@@ -780,35 +811,16 @@ config FREETZ_TARGET_TOOLCHAIN
 		Build the binutils and gcc to run on the target.
 		Files are installed into toolchain/target/target-utils.
 
-comment "Tools and toolchains options ------------------------"
-config FREETZ_TOOLCHAIN_MINIMIZE_REQUIRED_GLIBC_VERSION
-#	bool "Minimize required GLIBC version" if FREETZ_BUILD_TOOLCHAIN
-	bool
-	default y
 
-config FREETZ_TOOLCHAIN_32BIT
-	bool "Build 32-bit tools and toolchains"
-	depends on FREETZ_SHOW_APTGURU
-	depends on !FREETZ_DOWNLOAD_TOOLCHAIN
+comment "Host-tools options ----------------------------------"
+
+config FREETZ_UBOOT_STATIC
+	bool "Build U-Boot with static OpenSSL"
 	depends on !FREETZ_HOSTTOOLS_DOWNLOAD
 	default n
 	help
-		This option causes 32-bit tools and toolchains to be built on a 64-bit systems.
-
-config FREETZ_TOOLCHAIN_CCACHE
-	bool "Build ccache for kernel and target"
-	depends on FREETZ_SHOW_APTGURU
-	default y if FREETZ_SHOW_APTGURU
-	default n
-	help
-		ccache is a compiler cache. It acts as a caching pre-processor to C/C++
-		compilers, using the -E compiler switch and a hash to detect when a
-		compilation can be satisfied from cache. This often results in a 5 to 10
-		times speedup in common compilations.
-
-		The idea came from Erik Thiele wrote the original compilercache program
-		as a bourne shell script. ccache is a re-implementation of Erik's idea
-		in C with more features and better performance.
+		Used for precompiled dl-tools. You need to
+		have a installed libssl.a and libctypto.a
 
 choice
 	prompt "Root emulator"

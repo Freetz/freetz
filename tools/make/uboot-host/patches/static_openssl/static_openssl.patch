@@ -1,0 +1,12 @@
+--- tools/Makefile
++++ tools/Makefile
+@@ -175,7 +175,8 @@
+ HOSTCFLAGS_kwbimage.o += \
+ 	$(shell pkg-config --cflags libssl libcrypto 2> /dev/null || echo "")
+ HOSTLDLIBS_mkimage += \
+-	$(shell pkg-config --libs libssl libcrypto 2> /dev/null || echo "-lssl -lcrypto")
++	-Wl,-Bstatic  $(shell pkg-config --libs          libssl libcrypto 2> /dev/null) \
++	-Wl,-Bdynamic $(shell pkg-config --libs --static libssl libcrypto 2> /dev/null)
+ 
+ # OS X deprecate openssl in favour of CommonCrypto, supress deprecation
+ # warnings on those systems
