@@ -42,6 +42,7 @@ PATH=${PATH:+${PATH}:}/sbin
 
 UIMG_TOOL="${0%/*}/uimg"
 TSUM_TOOL="${0%/*}/tichksum"
+FDTD_TOOL="${0%/*}/fit/fdtdump"
 
 function wait_loader() {
 	echo -en " * No reply from box, assuming switch-off or restart. Trying to re-detect box.\n   Waiting "
@@ -327,6 +328,13 @@ prepare_image() {
 			echo -e "Error: file is not a valid fit-boot image to be written to the device.\n" >&2
 			exit 1
 		fi
+#		if tail -c +73 "$fitimage" | $FDTD_TOOL - 2>/dev/null | grep -q 'mtdram=rootfs_ram'; then
+		if strings "$fitimage" | grep -q 'mtdram=rootfs_ram'; then
+			echo -e "Error: it is not known how to flash a fit-boot image with 'rootfs_ram' method yet." >&2
+			echo -e "Error: run a recovery.exe and get a capture by wireguard or tcpdump to add it." >&2
+			echo -e "Error: meanwhile install an older firmware and flash this one by the web interface.\n" >&2
+			exit 1
+		fi
 	elif [ $ISRAM ]; then
 		tmpdir=$(mktemp -td freetz_XXX) || { echo "Error creating temporary directory."; exit 1; }
 		mtdram1="$tmpdir/ramboot.flash"
@@ -576,6 +584,7 @@ fi
 [ $ISUIMG ]     && [ ! $LFS ]                  && LFS="1"
 [ $ISUIMG ]     && [ ! -x $UIMG_TOOL ]         && echo "File $UIMG_TOOL missing. Run 'make uimg-host' first."              && exit 1
 [ $ISRAM ]      && [ ! -x $TSUM_TOOL ]         && echo "File $TSUM_TOOL missing. Run 'make tichksum-host' first."          && exit 1
+[ $ISFIT ]      && [ ! -x $FDTD_TOOL ]         && echo "File $FDTD_TOOL missing. Run 'make dtc-host' first."               && exit 1
 [ ! $ISRAM ] && [ ! $ISFIT ] && [ $FULLSIZE ]  && echo "Parameter '-ram' is only allowed for ram-boot and fit-boot mode."  && exit 1
 [ ! $ISRAM ] && [ ! $ISFIT ] && [ $MAPSTART ]  && echo "Parameter '-map' is only allowed for ram-boot and fit-boot mode."  && exit 1
 [ ! $ISRAM ] && [ ! $ISFIT ] && [ $ALIBYTES ]  && echo "Parameter '-ali' is only allowed for ram-boot and fit-boot mode."  && exit 1
