@@ -1,8 +1,14 @@
-YF_BOOTMANAGER_REPOSITORY:=https://github.com/PeterPawn/YourFritz.git
-$(call TOOL_INIT, $(shell git ls-remote --tags $(YF_BOOTMANAGER_REPOSITORY) freetz-ng-version | sed -n -e "s|^\([0-9a-f]*\).*|\1|p"))
+YF_BOOTMANAGER_HOST_REPOSITORY:=https://github.com/PeterPawn/YourFritz.git
+$(call TOOLS_INIT, $(shell git ls-remote --tags $(YF_BOOTMANAGER_HOST_REPOSITORY) freetz-ng-version | sed -n -e "s|^\([0-9a-f]*\).*|\1|p"))
 # Versions after this commit have no vanilla GPL3 - but it's not a problem to use the unchanged(!) version in an own image.
-$(TOOL)_SITE:=git_sparse@https://github.com/PeterPawn/YourFritz.git,bootmanager
-$(TOOL)_SOURCE:=yf-bootmanager-$($(TOOL)_VERSION).tar.xz
+$(PKG)_SOURCE:=yf-bootmanager-$($(PKG)_VERSION).tar.xz
+$(PKG)_HASH:=X
+$(PKG)_SITE:=git_sparse@$($(PKG)_REPOSITORY),bootmanager
+### VERSION:=0.8.6
+### WEBSITE:=https://github.com/PeterPawn/YourFritz/tree/main/bootmanager
+### MANPAGE:=https://github.com/PeterPawn/YourFritz/tree/main/bootmanager#readme
+### CHANGES:=https://github.com/PeterPawn/YourFritz/commits/main/bootmanager
+### CVSREPO:=https://github.com/PeterPawn/YourFritz/tree/main/bootmanager
 
 
 $(TOOLS_SOURCE_DOWNLOAD)
