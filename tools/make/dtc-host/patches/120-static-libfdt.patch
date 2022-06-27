@@ -1,0 +1,17 @@
+--- Makefile
++++ Makefile
+@@ -265,11 +265,11 @@
+ 
+ fitdump:	$(FITDUMP_OBJS)
+ 
+-fdtget:	$(FDTGET_OBJS) $(LIBFDT_lib)
++fdtget:	$(FDTGET_OBJS) $(LIBFDT_archive)
+ 
+-fdtput:	$(FDTPUT_OBJS) $(LIBFDT_lib)
++fdtput:	$(FDTPUT_OBJS) $(LIBFDT_archive)
+ 
+-fdtoverlay: $(FDTOVERLAY_OBJS) $(LIBFDT_lib)
++fdtoverlay: $(FDTOVERLAY_OBJS) $(LIBFDT_archive)
+ 
+ dist:
+ 	git archive --format=tar --prefix=dtc-$(dtc_version)/ HEAD \

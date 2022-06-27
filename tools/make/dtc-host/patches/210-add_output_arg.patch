@@ -1,0 +1,30 @@
+--- fitdump.c
++++ fitdump.c
+@@ -201,14 +201,16 @@
+ /* Usage related data. */
+ static const char usage_synopsis[] = "fitdump [options] <file>";
+ /* static const char usage_short_opts[] = "ds" USAGE_COMMON_SHORT_OPTS; */
+-static const char usage_short_opts[] = "dn" USAGE_COMMON_SHORT_OPTS;
++static const char usage_short_opts[] = "odn" USAGE_COMMON_SHORT_OPTS;
+ static struct option const usage_long_opts[] = {
++	{"output",     required_argument, NULL, 'o'},
+ 	{"debug",            no_argument, NULL, 'd'},
+ 	{"nodenames",        no_argument, NULL, 'n'},
+ /*	{"scan",             no_argument, NULL, 's'}, */
+ 	USAGE_COMMON_LONG_OPTS
+ };
+ static const char * const usage_opts_help[] = {
++	"Output directory name to write decoded files",
+ 	"Dump debug information while decoding the file",
+ 	"Use node names for image files (<nodename>.image)",
+ /*	"Scan for an embedded fdt in file", */
+@@ -250,6 +252,9 @@
+ 		switch (opt) {
+ 		case_USAGE_COMMON_FLAGS
+ 
++		case 'o':
++			out_dir = optarg;
++			break;
+ 		case 'd':
+ 			debug = true;
+ 			break;

@@ -1,0 +1,11 @@
+--- fitdump.c
++++ fitdump.c
+@@ -316,7 +316,7 @@
+ 
+ 	dump_blob(buf, debug, nodenames);
+ 
+-	chdir(cwd);
++	(void)!chdir(cwd);
+ 
+ 	return 0;
+ }

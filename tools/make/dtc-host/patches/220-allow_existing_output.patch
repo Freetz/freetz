@@ -1,0 +1,19 @@
+
+  Not recursive!
+
+--- fitdump.c
++++ fitdump.c
+@@ -270,11 +270,10 @@
+ 		usage("missing input filename");
+ 	file = argv[optind];
+ 
+-	if (stat(out_dir, &od) != -1)
+-		die("output directory does exist already: %s\n", out_dir);
+-
++	if (stat(out_dir, &od) == -1) {
+ 	if (mkdir(out_dir, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == -1)
+ 		die("error %u (%s) creating output directory: %s\n", errno, strerror(errno), out_dir);
++	}
+ 
+ 	buf = utilfdt_read(file, &len);
+ 	if (!buf)
