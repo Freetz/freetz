@@ -7,6 +7,13 @@ menu "Build system options"
 		help
 			Show revision info in menuconfig
 
+	config FREETZ_MENUCONFIG_BUTTONS
+		bool "No load/save buttons in menuconfig"
+		default n
+		help
+			Only select+exit+help buttons at bottom.
+			Rebuild kconfig-host after toggling this.
+
 	choice
 		prompt "Verbosity level"
 		default FREETZ_VERBOSITY_LEVEL_2
