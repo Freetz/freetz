@@ -45,7 +45,7 @@ get_partition_by_name() {
 fitinfo() {
 	[ -e /tmp/bootmanager.data ] && . /tmp/bootmanager.data
 	VER="${inactive_version#*.}"
-	VER="${inactive_version%-*}"
+	VER="${VER%-*}"
 	REV="${inactive_version#*-}"
 	DAT="$(date -d @$inactive_date_epoch +'%d.%m.%Y %H:%M:%S')"
 	echo "FritzOS ${VER:-UNKNOWN}${REV:+ rev$REV}${DAT:+ ($DAT)}"
