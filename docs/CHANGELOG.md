@@ -48,7 +48,7 @@ Latest changes
    * ccache 4.6.1
    * gcc 3.4.6/4.6.4/4.7.4/4.8.5/5.5.0/8.3.0/9.3.0
    * precompiled host-tools 2022-06-27
-   * precompiled toolchains r19511
+   * precompiled toolchains r19900
 
  - Host tools:
    * fakeroot 1.29
