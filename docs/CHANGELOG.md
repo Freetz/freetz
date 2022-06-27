@@ -57,7 +57,7 @@ Latest changes
    * patchelf 0.14.5
    * U-Boot 2022.04
    * yf-bootmanager 0.8.6 87ee8c3
-   * yf-fit_tools 0.2 399b791
+   * yf-fit_tools 0.2 24011d3
 
  - Packages & libs:
    * ACME.sh 3.0.4 (letsencrypt)
