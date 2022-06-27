@@ -4,7 +4,7 @@ $(PKG)_BINS:=extract bin2asm
 $(PKG)_BUILD_DIR:=$($(PKG)_BINS:%=$($(PKG)_DIR)/avm_kernel_config.%)
 $(PKG)_TARGET_DIR:=$($(PKG)_BINS:%=$(TOOLS_DIR)/avm_kernel_config.%)
 
-$(PKG)_DEPENDS_ON+=sfk-host dtc-host
+$(PKG)_DEPENDS_ON+=sfk-host libdtc-host
 
 
 $(TOOLS_LOCALSOURCE_PACKAGE)

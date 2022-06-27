@@ -11,22 +11,22 @@ $(TOOLS_UNPACKED)
 $(TOOLS_CONFIGURED_NOP)
 
 $($(PKG)_LIBFDT_BINARY): $($(PKG)_DIR)/.unpacked
-	$(TOOLS_SUBMAKE) -f Makefile.freetz -C $(DTC_HOST_DIR)/libfdt all \
+	$(TOOLS_SUBMAKE) -f Makefile.freetz -C $(LIBDTC_HOST_DIR)/libfdt all \
 		CC="$(TOOLS_CC)" \
 		BITNESS="$(HOST_CFLAGS_FORCE_32BIT_CODE)"
 
 $($(PKG)_BINARY): $($(PKG)_LIBFDT_BINARY)
-	$(TOOLS_SUBMAKE) -f Makefile.freetz -C $(DTC_HOST_DIR)/libfdt install \
+	$(TOOLS_SUBMAKE) -f Makefile.freetz -C $(LIBDTC_HOST_DIR)/libfdt install \
 		PREFIX="$(HOST_TOOLS_DIR)"
 
 $(pkg)-precompiled: $($(PKG)_BINARY)
 
 
 $(pkg)-clean:
-	-$(MAKE) -f Makefile.freetz -C $(DTC_HOST_DIR)/libfdt clean
+	-$(MAKE) -f Makefile.freetz -C $(LIBDTC_HOST_DIR)/libfdt clean
 
 $(pkg)-dirclean:
-	$(RM) -r $(DTC_HOST_DIR)
+	$(RM) -r $(LIBDTC_HOST_DIR)
 
 $(pkg)-distclean: $(pkg)-dirclean
 	$(RM) $(HOST_TOOLS_DIR)/lib/libfdt* $(HOST_TOOLS_DIR)/include/*fdt*.h
