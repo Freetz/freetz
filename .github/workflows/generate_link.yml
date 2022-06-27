@@ -39,8 +39,8 @@ jobs:
       - name: generate
         id: generate
         run: |
-          PKG="$(git log --format=%B -n1 ${{ github.sha }} | sed -nr 's/^bump ([^ ,]*).*/\1/p')"
-          [ -z "$PKG" ] && echo "No bump." && exit
+          PKG="$(git log --format=%B -n1 ${{ github.sha }} | sed -nr 's/^(add|bump) ([^ ,]*).*/\2/p')"
+          [ -z "$PKG" ] && echo "No add or bump." && exit
           echo "::set-output name=pkg::$PKG"
           PKG="$(echo "$PKG" | tr '[:upper:]' '[:lower:]')"
           TYPE=""
