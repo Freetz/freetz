@@ -10,13 +10,8 @@ program     cmake                  FREETZ_TOOLCHAIN_CCACHE
 program     cpio                   FREETZ_AVM_PROP_INNER_FILESYSTEM_TYPE_CPIO
 program     dd                     FREETZ_PACKAGE_SUNDTEK
 program     depmod                 FREETZ_AVM_VERSION_07_2X_MIN
-program     dtc                    FREETZ_AVM_HAS_FWLAYOUT_6
-program     dumpimage              FREETZ_AVM_HAS_FWLAYOUT_6
 program     execstack              FREETZ_AVM_VERSION_07_2X_MIN
 program     fastjar                FREETZ_PACKAGE_CLASSPATH
-program     fdtdump                FREETZ_AVM_HAS_FWLAYOUT_6
-program     fdtget                 FREETZ_AVM_HAS_FWLAYOUT_6
-program     fdtput                 FREETZ_AVM_HAS_FWLAYOUT_6
 program     file
 program     find
 program     flex
@@ -33,7 +28,6 @@ program     ldconfig
 program     libtool
 program     libtoolize             FREETZ_PACKAGE_GNTPSEND
 program     md5sum
-program     mkimage                FREETZ_AVM_HAS_FWLAYOUT_6
 program     nc                     FREETZ_TYPE_FIRMWARE_DETECT_LATEST
 program     openssl             or FREETZ_FWMOD_VALIDATE FREETZ_FWMOD_SIGN
 program     patch
@@ -60,6 +54,9 @@ header      ncurses.h
 header      zlib.h
 header      sys/acl.h
 header      sys/capability.h
+header      uuid/uuid.h            FREETZ_AVM_HAS_FWLAYOUT_6 FREETZ_HOSTTOOLS_BUILD
+header      openssl/evp.h          FREETZ_AVM_HAS_FWLAYOUT_6 FREETZ_HOSTTOOLS_BUILD
+header      gnutls/gnutls.h        FREETZ_AVM_HAS_FWLAYOUT_6 FREETZ_HOSTTOOLS_BUILD
 header      readline/readline.h    FREETZ_PACKAGE_GDB_HOST
 header      sqlite3.h              FREETZ_ROOTEMU_PSEUDO
 lib         libsqlite3.so          FREETZ_ROOTEMU_PSEUDO
