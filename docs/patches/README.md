@@ -484,6 +484,14 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
   * **<u>PATCH_MODFS_BOOT_MANAGER: Add yf-bootmanager</u><a id='patch-modfs-boot-manager'></a>**<br>
     Extends the "reboot" page of FRITZ!OS to select system version and branding.
 
+  * **<u>PATCH_MODFS_BOOT_MANAGER_labor: labor - EXPERIMENTAL</u><a id='patch-modfs-boot-manager-labor'></a>**<br>
+    This uses the experimental Github-Tag: freetz-ng-test https://github.com/PeterPawn/YourFritz/commits/freetz-ng-test
+
+  * **<u>PATCH_MODFS_BOOT_MANAGER_latest: latest</u><a id='patch-modfs-boot-manager-latest'></a>**<br>
+    This uses the stable Github-Tag: freetz-ng-version https://github.com/PeterPawn/YourFritz/commits/freetz-ng-version
+
+  * **<u>PATCH_MODFS_BOOT_MANAGER_tested: tested</u><a id='patch-modfs-boot-manager-tested'></a>**<br>
+
   * **[PATCH_MULTIPLE_PRINTERS: Add support for multiple printers](PATCH_MULTIPLE_PRINTERS.md)<a id='patch-multiple-printers'></a>**<br>
     Use this patch if you want to use more than one printer.
 
