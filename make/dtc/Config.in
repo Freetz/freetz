@@ -1,0 +1,29 @@
+config FREETZ_PACKAGE_DTC
+	bool "dtc 1.6.1"
+	default n
+	help
+		Device  Tree  Compiler,  dtc, takes as input a device-tree in a given format and outputs a
+		device-tree in another format for booting kernels on  embedded  systems.   Typically,  the
+		input  format  is  "dts",  a  human readable source format, and creates a "dtb", or binary
+		format as output.
+
+if FREETZ_PACKAGE_DTC
+
+	config FREETZ_PACKAGE_DTC_fdtdump
+		bool "fdtdump"
+		default n
+
+	config FREETZ_PACKAGE_DTC_fdtget
+		bool "fdtget"
+		default n
+
+	config FREETZ_PACKAGE_DTC_fdtput
+		bool "fdtput"
+		default n
+
+	config FREETZ_PACKAGE_DTC_fitdump
+		bool "fitdump"
+		default n
+
+endif # FREETZ_PACKAGE_DTC
+

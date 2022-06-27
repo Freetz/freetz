@@ -1,0 +1,22 @@
+--- Makefile
++++ Makefile
+@@ -45,16 +45,16 @@
+ HOSTOS := $(shell uname -s | tr '[:upper:]' '[:lower:]' | \
+ 	    sed -e 's/\(cygwin\|msys\).*/\1/')
+ 
+-NO_PYTHON ?= 0
++NO_PYTHON := 1
+ 
+-NO_VALGRIND := $(shell $(PKG_CONFIG) --exists valgrind; echo $$?)
++NO_VALGRIND := 1
+ ifeq ($(NO_VALGRIND),1)
+ 	CPPFLAGS += -DNO_VALGRIND
+ else
+ 	CFLAGS += $(shell $(PKG_CONFIG) --cflags valgrind)
+ endif
+ 
+-NO_YAML := $(shell $(PKG_CONFIG) --exists yaml-0.1; echo $$?)
++NO_YAML := 1
+ ifeq ($(NO_YAML),1)
+ 	CFLAGS += -DNO_YAML
+ else

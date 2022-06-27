@@ -6,7 +6,9 @@ $(PKG)_SITE:=@KERNEL/software/utils/dtc
 $(PKG)_LIBFDT_BINARY:=$($(PKG)_DIR)/libfdt/libfdt.a
 $(PKG)_BINARY:=$(HOST_TOOLS_DIR)/lib/libfdt.a
 
-ifneq ($(DTC_HOST_SOURCE),$(LIBDTC_HOST_SOURCE))
+
+# libdtc-host, dtc-host and fitdump using the same source
+ifneq ($($(PKG)_SOURCE),$(DTC_HOST_SOURCE))
 $(TOOLS_SOURCE_DOWNLOAD)
 endif
 $(TOOLS_UNPACKED)

@@ -10,13 +10,13 @@ $(PKG)_BINARIES_BUILD_DIR  := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/%)
 $(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_INSTALL_DIR)/%)
 
 
-# libdtc-host uses same
+# libdtc-host, dtc-host and fitdump using the same source
 $(TOOLS_SOURCE_DOWNLOAD)
 $(TOOLS_UNPACKED)
 $(TOOLS_CONFIGURED_NOP)
 
-$($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.unpacked
-	$(TOOLS_SUBMAKE) -C $(DTC_HOST_DIR)
+$($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
+	$(TOOLS_SUBMAKE) -C $(DTC_HOST_DIR) $(DTC_HOST_BINARIES)
 
 $($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_INSTALL_DIR)/%: $($(PKG)_DIR)/%
 	$(INSTALL_FILE)
