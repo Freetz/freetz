@@ -136,7 +136,6 @@ image() {
 
 	if [ -e var/tmp/fit-image ]; then
 		FLV_FIT='1'
-#		$FTOOLS/fitimg -x var/tmp/fit-image -d var/tmp/ -n -f -q
 		$FTOOLS/fit.sh unpack var/tmp/fit-image var/tmp
 	fi
 
@@ -354,8 +353,8 @@ if [ "$unpack" == "y" ]; then
 		done
 		[ -n "$do_verbose" ] && echo -e "Using 'tools' of ${FTOOLS%/*}\n"
 	fi
-	if [ ! -e $FTOOLS/find-squashfs -o ! -e $FTOOLS/uimg -o ! -e $FTOOLS/yf/fit_tools/fit-remove-avm-header.sh ]; then
-		echo "You have to run 'make tools' first."
+	if [ ! -e $FTOOLS/find-squashfs -o ! -e $FTOOLS/uimg -o ! -e $FTOOLS/fit/fitdump -o ! -e $FTOOLS/yf/fit_tools/fit-remove-avm-header.sh ]; then
+		echo "You have to run 'make tools-all' first."
 		exit 1
 	fi
 fi
