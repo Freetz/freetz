@@ -1,7 +1,7 @@
 if FREETZ_SHOW_ADVANCED
 
-comment " Replace kernel (not available, needs AVM sources)"
-	depends on ! FREETZ_REPLACE_KERNEL_AVAILABLE
+comment " Replace kernel (not available, ask fritzbox_info@avm.de)"
+	depends on !FREETZ_REPLACE_KERNEL_AVAILABLE && FREETZ_KERNEL_VERSION_3_MAX
 
 config FREETZ_REPLACE_KERNEL
 	bool "Replace kernel"

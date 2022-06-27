@@ -796,7 +796,7 @@ config FREETZ_TYPE_FIRMWARE_LABOR
 ###
 
 if !FREETZ_REAL_DEVELOPER_ONLY__KCONF && \
-	( FREETZ_TYPE_FIRMWARE_UNTESTED || !FREETZ_TYPE_FIRMWARE_FINAL || FREETZ_SYSTEM_TYPE_GRX5 || FREETZ_REPLACE_KERNEL )
+	( FREETZ_TYPE_FIRMWARE_UNTESTED || !FREETZ_TYPE_FIRMWARE_FINAL || FREETZ_SYSTEM_TYPE_GRX5||FREETZ_KERNEL_VERSION_4_MIN || FREETZ_REPLACE_KERNEL )
 
 	comment "WARNINGS -------------------------------------------------"
 if FREETZ_TYPE_FIRMWARE_UNTESTED
@@ -809,9 +809,9 @@ if !FREETZ_TYPE_FIRMWARE_FINAL
 	comment " - some remove/AVM-web-interface patches are not working"
 	comment "   even if selectable in menuconfig"
 endif
-if FREETZ_SYSTEM_TYPE_GRX5
-	comment " - replace-kernel is not (yet) available"
-	comment "   because of changed bootloader format"
+if FREETZ_SYSTEM_TYPE_GRX5||FREETZ_KERNEL_VERSION_4_MIN
+	comment " - replace-kernel is not (yet) available because of changed"
+	comment "   bootloader format. Examine it or ask fritzbox_info@avm.de"
 endif
 if FREETZ_REPLACE_KERNEL
 	comment " - replace-kernel might not work at all"
