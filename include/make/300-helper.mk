@@ -233,7 +233,7 @@ endef
 #   revision of the specified tag
 #
 define git-get-tag-revision
-$(shell rev=$$(git ls-remote --tags $(strip $(1)) $(strip $(2)) | sed -rn -e 's,^([0-9a-f]{10})[0-9a-f]{30}.*,\1,p'); echo "$${rev:-FAILED_TO_DETERMINE_TAG_REVISION}")
+$(shell rev=$$(git ls-remote --tags $(strip $(1)) $(strip $(2)) | sed -rn -e 's,^([0-9a-f]{40}).*,\1,p'); echo "$${rev:-FAILED_TO_DETERMINE_TAG_REVISION}")
 endef
 
 #
