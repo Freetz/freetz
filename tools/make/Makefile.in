@@ -14,7 +14,8 @@ HOST_CFLAGS_FORCE_32BIT_CODE:=$(if $(filter-out 32,$(HOST_BITNESS)),-m32)
 TOOLS_SOURCE_DIR:=$(FREETZ_BASE_DIR)/source/host-tools
 HOST_TOOLS_DIR:=$(FREETZ_BASE_DIR)/$(TOOLS_BUILD_DIR)
 
-$(TOOLS_SOURCE_DIR) $(HOST_TOOLS_DIR):
+$(TOOLS_SOURCE_DIR) \
+$(HOST_TOOLS_DIR):
 	@mkdir -p $@
 
 TOOLS:=$(sort $(basename $(notdir $(wildcard $(TOOLS_DIR)/make/*/*.mk))))
@@ -119,6 +120,7 @@ $(PKG)_BUILD_PREREQ:=
 $(PKG)_BUILD_PREREQ_HINT:=
 $(PKG)_DEPENDS_ON:=$(UNPACK_TARBALL_PREREQUISITES)
 #
+$(PKG)_REBUILD_SUBOPTS=
 #
 $(PKG)_SRC:=$($(PKG)_MAKE_DIR)/src
 $(PKG)_MAKE_DIR:=$(TOOLS_DIR)/make/$(pkg)
@@ -144,12 +146,28 @@ define TOOLS_INIT
 $(eval $(call TOOLS_INIT__INTV,$1,$2,$3))
 endef
 
+# check for changed suboptions, should only be called if $(PKG)_REBUILD_SUBOPTS is defined
+define PKG_FINISH_CHECK_REBUILD_SUBOPTS__INT1
+$(PKG)_FREETZ_CONFIG_FILE:=$(TOOLS_SOURCE_DIR)/.$(pkg)_config
+endef
+define PKG_FINISH_CHECK_REBUILD_SUBOPTS__INT2
+$($(PKG)_FREETZ_CONFIG_FILE): $(TOPDIR)/.config | $(TOOLS_SOURCE_DIR)
+	@($(foreach OPT,$($(PKG)_REBUILD_SUBOPTS),echo "$(if $($(OPT)),$(OPT)=$($(OPT)),$(_hash) $(OPT) is not set)";):) > $($(PKG)_FREETZ_CONFIG_FILE).temp
+	@if ! diff -q $($(PKG)_FREETZ_CONFIG_FILE).temp $($(PKG)_FREETZ_CONFIG_FILE) 2>/dev/null $(SILENT); then \
+		$(RM) -r $($(PKG)_DIR); \
+		mv $($(PKG)_FREETZ_CONFIG_FILE).temp $($(PKG)_FREETZ_CONFIG_FILE); \
+	else \
+		$(RM) $($(PKG)_FREETZ_CONFIG_FILE).temp; \
+	fi
+$(pkg)-build-prereq: $($(PKG)_FREETZ_CONFIG_FILE)
+endef
+
 
 ### PKG_FINISH - package finalisation
 # Finalise tool package
 define TOOLS_FINISH__INT
 
-$(pkg)-precompiled--int: $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON))
+$(pkg)-precompiled--int: $(pkg)-build-prereq $(patsubst %,%-precompiled,$($(PKG)_DEPENDS_ON))
 .PHONY: $(pkg)-precompiled--int
 
 $(pkg)-precompiled:
@@ -167,7 +185,9 @@ PKG:=
 
 endef
 #
-TOOLS_FINISH=$(eval $(TOOLS_FINISH__INT))
+TOOLS_FINISH=
+TOOLS_FINISH+=$(if $($(PKG)_REBUILD_SUBOPTS),$(eval $(PKG_FINISH_CHECK_REBUILD_SUBOPTS__INT1))$(eval $(PKG_FINISH_CHECK_REBUILD_SUBOPTS__INT2)))
+TOOLS_FINISH+=$(eval $(TOOLS_FINISH__INT))
 
 
 ### PKG_SOURCE_DOWNLOAD - download source packages
@@ -179,12 +199,20 @@ define TOOLS_UNPACKED__INT
 $($(PKG)_DIR)/.unpacked: | $($(PKG)_DEPENDS_ON)
 endef
 
+## check for changed suboptions, should only be called if $(PKG)_REBUILD_SUBOPTS is defined
+define TOOLS_UNPACKED_CHECK_REBUILD_SUBOPTS
+$($(PKG)_DIR)/.unpacked: $($(PKG)_FREETZ_CONFIG_FILE)
+endef
+
 TOOLS_UNPACKED           =
 TOOLS_LOCALSOURCE_PACKAGE=
 #
 TOOLS_UNPACKED           +=$(eval $(TOOLS_UNPACKED__INT))
 TOOLS_UNPACKED           +=$(eval $(PKG_UNPACKED__ALL_INT))
 TOOLS_LOCALSOURCE_PACKAGE+=$(eval $(PKG_UNPACKED_LOCALSOURCE_PACKAGE__INT))
+#
+TOOLS_UNPACKED           +=$(if $($(PKG)_REBUILD_SUBOPTS),$(eval $(TOOLS_UNPACKED_CHECK_REBUILD_SUBOPTS)))
+TOOLS_LOCALSOURCE_PACKAGE+=$(if $($(PKG)_REBUILD_SUBOPTS),$(eval $(TOOLS_UNPACKED_CHECK_REBUILD_SUBOPTS)))
 
 
 ### PKG_CONFIGURED: Configure package
