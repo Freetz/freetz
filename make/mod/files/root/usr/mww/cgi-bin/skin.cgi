@@ -33,7 +33,7 @@ invalid_skin() {
 	exit
 }
 
-default_skin=legacy
+default_skin=cuma
 set_skin() {
 	local name=$1
 	cookie_redir "skin=$name; Path=/; Max-Age=$((20*365*24*3600))"
