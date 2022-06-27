@@ -231,13 +231,19 @@ menu "Additional informations"
 				This selects curl and uses it for encrypted https connections.
 
 	config FREETZ_ADD_INACTIVE_SYSTEM
-		bool "Show inactive firmware - DEVELOPER"
-		depends on ( FREETZ_AVM_HAS_FWLAYOUT_6 && (FREETZ_AVM_HAS_BLK_DEV_LOOP_BUILTIN || FREETZ_REPLACE_MODULE_AVAILABLE) && FREETZ_SHOW_DEVELOPER )
-		select FREETZ_PATCH_MODFS_BOOT_MANAGER
+		bool "Show inactive firmware"
+		depends on ( FREETZ_AVM_HAS_FWLAYOUT_6 && (FREETZ_AVM_HAS_BLK_DEV_LOOP_BUILTIN || FREETZ_REPLACE_MODULE_AVAILABLE) )
+		select FREETZ_MODULE_loop              if !FREETZ_AVM_HAS_BLK_DEV_LOOP_BUILTIN && FREETZ_REPLACE_MODULE_AVAILABLE
+		select FREETZ_PACKAGE_DTC              if !FREETZ_AVM_PROP_INNER_FILESYSTEM_TYPE_CPIO
+		select FREETZ_PACKAGE_DTC_fitdump      if !FREETZ_AVM_PROP_INNER_FILESYSTEM_TYPE_CPIO
+		select FREETZ_PATCH_MODFS_BOOT_MANAGER if  FREETZ_AVM_PROP_INNER_FILESYSTEM_TYPE_CPIO
+		default y                              if !FREETZ_AVM_PROP_INNER_FILESYSTEM_TYPE_CPIO
 		default n
 		help
 			The freetz webif shows on the system page the installed firmware in
 			the inactive partion too.
+			Squashfs devices are using fitdump, the evalauation takes about 3 seconds.
+			Cpio devices, currently only 5530:
 			To do this the yf-bootmanager is selected. After every device start
 			it could take up to 1 minute until the informations are available.
 			The latest bootmanager version is mandatory for this feature!

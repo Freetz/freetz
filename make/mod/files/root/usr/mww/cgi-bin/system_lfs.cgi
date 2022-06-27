@@ -80,9 +80,28 @@ imginfo() {
 	fi
 }
 
+DUMPS="/tmp/.lfs.fitdump"
 CACHE="/tmp/.lfs.caching"
 OUTER="/tmp/.lfs.reserve"
 INNER="/tmp/.lfs.wrapper"
+fitmnt() {
+	MTD_DEAD="$(sed -n "s,:.*fit$LFS_DEAD.*,,p" /proc/mtd)"
+	[ -z "$MTD_DEAD" ] && MTD_DEAD="disk/by-partlabel/fit$LFS_DEAD"
+	tail -c +73 /dev/$MTD_DEAD | fitdump --output $DUMPS --nodenames -
+	for PART in $DUMPS/*.image; do
+		PART="${PART##*/}"
+		[ "${PART/TZ_HW/}" != "$PART" ] && continue # TrustZone
+		[ "${PART/_HW0/}"  != "$PART" ] && continue # other CPU
+		[ "${PART/HW273/}" != "$PART" ] && continue # also 5590
+		[ "${PART/flat_dt/}" != "$PART" ] && continue
+		[ "${PART/kernel/}"  != "$PART" ] && continue
+		break
+	done
+	mkdir $OUTER
+	modprobe loop 2>/dev/null
+	mount -t squashfs -o ro,loop $DUMPS/$PART $OUTER || mount -o ro,loop $DUMPS/$PART $OUTER
+	MNT=$OUTER
+}
 resmnt() {
 	mkdir $OUTER
 	[ -d /wrapper ] && fst=yaffs2 || fst=squashfs
@@ -103,6 +122,7 @@ resunm() {
 			rmdir $X
 		done
 	done
+	rm -rf $DUMP
 }
 
 # SWITCHABLE="y"
@@ -113,14 +133,16 @@ if [ -x "$(which bootslotctl)" ]; then
 	NEXT="$LFS_LIVE"
 	[ "$LFS_LIVE" == "$LFS_DEAD" ] && LFS_LIVE="$(( ($LFS_LIVE+1) %2 ))"  # && SWITCHABLE="n"
 	PRIB="$(imginfo /)"
-#	MTD_DEAD="$(sed -n "s,:.*fit$LFS_DEAD.*,,p" /proc/mtd)"
-#	OFF_DEAD="$(sed -nr 's,^rootfs_type.*rootfs_offset=([0-9]*).*,\1,p' /tmp/bootmanager.inactive.fit)"
-#	#rootfs_type=squashfs rootfs_offset=X rootfs_size=Y
-#	cat /dev/$MTD_DEAD > $OUTER
-#	modprobe loop 2>/dev/null
-#	mount -o loop,offset=$OFF_DEAD $OUTER $INNER
-#	SECB="$(imginfo $OUTER)"
-	SECB="$(fitinfo)"
+	if [ -x /usr/bin/bootmanager ]; then
+		SECB="$(fitinfo)"
+	else
+		SECB="$(cat $CACHE 2>/dev/null)"
+		if [ -z "$SECB" ]; then
+			[ "$FREETZ_AVM_PROP_INNER_FILESYSTEM_TYPE_CPIO" != "y" ] && fitmnt  # || TODO: cpio
+			SECB="$(imginfo $MNT | tee $CACHE)"
+		fi
+		resunm
+	fi
 else
 	NEXT="$(sed -n 's/^linux_fs_start[ \t]*//p' /proc/sys/urlader/environment)"
 	[ -z "$NEXT" ] && NEXT=0
