@@ -181,7 +181,6 @@ function push_fw() {
 				-W "quote MEDIA SDRAM" \
 				-W "quote SETENV memsize ${FREESIZE}" \
 				-W "quote SETENV kernel_args_tmp \"${AFU}mtdram1=${MTDSTART},${MAPLIMIT} mtdparts_ext=update-image.0:${FILESIZE}@0x0(fit-image)\"" \
-				-X "$([ ! $LFS ] && echo "quote SYST" || echo "quote SETENV linux_fs_start $LFS")" \
 				-Y "quote QUIT" \
 				$ip ${fitimage} "${MTDSTART} ${MAPLIMIT}" || exit $?
 		elif [ $ISRAM ]; then
@@ -248,7 +247,6 @@ quote MEDIA SDRAM
 quote SETENV memsize ${FREESIZE}
 quote SETENV kernel_args_tmp \"${AFU}mtdram1=${MTDSTART},${MAPLIMIT} mtdparts_ext=update-image.0:${FILESIZE}@0x0(fit-image)\"
 put ${fitimage} "${MTDSTART} ${MAPLIMIT}"
-$([ $LFS ] && echo quote SETENV linux_fs_start $LFS)
 quit
 EOT
 		elif [ $ISRAM ]; then
