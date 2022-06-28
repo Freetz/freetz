@@ -174,7 +174,16 @@ function push_fw() {
 	fi
 
 	if [ $FOUND_NCFTP ]; then
-		if [ $ISFIT ]; then
+		if [ $ISFIT -a -n "$FITV" ]; then
+			ncftpput \
+				-C -d stdout -u adam2 -p adam2 \
+				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
+				-W "quote MEDIA SDRAM" \
+				-W "quote SETENV kernel_args \"\"" \
+				-W "quote SETENV kernel_args_tmp \"mtdram=rootfs_ram,${FITV/ /,}\"" \
+				-Y "quote QUIT" \
+				$ip ${fitimage} "${FITV}" || exit $?
+		elif [ $ISFIT -a -z "$FITV" ]; then
 			ncftpput \
 				-C -d stdout -u adam2 -p adam2 \
 				-o doNotGetStartCWD=1,useFEAT=0,useHELP_SITE=0,useCLNT=0,useSIZE=0,useMDTM=0 \
@@ -237,7 +246,19 @@ function push_fw() {
 			echo "miserable failure" && exit 1
 		fi
 	elif [ $FOUND_FTP ]; then
-		if [ $ISFIT ]; then
+		if [ $ISFIT -a -n "$FITV" ]; then
+			ftp -n -p <<EOT
+open $ip
+user adam2 adam2
+debug
+bin
+quote MEDIA SDRAM
+quote SETENV kernel_args \"\"
+quote SETENV kernel_args_tmp \"mtdram=rootfs_ram,${FITV/ /,}\"
+put ${fitimage} "${FITV}"
+quit
+EOT
+		elif [ $ISFIT -a -z "$FITV" ]; then
 			ftp -n -p <<EOT
 open $ip
 user adam2 adam2
@@ -327,17 +348,18 @@ prepare_image() {
 			exit 1
 		fi
 #		FITV="$(tail -c +73 "$fitimage" | $FDTD_TOOL - 2>/dev/null | sed -nr 's/.*"mtdram=/mtdram=/p')"
-		FITV="$(strings "$fitimage" | grep '^mtdram=')"
-		if [ "$FITV" != "${FITV#mtdram=ram-filesystem,}" ]; then
-			FITV='0'
-		elif [ "$FITV" != "${FITV#mtdram=rootfs_ram,}" ]; then
+		FITV="$(strings "$fitimage" | grep 'mtdram=')"
+		if echo "$FITV" | grep -q 'mtdram=ram-filesystem,'; then
+			FITV=''
+		elif echo "$FITV" | grep -q 'mtdram=rootfs_ram,'; then
 			echo -e "Error: it is not known how to flash a fit-boot image with 'rootfs_ram' method yet." >&2
 			echo -e "Error: run a recovery.exe and get a capture by wireguard or tcpdump to add it." >&2
 			echo -e "Error: meanwhile install an older firmware and flash this one by the web interface.\n" >&2
-			exit 1
-			FITV='1'
+			read -rsn1 -t2 v
+			[ "$v" != "v" ] && exit 1
+			FITV="$(echo "$FITV" | sed -rn 's/.*mtdram=rootfs_ram,([0-9A-Fa-fx]*),([0-9A-Fa-fx]*.*)/\1 \2/p')"
 		else
-			FITV='0'
+			FITV=''
 		fi
 	elif [ $ISRAM ]; then
 		tmpdir=$(mktemp -td freetz_XXX) || { echo "Error creating temporary directory."; exit 1; }
