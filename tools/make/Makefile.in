@@ -149,7 +149,8 @@ define PKG_FINISH_CHECK_REBUILD_SUBOPTS__INT1
 $(PKG)_FREETZ_CONFIG_FILE:=$(TOOLS_SOURCE_DIR)/.$(pkg)_config
 endef
 define PKG_FINISH_CHECK_REBUILD_SUBOPTS__INT2
-$($(PKG)_FREETZ_CONFIG_FILE): $(TOPDIR)/.config | $(TOOLS_SOURCE_DIR)
+.PHONY: $($(PKG)_FREETZ_CONFIG_FILE)
+$($(PKG)_FREETZ_CONFIG_FILE): | $(TOOLS_SOURCE_DIR)
 	@($(foreach OPT,$($(PKG)_REBUILD_SUBOPTS),echo "$(if $($(OPT)),$(OPT)=$($(OPT)),$(_hash) $(OPT) is not set)";):) > $($(PKG)_FREETZ_CONFIG_FILE).temp
 	@if ! diff -q $($(PKG)_FREETZ_CONFIG_FILE).temp $($(PKG)_FREETZ_CONFIG_FILE) 2>/dev/null $(SILENT); then \
 		$(RM) -r $($(PKG)_DIR); \
