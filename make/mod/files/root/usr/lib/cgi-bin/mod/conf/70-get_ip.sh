@@ -1,7 +1,4 @@
 
-current_ip="$(get_ip)"
-[ -z "$current_ip" ] && current_ip="-$(lang de:"keine" en:"none")-"
-
 sec_begin 'get_ip'
 cat << EOF
 
@@ -22,9 +19,6 @@ cat << EOF
 </pre>
 </p>
 
-<p>
-$(lang de:"Ermittelte IP" en:"Determined IP"): $current_ip
-</p>
-
 EOF
 sec_end
+
