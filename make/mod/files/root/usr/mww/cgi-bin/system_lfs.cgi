@@ -123,7 +123,7 @@ resunm() {
 			rmdir $X
 		done
 	done
-	rm -rf $DUMP
+	rm -rf $DUMPS
 }
 
 # SWITCHABLE="y"
