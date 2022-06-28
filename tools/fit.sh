@@ -1,6 +1,6 @@
 #!/bin/bash
 # fitimg unpacker & scanner
-# uses: [fdtdump] [dtc] fdtget [dumpimage] and [diff]
+# uses: [fdtdump] [dtc] fdtget [dumpimage] fitdump [diff]
 MYPWD="$(dirname $(realpath $0))"
 FTDIR="$MYPWD/fit"
 
