@@ -63,6 +63,7 @@ for X in /tmp/.lfs.wrapper /tmp/.lfs.reserve; do
 		umount $X
 		rmdir $X
 	done
+	rm -rf /tmp/.lfs.fitdump
 done
 rm -f /tmp/.lfs.caching
 
