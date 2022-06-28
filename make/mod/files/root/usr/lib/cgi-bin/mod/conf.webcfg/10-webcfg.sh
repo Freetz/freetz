@@ -93,7 +93,7 @@ echo '</p>'
 
 cgi_print_textline_p "cgi_width" "$MOD_CGI_WIDTH" 4 "$(lang de:"Breite des Hauptinhalts" en:"Width of the main content area"):"
 cgi_print_checkbox_p "show_memory_usage" "$MOD_SHOW_MEMORY_USAGE" "$(lang de:"Zeige Speicherverbrauch" en:"Show memory usage")"
-[ "$FREETZ_AVM_PROP_INNER_FILESYSTEM_TYPE_CPIO" != "y" ] && \
+[ ! -x /usr/bin/bootmanager ] && [ "$FREETZ_AVM_PROP_INNER_FILESYSTEM_TYPE_CPIO" != "y" ] && [ -e /usr/mww/cgi-bin/system_lfs.cgi ] && \
   cgi_print_checkbox_p "update_lfs" "$MOD_UPDATE_LFS" "$(lang de:"Ermittele inaktive Firmwareversion beim booten" en:"Identify inactive firmware version at boot")"
 
 sec_end
