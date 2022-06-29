@@ -65,7 +65,7 @@ Latest changes
    * atop 2.7.1
    * BIND 9.11.37/9.16.29
    * CA-bundle 2022-04-26
-   * Curl 7.83.1
+   * Curl 7.84.0
    * dtc 1.6.1
    * git 2.36.1
    * HAProxy 2.6.1
