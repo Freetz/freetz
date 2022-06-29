@@ -1,14 +1,13 @@
 --- Makefile.in
 +++ Makefile.in
-@@ -251,9 +251,9 @@
+@@ -252,8 +252,8 @@
  BUILD_CFLAGS = @BUILD_CFLAGS@
  CC = @CC@
  CCDEPMODE = @CCDEPMODE@
 -CFLAGS = @CFLAGS@
-+CFLAGS = $(patsubst -Ofast,-O2, @CFLAGS@)
- CPP = @CPP@
 -CPPFLAGS = @CPPFLAGS@
++CFLAGS = $(patsubst -Ofast,-O2, @CFLAGS@)
 +CPPFLAGS = $(patsubst -Ofast,-O2, @CPPFLAGS@)
+ CSCOPE = @CSCOPE@
+ CTAGS = @CTAGS@
  CYGPATH_W = @CYGPATH_W@
- DEFS = @DEFS@
- DEPDIR = @DEPDIR@

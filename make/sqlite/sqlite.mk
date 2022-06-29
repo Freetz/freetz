@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 3380500)
+$(call PKG_INIT_BIN, 3390000)
 $(PKG)_LIB_VERSION:=0.8.6
 $(PKG)_SOURCE:=$(pkg)-autoconf-$($(PKG)_VERSION).tar.gz
-$(PKG)_HASH:=5af07de982ba658fd91a03170c945f99c971f6955bc79df3266544373e39869c
+$(PKG)_HASH:=e90bcaef6dd5813fcdee4e867f6b65f3c9bfd0aec0f1017f9f3bbce1e4ed09e2
 $(PKG)_SITE:=https://www.sqlite.org/2022
 ### WEBSITE:=https://www.sqlite.org
 ### MANPAGE:=https://www.sqlite.org/docs.html
@@ -26,6 +26,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-static-shell
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_SQLITE_WITH_READLINE),--enable-readline,--disable-readline)
 
 $(PKG)_CONFIGURE_ENV += ac_cv_header_zlib_h=no
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -54,6 +55,7 @@ $($(PKG)_LIB_TARGET_BINARY): $($(PKG)_LIB_STAGING_BINARY)
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_LIB_TARGET_BINARY)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(SQLITE_DIR) clean
