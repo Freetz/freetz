@@ -1,0 +1,32 @@
+#!/bin/sh
+
+
+case $1 in
+	""|load)
+		modreg daemon --hide htop
+
+		echo -n "Setting up htop ... "
+		# ~root/.config/htop/htoprc -> /tmp/flash/htop/htoprc
+		[ ! -e ~root/.config ] && mkdir -p ~root/.config
+		[ ! -e ~root/.config/htop -a ! -L ~root/.config/htop ] && ln -sf /tmp/flash/htop ~root/.config/htop
+		[ ! -e ~root/.config/htop ] && mkdir -p ~root/.config/htop  # /tmp/flash/htop
+		echo "done."
+		;;
+	unload)
+		modunreg daemon htop
+		;;
+	start)
+		;;
+	stop)
+		;;
+	restart)
+		;;
+	status)
+		;;
+	*)
+		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		exit 1
+		;;
+esac
+
+exit 0
