@@ -9,7 +9,7 @@ case $1 in
 		# ~root/.config/htop/htoprc -> /tmp/flash/htop/htoprc
 		[ ! -e ~root/.config ] && mkdir -p ~root/.config
 		[ ! -e ~root/.config/htop -a ! -L ~root/.config/htop ] && ln -sf /tmp/flash/htop ~root/.config/htop
-		[ ! -e ~root/.config/htop ] && mkdir -p ~root/.config/htop  # /tmp/flash/htop
+		[ ! -e ~root/.config/htop ] && mkdir -p /tmp/flash/htop
 		echo "done."
 		;;
 	unload)
