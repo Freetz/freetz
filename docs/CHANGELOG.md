@@ -67,7 +67,7 @@ Latest changes
    * CA-bundle 2022-04-26
    * Curl 7.84.0
    * dtc 1.6.1
-   * git 2.36.1
+   * Git 2.37.0
    * HAProxy 2.6.1
    * htpdate 1.3.4
    * htop 1.0.3/2.3.1
