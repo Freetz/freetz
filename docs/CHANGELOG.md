@@ -197,7 +197,7 @@ Latest changes
    * UnRAR 6.1.4
    * utf8proc 2.7.0
    * Wget GNU 1.21.2
-   * wireguard-linux-compat 1.0.20211208
+   * wireguard-linux-compat 1.0.20220627
    * wireguard-tools 1.0.20210914
    * zlib 1.2.12
 
