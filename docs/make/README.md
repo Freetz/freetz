@@ -750,7 +750,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
   * **[wireguard-tools 1.0.20210914](wireguard.md)<a id='wireguard'></a>**<br>
     WireGuard is an extremely simple yet fast and modern VPN that utilizes state-of-the-art cryptography. It aims to be faster, simpler, leaner, and more useful than IPSec, while avoiding the massive headache. It intends to be considerably more performant than OpenVPN. WireGuard is designed as a general purpose VPN for running on embedded interfaces and super computers alike, fit for many different circumstances. Initially released for the Linux kernel, it plans to be cross-platform and widely deployable. It is currently under heavy development, but already it might be regarded as the most secure, easiest to use, and simplest VPN solution in the industry.
 
-  * **[wireguard-linux-compat 1.0.20211208](wireguard-linux-compat.md)<a id='wireguard-linux-compat'></a>**<br>
+  * **[wireguard-linux-compat 1.0.20220627](wireguard-linux-compat.md)<a id='wireguard-linux-compat'></a>**<br>
     This package provides the kernel module required for Wireguard
 
   * **[WOL 0.7.1 (binary only)](wol.md)<a id='wol'></a>**<br>
