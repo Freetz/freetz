@@ -96,7 +96,7 @@ Content: [FOS-Release](#fos-release) - [FOS-Labor](#fos-labor) - [FOS-Inhaus](#f
  - HWR 256: [FRITZ.Box_7530_AX-07.39-97709-Inhaus.image](http://download.avm.de/inhaus/MOVE21/7530AX/FRITZ.Box_7530_AX-07.39-97709-Inhaus.image)
  - HWR 258: [FRITZ.Box_6850_5G-07.39-96217-Inhaus.image](http://download.avm.de/inhaus/MOVE21/68505G/FRITZ.Box_6850_5G-07.39-96217-Inhaus.image)
  - HWR 259: [FRITZ.Box_7590_AX-07.39-97704-Inhaus.image](http://download.avm.de/inhaus/MOVE21/7590AX/FRITZ.Box_7590_AX-07.39-97704-Inhaus.image)
- - HWR 261: [FRITZ.Box_4060-07.39-97564-Inhaus.image](http://download.avm.de/inhaus/MOVE21/4060/FRITZ.Box_4060-07.39-97564-Inhaus.image)
+ - HWR 261: [FRITZ.Box_4060-07.39-97680-Inhaus.image](http://download.avm.de/inhaus/MOVE21/4060/FRITZ.Box_4060-07.39-97680-Inhaus.image)
  - HWR 262: [FRITZ.Box_6850_LTE-07.39-96323-Inhaus.image](http://download.avm.de/inhaus/MOVE21/6850LTE/FRITZ.Box_6850_LTE-07.39-96323-Inhaus.image)
 
 ### Dect-Release
