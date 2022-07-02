@@ -96,6 +96,7 @@ Latest changes
    * Smartmontools 7.3
    * strace 4.9/5.0/5.18
    * Stunnel 5.64
+   * Sudo 1.9.11p3
    * SQLite 3.39.0
    * tcpdump 4.1.1/4.99.1
    * tmux 3.3a

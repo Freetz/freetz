@@ -1,7 +1,8 @@
 config FREETZ_PACKAGE_SUDO
-	bool "sudo 1.7.10 (binary only)"
-	select FREETZ_LIB_libcrypt  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
-	select FREETZ_LIB_libutil   if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	bool "Sudo 1.9.11p3 (binary only)"
+	select FREETZ_LIB_libdl       if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_libpthread  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_libutil     if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	default n
 	help
 		Sudo (su "do") allows a system administrator to delegate authority to
