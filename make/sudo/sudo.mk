@@ -16,14 +16,14 @@ $(PKG)_LIBS_TARGET_DIR:=$($(PKG)_LIBS:%=$($(PKG)_DEST_LIBDIR)/%)
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
-$(PKG)_CONFIGURE_OPTIONS += --without-lecture \
-			    --without-pam \
-			    --without-sendmail \
-			    --disable-pam-session \
-			    --disable-root-mailer \
-			    --disable-root-sudo \
-			    --sysconfdir=/mod/etc \
-			    --disable-zlib
+$(PKG)_CONFIGURE_OPTIONS += --without-lecture
+$(PKG)_CONFIGURE_OPTIONS += --without-pam
+$(PKG)_CONFIGURE_OPTIONS += --without-sendmail
+$(PKG)_CONFIGURE_OPTIONS += --disable-pam-session
+$(PKG)_CONFIGURE_OPTIONS += --disable-root-mailer
+$(PKG)_CONFIGURE_OPTIONS += --disable-root-sudo
+$(PKG)_CONFIGURE_OPTIONS += --sysconfdir=/mod/etc
+$(PKG)_CONFIGURE_OPTIONS += --disable-zlib
 
 $(PKG)_CONFIGURE_ENV += sudo_cv_uid_t_len=10
 
