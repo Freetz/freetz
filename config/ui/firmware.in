@@ -5,7 +5,6 @@
 
 choice
 	prompt "Hardware series"
-		depends on FREETZ_SHOW_ADVANCED
 		default FREETZ_SERIES_4N5
 		help
 			Select your hardware series here.
@@ -13,41 +12,31 @@ choice
 			type. Example: 7[5]90 is series 5
 
 	config FREETZ_SERIES_0N1
-		bool "0&1"
+		bool "7050/7170"
 		help
 			Flagships: 7050 and 7170
 
 	config FREETZ_SERIES_2N3
-		bool "2&3"
+		bool "7270/7390"
 		help
 			Flagships: 7270 and 7390
 
 	config FREETZ_SERIES_4N5
-		bool "4&5"
+		bool "7490/7590"
 		help
 			Flagships: 7490 and 7590
 
 	config FREETZ_SERIES_EXT
-		bool "P&R"
+		bool "Extender"
 		help
 			Extender: Powerline & Repeater
 
-	config FREETZ_SERIES_ALL_CHOICE
-		bool "all" if FREETZ_SHOW_ADVANCED
+	config FREETZ_SERIES_ALL
+		bool "All devices"
 		help
 			Every supported device
 
 endchoice # "Hardware series" #
-
-config FREETZ_SERIES_ALL_CONFIG
-	bool
-	default y
-	depends on !FREETZ_SHOW_ADVANCED
-
-config FREETZ_SERIES_ALL
-	bool
-	default y
-	depends on FREETZ_SERIES_ALL_CONFIG || FREETZ_SERIES_ALL_CHOICE
 
 ###
 ### Hardware type
