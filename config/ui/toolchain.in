@@ -3,11 +3,7 @@ menu "Toolchain options"
 
 choice
 	prompt "Toolchains"
-	default FREETZ_DOWNLOAD_TOOLCHAIN if FREETZ_SHOW_APTGURU
-	default FREETZ_BUILD_TOOLCHAIN
-
-	help
-		Download Toolchain, build toolchain
+	default FREETZ_DOWNLOAD_TOOLCHAIN
 
 	config FREETZ_DOWNLOAD_TOOLCHAIN
 		bool "Use precompiled x86_64 toolchains"
@@ -30,8 +26,7 @@ config FREETZ_TOOLCHAIN_32BIT
 config FREETZ_TOOLCHAIN_CCACHE
 	bool "Build ccache for kernel and target"
 	depends on FREETZ_SHOW_APTGURU
-	default y if FREETZ_SHOW_APTGURU
-	default n
+	default y
 	help
 		ccache is a compiler cache. It acts as a caching pre-processor to C/C++
 		compilers, using the -E compiler switch and a hash to detect when a
@@ -832,15 +827,13 @@ choice
 
 	config FREETZ_ROOTEMU_PSEUDO
 		bool "Use pseudo"
-		depends on FREETZ_SHOW_APTGURU
 
 endchoice # "Root emulator" #
 
 config FREETZ_HOSTTOOLS_DOWNLOAD
 	bool "Use precompiled x86_64 host-tools"
 	depends on FREETZ_SHOW_APTGURU
-	default y if FREETZ_SHOW_APTGURU
-	default n
+	default y
 	help
 		Download and use precompiled binaries files. Not
 		every tool is included, see $(TOOLS_BUILD_LOCAL).
