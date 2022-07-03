@@ -11,10 +11,6 @@ TOOLCHAIN_HOST_CFLAGS+=-fno-stack-protector
 
 endif
 
-ifeq ($(strip $(FREETZ_TOOLCHAIN_32BIT)),y)
-TOOLCHAIN_HOST_CFLAGS+=$(HOST_CFLAGS_FORCE_32BIT_CODE)
-endif
-
 # gcc5 does not like be compiled by gcc11/C++17
 ifeq ($(strip $(FREETZ_TARGET_GCC_5_MAX)),y)
 TOOLCHAIN_HOST_CFLAGS+=--std=c++03

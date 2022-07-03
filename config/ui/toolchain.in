@@ -14,15 +14,6 @@ choice
 
 endchoice # "Toolchains" #
 
-config FREETZ_TOOLCHAIN_32BIT
-	bool "Build 32-bit tools and toolchains"
-	depends on FREETZ_SHOW_APTGURU
-	depends on !FREETZ_DOWNLOAD_TOOLCHAIN
-	depends on !FREETZ_HOSTTOOLS_DOWNLOAD
-	default n
-	help
-		This option causes 32-bit tools and toolchains to be built on a 64-bit systems.
-
 config FREETZ_TOOLCHAIN_CCACHE
 	bool "Build ccache for kernel and target"
 	depends on FREETZ_SHOW_APTGURU
