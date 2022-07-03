@@ -682,7 +682,7 @@ choice
 	config FREETZ_TYPE_FIRMWARE_07_1X_INHAUS
 		bool "FRITZ!OS 07.08 Inhaus"
 		select FREETZ_AVM_VERSION_07_1X
-		depends on FREETZ_AVM_HAS_FIRMWARE_07_1X_INHAUS && FREETZ_SHOW_ADVANCED
+		depends on FREETZ_AVM_HAS_FIRMWARE_07_1X_INHAUS && FREETZ_SHOW_EXPERT
 		help
 			Enable this to use an AVM Inhaus firmware as base for modding.
 
@@ -715,7 +715,7 @@ choice
 	config FREETZ_TYPE_FIRMWARE_07_4X_LABOR
 		bool "FRITZ!OS 07.39 Labor - UNTESTED"
 		select FREETZ_AVM_VERSION_07_4X
-		depends on FREETZ_AVM_HAS_FIRMWARE_07_4X_LABOR && FREETZ_SHOW_ADVANCED
+		depends on FREETZ_AVM_HAS_FIRMWARE_07_4X_LABOR && FREETZ_SHOW_EXPERT
 		help
 			Enable this to use an AVM Labor firmware as base for modding.
 			For more details see <http://www.avm.de/Labor/>.
@@ -746,7 +746,7 @@ config FREETZ_AVM_VERSION_LATEST_MAJOR
 
 config FREETZ_TYPE_FIRMWARE_DETECT_LATEST
 	bool "Detect the latest firmware version"
-	depends on FREETZ_SHOW_ADVANCED
+	depends on FREETZ_SHOW_EXPERT
 	depends on FREETZ_AVM_HAS_JUIS_SUPPORT
 	depends on !FREETZ_TYPE_ALIEN_HARDWARE
 	depends on !FREETZ_TYPE_FIRMWARE_FINAL || FREETZ_AVM_VERSION_LATEST_MAJOR
@@ -841,7 +841,7 @@ config FREETZ_TYPE_FIRMWARE_UNTESTED
 
 config FREETZ_TYPE_ALIEN_HARDWARE
 	bool "Compile image for 'alien' hardware"
-	depends on FREETZ_SHOW_ADVANCED && \
+	depends on FREETZ_SHOW_EXPERT && \
 		( \
 		FREETZ_TYPE_1750 || \
 		FREETZ_TYPE_3490 || \
@@ -1106,7 +1106,7 @@ choice
 	config FREETZ_TYPE_IAD_3331_7170
 		bool "Alice IAD 3331"
 		depends on FREETZ_TYPE_7170 && FREETZ_TYPE_LANG_DE
-		select FREETZ_REMOVE_PIGLET_V1 if FREETZ_SHOW_ADVANCED
+		select FREETZ_REMOVE_PIGLET_V1 if FREETZ_SHOW_EXPERT
 		select FREETZ_ENFORCE_URLADER_SETTINGS
 		help
 			Enable this to compile a mod image for Alice IAD 3331 based

@@ -38,7 +38,7 @@ if FREETZ_PACKAGE_OPENVPN
 
 		config FREETZ_PACKAGE_OPENVPN_USE_V0_CGI
 			bool "none - binary only"
-			depends on FREETZ_SHOW_ADVANCED
+			depends on FREETZ_SHOW_EXPERT
 			help
 				No configuration interface, just the binary.
 
@@ -53,7 +53,7 @@ if FREETZ_PACKAGE_OPENVPN
 
 		config FREETZ_PACKAGE_OPENVPN_USE_V2_CGI
 			bool "v2 - new simple-gui"
-			depends on FREETZ_SHOW_ADVANCED
+			depends on FREETZ_SHOW_EXPERT
 			select FREETZ_PACKAGE_OPENVPN_V2_CGI
 			help
 				New quite simple OpenVPN configuration interface v2.

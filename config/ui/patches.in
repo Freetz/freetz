@@ -2,7 +2,7 @@ menu "Removal patches"
 
 config FREETZ_SELECT_HARDENING
 	bool "Select hardening"
-	depends on FREETZ_SHOW_ADVANCED
+	depends on FREETZ_SHOW_EXPERT
 	depends on \
 		FREETZ_AVM_HAS_TR069 || \
 		FREETZ_AVM_HAS_KIDS || \
@@ -69,7 +69,7 @@ config FREETZ_REMOVE_MICROVOIP_DSL
 config FREETZ_REMOVE_ANNEX_B_FIRMWARE
 	bool "Remove Annex B firmware"
 	depends on \
-		FREETZ_SHOW_ADVANCED && \
+		FREETZ_SHOW_EXPERT && \
 		FREETZ_TYPE_7270_V1
 	default n
 	help
@@ -89,7 +89,7 @@ config FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_DIFFS
 
 config FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_PRIME
 	bool "Remove 1st Annex firmware"
-	depends on FREETZ_SHOW_ADVANCED && \
+	depends on FREETZ_SHOW_EXPERT && \
 		FREETZ_AVM_HAS_MULTI_ANNEX && \
 		FREETZ_REMOVE_MULTI_ANNEX_FIRMWARE_DIFFS
 	default n
@@ -805,7 +805,7 @@ config FREETZ_REMOVE_SUPPORT_EVENTSDUMP
 		Seem to be use only by AVM's support-files.
 
 config FREETZ_REMOVE_PUBKEY
-	bool "Remove public firmware key" if FREETZ_SHOW_ADVANCED
+	bool "Remove public firmware key" if FREETZ_SHOW_EXPERT
 	depends on FREETZ_AVM_HAS_SIGNATURE
 	default n
 	help
@@ -836,7 +836,7 @@ config FREETZ_REMOVE_PUBKEY_INHAUS
 		*key4 for router and *key3 for powerline & repeater devices.
 
 config FREETZ_REMOVE_TR069
-	bool "Remove tr069" if FREETZ_SHOW_ADVANCED
+	bool "Remove tr069" if FREETZ_SHOW_EXPERT
 	depends on FREETZ_AVM_HAS_TR069
 	select FREETZ_AVMDAEMON_DISABLE_TR069
 	default n
@@ -844,7 +844,7 @@ config FREETZ_REMOVE_TR069
 		Removes libtr069 to save space.
 
 config FREETZ_REMOVE_TR064
-	bool "Remove tr064" if FREETZ_SHOW_ADVANCED
+	bool "Remove tr064" if FREETZ_SHOW_EXPERT
 	depends on FREETZ_REMOVE_TR069
 	depends on FREETZ_AVM_HAS_TR064
 	default n
@@ -1014,7 +1014,7 @@ config FREETZ_REMOVE_TELEPHONY
 
 config FREETZ_REMOVE_WLAN
 	bool "Remove WLAN"
-	depends on FREETZ_AVM_HAS_WLAN && (FREETZ_AVM_VERSION_06_9X_MAX || FREETZ_TYPE_3390_3490) && FREETZ_SHOW_ADVANCED
+	depends on FREETZ_AVM_HAS_WLAN && (FREETZ_AVM_VERSION_06_9X_MAX || FREETZ_TYPE_3390_3490) && FREETZ_SHOW_EXPERT
 	default n
 	help
 		Radically remove a lot of wlan-related files. This patch saves about
@@ -1637,12 +1637,12 @@ config FREETZ_KEEP_AVM_UCLIBC
 	default n
 
 comment "Replace OpenSSL libraries (not available, requires openssl-0.9.8)"
-	depends on FREETZ_SHOW_ADVANCED && \
+	depends on FREETZ_SHOW_EXPERT && \
 		FREETZ_AVM_HAS_OPENSSL_VERSION_0 && !FREETZ_OPENSSL_VERSION_0
 
 config FREETZ_REPLACE_OPENSSL
 	bool "Replace OpenSSL libraries"
-	depends on FREETZ_SHOW_ADVANCED && \
+	depends on FREETZ_SHOW_EXPERT && \
 		FREETZ_AVM_HAS_OPENSSL_VERSION_0 &&  FREETZ_OPENSSL_VERSION_0
 	select FREETZ_LIB_libcrypto
 	select FREETZ_LIB_libssl
@@ -1677,7 +1677,7 @@ config FREETZ_REPLACE_DTRACE
 
 config FREETZ_REPLACE_ONLINECHANGED
 	bool "Replace onlinechanged - EXPERIMENTAL"
-	depends on FREETZ_SHOW_ADVANCED
+	depends on FREETZ_SHOW_EXPERT
 	default n
 	help
 		AVM's built-in onlinechanged is not reliably called on some DSL boxes for
@@ -1751,7 +1751,7 @@ config FREETZ_ADD_ANNEX_A_FIRMWARE
 
 config FREETZ_ENFORCE_URLADER_SETTINGS
 	bool "Enforce urlader environment"
-	depends on FREETZ_SHOW_ADVANCED
+	depends on FREETZ_SHOW_EXPERT
 	default n
 	help
 		Enforce some urlader (Adam2/EVA) environment variables.
