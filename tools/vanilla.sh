@@ -140,11 +140,39 @@ generate_vanilla() {
 }
 
 
+help() {
+echo "Usage: $0 <vanilla2avm|vanilla4avm|generate_vanilla>"
+cat <<'EOX'
+
+        vanilla2avm - patches unpacked vanilla kernel sources 2 avm with a avmdiff
+        vanilla4avm - creates avmdiff file from vanilla kernel 4 avm sources
+        generate_vanilla - initial used to create avmdiff from tiny kernel pack files
+
+        Add kernel source, create avmdiff:
+        Unpack avm sources
+        mkdir -p ~/vanilla
+        ln -sf $(realpath sources/kernel) ~/vanilla/avm
+        ~/freetz-ng/tools/vanilla.sh vanilla4avm "" "" "7590_07.50"
+        upload ~/vanilla/pxz/*.patch.xz
+        add hash to config/mod/download.in
+        add "7590_07.50" to config/avm/source.in
+        get config name: grep KCONFIG sources/kernel/linux*/.kernelvariables
+        add make/linux/patches/*/7590_07.50/
+        add make/busybox/avm/07.50-7590--busybox.config.*
+        add make/linux/configs/avm/config-*-7590_07.50
+        add make/linux/configs/freetz/config-*-7590_07.50
+        make sure the kernel version exists in config/avm/kernel.in
+        check if avms .config matches with provided sources
+
+EOX
+}
+
+
 case "$1" in
 	vanilla2avm)		shift; vanilla2avm "$@" ;;
 	vanilla4avm)		shift; vanilla4avm "$@" ;;
 	generate_vanilla)	shift; generate_vanilla ;;
-	*)			echo "Usage: $0 <vanilla2avm|vanilla4avm|generate_vanilla>" ;;
+	*)			help                    ;;
 esac
 
 
