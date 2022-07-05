@@ -150,7 +150,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
 
 ### D
 
-  * **<u>dante 1.2.2 (binary only)</u><a id='dante'></a>**<br>
+  * **[Dante 1.4.3 (binary only)](../docs/make/dante.md)<a id='dante'></a>**<br>
     socks proxy daemon
 
   * **[davfs2: davfs 1.5.2/1.6.1](../docs/make/davfs2.md)<a id='davfs2'></a>**<br>
