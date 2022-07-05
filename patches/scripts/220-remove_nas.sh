@@ -45,7 +45,7 @@ if [ -e "$sedfile" ]; then
 	modsed 's!<div id="btn_form_foot">!<div>\n&!' "$sedfile"
 	modsed 's/\(jxl.disableNode("page_bottom",\).*/\1 false);/g' "$sedfile"
 
-	# Fehler von AVM? https://trac.boxmatrix.info/freetz-ng/ticket/2011
+	# Fehler von AVM? see #2011
 	modsed '/^if config.NAS then$/{N;s/^.*\(\nrequire("call_webusb")\)/if true then\1/g}' "$sedfile"
 fi
 

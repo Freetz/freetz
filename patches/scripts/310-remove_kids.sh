@@ -18,7 +18,7 @@ else
 	modsed '/^function HasRestriction() {$/,/^}$/d' "${HTML_LANG_MOD_DIR}/html/de/home/home.js"
 fi
 
-# avoid reboot problem, see https://trac.boxmatrix.info/freetz-ng/ticket/1716
+# avoid reboot problem, see #1716
 if isFreetzType 3170 && [ "$FREETZ_REPLACE_KERNEL" = "y" ] ; then
 	# removing userman segfaults
 	modsed "s/^rmmod userman$/# rmmod userman # segfaults/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.dsl.sh"
