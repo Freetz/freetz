@@ -77,7 +77,6 @@ More features - less bugs!
 ```
   git clone https://gitlab.com/Freetz-NG/freetz-ng ~/freetz-ng
   git clone https://bitbucket.org/Freetz-NG/freetz-ng ~/freetz-ng
-  svn co https://svn.boxmatrix.info/freetz-ng/trunk ~/freetz-ng
 ```
 
 ### Documentation:
