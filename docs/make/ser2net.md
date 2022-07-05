@@ -1,5 +1,5 @@
 # ser2net 3.5.4
- - Homepage: [http://ser2net.sourceforge.net/](http://ser2net.sourceforge.net/)
+ - Homepage: [https://ser2net.sourceforge.net/](https://ser2net.sourceforge.net/)
  - Manpage: [https://linux.die.net/man/8/ser2net](https://linux.die.net/man/8/ser2net)
  - Changelog: [https://sourceforge.net/p/ser2net/news/](https://sourceforge.net/p/ser2net/news/)
  - Repository: [https://sourceforge.net/projects/ser2net/](https://sourceforge.net/projects/ser2net/)
