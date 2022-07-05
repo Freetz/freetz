@@ -78,7 +78,7 @@ configure () {
 			done
 			local url_hostname="${url#*[?&]hostname=}"
 			if [ -z "$alias" -a "$url_hostname" != "$url" ]; then
-				#use hostname= as alias, see https://trac.boxmatrix.info/freetz-ng/ticket/1960
+				#use hostname= as alias, see #1960
 				echo "alias ${url_hostname%%&*}"
 			fi
 
