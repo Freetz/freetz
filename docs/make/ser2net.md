@@ -5,9 +5,6 @@
  - Repository: [https://sourceforge.net/projects/ser2net/](https://sourceforge.net/projects/ser2net/)
  - Package: [master/make/ser2net/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/ser2net/)
 
-Homepage:
-[http://ser2net.sourceforge.net/](http://ser2net.sourceforge.net/)
-
 Anwendungsbeispiele:
 [http://www.nwlab.net/tutorials/ser2net/konsolenserver-linux.html](http://www.nwlab.net/tutorials/ser2net/konsolenserver-linux.html)
 [http://www.aufpreis.de/aufpreis/php/ser2netttyredirect.php](http://www.aufpreis.de/aufpreis/php/ser2netttyredirect.php)
@@ -19,3 +16,4 @@ möglich.
 
 Thread im IPPF:
 [http://www.ip-phone-forum.de/showthread.php?p=1329692](http://www.ip-phone-forum.de/showthread.php?p=1329692)
+

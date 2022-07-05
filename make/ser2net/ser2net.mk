@@ -2,7 +2,7 @@ $(call PKG_INIT_BIN, 3.5.4)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_HASH:=ff44cc792e43e57fd3392faee3e52c82002a2aaa4a79e255667cfcd6cd64580f
 $(PKG)_SITE:=@SF/ser2net
-### WEBSITE:=http://ser2net.sourceforge.net/
+### WEBSITE:=https://ser2net.sourceforge.net/
 ### MANPAGE:=https://linux.die.net/man/8/ser2net
 ### CHANGES:=https://sourceforge.net/p/ser2net/news/
 ### CVSREPO:=https://sourceforge.net/projects/ser2net/
