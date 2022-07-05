@@ -12,7 +12,7 @@ intended to interfere less with key bindings than Screen does."*
 *[screen](screen.md)*, allowing you to run a program in an
 environment that is protected from the controlling terminal and attach
 to it later. It was introduced in Freetz trunk
-[2636](https://trac.boxmatrix.info/freetz-ng/changeset/2636)
+Changeset r2636
 by whoopie. It is smaller than the aforementioned *screen*.
 
 ### Bedienung

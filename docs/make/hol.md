@@ -7,7 +7,7 @@ der FritzBox heraus. Es basiert auf
 einem Skript für Windows-Rechner, redet seine Sprache und ermöglicht den
 Rechner herunterzufahren, neu zu starten und einige weitere Aktionen.
 Seit
-[r5024](https://trac.boxmatrix.info/freetz-ng/changeset/5024)
+Changeset r5024
 ist HOL-Paket im trunk.
 Langfristig ist angedacht HOL mit WOL zu verbinden und HOL-Aktionen aus
 dem erweiterten WOL-WebIF zu ermöglichen. Momentan ist es noch nicht

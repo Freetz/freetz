@@ -27,7 +27,7 @@ xrelayd-ähnliche-Lösung zu benutzen. Dafür sprechen bei jedem Reboot neu
 erstellte selbst signierte Zertifikate des HTTPS-Servers von AVM.
 
 Seit
-Freetz-trunk-[r3571](https://trac.boxmatrix.info/freetz-ng/changeset/3571) gibt es dazu auch ein WebGUI.
+Freetz-trunk Changeset r3571 gibt es dazu auch ein WebGUI.
 
 ### Konfiguration
 

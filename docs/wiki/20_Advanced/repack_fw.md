@@ -105,7 +105,7 @@ zum Packen nicht benötigt wird. Das ist eine kleine Schwäche des Skripts
 
 ### Verwendung von fwmod im "no freetz"-Modus
 
-Seit trunk-[r13796](https://trac.boxmatrix.info/freetz-ng/changeset/13796)
+Seit trunk Changeset r13796
 ist es möglich fwmod im quasi "no freetz"-Modus zu verwenden. Vom
 Ablauf her entspricht dieser Modus dem Bauen einer freetz-modifizierten
 Firmware. In diesem Modus wird jedoch keine einzige freetz-Änderung

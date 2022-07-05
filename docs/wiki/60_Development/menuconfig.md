@@ -233,7 +233,7 @@ Wir sehen einen Fehler wie diesen:
 ```
 
 Gemäß Beschreibung in
-[r8466](https://trac.boxmatrix.info/freetz-ng/changeset/8466)
+Changeset r8466
 gibt es zwei Wege, bei einem von `make menuconfig` angezeigten
 Syntax-Fehler schnell die fehlerhafte Stelle zu finden:
 

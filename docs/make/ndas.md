@@ -15,9 +15,9 @@ I'm using NDAS currenlty to play movies up to 720p.
 **Note** NDAS is now supported for little endian (e.g. 7170, 7270) and
 big endian (e.g. 7390) thanks to
 [ER13](http://www.ip-phone-forum.de/member.php?u=83184).
-The changes are introduced in [11390](https://trac.boxmatrix.info/freetz-ng/changeset/11390) to
-[11392](https://trac.boxmatrix.info/freetz-ng/changeset/11392), [11434](https://trac.boxmatrix.info/freetz-ng/changeset/11434), and
-[11464](https://trac.boxmatrix.info/freetz-ng/changeset/11464).
+The changes are introduced in Changeset r11390 to
+Changeset r11392, Changeset r11434, and
+Changeset r11464.
 Follow the directions from the [Wiki](../index.en.html#)
 After the following step you can configure the packages you want to have
 included in your image.
@@ -45,7 +45,7 @@ or(/and)
 
 ### Setup in Freetz
 
-There is currently (Freetz-trunk [11464](https://trac.boxmatrix.info/freetz-ng/changeset/11464)) no
+There is currently (Freetz-trunk Changeset r11464) no
 web-interface available for NDAS.
 You can configure NDAS via console (e.g. via ssh or telnet access), but
 you can also use a script in rc.custom to get all configured for NDAS to

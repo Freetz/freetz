@@ -8,7 +8,7 @@ concepts described here.
 
 If you'd like to add conditional patches which could be enabled/disable
 by the user via menuconfig, a good example is
-[r11348](https://trac.boxmatrix.info/freetz-ng/changeset/11348)
+Changeset r11348
 
 ### Adding multi-binary packages
 

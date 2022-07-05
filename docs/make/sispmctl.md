@@ -81,7 +81,7 @@ werden mehrere Instanzen von sispmctl als Listener auf unterschiedlichen
 Ports gestartet. Diese Ports können über die Einstellungsseite separat
 für jede Steckdosenleiste konfiguriert werden.
 
-Seit Trunkversion [r6789](https://trac.boxmatrix.info/freetz-ng/changeset/6789) ist sispmctl 3.0 samt cgi-Version 1.1 ein
+Seit Trunkversion Changeset r6789 ist sispmctl 3.0 samt cgi-Version 1.1 ein
 Bestandteil von FREETZ und kann über menuconfig unter "Testing"
 ausgewählt werden. CGI-Version und rc-Skript kann in menuconfig separat
 abgewählt oder ins Image "mitgenommen" werden. Werden cgi- und

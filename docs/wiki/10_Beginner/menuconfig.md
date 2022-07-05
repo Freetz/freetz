@@ -74,7 +74,7 @@ Branding werden aber von der Box nicht akzeptiert.
 -   **freenet**: Gibt an, ob das freenet Branding in der modifizierten
     Firmware erhalten bleiben soll.
 
-[r2700](https://trac.boxmatrix.info/freetz-ng/changeset/2700) wurde die Logik der
+Changeset r2700 wurde die Logik der
 Brandingauswahl umgekehrt. Ausgewählte Brandings werden ab jetzt
 entfernt.
 

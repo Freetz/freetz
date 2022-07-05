@@ -498,7 +498,7 @@ Thread](http://www.ip-phone-forum.de/showthread.php?p=1185868)).
 > werden sollte. Mehr dazu im
 > [IPPF-Thread](http://www.ip-phone-forum.de/showthread.php?t=186208).
 > In FREETZ seit Revision
-> [r3049](https://trac.boxmatrix.info/freetz-ng/changeset/3049).
+> Changeset r3049.
 
 ### Beim Erstellen tritt immer noch ein Fehler auf...
 
@@ -945,7 +945,7 @@ anzufangen).
 > ```
 
 > **Ab Freetz-1.2.x und SVN-trunk
-> ≥[r3318](https://trac.boxmatrix.info/freetz-ng/changeset/3318):**
+> ≥Changeset r3318:**
 >
 > ```
 >	 echo 1 > /tmp/flash/mod/security <--- Bsp. #2: Setzen von Stufe "1" (Konfigurationsdateien editierbar)
@@ -1065,7 +1065,7 @@ anzufangen).
 >	 modsave flash
 > ```
 
- * Seit [r5706](https://trac.boxmatrix.info/freetz-ng/changeset/5706) wird das Setzen des Limits nicht mehr unterstützt.
+ * Seit Changeset r5706 wird das Setzen des Limits nicht mehr unterstützt.
 
 ### Kein FTP-Zugriff nach Freetz möglich
 

@@ -74,7 +74,7 @@ tar -xzf rootfs.tar.gz
 ```
 
 **Neu in der Entwicklerversion seit
-[r8566](https://trac.boxmatrix.info/freetz-ng/changeset/8566):**
+Changeset r8566:**
 Man kann direkt in *Menuconfig* einstellen, daß beim Build zusätzlich
 zum oder anstelle des Firmware-Images das Dateisystem direkt in ein
 Archiv gepackt wird ("USB Root Mode", ersetzt Schritt 1 oben).

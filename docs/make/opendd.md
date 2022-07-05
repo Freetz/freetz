@@ -29,7 +29,7 @@ Beispielskripte:
 
 Hiermit wird konfiguriert wie die externe IP ermittelt wird. Ab
 Trunk-Version
-[r7376](https://trac.boxmatrix.info/freetz-ng/changeset/7376) wird get_ip an [zentraler
+Changeset r7376 wird get_ip an [zentraler
 Stelle](mod.html#get_ip) konfiguriert, wodurch diese Option bei
 opendd entfällt.
 

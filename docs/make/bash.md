@@ -27,8 +27,8 @@ gehören dazu. Und hiermit natürlich auch die Freetz Box
 :-?
 
 Hinweis: Die im Folgenden beschriebene manuelle Anpassung des Prompts
-ist seit [Changeset
-5803](https://trac.boxmatrix.info/freetz-ng/changeset/5803) (freetz-devel)
+ist seit
+Changeset r5803 (freetz-devel)
 nicht mehr nötig, da es dort bereits eingebaut ist.
 
 Man kann den sog. Prompt anpassen, also das, was jeweils vor dem Cursor

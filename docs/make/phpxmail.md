@@ -107,7 +107,7 @@ directory!
 8.  Forward TCP port 995 to Fritz!Box port 10995 (POP3S)
 9.  Activate the XMail options SSMTP and POP3S (note that the checkboxes
     don't show up checked again before changeset
-    [r4760](https://trac.boxmatrix.info/freetz-ng/changeset/4760))
+    Changeset r4760)
 10. Test by checking your e-mail with SSL (port 995) enabled
 
 ### Useful links

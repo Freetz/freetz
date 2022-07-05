@@ -63,7 +63,7 @@ o.ä.).
 
 ### Datenbank
 
-Bis zu [r11010](https://trac.boxmatrix.info/freetz-ng/changeset/11010)
+Bis zu Changeset r11010
 konnte mit einem Intervall von 60 Sekunden 146 Tage aufgezeichnet
 werden, mit 150 Sekunden 1 Jahr. Ab dieser Revision werden die
 Datenbanken von DigiTemp und RRDstats-Kabelsegment mit 2 Jahren bei 60
@@ -119,6 +119,6 @@ experimentierfreudige):
     [http://www.arbeitsplatzvernichtung-durch-outsourcing.de/marty44/rrdtool.html](http://www.arbeitsplatzvernichtung-durch-outsourcing.de/marty44/rrdtool.html)
 -   Thread "[[Trunk #3003] Visualisierung von
     DigiTemp](http://www.ip-phone-forum.de/showthread.php?t=183491)"
-    im IP-Phone-Forum (nicht auf Trunk [r3003](https://trac.boxmatrix.info/freetz-ng/changeset/3003)
+    im IP-Phone-Forum (nicht auf Trunk Changeset r3003
     beschränkt, sondern stetig aktualisiert)
 

@@ -363,7 +363,7 @@ Gruppe Heizungen ausschalten
 
 ### Datenbanken
 
-Bis zu [r11010](https://trac.boxmatrix.info/freetz-ng/changeset/11010)
+Bis zu Changeset r11010
 konnte mit einem Intervall von 60 Sekunden 146 Tage aufgezeichnet
 werden, mit 150 Sekunden 1 Jahr. Ab dieser Revision werden die
 Datenbanken von DigiTemp und RRDstats-Kabelsegment mit 2 Jahren bei 60

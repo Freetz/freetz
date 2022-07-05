@@ -32,7 +32,7 @@ Das Erstellen eines Cross-Compilers ist mit Freetz denkbar einfach:
 
 ## Eigene Download-Toolchain erstellen
 
-Aus und seit [r9983](https://trac.boxmatrix.info/freetz-ng/changeset/9983):
+Aus und seit Changeset r9983:
 
 From now on one can build his own toolchains and use them as download
 toolchains by overriding the corresponding options under "Override

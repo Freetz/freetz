@@ -161,7 +161,7 @@ German.
 
 > The trunk is the current development tree.
 > A branch is a tree which is separated from the trunk at a specific
-> time (e.g. [r2759](https://trac.boxmatrix.info/freetz-ng/changeset/2759)).
+> time (e.g. Changeset r2759).
 > All release versions are tagged
 
 > To check out current development version:
@@ -504,7 +504,7 @@ firmware release, use it carefully!!
 > message as an warning. More informations at the
 > [IPPF-Thread](http://www.ip-phone-forum.de/showthread.php?t=186208)
 > . In FREETZ available since revision
-> [r3049](https://trac.boxmatrix.info/freetz-ng/changeset/3049)
+> Changeset r3049
 > .
 
 ### The problem still occurs. What now?
@@ -672,7 +672,7 @@ requires security level "0").
 > modsave flash
 > ```
 
- *  As of [r5706](https://trac.boxmatrix.info/freetz-ng/changeset/5706) the setting MOD_LIMIT is obsolete.
+ *  As of Changeset r5706 the setting MOD_LIMIT is obsolete.
 
 ### No ftp access after Freetz
 

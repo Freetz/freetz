@@ -42,7 +42,7 @@ availble. I used:
 -   [freetz-linux
     1.2.1](http://www.ip-phone-forum.de/showthread.php?t=199449&page=28)
     (with xz added with: sudo apt-get install xz-utils)\
-    (from [r11347](https://trac.boxmatrix.info/freetz-ng/changeset/11347) the following is needed:
+    (from Changeset r11347 the following is needed:
     sudo apt-get install libacl1-dev libattr1-dev libcap-dev)\
     (from revision ??? the following is also needed: sudo apt-get
     install imagemagick)
