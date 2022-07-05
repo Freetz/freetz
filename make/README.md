@@ -796,7 +796,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
      - [einhängen/attach](../docs/make/screen.md#einhängenattach)
      - [PuTTY-Tip: Änderung der Fensterbreite beim Screen-Start verhindern](../docs/make/screen.md#putty-tip-änderung-der-fensterbreite-beim-screen-start-verhindern)
 
-  * **[ser2net 2.7](../docs/make/ser2net.md)<a id='ser2net'></a>**<br>
+  * **[ser2net 3.5.4](../docs/make/ser2net.md)<a id='ser2net'></a>**<br>
     Ser2net is a program for allowing network connections to serial ports. It supports RFC 2217 (remote control of serial port parameters), but you must have a complient client.
 
   * **<u>sfk: Swiss File Knife 1.9.7.2</u><a id='sfk'></a>**<br>
