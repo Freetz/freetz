@@ -58,7 +58,7 @@ jobs:
           for x in  PACKAGE_LDD PACKAGE_STRACE                               ; do echo "FREETZ_$x=y"  >> .config; done
           for x in  PACKAGE_DROPBEAR                              ; do echo "# FREETZ_$x is not set"  >> .config; done
           echo '# FREETZ_TOOLCHAIN_CCACHE is not set'                                                 >> .config
-          echo 'FREETZ_USER_LEVEL_APTGURU=y'                                                          >> .config
+          echo 'FREETZ_USER_LEVEL_EXPERT=y'                                                           >> .config
           echo 'FREETZ_VERBOSITY_LEVEL_0=y'                                                           >> .config
           echo 'FREETZ_DL_SITE_USER="https://raw.githubusercontent.com/Freetz-NG/dl-mirror/master"'   >> .config
           wget -q "${{ secrets.ACTIONS_CUSTOM }}cfg" -O cfg 2>/dev/null && mv cfg .config || rm -f cfg

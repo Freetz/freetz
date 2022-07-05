@@ -45,7 +45,7 @@ jobs:
 
       - name: tools
         run: |
-          echo 'FREETZ_USER_LEVEL_APTGURU=y\nFREETZ_HOSTTOOLS_DOWNLOAD=y\nFREETZ_DL_SITE_USER="https://raw.githubusercontent.com/Freetz-NG/dl-mirror/master"' > .config
+          echo 'FREETZ_USER_LEVEL_EXPERT=y\nFREETZ_HOSTTOOLS_DOWNLOAD=y\nFREETZ_DL_SITE_USER="https://raw.githubusercontent.com/Freetz-NG/dl-mirror/master"' > .config
           mkdir -p dl/ 2>/dev/null || true
           useradd freetz -s $(which bash) -d $(pwd) -M && chown freetz . -R
           su freetz -c "umask 0022 && make olddefconfig && make tools"
