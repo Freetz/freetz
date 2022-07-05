@@ -93,6 +93,7 @@ Latest changes
    * pcre2 10.40
    * Privoxy 3.0.33
    * radvd 1.9.3/2.19
+   * ser2net 3.5.4
    * Smartmontools 7.3
    * strace 4.9/5.0/5.18
    * Stunnel 5.64
