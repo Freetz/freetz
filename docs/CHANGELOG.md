@@ -688,8 +688,7 @@ Latest changes
     * menuconfig push-firmware: flashes the latest build image ./images/latest.image Use ./tools/push_firmware for more options
     * sorting: The packages in menuconfig are sorted now alphabetical. For a faster navigation just type the character, or
       space for pre-assigned.
-    * labor detection: Labor firmware URL is not hardcoded anymore in Freetz, the current URL is detected by using
-      boxmatrix.info, see https://boxmatrix.info/wiki/Labor-Files for currently availabele labor firmwares.
+    * labor detection: Labor firmware URL is not hardcoded anymore in Freetz, the current URL is detected by using boxmatrix.
       The labor option is enabled for all devices without current FritzOS, but having previous FritzOS version.
 
 - Other stuff:
