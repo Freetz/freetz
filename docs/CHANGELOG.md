@@ -66,6 +66,7 @@ Latest changes
    * BIND 9.11.37/9.16.29
    * CA-bundle 2022-04-26
    * Curl 7.84.0
+   * Dante 1.4.3
    * dtc 1.6.1
    * Git 2.37.0
    * HAProxy 2.6.1
