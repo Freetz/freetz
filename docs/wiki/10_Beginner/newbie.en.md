@@ -188,13 +188,11 @@ system advisors packages and activate by hitting ok).
 
 Next, enter the following command:
 
-> **svn checkout
-> [https://svn.boxmatrix.info/freetz-ng/branches/freetz-stable-2.0](https://svn.boxmatrix.info/freetz-ng/branches/freetz-stable-2.0)**
+> **svn checkout URL**
 
 This will download the newest stable Freetz source code (in this case:
 version 2.0) from the subversion repository. Here you can find out if a
-newer version has been released:
-[https://svn.boxmatrix.info/freetz-ng/tags/](https://svn.boxmatrix.info/freetz-ng/tags/).
+newer version has been released: tags/.
 After the download has finished you will see this message: **Checked out
 revision xxxx**, e.g. xxxx=6526. Please look into FIRMWARES file for
 supported firmwares. The release version can be out of date.

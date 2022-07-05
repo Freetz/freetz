@@ -121,7 +121,7 @@ Homepage](http://stinkylinux.slightlystinky.servebbs.net/)
     -   **SSH/TELNET**: (the preferred method)
 
         ```
-			svn co https://svn.boxmatrix.info/freetz-ng/tags/freetz-1.1.x freetz-1.1.x
+			svn co URL
         ```
 
 You can replace `freetz-1.1.x` with any other valid tag, or use the
