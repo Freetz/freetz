@@ -160,7 +160,7 @@ Vidalia configuration:
 ### obfsproxy
 
 -   [Information](https://www.torproject.org/projects/obfsproxy)
--   Patch in ticket [#1712](https://trac.boxmatrix.info/freetz-ng/ticket/1712)
+-   Patch in Ticket #1712
 
 ### Memory Usage
 

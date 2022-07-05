@@ -193,7 +193,7 @@
 > Da AVM den Quellcode des PacketAccelerator veröffentlicht hat, könnte
 > das Problem von jemandem mit viel Zeit und Wissen behoben werden.
 > Das Thema wird in Ticket
-> [#1605](https://trac.boxmatrix.info/freetz-ng/ticket/1605 "defect: iptables/nat/conntrack & kernel 2.6.28/2.6.32 (new)")
+> Ticket #1605 "defect: iptables/nat/conntrack & kernel 2.6.28/2.6.32 (new)"
 > behandelt, und so lange das Ticket noch nicht geschlossen ist
 > besteht das Problem.
 

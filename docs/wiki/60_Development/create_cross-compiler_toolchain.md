@@ -112,9 +112,9 @@ packages from source should be fine.
 ### Using the dev-tools package to install compiler and tools
 
 -   add dev-tools patch from
-    [#2722](https://trac.boxmatrix.info/freetz-ng/ticket/2722 "enhancement: NATIVE COMPILER: add target compiler and target tools as m4, automake, ... (closed: wontfix)")
+    Ticket #2722 "enhancement: NATIVE COMPILER: add target compiler and target tools as m4, automake, ... (closed: wontfix)"
     and toolchain.patch from
-    [#2650](https://trac.boxmatrix.info/freetz-ng/ticket/2650 "defect: FREETZ_PACKAGE_PYTHON_MOD_CTYPES: can not load shared libs (new)")
+    Ticket #2650 "defect: FREETZ_PACKAGE_PYTHON_MOD_CTYPES: can not load shared libs (new)"
     using similar commands as:\
     `for f in $(svn --dry-run patch dev-tools_v4.patch  | grep target | tr -d "'" | cut -d' ' -f4); do mkdir -p $(dirname $f); touch $f; svn add $(dirname $f) 2> /dev/null; rm $f; done`\
     `svn patch dev-tools_v4.patch`\

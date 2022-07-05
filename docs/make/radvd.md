@@ -58,7 +58,7 @@ Advanced options  --->   BusyBox options  --->    IPv6 Options  --->   [*] trace
 Due to an application that is not supported on later versions, I prever
 to stay on Freetz-1.2.
 But due to issues with other IPv6 enabled devices, I would like to
-include enhancement [#1921](https://trac.boxmatrix.info/freetz-ng/ticket/1921) also in Freetz-1.2.
+include enhancement Ticket #1921 also in Freetz-1.2.
 
 With the following commands executed before make you can have this
 enhancement included also:
@@ -81,7 +81,7 @@ you received from SixXS. E.g. you can pick the first possilbe /64 range
 Network range - 2001:aaaa:bbbb:0000:0000:0000:0000:0000 -
 2001:aaaa:bbbb:0000:ffff:ffff:ffff:ffff
 
-**Note** In below screenshot enhancement [1921](https://trac.boxmatrix.info/freetz-ng/ticket/1921) is
+**Note** In below screenshot enhancement Ticket #1921 is
 included.
 
 [![Howto setup radvd](../screenshots/236_md.jpg)](../screenshots/236.jpg)

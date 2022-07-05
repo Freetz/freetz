@@ -17,7 +17,7 @@ geringe Größe des kompilierten Skript-Interpreters.
     Links](http://www.dmoz.org/World/Deutsch/Computer/Programmieren/Sprachen/Lua/)
 -   [Libraries And
     Bindings](http://lua-users.org/wiki/LibrariesAndBindings)
--   [Ticket with patch for common libraries](https://trac.boxmatrix.info/freetz-ng/ticket/1325)
--   [LUA for Haserl](https://trac.boxmatrix.info/freetz-ng/ticket/1326)
+-   Ticket #1325 "Ticket with patch for common libraries"
+-   Ticket #1326 "LUA for Haserl"
 
 

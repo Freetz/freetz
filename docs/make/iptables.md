@@ -279,7 +279,7 @@ To revert the settings to AVM printk and re-enable DECT type:
 
 The log appears then again on console 0 and is no longer in the syslog.
 
-You can also try a patch from [this ticket](https://trac.boxmatrix.info/freetz-ng/ticket/254), but first read
+You can also try a patch from Ticket #254, but first read
 the comments carefully.
 
 ### What is the difference of INPUT, OUTPUT and FORWARD chains

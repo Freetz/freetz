@@ -148,5 +148,5 @@ dbus-send --system --type=method_call --dest=org.bluez --print-reply /org/bluez/
 ### Weiterführende Links
 
 -   [BlueZ](http://www.bluez.org/)
--   Bluez 4.98 patch: [#602](https://trac.boxmatrix.info/freetz-ng/ticket/602)
+-   Bluez 4.98 patch: Ticket #602
 

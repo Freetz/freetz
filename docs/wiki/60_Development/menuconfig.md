@@ -85,10 +85,10 @@ Folgenden zu tun haben werden, sind
         ```
 
 Siehe vorerst
-[#1532](https://trac.boxmatrix.info/freetz-ng/ticket/1532 "enhancement: Warnings im Zusammenhang mit neuem Kconfig (menuconfig) (closed: fixed)")
+Ticket #1532 "enhancement: Warnings im Zusammenhang mit neuem Kconfig (menuconfig) (closed: fixed)"
 , insbes. Kommentare Nr.
 
--   **[10](https://trac.boxmatrix.info/freetz-ng/ticket/1532#comment:10 "Kommentar 10 für Ticket #1532"):
+-   **Ticket #1532 "Kommentar 10 für Ticket #1532":
     Erklärung einer Warnung mit Vorschlägen zur Problembehebung**
 
     > Diese *unmet dependencies* behebt am besten jeder so, wie der
@@ -116,10 +116,10 @@ Siehe vorerst
 
 <!-- -->
 
--   **[24](https://trac.boxmatrix.info/freetz-ng/ticket/1532#comment:24 "Kommentar 24 für Ticket #1532"):
+-   **Ticket #1532 "Kommentar 24 für Ticket #1532":
     Liste aktueller Warnungen mit Erläuterungen zu Ursachen und
     möglichen Lösungen**
--   **[31](https://trac.boxmatrix.info/freetz-ng/ticket/1532#comment:31 "Kommentar 31 für Ticket #1532"):
+-   **Ticket #1532 "Kommentar 31 für Ticket #1532":
     konkretes Beispiel einer von Alexander Kriegisch eingecheckten
     Problembehebung**
 
@@ -149,7 +149,7 @@ Siehe vorerst
 
 <!-- -->
 
--   **[54](https://trac.boxmatrix.info/freetz-ng/ticket/1532#comment:54 "Kommentar 54 für Ticket #1532"):
+-   **Ticket #1532 "Kommentar 54 für Ticket #1532":
     verallgemeintertes "Kochrezept" zur Problembehebung bei
     Remove-Patches**
 
@@ -179,7 +179,7 @@ Siehe vorerst
 
 <!-- -->
 
--   **[55](https://trac.boxmatrix.info/freetz-ng/ticket/1532#comment:55 "Kommentar 55 für Ticket #1532"):
+-   **Ticket #1532 "Kommentar 55 für Ticket #1532":
     weitere Erläuterungen zur Umsetzung des Kochrezepts**
 
     > Replying to oliver:

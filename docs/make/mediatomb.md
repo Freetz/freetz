@@ -18,7 +18,7 @@ Die Konfiguration von *MediaTomb* erfolgt dateibasiert (im
 Artikel](http://wiki.ubuntuusers.de/Mediatomb) ist dies recht
 gut beschrieben). Informationen zu einem dafür in Freetz integrierten
 Web-Interface finden sich u. a. in
-[ticket:1993](https://trac.boxmatrix.info/freetz-ng/ticket/1993)
+Ticket #1993
 
 ^(vielleicht mag noch jemand, der *MediaTomb* erfolgreich auf seine Box bekommen hat, Hinweise zum "wie" ergänzen -- insbesondere hinsichtlich des Platzbedarfs?)^
 

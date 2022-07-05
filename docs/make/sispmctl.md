@@ -171,8 +171,8 @@ intgrierten Web-Interfaces ist nach einem solchen Absturz möglich.
     IPPF](http://www.ip-phone-forum.de/showthread.php?t=232493&p=1690967&viewfull=1#post1690967)
 -   [Version 1.1 von sispmctl-cgi auf
     IPPF](http://www.ip-phone-forum.de/showthread.php?t=232493&p=1695596&viewfull=1#post1695596)
--   [Ticket #1264 im trac](https://trac.boxmatrix.info/freetz-ng/ticket/1264)
--   [Ticket #1677 im trac](https://trac.boxmatrix.info/freetz-ng/ticket/1677)
+-   Ticket #1264
+-   Ticket #1677
 
 ### Weitere Screenshots
 

@@ -66,7 +66,7 @@ or something (in Freetz WebIF since
 ```
 
 You can monitor these values easily with the patch from ticket
-[#1308](https://trac.boxmatrix.info/freetz-ng/ticket/1308)
+Ticket #1308
 
 ### Limit memory usage
 

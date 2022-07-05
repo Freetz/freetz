@@ -349,7 +349,7 @@ CRL
 CRL steht für "certificate revocation list" und bietet eine
 Möglichkeit, ausgestellte Zertifikate zurückzuziehen und damit ungültig
 zu machen. Aktuell gibt es einen BUG in Freetz
-([#1578](https://trac.boxmatrix.info/freetz-ng/ticket/1578)) so dass eine CRL nur mit etwas Handarbeit
+(Ticket #1578) so dass eine CRL nur mit etwas Handarbeit
 über die Telnet Konsole bzw. Rudishell zum Laufen gebracht werden kann.
 Wer sich das manuelle Erstellen einer CRL nicht zutraut findet mit
 Kleopatra (Windows /

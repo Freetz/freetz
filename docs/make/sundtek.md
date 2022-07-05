@@ -11,7 +11,7 @@ sollte mindestens USB 2.0 haben, 11 MBit/s reichen nicht aus.
  * Mit Kernel
 2.6.19.2 (Fritzbox 7270v1 und 7570) gibt es momentan ein Memoryleak,
 siehe
-[#472](https://trac.boxmatrix.info/freetz-ng/ticket/472)
+Ticket #472
 
 ### Parameter für 'mediaclient'
 

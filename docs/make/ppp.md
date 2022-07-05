@@ -90,7 +90,7 @@ Hierzu werden die iptables-Module *state* und *MASQUERADE* benötigt.
  * Diese lassen
 (ließen?) Boxen mit altem Kernel 2.6.13.1 wie zB die 7170 nach einer
 gewissen Zeit rebooten, siehe Ticket
-[#260](https://trac.boxmatrix.info/freetz-ng/ticket/260)
+Ticket #260
 
 Die Befehle können in der debug.cfg oder rc.custum eingetragen werden.
 Von Vorteil ist es aber sie von den Skripten des ppp-cgi ausfgühren zu

@@ -74,5 +74,5 @@ Test:
 
 ### Weiterführende Links
 
--   [Patch for LUA support](https://trac.boxmatrix.info/freetz-ng/ticket/1326)
+-   Ticket #1326 "Patch for LUA support"
 

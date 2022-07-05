@@ -37,4 +37,4 @@ In Freetz basiert z.B. das [NTFS](ntfs-3g.html) Paket auf *FUSE*.
 -   [Develop your own filesystem with
     FUSE](http://www.ibm.com/developerworks/linux/library/l-fuse/)
 -   s3fslite für Freetz:
-    [#796](https://trac.boxmatrix.info/freetz-ng/ticket/796)
+    Ticket #796
