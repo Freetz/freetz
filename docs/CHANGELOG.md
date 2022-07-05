@@ -87,7 +87,7 @@ Latest changes
    * Nano 6.3
    * Net-SNMP 5.9.1
    * NZBGet 21.1
-   * OpenSSL 0.9.8zh/1.0.2u/1.1.1p/3.0.4
+   * OpenSSL 0.9.8zh/1.0.2u/1.1.1q/3.0.5
    * OpenVPN 2.4.12/2.5.7
    * PCSC-lite 1.9.8
    * pcre2 10.40
