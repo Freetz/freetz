@@ -1,7 +1,8 @@
-CAPTION='ser2net.conf (Serial to Network Proxy)'
-DESCRIPTION="$(lang de:"Konfigurationsdatei f&uuml;r den Serial to Network Proxy." en:"Config file for the Serial to Network Proxy.")"
+CAPTION='ser2net.conf'
+DESCRIPTION="Syntax: <tt>&lt;TCP port&gt;:&lt;state&gt;:&lt;timeout&gt;:&lt;device&gt;:&lt;options&gt;</tt><br>
+$(lang de:"Dokumentation" en:"Documentation"): <a target=blank href=https://github.com/cminyard/ser2net/blob/3.5.x/ser2net.conf>https://github.com/cminyard/ser2net/blob/3.5.x/ser2net.conf</a>"
 
-CONFIG_FILE='/tmp/flash/ser2net.conf'
-CONFIG_SAVE='modsave flash; if [ ! -z "$(pidof ser2net)" ]; then echo ""; /mod/etc/init.d/rc.ser2net restart; fi'
+CONFIG_FILE='/tmp/flash/ser2net/ser2net.conf'
+CONFIG_SAVE='modsave flash; killall -0 ser2net && /mod/etc/init.d/rc.ser2net restart'
 CONFIG_TYPE='text'
 

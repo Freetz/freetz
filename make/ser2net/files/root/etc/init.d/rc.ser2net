@@ -1,45 +1,29 @@
 #!/bin/sh
 
 DAEMON=ser2net
-DAEMON_CONFIG=/tmp/flash/ser2net.conf
-DAEMON_LONG_NAME="Serial to Network Proxy"
+DAEMON_CFGFILE=/tmp/flash/$DAEMON/$DAEMON.conf
 . /etc/init.d/modlibrc
 
-[ -e /etc/ser2net.conf ] && DAEMON_CONFIG=/etc/ser2net.conf
-
-config() {
-		if [ ! -e "$DAEMON_CONFIG" ]; then
-			echo -n "Creating $DAEMON_CONFIG ... "
-			cat <<"EOF" > $DAEMON_CONFIG
-# This is the configuration file for ser2net.  It has the following format:
-#  <TCP port>:<state>:<timeout>:<device>:<options>
-
-# example entries for a USB serial adapter
-10232:raw:60:/dev/ttyUSB0:19200 NONE 1STOPBIT 8DATABITS
-23232:telnet:60:/dev/ttyUSB0:19200 NONE 1STOPBIT 8DATABITS
-EOF
-			echo "done."
-			/usr/bin/modsave flash
-		fi
-}
 
 start() {
-	modlib_startdaemon $DAEMON -c $DAEMON_CONFIG -P $PID_FILE
+	modlib_startdaemon $DAEMON_BIN -c $DAEMON_CFGFILE -P $PID_FILE
 }
 
 case $1 in
 	""|load)
-		[ "$DAEMON_CONFIG" != "/etc/ser2net.conf" ] && modreg file ser2net conf 'ser2net.conf' 0 "ser2net_conf"
+		modlib_defaults $DAEMON_CFGFILE
 
-		modreg cgi 'ser2net' 'ser2net'
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
 		modreg daemon $DAEMON
+		modreg file $DAEMON conf "${DAEMON_CFGFILE##*/}" 0 "ser2net_conf"
 
 		modlib_start $SER2NET_ENABLED
 		;;
 	unload)
+		modunreg file $DAEMON
 		modunreg daemon $DAEMON
-		modunreg cgi ser2net
-		modunreg file ser2net
+		modunreg cgi $DAEMON
+
 		modlib_stop
 		;;
 	start)
@@ -58,7 +42,6 @@ case $1 in
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
 		exit 1
 		;;
-
 esac
 
 exit 0
