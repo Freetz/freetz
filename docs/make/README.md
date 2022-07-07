@@ -115,8 +115,8 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
 
 ### D
 
-  * **[Dante 1.4.3 (binary only)](dante.md)<a id='dante'></a>**<br>
-    socks proxy daemon
+  * **[Dante 1.4.3](dante.md)<a id='dante'></a>**<br>
+    A free SOCKS server
 
   * **[davfs2: davfs 1.5.2/1.6.1](davfs2.md)<a id='davfs2'></a>**<br>
     davfs is a Linux file system driver that allows you to mount a WebDAV server as a disk drive. WebDAV is an extension to HTTP/1.1 that allows remote collaborative authoring of Web resources, defined in RFC 4918.
