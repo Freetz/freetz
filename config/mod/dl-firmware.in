@@ -1,4 +1,10 @@
 
+config FREETZ_DL_OVERRIDE
+	bool "Override firmware options" if FREETZ_SHOW_EXPERT
+	default n
+	help
+		Enable this to override automatically generated firmware entries.
+
 config FREETZ_DL_SITE
 	string "Firmware site"                                                                                             if FREETZ_DL_OVERRIDE && !FREETZ_TYPE_FIRMWARE_DETECT_LATEST
 	default "http://localhost"                                                                                         if FREETZ_TYPE_FIRMWARE_DETECT_LATEST
