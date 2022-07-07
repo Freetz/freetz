@@ -21,7 +21,7 @@ MYPWD="$(dirname ${SCRIPT%/*})"
 PDIR="config/.img"
 PBIG="$MYPWD/config/img.in"
 FWDU="$MYPWD/tools/fwdu"
-DLIN="$MYPWD/config/mod/download.in"
+DLIN="$MYPWD/config/mod/dl-firmware.in"
 PROP="$MYPWD/$PDIR"
 CINTMP="$PROP/Config.in"
 UNPACK="$HOME/.freetz-props"
@@ -56,7 +56,7 @@ outp() {
 	echo -e "$K$V"
 }
 
-# $1 download.in definition
+# $1 dl-firmware.in definition
 get_shorty() {
 	echo "$PDIR/$(echo "${line#* if }" | sed 's/ && FREETZ_TYPE_ANNEX_/--X/g;s/ && FREETZ_TYPE_FIRMWARE_/--/g;s/ && FREETZ_AVM_VERSION_/--/g;s/ && FREETZ_TYPE_LANG_/--/g;s/FREETZ_TYPE_//g;s/.* || FON)/FON/g').in"
 }
@@ -85,10 +85,10 @@ in_s() { [ "$DOCONS" != "1" ] && in_s_fancy "$@" || in_s_consi "$@"; }
 ## fwlist
 fwlist() {
 	mkdir -p "$PROP"
-	START="$(nl -ba $DLIN | sed -rn 's/^ *(.*)\t\tconfig FREETZ_DL_SOURCE$/\1/p')"
+	START="$(nl -ba $DLIN | sed -rn 's/^ *(.*)\t*\tconfig FREETZ_DL_SOURCE$/\1/p')"
 	COUNT="$(wc -l $DLIN | sed 's/ .*//')"
 	TOP="$(( $COUNT - $START ))"
-	BOT="$(tail -n$TOP $DLIN | nl -ba | sed -rn 's/^ *(.*)\t\tconfig .*/\1/p' | head -n1)"
+	BOT="$(tail -n$TOP $DLIN | nl -ba | sed -rn 's/^ *(.*)\t*\tconfig .*/\1/p' | head -n1)"
 #	cat "$DLIN" | tail -n "$TOP" | head -n "$BOT" | grep -v 'FREETZ_DL_DETECT_IMAGE_NAME' | sed -rn 's/^.*\tdefault //p' | sed 's/"//g;s/  */ /g' \
 	cat "$DLIN" | tail -n "$TOP" | head -n "$BOT" | grep -v 'FREETZ_DL_DETECT_IMAGE_NAME' | sed -rn 's/^[^#]*\tdefault //p' | sed 's/"//g;s/  */ /g' \
 	  | sed 's/ || FREETZ_TYPE_[0-9][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9]_[^ ][^ ] *//g' \

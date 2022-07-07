@@ -134,8 +134,8 @@ generate_vanilla() {
 		local file=${x##*/}
 		local OLD_HASH="$(sha256sum $DL_DIR/${file/$VERSION/$OLD_VER})"
 		local NEW_HASH="$(sha256sum $x)"
-		grep -q "${OLD_HASH%% *}" $GITDIR/config/mod/download.in || echo "Not found: $file"
-		sed "s/${OLD_HASH%% *}/${NEW_HASH%% *}/" -i $GITDIR/config/mod/download.in
+		grep -q "${OLD_HASH%% *}" $GITDIR/config/mod/dl-kernel.in || echo "Not found: $file"
+		sed "s/${OLD_HASH%% *}/${NEW_HASH%% *}/" -i $GITDIR/config/mod/dl-kernel.in
 	done
 }
 
@@ -154,7 +154,7 @@ cat <<'EOX'
         ln -sf $(realpath sources/kernel) ~/vanilla/avm
         ~/freetz-ng/tools/vanilla.sh vanilla4avm "" "" "7590_07.50"
         upload ~/vanilla/pxz/*.patch.xz
-        add hash to config/mod/download.in
+        add hash to config/mod/dl-kernel.in
         add "7590_07.50" to config/avm/source.in
         get config name: grep KCONFIG sources/kernel/linux*/.kernelvariables
         add make/linux/patches/*/7590_07.50/

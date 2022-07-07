@@ -40,7 +40,7 @@ extract_urls() {
 	local site_symbol="$1" filename_symbol="$2" filter_symbol="$3"
 	local menuconfigfile= site= filename= condition=
 
-	menuconfigfile="./config/mod/download.in"
+	menuconfigfile="./config/mod/dl-firmware.in"
 	if [ ! -f "$menuconfigfile" ]; then
 		echo >&2 "Menuconfig file \"$file\" not found."
 		exit 1
