@@ -1,0 +1,17 @@
+com2sec readonly  192.168.0.0/16  public
+com2sec readonly  127.0.0.0/8     public
+com2sec paranoid  default         public
+
+group MyROSystem v1  paranoid
+group MyROSystem v2c paranoid
+group MyROSystem usm paranoid
+group MyROGroup  v1  readonly
+group MyROGroup  v2c readonly
+group MyROGroup  usm readonly
+
+view all    included .1 80
+view system included .1.3.6.1.2.1.1
+
+access MyROSystem "" any noauth exact system none none
+access MyROGroup  "" any noauth exact all    none none
+

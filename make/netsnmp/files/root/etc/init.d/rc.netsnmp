@@ -1,63 +1,32 @@
 #!/bin/sh
 
-DAEMON=snmpd
-DAEMON_LONG_NAME="Net-SNMP daemon"
-PID_FILE=/var/run/$DAEMON.pid
-CONF_NAME=netsnmp
-
+DAEMON=netsnmp
+DAEMON_LONG_NAME="Net-SNMP"
+DAEMON_CFGFILE=/tmp/flash/$DAEMON/snmpd.conf
+DAEMON_BIN=snmpd
 . /etc/init.d/modlibrc
 
-SNMPDOPTS="-Lf /dev/null"
-
-CFGFILE="/tmp/flash/snmpd.conf"
-[ -e /etc/snmp/snmpd.conf ] && CFGFILE="/etc/snmp/snmpd.conf"
-
-
-config() {
-	mkdir -p /var/lib/snmp
-	if [ ! -e "$CFGFILE" ]; then
-		echo "Creating $CFGFILE"
-		{
-		echo "com2sec readonly  192.168.0.0/16  public"
-		echo "com2sec readonly  169.254.0.0/16  public"
-		cat <<"EOF"
-com2sec readonly  127.0.0.0/8     public
-com2sec paranoid  default         public
-
-group MyROSystem v1  paranoid
-group MyROSystem v2c paranoid
-group MyROSystem usm paranoid
-group MyROGroup  v1  readonly
-group MyROGroup  v2c readonly
-group MyROGroup  usm readonly
-
-view all    included .1 80
-view system included .1.3.6.1.2.1.1
-
-access MyROSystem "" any noauth exact system none none
-access MyROGroup  "" any noauth exact all    none none
-EOF
-		} > $CFGFILE
-		/usr/bin/modsave flash
-	fi
-}
 
 start() {
-	modlib_startdaemon $DAEMON -c $CFGFILE -p $PID_FILE $SNMPDOPTS
+	modlib_startdaemon $DAEMON_BIN -c $DAEMON_CFGFILE -p $PID_FILE -Ls3
 }
 
 case $1 in
 	""|load)
-		modreg cgi 'netsnmp' 'Net-SNMP'
-		modreg daemon netsnmp
-		[ "$CFGFILE" != "/etc/snmp/snmpd.conf" ] && modreg file netsnmp conf 'snmpd.conf' 0 "snmpd_conf"
+		modlib_defaults $DAEMON_CFGFILE
+		mkdir -p /var/lib/snmp
+
+		modreg cgi $DAEMON "$DAEMON_LONG_NAME"
+		modreg daemon $DAEMON
+		modreg file $DAEMON conf "${DAEMON_CFGFILE##*/}" 0 "snmpd_conf"
 
 		modlib_start $NETSNMP_ENABLED
 		;;
 	unload)
-		modunreg cgi netsnmp
-		modunreg daemon netsnmp
-		modunreg file netsnmp
+		modunreg file $DAEMON
+		modunreg daemon $DAEMON
+		modunreg cgi $DAEMON
+
 		modlib_stop
 		;;
 	start)
@@ -76,7 +45,6 @@ case $1 in
 		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
 		exit 1
 		;;
-
 esac
 
 exit 0

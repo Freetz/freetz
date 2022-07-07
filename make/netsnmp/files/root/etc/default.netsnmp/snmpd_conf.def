@@ -1,7 +1,7 @@
-CAPTION='snmpd.conf (Net-SNMP)'
-DESCRIPTION="$(lang de:"Konfigurationsdatei f&uuml;r den Net-SNMP Daemon." en:"Config file for the Net-SNMP Daemon.")"
+CAPTION='snmpd.conf'
+DESCRIPTION="$(lang de:"Dokumentation" en:"Documentation"): <a target=blank href=https://github.com/net-snmp/net-snmp/blob/master/EXAMPLE.conf.def>https://github.com/net-snmp/net-snmp/blob/master/EXAMPLE.conf.def</a>"
 
-CONFIG_FILE='/tmp/flash/snmpd.conf'
-CONFIG_SAVE='modsave flash; if [ ! -z "$(pidof snmpd)" ]; then echo ""; /mod/etc/init.d/rc.netsnmp restart; fi'
+CONFIG_FILE='/tmp/flash/netsnmp/snmpd.conf'
+CONFIG_SAVE='modsave flash; killall -0 snmpd && /mod/etc/init.d/rc.netsnmp restart'
 CONFIG_TYPE='text'
 
