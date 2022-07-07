@@ -1,0 +1,37 @@
+
+#debug: 2
+logoutput: /var/log/socks.log
+#errorlog: /var/log/socks.errlog
+
+internal: 0.0.0.0 port = 1080
+internal: :: port = 1080
+external: dsl
+
+user.privileged: root
+user.notprivileged: nobody
+
+clientmethod: none
+socksmethod: none
+#socksmethod: username
+
+client pass {
+	from: 0/0 to: 0/0
+	log: error # connect disconnect
+}
+client block {
+	from: 0/0 to: 0/0
+	log: error connect
+}
+
+socks pass {
+	from: 0/0 to: 0/0
+	command: bind connect udpassociate
+	log: error # connect disconnect iooperation
+	socksmethod: none
+#	socksmethod: username
+}
+socks block {
+	from: 0/0 to: 0/0
+	log: error connect
+}
+
