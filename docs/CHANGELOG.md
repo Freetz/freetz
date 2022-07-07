@@ -41,7 +41,6 @@ Latest changes
 ### devel
 
  - Known problems:
-   * Replace kernel does not work for most latest firmware versions.
    * Loading build kernel modules may work or do not. You'll notice.
 
  - Firmware updates:
