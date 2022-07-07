@@ -3,6 +3,7 @@ Latest changes
 
 - Freetz-NG
   * [devel](#devel)
+  * [ng22070](#ng22070)
   * [ng22040](#ng22040)
   * [ng21090](#ng21090)
   * [ng21030](#ng21030)
@@ -38,6 +39,15 @@ Latest changes
 <br>
 
 ### devel
+
+ - Known problems:
+   * Replace kernel does not work for most latest firmware versions.
+   * Loading build kernel modules may work or do not. You'll notice.
+
+ - Firmware updates:
+   * Please see [FIRMWARES](FIRMWARES.md) for the list of currently supported devices and firmwares.
+
+### ng22070
 
  - Known problems:
    * Replace kernel does not work for most latest firmware versions.
@@ -111,7 +121,7 @@ Latest changes
    * Wget GNU 1.21.3
 
  - Firmware updates:
-   * Please see [FIRMWARES](FIRMWARES.md) for the list of currently supported devices and firmwares.
+   * Please see [FIRMWARES](https://github.com/Freetz-NG/freetz-ng/blob/ng22070/docs/FIRMWARES.md) for the list of supported devices and firmwares.
 
 ### ng22040
 

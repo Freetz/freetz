@@ -1,5 +1,12 @@
 # NEWS
 
+ * __[2022-07-08](#2022-07-08)__<a id='2022-07-08'></a><br>
+   Es wurde ein neuer [Tag](https://github.com/Freetz-NG/freetz-ng/tags) `ng22070` erstellt.<br>
+   Die automatisch angebotene und nicht deaktivierbare `.zip`-Datei darf auf keinen Fall verwendet werden, da<br>
+   darin keine Dateiberechtigungen enthalten sind! In der `.tar.gz` fehlt mindestens die Versionsinformation.<br>
+   Stattdessen sollte ein Tag wie in der [README](https://github.com/Freetz-NG/freetz-ng#or-clone-a-single-tag) beschrieben mit git ausgecheckt werden.<br>
+   Siehe [ng22070](https://github.com/Freetz-NG/freetz-ng/releases/tag/ng22070)<br>
+
  * __[2022-06-02](#2022-06-02)__<a id='2022-06-02'></a><br>
    Zum Auschecken und wärend des Buildvorgangs ist keine `umask 0022` mehr notwendig, die Berechtigungen<br>
    werden angepasst falls es notwendig ist. Dies wird nach jedem `update`/`pull` des Checkouts geprüft.<br>
