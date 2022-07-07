@@ -3,6 +3,7 @@
 #Arg $1: <VERSION>
 #Arg $2: <new|old|all>
 
+DLTCIN='config/mod/dl-toolchain.in'
 VERSION="$(tools/freetz_revision short)"
 VERSION="${1:-r${VERSION%-*}}"
 [ "$1" == "own" ] && VERSION="rLOCAL"
@@ -109,6 +110,11 @@ cat out.target | grep -v '^#' | grep -iv gcc.3 | sort -u -k4 | grep '^dl/' -v
 echo -e "\n# files:\n"
 cat out.target | grep -v '^#' | grep -iv gcc.3 | sort -u | grep '^dl/'
 
+#u
+grep -h '^default' out.{kernel,target} | while read x; do sed -i "s/.* if ${x##* if }$/\t${x//&/\\&}/" $DLTCIN; done
+[ "$VERSION" != "rLOCAL" ] && sed -ri "s/default \"r(.){5}\"$/default \"$VERSION\"/g" $DLTCIN && ln -f $DLTCIN
+
+#c
 rm -f out.{raw,kernel,target}
 echo
 #grep -v '^#' out.raw | sort -u 
