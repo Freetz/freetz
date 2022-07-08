@@ -227,9 +227,23 @@ else
 	echo "<p>$(lang de:"HINWEIS: Es gibt kein ausf&uuml;hrbares Nach-Installationsskript." en:"NOTE: There is no executable post-installation script.")</p>"
 fi
 
+burner() {
+	(
+		. /var/env.cache
+		burnuimg /var/firmware-update.uimg && aicmd pumaglued uimg switchandreboot
+	)
+}
+if [ -f /var/firmware-update.uimg ]; then
+	pre_begin
+	html_do burner
+	retval=$?
+	pre_end
+	[ "$retval" != "0" ] && status "failed" && do_exit $retval
+fi
+
 if $rebootbox; then
 	echo "<b>$(lang de:"Das Ger&auml;t startet jetzt neu" en:"The device will reboot now") ... </b>"
-	(sleep 3; reboot)&
+	[ ! -f /var/firmware-update.uimg ] && (sleep 3; reboot)&
 fi
 
 do_exit 0
