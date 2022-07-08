@@ -10,7 +10,7 @@
  - 190-add_freetz_webmenu.sh        - !FREETZ_AVM_HAS_ONLY_LUA
  - 222-drop_noexec.sh               - FREETZ_AVM_HAS_NOEXEC
  - 250-remove_avm_inetd.sh          - FREETZ_AVM_HAS_INETD
- - 700-set_lang_to_utf8.sh          - FREETZ_BUSYBOX_UNICODE_SUPPORT
+ - 700-set_lang.sh                  - all
  - 840-remove_smd_httpd.sh          - FREETZ_CPU_MODEL_ARM_cortex_a9
  - 850-patch_fiber_fit-image.sh     - FREETZ_TYPE_FIBER
 
