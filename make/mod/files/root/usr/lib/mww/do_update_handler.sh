@@ -8,15 +8,7 @@ exec < $1
 
 footer() {
 	echo "<p>"
-
 	back_button --title="$(lang de:"Zur&uuml;ck zur &Uuml;bersicht" en:"Back to main page")" mod status
-
-	if [ "$rebootbox" != "true" ]; then
-	cat << EOF
-<form action="/cgi-bin/exec.cgi/reboot" method="post"><div class="btn"><input type="submit" value="$(lang de:"Neustart" en:"Reboot")"></div></form>
-EOF
-	fi
-
 	echo "</p>"
 
 	cgi_end
@@ -85,15 +77,10 @@ EOF
 
 stop=${NAME%%:*}
 downgrade=false
-rebootbox=false
+rebootbox=true
 delete_jffs2=false
 case $NAME in
 	*:downgrade*) downgrade=true ;;
-esac
-case $NAME in
-	*:rebootbox*) rebootbox=true ;;
-esac
-case $NAME in
 	*:delete_jffs2*) delete_jffs2=true ;;
 esac
 
@@ -235,29 +222,14 @@ if [ -x /var/post_install ]; then
 	pre_begin
 	html < /var/post_install
 	pre_end
-
-cat << EOF
-<p>
-$(lang \
-  de:"Das Nach-Installationsskript l&auml;uft beim Neustart (reboot) und f&uuml;hrt die darin definierten Aktionen aus, z.B. das tats&auml;chliche Flashen der Firmware. Sie k&ouml;nnen immer noch entscheiden, diesen Vorgang abzubrechen, indem Sie das Skript und den Rest der extrahierten Firmware-Komponenten l&ouml;schen." \
-  en:"The post-installation script will be executed upon reboot and perform the actions specified therein, e.g. the actual firmware flashing. You may still choose to interrupt this process by removing the script along with the rest of the extracted firmware components." \
-)
-</p>
-EOF
+	echo "<p>$(lang de:"Das Nach-Installationsskript wird beim Neustart ausgef&uuml;hrt." en:"The post-installation script will be executed upon reboot.")</p>"
 else
-cat << EOF
-<p>
-$(lang \
-  de:"HINWEIS: Es gibt kein ausf&uuml;hrbares Nach-Installationsskript." \
-  en:"NOTE: There is no executable post-installation script." \
-)
-</p>
-EOF
+	echo "<p>$(lang de:"HINWEIS: Es gibt kein ausf&uuml;hrbares Nach-Installationsskript." en:"NOTE: There is no executable post-installation script.")</p>"
 fi
 
 if $rebootbox; then
-	echo "<b>$(lang de:"Das Ger&auml;t startet automatisch neu" en:"The device will reboot automatically") ... </b>"
-	(sleep 5; reboot)&
+	echo "<b>$(lang de:"Das Ger&auml;t startet jetzt neu" en:"The device will reboot now") ... </b>"
+	(sleep 3; reboot)&
 fi
 
 do_exit 0
