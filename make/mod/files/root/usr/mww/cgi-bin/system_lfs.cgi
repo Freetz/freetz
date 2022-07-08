@@ -51,7 +51,7 @@ fitinfo() {
 	DAT="$(date -d @$inactive_date_epoch +'%d.%m.%Y %H:%M:%S')"
 	echo "FritzOS ${VER:-UNKNOWN}${REV:+ rev$REV}${DAT:+ ($DAT)}"
 
-	if [ -n "$inactive_modified_by" ]; then
+	if [ -n "$inactive_modified_by" -a "$inactive_modified_by" != "-" ]; then
 		WHO="${inactive_modified_by/Freetz-NG/Freetz}"
 		SUB="${inactive_modified_version:-ng}"
 		FMD="$(date -d @$inactive_modified_at_epoch +'%d.%m.%Y %H:%M:%S')"
