@@ -7,6 +7,19 @@
    Stattdessen sollte ein Tag wie in der [README](https://github.com/Freetz-NG/freetz-ng#or-clone-a-single-tag) beschrieben mit git ausgecheckt werden.<br>
    Siehe [ng22070](https://github.com/Freetz-NG/freetz-ng/releases/tag/ng22070)<br>
 
+ * __[2022-07-03](#2022-07-03)__<a id='2022-07-03'></a><br>
+   Der SVN-Server auf Boxmatrix kann nicht mehr aktualisiert und sollte daher nicht mehr verwendet werden.<br>
+   Zurückzuführen ist diese Deaktivierung auf Patches über die sich Hippi ärgerte, ohne die `fitimg` in Freetz<br>
+   allerdings nicht nutzbar gewesen wäre. Auf seinen Wunsch wurde sein Perl-Script aus Freetz entfernt und<br>
+   mit Standard-Tools aus [Device Tree Compiler](https://git.kernel.org/pub/scm/utils/dtc/dtc.git) und [U-Boot](https://github.com/u-boot/u-boot) sowie PeterPawns [fit_tools](https://github.com/PeterPawn/YourFritz/tree/main/fit_tools) und [fitdump](https://github.com/PeterPawn/dtc/tree/fitdump) ersetzt.<br>
+   Vorteile diese Umstellung sind unter anderem dass nicht mehr jedes einzelne neue Gerät aufwändig in das<br>
+   Script hineingebastelt werden muss und die Tools auch auf der Fritzbox selbst zur schnellen Anzeige der<br>
+   inaktiven Partition nutzbar sind.<br>
+   Siehe
+   [extrem schlimmer Patch](https://github.com/Freetz-NG/freetz-ng/blob/b1d2002905bdf5641651de0e245b80b2d48f74e7/tools/make/fitimg-host/patches/100-show_help_no_args.patch) /
+   [noch schlimmerer Patch](https://github.com/Freetz-NG/freetz-ng/blob/b1d2002905bdf5641651de0e245b80b2d48f74e7/tools/make/fitimg-host/patches/200-fix_unlzma_path.patch)
+   <br>
+
  * __[2022-06-02](#2022-06-02)__<a id='2022-06-02'></a><br>
    Zum Auschecken und wärend des Buildvorgangs ist keine `umask 0022` mehr notwendig, die Berechtigungen<br>
    werden angepasst falls es notwendig ist. Dies wird nach jedem `update`/`pull` des Checkouts geprüft.<br>
@@ -16,7 +29,7 @@
    Der Kernel wird nun nicht mehr direkt aus den AVM-Sourcen gebaut sondern mit einem Download von<br>
    kernel.org und anschliessend gepatcht. Dies erspart das ständige Warten auf AVM bis Sourcen verfügbar<br>
    sind, ausserdem werden für Laborversionen nur sporadisch Sourcen veröffentlich, für Inhaus überhaupt<br>
-   nicht. Für eine solche Firmware stehen  keine Kernelmodule zur Verfügung.<br>
+   nicht. Für eine solche Firmware stehen keine Kernelmodule zur Verfügung.<br>
    Dies kann mit den Inhaus 7.39 dieser Geräte getestet werden:<br>
     - 4.4.271  - 3000 + 7530 + 6850-4G + 6850-5G<br>
     - 4.4.271  - 2400<br>
