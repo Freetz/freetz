@@ -730,6 +730,11 @@ determine_() {
 	[ -e "$unpacked/usr/sbin/rpcbind" ] && X="available" && in_b "FREETZ_AVM_HAS_RPCBIND"
 	[ $DOSHOW -ge 2 ] && outp "rpcbind" "$X"
 
+	#SERVICES
+	X="%"
+	[ -e "$unpacked/etc/services" ] && X="available" && in_b "FREETZ_AVM_HAS_SERVICES"
+	[ $DOSHOW -ge 2 ] && outp "servies" "$X"
+
 	#NSSWITCH
 	X="%"
 	[ -e "$unpacked/etc/nsswitch.conf" ] && X="available" && in_b "FREETZ_AVM_HAS_NSSWITCH"
