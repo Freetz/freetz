@@ -1,3 +1,7 @@
+[ "$FREETZ_ADD_ETCSERVICES" == "y" ] || return 0
+echo1 "creating etc/services"
+
+cat << 'EOF' > ${FILESYSTEM_MOD_DIR}/etc/services
 echo		7/tcp
 echo		7/udp
 discard		9/tcp
@@ -204,4 +208,6 @@ lighttpd	8008/tcp
 privoxy		8118/tcp
 tor		9050/tcp
 xmail		10025/tcp
+
+EOF
 
