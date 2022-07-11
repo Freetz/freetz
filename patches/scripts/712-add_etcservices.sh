@@ -106,7 +106,7 @@ radius		1812/tcp
 radius		1812/udp
 radius-acct	1813/tcp	radacct
 radius-acct	1813/udp	radacct
-ssdp		1900/udp	Simple Service Discovery Protocol
+ssdp		1900/udp	# Simple Service Discovery Protocol
 nfsd		2047/tcp	nfs	# Network File System
 nfsd		2047/udp	nfs	# Network File System
 #nfs		2049/tcp	# AVM noobs running an obscure webserver on this port with older FOS
@@ -141,10 +141,10 @@ xmpp-client	5222/tcp	jabber-client
 xmpp-client	5222/udp	jabber-client
 xmpp-server	5269/tcp	jabber-server
 xmpp-server	5269/udp	jabber-server
-pcp		5351/udp	Port Control Protocol
-mdns		5353/tcp	Multicast Domain Name Service
-mdns		5353/udp	Multicast Domain Name Service
-llmnr		5355/udp	Link Local Multicast Name Resolution
+pcp		5351/udp	# Port Control Protocol
+mdns		5353/tcp	# Multicast Domain Name Service
+mdns		5353/udp	# Multicast Domain Name Service
+llmnr		5355/udp	# Link Local Multicast Name Resolution
 postgresql	5432/tcp	postgres
 postgresql	5432/udp	postgres
 x11		6000/tcp
