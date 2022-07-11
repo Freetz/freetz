@@ -1726,14 +1726,16 @@ config FREETZ_ADD_SWAPOPTIONS
 
 config FREETZ_ADD_ETCSERVICES
 	bool "Add /etc/services"
+	depends on !FREETZ_AVM_HAS_ETCSERVICES
 	default y
 	help
-		Adds /etc/services file.
-		Used eg by nfsd and rpcinfo.
+		Adds /etc/services file. Used eg by nfsd and rpcinfo.
+		This patch is only availably for firmware not yet
+		containing the file, typically before FOS 7.1x.
 
 config FREETZ_CUSTOM_ETCSERVICES
 	bool "Custom /etc/services"
-	depends on FREETZ_ADD_ETCSERVICES
+	select FREETZ_ADD_ETCSERVICES if !FREETZ_AVM_HAS_ETCSERVICES
 	default y
 	help
 		Adds freetz-specific services to /etc/services.
