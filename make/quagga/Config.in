@@ -25,41 +25,39 @@ config FREETZ_PACKAGE_QUAGGA
 		IF YOU DON'T KNOW HOW TO CONFIGURE THE ROUTING DAEMONS!
 		(However: a guided/safe config interface is on the todo list ;-)
 
-config FREETZ_PACKAGE_QUAGGA_ZEBRA
-	bool
-	depends on FREETZ_PACKAGE_QUAGGA
+if FREETZ_PACKAGE_QUAGGA
 
-config FREETZ_PACKAGE_QUAGGA_VTYSH
-	bool
-	depends on FREETZ_PACKAGE_QUAGGA
+	config FREETZ_PACKAGE_QUAGGA_ZEBRA
+		bool
 
-config FREETZ_PACKAGE_QUAGGA_BGPD
-	bool "bgpd"
-	depends on FREETZ_PACKAGE_QUAGGA
-	default n
+	config FREETZ_PACKAGE_QUAGGA_VTYSH
+		bool
 
-config FREETZ_PACKAGE_QUAGGA_RIPD
-	bool "ripd"
-	depends on FREETZ_PACKAGE_QUAGGA
-	default n
+	config FREETZ_PACKAGE_QUAGGA_BGPD
+		bool "bgpd"
+		default n
 
-config FREETZ_PACKAGE_QUAGGA_RIPNGD
-	bool "ripngd"
-	depends on FREETZ_PACKAGE_QUAGGA && FREETZ_TARGET_IPV6_SUPPORT
-	default n
+	config FREETZ_PACKAGE_QUAGGA_RIPD
+		bool "ripd"
+		default n
 
-config FREETZ_PACKAGE_QUAGGA_OSPFD
-	bool "ospfd"
-	depends on FREETZ_PACKAGE_QUAGGA
-	default n
+	config FREETZ_PACKAGE_QUAGGA_RIPNGD
+		bool "ripngd"
+		depends on FREETZ_TARGET_IPV6_SUPPORT
+		default n
 
-config FREETZ_PACKAGE_QUAGGA_OSPF6D
-	bool "ospf6d"
-	depends on FREETZ_PACKAGE_QUAGGA && FREETZ_TARGET_IPV6_SUPPORT
-	default n
+	config FREETZ_PACKAGE_QUAGGA_OSPFD
+		bool "ospfd"
+		default n
 
-config FREETZ_PACKAGE_QUAGGA_ISISD
-	bool "isisd"
-	depends on FREETZ_PACKAGE_QUAGGA
-	default n
+	config FREETZ_PACKAGE_QUAGGA_OSPF6D
+		bool "ospf6d"
+		depends on FREETZ_TARGET_IPV6_SUPPORT
+		default n
+
+	config FREETZ_PACKAGE_QUAGGA_ISISD
+		bool "isisd"
+		default n
+
+endif # FREETZ_PACKAGE_QUAGGA
 
