@@ -107,8 +107,10 @@ radius		1812/udp
 radius-acct	1813/tcp	radacct
 radius-acct	1813/udp	radacct
 ssdp		1900/udp	Simple Service Discovery Protocol
-#nfs		2049/tcp	Network File System
-#nfs		2049/udp	Network File System
+nfsd		2047/tcp	nfs	# Network File System
+nfsd		2047/udp	nfs	# Network File System
+#nfs		2049/tcp	# AVM noobs running an obscure webserver on this port with older FOS
+#nfs		2049/udp	# AVM noobs running an obscure webserver on this port with older FOS
 dict		2628/tcp
 dict		2628/udp
 gpsd		2947/tcp

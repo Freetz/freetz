@@ -25,8 +25,6 @@ rrdstats	86/tcp
 vnstat		87/tcp
 lcd4linux	89/tcp
 aha		90/tcp
-nfs		2047/tcp
-nfs		2047/udp
 pyload-remote	7227/tcp
 pyload-webif	8000/tcp
 lighttpd	8008/tcp
