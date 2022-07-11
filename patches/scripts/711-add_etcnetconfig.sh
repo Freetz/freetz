@@ -1,3 +1,7 @@
+[ "$FREETZ_ADD_ETCNETCONFIG" == "y" ] || return 0
+echo1 "creating etc/netconfig"
+
+cat << 'EOF' > ${FILESYSTEM_MOD_DIR}/etc/netconfig
 #
 # The network configuration file. This file is currently only used in
 # conjunction with the TI-RPC code in the libtirpc library.
@@ -17,3 +21,6 @@ tcp6       tpi_cots_ord  v     inet6    tcp     -       -
 rawip      tpi_raw       -     inet      -      -       -
 local      tpi_cots_ord  -     loopback  -      -       -
 unix       tpi_cots_ord  -     loopback  -      -       -
+
+EOF
+
