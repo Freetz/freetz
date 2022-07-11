@@ -330,7 +330,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
     Adds /etc/netconfig file. Used eg by libtirpc and rpcbind.
 
   * **<u>ADD_ETCSERVICES: Add /etc/services</u><a id='add-etcservices'></a>**<br>
-    Adds /etc/services file. Used eg by netstat to display names of IP-ports.
+    Adds /etc/services file. Used eg by nfsd and rpcinfo. This patch is only availably for firmware not yet containing the file, typically before FOS 7.1x.
 
   * **[ADD_REGEXT_GUI: Patch GUI to enable external SIP connections](ADD_REGEXT_GUI.md)<a id='add-regext-gui'></a>**<br>
     Patches the WebUI and add a checkbox to enable setting "reg_from_outside" in the voip.conf.
@@ -397,6 +397,9 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
 
   * **[AVMDAEMON_DISABLE_TR069: Disable tr069](AVMDAEMON_DISABLE_TR069.md)<a id='avmdaemon-disable-tr069'></a>**<br>
     Disables multid's tr069discover
+
+  * **<u>CUSTOM_ETCSERVICES: Custom /etc/services</u><a id='custom-etcservices'></a>**<br>
+    Adds freetz-specific services to /etc/services. Used eg by netstat to display names of IP-ports.
 
   * **[CUSTOM_UDEV_RULES: Enable custom UDEV rules](CUSTOM_UDEV_RULES.md)<a id='custom-udev-rules'></a>**<br>
     You could use own rules for UDEV.
