@@ -43,6 +43,9 @@ Latest changes
  - Known problems:
    * Loading build kernel modules may work or do not. You'll notice.
 
+ - Packages & libs:
+   * mbed TLS 2.7.19/2.28.1
+
  - Firmware updates:
    * Please see [FIRMWARES](FIRMWARES.md) for the list of currently supported devices and firmwares.
 
