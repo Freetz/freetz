@@ -178,36 +178,5 @@ sane-port	6566/tcp	sane saned
 ircd		6667/tcp
 git		9418/tcp
 
-avm-contfiltd	82/tcp
-avm-telefon1	1011/tcp
-avm-telefon2	1012/tcp
-avm-rtp		7077/udp	Telefonie RTCP
-avm-usermand	8080/tcp
-kids-locked	8182/tcp	Kindersicherung
-avm-update	8183/tcp	Updatehinweis
-kids-ticket	8184/tcp	Ticketeingabe
-guest-nag	8185/tcp	Gasthinweise
-guest-login	8186/tcp	Gastanmeldung
-avm-telefon3	8888/tcp
-avm-upnp	49000/udp	Universal Plug and Play
-avm-mesh	53805/udp	Mesh Discovery
-
-freetz		81/tcp
-nhipt		83/tcp
-wol		84/tcp
-digitemp	85/tcp
-rrdstats	86/tcp
-vnstat		87/tcp
-lcd4linux	89/tcp
-aha		90/tcp
-nfs		2047/tcp
-nfs		2047/udp
-pyload-remote	7227/tcp
-pyload-webif	8000/tcp
-lighttpd	8008/tcp
-privoxy		8118/tcp
-tor		9050/tcp
-xmail		10025/tcp
-
 EOF
 
