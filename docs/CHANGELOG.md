@@ -44,6 +44,7 @@ Latest changes
    * Loading build kernel modules may work or do not. You'll notice.
 
  - Packages & libs:
+   * Git 2.37.1
    * mbed TLS 2.7.19/2.28.1
 
  - Firmware updates:
