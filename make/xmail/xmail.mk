@@ -31,6 +31,7 @@ ifeq ($(strip $(FREETZ_PACKAGE_XMAIL_STATIC)),y)
 $(PKG)_LDFLAGS += -static
 endif
 
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
@@ -43,7 +44,7 @@ $($(PKG)_BINARIES_BUILD_DIR): $($(PKG)_DIR)/.configured
 		EXTRA_LDFLAGS="$(XMAIL_LDFLAGS)" \
 		SSLLIBS="$(XMAIL_SSLLIBS)" \
 		STRIP="$(TARGET_STRIP)"
-	$(TARGET_CC) $(TARGET_CFLAGS) -o $(XMAIL_DIR)/bin/compartment $(XMAIL_DIR)/docs/compartment.c
+	PATH=$(TARGET_PATH) $(TARGET_CC) $(TARGET_CFLAGS) -o $(XMAIL_DIR)/bin/compartment $(XMAIL_DIR)/docs/compartment.c
 
 $($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/lib/MailRoot/bin/%: $($(PKG)_DIR)/bin/%
 	$(INSTALL_BINARY_STRIP)
@@ -55,6 +56,7 @@ $($(PKG)_TAR_CONFIG):
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR) $($(PKG)_TAR_CONFIG)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(XMAIL_DIR) clean
