@@ -66,7 +66,7 @@ for files in \
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
 
-# don't remove libwebusb*.so, see #2020
+# don't remove libwebusb*.so, see Ticket #2020
 modsed -r 's/(CONFIG_WEBUSB)=.*$/\1="n"/g' "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 # MEDIASRV & NAS are using this file
 [ "$FREETZ_REMOVE_NAS" == "y" ] && rm_files "${FILESYSTEM_MOD_DIR}/lib/libavmdb.so*"

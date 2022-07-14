@@ -404,7 +404,7 @@ collect_epc_120225() {
 		updateT=${updateT}txfq${count}:txdb${count}
 	done
 	[ $updateD = N ] && return
-	#uptime disabled, see #1793
+	#uptime disabled, see Ticket #1793
 #	if [ "$RRDSTATS_CISCOEPC_UP" == "yes" ]; then
 #		local tX=$($WGET http://192.168.100.1/Docsis_status.asp -O - -q -T 2 |grep -v NetworkAccessControl| sed -ne 's/.*nowrap>\([0-9]*\).*dw(vdays).*\( [0-9]\{1,2\}\).*\(:[0-9]*\).*:[0-9]*.*/\1 days\2h\3/p')
 #		if [ -n "$tX" ]; then

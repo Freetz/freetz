@@ -41,7 +41,7 @@ menu2html_remove dect
 menulua_remove dect.internetradio
 menulua_remove dect.podcast
 
-# don't patch this in firmwares < 05.5x (see #2056)
+# don't patch this in firmwares < 05.5x (see Ticket #2056)
 if [ "$FREETZ_AVM_VERSION_05_5X_MIN" == "y" ]; then
 	MODPROBEPIGLET=$(grep -l -i dect_firstlevelfile "${FILESYSTEM_MOD_DIR}/etc/init.d/"* 2>/dev/null)
 	if [ -e "$MODPROBEPIGLET" ]; then

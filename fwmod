@@ -2070,7 +2070,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 	if [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 -a -n "$KERNEL_LIMIT" ]; then
 		if [ "$FREETZ_AVM_HAS_TAM" = "y" -a "${FREETZ_AVM_HAS_SEPARATE_FILESYSTEM_IMAGE}" != "y" ]; then
 			# Calculate aproximately free space in seconds for the answering machine
-			# 5*64kB sectors needed, see #1680
+			# 5*64kB sectors needed, see Ticket #1680
 			FREE_BYTE_JFFS2=$((($KERNEL_LIMIT - $KERNEL_SIZE - 327680)))
 			FREE_MINUTES=$((($FREE_BYTE_JFFS2 / 2017 / 60)))
 			if [ "$FREE_BYTE_JFFS2" -gt 0 ]; then
