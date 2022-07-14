@@ -46,6 +46,7 @@ Latest changes
  - Packages & libs:
    * Git 2.37.1
    * mbed TLS 2.7.19/2.28.1
+   * SQLite 3.39.1
 
  - Firmware updates:
    * Please see [FIRMWARES](FIRMWARES.md) for the list of currently supported devices and firmwares.
