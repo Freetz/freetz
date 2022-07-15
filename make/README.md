@@ -985,7 +985,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
 
 ### V
 
-  * **[Vim 8.2.5052 (binary only)](../docs/make/vim.md)<a id='vim'></a>**<br>
+  * **[Vim 9.0.0049 (binary only)](../docs/make/vim.md)<a id='vim'></a>**<br>
     An improved version of VI
 
   * **<u>vnstat 1.17 (binary only)</u><a id='vnstat'></a>**<br>
