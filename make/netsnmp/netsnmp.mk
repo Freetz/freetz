@@ -32,6 +32,7 @@ $(PKG)_LIBS_BUILD_DIR:=$(join $($(PKG)_LIBS_BUILD_DIR_SHORT:%=$($(PKG)_DIR)/%/.l
 $(PKG)_LIBS_TARGET_DIR:=$($(PKG)_LIBNAMES_LONG:%=$($(PKG)_DEST_LIBDIR)/%)
 
 NETSNMP_MIB_MODULES_INCLUDED:=\
+	agent/extend \
 	host/hr_device \
 	host/hr_disk \
 	host/hr_filesys \
