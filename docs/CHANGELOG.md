@@ -44,6 +44,7 @@ Latest changes
    * Loading build kernel modules may work or do not. You'll notice.
 
  - Packages & libs:
+   * CA-bundle 2022-07-19
    * Git 2.37.1
    * mbed TLS 2.7.19/2.28.1
    * SQLite 3.39.1
