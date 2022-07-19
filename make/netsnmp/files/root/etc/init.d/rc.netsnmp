@@ -38,11 +38,14 @@ case $1 in
 	restart)
 		modlib_restart
 		;;
+	reload)
+		modlib_reload
+		;;
 	status)
 		modlib_status
 		;;
 	*)
-		echo "Usage: $0 [load|unload|start|stop|restart|status]" 1>&2
+		echo "Usage: $0 [load|unload|start|stop|restart|reload|status]" 1>&2
 		exit 1
 		;;
 esac
