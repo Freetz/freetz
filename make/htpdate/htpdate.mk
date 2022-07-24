@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.3.4)
+$(call PKG_INIT_BIN, 1.3.5)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_HASH:=744f9200cfd3b008a5516c5eb6da727af532255a329126a7b8f49a5623985642
+$(PKG)_HASH:=a8734d4f1d84d0608d045508608f2d29d8b968da269f83120aaac67709b1bd03
 $(PKG)_SITE:=https://www.vervest.org/htp/archive/c
 ### WEBSITE:=http://www.vervest.org/htp/
 ### MANPAGE:=https://www.vervest.org/htp/?FAQ
