@@ -113,7 +113,7 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --with-endianness=$(if $(FREETZ_TARGET_ARCH_BE),big,little)
 $(PKG)_CONFIGURE_OPTIONS += --with-logfile=/var/log/snmpd.log
 $(PKG)_CONFIGURE_OPTIONS += --with-persistent-directory=/var/lib/snmp
-$(PKG)_CONFIGURE_OPTIONS += --with-default-snmp-version=1
+$(PKG)_CONFIGURE_OPTIONS += --with-default-snmp-version=2
 $(PKG)_CONFIGURE_OPTIONS += --with-sys-contact=root@localhost
 $(PKG)_CONFIGURE_OPTIONS += --with-sys-location=Unknown
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NETSNMP_WITH_APPLICATIONS),--enable-applications,--disable-applications)
