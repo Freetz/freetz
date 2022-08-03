@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 6.3)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_HASH:=24c51bb2bddc682f95ae745c743cbceebd836549de66bdfd6af80a40333cc6a7
+$(call PKG_INIT_BIN, 6.4)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
+$(PKG)_HASH:=4199ae8ca78a7796de56de1a41b821dc47912c0307e9816b56cc317df34661c0
 $(PKG)_SITE:=https://www.nano-editor.org/dist/v6
 ### WEBSITE:=https://www.nano-editor.org/
 ### MANPAGE:=https://www.nano-editor.org/docs.php
