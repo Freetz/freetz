@@ -43,6 +43,9 @@ Latest changes
  - Known problems:
    * Loading build kernel modules may work or do not. You'll notice.
 
+ - Host tools:
+   * kconfig 5.19
+
  - Packages & libs:
    * CA-bundle 2022-07-19
    * Git 2.37.1
