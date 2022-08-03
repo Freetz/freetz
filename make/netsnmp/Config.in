@@ -10,6 +10,13 @@ menuconfig FREETZ_PACKAGE_NETSNMP
 
 if FREETZ_PACKAGE_NETSNMP
 
+	config FREETZ_PACKAGE_NETSNMP_WITH_64BIT
+		bool "With 64-bit counter"
+		default n
+		help
+			Enabled 64-bit counter for network interfaces.
+			Works only with disabled avm packet-accelerator.
+
 	config FREETZ_PACKAGE_NETSNMP_WITH_OPENSSL
 		bool "With openssl encryption"
 		select FREETZ_LIB_libcrypto
