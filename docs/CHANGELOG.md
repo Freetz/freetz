@@ -47,6 +47,7 @@ Latest changes
    * kconfig 5.19
 
  - Packages & libs:
+   * BIND 9.11.37/9.16.31
    * CA-bundle 2022-07-19
    * Git 2.37.1
    * htpdate 1.3.5
