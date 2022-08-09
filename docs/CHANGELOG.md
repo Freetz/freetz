@@ -51,6 +51,7 @@ Latest changes
    * CA-bundle 2022-07-19
    * Git 2.37.1
    * htpdate 1.3.5
+   * Lighttpd 1.4.66
    * mbed TLS 2.7.19/2.28.1
    * Nano 6.4
    * SQLite 3.39.2
