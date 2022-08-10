@@ -534,7 +534,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
   * **<u>Netpbm-tools 10.35.85 (binary only)</u><a id='netpbm'></a>**<br>
     Provides the following tools from netpbm-suite: bmptopnm, giftopnm, jpegtopnm, pngtopnm, pnmtojpeg, pnmtopng
 
-  * **[netsnmp: Net-SNMP 5.9.1](../docs/make/netsnmp.md)<a id='netsnmp'></a>**<br>
+  * **[netsnmp: Net-SNMP 5.9.3](../docs/make/netsnmp.md)<a id='netsnmp'></a>**<br>
     SNMP (Simple Network Management Protocol) daemon. SNMP is a widely used protocol for monitoring the health and welfare of network equipment (eg. routers), computer equipment and even devices like UPSs. Net-SNMP is a suite of applications used to implement SNMP v1, SNMP v2c and SNMP v3.
      - [Creating a Feetz Image with Net-SNMP](../docs/make/netsnmp.md#creating-a-feetz-image-with-net-snmp)
      - [Setup in Freetz web-interface](../docs/make/netsnmp.md#setup-in-freetz-web-interface)
