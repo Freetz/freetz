@@ -1320,7 +1320,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 		done || error 1 "busybox failed"
 
 		echo1 "checking BusyBox version"
-		echo2 "... used by AVM ...... $(strings ${FILESYSTEM_DIR}/bin/busybox | sed 's/ ()//g' | sed -n 's/^BusyBox v//p')"
+		echo2 "... used by AVM ...... $(strings ${FILESYSTEM_DIR}/bin/busybox | sed 's/ ()//g' | grep -v 'multi-call' | sed -n 's/^BusyBox v//p')"
 		echo2 "... used by Freetz ... $(strings ${FILESYSTEM_MOD_DIR}/bin/$BBBIN | sed -n 's/^BusyBox v//p')"
 	fi
 
