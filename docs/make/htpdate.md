@@ -1,5 +1,5 @@
-# htpdate 1.3.5
- - Homepage: [http://www.vervest.org/htp/](http://www.vervest.org/htp/)
+# htpdate 1.3.6
+ - Homepage: [https://www.vervest.org/htp/](https://www.vervest.org/htp/)
  - Manpage: [https://www.vervest.org/htp/?FAQ](https://www.vervest.org/htp/?FAQ)
  - Changelog: [https://github.com/twekkel/htpdate/blob/master/Changelog](https://github.com/twekkel/htpdate/blob/master/Changelog)
  - Repository: [https://github.com/twekkel/htpdate](https://github.com/twekkel/htpdate)
