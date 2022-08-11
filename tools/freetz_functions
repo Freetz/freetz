@@ -187,7 +187,7 @@ modsed() {
 
 	if [ "$c" == "0" ]; then
 		if [ $# -lt 3 ]; then
-			warn2 "$2 not found, skipping."
+			warn3 "$2 not found, skipping."
 		else
 			error 1 "$2 not found, aborting."
 		fi
@@ -314,12 +314,14 @@ L3="$L2$L1"
 echo0() { [ "$FREETZ_VERBOSITY_LEVEL" -ge 0 ] && echoX -i "$L0" "$@"; }
 echo1() { [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && echoX -i "$L1" "$@"; }
 echo2() { [ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ] && echoX -i "$L2" "$@"; }
+echo3() { [ "$FREETZ_VERBOSITY_LEVEL" -ge 3 ] && echoX -i "$L3" "$@"; }
 
 # Warning message
 warn() { echoX -c -p "WARNING: " "$@" >&2; }
 warn0() { [ "$FREETZ_VERBOSITY_LEVEL" -ge 0 ] && warn "$@"; }
 warn1() { [ "$FREETZ_VERBOSITY_LEVEL" -ge 1 ] && warn "$@"; }
 warn2() { [ "$FREETZ_VERBOSITY_LEVEL" -ge 2 ] && warn "$@"; }
+warn3() { [ "$FREETZ_VERBOSITY_LEVEL" -ge 3 ] && warn "$@"; }
 
 
 # Error message + exit with specified error code
