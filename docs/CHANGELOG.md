@@ -57,6 +57,7 @@ Latest changes
    * Net-SNMP 5.9.3
    * SQLite 3.39.2
    * Stunnel 5.65
+   * uClibc-ng 1.0.42
    * Unbound 1.16.1
    * Vim 9.0.0049
 
