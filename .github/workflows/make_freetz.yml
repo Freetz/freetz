@@ -112,7 +112,7 @@ jobs:
           git tag -d $ACTIONS_NAME && git push --delete origin $ACTIONS_NAME || true
 
       - name: release
-        uses: ncipollo/release-action@v1.10.0
+        uses: ncipollo/release-action@v1
         with:
           tag: ${{ steps.vars.outputs.name }}
           name: ${{ steps.vars.outputs.name }}
