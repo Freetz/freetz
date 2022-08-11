@@ -161,6 +161,17 @@ uclibc-menuconfig: $(UCLIBC_DIR)/.config
 	cp -f $^ $(UCLIBC_CONFIG_FILE) && \
 	touch $^
 
+uclibc-olddefconfig: $(UCLIBC_DIR)/.config
+	$(UCLIBC_MAKE) -C $(UCLIBC_DIR) \
+		$(UCLIBC_COMMON_BUILD_FLAGS) \
+		PREFIX=$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/ \
+		DEVEL_PREFIX=/usr/ \
+		RUNTIME_PREFIX=$(TARGET_TOOLCHAIN_DIR)/$(UCLIBC_DEVEL_SUBDIR)/ \
+		HOSTCC="$(TOOLCHAIN_HOSTCC) $(UCLIBC_HOST_CFLAGS)" \
+		olddefconfig && \
+	cp -f $^ $(UCLIBC_CONFIG_FILE) && \
+	touch $^
+
 $(UCLIBC_DIR)/lib/libc.a: $(UCLIBC_DIR)/.configured | $(UCLIBC_PREREQ_GCC_INITIAL)
 	@$(call _ECHO,building,$(UCLIBC_ECHO_TYPE),$(UCLIBC_ECHO_MAKE))
 	$(UCLIBC_MAKE) -C $(UCLIBC_DIR) \
@@ -246,6 +257,9 @@ $(TARGET_SPECIFIC_ROOT_DIR)$(UCLIBC_TARGET_SUBDIR)/libc.so.$(TARGET_TOOLCHAIN_UC
 	touch -c $@
 endif
 
+uclibc-autofix: uclibc-dirclean
+	$(MAKE) AUTO_FIX_PATCHES=y uclibc-unpacked
+
 uclibc-configured: kernel-configured $(UCLIBC_DIR)/.configured
 
 uclibc: $(UCLIBC_PREREQ_GCC_INITIAL) $(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libc.a $(TARGET_SPECIFIC_ROOT_DIR)$(UCLIBC_TARGET_SUBDIR)/libc.so.$(TARGET_TOOLCHAIN_UCLIBC_MAJOR_VERSION)
@@ -297,7 +311,7 @@ uclibc_target-dirclean:
 uclibc_target-distclean: uclibc_target-dirclean
 
 
-.PHONY: uclibc-source uclibc-unpacked uclibc-menuconfig uclibc-configured
+.PHONY: uclibc-source uclibc-unpacked uclibc-autofix uclibc-menuconfig uclibc-olddefconfig uclibc-configured
 .PHONY: uclibc        uclibc-clean        uclibc-dirclean        uclibc-distclean
 .PHONY: uclibc_target uclibc_target-clean uclibc_target-dirclean uclibc_target-distclean
 

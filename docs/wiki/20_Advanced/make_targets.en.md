@@ -50,7 +50,9 @@ tools-allexcept-local                   Builds all non-local tools of Freetz (dl
 tools-distclean-local                   Cleans everything of local tools (dl-tools)
 tools-dirclean                          Cleans everything of all Freetz tools
 
+uclibc-autofix                          Adjusts patches of selected uClibc
 uclibc-menuconfig                       Configuration of selected uClibc
+uclibc-olddefconfig                     Updates selected uClibc .config file
 
 firmware-nocompile                      Creates firmware without packages and libraries
 mirror                                  Downloads all selected package sources files
