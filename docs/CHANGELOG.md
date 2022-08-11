@@ -50,7 +50,7 @@ Latest changes
    * BIND 9.11.37/9.16.31
    * CA-bundle 2022-07-19
    * Git 2.37.1
-   * htpdate 1.3.5
+   * htpdate 1.3.6
    * Lighttpd 1.4.66
    * mbed TLS 2.7.19/2.28.1
    * Nano 6.4

@@ -1,8 +1,8 @@
-$(call PKG_INIT_BIN, 1.3.5)
+$(call PKG_INIT_BIN, 1.3.6)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_HASH:=a8734d4f1d84d0608d045508608f2d29d8b968da269f83120aaac67709b1bd03
+$(PKG)_HASH:=3cdc558ec8e53ef374a42490b2f28c0b23981fa8754a6d7182044707828ad1e9
 $(PKG)_SITE:=https://www.vervest.org/htp/archive/c
-### WEBSITE:=http://www.vervest.org/htp/
+### WEBSITE:=https://www.vervest.org/htp/
 ### MANPAGE:=https://www.vervest.org/htp/?FAQ
 ### CHANGES:=https://github.com/twekkel/htpdate/blob/master/Changelog
 ### CVSREPO:=https://github.com/twekkel/htpdate
