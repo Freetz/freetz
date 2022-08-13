@@ -1,4 +1,4 @@
-# strace 4.9/5.0/5.18 (binary only)
+# strace 4.9/5.0/5.19 (binary only)
  - Homepage: [https://www.strace.io/](https://www.strace.io/)
  - Manpage: [https://man7.org/linux/man-pages/man1/strace.1.html](https://man7.org/linux/man-pages/man1/strace.1.html)
  - Changelog: [https://www.strace.io/files/](https://www.strace.io/files/)
