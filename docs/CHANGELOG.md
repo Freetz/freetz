@@ -57,6 +57,7 @@ Latest changes
    * Nano 6.4
    * Net-SNMP 5.9.3
    * SQLite 3.39.2
+   * strace 4.9/5.0/5.19
    * Stunnel 5.65
    * uClibc-ng 1.0.42
    * Unbound 1.16.2
