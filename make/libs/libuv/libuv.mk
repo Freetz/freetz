@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 1.44.1)
+$(call PKG_INIT_LIB, 1.44.2)
 $(PKG)_SHLIB_VERSION:=1.0.0
 $(PKG)_SOURCE:=$(pkg)-v$($(PKG)_VERSION).tar.gz
-$(PKG)_HASH:=9d37b63430fe3b92a9386b949bebd8f0b4784a39a16964c82c9566247a76f64a
+$(PKG)_HASH:=ccfcdc968c55673c6526d8270a9c8655a806ea92468afcbcabc2b16040f03cb4
 $(PKG)_SITE:=https://dist.libuv.org/dist/v$($(PKG)_VERSION)
 ### WEBSITE:=https://libuv.org/
 ### MANPAGE:=https://docs.libuv.org/en/v1.x/
@@ -17,6 +17,7 @@ $(PKG)_CONFIGURE_PRE_CMDS += ./autogen.sh;
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -39,6 +40,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 $(pkg): $($(PKG)_STAGING_BINARY)
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(LIBUV_DIR) clean
