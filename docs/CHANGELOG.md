@@ -49,7 +49,7 @@ Latest changes
  - Packages & libs:
    * BIND 9.11.37/9.16.31
    * CA-bundle 2022-07-19
-   * Git 2.37.1
+   * Git 2.37.2
    * htpdate 1.3.6
    * libtirpc 1.3.3
    * Lighttpd 1.4.66

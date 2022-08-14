@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 2.37.1)
+$(call PKG_INIT_BIN, 2.37.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_HASH:=c8162c6b8b8f1c5db706ab01b4ee29e31061182135dc27c4860224aaec1b3500
+$(PKG)_HASH:=1c3d9c821c4538e7a6dac30a4af8bd8dcfe4f651f95474c526b52f83406db003
 $(PKG)_SITE:=@KERNEL/software/scm/git
 ### WEBSITE:=https://www.git-scm.com/
 ### MANPAGE:=https://www.git-scm.com/docs
