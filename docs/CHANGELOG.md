@@ -51,6 +51,7 @@ Latest changes
    * CA-bundle 2022-07-19
    * Git 2.37.2
    * htpdate 1.3.6
+   * libcap 2.49/2.65
    * libtirpc 1.3.3
    * Lighttpd 1.4.66
    * mbed TLS 2.7.19/2.28.1
