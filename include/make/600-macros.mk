@@ -44,6 +44,7 @@ $(DL_DIR)/$($(PKG)_SOURCE): | $(DL_DIR)
 		$(call MESSAGE, Found $($(PKG)_SOURCE) in $(MIRROR_DIR), creating hard link); \
 		ln $(MIRROR_DIR)/$($(PKG)_SOURCE) $(DL_DIR); \
 	else \
+		[ -z "$(strip $($(PKG)_HASH))" ] && echo "no checksum is set, abort." && exit 1; \
 		$(DL_TOOL) \
 			$(DL_DIR) \
 			$(if $($(PKG)_SOURCE_DOWNLOAD_NAME),$($(PKG)_SOURCE_DOWNLOAD_NAME),$($(PKG)_SOURCE)) \
