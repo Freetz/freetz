@@ -55,6 +55,7 @@ Latest changes
    * libtirpc 1.3.3
    * libuv 1.44.2
    * Lighttpd 1.4.66
+   * liblz4 1.9.4
    * mbed TLS 2.7.19/2.28.1
    * Nano 6.4
    * Net-SNMP 5.9.3
