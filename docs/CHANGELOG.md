@@ -50,6 +50,7 @@ Latest changes
    * BIND 9.11.37/9.16.31
    * CA-bundle 2022-07-19
    * Git 2.37.2
+   * HAProxy 2.6.2
    * htpdate 1.3.6
    * libcap 2.49/2.65
    * libtirpc 1.3.3
