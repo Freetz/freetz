@@ -1,14 +1,17 @@
 config FREETZ_PACKAGE_USBIDS
-	bool "USB IDs 0.0"
+	bool "usb.ids a5edeafb60"
 	default n
 	help
 		This package provides up-to-date version of the usb.ids file
 		needed by many usb related packages.
 
-config FREETZ_PACKAGE_USBIDS_FORCE_DOWNLOAD
-	bool "Force update on each build"
-	depends on FREETZ_PACKAGE_USBIDS
-	default y
-	help
-		Download the latest version of usb.ids each time freetz is built.
+if FREETZ_PACKAGE_USBIDS
+
+	config FREETZ_PACKAGE_USBIDS_VERSION_LATEST
+		bool "Use latest version"
+		default n
+		help
+			Download the latest version of usb.ids file.
+
+endif # FREETZ_PACKAGE_USBIDS
 

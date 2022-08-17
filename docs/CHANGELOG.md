@@ -65,6 +65,7 @@ Latest changes
    * Stunnel 5.65
    * uClibc-ng 1.0.42
    * Unbound 1.16.2
+   * usb.ids a5edeafb60
    * Vim 9.0.0049
 
  - Firmware updates:
