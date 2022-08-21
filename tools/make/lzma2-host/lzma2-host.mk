@@ -1,7 +1,10 @@
-$(call TOOLS_INIT, 5.2.5)
+$(call TOOLS_INIT, 5.2.6)
 $(PKG)_SOURCE:=xz-$($(PKG)_VERSION).tar.xz
-$(PKG)_HASH:=3e1e518ffc912f86608a8cb35e4bd41ad1aec210df2a47aaa1f95e7f5576ef56
-$(PKG)_SITE:=http://tukaani.org/xz
+$(PKG)_HASH:=e076ba3439cb7cfc45b908c869f51a8c89f3c9ee9ee982fde28849c015e723a7
+$(PKG)_SITE:=https://tukaani.org/xz
+### WEBSITE:=https://tukaani.org/xz/
+### CHANGES:=https://git.tukaani.org/?p=xz.git;a=blob_plain;f=NEWS;hb=HEAD
+### CVSREPO:=https://git.tukaani.org/?p=xz.git
 
 $(PKG)_DIR:=$(TOOLS_SOURCE_DIR)/xz-$($(PKG)_VERSION)
 

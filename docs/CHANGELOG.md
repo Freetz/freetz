@@ -45,6 +45,7 @@ Latest changes
 
  - Host tools:
    * kconfig 5.19
+   * xz 5.2.6
 
  - Packages & libs:
    * BIND 9.11.37/9.16.31
