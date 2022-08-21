@@ -1,8 +1,8 @@
-$(call PKG_INIT_BIN, 5.2.5)
+$(call PKG_INIT_BIN, 5.2.6)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_HASH:=3e1e518ffc912f86608a8cb35e4bd41ad1aec210df2a47aaa1f95e7f5576ef56
-$(PKG)_SITE:=http://tukaani.org/xz
+$(PKG)_HASH:=e076ba3439cb7cfc45b908c869f51a8c89f3c9ee9ee982fde28849c015e723a7
+$(PKG)_SITE:=https://tukaani.org/xz
 ### WEBSITE:=https://tukaani.org/xz/
 ### CHANGES:=https://git.tukaani.org/?p=xz.git;a=blob_plain;f=NEWS;hb=HEAD
 ### CVSREPO:=https://git.tukaani.org/?p=xz.git
@@ -28,6 +28,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-doc
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
 $(PKG)_CONFIGURE_OPTIONS += --without-libintl-prefix
+
 
 ifneq ($(strip $(DL_DIR)/$(XZ_SOURCE)), $(strip $(DL_DIR)/$(LZMA2_HOST_SOURCE)))
 $(PKG_SOURCE_DOWNLOAD)
@@ -57,6 +58,7 @@ $($(PKG)_LIB_TARGET_BINARY): $($(PKG)_LIB_STAGING_BINARY)
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_LIB_TARGET_BINARY)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(XZ_DIR) clean
