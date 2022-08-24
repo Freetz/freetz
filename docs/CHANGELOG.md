@@ -43,6 +43,9 @@ Latest changes
  - Known problems:
    * Loading build kernel modules may work or do not. You'll notice.
 
+ - Build system:
+   * ccache 4.6.2
+
  - Host tools:
    * kconfig 5.19
    * precompiled host-tools 2022-08-21
