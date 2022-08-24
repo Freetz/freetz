@@ -68,6 +68,7 @@ Latest changes
    * SQLite 3.39.2
    * strace 4.9/5.0/5.19
    * Stunnel 5.65
+   * Tor 0.4.7.9
    * uClibc-ng 1.0.42
    * Unbound 1.16.2
    * usb.ids a5edeafb60
