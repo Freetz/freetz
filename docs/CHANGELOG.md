@@ -55,7 +55,7 @@ Latest changes
    * BIND 9.11.37/9.16.31
    * CA-bundle 2022-07-19
    * Curl 7.85.0
-   * Git 2.37.2
+   * Git 2.37.3
    * HAProxy 2.6.2
    * htpdate 1.3.6
    * libcap 2.49/2.65
