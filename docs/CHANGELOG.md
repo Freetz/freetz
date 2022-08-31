@@ -44,7 +44,7 @@ Latest changes
    * Loading build kernel modules may work or do not. You'll notice.
 
  - Build system:
-   * ccache 4.6.2
+   * ccache 4.6.3
 
  - Host tools:
    * kconfig 5.19
