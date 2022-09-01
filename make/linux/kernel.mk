@@ -94,9 +94,9 @@ endif
 					&& \
 					[ "$$(readlink -f "$(KERNEL_SOURCE_DIR)/$${symlink_location}")" != "$(abspath $(KERNEL_SOURCE_DIR))/$${f}" ] \
 				; then \
-					$(call nMESSAGE, Warning: Symlink \"$(KERNEL_SOURCE_DIR)/$${symlink_location}\" doesn't point to expected \"$${symlink_target}\"); \
+					$(call MESSAGE, Warning: Symlink \"$(KERNEL_SOURCE_DIR)/$${symlink_location}\" doesn't point to expected \"$${symlink_target}\"); \
 					if [ "$$(readlink "$(KERNEL_SOURCE_DIR)/$${symlink_location}" | sed 's/^\/.*/X/')" == "X" ]; then \
-						$(call nMESSAGE, Deleting \"$(KERNEL_SOURCE_DIR)/$${symlink_location}\" --> $$(readlink "$(KERNEL_SOURCE_DIR)/$${symlink_location}")); \
+						$(call MESSAGE, Deleting \"$(KERNEL_SOURCE_DIR)/$${symlink_location}\" --> $$(readlink "$(KERNEL_SOURCE_DIR)/$${symlink_location}")); \
 						$(RM) "$(KERNEL_SOURCE_DIR)/$${symlink_location}"; \
 					else \
 						continue; \
@@ -107,17 +107,17 @@ endif
 			fi; \
 			\
 			if [ -e "$(KERNEL_SOURCE_DIR)/$${symlink_location}" ]; then \
-				$(call nMESSAGE, Warning: \"$(KERNEL_SOURCE_DIR)/$${symlink_location}\" is expected to be a symlink to \"$${symlink_target}\"); \
+				$(call MESSAGE, Warning: \"$(KERNEL_SOURCE_DIR)/$${symlink_location}\" is expected to be a symlink to \"$${symlink_target}\"); \
 				continue; \
 			fi; \
 			\
-			$(call nMESSAGE, Linking  \"$(KERNEL_SOURCE_DIR)/$${symlink_location}\" to \"$${symlink_target}\"); \
+			$(call MESSAGE, Linking  \"$(KERNEL_SOURCE_DIR)/$${symlink_location}\" to \"$${symlink_target}\"); \
 			ln -sf "$${symlink_target}" "$(KERNEL_SOURCE_DIR)/$${symlink_location}"; \
 		fi; \
 	done;
 	@for i in $$(find $(KERNEL_SOURCE_DIR) -name Makefile.26 -printf '%h\n'); do \
 		if [ ! -e $$i/Makefile ]; then \
-			$(call nMESSAGE, Linking  \"$$i/Makefile\" to \"Makefile.26\"); \
+			$(call MESSAGE, Linking  \"$$i/Makefile\" to \"Makefile.26\"); \
 			ln -sf Makefile.26 $$i/Makefile; \
 		fi; \
 	done;
@@ -145,7 +145,7 @@ endif
 		}' {} '+' \
 		| sort -u \
 	); do \
-		$(call nMESSAGE, Creating \"$$i\"); \
+		$(call MESSAGE, Creating \"$$i\"); \
 		mkdir -p $$(dirname "$$i"); \
 		[ -h $$i ] && $(RM) $$i; \
 		touch $$i; \
@@ -156,13 +156,12 @@ endif
 		| sort -u \
 	); do \
 		if [ ! -e $(KERNEL_SOURCE_DIR)/$$i ]; then \
-			$(call nMESSAGE, Creating \"$(KERNEL_SOURCE_DIR)/$$i\"); \
+			$(call MESSAGE, Creating \"$(KERNEL_SOURCE_DIR)/$$i\"); \
 			mkdir -p $(KERNEL_SOURCE_DIR)/$${i%\/*}; \
 			[ -h $(KERNEL_SOURCE_DIR)/$$i ] && $(RM) $(KERNEL_SOURCE_DIR)/$$i; \
 			touch $(KERNEL_SOURCE_DIR)/$$i; \
 		fi; \
 	done; \
-	$(call nMESSAGE);
 	ln -s linux-$(KERNEL_VERSION_MAJOR) $(KERNEL_DIR)/linux
 	touch $@
 

@@ -121,10 +121,6 @@ define MESSAGE
 printf "%s\n" "$(1)" $(SILENT)
 endef
 
-define nMESSAGE
-printf "\n%s" "$(1)" $(SILENT)
-endef
-
 # Print yellow error message and exit
 define ERROR
 [ "$(FREETZ_VERBOSITY_LEVEL)" = "0" ] && echo && cat .build.log 2>/dev/null; \
