@@ -71,13 +71,11 @@ ifeq ($(strip $(FREETZ_REPLACE_SOURCE_AVAILABLE)),y)
 	@echo "#vanilla to avm fixes" $(SILENT)
 	@find $(KERNEL_SOURCE_DIR) -type l -exec rm -f {} ';'
 	@$(TOOLS_DIR)/unxz $(DL_DIR)/$(DL_KERNEL_AVMDIFF_SOURCE) -c | grep -E '^    #FREETZ# (mkdir|chmod|slink|touch) .*' | while read x a b c; do \
+	  [ "$$a" != "mkdir" ] && [ "$$b" != "$${b%/*}" ] && mkdir -p    "$(KERNEL_SOURCE_DIR)/$${b%/*}"; \
 	  [ "$$a" == "mkdir" ] && mkdir -p    "$(KERNEL_SOURCE_DIR)/$${b}"; \
-	  [ "$$a" == "chmod" ] && mkdir -p    "$(KERNEL_SOURCE_DIR)/$${b%/*}"; \
 	  [ "$$a" == "chmod" ] && touch       "$(KERNEL_SOURCE_DIR)/$${b}"; \
 	  [ "$$a" == "chmod" ] && chmod +x    "$(KERNEL_SOURCE_DIR)/$${b}"; \
-	  [ "$$a" == "slink" ] && mkdir -p    "$(KERNEL_SOURCE_DIR)/$${b%/*}"; \
 	  [ "$$a" == "slink" ] && ln -s "$$c" "$(KERNEL_SOURCE_DIR)/$${b}"; \
-	  [ "$$a" == "touch" ] && mkdir -p    "$(KERNEL_SOURCE_DIR)/$${b%/*}"; \
 	  [ "$$a" == "touch" ] && touch       "$(KERNEL_SOURCE_DIR)/$${b}"; \
 	done || true
 endif
