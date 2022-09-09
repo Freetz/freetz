@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.2.12)
+$(call PKG_INIT_BIN, 4.4.2)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_HASH:=913ac95c7fad92c2a4ebcfd11850904f531845c75d45c3e4e4a693990fe2497d
+$(PKG)_HASH:=F98A482520C47507521A907914DAA9EFBC1384E0591B5AFC3DA18AA897DE2948
 $(PKG)_SITE:=http://www.ffmpeg.org/releases
 
 $(PKG)_DEPENDS_ON += zlib
@@ -14,8 +14,8 @@ $(PKG)_BINARIES_BUILD_DIR  := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/%)
 $(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 
 $(PKG)_LIBNAMES_SHORT      := avcodec avdevice avfilter avformat avutil postproc swresample swscale
-$(PKG)_LIBVERSIONS_MAJOR   := 54      54       3        54       52     52       0          2
-$(PKG)_LIBVERSIONS_MINOR   := 92.100  3.103    42.103   63.104   18.100 2.100    17.102     2.100
+$(PKG)_LIBVERSIONS_MAJOR   := 58      58       7        58       56     55       3          5
+$(PKG)_LIBVERSIONS_MINOR   := 134.100 13.100   110.100  76.100   70.100 9.100    9.100      9.100
 
 $(PKG)_LIBNAMES_LONG_MAJOR := $(join $($(PKG)_LIBNAMES_SHORT:%=lib%.so.),$($(PKG)_LIBVERSIONS_MAJOR))
 $(PKG)_LIBNAMES_LONG       := $(join $($(PKG)_LIBNAMES_LONG_MAJOR:%=%.),$($(PKG)_LIBVERSIONS_MINOR))
@@ -44,7 +44,7 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-cross-compile
 $(PKG)_CONFIGURE_OPTIONS += --cross-prefix="$(TARGET_CROSS)"
 $(PKG)_CONFIGURE_OPTIONS += --arch="$(TARGET_ARCH_ENDIANNESS_DEPENDENT)"
 $(PKG)_CONFIGURE_OPTIONS += --disable-mips32r2
-$(PKG)_CONFIGURE_OPTIONS += --disable-mipsdspr1
+$(PKG)_CONFIGURE_OPTIONS += --disable-mipsdsp
 $(PKG)_CONFIGURE_OPTIONS += --disable-mipsdspr2
 $(PKG)_CONFIGURE_OPTIONS += --disable-mipsfpu
 $(PKG)_CONFIGURE_OPTIONS += --target-os=linux
@@ -73,6 +73,13 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-devices
 $(PKG)_CONFIGURE_OPTIONS += --disable-filters
 $(PKG)_CONFIGURE_OPTIONS += --disable-hwaccels
 
+ifeq ($(strip $(FREETZ_PACKAGE_FFMPEG_EVERYTHING)),y)
+$(PKG)_DEPENDS_ON += lzma1
+$(PKG)_DEPENDS_ON += openssl
+$(PKG)_CONFIGURE_OPTIONS += --enable-nonfree
+$(PKG)_CONFIGURE_OPTIONS += --enable-openssl
+$(PKG)_CONFIGURE_OPTIONS += --extra-libs="-latomic"
+else
 $(PKG)_CONFIGURE_OPTIONS += --disable-everything
 $(PKG)_CONFIGURE_OPTIONS += $($(PKG)_CONFIGURE_ENCODERS)
 $(PKG)_CONFIGURE_OPTIONS += $($(PKG)_CONFIGURE_DECODERS)
@@ -80,13 +87,12 @@ $(PKG)_CONFIGURE_OPTIONS += $($(PKG)_CONFIGURE_MUXERS)
 $(PKG)_CONFIGURE_OPTIONS += $($(PKG)_CONFIGURE_DEMUXERS)
 $(PKG)_CONFIGURE_OPTIONS += $($(PKG)_CONFIGURE_PARSERS)
 $(PKG)_CONFIGURE_OPTIONS += $($(PKG)_CONFIGURE_PROTOCOLS)
+endif
 
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_FFMPEG_ffmpeg),--enable-ffmpeg,--disable-ffmpeg)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_FFMPEG_ffserver),--enable-ffserver,--disable-ffserver)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_FFMPEG_ffserver),--enable-ffserver) #,--disable-ffserver)
 $(PKG)_CONFIGURE_OPTIONS += --disable-ffplay
 $(PKG)_CONFIGURE_OPTIONS += --disable-ffprobe
-
-
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)

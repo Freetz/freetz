@@ -1,5 +1,5 @@
-menuconfig FREETZ_PACKAGE_FFMPEG
-	bool "FFmpeg 1.2.12"
+config FREETZ_PACKAGE_FFMPEG
+	bool "FFmpeg 4.4.2"
 	default n
 	help
 		FFmpeg is a complete, cross-platform solution to record,
@@ -40,6 +40,17 @@ config FREETZ_PACKAGE_FFMPEG_ffserver
 	select FREETZ_PACKAGE_FFMPEG_DEMUXER_rtsp
 	select FREETZ_PACKAGE_FFMPEG_PROTOCOL_rtp
 	default n
+
+config FREETZ_PACKAGE_FFMPEG_EVERYTHING
+	bool "everything"
+	depends on !FREETZ_TARGET_UCLIBC_0_9_28
+	depends on !FREETZ_TARGET_UCLIBC_0_9_29
+	depends on FREETZ_OPENSSL_VERSION_1
+	select FREETZ_LIB_liblzma
+	select FREETZ_LIB_libopenjpeg
+	default n
+
+if !FREETZ_PACKAGE_FFMPEG_EVERYTHING
 
 config FREETZ_PACKAGE_FFMPEG_PATENTED
 	bool "Include patented codecs and technologies"
@@ -353,5 +364,6 @@ config FREETZ_PACKAGE_FFMPEG_PROTOCOL_tcp
 config FREETZ_PACKAGE_FFMPEG_PROTOCOL_udp
 	bool "udp:"
 
-endif # FREETZ_PACKAGE_FFMPEG
+endif # !FREETZ_PACKAGE_FFMPEG_EVERYTHING
 
+endif # FREETZ_PACKAGE_FFMPEG

@@ -24,7 +24,7 @@ config FREETZ_LIB_libavformat
 	bool "libavformat.so"
 	select FREETZ_LIB_libm        if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libz
-	select FREETZ_LIB_libm        if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	select FREETZ_LIB_libpthread  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libavcodec
 	select FREETZ_LIB_libavutil
 	default n
