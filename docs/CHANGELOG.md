@@ -67,7 +67,7 @@ Latest changes
    * mbed TLS 2.7.19/2.28.1
    * Nano 6.4
    * Net-SNMP 5.9.3
-   * SQLite 3.39.2
+   * SQLite 3.39.3
    * strace 4.9/5.0/5.19
    * Stunnel 5.65
    * Tor 0.4.7.9
