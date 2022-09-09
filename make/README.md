@@ -268,7 +268,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
 
 ### F
 
-  * **<u>FFmpeg 1.2.12</u><a id='ffmpeg'></a>**<br>
+  * **<u>FFmpeg 4.4.2</u><a id='ffmpeg'></a>**<br>
     FFmpeg is a complete, cross-platform solution to record, convert and stream audio and video.
 
   * **[fortune 1.2](../docs/make/fortune.md)<a id='fortune'></a>**<br>
