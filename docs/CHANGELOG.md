@@ -62,7 +62,7 @@ Latest changes
    * libcap 2.49/2.65
    * libtirpc 1.3.3
    * libuv 1.44.2
-   * Lighttpd 1.4.66
+   * Lighttpd 1.4.67
    * liblz4 1.9.4
    * mbed TLS 2.7.19/2.28.1
    * minidlna 1.3.2
