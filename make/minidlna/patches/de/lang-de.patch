@@ -114,9 +114,9 @@
  	ret = sql_exec(db, create_objectTable_sqlite);
 --- upnphttp.c
 +++ upnphttp.c
-@@ -625,24 +625,24 @@
+@@ -630,24 +630,24 @@
  	strcatf(&str,
- 		"<HTML><HEAD><TITLE>" SERVER_NAME " " MINIDLNA_VERSION "</TITLE></HEAD>"
+ 		"<HTML><HEAD><TITLE>" SERVER_NAME " " MINIDLNA_VERSION "</TITLE><meta http-equiv=\"refresh\" content=\"20\"></HEAD>"
  		"<BODY><div style=\"text-align: center\">"
 -		"<h2>" SERVER_NAME " status</h2></div>");
 +		"<h2>" SERVER_NAME " Status</h2></div>");
@@ -147,7 +147,7 @@
  	for (i = 0; i < CLIENT_CACHE_SLOTS; i++)
  	{
  		if (!clients[i].addr.s_addr)
-@@ -654,7 +654,7 @@
+@@ -659,7 +659,7 @@
  	}
  	strcatf(&str, "</table>");
  

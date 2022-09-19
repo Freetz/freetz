@@ -65,6 +65,7 @@ Latest changes
    * Lighttpd 1.4.66
    * liblz4 1.9.4
    * mbed TLS 2.7.19/2.28.1
+   * minidlna 1.3.2
    * Nano 6.4
    * Net-SNMP 5.9.3
    * SQLite 3.39.3
