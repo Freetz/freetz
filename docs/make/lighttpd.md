@@ -1,4 +1,4 @@
-# Lighttpd 1.4.66
+# Lighttpd 1.4.67
  - Homepage: [https://www.lighttpd.net/](https://www.lighttpd.net/)
  - Manpage: [https://redmine.lighttpd.net/projects/lighttpd/wiki](https://redmine.lighttpd.net/projects/lighttpd/wiki)
  - Changelog: [https://www.lighttpd.net/download/](https://www.lighttpd.net/download/)
