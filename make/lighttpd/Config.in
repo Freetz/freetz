@@ -63,17 +63,17 @@ if FREETZ_PACKAGE_LIGHTTPD
 
 		choice
 			prompt "Provided by"
-			default FREETZ_PACKAGE_LIGHTTPD_WITH_OPENSSL
+			default FREETZ_PACKAGE_LIGHTTPD_MOD_OPENSSL
 				help
 					This option adds the selected file to the image.
 					Please see https://redmine.lighttpd.net/wiki/1/Docs:SSL
 					for more information on the module.
 
-			config FREETZ_PACKAGE_LIGHTTPD_WITH_OPENSSL
+			config FREETZ_PACKAGE_LIGHTTPD_MOD_OPENSSL
 				bool "mod_openssl"
 				select FREETZ_LIB_libcrypto
 
-			config FREETZ_PACKAGE_LIGHTTPD_WITH_MBEDTLS
+			config FREETZ_PACKAGE_LIGHTTPD_MOD_MBEDTLS
 				bool "mod_mbedtls - EXPERIMENTAL"
 				select FREETZ_LIB_libmbedcrypto
 
@@ -82,7 +82,7 @@ if FREETZ_PACKAGE_LIGHTTPD
 #				bool "mod_wolfssl - EXPERIMENTAL"
 #				select FREETZ_LIB_...
 
-			config FREETZ_PACKAGE_LIGHTTPD_WITH_GNUTLS
+			config FREETZ_PACKAGE_LIGHTTPD_MOD_GNUTLS
 				bool "mod_gnutls - EXPERIMENTAL"
 				select FREETZ_LIB_libgnutls
 
