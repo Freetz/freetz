@@ -1,4 +1,4 @@
-# minidlna 1.3.0
+# minidlna 1.3.2
  - Homepage: [https://sourceforge.net/projects/minidlna/](https://sourceforge.net/projects/minidlna/)
  - Manpage: [https://manpages.debian.org/testing/minidlna/minidlnad.1.en.html](https://manpages.debian.org/testing/minidlna/minidlnad.1.en.html)
  - Changelog: [https://sourceforge.net/p/minidlna/git/ci/master/tree/NEWS](https://sourceforge.net/p/minidlna/git/ci/master/tree/NEWS)
