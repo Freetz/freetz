@@ -55,6 +55,7 @@ Latest changes
    * BIND 9.11.37/9.16.32
    * CA-bundle 2022-07-19
    * Curl 7.85.0
+   * expat 2.4.9
    * ffmpeg 4.4.2
    * Git 2.37.3
    * HAProxy 2.6.4
