@@ -28,7 +28,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
 
 ### E
 
-  * **[expat: libexpat (libexpat.so) 2.4.8](expat.md)<a id='expat'></a>**<br>
+  * **[expat: libexpat (libexpat.so) 2.4.9](expat.md)<a id='expat'></a>**<br>
     This is Expat, a C library for parsing XML, written by James Clark. Expat is a stream-oriented XML parser. This means that you register handlers with the parser before starting the parse. These handlers are called when the parser discovers the associated structures in the document being parsed. A start tag is an example of the kind of structures for which you may register handlers.
 
 ### F
