@@ -61,10 +61,11 @@ Latest changes
    * HAProxy 2.6.4
    * htpdate 1.3.6
    * libcap 2.49/2.65
+   * liblz4 1.9.4
+   * libnettle 3.8.1
    * libtirpc 1.3.3
    * libuv 1.44.2
    * Lighttpd 1.4.67
-   * liblz4 1.9.4
    * mbed TLS 2.7.19/2.28.1
    * minidlna 1.3.2
    * Nano 6.4

@@ -1,11 +1,11 @@
 --- Makefile.in
 +++ Makefile.in
-@@ -22,7 +22,7 @@
+@@ -24,7 +24,7 @@
  include config.make
  
  PRE_CPPFLAGS = -I.
 -EXTRA_CFLAGS = $(CCPIC)
 +override EXTRA_CFLAGS += $(CCPIC)
  
- # FIXME: Add configuration of LIBEXT?
  LIBTARGETS = @IF_STATIC@ libnettle.a @IF_HOGWEED@ libhogweed.a
+ SHLIBTARGETS = @IF_SHARED@ $(LIBNETTLE_FORLINK) @IF_HOGWEED@ $(LIBHOGWEED_FORLINK)
