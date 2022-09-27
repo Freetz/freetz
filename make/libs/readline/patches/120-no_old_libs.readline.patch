@@ -1,7 +1,7 @@
 --- Makefile.in
 +++ Makefile.in
-@@ -235,10 +235,8 @@
- maybe-uninstall-headers: uninstall-headers
+@@ -252,10 +252,8 @@
+ maybe-uninstall-pc: uninstall-pc
  
  install-static: installdirs $(STATIC_LIBS) install-headers
 -	-$(MV) $(DESTDIR)$(libdir)/libreadline.a $(DESTDIR)$(libdir)/libreadline.old
@@ -11,7 +11,7 @@
  	$(INSTALL_DATA) libhistory.a $(DESTDIR)$(libdir)/libhistory.a
  	-test -n "$(RANLIB)" && $(RANLIB) $(DESTDIR)$(libdir)/libhistory.a
  
-@@ -249,7 +247,7 @@
+@@ -267,7 +265,7 @@
  
  uninstall: uninstall-headers
  	-test -n "$(DESTDIR)$(libdir)" && cd $(DESTDIR)$(libdir) && \
