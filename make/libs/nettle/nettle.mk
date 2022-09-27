@@ -22,6 +22,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-openssl
 $(PKG)_CONFIGURE_OPTIONS += --disable-mini-gmp
 $(PKG)_CONFIGURE_OPTIONS += --enable-public-key
 
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -43,6 +44,7 @@ $($(PKG)_LIBS_TARGET_DIR): $($(PKG)_TARGET_DIR)/%: $(TARGET_TOOLCHAIN_STAGING_DI
 $(pkg): $($(PKG)_LIBS_STAGING_DIR)
 
 $(pkg)-precompiled: $($(PKG)_LIBS_TARGET_DIR)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(NETTLE_DIR) clean
