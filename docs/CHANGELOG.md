@@ -71,6 +71,7 @@ Latest changes
    * minidlna 1.3.2
    * Nano 6.4
    * Net-SNMP 5.9.3
+   * rsync 3.2.6
    * SQLite 3.39.3
    * strace 4.9/5.0/5.19
    * Stunnel 5.65

@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 3.2.3)
+$(call PKG_INIT_BIN, 3.2.6)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_HASH:=becc3c504ceea499f4167a260040ccf4d9f2ef9499ad5683c179a697146ce50e
+$(PKG)_HASH:=fb3365bab27837d41feaf42e967c57bd3a47bc8f10765a3671efd6a3835454d3
 $(PKG)_SITE:=@SAMBA/rsync/src
 ### WEBSITE:=https://rsync.samba.org/
 ### MANPAGE:=https://rsync.samba.org/documentation.html
@@ -30,6 +30,7 @@ $(PKG)_CONFIGURE_OPTIONS += --without-included-zlib
 $(PKG)_CONFIGURE_OPTIONS += --with-nobody-group=nobody
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),,--disable-ipv6)
 
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -43,6 +44,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(RSYNC_DIR) clean
