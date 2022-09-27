@@ -32,13 +32,6 @@ In Freetz basiert z.B. das [NTFS](ntfs-3g.html) Paket auf *FUSE*.
 
 ### Weiterführende Links
 
--   [Wikipedia:
-    FUSE](http://de.wikipedia.org/wiki/Filesystem_in_Userspace)
--   [FUSE Project
-    Homepage](http://fuse.sourceforge.net/) (Sourceforge)
--   [Official list of FUSE
-    filesystems](http://fuse.sourceforge.net/wiki/index.php/FileSystems)
--   [Develop your own filesystem with
-    FUSE](http://www.ibm.com/developerworks/linux/library/l-fuse/)
--   s3fslite für Freetz:
-    Ticket #796
+ - [Wikipedia: FUSE](http://de.wikipedia.org/wiki/Filesystem_in_Userspace)
+ - s3fslite für Freetz: Ticket #796
+
