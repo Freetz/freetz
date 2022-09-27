@@ -1,4 +1,8 @@
-# Screen 4.8.0
+# Screen 4.9.0
+ - Homepage: [https://www.gnu.org/software/screen/](https://www.gnu.org/software/screen/)
+ - Manpage: [https://www.gnu.org/software/screen/manual/](https://www.gnu.org/software/screen/manual/)
+ - Changelog: [https://git.savannah.gnu.org/cgit/screen.git/refs/](https://git.savannah.gnu.org/cgit/screen.git/refs/)
+ - Repository: [https://git.savannah.gnu.org/cgit/screen.git](https://git.savannah.gnu.org/cgit/screen.git)
  - Package: [master/make/screen/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/screen/)
 
 *"Screen is a full-screen window manager that multiplexes a physical
