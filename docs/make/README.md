@@ -194,7 +194,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
   * **[fstyp 0.1 (binary only)](fstyp.md)<a id='fstyp'></a>**<br>
     fstyp can be used to heuristically detect which filesystem type a block device contains.
 
-  * **[FUSE 2.9.7 (binary only)](fuse.md)<a id='fuse'></a>**<br>
+  * **[FUSE 2.9.9 (binary only)](fuse.md)<a id='fuse'></a>**<br>
     Filesystem in Userspace (FUSE) is a free Unix kernel module that allows non-privileged users to create their own file systems without the need to write any kernel code. This is achieved by running the file systemcode in user space, while the FUSE module only provides a "bridge" to the actual kernel interfaces. FUSE was officially merged into the mainstream Linux kernel tree in kernel version 2.6.14. FUSE is particularly useful for writing virtual file systems. Unlike traditional filesystems which essentially save data to and retrieve data from disk, virtual filesystems do not actually store data themselves. They act as a view or translation of an existing filesystem or storage device. In principle, any resource available to FUSE implementation can be exported as a file system. In Freetz, the NTFS package depends on fuse, for example.
 
 ### G

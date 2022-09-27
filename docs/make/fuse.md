@@ -1,4 +1,8 @@
-# FUSE 2.9.7 (binary only)
+# FUSE 2.9.9 (binary only)
+ - Homepage: [https://github.com/libfuse/libfuse](https://github.com/libfuse/libfuse)
+ - Manpage: [https://github.com/libfuse/libfuse/wiki](https://github.com/libfuse/libfuse/wiki)
+ - Changelog: [https://github.com/libfuse/libfuse/releases](https://github.com/libfuse/libfuse/releases)
+ - Repository: [https://github.com/libfuse/libfuse/commits/master](https://github.com/libfuse/libfuse/commits/master)
  - Package: [master/make/fuse/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/fuse/)
 
 **[FUSE](http://de.wikipedia.org/wiki/Filesystem_in_Userspace)**
