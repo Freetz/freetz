@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_LYNX
-	bool "Lynx 2.8.9 web browser"
+	bool "Lynx 2.8.9 (binary only)"
 	select FREETZ_LIB_libncurses
 	default n
 	help
@@ -15,17 +15,17 @@ config FREETZ_PACKAGE_LYNX
 
 if FREETZ_PACKAGE_LYNX
 
-config FREETZ_PACKAGE_LYNX_WITH_SSL
-	bool "With https support"
-	select FREETZ_LIB_libcrypto
-	select FREETZ_LIB_libssl
-	select FREETZ_LIB_libdl if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
-	default y
+	config FREETZ_PACKAGE_LYNX_WITH_SSL
+		bool "With https support"
+		select FREETZ_LIB_libcrypto
+		select FREETZ_LIB_libssl
+		select FREETZ_LIB_libdl if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+		default y
 
-config FREETZ_PACKAGE_LYNX_WITH_ZLIB
-	bool "With zlib support"
-	select FREETZ_LIB_libz
-	default y
+	config FREETZ_PACKAGE_LYNX_WITH_ZLIB
+		bool "With zlib support"
+		select FREETZ_LIB_libz
+		default y
 
 endif # FREETZ_PACKAGE_LYNX
 

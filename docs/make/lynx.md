@@ -19,11 +19,7 @@ sowie
 
 ### Weiterführende Links
 
--   [Lynx Homepage](http://lynx.isc.org/)
--   [The History of
-    Lynx](http://people.cc.ku.edu/~grobe/early-lynx.html)
--   [Tips on using
-    Lynx](http://brainstormsandraves.com/articles/browsers/lynx/)
--   [Liste von
-    Web-Browsern](http://de.wikipedia.org/wiki/Liste_von_Webbrowsern)
+-   [The History of Lynx](http://people.cc.ku.edu/~grobe/early-lynx.html)
+-   [Tips on using Lynx](http://brainstormsandraves.com/articles/browsers/lynx/)
+-   [Liste von Web-Browsern](http://de.wikipedia.org/wiki/Liste_von_Webbrowsern)
 
