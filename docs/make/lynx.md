@@ -1,4 +1,7 @@
-# Lynx 2.8.9 web browser
+# Lynx 2.8.9 (binary only)
+ - Homepage: [https://lynx.invisible-island.net/](https://lynx.invisible-island.net/)
+ - Manpage: [https://lynx.invisible-island.net/lynx_help/lynx_help_main.html](https://lynx.invisible-island.net/lynx_help/lynx_help_main.html)
+ - Changelog: [https://lynx.invisible-island.net/current/CHANGES.html](https://lynx.invisible-island.net/current/CHANGES.html)
  - Package: [master/make/lynx/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/lynx/)
 
 **[Lynx](http://lynx.isc.org/)** ist ein
