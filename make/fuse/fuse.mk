@@ -1,7 +1,11 @@
-$(call PKG_INIT_BIN, 2.9.7)
+$(call PKG_INIT_BIN, 2.9.9)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_HASH:=832432d1ad4f833c20e13b57cf40ce5277a9d33e483205fc63c78111b3358874
+$(PKG)_HASH:=d0e69d5d608cc22ff4843791ad097f554dd32540ddc9bed7638cc6fea7c1b4b5
 $(PKG)_SITE:=https://github.com/libfuse/libfuse/releases/download/fuse-$($(PKG)_VERSION)
+### WEBSITE:=https://github.com/libfuse/libfuse
+### MANPAGE:=https://github.com/libfuse/libfuse/wiki
+### CHANGES:=https://github.com/libfuse/libfuse/releases
+### CVSREPO:=https://github.com/libfuse/libfuse/commits/master
 
 $(PKG)_PATCH_POST_CMDS += $(SED) -i -r -e 's| -D_FILE_OFFSET_BITS=64||g;' fuse.pc.in {example,lib,util}/Makefile.{am,in};
 
@@ -20,6 +24,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-mtab
 $(PKG)_CONFIGURE_OPTIONS += --disable-example
 $(PKG)_CONFIGURE_OPTIONS += --with-gnu-ld
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -52,6 +57,7 @@ $($(PKG)_LIB_TARGET_BINARY): $($(PKG)_LIB_STAGING_BINARY)
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_LIB_TARGET_BINARY)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(FUSE_DIR) clean

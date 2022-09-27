@@ -57,6 +57,7 @@ Latest changes
    * Curl 7.85.0
    * expat 2.4.9
    * ffmpeg 4.4.2
+   * FUSE 2.9.9
    * Git 2.37.3
    * HAProxy 2.6.4
    * htpdate 1.3.6
