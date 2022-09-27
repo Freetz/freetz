@@ -1,7 +1,11 @@
 $(call PKG_INIT_BIN, 1.6.15)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_HASH:=5ff2271512f745bf1a451072cd3768a5daed71e90c5179fae12b049d6c02aa0f
-$(PKG)_SITE:=http://mosquitto.org/files/source
+$(PKG)_SITE:=https://mosquitto.org/files/source
+### WEBSITE:=https://www.mosquitto.org/
+### MANPAGE:=https://www.mosquitto.org/documentation/
+### CHANGES:=https://mosquitto.org/blog/
+### CVSREPO:=https://github.com/eclipse/mosquitto
 
 $(PKG)_BINARY_BROKER:=$($(PKG)_DIR)/src/mosquitto
 $(PKG)_BINARY_MOSQUITTO_PASSWD:=$($(PKG)_DIR)/src/mosquitto_passwd
