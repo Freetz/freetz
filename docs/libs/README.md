@@ -63,7 +63,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
   * **[jansson: libjansson (libjansson.so) 2.7](jansson.md)<a id='jansson'></a>**<br>
     A C library for encoding, decoding and manipulating JSON data.
 
-  * **[JPEG library (libjpeg.so) 9d](jpeg.md)<a id='jpeg'></a>**<br>
+  * **[JPEG library (libjpeg.so) 9e](jpeg.md)<a id='jpeg'></a>**<br>
     libjpeg is a library for handling the JPEG (JFIF) image format
 
 ### L
