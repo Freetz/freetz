@@ -75,7 +75,7 @@ Latest changes
    * Net-SNMP 5.9.3
    * rsync 3.2.6
    * Screen 4.9.0
-   * SQLite 3.39.3
+   * SQLite 3.39.4
    * strace 4.9/5.0/5.19
    * Stunnel 5.65
    * Tor 0.4.7.9
