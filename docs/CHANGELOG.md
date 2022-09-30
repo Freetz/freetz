@@ -64,6 +64,7 @@ Latest changes
    * jpeg 9e
    * libcap 2.49/2.65
    * liblz4 1.9.4
+   * libmaxminddb 1.7.0
    * libnettle 3.8.1
    * libtirpc 1.3.3
    * libuv 1.44.2
