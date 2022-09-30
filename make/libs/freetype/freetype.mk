@@ -1,8 +1,12 @@
-$(call PKG_INIT_LIB, 2.10.1)
-$(PKG)_LIB_VERSION:=6.17.1
+$(call PKG_INIT_LIB, 2.12.1)
+$(PKG)_LIB_VERSION:=6.18.3
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_HASH:=16dbfa488a21fe827dc27eaf708f42f7aa3bb997d745d31a19781628c36ba26f
+$(PKG)_HASH:=4766f20157cc4cf0cd292f80bf917f92d1c439b243ac3018debf6b9140c41a7f
 $(PKG)_SITE:=@SF/freetype
+### WEBSITE:=https://freetype.org
+### MANPAGE:=https://freetype.org/freetype2/docs/documentation.html
+### CHANGES:=https://freetype.org/index.html#news
+### CVSREPO:=https://gitlab.freedesktop.org/freetype
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/objs/.libs/libfreetype.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libfreetype.so.$($(PKG)_LIB_VERSION)
@@ -17,6 +21,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-bzip2=no
 $(PKG)_CONFIGURE_OPTIONS += --with-harfbuzz=no
 $(PKG)_CONFIGURE_OPTIONS += --with-png=no
 $(PKG)_CONFIGURE_OPTIONS += --with-zlib=yes
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -39,6 +44,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 $(pkg): $($(PKG)_STAGING_BINARY)
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(FREETYPE_DIR) distclean
