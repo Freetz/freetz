@@ -1,8 +1,10 @@
-$(call PKG_INIT_LIB, 9d)
-$(PKG)_LIB_VERSION:=9.4.0
+$(call PKG_INIT_LIB, 9e)
+$(PKG)_LIB_VERSION:=9.5.0
 $(PKG)_SOURCE:=jpegsrc.v$($(PKG)_VERSION).tar.gz
-$(PKG)_HASH:=6c434a3be59f8f62425b2e3c077e785c9ce30ee5874ea1c270e843f273ba71ee
-$(PKG)_SITE:=http://ijg.org/files
+$(PKG)_HASH:=4077d6a6a75aeb01884f708919d25934c93305e49f7e3f36db9129320e6f4f3d
+$(PKG)_SITE:=https://www.ijg.org/files
+### WEBSITE:=https://www.ijg.org/
+### MANPAGE:=http://www.faqs.org/faqs/jpeg-faq/
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/libjpeg.so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/libjpeg.so.$($(PKG)_LIB_VERSION)
@@ -10,6 +12,7 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/libjpeg.so.$($(PKG)_LIB_VERSION)
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -31,6 +34,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 $(pkg): $($(PKG)_STAGING_BINARY)
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(JPEG_DIR) clean

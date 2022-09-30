@@ -61,6 +61,7 @@ Latest changes
    * Git 2.37.3
    * HAProxy 2.6.4
    * htpdate 1.3.6
+   * jpeg 9e
    * libcap 2.49/2.65
    * liblz4 1.9.4
    * libnettle 3.8.1
