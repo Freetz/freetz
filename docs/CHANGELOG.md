@@ -55,6 +55,7 @@ Latest changes
    * BIND 9.11.37/9.16.33
    * CA-bundle 2022-07-19
    * Curl 7.85.0
+   * Dnsmasq 2.80/2.87
    * expat 2.4.9
    * ffmpeg 4.4.2
    * FreeType 2.12.1
