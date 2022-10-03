@@ -10,7 +10,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
   * **[apr-util: Apache Portable Runtime Utility Library (libaprutil-1.so) 1.6.1](apr-util.md)<a id='apr-util'></a>**<br>
     APR Util is a utilities library implemented on top of APR, providing database access, xml parsing, and other useful functionality.
 
-  * **[attr: libattr (libattr.so) 2.4.44](attr.md)<a id='attr'></a>**<br>
+  * **[attr: libattr (libattr.so) 2.5.1](attr.md)<a id='attr'></a>**<br>
     libattr allows to modify extended attributes of files.
 
 ### B
