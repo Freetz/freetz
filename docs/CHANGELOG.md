@@ -52,7 +52,6 @@ Latest changes
    * xz 5.2.6
 
  - Packages & libs:
-   * attr 2.5.1
    * BIND 9.11.37/9.16.33
    * CA-bundle 2022-07-19
    * Curl 7.85.0
@@ -65,6 +64,7 @@ Latest changes
    * HAProxy 2.6.4
    * htpdate 1.3.6
    * jpeg 9e
+   * libattr 2.5.1
    * libcap 2.49/2.66
    * liblz4 1.9.4
    * libmaxminddb 1.7.1
