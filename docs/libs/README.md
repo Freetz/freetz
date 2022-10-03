@@ -279,7 +279,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
   * **[polarssl13: PolarSSL-1.3.x (libpolarssl13.so) 1.3.22](polarssl13.md)<a id='polarssl13'></a>**<br>
     The aim of the PolarSSL project is to provide a quality, open-source cryptographic library written in C and targeted at embedded systems. See https://polarssl.org for more details.
 
-  * **[popt: libpopt (libpopt.so) 1.16](popt.md)<a id='popt'></a>**<br>
+  * **[popt: libpopt (libpopt.so) 1.19](popt.md)<a id='popt'></a>**<br>
     The popt library exists essentially for parsing command line options.
 
   * **[protobuf-c: libprotobuf-c (libprotobuf-c.so) 1.1.0](protobuf-c.md)<a id='protobuf-c'></a>**<br>
