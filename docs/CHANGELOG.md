@@ -65,7 +65,7 @@ Latest changes
    * HAProxy 2.6.4
    * htpdate 1.3.6
    * jpeg 9e
-   * libcap 2.49/2.65
+   * libcap 2.49/2.66
    * liblz4 1.9.4
    * libmaxminddb 1.7.1
    * libnettle 3.8.1
