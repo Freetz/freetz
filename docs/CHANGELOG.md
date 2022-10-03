@@ -61,7 +61,7 @@ Latest changes
    * FreeType 2.12.1
    * FUSE 2.9.9
    * Git 2.37.3
-   * HAProxy 2.6.4
+   * HAProxy 2.6.6
    * htpdate 1.3.6
    * jpeg 9e
    * libattr 2.5.1
