@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 6.15)
+$(call PKG_INIT_BIN, 7.0)
 $(PKG)_SOURCE:=cifs-utils-$($(PKG)_VERSION).tar.bz2
-$(PKG)_HASH:=a7b6940e93250c1676a6fa66b6ead91b78cd43a5fee99cc462459c8b9cf1e6f4
+$(PKG)_HASH:=0defaab85bd3ea46ffc45ab41fb0d0ad54d05ae2cfaa7e503de86d4f12bc8161
 $(PKG)_SITE:=@SAMBA/linux-cifs/cifs-utils
 ### WEBSITE:=https://wiki.samba.org/index.php/LinuxCIFS_utils
 ### CHANGES:=https://wiki.samba.org/index.php/LinuxCIFS_utils#News
@@ -28,6 +28,7 @@ $(PKG)_CONFIGURE_OPTIONS += --without-libcap
 
 $(PKG)_CONFIGURE_PRE_CMDS += autoreconf -i;
 
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -41,6 +42,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(CIFSMOUNT_DIR) clean
