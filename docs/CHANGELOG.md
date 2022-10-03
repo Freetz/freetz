@@ -47,7 +47,7 @@ Latest changes
    * ccache 4.6.3
 
  - Host tools:
-   * kconfig 5.19
+   * kconfig 6.0
    * precompiled host-tools 2022-08-21
    * xz 5.2.6
 
