@@ -63,7 +63,6 @@ Content: [FOS-Release](#fos-release) - [FOS-Labor](#fos-labor) - [FOS-Inhaus](#f
  - HWR 254: [FRITZ.Box_6820v3_LTE-07.29.image](http://download.avm.de/fritzbox/fritzbox-6820-lte-v3/deutschland/fritz.os/FRITZ.Box_6820v3_LTE-07.29.image)
  - HWR 256: [FRITZ.Box_7530_AX-07.31.image](http://download.avm.de/fritzbox/fritzbox-7530-ax/deutschland/fritz.os/FRITZ.Box_7530_AX-07.31.image)
  - HWR 257: [FRITZ.Box_5530-07.29.image](http://download.avm.de/fritzbox/fritzbox-5530-fiber/deutschland/fritz.os/FRITZ.Box_5530-07.29.image)
- - HWR 257: [FRITZ.Box_5530-07.30.image](http://download.avm.de/fritzbox/fritzbox-5530-fiber/deutschland/fritz.os/FRITZ.Box_5530-07.30.image)
  - HWR 258: [FRITZ.Box_6850_5G-07.30.image](http://download.avm.de/fritzbox/fritzbox-6850-5g/deutschland/fritz.os/FRITZ.Box_6850_5G-07.30.image)
  - HWR 259: [FRITZ.Box_7590_AX-07.31.image](http://download.avm.de/fritzbox/fritzbox-7590-ax/deutschland/fritz.os/FRITZ.Box_7590_AX-07.31.image)
  - HWR 260: [FRITZ.Box_7583_VDSL-07.31.image](http://download.avm.de/fritzbox/fritzbox-7583-vdsl/deutschland/fritz.os/FRITZ.Box_7583_VDSL-07.31.image)
