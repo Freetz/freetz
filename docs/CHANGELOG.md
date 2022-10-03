@@ -52,6 +52,7 @@ Latest changes
    * xz 5.2.6
 
  - Packages & libs:
+   * attr 2.5.1
    * BIND 9.11.37/9.16.33
    * CA-bundle 2022-07-19
    * Curl 7.85.0
