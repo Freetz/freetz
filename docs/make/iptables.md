@@ -1,4 +1,7 @@
 # Iptables 1.4.11.1/1.4.21/1.6.2 (binary only)
+ - Homepage: [https://netfilter.org/projects/iptables/index.html](https://netfilter.org/projects/iptables/index.html)
+ - Changelog: [https://netfilter.org/projects/iptables/downloads.html](https://netfilter.org/projects/iptables/downloads.html)
+ - Repository: [https://git.netfilter.org/iptables/](https://git.netfilter.org/iptables/)
  - Package: [master/make/iptables/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/iptables/)
 
 ### Current state (largely broken)
