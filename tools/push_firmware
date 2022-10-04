@@ -246,7 +246,7 @@ function push_fw() {
 			echo "miserable failure" && exit 1
 		fi
 	elif [ $FOUND_FTP ]; then
-		if [ $ISFIT -a -n "$FITV" ]; then
+		if [ -n "$ISFIT" -a -n "$FITV" ]; then
 			ftp -n -p <<EOT
 open $ip
 user adam2 adam2
@@ -258,7 +258,7 @@ quote SETENV kernel_args_tmp \"mtdram=rootfs_ram,${FITV/ /,}\"
 put ${fitimage} "${FITV}"
 quit
 EOT
-		elif [ $ISFIT -a -z "$FITV" ]; then
+		elif [ -n "$ISFIT" -a -z "$FITV" ]; then
 			ftp -n -p <<EOT
 open $ip
 user adam2 adam2
