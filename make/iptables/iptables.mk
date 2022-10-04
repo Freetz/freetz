@@ -4,7 +4,10 @@ $(PKG)_HASH_KERNEL2:=170c294698ca573477b1b2a3815e1563bf9929d182efef6cf0331a6e955
 $(PKG)_HASH_KERNEL3:=52004c68021da9a599feed27f65defcfb22128f7da2c0531c0f75de0f479d3e0
 $(PKG)_HASH_KERNEL4:=55d02dfa46263343a401f297d44190f2a3e5113c8933946f094ed40237053733
 $(PKG)_HASH:=$($(PKG)_HASH_KERNEL$(if $(FREETZ_KERNEL_VERSION_2),2,$(if $(FREETZ_KERNEL_VERSION_3),3,4)))
-$(PKG)_SITE:=http://netfilter.org/projects/$(pkg)/files
+$(PKG)_SITE:=https://netfilter.org/projects/iptables/files
+### WEBSITE:=https://netfilter.org/projects/iptables/index.html
+### CHANGES:=https://netfilter.org/projects/iptables/downloads.html
+### CVSREPO:=https://git.netfilter.org/iptables/
 
 $(PKG)_CONDITIONAL_PATCHES_DIR := kernel$(strip $(foreach v,2 3 4 5,$(word 2,$(filter $(v)%,$(KERNEL_VERSION_MAJOR)) $v)))
 $(PKG)_CONDITIONAL_PATCHES+=$($(PKG)_CONDITIONAL_PATCHES_DIR) $($(PKG)_CONDITIONAL_PATCHES_DIR)/$(KERNEL_VERSION_MAJOR)
