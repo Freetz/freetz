@@ -1,13 +1,16 @@
-$(call PKG_INIT_BIN, 3.9)
+$(call PKG_INIT_BIN, 3.12)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_SITE:=https://downloads.es.net/pub/iperf
-$(PKG)_HASH:=24b63a26382325f759f11d421779a937b63ca1bc17c44587d2fcfedab60ac038
+$(PKG)_HASH:=72034ecfb6a7d6d67e384e19fb6efff3236ca4f7ed4c518d7db649c447e1ffd6
+### WEBSITE:=https://iperf.fr/
+### MANPAGE:=https://iperf.fr/iperf-doc.php
+### CHANGES:=https://github.com/esnet/iperf/tags
+### CVSREPO:=https://github.com/esnet/iperf
 
 $(PKG)_PATCH_POST_CMDS += $(call PKG_ADD_EXTRA_FLAGS,LDFLAGS|LIBS)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/iperf3
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/iperf
-
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_IPERF_WITH_OPENSSL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_IPERF_STATIC
@@ -24,6 +27,7 @@ endif
 else
 $(PKG)_CONFIGURE_OPTIONS += --without-openssl
 endif
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -51,4 +55,3 @@ $(pkg)-uninstall:
 	$(RM) $(IPERF_TARGET_BINARY)
 
 $(PKG_FINISH)
-
