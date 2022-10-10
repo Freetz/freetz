@@ -1,16 +1,16 @@
 if FREETZ_TARGET_UCLIBC_SUPPORTS_rpc
 
-comment "unfs3 (not available, you have selected incompatible package nfsd)"
-	depends on FREETZ_PACKAGE_NFSD_CGI
+	comment "UNFS3 (not available, you have selected incompatible package nfsd)"
+		depends on FREETZ_PACKAGE_NFSD_CGI
 
-config FREETZ_PACKAGE_UNFS3
-	bool "unfs3 0.9.22"
-	depends on !FREETZ_PACKAGE_NFSD_CGI
-	select FREETZ_PACKAGE_PORTMAP if FREETZ_TARGET_UCLIBC_SUPPORTS_rpc
-	select FREETZ_PACKAGE_RPCBIND if !FREETZ_TARGET_UCLIBC_SUPPORTS_rpc
-	select FREETZ_LIB_libtirpc    if !FREETZ_TARGET_UCLIBC_SUPPORTS_rpc
-	help
-		Userspace NFS v3 Server.
+	config FREETZ_PACKAGE_UNFS3
+		bool "UNFS3 0.9.23"
+		depends on !FREETZ_PACKAGE_NFSD_CGI
+		select FREETZ_PACKAGE_PORTMAP if FREETZ_TARGET_UCLIBC_SUPPORTS_rpc
+		select FREETZ_PACKAGE_RPCBIND if !FREETZ_TARGET_UCLIBC_SUPPORTS_rpc
+		select FREETZ_LIB_libtirpc    if !FREETZ_TARGET_UCLIBC_SUPPORTS_rpc
+		help
+			Userspace NFS v3 Server.
 
 endif # FREETZ_TARGET_UCLIBC_SUPPORTS_rpc
 
