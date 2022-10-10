@@ -58,12 +58,13 @@ Latest changes
    * Curl 7.85.0
    * Dnsmasq 2.80/2.87
    * expat 2.4.9
-   * ffmpeg 4.4.2
+   * FFmpeg 5.1.2
    * FreeType 2.12.1
    * FUSE 2.9.9
-   * Git 2.37.3
+   * Git 2.38.0
    * HAProxy 2.6.6
    * htpdate 1.3.6
+   * iPerf3 3.12
    * jpeg 9e
    * libattr 2.5.1
    * libcap 2.49/2.66
@@ -82,10 +83,11 @@ Latest changes
    * Screen 4.9.0
    * SQLite 3.39.4
    * strace 4.9/5.0/5.19
-   * Stunnel 5.65
+   * Stunnel 5.66
    * Tor 0.4.7.9
    * uClibc-ng 1.0.42
    * Unbound 1.16.6
+   * UNFS3 0.9.23
    * usb.ids a5edeafb60
    * Vim 9.0.0049
    * XZ Utils 5.2.6
