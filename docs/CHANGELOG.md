@@ -48,7 +48,7 @@ Latest changes
 
  - Host tools:
    * kconfig 6.0
-   * precompiled host-tools 2022-08-21
+   * precompiled host-tools 2022-10-12
    * xz 5.2.7
 
  - Packages & libs:
