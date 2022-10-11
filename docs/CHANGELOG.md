@@ -90,7 +90,7 @@ Latest changes
    * UNFS3 0.9.23
    * usb.ids a5edeafb60
    * Vim 9.0.0049
-   * XZ Utils 5.2.6
+   * XZ Utils 5.2.7
 
  - Firmware updates:
    * Please see [FIRMWARES](FIRMWARES.md) for the list of currently supported devices and firmwares.
