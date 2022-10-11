@@ -79,6 +79,7 @@ Latest changes
    * minidlna 1.3.2
    * Nano 6.4
    * Net-SNMP 5.9.3
+   * OpenSSL 0.9.8zh/1.0.2u/1.1.1r/3.0.6
    * rsync 3.2.6
    * Screen 4.9.0
    * SQLite 3.39.4
