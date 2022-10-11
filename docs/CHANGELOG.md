@@ -53,7 +53,7 @@ Latest changes
 
  - Packages & libs:
    * BIND 9.11.37/9.16.33
-   * CA-bundle 2022-07-19
+   * CA-bundle 2022-10-11
    * Cifsmount 7.0
    * Curl 7.85.0
    * Dnsmasq 2.80/2.87
