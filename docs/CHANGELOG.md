@@ -49,7 +49,7 @@ Latest changes
  - Host tools:
    * kconfig 6.0
    * precompiled host-tools 2022-08-21
-   * xz 5.2.6
+   * xz 5.2.7
 
  - Packages & libs:
    * BIND 9.11.37/9.16.33
