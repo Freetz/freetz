@@ -1,4 +1,4 @@
-# Zlib (libz.so) 1.2.12
+# Zlib (libz.so) 1.2.13
  - Homepage: [https://www.zlib.net/](https://www.zlib.net/)
  - Manpage: [https://www.zlib.net/manual.html](https://www.zlib.net/manual.html)
  - Changelog: [https://www.zlib.net/](https://www.zlib.net/)

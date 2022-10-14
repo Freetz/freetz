@@ -333,5 +333,5 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
 
 ### Z
 
-  * **[Zlib (libz.so) 1.2.12](zlib.md)<a id='zlib'></a>**<br>
+  * **[Zlib (libz.so) 1.2.13](zlib.md)<a id='zlib'></a>**<br>
     zlib is a lossless data-compression library for use on virtually any computer hardware and operating system. The zlib data format is itself portable across platforms.
