@@ -48,8 +48,8 @@ download() {
 		done
 	fi
 
-	for file in $(find ftp.avm.de -type f); do
-		mv -f $file $(echo $file | sed -r -e 's,(ftp[.]avm[.]de/(fritzbox|fritzpowerline|fritzwlan)/|ftp[.]avm[.]de/archive/fritz[.]box/|service[.]avm[.]de/|firmware/),,g;s,/,--,g')
+	find ftp.avm.de -type f | while read file; do
+		mv -f "$file" "$(echo "$file" | sed -r -e 's, ,-,g;s,(ftp[.]avm[.]de/(fritzbox|fritzpowerline|fritzwlan)/|ftp[.]avm[.]de/archive/fritz[.]box/|service[.]avm[.]de/|firmware/),,g;s,/,--,g')"
 	done
 	rm -rf ftp.avm.de 2>/dev/null
 }
@@ -62,7 +62,7 @@ unpack() {
 	[ -f _failed.log ] && rm _failed.log
 
 	for file in *.image; do
-		image $file unpacked/
+		image "$file" unpacked/
 	done
 
 	if [ -e _failed.log ]; then
@@ -216,9 +216,9 @@ image() {
 			declare -a load_addrs
 			load_addrs=($($FTOOLS/unpack-kernel kernel.raw kernel.raw.unpacked 2>/dev/null | sed -nre 's,.*LoadAddress=(.+),\1,p'))
 			for file in kernel.raw.unpacked kernel.raw.unpacked.2ND; do
-				[ -e $file ] || continue
+				[ -e "$file" ] || continue
 				[ "$file" != "${file/2ND/}" ] && load_addr="${load_addrs[1]}" || load_addr="${load_addrs[0]}"
-				akc_size="$($FTOOLS/avm_kernel_config.extract -l $load_addr $file 2>/dev/null | wc -c)"
+				akc_size="$($FTOOLS/avm_kernel_config.extract -l $load_addr "$file" 2>/dev/null | wc -c)"
 				[ "$akc_size" != "0" ] && echo "avm_kernel_config${file#kernel.raw.unpacked} size is $(( $akc_size / 1024 )) KB" >> "$nfo"
 			done
 			rm -f kernel.raw.unpacked kernel.raw.unpacked.2ND
