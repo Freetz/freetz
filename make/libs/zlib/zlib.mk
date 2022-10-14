@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 1.2.12)
+$(call PKG_INIT_LIB, 1.2.13)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_HASH:=7db46b8d7726232a621befaab4a1c870f00a90805511c0e0090441dac57def18
+$(PKG)_HASH:=d14c38e313afc35a9a8760dadf26042f51ea0f5d154b0630a31da0540107fb98
 $(PKG)_SITE:=https://www.zlib.net
 ### WEBSITE:=https://www.zlib.net/
 ### MANPAGE:=https://www.zlib.net/manual.html
@@ -20,6 +20,7 @@ $(PKG)_CONFIGURE_ENV += RANLIB="$(TARGET_RANLIB)"
 $(PKG)_CONFIGURE_ENV += NM="$(TARGET_NM)"
 $(PKG)_CONFIGURE_ENV += CROSS_PREFIX="$(TARGET_CROSS)"
 $(PKG)_CONFIGURE_ENV += prefix=/usr
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -42,6 +43,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 $(pkg): $($(PKG)_STAGING_BINARY)
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(ZLIB_DIR) clean
