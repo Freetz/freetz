@@ -9,6 +9,7 @@ $(PKG)_SITE:=https://www.ffmpeg.org/releases
 
 $(PKG)_DEPENDS_ON += zlib
 $(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_FFMPEG_DECODER_libopenjpeg),openjpeg)
+$(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_FFMPEG_LZMA),xz)
 
 $(PKG)_BINARIES_ALL        := ffmpeg ffprobe
 $(PKG)_BINARIES            := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_BINARIES_ALL))
@@ -25,8 +26,8 @@ $(PKG)_LIBS_BUILD_DIR      := $(join $($(PKG)_LIBNAMES_SHORT:%=$($(PKG)_DIR)/lib
 $(PKG)_LIBS_STAGING_DIR    := $($(PKG)_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/%)
 $(PKG)_LIBS_TARGET_DIR     := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_TARGET_LIBDIR)/%)
 
-$(PKG)_ENCODERS  := ac3 jpegls mjpeg mpeg1video mpeg2video mpeg4 pcm_s16be pcm_s16le png vorbis zlib
-$(PKG)_DECODERS  := aac ac3 atrac3 gif h264 jpegls libopenjpeg mjpeg mjpegb mp2 mp3 mpeg1video mpeg2video mpeg4 mpegvideo pcm_s16be pcm_s16le png vorbis wmav1 wmav2 zlib
+$(PKG)_ENCODERS  := ac3 jpegls mjpeg mpeg1video mpeg2video mpeg4 pcm_s16be pcm_s16le png tiff vorbis zlib
+$(PKG)_DECODERS  := aac ac3 atrac3 gif h264 jpegls libopenjpeg mjpeg mjpegb mp2 mp3 mpeg1video mpeg2video mpeg4 mpegvideo pcm_s16be pcm_s16le png tiff vorbis wmav1 wmav2 zlib
 $(PKG)_MUXERS    := ac3 avi flv h264 matroska mjpeg mov mp3 mp4 mpeg1video mpeg2video mpegts ogg rtp
 $(PKG)_DEMUXERS  := ac3 avi flv h264 image2 matroska mjpeg mov mp3 mpegps mpegts mpegvideo ogg rm rtsp sdp v4l2
 $(PKG)_PARSERS   := aac ac3 h264 mjpeg mpegaudio mpegvideo mpeg4video
@@ -35,6 +36,7 @@ $(PKG)_PROTOCOLS := file http https pipe rtp tcp udp
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_FFMPEG_ffmpeg
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_FFMPEG_ffprobe
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_FFMPEG_LZMA
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_FFMPEG_SSL_OPENSSL
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_FFMPEG_SSL_MBEDTLS
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_FFMPEG_SSL_GNUTLS
@@ -95,12 +97,11 @@ endif
 $(PKG)_CONFIGURE_OPTIONS += --enable-postproc
 $(PKG)_CONFIGURE_OPTIONS += --enable-swscale
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_FFMPEG_DECODER_libopenjpeg),--enable-libopenjpeg,--disable-libopenjpeg)
-
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_FFMPEG_LZMA),--enable-lzma,--disable-lzma)
 $(PKG)_CONFIGURE_OPTIONS += --disable-bsfs
 $(PKG)_CONFIGURE_OPTIONS += --disable-devices
 $(PKG)_CONFIGURE_OPTIONS += --disable-filters
 $(PKG)_CONFIGURE_OPTIONS += --disable-hwaccels
-$(PKG)_CONFIGURE_OPTIONS += --disable-lzma
 
 ifeq ($(strip $(FREETZ_PACKAGE_FFMPEG_EVERYTHING)),y)
 ifeq ($(strip $(FREETZ_TARGET_GCC_4_8_MIN)),y)
