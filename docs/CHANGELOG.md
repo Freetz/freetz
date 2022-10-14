@@ -73,6 +73,7 @@ Latest changes
    * libmaxminddb 1.7.1
    * libnettle 3.8.1
    * libpopt 1.19
+   * libtasn1 4.19.0
    * libtirpc 1.3.3
    * libuv 1.44.2
    * Lighttpd 1.4.67

@@ -1,22 +1,22 @@
 --- Makefile.am
 +++ Makefile.am
-@@ -26,7 +26,7 @@
- 	windows/test-parser/test-parser.vcproj				\
+@@ -28,7 +28,7 @@
  	windows/test-tree/test-tree.vcproj windows/libtasn14win.mk
+ EXTRA_DIST += cfg.mk maint.mk CONTRIBUTING.md README.md
  
--SUBDIRS = gl lib src tests
-+SUBDIRS = gl lib
+-SUBDIRS = lib src fuzz tests
++SUBDIRS = lib
  
  if ENABLE_DOC
  SUBDIRS += doc examples
 --- Makefile.in
 +++ Makefile.in
-@@ -949,7 +949,7 @@
- 	windows/test-parser/test-parser.vcproj \
+@@ -1483,7 +1483,7 @@
  	windows/test-tree/test-tree.vcproj windows/libtasn14win.mk \
- 	cfg.mk maint.mk .clcopying
--SUBDIRS = gl lib src tests $(am__append_1)
-+SUBDIRS = gl lib           $(am__append_1)
- ACLOCAL_AMFLAGS = -I m4 -I gl/m4 -I lib/glm4
- TMPFILE = "abi-temp.xml"
- all: config.h
+ 	cfg.mk maint.mk CONTRIBUTING.md README.md \
+ 	$(top_srcdir)/.version
+-SUBDIRS = lib src fuzz tests $(am__append_1)
++SUBDIRS = lib                $(am__append_1)
+ @CODE_COVERAGE_ENABLED_TRUE@GITIGNOREFILES := $(GITIGNOREFILES) $(CODE_COVERAGE_OUTPUT_FILE) $(CODE_COVERAGE_OUTPUT_DIRECTORY)
+ @CODE_COVERAGE_ENABLED_TRUE@code_coverage_v_lcov_cap = $(code_coverage_v_lcov_cap_$(V))
+ @CODE_COVERAGE_ENABLED_TRUE@code_coverage_v_lcov_cap_ = $(code_coverage_v_lcov_cap_$(AM_DEFAULT_VERBOSITY))
