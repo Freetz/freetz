@@ -1,8 +1,8 @@
-$(call PKG_INIT_BIN, 3.6.16)
-$(PKG)_LIB_VERSION:=30.28.2
+$(call PKG_INIT_BIN, 3.7.8)
+$(PKG)_LIB_VERSION:=30.34.2
 $(PKG)_OPENSSL_LIB_VERSION:=27.0.2
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_HASH:=1b79b381ac283d8b054368b335c408fedcb9b7144e0c07f531e3537d4328f3b3
+$(PKG)_HASH:=c58ad39af0670efe6a8aee5e3a8b2331a1200418b64b7c51977fb396d4617114
 $(PKG)_SITE:=https://www.gnupg.org/ftp/gcrypt/gnutls/v$(call GET_MAJOR_VERSION,$($(PKG)_VERSION)),ftp://ftp.gnutls.org/gcrypt/gnutls/v$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 ### WEBSITE:=https://www.gnutls.org/
 ### MANPAGE:=https://www.gnutls.org/documentation.html
@@ -28,6 +28,8 @@ $(PKG)_EXCLUDED += $(addprefix $($(PKG)_TARGET_LIBDIR)/, \
 	$(if $(FREETZ_LIB_libgnutls_openssl),,$($(PKG)_LIB_OPENSSL) libgnutls-openssl.so.$(call GET_MAJOR_VERSION,$($(PKG)_OPENSSL_LIB_VERSION),1) libgnutls-openssl.so) \
 )
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libgnutls_openssl
+
 $(PKG)_DEPENDS_ON += libtasn1 zlib nettle
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
@@ -49,17 +51,18 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-gtk-doc
 $(PKG)_CONFIGURE_OPTIONS += --disable-gtk-doc-html
 $(PKG)_CONFIGURE_OPTIONS += --disable-gtk-doc-pdf
 $(PKG)_CONFIGURE_OPTIONS += --disable-tests
-$(PKG)_CONFIGURE_OPTIONS += --disable-openpgp-authentication
-$(PKG)_CONFIGURE_OPTIONS += --enable-openssl-compatibility
-$(PKG)_CONFIGURE_OPTIONS += --with-included-libcfg
+$(PKG)_CONFIGURE_OPTIONS += --disable-bash-tests
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libgnutls_openssl),--enable-openssl-compatibility)
 $(PKG)_CONFIGURE_OPTIONS += --with-included-unistring
 $(PKG)_CONFIGURE_OPTIONS += --with-libtasn1-prefix="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
 $(PKG)_CONFIGURE_OPTIONS += --with-libz-prefix="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr"
-$(PKG)_CONFIGURE_OPTIONS += --with-libnsl-prefix=no
-$(PKG)_CONFIGURE_OPTIONS += --with-idn=no
-$(PKG)_CONFIGURE_OPTIONS += --with-lzo=no
-$(PKG)_CONFIGURE_OPTIONS += --with-p11-kit=no
-$(PKG)_CONFIGURE_OPTIONS += --with-tpm=no
+$(PKG)_CONFIGURE_OPTIONS += --without-brotli
+$(PKG)_CONFIGURE_OPTIONS += --without-idn
+$(PKG)_CONFIGURE_OPTIONS += --without-p11-kit
+$(PKG)_CONFIGURE_OPTIONS += --without-tpm
+$(PKG)_CONFIGURE_OPTIONS += --without-tpm2
+$(PKG)_CONFIGURE_OPTIONS += --without-zstd
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -85,6 +88,7 @@ $($(PKG)_LIBS_TARGET_DIR): $($(PKG)_TARGET_LIBDIR)/%: $(TARGET_TOOLCHAIN_STAGING
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR) $($(PKG)_LIBS_TARGET_DIR)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(GNUTLS_DIR) clean

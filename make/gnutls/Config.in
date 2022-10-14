@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_GNUTLS
-	bool "GnuTLS 3.6.16 (binary only)"
+	bool "GnuTLS 3.7.8 (binary only)"
 	select FREETZ_LIB_libgnutls
 	default n
 	help
@@ -7,17 +7,19 @@ config FREETZ_PACKAGE_GNUTLS
 		secure layer, over a reliable transport layer. Currently the GnuTLS
 		library implements TLS 1.3, 1.2, 1.1, 1.0 protocols and SSL 3.0.
 
-config FREETZ_PACKAGE_GNUTLS_CERTTOOL
-	bool "certtool"
-	depends on FREETZ_PACKAGE_GNUTLS
-	default n
-	help
-		Provides GnuTLS certtool utility.
+if FREETZ_PACKAGE_GNUTLS
 
-config FREETZ_PACKAGE_GNUTLS_UTILS
-	bool "utils"
-	depends on FREETZ_PACKAGE_GNUTLS
-	default n
-	help
-		Provides gnutls-cli, gnutls-serv, psktool and srptool utilities.
+	config FREETZ_PACKAGE_GNUTLS_CERTTOOL
+		bool "certtool"
+		default n
+		help
+			Provides GnuTLS certtool utility.
+
+	config FREETZ_PACKAGE_GNUTLS_UTILS
+		bool "utils"
+		default n
+		help
+			Provides gnutls-cli, gnutls-serv, psktool and srptool utilities.
+
+endif # FREETZ_PACKAGE_GNUTLS
 
