@@ -5,6 +5,10 @@ $(PKG)_HASH_CURRENT:=82ff5fda18ecbdee9053bdbeed6059c89e487f3024227131657d4c45367
 $(PKG)_HASH:=$($(PKG)_HASH_$(if $(FREETZ_AVM_GCC_4_MAX),ABANDON,CURRENT))
 $(PKG)_SITE:=https://github.com/ARMmbed/mbedtls/archive,https://tls.mbed.org/download
 ### VERSION:=2.7.19/2.28.1
+### WEBSITE:=https://www.trustedfirmware.org/projects/mbed-tls/
+### MANPAGE:=https://mbed-tls.readthedocs.io/en/latest/
+### CHANGES:=https://github.com/Mbed-TLS/mbedtls/releases
+### CVSREPO:=https://github.com/Mbed-TLS/mbedtls
 
 $(PKG)_CONDITIONAL_PATCHES+=$(if $(FREETZ_AVM_GCC_4_MAX),abandon,current)
 
@@ -36,6 +40,7 @@ $(PKG)_FEATURES_TO_DISABLE += $(if $(FREETZ_LIB_libmbedcrypto_WITH_GENRSA),,MBED
 # Don't use -D/-U to define/undefine required symbols, patch config.h instead. The installed headers must contain properly defined symbols.
 $(PKG)_PATCH_POST_CMDS += $(SED) -ri $(foreach f,$(MBEDTLS_FEATURES_TO_DISABLE),-e 's|^([ \t]*$(_hash)define[ \t]+$(f)[ \t]*)$$$$|/* \1 */|') include/mbedtls/config.h;
 
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_NOP)
@@ -66,6 +71,7 @@ $($(PKG)_LIBS_SO_TARGET_DIR): $($(PKG)_TARGET_DIR)/%: $(TARGET_TOOLCHAIN_STAGING
 $(pkg): $($(PKG)_LIBS_SO_STAGING_DIR) $($(PKG)_LIBS_A_STAGING_DIR) $($(PKG)_DIR)/.headers
 
 $(pkg)-precompiled: $($(PKG)_LIBS_SO_TARGET_DIR)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(MBEDTLS_DIR)/library clean
