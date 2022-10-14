@@ -1,21 +1,23 @@
-$(call PKG_INIT_BIN, 4.4.2)
-$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_HASH:=F98A482520C47507521A907914DAA9EFBC1384E0591B5AFC3DA18AA897DE2948
-$(PKG)_SITE:=http://www.ffmpeg.org/releases
+$(call PKG_INIT_BIN, 5.1.2)
+$(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
+$(PKG)_HASH:=619e706d662c8420859832ddc259cd4d4096a48a2ce1eefd052db9e440eef3dc
+$(PKG)_SITE:=https://www.ffmpeg.org/releases
+### WEBSITE:=https://www.ffmpeg.org/
+### MANPAGE:=https://www.ffmpeg.org/documentation.html
+### CHANGES:=https://www.ffmpeg.org/index.html#news
+### CVSREPO:=https://git.ffmpeg.org/ffmpeg.git
 
 $(PKG)_DEPENDS_ON += zlib
-ifeq ($(strip $(FREETZ_PACKAGE_FFMPEG_DECODER_libopenjpeg)),y)
-$(PKG)_DEPENDS_ON += openjpeg
-endif
+$(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_FFMPEG_DECODER_libopenjpeg),openjpeg)
 
-$(PKG)_BINARIES_ALL        := ffmpeg ffserver
+$(PKG)_BINARIES_ALL        := ffmpeg ffprobe
 $(PKG)_BINARIES            := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_BINARIES_ALL))
 $(PKG)_BINARIES_BUILD_DIR  := $($(PKG)_BINARIES:%=$($(PKG)_DIR)/%)
 $(PKG)_BINARIES_TARGET_DIR := $($(PKG)_BINARIES:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 
 $(PKG)_LIBNAMES_SHORT      := avcodec avdevice avfilter avformat avutil postproc swresample swscale
-$(PKG)_LIBVERSIONS_MAJOR   := 58      58       7        58       56     55       3          5
-$(PKG)_LIBVERSIONS_MINOR   := 134.100 13.100   110.100  76.100   70.100 9.100    9.100      9.100
+$(PKG)_LIBVERSIONS_MAJOR   := 59      59       8        59       57     56       4          6
+$(PKG)_LIBVERSIONS_MINOR   := 37.100  7.100    44.100   27.100   28.100 6.100    7.100      7.100
 
 $(PKG)_LIBNAMES_LONG_MAJOR := $(join $($(PKG)_LIBNAMES_SHORT:%=lib%.so.),$($(PKG)_LIBVERSIONS_MAJOR))
 $(PKG)_LIBNAMES_LONG       := $(join $($(PKG)_LIBNAMES_LONG_MAJOR:%=%.),$($(PKG)_LIBVERSIONS_MINOR))
@@ -25,14 +27,17 @@ $(PKG)_LIBS_TARGET_DIR     := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_TARGET_LIBDIR)/%
 
 $(PKG)_ENCODERS  := ac3 jpegls mjpeg mpeg1video mpeg2video mpeg4 pcm_s16be pcm_s16le png vorbis zlib
 $(PKG)_DECODERS  := aac ac3 atrac3 gif h264 jpegls libopenjpeg mjpeg mjpegb mp2 mp3 mpeg1video mpeg2video mpeg4 mpegvideo pcm_s16be pcm_s16le png vorbis wmav1 wmav2 zlib
-$(PKG)_MUXERS    := ac3 avi ffm flv h264 matroska mjpeg mov mp3 mp4 mpeg1video mpeg2video mpegts ogg rtp
-$(PKG)_DEMUXERS  := ac3 avi ffm flv h264 image2 matroska mjpeg mov mp3 mpegps mpegts mpegvideo ogg rm rtsp sdp v4l2
+$(PKG)_MUXERS    := ac3 avi flv h264 matroska mjpeg mov mp3 mp4 mpeg1video mpeg2video mpegts ogg rtp
+$(PKG)_DEMUXERS  := ac3 avi flv h264 image2 matroska mjpeg mov mp3 mpegps mpegts mpegvideo ogg rm rtsp sdp v4l2
 $(PKG)_PARSERS   := aac ac3 h264 mjpeg mpegaudio mpegvideo mpeg4video
-$(PKG)_PROTOCOLS := file http pipe rtp tcp udp
+$(PKG)_PROTOCOLS := file http https pipe rtp tcp udp
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_FFMPEG_ffmpeg
-$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_FFMPEG_ffserver
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_FFMPEG_ffprobe
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_FFMPEG_SSL_OPENSSL
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_FFMPEG_SSL_MBEDTLS
+$(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_FFMPEG_SSL_GNUTLS
 $(foreach i,encoder decoder muxer demuxer parser protocol, \
 	$(eval $(PKG)_REBUILD_SUBOPTS += $(patsubst %,FREETZ_PACKAGE_FFMPEG_$(call TOUPPER_NAME,$(i))_%,$($(PKG)_$(call TOUPPER_NAME,$(i))S))) \
 	$(eval $(PKG)_CONFIGURE_$(call TOUPPER_NAME,$(i))S := $(foreach c,$($(PKG)_$(call TOUPPER_NAME,$(i))S),$(if $(FREETZ_PACKAGE_FFMPEG_$(call TOUPPER_NAME,$(i))_$(c)),--enable-$(i)="$(c)"))) \
@@ -55,8 +60,14 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-debug
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-gpl
 $(PKG)_CONFIGURE_OPTIONS += --enable-version3
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_FFMPEG_NONFREE),--enable-nonfree,--disable-nonfree)
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-doc
+$(PKG)_CONFIGURE_OPTIONS += --disable-htmlpages
+$(PKG)_CONFIGURE_OPTIONS += --disable-manpages
+$(PKG)_CONFIGURE_OPTIONS += --disable-podpages
+$(PKG)_CONFIGURE_OPTIONS += --disable-txtpages
+
 $(PKG)_CONFIGURE_OPTIONS += --disable-mmx
 $(PKG)_CONFIGURE_OPTIONS += --disable-mmxext
 $(PKG)_CONFIGURE_OPTIONS += --enable-pthreads
@@ -64,6 +75,23 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-optimizations
 $(PKG)_CONFIGURE_OPTIONS += --enable-small
 $(PKG)_CONFIGURE_OPTIONS += --disable-stripping
 $(PKG)_CONFIGURE_OPTIONS += --enable-zlib
+
+ifeq ($(strip $(FREETZ_PACKAGE_FFMPEG_SSL_OPENSSL)),y)
+$(PKG)_REBUILD_SUBOPTS += FREETZ_OPENSSL_SHLIB_VERSION
+$(PKG)_DEPENDS_ON += openssl
+$(PKG)_CONFIGURE_OPTIONS += --enable-openssl
+endif
+
+ifeq ($(strip $(FREETZ_PACKAGE_FFMPEG_SSL_MBEDTLS)),y)
+$(PKG)_DEPENDS_ON += mbedtls
+$(PKG)_CONFIGURE_OPTIONS += --enable-mbedtls
+endif
+
+ifeq ($(strip $(FREETZ_PACKAGE_FFMPEG_SSL_GNUTLS)),y)
+$(PKG)_DEPENDS_ON += gnutls
+$(PKG)_CONFIGURE_OPTIONS += --enable-gnutls
+endif
+
 $(PKG)_CONFIGURE_OPTIONS += --enable-postproc
 $(PKG)_CONFIGURE_OPTIONS += --enable-swscale
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_FFMPEG_DECODER_libopenjpeg),--enable-libopenjpeg,--disable-libopenjpeg)
@@ -72,13 +100,13 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-bsfs
 $(PKG)_CONFIGURE_OPTIONS += --disable-devices
 $(PKG)_CONFIGURE_OPTIONS += --disable-filters
 $(PKG)_CONFIGURE_OPTIONS += --disable-hwaccels
+$(PKG)_CONFIGURE_OPTIONS += --disable-lzma
 
 ifeq ($(strip $(FREETZ_PACKAGE_FFMPEG_EVERYTHING)),y)
-$(PKG)_DEPENDS_ON += lzma1
-$(PKG)_DEPENDS_ON += openssl
-$(PKG)_CONFIGURE_OPTIONS += --enable-nonfree
-$(PKG)_CONFIGURE_OPTIONS += --enable-openssl
+ifeq ($(strip $(FREETZ_TARGET_GCC_4_8_MIN)),y)
+$(PKG)_DEPENDS_ON += libatomic
 $(PKG)_CONFIGURE_OPTIONS += --extra-libs="-latomic"
+endif
 else
 $(PKG)_CONFIGURE_OPTIONS += --disable-everything
 $(PKG)_CONFIGURE_OPTIONS += $($(PKG)_CONFIGURE_ENCODERS)
@@ -90,9 +118,10 @@ $(PKG)_CONFIGURE_OPTIONS += $($(PKG)_CONFIGURE_PROTOCOLS)
 endif
 
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_FFMPEG_ffmpeg),--enable-ffmpeg,--disable-ffmpeg)
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_FFMPEG_ffserver),--enable-ffserver) #,--disable-ffserver)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_FFMPEG_ffprobe),--enable-ffprobe,--disable-ffprobe)
 $(PKG)_CONFIGURE_OPTIONS += --disable-ffplay
-$(PKG)_CONFIGURE_OPTIONS += --disable-ffprobe
+
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -116,6 +145,7 @@ $($(PKG)_LIBS_TARGET_DIR): $($(PKG)_TARGET_LIBDIR)/%: $(TARGET_TOOLCHAIN_STAGING
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR) $($(PKG)_LIBS_TARGET_DIR)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(FFMPEG_DIR) clean

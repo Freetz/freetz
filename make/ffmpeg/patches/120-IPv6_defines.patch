@@ -1,7 +1,7 @@
 --- libavformat/udp.c
 +++ libavformat/udp.c
-@@ -47,8 +47,11 @@
- #define HAVE_PTHREAD_CANCEL 0
+@@ -70,8 +70,11 @@
+ #include "libavutil/thread.h"
  #endif
  
 -#ifndef IPV6_ADD_MEMBERSHIP
@@ -13,7 +13,7 @@
  #define IPV6_DROP_MEMBERSHIP IPV6_LEAVE_GROUP
  #endif
  
-@@ -153,7 +156,7 @@
+@@ -217,7 +220,7 @@
          }
      }
  #endif
@@ -22,7 +22,7 @@
      if (addr->sa_family == AF_INET6) {
          struct ipv6_mreq mreq6;
  
-@@ -182,7 +185,7 @@
+@@ -251,7 +254,7 @@
          }
      }
  #endif

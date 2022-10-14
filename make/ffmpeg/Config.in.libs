@@ -1,59 +1,70 @@
 menu "FFmpeg libraries"
 
-config FREETZ_LIB_libavcodec
-	bool "libavcodec.so"
-	default n
-	select FREETZ_LIB_libm        if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
-	select FREETZ_LIB_libz        if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
-	select FREETZ_LIB_libpthread  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
-	select FREETZ_LIB_libavutil
-	select FREETZ_LIB_libopenjpeg if FREETZ_PACKAGE_FFMPEG_DECODER_libopenjpeg
+	config FREETZ_LIB_libavcodec
+		bool "libavcodec.so"
+		default n
+		select FREETZ_LIB_libm               if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+		select FREETZ_LIB_libpthread         if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+		select FREETZ_LIB_libavutil
+		select FREETZ_LIB_libswresample
+		select FREETZ_LIB_libz
+		select FREETZ_LIB_libopenjpeg        if FREETZ_PACKAGE_FFMPEG_DECODER_libopenjpeg
 
-config FREETZ_LIB_libavdevice
-	bool "libavdevice.so"
-	default n
-	select FREETZ_LIB_libpthread  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	config FREETZ_LIB_libavdevice
+		bool "libavdevice.so"
+		select FREETZ_LIB_libavutil
+		select FREETZ_LIB_libavformat
+		default n
+		select FREETZ_LIB_libpthread         if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 
-config FREETZ_LIB_libavfilter
-	bool "libavfilter.so"
-	select FREETZ_LIB_libpthread  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
-	select FREETZ_LIB_libavutil
-	default n
+	config FREETZ_LIB_libavfilter
+		bool "libavfilter.so"
+		select FREETZ_LIB_libpthread         if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+		select FREETZ_LIB_libavutil
+		default n
 
-config FREETZ_LIB_libavformat
-	bool "libavformat.so"
-	select FREETZ_LIB_libm        if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
-	select FREETZ_LIB_libz
-	select FREETZ_LIB_libpthread  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
-	select FREETZ_LIB_libavcodec
-	select FREETZ_LIB_libavutil
-	default n
+	config FREETZ_LIB_libavformat
+		bool "libavformat.so"
+		select FREETZ_LIB_libm               if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+		select FREETZ_LIB_libpthread         if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+		select FREETZ_LIB_libavutil
+		select FREETZ_LIB_libavcodec
+		select FREETZ_LIB_libz
+		select FREETZ_LIB_libcrypto          if FREETZ_PACKAGE_FFMPEG_SSL_OPENSSL
+		select FREETZ_LIB_libssl             if FREETZ_PACKAGE_FFMPEG_SSL_OPENSSL
+		select FREETZ_LIB_libmbedcrypto      if FREETZ_PACKAGE_FFMPEG_SSL_MBEDTLS
+		select FREETZ_LIB_libmbedtls         if FREETZ_PACKAGE_FFMPEG_SSL_MBEDTLS
+		select FREETZ_LIB_libmbedx509        if FREETZ_PACKAGE_FFMPEG_SSL_MBEDTLS
+		select FREETZ_LIB_libgnutls          if FREETZ_PACKAGE_FFMPEG_SSL_GNUTLS
+#		select FREETZ_LIB_libgnutls_openssl  if FREETZ_PACKAGE_FFMPEG_SSL_GNUTLS
+		select FREETZ_LIB_libatomic          if FREETZ_PACKAGE_FFMPEG_EVERYTHING && FREETZ_TARGET_GCC_4_8_MIN
+		default n
 
-config FREETZ_LIB_libavutil
-	bool "libavutil.so"
-	default n
-	select FREETZ_LIB_libm        if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
-	select FREETZ_LIB_libpthread  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+	config FREETZ_LIB_libavutil
+		bool "libavutil.so"
+		default n
+		select FREETZ_LIB_libm               if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+		select FREETZ_LIB_libpthread         if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 
-config FREETZ_LIB_libpostproc
-	bool "libpostproc.so"
-	default n
-	select FREETZ_LIB_libpthread  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
-	select FREETZ_LIB_libavutil
+	config FREETZ_LIB_libpostproc
+		bool "libpostproc.so"
+		default n
+		select FREETZ_LIB_libpthread         if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+		select FREETZ_LIB_libavutil
 
-config FREETZ_LIB_libswresample
-	bool "libswresample.so"
-	select FREETZ_LIB_libm        if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
-	select FREETZ_LIB_libpthread  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
-	select FREETZ_LIB_libavutil
-	default n
+	config FREETZ_LIB_libswresample
+		bool "libswresample.so"
+		select FREETZ_LIB_libm               if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+		select FREETZ_LIB_libpthread         if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+		select FREETZ_LIB_libavutil
+		default n
 
-config FREETZ_LIB_libswscale
-	bool "libswscale.so"
-	select FREETZ_LIB_libm        if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
-	select FREETZ_LIB_libpthread  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
-	select FREETZ_LIB_libavutil
-	default n
+	config FREETZ_LIB_libswscale
+		bool "libswscale.so"
+		select FREETZ_LIB_libm               if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+		select FREETZ_LIB_libpthread         if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+		select FREETZ_LIB_libavutil
+		default n
 
-endmenu
+endmenu # "FFmpeg libraries"
 
