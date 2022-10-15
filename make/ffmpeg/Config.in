@@ -252,10 +252,9 @@ if FREETZ_PACKAGE_FFMPEG
 	config FREETZ_PACKAGE_FFMPEG_DECODER_jpegls
 		bool "JPEG-LS"
 
-# 	# https://github.com/uclouvain/openjpeg - min v2.1
+# 	# min v2.1 - cmake since v2.0
 #	config FREETZ_PACKAGE_FFMPEG_DECODER_libopenjpeg
 #		bool "JPEG-2000"
-#		select FREETZ_LIB_libopenjpeg
 
 	config FREETZ_PACKAGE_FFMPEG_DECODER_mjpeg
 		bool "MJPEG"
@@ -380,11 +379,10 @@ if FREETZ_PACKAGE_FFMPEG
 		bool "Image2"
 		select FREETZ_PACKAGE_FFMPEG_DECODER_gif
 		select FREETZ_PACKAGE_FFMPEG_DECODER_jpegls
+#		select FREETZ_PACKAGE_FFMPEG_DECODER_libopenjpeg
 		select FREETZ_PACKAGE_FFMPEG_DECODER_mjpeg
 		select FREETZ_PACKAGE_FFMPEG_DECODER_mjpegb
 		select FREETZ_PACKAGE_FFMPEG_DECODER_png
-		# optional because of an extra library
-		# select FREETZ_PACKAGE_FFMPEG_DECODER_libopenjpeg
 
 	config FREETZ_PACKAGE_FFMPEG_DEMUXER_matroska
 		bool "MATROSKA"
