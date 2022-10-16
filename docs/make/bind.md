@@ -3,7 +3,7 @@
  - Manpage: [https://bind9.readthedocs.io/en/v9_16/](https://bind9.readthedocs.io/en/v9_16/)
  - Changelog: [https://bind9.readthedocs.io/en/v9_16/notes.html](https://bind9.readthedocs.io/en/v9_16/notes.html)
  - Repository: [https://gitlab.isc.org/isc-projects/bind9/](https://gitlab.isc.org/isc-projects/bind9/)
- - Package: [master/make/bind/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/bind/)
+ - Package: [master/make/pkgs/bind/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/bind/)
 
 Mit [bind](http://isc.org/software/bind) (Berkeley
 Internet Name Daemon) kann ein DNS-Server zur IP- und Namensauflösung

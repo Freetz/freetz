@@ -1,5 +1,5 @@
 # JamVM 1.5.4 (binary only)
- - Package: [master/make/jamvm/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/jamvm/)
+ - Package: [master/make/pkgs/jamvm/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/jamvm/)
 
 **[JamVM](http://jamvm.sourceforge.net/)** ist eine
 neue [Java Virtual

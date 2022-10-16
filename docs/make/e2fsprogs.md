@@ -1,5 +1,5 @@
 # e2fsprogs 1.42.13 (binary only)
- - Package: [master/make/e2fsprogs/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/e2fsprogs/)
+ - Package: [master/make/pkgs/e2fsprogs/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/e2fsprogs/)
 
 **e2fsprogs** ist eine Tool-Sammlung zur Wartung von *ext2* and *ext3*
 Dateisystemen. Diese Dateisysteme werden für gewöhnlich als Standard bei

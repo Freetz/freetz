@@ -1,5 +1,5 @@
 # br2684ctl (binary only)
- - Package: [master/make/br2684ctl/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/br2684ctl/)
+ - Package: [master/make/pkgs/br2684ctl/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/br2684ctl/)
 
 This package allows you to connect to your ISP via additional virtual
 circuits (ATM PVC's).

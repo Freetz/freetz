@@ -1,5 +1,5 @@
 # bluez-utils 2.25 (binary only, incl. Pin-Change and NAP)
- - Package: [master/make/bluez-utils/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/bluez-utils/)
+ - Package: [master/make/pkgs/bluez-utils/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/bluez-utils/)
 
 Official Linux Bluetooth protocol stack
 

@@ -1,5 +1,5 @@
 # Gateway6 client 5.1
- - Package: [master/make/gw6/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/gw6/)
+ - Package: [master/make/pkgs/gw6/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/gw6/)
 
 gw6 ist ein IPv6 Client für
 [gogo6/freenet6](http://gogonet.gogo6.com/page/freenet6-services)

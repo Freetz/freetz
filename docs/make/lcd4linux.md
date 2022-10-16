@@ -1,5 +1,5 @@
 # LCD4linux 9d4e4b7-git
- - Package: [master/make/lcd4linux/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/lcd4linux/)
+ - Package: [master/make/pkgs/lcd4linux/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/lcd4linux/)
 
 Mit LCD4linux kann ein an die Fritz!Box angeschlossenes Display angesteuert werden.<br>
 <br>

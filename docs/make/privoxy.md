@@ -3,7 +3,7 @@
  - Manpage: [https://www.privoxy.org/user-manual/](https://www.privoxy.org/user-manual/)
  - Changelog: [https://www.privoxy.org/gitweb/?p=privoxy.git;a=blob;f=ChangeLog](https://www.privoxy.org/gitweb/?p=privoxy.git;a=blob;f=ChangeLog)
  - Repository: [https://www.privoxy.org/gitweb/?p=privoxy.git](https://www.privoxy.org/gitweb/?p=privoxy.git)
- - Package: [master/make/privoxy/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/privoxy/)
+ - Package: [master/make/pkgs/privoxy/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/privoxy/)
 
 [Privoxy](http://www.privoxy.org) ist ein HTTP
 Proxy mit umfangreichen Filtermöglichkeiten zum **Schutz der

@@ -1,5 +1,5 @@
 # AVM-firewall
- - Package: [master/make/avm-firewall/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/avm-firewall/)
+ - Package: [master/make/pkgs/avm-firewall/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/avm-firewall/)
 
 Das **AVM-firewall-CGI** stellt eine Web-Oberfläche dar, mit der man die
 von AVM dem User vorenthaltene integrierte Firewall administrieren kann.

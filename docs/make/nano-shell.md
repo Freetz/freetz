@@ -1,5 +1,5 @@
 # Nano Shell
- - Package: [master/make/nano-shell/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/nano-shell/)
+ - Package: [master/make/pkgs/nano-shell/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/nano-shell/)
 
 Die **Nano-Shell** führt beliebige Shell-Komandos via URL aus, d.h. an
 eine Webadresse angehängte Parameter werden von einem kleinen CGI-Skript

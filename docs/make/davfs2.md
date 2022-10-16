@@ -1,5 +1,5 @@
 # davfs 1.5.2/1.6.1
- - Package: [master/make/davfs2/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/davfs2/)
+ - Package: [master/make/pkgs/davfs2/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/davfs2/)
 
 [![WebDAV: Konfiguration](../screenshots/62_md.jpg)](../screenshots/62.jpg)
 

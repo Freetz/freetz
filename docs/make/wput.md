@@ -1,5 +1,5 @@
 # wput 0.6.1 (binary only)
- - Package: [master/make/wput/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/wput/)
+ - Package: [master/make/pkgs/wput/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/wput/)
 
 **wput** ist ein command-line ftp client, der Dateien oder auch ganze
 Verzeichnisse auf einen remote Server hochlädt. Dabei unterstützt er

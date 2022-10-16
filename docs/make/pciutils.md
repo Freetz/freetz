@@ -1,5 +1,5 @@
 # pciutils 3.1.7 (binary only)
- - Package: [master/make/pciutils/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pciutils/)
+ - Package: [master/make/pkgs/pciutils/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/pciutils/)
 
 Die **PCI Utilities** sind eine Tool-Sammlung zur Untersuchung und
 Manipulation von

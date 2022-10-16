@@ -1,5 +1,5 @@
 # Polipo 1.1.1
- - Package: [master/make/polipo/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/polipo/)
+ - Package: [master/make/pkgs/polipo/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/polipo/)
 
 ### Using with Tor
 

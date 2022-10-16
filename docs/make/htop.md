@@ -3,5 +3,5 @@
  - Manpage: [https://linux.die.net/man/1/htop](https://linux.die.net/man/1/htop)
  - Changelog: [https://github.com/htop-dev/htop/blob/main/ChangeLog](https://github.com/htop-dev/htop/blob/main/ChangeLog)
  - Repository: [https://github.com/htop-dev/htop ](https://github.com/htop-dev/htop )
- - Package: [master/make/htop/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/htop/)
+ - Package: [master/make/pkgs/htop/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/htop/)
 

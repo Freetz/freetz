@@ -3,7 +3,7 @@
  - Manpage: [https://www.gnu.org/software/wget/manual/](https://www.gnu.org/software/wget/manual/)
  - Changelog: [https://git.savannah.gnu.org/cgit/wget.git/tree/NEWS](https://git.savannah.gnu.org/cgit/wget.git/tree/NEWS)
  - Repository: [https://git.savannah.gnu.org/cgit/wget.git/](https://git.savannah.gnu.org/cgit/wget.git/)
- - Package: [master/make/wget/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/wget/)
+ - Package: [master/make/pkgs/wget/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/wget/)
 
 GNU Wget ist ein freies Kommandozeilen-Programm zum Herunterladen von Ressourcen
 (Dateien, Webseiten, etc) über ein Netzwerk. Zu den unterstützten Protokollen gehören

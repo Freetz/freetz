@@ -1,5 +1,5 @@
 # Inetd 0.2
- - Package: [master/make/inetd/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/inetd/)
+ - Package: [master/make/pkgs/inetd/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/inetd/)
 
 [![Inetd Webinterface](../screenshots/206_md.png)](../screenshots/206.png)
 

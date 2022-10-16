@@ -1,5 +1,5 @@
 # pptpd 1.4.0
- - Package: [master/make/pptpd/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pptpd/)
+ - Package: [master/make/pkgs/pptpd/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/pptpd/)
 
 Das Interface an sich ist leicht überschaubar ;-).
 

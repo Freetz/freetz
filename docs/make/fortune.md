@@ -1,5 +1,5 @@
 # fortune 1.2
- - Package: [master/make/fortune/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/fortune/)
+ - Package: [master/make/pkgs/fortune/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/fortune/)
 
 Das Computerprogramm Fortune ist traditionell auf Computern mit Unix
 oder Linux als Betriebssystem zu finden. Es existieren aber auch für

@@ -1,5 +1,5 @@
 # Pingtunnel 0.72
- - Package: [master/make/pingtunnel/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pingtunnel/)
+ - Package: [master/make/pkgs/pingtunnel/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/pingtunnel/)
 
 **PTunnel** erlaubt das verlässliche Tunneln von TCP Verbindungen über
 [ICMP](http://de.wikipedia.org/wiki/Internet_Control_Message_Protocol)

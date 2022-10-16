@@ -1,5 +1,5 @@
 # module-init-tools 3.12 (binary only)
- - Package: [master/make/module-init-tools/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/module-init-tools/)
+ - Package: [master/make/pkgs/module-init-tools/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/module-init-tools/)
 
 Das Paket **module-init-tools** (oder kurz: *m-i-t*) enthält diverse
 Programme zur Verwaltung von Kernel-Modulen - also quasi die Programme

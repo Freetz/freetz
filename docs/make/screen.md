@@ -3,7 +3,7 @@
  - Manpage: [https://www.gnu.org/software/screen/manual/](https://www.gnu.org/software/screen/manual/)
  - Changelog: [https://git.savannah.gnu.org/cgit/screen.git/refs/](https://git.savannah.gnu.org/cgit/screen.git/refs/)
  - Repository: [https://git.savannah.gnu.org/cgit/screen.git](https://git.savannah.gnu.org/cgit/screen.git)
- - Package: [master/make/screen/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/screen/)
+ - Package: [master/make/pkgs/screen/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/screen/)
 
 *"Screen is a full-screen window manager that multiplexes a physical
 terminal between several processes, typically interactive shells."*

@@ -1,5 +1,5 @@
 # owfs 2.7p32 (binary only)
- - Package: [master/make/owfs/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/owfs/)
+ - Package: [master/make/pkgs/owfs/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/owfs/)
 
 Dieses Paket bietet ähnliche Funktionen wie das digitemp Paket, mit dem
 Vorteil, dass eine größere Auswahl an Chips unterstützt wird. Eine

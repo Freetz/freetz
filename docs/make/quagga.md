@@ -1,5 +1,5 @@
 # quagga 0.99.17
- - Package: [master/make/quagga/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/quagga/)
+ - Package: [master/make/pkgs/quagga/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/quagga/)
 
 **[Quagga](http://www.quagga.net/)** ist eine
 Routing-Software Suite, die Implementierungen für

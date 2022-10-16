@@ -3,7 +3,7 @@
  - Manpage: [https://github.com/transmission/transmission/wiki](https://github.com/transmission/transmission/wiki)
  - Changelog: [https://github.com/transmission/transmission/releases](https://github.com/transmission/transmission/releases)
  - Repository: [https://github.com/transmission/transmission](https://github.com/transmission/transmission)
- - Package: [master/make/transmission/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/transmission/)
+ - Package: [master/make/pkgs/transmission/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/transmission/)
 
 ### Blocklist
 

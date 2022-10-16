@@ -3,7 +3,7 @@
  - Manpage: [https://subversion.apache.org/quick-start](https://subversion.apache.org/quick-start)
  - Changelog: [https://subversion.apache.org/docs/release-notes/release-history.html](https://subversion.apache.org/docs/release-notes/release-history.html)
  - Repository: [https://svn.apache.org/viewvc/subversion/](https://svn.apache.org/viewvc/subversion/)
- - Package: [master/make/subversion/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/subversion/)
+ - Package: [master/make/pkgs/subversion/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/subversion/)
 
 [Subversion](http://subversion.tigris.org/) (SVN)
 ist eine Freie Software zur Versionsverwaltung von Dateien und

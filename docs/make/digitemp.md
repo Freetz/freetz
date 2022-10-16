@@ -1,5 +1,5 @@
 # DigiTemp 3.7.2 (binary only)
- - Package: [master/make/digitemp/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/digitemp/)
+ - Package: [master/make/pkgs/digitemp/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/digitemp/)
 
 ### **Was ist digitemp?**
 

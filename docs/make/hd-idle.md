@@ -1,5 +1,5 @@
 # hd-idle 0.99
- - Package: [master/make/hd-idle/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/hd-idle/)
+ - Package: [master/make/pkgs/hd-idle/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/hd-idle/)
 
 **[hd-idle](http://hd-idle.sourceforge.net/)** ist
 ein Tool, um externe Festplatten nach einer festgelegten "Idle-Zeit"

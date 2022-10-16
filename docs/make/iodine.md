@@ -1,5 +1,5 @@
 # iodine 0.7.0
- - Package: [master/make/iodine/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/iodine/)
+ - Package: [master/make/pkgs/iodine/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/iodine/)
 
 **[iodine](http://code.kryo.se/iodine/)** erlaubt
 es, IPv4 Daten über DNS zu tunneln. Eine hilfreiche Sache, wenn man z.B.

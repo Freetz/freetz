@@ -1,5 +1,5 @@
 # pptp 1.7.2
- - Package: [master/make/pptp/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pptp/)
+ - Package: [master/make/pkgs/pptp/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/pptp/)
 
 `"PPTP Client is a Linux, FreeBSD, NetBSD and OpenBSD client for the proprietary Microsoft Point-to-Point Tunneling Protocol, PPTP. Allows connection to a PPTP based Virtual Private Network (VPN)."`
 

@@ -3,7 +3,7 @@
  - Manpage: [https://nmap.org/docs.html](https://nmap.org/docs.html)
  - Changelog: [https://nmap.org/changelog.html](https://nmap.org/changelog.html)
  - Repository: [https://github.com/nmap/nmap](https://github.com/nmap/nmap)
- - Package: [master/make/nmap/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/nmap/)
+ - Package: [master/make/pkgs/nmap/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/nmap/)
 
 "*Nmap ("Network Mapper") is a free and open source (license) utility
 for network exploration or security auditing. Many systems and network

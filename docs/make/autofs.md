@@ -1,5 +1,5 @@
 # AutoFS 5.0.5/5.1.8
- - Package: [master/make/autofs/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/autofs/)
+ - Package: [master/make/pkgs/autofs/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/autofs/)
 
 Mit diesem Paket können verschiedene Dateisysteme nach /var/media/autofs
 gemountet werden.

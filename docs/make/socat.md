@@ -3,7 +3,7 @@
  - Manpage: [http://www.dest-unreach.org/socat/doc/socat.html](http://www.dest-unreach.org/socat/doc/socat.html)
  - Changelog: [http://www.dest-unreach.org/socat/doc/CHANGES](http://www.dest-unreach.org/socat/doc/CHANGES)
  - Repository: [https://repo.or.cz/socat.git](https://repo.or.cz/socat.git)
- - Package: [master/make/socat/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/socat/)
+ - Package: [master/make/pkgs/socat/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/socat/)
 
 **[socat](http://www.dest-unreach.org/socat/)** ist
 eine Alternative zum [netcat Paket](netcat.md), welches mit

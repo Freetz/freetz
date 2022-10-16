@@ -1,5 +1,5 @@
 # ldd
- - Package: [master/make/ldd/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/ldd/)
+ - Package: [master/make/pkgs/ldd/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/ldd/)
 
 **ldd** steht für **L**ist **D**ynamic **D**ependencies. Es handelt sich
 hier um ein kleines Konsolen-Tool, mit dem sich herausfinden lässt, ob

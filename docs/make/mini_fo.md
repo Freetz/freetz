@@ -1,5 +1,5 @@
 # mini_fo 0.3
- - Package: [master/make/mini_fo/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/mini_fo/)
+ - Package: [master/make/pkgs/mini_fo/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/mini_fo/)
 
 [![Mini_fo Webinterface](../screenshots/205_md.png)](../screenshots/205.png)
 

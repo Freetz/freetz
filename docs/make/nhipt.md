@@ -1,5 +1,5 @@
 # NHIPT Iptables CGI 0.8.3a - EXPERIMENTAL
- - Package: [master/make/nhipt/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/nhipt/)
+ - Package: [master/make/pkgs/nhipt/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/nhipt/)
 
 [![nhipt Seite im Freetz Webinterface](../screenshots/178_md.jpg)](../screenshots/178.jpg)
 

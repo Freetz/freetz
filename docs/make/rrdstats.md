@@ -1,5 +1,5 @@
 # RRDstats for RRDtool
- - Package: [master/make/rrdstats/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/rrdstats/)
+ - Package: [master/make/pkgs/rrdstats/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/rrdstats/)
 
 [![RRDstats screenshot](../screenshots/229_md.jpg)](../screenshots/229.jpg)
 

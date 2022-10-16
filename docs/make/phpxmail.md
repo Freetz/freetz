@@ -1,5 +1,5 @@
 # PHPXmail 1.5
- - Package: [master/make/phpxmail/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/phpxmail/)
+ - Package: [master/make/pkgs/phpxmail/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/phpxmail/)
 
 The mail to/from my hosting provider got interrupted now and then and
 the support wasn't that good. Setting up a mail server using Freetz and

@@ -1,5 +1,5 @@
 # Halt-On-Lan 0.1
- - Package: [master/make/hol/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/hol/)
+ - Package: [master/make/pkgs/hol/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/hol/)
 
 Halt-on-Lan ist ein Paket zum Steuern vom Rechner im lokalen Netz von
 der FritzBox heraus. Es basiert auf

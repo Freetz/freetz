@@ -1,5 +1,5 @@
 # OpenDD 0.7.9
- - Package: [master/make/opendd/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/opendd/)
+ - Package: [master/make/pkgs/opendd/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/opendd/)
 
 [![Konfigurationsseite OpenDD](../screenshots/177_md.jpg)](../screenshots/177.jpg)
 

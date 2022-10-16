@@ -1,5 +1,5 @@
 # SANE 1.0.27
- - Package: [master/make/sane-backends/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/sane-backends/)
+ - Package: [master/make/pkgs/sane-backends/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/sane-backends/)
 
 ### Beschreibung
 

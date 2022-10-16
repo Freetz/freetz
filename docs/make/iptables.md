@@ -2,7 +2,7 @@
  - Homepage: [https://netfilter.org/projects/iptables/index.html](https://netfilter.org/projects/iptables/index.html)
  - Changelog: [https://netfilter.org/projects/iptables/downloads.html](https://netfilter.org/projects/iptables/downloads.html)
  - Repository: [https://git.netfilter.org/iptables/](https://git.netfilter.org/iptables/)
- - Package: [master/make/iptables/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/iptables/)
+ - Package: [master/make/pkgs/iptables/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/iptables/)
 
 ### Current state (largely broken)
 

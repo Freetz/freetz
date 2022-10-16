@@ -3,7 +3,7 @@
  - Manpage: [https://httpd.apache.org/docs/2.4/](https://httpd.apache.org/docs/2.4/)
  - Changelog: [https://downloads.apache.org/httpd/CHANGES_2.4](https://downloads.apache.org/httpd/CHANGES_2.4)
  - Repository: [https://github.com/apache/httpd](https://github.com/apache/httpd)
- - Package: [master/make/apache2/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/apache2/)
+ - Package: [master/make/pkgs/apache2/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/apache2/)
 
 *Mit diesem Paket ist es möglich, den Apache Webserver entweder allein
 oder mit zusätzlichem PHP CGI Binary zu erstellen.*

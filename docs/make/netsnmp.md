@@ -3,7 +3,7 @@
  - Manpage: [http://www.net-snmp.org/docs/man/](http://www.net-snmp.org/docs/man/)
  - Changelog: [http://www.net-snmp.org/download.html](http://www.net-snmp.org/download.html)
  - Repository: [https://github.com/net-snmp/net-snmp](https://github.com/net-snmp/net-snmp)
- - Package: [master/make/netsnmp/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/netsnmp/)
+ - Package: [master/make/pkgs/netsnmp/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/netsnmp/)
 
 Net-SNMP (**S**imple **N**etwork **M**anagement **P**rotocol) includes
 an open source SNMPd agent to monitor and administer SNMP capable

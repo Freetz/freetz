@@ -1,5 +1,5 @@
 # USB/IP 0.1.8
- - Package: [master/make/usbip/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/usbip/)
+ - Package: [master/make/pkgs/usbip/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/usbip/)
 
 Das Ziel von
 **[USB/IP](http://usbip.sourceforge.net/)** ist es,

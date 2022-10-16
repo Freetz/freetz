@@ -3,7 +3,7 @@
  - Manpage: [https://www.stunnel.org/static/stunnel.html](https://www.stunnel.org/static/stunnel.html)
  - Changelog: [https://www.stunnel.org/NEWS.html](https://www.stunnel.org/NEWS.html)
  - Repository: [https://github.com/mtrojnar/stunnel](https://github.com/mtrojnar/stunnel)
- - Package: [master/make/stunnel/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/stunnel/)
+ - Package: [master/make/pkgs/stunnel/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/stunnel/)
 
 [![Stunnel Webinterface](../screenshots/202_md.png)](../screenshots/202.png)
 

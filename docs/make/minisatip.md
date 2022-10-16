@@ -1,5 +1,5 @@
 # minisatip 1.0.4 (binary only)
- - Package: [master/make/minisatip/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/minisatip/)
+ - Package: [master/make/pkgs/minisatip/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/minisatip/)
 
 Dieses Package stellt einen SAT>IP Server im Netzwerk bereit.<br>
 <br>

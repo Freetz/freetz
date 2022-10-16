@@ -1,5 +1,5 @@
 # Xrelayd 0.2.1pre2
- - Package: [master/make/xrelayd/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/xrelayd/)
+ - Package: [master/make/pkgs/xrelayd/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/xrelayd/)
 
 [![Xrelayd Webinterface](../screenshots/203_md.png)](../screenshots/203.png)
 

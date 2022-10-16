@@ -1,5 +1,5 @@
 # XMail 1.27
- - Package: [master/make/xmail/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/xmail/)
+ - Package: [master/make/pkgs/xmail/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/xmail/)
 
 ### Weiterführende Links
 

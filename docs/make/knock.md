@@ -1,5 +1,5 @@
 # Knockd 0.7
- - Package: [master/make/knock/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/knock/)
+ - Package: [master/make/pkgs/knock/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/knock/)
 
 *"Wer klopfet, dem wird aufgetan"* - so könnte man dieses Paket
 überschreiben. *knockd* bietet eine gute Möglichkeit, Dienste von Remote
