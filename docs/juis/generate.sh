@@ -1,7 +1,7 @@
 #!/bin/bash
-# generates docs/JUIS.md
+# generates docs/juis/README.md
 SCRIPT="$(readlink -f $0)"
-PARENT="$(dirname ${SCRIPT%/*})"
+PARENT="$(dirname $(dirname ${SCRIPT%/*}))"
 TOOLS="$PARENT/tools"
 
 
@@ -73,7 +73,7 @@ echo -e '\n### Dect-Release' ; cat dect-rel | while read -s x; do echo " - MHW $
 echo -e '\n### Dect-Labor'   ; cat dect-lab | while read -s x; do echo " - MHW ${x%=*}: [${x##*/}](${x#*=})"; done
 echo -e '\n### Dect-Inhaus'  ; cat dect-inh | while read -s x; do echo " - MHW ${x%=*}: [${x##*/}](${x#*=})"; done
 echo -e '\n### BPjM'         ; cat bpjm     | while read -s x; do echo " - CRC ${x%=*}: [${x##*/}](${x#*=})"; done
-) | sed 's/_-/-/' > $PARENT/docs/JUIS.md
+) | sed 's/_-/-/' > $PARENT/docs/juis/README.md
 
 #tmp
 rm -f fos-xxx fos-rel fos-dwn fos-lab fos-inh  dect-rel dect-lab dect-inh  bpjm bpjm.out

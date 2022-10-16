@@ -5,7 +5,7 @@ on:
     branches: [ master ]
     paths:
       - '.github/workflows/generate_juis.yml'
-      - 'docs/generate_juis.sh'
+      - 'docs/juis/generate.sh'
   schedule:
     - cron: '00 16 * * 1-5'
   workflow_dispatch:
@@ -43,7 +43,7 @@ jobs:
       - name: generate
         run: |
           export LANG=en_US.utf8
-          docs/generate_juis.sh
+          docs/juis/generate.sh
 
       - name: commit
         env:
