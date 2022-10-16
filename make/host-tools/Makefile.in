@@ -18,7 +18,7 @@ $(TOOLS_SOURCE_DIR) \
 $(HOST_TOOLS_DIR):
 	@mkdir -p $@
 
-TOOLS:=$(sort $(basename $(notdir $(wildcard $(TOOLS_DIR)/make/*/*.mk))))
+TOOLS:=$(sort $(basename $(notdir $(wildcard $(FREETZ_BASE_DIR)/$(MAKE_DIR)/host-tools/*/*.mk))))
 
 TOOLS_TARXZBUNDLE:=tools-host
 
@@ -120,8 +120,8 @@ $(PKG)_DEPENDS_ON:=$(UNPACK_TARBALL_PREREQUISITES)
 #
 $(PKG)_REBUILD_SUBOPTS=
 #
+$(PKG)_MAKE_DIR:=$(FREETZ_BASE_DIR)/$(MAKE_DIR)/host-tools/$(pkg)
 $(PKG)_SRC:=$($(PKG)_MAKE_DIR)/src
-$(PKG)_MAKE_DIR:=$(TOOLS_DIR)/make/$(pkg)
 $(PKG)_SOURCE_DIR:=$(TOOLS_SOURCE_DIR)
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$(pkg_short)-$($(PKG)_VERSION)
 #

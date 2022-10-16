@@ -6,7 +6,7 @@ on:
 #   paths:
 #     - '.github/workflows/dl-hosttools.yml'
 #     - 'tools/dl-hosttools'
-#     - 'tools/make/'
+#     - 'make/host-tools/'
   workflow_dispatch:
 
 jobs:
@@ -94,9 +94,9 @@ jobs:
           ACTIONS_VERSION: ${{ steps.version.outputs.version }}
         run: |
           SHA256="$(sha256sum dl/tools-$ACTIONS_VERSION.tar.xz)"
-          sed -r "s/^(\\$\(call TOOLS_INIT,).*/\1 ${ACTIONS_VERSION})/"                                               -i tools/make/tools-host/tools-host.mk
-          sed -r "s/^(\\$\(PKG\)_HASH:)=.*/\1=${SHA256%% *}/"                                                         -i tools/make/tools-host/tools-host.mk
-          sed -r "s,^(\\$\(PKG\)_SITE:)=.*,\1=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/dl-hosttools,"  -i tools/make/tools-host/tools-host.mk
+          sed -r "s/^(\\$\(call TOOLS_INIT,).*/\1 ${ACTIONS_VERSION})/"                                               -i make/host-tools/tools-host/tools-host.mk
+          sed -r "s/^(\\$\(PKG\)_HASH:)=.*/\1=${SHA256%% *}/"                                                         -i make/host-tools/tools-host/tools-host.mk
+          sed -r "s,^(\\$\(PKG\)_SITE:)=.*,\1=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/dl-hosttools,"  -i make/host-tools/tools-host/tools-host.mk
 
 #     - name: commit
 #       env:

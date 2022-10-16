@@ -288,8 +288,8 @@ include $(MAKE_DIR)/include/400-host.mk
 include $(MAKE_DIR)/include/500-echo.mk
 include $(MAKE_DIR)/include/600-macros.mk
 
-include $(TOOLS_DIR)/make/Makefile.in
-include $(call sorted-wildcard,$(TOOLS_DIR)/make/*/*.mk)
+include $(MAKE_DIR)/host-tools/Makefile.in
+include $(call sorted-wildcard,$(MAKE_DIR)/host-tools/*/*.mk)
 
 TOOLS_CACHECLEAN:=$(patsubst %,%-cacheclean,$(TOOLS))
 TOOLS_CLEAN:=$(patsubst %,%-clean,$(TOOLS))
