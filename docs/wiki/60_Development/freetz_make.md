@@ -280,8 +280,8 @@ das ein wenig transparenter zu machen.
 -   Jetzt ist `.config.cmd` dran. Dadurch werden rekursiv
     Konfigurations-Schalter diverser Pakete eingelesen, die später dem
     Build zur Verfügung stehen.
--   Richtig rund geht es jetzt, denn include `make/Makefile.in`,
-    `make/*/Makefile.in`, `toolchain/make/Makefile.in` und die
+-   Richtig rund geht es jetzt, denn include `make/pkgs/Makefile.in`,
+    `make/pkgs/*/Makefile.in`, `make/toolchain/Makefile.in` und die
     entsprechenden ***\*.mk***-Dateien sorgen für noch mehr
     Informationen im virtuellen `Makefile`. Anschließend haben wir,
     analog zu den Tools oben, folgende Targets zur Verfügung, die sich
