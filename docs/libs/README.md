@@ -142,7 +142,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
   * **[libid3tag (libid3tag.so) 0.15.1b](libid3tag.md)<a id='libid3tag'></a>**<br>
     ID3 tag manipulation library
 
-  * **[libidn (libidn.so) 1.38](libidn.md)<a id='libidn'></a>**<br>
+  * **[libidn (libidn.so) 1.41](libidn.md)<a id='libidn'></a>**<br>
     GNU Libidn is a fully documented implementation of the Stringprep, Punycode and IDNA 2003 specifications. Libidn's purpose is to encode and decode internationalized domain names.
 
   * **[libmad (libmad.so) 0.15.1b](libmad.md)<a id='libmad'></a>**<br>
