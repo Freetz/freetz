@@ -54,7 +54,7 @@ $(PKG)_DEPENDS_ON += iconv
 $(PKG)_TARGET_LDFLAGS += -liconv
 endif
 
-include $(MAKE_DIR)/samba/samba$(if $(FREETZ_SAMBA_VERSION_3_0),30,36).mk.in
+include $(MAKE_DIR)/pkgs/samba/samba$(if $(FREETZ_SAMBA_VERSION_3_0),30,36).mk.in
 
 $(PKG)_TARGET_CFLAGS   += -ffunction-sections -fdata-sections
 $(PKG)_TARGET_CPPFLAGS += -DMAX_DEBUG_LEVEL=$(FREETZ_PACKAGE_SAMBA_MAX_DEBUG_LEVEL)

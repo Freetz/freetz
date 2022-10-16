@@ -59,17 +59,17 @@ config FREETZ_PACKAGE_ASTERISK_STATIC
 	depends on FREETZ_PACKAGE_ASTERISK && FREETZ_PACKAGE_ASTERISK_EMBED_MODULES
 	default n
 
-source "make/asterisk-gui/Config.in"
+source "make/pkgs/asterisk-gui/Config.in"
 
 menu "Asterisk modules"
 	depends on FREETZ_PACKAGE_ASTERISK
-	source "make/asterisk/Config.in.generated"
+	source "make/pkgs/asterisk/Config.in.generated"
 endmenu
 
 menu "Asterisk 3rd-party modules"
 	depends on FREETZ_PACKAGE_ASTERISK && !FREETZ_PACKAGE_ASTERISK_STATIC
-	source "make/asterisk-chan-capi/Config.in"
-	source "make/asterisk-chan-dongle/Config.in"
-	source "make/asterisk-chan-sccp/Config.in"
+	source "make/pkgs/asterisk-chan-capi/Config.in"
+	source "make/pkgs/asterisk-chan-dongle/Config.in"
+	source "make/pkgs/asterisk-chan-sccp/Config.in"
 endmenu
 

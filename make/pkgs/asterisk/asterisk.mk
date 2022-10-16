@@ -13,7 +13,7 @@ $(PKG)_INSTALL_DIR_ABSOLUTE:=$(abspath $($(PKG)_INSTALL_DIR))
 $(PKG)_BINARY_BUILD_DIR  := $($(PKG)_INSTALL_DIR)/usr/sbin/asterisk
 $(PKG)_BINARY_TARGET_DIR := $($(PKG)_DEST_DIR)/usr/sbin/asterisk
 
-include $(MAKE_DIR)/asterisk/asterisk-modules.mk.in
+include $(MAKE_DIR)/pkgs/asterisk/asterisk-modules.mk.in
 $(PKG)_MODULES := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_MODULES_ALL))
 ifneq ($(strip $(FREETZ_PACKAGE_ASTERISK_EMBED_MODULES)),y)
 $(PKG)_MODULES_BUILD_DIR := $($(PKG)_MODULES:%=$($(PKG)_INSTALL_DIR)$($(PKG)_MODULES_DIR)/%.so)
