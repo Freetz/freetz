@@ -8,6 +8,8 @@ $(PKG)_HASH:=$($(PKG)_HASH_$($(PKG)_VERSION))
 $(PKG)_SITE:=https://www.busybox.net/downloads
 # run make/busybox/generate.sh after bump
 
+$(PKG)_MAKE_DIR:=$(MAKE_DIR)/busybox
+
 $(PKG)_REBUILD_SUBOPTS += FREETZ_BUSYBOX__VERSION_STRING
 $(PKG)_CONDITIONAL_PATCHES+=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 
