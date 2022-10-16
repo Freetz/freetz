@@ -1,20 +1,22 @@
-$(call PKG_INIT_LIB, 1.38)
-$(PKG)_LIB_VERSION:=12.6.3
+$(call PKG_INIT_LIB, 1.41)
+$(PKG)_LIB_VERSION:=12.6.4
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_HASH:=de00b840f757cd3bb14dd9a20d5936473235ddcba06d4bc2da804654b8bbf0f6
+$(PKG)_HASH:=884d706364b81abdd17bee9686d8ff2ae7431c5a14651047c68adf8b31fd8945
 $(PKG)_SITE:=@GNU/$(pkg)
+### WEBSITE:=https://www.gnu.org/software/libidn/
+### MANPAGE:=https://www.gnu.org/software/libidn/manual/libidn.html
+### CHANGES:=https://git.savannah.gnu.org/gitweb/?p=libidn.git;a=blob_plain;f=NEWS;hb=HEAD
+### CVSREPO:=https://git.savannah.gnu.org/gitweb/?p=libidn.git
 
+$(PKG)_LIBNAME_SHORT := $(pkg)
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_LIB)/$(pkg).so.$($(PKG)_LIB_VERSION)
 
-$(PKG)_LIBNAME_SHORT := $(pkg)
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
-
-
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	$(SUBMAKE) -C $(LIBIDN_DIR) all
@@ -34,6 +36,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 $(pkg): $($(PKG)_STAGING_BINARY)
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(LIBIDN_DIR) clean
