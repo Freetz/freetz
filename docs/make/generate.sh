@@ -1,7 +1,7 @@
 #!/bin/bash
 # generates docs/make/README.md and make/README.md (subs)
 MDPWD="$(dirname $(realpath $0))"
-INPWD="$MDPWD/../../make"
+INPWD="$MDPWD/../../make/pkgs"
 
 PKGS=$(
 for dir in avm $(find "$INPWD" -maxdepth 1 -mindepth 1 -type d); do
@@ -30,7 +30,7 @@ echo "$PKGS" | sed 's/##.*//g' | uniq | while read cat; do
 		if [ -e "$MDPWD/$pkg.md" ]; then
 			while [ "$(awk 'END{print NR}' "$MDPWD/$pkg.md")" -lt 2 ]; do echo >> "$MDPWD/$pkg.md"; done
 			sed "1c# $dsc" -i "$MDPWD/$pkg.md"
-			lnk="https://github.com/Freetz-NG/freetz-ng/tree/master/make/$pkg/"
+			lnk="https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/$pkg/"
 			sed "/^ - Package: \[.*)$/d" -i "$MDPWD/$pkg.md"
 			sed "2i\ - Package: \[${lnk:44}\]($lnk)" -i "$MDPWD/$pkg.md"
 			for pair in CVSREPO°Repository CHANGES°Changelog MANPAGE°Manpage WEBSITE°Homepage; do
