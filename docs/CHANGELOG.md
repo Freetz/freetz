@@ -3,6 +3,7 @@ Latest changes
 
 - Freetz-NG
   * [devel](#devel)
+  * [ng22070](#ng22100)
   * [ng22070](#ng22070)
   * [ng22040](#ng22040)
   * [ng21090](#ng21090)
@@ -39,6 +40,14 @@ Latest changes
 <br>
 
 ### devel
+
+ - Known problems:
+   * Loading build kernel modules may work or do not. You'll notice.
+
+ - Firmware updates:
+   * Please see [FIRMWARES](FIRMWARES.md) for the list of currently supported devices and firmwares.
+
+### ng22100
 
  - Known problems:
    * Loading build kernel modules may work or do not. You'll notice.
@@ -97,7 +106,7 @@ Latest changes
    * zlib 1.2.13
 
  - Firmware updates:
-   * Please see [FIRMWARES](FIRMWARES.md) for the list of currently supported devices and firmwares.
+   * Please see [FIRMWARES](https://github.com/Freetz-NG/freetz-ng/blob/ng22100/docs/FIRMWARES.md) for the list of supported devices and firmwares.
 
 ### ng22070
 
