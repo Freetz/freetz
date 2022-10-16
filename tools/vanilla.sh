@@ -157,10 +157,10 @@ cat <<'EOX'
         add hash to config/mod/dl-kernel.in
         add "7590_07.50" to config/avm/source.in
         get config name: grep KCONFIG sources/kernel/linux*/.kernelvariables
-        add make/linux/patches/*/7590_07.50/
+        add make/kernel/patches/*/7590_07.50/
         add make/busybox/avm/07.50-7590--busybox.config.*
-        add make/linux/configs/avm/config-*-7590_07.50
-        add make/linux/configs/freetz/config-*-7590_07.50
+        add make/kernel/configs/avm/config-*-7590_07.50
+        add make/kernel/configs/freetz/config-*-7590_07.50
         make sure the kernel version exists in config/avm/kernel.in
         check if avms .config matches with provided sources
 

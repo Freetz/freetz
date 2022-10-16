@@ -38,7 +38,7 @@ rm -rf "$PROP"
 mkdir -p "$PROP"
 touch "$CINTMP"
 
-for src in $PARENT/make/linux/configs/avm/*; do
+for src in $PARENT/make/kernel/configs/avm/*; do
 	src="${src%--not-available}"
 	[ ! -e "$src" ] && src="${src/avm/freetz}"
 	echo "source \"$PDIR/${src##*/}.in\"" >> "$CINTMP"
