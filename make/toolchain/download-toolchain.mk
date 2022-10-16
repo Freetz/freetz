@@ -1,7 +1,7 @@
-include $(TOOLCHAIN_DIR)/make/kernel/ccache/ccache.mk
-include $(TOOLCHAIN_DIR)/make/target/ccache/ccache.mk
-include $(TOOLCHAIN_DIR)/make/target/libtool-staging/libtool-staging.mk
-include $(TOOLCHAIN_DIR)/make/target/uclibc/uclibc.mk
+include $(MAKE_DIR)/toolchain/kernel/ccache/ccache.mk
+include $(MAKE_DIR)/toolchain/target/ccache/ccache.mk
+include $(MAKE_DIR)/toolchain/target/libtool-staging/libtool-staging.mk
+include $(MAKE_DIR)/toolchain/target/uclibc/uclibc.mk
 
 ifeq ($(strip $(FREETZ_TOOLCHAIN_CCACHE)),y)
 	CCACHE:=ccache-kernel ccache

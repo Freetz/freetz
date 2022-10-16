@@ -1,6 +1,6 @@
-include $(TOOLCHAIN_DIR)/make/kernel/binutils/binutils.mk
-include $(TOOLCHAIN_DIR)/make/kernel/gcc/gcc.mk
-include $(TOOLCHAIN_DIR)/make/kernel/ccache/ccache.mk
+include $(MAKE_DIR)/toolchain/kernel/binutils/binutils.mk
+include $(MAKE_DIR)/toolchain/kernel/gcc/gcc.mk
+include $(MAKE_DIR)/toolchain/kernel/ccache/ccache.mk
 
 KERNEL_TOOLCHAIN:=binutils-kernel gcc-kernel $(if $(FREETZ_TOOLCHAIN_CCACHE),ccache-kernel)
 

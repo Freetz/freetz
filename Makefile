@@ -331,7 +331,7 @@ step: image world tools firmware
 
 -include .config.cmd
 
-include $(TOOLCHAIN_DIR)/make/Makefile.in
+include $(MAKE_DIR)/toolchain/Makefile.in
 include $(MAKE_DIR)/include/700-image.mk
 include $(MAKE_DIR)/pkgs/Makefile.in
 include $(call sorted-wildcard,$(MAKE_DIR)/libs/*/Makefile.in)
@@ -371,10 +371,10 @@ TOOLCHAIN_DISTCLEAN:=$(patsubst %,%-distclean,$(TOOLCHAIN))
 TOOLCHAIN_SOURCE:=$(patsubst %,%-source,$(TOOLCHAIN))
 
 ifeq ($(strip $(FREETZ_BUILD_TOOLCHAIN)),y)
-include $(TOOLCHAIN_DIR)/make/kernel-toolchain.mk
-include $(TOOLCHAIN_DIR)/make/target-toolchain.mk
+include $(MAKE_DIR)/toolchain/kernel-toolchain.mk
+include $(MAKE_DIR)/toolchain/target-toolchain.mk
 else
-include $(TOOLCHAIN_DIR)/make/download-toolchain.mk
+include $(MAKE_DIR)/toolchain/download-toolchain.mk
 endif
 
 package-list: package-list-clean $(PACKAGES_LIST)

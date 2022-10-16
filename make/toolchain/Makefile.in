@@ -1,5 +1,5 @@
--include $(call sorted-wildcard,$(TOOLCHAIN_DIR)/make/kernel/*/Makefile.in)
--include $(call sorted-wildcard,$(TOOLCHAIN_DIR)/make/target/*/Makefile.in)
+-include $(call sorted-wildcard,$(MAKE_DIR)/toolchain/kernel/*/Makefile.in)
+-include $(call sorted-wildcard,$(MAKE_DIR)/toolchain/target/*/Makefile.in)
 
 KERNEL_ARCH:=$(call qstrip,$(FREETZ_KERNEL_ARCH))
 
@@ -103,4 +103,5 @@ target-toolchain-distclean: target-toolchain-dirclean
 	$(RM) $(TOOLCHAIN_DIR)/target
 	$(RM) $(TARGET_TOOLCHAIN_SYMLINK_DOT_FILE)
 
-include $(TOOLCHAIN_DIR)/make/toolchain-common.in
+include $(MAKE_DIR)/toolchain/toolchain-common.in
+

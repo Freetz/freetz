@@ -6,11 +6,11 @@ TARGET_TOOLCHAIN_PREFIX-gcc-final-phase=$(TARGET_TOOLCHAIN_STAGING_DIR)
 # TODO: modify gcc, so that we don't need this hack
 TARGET_TOOLCHAIN_SYSROOT=$(TARGET_TOOLCHAIN_PREFIX-gcc-final-phase)/usr/
 
-include $(TOOLCHAIN_DIR)/make/target/binutils/binutils.mk
-include $(TOOLCHAIN_DIR)/make/target/gcc/gcc.mk
-include $(TOOLCHAIN_DIR)/make/target/uclibc/uclibc.mk
-include $(TOOLCHAIN_DIR)/make/target/ccache/ccache.mk
-include $(TOOLCHAIN_DIR)/make/target/libtool-staging/libtool-staging.mk
+include $(MAKE_DIR)/toolchain/target/binutils/binutils.mk
+include $(MAKE_DIR)/toolchain/target/gcc/gcc.mk
+include $(MAKE_DIR)/toolchain/target/uclibc/uclibc.mk
+include $(MAKE_DIR)/toolchain/target/ccache/ccache.mk
+include $(MAKE_DIR)/toolchain/target/libtool-staging/libtool-staging.mk
 
 TARGET_TOOLCHAIN := binutils gcc $(STDCXXLIB) $(if $(FREETZ_TOOLCHAIN_CCACHE),ccache)
 TARGET_TOOLCHAIN += $(if $(FREETZ_TARGET_TOOLCHAIN),binutils_target gcc_target uclibc_target)

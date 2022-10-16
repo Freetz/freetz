@@ -4,7 +4,7 @@ CCACHE_HASH:=1e3a251bb112632553b8255a78661fe526c3a16598496d51128c32b218fd8b22
 CCACHE_SITE:=https://github.com/ccache/ccache/releases/download/v$(CCACHE_VERSION)
 
 CCACHE_DIR:=$(TARGET_TOOLCHAIN_DIR)/ccache-$(CCACHE_VERSION)
-CCACHE_MAKE_DIR:=$(TOOLCHAIN_DIR)/make/target/ccache
+CCACHE_MAKE_DIR:=$(MAKE_DIR)/toolchain/target/ccache
 CCACHE_BINARY:=ccache
 CCACHE_TARGET_BINARY:=usr/bin/ccache
 
