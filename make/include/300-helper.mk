@@ -238,10 +238,10 @@ endef
 
 #
 # $1 - menuconfig file
-# $2 - (optional) dir name, if omitted "make" is used
+# $2 - (optional) dir name, if omitted "make/pkgs" is used
 #
 define genin-get-considered-packages
-$(shell cat $1 2>/dev/null | sed -r -n -e 's,^[ \t]*source[ \t]+"$(if $(strip $(2)),$(strip $(2)),make)/([^/]+)/(Config|external)[.]in(.libs)?.*,\1,p' | sort -u)
+$(shell cat $1 2>/dev/null | sed -r -n -e 's,^[ \t]*source[ \t]+"$(if $(strip $(2)),$(strip $(2)),make/pkgs)/([^/]+)/(Config|external)[.]in(.libs)?.*,\1,p' | sort -u)
 endef
 
 #

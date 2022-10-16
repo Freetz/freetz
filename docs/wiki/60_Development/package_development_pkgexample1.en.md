@@ -95,8 +95,8 @@ changes are recognized (no need to save these, as they will be generated
 again):
 
 ```
-rm make/external.in.generated
-rm make/Config.in.generated
+rm make/pkgs/external.in.generated
+rm make/pkgs/Config.in.generated
 ```
 
 (sudo will execute the command with root rights, so be carefull.)
