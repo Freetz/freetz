@@ -46,6 +46,7 @@ Latest changes
 
  - Libraries:
    * libidn 1.41
+   * libxml2 2.10.3
 
  - Firmware updates:
    * Please see [FIRMWARES](FIRMWARES.md) for the list of currently supported devices and firmwares.

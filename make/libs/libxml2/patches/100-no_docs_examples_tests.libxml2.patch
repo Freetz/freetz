@@ -1,49 +1,47 @@
 --- Makefile.in
 +++ Makefile.in
-@@ -411,7 +411,7 @@
- man3dir = $(mandir)/man3
- NROFF = nroff
- MANS = $(man_MANS)
--DATA = $(cmake_DATA) $(confexec_DATA) $(m4data_DATA) $(pkgconfig_DATA)
-+DATA =                                               $(pkgconfig_DATA)
+@@ -373,7 +373,7 @@
+     n|no|NO) false;; \
+     *) (install-info --version) >/dev/null 2>&1;; \
+   esac
+-DATA = $(cmake_DATA) $(examples_DATA) $(m4data_DATA) \
++DATA =                                               \
+ 	$(nodist_pkgconfig_DATA)
  RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
    distclean-recursive maintainer-clean-recursive
- am__recursive_targets = \
-@@ -724,7 +724,7 @@
+@@ -677,7 +677,7 @@
  top_builddir = @top_builddir@
  top_srcdir = @top_srcdir@
  ACLOCAL_AMFLAGS = -I m4
--SUBDIRS = include . doc example fuzz xstc $(PYTHON_SUBDIR)
-+SUBDIRS = include .                  xstc $(PYTHON_SUBDIR)
+-SUBDIRS = include . doc example fuzz xstc $(am__append_1)
++SUBDIRS = include .                  xstc $(am__append_1)
  DIST_SUBDIRS = include . doc example fuzz python xstc
- AM_CPPFLAGS = -I$(top_builddir)/include -I$(srcdir)/include
- AM_CFLAGS = $(EXTRA_CFLAGS) $(THREAD_CFLAGS) $(Z_CFLAGS) $(LZMA_CFLAGS)
-@@ -1769,7 +1769,7 @@
+ AM_CPPFLAGS = -I$(top_builddir)/include -I$(srcdir)/include -DSYSCONFDIR='"$(sysconfdir)"'
+ AM_CFLAGS = $(EXTRA_CFLAGS)
+@@ -1906,7 +1906,7 @@
  	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
- check: $(BUILT_SOURCES)
- 	$(MAKE) $(AM_MAKEFLAGS) check-recursive
--all-am: Makefile $(PROGRAMS) $(LTLIBRARIES) $(SCRIPTS) $(MANS) $(DATA) \
-+all-am: Makefile             $(LTLIBRARIES)            $(MANS) $(DATA) \
+ 	$(MAKE) $(AM_MAKEFLAGS) check-local
+ check: check-recursive
+-all-am: Makefile $(PROGRAMS) $(LTLIBRARIES) $(SCRIPTS) $(DATA) \
++all-am: Makefile             $(LTLIBRARIES)            $(DATA) \
  		config.h
  install-binPROGRAMS: install-libLTLIBRARIES
  
-@@ -1906,15 +1906,15 @@
+@@ -2033,14 +2033,14 @@
  
  info-am:
  
--install-data-am: install-cmakeDATA install-data-local \
--	install-m4dataDATA install-man install-pkgconfigDATA
+-install-data-am: install-cmakeDATA install-examplesDATA \
+-	install-m4dataDATA install-nodist_pkgconfigDATA
 +install-data-am: \
-+	install-pkgconfigDATA
++	install-nodist_pkgconfigDATA
  
  install-dvi: install-dvi-recursive
  
  install-dvi-am:
  
--install-exec-am: install-binPROGRAMS install-binSCRIPTS \
--	install-confexecDATA install-libLTLIBRARIES
-+install-exec-am: install-binSCRIPTS \
-+	install-libLTLIBRARIES
+-install-exec-am: install-binPROGRAMS install-libLTLIBRARIES \
++install-exec-am: install-libLTLIBRARIES \
+ 	install-nodist_binSCRIPTS
  
  install-html: install-html-recursive
- 
