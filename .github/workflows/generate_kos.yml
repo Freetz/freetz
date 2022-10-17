@@ -5,7 +5,7 @@ on:
     branches: [ master ]
     paths:
       - '.github/workflows/generate_kos.yml'
-      - 'config/generate_kos.sh'
+      - 'config/.kos/generate.sh'
       - 'make/kernel/configs/avm/*'
   workflow_dispatch:
 
@@ -42,7 +42,7 @@ jobs:
       - name: generate
         run: |
           export LANG=en_US.utf8
-          config/generate_kos.sh
+          config/.kos/generate.sh
 
       - name: commit
         env:

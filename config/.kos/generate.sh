@@ -2,9 +2,9 @@
 #by cuma, 2020
 
 SCRIPT="$(readlink -f $0)"
-PARENT="$(dirname ${SCRIPT%/*})"
-PDIR="config/.kos"
-PBIG="$PARENT/config/kos.in"
+PARENT="$(dirname $(dirname ${SCRIPT%/*}))"
+PDIR="config/.kos/separate"
+PBIG="$PARENT/config/.kos/Config.in"
 PROP="$PARENT/$PDIR"
 CINTMP="$PROP/Config.in"
 SYMS="

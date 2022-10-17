@@ -5,7 +5,7 @@ on:
     branches: [ master ]
     paths:
       - '.github/workflows/generate_img.yml'
-      - 'config/generate_img.sh'
+      - 'config/.img/generate.sh'
       - 'docs/FIRMWARES.md'
   workflow_dispatch:
 
@@ -58,7 +58,7 @@ jobs:
           export LANG=en_US.utf8
           mkdir -p ~/.freetz-props/ 2>/dev/null || true
           mkdir -p ~/.freetz-dl/fw/ 2>/dev/null || true
-          FREETZ_ENABLEG=true config/generate_img.sh
+          FREETZ_ENABLEG=true config/.img/generate.sh
           rm -f ".wget-hsts" || true
 
       - name: commit
