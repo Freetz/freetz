@@ -1,1 +1,1 @@
-../../../tools/juis_check
+../../../../tools/juis_check
