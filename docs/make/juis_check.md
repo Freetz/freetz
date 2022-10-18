@@ -1,4 +1,4 @@
-# juis_check 1.1
+# juis_check 1.2
  - Package: [master/make/pkgs/juis_check/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/juis_check/)
 
 Mit diesen Package kann nach der neuesten Firmwareversion von AVM gesucht werden. Das Resultat wird im Webinterface unter `System` angezeigt.<br>
