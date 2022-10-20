@@ -1,0 +1,4 @@
+#!/bin/bash
+out="${JUIS_CHECK_SOURCE_SCRIPT##*/}"
+sed '1c#!/bin/sh' "$JUIS_CHECK_SOURCE_SCRIPT" > "$out.tmp" && chmod +x "$out.tmp" && mv "$out.tmp" "$out"
+
