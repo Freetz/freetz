@@ -7,45 +7,47 @@ We workaround the problem for Freetz in a hackish way by patching the "in libucb
 
 --- configure
 +++ configure
-@@ -12908,13 +12908,12 @@
- $as_echo "#define HAVE_GETPAGESIZE 1" >>confdefs.h
+@@ -14494,14 +14494,13 @@
+ printf "%s\n" "#define HAVE_GETPAGESIZE 1" >>confdefs.h
  
- else
--  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for getpagesize in -lucb" >&5
--$as_echo_n "checking for getpagesize in -lucb... " >&6; }
--if ${ac_cv_lib_ucb_getpagesize+:} false; then :
-+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for getpagesize" >&5
-+$as_echo_n "checking for getpagesize... " >&6; }
-+if ${ac_cv_lib_c_getpagesize+:} false; then :
-   $as_echo_n "(cached) " >&6
- else
+ else $as_nop
+-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for getpagesize in -lucb" >&5
+-printf %s "checking for getpagesize in -lucb... " >&6; }
+-if test ${ac_cv_lib_ucb_getpagesize+y}
++  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for getpagesize" >&5
++printf %s "checking for getpagesize... " >&6; }
++if test ${ac_cv_lib_c_getpagesize+y}
+ then :
+   printf %s "(cached) " >&6
+ else $as_nop
    ac_check_lib_save_LIBS=$LIBS
 -LIBS="-lucb  $LIBS"
  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
  /* end confdefs.h.  */
  
-@@ -12934,18 +12933,18 @@
- }
+@@ -14519,19 +14518,19 @@
  _ACEOF
- if ac_fn_c_try_link "$LINENO"; then :
+ if ac_fn_c_try_link "$LINENO"
+ then :
 -  ac_cv_lib_ucb_getpagesize=yes
 +  ac_cv_lib_c_getpagesize=yes
- else
+ else $as_nop
 -  ac_cv_lib_ucb_getpagesize=no
 +  ac_cv_lib_c_getpagesize=no
  fi
- rm -f core conftest.err conftest.$ac_objext \
+ rm -f core conftest.err conftest.$ac_objext conftest.beam \
      conftest$ac_exeext conftest.$ac_ext
  LIBS=$ac_check_lib_save_LIBS
  fi
--{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ucb_getpagesize" >&5
--$as_echo "$ac_cv_lib_ucb_getpagesize" >&6; }
--if test "x$ac_cv_lib_ucb_getpagesize" = xyes; then :
--  LIBS="$LIBS -lucb"; $as_echo "#define HAVE_GETPAGESIZE 1" >>confdefs.h
-+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_c_getpagesize" >&5
-+$as_echo "$ac_cv_lib_c_getpagesize" >&6; }
-+if test "x$ac_cv_lib_c_getpagesize" = xyes; then :
-+  $as_echo "#define HAVE_GETPAGESIZE 1" >>confdefs.h
+-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ucb_getpagesize" >&5
+-printf "%s\n" "$ac_cv_lib_ucb_getpagesize" >&6; }
+-if test "x$ac_cv_lib_ucb_getpagesize" = xyes
++{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_c_getpagesize" >&5
++printf "%s\n" "$ac_cv_lib_c_getpagesize" >&6; }
++if test "x$ac_cv_lib_c_getpagesize" = xyes
+ then :
+-  LIBS="$LIBS -lucb"; printf "%s\n" "#define HAVE_GETPAGESIZE 1" >>confdefs.h
++  printf "%s\n" "#define HAVE_GETPAGESIZE 1" >>confdefs.h
  
  fi
  

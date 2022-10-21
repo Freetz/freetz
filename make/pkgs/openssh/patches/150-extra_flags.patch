@@ -11,7 +11,7 @@
  CPPFLAGS=-I. -I$(srcdir) @CPPFLAGS@ $(PATHS) @DEFS@
  PICFLAG=@PICFLAG@
  LIBS=@LIBS@
-@@ -60,8 +60,8 @@
+@@ -61,8 +61,8 @@
  INSTALL=@INSTALL@
  SED=@SED@
  XAUTH_PATH=@XAUTH_PATH@
@@ -43,8 +43,8 @@
 +LDFLAGS=-L. @LDFLAGS@ $(EXTRA_LDFLAGS)
 +LDFLAGS_NOPIE=-L. -Lopenbsd-compat/ @LDFLAGS_NOPIE@ $(EXTRA_LDFLAGS)
  
- OPENBSD=base64.o \
- 	basename.o \
+ OPENBSD=arc4random.o \
+ 	arc4random_uniform.o \
 --- openbsd-compat/regress/Makefile.in
 +++ openbsd-compat/regress/Makefile.in
 @@ -6,12 +6,12 @@

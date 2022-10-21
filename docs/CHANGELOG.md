@@ -44,6 +44,9 @@ Latest changes
  - Known problems:
    * Loading build kernel modules may work or do not. You'll notice.
 
+ - Packages:
+   * OpenSSH 9.1p1
+
  - Libraries:
    * libidn 1.41
    * libxml2 2.10.3
