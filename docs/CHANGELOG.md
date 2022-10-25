@@ -48,6 +48,7 @@ Latest changes
    * OpenSSH 9.1p1
 
  - Libraries:
+   * expat 2.5.0
    * libidn 1.41
    * libxml2 2.10.3
 

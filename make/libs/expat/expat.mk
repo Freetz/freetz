@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 2.4.9)
-$(PKG)_LIB_VERSION:=1.8.9
+$(call PKG_INIT_LIB, 2.5.0)
+$(PKG)_LIB_VERSION:=1.8.10
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_HASH:=6e8c0728fe5c7cd3f93a6acce43046c5e4736c7b4b68e032e9350daa0efc0354
+$(PKG)_HASH:=ef2420f0232c087801abf705e89ae65f6257df6b7931d37846a193ef2e8cdcbe
 $(PKG)_SITE:=@SF/expat,https://github.com/libexpat/libexpat/releases/download/R_$(subst .,_,$($(PKG)_VERSION))
 ### WEBSITE:=https://libexpat.github.io/
 ### MANPAGE:=https://libexpat.github.io/doc/
@@ -17,6 +17,7 @@ $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --without-xmlwf
 $(PKG)_CONFIGURE_OPTIONS += --without-examples
 $(PKG)_CONFIGURE_OPTIONS += --without-tests
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -39,6 +40,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 $(pkg): $($(PKG)_STAGING_BINARY)
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(EXPAT_DIR) clean
