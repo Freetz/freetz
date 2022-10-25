@@ -523,7 +523,7 @@ Currently supported devices and firmwares
 * __Fritz!Repeater 3000 AX (UNTESTED)__
   - 270.07.39 rev00000 {ALL} [MOVE21] (Inhaus)
 * __Fritz!Repeater 6000__
-  - 253.07.29 rev93257 {ALL} [PSQ19P2NL4]
+  - 253.07.30 rev98407 {ALL} [PSQ19P2NL4]
 
 ### T-Com derivatives
 
