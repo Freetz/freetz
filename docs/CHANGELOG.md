@@ -44,6 +44,9 @@ Latest changes
  - Known problems:
    * Loading build kernel modules may work or do not. You'll notice.
 
+ - Build system:
+   * Ccache 4.7.2
+
  - Packages:
    * Curl 7.86.0
    * dehydrated 0.7.1 (letsencrypt)
