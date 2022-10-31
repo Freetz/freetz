@@ -46,6 +46,7 @@ Latest changes
 
  - Packages:
    * OpenSSH 9.1p1
+   * strace 4.9/5.0/6.0
 
  - Libraries:
    * expat 2.5.0
