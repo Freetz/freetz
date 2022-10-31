@@ -1,4 +1,4 @@
-# dehydrated 0.7.0 (letsencrypt)
+# dehydrated 0.7.1 (letsencrypt)
  - Homepage: [https://dehydrated.io/](https://dehydrated.io/)
  - Manpage: [https://github.com/dehydrated-io/dehydrated/wiki](https://github.com/dehydrated-io/dehydrated/wiki)
  - Changelog: [https://github.com/dehydrated-io/dehydrated/releases](https://github.com/dehydrated-io/dehydrated/releases)
