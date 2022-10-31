@@ -46,6 +46,7 @@ Latest changes
 
  - Packages:
    * Curl 7.86.0
+   * dehydrated 0.7.1 (letsencrypt)
    * OpenSSH 9.1p1
    * strace 4.9/5.0/6.0
 
