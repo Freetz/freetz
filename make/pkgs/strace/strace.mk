@@ -7,7 +7,7 @@ $(PKG)_HASH:=$($(PKG)_HASH_$($(PKG)_VERSION))
 $(PKG)_SITE:=https://www.strace.io/files/$($(PKG)_VERSION),https://github.com/strace/strace/releases/download/v$($(PKG)_VERSION)
 ### WEBSITE:=https://www.strace.io/
 ### MANPAGE:=https://man7.org/linux/man-pages/man1/strace.1.html
-### CHANGES:=https://www.strace.io/files/
+### CHANGES:=https://github.com/strace/strace/releases
 ### CVSREPO:=https://github.com/strace/strace
 
 $(PKG)_CONDITIONAL_PATCHES+=$($(PKG)_VERSION)
