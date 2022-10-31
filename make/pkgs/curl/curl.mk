@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 7.85.0)
+$(call PKG_INIT_BIN, 7.86.0)
 $(PKG)_LIB_VERSION:=4.8.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_HASH:=88b54a6d4b9a48cb4d873c7056dcba997ddd5b7be5a2d537a4acb55c20b04be6
+$(PKG)_HASH:=2d61116e5f485581f6d59865377df4463f2e788677ac43222b496d4e49fb627b
 $(PKG)_SITE:=https://curl.se/download,https://curl.haxx.se/download
 ### WEBSITE:=https://curl.se/
 ### MANPAGE:=https://curl.se/docs/manpage.html
@@ -80,13 +80,13 @@ $(PKG)_CONFIGURE_OPTIONS += --with-random="/dev/urandom"
 $(PKG)_CONFIGURE_OPTIONS += --without-cyassl
 $(PKG)_CONFIGURE_OPTIONS += --without-gnutls
 $(PKG)_CONFIGURE_OPTIONS += --without-polarssl
-$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libcurl_WITH_OPENSSL),--with-ssl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",--without-ssl)
+$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libcurl_WITH_OPENSSL),--with-openssl="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",--without-openssl)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libcurl_WITH_MBEDTLS),--with-mbedtls="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",--without-mbedtls)
 $(PKG)_CONFIGURE_OPTIONS += --without-ca-bundle
 $(PKG)_CONFIGURE_OPTIONS += --without-gssapi
 $(PKG)_CONFIGURE_OPTIONS += --without-libpsl
 $(PKG)_CONFIGURE_OPTIONS += --without-libgsasl
-$(PKG)_CONFIGURE_OPTIONS += --without-libidn
+$(PKG)_CONFIGURE_OPTIONS += --without-libidn2
 $(PKG)_CONFIGURE_OPTIONS += --without-librtmp
 $(PKG)_CONFIGURE_OPTIONS += --without-nghttp2
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libcurl_WITH_SFTP),--with-libssh2="$(TARGET_TOOLCHAIN_STAGING_DIR)/usr",--without-libssh2)

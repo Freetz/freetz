@@ -45,6 +45,7 @@ Latest changes
    * Loading build kernel modules may work or do not. You'll notice.
 
  - Packages:
+   * Curl 7.86.0
    * OpenSSH 9.1p1
    * strace 4.9/5.0/6.0
 
