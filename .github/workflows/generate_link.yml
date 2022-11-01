@@ -42,7 +42,7 @@ jobs:
         run: |
           PKG="$(git log --format=%B -n1 ${{ github.sha }} | sed -nr 's/^(add|bump) ([^ ,]*).*/\2/p')"
           [ -z "$PKG" ] && echo "No add or bump." && exit
-          echo "::set-output name=pkg::$PKG"
+          echo "pkg=$PKG" >> $GITHUB_OUTPUT
           PKG="$(echo "$PKG" | tr '[:upper:]' '[:lower:]')"
           TYPE=""
           for x in make libs; do [ -e docs/$x/$PKG.md ] && TYPE=$x; done
@@ -51,7 +51,7 @@ jobs:
           [ -z "$TYPE" ] && echo "No page." && exit
           LINK="https://freetz-ng.github.io/freetz-ng/$TYPE/#$PKG"
           LINK="https://freetz-ng.github.io/freetz-ng/$TYPE/$PKG"
-          echo "::set-output name=link::$LINK"
+          echo "link=$LINK" >> $GITHUB_OUTPUT
           echo "################################################################" && bash -c "echo LINK=$LINK"
 
       - name: comment

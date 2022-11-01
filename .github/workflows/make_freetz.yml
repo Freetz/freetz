@@ -93,9 +93,9 @@ jobs:
           LINK="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
           LAST="$(ls images/*.image | sed 's,.*/,,;s,\.image$,,')"
           NAME="$(ls images/*.image | sed 's,.*/,,;s,_[0-9].*,,')"
-          [ -n "$LINK" ] && echo "::set-output name=link::$LINK"
-          [ -n "$LAST" ] && echo "::set-output name=last::$LAST"
-          [ -n "$NAME" ] && echo "::set-output name=name::$NAME"
+          [ -n "$LINK" ] && echo "link=$LINK" >> $GITHUB_OUTPUT
+          [ -n "$LAST" ] && echo "last=$LAST" >> $GITHUB_OUTPUT
+          [ -n "$NAME" ] && echo "name=$NAME" >> $GITHUB_OUTPUT
           echo "################################################################"
           echo "LINK=$LINK"
           echo "LAST=$LAST"

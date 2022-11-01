@@ -29,9 +29,9 @@ jobs:
         run: |
           OWNER="$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')"
           [ -z "$OWNER" ] && OWNER="$(echo ${{ github.actor }} | tr '[:upper:]' '[:lower:]')"
-          [ -n "$OWNER" ] && echo "::set-output name=owner::$OWNER" || exit 1
+          [ -n "$OWNER" ] && echo "owner=$OWNER" >> $GITHUB_OUTPUT || exit 1
           IMAGE="$(echo "${{ github.workflow }}" | sed 's/.*_//')"
-          [ -n "$IMAGE" ] && echo "::set-output name=image::$IMAGE" || exit 1
+          [ -n "$IMAGE" ] && echo "image=$IMAGE" >> $GITHUB_OUTPUT || exit 1
           for x in Dockerfile entrypoint.sh; do ln -s .github/docker/$IMAGE/$x; done
           echo "################################################################" && echo "URI=$OWNER/$IMAGE"
 

@@ -23,7 +23,7 @@ jobs:
         id: split
         run: |
           export SPLIT="${GITHUB_WORKFLOW#*_}"
-          echo "::set-output name=split::$SPLIT"
+          echo "split=$SPLIT" >> $GITHUB_OUTPUT
           echo "################################################################" && bash -c "echo SPLIT=$SPLIT"
 
 #     - name: update
@@ -62,7 +62,7 @@ jobs:
         id: version
         run: |
           export VERSION="r$(tools/freetz_revision short)"
-          [ -n "$VERSION" ] && echo "::set-output name=version::$VERSION" || exit 1
+          [ -n "$VERSION" ] && echo "version=$VERSION" >> $GITHUB_OUTPUT || exit 1
           echo "################################################################" && bash -c "echo VERSION=$VERSION"
 
       - name: generate
