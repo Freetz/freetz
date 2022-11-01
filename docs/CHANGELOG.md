@@ -47,6 +47,9 @@ Latest changes
  - Build system:
    * Ccache 4.7.2
 
+ - Host tools:
+   * precompiled host-tools 2022-11-01
+
  - Packages:
    * Curl 7.86.0
    * dehydrated 0.7.1 (letsencrypt)
