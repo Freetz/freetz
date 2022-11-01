@@ -13,6 +13,7 @@ RUN \
  && DEBIAN_FRONTEND=noninteractive apt-get -y clean \
  && rm -rf /var/lib/apt/lists/* \
  && locale-gen en_US.utf8 && locale-gen de_DE.UTF-8 && update-locale \
+ && wget https://github.com/Kitware/CMake/releases/download/v3.15.7/cmake-3.15.7.tar.gz -O - | tar xz && cd cmake-3.15.7 && ./configure && make && make install && cd - && rm -rf cmake-3.15.7 \
  && useradd $BUILD_USER -s $(which bash) -M -d /workspace && \
     echo "$BUILD_USER ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers && \
     mkdir -p /workspace && \
