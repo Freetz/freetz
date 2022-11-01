@@ -1,5 +1,15 @@
 # NEWS
 
+ * __[2022-11-01](#2022-11-01)__<a id='2022-11-01'></a><br>
+   Die precompiled Hosttool werden nun nicht mehr mit Ubuntu 18 x64 sondern sondern mit Ubuntu 20 x64 erstellt.<br>
+   Daher werden diese auf sehr alten Systemen nicht mehr funktionieren.<br>
+   Alternativen:<br>
+    - Die Tools selbst bauen<br>
+    - Ein Docker Image verwenden<br>
+    - Das Betriebsystem aktualisieren<br>
+   
+   Siehe [061da8a1](https://github.com/Freetz-NG/freetz-ng/commit/061da8a11a4ae593a98dd48d53fc2a3f0108b17a)<br>
+
  * __[2022-10-16](#2022-10-16)__<a id='2022-10-16'></a><br>
    Es wurde ein neuer [Tag](https://github.com/Freetz-NG/freetz-ng/tags) `ng22100` erstellt.<br>
    Die automatisch angebotene und nicht deaktivierbare `.zip`-Datei darf auf keinen Fall verwendet werden, da<br>
