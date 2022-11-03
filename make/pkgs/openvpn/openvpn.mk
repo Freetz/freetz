@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, $(if $(FREETZ_PACKAGE_OPENVPN_VERSION_ABANDON),2.4.12,2.5.7))
+$(call PKG_INIT_BIN, $(if $(FREETZ_PACKAGE_OPENVPN_VERSION_ABANDON),2.4.12,2.5.8))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
 $(PKG)_HASH_ABANDON:=7426b99b2058b942552af2680ee58546fbf63712992557328bd0014093aa7da4
-$(PKG)_HASH_CURRENT:=313bca7e996a4f59ef9940dd87c6c4b9168064db9be6cabebd37cd65f13759ed
+$(PKG)_HASH_CURRENT:=2bbd0026469902037ee6499b68283d5ab36c74e36cae3112082cfdf6c77a0c57
 $(PKG)_HASH:=$($(PKG)_HASH_$(if $(FREETZ_PACKAGE_OPENVPN_VERSION_ABANDON),ABANDON,CURRENT))
 $(PKG)_SITE:=https://swupdate.openvpn.net/community/releases,https://build.openvpn.net/downloads/releases
 ### WEBSITE:=https://openvpn.net/community-downloads/
@@ -40,6 +40,14 @@ $(PKG)_REBUILD_SUBOPTS += $(if $(FREETZ_PACKAGE_OPENVPN_MBEDTLS),FREETZ_LIB_libm
 
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
+ifneq ($(strip $(FREETZ_PACKAGE_OPENVPN_VERSION_ABANDON)),y)
+$(PKG)_CONFIGURE_ENV += ac_cv_header_poll_h=no
+$(PKG)_CONFIGURE_ENV += ac_cv_header_sys_epoll_h=no
+$(PKG)_CONFIGURE_ENV += ac_cv_func_epoll_create=no
+$(PKG)_CONFIGURE_ENV += ac_cv_func_strsep=no
+$(PKG)_CONFIGURE_ENV += ac_cv_func_poll=no
+endif
+
 $(PKG)_CONFIGURE_ENV += ac_cv_path_IFCONFIG=/sbin/ifconfig
 $(PKG)_CONFIGURE_ENV += ac_cv_path_IPROUTE=/sbin/ip
 $(PKG)_CONFIGURE_ENV += ac_cv_path_ROUTE=/sbin/route
@@ -64,6 +72,7 @@ $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_OPENVPN_MBEDTLS),--with-crypto
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_OPENVPN_USE_IPROUTE),--enable-iproute2)
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_OPENVPN_ENABLE_SMALL),--enable-small,--disable-small)
 
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -81,6 +90,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(OPENVPN_DIR) clean
