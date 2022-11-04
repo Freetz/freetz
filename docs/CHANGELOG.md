@@ -49,7 +49,7 @@ Latest changes
 
  - Host tools:
    * fakeroot 1.30.1
-   * precompiled host-tools 2022-11-01
+   * precompiled host-tools 2022-11-04
 
  - Packages:
    * Curl 7.86.0
