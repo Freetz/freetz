@@ -1,5 +1,5 @@
 
-  https://ftp.debian.org/debian/pool/main/f/fakeroot/fakeroot_1.27-1.debian.tar.xz
+  https://ftp.debian.org/debian/pool/main/f/fakeroot/fakeroot_1.29-1.debian.tar.xz
 
 Subject: Also wrap the "stat" library call
 Author: Christoph Biedl <debian.axhn@manchmal.in-ulm.de>
@@ -24,7 +24,7 @@ Forwarded: Yes
 
 --- configure.ac
 +++ configure.ac
-@@ -362,9 +362,13 @@
+@@ -381,9 +381,13 @@
  
  :>fakerootconfig.h.tmp
  
@@ -38,9 +38,9 @@ Forwarded: Yes
 +    SYMBOL="${PRE}${FUNC}"
 +  fi
    FOUND=
-   for WRAPPED in __${PRE}x${FUNC} _${PRE}x${FUNC} __${PRE}${FUNC}13 ${PRE}${FUNC}; do
+   for WRAPPED in __${PRE}x${FUNC} _${PRE}x${FUNC} __${PRE}${FUNC}13 ${PRE}${FUNC} __${PRE}${FUNC}; do
      AC_CHECK_FUNCS($WRAPPED,FOUND=$WRAPPED)
-@@ -375,8 +379,8 @@
+@@ -394,8 +398,8 @@
  dnl  for WRAPPED in _${PRE}${FUNC}; do
  dnl    FOUND=$WRAPPED
      if test -n "$FOUND"; then
@@ -51,7 +51,7 @@ Forwarded: Yes
        DEFINE_NEXT=[`echo wrap_${FOUND}| tr '[a-z]' '[A-Z]'`]
        DEFINE_ARG=[`echo wrap_${FOUND}| tr '[a-z]' '[A-Z]'`]
        AC_DEFINE_UNQUOTED(WRAP_${PF}, $FOUND)
-@@ -518,6 +522,12 @@
+@@ -572,6 +576,12 @@
  #define TMP_STAT  __astat
  #define NEXT_STAT_NOARG  next___astat
  

@@ -48,6 +48,7 @@ Latest changes
    * Ccache 4.7.2
 
  - Host tools:
+   * fakeroot 1.30.1
    * precompiled host-tools 2022-11-01
 
  - Packages:
