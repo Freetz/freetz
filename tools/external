@@ -27,7 +27,7 @@ if [ "$EXTERNAL_DOWNLOADER" == "y" ]; then
 fi
 
 #external services
-for EXTERNAL_SERVICE in $(find make -maxdepth 2 -name external.services); do
+for EXTERNAL_SERVICE in make/pkgs/*/external.services; do
 	source $EXTERNAL_SERVICE
 done
 #.pkg files
@@ -64,7 +64,7 @@ fi
 
 #own files
 EXTERNAL_FILES="$EXTERNAL_OWN_FILES $EXTERNAL_DYNAMIC_FILES"
-for EXT_FILE in make/*/external.files make/libs/*/external.files; do
+for EXT_FILE in make/pkgs/*/external.files make/libs/*/external.files; do
 	if [ "$EXTERNAL_DYNAMIC" == "y" ]; then
 		pkg=$(basename "${EXT_FILE%/external.files}")
 		echo "$EXTERNAL_SERVICES" | grep -qE "(^| )${pkg}( |$)" && continue
@@ -159,3 +159,4 @@ if [ "$EXTERNAL_DOWNLOADER" == "y" ]; then
 elif [ "$EXTERNAL_CREATEPAK" != "y" ]; then
 	echo "  NOTE: Please copy content of build/modified/external/ to your box."
 fi
+
