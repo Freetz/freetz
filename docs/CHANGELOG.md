@@ -62,6 +62,7 @@ Latest changes
  - Libraries:
    * expat 2.5.0
    * libidn 1.41
+   * libgpg-error 1.46
    * libxml2 2.10.3
 
  - Firmware updates:

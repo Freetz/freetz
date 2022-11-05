@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 1.45)
-$(PKG)_LIB_VERSION:=0.33.0
+$(call PKG_INIT_LIB, 1.46)
+$(PKG)_LIB_VERSION:=0.33.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_HASH:=570f8ee4fb4bff7b7495cff920c275002aea2147e9a1d220c068213267f80a26
+$(PKG)_HASH:=b7e11a64246bbe5ef37748de43b245abd72cfcd53c9ae5e7fc5ca59f1c81268d
 $(PKG)_SITE:=https://gnupg.org/ftp/gcrypt/libgpg-error,ftp://ftp.gnupg.org/gcrypt/libgpg-error
 ### WEBSITE:=https://gnupg.org/software/libgpg-error/
 ### CHANGES:=https://git.gnupg.org/cgi-bin/gitweb.cgi?p=libgpg-error.git;a=blob;f=NEWS
@@ -16,6 +16,8 @@ $(PKG)_PATCH_POST_CMDS += $(if $(TARGET_TRIPLET_GNU_ABI),(cd src/syscfg; ln -s l
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
+$(PKG)_CONFIGURE_OPTIONS += --enable-install-gpg-error-config
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
