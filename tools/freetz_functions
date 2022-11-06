@@ -105,12 +105,14 @@ enable_page() {
 	  "${HTML_LANG_MOD_DIR}/menus/menu_show.lua"
 }
 
-#decrip_file <file>
+#decrip_file [-force] <file>
 #decripples css/html/lua text file
 decrip_file() {
+	local force='n'
+	[ "$1" == '-force' ] && force='y' && shift
 	[ -e "$1" ] || return 1
-	local l="$(wc -l "$1" | sed 's/ .*//')"
-	[ "$l" -gt 1 ] && return 1
+	local lines="$(wc -l "$1" | sed 's/ .*//')"
+	[ "$force" != 'y' ] && [ "$lines" -gt 1 ] && return 1
 	echo2 "decrippling file $1"
 	modsed 's/></>\n</g;s/{/ {\n/g;s/}/\n}\n/g;s/;/;\n/g' "$1"
 }
