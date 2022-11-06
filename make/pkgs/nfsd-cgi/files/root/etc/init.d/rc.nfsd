@@ -1,6 +1,9 @@
 #!/bin/sh
 
 [ -x "$(which rpcbind 2>/dev/null)" ] && RPCPROG='rpcbind' || RPCPROG='portmap'
+[ -r /etc/options.cfg ] && . /etc/options.cfg
+[ "$FREETZ_AVM_HAS_RPCBIND" == "y" ] && RPCPROG=''
+
 DAEMON=nfsd
 DAEMON_CHECK="$RPCPROG nfsd mountd"
 . /etc/init.d/modlibrc
@@ -36,7 +39,7 @@ start() {
 		chown -R nobody.nobody /var/run/rpcbind
 	fi
 
-	"$RPCPROG"
+	[ -z "$RPCPROG" ] && true || "$RPCPROG"
 	exitval1=$?
 	exportfs -r > /dev/null 2>&1
 	exitval2=$?
@@ -63,7 +66,7 @@ stop() {
 	exitval2=$?
 	/usr/sbin/exportfs -au
 	exitval3=$?
-	killall "$RPCPROG" > /dev/null 2>&1
+	[ -z "$RPCPROG" ] && true || killall "$RPCPROG" > /dev/null 2>&1
 	exitval4=$?
 	umount $PROCNFSD_DIR > /dev/null 2>&1
 	[ "$exitval1" -eq 0 -a "$exitval2" -eq 0 -a "$exitval3" -eq 0 -a "$exitval4" -eq 0 ] && return 0
