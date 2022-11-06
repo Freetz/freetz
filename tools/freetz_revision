@@ -26,9 +26,10 @@ elif [ -e $DIR/.git ]; then
 	RH="$(git --git-dir=$GDB rev-parse --verify --short @)"
 	[ "${1:0:1}" == "f" ] && RB="${RB/master/}" || RD="$(TZ=UTC date --date @"$(git --git-dir=$GDB log --pretty='format:%cd' --format='%at' -1 @)" '+%Y-%m-%d')"
 fi
-[ -s config/custom.in ] && RC="${RC}O"
-[ -s .fwmod_custom ] && RC="${RC}F"
+[ -s $DIR/config/custom.in ]                                            && RC="${RC}O"
+[ -s $DIR/.fwmod_custom ]                                               && RC="${RC}F"
 [ "$(grep -vE "^#|^ *$" $DIR/addon/*.pkg 2>/dev/null | wc -l)" != "0" ] && RC="${RC}A"
+[ -L $DIR/addon ]                                                       && RC="${RC}S"
 R=" ${RC:+$RC-}${RH:-UNKNOWN}${RB:+ $RB}${RD:+ $RD}"
 [ "${1:0:1}" == "f" ] && R="${R// /-}"
 case "${1}" in
