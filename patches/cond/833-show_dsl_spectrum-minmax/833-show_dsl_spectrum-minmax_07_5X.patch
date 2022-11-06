@@ -1,20 +1,33 @@
---- usr/www/all/internet/dsl_spectrum.lua
-+++ usr/www/all/internet/dsl_spectrum.lua
-@@ -257,7 +257,7 @@
- import Chartist from "/js/chartist.js";
- import { ajaxGet, stopXhr } from "/js/ajax.js";
- var g_spectrum = <?lua json.write(g_data) ?>;
--var g_show_MinMax=<?lua if box.get.min_max then box.out(" true ") else box.out(" false ") end ?>;
-+var g_show_MinMax=<?lua if not box.get.min_max then box.out(" true ") else box.out(" false ") end ?>;
- function yAxisFormatterSnr(val, axis) {
- if (val % 10 == 0) {
- return val;
-@@ -700,7 +700,7 @@
- </div>
- <!-- Legende xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-->
- <div class="formular">
--<a class="textlink nocancel" id="uiToggleMinMax">{?7888:534?}</a><br>
-+<a class="textlink nocancel" id="uiToggleMinMax">{?7888:534?}</a><br>  <!-- from function OnMinMax() -->
- <a class="hide" id="uiMinMaxReset">{?7888:4099?}</a>
- </div>
- </div>
+--- usr/www/all/internet/spectrum.js
++++ usr/www/all/internet/spectrum.js
+@@ -18,7 +18,7 @@
+ }
+ ;
+ let active=false;
+-let showMinMax=false;
++let showMinMax=true;
+ let defChartChannelLinePatternsSVG;
+ let snrData= {
+ 
+@@ -702,10 +702,10 @@
+ class:"textlink nocancel",id:"uiToggleMinMax"
+ }
+ ," {
+-?557:386?
++?557:61?
+ }
+ ")),html2.div(html2.a( {
+-class:"hide",id:"uiMinMaxReset"
++class:"textlink",id:"uiMinMaxReset"
+ }
+ ," {
+ ?557:66?
+@@ -1146,7 +1146,7 @@
+ 
+ }
+ ;
+-showMinMax=false;
++showMinMax=true;
+ gResetMinMax=false;
+ active=false;
+ 
