@@ -30,6 +30,7 @@
  - 080-start_plugin.sh              - FREETZ_AVM_HAS_PLUGINS_UPDATE
  - 105-S06-logging.sh               - FREETZ_AVM_VERSION_05_2X_MIN
  - 108-patch_multid-wait.sh         - FREETZ_AVM_VERSION_06_5X_MAX
+ - 360-enable_rpcbind.sh            - FREETZ_AVM_HAS_RPCBIND && FREETZ_PACKAGE_NFSD_CGI
  - 391-symlink_blkid.sh             - !FREETZ_BUSYBOX__KEEP_BINARIES || FREETZ_PACKAGE_E2FSPROGS_BLKID
  - 401-remove_ftpd_banner.sh        - FREETZ_AVM_HAS_NAS
  - 620-symlink_wget.sh              - FREETZ_BUSYBOX_WGET || FREETZ_PACKAGE_WGET
