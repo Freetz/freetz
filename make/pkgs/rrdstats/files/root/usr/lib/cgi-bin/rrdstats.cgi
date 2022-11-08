@@ -183,7 +183,7 @@ cat << EOF
 <input type="hidden" name="delbackup" value="no">
 <input id="b2" type="checkbox" name="delbackup" value="yes"$delbackup_chk>
 <label for="b2">$(lang de:"Nicht mehr Backups aufbewahren als" en:"Do not keep more backups than")</label>:&nbsp;
-<input type="text" name="maximumbackups" size="2" maxlength="3" value="$(html "$RRDSTATS_MAXIMUMBACKUPS")">
+<input type="text" name="maximumbackups" size="3" maxlength="4" value="$(html "$RRDSTATS_MAXIMUMBACKUPS")">
 </p>
 EOF
 
