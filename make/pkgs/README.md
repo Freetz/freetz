@@ -759,7 +759,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
   * **<u>ripmime 1.2.16.21 (binary only)</u><a id='ripmime'></a>**<br>
     ripmime is an utility to decode and extract the parts of mime-formatted mails.
 
-  * **<u>RPCBind 1.2.5 (binary only)</u><a id='rpcbind'></a>**<br>
+  * **[RPCBind 1.2.6 (binary only)](../../docs/make/rpcbind.md)<a id='rpcbind'></a>**<br>
     The rpcbind utility is a server that converts RPC program numbers into universal addresses.
 
   * **[RRDtool 1.2.30 (binary only)](../../docs/make/rrdtool.md)<a id='rrdtool'></a>**<br>
