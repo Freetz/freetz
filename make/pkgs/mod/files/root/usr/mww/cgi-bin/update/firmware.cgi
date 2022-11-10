@@ -77,9 +77,16 @@ fi
 
 cat << EOF
 	<div class="btn"><input type=submit value="$(lang de:"Firmware hochladen" en:"Upload firmware")" style="width:200px"></div>
-	<div style="clear: both; text-align: right;"><a href="external.cgi">$(lang de:"external-Datei hochladen (optional)" en:"upload external file (optional)")</a></div>
-</form>
+EOF
 
+if [ -e /usr/mww/cgi-bin/update/external.cgi ]; then
+cat << EOF
+	<div style="clear: both; text-align: right;"><a href="external.cgi">$(lang de:"external-Datei hochladen (optional)" en:"upload external file (optional)")</a></div>
+EOF
+fi
+
+cat << EOF
+</form>
 EOF
 
 cgi_end
