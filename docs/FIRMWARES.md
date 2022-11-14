@@ -506,6 +506,7 @@ Currently supported devices and firmwares
   - 134.07.12 rev70775 {ALL} [MESH18 NL2]
   - 134.07.21 rev83664 {ALL} [PSQ19]
   - 134.07.29 rev93262 {ALL} [PSQ19P2NL4]
+  - 134.07.29 rev00000 {ALL} [WU22 PSQ19] (Inhaus)
 
 * __Fritz!Repeater 1200__
   - 172.07.14 rev73941 {ALL} [MESH18 NL4]
