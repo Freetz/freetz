@@ -9,7 +9,7 @@
  #endif
 --- runopts.h
 +++ runopts.h
-@@ -140,6 +140,7 @@
+@@ -145,6 +145,7 @@
  
  	int pass_on_env;
  
@@ -34,7 +34,7 @@
  		m_free(cp);
 --- svr-runopts.c
 +++ svr-runopts.c
-@@ -102,6 +102,8 @@
+@@ -103,6 +103,8 @@
  					"		(default port is %s if none specified)\n"
  					"-P PidFile	Create pid file PidFile\n"
  					"		(default %s)\n"
@@ -43,7 +43,7 @@
  #if INETD_MODE
  					"-i		Start for inetd\n"
  #endif
-@@ -134,6 +136,7 @@
+@@ -136,6 +138,7 @@
  #endif
  					MAX_AUTH_TRIES,
  					DROPBEAR_MAX_PORTS, DROPBEAR_DEFPORT, DROPBEAR_PIDFILE,
@@ -51,7 +51,7 @@
  					DEFAULT_RECV_WINDOW, DEFAULT_KEEPALIVE, DEFAULT_IDLE_TIMEOUT);
  }
  
-@@ -176,6 +179,7 @@
+@@ -180,6 +183,7 @@
  	svr_opts.hostkey = NULL;
  	svr_opts.delay_hostkey = 0;
  	svr_opts.pidfile = expand_homedir_path(DROPBEAR_PIDFILE);
@@ -59,7 +59,7 @@
  #if DROPBEAR_SVR_LOCALTCPFWD
  	svr_opts.nolocaltcp = 0;
  #endif
-@@ -276,6 +280,9 @@
+@@ -282,6 +286,9 @@
  				case 'P':
  					next = &svr_opts.pidfile;
  					break;
@@ -69,7 +69,7 @@
  #if DO_MOTD
  				/* motd is displayed by default, -m turns it off */
  				case 'm':
-@@ -386,6 +393,10 @@
+@@ -398,6 +405,10 @@
  	}
  #endif
  
