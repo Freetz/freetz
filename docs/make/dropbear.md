@@ -1,4 +1,4 @@
-# Dropbear 2022.82
+# Dropbear 2022.83
  - Homepage: [https://matt.ucc.asn.au/dropbear/dropbear.html](https://matt.ucc.asn.au/dropbear/dropbear.html)
  - Manpage: [https://linux.die.net/man/8/dropbear](https://linux.die.net/man/8/dropbear)
  - Changelog: [https://matt.ucc.asn.au/dropbear/CHANGES](https://matt.ucc.asn.au/dropbear/CHANGES)
