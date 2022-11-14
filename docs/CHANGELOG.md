@@ -59,7 +59,7 @@ Latest changes
    * OpenVPN 2.4.12/2.5.8
    * RPCBind 1.2.6
    * strace 4.9/5.0/6.0
-   * Tor 0.4.7.10
+   * Tor 0.4.7.11
 
  - Libraries:
    * expat 2.5.0
