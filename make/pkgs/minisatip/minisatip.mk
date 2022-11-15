@@ -16,6 +16,8 @@ $(PKG)_TARGET_WEBROOT := $($(PKG)_DEST_DIR)/usr/share/minisatip/html
 $(PKG)_EXCLUDED += $(if $(FREETZ_PACKAGE_MINISATIP_HTML),,usr/share)
 
 
+$(PKG)_CONDITIONAL_PATCHES+=$(if $(FREETZ_KERNEL_VERSION_2_6_39_MAX),$(if $(FREETZ_KERNEL_VERSION_2_6_39_3),sendmmsg))
+
 $(PKG)_CONFIGURE_OPTIONS += --disable-dvbca
 $(PKG)_CONFIGURE_OPTIONS += --disable-netcv
 $(PKG)_CONFIGURE_OPTIONS += --disable-axe
