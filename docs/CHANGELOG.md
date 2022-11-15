@@ -68,6 +68,7 @@ Latest changes
    * libidn 1.41
    * libgpg-error 1.46
    * libxml2 2.10.3
+   * neon 0.30.2/0.32.4
 
  - Firmware updates:
    * Please see [FIRMWARES](FIRMWARES.md) for the list of currently supported devices and firmwares.
