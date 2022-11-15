@@ -9,11 +9,17 @@ config FREETZ_PACKAGE_RPCBIND
 		The rpcbind utility is a server that converts
 		RPC program numbers into universal addresses.
 
-config FREETZ_PACKAGE_RPCBIND_RPCINFO
-	bool "RPCInfo"
-	depends on FREETZ_PACKAGE_RPCBIND
-	default n
-	help
-		The rpcinfo utility makes an RPC call to an
-		RPC server and reports what it finds. 
+if FREETZ_PACKAGE_RPCBIND
+
+	comment "WARNING: This replaces avm's binaries"
+		depends on FREETZ_AVM_HAS_RPCBIND
+
+	config FREETZ_PACKAGE_RPCBIND_RPCINFO
+		bool "RPCInfo"
+		default n
+		help
+			The rpcinfo utility makes an RPC call to an
+			RPC server and reports what it finds. 
+
+endif # FREETZ_PACKAGE_RPCBIND
 
