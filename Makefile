@@ -21,7 +21,7 @@ ifneq ($($(ENVIRA_MARK)),y)
 ENVIRA_UMASK:=0022
 ENVIRA_MODE_EXEC:=0755
 ENVIRA_MODE_FILE:=0644
-ENVIRA_CVS_DIRS:=.github addon config docs graphics include make patches toolchain tools
+ENVIRA_CVS_DIRS:=.github addon config docs graphics include make patches tools
 ENVIRA_LAST_REV:=.envira.log
 ENVIRA_REV_TOOL:=tools/freetz_revision
 ENVIRA_PATH_REL:=tools/path
@@ -621,7 +621,7 @@ common-distclean: common-dirclean
 	$(RM) -r $(FW_IMAGES_DIR)
 	$(RM) -r $(KERNEL_TARGET_DIR)
 	$(RM) -r $(PACKAGES_DIR_ROOT) $(SOURCE_DIR_ROOT)
-	$(RM) -r $(TOOLCHAIN_BUILD_DIR)
+	$(RM) -r $(TOOLCHAIN_DIR)
 	$(RM) -r $(TOOLS_BUILD_DIR)
 	@echo "The files ./.config ./config/custom.in ./.fwmod_custom and the directories ~/.freetz-dl/ ~/.freetz-signature/ were not removed."
 
