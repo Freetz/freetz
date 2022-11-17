@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 5.2.7)
+$(call PKG_INIT_BIN, 5.2.8)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_HASH:=8712e9acb0b6b49a97d443458a3067dc5c08a025e02dc5f773176c51dd7cfc69
+$(PKG)_HASH:=2424b2711b1d40d2129645d550363896c6853c97528f085f7765092fe68679d4
 $(PKG)_SITE:=https://tukaani.org/xz
 ### WEBSITE:=https://tukaani.org/xz/
 ### CHANGES:=https://git.tukaani.org/?p=xz.git;a=blob_plain;f=NEWS;hb=HEAD
