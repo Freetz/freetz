@@ -70,6 +70,7 @@ Latest changes
    * expat 2.5.0
    * libidn 1.41
    * libgpg-error 1.46
+   * libusb-compat 0.1.8
    * libxml2 2.10.3
    * neon 0.30.2/0.32.4
 

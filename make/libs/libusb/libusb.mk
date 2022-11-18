@@ -1,13 +1,13 @@
-$(call PKG_INIT_LIB,$(if $(FREETZ_LIB_libusb_0_WITH_COMPAT),0.1.7,0.1.12))
+$(call PKG_INIT_LIB,$(if $(FREETZ_LIB_libusb_0_WITH_COMPAT),0.1.8,0.1.12))
 $(PKG)_DIR_COMPONENT:=$(pkg)$(if $(FREETZ_LIB_libusb_0_WITH_COMPAT),-compat)-$($(PKG)_VERSION)
 $(PKG)_SHORT_VERSION:=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 $(PKG)_LIB_VERSION:=4.4.4
-$(PKG)_SOURCE:=$($(PKG)_DIR_COMPONENT).tar.$(if $(FREETZ_LIB_libusb_0_WITH_COMPAT),bz2,gz)
-$(PKG)_HASH_0.1.7:=8259f8d5b084fe43c47823a939e955e0ba21942b8d112266c39d228cc14764d6
-$(PKG)_HASH_0.1.12:=37f6f7d9de74196eb5fc0bbe0aea9b5c939de7f500acba3af6fd643f3b538b44
-$(PKG)_HASH:=$($(PKG)_HASH_$($(PKG)_VERSION))
+$(PKG)_SOURCE:=$($(PKG)_DIR_COMPONENT).tar.gz
+$(PKG)_HASH_compat:=f79dcc3b2c2ef4141e5300faf71519badde85d4ac87fd3372d2b88bba8af05dc
+$(PKG)_HASH_legacy:=37f6f7d9de74196eb5fc0bbe0aea9b5c939de7f500acba3af6fd643f3b538b44
+$(PKG)_HASH:=$($(PKG)_HASH_$(if $(FREETZ_LIB_libusb_0_WITH_COMPAT),compat,legacy))
 $(PKG)_SITE:=$(if $(FREETZ_LIB_libusb_0_WITH_COMPAT),https://github.com/libusb/libusb-compat-0.1/releases/download/v$($(PKG)_VERSION),@SF/$(pkg))
-### VERSION:=0.1.7/0.1.12
+### VERSION:=0.1.8/0.1.12
 
 $(PKG)_DIR:=$($(PKG)_SOURCE_DIR)/$($(PKG)_DIR_COMPONENT)
 
@@ -22,11 +22,13 @@ $(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_libusb_0_WITH_COMPAT
 
 $(PKG)_DEPENDS_ON += $(if $(FREETZ_LIB_libusb_0_WITH_COMPAT),libusb1)
 
+$(PKG)_CONFIGURE_PRE_CMDS += $(if $(FREETZ_LIB_libusb_0_WITH_COMPAT),./bootstrap.sh;)
 $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_LIB_libusb_0_WITH_COMPAT),--disable-examples-build)
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -50,6 +52,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 $(pkg): $($(PKG)_STAGING_BINARY)
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(LIBUSB_DIR) clean
