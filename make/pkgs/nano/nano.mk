@@ -1,10 +1,10 @@
-$(call PKG_INIT_BIN, 6.4)
+$(call PKG_INIT_BIN, 7.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_HASH:=4199ae8ca78a7796de56de1a41b821dc47912c0307e9816b56cc317df34661c0
-$(PKG)_SITE:=https://www.nano-editor.org/dist/v6
+$(PKG)_HASH:=8dd6eac38b2b8786d82681f0e1afd84f6b75210d17391b6443c437e451552149
+$(PKG)_SITE:=https://www.nano-editor.org/dist/v7
 ### WEBSITE:=https://www.nano-editor.org/
 ### MANPAGE:=https://www.nano-editor.org/docs.php
-### CHANGES:=https://www.nano-editor.org/dist/v6/NEWS
+### CHANGES:=https://www.nano-editor.org/dist/v7/NEWS
 ### CVSREPO:=https://git.savannah.gnu.org/cgit/nano.git/
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/nano
@@ -67,6 +67,7 @@ $(PKG)_EXCLUDED+=$(addprefix $($(PKG)_TARGET_SYNTAX_FILES_DIR),$(filter-out $($(
 $(PKG)_SYNTAX_FILES:=$(addprefix $($(PKG)_SYNTAX_FILES_DIR),$($(PKG)_SYNTAX_FILES_LIST))
 $(PKG)_TARGET_SYNTAX_FILES:=$(addprefix $($(PKG)_TARGET_SYNTAX_FILES_DIR),$($(PKG)_SYNTAX_FILES_LIST))
 
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -85,6 +86,7 @@ $($(PKG)_TARGET_SYNTAX_FILES): $($(PKG)_TARGET_SYNTAX_FILES_DIR)%: $($(PKG)_SYNT
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_SYNTAX_FILES)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(NANO_DIR) clean
