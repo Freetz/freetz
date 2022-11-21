@@ -45,7 +45,7 @@ Latest changes
    * Loading build kernel modules may work or do not. You'll notice.
 
  - Build system:
-   * Ccache 4.7.3
+   * Ccache 4.7.4
 
  - Host tools:
    * fakeroot 1.30.1
