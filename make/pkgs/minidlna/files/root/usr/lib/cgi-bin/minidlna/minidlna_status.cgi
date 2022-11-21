@@ -21,7 +21,7 @@ cat << EOF
 
 <pre class="log">
 EOF
-wget http://$(self_host):${MINIDLNA_PORT}/ -O - | sed -r ' \
+wget http://127.0.0.1:${MINIDLNA_PORT}/ -O - | sed -r ' \
   s#(<table)#\1 width=550px style="border:0px"#g; \
   s#(<table)#\1 width=123px#; \
   s#(<td)#\1 style="text-align:left; border-bottom:1px dashed"#g'
