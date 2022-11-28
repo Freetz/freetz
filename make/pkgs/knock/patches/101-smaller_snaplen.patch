@@ -1,11 +1,11 @@
 --- src/knockd.c
 +++ src/knockd.c
-@@ -207,7 +207,7 @@
+@@ -241,7 +241,7 @@
  
  	/* 50ms timeout for packet capture. See pcap(3pcap) manpage, which
  	 * recommends that a timeout of 0 not be used. */
--	cap = pcap_open_live(o_int, 65535, 0, 50, pcapErr);
-+	cap = pcap_open_live(o_int, BUFSIZ, 0, 50, pcapErr);
- 	if(strlen(pcapErr)) {
- 		fprintf(stderr, "could not open %s: %s\n", o_int, pcapErr);
+-	cap = pcap_open_live(o_int, 65535, 0, 50, pcap_err);
++	cap = pcap_open_live(o_int, BUFSIZ, 0, 50, pcap_err);
+ 	if(strlen(pcap_err)) {
+ 		fprintf(stderr, "could not open %s: %s\n", o_int, pcap_err);
  	}

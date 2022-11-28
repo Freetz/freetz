@@ -58,6 +58,7 @@ Latest changes
    * Curl 7.86.0
    * dehydrated 0.7.1 (letsencrypt)
    * Dropbear 2022.83
+   * Knock 0.8
    * Nano 7.0
    * OpenSSH 9.1p1
    * OpenSSL 0.9.8zh/1.0.2u/1.1.1s/3.0.7
