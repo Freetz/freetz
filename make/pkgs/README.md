@@ -417,7 +417,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
 
 ### K
 
-  * **[Knockd 0.7](../../docs/make/knock.md)<a id='knock'></a>**<br>
+  * **[Knock 0.8](../../docs/make/knock.md)<a id='knock'></a>**<br>
     Knockd is a port-knock server. It listens to all traffic on an ethernet (or PPP) interface, looking for special "knock" sequences of port-hits.
 
 ### L
