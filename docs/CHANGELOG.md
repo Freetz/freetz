@@ -54,6 +54,7 @@ Latest changes
    * xz 5.2.8
 
  - Packages:
+   * ACME.sh 3.0.5 (letsencrypt)
    * Curl 7.86.0
    * dehydrated 0.7.1 (letsencrypt)
    * Dropbear 2022.83
