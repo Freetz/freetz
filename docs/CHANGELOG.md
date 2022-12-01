@@ -43,6 +43,7 @@ Latest changes
 
  - Known problems:
    * Loading build kernel modules may work or do not. You'll notice.
+   * Dnsmasq, Bind & Unbound are not compatible since Fritzos 7.5
 
  - Build system:
    * Ccache 4.7.4
