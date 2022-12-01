@@ -686,7 +686,7 @@ determine_() {
 
 	#WIREGUARD
 	X="%"
-	[ -e "$unpacked/bin/wg" ] && X="available" && in_b "FREETZ_AVM_HAS_WIREGUARD"
+	[ -e "$unpacked/lib/libwireguard.so" ] && X="available" && in_b "FREETZ_AVM_HAS_WIREGUARD"
 	[ $DOSHOW -ge 2 ] && outp "wireguard" "$X"
 
 	#WEBSRV

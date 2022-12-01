@@ -383,6 +383,7 @@ config FREETZ_REMOVE_AVM_WIREGUARD
 	bool "Remove WireGuard - UNTESTED"
 	default n
 	depends on FREETZ_AVM_HAS_WIREGUARD
+	select FREETZ_REMOVE_AVM_VPN if FREETZ_AVM_HAS_VPN
 	help
 		Remove AVM's WireGuard executables, library and kernel module.
 		This will save about 275kB compressed size.

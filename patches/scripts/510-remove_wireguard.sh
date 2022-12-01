@@ -2,6 +2,7 @@
 echo1 "removing WireGuard files"
 
 for files in \
+  bin/vpnd \
   bin/wg \
   bin/wg-addmaster \
   bin/wg-addslave \
@@ -16,8 +17,4 @@ done
 
 #echo1 "patching WebUI"
 # no device to test
-
-#echo1 "patching rc.conf"
-# not used (yet?) - or replaces avm's ipv4-only vpn and uses CONFIG_VPN ?
-#modsed "s/CONFIG_WG=.*$/CONFIG_WG=\"n\"/g" "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.conf"
 
