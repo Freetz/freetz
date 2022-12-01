@@ -3,7 +3,7 @@ Latest changes
 
 - Freetz-NG
   * [devel](#devel)
-  * [ng22070](#ng22100)
+  * [ng22100](#ng22100)
   * [ng22070](#ng22070)
   * [ng22040](#ng22040)
   * [ng21090](#ng21090)
