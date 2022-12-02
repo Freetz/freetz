@@ -3,6 +3,10 @@ $(PKG)_LIB_VERSION:=0.4.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_HASH:=222bcca8893d7bf8a1ce207fb39ceead5233b5015623d099392e95197676c92f
 $(PKG)_SITE:=http://cloud.github.com/downloads/rvoicilas/inotify-tools
+### WEBSITE:=https://github.com/inotify-tools/inotify-tools
+### MANPAGE:=https://github.com/inotify-tools/inotify-tools/wiki
+### CHANGES:=https://github.com/inotify-tools/inotify-tools/releases
+### CVSREPO:=https://github.com/inotify-tools/inotify-tools/commits/master
 
 $(PKG)_STARTLEVEL=10
 
@@ -22,6 +26,7 @@ $(PKG)_CONFIGURE_PRE_CMDS += touch -t 200001010000.00 configure.ac aclocal.m4;
 
 $(PKG)_CONFIGURE_ENV += LD="$(TARGET_LD)"
 $(PKG)_CONFIGURE_OPTIONS += --disable-doxygen
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -43,6 +48,7 @@ $($(PKG)_LIB_TARGET_BINARY): $($(PKG)_LIB_BINARY)
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_INWAIT_TARGET_BINARY) $($(PKG)_INWATCH_TARGET_BINARY) $($(PKG)_LIB_TARGET_BINARY)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(INOTIFY_TOOLS_DIR) clean
