@@ -1,7 +1,8 @@
 $(call PKG_INIT_BIN, 0.7.9)
 $(PKG)_SOURCE:=$(pkg).$($(PKG)_VERSION).tar.gz
 $(PKG)_HASH:=f6b1854f931ddbac096015ac253fc6d2b481f98783ab5ebfbdb89ff4f49da0b5
-$(PKG)_SITE:=http://www.bsdmon.com/download/
+$(PKG)_SITE:=https://www.bsdmon.com/download
+### WEBSITE:=https://www.bsdmon.com/wakka/OpenDD
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/$(pkg)
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/$(pkg)
@@ -16,6 +17,7 @@ $(PKG)_DEPENDS_ON += openssl
 endif
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_OPENDD_WITH_SSL
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -37,6 +39,7 @@ $($(PKG)_TARGET_PEM): $($(PKG)_PEM)
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_TARGET_PEM)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(OPENDD_DIR) clean
