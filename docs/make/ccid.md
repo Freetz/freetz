@@ -1,4 +1,4 @@
-# CCID 1.5.0
+# CCID 1.5.1
  - Homepage: [https://ccid.apdu.fr/](https://ccid.apdu.fr/)
  - Manpage: [https://salsa.debian.org/rousseau/CCID/blob/master/README.md](https://salsa.debian.org/rousseau/CCID/blob/master/README.md)
  - Changelog: [https://salsa.debian.org/rousseau/CCID/blob/master/README.md#history](https://salsa.debian.org/rousseau/CCID/blob/master/README.md#history)
