@@ -1,4 +1,8 @@
 # inotify-tools 3.14
+ - Homepage: [https://github.com/inotify-tools/inotify-tools](https://github.com/inotify-tools/inotify-tools)
+ - Manpage: [https://github.com/inotify-tools/inotify-tools/wiki](https://github.com/inotify-tools/inotify-tools/wiki)
+ - Changelog: [https://github.com/inotify-tools/inotify-tools/releases](https://github.com/inotify-tools/inotify-tools/releases)
+ - Repository: [https://github.com/inotify-tools/inotify-tools/commits/master](https://github.com/inotify-tools/inotify-tools/commits/master)
  - Package: [master/make/pkgs/inotify-tools/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/inotify-tools/)
 
 **Inotify** ist eine Kernel-Schnittstelle zur Überwachung von
