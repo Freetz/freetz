@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.5.0)
+$(call PKG_INIT_BIN, 1.5.1)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_HASH:=81549b3422469d503996d03a3aed2ef1375b359167f10d66be9e3844e729322e
+$(PKG)_HASH:=e7a78c398ec0d617a4f98bac70d5b64f78689284dd0ae87d4692e2857f117377
 $(PKG)_SITE:=https://ccid.apdu.fr/files
 ### WEBSITE:=https://ccid.apdu.fr/
 ### MANPAGE:=https://salsa.debian.org/rousseau/CCID/blob/master/README.md
@@ -20,6 +20,7 @@ $(PKG)_CONFIGURE_PRE_CMDS += $(call PKG_PREVENT_RPATH_HARDCODING,./configure)
 $(PKG)_CONFIGURE_OPTIONS += --enable-libusb
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
 $(PKG)_CONFIGURE_OPTIONS += --enable-embedded
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -42,6 +43,7 @@ $($(PKG)_UDEV_TARGET_RULESFILE): $($(PKG)_UDEV_RULESFILE)
 $(pkg):
 
 $(pkg)-precompiled: $(CCID_TARGET_BINARY) $(CCID_UDEV_TARGET_RULESFILE)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(CCID_DIR) clean
