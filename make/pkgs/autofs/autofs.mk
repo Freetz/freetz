@@ -4,6 +4,10 @@ $(PKG)_HASH_ABANDON:=9cdfb2433524ba798e9aebeb3a613931627aa4ba579466985599295e05c
 $(PKG)_HASH_CURRENT:=b33d1059855664b20eeda26f3e28ff518fb0c3d58f565570af2ae569dc73c0fd
 $(PKG)_HASH:=$($(PKG)_HASH_$(if $(FREETZ_KERNEL_VERSION_2_MAX),ABANDON,CURRENT))
 $(PKG)_SITE:=@KERNEL/linux/daemons/$(pkg)/v5
+### WEBSITE:=https://docs.kernel.org/filesystems/autofs.html
+### MANPAGE:=https://github.com/torvalds/linux/blob/master/Documentation/filesystems/autofs-mount-control.rst
+### CHANGES:=https://mirrors.edge.kernel.org/pub/linux/daemons/autofs/v5/
+### CVSREPO:=https://github.com/torvalds/linux/tree/master/fs/autofs
 
 $(PKG)_BUILD_PREREQ += bison flex
 $(PKG)_STARTLEVEL=50
@@ -71,6 +75,7 @@ $(PKG)_MODULES := \
 $(PKG)_MODULES_BUILD_DIR := $($(PKG)_MODULES:%=$($(PKG)_DIR)/modules/%)
 $(PKG)_MODULES_TARGET_DIR := $($(PKG)_MODULES:%=$($(PKG)_DEST_LIBDIR)/autofs/%)
 
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 ifeq ($(FREETZ_KERNEL_VERSION_2_MAX),y)
@@ -99,6 +104,7 @@ $($(PKG)_MODULES_TARGET_DIR): $($(PKG)_DEST_LIBDIR)/autofs/%: $($(PKG)_DIR)/modu
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $(if $(FREETZ_KERNEL_VERSION_2_MAX),,$($(PKG)_TARGET_LIBRARY)) $($(PKG)_MODULES_TARGET_DIR)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(AUTOFS_DIR) clean
