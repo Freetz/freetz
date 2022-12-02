@@ -1,7 +1,7 @@
-$(call PKG_INIT_BIN, 1.9.8)
+$(call PKG_INIT_BIN, 1.9.9)
 $(PKG)_LIB_VERSION:=1.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
-$(PKG)_HASH:=502d80c557ecbee285eb99fe8703eeb667bcfe067577467b50efe3420d1b2289
+$(PKG)_HASH:=cbcc3b34c61f53291cecc0d831423c94d437b188eb2b97b7febc08de1c914e8a
 $(PKG)_SITE:=https://pcsclite.apdu.fr/files
 ### WEBSITE:=https://pcsclite.apdu.fr/
 ### MANPAGE:=https://salsa.debian.org/rousseau/PCSC/blob/master/README

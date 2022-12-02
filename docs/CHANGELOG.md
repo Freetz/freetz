@@ -68,6 +68,7 @@ Latest changes
    * OpenSSH 9.1p1
    * OpenSSL 0.9.8zh/1.0.2u/1.1.1s/3.0.7
    * OpenVPN 2.4.12/2.5.8
+   * PCSC-lite 1.9.9
    * RPCBind 1.2.6
    * strace 4.9/5.0/6.0
    * Tor 0.4.7.11
