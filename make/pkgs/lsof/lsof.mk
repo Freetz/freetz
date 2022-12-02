@@ -1,7 +1,8 @@
 $(call PKG_INIT_BIN, 4.89)
 $(PKG)_SOURCE:=lsof_$($(PKG)_VERSION)_src.tar.xz
 $(PKG)_HASH:=d1cd7530d293c79a2b3476a9ed8568da6d7ec7995139bf73b54bc8aa079a0c6c
-$(PKG)_SITE:=ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof,http://people.freebsd.org/~abe
+$(PKG)_SITE:=ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof,https://people.freebsd.org/~abe
+### WEBSITE:=https://people.freebsd.org/~abe/
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/lsof
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/lsof
