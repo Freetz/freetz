@@ -62,6 +62,7 @@ Latest changes
    * CCID 1.5.1
    * Curl 7.86.0
    * dehydrated 0.7.1 (letsencrypt)
+   * Dnsmasq 2.80/2.88
    * Dropbear 2022.83
    * HAProxy 2.6.7
    * Knock 0.8
