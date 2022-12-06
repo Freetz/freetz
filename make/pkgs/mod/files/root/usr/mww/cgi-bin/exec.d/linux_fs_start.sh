@@ -6,7 +6,6 @@ FWLAYOUT=''
 [ "$FREETZ_AVM_HAS_FWLAYOUT_5" == "y" ] && FWLAYOUT='5'
 [ "$FREETZ_AVM_HAS_FWLAYOUT_6" == "y" ] && FWLAYOUT='6'
 
-if [ -x "$(which bootslotctl)" ]; then
 case "$FWLAYOUT" in
 	5)	# UIMG
 		LFS_LIVE="$(sed -n 's/^linux_fs_start[ \t]*//p' /proc/sys/urlader/environment)"
