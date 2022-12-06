@@ -8,12 +8,12 @@ FWLAYOUT=''
 
 case "$FWLAYOUT" in
 	5)	# UIMG
+		. /var/env.mod.daemon
 		LFS_LIVE="$(sed -n 's/^linux_fs_start[ \t]*//p' /proc/sys/urlader/environment)"
 		[ -z "$LFS_LIVE" ] && LFS_LIVE=0
 		LFS_DEAD="$(( ($LFS_LIVE+1) %2 ))"
 		echo "changing $LFS_LIVE -> $LFS_DEAD ... and rebooting"
-		/bin/aicmd pumaglued uimg switchandreboot
-		LFS_TEST="$LFS_DEAD"
+		/bin/aicmd pumaglued uimg switchandreboot && LFS_TEST="$LFS_DEAD" || LFS_TEST="9"
 		;;
 	6)	# FIT
 		. /var/env.mod.daemon  # CONFIG_ENVIRONMENT_PATH
