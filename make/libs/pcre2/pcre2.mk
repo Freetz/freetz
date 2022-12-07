@@ -1,11 +1,11 @@
 $(call PKG_INIT_LIB, 10.41)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_HASH:=0f78cebd3e28e346475fb92e95fe9999945b4cbaad5f3b42aca47b887fb53308
-$(PKG)_SITE:=https://github.com/PhilipHazel/pcre2/releases/download/pcre2-$($(PKG)_VERSION)
+$(PKG)_SITE:=https://github.com/PCRE2Project/pcre2/releases/download/pcre2-$($(PKG)_VERSION)
 ### WEBSITE:=https://www.pcre.org/
 ### MANPAGE:=https://www.pcre.org/current/doc/html/
-### CHANGES:=https://www.pcre.org/changelog.txt
-### CVSREPO:=https://github.com/PhilipHazel/pcre2
+### CHANGES:=https://github.com/PCRE2Project/pcre2/blob/master/ChangeLog
+### CVSREPO:=https://github.com/PCRE2Project/pcre2
 
 $(PKG)_LIB_VERSION:=0.11.1
 $(PKG)_LIBNAME=libpcre2-8.so.$($(PKG)_LIB_VERSION)
