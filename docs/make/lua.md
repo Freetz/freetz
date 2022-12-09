@@ -1,4 +1,8 @@
 # Lua 5.1.5 (binary only)
+ - Homepage: [https://www.lua.org](https://www.lua.org)
+ - Manpage: [https://www.lua.org/docs.html](https://www.lua.org/docs.html)
+ - Changelog: [https://www.lua.org/versions.html](https://www.lua.org/versions.html)
+ - Repository: [https://github.com/lua/lua](https://github.com/lua/lua)
  - Package: [master/make/pkgs/lua/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/lua/)
 
 **[Lua](http://www.lua.org/)** ist eine
