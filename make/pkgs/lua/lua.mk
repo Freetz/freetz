@@ -1,7 +1,11 @@
 $(call PKG_INIT_BIN, 5.1.5)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_HASH:=2640fc56a795f29d28ef15e13c34a47e223960b0240e8cb0a82d9b0738695333
-$(PKG)_SITE:=http://www.lua.org/ftp
+$(PKG)_SITE:=https://www.lua.org/ftp
+### WEBSITE:=https://www.lua.org
+### MANPAGE:=https://www.lua.org/docs.html
+### CHANGES:=https://www.lua.org/versions.html
+### CVSREPO:=https://github.com/lua/lua
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/lua
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/lua
@@ -17,6 +21,7 @@ $(PKG)_DEPENDS_ON += ncurses readline
 endif
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_LUA_READLINE
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -61,6 +66,7 @@ $($(PKG)_LIB_TARGET_BINARY): $($(PKG)_LIB_STAGING_BINARY)
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $($(PKG)_LIB_TARGET_BINARY)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(LUA_DIR) clean
