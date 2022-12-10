@@ -8,14 +8,14 @@ log() {
 	echo "$_log" >> /var/log/mod_net.log
 }
 
-rextd_mode=start
+daemon_mode=start
 while [ $# -gt 0 ]; do
-	[ "$1" == "-s" ] && rextd_mode="stop"
-	[ "$1" == "-I" ] && rextd_mode="reload"
+	[ "$1" == "-s" ] && daemon_mode="stop"
+	[ "$1" == "-I" ] && daemon_mode="reload"
 	shift
 done
 
-if [ "$rextd_mode" == "start" ]; then
+if [ "$daemon_mode" == "start" ]; then
 	for dns_pkg in bind dnsmasq unbound; do
 		if [ -e /mod/etc/init.d/rc.$dns_pkg ]; then
 			rc="/mod/etc/init.d/rc.$dns_pkg"
@@ -28,6 +28,6 @@ if [ "$rextd_mode" == "start" ]; then
 	done
 fi
 
-[ "$rextd_mode" == "start" -a  "$(/etc/init.d/rc.rextd status)" == "running" ] && rextd_mode=reload
-/etc/init.d/rc.rextd $rextd_mode 2>&1 | log
+[ "$daemon_mode" == "start" -a  "$(/etc/init.d/rc.rextd status)" == "running" ] && daemon_mode=reload
+/etc/init.d/rc.rextd $daemon_mode 2>&1 | log
 

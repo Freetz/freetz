@@ -8,12 +8,12 @@ log() {
 	echo "$_log" >> /var/log/mod_net.log
 }
 
-dsld_mode=start
+daemon_mode=start
 while [ $# -gt 0 ]; do
-	[ "$1" == "-s" ] && dsld_mode="stop"
-	[ "$1" == "-I" ] && dsld_mode="reload"
+	[ "$1" == "-s" ] && daemon_mode="stop"
+	[ "$1" == "-I" ] && daemon_mode="reload"
 	shift
 done
 
-/etc/init.d/rc.dsld $dsld_mode 2>&1 | log
+/etc/init.d/rc.dsld $daemon_mode 2>&1 | log
 

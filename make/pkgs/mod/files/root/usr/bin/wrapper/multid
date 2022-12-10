@@ -8,14 +8,14 @@ log() {
 	echo "$_log" >> /var/log/mod_net.log
 }
 
-multid_mode=start
+daemon_mode=start
 while [ $# -gt 0 ]; do
-	[ "$1" == "-s" ] && multid_mode="stop"
-	[ "$1" == "-I" ] && multid_mode="reload"
+	[ "$1" == "-s" ] && daemon_mode="stop"
+	[ "$1" == "-I" ] && daemon_mode="reload"
 	shift
 done
 
-if [ "$multid_mode" == "start" ]; then
+if [ "$daemon_mode" == "start" ]; then
 	for dns_pkg in bind dnsmasq unbound; do
 		if [ -e /mod/etc/init.d/rc.$dns_pkg ]; then
 			rc="/mod/etc/init.d/rc.$dns_pkg"
@@ -28,5 +28,6 @@ if [ "$multid_mode" == "start" ]; then
 	done
 fi
 
-/etc/init.d/rc.multid $multid_mode 2>&1 | log
+#[ "$daemon_mode" == "start" -a  "$(/etc/init.d/rc.multid status)" == "running" ] && daemon_mode=reload
+/etc/init.d/rc.multid $daemon_mode 2>&1 | log
 

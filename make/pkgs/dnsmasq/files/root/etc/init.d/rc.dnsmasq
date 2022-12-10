@@ -5,10 +5,9 @@ DAEMON_LONG_NAME=Dnsmasq
 PID_FILE=/var/run/$DAEMON/$DAEMON.pid
 . /etc/init.d/modlibrc
 
+
 [ -e /etc/init.d/rc.rextd ] && MASTER=rextd || MASTER=multid
-
 [ -r /etc/options.cfg ] && . /etc/options.cfg
-
 if [ "$FREETZ_AVMDAEMON_DISABLE_DNS" != "y" ]; then
 	[ "$(/etc/init.d/rc.$MASTER status)" != "running" -o "$DNSMASQ_MULTID_RESTART" != "yes" ] && nomultid=y
 else

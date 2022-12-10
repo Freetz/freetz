@@ -107,7 +107,15 @@ stop() {
 }
 
 reload() {
-	$DAEMON_BIN -I
+	local ret
+	if [ -x "$(which svctl)" ]; then
+		msgsend -a $DAEMON reload
+		ret=$?
+	else
+		$DAEMON_BIN -I
+		ret=$?
+	fi
+	return $ret
 }
 
 case $1 in

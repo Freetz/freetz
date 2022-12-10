@@ -5,16 +5,14 @@ DAEMON_LONG_NAME=Unbound
 DAEMON_CFGFILE=/tmp/flash/$DAEMON/$DAEMON.conf
 . /etc/init.d/modlibrc
 
+
 [ -e /etc/init.d/rc.rextd ] && MASTER=rextd || MASTER=multid
-
 [ -r /etc/options.cfg ] && . /etc/options.cfg
-
 if [ "$FREETZ_AVMDAEMON_DISABLE_DNS" != "y" ]; then
 	[ "$(/etc/init.d/rc.$MASTER status)" != "running" -o "$UNBOUND_MULTID_RESTART" != "yes" ] && nomultid=y
 else
 	nomultid=y
 fi
-
 
 startdaemon_pre() {
 	[ "$nomultid" == "y" ] || /etc/init.d/rc.$MASTER stop >/dev/null

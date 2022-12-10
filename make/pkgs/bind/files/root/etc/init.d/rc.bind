@@ -8,7 +8,6 @@ PID_FILE=/var/run/${DAEMON_BIN}/${DAEMON_BIN}.pid
 
 [ -e /etc/init.d/rc.rextd ] && MASTER=rextd || MASTER=multid
 [ -r /etc/options.cfg ] && . /etc/options.cfg
-
 if [ "$FREETZ_AVMDAEMON_DISABLE_DNS" != "y" ]; then
 	[ "$(/etc/init.d/rc.$MASTER status)" != "running" -o "$BIND_MULTID" != "yes" ] && nomultid=y
 else
