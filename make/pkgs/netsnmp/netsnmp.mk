@@ -145,6 +145,7 @@ $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_NETSNMP_WITH_ZLIB),,--without-
 $(PKG)_CONFIGURE_OPTIONS += --disable-perl-cc-checks
 $(PKG)_CONFIGURE_OPTIONS += --disable-embedded-perl
 $(PKG)_CONFIGURE_OPTIONS += --without-perl-modules
+$(PKG)_CONFIGURE_OPTIONS += --without-pcre
 
 
 $(PKG_SOURCE_DOWNLOAD)
