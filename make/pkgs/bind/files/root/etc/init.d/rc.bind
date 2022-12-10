@@ -6,23 +6,24 @@ DAEMON_CONFIG=/tmp/flash/${DAEMON}/${DAEMON_BIN}.conf
 PID_FILE=/var/run/${DAEMON_BIN}/${DAEMON_BIN}.pid
 . /etc/init.d/modlibrc
 
+[ -e /etc/init.d/rc.rextd ] && MASTER=rextd || MASTER=multid
 [ -r /etc/options.cfg ] && . /etc/options.cfg
 
-if [ "$BIND_MULTID" != "yes" -o "$FREETZ_AVMDAEMON_DISABLE_DNS" == "y" ]; then
-	nomultid=y
+if [ "$FREETZ_AVMDAEMON_DISABLE_DNS" != "y" ]; then
+	[ "$(/etc/init.d/rc.$MASTER status)" != "running" -o "$BIND_MULTID" != "yes" ] && nomultid=y
 else
-	[ "$(/etc/init.d/rc.multid status)" != "running" ] && nomultid=y
+	nomultid=y
 fi
 
 start() {
-	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid stop >/dev/null
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.$MASTER stop >/dev/null
 	modlib_startdaemon $DAEMON_BIN $BIND_CMDLINE
-	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid start >/dev/null
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.$MASTER start >/dev/null
 	return 0
 }
 
 stop() {
-	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid stop >/dev/null
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.$MASTER stop >/dev/null
 	local current_pid="$(cat $PID_FILE 2>/dev/null)"
 	kill $current_pid 2>/dev/null
 	#wait for shutdown
@@ -32,7 +33,7 @@ stop() {
 		[ $cnt -gt 9 ] && break
 		sleep 1
 	done
-	[ "$nomultid" != "y" ] && /etc/init.d/rc.multid start >/dev/null
+	[ "$nomultid" != "y" ] && /etc/init.d/rc.$MASTER start >/dev/null
 	return 0
 }
 
