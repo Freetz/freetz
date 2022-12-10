@@ -1,9 +1,12 @@
 [ "$FREETZ_REMOVE_TR064" == "y" ] || return 0
 echo1 "removing tr064"
 
+[ "$FREETZ_AVM_VERSION_07_25_MAX" == "y" ] && \
+  rm_files \
+  "${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libtr069.so"
+
 rm_files \
   "${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libtr064.so" \
-  "${FILESYSTEM_MOD_DIR}/usr/share/ctlmgr/libtr069.so" \
   "${FILESYSTEM_MOD_DIR}/etc/websrv_tr064_ssl_key.pem"
 
 # patcht Heimnetz > Netzwerk > Netzwerkeinstellungen > Heimnetzfreigaben > Zugriff für Anwendungen zulassen
