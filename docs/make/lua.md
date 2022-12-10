@@ -1,4 +1,4 @@
-# Lua 5.1.5 (binary only)
+# Lua 5.1.5/5.4.4 (binary only)
  - Homepage: [https://www.lua.org](https://www.lua.org)
  - Manpage: [https://www.lua.org/docs.html](https://www.lua.org/docs.html)
  - Changelog: [https://www.lua.org/versions.html](https://www.lua.org/versions.html)
