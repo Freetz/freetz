@@ -44,7 +44,6 @@ Latest changes
  - Known problems:
    * Loading build kernel modules may work or do not. You'll notice.
    * Fritzos 7.5: Dnsmasq, Bind & Unbound are not compatible
-   * Fritzos 7.5: Patch show_dsl_spectrum-minmax is not compatible
    * Fritzos 7.5: Patch remove-wireguard removes only files, doesn't changes the webif
 
  - Build system:
