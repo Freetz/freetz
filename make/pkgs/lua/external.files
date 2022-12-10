@@ -1,3 +1,4 @@
-[ "$EXTERNAL_FREETZ_PACKAGE_LUA" == "y" ] && EXTERNAL_FILES+=" /usr/bin/lua"
+[ "FREETZ_LIB_liblua_WITH_VERSION_ABANDON" == "y" ] && ELIBVER="5.1.5" || ELIBVER="5.4.4"
 
-[ "$EXTERNAL_FREETZ_LIB_liblua" == "y" ] && EXTERNAL_FILES+=" ${FREETZ_LIBRARY_DIR}/liblua.so.5.1.5"
+[ "$EXTERNAL_FREETZ_PACKAGE_LUA" == "y" ] && EXTERNAL_FILES+=" /usr/bin/lua"
+[ "$EXTERNAL_FREETZ_LIB_liblua" == "y" ] && EXTERNAL_FILES+=" ${FREETZ_LIBRARY_DIR}/liblua.so.$ELIBVER"

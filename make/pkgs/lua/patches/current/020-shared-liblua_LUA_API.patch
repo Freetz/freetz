@@ -1,0 +1,75 @@
+--- src/ldebug.h
++++ src/ldebug.h
+@@ -36,7 +36,7 @@
+ #endif
+ 
+ 
+-LUAI_FUNC int luaG_getfuncline (const Proto *f, int pc);
++LUA_API int luaG_getfuncline (const Proto *f, int pc);
+ LUAI_FUNC const char *luaG_findlocal (lua_State *L, CallInfo *ci, int n,
+                                                     StkId *pos);
+ LUAI_FUNC l_noret luaG_typeerror (lua_State *L, const TValue *o,
+--- src/ldo.h
++++ src/ldo.h
+@@ -68,7 +68,7 @@
+                                         ptrdiff_t oldtop, ptrdiff_t ef);
+ LUAI_FUNC void luaD_poscall (lua_State *L, CallInfo *ci, int nres);
+ LUAI_FUNC int luaD_reallocstack (lua_State *L, int newsize, int raiseerror);
+-LUAI_FUNC int luaD_growstack (lua_State *L, int n, int raiseerror);
++LUA_API int luaD_growstack (lua_State *L, int n, int raiseerror);
+ LUAI_FUNC void luaD_shrinkstack (lua_State *L);
+ LUAI_FUNC void luaD_inctop (lua_State *L);
+ 
+--- src/lfunc.h
++++ src/lfunc.h
+@@ -47,7 +47,7 @@
+ #define CLOSEKTOP	(-1)
+ 
+ 
+-LUAI_FUNC Proto *luaF_newproto (lua_State *L);
++LUA_API Proto *luaF_newproto (lua_State *L);
+ LUAI_FUNC CClosure *luaF_newCclosure (lua_State *L, int nupvals);
+ LUAI_FUNC LClosure *luaF_newLclosure (lua_State *L, int nupvals);
+ LUAI_FUNC void luaF_initupvals (lua_State *L, LClosure *cl);
+--- src/lmem.h
++++ src/lmem.h
+@@ -74,14 +74,14 @@
+ #define luaM_shrinkvector(L,v,size,fs,t) \
+    ((v)=cast(t *, luaM_shrinkvector_(L, v, &(size), fs, sizeof(t))))
+ 
+-LUAI_FUNC l_noret luaM_toobig (lua_State *L);
++LUA_API l_noret luaM_toobig (lua_State *L);
+ 
+ /* not to be called directly */
+-LUAI_FUNC void *luaM_realloc_ (lua_State *L, void *block, size_t oldsize,
++LUA_API void *luaM_realloc_ (lua_State *L, void *block, size_t oldsize,
+                                                           size_t size);
+ LUAI_FUNC void *luaM_saferealloc_ (lua_State *L, void *block, size_t oldsize,
+                                                               size_t size);
+-LUAI_FUNC void luaM_free_ (lua_State *L, void *block, size_t osize);
++LUA_API void luaM_free_ (lua_State *L, void *block, size_t osize);
+ LUAI_FUNC void *luaM_growaux_ (lua_State *L, void *block, int nelems,
+                                int *size, int size_elem, int limit,
+                                const char *what);
+--- src/lstring.h
++++ src/lstring.h
+@@ -49,7 +49,7 @@
+ LUAI_FUNC void luaS_init (lua_State *L);
+ LUAI_FUNC void luaS_remove (lua_State *L, TString *ts);
+ LUAI_FUNC Udata *luaS_newudata (lua_State *L, size_t s, int nuvalue);
+-LUAI_FUNC TString *luaS_newlstr (lua_State *L, const char *str, size_t l);
++LUA_API TString *luaS_newlstr (lua_State *L, const char *str, size_t l);
+ LUAI_FUNC TString *luaS_new (lua_State *L, const char *str);
+ LUAI_FUNC TString *luaS_createlngstrobj (lua_State *L, size_t l);
+ 
+--- src/lundump.h
++++ src/lundump.h
+@@ -30,7 +30,7 @@
+ LUAI_FUNC LClosure* luaU_undump (lua_State* L, ZIO* Z, const char* name);
+ 
+ /* dump one chunk; from ldump.c */
+-LUAI_FUNC int luaU_dump (lua_State* L, const Proto* f, lua_Writer w,
++LUA_API int luaU_dump (lua_State* L, const Proto* f, lua_Writer w,
+                          void* data, int strip);
+ 
+ #endif

@@ -4,3 +4,23 @@ config FREETZ_LIB_liblua
 	help
 		LUA library
 
+if FREETZ_LIB_liblua
+
+	choice
+		prompt "Version"
+			default FREETZ_LIB_liblua_WITH_VERSION_CURRENT
+
+		config FREETZ_LIB_liblua_WITH_VERSION_ABANDON
+			bool "5.1.5"
+#			depends on !FREETZ_TARGET_GCC_5_MIN
+#			default y
+
+		config FREETZ_LIB_liblua_WITH_VERSION_CURRENT
+			bool "5.4.4"
+			depends on FREETZ_TARGET_GCC_5_MIN
+#			default y
+
+	endchoice
+
+endif # FREETZ_LIB_liblua
+

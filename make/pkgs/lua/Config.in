@@ -1,5 +1,5 @@
 config FREETZ_PACKAGE_LUA
-	bool "Lua 5.1.5 (binary only)"
+	bool "Lua 5.1.5/5.4.4 (binary only)"
 	default n
 	select FREETZ_LIB_liblua
 	select FREETZ_LIB_libdl  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
@@ -7,43 +7,38 @@ config FREETZ_PACKAGE_LUA
 	help
 		Lua Scripting Language.
 
-		Lua is a powerful light-weight programming language designed for
-		extending applications. Lua is also frequently used as a
-		general-purpose, stand-alone language. Lua is free software.
+		Lua is a powerful, efficient, lightweight, embeddable scripting language.
+		It supports procedural programming, object-oriented programming,
+		functional programming, data-driven programming, and data description.
 
 		Lua combines simple procedural syntax with powerful data description
 		constructs based on associative arrays and extensible semantics. Lua is
-		dynamically typed, runs by interpreting bytecode for a register-based
+		dynamically typed, runs by interpreting bytecode with a register-based
 		virtual machine, and has automatic memory management with incremental
 		garbage collection, making it ideal for configuration, scripting, and
-		rapid prototyping.
+		rapid prototyping. 
 
-		A fundamental concept in the design of Lua is to provide meta-mechanisms
-		for implementing features, instead of providing a host of features
-		directly in the language. For example, although Lua is not a pure
-		object-oriented language, it does provide meta-mechanisms for
-		implementing classes and inheritance. Lua's meta-mechanisms bring an
-		economy of concepts and keep the language small, while allowing the
-		semantics to be extended in unconventional ways. Extensible semantics
-		is a distinguishing feature of Lua.
+if FREETZ_PACKAGE_LUA
 
-		Lua is a language engine that you can embed into your application. This
-		means that, besides syntax and semantics, Lua has an API that allows
-		the application to exchange data with Lua programs and also to extend
-		Lua with C functions. In this sense, Lua can be regarded as a language
-		framework for building domain-specific languages.
+	choice
+		prompt "Version"
 
-		Lua is implemented as a small library of C functions, written in ANSI C,
-		and compiles unmodified in all known platforms. The implementation goals
-		are simplicity, efficiency, portability, and low embedding cost. The
-		result is a fast language engine with small footprint, making it ideal
-		in embedded systems too.
+		config FREETZ_PACKAGE_LUA_VERSION_ABANDON
+			bool "5.1.5"
+			depends on FREETZ_LIB_liblua_WITH_VERSION_ABANDON
 
-config FREETZ_PACKAGE_LUA_READLINE
-	bool "Build with readline support"
-	depends on FREETZ_PACKAGE_LUA
-	default y
-	select FREETZ_LIB_libreadline
-	select FREETZ_LIB_libhistory
-	select FREETZ_LIB_libncurses
+		config FFREETZ_PACKAGE_LUA_VERSION_CURRENT
+			bool "5.4.4"
+			depends on FREETZ_LIB_liblua_WITH_VERSION_CURRENT
+
+	endchoice
+
+	config FREETZ_PACKAGE_LUA_READLINE
+		bool "Build with readline support"
+		default y
+		select FREETZ_LIB_libreadline
+		select FREETZ_LIB_libhistory   if FREETZ_LIB_liblua_WITH_VERSION_ABANDON
+		select FREETZ_LIB_libncurses   if FREETZ_LIB_liblua_WITH_VERSION_ABANDON
+
+endif # FREETZ_PACKAGE_LUA
 

@@ -1,11 +1,15 @@
-$(call PKG_INIT_BIN, 5.1.5)
+$(call PKG_INIT_BIN, $(if $(FREETZ_LIB_liblua_WITH_VERSION_ABANDON),5.1.5,5.4.4))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_HASH:=2640fc56a795f29d28ef15e13c34a47e223960b0240e8cb0a82d9b0738695333
+$(PKG)_HASH_ABANDON:=2640fc56a795f29d28ef15e13c34a47e223960b0240e8cb0a82d9b0738695333
+$(PKG)_HASH_CURRENT:=164c7849653b80ae67bec4b7473b884bf5cc8d2dca05653475ec2ed27b9ebf61
+$(PKG)_HASH:=$($(PKG)_HASH_$(if $(FREETZ_LIB_liblua_WITH_VERSION_ABANDON),ABANDON,CURRENT))
 $(PKG)_SITE:=https://www.lua.org/ftp
 ### WEBSITE:=https://www.lua.org
 ### MANPAGE:=https://www.lua.org/docs.html
 ### CHANGES:=https://www.lua.org/versions.html
 ### CVSREPO:=https://github.com/lua/lua
+
+$(PKG)_CONDITIONAL_PATCHES+=$(if $(FREETZ_LIB_liblua_WITH_VERSION_ABANDON),abandon,current)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/lua
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/lua
@@ -16,10 +20,18 @@ $(PKG)_LIB_BINARY:=$($(PKG)_DIR)/src/$($(PKG)_LIBNAME)
 $(PKG)_LIB_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib/$($(PKG)_LIBNAME)
 $(PKG)_LIB_TARGET_BINARY:=$($(PKG)_TARGET_LIBDIR)/$($(PKG)_LIBNAME)
 
+$(PKG)_MAKE_TARGET := linux
+
 ifeq ($(strip $(FREETZ_PACKAGE_LUA_READLINE)),y)
+ifeq ($(FREETZ_LIB_liblua_WITH_VERSION_ABANDON),y)
 $(PKG)_DEPENDS_ON += ncurses readline
+else
+$(PKG)_DEPENDS_ON += readline
+$(PKG)_MAKE_TARGET := linux-readline
+endif
 endif
 
+$(PKG)_REBUILD_SUBOPTS += FREETZ_LIB_liblua_WITH_VERSION_ABANDON
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_LUA_READLINE
 
 
@@ -35,7 +47,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		RANLIB="$(TARGET_RANLIB)" \
 		MYLDFLAGS="-L$(TARGET_TOOLCHAIN_STAGING_DIR)/usr/lib" \
 		USE_READLINE="$(strip $(FREETZ_PACKAGE_LUA_READLINE))" \
-		linux
+		$(LUA_MAKE_TARGET)
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_BINARY_STRIP)
