@@ -10,6 +10,7 @@ $(PKG)_SITE:=https://www.lua.org/ftp
 ### CVSREPO:=https://github.com/lua/lua
 
 $(PKG)_CONDITIONAL_PATCHES+=$(if $(FREETZ_LIB_liblua_WITH_VERSION_ABANDON),abandon,current)
+$(PKG)_CONDITIONAL_PATCHES+=$(if $(FREETZ_PACKAGE_LUA_FLOAT),$(if $(FREETZ_LIB_liblua_WITH_VERSION_ABANDON),abandon,current)/float)
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/lua
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/lua
