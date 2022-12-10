@@ -9,7 +9,8 @@ config FREETZ_PACKAGE_PPPD
 	select FREETZ_MODULE_ppp_async      if !FREETZ_AVM_HAS_PPP_ASYNC_BUILTIN
 	select FREETZ_MODULE_ppp_deflate    if !FREETZ_AVM_HAS_PPP_DEFLATE_BUILTIN
 	select FREETZ_MODULE_ppp_generic    if !FREETZ_AVM_HAS_PPP_BUILTIN && !FREETZ_KERNEL_VERSION_2_6_28
-	select FREETZ_MODULE_ppp_mppe_mppc  if !FREETZ_AVM_HAS_PPP_MPPE_MPPC_BUILTIN
+	select FREETZ_MODULE_ppp_mppe       if !FREETZ_AVM_HAS_PPP_MPPE_BUILTIN      &&  FREETZ_KERNEL_VERSION_2_6_39_MIN
+	select FREETZ_MODULE_ppp_mppe_mppc  if !FREETZ_AVM_HAS_PPP_MPPE_MPPC_BUILTIN && !FREETZ_KERNEL_VERSION_2_6_39_MIN
 	default n
 	help
 		An implementation of the Point-to-point protocol.
