@@ -33,7 +33,7 @@ case "$3" in
 		do_log /var/tmp/sessions.txt "WEB-Sessions"
 		rm -f /var/tmp/sessions.txt
 
-		[ -x "$(which svctl)" ] && svctl status | sed 's/\.service//g;s/, status/ /g' > /var/tmp/svctl.txt 2>&1
+		[ -x "$(which svctl)" ] && svctl status | sed 's/\.service//g;s/, status/ /g;s/$/./g' > /var/tmp/svctl.txt 2>&1
 		do_log /var/tmp/svctl.txt "AVM-Supervisor"
 		rm -f /var/tmp/svctl.txt
 
