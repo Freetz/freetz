@@ -20,7 +20,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
   * **[REMOVE_AURA_USB: Remove AURA (AVM USB Remote-Architecture)](REMOVE_AURA_USB.md)<a id='remove-aura-usb'></a>**<br>
     Remove the aura-usb-daemon (remote USB connection, USB-Fernanschluss) and some related files. This patch only removes the files, not the settings in AVM's web interface.
 
-  * **<u>REMOVE_AVM_AVMCOUNTERD: Remove AVMCOUNTERD</u><a id='remove-avm-avmcounterd'></a>**<br>
+  * **<u>Remove AVMCOUNTERD</u><a id='remove-avmcounterd'></a>**<br>
     Remove AVM's AVMCOUNTERD executable and libraries. This will save about 112kB compressed size.
 
   * **[REMOVE_AVM_E2FSPROGS: Remove e2fsprogs](REMOVE_AVM_E2FSPROGS.md)<a id='remove-avm-e2fsprogs'></a>**<br>
