@@ -689,6 +689,11 @@ determine_() {
 	[ -e "$unpacked/lib/libwireguard.so" ] && X="available" && in_b "FREETZ_AVM_HAS_WIREGUARD"
 	[ $DOSHOW -ge 2 ] && outp "wireguard" "$X"
 
+	#AVMCOUNTERD
+	X="%"
+	[ -e "$unpacked/sbin/avmcounterd" ] && X="available" && in_b "FREETZ_AVM_HAS_AVMCOUNTERD"
+	[ $DOSHOW -ge 2 ] && outp "avmcounterd" "$X"
+
 	#WEBSRV
 	X="%"
 	[ -e "$unpacked/sbin/websrv" ] && X="available" && in_b "FREETZ_AVM_HAS_WEBSRV"
