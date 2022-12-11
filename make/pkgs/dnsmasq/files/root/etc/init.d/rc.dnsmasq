@@ -8,7 +8,7 @@ PID_FILE=/var/run/$DAEMON/$DAEMON.pid
 
 [ -e /etc/init.d/rc.rextd ] && MASTER=rextd || MASTER=multid
 [ -r /etc/options.cfg ] && . /etc/options.cfg
-if [ "$FREETZ_AVMDAEMON_DISABLE_DNS" != "y" ]; then
+if [ "$FREETZ_AVMDAEMON_DISABLE_DNS" != "y" -a "$FREETZ_AVM_HAS_DNSCRASH" != "y" ]; then
 	[ "$(/etc/init.d/rc.$MASTER status)" != "running" -o "$DNSMASQ_MULTID_RESTART" != "yes" ] && nomultid=y
 else
 	nomultid=y
@@ -85,10 +85,14 @@ get_leases() {
 
 case $1 in
 	""|load|multid|rextd)
-		if [ "$1" == "multid" -o "$1" == "rextd" ]; then
-			[ "$DNSMASQ_WRAPPER" != "yes" ] && exit
+		if [ "$FREETZ_AVM_HAS_DNSCRASH" == "y" ]; then
+			[ "$1" == "multid" -o "$1" == "rextd" ] && exit
 		else
-			[ "$DNSMASQ_WRAPPER" == "yes" ] && exit
+			if [ "$1" == "multid" -o "$1" == "rextd" ]; then
+				[ "$DNSMASQ_WRAPPER" != "yes" ] && exit
+			else
+				[ "$DNSMASQ_WRAPPER" == "yes" ] && exit
+			fi
 		fi
 
 		modlib_defaults
@@ -117,7 +121,7 @@ case $1 in
 		modlib_stop
 		;;
 	restart)
-		if [ "$FREETZ_AVMDAEMON_DISABLE_DNS" != "y" ]; then
+		if [ "$FREETZ_AVMDAEMON_DISABLE_DNS" != "y" -a "$FREETZ_AVM_HAS_DNSCRASH" != "y" ]; then
 			modlib_check_running && nomultid=y
 		fi
 		modlib_restart

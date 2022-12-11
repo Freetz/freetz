@@ -8,7 +8,7 @@ PID_FILE=/var/run/${DAEMON_BIN}/${DAEMON_BIN}.pid
 
 [ -e /etc/init.d/rc.rextd ] && MASTER=rextd || MASTER=multid
 [ -r /etc/options.cfg ] && . /etc/options.cfg
-if [ "$FREETZ_AVMDAEMON_DISABLE_DNS" != "y" ]; then
+if [ "$FREETZ_AVMDAEMON_DISABLE_DNS" != "y" -a "$FREETZ_AVM_HAS_DNSCRASH" != "y" ]; then
 	[ "$(/etc/init.d/rc.$MASTER status)" != "running" -o "$BIND_MULTID" != "yes" ] && nomultid=y
 else
 	nomultid=y
@@ -37,11 +37,15 @@ stop() {
 }
 
 case $1 in
-	""|load|multid)
-		if [ "$1" == "multid" ]; then
-			[ "$BIND_WRAPPER" != "yes" -o "$EXTERNAL_FREETZ_PACKAGE_BIND_NAMED" == "y" ] && exit
+	""|load|multid|rextd)
+		if [ "$FREETZ_AVM_HAS_DNSCRASH" == "y" ]; then
+			[ "$1" == "multid" -o "$1" == "rextd" ] && exit
 		else
-			[ "$BIND_WRAPPER" == "yes" -a "$EXTERNAL_FREETZ_PACKAGE_BIND_NAMED" != "y" ] && exit
+			if [ "$1" == "multid" -o "$1" == "rextd" ]; then
+				[ "$BIND_WRAPPER" != "yes" -o "$EXTERNAL_FREETZ_PACKAGE_BIND_NAMED" == "y" ] && exit
+			else
+				[ "$BIND_WRAPPER" == "yes" -a "$EXTERNAL_FREETZ_PACKAGE_BIND_NAMED" != "y" ] && exit
+			fi
 		fi
 
 		mkdir -p "/tmp/flash/${DAEMON}"
@@ -67,7 +71,7 @@ case $1 in
 		modlib_stop
 		;;
 	restart)
-		if [ "$FREETZ_AVMDAEMON_DISABLE_DNS" != "y" ]; then
+		if [ "$FREETZ_AVMDAEMON_DISABLE_DNS" != "y" -a "$FREETZ_AVM_HAS_DNSCRASH" != "y" ]; then
 			modlib_check_running && nomultid=y
 		fi
 		modlib_restart

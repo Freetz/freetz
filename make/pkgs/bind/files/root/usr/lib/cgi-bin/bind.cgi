@@ -8,6 +8,7 @@ check "$BIND_WRAPPER" yes:wrapper
 
 sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$BIND_ENABLED" "" "" 0
+if [ "$FREETZ_AVM_HAS_DNSCRASH" != "y" ]; then
 if [ "$EXTERNAL_FREETZ_PACKAGE_BIND_NAMED" != "y" ]; then
 cat << EOF
 <p>
@@ -15,6 +16,7 @@ cat << EOF
 <input id="e1" type="checkbox" name="wrapper" value="yes"$wrapper_chk><label for="w1"> $(lang de:"vor multid starten" en:"start before multid")</label><br>
 </p>
 EOF
+fi
 fi
 sec_end
 
@@ -25,6 +27,7 @@ $(lang de:"Optionale Parameter:" en:"Optional parameters:")
 <input type="text" name="cmdline" size="55" maxlength="250" value="$(html "$BIND_CMDLINE")">
 </p>
 EOF
+if [ "$FREETZ_AVM_HAS_DNSCRASH" != "y" ]; then
 if [ "$FREETZ_AVMDAEMON_DISABLE_DNS" != "y" ]; then
 cat << EOF
 <p>
@@ -33,4 +36,6 @@ cat << EOF
 </p>
 EOF
 fi
+fi
 sec_end
+
