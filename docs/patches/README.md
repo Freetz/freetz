@@ -21,7 +21,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
     Remove the aura-usb-daemon (remote USB connection, USB-Fernanschluss) and some related files. This patch only removes the files, not the settings in AVM's web interface.
 
   * **<u>Remove AVMCOUNTERD</u><a id='remove-avmcounterd'></a>**<br>
-    Remove AVM's AVMCOUNTERD executable and libraries. This will save about 112kB compressed size.
+    Remove AVM's AVMCOUNTERD executable and libraries. This will save about 68kB compressed size.
 
   * **[REMOVE_AVM_E2FSPROGS: Remove e2fsprogs](REMOVE_AVM_E2FSPROGS.md)<a id='remove-avm-e2fsprogs'></a>**<br>
     Removes the e2fsprogs files (blkid, fsck, mkfs) and libraries. Saves about 220KB of compressed space. Warning: Without blkid the AVM scripts could not mount!
