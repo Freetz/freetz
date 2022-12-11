@@ -114,7 +114,11 @@ decrip_file() {
 	local lines="$(wc -l "$1" | sed 's/ .*//')"
 	[ "$force" != 'y' ] && [ "$lines" -gt 1 ] && return 1
 	echo2 "decrippling file $1"
-	modsed 's/></>\n</g;s/{/ {\n/g;s/}/\n}\n/g;s/;/;\n/g' "$1"
+	if [ "$force" == 'y' ]; then
+		modsed 's/></>\n</g;s/,/,\n/g;s/;/;\n/g' "$1"
+	else
+		modsed 's/></>\n</g;s/{/ {\n/g;s/}/\n}\n/g;s/;/;\n/g' "$1"
+	fi
 }
 
 # -------------------------------------------------------------------
