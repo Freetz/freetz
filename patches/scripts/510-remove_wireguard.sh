@@ -15,6 +15,5 @@ for files in \
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
 
-#echo1 "patching WebUI"
-# no device to test
+#WebUI is patched by selected remove-vpn
 
