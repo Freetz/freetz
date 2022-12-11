@@ -388,6 +388,14 @@ config FREETZ_REMOVE_AVM_WIREGUARD
 		Remove AVM's WireGuard executables, library and kernel module.
 		This will save about 275kB compressed size.
 
+config FREETZ_REMOVE_AVM_AVMCOUNTERD
+	bool "Remove AVMCOUNTERD"
+	default n
+	depends on FREETZ_AVM_HAS_AVMCOUNTERD
+	help
+		Remove AVM's AVMCOUNTERD executables and libraries.
+		This will save about 112kB compressed size.
+
 config FREETZ_REMOVE_WEBSRV
 	bool "Remove websrv"
 	depends on FREETZ_AVM_HAS_WEBSRV
