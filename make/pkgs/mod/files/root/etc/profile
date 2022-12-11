@@ -48,8 +48,11 @@ alias l='ls -la'
 alias c='cd ..'
 alias w='uptime'
 
-# more aliases
-[ -d /etc/profile.d ] && for p in /etc/profile.d/* /mod/etc/profile.d/*; do
-	[ -r "$p" ] && . "$p"
-done
+# more aliases, ignoring avms /etc/profile.d/profile.sh
+if [ -d /mod/etc/profile.d ]; then
+	for p in /mod/etc/profile.d/*; do
+		[ -r "$p" ] && . "$p"
+	done
+	unset p
+fi
 
