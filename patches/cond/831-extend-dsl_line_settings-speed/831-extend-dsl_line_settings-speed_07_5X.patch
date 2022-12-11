@@ -1,6 +1,6 @@
 --- usr/www/all/internet/dsl_line_settings.lua
 +++ usr/www/all/internet/dsl_line_settings.lua
-@@ -17,16 +17,16 @@
+@@ -16,16 +16,16 @@
  end
  function InitMode()
  g_data.marge_receive = read_if_possible("sar:settings/DownstreamMarginOffset")
@@ -21,7 +21,7 @@
  g_data.inp_smart_dsl = box.query("sar:status/AdvisedDsINP")
  g_data.limit_rate = box.query("sar:settings/LimitPhyToBookedRateEnable")
  g_data.show_limit_rate = (tonumber(g_data.limit_rate) or -1) ~= -1
-@@ -142,6 +148,30 @@
+@@ -141,6 +141,30 @@
  result.add(html.tr{
  html.td{class = "title", title},
  html.td{class = "radio", html.div{
@@ -52,7 +52,7 @@
  html.input{type = "radio", name = val_name, checked = selected_id == all_values[5],
  value = all_values[5], id = val_id .. "4"
  }
-@@ -174,6 +198,14 @@
+@@ -173,6 +173,14 @@
  if get_smart_style() ~= "" then
  result.add(html.tr{
  html.td{class = "title", " "},
@@ -67,7 +67,7 @@
  html.td{class = "radio", html.div{class = get_smart(smart_id, all_values[5]), " "}},
  html.td{class = "emptyline", html.div{}},
  html.td{class = "radio", html.div{class = get_smart(smart_id, all_values[4]), " "}},
-@@ -286,14 +318,18 @@
+@@ -285,14 +285,18 @@
  html.td{colspan = "4", class = "left", html.div{html.span{class = "wrap",
  [[{?5085:720?}]]
  }}},
@@ -88,7 +88,7 @@
  }
  )
  if show_down then
-@@ -666,13 +702,12 @@
+@@ -665,13 +665,12 @@
  <?include "templates/page_head.html" ?>
  <form id="main_form" method="POST" action="<?lua href.write(box.glob.script) ?>">
  <div>

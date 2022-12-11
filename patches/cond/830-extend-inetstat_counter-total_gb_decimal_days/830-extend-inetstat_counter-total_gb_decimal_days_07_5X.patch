@@ -1,0 +1,89 @@
+--- usr/www/avm/internet/inetstat_counter.lua
++++ usr/www/all/internet/inetstat_counter.lua
+@@ -20,12 +20,12 @@
+ <tr class="first_row">
+ <th class="first_col"></th>
+ <th>{?815:780?}</th>
+-<th style="text-align:center;" colspan="3">{?815:401?}</th>
++<th style="text-align:center;" colspan="3">Datenvolumen (GB)</th>
+ <th>{?815:377?}</th>
+ </tr>
+ <tr class="first_row">
+ <th class="first_col"></th>
+-<th>{?815:351?}</th>
++<th>([d+]hh:mm)</th>
+ <th>{?815:151?}</th>
+ <th>{?815:605?}</th>
+ <th>{?815:915?}</th>
+@@ -36,7 +36,7 @@
+ end
+ function write_vol_js()
+ local result = {}
+-for _, period in ipairs{"Today", "Yesterday", "ThisWeek", "ThisMonth", "LastMonth"} do
++for _, period in ipairs{"Today", "Yesterday", "ThisWeek", "LastWeek", "ThisMonth", "LastMonth", "Total"} do
+ result[period] = {
+ BytesReceivedHigh = box.query("inetstat:status/" .. period .. "/BytesReceivedHigh"),
+ BytesReceivedLow = box.query("inetstat:status/" .. period .. "/BytesReceivedLow"),
+@@ -50,11 +50,21 @@
+ local str = ""
+ local outgoingcalls = box.query("inetstat:status/"..request.."/OutgoingCalls")
+ local time = box.query("inetstat:status/"..request.."/PhyConnTimeOutgoing")
+-str = [[<td datalabel="{?815:922?}" class="time">]] .. general.convert_to_str(time) .. [[</td>]]
++
++_time = general.convert_to_str(time)
++_hour = string.sub(_time, 0, string.len(_time)-3)
++if (tonumber(_hour) >= 24) then
++_days = math.floor(_hour/24)
++_hour = _hour - 24*_days
++if string.len(_hour) <2 then _hour = "0" .. _hour end
++_time = _days .. "+" .. _hour .. string.sub(_time, string.len(_time)-2)
++end
++str = [[<td datalabel="Online-Zeit ([d+]hh:mm)" class="time">]] .. _time .. [[</td>]]
++
+ str = str .. core.sprintf([[
+-<td datalabel="{?815:466?}" class="vol vol-sum">%1</td>
+-<td datalabel="{?815:493?}" class="vol vol-outgoing">%2</td>
+-<td datalabel="{?815:744?}" class="vol vol-incoming">%3</td>
++<td datalabel="Datenvolumen gesamt (GB)" class="vol vol-sum">%1</td>
++<td datalabel="Datenvolumen gesendet (GB)" class="vol vol-outgoing">%2</td>
++<td datalabel="Datenvolumen empfangen (GB)" class="vol vol-incoming">%3</td>
+ ]],
+ box.tohtml(" "),
+ box.tohtml(" "),
+@@ -69,8 +69,10 @@
+ Today = [[{?815:124?}]],
+ Yesterday = [[{?815:693?}]],
+ ThisWeek = [[{?815:110?}]],
++LastWeek = "Vorwoche",
+ ThisMonth = [[{?815:215?}]],
+-LastMonth = [[{?815:617?}]]
++LastMonth = [[{?815:617?}]],
++Total = "Gesamt"
+ }
+ str = str .. [[
+ <td datalabel="" class="first_col">]]
+@@ -86,8 +86,10 @@
+ local str = get_data_table_row("Today")
+ str = str .. get_data_table_row("Yesterday")
+ str = str .. get_data_table_row("ThisWeek")
++str = str .. get_data_table_row("LastWeek")
+ str = str .. get_data_table_row("ThisMonth")
+ str = str .. get_data_table_row("LastMonth")
++str = str .. get_data_table_row("Total")
+ return str
+ end
+ function get_data_table()
+@@ -430,7 +430,12 @@
+ return high * 4294967296 + low;
+ }
+ function convertToMB(num) {
+-return Math.round(num / 1000000);
++var result = Math.round(num / 1000000);
++result = String(Math.floor(result /102.4 +0.5));
++if (result.length < 2) result = "0" + result;
++result = result.replace(/(.)$/,",$1");
++result = result.replace(/(.)(...,.)$/,"$1.$2");
++return result;
+ }
+ function updateVolume() {
+ const data = <?lua write_vol_js() ?>;
