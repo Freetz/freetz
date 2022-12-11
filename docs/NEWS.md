@@ -1,5 +1,11 @@
 # NEWS
 
+ * __[2022-12-11](#2022-12-11)__<a id='2022-12-11'></a><br>
+   AVM hat wie gewohnt Fritzos optimiert und den multid noch viel mehr verbessert. Eines seiner neuen Features<br>
+   ist ein Crash wenn Port 53/udp belegt ist. So kann durch die Sicherheitsoptimierungen kein anderer DNS-Server<br>
+   mehr auf dem Standardport betrieben werden.<br>
+   Falls man darauf nicht verzichten möchte bietet sich eine Alternative wie Openwrt an.<br>
+
  * __[2022-11-01](#2022-11-01)__<a id='2022-11-01'></a><br>
    Die precompiled Hosttool werden nun nicht mehr mit Ubuntu 18 x64 sondern sondern mit Ubuntu 20 x64 erstellt.<br>
    Daher werden diese auf sehr alten Systemen nicht mehr funktionieren.<br>
