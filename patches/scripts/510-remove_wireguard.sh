@@ -15,5 +15,7 @@ for files in \
 	rm_files "${FILESYSTEM_MOD_DIR}/$files"
 done
 
+supervisor_delete_service "vpnd"
+
 #WebUI is patched by selected remove-vpn
 
