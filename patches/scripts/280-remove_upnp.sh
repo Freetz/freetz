@@ -49,6 +49,8 @@ for _upnp_name in upnpdevdstart upnpdstart _upnp_name; do
 	modsed "s/^\($_upnp_name *()\)/\1\n{ return; }\n_\1/" "$_upnp_file" "_$_upnp_name"
 done
 
+supervisor_delete_service "upnpd"
+
 echo1 "patching rc.conf"
 modsed "s/CONFIG_UPNP=.*$/CONFIG_UPNP=\"n\"/g" "$FILESYSTEM_MOD_DIR/etc/init.d/rc.conf"
 
