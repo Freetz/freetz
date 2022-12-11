@@ -7,8 +7,6 @@ for file in \
   usr/share/avmcounterd/ \
   lib/libavmcounterd_module.so* \
   lib/libkavmcounterd.so* \
-  lib/libavmrrdtoolapi.so* \
-  lib/libavmrrdstate.so* \
   ; do
 	rm_files "${FILESYSTEM_MOD_DIR}/$file"
 done
