@@ -86,7 +86,7 @@ Latest changes
    * libusb-compat 0.1.8
    * libxml2 2.10.3
    * neon 0.30.2/0.32.4
-   * pcre2 10.41
+   * pcre2 10.42
 
  - Firmware updates:
    * Please see [FIRMWARES](FIRMWARES.md) for the list of currently supported devices and firmwares.
