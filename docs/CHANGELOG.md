@@ -62,6 +62,7 @@ Latest changes
    * dehydrated 0.7.1 (letsencrypt)
    * Dnsmasq 2.80/2.88
    * Dropbear 2022.83
+   * Git 2.38.2
    * HAProxy 2.6.7
    * Knock 0.8
    * Lua 5.1.5/5.4.4
