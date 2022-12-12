@@ -49,6 +49,7 @@ Latest changes
 
  - Host tools:
    * fakeroot 1.30.1
+   * kconfig 6.1
    * precompiled host-tools 2022-12-10
    * pseudo 1.9.0 oe-core c9670c2
    * sed 4.9

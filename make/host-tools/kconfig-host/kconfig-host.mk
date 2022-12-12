@@ -1,6 +1,7 @@
-$(call TOOLS_INIT, v6.0)
+$(call TOOLS_INIT, v6.1)
+## patches/300-main_makefile.patch contains also the version
 $(PKG)_SOURCE:=kconfig-$($(PKG)_VERSION).tar.xz
-$(PKG)_HASH:=30194675680980ee5a5f4ba698320faa42e6fe968cfccea250efc07f2e72d39d
+$(PKG)_HASH:=18dc09c3261d25c3c911e28003bde49d5450a8b85813231bd425bd0f6e22504a
 $(PKG)_SITE:=git_archive@git://repo.or.cz/linux.git,scripts/basic,scripts/kconfig,scripts/Kbuild.include,scripts/Makefile.compiler,scripts/Makefile.build,scripts/Makefile.host,scripts/Makefile.lib,Documentation/kbuild/kconfig-language.rst,Documentation/kbuild/kconfig-macro-language.rst,Documentation/kbuild/kconfig.rst
 
 $(PKG)_TARGET_DIR:=$(TOOLS_DIR)/kconfig
