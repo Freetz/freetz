@@ -18,7 +18,7 @@
    for ac_prog in gar ar
 --- Makefile
 +++ Makefile
-@@ -1466,7 +1466,7 @@
+@@ -1575,7 +1575,7 @@
  
  ifdef LIBPCREDIR
  	BASIC_CFLAGS += -I$(LIBPCREDIR)/include
@@ -27,7 +27,7 @@
  endif
  
  ifdef HAVE_ALLOCA_H
-@@ -1486,7 +1486,7 @@
+@@ -1595,7 +1595,7 @@
  	ifdef CURLDIR
  		# Try "-Wl,-rpath=$(CURLDIR)/$(lib)" in such a case.
  		CURL_CFLAGS = -I$(CURLDIR)/include
@@ -36,7 +36,7 @@
  	else
  		CURL_CFLAGS =
  		CURL_LIBCURL =
-@@ -1522,7 +1522,7 @@
+@@ -1631,7 +1631,7 @@
  	ifndef NO_EXPAT
  		ifdef EXPATDIR
  			BASIC_CFLAGS += -I$(EXPATDIR)/include
@@ -45,7 +45,7 @@
  		else
  			EXPAT_LIBEXPAT = -lexpat
  		endif
-@@ -1535,7 +1535,7 @@
+@@ -1644,7 +1644,7 @@
  
  ifdef ZLIB_PATH
  	BASIC_CFLAGS += -I$(ZLIB_PATH)/include
@@ -54,7 +54,7 @@
  endif
  EXTLIBS += -lz
  
-@@ -1543,7 +1543,7 @@
+@@ -1652,7 +1652,7 @@
  	OPENSSL_LIBSSL = -lssl
  	ifdef OPENSSLDIR
  		BASIC_CFLAGS += -I$(OPENSSLDIR)/include
@@ -63,7 +63,7 @@
  	else
  		OPENSSL_LINK =
  	endif
-@@ -1570,7 +1570,7 @@
+@@ -1679,7 +1679,7 @@
  	ifdef NEEDS_LIBICONV
  		ifdef ICONVDIR
  			BASIC_CFLAGS += -I$(ICONVDIR)/include
