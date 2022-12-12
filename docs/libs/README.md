@@ -266,7 +266,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
   * **[pcre: libpcre (libpcre.so) 8.45](pcre.md)<a id='pcre'></a>**<br>
     A Perl Compatible Regular Expression library
 
-  * **[pcre2: libpcre2 (libpcre2-8.so) 10.41](pcre2.md)<a id='pcre2'></a>**<br>
+  * **[pcre2: libpcre2 (libpcre2-8.so) 10.42](pcre2.md)<a id='pcre2'></a>**<br>
     A Perl Compatible Regular Expression library
 
   * **[pjproject2: libpj (libpj.so) 2.2.1](pjproject2.md)<a id='pjproject2'></a>**<br>
