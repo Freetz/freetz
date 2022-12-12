@@ -55,6 +55,11 @@ Latest changes
    * sed 4.9
    * xz 5.2.9
 
+ - Patches:
+   * remove AVMCOUNTERD: collects some data for you
+   * remove AVM-WireGuard: VPN even with IPv6 support!!1
+   * Various Fritzos 7.5 related changes
+
  - Packages:
    * ACME.sh 3.0.5 (letsencrypt)
    * BIND 9.11.37/9.16.35
