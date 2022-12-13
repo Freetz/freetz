@@ -11,5 +11,7 @@ modsed -r \
   's/(AVMDAEMONS.* )ddnsd /\1/g' \
   "${FILESYSTEM_MOD_DIR}/etc/init.d/rc.net"
 
+supervisor_delete_service "ddnsd"
+
 rm_files ${FILESYSTEM_MOD_DIR}/sbin/ddnsd
 
