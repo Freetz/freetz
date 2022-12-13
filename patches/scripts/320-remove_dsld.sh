@@ -6,6 +6,8 @@ rm_files "${FILESYSTEM_MOD_DIR}/etc/modules-load.d/dsl.conf"
 
 modsed 's/^ *eval.*dsld.*/echo -n/g' "$FILESYSTEM_MOD_DIR/etc/init.d/rc.net"
 
+supervisor_delete_service "dsld"
+
 if [ -e "$FILESYSTEM_MOD_DIR/etc/init.d/rc.init" ]; then
 	modsed "s/DSL=y/DSL=n/g" "$FILESYSTEM_MOD_DIR/etc/init.d/rc.init"
 else
