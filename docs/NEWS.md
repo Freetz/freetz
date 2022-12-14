@@ -1,6 +1,9 @@
 # NEWS
 
- * __[2022-12-11](#2022-12-11)__<a id='2022-12-11'></a><br>
+ * __[2022-12-14](#2022-12-14)__<a id='2022-12-14'></a><br>
+   Frohe Weihnachten und guten Rutsch.<br>
+
+  * __[2022-12-11](#2022-12-11)__<a id='2022-12-11'></a><br>
    AVM hat wie gewohnt Fritzos optimiert und den multid noch viel mehr verbessert. Eines seiner neuen Features<br>
    ist ein Crash wenn Port 53/udp belegt ist. So kann durch die Sicherheitsoptimierungen kein anderer DNS-Server<br>
    mehr auf dem Standardport betrieben werden.<br>
