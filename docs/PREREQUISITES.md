@@ -75,7 +75,7 @@ sudo yum -y install ImageMagick subversion gcc gcc-c++ binutils autoconf automak
  - Deutsche Tastaturbelegung:<br>
 Siehe [ubuntu.com: LocaleConf](https://help.ubuntu.com/community/LocaleConf)
 ```
-sudo apt-get -y install console-data && sudo locale-gen de_DE && sudo dpkg-reconfigure console-data && exit
+sudo apt-get -y install console-data && sudo locale-gen de_DE && sudo dpkg-reconfigure console-data
 ```
 
  - 32-Bit (Multiarch) aktivieren:<br>
