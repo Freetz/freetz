@@ -82,7 +82,7 @@ Latest changes
    * SQLite 3.40.0
    * Tor 0.4.7.11
    * Unbound 1.17.0
-   * XZ Utils 5.2.9
+   * XZ Utils 5.2.10
 
  - Libraries:
    * expat 2.5.0
