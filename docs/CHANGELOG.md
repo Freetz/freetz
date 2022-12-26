@@ -72,7 +72,7 @@ Latest changes
    * HAProxy 2.6.7
    * Knock 0.8
    * Lua 5.1.5/5.4.4
-   * Nano 7.0
+   * Nano 7.1
    * OpenSSH 9.1p1
    * OpenSSL 0.9.8zh/1.0.2u/1.1.1s/3.0.7
    * OpenVPN 2.4.12/2.5.8
