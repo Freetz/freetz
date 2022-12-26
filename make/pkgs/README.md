@@ -356,7 +356,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
   * **<u>iftop 0.17 (binary only)</u><a id='iftop'></a>**<br>
     iftop does for network usage what top(1) does for CPU usage. It listens to network traffic on a named interface and displays a table of current bandwidth usage by pairs of hosts. Handy for answering the question "why is our ADSL link so slow?". WWW: http://www.ex-parrot.com/pdw/iftop/
 
-  * **[igmpproxy 0.1](../../docs/make/igmpproxy.md)<a id='igmpproxy'></a>**<br>
+  * **[IGMPproxy 0.4](../../docs/make/igmpproxy.md)<a id='igmpproxy'></a>**<br>
     IGMPproxy is a simple dynamic Multicast Routing Daemon using only IGMP signalling. It's intended for simple forwarding of Multicast traffic between networks.
 
   * **<u>ImageMagick 7.0.10-10 (binary only)</u><a id='imagemagick'></a>**<br>
