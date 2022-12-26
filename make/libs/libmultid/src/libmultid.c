@@ -33,15 +33,15 @@
 #endif
 #endif
 
-static void debug_printf(char *fmt, ...) {
 #ifdef DEBUG
+static void debug_printf(char *fmt, ...) {
 	va_list ap;
 	va_start(ap, fmt);
 	vfprintf(stdout, fmt, ap);
 	va_end(ap);
 	fflush(stdout);
-#endif
 }
+#endif
 
 static int (*real_bind)(int, const struct sockaddr *, socklen_t) = NULL;
 
@@ -69,7 +69,9 @@ static void _libmultid_init (void)
 		fprintf(stderr, "[libmultid::_libmultid_init()] Unable to get bind-handle: %s\n", err);
 		exit(1);
 	}
+#ifdef DEBUG
 	debug_printf("[libmultid::_libmultid_init()] successfully initialized\n");
+#endif
 }
 
 #ifdef D_LOCAL
@@ -141,8 +143,9 @@ int bind (int fd, const struct sockaddr *sk, socklen_t sl)
 		break;
 #endif
 	default:
-		debug_printf("[libmultid::bind()] address family unknown af=%d fd=%d\n", sk->sa_family, fd);
+		fprintf(stderr, "[libmultid::bind()] address family unknown af=%d fd=%d\n", sk->sa_family, fd);
 		break;
 	}
 	return real_bind (fd, sk, sl);
 }
+
