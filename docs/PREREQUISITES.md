@@ -4,6 +4,7 @@ Eine einfache Möglichkeit die benötigten Pakete zu installieren besteht darin,
 ### Getestete Distributionen
  - [Fedora](#fedora)
  - [Ubuntu](#ubuntu)
+ - [Kali](#kali)
  - sonst keine
 
 ### Problematische Distributionen
@@ -13,8 +14,9 @@ Eine einfache Möglichkeit die benötigten Pakete zu installieren besteht darin,
 ### Alle anderen Distributionen
 ... sind ungetestet und können funktionieren oder auch nicht. Dies hängt start von den Fähigkeiten des Bedieners ab.
 
+### Kali
 Kali rolling wurde schon erfolgreich zum Bauen benutzt. Einfach die Pakete installieren, die für Ubuntu vorgeschlagen werden.
-Das meiste wird bei Kali sowiso schon dabei installiert sein.
+Das meiste wird bei Kali sowieso schon dabei installiert sein.
 
 ### Distribution ermitteln
 Wenn man vergessen hat welche Linux Version installiert ist kann dies so prüfen:
