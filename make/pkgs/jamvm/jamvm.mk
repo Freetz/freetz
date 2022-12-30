@@ -2,6 +2,10 @@ $(call PKG_INIT_BIN, 2.0.0)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_HASH:=76428e96df0ae9dd964c7a7c74c1e9a837e2f312c39e9a357fa8178f7eff80da
 $(PKG)_SITE:=@SF/$(pkg)
+### WEBSITE:=https://jamvm.sourceforge.net/
+### MANPAGE:=https://sourceforge.net/projects/jamvm/files/jamvm/JamVM%202.0.0/
+### CHANGES:=https://sourceforge.net/projects/jamvm/files/jamvm/
+### CVSREPO:=https://sourceforge.net/p/jamvm/code/ci/master/tree/
 
 $(PKG)_BINARY:=$($(PKG)_DIR)/src/jamvm
 $(PKG)_TARGET_BINARY:=$($(PKG)_DEST_DIR)/usr/bin/jamvm
