@@ -23,6 +23,7 @@ $(PKG)_CPPFLAGS += $(if $(FREETZ_AVM_PROP_LIBC_GLIBC),-DD_GLIBC)
 $(PKG)_CPPFLAGS += $(if $(FREETZ_AVM_PROP_LIBC_MUSL),-DD_MUSL)
 $(PKG)_CPPFLAGS += $(if $(FREETZ_AVM_PROP_LIBC_UCLIBC),-DD_UCLIBC)
 
+
 $(PKG_LOCALSOURCE_PACKAGE)
 $(PKG_CONFIGURED_NOP)
 
@@ -33,6 +34,7 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 		CPPFLAGS="$(strip $(LIBMULTID_CPPFLAGS))" \
 		LIB_VERSION="$(LIBMULTID_VERSION)" \
 		all
+	$(FREETZ_BASE_DIR)/$(TOOLS_DIR)/patchelf --remove-rpath $@
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 	$(INSTALL_LIBRARY_STRIP)
@@ -40,6 +42,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY)
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(LIBMULTID_DIR) clean
