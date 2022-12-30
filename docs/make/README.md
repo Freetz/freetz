@@ -89,7 +89,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
   * **[Cifsmount 7.0](cifsmount.md)<a id='cifsmount'></a>**<br>
     User space helper for mounting remote CIFS shares + CGI web interface for easy configuration of up to three mounts incl. (auto-) start/stop. CIFS is an extended version of SMB, the well-known protocol used by MS Windows and Samba for sharing folders, files and printers. Thus, cifsmount is a replacement for smbmount, having the advantage of being significantly smaller than smbmount. So if you want to mount Windows or Samba shares from your router box, this package is for you. If this does not work, enable replace-kernel!
 
-  * **<u>classpath GNU 0.98 (binary only)</u><a id='classpath'></a>**<br>
+  * **<u>classpath GNU 0.99 (binary only)</u><a id='classpath'></a>**<br>
     GNU Classpath, Essential Libraries for Java, is a GNU project to create free core class libraries for use with virtual machines and compilers for the java programming language.
 
   * **<u>Cntlm 0.93beta5 (binary only)</u><a id='cntlm'></a>**<br>
