@@ -7,7 +7,7 @@ $(PKG)_SITE:=https://download.savannah.nongnu.org/releases/attr,http://ftp.de.de
 ### CHANGES:=https://git.savannah.nongnu.org/cgit/attr.git/log/
 ### CVSREPO:=https://git.savannah.nongnu.org/cgit/attr.git
 
-$(PKG)_BINARY:=$($(PKG)_DIR)/libattr/.libs/lib$(pkg).so.$($(PKG)_LIB_VERSION)
+$(PKG)_BINARY:=$($(PKG)_DIR)/.libs/lib$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_STAGING_BINARY:=$(TARGET_TOOLCHAIN_STAGING_DIR)/lib/lib$(pkg).so.$($(PKG)_LIB_VERSION)
 $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/lib$(pkg).so.$($(PKG)_LIB_VERSION)
 
