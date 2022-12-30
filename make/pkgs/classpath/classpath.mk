@@ -3,6 +3,10 @@ $(PKG)_LIB_VERSION:=0.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_HASH:=f929297f8ae9b613a1a167e231566861893260651d913ad9b6c11933895fecc8
 $(PKG)_SITE:=@GNU/$(pkg)
+### WEBSITE:=https://www.gnu.org/software/classpath/
+### MANPAGE:=https://developer.classpath.org/mediation/
+### CHANGES:=https://www.gnu.org/software/classpath/downloads/downloads.html
+### CVSREPO:=http://savannah.gnu.org/cvs/?group=classpath
 
 $(PKG)_CLASSES_FILE_FULL:=glibj.zip
 $(PKG)_CLASSES_FILE_MINI:=mini.jar
