@@ -259,14 +259,12 @@ config FREETZ_AVM_HAS_JUIS_SUPPORT
 config FREETZ_AVM_HAS_MULTID_LEASES_FORMAT_V2
 	bool
 	default y
-	depends on \
-		FREETZ_AVM_VERSION_05_2X_MIN
+	depends on FREETZ_AVM_VERSION_05_2X_MIN
 
 config FREETZ_AVM_HAS_DNSCRASH
 	bool
 	default y
-	depends on \
-		FREETZ_AVM_VERSION_07_5X_MIN
+	depends on FREETZ_AVM_VERSION_07_5X_MIN && !FREETZ_AVM_HAS_AVMMULTID_PRELOAD
 	help
 		multid crashes on start if another dns server uses
 		port 53/udp. It's not a but, its a secarity feature.
@@ -274,12 +272,10 @@ config FREETZ_AVM_HAS_DNSCRASH
 config FREETZ_AVM_HAS_AVMMULTID_PRELOAD
 	bool
 	default y
-	depends on \
-		!FREETZ_SEPARATE_AVM_UCLIBC
+	depends on !FREETZ_SEPARATE_AVM_UCLIBC
 
 config FREETZ_AVM_HAS_AVMCTLMGR_PRELOAD
 	bool
 	default y
-	depends on \
-		!FREETZ_SEPARATE_AVM_UCLIBC
+	depends on !FREETZ_SEPARATE_AVM_UCLIBC
 
