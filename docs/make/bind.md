@@ -1,4 +1,4 @@
-# BIND 9.11.37/9.16.35
+# BIND 9.11.37/9.16.36
  - Homepage: [https://www.isc.org/bind/](https://www.isc.org/bind/)
  - Manpage: [https://bind9.readthedocs.io/en/v9_16/](https://bind9.readthedocs.io/en/v9_16/)
  - Changelog: [https://bind9.readthedocs.io/en/v9_16/notes.html](https://bind9.readthedocs.io/en/v9_16/notes.html)
