@@ -123,7 +123,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
      - [Konfiguration cifsmount](../../docs/make/cifsmount.md#konfiguration-cifsmount)
      - [Fehlersuche](../../docs/make/cifsmount.md#fehlersuche)
 
-  * **<u>classpath GNU 0.99 (binary only)</u><a id='classpath'></a>**<br>
+  * **[classpath GNU 0.99 (binary only)](../../docs/make/classpath.md)<a id='classpath'></a>**<br>
     GNU Classpath, Essential Libraries for Java, is a GNU project to create free core class libraries for use with virtual machines and compilers for the java programming language.
 
   * **<u>Cntlm 0.93beta5 (binary only)</u><a id='cntlm'></a>**<br>
