@@ -52,8 +52,7 @@ static void debug_printf(char *fmt, ...) {
 static int (*real_bind)(int, const struct sockaddr *, socklen_t) = NULL;
 
 static void _libmultid_init (void) __attribute__((constructor));
-static void _libmultid_init (void)
-{
+static void _libmultid_init (void) {
 	const char *err;
 
 #if defined(RTLD_NEXT) && 0
@@ -89,9 +88,7 @@ static void _libmultid_init (void)
 #define BIND_TO_LOCAL6(_sin6_addr)
 #endif
 
-static int
-change_port (u_short *pport)
-{
+static int change_port (u_short *pport) {
 	u_short port = ntohs (*pport);
 	switch (port) {
 #if defined D_DNS || defined D_DHCP || defined D_LLMNR
@@ -114,8 +111,7 @@ change_port (u_short *pport)
 	}
 }
 
-int bind (int fd, const struct sockaddr *sk, socklen_t sl)
-{
+int bind (int fd, const struct sockaddr *sk, socklen_t sl) {
 	switch (sk->sa_family) {
 	case AF_INET: {
 		struct sockaddr_in *lsk_in = (struct sockaddr_in *)sk;
