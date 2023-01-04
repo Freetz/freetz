@@ -1,6 +1,6 @@
-$(call PKG_INIT_BIN, 1.4.67)
+$(call PKG_INIT_BIN, 1.4.68)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.xz
-$(PKG)_HASH:=7e04d767f51a8d824b32e2483ef2950982920d427d1272ef4667f49d6f89f358
+$(PKG)_HASH:=e56f37ae52b63e1ada4d76ce78005affb6e56eea2f6bdb0ce17d6d36e9583384
 $(PKG)_SITE:=https://download.lighttpd.net/lighttpd/releases-1.4.x
 ### WEBSITE:=https://www.lighttpd.net/
 ### MANPAGE:=https://redmine.lighttpd.net/projects/lighttpd/wiki
@@ -16,7 +16,7 @@ $(PKG)_MODULES_ALL := \
 	auth authn_dbi authn_file authn_gssapi authn_ldap authn_pam \
 	cgi \
 	deflate dirlisting \
-	evasive evhost expire extforward \
+	evhost expire extforward \
 	fastcgi \
 	gnutls \
 	indexfile \
@@ -25,8 +25,8 @@ $(PKG)_MODULES_ALL := \
 	openssl \
 	proxy \
 	redirect rewrite rrdtool \
-	scgi secdownload setenv simple_vhost sockproxy ssi staticfile status \
-	uploadprogress userdir usertrack \
+	scgi setenv simple_vhost sockproxy ssi staticfile status \
+	userdir \
 	vhostdb vhostdb_dbi vhostdb_ldap vhostdb_mysql vhostdb_pgsql \
 	webdav wolfssl wstunnel
 $(PKG)_MODULES := $(call PKG_SELECTED_SUBOPTIONS,$($(PKG)_MODULES_ALL),MOD)
@@ -134,6 +134,7 @@ ifneq ($(strip $(FREETZ_TARGET_UCLIBC_SUPPORTS_inotify)),y)
 $(PKG)_CONFIGURE_ENV += ac_cv_header_sys_inotify_h=no
 endif
 
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -150,6 +151,7 @@ $($(PKG)_MODULES_TARGET_DIR): $($(PKG)_DEST_DIR)$($(PKG)_MODULES_DIR)/%: $($(PKG
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_BINARY_TARGET_DIR) $($(PKG)_MODULES_TARGET_DIR)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(LIGHTTPD_DIR) clean

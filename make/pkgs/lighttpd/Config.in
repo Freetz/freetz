@@ -1,5 +1,5 @@
 menuconfig FREETZ_PACKAGE_LIGHTTPD
-	bool "Lighttpd 1.4.67"
+	bool "Lighttpd 1.4.68"
 	select FREETZ_LIB_libpthread if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_PACKAGE_LIGHTTPD_MOD_ACCESS
 	select FREETZ_PACKAGE_LIGHTTPD_MOD_INDEXFILE
@@ -199,14 +199,6 @@ if FREETZ_PACKAGE_LIGHTTPD
 			for more information on this module.
 
 
-	config FREETZ_PACKAGE_LIGHTTPD_MOD_EVASIVE
-		bool "mod_evasive - DEPRECATED"
-		default n
-		help
-			This option adds mod_evasive.so to the image.
-			Please see https://redmine.lighttpd.net/wiki/1/Docs:ModEvasive
-			for more information on this module.
-
 	config FREETZ_PACKAGE_LIGHTTPD_MOD_EVHOST
 		bool "mod_evhost"
 		default y
@@ -315,14 +307,6 @@ if FREETZ_PACKAGE_LIGHTTPD
 			Please see https://redmine.lighttpd.net/wiki/1/Docs:ModSCGI
 			for more information on this module.
 
-	config FREETZ_PACKAGE_LIGHTTPD_MOD_SECDOWNLOAD
-		bool "mod_secdownload - DEPRECATED"
-		default n
-		help
-			This option adds mod_secdownload.so to the image.
-			Please see https://redmine.lighttpd.net/wiki/1/Docs:ModSecDownload
-			for more information on this module.
-
 	config FREETZ_PACKAGE_LIGHTTPD_MOD_SETENV
 		bool "mod_setenv"
 		default y
@@ -364,28 +348,12 @@ if FREETZ_PACKAGE_LIGHTTPD
 			Please see https://redmine.lighttpd.net/wiki/1/Docs:ModStatus
 			for more information on this module.
 
-	config FREETZ_PACKAGE_LIGHTTPD_MOD_UPLOADPROGRESS
-		bool "mod_uploadprogress - DEPRECATED"
-		default n
-		help
-			This option adds mod_userdir.so to the image.
-			Please see https://redmine.lighttpd.net/wiki/1/Docs:ModUploadprogress
-			for more information on this module.
-
 	config FREETZ_PACKAGE_LIGHTTPD_MOD_USERDIR
 		bool "mod_userdir"
 		default y
 		help
 			This option adds mod_userdir.so to the image.
 			Please see https://redmine.lighttpd.net/wiki/1/Docs:ModUserDir
-			for more information on this module.
-
-	config FREETZ_PACKAGE_LIGHTTPD_MOD_USERTRACK
-		bool "mod_usertrack - DEPRECATED"
-		default n
-		help
-			This option adds mod_usertrack.so to the image.
-			Please see https://redmine.lighttpd.net/wiki/1/Docs:ModUserTrack
 			for more information on this module.
 
 	config FREETZ_PACKAGE_LIGHTTPD_MOD_VHOSTDB

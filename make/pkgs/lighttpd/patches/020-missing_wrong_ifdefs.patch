@@ -1,11 +1,11 @@
 --- src/mod_openssl.c
 +++ src/mod_openssl.c
-@@ -2284,7 +2284,7 @@
-             SSL_CTX_set_options(s->ssl_ctx, SSL_OP_PRIORITIZE_CHACHA);
-       #endif
- 
--      #ifndef OPENSSL_NO_DH
-+      #if !defined(OPENSSL_NO_DH) && !defined(OPENSSL_NO_BIO)
-       {
-        #if OPENSSL_VERSION_NUMBER < 0x30000000L
-         DH *dh;
+@@ -2108,7 +2108,7 @@
+ static int
+ mod_openssl_ssl_conf_dhparameters(server *srv, plugin_config_socket *s, const buffer *dhparameters)
+ {
+-  #ifndef OPENSSL_NO_DH
++  #if !defined(OPENSSL_NO_DH) && !defined(OPENSSL_NO_BIO)
+    #if OPENSSL_VERSION_NUMBER < 0x30000000L
+     DH *dh;
+     /* Support for Diffie-Hellman key exchange */
