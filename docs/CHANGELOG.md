@@ -48,6 +48,7 @@ Latest changes
    * Ccache 4.7.4
 
  - Host tools:
+   * busybox 1.36.0
    * fakeroot 1.30.1
    * kconfig 6.1
    * precompiled host-tools 2022-12-27
