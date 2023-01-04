@@ -63,6 +63,7 @@ Latest changes
  - Packages:
    * ACME.sh 3.0.5 (letsencrypt)
    * BIND 9.11.37/9.16.36
+   * BusyBox 1.36.0
    * CCID 1.5.1
    * classpath 0.99
    * Curl 7.87.0

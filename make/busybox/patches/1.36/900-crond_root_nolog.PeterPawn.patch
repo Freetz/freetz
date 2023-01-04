@@ -23,9 +23,9 @@
 +	smallint cl_nolog;              /* bool: disable logging of start message for job entries starting with a dash (-), only valid for user 'root' */
 +#endif
  	char *cl_shell;
+ 	char *cl_path;
  	/* ordered by size, not in natural order. makes code smaller: */
- 	char cl_Dow[7];                 /* 0-6, beginning sunday */
-@@ -550,6 +561,13 @@
+@@ -557,6 +568,13 @@
  			} else
  #endif
  			{
@@ -39,7 +39,7 @@
  				/* parse date ranges */
  				ParseField(file->cf_username, line->cl_Mins, 60, 0, NULL, tokens[0]);
  				ParseField(file->cf_username, line->cl_Hrs, 24, 0, NULL, tokens[1]);
-@@ -948,6 +966,9 @@
+@@ -956,6 +974,9 @@
  				continue;
  
  			pid = start_one_job(file->cf_username, line);

@@ -52,7 +52,7 @@ Signed-off-by: Eugene Rudoy <gene.devel@gmail.com>
  //usage:     "\n	-p	Write to stdout"
  //usage:     "\n	-t	Test"
  //usage:     "\n	-q	Quiet"
-@@ -492,8 +503,12 @@
+@@ -494,8 +505,12 @@
  		OPT_l = (1 << 0),
  		OPT_x = (1 << 1),
  		OPT_j = (1 << 2),
@@ -65,7 +65,7 @@ Signed-off-by: Eugene Rudoy <gene.devel@gmail.com>
  	smallint quiet = 0;
  	IF_NOT_FEATURE_UNZIP_CDF(const) smallint verbose = 0;
  	enum { O_PROMPT, O_NEVER, O_ALWAYS };
-@@ -557,7 +572,7 @@
+@@ -559,7 +574,7 @@
  
  	opts = 0;
  	/* '-' makes getopt return 1 for non-options */
@@ -74,7 +74,7 @@ Signed-off-by: Eugene Rudoy <gene.devel@gmail.com>
  		switch (i) {
  		case 'd':  /* Extract to base directory */
  			base_dir = optarg;
-@@ -600,6 +615,13 @@
+@@ -602,6 +617,13 @@
  			opts |= OPT_j;
  			break;
  
@@ -88,7 +88,7 @@ Signed-off-by: Eugene Rudoy <gene.devel@gmail.com>
  		case 1:
  			if (!src_fn) {
  				/* The zip file */
-@@ -914,6 +936,36 @@
+@@ -916,6 +938,36 @@
  		/* Strip paths (after -l: unzip -lj a.zip lists full names) */
  		if (opts & OPT_j)
  			overlapping_strcpy(dst_fn, bb_basename(dst_fn));
