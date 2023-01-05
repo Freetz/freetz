@@ -52,7 +52,7 @@ Latest changes
    * fakeroot 1.30.1
    * kconfig 6.1
    * ncurses 6.4
-   * precompiled host-tools 2023-01-04
+   * precompiled host-tools 2023-01-05
    * pseudo 1.9.0 oe-core c9670c2
    * sed 4.9
    * xz 5.2.10
