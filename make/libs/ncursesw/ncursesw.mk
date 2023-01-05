@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 6.3)
+$(call PKG_INIT_LIB, 6.4)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=ncurses-$($(PKG)_VERSION).tar.gz
-$(PKG)_HASH:=97fc51ac2b085d4cde31ef4d2c3122c21abc217e9090a43a30fc5ec21684e059
+$(PKG)_HASH:=6931283d9ac87c5073f30b6290c4c75f21632bb4fc3603ac8100812bed248159
 $(PKG)_SITE:=@GNU/$(pkg)
 
 $(PKG)_HOST_DEPENDS_ON += ncurses-host
@@ -56,6 +56,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-pkg-config-libdir="$($(PKG)_PKGCONFIG_DIR)"
 $(PKG)_CONFIGURE_OPTIONS += --enable-widec
 $(PKG)_CONFIGURE_OPTIONS += --with-build-cppflags=-D_GNU_SOURCE
 
+
 define $(PKG)_CUSTOM_UNPACK
 	mkdir -p $($(PKG)_DIR); \
 	$(TAR) xzf $(1) --strip-components=1 -C $($(PKG)_DIR)
@@ -107,6 +108,7 @@ endef
 
 $(pkg): $($(PKG)_LIBS_STAGING_DIR)
 $(pkg)-precompiled: $($(PKG)_LIBS_TARGET_DIR)
+
 
 
 
