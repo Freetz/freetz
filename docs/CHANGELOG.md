@@ -51,6 +51,7 @@ Latest changes
    * busybox 1.36.0
    * fakeroot 1.30.1
    * kconfig 6.1
+   * ncurses 6.4
    * precompiled host-tools 2023-01-04
    * pseudo 1.9.0 oe-core c9670c2
    * sed 4.9
