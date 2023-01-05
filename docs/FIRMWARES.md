@@ -511,7 +511,7 @@ Currently supported devices and firmwares
   - 169.07.12 rev71975 {ALL} [MESH18 NL2]
   - 169.07.21 rev83013 {ALL} [PSQ19]
   - 169.07.29 rev93265 {ALL} [PSQ19P2NL4]
-  - 169.07.39 rev00000 {ALL} [MOVE21] (Labor)
+  - 169.07.50 rev102232 {ALL} [MOVE21]
 * __Fritz!Repeater 3000__
   - 174.07.04 rev66458 {ALL}
   - 174.07.14 rev73940 {ALL} [MESH18 NL4]
