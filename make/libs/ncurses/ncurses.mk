@@ -4,6 +4,9 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_HASH:=6931283d9ac87c5073f30b6290c4c75f21632bb4fc3603ac8100812bed248159
 $(PKG)_SITE:=@GNU/$(pkg)
 # run make/libs/ncurses/generate.sh after bump
+### WEBSITE:=https://invisible-island.net/ncurses/
+### MANPAGE:=https://invisible-island.net/ncurses/announce.html
+### CHANGES:=https://invisible-island.net/ncurses/NEWS.html
 
 $(PKG)_HOST_DEPENDS_ON += ncurses-host
 

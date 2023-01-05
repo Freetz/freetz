@@ -4,6 +4,10 @@ $(PKG)_SOURCE:=ncurses-$($(PKG)_VERSION).tar.gz
 $(PKG)_HASH:=6931283d9ac87c5073f30b6290c4c75f21632bb4fc3603ac8100812bed248159
 $(PKG)_SITE:=@GNU/$(pkg)
 
+
+
+
+
 $(PKG)_HOST_DEPENDS_ON += ncurses-host
 
 $(PKG)_LIBCONFIG_SHORT := ncursesw6-config
