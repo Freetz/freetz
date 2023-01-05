@@ -1,23 +1,23 @@
 --- misc/terminfo.src
 +++ misc/terminfo.src
-@@ -4815,6 +4815,7 @@
- # This version reflects the current xterm features.
- xterm-new|modern xterm terminal emulator,
+@@ -4984,6 +4984,7 @@
+ 
+ xterm+nofkeys|building block for xterm fkey-variants,
  	npc,
 +	kbs=\177,
  	kcbt=\E[Z, kent=\EOM, nel=\EE, use=ecma+index,
- 	use=ansi+rep, use=ecma+strikeout, use=xterm+pcfkeys,
- 	use=xterm+nofkeys,
-@@ -6425,7 +6426,7 @@
+ 	use=ansi+rep, use=ecma+strikeout, use=vt420+lrmm,
+ 	use=xterm+sm+1006, use=xterm+tmux, use=ecma+italics,
+@@ -6698,7 +6699,7 @@
  	enacs=\E(B\E)0, flash=\E[?5h$<100/>\E[?5l, home=\E[H,
  	ht=^I, hts=\EH, ich=\E[%p1%d@, il=\E[%p1%dL, il1=\E[L,
  	ind=\n, is1=\E[?47l\E=\E[?1l,
 -	is2=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;3;4;6l\E[4l, kbs=^H,
 +	is2=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;3;4;6l\E[4l, kbs=\177,
  	kcbt=\E[Z, kmous=\E[M, rc=\E8, rev=\E[7m, ri=\EM, rmacs=^O,
- 	rmcup=\E[2J\E[?47l\E8, rmir=\E[4l, rmkx=\E>, rmso=\E[27m,
- 	rmul=\E[24m,
-@@ -6675,7 +6676,7 @@
+ 	rmir=\E[4l, rmkx=\E>, rmso=\E[27m, rmul=\E[24m,
+ 	rs1=\E>\E[1;3;4;5;6l\E[?7h\E[m\E[r\E[2J\E[H,
+@@ -6945,7 +6946,7 @@
  	home=\E[H, hpa=\E[%i%p1%dG, ht=^I, hts=\EH, ich=\E[%p1%d@,
  	il=\E[%p1%dL, il1=\E[L, ind=\n, is1=\E[?47l\E>\E[?1l,
  	is2=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;3;4;6l\E[4l, kNXT@,
@@ -25,8 +25,8 @@
 +	kPRV@, ka1=\E[7~, ka3=\E[5~, kb2=\EOu, kbeg=\EOu, kbs=\177,
  	kc1=\E[8~, kc3=\E[6~, kent=\EOM, khlp=\E[28~, kmous=\E[M,
  	mc4=\E[4i, mc5=\E[5i, rc=\E8, rev=\E[7m, ri=\EM, rmacs=^O,
- 	rmam=\E[?7l, rmcup=\E[2J\E[?47l\E8, rmir=\E[4l, rmkx=,
-@@ -7905,7 +7906,7 @@
+ 	rmam=\E[?7l, rmir=\E[4l, rmkx=, rmso=\E[27m, rmul=\E[24m,
+@@ -8192,7 +8193,7 @@
  	dl=\E[%p1%dM, dl1=\E[M, ed=\E[J, el=\E[K, el1=\E[1K,
  	enacs=\E(B\E)0, flash=\Eg, home=\E[H, hpa=\E[%i%p1%dG,
  	ht=^I, hts=\EH, ich=\E[%p1%d@, il=\E[%p1%dL, il1=\E[L,
@@ -35,7 +35,7 @@
  	kcub1=\EOD, kcud1=\EOB, kcuf1=\EOC, kcuu1=\EOA, kf1=\EOP,
  	kf10=\E[21~, kf11=\E[23~, kf12=\E[24~, kf2=\EOQ, kf3=\EOR,
  	kf4=\EOS, kf5=\E[15~, kf6=\E[17~, kf7=\E[18~, kf8=\E[19~,
-@@ -8033,6 +8034,7 @@
+@@ -8334,6 +8335,7 @@
  # on Solaris because Sun's curses implementation gets confused.
  screen.teraterm|disable ncv in teraterm,
  	ncv#127,

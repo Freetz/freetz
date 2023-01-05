@@ -1,7 +1,7 @@
-$(call PKG_INIT_LIB, 6.3)
+$(call PKG_INIT_LIB, 6.4)
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_HASH:=97fc51ac2b085d4cde31ef4d2c3122c21abc217e9090a43a30fc5ec21684e059
+$(PKG)_HASH:=6931283d9ac87c5073f30b6290c4c75f21632bb4fc3603ac8100812bed248159
 $(PKG)_SITE:=@GNU/$(pkg)
 # run make/libs/ncurses/generate.sh after bump
 
@@ -62,6 +62,7 @@ $(PKG)_CONFIGURE_OPTIONS += --with-pkg-config-libdir="$($(PKG)_PKGCONFIG_DIR)"
 
 
 
+
 ifneq ($(strip $(DL_DIR)/$(NCURSES_SOURCE)), $(strip $(DL_DIR)/$(NCURSES_HOST_SOURCE)))
 $(PKG_SOURCE_DOWNLOAD)
 endif
@@ -108,6 +109,7 @@ $(pkg)-terminfo-precompiled: $(pkg)-terminfo
 
 $(pkg): $($(PKG)_LIBS_STAGING_DIR)
 $(pkg)-precompiled: $($(PKG)_LIBS_TARGET_DIR) $(pkg)-terminfo-precompiled
+
 
 $(pkg)-terminfo-clean:
 	$(RM) -r $(NCURSES_TABSET_STAGING_DIR) $(NCURSES_TERMINFO_STAGING_DIR)
