@@ -89,7 +89,7 @@ Latest changes
    * PCSC-lite 1.9.9
    * RPCBind 1.2.6
    * strace 4.9/5.0/6.1
-   * SQLite 3.40.0
+   * SQLite 3.40.1
    * Tor 0.4.7.12
    * Unbound 1.17.0
    * XZ Utils 5.2.10
