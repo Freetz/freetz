@@ -1,11 +1,11 @@
-$(call PKG_INIT_LIB, $(if $(FREETZ_LIB_libpcap_VERSION_ABANDON),1.1.1,1.10.1))
+$(call PKG_INIT_LIB, $(if $(FREETZ_LIB_libpcap_VERSION_ABANDON),1.1.1,1.10.2))
 $(PKG)_LIB_VERSION:=$($(PKG)_VERSION)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_HASH_ABANDON:=508cca15547e55d1318498b838456a21770c450beb2dc7d7d4a96d90816e5a85
-$(PKG)_HASH_CURRENT:=ed285f4accaf05344f90975757b3dbfe772ba41d1c401c2648b7fa45b711bdd4
+$(PKG)_HASH_CURRENT:=db6d79d4ad03b8b15fb16c42447d093ad3520c0ec0ae3d331104dcfb1ce77560
 $(PKG)_HASH:=$($(PKG)_HASH_$(if $(FREETZ_LIB_libpcap_VERSION_ABANDON),ABANDON,CURRENT))
 $(PKG)_SITE:=https://www.tcpdump.org/release/
-### VERSION:=1.1.1/1.10.1
+### VERSION:=1.1.1/1.10.2
 ### WEBSITE:=https://www.tcpdump.org
 ### MANPAGE:=https://www.tcpdump.org/manpages/pcap-filter.7.html
 ### CHANGES:=https://git.tcpdump.org/libpcap/blob/HEAD:/CHANGES
