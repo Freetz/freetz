@@ -93,7 +93,7 @@ Latest changes
    * tcpdump 4.1.1/4.99.2
    * Tor 0.4.7.12
    * Unbound 1.17.0
-   * XZ Utils 5.2.10
+   * XZ Utils 5.4.0
 
  - Libraries:
    * expat 2.5.0
