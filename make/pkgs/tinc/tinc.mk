@@ -3,7 +3,11 @@ $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_HASH_1.0.36  :=40f73bb3facc480effe0e771442a706ff0488edea7a5f2505d4ccb2aa8163108
 $(PKG)_HASH_1.1pre18:=2757ddc62cf64b411f569db2fa85c25ec846c0db110023f6befb33691f078986
 $(PKG)_HASH:=$($(PKG)_HASH_$($(PKG)_VERSION))
-$(PKG)_SITE:=http://www.tinc-vpn.org/packages
+$(PKG)_SITE:=https://www.tinc-vpn.org/packages
+### WEBSITE:=https://www.tinc-vpn.org/
+### MANPAGE:=https://www.tinc-vpn.org/docs/
+### CHANGES:=https://www.tinc-vpn.org/news/
+### CVSREPO:=https://www.tinc-vpn.org/git/browse?p=tinc
 
 $(PKG)_CONDITIONAL_PATCHES+=$(if $(FREETZ_PACKAGE_TINC_VERSION_1_1),1.1,1.0)
 
@@ -35,6 +39,7 @@ ifeq ($(strip $(FREETZ_PACKAGE_TINC_STATIC)),y)
 $(PKG)_EXTRA_LDFLAGS += -static
 endif
 
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -51,6 +56,7 @@ $($(PKG)_TARGET_BINARY_CTL): $($(PKG)_BINARY_CTL)
 	$(INSTALL_BINARY_STRIP)
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY) $(if $(FREETZ_PACKAGE_TINC_tinc),$($(PKG)_TARGET_BINARY_CTL))
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(TINC_DIR) clean
