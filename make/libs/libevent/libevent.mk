@@ -4,6 +4,10 @@ $(PKG)_SHLIB_VERSION:=7.0.1
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
 $(PKG)_HASH:=92e6de1be9ec176428fd2367677e61ceffc2ee1cb119035037a27d346b0403bb
 $(PKG)_SITE:=https://github.com/libevent/libevent/releases/download/release-$($(PKG)_VERSION)
+### WEBSITE:=https://libevent.org/
+### MANPAGE:=https://libevent.org/libevent-book/
+### CHANGES:=https://github.com/libevent/libevent/releases
+### CVSREPO:=https://github.com/libevent/libevent
 
 $(PKG)_LIBNAME=$(pkg)-$($(PKG)_MAJOR_VERSION).so.$($(PKG)_SHLIB_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/$($(PKG)_LIBNAME)
@@ -21,6 +25,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-openssl
 $(PKG)_CONFIGURE_OPTIONS += --disable-debug-mode
 $(PKG)_CONFIGURE_OPTIONS += --disable-libevent-regress
 $(PKG)_CONFIGURE_OPTIONS += --disable-samples
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -43,6 +48,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 $(pkg): $($(PKG)_STAGING_BINARY)
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(LIBEVENT_DIR) clean
