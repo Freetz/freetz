@@ -1,5 +1,8 @@
 # NEWS
 
+ * __[2023-01-08](#2023-01-08)__<a id='2023-01-08'></a><br>
+   Der Hauptmirror läuft aktuell nicht. Wenn er nochmal rennt wird es wieder gehen.<br>
+
  * __[2022-12-14](#2022-12-14)__<a id='2022-12-14'></a><br>
    Frohe Weihnachten und guten Rutsch.<br>
 
