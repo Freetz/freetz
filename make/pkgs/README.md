@@ -74,7 +74,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
      - [Networks](../../docs/make/bip.md#networks)
      - [Users](../../docs/make/bip.md#users)
 
-  * **[Bird 1.6.4](../../docs/make/bird.md)<a id='bird'></a>**<br>
+  * **[BIRD 1.6.8](../../docs/make/bird.md)<a id='bird'></a>**<br>
     The BIRD Internet Routing Daemon
 
   * **<u>bittwist 1.1 (binary only)</u><a id='bittwist'></a>**<br>

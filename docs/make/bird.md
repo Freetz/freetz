@@ -1,4 +1,8 @@
-# Bird 1.6.4
+# BIRD 1.6.8
+ - Homepage: [https://bird.network.cz/](https://bird.network.cz/)
+ - Manpage: [https://gitlab.nic.cz/labs/bird/wikis/home](https://gitlab.nic.cz/labs/bird/wikis/home)
+ - Changelog: [https://bird.network.cz/?o_news](https://bird.network.cz/?o_news)
+ - Repository: [https://gitlab.nic.cz/labs/bird](https://gitlab.nic.cz/labs/bird)
  - Package: [master/make/pkgs/bird/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/bird/)
 
 **Bird** ist die OpenSource Implementierung eines TCP/IP Routing Daemons
