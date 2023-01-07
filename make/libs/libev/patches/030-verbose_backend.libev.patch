@@ -1,6 +1,6 @@
 --- ev.c
 +++ ev.c
-@@ -2381,21 +2381,27 @@
+@@ -3078,27 +3078,35 @@
  /*****************************************************************************/
  
  #if EV_USE_IOCP
@@ -18,6 +18,14 @@
  #if EV_USE_EPOLL
 +# warning using "ev_epoll.c"
  # include "ev_epoll.c"
+ #endif
+ #if EV_USE_LINUXAIO
++# warning using "ev_linuxaio.c"
+ # include "ev_linuxaio.c"
+ #endif
+ #if EV_USE_IOURING
++# warning using "ev_iouring.c"
+ # include "ev_iouring.c"
  #endif
  #if EV_USE_POLL
 +# warning using "ev_poll.c"

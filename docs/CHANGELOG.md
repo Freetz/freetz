@@ -97,6 +97,7 @@ Latest changes
 
  - Libraries:
    * expat 2.5.0
+   * libev 4.33
    * libidn 1.41
    * libgpg-error 1.46
    * libusb-compat 0.1.8

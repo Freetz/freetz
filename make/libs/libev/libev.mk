@@ -1,8 +1,12 @@
-$(call PKG_INIT_LIB, 4.15)
+$(call PKG_INIT_LIB, 4.33)
 $(PKG)_SHLIB_VERSION:=4.0.0
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_HASH:=b2dd43a073556f5350cbed05b6ef444dcc4b563f4e0b1009d7bf448261606feb
+$(PKG)_HASH:=507eb7b8d1015fbec5b935f34ebed15bf346bed04a11ab82b8eee848c4205aea
 $(PKG)_SITE:=http://dist.schmorp.de/libev
+### WEBSITE:=http://dist.schmorp.de/libev/
+### MANPAGE:=http://software.schmorp.de/pkg/libev.html
+### CHANGES:=http://cvs.schmorp.de/libev/Changes
+### CVSREPO:=http://cvs.schmorp.de/libev/
 
 $(PKG)_LIBNAME=$(pkg).so.$($(PKG)_SHLIB_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/.libs/$($(PKG)_LIBNAME)
@@ -11,6 +15,7 @@ $(PKG)_TARGET_BINARY:=$($(PKG)_TARGET_DIR)/$($(PKG)_LIBNAME)
 
 $(PKG)_CONFIGURE_OPTIONS += --enable-shared
 $(PKG)_CONFIGURE_OPTIONS += --enable-static
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -32,6 +37,7 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_STAGING_BINARY)
 $(pkg): $($(PKG)_STAGING_BINARY)
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(LIBEV_DIR) clean
