@@ -1,7 +1,13 @@
-$(call PKG_INIT_BIN, 1.6.4)
+$(call PKG_INIT_BIN, 1.6.8)
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.gz
-$(PKG)_HASH:=c26b8caae988dba81a9dbbee93502463d4326d1b749d728d62aa5529c605afc0
-$(PKG)_SITE:=ftp://bird.network.cz/pub/bird
+$(PKG)_HASH:=6c61ab5d2ef59d2559a8735b8252b5a0238013b43e5fb8a96c5d9d06e7bc00b2
+$(PKG)_SITE:=https://bird.network.cz/download;ftp://bird.network.cz/pub/bird
+### WEBSITE:=https://bird.network.cz/
+### MANPAGE:=https://gitlab.nic.cz/labs/bird/wikis/home
+### CHANGES:=https://bird.network.cz/?o_news
+### CVSREPO:=https://gitlab.nic.cz/labs/bird
+# v2: https://gitlab.nic.cz/labs/bird/-/wikis/transition-notes-to-bird-2
+
 $(PKG)_STARTLEVEL=82
 
 $(PKG)_BINARIES_ALL := bird birdc
@@ -25,6 +31,7 @@ $(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_PACKAGE_BIRD_DEBUG),--enable-debug,--d
 $(PKG)_CONFIGURE_OPTIONS += --disable-memcheck
 #$(PKG)_CONFIGURE_OPTIONS += $(if $(FREETZ_TARGET_IPV6_SUPPORT),--enable-ipv6,--disable-ipv6)
 
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -38,6 +45,7 @@ $($(PKG)_BINARIES_TARGET_DIR): $($(PKG)_DEST_DIR)/usr/sbin/%: $($(PKG)_DIR)/%
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_BINARIES_TARGET_DIR)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(BIRD_DIR) clean

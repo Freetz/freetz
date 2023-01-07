@@ -1,24 +1,26 @@
 config FREETZ_PACKAGE_BIRD
-	bool "Bird 1.6.4"
+	bool "BIRD 1.6.8"
 	default n
 	help
 		The BIRD Internet Routing Daemon
 
-config FREETZ_PACKAGE_BIRD_DEBUG
-	bool "Debugging code (recommended)"
-	depends on FREETZ_PACKAGE_BIRD
-	default y
-	help
-		Enables additional debugging code. This is highly recommended.
-		Increases binary size by around 3 KB.
+if FREETZ_PACKAGE_BIRD
 
-config FREETZ_PACKAGE_BIRDC
-	bool "birdc"
-	depends on FREETZ_PACKAGE_BIRD
-	select FREETZ_LIB_libncurses
-	select FREETZ_LIB_libreadline
-	select FREETZ_LIB_libhistory
-	default n
-	help
-		birdc (command-line interface for bird)
+	config FREETZ_PACKAGE_BIRD_DEBUG
+		bool "Debugging code (recommended)"
+		default y
+		help
+			Enables additional debugging code. This is highly recommended.
+			Increases binary size by around 3 KB.
+
+	config FREETZ_PACKAGE_BIRDC
+		bool "birdc"
+		select FREETZ_LIB_libncurses
+		select FREETZ_LIB_libreadline
+		select FREETZ_LIB_libhistory
+		default n
+		help
+			birdc (command-line interface for bird)
+
+endif # FREETZ_PACKAGE_BIRD
 
