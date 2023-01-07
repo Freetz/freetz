@@ -55,7 +55,7 @@ Latest changes
    * precompiled host-tools 2023-01-05
    * pseudo 1.9.0 oe-core c9670c2
    * sed 4.9
-   * xz 5.2.10
+   * xz 5.4.0
 
  - Patches:
    * remove AVMCOUNTERD: collects some data for you
