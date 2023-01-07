@@ -25,12 +25,6 @@ Verbindungen zwischen zwei Hosts herzustellen.
 
 ### Weiterführende Links
 
--   [tinc Homepage](http://www.tinc-vpn.org/)
--   [Linux.COM Artikel: Creating a VPN with
-    tinc](http://www.linux.com/feature/131343)
--   [Linux-Magazin.DE Artikel: VPN-Daemon im Userspace:
-    Tinc](http://www.linux-magazin.de/heft_abo/ausgaben/2003/10/einfache_verbindung)
--   [Heise.DE Netze: Dezentrales VPN mit
-    Tinc](http://www.heise.de/netze/artikel/Dezentrales-VPN-mit-Tinc-785436.html)
+-   [Linux-Magazin.DE Artikel: VPN-Daemon im Userspace: Tinc](http://www.linux-magazin.de/heft_abo/ausgaben/2003/10/einfache_verbindung)
 
 
