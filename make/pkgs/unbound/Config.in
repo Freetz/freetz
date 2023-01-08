@@ -40,15 +40,16 @@ if FREETZ_PACKAGE_UNBOUND_WEBIF
 		comment "HINT: Don't forget to enable the DNS server."
 		depends on FREETZ_AVMDAEMON_DISABLE_DNS
 
-		config FREETZ_PACKAGE_BIND_NAMED_DISABLE_DNS
+		config FREETZ_PACKAGE_UNBOUND_DISABLE_DNS
 			bool "Disable multid's DNS"
 			depends on FREETZ_AVM_HAS_AVMMULTID_PRELOAD
 			select FREETZ_AVMDAEMON_DISABLE_MULTIDPORTS
 			select FREETZ_AVMDAEMON_DISABLE_DNS
 			select FREETZ_AVMDAEMON_DISABLE_LLMNR
-			default y
+			default n
 			help
 				This selects the remapping of multid's DNS (and LLMNR) ports.
+				By default unbound uses 5353 and this is not needed.
 
 endif # FREETZ_PACKAGE_UNBOUND_WEBIF
 
