@@ -2,6 +2,10 @@ $(call TOOLS_INIT, 0.1.34)
 $(PKG)_SOURCE:=mklibs_$($(PKG)_VERSION).tar.gz
 $(PKG)_HASH:=0c13c314f5c397529f58a5a02d57d83aeb4463d6a0d80b9374c6576ec37ed39f
 $(PKG)_SITE:=http://archive.debian.org/debian/pool/main/m/mklibs
+### WEBSITE:=https://packages.debian.org/sid/mklibs
+### MANPAGE:=https://manpages.debian.org/unstable/mklibs/mklibs.1.html
+### CHANGES:=https://salsa.debian.org/installer-team/mklibs/blob/master/debian/changelog
+### CVSREPO:=https://github.com/openwrt/openwrt/tree/master/tools/mklibs
 
 $(PKG)_DESTDIR:=$(FREETZ_BASE_DIR)/$(TOOLS_DIR)/build/bin
 $(PKG)_SCRIPT:=$($(PKG)_DIR)/src/mklibs
