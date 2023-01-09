@@ -98,6 +98,7 @@ Latest changes
 
  - Libraries:
    * expat 2.5.0
+   * libctlmgr 1.0
    * libev 4.33
    * libidn 1.41
    * libgpg-error 1.46

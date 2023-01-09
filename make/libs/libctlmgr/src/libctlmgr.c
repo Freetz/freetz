@@ -24,27 +24,32 @@
 #define str(s) #s
 
 #ifndef LIBC_LOCATION
-#if defined(__UCLIBC__)
+#if defined(D_UCLIBC)
 #define LIBC_LOCATION "/lib/libc.so." xstr(__UCLIBC_MAJOR__)
+#endif
+#if defined(D_MUSL)
+#define LIBC_LOCATION "/lib/libc.so"
+#endif
+#if defined(D_GLIBC)
+#define LIBC_LOCATION "/lib/libc.so.6"
 #endif
 #endif
 
-static void debug_printf(char *fmt, ...) {
 #ifdef DEBUG
+static void debug_printf(char *fmt, ...) {
 	va_list ap;
 	va_start(ap, fmt);
 	vfprintf(stderr, fmt, ap);
 	va_end(ap);
 	fflush(stderr);
-#endif
 }
+#endif
 
 static int (*real_chmod)(const char *pathname, mode_t mode) = NULL;
 static int (*real_rename)(const char *, const char *) = NULL;
 
 static void _libctlmgr_init (void) __attribute__((constructor));
-static void _libctlmgr_init (void)
-{
+static void _libctlmgr_init (void) {
 	const char *err;
 
 #if defined(RTLD_NEXT) && 0
@@ -76,31 +81,45 @@ static void _libctlmgr_init (void)
 }
 
 int rename(const char *old, const char *new) {
+#ifdef DEBUG
 	debug_printf("ctlmgr: rename() %s --> %s ", old, new);
+#endif
 
 #ifdef D_RENAME
 	if (strcmp(old, "/var/tmp/passwd.tmp")==0) {
+#ifdef DEBUG
 		debug_printf("(rejected)\n");
+#endif
 		system("/usr/bin/modusers update");
 		return 0;
 	}
 #endif
 
+#ifdef DEBUG
 	debug_printf("(allowed)\n");
+#endif
 	return real_rename(old, new);
 }
 
 int chmod(const char *pathname, mode_t mode) {
+#ifdef DEBUG
 	debug_printf("ctlmgr: chmod() %s ", pathname);
+#endif
 
 #ifdef D_CHMOD
 	char* fullpath = realpath(pathname, NULL);
 	if(fullpath == NULL) {
+#ifdef DEBUG
 		debug_printf("<NULL> ");
+#endif
 	} else {
+#ifdef DEBUG
 		debug_printf("--> %s ",fullpath);
+#endif
 		if (strcmp(fullpath, "/var/tmp")==0) {
+#ifdef DEBUG
 			debug_printf("(rejected)\n");
+#endif
 			free(fullpath);
 			return 0;
 		}
@@ -108,7 +127,9 @@ int chmod(const char *pathname, mode_t mode) {
 	}
 #endif
 
+#ifdef DEBUG
 	debug_printf("(allowed)\n");
+#endif
 	return real_chmod(pathname, mode);
 }
 
