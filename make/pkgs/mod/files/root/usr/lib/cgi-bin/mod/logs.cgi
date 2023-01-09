@@ -29,7 +29,7 @@ case "$3" in
 		logg=false
 
 		aicmd ctlmgr sessions show 2>/dev/null | sed -rn 's/^ +//p' > /var/tmp/sessions.txt
-		[ -z /var/tmp/sessions.txt ] && msgsend ctlmgr sessions
+		[ -s /var/tmp/sessions.txt ] || msgsend ctlmgr sessions
 		[ "0$(wc -l /var/tmp/sessions.txt 2>/dev/null | sed 's/ .*//')" -gt 2 ] || rm -f /var/tmp/sessions.txt
 		do_log /var/tmp/sessions.txt "WEB-Sessions"
 		rm -f /var/tmp/sessions.txt
