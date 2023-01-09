@@ -154,7 +154,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
   * **[libmnl (libmnl.so) 1.0.4](libmnl.md)<a id='libmnl'></a>**<br>
     libmnl is a minimalistic user-space library oriented to Netlink developers. There are a lot of common tasks in parsing, validating, constructing of both the Netlink header and TLVs that are repetitive and easy to get wrong. This library aims to provide simple helpers that allows you to re-use code and to avoid re-inventing the wheel.
 
-  * **[libmultid (libmultid.so) 0.5](libmultid.md)<a id='libmultid'></a>**<br>
+  * **[libmultid (libmultid.so) 1.0](libmultid.md)<a id='libmultid'></a>**<br>
     If this library is preloaded to multid, some portbindings will be remapped.
 
   * **[libnet (libnet.so) 1.1.4](libnet.md)<a id='libnet'></a>**<br>
