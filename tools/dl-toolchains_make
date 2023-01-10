@@ -88,9 +88,9 @@ dltc() {
 }
 
 case "$2" in
-	a|all)		old="old" new="new"       ;;
+	a|all|"")	old="old" new="new"       ;;
 	o|old)		old="old" new=""          ;;
-	n|new|"")	old=""    new="new"       ;;
+	n|new)		old=""    new="new"       ;;
 	*)		shift ; dltc "$*"; exit 0 ;;
 esac
 
