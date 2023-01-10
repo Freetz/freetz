@@ -293,7 +293,7 @@ config FREETZ_REMOVE_NEXUS
 		There are NO changes of the avm-webif!
 
 config FREETZ_REMOVE_MESHD
-	bool "Remove MESHD"
+	bool "Remove MESHD (Settings Synchronize)"
 	default n
 	select FREETZ_REMOVE_PCPD if FREETZ_AVM_HAS_PCPD
 	depends on FREETZ_AVM_HAS_MESHD
@@ -301,6 +301,9 @@ config FREETZ_REMOVE_MESHD
 		Removes "meshd" and "meshd_config" services and
 		related files like the daemon and some scripts.
 		This prevents log-spam when PLCD is removed too.
+		Even AVM calles it "mesh" it is used to synchronize
+		telephone and wlan settings from the master device
+		to its authenticated slaves.
 		There are NO changes of the avm-webif!
 
 config FREETZ_REMOVE_PCPD
