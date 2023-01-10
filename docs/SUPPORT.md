@@ -1,6 +1,8 @@
 # SUPPORT
 Wie kann ich Freetz-NG unterstützen?
 
+ * __[Sponsor](#sponsor)__<a id='sponsor'></a><br>
+    - [![](https://img.shields.io/static/v1?label=GitHub&message=fda77&logo=GitHub&color=%230e8e86)](https://github.com/sponsors/fda77)
  * __[UNTESTED](#untested)__<a id='untested'></a><br>
    Im ```menuconfig``` und in [FIRMWARES](FIRMWARES.md) sind verschieden Geräte als ```UNTESTED``` markiert.<br>
    Mangels Hardware konnte auf diesen nicht ausprobiert werden ob Freetz-NG funktioniert.<br>
