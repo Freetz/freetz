@@ -8,7 +8,7 @@ CONF_NAME=avm
 
 [ -r /etc/options.cfg ] && . /etc/options.cfg
 # include environment required for rextd restart
-. /bin/env.mod.rcconf
+. /bin/env.mod.rcconf avm
 
 start() {
 	echo -n "Starting ${DAEMON_LONG_NAME} ... "
@@ -33,8 +33,13 @@ start() {
 			export LD_PRELOAD=libmultid.so
 		fi
 	fi
-	$DAEMON_BIN -v 2>/dev/null
-	exitval=$?
+	if modlib_check_supervisor; then
+		nohup $DAEMON_BIN -v 0</dev/null 1>/dev/null 2>&1 &
+		exitval=0
+	else
+		$DAEMON_BIN -v 2>/dev/null
+		exitval=$?
+	else
 	unset LD_PRELOAD
 	sleep 1
 	[ -f /tmp/flash/mod/multid.start ] && . /tmp/flash/mod/multid.start

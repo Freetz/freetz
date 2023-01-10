@@ -10,7 +10,7 @@ TMPFILE="/tmp/.dsld."
 
 [ -r /etc/options.cfg ] && . /etc/options.cfg
 # include environment required for dsld restart
-. /bin/env.mod.rcconf
+. /bin/env.mod.rcconf avm
 
 start() {
 	echo -n "Starting ${DAEMON_LONG_NAME} ... "
@@ -41,8 +41,13 @@ start() {
 
 	#remove duplicate arguments
 	DAEMON_ARGS="$(for arg in $DAEMON_CMD $DAEMON_OPT; do [ "$arg" != "dsld" ] && echo " $arg"; done |sort -u)"
-	$DAEMON_BIN $DAEMON_ARGS 2>/dev/null
-	exitval=$?
+	if modlib_check_supervisor; then
+		nohup $DAEMON_BIN $DAEMON_ARGS 0</dev/null 1>/dev/null 2>&1 &
+		exitval=0
+	else
+		$DAEMON_BIN $DAEMON_ARGS 2>/dev/null
+		exitval=$?
+	fi
 	if [ "$exitval" -eq 0 ]; then
 		echo 'done.'
 	else
