@@ -203,8 +203,8 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
   * **[Remove NAS](REMOVE_NAS.md)<a id='remove-nas'></a>**<br>
     Removes the AVM NAS Webinterface and internal memory file (saves about 390 KB in compressed image).
 
-  * **<u>Remove NEXUS (AVM mesh)</u><a id='remove-nexus'></a>**<br>
-    Removes "nexus" related files like the daemon, service and some scripts. There are NO changes of the avm-webif!
+  * **<u>Remove NEXUS - EXPERIMENTAL</u><a id='remove-nexus'></a>**<br>
+    Removes "nexus" related files like the daemon, service and some scripts. AVM's begin of the "mesh" promotion campaign to share AHA data with all network devices. There are NO changes of the avm-webif!
 
   * **<u>Remove NLS</u><a id='remove-nls'></a>**<br>
     Remove NLS support This patch will remove all the nls_*.ko kernel module from the firmware. This may affect mounting FAT, NTFS and other filesystems. You can add some of the Freetz kernel nls modules if you need them.
@@ -213,6 +213,9 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
     Remove NTFS support This patch will remove ntfs-3g dependent files from the firmware. Be careful, mounting volumes with this filesystem will not work. It saves about 118K compressed space in kernel.image.
 
 ### P
+
+  * **<u>Remove PCPD (Port Control Protocol)</u><a id='remove-pcpd'></a>**<br>
+    Removes "pcpd" service and related files like the daemon and some of the tools. PCP is used for dynamic port-forwardings and does not work without MESHD (don't ask). There are NO changes of the avm-webif!
 
   * **<u>REMOVE_PIGLET_ISDN: Remove ISDN piglet file(s)</u><a id='remove-piglet-isdn'></a>**<br>
     The firmware of this model contains separate piglet files for ISDN and POTS. Depending on your type of fixed line usage you can safely remove the unneeded bitfile(s). Hint: If you are using POTS fixed line you can try to select this patch. Be careful! Sometimes even POTS models are using the ISDN files and not the POTS ones. If your box ends up in a reboot cycle, you should deselect this patch and maybe want to try the other one, even
