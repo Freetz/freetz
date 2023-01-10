@@ -68,6 +68,6 @@ Um es kurz zusammenzufassen: Einfach `tools/push_firmware` verwenden und den Res
 
 ### Anmerkungen
  * Die ganzen Namen hier wie zB NOR, NAND oder INHAUS sind meist keine offiziellen sondern Vereinbarungen oder Anlehnungen.
- * Es dazu noch sehr viel zu lesen, mindestens in diversen Foren (IPPF, IPF) und auf GitHub (Freetz-NG, YourFritz).
- * Mit Fritzbox sind auch die anderen Dinger gemein die nicht Fritzbox heissen.
+ * Es gibt dazu noch sehr viel zu lesen, mindestens in diversen Foren (IPPF, IPF) und auf GitHub (Freetz-NG, YourFritz).
+ * Mit Fritzbox sind auch die anderen Dinger von AVM gemein die nicht Fritzbox heissen.
 
