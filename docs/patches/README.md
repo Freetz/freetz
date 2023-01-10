@@ -229,7 +229,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
   * **[REMOVE_PIGLET_V2: Remove v2 piglet file(s)](REMOVE_PIGLET_V2.md)<a id='remove-piglet-v2'></a>**<br>
     The firmware of this model contains double piglet files. Which instance is needed depends on the hardware version (v1 or v2) of your box. You can safely remove the unneeded instance. Hint: If "echo $HWRevision_BitFileCount" returns "" (nothing) you could select this patch.
 
-  * **<u>Remove PLCD (powerline)</u><a id='remove-plcd'></a>**<br>
+  * **<u>Remove PLCD (AVM Powerline)</u><a id='remove-plcd'></a>**<br>
     This removes the plcd daemon (44-76kB uncompressed) and related start script. Known so far: It is used to scan the network for PLC devices and show them on the webinterface in mesh/network.
 
   * **[Remove printserv](REMOVE_PRINTSERV.md)<a id='remove-printserv'></a>**<br>
