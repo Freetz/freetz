@@ -1608,7 +1608,7 @@ if [ "$DO_MOD" -gt 0 ]; then
 	if [ "$FREETZ_STRIP_LIBRARIES" == "y" ]; then
 		echo0 "shrinking shared libs"
 		source ${TOOLS_DIR}/freetz_mklibs
-		mklibs || error 1 "mklibs returned an error. Please see build/modified/mklibs.log"
+		freetz_mklibs || error 1 "mklibs returned an error. Please see build/modified/mklibs.log"
 	fi
 	if  [ "$FREETZ_STRIP_MODULES_ALL" == "y" ]; then
 		echo0 "stripping all kernel modules"
