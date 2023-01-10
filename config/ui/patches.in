@@ -282,12 +282,14 @@ config FREETZ_REMOVE_PLCD
 		PLC devices and show them on the webinterface in mesh/network.
 
 config FREETZ_REMOVE_NEXUS
-	bool "Remove NEXUS (AVM mesh)"
+	bool "Remove NEXUS - EXPERIMENTAL"
 	default n
-	depends on FREETZ_AVM_HAS_NEXUS && FREETZ_AVM_VERSION_06_9X
+	depends on FREETZ_AVM_HAS_NEXUS
 	help
 		Removes "nexus" related files like
 		the daemon, service and some scripts.
+		AVM's begin of the "mesh" promotion campaign
+		to share AHA data with all network devices.
 		There are NO changes of the avm-webif!
 
 config FREETZ_REMOVE_MESHD
