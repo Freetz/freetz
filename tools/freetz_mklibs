@@ -22,7 +22,10 @@ freetz_mklibs() {
 		file -r -N -F '' {} + | \
 		awk ' /shared object/ { print $1 }' >> "${MOD_DIR}/mklibs-progs"
 	# Run mklibs script, needs path to mklibs-readelf and objcopy
-	PATH="${HOST_TOOLS_DIR}/bin:${HOST_TOOLS_DIR}/usr/bin:${TARGET_TOOLCHAIN_STAGING_DIR}/bin:${PATH}" \
+	[ "$FREETZ_TOOLCHAIN_CCACHE" == "y" ] \
+	  && BINS_PATH="${TARGET_TOOLCHAIN_STAGING_DIR}/bin:${TARGET_TOOLCHAIN_STAGING_DIR}/bin-ccache" \
+	  || BINS_PATH="${TARGET_TOOLCHAIN_STAGING_DIR}/bin-ccache:${TARGET_TOOLCHAIN_STAGING_DIR}/bin"
+	PATH="${HOST_TOOLS_DIR}/path:${HOST_TOOLS_DIR}/bin:${HOST_TOOLS_DIR}/usr/bin:${BINS_PATH}:${PATH}" \
 		"${HOST_TOOLS_DIR}/bin/mklibs" \
 		-vvv \
 		-D \
