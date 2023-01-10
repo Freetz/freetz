@@ -293,11 +293,23 @@ config FREETZ_REMOVE_NEXUS
 config FREETZ_REMOVE_MESHD
 	bool "Remove MESHD"
 	default n
+	select FREETZ_REMOVE_PCPD if FREETZ_AVM_HAS_PCPD
 	depends on FREETZ_AVM_HAS_MESHD
 	help
 		Removes "meshd" and "meshd_config" services and
 		related files like the daemon and some scripts.
 		This prevents log-spam when PLCD is removed too.
+		There are NO changes of the avm-webif!
+
+config FREETZ_REMOVE_PCPD
+	bool "Remove PCPD (Port Control Protocol)"
+	default n
+	depends on FREETZ_AVM_HAS_PCPD
+	help
+		Removes "pcpd" service and related files like
+		the daemon and some of the tools.
+		PCP is used for dynamic port-forwardings and
+		does not work without MESHD (don't ask).
 		There are NO changes of the avm-webif!
 
 config FREETZ_REMOVE_AHA
