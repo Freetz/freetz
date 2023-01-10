@@ -719,6 +719,11 @@ determine_() {
 	[ -e "$unpacked/sbin/meshd" -o -e "$unpacked/usr/sbin/meshd" ] && X="available" && in_b "FREETZ_AVM_HAS_MESHD"
 	[ $DOSHOW -ge 2 ] && outp "meshd" "$X"
 
+	#PCPD
+	X="%"
+	[ -e "$unpacked/sbin/pcpd" ] && X="available" && in_b "FREETZ_AVM_HAS_PCPD"
+	[ $DOSHOW -ge 2 ] && outp "pcpd" "$X"
+
 	#UNTRUSTEDD
 	X="%"
 	[ -e "$unpacked/usr/bin/untrustedd" ] && X="available" && in_b "FREETZ_AVM_HAS_UNTRUSTEDD"
