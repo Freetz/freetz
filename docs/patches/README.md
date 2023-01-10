@@ -177,8 +177,8 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
   * **[Remove mediasrv (UPnP/DLNA)](REMOVE_MEDIASRV.md)<a id='remove-mediasrv'></a>**<br>
     Remove the MediaServer-daemon (mediasrv) and some other related files. This patch hides also the MediaServer options in the Web UI, so you must disable it before flashing the new image. Saves compressed 230 KB on a 7270_V2 and 40 KB on a 7170.
 
-  * **<u>Remove MESHD</u><a id='remove-meshd'></a>**<br>
-    Removes "meshd" and "meshd_config" services and related files like the daemon and some scripts. This prevents log-spam when PLCD is removed too. There are NO changes of the avm-webif!
+  * **<u>Remove MESHD (Settings Synchronize)</u><a id='remove-meshd'></a>**<br>
+    Removes "meshd" and "meshd_config" services and related files like the daemon and some scripts. This prevents log-spam when PLCD is removed too. Even AVM calles it "mesh" it is used to synchronize telephone and wlan settings from the master device to its authenticated slaves. There are NO changes of the avm-webif!
 
   * **<u>REMOVE_MICROVOIP_DSL: Remove microvoip-dsl.bin</u><a id='remove-microvoip-dsl'></a>**<br>
     Remove the files lib/modules/microvoip-dsl.bin and lib/modules/2.6.13.1-*/kernel/drivers/atm/avm_atm/tiatm.ko This saves about 590-700 KB of uncompressed data size.
