@@ -67,6 +67,7 @@ Latest changes
    * BIND 9.11.37/9.16.36
    * BIRD 1.6.8
    * BusyBox 1.36.0
+   * CA-bundle 2023-01-10
    * CCID 1.5.1
    * classpath 0.99
    * Curl 7.87.0
