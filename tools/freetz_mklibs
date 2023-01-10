@@ -46,6 +46,7 @@ freetz_mklibs() {
 		done
 		[ -n "$DEST" ] || error 1 "${FUNCNAME}: failed to determine the destination of ${LIB##*/}"
 		if cp "$LIB" "$DEST"; then
+			chmod +x "$DEST"
 			echo2 "Successfully copied mklibs-processed version of ${LIB##*/} to ${DEST#${FILESYSTEM_MOD_DIR}}"
 		else
 			error 1 "${FUNCNAME}: failed to copy ${LIB##*/} to the destination directory"
