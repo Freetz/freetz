@@ -458,5 +458,19 @@ modlib_add_httpd_symlink() {
 	done
 }
 
+# modlib_check_supervisor
+#   checks if the script is started by avm-svctl.
+#   return values:
+#    0: true
+#    1: false
+modlib_check_supervisor() {
+	local NAME XPID="$PPID"
+	while [ "$NAME" != "supervisor" -a $XPID -gt 1 2>/dev/null ]; do
+		NAME="$(sed -n 's/^Name:[\t ]*//p' /proc/$XPID/status 2>/dev/null)"
+		XPID="$(sed -n 's/^PPid:[\t ]*//p' /proc/$XPID/status 2>/dev/null)"
+	done
+	[ "$NAME" == "supervisor" ]
+}
+
 # load config
 [ -n "$DAEMON" ] && modlib_loadconfig
