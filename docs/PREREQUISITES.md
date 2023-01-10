@@ -1,5 +1,5 @@
 # PREREQUISITES: Installation der benötigten Pakete
-Eine einfache Möglichkeit die benötigten Pakete zu installieren besteht darin, diesen Code per Copy and Paste auf der Konsole auszuführen!
+Eine einfache Möglichkeit die benötigten Pakete zu installieren besteht darin, diesen Code per Copy and Paste auf der Konsole auszuführen, zB in PuTTY per Rechtsclick!
 
 ### Getestete Distributionen
  - [Fedora](#fedora)
