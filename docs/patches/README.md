@@ -201,7 +201,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
     Removes the AVM NAS Webinterface and internal memory file (saves about 390 KB in compressed image).
 
   * **<u>Remove NEXUS (AVM mesh)</u><a id='remove-nexus'></a>**<br>
-    Removes "mesh" related files like the nexus daemon and some scripts.
+    Removes "nexus" related files like the daemon, service and some scripts. There are NO changes of the avm-webif!
 
   * **<u>Remove NLS</u><a id='remove-nls'></a>**<br>
     Remove NLS support This patch will remove all the nls_*.ko kernel module from the firmware. This may affect mounting FAT, NTFS and other filesystems. You can add some of the Freetz kernel nls modules if you need them.
