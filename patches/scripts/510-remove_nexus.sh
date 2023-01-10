@@ -34,14 +34,6 @@ if [ "$FREETZ_AVM_VERSION_07_0X_MIN" == "y" ]; then
 fi
 
 #[ "$FREETZ_AVM_VERSION_07_0X_MIN" == "y" ] && for files in \
-#  etc/init.d/E50-plcd \
-#  usr/sbin/plcd \
-#  lib/libmesh_plcservice.so \
-#  ; do
-#       rm_files "${FILESYSTEM_MOD_DIR}/$files"
-#done
-
-#[ "$FREETZ_AVM_VERSION_07_0X_MIN" == "y" ] && for files in \
 #  lib/libavmnexuscpp.so.0.0.0 \
 #  lib/libavmnexusmail.so.0.0.0 \
 #  ; do
