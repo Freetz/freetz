@@ -272,25 +272,25 @@ config FREETZ_REMOVE_UNTRUSTEDD
 		This removes the untrustedd daemon (10kB uncompressed) and related
 		service script. Known so far: Nothing.
 
+config FREETZ_REMOVE_PCPD
+	bool "Remove PCPD (Port Control Protocol)"
+	default n
+	depends on FREETZ_AVM_HAS_PCPD
+	help
+		Removes "pcpd" service and related files like
+		the daemon and some of the tools.
+		PCP is used for dynamic port-forwardings and
+		does not work without MESHD (don't ask).
+		There are NO changes of the avm-webif!
+
 config FREETZ_REMOVE_PLCD
-	bool "Remove PLCD (powerline)"
+	bool "Remove PLCD (AVM Powerline)"
 	default n
 	depends on FREETZ_AVM_HAS_PLCD
 	help
 		This removes the plcd daemon (44-76kB uncompressed) and related
 		start script. Known so far: It is used to scan the network for
 		PLC devices and show them on the webinterface in mesh/network.
-
-config FREETZ_REMOVE_NEXUS
-	bool "Remove NEXUS - EXPERIMENTAL"
-	default n
-	depends on FREETZ_AVM_HAS_NEXUS
-	help
-		Removes "nexus" related files like
-		the daemon, service and some scripts.
-		AVM's begin of the "mesh" promotion campaign
-		to share AHA data with all network devices.
-		There are NO changes of the avm-webif!
 
 config FREETZ_REMOVE_MESHD
 	bool "Remove MESHD (Settings Synchronize)"
@@ -306,15 +306,15 @@ config FREETZ_REMOVE_MESHD
 		to its authenticated slaves.
 		There are NO changes of the avm-webif!
 
-config FREETZ_REMOVE_PCPD
-	bool "Remove PCPD (Port Control Protocol)"
+config FREETZ_REMOVE_NEXUS
+	bool "Remove NEXUS - EXPERIMENTAL"
 	default n
-	depends on FREETZ_AVM_HAS_PCPD
+	depends on FREETZ_AVM_HAS_NEXUS
 	help
-		Removes "pcpd" service and related files like
-		the daemon and some of the tools.
-		PCP is used for dynamic port-forwardings and
-		does not work without MESHD (don't ask).
+		Removes "nexus" related files like
+		the daemon, service and some scripts.
+		AVM's begin of the "mesh" promotion campaign
+		to share AHA data with all network devices.
 		There are NO changes of the avm-webif!
 
 config FREETZ_REMOVE_AHA
