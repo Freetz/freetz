@@ -8,10 +8,19 @@ config FREETZ_PACKAGE_MTR
 
 if FREETZ_PACKAGE_MTR
 
-	config FREETZ_PACKAGE_MTR_VERSION_ABANDON
-		bool
-		default y
-		depends on !FREETZ_TARGET_GCC_4_8_MIN
+	choice
+		prompt "Version"
+			default FREETZ_PACKAGE_MTR_VERSION_CURRENT
+
+		config FREETZ_PACKAGE_MTR_VERSION_ABANDON
+			bool "0.80"
+			depends on !FREETZ_TARGET_GCC_4_8_MIN
+
+		config FREETZ_PACKAGE_MTR_VERSION_CURRENT
+			bool "0.95"
+			depends on FREETZ_TARGET_GCC_4_8_MIN
+
+	endchoice
 
 endif # FREETZ_PACKAGE_MTR
 
