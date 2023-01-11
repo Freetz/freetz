@@ -27,7 +27,7 @@ Reagiert das Gerät zu zäh und Netzwerkerkennung (media detect/sense) braucht z
 Um die Fritzbox im Bootloader anzuhalten kann man eine recovery.exe irgend einer __ANDEREN__ Fritzbox nutzen.
 
 ### Methoden
-Verfügbare Scripte und Tools
+Verfügbare Scripte und Tools zum Flashen über den Bootloader:
 
  * Gen 1+2: __single-boot__<a id='single'></a> / NOR<br>
    Die ersten Fritzboxen von 7050 bis 7390
@@ -43,7 +43,7 @@ Verfügbare Scripte und Tools
       Vorsicht: Dieses Script kann kein Image flashen, sondern nur das soganannte <br>`inmemory`-Zwischenformat. Siehe dazu `tools/image2inmemory`
 
  * Gen 6: __fit-boot__<a id='fit'></a><br>
-   Neueste Fritzboxen wie 5530 & 7530 AX
+   Neueste Fritzboxen wie 7530 AX & 5530
     - `tools/push_firmware` von Freetz-NG
     - [fit_tools](https://github.com/PeterPawn/YourFritz/tree/main/fit_tools) von YourFritz,
       wird in Freetz-NG für den AVM spezifische Header bzw<br>Signatur genutzt. Danach können DTC und U-Boot verwenden werden.
