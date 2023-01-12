@@ -49,13 +49,17 @@ $(pkg)-distclean: $(pkg)-dirclean
 		$(HOST_TOOLS_DIR)/usr/bin/idle \
 		$(HOST_TOOLS_DIR)/usr/bin/pgen \
 		$(HOST_TOOLS_DIR)/usr/bin/pydoc \
-		$(HOST_TOOLS_DIR)/usr/bin/python* \
+		$(HOST_TOOLS_DIR)/usr/bin/python \
+		$(HOST_TOOLS_DIR)/usr/bin/python-config \
+		$(HOST_TOOLS_DIR)/usr/bin/python2* \
 		$(HOST_TOOLS_DIR)/usr/bin/smtpd.py \
-		$(HOST_TOOLS_DIR)/usr/include/python2.7 \
-		$(HOST_TOOLS_DIR)/usr/lib/libpython2.7.* \
-		$(HOST_TOOLS_DIR)/usr/lib/python2.7 \
-		$(HOST_TOOLS_DIR)/usr/lib/pkgconfig/python* \
-		$(HOST_TOOLS_DIR)/usr/share/python2.7 \
-		$(HOST_TOOLS_DIR)/usr/share/man/man1/python*
+		$(HOST_TOOLS_DIR)/usr/include/python2* \
+		$(HOST_TOOLS_DIR)/usr/lib/libpython2* \
+		$(HOST_TOOLS_DIR)/usr/lib/pkgconfig/python-2* \
+		$(HOST_TOOLS_DIR)/usr/lib/pkgconfig/python2* \
+		$(HOST_TOOLS_DIR)/usr/lib/pkgconfig/python.pc \
+		$(HOST_TOOLS_DIR)/usr/lib/python2* \
+		$(HOST_TOOLS_DIR)/usr/share/man/man1/python.1 \
+		$(HOST_TOOLS_DIR)/usr/share/man/man1/python2*
 
 $(TOOLS_FINISH)
