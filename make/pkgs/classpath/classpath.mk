@@ -22,8 +22,10 @@ $(PKG)_LIBS_BUILD_DIR:=$(join $(CLASSPATH_LIBS_BUILD_DIR_SHORT:%=$($(PKG)_DIR)/n
 $(PKG)_LIBS_STAGING_DIR:=$(CLASSPATH_LIBNAMES_LONG:%=$(TARGET_TOOLCHAIN_STAGING_DIR)$(CLASSPATH_LIBRARY_DIR)/%)
 $(PKG)_LIBS_TARGET_DIR:=$(CLASSPATH_LIBNAMES_LONG:%=$($(PKG)_DEST_DIR)$(CLASSPATH_LIBRARY_DIR)/%)
 
-$(PKG)_BUILD_PREREQ += fastjar javac
-$(PKG)_BUILD_PREREQ_HINT := Hint: on Debian-like systems fastjar is provided by the package of the same name, whereas javac (Java compiler) is provided by many packages. You could use either of them interchangeably.
+$(PKG)_HOST_DEPENDS_ON += fastjar-host
+
+$(PKG)_BUILD_PREREQ += javac
+$(PKG)_BUILD_PREREQ_HINT := Hint: on Debian-like systems javac (Java compiler) is provided by many packages. You could use either of them interchangeably.
 
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_CLASSPATH_MINI
@@ -46,6 +48,7 @@ $(PKG)_CONFIGURE_OPTIONS += --disable-qt-peer
 $(PKG)_CONFIGURE_OPTIONS += --disable-rpath
 $(PKG)_CONFIGURE_OPTIONS += --without-libiconv-prefix
 $(PKG)_CONFIGURE_OPTIONS += --disable-Werror
+
 
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
@@ -74,6 +77,7 @@ $($(PKG)_LIBS_TARGET_DIR): $($(PKG)_DEST_DIR)$(CLASSPATH_LIBRARY_DIR)/%: $(TARGE
 $(pkg):
 
 $(pkg)-precompiled: $($(PKG)_TARGET_CLASSES_FILE) $($(PKG)_LIBS_TARGET_DIR)
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(CLASSPATH_DIR) clean
