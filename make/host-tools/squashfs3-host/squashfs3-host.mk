@@ -3,7 +3,6 @@ $(PKG)_SOURCE:=squashfs$($(PKG)_VERSION).tar.gz
 $(PKG)_HASH:=9ea1a9b3bd4f387ca11b5e96f00f8ae996fb81c4c7ad41f7c7f359917628a339
 $(PKG)_SITE:=@SF/squashfs
 
-$(PKG)_DIR:=$(TOOLS_SOURCE_DIR)/squashfs$($(PKG)_VERSION)
 $(PKG)_BUILD_DIR:=$($(PKG)_DIR)/squashfs-tools
 
 $(PKG)_TOOLS:=mksquashfs unsquashfs

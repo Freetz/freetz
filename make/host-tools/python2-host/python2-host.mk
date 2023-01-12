@@ -3,7 +3,6 @@ $(PKG)_SOURCE:=Python-$($(PKG)_VERSION).tar.xz
 $(PKG)_HASH:=b62c0e7937551d0cc02b8fd5cb0f544f9405bafc9a54d3808ed4594812edef43
 $(PKG)_SITE:=https://www.python.org/ftp/python/$($(PKG)_VERSION)
 
-$(PKG)_DIR:=$(TOOLS_SOURCE_DIR)/Python-$($(PKG)_VERSION)
 $(PKG)_BINARY:=$($(PKG)_DIR)/python
 $(PKG)_TARGET_BINARY:=$(HOST_TOOLS_DIR)/usr/bin/python2.7
 
