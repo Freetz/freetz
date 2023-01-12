@@ -5,7 +5,7 @@ $(PKG)_SITE:=@SF/scons
 
 $(PKG)_TARGET_BINARY:=$(HOST_TOOLS_DIR)/usr/bin/scons
 
-$(PKG)_DEPENDS_ON+=python-host
+$(PKG)_DEPENDS_ON+=python2-host
 
 
 $(TOOLS_SOURCE_DOWNLOAD)

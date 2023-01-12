@@ -22,32 +22,31 @@ $(TOOLS_CONFIGURED_CONFIGURE)
 
 $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	(PATH=$(TARGET_PATH); \
-		$(TOOLS_SUBMAKE) -C $(PYTHON_HOST_DIR) \
+		$(TOOLS_SUBMAKE) -C $(PYTHON2_HOST_DIR) \
 		all Parser/pgen )
 	@touch -c $@
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY) | $(HOST_TOOLS_DIR)
 	(PATH=$(TARGET_PATH); \
-		$(TOOLS_SUBMAKE) -C $(PYTHON_HOST_DIR) \
+		$(TOOLS_SUBMAKE) -C $(PYTHON2_HOST_DIR) \
 		DESTDIR="$(HOST_TOOLS_DIR)" \
 		install )
-	cp -a $(PYTHON_HOST_BINARY) $(PYTHON_HOST_DIR)/Parser/pgen \
+	cp -a $(PYTHON2_HOST_BINARY) $(PYTHON2_HOST_DIR)/Parser/pgen \
 		$(HOST_TOOLS_DIR)/usr/bin
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
 
 $(pkg)-clean:
-	-$(MAKE) -C $(PYTHON_HOST_DIR) clean
+	-$(MAKE) -C $(PYTHON2_HOST_DIR) clean
 
 $(pkg)-dirclean:
-	$(RM) -r $(PYTHON_HOST_DIR)
+	$(RM) -r $(PYTHON2_HOST_DIR)
 
 $(pkg)-distclean: $(pkg)-dirclean
 	$(RM) -r \
-		$(PYTHON_HOST_TARGET_BINARY) \
+		$(PYTHON2_HOST_TARGET_BINARY) \
 		$(HOST_TOOLS_DIR)/usr/bin/2to3 \
-		$(HOST_TOOLS_DIR)/usr/bin/easy_install* \
 		$(HOST_TOOLS_DIR)/usr/bin/idle \
 		$(HOST_TOOLS_DIR)/usr/bin/pgen \
 		$(HOST_TOOLS_DIR)/usr/bin/pydoc \
