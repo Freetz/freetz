@@ -50,6 +50,7 @@ Latest changes
  - Host tools:
    * busybox 1.36.0
    * fakeroot 1.30.1
+   * fastjar 0.98
    * kconfig 6.1
    * mklibs 0.1.45
    * ncurses 6.4
