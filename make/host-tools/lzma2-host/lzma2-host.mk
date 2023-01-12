@@ -6,8 +6,6 @@ $(PKG)_SITE:=https://tukaani.org/xz
 ### CHANGES:=https://git.tukaani.org/?p=xz.git;a=blob_plain;f=NEWS;hb=HEAD
 ### CVSREPO:=https://git.tukaani.org/?p=xz.git
 
-$(PKG)_DIR:=$(TOOLS_SOURCE_DIR)/xz-$($(PKG)_VERSION)
-
 $(PKG)_ALONE_DIR:=$($(PKG)_DIR)/src/xz
 $(PKG)_LIB_DIR:=$($(PKG)_DIR)/src/liblzma/.libs
 
