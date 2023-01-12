@@ -26,12 +26,11 @@ $($(PKG)_BINARY): $($(PKG)_DIR)/.configured
 	@touch -c $@
 
 $($(PKG)_TARGET_BINARY): $($(PKG)_BINARY) | $(HOST_TOOLS_DIR)
+	cp -a $(PYTHON2_HOST_DIR)/Parser/pgen $(HOST_TOOLS_DIR)/usr/bin
 	(PATH=$(TARGET_PATH); \
 		$(TOOLS_SUBMAKE) -C $(PYTHON2_HOST_DIR) \
 		DESTDIR="$(HOST_TOOLS_DIR)" \
 		install )
-	cp -a $(PYTHON2_HOST_BINARY) $(PYTHON2_HOST_DIR)/Parser/pgen \
-		$(HOST_TOOLS_DIR)/usr/bin
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
