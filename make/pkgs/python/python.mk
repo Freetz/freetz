@@ -33,9 +33,6 @@ $(PKG)_EXCLUDED_FILES   := $(call newline2space,$(foreach mod,$($(PKG)_MODULES_E
 $(PKG)_UNNECESSARY_DIRS := $(if $(FREETZ_PACKAGE_PYTHON_COMPRESS_PYC),$(call newline2space,$(Python/unnecessary-if-compression-enabled/dirs)))
 $(PKG)_UNNECESSARY_DIRS += $(call newline2space,$(foreach mod,$($(PKG)_MODULES_EXCLUDED),$(PyMod/$(mod)/dirs)))
 
-$(PKG)_BUILD_PREREQ += zip
-$(PKG)_BUILD_PREREQ_HINT := Hint: on Debian-like systems this binary is provided by the zip package (sudo apt-get install zip)
-
 $(PKG)_HOST_DEPENDS_ON += python2-host
 $(PKG)_DEPENDS_ON += expat libffi zlib
 $(PKG)_DEPENDS_ON += $(if $(FREETZ_PACKAGE_PYTHON_MOD_BSDDB),db)

@@ -24,9 +24,6 @@ $(PKG)_LIBS_TARGET_DIR:=$(CLASSPATH_LIBNAMES_LONG:%=$($(PKG)_DEST_DIR)$(CLASSPAT
 
 $(PKG)_HOST_DEPENDS_ON += fastjar-host
 
-$(PKG)_BUILD_PREREQ += javac
-$(PKG)_BUILD_PREREQ_HINT := Hint: on Debian-like systems javac (Java compiler) is provided by many packages. You could use either of them interchangeably.
-
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 $(PKG)_REBUILD_SUBOPTS += FREETZ_PACKAGE_CLASSPATH_MINI
 

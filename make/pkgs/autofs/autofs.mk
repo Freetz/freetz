@@ -9,7 +9,6 @@ $(PKG)_SITE:=@KERNEL/linux/daemons/$(pkg)/v5
 ### CHANGES:=https://mirrors.edge.kernel.org/pub/linux/daemons/autofs/v5/
 ### CVSREPO:=https://github.com/torvalds/linux/tree/master/fs/autofs
 
-$(PKG)_BUILD_PREREQ += bison flex
 $(PKG)_STARTLEVEL=50
 
 $(PKG)_DEPENDS_ON += $(if $(FREETZ_TARGET_UCLIBC_SUPPORTS_rpc),,libtirpc)

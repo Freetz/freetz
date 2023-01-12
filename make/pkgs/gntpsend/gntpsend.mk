@@ -6,8 +6,6 @@ $(PKG)_SITE := git@https://github.com/mattn/gntp-send.git
 $(PKG)_BINARY := $($(PKG)_DIR)/gntp-send
 $(PKG)_TARGET_BINARY := $($(PKG)_DEST_DIR)/usr/bin/gntp-send
 
-$(PKG)_BUILD_PREREQ += libtoolize aclocal automake autoconf
-
 $(PKG)_CONFIGURE_PRE_CMDS += ./autogen.sh;
 
 $(PKG)_CONFIGURE_OPTIONS += --disable-shared

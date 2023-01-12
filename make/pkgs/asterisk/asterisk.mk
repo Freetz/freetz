@@ -21,8 +21,6 @@ $(PKG)_MODULES_TARGET_DIR := $($(PKG)_MODULES:%=$($(PKG)_DEST_DIR)$($(PKG)_MODUL
 $(PKG)_EXCLUDED += $(patsubst %,$($(PKG)_DEST_DIR)$($(PKG)_MODULES_DIR)/%.so,$(filter-out $($(PKG)_MODULES),$($(PKG)_MODULES_ALL)))
 endif
 
-$(PKG)_BUILD_PREREQ += svn xml2-config
-
 $(PKG)_DEPENDS_ON += curl
 $(PKG)_DEPENDS_ON += iksemel
 $(PKG)_DEPENDS_ON += libgsm

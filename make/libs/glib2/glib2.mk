@@ -17,9 +17,6 @@ $(PKG)_LIBS_TARGET_DIR := $($(PKG)_LIBNAMES_LONG:%=$($(PKG)_TARGET_DIR)/%)
 
 $(PKG)_PKGCONFIGS_SHORT := $($(PKG)_LIBNAMES_SHORT) gmodule-no-export gmodule-export gio-unix
 
-$(PKG)_BUILD_PREREQ += glib-genmarshal
-$(PKG)_BUILD_PREREQ_HINT := Hint: on Debian-like systems this binary is provided by the libglib2.0-dev package
-
 $(PKG)_REBUILD_SUBOPTS += FREETZ_TARGET_IPV6_SUPPORT
 
 $(PKG)_DEPENDS_ON += pcre libffi zlib
