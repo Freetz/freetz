@@ -19,7 +19,6 @@ $($(PKG)_TARGET_BINARY): $($(PKG)_DIR)/.unpacked
 		--symlink-scons \
 		--no-install-man \
 		$(SILENT)
-	find $(dir $@) -maxdepth 1 -type f -name "scons*" -exec $(SED) -i -r -e 's,^#![ ]*/usr/bin/env[ ]*python,#!$(abspath $(HOST_TOOLS_DIR)/usr/bin/python),g' \{\} \+
 
 $(pkg)-precompiled: $($(PKG)_TARGET_BINARY)
 
