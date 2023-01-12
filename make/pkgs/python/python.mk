@@ -2,7 +2,11 @@ $(call PKG_INIT_BIN, 2.7.18)
 $(PKG)_MAJOR_VERSION:=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION))
 $(PKG)_SOURCE:=Python-$($(PKG)_VERSION).tar.xz
 $(PKG)_HASH:=b62c0e7937551d0cc02b8fd5cb0f544f9405bafc9a54d3808ed4594812edef43
-$(PKG)_SITE:=http://www.python.org/ftp/python/$($(PKG)_VERSION)
+$(PKG)_SITE:=https://www.python.org/ftp/python/$($(PKG)_VERSION)
+### WEBSITE:=https://www.python.org/
+### MANPAGE:=https://docs.python.org/2/
+### CHANGES:=https://www.python.org/downloads/
+### CVSREPO:=https://github.com/python/cpython
 
 $(PKG)_LOCAL_INSTALL_DIR:=$($(PKG)_DIR)/_install
 
