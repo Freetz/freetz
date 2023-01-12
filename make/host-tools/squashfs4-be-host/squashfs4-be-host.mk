@@ -3,6 +3,8 @@ $(PKG)_SOURCE:=squashfs$($(PKG)_VERSION).tar.gz
 $(PKG)_HASH:=0d605512437b1eb800b4736791559295ee5f60177e102e4d4ccd0ee241a5f3f6
 $(PKG)_SITE:=@SF/squashfs
 
+$(PKG)_DEPENDS_ON:=lzma2-host
+
 # Enable legacy SquashFS formats support (SquashFS-1/2/3, ZLIB/LZMA1 compressed)
 # 1 - to enable
 # 0 - to disable
