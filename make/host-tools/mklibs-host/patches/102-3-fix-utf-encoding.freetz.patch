@@ -1,0 +1,11 @@
+--- src/mklibs
++++ src/mklibs
+@@ -427,7 +427,7 @@
+         debug(DEBUG_SPAM, prog, "is a hardlink to", objects[inode])
+     elif so_pattern.match(prog):
+         debug(DEBUG_SPAM, prog, "is a library")
+-    elif script_pattern.match(open(prog).read(256)):
++    elif script_pattern.match(open(prog, encoding="latin-1", errors='ignore').read(256)):
+         debug(DEBUG_SPAM, prog, "is a script")
+     else:
+         objects[inode] = prog

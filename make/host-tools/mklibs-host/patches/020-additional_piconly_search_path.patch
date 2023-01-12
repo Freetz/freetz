@@ -15,7 +15,7 @@ This patch makes also "missing select"-errors easier to see even if this kind of
 
 --- src/mklibs
 +++ src/mklibs
-@@ -241,7 +241,7 @@
+@@ -247,7 +247,7 @@
  # Find a PIC archive for the library
  def find_pic(lib):
      base_name = so_pattern.match(lib).group(1)
@@ -24,7 +24,7 @@ This patch makes also "missing select"-errors easier to see even if this kind of
          for file in glob.glob(sysroot + path + "/" + base_name + "_pic.a"):
              if os.access(file, os.F_OK):
                  return resolve_link(file)
-@@ -250,7 +250,7 @@
+@@ -256,7 +256,7 @@
  # Find a PIC .map file for the library
  def find_pic_map(lib):
      base_name = so_pattern.match(lib).group(1)
@@ -33,15 +33,15 @@ This patch makes also "missing select"-errors easier to see even if this kind of
          for file in glob.glob(sysroot + path + "/" + base_name + "_pic.map"):
              if os.access(file, os.F_OK):
                  return resolve_link(file)
-@@ -292,6 +292,7 @@
-     print >> outfd, "  -d, --dest-dir DIRECTORY     create libraries in DIRECTORY"
-     print >> outfd, "  -D, --no-default-lib         omit default libpath (", ':'.join(default_lib_path), ")"
-     print >> outfd, "  -L DIRECTORY[:DIRECTORY]...  add DIRECTORY(s) to the library search path"
-+    print >> outfd, "  -P DIRECTORY[:DIRECTORY]...  add DIRECTORY(s) to the pic.a/pic.map search path"
-     print >> outfd, "  -l LIBRARY                   add LIBRARY always"
-     print >> outfd, "      --ldlib LDLIB            use LDLIB for the dynamic linker"
-     print >> outfd, "      --libc-extras-dir DIRECTORY  look for libc extra files in DIRECTORY"
-@@ -332,7 +333,7 @@
+@@ -298,6 +298,7 @@
+     print("  -d, --dest-dir DIRECTORY     create libraries in DIRECTORY", file=outfd)
+     print("  -D, --no-default-lib         omit default libpath (", ':'.join(default_lib_path, file=outfd), ", file=outfd)", file=outfd)
+     print("  -L DIRECTORY[:DIRECTORY]...  add DIRECTORY(s, file=outfd) to the library search path", file=outfd)
++    print("  -P DIRECTORY[:DIRECTORY]...  add DIRECTORY(s, file=outfd) to the pic.a/pic.map search path", file=outfd)
+     print("  -l LIBRARY                   add LIBRARY always", file=outfd)
+     print("      --ldlib LDLIB            use LDLIB for the dynamic linker", file=outfd)
+     print("      --libc-extras-dir DIRECTORY  look for libc extra files in DIRECTORY", file=outfd)
+@@ -338,7 +339,7 @@
  os.environ['LC_ALL'] = "C"
  
  # Argument parsing
@@ -50,7 +50,7 @@ This patch makes also "missing select"-errors easier to see even if this kind of
  longopts = ["no-default-lib", "dry-run", "verbose", "version", "help",
              "dest-dir=", "ldlib=", "libc-extras-dir=", "target=", "root=",
              "sysroot=", "gcc-options=", "libdir="]
-@@ -340,6 +341,7 @@
+@@ -346,6 +347,7 @@
  # some global variables
  lib_rpath = []
  lib_path = []
@@ -58,7 +58,7 @@ This patch makes also "missing select"-errors easier to see even if this kind of
  dest_path = "DEST"
  ldlib = "LDLIB"
  include_default_lib_path = "yes"
-@@ -367,6 +369,8 @@
+@@ -373,6 +375,8 @@
              debuglevel = debuglevel + 1
      elif opt == "-L":
          lib_path.extend(string.split(arg, ":"))
@@ -67,7 +67,7 @@ This patch makes also "missing select"-errors easier to see even if this kind of
      elif opt in ("-d", "--dest-dir"):
          dest_path = arg
      elif opt in ("-D", "--no-default-lib"):
-@@ -625,7 +629,7 @@
+@@ -617,7 +621,7 @@
              cmd.append(pic_file)
              cmd.extend(extra_post_obj)
              cmd.extend(extra_flags)

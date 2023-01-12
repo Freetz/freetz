@@ -1,0 +1,11 @@
+--- src/mklibs
++++ src/mklibs
+@@ -467,7 +467,7 @@
+     debug(DEBUG_NORMAL, "I: library reduction pass", str(passnr))
+     if debuglevel >= DEBUG_VERBOSE:
+         print("Objects:",)
+-        for obj in sorted([x[string.rfind(x, '/') + 1:] for x in objects.values()]):
++        for obj in sorted([x[x.rfind('/') + 1:] for x in objects.values()]):
+             print(obj,)
+         print()
+ 

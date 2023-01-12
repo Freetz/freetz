@@ -1,0 +1,13 @@
+--- src/mklibs
++++ src/mklibs
+@@ -603,8 +603,8 @@
+             if soname in ("libc.so.0", "libc.so.1", "libc.so.6", "libc.so.6.1", "libc.so.0.1", "libc.so.0.3"):
+                 # force dso_handle.os to be included, otherwise reduced libc
+                 # may segfault in ptmalloc_init due to undefined weak reference
+-                extra_pre_obj.append(sysroot + libc_extras_dir + "/soinit.o")
+-                extra_post_obj.append(sysroot + libc_extras_dir + "/sofini.o")
++#               extra_pre_obj.append(sysroot + libc_extras_dir + "/soinit.o")
++#               extra_post_obj.append(sysroot + libc_extras_dir + "/sofini.o")
+                 symbols.add(ProvidedSymbol('__dso_handle', None, None, True))
+ 
+             map_file = find_pic_map(library)

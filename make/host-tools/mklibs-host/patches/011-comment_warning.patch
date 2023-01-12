@@ -1,13 +1,13 @@
 --- src/mklibs
 +++ src/mklibs
-@@ -446,8 +446,8 @@
+@@ -450,8 +450,8 @@
                      if debuglevel >= DEBUG_VERBOSE:
-                         print "Adding rpath " + rpath_elem + " for " + obj
+                         print("Adding rpath " + rpath_elem + " for " + obj)
                      lib_rpath.append(rpath_elem)
 -        else:
--            print "warning: " + obj + " may need rpath, but --root not specified"
+-            print("warning: " + obj + " may need rpath, but --root not specified")
 +#        else:
-+#            print "warning: " + obj + " may need rpath, but --root not specified"
++#            print("warning: " + obj + " may need rpath, but --root not specified")
  
  lib_path.extend(lib_rpath)
  

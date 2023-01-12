@@ -1,0 +1,20 @@
+--- src/mklibs
++++ src/mklibs
+@@ -423,7 +423,7 @@
+ objects = {}  # map from inode to filename
+ for prog in proglist:
+     inode = os.stat(prog)[ST_INO]
+-    if objects.has_key(inode):
++    if inode in objects:
+         debug(DEBUG_SPAM, prog, "is a hardlink to", objects[inode])
+     elif so_pattern.match(prog):
+         debug(DEBUG_SPAM, prog, "is a library")
+@@ -478,7 +478,7 @@
+         obj = dest_path + "/" + lib
+         small_libs.append(obj)
+         inode = os.stat(obj)[ST_INO]
+-        if objects.has_key(inode):
++        if inode in objects:
+             debug(DEBUG_SPAM, obj, "is hardlink to", objects[inode])
+         else:
+             objects[inode] = obj

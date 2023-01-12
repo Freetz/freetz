@@ -1,17 +1,11 @@
 --- src/mklibs
 +++ src/mklibs
-@@ -606,12 +606,12 @@
-                 extra_post_obj.append(sysroot + libc_extras_dir + "/sofini.o")
-                 symbols.add(ProvidedSymbol('__dso_handle', None, None, True, True))
+@@ -600,7 +600,7 @@
+             symbols.update(library_symbols_used[library])
  
--            if soname == "libc.so.0":
-+            if soname in ("libc.so.0", "libc.so.1"):
-                 symbols.add(ProvidedSymbol('__uClibc_init', None, None, True, True))
-                 symbols.add(ProvidedSymbol('__uClibc_fini', None, None, True, True))
-                 extra_pre_obj.append("-Wl,-init,__uClibc_init")
- 
--            if soname == "libpthread.so.0":
-+            if soname in ("libpthread.so.0", "libpthread.so.1"):
-                 symbols.add(ProvidedSymbol('__pthread_initialize_minimal_internal', None, None, True, True))
-                 extra_flags.append("-Wl,-z,nodelete,-z,initfirst,-init=__pthread_initialize_minimal_internal")
- 
+             # libc.so.6 needs its soinit.o and sofini.o as well as the pic
+-            if soname in ("libc.so.6", "libc.so.6.1", "libc.so.0.1", "libc.so.0.3"):
++            if soname in ("libc.so.0", "libc.so.1", "libc.so.6", "libc.so.6.1", "libc.so.0.1", "libc.so.0.3"):
+                 # force dso_handle.os to be included, otherwise reduced libc
+                 # may segfault in ptmalloc_init due to undefined weak reference
+                 extra_pre_obj.append(sysroot + libc_extras_dir + "/soinit.o")

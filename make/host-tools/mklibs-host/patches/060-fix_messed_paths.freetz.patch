@@ -1,0 +1,21 @@
+--- src/mklibs
++++ src/mklibs
+@@ -658,15 +658,15 @@
+ # at its correct location (and not duplicated in /lib)
+ ld_file_name = os.path.basename(ldlib)
+ ld_path_name = os.path.dirname(ldlib)
+-ld_full_path = "../" + ldlib
++ld_full_path = ld_file_name
+ ld_file = find_lib(ld_file_name)
+ 
+ if ld_path_name != "/lib":
+     if os.access(dest_path + "/" + ld_file_name, os.F_OK):
+         os.remove(dest_path + "/" + ld_file_name)
+ 
+-if not os.path.exists(dest_path + "/../" + ld_path_name):
+-    os.mkdir(dest_path + "/../" + ld_path_name)
++if not os.path.exists(ld_path_name):
++    os.mkdir(ld_path_name)
+ 
+ if not os.access(dest_path + "/" + ld_full_path, os.F_OK):
+     debug(DEBUG_NORMAL, "I: stripping and copying dynamic linker to " + ld_full_path)

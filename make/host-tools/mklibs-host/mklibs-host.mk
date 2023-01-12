@@ -1,19 +1,21 @@
-$(call TOOLS_INIT, 0.1.34)
-$(PKG)_SOURCE:=mklibs_$($(PKG)_VERSION).tar.gz
-$(PKG)_HASH:=0c13c314f5c397529f58a5a02d57d83aeb4463d6a0d80b9374c6576ec37ed39f
-$(PKG)_SITE:=http://archive.debian.org/debian/pool/main/m/mklibs
+$(call TOOLS_INIT, 0.1.45)
+$(PKG)_SOURCE:=mklibs_$($(PKG)_VERSION).tar.xz
+$(PKG)_HASH:=dd92a904b3942566f713fe536cd77dd1a5cfc62243c0e0bc6bb5d866e37422f3
+$(PKG)_SITE:=http://deb.debian.org/debian/pool/main/m/mklibs
 ### WEBSITE:=https://packages.debian.org/sid/mklibs
 ### MANPAGE:=https://manpages.debian.org/unstable/mklibs/mklibs.1.html
 ### CHANGES:=https://salsa.debian.org/installer-team/mklibs/blob/master/debian/changelog
 ### CVSREPO:=https://github.com/openwrt/openwrt/tree/master/tools/mklibs
 
-$(PKG)_DEPENDS_ON:=python2-host
+$(PKG)_DEPENDS_ON:=python3-host
 
 $(PKG)_DESTDIR:=$(FREETZ_BASE_DIR)/$(TOOLS_DIR)/build/bin
 $(PKG)_SCRIPT:=$($(PKG)_DIR)/src/mklibs
 $(PKG)_TARGET_SCRIPT:=$($(PKG)_DESTDIR)/mklibs
 $(PKG)_READELF_BINARY:=$($(PKG)_DIR)/src/mklibs-readelf/mklibs-readelf
 $(PKG)_READELF_TARGET_BINARY:=$($(PKG)_DESTDIR)/mklibs-readelf
+
+$(PKG)_CONFIGURE_PRE_CMDS += autoreconf -i;
 
 $(PKG)_CONFIGURE_OPTIONS += --prefix=/
 

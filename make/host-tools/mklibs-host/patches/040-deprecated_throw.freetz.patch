@@ -12,7 +12,7 @@
      delete *it;
  }
  
--file *file::open (const char *filename) throw (std::bad_alloc, std::runtime_error)
+-file *file::open (const char *filename) throw ()
 +file *file::open (const char *filename)
  {
    struct stat buf;
@@ -21,7 +21,7 @@
  }
  
  template<typename _class>
--file *file::open_class(uint8_t *mem, size_t len) throw (std::bad_alloc, std::runtime_error)
+-file *file::open_class(uint8_t *mem, size_t len) throw ()
 +file *file::open_class(uint8_t *mem, size_t len)
  {
    switch (mem[EI_DATA])
@@ -30,12 +30,12 @@
  }
  
  template <typename _class, typename _data>
--file_data<_class, _data>::file_data(uint8_t *mem, size_t len) throw (std::bad_alloc, std::runtime_error)
+-file_data<_class, _data>::file_data(uint8_t *mem, size_t len) throw ()
 +file_data<_class, _data>::file_data(uint8_t *mem, size_t len)
  : file(mem, len)
  {
    if (mem[EI_CLASS] != _class::id)
-@@ -177,7 +177,7 @@
+@@ -179,7 +179,7 @@
  }
  
  template <typename _class, typename _data>
@@ -44,11 +44,11 @@
  {
    this->name   = convert<_data, typeof shdr->sh_name  >()(shdr->sh_name  );
    this->type   = convert<_data, typeof shdr->sh_type  >()(shdr->sh_type  );
-@@ -188,21 +188,21 @@
+@@ -190,21 +190,21 @@
  }
  
  template <typename _class, typename _data>
--void section_data<_class, _data>::update(const file &file) throw (std::bad_alloc)
+-void section_data<_class, _data>::update(const file &file) throw ()
 +void section_data<_class, _data>::update(const file &file)
  {
    const section_type<section_type_STRTAB> &section =
@@ -64,21 +64,21 @@
  }
  
  template <typename _class, typename _data>
--section_real<_class, _data, section_type_DYNAMIC>::section_real(Shdr *header, uint8_t *mem) throw (std::bad_alloc)
+-section_real<_class, _data, section_type_DYNAMIC>::section_real(Shdr *header, uint8_t *mem) throw ()
 +section_real<_class, _data, section_type_DYNAMIC>::section_real(Shdr *header, uint8_t *mem)
  : section_data<_class, _data>(header, mem)
  {
    if (this->type != SHT_DYNAMIC)
-@@ -219,7 +219,7 @@
+@@ -221,7 +221,7 @@
  }
  
  template <typename _class, typename _data>
--void section_real<_class, _data, section_type_DYNAMIC>::update(const file &file) throw (std::bad_alloc)
+-void section_real<_class, _data, section_type_DYNAMIC>::update(const file &file) throw ()
 +void section_real<_class, _data, section_type_DYNAMIC>::update(const file &file)
  {
    section_data<_class, _data>::update(file);
  
-@@ -234,14 +234,14 @@
+@@ -236,14 +236,14 @@
    }
  }
  
@@ -90,21 +90,21 @@
  }
  
  template <typename _class, typename _data>
--section_real<_class, _data, section_type_DYNSYM>::section_real(Shdr *header, uint8_t *mem) throw (std::bad_alloc)
+-section_real<_class, _data, section_type_DYNSYM>::section_real(Shdr *header, uint8_t *mem) throw ()
 +section_real<_class, _data, section_type_DYNSYM>::section_real(Shdr *header, uint8_t *mem)
  : section_data<_class, _data>(header, mem)
  {
    if (this->type != SHT_DYNSYM)
-@@ -258,7 +258,7 @@
+@@ -260,7 +260,7 @@
  }
  
  template <typename _class, typename _data>
--void section_real<_class, _data, section_type_DYNSYM>::update(const file &file) throw (std::bad_alloc)
+-void section_real<_class, _data, section_type_DYNSYM>::update(const file &file) throw ()
 +void section_real<_class, _data, section_type_DYNSYM>::update(const file &file)
  {
    section_data<_class, _data>::update (file);
  
-@@ -274,7 +274,7 @@
+@@ -276,7 +276,7 @@
    }
  }
  
@@ -113,25 +113,25 @@
  {
    for (std::vector<version_definition *>::const_iterator it = verdefs.begin(); it != verdefs.end(); ++it)
      if ((*it)->get_ndx() == index)
-@@ -283,7 +283,7 @@
+@@ -285,7 +285,7 @@
  }
  
  template <typename _class, typename _data>
--section_real<_class, _data, section_type_GNU_VERDEF>::section_real(Shdr *header, uint8_t *mem) throw (std::bad_alloc)
+-section_real<_class, _data, section_type_GNU_VERDEF>::section_real(Shdr *header, uint8_t *mem) throw ()
 +section_real<_class, _data, section_type_GNU_VERDEF>::section_real(Shdr *header, uint8_t *mem)
  : section_data<_class, _data>(header, mem)
  {
    if (this->type != SHT_GNU_verdef)
-@@ -305,7 +305,7 @@
+@@ -307,7 +307,7 @@
  }
  
  template <typename _class, typename _data>
--void section_real<_class, _data, section_type_GNU_VERDEF>::update(const file &file) throw (std::bad_alloc)
+-void section_real<_class, _data, section_type_GNU_VERDEF>::update(const file &file) throw ()
 +void section_real<_class, _data, section_type_GNU_VERDEF>::update(const file &file)
  {
    section_data<_class, _data>::update(file);
  
-@@ -320,7 +320,7 @@
+@@ -322,7 +322,7 @@
    }
  }
  
@@ -140,34 +140,34 @@
  {
    for (std::vector<version_requirement *>::const_iterator it = verneeds.begin(); it != verneeds.end(); ++it)
      for (std::vector<version_requirement_entry *>::const_iterator it1 = (*it)->get_entries().begin(); it1 != (*it)->get_entries().end(); ++it1)
-@@ -331,7 +331,7 @@
+@@ -333,7 +333,7 @@
  
  template <typename _class, typename _data>
  section_real<_class, _data, section_type_GNU_VERNEED>::
--section_real(Shdr *header, uint8_t *mem) throw (std::bad_alloc)
+-section_real(Shdr *header, uint8_t *mem) throw ()
 +section_real(Shdr *header, uint8_t *mem)
  : section_data<_class, _data> (header, mem)
  {
    if (this->type != SHT_GNU_verneed)
-@@ -353,7 +353,7 @@
+@@ -355,7 +355,7 @@
  }
  
  template <typename _class, typename _data>
--void section_real<_class, _data, section_type_GNU_VERNEED>::update(const file &file) throw (std::bad_alloc)
+-void section_real<_class, _data, section_type_GNU_VERNEED>::update(const file &file) throw ()
 +void section_real<_class, _data, section_type_GNU_VERNEED>::update(const file &file)
  {
    section_data<_class, _data>::update(file);
  
-@@ -370,7 +370,7 @@
+@@ -372,7 +372,7 @@
  
  template <typename _class, typename _data>
  section_real<_class, _data, section_type_GNU_VERSYM>::
--section_real (Shdr *header, uint8_t *mem) throw (std::bad_alloc)
+-section_real (Shdr *header, uint8_t *mem) throw ()
 +section_real (Shdr *header, uint8_t *mem)
  : section_data<_class, _data> (header, mem)
  {
    if (this->type != SHT_GNU_versym)
-@@ -387,7 +387,7 @@
+@@ -389,7 +389,7 @@
  }
  
  template <typename _class, typename _data>
@@ -176,16 +176,16 @@
  {
    this->type   = convert<_data, typeof phdr->p_type  >()(phdr->p_type);
    this->flags  = convert<_data, typeof phdr->p_flags >()(phdr->p_offset);
-@@ -397,7 +397,7 @@
+@@ -399,7 +399,7 @@
  }
  
  template <typename _class, typename _data>
--segment_real<_class, _data, segment_type_INTERP>::segment_real (Phdr *header, uint8_t *mem) throw (std::bad_alloc)
+-segment_real<_class, _data, segment_type_INTERP>::segment_real (Phdr *header, uint8_t *mem) throw ()
 +segment_real<_class, _data, segment_type_INTERP>::segment_real (Phdr *header, uint8_t *mem)
  : segment_data<_class, _data> (header, mem)
  {
    if (this->type != PT_INTERP)
-@@ -407,7 +407,7 @@
+@@ -409,7 +409,7 @@
  }
  
  template <typename _class, typename _data>
@@ -194,41 +194,41 @@
  {
    this->tag = convert<_data, typeof dyn->d_tag     >()(dyn->d_tag);
    this->val = convert<_data, typeof dyn->d_un.d_val>()(dyn->d_un.d_val);
-@@ -426,13 +426,13 @@
+@@ -429,13 +429,13 @@
  }
  
  template <typename _class, typename _data>
--void dynamic_data<_class, _data>::update_string(const section_type<section_type_STRTAB> &section) throw (std::bad_alloc)
+-void dynamic_data<_class, _data>::update_string(const section_type<section_type_STRTAB> &section) throw ()
 +void dynamic_data<_class, _data>::update_string(const section_type<section_type_STRTAB> &section)
  {
    if (is_string)
      val_string = section.get_string(val);
  }
  
--std::string symbol::get_version () const throw (std::bad_alloc)
+-std::string symbol::get_version () const throw ()
 +std::string symbol::get_version () const
  {
    if (verneed)
      return verneed->get_name();
-@@ -442,7 +442,7 @@
+@@ -445,7 +445,7 @@
    return "Base";
  }
  
--std::string symbol::get_version_file () const throw (std::bad_alloc)
+-std::string symbol::get_version_file () const throw ()
 +std::string symbol::get_version_file () const
  {
    if (verneed)
      return verneed->get_file();
-@@ -450,7 +450,7 @@
+@@ -453,7 +453,7 @@
    return "None";
  }
  
--std::string symbol::get_name_version () const throw (std::bad_alloc)
+-std::string symbol::get_name_version () const throw ()
 +std::string symbol::get_name_version () const
  {
    std::string ver;
  
-@@ -463,7 +463,7 @@
+@@ -466,7 +466,7 @@
  }
  
  template <typename _class, typename _data>
@@ -237,23 +237,23 @@
  {
    this->name  = convert<_data, typeof sym->st_name >()(sym->st_name);
    this->info  = convert<_data, typeof sym->st_info >()(sym->st_info);
-@@ -475,13 +475,13 @@
+@@ -478,13 +478,13 @@
  }
  
  template <typename _class, typename _data>
--void symbol_data<_class, _data>::update_string(const section_type<section_type_STRTAB> &section) throw (std::bad_alloc)
+-void symbol_data<_class, _data>::update_string(const section_type<section_type_STRTAB> &section) throw ()
 +void symbol_data<_class, _data>::update_string(const section_type<section_type_STRTAB> &section)
  {
    name_string = section.get_string(name);
  }
  
  template <typename _class, typename _data>
--void symbol_data<_class, _data>::update_version(const file &file, uint16_t index) throw (std::bad_alloc)
+-void symbol_data<_class, _data>::update_version(const file &file, uint16_t index) throw ()
 +void symbol_data<_class, _data>::update_version(const file &file, uint16_t index)
  {
    if (!file.get_section_GNU_VERSYM())
      return;
-@@ -509,7 +509,7 @@
+@@ -512,7 +512,7 @@
  }
  
  template <typename _class, typename _data>
@@ -262,18 +262,18 @@
  {
    this->ndx    = convert<_data, typeof (verdef->vd_ndx)> () (verdef->vd_ndx);
    uint16_t cnt = convert<_data, typeof (verdef->vd_cnt)> () (verdef->vd_cnt);
-@@ -528,18 +528,18 @@
+@@ -531,18 +531,18 @@
  }
  
  template <typename _class, typename _data>
--void version_definition_data<_class, _data>::update_string(const section_type<section_type_STRTAB> &section) throw (std::bad_alloc)
+-void version_definition_data<_class, _data>::update_string(const section_type<section_type_STRTAB> &section) throw ()
 +void version_definition_data<_class, _data>::update_string(const section_type<section_type_STRTAB> &section)
  {
    for (std::vector<uint32_t>::iterator it = names.begin(); it != names.end(); ++it)
      names_string.push_back(section.get_string(*it));
  }
  
--version_requirement::version_requirement() throw (std::bad_alloc)
+-version_requirement::version_requirement() throw ()
 +version_requirement::version_requirement()
  : file_string("None")
  { }
@@ -284,16 +284,16 @@
  {
    uint16_t cnt = convert<_data, typeof (verneed->vn_cnt)> ()  (verneed->vn_cnt);
    this->file   = convert<_data, typeof (verneed->vn_file)> () (verneed->vn_file);
-@@ -558,7 +558,7 @@
+@@ -561,7 +561,7 @@
  
  template <typename _class, typename _data>
  void version_requirement_data<_class, _data>::
--update_string(const section_type<section_type_STRTAB> &section) throw (std::bad_alloc)
+-update_string(const section_type<section_type_STRTAB> &section) throw ()
 +update_string(const section_type<section_type_STRTAB> &section)
  {
    file_string = section.get_string(file);
  
-@@ -571,19 +571,19 @@
+@@ -574,19 +574,19 @@
  }
  
  version_requirement_entry::
@@ -316,11 +316,11 @@
  : version_requirement_entry(verneed)
  {
    flags = convert<_data, typeof vna->vna_flags>() (vna->vna_flags);
-@@ -593,7 +593,7 @@
+@@ -596,7 +596,7 @@
  
  template <typename _class, typename _data>
  void version_requirement_entry_data<_class, _data>::
--update_string(const section_type<section_type_STRTAB> &section) throw (std::bad_alloc)
+-update_string(const section_type<section_type_STRTAB> &section) throw ()
 +update_string(const section_type<section_type_STRTAB> &section)
  {
    name_string = section.get_string(name);
@@ -361,7 +361,7 @@
      class file_data : public file
      {
        public:
--        file_data(uint8_t *, size_t len) throw (std::bad_alloc, std::runtime_error);
+-        file_data(uint8_t *, size_t len) throw ();
 +        file_data(uint8_t *, size_t len);
  
 -        const uint8_t get_class() const throw () { return _class::id; }
@@ -378,7 +378,7 @@
 -        section_data(Shdr *, uint8_t *) throw ();
 +        section_data(Shdr *, uint8_t *);
  
--        virtual void update(const file &) throw (std::bad_alloc);
+-        virtual void update(const file &) throw ();
 +        virtual void update(const file &);
      };
  
@@ -396,10 +396,10 @@
          typedef typename _elfdef<_class>::Shdr Shdr;
  
        public:
--        section_real(Shdr *, uint8_t *) throw (std::bad_alloc);
+-        section_real(Shdr *, uint8_t *) throw ();
 +        section_real(Shdr *, uint8_t *);
  
--        void update(const file &) throw (std::bad_alloc);
+-        void update(const file &) throw ();
 +        void update(const file &);
      };
  
@@ -408,10 +408,10 @@
          typedef typename _elfdef<_class>::Shdr Shdr;
  
        public:
--        section_real(Shdr *, uint8_t *) throw (std::bad_alloc);
+-        section_real(Shdr *, uint8_t *) throw ();
 +        section_real(Shdr *, uint8_t *);
  
--        void update(const file &) throw (std::bad_alloc);
+-        void update(const file &) throw ();
 +        void update(const file &);
      };
  
@@ -420,10 +420,10 @@
          typedef typename _elfdef<_class>::Shdr Shdr;
  
        public:
--        section_real(Shdr *, uint8_t *) throw (std::bad_alloc);
+-        section_real(Shdr *, uint8_t *) throw ();
 +        section_real(Shdr *, uint8_t *);
  
--        void update(const file &) throw (std::bad_alloc);
+-        void update(const file &) throw ();
 +        void update(const file &);
      };
  
@@ -432,10 +432,10 @@
          typedef typename _elfdef<_class>::Shdr Shdr;
  
        public:
--        section_real(Shdr *, uint8_t *) throw (std::bad_alloc);
+-        section_real(Shdr *, uint8_t *) throw ();
 +        section_real(Shdr *, uint8_t *);
  
--        void update(const file &) throw (std::bad_alloc);
+-        void update(const file &) throw ();
 +        void update(const file &);
      };
  
@@ -444,7 +444,7 @@
          typedef typename _elfdef<_class>::Shdr Shdr;
  
        public:
--        section_real(Shdr *, uint8_t *) throw (std::bad_alloc);
+-        section_real(Shdr *, uint8_t *) throw ();
 +        section_real(Shdr *, uint8_t *);
      };
  
@@ -471,7 +471,7 @@
          typedef typename _elfdef<_class>::Phdr Phdr;
  
        public:
--        segment_real (Phdr *, uint8_t *) throw (std::bad_alloc);
+-        segment_real (Phdr *, uint8_t *) throw ();
 +        segment_real (Phdr *, uint8_t *);
      };
  
@@ -483,7 +483,7 @@
 -        dynamic_data (Dyn *) throw ();
 +        dynamic_data (Dyn *);
  
--        void update_string(const section_type<section_type_STRTAB> &) throw (std::bad_alloc);
+-        void update_string(const section_type<section_type_STRTAB> &) throw ();
 +        void update_string(const section_type<section_type_STRTAB> &);
      };
  
@@ -495,8 +495,8 @@
 -        symbol_data (Sym *) throw ();
 +        symbol_data (Sym *);
  
--        void update_string(const section_type<section_type_STRTAB> &) throw (std::bad_alloc);
--        virtual void update_version (const file &, uint16_t) throw (std::bad_alloc);
+-        void update_string(const section_type<section_type_STRTAB> &) throw ();
+-        virtual void update_version (const file &, uint16_t) throw ();
 +        void update_string(const section_type<section_type_STRTAB> &);
 +        virtual void update_version (const file &, uint16_t);
      };
@@ -509,7 +509,7 @@
 -        version_definition_data (Verdef *) throw ();
 +        version_definition_data (Verdef *);
  
--        void update_string(const section_type<section_type_STRTAB> &) throw (std::bad_alloc);
+-        void update_string(const section_type<section_type_STRTAB> &) throw ();
 +        void update_string(const section_type<section_type_STRTAB> &);
      };
  
@@ -521,7 +521,7 @@
 -        version_requirement_data (Verneed *) throw ();
 +        version_requirement_data (Verneed *);
  
--        void update_string(const section_type<section_type_STRTAB> &) throw (std::bad_alloc);
+-        void update_string(const section_type<section_type_STRTAB> &) throw ();
 +        void update_string(const section_type<section_type_STRTAB> &);
      };
  
@@ -533,7 +533,7 @@
 -        version_requirement_entry_data (Vernaux *, const version_requirement &) throw ();
 +        version_requirement_entry_data (Vernaux *, const version_requirement &);
  
--        void update_string(const section_type<section_type_STRTAB> &) throw (std::bad_alloc);
+-        void update_string(const section_type<section_type_STRTAB> &) throw ();
 +        void update_string(const section_type<section_type_STRTAB> &);
      };
  }
@@ -553,20 +553,21 @@
 -      const uint16_t get_machine() const throw () { return machine; }
 -      const uint32_t get_flags() const throw () { return flags; }
 -      const uint16_t get_shstrndx() const throw () { return shstrndx; }
+-
+-      const std::vector<section *> get_sections() const throw () { return sections; };
+-      const section &get_section(unsigned int i) const throw () { return *sections.at(i); };
+-      const section_type<section_type_DYNAMIC> *get_section_DYNAMIC() const throw () { return section_DYNAMIC; };
+-      const section_type<section_type_DYNSYM> *get_section_DYNSYM() const throw () { return section_DYNSYM; };
+-      const section_type<section_type_GNU_VERDEF> *get_section_GNU_VERDEF() const throw () { return section_GNU_VERDEF; };
+-      const section_type<section_type_GNU_VERNEED> *get_section_GNU_VERNEED() const throw () { return section_GNU_VERNEED; };
+-      const section_type<section_type_GNU_VERSYM> *get_section_GNU_VERSYM() const throw () { return section_GNU_VERSYM; };
 +      virtual const uint8_t get_class() const = 0;
 +      virtual const uint8_t get_data() const = 0;
 +      const uint16_t get_type() const { return type; }
 +      const uint16_t get_machine() const { return machine; }
 +      const uint32_t get_flags() const { return flags; }
 +      const uint16_t get_shstrndx() const { return shstrndx; }
- 
--      const std::vector<section *> get_sections() const throw () { return sections; };
--      const section &get_section(unsigned int i) const throw (std::out_of_range) { return *sections.at(i); };
--      const section_type<section_type_DYNAMIC> *get_section_DYNAMIC() const throw () { return section_DYNAMIC; };
--      const section_type<section_type_DYNSYM> *get_section_DYNSYM() const throw () { return section_DYNSYM; };
--      const section_type<section_type_GNU_VERDEF> *get_section_GNU_VERDEF() const throw () { return section_GNU_VERDEF; };
--      const section_type<section_type_GNU_VERNEED> *get_section_GNU_VERNEED() const throw () { return section_GNU_VERNEED; };
--      const section_type<section_type_GNU_VERSYM> *get_section_GNU_VERSYM() const throw () { return section_GNU_VERSYM; };
++
 +      const std::vector<section *> get_sections() const { return sections; };
 +      const section &get_section(unsigned int i) const { return *sections.at(i); };
 +      const section_type<section_type_DYNAMIC> *get_section_DYNAMIC() const { return section_DYNAMIC; };
@@ -580,15 +581,15 @@
 +      const std::vector<segment *> get_segments() const { return segments; };
 +      const segment_type<segment_type_INTERP> *get_segment_INTERP() const { return segment_INTERP; };
  
--      static file *open(const char *filename) throw (std::bad_alloc, std::runtime_error);
+-      static file *open(const char *filename) throw ();
 +      static file *open(const char *filename);
  
      protected:
--      file(uint8_t *mem, size_t len) throw (std::bad_alloc) : mem(mem), len(len) { }
+-      file(uint8_t *mem, size_t len) throw () : mem(mem), len(len) { }
 +      file(uint8_t *mem, size_t len) : mem(mem), len(len) { }
  
        template<typename _class>
--        static file *open_class(uint8_t *, size_t) throw (std::bad_alloc, std::runtime_error);
+-        static file *open_class(uint8_t *, size_t) throw ();
 +        static file *open_class(uint8_t *, size_t);
  
        uint16_t type;
@@ -613,7 +614,7 @@
      class section_type<section_type_STRTAB> : public virtual section
      {
        public:
--        std::string get_string(uint32_t offset) const throw (std::bad_alloc)
+-        std::string get_string(uint32_t offset) const throw ()
 +        std::string get_string(uint32_t offset) const
          {
            return std::string(reinterpret_cast<const char *> (mem + offset));
@@ -744,10 +745,10 @@
 -      uint8_t get_bind () const throw () { return bind; }
 -      uint8_t get_type () const throw () { return type; }
 -      const std::string &get_name_string() const throw () { return name_string; }
--      std::string get_version() const throw (std::bad_alloc);
--      std::string get_version_file() const throw (std::bad_alloc);
+-      std::string get_version() const throw ();
+-      std::string get_version_file() const throw ();
 -      uint16_t get_version_data() const throw () { return versym; }
--      std::string get_name_version() const throw (std::bad_alloc);
+-      std::string get_name_version() const throw ();
 +      uint8_t get_info() const { return info; }
 +      uint16_t get_shndx() const { return shndx; }
 +      uint64_t get_value() const { return value; }
@@ -780,7 +781,7 @@
    class version_requirement
    {
      public:
--      version_requirement() throw (std::bad_alloc);
+-      version_requirement() throw ();
 -      virtual ~version_requirement () throw () { }
 +      version_requirement();
 +      virtual ~version_requirement () { }
@@ -811,3 +812,41 @@
  
      protected:
        uint16_t flags;
+--- src/mklibs-readelf/endian.hpp
++++ src/mklibs-readelf/endian.hpp
+@@ -41,7 +41,7 @@
+   template <typename type>
+     struct convert_nop
+     {
+-      inline type operator () (const type &in) const throw () { return in; }
++      inline type operator () (const type &in) const { return in; }
+     };
+ 
+   template <typename type>
+@@ -55,7 +55,7 @@
+   template <>
+     struct convert_simple<uint16_t>
+     {
+-      inline uint16_t operator () (const uint16_t &in) const throw ()
++      inline uint16_t operator () (const uint16_t &in) const
+       {
+         return (in & 0x00ffU) << 8 | 
+           (in & 0xff00U) >> 8;
+@@ -65,7 +65,7 @@
+   template <>
+     struct convert_simple<uint32_t>
+     {
+-      inline uint32_t operator () (const uint32_t &in) const throw ()
++      inline uint32_t operator () (const uint32_t &in) const
+       {
+         return (in & 0x000000ffU) << 24 |
+           (in & 0xff000000U) >> 24 |
+@@ -77,7 +77,7 @@
+   template <>
+     struct convert_simple<uint64_t>
+     {
+-      inline uint64_t operator () (const uint64_t &in) const throw ()
++      inline uint64_t operator () (const uint64_t &in) const
+       {
+         return (in & 0x00000000000000ffULL) << 56 |
+           (in & 0xff00000000000000ULL) >> 56 |
