@@ -54,6 +54,7 @@ Latest changes
    * ncurses 6.4
    * precompiled host-tools 2023-01-07
    * pseudo 1.9.0 oe-core c9670c2
+   * python 3.11.1
    * sed 4.9
    * xz 5.4.0
 
