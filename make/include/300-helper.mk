@@ -172,13 +172,14 @@ UNPACK_TARBALL_PREREQUISITES := kconfig-host busybox-host tar-host
 # $1: list of directories containing the patches
 # $2: directory to apply the patches to
 # $3: (optional) exact name of the patch file
+# $4: (optional) redirect stdout to this target
 define APPLY_PATCHES
 	set -e; shopt -s nullglob; for i in $(strip $(foreach dir,$(strip $1),$(dir)/$(if $(strip $(3)),$(strip $(3)),*.patch*))); do \
 		case $(_dollar)i in \
 			*.patch|*.patch.gz|*.patch.bzip2|*.patch.bz2|*.patch.bz|*.patch.xz|*.patch.lz|*.patch.lzma|*.patch.Z|*.patch.diff) ;; \
 			*) continue ;; \
 		esac; \
-		$(PATCH_TOOL) $(strip $2) $(_dollar)i; \
+		$(PATCH_TOOL) $(strip $2) $(_dollar)i $(if $(strip $(4)),> $(strip $(4))); \
 	done;
 endef
 
