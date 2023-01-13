@@ -30,7 +30,7 @@ time make tools-allexcept-local  # 4min
 make tools-distclean-local
 PACK="$(sed -n 's,^/,tools/,p' tools/.gitignore | grep -vE "/(${SKIP// /|})$")"
 find $PACK -type f -a -executable | xargs strip --strip-all -R .note -R .comment 2>/dev/null
-time tar cvf - $PACK | xz -9 - > "$OUTP"  # 1min
+time tar cf - $PACK | xz -9 - > "$OUTP"  # 1min
 echo "################################################################"
 du -h "$OUTP"
 sha256sum "$OUTP" | sed 's/^/SHA256:=/;s/ .*//'
