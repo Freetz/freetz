@@ -17,14 +17,17 @@ Für die Erstinstallation bleibt somit nur der ...
 ### Bootloader
 Welche Methode für den Bootloader genutzt werden muss hängt vom Gerät hab.
 Grundsätzlich funktioniert `push_firmware` von Freetz-NG (!) mit allen Methode.
-Es gibt einige weitere Tools und Scripte, eigentlich kann man (wenn man es kann) auch ohne diese von Hand mit einer FTP-Verbindung installiere. 
-Der Bootloader hat die IP `192.168.178.1` und ist nicht die IP die man im Webinterface konfiguriert. Man greift via FTP darauf zu.
+Es gibt einige weitere Tools und Scripte, eigentlich kann man (wenn man es kann) auch ohne diese von Hand mit einer FTP-Verbindung installieren.
+Der Bootloader hat die IP `192.168.178.1` und ist nicht die IP die man im Webinterface konfiguriert.
 Wenn man nicht weiss wie man diese verändert, hat man sie sicherlich auch nicht verändert.
+Man greift via FTP darauf zu, die Zugangsdaten lauten `adam2`/`adam2`. Wenn diese nicht akzeptiert werden ist man wahrscheinlich mit dem NAS-FTP vom normalen Fritzos verbunden.
 Ein paar Sekunden nachdem die Fritzbox an den Strom angeschlossen ist ist der Bootloader dieser für wenige Sekunden erreichbar.
 Falls man den Zeitpunkt verpasst hat muss man es solange versuchern bis das Timing passt.
-Zwischengeschaltete Netzwerkgeräte wie Switches können einen positiven oder negativen Effekt haben.
+Zwischengeschaltete Netzwerkgeräte wie Switches können einen positiven oder negativen Effekt haben. Wlan und Powerline sollten nicht verwendet werden.
 Reagiert das Gerät zu zäh und Netzwerkerkennung (media detect/sense) braucht zu lange kann der Zeitpunkt schon vorbei sein.
 Um die Fritzbox im Bootloader anzuhalten kann man eine recovery.exe irgend einer __ANDEREN__ Fritzbox nutzen.
+Alle Fritzboxen ausser den ersten "single-boot" Geräten haben 2 Firmware-Images im Flash und werden abwechselnd genutzt,
+die Aktive kann man via [quote GETENV linux_fs_start](https://github.com/PeterPawn/modfs/blob/master/BOOTSELECTION.ger) im Bootloader ansehen und umschalten.
 
 ### Methoden
 Verfügbare Scripte und Tools zum Flashen über den Bootloader:
