@@ -30,6 +30,6 @@ $(pkg)-dirclean:
 	$(RM) -r $(FASTJAR_HOST_DIR)
 
 $(pkg)-distclean: $(pkg)-dirclean
-	$(RM) $(FASTJAR_TARGET_BINARY)
+	$(RM) $(FASTJAR_HOST_TARGET_BINARY)
 
 $(TOOLS_FINISH)
