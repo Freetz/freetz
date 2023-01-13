@@ -54,7 +54,7 @@ Latest changes
    * kconfig 6.1
    * mklibs 0.1.45
    * ncurses 6.4
-   * precompiled host-tools 2023-01-12
+   * precompiled host-tools 2023-01-13
    * prelink 20130503
    * pseudo 1.9.0 oe-core c9670c2
    * python 3.11.1
