@@ -28,7 +28,9 @@ $(TOOLS_UNPACKED)
 $(TOOLS_CONFIGURED_NOP)
 
 $($(PKG)_TARGET_PRG:%=$($(PKG)_DIR)/scripts/kconfig/%): $($(PKG)_DIR)/.unpacked
-	$(TOOLS_SUBMAKE) -C $(KCONFIG_HOST_DIR) $(subst --$(notdir $@),,$(filter %--$(notdir $@),$(KCONFIG_HOST_TARGET_ALL)))
+	$(TOOLS_SUBMAKE) -C $(KCONFIG_HOST_DIR) \
+		HOSTPKG_CONFIG="pkgconf" \
+		$(subst --$(notdir $@),,$(filter %--$(notdir $@),$(KCONFIG_HOST_TARGET_ALL)))
 
 $(patsubst %,$($(PKG)_TARGET_DIR)/%,$($(PKG)_TARGET_PRG)): $($(PKG)_TARGET_DIR)/% : $($(PKG)_DIR)/scripts/kconfig/%
 	$(INSTALL_FILE)
