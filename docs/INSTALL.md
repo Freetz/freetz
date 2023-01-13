@@ -39,7 +39,7 @@ Verfügbare Scripte und Tools zum Flashen über den Bootloader:
  * Gen 3: __ram-boot__<a id='ram'></a> / NAND / inmemory<br>
    Fritzboxen nach 7390, wie 7490 & 7590
     - `tools/push_firmware` von Freetz-NG
-    - [eva_tools](https://www.yourfritz.de/desc-eva) aus [YourFritz](https://github.com/PeterPawn/YourFritz/tree/main/eva_tools) für Windows/PowerShell<br>
+    - [eva_tools](http://www.yourfritz.de/desc-eva) aus [YourFritz](https://github.com/PeterPawn/YourFritz/tree/main/eva_tools) für Windows/PowerShell<br>
       Vorsicht: Dieses Script kann kein Image flashen, sondern nur das soganannte <br>`inmemory`-Zwischenformat. Siehe dazu `tools/image2inmemory`
 
  * Gen 6: __fit-boot__<a id='fit'></a><br>
@@ -67,7 +67,7 @@ Um es kurz zusammenzufassen: Einfach `tools/push_firmware` verwenden und den Res
  * Wenn man nicht weiss weshalb man einen Parameter angegeben halt sollte man diesen weglassen! Es müsste alles automatisch erkannt werden.
 
 ### Anmerkungen
- * Die ganzen Namen hier wie zB NOR, NAND oder INHAUS sind meist keine offiziellen sondern Vereinbarungen oder Anlehnungen.
+ * Die Namen hier wie zB NOR, NAND oder INHAUS sind meist keine offiziellen Bezeichnungen sondern Vereinbarungen oder Anlehnungen.
  * Es gibt dazu noch sehr viel zu lesen, mindestens in diversen Foren (IPPF, IPF) und auf GitHub (Freetz-NG, YourFritz).
  * Mit Fritzbox sind auch die anderen Dinger von AVM gemein die nicht Fritzbox heissen.
 
