@@ -1,0 +1,27 @@
+Description: Ensure to write the data on the disk when renamed a file 
+
+Index: b/src/cache.c
+===================================================================
+--- src/cache.c
++++ src/cache.c
+@@ -686,6 +686,7 @@
+   if (write (fd, &cache, sizeof (cache)) != sizeof (cache)
+       || write (fd, data, len) != len
+       || fchmod (fd, 0644)
++      || fsync (fd)
+       || close (fd)
+       || rename (prelink_cache_tmp, prelink_cache))
+     {
+Index: b/src/dso.c
+===================================================================
+--- src/dso.c
++++ src/dso.c
+@@ -1632,6 +1632,8 @@
+     }
+ 
+   elf_end (dso->elf);
++  if (dso_is_rdwr (dso))
++    fsync (dso->fd);
+   close (dso->fd);
+   if (dso->elfro)
+     {

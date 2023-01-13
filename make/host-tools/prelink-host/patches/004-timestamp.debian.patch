@@ -1,0 +1,83 @@
+Description: Add -T option to print the timestamp 
+
+Index: prelink-0.0.20130503/doc/prelink.8
+===================================================================
+--- prelink-0.0.20130503.orig/doc/prelink.8	2013-12-28 19:41:52.000000000 -0800
++++ prelink-0.0.20130503/doc/prelink.8	2013-12-28 20:26:47.136677003 -0800
+@@ -147,6 +147,9 @@
+ When processing command line directory arguments, limit directory tree walk
+ to a single file system.
+ .TP
++.B \-T \-\-timestamp\-output
++Prefix output with timestamps.
++.TP
+ .B \-u \-\-undo
+ Revert binaries and libraries to their original content before they were
+ prelinked.
+Index: prelink-0.0.20130503/src/main.c
+===================================================================
+--- prelink-0.0.20130503.orig/src/main.c	2013-12-28 20:24:48.000000000 -0800
++++ prelink-0.0.20130503/src/main.c	2013-12-28 20:26:47.136677003 -0800
+@@ -25,6 +25,7 @@
+ #include <argp.h>
+ #include <stdlib.h>
+ #include <unistd.h>
++#include <time.h>
+ 
+ #include "prelink.h"
+ 
+@@ -50,6 +51,7 @@
+ enum verify_method_t verify_method;
+ int quick;
+ int compute_checksum;
++int timestamp_output;
+ long long seed;
+ GElf_Addr mmap_reg_start = ~(GElf_Addr) 0;
+ GElf_Addr mmap_reg_end = ~(GElf_Addr) 0;
+@@ -101,6 +103,7 @@
+   {"undo",		'u', 0, 0,  "Undo prelink" },
+   {"verbose",		'v', 0, 0,  "Produce verbose output" },
+   {"verify",		'y', 0, 0,  "Verify file consistency by undoing and redoing prelink and printing original to standard output" },
++  {"timestamp-output", 'T', 0, 0,  "Prefix output with timestamps" },
+   {"md5",		OPT_MD5, 0, 0, "For verify print MD5 sum of original to standard output instead of content" },
+   {"sha",		OPT_SHA, 0, 0, "For verify print SHA sum of original to standard output instead of content" },
+   {"dynamic-linker",	OPT_DYNAMIC_LINKER, "DYNAMIC_LINKER",
+@@ -146,6 +149,9 @@
+     case 'v':
+       ++verbose;
+       break;
++    case 'T':
++      timestamp_output = 1;
++      break;
+     case 'R':
+       random_base |= 1;
+       break;
+@@ -296,6 +302,19 @@
+ # define set_default_layout_page_size()
+ #endif
+ 
++void print_error_prefix(void)
++{
++  time_t t;
++  char buf[20];
++
++  if (timestamp_output) {
++    t = time(NULL);
++    if (strftime(buf, 20, "%Y-%m-%d %H:%M:%S", localtime(&t)))
++      fprintf(stderr, "%s ", buf);
++  }
++  fprintf(stderr, "prelink: ");
++}
++
+ int
+ main (int argc, char *argv[])
+ {
+@@ -303,6 +322,8 @@
+ 
+   setlocale (LC_ALL, "");
+ 
++  error_print_progname = print_error_prefix;
++
+   /* Set the default for exec_shield.  */
+   if (! access ("/proc/sys/kernel/exec-shield", F_OK))
+     exec_shield = 1;

@@ -1,0 +1,66 @@
+Description: Add method to re-execute /sbin/init upon change made by prelink
+Bug-Debian: http://bugs.debian.org/281409
+
+Index: prelink-0.0.20130503/src/main.c
+===================================================================
+--- prelink-0.0.20130503.orig/src/main.c	2011-10-12 08:36:10.000000000 -0700
++++ prelink-0.0.20130503/src/main.c	2013-12-28 20:24:48.000000000 -0800
+@@ -59,6 +59,8 @@
+ const char *prelink_conf = PRELINK_CONF;
+ const char *prelink_cache = PRELINK_CACHE;
+ const char *undo_output;
++int noreexecinit;
++time_t initctime;
+ 
+ const char *argp_program_version = "prelink 1.0";
+ 
+@@ -114,6 +116,7 @@
+   {"mmap-region-end",	OPT_MMAP_REG_END, "BASE_ADDRESS", OPTION_HIDDEN, "" },
+   {"seed",		OPT_SEED, "SEED", OPTION_HIDDEN, "" },
+   {"compute-checksum",	OPT_COMPUTE_CHECKSUM, 0, OPTION_HIDDEN, "" },
++  {"init",             'i', 0, 0,  "Do not re-execute init" },
+   { 0 }
+ };
+ 
+@@ -230,12 +233,29 @@
+       if (endarg != strchr (arg, '\0') || (layout_page_size & (layout_page_size - 1)))
+ 	error (EXIT_FAILURE, 0, "--layout-page-size option requires numberic power-of-two argument");
+       break;
++    case 'i':
++      noreexecinit=1;
++      break;
+     default:
+       return ARGP_ERR_UNKNOWN;
+     }
+   return 0;
+ }
+ 
++time_t get_ctime(const char *file) {
++  struct stat st;
++  if(stat(file,&st) == 0)
++    return st.st_ctime;
++  return 0;
++}
++
++void checkinit() {
++    if(initctime != get_ctime("/sbin/init")) {
++      printf("Executing /sbin/init U\n");
++      system("/sbin/init U");
++       }
++}
++
+ static struct argp argp = { options, parse_opt, "[FILES]", argp_doc };
+ 
+ #if (defined (__i386__) || defined (__x86_64__)) && defined (__GNUC__)
+@@ -295,6 +315,11 @@
+ 
+   argp_parse (&argp, argc, argv, 0, &remaining, 0);
+ 
++  if(!noreexecinit) {
++    initctime = get_ctime("/sbin/init");
++       atexit(checkinit);
++  }
++
+   if (ld_library_path == NULL)
+     ld_library_path = getenv ("LD_LIBRARY_PATH");
+ 

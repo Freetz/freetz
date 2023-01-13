@@ -1,0 +1,12 @@
+--- a/src/canonicalize.c	2006-08-13 17:18:17.000000000 +0200
++++ b/src/canonicalize.c	2014-02-04 12:19:05.000000000 +0100
+@@ -100,6 +100,9 @@ canon_filename (const char *name, int ne
+   if (path_max <= 0)
+     path_max = 1024;
+ #endif
++#ifndef MAXSYMLINKS
++  #define MAXSYMLINKS sysconf(_SC_SYMLOOP_MAX)
++#endif
+ 
+   rpath = malloc (path_max);
+   if (rpath == NULL)
