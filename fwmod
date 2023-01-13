@@ -2022,7 +2022,7 @@ if [ "$DO_PACK" -gt 0 ]; then
 		if [ "${FREETZ_AVM_HAS_INNER_OUTER_FILESYSTEM}" == "y" ]; then
 			if [ "${FREETZ_AVM_OUTER_FILESYSTEM_TYPE}" == "Ext2FS" ]; then
 				echo0 "creating outer-filesystem image (Ext2FS)"
-				PATH="$TOOLS_DIR:$PATH" $TOOLS_DIR/mke2img -G 2 -R 0 -d "${FILESYSTEM_OUTER_MOD_DIR}" -o "$ABS_BASE_DIR/$RAW_FILESYSTEM_MOD.ext2" >> $MOD_DIR/filesystem.log 2>&1
+				$TOOLS_DIR/mke2img -G 2 -R 0 -d "${FILESYSTEM_OUTER_MOD_DIR}" -o "$ABS_BASE_DIR/$RAW_FILESYSTEM_MOD.ext2" >> $MOD_DIR/filesystem.log 2>&1
 				[ $? -ne 0 -o ! -s "$RAW_FILESYSTEM_MOD.ext2" ] && error 1 "creation of ext2 image failed"
 
 				{
