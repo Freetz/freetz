@@ -43,7 +43,7 @@ ifneq ($(shell grep -q "$$($(ENVIRA_REV_TOOL))" $(ENVIRA_LAST_REV) 2>/dev/null &
 endif
 endif
 	@$(ENVIRA_REV_TOOL) make
-	@umask $(ENVIRA_UMASK) && PATH="$(ENVIRA_PATH_ABS):$(PATH)" $(MAKE) $(MAKECMDGOALS) $(ENVIRA_MAKE_VARS) || kill $$$$
+	@umask $(ENVIRA_UMASK) && PATH="$(ENVIRA_PATH_ABS):$(PATH):/usr/sbin" $(MAKE) $(MAKECMDGOALS) $(ENVIRA_MAKE_VARS) || kill $$$$
 .PHONY: envira
 
 $(MAKECMDGOALS): envira
