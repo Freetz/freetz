@@ -58,1848 +58,1834 @@ if FREETZ_PACKAGE_IPTABLES
 
 	endchoice
 
-config FREETZ_PACKAGE_IPTABLES_SAVE_RESTORE
-	bool "Iptables-save / -restore"
-	default n
-	help
-		iptables-save & iptables-restore
+	config FREETZ_PACKAGE_IPTABLES_SAVE_RESTORE
+		bool "Iptables-save / -restore"
+		default n
+		help
+			iptables-save & iptables-restore
 
-config FREETZ_PACKAGE_IPTABLES_XML
-	bool "Iptables-xml"
-	depends on FREETZ_PACKAGE_IPTABLES_SAVE_RESTORE
-	default n
-	help
-		Include iptables-xml to convert saved rules to xml.
+	config FREETZ_PACKAGE_IPTABLES_XML
+		bool "Iptables-xml"
+		depends on FREETZ_PACKAGE_IPTABLES_SAVE_RESTORE
+		default n
+		help
+			Include iptables-xml to convert saved rules to xml.
 
-config FREETZ_PACKAGE_IPTABLES_STATIC
-	bool "Link statically"
-	default y
-	help
-		Build a statically linked binary with all libraries compiled in
+	config FREETZ_PACKAGE_IPTABLES_STATIC
+		bool "Link statically"
+		default y
+		help
+			Build a statically linked binary with all libraries compiled in
 
 if FREETZ_KERNEL_VERSION_2
-source "make/pkgs/iptables-cgi/Config.in"
-source "make/pkgs/nhipt/Config.in"
-source "make/pkgs/iptables/Config.in.modules"
+	source "make/pkgs/iptables-cgi/Config.in"
+	source "make/pkgs/nhipt/Config.in"
+	source "make/pkgs/iptables/Config.in.modules"
 endif
 
+	config FREETZ_PACKAGE_IPTABLES_KERNEL_MODULES
+		bool "Iptables kernel modules"
+		default y
+		help
+			Linux kernel modules for iptables
 
-config FREETZ_PACKAGE_IPTABLES_KERNEL_MODULES
-	bool "Iptables kernel modules"
-	default y
-	help
-		Linux kernel modules for iptables
-
-		Please note that some kernel modules have corresponding shared libraries
-		and vice versa, so please make sure to select both of them, if they are
-		needed for your purpose.
+			Please note that some kernel modules have corresponding shared libraries
+			and vice versa, so please make sure to select both of them, if they are
+			needed for your purpose.
 
 if FREETZ_PACKAGE_IPTABLES_KERNEL_MODULES
 
-comment "CAUTION: Use of module ip_conntrack can lead to spontaneous reboots"
-depends on \
-	FREETZ_MODULE_ip_conntrack && \
-	FREETZ_KERNEL_VERSION_2_6_13
+		comment "CAUTION: Use of module ip_conntrack can lead to spontaneous reboots"
+		depends on \
+			FREETZ_MODULE_ip_conntrack && \
+			FREETZ_KERNEL_VERSION_2_6_13
 
-menu "Select kernel modules (IPv4)"
+		menu "Select kernel modules (IPv4)"
 
+			config FREETZ_MODULE_iptable_filter
+				bool "iptable_filter.ko"
+				select FREETZ_MODULE_ip_tables
+				default y
+				help
+					Packet filtering defines a table `filter', which has a series of
+					rules for simple packet filtering at local input, forwarding and
+					local output. See the man page for iptables(8).
 
-config FREETZ_MODULE_iptable_filter
-	bool "iptable_filter.ko"
-	select FREETZ_MODULE_ip_tables
-	default y
-	help
-		Packet filtering defines a table `filter', which has a series of
-		rules for simple packet filtering at local input, forwarding and
-		local output. See the man page for iptables(8).
+			config FREETZ_MODULE_iptable_mangle
+				bool "iptable_mangle.ko"
+				select FREETZ_MODULE_ip_tables
+				default n
+				help
+					This option adds a `mangle' table to iptables: see the man page for
+					iptables(8). This table is used for various packet alterations
+					which can effect how the packet is routed.
 
-config FREETZ_MODULE_iptable_mangle
-	bool "iptable_mangle.ko"
-	select FREETZ_MODULE_ip_tables
-	default n
-	help
-		This option adds a `mangle' table to iptables: see the man page for
-		iptables(8). This table is used for various packet alterations
-		which can effect how the packet is routed.
+			comment "iptable_nat.ko (not available, needs replace kernel)"
+				depends on FREETZ_KERNEL_VERSION_2_6_19 && !FREETZ_REPLACE_KERNEL
 
-comment "iptable_nat.ko (not available, needs replace kernel)"
-	depends on FREETZ_KERNEL_VERSION_2_6_19 && !FREETZ_REPLACE_KERNEL
+			config FREETZ_MODULE_iptable_nat
+				bool "iptable_nat.ko"
+				depends on FREETZ_PACKAGE_IPTABLES_STATE_AVAILABLE
+				depends on !FREETZ_KERNEL_VERSION_2_6_19 || FREETZ_REPLACE_KERNEL
+				select FREETZ_MODULE_ip_conntrack if FREETZ_KERNEL_VERSION_2_6_19_MAX
+				select FREETZ_MODULE_ip_tables
+				select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
+				select FREETZ_MODULE_nf_nat if FREETZ_KERNEL_VERSION_2_6_28
+				default n
+				help
+					Cannot be loaded when using AVM-kernel 2.6.19, see Ticket #1929
 
-config FREETZ_MODULE_iptable_nat
-	bool "iptable_nat.ko"
-	depends on FREETZ_PACKAGE_IPTABLES_STATE_AVAILABLE
-	depends on !FREETZ_KERNEL_VERSION_2_6_19 || FREETZ_REPLACE_KERNEL
-	select FREETZ_MODULE_ip_conntrack if FREETZ_KERNEL_VERSION_2_6_19_MAX
-	select FREETZ_MODULE_ip_tables
-	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
-	select FREETZ_MODULE_nf_nat if FREETZ_KERNEL_VERSION_2_6_28
-	default n
-	help
-		Cannot be loaded when using AVM-kernel 2.6.19, see Ticket #1929
-
-config FREETZ_MODULE_iptable_raw
-	bool "iptable_raw.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_MIN
-	select FREETZ_MODULE_ip_tables
-	default n
-
+			config FREETZ_MODULE_iptable_raw
+				bool "iptable_raw.ko"
+				depends on FREETZ_KERNEL_VERSION_2_6_19_MIN
+				select FREETZ_MODULE_ip_tables
+				default n
 
 if FREETZ_PACKAGE_IPTABLES_STATE_AVAILABLE
 
-config FREETZ_MODULE_ip_conntrack
-	bool "ip_conntrack.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
-	default n
-	help
-		Connection tracking keeps a record of what packets have passed
-		through your machine, in order to figure out how they are related
-		into connections.
+				config FREETZ_MODULE_ip_conntrack
+					bool "ip_conntrack.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
+					default n
+					help
+						Connection tracking keeps a record of what packets have passed
+						through your machine, in order to figure out how they are related
+						into connections.
 
-		This is required to do Masquerading or other kinds of Network
-		Address Translation (except for Fast NAT). It can also be used to
-		enhance packet filtering (see `Connection state match support'
-		below).
+						This is required to do Masquerading or other kinds of Network
+						Address Translation (except for Fast NAT). It can also be used to
+						enhance packet filtering (see `Connection state match support'
+						below).
 
-config FREETZ_MODULE_ip_conntrack_ftp
-	bool "ip_conntrack_ftp.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
-	select FREETZ_MODULE_ip_conntrack
-	default n
-	help
-		Tracking FTP connections is problematic: special helpers are
-		required for tracking them, and doing masquerading and other forms
-		of Network Address Translation on them.
+				config FREETZ_MODULE_ip_conntrack_ftp
+					bool "ip_conntrack_ftp.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
+					select FREETZ_MODULE_ip_conntrack
+					default n
+					help
+						Tracking FTP connections is problematic: special helpers are
+						required for tracking them, and doing masquerading and other forms
+						of Network Address Translation on them.
 
-config FREETZ_MODULE_ip_conntrack_h323
-	bool "ip_conntrack_h323.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19
-	select FREETZ_MODULE_ip_conntrack
-	default n
-	help
-		H.323 is a VoIP signalling protocol from ITU-T. As one of the most
-		important VoIP protocols, it is widely used by voice hardware and
-		software including voice gateways, IP phones, Netmeeting, OpenPhone,
-		Gnomemeeting, etc.
+				config FREETZ_MODULE_ip_conntrack_h323
+					bool "ip_conntrack_h323.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_19
+					select FREETZ_MODULE_ip_conntrack
+					default n
+					help
+						H.323 is a VoIP signalling protocol from ITU-T. As one of the most
+						important VoIP protocols, it is widely used by voice hardware and
+						software including voice gateways, IP phones, Netmeeting, OpenPhone,
+						Gnomemeeting, etc.
 
-		With this module you can support H.323 on a connection tracking/NAT
-		firewall.
+						With this module you can support H.323 on a connection tracking/NAT
+						firewall.
 
-		This module supports RAS, Fast Start, H.245 Tunnelling, Call
-		Forwarding, RTP/RTCP and T.120 based audio, video, fax, chat,
-		whiteboard, file transfer, etc. For more information, please
-		visit http://nath323.sourceforge.net/.
+						This module supports RAS, Fast Start, H.245 Tunnelling, Call
+						Forwarding, RTP/RTCP and T.120 based audio, video, fax, chat,
+						whiteboard, file transfer, etc. For more information, please
+						visit http://nath323.sourceforge.net/.
 
-config FREETZ_MODULE_ip_conntrack_irc
-	bool "ip_conntrack_irc.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
-	select FREETZ_MODULE_ip_conntrack
-	default n
-	help
-		There is a commonly-used extension to IRC called
-		Direct Client-to-Client Protocol (DCC). This enables users to send
-		files to each other, and also chat to each other without the need
-		of a server. DCC Sending is used anywhere you send files over IRC,
-		and DCC Chat is most commonly used by Eggdrop bots. If you are using
-		NAT, this extension will enable you to send files and initiate chats.
-		Note that you do NOT need this extension to get files or have others
-		initiate chats, or everything else in IRC.
+				config FREETZ_MODULE_ip_conntrack_irc
+					bool "ip_conntrack_irc.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
+					select FREETZ_MODULE_ip_conntrack
+					default n
+					help
+						There is a commonly-used extension to IRC called
+						Direct Client-to-Client Protocol (DCC). This enables users to send
+						files to each other, and also chat to each other without the need
+						of a server. DCC Sending is used anywhere you send files over IRC,
+						and DCC Chat is most commonly used by Eggdrop bots. If you are using
+						NAT, this extension will enable you to send files and initiate chats.
+						Note that you do NOT need this extension to get files or have others
+						initiate chats, or everything else in IRC.
 
-config FREETZ_MODULE_ip_conntrack_pptp
-	bool "ip_conntrack_pptp.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19
-	select FREETZ_MODULE_ip_conntrack
-	default n
-	help
-		This module adds support for PPTP (Point to Point Tunnelling
-		Protocol, RFC2637) connection tracking and NAT.
+				config FREETZ_MODULE_ip_conntrack_pptp
+					bool "ip_conntrack_pptp.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_19
+					select FREETZ_MODULE_ip_conntrack
+					default n
+					help
+						This module adds support for PPTP (Point to Point Tunnelling
+						Protocol, RFC2637) connection tracking and NAT.
 
-		If you are running PPTP sessions over a stateful firewall or NAT
-		box, you may want to enable this feature.
+						If you are running PPTP sessions over a stateful firewall or NAT
+						box, you may want to enable this feature.
 
-		Please note that not all PPTP modes of operation are supported yet.
-		For more info, read top of the file
-		net/ipv4/netfilter/ip_conntrack_pptp.c
+						Please note that not all PPTP modes of operation are supported yet.
+						For more info, read top of the file
+						net/ipv4/netfilter/ip_conntrack_pptp.c
 
-config FREETZ_MODULE_ip_conntrack_proto_sctp
-	bool "ip_conntrack_proto_sctp.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13
-	select FREETZ_MODULE_ip_conntrack
-	default n
-	help
-		With this option enabled, the connection tracking code will
-		be able to do state tracking on SCTP connections.
+				config FREETZ_MODULE_ip_conntrack_proto_sctp
+					bool "ip_conntrack_proto_sctp.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_13
+					select FREETZ_MODULE_ip_conntrack
+					default n
+					help
+						With this option enabled, the connection tracking code will
+						be able to do state tracking on SCTP connections.
 
+				config FREETZ_MODULE_ip_conntrack_rtsp
+					bool "ip_conntrack_rtsp.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
+					select FREETZ_MODULE_ip_conntrack
+					default n
+					help
+						Tracking RTSP Connections
 
-config FREETZ_MODULE_ip_conntrack_rtsp
-	bool "ip_conntrack_rtsp.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
-	select FREETZ_MODULE_ip_conntrack
-	default n
-	help
-		Tracking RTSP Connections
+				config FREETZ_MODULE_ip_conntrack_tftp
+					bool "ip_conntrack_tftp.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
+					select FREETZ_MODULE_ip_conntrack
+					default n
+					help
+						TFTP connection tracking helper, this is required depending
+						on how restrictive your ruleset is.
+						If you are using a tftp client behind -j SNAT or -j MASQUERADING
+						you will need this.
 
-config FREETZ_MODULE_ip_conntrack_tftp
-	bool "ip_conntrack_tftp.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
-	select FREETZ_MODULE_ip_conntrack
-	default n
-	help
-		TFTP connection tracking helper, this is required depending
-		on how restrictive your ruleset is.
-		If you are using a tftp client behind -j SNAT or -j MASQUERADING
-		you will need this.
+				config FREETZ_MODULE_ip_nat
+					bool "ip_nat.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_19 && FREETZ_REPLACE_KERNEL
+					select FREETZ_MODULE_ip_conntrack
+					default n
+					help
+						The Full NAT option allows masquerading, port forwarding and other
+						forms of full Network Address Port Translation. It is controlled by
+						the `nat' table in iptables: see the man page for iptables(8).
 
-config FREETZ_MODULE_ip_nat
-	bool "ip_nat.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19 && FREETZ_REPLACE_KERNEL
-	select FREETZ_MODULE_ip_conntrack
-	default n
-	help
-		The Full NAT option allows masquerading, port forwarding and other
-		forms of full Network Address Port Translation. It is controlled by
-		the `nat' table in iptables: see the man page for iptables(8).
+				config FREETZ_MODULE_ip_nat_ftp
+					bool "ip_nat_ftp.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_19_MAX && \
+						(!FREETZ_KERNEL_VERSION_2_6_19 || FREETZ_REPLACE_KERNEL)
+					select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13
+					select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
+					select FREETZ_MODULE_ip_conntrack_ftp
+					default n
 
-config FREETZ_MODULE_ip_nat_ftp
-	bool "ip_nat_ftp.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX && \
-		(!FREETZ_KERNEL_VERSION_2_6_19 || FREETZ_REPLACE_KERNEL)
-	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13
-	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
-	select FREETZ_MODULE_ip_conntrack_ftp
-	default n
+				config FREETZ_MODULE_ip_nat_h323
+					bool "ip_nat_h323.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_19 && FREETZ_REPLACE_KERNEL
+					select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
+					select FREETZ_MODULE_ip_conntrack_h323
+					default n
 
-config FREETZ_MODULE_ip_nat_h323
-	bool "ip_nat_h323.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19 && FREETZ_REPLACE_KERNEL
-	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
-	select FREETZ_MODULE_ip_conntrack_h323
-	default n
+				config FREETZ_MODULE_ip_nat_irc
+					bool "ip_nat_irc.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_19_MAX && \
+						(!FREETZ_KERNEL_VERSION_2_6_19 || FREETZ_REPLACE_KERNEL)
+					select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13
+					select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
+					select FREETZ_MODULE_ip_conntrack_irc if FREETZ_KERNEL_VERSION_2_6_19
+					default n
 
-config FREETZ_MODULE_ip_nat_irc
-	bool "ip_nat_irc.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX && \
-		(!FREETZ_KERNEL_VERSION_2_6_19 || FREETZ_REPLACE_KERNEL)
-	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13
-	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
-	select FREETZ_MODULE_ip_conntrack_irc if FREETZ_KERNEL_VERSION_2_6_19
-	default n
+				config FREETZ_MODULE_ip_nat_pptp
+					bool "ip_nat_pptp.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_19 && FREETZ_REPLACE_KERNEL
+					select FREETZ_MODULE_ip_nat
+					select FREETZ_MODULE_ip_conntrack_pptp
+					default n
 
-config FREETZ_MODULE_ip_nat_pptp
-	bool "ip_nat_pptp.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19 && FREETZ_REPLACE_KERNEL
-	select FREETZ_MODULE_ip_nat
-	select FREETZ_MODULE_ip_conntrack_pptp
-	default n
+				config FREETZ_MODULE_ip_nat_rtsp
+					bool "ip_nat_rtsp.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_19_MAX && \
+						(!FREETZ_KERNEL_VERSION_2_6_19 || FREETZ_REPLACE_KERNEL)
+					select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13
+					select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
+					select FREETZ_MODULE_ip_conntrack_rtsp
+					default n
 
-config FREETZ_MODULE_ip_nat_rtsp
-	bool "ip_nat_rtsp.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX && \
-		(!FREETZ_KERNEL_VERSION_2_6_19 || FREETZ_REPLACE_KERNEL)
-	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13
-	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
-	select FREETZ_MODULE_ip_conntrack_rtsp
-	default n
-
-config FREETZ_MODULE_ip_nat_tftp
-	bool "ip_nat_tftp.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX && \
-		(!FREETZ_KERNEL_VERSION_2_6_19 || FREETZ_REPLACE_KERNEL)
-	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13
-	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
-	select FREETZ_MODULE_ip_conntrack_tftp if FREETZ_KERNEL_VERSION_2_6_19
-	default n
+				config FREETZ_MODULE_ip_nat_tftp
+					bool "ip_nat_tftp.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_19_MAX && \
+						(!FREETZ_KERNEL_VERSION_2_6_19 || FREETZ_REPLACE_KERNEL)
+					select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13
+					select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
+					select FREETZ_MODULE_ip_conntrack_tftp if FREETZ_KERNEL_VERSION_2_6_19
+					default n
 
 endif # FREETZ_PACKAGE_IPTABLES_STATE_AVAILABLE
 
+			config FREETZ_MODULE_ip_tables
+				bool "ip_tables.ko"
+				select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_MIN
+				default n
+				help
+					iptables is a general, extensible packet identification framework.
+					The packet filtering and full NAT (masquerading, port forwarding,
+					etc) subsystems now use this.
 
-config FREETZ_MODULE_ip_tables
-	bool "ip_tables.ko"
-	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_MIN
-	default n
-	help
-		iptables is a general, extensible packet identification framework.
-		The packet filtering and full NAT (masquerading, port forwarding,
-		etc) subsystems now use this.
+			config FREETZ_MODULE_ipt_CONNMARK
+				bool "ipt_CONNMARK.ko"
+				depends on FREETZ_KERNEL_VERSION_2_6_13
+				select FREETZ_MODULE_ip_conntrack
+				select FREETZ_MODULE_ip_tables
+				default n
+				help
+					This option adds a `CONNMARK' target, which allows one to manipulate
+					the connection mark value.  Similar to the MARK target, but
+					affects the connection mark value rather than the packet mark value.
 
-config FREETZ_MODULE_ipt_CONNMARK
-	bool "ipt_CONNMARK.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13
-	select FREETZ_MODULE_ip_conntrack
-	select FREETZ_MODULE_ip_tables
-	default n
-	help
-		This option adds a `CONNMARK' target, which allows one to manipulate
-		the connection mark value.  Similar to the MARK target, but
-		affects the connection mark value rather than the packet mark value.
+			config FREETZ_MODULE_ipt_LOG
+				bool "ipt_LOG.ko"
+				depends on FREETZ_KERNEL_VERSION_2
+				select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_19_MAX
+				select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_28_MIN
+				default n
+				help
+					This option adds a `LOG' target, which allows you to create rules in
+					any iptables table which records the packet header to the syslog.
 
-config FREETZ_MODULE_ipt_LOG
-	bool "ipt_LOG.ko"
-	depends on FREETZ_KERNEL_VERSION_2
-	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_19_MAX
-	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_28_MIN
-	default n
-	help
-		This option adds a `LOG' target, which allows you to create rules in
-		any iptables table which records the packet header to the syslog.
+			config FREETZ_MODULE_ipt_MARK
+				bool "ipt_MARK.ko"
+				depends on FREETZ_KERNEL_VERSION_2_6_13
+				select FREETZ_MODULE_ip_tables
+				default n
+				help
+					This option adds a `MARK' target, which allows you to create rules
+					in the `mangle' table which alter the netfilter mark (nfmark) field
+					associated with the packet prior to routing. This can change
+					the routing method (see `Use netfilter MARK value as routing
+					key') and can also be used by other subsystems to change their
+					behavior.
 
-config FREETZ_MODULE_ipt_MARK
-	bool "ipt_MARK.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13
-	select FREETZ_MODULE_ip_tables
-	default n
-	help
-		This option adds a `MARK' target, which allows you to create rules
-		in the `mangle' table which alter the netfilter mark (nfmark) field
-		associated with the packet prior to routing. This can change
-		the routing method (see `Use netfilter MARK value as routing
-		key') and can also be used by other subsystems to change their
-		behavior.
+			config FREETZ_MODULE_ipt_MASQUERADE
+				bool "ipt_MASQUERADE.ko"
+				depends on FREETZ_KERNEL_VERSION_2_6_19_MAX && \
+					(!FREETZ_KERNEL_VERSION_2_6_19 || FREETZ_REPLACE_KERNEL)
+				select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13
+				select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
+				select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19
+				default n
+				help
+					Masquerading is a special case of NAT: all outgoing connections are
+					changed to seem to come from a particular interface's address, and
+					if the interface goes down, those connections are lost. This is
+					only useful for dialup accounts with dynamic IP address (ie. your IP
+					address will be different on next dialup).
 
-config FREETZ_MODULE_ipt_MASQUERADE
-	bool "ipt_MASQUERADE.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX && \
-		(!FREETZ_KERNEL_VERSION_2_6_19 || FREETZ_REPLACE_KERNEL)
-	select FREETZ_MODULE_iptable_nat if FREETZ_KERNEL_VERSION_2_6_13
-	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
-	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19
-	default n
-	help
-		Masquerading is a special case of NAT: all outgoing connections are
-		changed to seem to come from a particular interface's address, and
-		if the interface goes down, those connections are lost. This is
-		only useful for dialup accounts with dynamic IP address (ie. your IP
-		address will be different on next dialup).
+			config FREETZ_MODULE_ipt_REDIRECT
+				bool "ipt_REDIRECT.ko"
+				depends on FREETZ_KERNEL_VERSION_2_6_28_MAX && \
+					(!FREETZ_KERNEL_VERSION_2_6_19 || FREETZ_REPLACE_KERNEL)
+				select FREETZ_MODULE_iptable_nat
+				select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
+				select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19 || FREETZ_KERNEL_VERSION_2_6_28
+				default n
+				help
+					REDIRECT is a special case of NAT: all incoming connections are
+					mapped onto the incoming interface's address, causing the packets to
+					come to the local machine instead of passing through. This is
+					useful for transparent proxies.
 
-config FREETZ_MODULE_ipt_REDIRECT
-	bool "ipt_REDIRECT.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_28_MAX && \
-		(!FREETZ_KERNEL_VERSION_2_6_19 || FREETZ_REPLACE_KERNEL)
-	select FREETZ_MODULE_iptable_nat
-	select FREETZ_MODULE_ip_nat if FREETZ_KERNEL_VERSION_2_6_19
-	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19 || FREETZ_KERNEL_VERSION_2_6_28
-	default n
-	help
-		REDIRECT is a special case of NAT: all incoming connections are
-		mapped onto the incoming interface's address, causing the packets to
-		come to the local machine instead of passing through. This is
-		useful for transparent proxies.
+			config FREETZ_MODULE_ipt_REJECT
+				bool "ipt_REJECT.ko"
+				select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13
+				select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_MIN
+				default n
+				help
+					The REJECT target allows a filtering rule to specify that an ICMP
+					error should be issued in response to an incoming packet, rather
+					than silently being dropped.
 
-config FREETZ_MODULE_ipt_REJECT
-	bool "ipt_REJECT.ko"
-	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13
-	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_MIN
-	default n
-	help
-		The REJECT target allows a filtering rule to specify that an ICMP
-		error should be issued in response to an incoming packet, rather
-		than silently being dropped.
+			config FREETZ_MODULE_ipt_TCPMSS
+				bool "ipt_TCPMSS.ko"
+				depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
+				select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13
+				select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19
+				default n
+				help
+					This option adds a `TCPMSS' target, which allows you to alter the
+					MSS value of TCP SYN packets, to control the maximum size for that
+					connection (usually limiting it to your outgoing interface's MTU
+					minus 40).
 
-config FREETZ_MODULE_ipt_TCPMSS
-	bool "ipt_TCPMSS.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
-	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13
-	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19
-	default n
-	help
-		This option adds a `TCPMSS' target, which allows you to alter the
-		MSS value of TCP SYN packets, to control the maximum size for that
-		connection (usually limiting it to your outgoing interface's MTU
-		minus 40).
+					This is used to overcome criminally braindead ISPs or servers which
+					block ICMP Fragmentation Needed packets. The symptoms of this
+					problem are that everything works fine from your Linux
+					firewall/router, but machines behind it can never exchange large
+					packets:
+						1) Web browsers connect, then hang with no data received.
+						2) Small mail works fine, but large emails hang.
+						3) ssh works fine, but scp hangs after initial handshaking.
 
-		This is used to overcome criminally braindead ISPs or servers which
-		block ICMP Fragmentation Needed packets. The symptoms of this
-		problem are that everything works fine from your Linux
-		firewall/router, but machines behind it can never exchange large
-		packets:
-			1) Web browsers connect, then hang with no data received.
-			2) Small mail works fine, but large emails hang.
-			3) ssh works fine, but scp hangs after initial handshaking.
+					Workaround: activate this option and add a rule to your firewall
+					configuration like:
 
-		Workaround: activate this option and add a rule to your firewall
-		configuration like:
+						iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN \
+							 -j TCPMSS --clamp-mss-to-pmtu
 
-			iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN \
-				 -j TCPMSS --clamp-mss-to-pmtu
+			config FREETZ_MODULE_ipt_TOS
+				bool "ipt_TOS.ko"
+				depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
+				select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13
+				select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19
+				default n
+				help
+					This option adds a `TOS' target, which allows you to create rules in
+					the `mangle' table which alter the Type Of Service field of an IP
+					packet prior to routing.
 
-config FREETZ_MODULE_ipt_TOS
-	bool "ipt_TOS.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
-	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13
-	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19
-	default n
-	help
-		This option adds a `TOS' target, which allows you to create rules in
-		the `mangle' table which alter the Type Of Service field of an IP
-		packet prior to routing.
+			config FREETZ_MODULE_ipt_TTL
+				bool "ipt_TTL.ko"
+				depends on FREETZ_KERNEL_VERSION_2
+				default n
+				help
+					This option adds a `TTL' target, which allows you to create rules in
+					the `mangle' table which alter the TTL (time to live) field of an IP
+					packet.
 
-config FREETZ_MODULE_ipt_TTL
-	bool "ipt_TTL.ko"
-	depends on FREETZ_KERNEL_VERSION_2
-	default n
-	help
-		This option adds a `TTL' target, which allows you to create rules in
-		the `mangle' table which alter the TTL (time to live) field of an IP
-		packet.
+			config FREETZ_MODULE_ipt_comment
+				bool "ipt_comment.ko"
+				depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
+				select FREETZ_MODULE_ip_tables
+				default n
+				help
+					This option adds a module, which allows you to add comments to your rules.
 
-config FREETZ_MODULE_ipt_comment
-	bool "ipt_comment.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
-	select FREETZ_MODULE_ip_tables
-	default n
-	help
-		This option adds a module, which allows you to add comments to your rules.
+			config FREETZ_MODULE_ipt_connmark
+				bool "ipt_connmark.ko"
+				depends on FREETZ_KERNEL_VERSION_2_6_13
+				select FREETZ_MODULE_ip_conntrack
+				select FREETZ_MODULE_ip_tables
+				default n
+				help
+					This option enables support for connection marks, used by the
+					`CONNMARK' target and `connmark' match. Similar to the mark value
+					of packets, but this mark value is kept in the conntrack session
+					instead of the individual packets.
 
-config FREETZ_MODULE_ipt_connmark
-	bool "ipt_connmark.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13
-	select FREETZ_MODULE_ip_conntrack
-	select FREETZ_MODULE_ip_tables
-	default n
-	help
-		This option enables support for connection marks, used by the
-		`CONNMARK' target and `connmark' match. Similar to the mark value
-		of packets, but this mark value is kept in the conntrack session
-		instead of the individual packets.
+			config FREETZ_MODULE_ipt_conntrack
+				bool "ipt_conntrack.ko"
+				depends on FREETZ_KERNEL_VERSION_2_6_13
+				select FREETZ_MODULE_ip_conntrack
+				select FREETZ_MODULE_ip_tables
+				default n
 
-config FREETZ_MODULE_ipt_conntrack
-	bool "ipt_conntrack.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13
-	select FREETZ_MODULE_ip_conntrack
-	select FREETZ_MODULE_ip_tables
-	default n
+			config FREETZ_MODULE_ipt_helper
+				bool "ipt_helper.ko"
+				depends on FREETZ_KERNEL_VERSION_2_6_13
+				select FREETZ_MODULE_ip_conntrack
+				select FREETZ_MODULE_ip_tables
+				default n
+				help
+					Helper matching allows you to match packets in dynamic connections
+					tracked by a conntrack-helper, ie. ip_conntrack_ftp
 
-config FREETZ_MODULE_ipt_helper
-	bool "ipt_helper.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13
-	select FREETZ_MODULE_ip_conntrack
-	select FREETZ_MODULE_ip_tables
-	default n
-	help
-		Helper matching allows you to match packets in dynamic connections
-		tracked by a conntrack-helper, ie. ip_conntrack_ftp
+			config FREETZ_MODULE_ipt_ipp2p
+				bool "ipt_ipp2p.ko"
+				depends on FREETZ_KERNEL_VERSION_2_6_19
+				select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13
+				select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19
+				default n
+				help
+					This option makes possible to match some P2P packets
+					therefore helps controlling such traffic.
 
-config FREETZ_MODULE_ipt_ipp2p
-	bool "ipt_ipp2p.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19
-	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13
-	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19
-	default n
-	help
-		This option makes possible to match some P2P packets
-		therefore helps controlling such traffic.
+			config FREETZ_MODULE_ipt_iprange
+				bool "ipt_iprange.ko"
+				depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
+				select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13
+				select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19
+				default n
+				help
+					This option makes possible to match IP addresses against IP address
+					ranges.
 
-config FREETZ_MODULE_ipt_iprange
-	bool "ipt_iprange.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
-	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13
-	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19
-	default n
-	help
-		This option makes possible to match IP addresses against IP address
-		ranges.
+			config FREETZ_MODULE_ipt_layer7
+				bool "ipt_layer7.ko"
+				depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
+				select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13
+				select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19
+				default n
+				help
+					Say Y if you want to be able to classify connections (and their
+					packets) based on regular expression matching of their application
+					layer data. This is one way to classify applications such as
+					peer-to-peer filesharing systems that do not always use the same
+					port.
 
-config FREETZ_MODULE_ipt_layer7
-	bool "ipt_layer7.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
-	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13
-	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19
-	default n
-	help
-		Say Y if you want to be able to classify connections (and their
-		packets) based on regular expression matching of their application
-		layer data. This is one way to classify applications such as
-		peer-to-peer filesharing systems that do not always use the same
-		port.
+			config FREETZ_MODULE_ipt_length
+				bool "ipt_length.ko"
+				depends on FREETZ_KERNEL_VERSION_2_6_13
+				select FREETZ_MODULE_ip_tables
+				default n
+				help
+					This option allows you to match the length of a packet against a
+					specific value or range of values.
 
-config FREETZ_MODULE_ipt_length
-	bool "ipt_length.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13
-	select FREETZ_MODULE_ip_tables
-	default n
-	help
-		This option allows you to match the length of a packet against a
-		specific value or range of values.
+			config FREETZ_MODULE_ipt_limit
+				bool "ipt_limit.ko"
+				depends on FREETZ_KERNEL_VERSION_2_6_13
+				select FREETZ_MODULE_ip_tables
+				default n
+				help
+					limit matching allows you to control the rate at which a rule can be
+					matched: mainly useful in combination with the LOG target ("LOG
+					target support", below) and to avoid some Denial of Service attacks.
 
-config FREETZ_MODULE_ipt_limit
-	bool "ipt_limit.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13
-	select FREETZ_MODULE_ip_tables
-	default n
-	help
-		limit matching allows you to control the rate at which a rule can be
-		matched: mainly useful in combination with the LOG target ("LOG
-		target support", below) and to avoid some Denial of Service attacks.
+			config FREETZ_MODULE_ipt_mac
+				bool "ipt_mac.ko"
+				depends on FREETZ_KERNEL_VERSION_2_6_13
+				select FREETZ_MODULE_ip_tables
+				default n
+				help
+					MAC matching allows you to match packets based on the source
+					Ethernet address of the packet.
 
-config FREETZ_MODULE_ipt_mac
-	bool "ipt_mac.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13
-	select FREETZ_MODULE_ip_tables
-	default n
-	help
-		MAC matching allows you to match packets based on the source
-		Ethernet address of the packet.
+			config FREETZ_MODULE_ipt_mark
+				bool "ipt_mark.ko"
+				depends on FREETZ_KERNEL_VERSION_2_6_13
+				select FREETZ_MODULE_ip_tables
+				default n
+				help
+					Netfilter mark matching allows you to match packets based on the
+					`nfmark' value in the packet. This can be set by the MARK target
+					(see below).
 
-config FREETZ_MODULE_ipt_mark
-	bool "ipt_mark.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13
-	select FREETZ_MODULE_ip_tables
-	default n
-	help
-		Netfilter mark matching allows you to match packets based on the
-		`nfmark' value in the packet. This can be set by the MARK target
-		(see below).
+			config FREETZ_MODULE_ipt_multiport
+				bool "ipt_multiport.ko"
+				depends on FREETZ_KERNEL_VERSION_2_6_13
+				select FREETZ_MODULE_ip_tables
+				default n
+				help
+					Multiport matching allows you to match TCP or UDP packets based on
+					a series of source or destination ports: normally a rule can only
+					match a single range of ports.
 
-config FREETZ_MODULE_ipt_multiport
-	bool "ipt_multiport.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13
-	select FREETZ_MODULE_ip_tables
-	default n
-	help
-		Multiport matching allows you to match TCP or UDP packets based on
-		a series of source or destination ports: normally a rule can only
-		match a single range of ports.
+			config FREETZ_MODULE_ipt_owner
+				bool "ipt_owner.ko"
+				depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
+				select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13
+				select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19
+				default n
+				help
+					Packet owner matching allows you to match locally-generated packets
+					based on who created them: the user, group, process or session.
 
-config FREETZ_MODULE_ipt_owner
-	bool "ipt_owner.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
-	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13
-	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19
-	default n
-	help
-		Packet owner matching allows you to match locally-generated packets
-		based on who created them: the user, group, process or session.
+			config FREETZ_MODULE_ipt_state
+				bool "ipt_state.ko"
+				depends on FREETZ_KERNEL_VERSION_2_6_13
+				select FREETZ_MODULE_ip_conntrack
+				select FREETZ_MODULE_ip_tables
+				default n
+				help
+					Connection state matching allows you to match packets based on their
+					relationship to a tracked connection (ie. previous packets). This
+					is a powerful tool for packet classification.
 
-config FREETZ_MODULE_ipt_state
-	bool "ipt_state.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13
-	select FREETZ_MODULE_ip_conntrack
-	select FREETZ_MODULE_ip_tables
-	default n
-	help
-		Connection state matching allows you to match packets based on their
-		relationship to a tracked connection (ie. previous packets). This
-		is a powerful tool for packet classification.
+			config FREETZ_MODULE_ipt_tcpmss
+				bool "ipt_tcpmss.ko"
+				depends on FREETZ_KERNEL_VERSION_2_6_13
+				select FREETZ_MODULE_ip_tables
+				default n
+				help
+					This option adds a `tcpmss' match, which allows you to examine the
+					MSS value of TCP SYN packets, which control the maximum packet size
+					for that connection.
 
-config FREETZ_MODULE_ipt_tcpmss
-	bool "ipt_tcpmss.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_13
-	select FREETZ_MODULE_ip_tables
-	default n
-	help
-		This option adds a `tcpmss' match, which allows you to examine the
-		MSS value of TCP SYN packets, which control the maximum packet size
-		for that connection.
+			config FREETZ_MODULE_ipt_tos
+				bool "ipt_tos.ko"
+				depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
+				select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13
+				select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19
+				default n
+				help
+					TOS matching allows you to match packets based on the Type Of
+					Service fields of the IP packet.
 
-config FREETZ_MODULE_ipt_tos
-	bool "ipt_tos.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_MAX
-	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13
-	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19
-	default n
-	help
-		TOS matching allows you to match packets based on the Type Of
-		Service fields of the IP packet.
-
-config FREETZ_MODULE_ipt_ttl
-	bool "ipt_ttl.ko"
-	depends on FREETZ_KERNEL_VERSION_2
-	select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13
-	select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_MIN
-	default n
-	help
-		This adds CONFIG_IP_NF_MATCH_TTL option, which enabled the user
-		to match packets by their TTL value.
-
+			config FREETZ_MODULE_ipt_ttl
+				bool "ipt_ttl.ko"
+				depends on FREETZ_KERNEL_VERSION_2
+				select FREETZ_MODULE_ip_tables if FREETZ_KERNEL_VERSION_2_6_13
+				select FREETZ_MODULE_x_tables if FREETZ_KERNEL_VERSION_2_6_19_MIN
+				default n
+				help
+					This adds CONFIG_IP_NF_MATCH_TTL option, which enabled the user
+					to match packets by their TTL value.
 
 if FREETZ_PACKAGE_IPTABLES_STATE_AVAILABLE
 
-config FREETZ_MODULE_nf_conntrack
-	bool "nf_conntrack.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
-	default n
-	help
-		Connection tracking keeps a record of what packets have passed
-		through your machine, in order to figure out how they are related
-		into connections.
+				config FREETZ_MODULE_nf_conntrack
+					bool "nf_conntrack.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+					default n
+					help
+						Connection tracking keeps a record of what packets have passed
+						through your machine, in order to figure out how they are related
+						into connections.
 
-		This is required to do Masquerading or other kinds of Network
-		Address Translation (except for Fast NAT). It can also be used to
-		enhance packet filtering (see `Connection state match support'
-		below).
+						This is required to do Masquerading or other kinds of Network
+						Address Translation (except for Fast NAT). It can also be used to
+						enhance packet filtering (see `Connection state match support'
+						below).
 
-config FREETZ_MODULE_nf_conntrack_ftp
-	bool "nf_conntrack_ftp.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
-	select FREETZ_MODULE_nf_conntrack
-	default n
-	help
-		Tracking FTP connections is problematic: special helpers are
-		required for tracking them, and doing masquerading and other forms
-		of Network Address Translation on them.
+				config FREETZ_MODULE_nf_conntrack_ftp
+					bool "nf_conntrack_ftp.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+					select FREETZ_MODULE_nf_conntrack
+					default n
+					help
+						Tracking FTP connections is problematic: special helpers are
+						required for tracking them, and doing masquerading and other forms
+						of Network Address Translation on them.
 
-config FREETZ_MODULE_nf_conntrack_h323
-	bool "nf_conntrack_h323.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
-	select FREETZ_MODULE_nf_conntrack
-	default n
-	help
-		H.323 is a VoIP signalling protocol from ITU-T. As one of the most
-		important VoIP protocols, it is widely used by voice hardware and
-		software including voice gateways, IP phones, Netmeeting, OpenPhone,
-		Gnomemeeting, etc.
+				config FREETZ_MODULE_nf_conntrack_h323
+					bool "nf_conntrack_h323.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+					select FREETZ_MODULE_nf_conntrack
+					default n
+					help
+						H.323 is a VoIP signalling protocol from ITU-T. As one of the most
+						important VoIP protocols, it is widely used by voice hardware and
+						software including voice gateways, IP phones, Netmeeting, OpenPhone,
+						Gnomemeeting, etc.
 
-		With this module you can support H.323 on a connection tracking/NAT
-		firewall.
+						With this module you can support H.323 on a connection tracking/NAT
+						firewall.
 
-		This module supports RAS, Fast Start, H.245 Tunnelling, Call
-		Forwarding, RTP/RTCP and T.120 based audio, video, fax, chat,
-		whiteboard, file transfer, etc. For more information, please
-		visit http://nath323.sourceforge.net/.
+						This module supports RAS, Fast Start, H.245 Tunnelling, Call
+						Forwarding, RTP/RTCP and T.120 based audio, video, fax, chat,
+						whiteboard, file transfer, etc. For more information, please
+						visit http://nath323.sourceforge.net/.
 
-config FREETZ_MODULE_nf_conntrack_irc
-	bool "nf_conntrack_irc.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
-	select FREETZ_MODULE_nf_conntrack
-	default n
-	help
-		There is a commonly-used extension to IRC called
-		Direct Client-to-Client Protocol (DCC). This enables users to send
-		files to each other, and also chat to each other without the need
-		of a server. DCC Sending is used anywhere you send files over IRC,
-		and DCC Chat is most commonly used by Eggdrop bots. If you are using
-		NAT, this extension will enable you to send files and initiate chats.
-		Note that you do NOT need this extension to get files or have others
-		initiate chats, or everything else in IRC.
+				config FREETZ_MODULE_nf_conntrack_irc
+					bool "nf_conntrack_irc.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+					select FREETZ_MODULE_nf_conntrack
+					default n
+					help
+						There is a commonly-used extension to IRC called
+						Direct Client-to-Client Protocol (DCC). This enables users to send
+						files to each other, and also chat to each other without the need
+						of a server. DCC Sending is used anywhere you send files over IRC,
+						and DCC Chat is most commonly used by Eggdrop bots. If you are using
+						NAT, this extension will enable you to send files and initiate chats.
+						Note that you do NOT need this extension to get files or have others
+						initiate chats, or everything else in IRC.
 
-config FREETZ_MODULE_nf_conntrack_ipv4
-	bool "nf_conntrack_ipv4.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
-	default n
+				config FREETZ_MODULE_nf_conntrack_ipv4
+					bool "nf_conntrack_ipv4.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+					default n
 
-config FREETZ_MODULE_nf_conntrack_pptp
-	bool "nf_conntrack_pptp.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
-	select FREETZ_MODULE_nf_conntrack
-	select FREETZ_MODULE_nf_conntrack_proto_gre
-	default n
-	help
-		This module adds support for PPTP (Point to Point Tunnelling
-		Protocol, RFC2637) connection tracking and NAT.
+				config FREETZ_MODULE_nf_conntrack_pptp
+					bool "nf_conntrack_pptp.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+					select FREETZ_MODULE_nf_conntrack
+					select FREETZ_MODULE_nf_conntrack_proto_gre
+					default n
+					help
+						This module adds support for PPTP (Point to Point Tunnelling
+						Protocol, RFC2637) connection tracking and NAT.
 
-		If you are running PPTP sessions over a stateful firewall or NAT
-		box, you may want to enable this feature.
+						If you are running PPTP sessions over a stateful firewall or NAT
+						box, you may want to enable this feature.
 
-config FREETZ_MODULE_nf_conntrack_proto_gre
-	bool "nf_conntrack_proto_gre.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
-	default n
+				config FREETZ_MODULE_nf_conntrack_proto_gre
+					bool "nf_conntrack_proto_gre.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+					default n
 
-config FREETZ_MODULE_nf_conntrack_tftp
-	bool "nf_conntrack_tftp.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_28 || FREETZ_KERNEL_VERSION_2_6_32
-	select FREETZ_MODULE_nf_conntrack
-	default n
-	help
-		TFTP connection tracking helper, this is required depending
-		on how restrictive your ruleset is.
-		If you are using a tftp client behind -j SNAT or -j MASQUERADING
-		you will need this.
+				config FREETZ_MODULE_nf_conntrack_tftp
+					bool "nf_conntrack_tftp.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_28 || FREETZ_KERNEL_VERSION_2_6_32
+					select FREETZ_MODULE_nf_conntrack
+					default n
+					help
+						TFTP connection tracking helper, this is required depending
+						on how restrictive your ruleset is.
+						If you are using a tftp client behind -j SNAT or -j MASQUERADING
+						you will need this.
 
-config FREETZ_MODULE_nf_defrag_ipv4
-	bool "nf_defrag_ipv4.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_28 || FREETZ_KERNEL_VERSION_2_6_32
-	default n
+				config FREETZ_MODULE_nf_defrag_ipv4
+					bool "nf_defrag_ipv4.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_28 || FREETZ_KERNEL_VERSION_2_6_32
+					default n
 
-config FREETZ_MODULE_nf_nat
-	bool
-	#bool "nf_nat.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
-	select FREETZ_MODULE_nf_conntrack
-	select FREETZ_MODULE_nf_conntrack_ipv4
-	select FREETZ_MODULE_nf_defrag_ipv4
-	default n
-	help
-		The Full NAT option allows masquerading, port forwarding and other
-		forms of full Network Address Port Translation. It is controlled by
-		the `nat' table in iptables: see the man page for iptables(8).
+				config FREETZ_MODULE_nf_nat
+					bool
+					#bool "nf_nat.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+					select FREETZ_MODULE_nf_conntrack
+					select FREETZ_MODULE_nf_conntrack_ipv4
+					select FREETZ_MODULE_nf_defrag_ipv4
+					default n
+					help
+						The Full NAT option allows masquerading, port forwarding and other
+						forms of full Network Address Port Translation. It is controlled by
+						the `nat' table in iptables: see the man page for iptables(8).
 
-config FREETZ_MODULE_nf_nat_ftp
-	bool "nf_nat_ftp.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
-	select FREETZ_MODULE_nf_nat
-	select FREETZ_MODULE_nf_conntrack_ftp
-	default n
+				config FREETZ_MODULE_nf_nat_ftp
+					bool "nf_nat_ftp.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+					select FREETZ_MODULE_nf_nat
+					select FREETZ_MODULE_nf_conntrack_ftp
+					default n
 
-config FREETZ_MODULE_nf_nat_h323
-	bool
-	#bool "nf_nat_h323.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
-	select FREETZ_MODULE_nf_nat
-	select FREETZ_MODULE_nf_conntrack_h323
-	default n
+				config FREETZ_MODULE_nf_nat_h323
+					bool
+					#bool "nf_nat_h323.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+					select FREETZ_MODULE_nf_nat
+					select FREETZ_MODULE_nf_conntrack_h323
+					default n
 
-config FREETZ_MODULE_nf_nat_irc
-	bool
-	#bool "nf_nat_irc.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
-	select FREETZ_MODULE_nf_nat
-	select FREETZ_MODULE_nf_conntrack_irc
-	default n
+				config FREETZ_MODULE_nf_nat_irc
+					bool
+					#bool "nf_nat_irc.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+					select FREETZ_MODULE_nf_nat
+					select FREETZ_MODULE_nf_conntrack_irc
+					default n
 
-config FREETZ_MODULE_nf_nat_pptp
-	bool
-	#bool "nf_nat_pptp.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
-	select FREETZ_MODULE_nf_nat
-	select FREETZ_MODULE_nf_conntrack_pptp
-	default n
+				config FREETZ_MODULE_nf_nat_pptp
+					bool
+					#bool "nf_nat_pptp.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+					select FREETZ_MODULE_nf_nat
+					select FREETZ_MODULE_nf_conntrack_pptp
+					default n
 
-config FREETZ_MODULE_nf_nat_tftp
-	bool "nf_nat_tftp.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
-	select FREETZ_MODULE_nf_nat
-	select FREETZ_MODULE_nf_conntrack_tftp
-	default n
+				config FREETZ_MODULE_nf_nat_tftp
+					bool "nf_nat_tftp.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+					select FREETZ_MODULE_nf_nat
+					select FREETZ_MODULE_nf_conntrack_tftp
+					default n
 
 endif # FREETZ_PACKAGE_IPTABLES_STATE_AVAILABLE
 
-endmenu # "Select kernel modules (IPv4)"
+		endmenu # "Select kernel modules (IPv4)"
 
+		menu "x_tables (both IPv4 and IPv6)"
+			depends on FREETZ_KERNEL_VERSION_2_6_19_MIN
 
-menu "x_tables (both IPv4 and IPv6)"
-	depends on FREETZ_KERNEL_VERSION_2_6_19_MIN
+			config FREETZ_MODULE_nf_log_common
+				bool "nf_log_common.ko"
+				depends on FREETZ_KERNEL_VERSION_4_MIN
+				depends on FREETZ_MODULE_xt_LOG
+				select FREETZ_MODULE_nf_log_ipv4 if FREETZ_MODULE_ip_tables
+				select FREETZ_MODULE_nf_log_ipv6 if FREETZ_MODULE_ip6_tables
 
-config FREETZ_MODULE_nf_log_common
-	bool "nf_log_common.ko"
-	depends on FREETZ_KERNEL_VERSION_4_MIN
-	depends on FREETZ_MODULE_xt_LOG
-	select FREETZ_MODULE_nf_log_ipv4 if FREETZ_MODULE_ip_tables
-	select FREETZ_MODULE_nf_log_ipv6 if FREETZ_MODULE_ip6_tables
+			config FREETZ_MODULE_nf_log_ipv4
+				bool "nf_log_ipv4.ko"
+				depends on FREETZ_MODULE_nf_log_common
+				depends on FREETZ_MODULE_ip_tables
 
-config FREETZ_MODULE_nf_log_ipv4
-	bool "nf_log_ipv4.ko"
-	depends on FREETZ_MODULE_nf_log_common
-	depends on FREETZ_MODULE_ip_tables
+			config FREETZ_MODULE_nf_log_ipv6
+				bool "nf_log_ipv6.ko"
+				depends on FREETZ_MODULE_nf_log_common
+				depends on FREETZ_MODULE_ip6_tables
 
-config FREETZ_MODULE_nf_log_ipv6
-	bool "nf_log_ipv6.ko"
-	depends on FREETZ_MODULE_nf_log_common
-	depends on FREETZ_MODULE_ip6_tables
-
-config FREETZ_MODULE_x_tables
-	bool "x_tables.ko"
-	default n
+			config FREETZ_MODULE_x_tables
+				bool "x_tables.ko"
+				default n
 
 if FREETZ_MODULE_x_tables
 
-config FREETZ_MODULE_xt_CLASSIFY
-	bool "xt_CLASSIFY.ko"
-	default n
-	help
-		This option adds a `CLASSIFY' target, which enables the user to set
-		the priority of a packet. Some qdiscs can use this value for
-		classification, among these are:
+				config FREETZ_MODULE_xt_CLASSIFY
+					bool "xt_CLASSIFY.ko"
+					default n
+					help
+						This option adds a `CLASSIFY' target, which enables the user to set
+						the priority of a packet. Some qdiscs can use this value for
+						classification, among these are:
 
-		atm, cbq, dsmark, pfifo_fast, htb, prio
+						atm, cbq, dsmark, pfifo_fast, htb, prio
 
-config FREETZ_MODULE_xt_DSCP
-	bool "xt_DSCP.ko"
-	depends on !FREETZ_KERNEL_VERSION_2
-	default n
-	help
-		DSCP/TOS field modification
+				config FREETZ_MODULE_xt_DSCP
+					bool "xt_DSCP.ko"
+					depends on !FREETZ_KERNEL_VERSION_2
+					default n
+					help
+						DSCP/TOS field modification
 
-config FREETZ_MODULE_xt_HL
-	depends on !FREETZ_KERNEL_VERSION_2
-	bool "xt_HL.ko"
-	default n
-	help
-		This option adds the "HL" (for IPv6) and "TTL" (for IPv4)
-		targets, which enable the user to change the
-		hoplimit/time-to-live value of the IP header.
+				config FREETZ_MODULE_xt_HL
+					depends on !FREETZ_KERNEL_VERSION_2
+					bool "xt_HL.ko"
+					default n
+					help
+						This option adds the "HL" (for IPv6) and "TTL" (for IPv4)
+						targets, which enable the user to change the
+						hoplimit/time-to-live value of the IP header.
 
-config FREETZ_MODULE_xt_LOG
-	bool "xt_LOG.ko"
-	depends on !FREETZ_KERNEL_VERSION_2
-	select FREETZ_MODULE_nf_log_common if FREETZ_KERNEL_VERSION_4_MIN
-	default y
-	help
-		This option adds a `LOG' target, which allows you to create rules in
-		any iptables table which records the packet header to the syslog.
+				config FREETZ_MODULE_xt_LOG
+					bool "xt_LOG.ko"
+					depends on !FREETZ_KERNEL_VERSION_2
+					select FREETZ_MODULE_nf_log_common if FREETZ_KERNEL_VERSION_4_MIN
+					default y
+					help
+						This option adds a `LOG' target, which allows you to create rules in
+						any iptables table which records the packet header to the syslog.
 
-config FREETZ_MODULE_xt_MARK
-	bool "xt_MARK.ko"
-	depends on FREETZ_KERNEL_VERSION_2
-	default n
-	help
-		This option adds a `MARK' target, which allows you to create rules
-		in the `mangle' table which alter the netfilter mark (nfmark) field
-		associated with the packet prior to routing. This can change
-		the routing method (see `Use netfilter MARK value as routing
-		key') and can also be used by other subsystems to change their
-		behavior.
+				config FREETZ_MODULE_xt_MARK
+					bool "xt_MARK.ko"
+					depends on FREETZ_KERNEL_VERSION_2
+					default n
+					help
+						This option adds a `MARK' target, which allows you to create rules
+						in the `mangle' table which alter the netfilter mark (nfmark) field
+						associated with the packet prior to routing. This can change
+						the routing method (see `Use netfilter MARK value as routing
+						key') and can also be used by other subsystems to change their
+						behavior.
 
-config FREETZ_MODULE_xt_NFQUEUE
-	bool "xt_NFQUEUE.ko"
-	default n
-	help
-		This target replaced the old obsolete QUEUE target.
+				config FREETZ_MODULE_xt_NFQUEUE
+					bool "xt_NFQUEUE.ko"
+					default n
+					help
+						This target replaced the old obsolete QUEUE target.
 
-		As opposed to QUEUE, it supports 65535 different queues,
-		not just one.
+						As opposed to QUEUE, it supports 65535 different queues,
+						not just one.
 
-config FREETZ_MODULE_xt_NOTRACK
-	bool "xt_NOTRACK.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19
-	select FREETZ_MODULE_ip_conntrack
-	default n
-	help
-		The NOTRACK target allows a select rule to specify
-		which packets *not* to enter the conntrack/NAT
-		subsystem with all the consequences (no ICMP error tracking,
-		no protocol helpers for the selected packets).
+				config FREETZ_MODULE_xt_NOTRACK
+					bool "xt_NOTRACK.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_19
+					select FREETZ_MODULE_ip_conntrack
+					default n
+					help
+						The NOTRACK target allows a select rule to specify
+						which packets *not* to enter the conntrack/NAT
+						subsystem with all the consequences (no ICMP error tracking,
+						no protocol helpers for the selected packets).
 
+				config FREETZ_MODULE_xt_comment
+					bool "xt_comment.ko"
+					default n
+					help
+						This option adds a `comment' dummy-match, which allows you to put
+						comments in your iptables ruleset.
 
-config FREETZ_MODULE_xt_comment
-	bool "xt_comment.ko"
-	default n
-	help
-		This option adds a `comment' dummy-match, which allows you to put
-		comments in your iptables ruleset.
+				config FREETZ_MODULE_xt_conntrack
+					bool "xt_conntrack.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_19
+					select FREETZ_MODULE_ip_conntrack
+					default n
+					help
+						Connection tracking keeps a record of what packets have passed
+						through your machine, in order to figure out how they are related
+						into connections.
 
-config FREETZ_MODULE_xt_conntrack
-	bool "xt_conntrack.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19
-	select FREETZ_MODULE_ip_conntrack
-	default n
-	help
-		Connection tracking keeps a record of what packets have passed
-		through your machine, in order to figure out how they are related
-		into connections.
+						Layer 3 independent connection tracking is experimental scheme
+						which generalize ip_conntrack to support other layer 3 protocols.
 
-		Layer 3 independent connection tracking is experimental scheme
-		which generalize ip_conntrack to support other layer 3 protocols.
+				config FREETZ_MODULE_xt_esp
+					bool "xt_esp.ko"
+					default n
+					help
+						This match extension allows you to match a range of SPIs
+						inside ESP header of IPSec packets.
 
-config FREETZ_MODULE_xt_esp
-	bool "xt_esp.ko"
-	default n
-	help
-		This match extension allows you to match a range of SPIs
-		inside ESP header of IPSec packets.
+				config FREETZ_MODULE_xt_helper
+					bool "xt_helper.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_19
+					select FREETZ_MODULE_ip_conntrack
+					default n
+					help
+						Helper matching allows you to match packets in dynamic connections
+						tracked by a conntrack-helper, ie. ip_conntrack_ftp
 
-config FREETZ_MODULE_xt_helper
-	bool "xt_helper.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19
-	select FREETZ_MODULE_ip_conntrack
-	default n
-	help
-		Helper matching allows you to match packets in dynamic connections
-		tracked by a conntrack-helper, ie. ip_conntrack_ftp
+				config FREETZ_MODULE_xt_hl
+					depends on !FREETZ_KERNEL_VERSION_2
+					bool "xt_hl.ko"
+					default n
+					help
+						HL match support
 
+						HL matching allows you to match packets based on the hop
+						limit of the packet.
 
-config FREETZ_MODULE_xt_hl
-	depends on !FREETZ_KERNEL_VERSION_2
-	bool "xt_hl.ko"
-	default n
-	help
-		HL match support
+				config FREETZ_MODULE_xt_iprange
+					bool "xt_iprange.ko"
+					default n
+					help
+						This option adds a "iprange" match, which allows you to match
+						based on an IP address range. (Normal iptables only matches on
+						single addresses x with an optional mask.)
 
-		HL matching allows you to match packets based on the hop
-		limit of the packet.
+				config FREETZ_MODULE_xt_length
+					bool "xt_length.ko"
+					default n
+					help
+						This option allows you to match the length of a packet against a
+						specific value or range of values.
 
-config FREETZ_MODULE_xt_iprange
-	bool "xt_iprange.ko"
-	default n
-	help
-		This option adds a "iprange" match, which allows you to match
-		based on an IP address range. (Normal iptables only matches on
-		single addresses x with an optional mask.)
+				config FREETZ_MODULE_xt_limit
+					bool "xt_limit.ko"
+					default n
+					help
+						limit matching allows you to control the rate at which a rule can be
+						matched: mainly useful in combination with the LOG target ("LOG
+						target support", below) and to avoid some Denial of Service attacks.
 
-config FREETZ_MODULE_xt_length
-	bool "xt_length.ko"
-	default n
-	help
-		This option allows you to match the length of a packet against a
-		specific value or range of values.
+				config FREETZ_MODULE_xt_mac
+					bool "xt_mac.ko"
+					default n
+					help
+						MAC matching allows you to match packets based on the source
+						Ethernet address of the packet.
 
-config FREETZ_MODULE_xt_limit
-	bool "xt_limit.ko"
-	default n
-	help
-		limit matching allows you to control the rate at which a rule can be
-		matched: mainly useful in combination with the LOG target ("LOG
-		target support", below) and to avoid some Denial of Service attacks.
+				config FREETZ_MODULE_xt_mark
+					bool "xt_mark.ko"
+					default n
+					help
+						Netfilter mark matching allows you to match packets based on the
+						`nfmark' value in the packet. This can be set by the MARK target
+						(see below).
 
-config FREETZ_MODULE_xt_mac
-	bool "xt_mac.ko"
-	default n
-	help
-		MAC matching allows you to match packets based on the source
-		Ethernet address of the packet.
+				config FREETZ_MODULE_xt_multiport
+					bool "xt_multiport.ko"
+					default n
+					help
+						Multiport matching allows you to match TCP or UDP packets based on
+						a series of source or destination ports: normally a rule can only
+						match a single range of ports.
 
-config FREETZ_MODULE_xt_mark
-	bool "xt_mark.ko"
-	default n
-	help
-		Netfilter mark matching allows you to match packets based on the
-		`nfmark' value in the packet. This can be set by the MARK target
-		(see below).
+				config FREETZ_MODULE_xt_physdev
+					bool "xt_physdev.ko"
+					depends on !FREETZ_KERNEL_VERSION_3
+					default n
+					help
+						Physdev packet matching matches against the physical bridge ports
+						the IP packet arrived on or will leave by.
 
-config FREETZ_MODULE_xt_multiport
-	bool "xt_multiport.ko"
-	default n
-	help
-		Multiport matching allows you to match TCP or UDP packets based on
-		a series of source or destination ports: normally a rule can only
-		match a single range of ports.
+				config FREETZ_MODULE_xt_pkttype
+					bool "xt_pkttype.ko"
+					default n
+					help
+						Packet type matching allows you to match a packet by
+						its "class", eg. BROADCAST, MULTICAST, ...
 
-config FREETZ_MODULE_xt_physdev
-	bool "xt_physdev.ko"
-	depends on !FREETZ_KERNEL_VERSION_3
-	default n
-	help
-		Physdev packet matching matches against the physical bridge ports
-		the IP packet arrived on or will leave by.
+						Typical usage:
+							iptables -A INPUT -m pkttype --pkt-type broadcast -j LOG
 
-config FREETZ_MODULE_xt_pkttype
-	bool "xt_pkttype.ko"
-	default n
-	help
-		Packet type matching allows you to match a packet by
-		its "class", eg. BROADCAST, MULTICAST, ...
+				config FREETZ_MODULE_xt_quota
+					bool "xt_quota.ko"
+					default n
+					help
+						This option adds a `quota' match, which allows to match on a
+						byte counter.
 
-		Typical usage:
-			iptables -A INPUT -m pkttype --pkt-type broadcast -j LOG
+				config FREETZ_MODULE_xt_realm
+					bool "xt_realm.ko"
+					default n
+					help
+						This option adds a `realm' match, which allows you to use the realm
+						key from the routing subsystem inside iptables.
 
-config FREETZ_MODULE_xt_quota
-	bool "xt_quota.ko"
-	default n
-	help
-		This option adds a `quota' match, which allows to match on a
-		byte counter.
+						This match pretty much resembles the CONFIG_NET_CLS_ROUTE4 option
+						in tc world.
 
-config FREETZ_MODULE_xt_realm
-	bool "xt_realm.ko"
-	default n
-	help
-		This option adds a `realm' match, which allows you to use the realm
-		key from the routing subsystem inside iptables.
+				config FREETZ_MODULE_xt_state
+					bool "xt_state.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_19
+					select FREETZ_MODULE_ip_conntrack
+					default n
+					help
+						Connection state matching allows you to match packets based on their
+						relationship to a tracked connection (ie. previous packets). This
+						is a powerful tool for packet classification.
 
-		This match pretty much resembles the CONFIG_NET_CLS_ROUTE4 option
-		in tc world.
+				config FREETZ_MODULE_xt_statistic
+					bool "xt_statistic.ko"
+					default n
+					help
+						This option adds a `statistic' match, which allows you to match
+						on packets periodically or randomly with a given percentage.
 
-config FREETZ_MODULE_xt_state
-	bool "xt_state.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_19
-	select FREETZ_MODULE_ip_conntrack
-	default n
-	help
-		Connection state matching allows you to match packets based on their
-		relationship to a tracked connection (ie. previous packets). This
-		is a powerful tool for packet classification.
+				config FREETZ_MODULE_xt_string
+					bool "xt_string.ko"
+					default n
+					help
+						This option adds a `string' match, which allows you to look for
+						pattern matchings in packets.
 
-config FREETZ_MODULE_xt_statistic
-	bool "xt_statistic.ko"
-	default n
-	help
-		This option adds a `statistic' match, which allows you to match
-		on packets periodically or randomly with a given percentage.
+				config FREETZ_MODULE_xt_tcpmss
+					bool "xt_tcpmss.ko"
+					default n
+					help
+						This option adds a `tcpmss' match, which allows you to examine the
+						MSS value of TCP SYN packets, which control the maximum packet size
+						for that connection.
 
-config FREETZ_MODULE_xt_string
-	bool "xt_string.ko"
-	default n
-	help
-		This option adds a `string' match, which allows you to look for
-		pattern matchings in packets.
+				config FREETZ_MODULE_xt_tcpudp
+					bool "xt_tcpudp.ko"
+					default y
 
-config FREETZ_MODULE_xt_tcpmss
-	bool "xt_tcpmss.ko"
-	default n
-	help
-		This option adds a `tcpmss' match, which allows you to examine the
-		MSS value of TCP SYN packets, which control the maximum packet size
-		for that connection.
-
-config FREETZ_MODULE_xt_tcpudp
-	bool "xt_tcpudp.ko"
-	default y
-
-config FREETZ_MODULE_xt_time
-	bool "xt_time.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
-	default n
+				config FREETZ_MODULE_xt_time
+					bool "xt_time.ko"
+					depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+					default n
 
 endif # FREETZ_MODULE_x_tables
 
-endmenu # "x_tables (both IPv4 and IPv6)"
+		endmenu # "x_tables (both IPv4 and IPv6)"
 
+		menu "Select kernel modules (IPv6)"
+			depends on FREETZ_TARGET_IPV6_SUPPORT
 
-menu "Select kernel modules (IPv6)"
-	depends on FREETZ_TARGET_IPV6_SUPPORT
+			config FREETZ_MODULE_ip6table_filter
+				bool "ip6table_filter.ko"
+				select FREETZ_MODULE_ip6_tables
+				default y
+				help
+					Packet filtering
 
-config FREETZ_MODULE_ip6table_filter
-	bool "ip6table_filter.ko"
-	select FREETZ_MODULE_ip6_tables
-	default y
-	help
-		Packet filtering
+					Packet filtering defines a table `filter', which has a series of
+					rules for simple packet filtering at local input, forwarding and
+					local output. See the man page for iptables(8).
 
-		Packet filtering defines a table `filter', which has a series of
-		rules for simple packet filtering at local input, forwarding and
-		local output. See the man page for iptables(8).
+			config FREETZ_MODULE_ip6table_mangle
+				bool "ip6table_mangle.ko"
+				select FREETZ_MODULE_ip6_tables
+				default n
+				help
+					Packet mangling
 
-config FREETZ_MODULE_ip6table_mangle
-	bool "ip6table_mangle.ko"
-	select FREETZ_MODULE_ip6_tables
-	default n
-	help
-		Packet mangling
+					This option adds a `mangle' table to iptables: see the man page for
+					iptables(8). This table is used for various packet alterations
+					which can effect how the packet is routed.
 
-		This option adds a `mangle' table to iptables: see the man page for
-		iptables(8). This table is used for various packet alterations
-		which can effect how the packet is routed.
+			config FREETZ_MODULE_ip6table_raw
+				bool "ip6table_raw.ko"
+				select FREETZ_MODULE_ip6_tables
+				default n
+				help
+					raw table support (required for TRACE)
 
-config FREETZ_MODULE_ip6table_raw
-	bool "ip6table_raw.ko"
-	select FREETZ_MODULE_ip6_tables
-	default n
-	help
-		raw table support (required for TRACE)
+					This option adds a `raw' table to ip6tables. This table is the very
+					first in the netfilter framework and hooks in at the PREROUTING
+					and OUTPUT chains.
 
-		This option adds a `raw' table to ip6tables. This table is the very
-		first in the netfilter framework and hooks in at the PREROUTING
-		and OUTPUT chains.
+			config FREETZ_MODULE_ip6_queue
+				bool "ip6_queue.ko"
+				depends on FREETZ_KERNEL_VERSION_2
+				default n
+				help
+					Userspace queueing via NETLINK
 
-config FREETZ_MODULE_ip6_queue
-	bool "ip6_queue.ko"
-	depends on FREETZ_KERNEL_VERSION_2
-	default n
-	help
-		Userspace queueing via NETLINK
+					This option adds a queue handler to the kernel for IPv6
+					packets which lets us to receive the filtered packets
+					with QUEUE target using libiptc as we can do with
+					the IPv4 now.
 
-		This option adds a queue handler to the kernel for IPv6
-		packets which lets us to receive the filtered packets
-		with QUEUE target using libiptc as we can do with
-		the IPv4 now.
+			config FREETZ_MODULE_ip6_tables
+				select FREETZ_LIB_libxt_standard if FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
+				bool "ip6_tables.ko"
+				default n
+				help
+					IP6 tables support (required for filtering/masq/NAT)
 
-config FREETZ_MODULE_ip6_tables
-	select FREETZ_LIB_libxt_standard if FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
-	bool "ip6_tables.ko"
-	default n
-	help
-		IP6 tables support (required for filtering/masq/NAT)
-
-		ip6tables is a general, extensible packet identification framework.
-		Currently only the packet filtering and packet mangling subsystem
-		for IPv6 use this, but connection tracking is going to follow.
+					ip6tables is a general, extensible packet identification framework.
+					Currently only the packet filtering and packet mangling subsystem
+					for IPv6 use this, but connection tracking is going to follow.
 
 if FREETZ_MODULE_ip6_tables
 
-config FREETZ_MODULE_ip6t_LOG
-	depends on FREETZ_KERNEL_VERSION_2
-	bool "ip6t_LOG.ko"
-	default n
-	help
-		LOG target support
+				config FREETZ_MODULE_ip6t_LOG
+					depends on FREETZ_KERNEL_VERSION_2
+					bool "ip6t_LOG.ko"
+					default n
+					help
+						LOG target support
 
-		This option adds a `LOG' target, which allows you to create rules in
-		any iptables table which records the packet header to the syslog.
+						This option adds a `LOG' target, which allows you to create rules in
+						any iptables table which records the packet header to the syslog.
 
-config FREETZ_MODULE_ip6t_MARK
-	depends on FREETZ_KERNEL_VERSION_2_6_13
-	bool "ip6t_MARK.ko"
-	default n
-	help
-		MARK target support
+				config FREETZ_MODULE_ip6t_MARK
+					depends on FREETZ_KERNEL_VERSION_2_6_13
+					bool "ip6t_MARK.ko"
+					default n
+					help
+						MARK target support
 
-		This option adds a `MARK' target, which allows you to create rules
-		in the `mangle' table which alter the netfilter mark (nfmark) field
-		associated with the packet packet prior to routing. This can change
-		the routing method (see `Use netfilter MARK value as routing
-		key') and can also be used by other subsystems to change their
-		behavior.
+						This option adds a `MARK' target, which allows you to create rules
+						in the `mangle' table which alter the netfilter mark (nfmark) field
+						associated with the packet packet prior to routing. This can change
+						the routing method (see `Use netfilter MARK value as routing
+						key') and can also be used by other subsystems to change their
+						behavior.
 
-config FREETZ_MODULE_ip6t_REJECT
-	bool "ip6t_REJECT.ko"
-	default n
-	help
-		The REJECT target allows a filtering rule to specify that an ICMPv6
-		error should be issued in response to an incoming packet, rather
-		than silently being dropped.
+				config FREETZ_MODULE_ip6t_REJECT
+					bool "ip6t_REJECT.ko"
+					default n
+					help
+						The REJECT target allows a filtering rule to specify that an ICMPv6
+						error should be issued in response to an incoming packet, rather
+						than silently being dropped.
 
-config FREETZ_MODULE_ip6t_ah
-	bool "ip6t_ah.ko"
-	default n
-	help
-		AH match support
+				config FREETZ_MODULE_ip6t_ah
+					bool "ip6t_ah.ko"
+					default n
+					help
+						AH match support
 
-		This module allows one to match AH and ESP packets.
+						This module allows one to match AH and ESP packets.
 
-config FREETZ_MODULE_ip6t_dst
-	depends on FREETZ_KERNEL_VERSION_2_6_13
-	bool "ip6t_dst.ko"
-	default n
-	help
-		Dst opts header match support
+				config FREETZ_MODULE_ip6t_dst
+					depends on FREETZ_KERNEL_VERSION_2_6_13
+					bool "ip6t_dst.ko"
+					default n
+					help
+						Dst opts header match support
 
-		This allows one to match packets based on the hop-by-hop
-		and destination options headers of a packet.
+						This allows one to match packets based on the hop-by-hop
+						and destination options headers of a packet.
 
-config FREETZ_MODULE_ip6t_esp
-	depends on FREETZ_KERNEL_VERSION_2_6_13
-	bool "ip6t_esp.ko"
-	default n
-	help
-		ESP match support
+				config FREETZ_MODULE_ip6t_esp
+					depends on FREETZ_KERNEL_VERSION_2_6_13
+					bool "ip6t_esp.ko"
+					default n
+					help
+						ESP match support
 
-		This module allows one to match AH and ESP packets.
+						This module allows one to match AH and ESP packets.
 
-config FREETZ_MODULE_ip6t_eui64
-	bool "ip6t_eui64.ko"
-	default n
-	help
-		EUI64 address check
+				config FREETZ_MODULE_ip6t_eui64
+					bool "ip6t_eui64.ko"
+					default n
+					help
+						EUI64 address check
 
-		This module performs checking on the IPv6 source address
-		Compares the last 64 bits with the EUI64 (delivered
-		from the MAC address) address
+						This module performs checking on the IPv6 source address
+						Compares the last 64 bits with the EUI64 (delivered
+						from the MAC address) address
 
-config FREETZ_MODULE_ip6t_frag
-	bool "ip6t_frag.ko"
-	default n
-	help
-		Fragmentation header match support
+				config FREETZ_MODULE_ip6t_frag
+					bool "ip6t_frag.ko"
+					default n
+					help
+						Fragmentation header match support
 
-		frag matching allows you to match packets based on the fragmentation
-		header of the packet.
+						frag matching allows you to match packets based on the fragmentation
+						header of the packet.
 
-config FREETZ_MODULE_ip6t_hbh
-	bool "ip6t_hbh.ko"
-	default n
-	help
-		Hop-by-hop and header match support
+				config FREETZ_MODULE_ip6t_hbh
+					bool "ip6t_hbh.ko"
+					default n
+					help
+						Hop-by-hop and header match support
 
-		This allows one to match packets based on the hop-by-hop
-		and destination options headers of a packet.
+						This allows one to match packets based on the hop-by-hop
+						and destination options headers of a packet.
 
-config FREETZ_MODULE_ip6t_hl
-	depends on FREETZ_KERNEL_VERSION_2
-	bool "ip6t_hl.ko"
-	default n
-	help
-		HL match support
+				config FREETZ_MODULE_ip6t_hl
+					depends on FREETZ_KERNEL_VERSION_2
+					bool "ip6t_hl.ko"
+					default n
+					help
+						HL match support
 
-		HL matching allows you to match packets based on the hop
-		limit of the packet.
+						HL matching allows you to match packets based on the hop
+						limit of the packet.
 
-config FREETZ_MODULE_ip6t_ipv6header
-	bool "ip6t_ipv6header.ko"
-	default n
-	help
-		IPv6 Extension Headers Match
+				config FREETZ_MODULE_ip6t_ipv6header
+					bool "ip6t_ipv6header.ko"
+					default n
+					help
+						IPv6 Extension Headers Match
 
-		This module allows one to match packets based upon
-		the ipv6 extension headers.
+						This module allows one to match packets based upon
+						the ipv6 extension headers.
 
-config FREETZ_MODULE_ip6t_length
-	depends on FREETZ_KERNEL_VERSION_2_6_13
-	bool "ip6t_length.ko"
-	default n
-	help
-		Packet Length match support
+				config FREETZ_MODULE_ip6t_length
+					depends on FREETZ_KERNEL_VERSION_2_6_13
+					bool "ip6t_length.ko"
+					default n
+					help
+						Packet Length match support
 
-		This option allows you to match the length of a packet against a
-		specific value or range of values.
+						This option allows you to match the length of a packet against a
+						specific value or range of values.
 
-config FREETZ_MODULE_ip6t_limit
-	depends on FREETZ_KERNEL_VERSION_2_6_13
-	bool "ip6t_limit.ko"
-	default n
-	help
-		limit match support
+				config FREETZ_MODULE_ip6t_limit
+					depends on FREETZ_KERNEL_VERSION_2_6_13
+					bool "ip6t_limit.ko"
+					default n
+					help
+						limit match support
 
-		limit matching allows you to control the rate at which a rule can be
-		matched: mainly useful in combination with the LOG target ("LOG
-		target support", below) and to avoid some Denial of Service attacks.
+						limit matching allows you to control the rate at which a rule can be
+						matched: mainly useful in combination with the LOG target ("LOG
+						target support", below) and to avoid some Denial of Service attacks.
 
-config FREETZ_MODULE_ip6t_mac
-	depends on FREETZ_KERNEL_VERSION_2_6_13
-	bool "ip6t_mac.ko"
-	default n
-	help
-		MAC address match support
+				config FREETZ_MODULE_ip6t_mac
+					depends on FREETZ_KERNEL_VERSION_2_6_13
+					bool "ip6t_mac.ko"
+					default n
+					help
+						MAC address match support
 
-		mac matching allows you to match packets based on the source
-		Ethernet address of the packet.
+						mac matching allows you to match packets based on the source
+						Ethernet address of the packet.
 
-config FREETZ_MODULE_ip6t_mark
-	depends on FREETZ_KERNEL_VERSION_2_6_13
-	bool "ip6t_mark.ko"
-	default n
-	help
-		netfilter MARK match support
+				config FREETZ_MODULE_ip6t_mark
+					depends on FREETZ_KERNEL_VERSION_2_6_13
+					bool "ip6t_mark.ko"
+					default n
+					help
+						netfilter MARK match support
 
-		Netfilter mark matching allows you to match packets based on the
-		`nfmark' value in the packet. This can be set by the MARK target
-		(see below).
+						Netfilter mark matching allows you to match packets based on the
+						`nfmark' value in the packet. This can be set by the MARK target
+						(see below).
 
-config FREETZ_MODULE_ip6t_multiport
-	depends on FREETZ_KERNEL_VERSION_2_6_13
-	bool "ip6t_multiport.ko"
-	default n
-	help
-		Multiple port match support
+				config FREETZ_MODULE_ip6t_multiport
+					depends on FREETZ_KERNEL_VERSION_2_6_13
+					bool "ip6t_multiport.ko"
+					default n
+					help
+						Multiple port match support
 
-		Multiport matching allows you to match TCP or UDP packets based on
-		a series of source or destination ports: normally a rule can only
-		match a single range of ports.
+						Multiport matching allows you to match TCP or UDP packets based on
+						a series of source or destination ports: normally a rule can only
+						match a single range of ports.
 
-config FREETZ_MODULE_ip6t_owner
-	depends on FREETZ_KERNEL_VERSION_2_6_13
-	bool "ip6t_owner.ko"
-	default n
-	help
-		Owner match support
+				config FREETZ_MODULE_ip6t_owner
+					depends on FREETZ_KERNEL_VERSION_2_6_13
+					bool "ip6t_owner.ko"
+					default n
+					help
+						Owner match support
 
-		Packet owner matching allows you to match locally-generated packets
-		based on who created them: the user, group, process or session.
+						Packet owner matching allows you to match locally-generated packets
+						based on who created them: the user, group, process or session.
 
-config FREETZ_MODULE_ip6t_rt
-	bool "ip6t_rt.ko"
-	default n
-	help
-		Routing header match support
+				config FREETZ_MODULE_ip6t_rt
+					bool "ip6t_rt.ko"
+					default n
+					help
+						Routing header match support
 
-		rt matching allows you to match packets based on the routing
-		header of the packet.
+						rt matching allows you to match packets based on the routing
+						header of the packet.
 
 endif # FREETZ_MODULE_ip6_tables
 
-config FREETZ_MODULE_nf_conntrack_ipv6
-	bool
-	#bool "nf_conntrack_ipv6.ko"
-	depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
-	default n
-	help
-		Connection tracking keeps a record of what packets have passed
-		through your machine, in order to figure out how they are related
-		into connections.
+			config FREETZ_MODULE_nf_conntrack_ipv6
+				bool
+				#bool "nf_conntrack_ipv6.ko"
+				depends on FREETZ_KERNEL_VERSION_2_6_28_MIN
+				default n
+				help
+					Connection tracking keeps a record of what packets have passed
+					through your machine, in order to figure out how they are related
+					into connections.
 
-		This is IPv6 support on Layer 3 independent connection tracking.
-		Layer 3 independent connection tracking is experimental scheme which
-		generalize ip_conntrack to support other layer 3 protocols.
+					This is IPv6 support on Layer 3 independent connection tracking.
+					Layer 3 independent connection tracking is experimental scheme which
+					generalize ip_conntrack to support other layer 3 protocols.
 
-endmenu # "Select kernel modules (IPv6)"
+		endmenu # "Select kernel modules (IPv6)"
 
 endif # FREETZ_PACKAGE_IPTABLES_KERNEL_MODULES
 
+	config FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
+		bool "Iptables shared libraries"
+		depends on !FREETZ_PACKAGE_IPTABLES_STATIC
+		default y
+		help
+			Shared Libraries for iptables
 
-config FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
-	bool "Iptables shared libraries"
-	depends on !FREETZ_PACKAGE_IPTABLES_STATIC
-	default y
-	help
-		Shared Libraries for iptables
-
-		Please note that some kernel modules have corresponding shared libraries
-		and vice versa, so please make sure to select both of them, if they are
-		needed for your purpose.
+			Please note that some kernel modules have corresponding shared libraries
+			and vice versa, so please make sure to select both of them, if they are
+			needed for your purpose.
 
 if FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
 
-menu "Select shared libraries (IPv4)"
-
-config FREETZ_LIB_libipt_addrtype
-	bool "libipt_addrtype.so"
-	default n
-	help
-		This module matches packets based on their address type.
-		Address types are used within the kernel networking stack and categorize
-		addresses into various groups. The exact definition of that group
-		depends on the specific layer three protocol.
-		Examples: UNICAST, BROADCAST, LOCAL, MULTICAST, ANYCAST, ...
-
-config FREETZ_LIB_libipt_ah
-	bool "libipt_ah.so"
-	default n
-	help
-		This module matches the SPIs in Authentication header of IPsec packets.
-
-config FREETZ_LIB_libipt_CLUSTERIP
-	bool "lipipt_CLUSTERIP.so"
-	default n
-	help
-		This module allows you to configure a simple cluster of nodes that
-		share a certain IP and MAC address without an explicit load balancer
-		in front of them. Connections are statically distributed between the
-		nodes in this cluster.
-
-config FREETZ_LIB_libipt_DNAT
-	bool "libipt_DNAT.so"
-	default n
-	help
-		This target is only valid in the nat table, in the PREROUTING
-		and OUTPUT chains, and user-defined chains which are only called from
-		those chains. It specifies that the destination address of the packet
-		should be modified (and all future packets in this connection will
-		also be mangled), and rules should cease being examined.
-
-config FREETZ_LIB_libipt_ecn
-	bool "libipt_ecn.so"
-	default n
-	help
-		This allows you to match the ECN bits of the IPv4 and TCP header.
-		ECN is the Explicit Congestion Notification mechanism as specified in
-		RFC3168.
-
-config FREETZ_LIB_libipt_ECN
-	bool "libipt_ECN.so"
-	default n
-	help
-		This target allows to selectively work around known ECN blackholes.
-		It can only be used in the mangle table.
-
-config FREETZ_LIB_libipt_icmp
-	bool "libipt_icmp.so"
-	default n
-	help
-		This extension can be used if `--protocol icmp' is specified.
-
-config FREETZ_LIB_libipt_ipp2p
-	bool "libipt_ipp2p.so"
-	depends on FREETZ_MODULE_ipt_ipp2p
-	default n
-	help
-		This extension can be used to match p2p protocols such as
-		eDonkey, KaZaA, Gnutella, BitTorrent.
-
-config FREETZ_LIB_libipt_LOG
-	bool "libipt_LOG.so"
-	default n
-	help
-		Turn on kernel logging of matching packets. When this option is set
-		for a rule, the Linux kernel will print some information on all
-		matching packets (like most IP header fields) via the kernel log
-		(where it can be read with dmesg or syslogd (8)).
-
-config FREETZ_LIB_libipt_MASQUERADE
-	bool "libipt_MASQUERADE.so"
-	default n
-	help
-		This target is only valid in the nat table, in the POSTROUTING
-		chain. It should only be used with dynamically assigned IP (dialup)
-		connections: if you have a static IP address, you should use the SNAT
-		target.
-
-config FREETZ_LIB_libipt_MIRROR
-	bool "libipt_MIRROR.so"
-	default n
-	help
-		This is an experimental demonstration target which inverts the source
-		and destination fields in the IP header and retransmits the packet.
-
-config FREETZ_LIB_libipt_NETMAP
-	bool "libipt_NETMAP.so"
-	default n
-	help
-		This target allows you to statically map a whole network of addresses onto
-		another network of addresses.
-
-config FREETZ_LIB_libipt_realm
-	bool "libipt_realm.so"
-	select FREETZ_MODULE_xt_realm if FREETZ_KERNEL_VERSION_2_6_19
-	default n
-	help
-		This matches the routing realm. Routing realms are used in complex
-		routing setups involving dynamic routing protocols like BGP.
-
-config FREETZ_LIB_libipt_REDIRECT
-	bool "libipt_REDIRECT.so"
-	default n
-	help
-		This target redirects the packet to the machine itself by changing the
-		destination IP to the primary address of the incoming interface
-		(locally-generated packets are mapped to the 127.0.0.1 address).
-
-config FREETZ_LIB_libipt_REJECT
-	bool "libipt_REJECT.so"
-	default n
-	help
-		This is used to send back an error packet in response to the matched
-		packet: otherwise it is equivalent to DROP
-		so it is a terminating TARGET, ending rule traversal.
-
-config FREETZ_LIB_libipt_SAME
-	bool "libipt_SAME.so"
-	default n
-	help
-		Similar to SNAT/DNAT depending on chain: it takes a range of addresses
-		(`--to 1.2.3.4-1.2.3.7') and gives a client the same
-		source-/destination-address for each connection.
-
-config FREETZ_LIB_libipt_SNAT
-	bool "libipt_SNAT.so"
-	default n
-	help
-		This target specifies that the source address of the packet should be
-		modified (and all future packets in this connection will also be
-		mangled), and rules should cease being examined.
-
-config FREETZ_LIB_libipt_ttl
-	bool "libipt_ttl.so"
-	default n
-	help
-		This module matches the time to live field in the IP header.
-
-config FREETZ_LIB_libipt_TTL
-	bool "libipt_TTL.so"
-	default n
-	help
-		This is used to modify the IPv4 TTL header field. The TTL field
-		determines how many hops (routers) a packet can traverse until it's
-		time to live is exceeded.
-
-config FREETZ_LIB_libipt_ULOG
-	bool "libipt_ULOG.so"
-	default n
-	help
-		This target provides userspace logging of matching packets. When this
-		target is set for a rule, the Linux kernel will multicast this packet
-		through a netlink socket. One or more userspace processes may then
-		subscribe to various multicast groups and receive the packets.
-
-config FREETZ_LIB_libipt_unclean
-	bool "libipt_unclean.so"
-	default n
-	help
-		This module takes no options, but attempts to match packets which seem
-		malformed or unusual. This is regarded as experimental.
-
-endmenu # "Select shared libraries (IPv4)"
-
-
-menu "Select shared libraries (both IPv4 and IPv6)"
-
-config FREETZ_LIB_libxt_CLASSIFY
-	bool "libxt_CLASSIFY.so"
-	default n
-	help
-		This module allows you to set the skb->priority value (and thus
-		classify the packet into a specific CBQ class).
-
-config FREETZ_LIB_libxt_comment
-	bool "libxt_comment.so"
-	select FREETZ_MODULE_xt_comment if FREETZ_KERNEL_VERSION_2_6_19
-	default n
-	help
-		Allows you to add comments (up to 256 characters) to any rule.
-
-config FREETZ_LIB_libxt_connbytes
-	bool "libxt_connbytes.so"
-	default n
-	help
-		Match by how many bytes or packets a connection (or one of the two
-		flows constituting the connection) has transferred so far, or by
-		average bytes per packet.
-
-#config FREETZ_LIB_libxt_connlimit
-#	bool "libxt_connlimit.so"
-#	default n
-#	help
-#		Allows you to restrict the number of parallel connections to a server
-#		per client IP address (or client address block).
-
-config FREETZ_LIB_libxt_connmark
-	bool "libxt_connmark.so"
-	default n
-	help
-		This module matches the netfilter mark field associated with a
-		connection (which can be set using the CONNMARK target below).
-
-config FREETZ_LIB_libxt_CONNMARK
-	bool "libxt_CONNMARK.so"
-	default n
-	help
-		This module sets the netfilter mark value associated with a connection.
-
-config FREETZ_LIB_libxt_CONNSECMARK
-	bool "libxt_CONNSECMARK.so"
-	default n
-	help
-		This module copies security markings from packets to connections
-		(if unlabeled), and from connections back to packets (also only
-		if unlabeled). Typically used in conjunction with SECMARK, it is
-		only valid in the mangle table.
-
-config FREETZ_LIB_libxt_conntrack
-	bool "libxt_conntrack.so"
-	select FREETZ_MODULE_xt_conntrack if FREETZ_KERNEL_VERSION_2_6_19
-	default n
-	help
-		This module, when combined with connection tracking, allows access to
-		the	connection tracking state for this packet/connection.
-
-config FREETZ_LIB_libxt_dscp
-	bool "libxt_dscp.so"
-	default n
-	help
-		This module matches the 6 bit DSCP field within the TOS field in the
-		IP header. DSCP has superseded TOS within the IETF.
-
-config FREETZ_LIB_libxt_DSCP
-	bool "libxt_DSCP.so"
-	default n
-	help
-		This target allows to alter the value of the DSCP bits within the TOS
-		header of the IPv4 packet. As this manipulates a packet, it can only
-		be used in the mangle table.
-
-config FREETZ_LIB_libxt_esp
-	bool "libxt_esp.so"
-	default n
-	help
-		This module matches the SPIs in ESP header of IPsec packets.
-
-config FREETZ_LIB_libxt_hashlimit
-	bool "libxt_hashlimit.so"
-	default n
-	help
-		hashlimit uses hash buckets to express a rate limiting match (like the
-		limit match) for a group of connections using a single iptables
-		rule.
-
-config FREETZ_LIB_libxt_helper
-	bool "libxt_helper.so"
-	select FREETZ_MODULE_xt_helper if FREETZ_KERNEL_VERSION_2_6_19
-	default n
-	help
-		This module matches packets related to a specific conntrack-helper.
-
-config FREETZ_LIB_libxt_iprange
-	bool "libxt_iprange.so"
-	default n
-	help
-		This matches on a given arbitrary range of IP addresses.
-
-config FREETZ_LIB_libxt_length
-	bool "libxt_length.so"
-	select FREETZ_MODULE_xt_length if FREETZ_KERNEL_VERSION_2_6_19
-	default n
-	help
-		This module matches the length of the layer-3 payload (e.g. layer-4
-		packet) of a packet against a specific value or range of values.
-
-config FREETZ_LIB_libxt_limit
-	bool "libxt_limit.so"
-	select FREETZ_MODULE_xt_limit if FREETZ_KERNEL_VERSION_2_6_19
-	default n
-	help
-		This module matches at a limited rate using a token bucket filter.
-		A rule using this extension will match until this limit is reached
-		(unless the `!' flag is used). It can be used in combination with the
-		LOG target to give limited logging, for example.
-
-config FREETZ_LIB_libxt_mac
-	bool "libxt_mac.so"
-	select FREETZ_MODULE_xt_mac if FREETZ_KERNEL_VERSION_2_6_19
-	default n
-	help
-		Match source MAC address.
-
-config FREETZ_LIB_libxt_mark
-	bool "libxt_mark.so"
-	select FREETZ_MODULE_xt_mark if FREETZ_KERNEL_VERSION_2_6_19
-	default n
-	help
-		This module matches the netfilter mark field associated with a packet
-		(which can be set using the MARK target below).
-
-config FREETZ_LIB_libxt_MARK
-	bool "libxt_MARK.so"
-	select FREETZ_MODULE_xt_MARK if FREETZ_KERNEL_VERSION_2_6_19
-	default n
-	help
-		This target is used to set the Netfilter mark value associated with
-		the packet. The target can only be used in the mangle table. It can,
-		for example, be used in conjunction with routing based on fwmark
-		(needs iproute2).
-
-config FREETZ_LIB_libxt_multiport
-	bool "libxt_multiport.so"
-	select FREETZ_MODULE_xt_multiport if FREETZ_KERNEL_VERSION_2_6_19
-	default n
-	help
-		This module matches a set of source or destination ports. Up to 15
-		ports can be specified. A port range (port:port) counts as two
-		ports.
-
-config FREETZ_LIB_libxt_NFLOG
-	bool "libxt_NFLOG.so"
-	default n
-	help
-		This target provides logging of matching packets. When this target is
-		set for a rule, the Linux kernel will pass the packet to the loaded
-		logging backend to log the packet.
-
-config FREETZ_LIB_libxt_NFQUEUE
-	bool "libxt_NFQUEUE.so"
-	default n
-	help
-		This target is an extension of the QUEUE target. As opposed to QUEUE,
-		it allows you to put a packet into any specific queue, identified by
-		its 16-bit queue number.
-
-config FREETZ_LIB_libxt_NOTRACK
-	bool "libxt_NOTRACK.so"
-	default n
-	help
-		This target disables connection tracking for all packets matching
-		that rule.
-
-config FREETZ_LIB_libxt_owner
-	bool "libxt_owner.so"
-	default n
-	help
-		This module attempts to match various characteristics of the packet
-		creator, for locally generated packets.
-
-config FREETZ_LIB_libxt_physdev
-	bool "libxt_physdev.so"
-	select FREETZ_MODULE_xt_physdev if FREETZ_KERNEL_VERSION_2_6_19
-	default n
-	help
-		This module matches on the bridge port input and output devices
-		enslaved to a bridge device.
-
-config FREETZ_LIB_libxt_pkttype
-	bool "libxt_pkttype.so"
-	select FREETZ_MODULE_xt_pkttype if FREETZ_KERNEL_VERSION_2_6_19
-	default n
-	help
-		This module matches the link-layer packet type.
-
-config FREETZ_LIB_libxt_quota
-	bool "libxt_quota.so"
-	default n
-	help
-		Implements network quotas by decrementing a byte counter with each
-		packet.
-
-config FREETZ_LIB_libxt_rateest
-	bool "libxt_rateest.so"
-	default n
-
-config FREETZ_LIB_libxt_RATEEST
-	bool "libxt_RATEEST.so"
-	default n
-	help
-		The RATEEST target collects statistics, performs rate estimation
-		calculation and saves the results for later evaluation using the
-		rateest match.
-
-config FREETZ_LIB_libxt_sctp
-	bool "libxt_sctp.so"
-	default n
-
-config FREETZ_LIB_libxt_SECMARK
-	bool "libxt_SECMARK.so"
-	default n
-	help
-		This is used to set the security mark value associated with the
-		packet for use by security subsystems such as SELinux.
-
-config FREETZ_LIB_libxt_standard
-	bool "libxt_standard.so"
-	default n
-
-config FREETZ_LIB_libxt_state
-	bool "libxt_state.so"
-	select FREETZ_MODULE_xt_state if FREETZ_KERNEL_VERSION_2_6_19
-	default n
-	help
-		This module, when combined with connection tracking, allows access to
-		the connection tracking state for this packet.
-
-config FREETZ_LIB_libxt_statistic
-	bool "libxt_statistic.so"
-	default n
-	help
-		This module matches packets based on some statistic condition.
-
-config FREETZ_LIB_libxt_string
-	bool "libxt_string.so"
-	select FREETZ_MODULE_xt_string if FREETZ_KERNEL_VERSION_2_6_19
-	default n
-	help
-		This modules matches a given string by using some pattern matching
-		strategy.
-
-config FREETZ_LIB_libxt_tcpmss
-	bool "libxt_tcpmss.so"
-	select FREETZ_MODULE_xt_tcpmss if FREETZ_KERNEL_VERSION_2_6_19
-	default n
-	help
-		This matches the TCP MSS (maximum segment size) field of the TCP header.
-
-config FREETZ_LIB_libxt_TCPMSS
-	bool "libxt_TCPMSS.so"
-	default n
-	help
-		This target allows to alter the MSS value of TCP SYN packets, to control
-		the maximum size for that connection (usually limiting it to your
-		outgoing interface's MTU minus 40 for IPv4 or 60 for IPv6,
-		respectively).
-
-config FREETZ_LIB_libxt_tcp
-	bool "libxt_tcp.so"
-	select FREETZ_MODULE_xt_tcpudp if FREETZ_KERNEL_VERSION_2_6_19
-	default n
-	help
-		These extensions can be used if `--protocol tcp' is specified.
-
-config FREETZ_LIB_libxt_time
-	bool "libxt_time.so"
-	default n
-	help
-		This matches if the packet arrival time/date is within a given range.
-
-config FREETZ_LIB_libxt_tos
-	bool "libxt_tos.so"
-	default n
-	help
-		This module matches the 8-bit Type of Service field in the IPv4 header
-		(i.e. including the "Precedence" bits) or the (also 8-bit) Priority
-		field in the IPv6 header.
-
-config FREETZ_LIB_libxt_TOS
-	bool "libxt_TOS.so"
-	default n
-	help
-		This module sets the Type of Service field in the IPv4 header
-		(including the 'precedence' bits) or the Priority field in the IPv6
-		header.
-
-config FREETZ_LIB_libxt_TRACE
-	bool "libxt_TRACE.so"
-	default n
-	help
-		This target marks packes so that the kernel will log every rule which
-		match the packets as those traverse the tables, chains, rules.
-		(The ipt_LOG or ip6t_LOG module is required for the logging.)
-
-config FREETZ_LIB_libxt_u32
-	bool "libxt_u32.so"
-	default n
-	help
-		U32 tests whether quantities of up to 4 bytes extracted from a packet
-		have specified values. The specification of what to extract is general
-		enough to find data at given offsets from tcp headers or payloads.
-
-config FREETZ_LIB_libxt_udp
-	bool "libxt_udp.so"
-	select FREETZ_MODULE_xt_tcpudp if FREETZ_KERNEL_VERSION_2_6_19
-	default n
-	help
-		These extensions can be used if `--protocol udp' is specified.
-
-endmenu # "Select shared libraries (both IPv4 and IPv6)"
-
-
-menu "Select shared libraries (IPv6)"
-	depends on FREETZ_TARGET_IPV6_SUPPORT
-
-config FREETZ_LIB_libip6t_ah
-	bool "libip6t_ah.so"
-	default n
-	help
-		This module matches the parameters in Authentication header of IPsec
-		packets.
-
-config FREETZ_LIB_libip6t_dst
-	bool "libip6t_dst.so"
-	default n
-	help
-		This module matches the parameters in Destination Options header.
-
-config FREETZ_LIB_libip6t_eui64
-	bool "libip6t_eui64.so"
-	default n
-	help
-		This module matches the EUI-64 part of a stateless autoconfigured IPv6
-		address.
-
-config FREETZ_LIB_libip6t_frag
-	bool "libip6t_frag.so"
-	default n
-	help
-		This module matches the parameters in Fragment header.
-
-config FREETZ_LIB_libip6t_hbh
-	bool "libip6t_hbh.so"
-	default n
-	help
-		This module matches the parameters in Hop-by-Hop Options header.
-
-config FREETZ_LIB_libip6t_hl
-	bool "libip6t_hl.so"
-	default n
-	help
-		This module matches the Hop Limit field in the IPv6 header.
-
-config FREETZ_LIB_libip6t_HL
-	bool "libip6t_HL.so"
-	default n
-	help
-		This is used to modify the Hop Limit field in IPv6 header.
-		The Hop Limit field is similar to what is known as TTL value in IPv4.
-
-config FREETZ_LIB_libip6t_icmp6
-	bool "libip6t_icmp6.so"
-	default n
-	help
-		This extension can be used if `--protocol ipv6-icmp' or
-		`--protocol icmpv6' is specified.
-
-config FREETZ_LIB_libip6t_ipv6header
-	bool "libip6t_ipv6header.so"
-	default n
-	help
-		This module matches IPv6 extension headers and/or upper layer header.
-
-config FREETZ_LIB_libip6t_LOG
-	bool "libip6t_LOG.so"
-	default n
-	help
-		Turn on kernel logging of matching packets. When this option is set
-		for a rule, the Linux kernel will print some information on all
-		matching packets (like most IPv6 IPv6-header fields) via the kernel log
-		(where it can be read with dmesg or syslogd (8)).
-
-config FREETZ_LIB_libip6t_mh
-	bool "libip6t_mh.so"
-	default n
-	help
-		This extension is loaded if `--protocol ipv6-mh' or `--protocol mh' is
-		specified.
-
-config FREETZ_LIB_libip6t_REJECT
-	bool "libip6t_REJECT.so"
-	default n
-	help
-		This is used to send back an error packet in response to the matched
-		packet: otherwise it is equivalent to DROP so it is a terminating
-		TARGET, ending rule traversal.
-
-config FREETZ_LIB_libip6t_rt
-	bool "libip6t_rt.so"
-	default n
-	help
-		Match on IPv6 routing header.
-
-endmenu # "Select shared libraries (IPv6)"
+		menu "Select shared libraries (IPv4)"
+
+			config FREETZ_LIB_libipt_addrtype
+				bool "libipt_addrtype.so"
+				default n
+				help
+					This module matches packets based on their address type.
+					Address types are used within the kernel networking stack and categorize
+					addresses into various groups. The exact definition of that group
+					depends on the specific layer three protocol.
+					Examples: UNICAST, BROADCAST, LOCAL, MULTICAST, ANYCAST, ...
+
+			config FREETZ_LIB_libipt_ah
+				bool "libipt_ah.so"
+				default n
+				help
+					This module matches the SPIs in Authentication header of IPsec packets.
+
+			config FREETZ_LIB_libipt_CLUSTERIP
+				bool "lipipt_CLUSTERIP.so"
+				default n
+				help
+					This module allows you to configure a simple cluster of nodes that
+					share a certain IP and MAC address without an explicit load balancer
+					in front of them. Connections are statically distributed between the
+					nodes in this cluster.
+
+			config FREETZ_LIB_libipt_DNAT
+				bool "libipt_DNAT.so"
+				default n
+				help
+					This target is only valid in the nat table, in the PREROUTING
+					and OUTPUT chains, and user-defined chains which are only called from
+					those chains. It specifies that the destination address of the packet
+					should be modified (and all future packets in this connection will
+					also be mangled), and rules should cease being examined.
+
+			config FREETZ_LIB_libipt_ecn
+				bool "libipt_ecn.so"
+				default n
+				help
+					This allows you to match the ECN bits of the IPv4 and TCP header.
+					ECN is the Explicit Congestion Notification mechanism as specified in
+					RFC3168.
+
+			config FREETZ_LIB_libipt_ECN
+				bool "libipt_ECN.so"
+				default n
+				help
+					This target allows to selectively work around known ECN blackholes.
+					It can only be used in the mangle table.
+
+			config FREETZ_LIB_libipt_icmp
+				bool "libipt_icmp.so"
+				default n
+				help
+					This extension can be used if `--protocol icmp' is specified.
+
+			config FREETZ_LIB_libipt_ipp2p
+				bool "libipt_ipp2p.so"
+				depends on FREETZ_MODULE_ipt_ipp2p
+				default n
+				help
+					This extension can be used to match p2p protocols such as
+					eDonkey, KaZaA, Gnutella, BitTorrent.
+
+			config FREETZ_LIB_libipt_LOG
+				bool "libipt_LOG.so"
+				default n
+				help
+					Turn on kernel logging of matching packets. When this option is set
+					for a rule, the Linux kernel will print some information on all
+					matching packets (like most IP header fields) via the kernel log
+					(where it can be read with dmesg or syslogd (8)).
+
+			config FREETZ_LIB_libipt_MASQUERADE
+				bool "libipt_MASQUERADE.so"
+				default n
+				help
+					This target is only valid in the nat table, in the POSTROUTING
+					chain. It should only be used with dynamically assigned IP (dialup)
+					connections: if you have a static IP address, you should use the SNAT
+					target.
+
+			config FREETZ_LIB_libipt_MIRROR
+				bool "libipt_MIRROR.so"
+				default n
+				help
+					This is an experimental demonstration target which inverts the source
+					and destination fields in the IP header and retransmits the packet.
+
+			config FREETZ_LIB_libipt_NETMAP
+				bool "libipt_NETMAP.so"
+				default n
+				help
+					This target allows you to statically map a whole network of addresses onto
+					another network of addresses.
+
+			config FREETZ_LIB_libipt_realm
+				bool "libipt_realm.so"
+				select FREETZ_MODULE_xt_realm if FREETZ_KERNEL_VERSION_2_6_19
+				default n
+				help
+					This matches the routing realm. Routing realms are used in complex
+					routing setups involving dynamic routing protocols like BGP.
+
+			config FREETZ_LIB_libipt_REDIRECT
+				bool "libipt_REDIRECT.so"
+				default n
+				help
+					This target redirects the packet to the machine itself by changing the
+					destination IP to the primary address of the incoming interface
+					(locally-generated packets are mapped to the 127.0.0.1 address).
+
+			config FREETZ_LIB_libipt_REJECT
+				bool "libipt_REJECT.so"
+				default n
+				help
+					This is used to send back an error packet in response to the matched
+					packet: otherwise it is equivalent to DROP
+					so it is a terminating TARGET, ending rule traversal.
+
+			config FREETZ_LIB_libipt_SAME
+				bool "libipt_SAME.so"
+				default n
+				help
+					Similar to SNAT/DNAT depending on chain: it takes a range of addresses
+					(`--to 1.2.3.4-1.2.3.7') and gives a client the same
+					source-/destination-address for each connection.
+
+			config FREETZ_LIB_libipt_SNAT
+				bool "libipt_SNAT.so"
+				default n
+				help
+					This target specifies that the source address of the packet should be
+					modified (and all future packets in this connection will also be
+					mangled), and rules should cease being examined.
+
+			config FREETZ_LIB_libipt_ttl
+				bool "libipt_ttl.so"
+				default n
+				help
+					This module matches the time to live field in the IP header.
+
+			config FREETZ_LIB_libipt_TTL
+				bool "libipt_TTL.so"
+				default n
+				help
+					This is used to modify the IPv4 TTL header field. The TTL field
+					determines how many hops (routers) a packet can traverse until it's
+					time to live is exceeded.
+
+			config FREETZ_LIB_libipt_ULOG
+				bool "libipt_ULOG.so"
+				default n
+				help
+					This target provides userspace logging of matching packets. When this
+					target is set for a rule, the Linux kernel will multicast this packet
+					through a netlink socket. One or more userspace processes may then
+					subscribe to various multicast groups and receive the packets.
+
+			config FREETZ_LIB_libipt_unclean
+				bool "libipt_unclean.so"
+				default n
+				help
+					This module takes no options, but attempts to match packets which seem
+					malformed or unusual. This is regarded as experimental.
+
+		endmenu # "Select shared libraries (IPv4)"
+
+		menu "Select shared libraries (both IPv4 and IPv6)"
+
+			config FREETZ_LIB_libxt_CLASSIFY
+				bool "libxt_CLASSIFY.so"
+				default n
+				help
+					This module allows you to set the skb->priority value (and thus
+					classify the packet into a specific CBQ class).
+
+			config FREETZ_LIB_libxt_comment
+				bool "libxt_comment.so"
+				select FREETZ_MODULE_xt_comment if FREETZ_KERNEL_VERSION_2_6_19
+				default n
+				help
+					Allows you to add comments (up to 256 characters) to any rule.
+
+			config FREETZ_LIB_libxt_connbytes
+				bool "libxt_connbytes.so"
+				default n
+				help
+					Match by how many bytes or packets a connection (or one of the two
+					flows constituting the connection) has transferred so far, or by
+					average bytes per packet.
+
+			#config FREETZ_LIB_libxt_connlimit
+			#	bool "libxt_connlimit.so"
+			#	default n
+			#	help
+			#		Allows you to restrict the number of parallel connections to a server
+			#		per client IP address (or client address block).
+
+			config FREETZ_LIB_libxt_connmark
+				bool "libxt_connmark.so"
+				default n
+				help
+					This module matches the netfilter mark field associated with a
+					connection (which can be set using the CONNMARK target below).
+
+			config FREETZ_LIB_libxt_CONNMARK
+				bool "libxt_CONNMARK.so"
+				default n
+				help
+					This module sets the netfilter mark value associated with a connection.
+
+			config FREETZ_LIB_libxt_CONNSECMARK
+				bool "libxt_CONNSECMARK.so"
+				default n
+				help
+					This module copies security markings from packets to connections
+					(if unlabeled), and from connections back to packets (also only
+					if unlabeled). Typically used in conjunction with SECMARK, it is
+					only valid in the mangle table.
+
+			config FREETZ_LIB_libxt_conntrack
+				bool "libxt_conntrack.so"
+				select FREETZ_MODULE_xt_conntrack if FREETZ_KERNEL_VERSION_2_6_19
+				default n
+				help
+					This module, when combined with connection tracking, allows access to
+					the	connection tracking state for this packet/connection.
+
+			config FREETZ_LIB_libxt_dscp
+				bool "libxt_dscp.so"
+				default n
+				help
+					This module matches the 6 bit DSCP field within the TOS field in the
+					IP header. DSCP has superseded TOS within the IETF.
+
+			config FREETZ_LIB_libxt_DSCP
+				bool "libxt_DSCP.so"
+				default n
+				help
+					This target allows to alter the value of the DSCP bits within the TOS
+					header of the IPv4 packet. As this manipulates a packet, it can only
+					be used in the mangle table.
+
+			config FREETZ_LIB_libxt_esp
+				bool "libxt_esp.so"
+				default n
+				help
+					This module matches the SPIs in ESP header of IPsec packets.
+
+			config FREETZ_LIB_libxt_hashlimit
+				bool "libxt_hashlimit.so"
+				default n
+				help
+					hashlimit uses hash buckets to express a rate limiting match (like the
+					limit match) for a group of connections using a single iptables
+					rule.
+
+			config FREETZ_LIB_libxt_helper
+				bool "libxt_helper.so"
+				select FREETZ_MODULE_xt_helper if FREETZ_KERNEL_VERSION_2_6_19
+				default n
+				help
+					This module matches packets related to a specific conntrack-helper.
+
+			config FREETZ_LIB_libxt_iprange
+				bool "libxt_iprange.so"
+				default n
+				help
+					This matches on a given arbitrary range of IP addresses.
+
+			config FREETZ_LIB_libxt_length
+				bool "libxt_length.so"
+				select FREETZ_MODULE_xt_length if FREETZ_KERNEL_VERSION_2_6_19
+				default n
+				help
+					This module matches the length of the layer-3 payload (e.g. layer-4
+					packet) of a packet against a specific value or range of values.
+
+			config FREETZ_LIB_libxt_limit
+				bool "libxt_limit.so"
+				select FREETZ_MODULE_xt_limit if FREETZ_KERNEL_VERSION_2_6_19
+				default n
+				help
+					This module matches at a limited rate using a token bucket filter.
+					A rule using this extension will match until this limit is reached
+					(unless the `!' flag is used). It can be used in combination with the
+					LOG target to give limited logging, for example.
+
+			config FREETZ_LIB_libxt_mac
+				bool "libxt_mac.so"
+				select FREETZ_MODULE_xt_mac if FREETZ_KERNEL_VERSION_2_6_19
+				default n
+				help
+					Match source MAC address.
+
+			config FREETZ_LIB_libxt_mark
+				bool "libxt_mark.so"
+				select FREETZ_MODULE_xt_mark if FREETZ_KERNEL_VERSION_2_6_19
+				default n
+				help
+					This module matches the netfilter mark field associated with a packet
+					(which can be set using the MARK target below).
+
+			config FREETZ_LIB_libxt_MARK
+				bool "libxt_MARK.so"
+				select FREETZ_MODULE_xt_MARK if FREETZ_KERNEL_VERSION_2_6_19
+				default n
+				help
+					This target is used to set the Netfilter mark value associated with
+					the packet. The target can only be used in the mangle table. It can,
+					for example, be used in conjunction with routing based on fwmark
+					(needs iproute2).
+
+			config FREETZ_LIB_libxt_multiport
+				bool "libxt_multiport.so"
+				select FREETZ_MODULE_xt_multiport if FREETZ_KERNEL_VERSION_2_6_19
+				default n
+				help
+					This module matches a set of source or destination ports. Up to 15
+					ports can be specified. A port range (port:port) counts as two
+					ports.
+
+			config FREETZ_LIB_libxt_NFLOG
+				bool "libxt_NFLOG.so"
+				default n
+				help
+					This target provides logging of matching packets. When this target is
+					set for a rule, the Linux kernel will pass the packet to the loaded
+					logging backend to log the packet.
+
+			config FREETZ_LIB_libxt_NFQUEUE
+				bool "libxt_NFQUEUE.so"
+				default n
+				help
+					This target is an extension of the QUEUE target. As opposed to QUEUE,
+					it allows you to put a packet into any specific queue, identified by
+					its 16-bit queue number.
+
+			config FREETZ_LIB_libxt_NOTRACK
+				bool "libxt_NOTRACK.so"
+				default n
+				help
+					This target disables connection tracking for all packets matching
+					that rule.
+
+			config FREETZ_LIB_libxt_owner
+				bool "libxt_owner.so"
+				default n
+				help
+					This module attempts to match various characteristics of the packet
+					creator, for locally generated packets.
+
+			config FREETZ_LIB_libxt_physdev
+				bool "libxt_physdev.so"
+				select FREETZ_MODULE_xt_physdev if FREETZ_KERNEL_VERSION_2_6_19
+				default n
+				help
+					This module matches on the bridge port input and output devices
+					enslaved to a bridge device.
+
+			config FREETZ_LIB_libxt_pkttype
+				bool "libxt_pkttype.so"
+				select FREETZ_MODULE_xt_pkttype if FREETZ_KERNEL_VERSION_2_6_19
+				default n
+				help
+					This module matches the link-layer packet type.
+
+			config FREETZ_LIB_libxt_quota
+				bool "libxt_quota.so"
+				default n
+				help
+					Implements network quotas by decrementing a byte counter with each
+					packet.
+
+			config FREETZ_LIB_libxt_rateest
+				bool "libxt_rateest.so"
+				default n
+
+			config FREETZ_LIB_libxt_RATEEST
+				bool "libxt_RATEEST.so"
+				default n
+				help
+					The RATEEST target collects statistics, performs rate estimation
+					calculation and saves the results for later evaluation using the
+					rateest match.
+
+			config FREETZ_LIB_libxt_sctp
+				bool "libxt_sctp.so"
+				default n
+
+			config FREETZ_LIB_libxt_SECMARK
+				bool "libxt_SECMARK.so"
+				default n
+				help
+					This is used to set the security mark value associated with the
+					packet for use by security subsystems such as SELinux.
+
+			config FREETZ_LIB_libxt_standard
+				bool "libxt_standard.so"
+				default n
+
+			config FREETZ_LIB_libxt_state
+				bool "libxt_state.so"
+				select FREETZ_MODULE_xt_state if FREETZ_KERNEL_VERSION_2_6_19
+				default n
+				help
+					This module, when combined with connection tracking, allows access to
+					the connection tracking state for this packet.
+
+			config FREETZ_LIB_libxt_statistic
+				bool "libxt_statistic.so"
+				default n
+				help
+					This module matches packets based on some statistic condition.
+
+			config FREETZ_LIB_libxt_string
+				bool "libxt_string.so"
+				select FREETZ_MODULE_xt_string if FREETZ_KERNEL_VERSION_2_6_19
+				default n
+				help
+					This modules matches a given string by using some pattern matching
+					strategy.
+
+			config FREETZ_LIB_libxt_tcpmss
+				bool "libxt_tcpmss.so"
+				select FREETZ_MODULE_xt_tcpmss if FREETZ_KERNEL_VERSION_2_6_19
+				default n
+				help
+					This matches the TCP MSS (maximum segment size) field of the TCP header.
+
+			config FREETZ_LIB_libxt_TCPMSS
+				bool "libxt_TCPMSS.so"
+				default n
+				help
+					This target allows to alter the MSS value of TCP SYN packets, to control
+					the maximum size for that connection (usually limiting it to your
+					outgoing interface's MTU minus 40 for IPv4 or 60 for IPv6,
+					respectively).
+
+			config FREETZ_LIB_libxt_tcp
+				bool "libxt_tcp.so"
+				select FREETZ_MODULE_xt_tcpudp if FREETZ_KERNEL_VERSION_2_6_19
+				default n
+				help
+					These extensions can be used if `--protocol tcp' is specified.
+
+			config FREETZ_LIB_libxt_time
+				bool "libxt_time.so"
+				default n
+				help
+					This matches if the packet arrival time/date is within a given range.
+
+			config FREETZ_LIB_libxt_tos
+				bool "libxt_tos.so"
+				default n
+				help
+					This module matches the 8-bit Type of Service field in the IPv4 header
+					(i.e. including the "Precedence" bits) or the (also 8-bit) Priority
+					field in the IPv6 header.
+
+			config FREETZ_LIB_libxt_TOS
+				bool "libxt_TOS.so"
+				default n
+				help
+					This module sets the Type of Service field in the IPv4 header
+					(including the 'precedence' bits) or the Priority field in the IPv6
+					header.
+
+			config FREETZ_LIB_libxt_TRACE
+				bool "libxt_TRACE.so"
+				default n
+				help
+					This target marks packes so that the kernel will log every rule which
+					match the packets as those traverse the tables, chains, rules.
+					(The ipt_LOG or ip6t_LOG module is required for the logging.)
+
+			config FREETZ_LIB_libxt_u32
+				bool "libxt_u32.so"
+				default n
+				help
+					U32 tests whether quantities of up to 4 bytes extracted from a packet
+					have specified values. The specification of what to extract is general
+					enough to find data at given offsets from tcp headers or payloads.
+
+			config FREETZ_LIB_libxt_udp
+				bool "libxt_udp.so"
+				select FREETZ_MODULE_xt_tcpudp if FREETZ_KERNEL_VERSION_2_6_19
+				default n
+				help
+					These extensions can be used if `--protocol udp' is specified.
+
+		endmenu # "Select shared libraries (both IPv4 and IPv6)"
+
+		menu "Select shared libraries (IPv6)"
+			depends on FREETZ_TARGET_IPV6_SUPPORT
+
+			config FREETZ_LIB_libip6t_ah
+				bool "libip6t_ah.so"
+				default n
+				help
+					This module matches the parameters in Authentication header of IPsec
+					packets.
+
+			config FREETZ_LIB_libip6t_dst
+				bool "libip6t_dst.so"
+				default n
+				help
+					This module matches the parameters in Destination Options header.
+
+			config FREETZ_LIB_libip6t_eui64
+				bool "libip6t_eui64.so"
+				default n
+				help
+					This module matches the EUI-64 part of a stateless autoconfigured IPv6
+					address.
+
+			config FREETZ_LIB_libip6t_frag
+				bool "libip6t_frag.so"
+				default n
+				help
+					This module matches the parameters in Fragment header.
+
+			config FREETZ_LIB_libip6t_hbh
+				bool "libip6t_hbh.so"
+				default n
+				help
+					This module matches the parameters in Hop-by-Hop Options header.
+
+			config FREETZ_LIB_libip6t_hl
+				bool "libip6t_hl.so"
+				default n
+				help
+					This module matches the Hop Limit field in the IPv6 header.
+
+			config FREETZ_LIB_libip6t_HL
+				bool "libip6t_HL.so"
+				default n
+				help
+					This is used to modify the Hop Limit field in IPv6 header.
+					The Hop Limit field is similar to what is known as TTL value in IPv4.
+
+			config FREETZ_LIB_libip6t_icmp6
+				bool "libip6t_icmp6.so"
+				default n
+				help
+					This extension can be used if `--protocol ipv6-icmp' or
+					`--protocol icmpv6' is specified.
+
+			config FREETZ_LIB_libip6t_ipv6header
+				bool "libip6t_ipv6header.so"
+				default n
+				help
+					This module matches IPv6 extension headers and/or upper layer header.
+
+			config FREETZ_LIB_libip6t_LOG
+				bool "libip6t_LOG.so"
+				default n
+				help
+					Turn on kernel logging of matching packets. When this option is set
+					for a rule, the Linux kernel will print some information on all
+					matching packets (like most IPv6 IPv6-header fields) via the kernel log
+					(where it can be read with dmesg or syslogd (8)).
+
+			config FREETZ_LIB_libip6t_mh
+				bool "libip6t_mh.so"
+				default n
+				help
+					This extension is loaded if `--protocol ipv6-mh' or `--protocol mh' is
+					specified.
+
+			config FREETZ_LIB_libip6t_REJECT
+				bool "libip6t_REJECT.so"
+				default n
+				help
+					This is used to send back an error packet in response to the matched
+					packet: otherwise it is equivalent to DROP so it is a terminating
+					TARGET, ending rule traversal.
+
+			config FREETZ_LIB_libip6t_rt
+				bool "libip6t_rt.so"
+				default n
+				help
+					Match on IPv6 routing header.
+
+		endmenu # "Select shared libraries (IPv6)"
 
 endif # FREETZ_PACKAGE_IPTABLES_SHARED_LIBS
-
 
 endif # FREETZ_PACKAGE_IPTABLES
 endif # FREETZ_KERNEL_VERSION_2 || FREETZ_SHOW_DEVELOPER
