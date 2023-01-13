@@ -9,10 +9,19 @@ config FREETZ_PACKAGE_HTOP
 
 if FREETZ_PACKAGE_HTOP
 
-	config FREETZ_PACKAGE_HTOP_VERSION_ABANDON
-		bool
-		default y
-		depends on !FREETZ_TARGET_GCC_4_8_MIN
+	choice
+		prompt "Version"
+			default FREETZ_PACKAGE_HTOP_VERSION_CURRENT
+
+		config FREETZ_PACKAGE_HTOP_VERSION_ABANDON
+			bool "1.0.3"
+			depends on !FREETZ_TARGET_GCC_4_8_MIN
+
+		config FREETZ_PACKAGE_HTOP_VERSION_CURRENT
+			bool "3.2.1"
+			depends on FREETZ_TARGET_GCC_4_8_MIN
+
+	endchoice
 
 endif # FREETZ_PACKAGE_HTOP
 
