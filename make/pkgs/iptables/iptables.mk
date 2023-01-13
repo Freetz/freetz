@@ -1,9 +1,9 @@
-$(call PKG_INIT_BIN, $(if $(FREETZ_KERNEL_VERSION_2),1.4.11.1,$(if $(FREETZ_KERNEL_VERSION_3),1.4.21,1.6.2)))
+$(call PKG_INIT_BIN, $(if $(FREETZ_PACKAGE_IPTABLES_VERSION_KERNEL2),1.4.11.1,$(if $(FREETZ_PACKAGE_IPTABLES_VERSION_KERNEL3),1.4.21,1.6.2)))
 $(PKG)_SOURCE:=$(pkg)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_HASH_KERNEL2:=170c294698ca573477b1b2a3815e1563bf9929d182efef6cf0331a6e955c9ade
 $(PKG)_HASH_KERNEL3:=52004c68021da9a599feed27f65defcfb22128f7da2c0531c0f75de0f479d3e0
 $(PKG)_HASH_KERNEL4:=55d02dfa46263343a401f297d44190f2a3e5113c8933946f094ed40237053733
-$(PKG)_HASH:=$($(PKG)_HASH_KERNEL$(if $(FREETZ_KERNEL_VERSION_2),2,$(if $(FREETZ_KERNEL_VERSION_3),3,4)))
+$(PKG)_HASH:=$($(PKG)_HASH_KERNEL$(if $(FREETZ_PACKAGE_IPTABLES_VERSION_KERNEL2),2,$(if $(FREETZ_PACKAGE_IPTABLES_VERSION_KERNEL3),3,4)))
 $(PKG)_SITE:=https://netfilter.org/projects/iptables/files
 ### WEBSITE:=https://netfilter.org/projects/iptables/index.html
 ### CHANGES:=https://netfilter.org/projects/iptables/downloads.html
@@ -22,7 +22,7 @@ $(PKG)_BINARY := $($(PKG)_DIR)/iptables/$(if $(FREETZ_PACKAGE_IPTABLES_STATIC),,
 $(PKG)_TARGET_BINARY := $($(PKG)_DEST_DIR)/usr/sbin/xtables-multi
 
 $(PKG)_LIBS_SUBDIRS := libiptc/.libs/
-ifeq ($(strip $(FREETZ_KERNEL_VERSION_2)),y)
+ifeq ($(strip $(FREETZ_PACKAGE_IPTABLES_VERSION_KERNEL2)),y)
 $(PKG)_LIBS_SUBDIRS += iptables/.libs/
 else
 $(PKG)_LIBS_SUBDIRS += libxtables/.libs/
@@ -32,10 +32,10 @@ $(PKG)_LIBS_SUBDIRS += libiptc/.libs/
 endif
 
 ifneq ($(strip $(FREETZ_PACKAGE_IPTABLES_STATIC)),y)
-ifeq ($(strip $(FREETZ_KERNEL_VERSION_2)),y)
+ifeq ($(strip $(FREETZ_PACKAGE_IPTABLES_VERSION_KERNEL2)),y)
 $(PKG)_LIBNAMES_ALL := libip4tc.so.0.0.0 libxtables.so.6.0.0 libip6tc.so.0.0.0
 else
-ifeq ($(strip $(FREETZ_KERNEL_VERSION_3)),y)
+ifeq ($(strip $(FREETZ_PACKAGE_IPTABLES_VERSION_KERNEL3)),y)
 $(PKG)_LIBNAMES_ALL := libip4tc.so.0.1.0 libxtables.so.10.0.0 libip6tc.so.0.1.0
 else
 $(PKG)_LIBNAMES_ALL := libip4tc.so.0.1.0 libxtables.so.12.0.0 libip6tc.so.0.1.0

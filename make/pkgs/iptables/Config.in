@@ -40,6 +40,23 @@ config FREETZ_PACKAGE_IPTABLES
 
 if FREETZ_PACKAGE_IPTABLES
 
+	choice
+		prompt "Version"
+
+		config FREETZ_PACKAGE_IPTABLES_VERSION_KERNEL2
+			bool "1.4.11.1"
+			depends on FREETZ_KERNEL_VERSION_2
+
+		config FREETZ_PACKAGE_IPTABLES_VERSION_KERNEL3
+			bool "1.4.21"
+			depends on FREETZ_KERNEL_VERSION_3
+
+		config FREETZ_PACKAGE_IPTABLES_VERSION_KERNEL4
+			bool "1.6.2"
+			depends on !FREETZ_KERNEL_VERSION_2
+			depends on !FREETZ_KERNEL_VERSION_3
+
+	endchoice
 
 config FREETZ_PACKAGE_IPTABLES_SAVE_RESTORE
 	bool "Iptables-save / -restore"
