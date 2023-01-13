@@ -67,7 +67,7 @@ $(KERNEL_DIR)/.unpacked: $(DL_KERNEL_SOURCE) $(if $(FREETZ_REPLACE_SOURCE_AVAILA
 	@echo "" $(SILENT)
 ifeq ($(strip $(FREETZ_REPLACE_SOURCE_AVAILABLE)),y)
 	@echo "#vanilla to avm patch: $(DL_DIR)/$(DL_KERNEL_AVMDIFF_SOURCE)" $(SILENT)
-	@$(call APPLY_PATCHES,$(DL_DIR),$(KERNEL_SOURCE_DIR),$(DL_KERNEL_AVMDIFF_SOURCE))
+	@$(call APPLY_PATCHES,$(DL_DIR),$(KERNEL_SOURCE_DIR),$(DL_KERNEL_AVMDIFF_SOURCE),/dev/null)
 	@echo "#vanilla to avm fixes" $(SILENT)
 	@find $(KERNEL_SOURCE_DIR) -type l -exec rm -f {} ';'
 	@$(TOOLS_DIR)/unxz $(DL_DIR)/$(DL_KERNEL_AVMDIFF_SOURCE) -c | grep -E '^    #FREETZ# (mkdir|chmod|slink|touch) .*' | while read x a b c; do \
