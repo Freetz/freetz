@@ -1,6 +1,6 @@
-$(call TOOLS_INIT, 0.17.2)
+$(call TOOLS_INIT, 0.14.5)
 $(PKG)_SOURCE:=patchelf-$($(PKG)_VERSION).tar.bz2
-$(PKG)_HASH:=bae2ea376072e422c196218dd9bdef0548ccc08da4de9f36b4672df84ea2d8e2
+$(PKG)_HASH:=b9a46f2989322eb89fa4f6237e20836c57b455aa43a32545ea093b431d982f5c
 $(PKG)_SITE:=https://github.com/NixOS/patchelf/releases/download/$($(PKG)_VERSION),https://releases.nixos.org/patchelf/patchelf-$($(PKG)_VERSION)
 ### WEBSITE:=https://opencollective.com/nixos
 ### MANPAGE:=https://sources.debian.org/patches/patchelf/
