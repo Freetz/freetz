@@ -1,6 +1,8 @@
 # PREREQUISITES: Installation der benötigten Pakete
 Eine einfache Möglichkeit die benötigten Pakete zu installieren besteht darin, diesen Code per Copy and Paste auf der Konsole auszuführen, zB in PuTTY per Rechtsclick!
 
+Mit `tools/prerequisites` können die Pakete auch installiert werden.
+
 ### Getestete Distributionen
  - [Fedora](#fedora)
  - [Debian](#debian)
@@ -89,9 +91,9 @@ sudo yum -y install ncurses-devel.i686 glibc-devel.i686 libgcc.i686
  - Fedora ~20 32-Bit:
 ```
 sudo yum -y install \
-  ImageMagick subversion gcc gcc-c++ binutils autoconf automake libtool make bzip2 ncurses-devel \
-  zlib-devel flex bison patch texinfo gettext pkgconfig ecj perl perl-String-CRC32 wget glib2-devel \
-  git libacl-devel libattr-devel libcap-devel
+  autoconf automake binutils bison bzip2 ecj flex gcc gcc-c++ gettext git glib2-devel \
+  ImageMagick libacl-devel libattr-devel libcap-devel libtool make ncurses-devel patch perl \
+  perl-String-CRC32 pkgconfig subversion texinfo wget zlib-devel
 ```
 
 ### Debian
@@ -186,12 +188,12 @@ sudo apt-get -y install \
  - Ubuntu 14 64-Bit:
 ```
 sudo apt-get -y install \
-  pv cpio rsync kmod imagemagick inkscape graphicsmagick subversion git bc unar wget sudo gcc \
-  g++ binutils autoconf automake autopoint libtool make bzip2 libncurses5-dev libreadline-dev \
-  zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config ecj realpath perl \
-  libstring-crc32-perl ruby ruby1.9 gawk libusb-dev unzip intltool libacl1-dev libcap-dev \
-  libc6-dev-i386 lib32ncurses5-dev gcc-multilib bsdmainutils lib32stdc++6 libglib2.0-dev ccache \
-  cmake lib32z1-dev libsqlite3-dev sqlite3 netcat curl openssl build-essential automake1.9
+  autoconf automake automake1.9 autopoint bc binutils bison bsdmainutils build-essential \
+  bzip2 ccache cmake cpio curl ecj flex g++ gawk gcc gcc-multilib gettext git graphicsmagick \
+  imagemagick inkscape intltool kmod lib32ncurses5-dev lib32stdc++6 lib32z1-dev libacl1-dev \
+  libc6-dev-i386 libcap-dev libglib2.0-dev libncurses5-dev libreadline-dev libsqlite3-dev \
+  libstring-crc32-perl libtool libusb-dev make netcat openssl patch perl pkg-config pv realpath rsync ruby ruby1.9 \
+  sqlite3 subversion sudo texinfo tofrodos unar unzip wget zlib1g-dev
 ```
 Zusätzlich muss manuell installiert werden:
 ```
@@ -223,28 +225,28 @@ sudo apt-get -y install libtool-bin
  - Ubuntu 13/14 32-Bit:
 ```
 sudo apt-get -y install \
-  graphicsmagick subversion gcc g++ binutils autoconf automake automake1.9 libtool make bzip2 \
-  libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config \
-  ecj fastjar realpath perl libstring-crc32-perl ruby ruby1.8 gawk python libusb-dev unzip intltool \
-  libacl1-dev libcap-dev
+  autoconf automake automake1.9 binutils bison bzip2 ecj fastjar flex g++ gawk gcc gettext \
+  graphicsmagick intltool libacl1-dev libcap-dev libncurses5-dev libreadline-dev libstring-crc32-perl \
+  libtool libusb-dev make patch perl pkg-config python realpath ruby ruby1.8 subversion texinfo \
+  tofrodos unzip zlib1g-dev
 ```
 
- - Ubuntu 9/10/11/12 32-Bit:
+ - Ubuntu 10/11/12 32-Bit:
 ```
 sudo apt-get -y install \
-  imagemagick subversion gcc g++ bzip2 binutils automake patch autoconf libtool pkg-config make \
-  libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config \
-  ecj fastjar realpath perl libstring-crc32-perl ruby ruby1.8 gawk python libusb-dev unzip intltool \
-  libglib2.0-dev xz-utils git-core libacl1-dev libattr1-dev libcap-dev
+  autoconf automake binutils bison bzip2 ecj fastjar flex g++ gawk gcc gettext git-core \
+  imagemagick intltool libacl1-dev libattr1-dev libcap-dev libglib2.0-dev libncurses5-dev \
+  libreadline-dev libstring-crc32-perl libtool libusb-dev make patch patch perl pkg-config pkg-config \
+  python realpath ruby ruby1.8 subversion texinfo tofrodos unzip xz-utils zlib1g-dev
 ```
 
  - Ubuntu 9.04 32-Bit (kein automake 1.8, "ecj" statt "ecj-bootstrap"):
 ```
 sudo apt-get -y install \
-  imagemagick subversion gcc g++ binutils autoconf automake automake1.9 libtool make bzip2 \
-  libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config \
-  jikes ecj fastjar realpath perl libstring-crc32-perl ruby ruby1.8 gawk python libusb-dev unzip \
-  intltool libglib2.0-dev xz-utils git-core libacl1-dev libattr1-dev libcap-dev
+  autoconf automake automake1.9 binutils bison bzip2 ecj fastjar flex g++ gawk gcc gettext \
+  git-core imagemagick intltool jikes libacl1-dev libattr1-dev libcap-dev libglib2.0-dev \
+  libncurses5-dev libreadline-dev libstring-crc32-perl libtool libusb-dev make patch perl pkg-config \
+  python realpath ruby ruby1.8 subversion texinfo tofrodos unzip xz-utils zlib1g-dev
 ```
 
 ### Kali
