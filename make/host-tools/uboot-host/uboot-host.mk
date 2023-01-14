@@ -1,6 +1,6 @@
-$(call TOOLS_INIT, v2022.04)
+$(call TOOLS_INIT, v2023.01)
 $(PKG)_SOURCE:=uboot-$($(PKG)_VERSION).tar.xz
-$(PKG)_HASH:=5eddb4326c506197870deb69cc233069981c2452323d1f5453546b64b538cb58
+$(PKG)_HASH:=5b5c697d1cd4a9099ba51061949ab1a39e11704f7a109c6bd69a1194c2abb7c8
 $(PKG)_SITE:=git@https://github.com/u-boot/u-boot.git
 ### CHANGES:=https://github.com/u-boot/u-boot/tags
 ### CVSREPO:=https://github.com/u-boot/u-boot
