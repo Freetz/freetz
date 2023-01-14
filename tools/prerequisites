@@ -100,15 +100,14 @@ detect_linux() {
 
 install_requisite() {
 	[ ! -e "$PACKAGES/${1##*/}" ] && echo "File not found: ${1##*/}" && exit 1
-	case "${1##*/}" in
-		Fedora*)	installer='sudo dnf --refresh' ;;
-		Debian*)	installer='sudo apt-get update && sudo apt' ;;
-		Ubuntu*)	installer='sudo apt-get update && sudo apt-get' ;;
-		*)		installer='echo' ;;
-	esac
 	vals="$(sed 's/[\t ]*#.*//g' "$PACKAGES/${1##*/}" | sort | tr '\n' ' ' | sed 's/^ *//;s/  */ /g;s/ *$//')"
 	echo "Installing these '${1##*/}' packages: $vals"
-	$installer install $vals
+	case "${1##*/}" in
+		Fedora*)                         sudo dnf --refresh  install $vals ;;
+		Debian*)  sudo apt-get update && sudo apt            install $vals ;;
+		Ubuntu*)  sudo apt-get update && sudo apt-get        install $vals ;;
+		*)        echo 'No known installer' ;;
+	esac
 }
 
 [ "$ARG" == "makefile_internal" ] && makefile_internal
