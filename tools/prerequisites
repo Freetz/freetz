@@ -2,6 +2,7 @@
 SCRIPT="$(readlink -f $0)"
 PARENT="$(dirname ${SCRIPT%/*})"
 PACKAGES="$PARENT/docs/PREREQUISITES/packages"
+[ "$1" == '-y' ] && shift && doy="-y" || doy=""
 ARG="$1"
 
 check_requisite() {
@@ -83,7 +84,8 @@ makefile_internal() {
 
 show_usage() {
 	echo "Checks or installs prerequisites"
-	echo "Usage: $0 <ARG>"
+	echo "Usage: $0 <-y> <ARG>"
+	echo "  -y: Install instantly, don't ask before"
 	echo "Available linux systems for <ARG>: "
 	for x in "$PACKAGES/"*; do echo "  - ${x##*/}"; done
 	echo "Without <ARG> it will be tried to detect the current Linux."
@@ -103,9 +105,9 @@ install_requisite() {
 	vals="$(sed 's/[\t ]*#.*//g' "$PACKAGES/${1##*/}" | sort | tr '\n' ' ' | sed 's/^ *//;s/  */ /g;s/ *$//')"
 	echo "Installing these '${1##*/}' packages: $vals"
 	case "${1##*/}" in
-		Fedora*)                         sudo dnf --refresh  install $vals ;;
-		Debian*)  sudo apt-get update && sudo apt            install $vals ;;
-		Ubuntu*)  sudo apt-get update && sudo apt-get        install $vals ;;
+		Fedora*)                         sudo dnf --refresh  install $doy $vals ;;
+		Debian*)  sudo apt-get update && sudo apt            install $doy $vals ;;
+		Ubuntu*)  sudo apt-get update && sudo apt-get        install $doy $vals ;;
 		*)        echo 'No known installer' ;;
 	esac
 }
