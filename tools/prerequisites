@@ -1,6 +1,8 @@
 #!/bin/bash
 SCRIPT="$(readlink -f $0)"
 PARENT="$(dirname ${SCRIPT%/*})"
+PACKAGES="$PARENT/docs/PREREQUISITES/packages"
+ARG="$1"
 
 check_requisite() {
 	case "$2" in
@@ -54,26 +56,63 @@ failed_requisite() {
 	esac
 }
 
-retval=0
-while read parser file depends; do
-	[ -z "$file" ] && continue
-	# check dependencies
-	MODE="or"
-	[ "${depends%% *}" == 'and' ] && \
-	  MODE="and" && \
-	  depends="${depends#and }"
-	depends="${depends#or }"
-	[ "${#depends}" == '0' ] && mandatory='y' || mandatory='n'
-	ands='y'
-	for x in $depends; do
-		grep -q "^$x=y$" "$PARENT/.config" 2>/dev/null && mandatory='y' || ands='n'
-	done
-	[ "$MODE" == "and" -a "$ands" != "y" ] && mandatory='n'
-	[ "$mandatory" != 'y' ] && continue
-	# check installed
-	check_requisite "$file" "$parser" && continue
-	failed_requisite "$file" "$parser"
-	retval=1
-done < <(sed 's/#.*//g;/^[ \t]*$/d' "$PARENT/.prerequisites" 2>/dev/null)
-exit $retval
+makefile_internal() {
+	retval=0
+	while read parser file depends; do
+		[ -z "$file" ] && continue
+		# check dependencies
+		MODE="or"
+		[ "${depends%% *}" == 'and' ] && \
+		  MODE="and" && \
+		  depends="${depends#and }"
+		depends="${depends#or }"
+		[ "${#depends}" == '0' ] && mandatory='y' || mandatory='n'
+		ands='y'
+		for x in $depends; do
+			grep -q "^$x=y$" "$PARENT/.config" 2>/dev/null && mandatory='y' || ands='n'
+		done
+		[ "$MODE" == "and" -a "$ands" != "y" ] && mandatory='n'
+		[ "$mandatory" != 'y' ] && continue
+		# check installed
+		check_requisite "$file" "$parser" && continue
+		failed_requisite "$file" "$parser"
+		retval=1
+	done < <(sed 's/#.*//g;/^[ \t]*$/d' "$PARENT/.prerequisites" 2>/dev/null)
+	exit $retval
+}
+
+show_usage() {
+	echo "Checks or installs prerequisites"
+	echo "Usage: $0 <ARG>"
+	echo "Available linux systems for <ARG>: "
+	for x in "$PACKAGES/"*; do echo "  - ${x##*/}"; done
+	echo "Without <ARG> it will be tried to detect the current Linux."
+	exit 1
+}
+
+detect_linux() {
+	NAME="$(sed -rn 's/^NAME=//p' /etc/os-release 2>/dev/null)"
+	NAME="$(echo $NAME | sed 's/"//g;s/ .*//;s/\..*//')"
+	VERSION="$(sed -rn 's/^VERSION=//p' /etc/os-release 2>/dev/null)"
+	VERSION="$(echo $VERSION | sed 's/"//g;s/ .*//;s/\..*//')"
+	echo "$NAME$VERSION"
+}
+
+install_requisite() {
+	[ ! -e "$PACKAGES/${1##*/}" ] && echo "File not found: ${1##*/}" && exit 1
+	case "${1##*/}" in
+		Fedora*)	installer='sudo dnf' ;;
+		Debian*)	installer='sudo apt' ;;
+		Ubuntu*)	installer='sudo apt-get' ;;
+		*)		installer='echo' ;;
+	esac
+	vals="$(sed 's/[\t ]*#.*//g' "$PACKAGES/${1##*/}" | sort | tr '\n' ' ' | sed 's/^ *//;s/  */ /g;s/ *$//')"
+	echo "Installing these '${1##*/}' packages by '${installer##* }': $vals"
+	$installer install $vals
+}
+
+[ "$ARG" == "makefile_internal" ] && makefile_internal
+[ -z "$ARG" ] && ARG="$(detect_linux)"
+[ -z "$ARG" -o "$ARG" == '-h' -o "$ARG" == '--help' ] && show_usage
+install_requisite "$ARG"
 

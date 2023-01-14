@@ -1,6 +1,8 @@
 # PREREQUISITES: Installation der benötigten Pakete
 Eine einfache Möglichkeit die benötigten Pakete zu installieren besteht darin, diesen Code per Copy and Paste auf der Konsole auszuführen, zB in PuTTY per Rechtsclick!
 
+Mit `tools/prerequisites` können die Pakete auch installiert werden.
+
 ### Getestete Distributionen
  - [Fedora](#fedora)
  - [Debian](#debian)
@@ -46,19 +48,19 @@ sudo dnf -y update && sudo systemctl daemon-reload
  - Fedora 36/37 64-Bit:
 ```
 sudo dnf -y groupinstall 'Development Tools' 'Development Libraries'
-sudo dnf -y install %%FEDORA36%%
+sudo dnf -y install %%Fedora36%%
 ```
 
  - Fedora 35 64-Bit:
 ```
 sudo dnf -y groupinstall 'Development Tools' 'Development Libraries'
-sudo dnf -y install %%FEDORA35%%
+sudo dnf -y install %%Fedora35%%
 ```
 
  - Fedora 33/34 64-Bit:
 ```
 sudo dnf -y groupinstall 'Development Tools' 'Development Libraries'
-sudo dnf -y install %%FEDORA33%%
+sudo dnf -y install %%Fedora33%%
 ```
 
  - Falls auf dem folgenden System ein 64-Bit Linux installiert ist wird zusätzlich benötigt:
@@ -68,10 +70,7 @@ sudo yum -y install ncurses-devel.i686 glibc-devel.i686 libgcc.i686
 
  - Fedora ~20 32-Bit:
 ```
-sudo yum -y install \
-  ImageMagick subversion gcc gcc-c++ binutils autoconf automake libtool make bzip2 ncurses-devel \
-  zlib-devel flex bison patch texinfo gettext pkgconfig ecj perl perl-String-CRC32 wget glib2-devel \
-  git libacl-devel libattr-devel libcap-devel
+sudo yum -y install %%Fedora20%%
 ```
 
 ### Debian
@@ -84,7 +83,7 @@ sudo apt -y dist-upgrade
 ```
  - Debian 11 (Bullseye) 64-Bit:
 ```
-sudo apt -y install %%DEBIAN11%%
+sudo apt -y install %%Debian11%%
 ```
 
 
@@ -113,12 +112,12 @@ sudo apt-get -y dist-upgrade
 
  - Ubuntu 22 64-Bit:
 ```
-sudo apt-get -y install %%UBUNTU22%%
+sudo apt-get -y install %%Ubuntu22%%
 ```
 
  - Ubuntu 20 64-Bit:
 ```
-sudo apt-get -y install %%UBUNTU20%%
+sudo apt-get -y install %%Ubuntu20%%
 # sqlite-32bit lässt sich mit apt nicht installieren, aber mit apt-get schon. Siehe auch:
 # https://developpaper.com/ubuntu-solves-the-problem-of-libsqlite3-0-dependency-recommended/
 sudo apt -y install libzstd-dev:i386 sqlite3:i386
@@ -126,23 +125,17 @@ sudo apt -y install libzstd-dev:i386 sqlite3:i386
 
  - Ubuntu 18 64-Bit:
 ```
-sudo apt-get -y install %%UBUNTU18%%
+sudo apt-get -y install %%Ubuntu18%%
 ```
 
  - Ubuntu 15/16 64-Bit:
 ```
-sudo apt-get -y install %%UBUNTU15%%
+sudo apt-get -y install %%Ubuntu15%%
 ```
 
  - Ubuntu 14 64-Bit:
 ```
-sudo apt-get -y install \
-  pv cpio rsync kmod imagemagick inkscape graphicsmagick subversion git bc unar wget sudo gcc \
-  g++ binutils autoconf automake autopoint libtool make bzip2 libncurses5-dev libreadline-dev \
-  zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config ecj realpath perl \
-  libstring-crc32-perl ruby ruby1.9 gawk libusb-dev unzip intltool libacl1-dev libcap-dev \
-  libc6-dev-i386 lib32ncurses5-dev gcc-multilib bsdmainutils lib32stdc++6 libglib2.0-dev ccache \
-  cmake lib32z1-dev libsqlite3-dev sqlite3 netcat curl openssl build-essential automake1.9
+sudo apt-get -y install %%Ubuntu14%%
 ```
 Zusätzlich muss manuell installiert werden:
 ```
@@ -173,29 +166,17 @@ sudo apt-get -y install libtool-bin
 
  - Ubuntu 13/14 32-Bit:
 ```
-sudo apt-get -y install \
-  graphicsmagick subversion gcc g++ binutils autoconf automake automake1.9 libtool make bzip2 \
-  libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config \
-  ecj fastjar realpath perl libstring-crc32-perl ruby ruby1.8 gawk python libusb-dev unzip intltool \
-  libacl1-dev libcap-dev
+sudo apt-get -y install %%Ubuntu13%%
 ```
 
- - Ubuntu 9/10/11/12 32-Bit:
+ - Ubuntu 10/11/12 32-Bit:
 ```
-sudo apt-get -y install \
-  imagemagick subversion gcc g++ bzip2 binutils automake patch autoconf libtool pkg-config make \
-  libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config \
-  ecj fastjar realpath perl libstring-crc32-perl ruby ruby1.8 gawk python libusb-dev unzip intltool \
-  libglib2.0-dev xz-utils git-core libacl1-dev libattr1-dev libcap-dev
+sudo apt-get -y install %%Ubuntu10%%
 ```
 
  - Ubuntu 9.04 32-Bit (kein automake 1.8, "ecj" statt "ecj-bootstrap"):
 ```
-sudo apt-get -y install \
-  imagemagick subversion gcc g++ binutils autoconf automake automake1.9 libtool make bzip2 \
-  libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config \
-  jikes ecj fastjar realpath perl libstring-crc32-perl ruby ruby1.8 gawk python libusb-dev unzip \
-  intltool libglib2.0-dev xz-utils git-core libacl1-dev libattr1-dev libcap-dev
+sudo apt-get -y install %%Ubuntu09%%
 ```
 
 ### Kali
