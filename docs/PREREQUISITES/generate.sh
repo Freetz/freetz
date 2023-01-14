@@ -1,7 +1,7 @@
 #!/bin/bash
 # generates docs/PREREQUISITES/README.md
 MDPWD="$(dirname $(realpath $0))"
-LIMIT=99
+LIMIT=80
 
 cat "$MDPWD/template.md" > "$MDPWD/README.md"
 for x in "$MDPWD/packages/"*; do
