@@ -61,7 +61,7 @@ Latest changes
    * python 3.11.1
    * sed 4.9
    * u-boot 2023.01
-   * xz 5.4.0
+   * xz 5.4.1
 
  - Patches:
    * remove AVMCOUNTERD: collects some data for you
@@ -101,7 +101,7 @@ Latest changes
    * tcpdump 4.1.1/4.99.2
    * Tor 0.4.7.12
    * Unbound 1.17.0
-   * XZ Utils 5.4.0
+   * XZ Utils 5.4.1
 
  - Libraries:
    * expat 2.5.0
