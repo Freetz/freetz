@@ -43,13 +43,7 @@ aarch64
 sudo dnf -y update && sudo systemctl daemon-reload
 ```
 
- - Fedora 37 64-Bit:
-```
-sudo dnf -y groupinstall 'Development Tools' 'Development Libraries'
-sudo dnf -y install %%FEDORA37%%
-```
-
- - Fedora 36 64-Bit:
+ - Fedora 36/37 64-Bit:
 ```
 sudo dnf -y groupinstall 'Development Tools' 'Development Libraries'
 sudo dnf -y install %%FEDORA36%%
@@ -64,7 +58,7 @@ sudo dnf -y install %%FEDORA35%%
  - Fedora 33/34 64-Bit:
 ```
 sudo dnf -y groupinstall 'Development Tools' 'Development Libraries'
-sudo dnf -y install %%FEDORA34%%
+sudo dnf -y install %%FEDORA33%%
 ```
 
  - Falls auf dem folgenden System ein 64-Bit Linux installiert ist wird zusätzlich benötigt:
@@ -131,12 +125,7 @@ sudo apt -y install libzstd-dev:i386 sqlite3:i386
 sudo apt-get -y install %%UBUNTU18%%
 ```
 
- - Ubuntu 16 64-Bit:
-```
-sudo apt-get -y install %%UBUNTU16%%
-```
-
- - Ubuntu 15 64-Bit:
+ - Ubuntu 15/16 64-Bit:
 ```
 sudo apt-get -y install %%UBUNTU15%%
 ```
