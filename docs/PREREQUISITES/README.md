@@ -109,10 +109,10 @@ sudo apt -y dist-upgrade
 sudo apt -y install \
   autoconf automake autopoint bc binutils bison bsdmainutils bzip2 ccache cmake cpio curl ecj \
   flex g++ gawk gcc gcc-multilib gettext git graphicsmagick imagemagick inkscape intltool kmod \
-  lib32ncurses5-dev lib32stdc++6 lib32z1-dev libacl1-dev libc6-dev-i386 libcap-dev libelf-dev \
-  libglib2.0-dev libgnutls28-dev libncurses5-dev libreadline-dev libsqlite3-dev libssl-dev \
-  libstring-crc32-perl libtool-bin libusb-dev libzstd-dev make netcat patch perl pkg-config pv rsync ruby \
-  sharutils sqlite3 subversion sudo texinfo tofrodos unar unzip uuid-dev wget zlib1g-dev
+  lib32stdc++6 lib32z1-dev libacl1-dev libc6-dev-i386 libcap-dev libelf-dev libglib2.0-dev \
+  libgnutls28-dev libncurses5-dev libreadline-dev libsqlite3-dev libssl-dev libstring-crc32-perl \
+  libtool-bin libusb-dev libzstd-dev make netcat patch perl pkg-config pv rsync ruby sharutils sqlite3 \
+  subversion sudo texinfo tofrodos unar unzip uuid-dev wget zlib1g-dev
 ```
 
 
@@ -144,10 +144,10 @@ sudo apt-get -y dist-upgrade
 sudo apt-get -y install \
   autoconf automake autopoint bc binutils bison bsdmainutils bzip2 ccache cmake cpio curl ecj \
   flex g++ gawk gcc gcc-multilib gettext git graphicsmagick imagemagick inkscape intltool kmod \
-  lib32ncurses5-dev lib32stdc++6 lib32z1-dev libacl1-dev libc6-dev-i386 libcap-dev libelf-dev \
-  libglib2.0-dev libgnutls28-dev libncurses5-dev libreadline-dev libsqlite3-dev libssl-dev \
-  libstring-crc32-perl libtool-bin libusb-dev libzstd-dev make netcat patch perl pkg-config pv rsync ruby \
-  sharutils sqlite3 subversion sudo texinfo tofrodos unar unzip uuid-dev wget zlib1g-dev
+  lib32stdc++6 lib32z1-dev libacl1-dev libc6-dev-i386 libcap-dev libelf-dev libglib2.0-dev \
+  libgnutls28-dev libncurses5-dev libreadline-dev libsqlite3-dev libssl-dev libstring-crc32-perl \
+  libtool-bin libusb-dev libzstd-dev make netcat patch perl pkg-config pv rsync ruby sharutils sqlite3 \
+  subversion sudo texinfo tofrodos unar unzip uuid-dev wget zlib1g-dev
 ```
 
  - Ubuntu 20 64-Bit:
@@ -155,10 +155,10 @@ sudo apt-get -y install \
 sudo apt-get -y install \
   autoconf automake autopoint bc binutils bison bsdmainutils bzip2 ccache cmake cpio curl ecj \
   flex g++ gawk gcc gcc-multilib gettext git graphicsmagick imagemagick inkscape intltool kmod \
-  lib32ncurses5-dev lib32stdc++6 lib32z1-dev libacl1-dev libc6-dev-i386 libcap-dev libelf-dev \
-  libglib2.0-dev libgnutls28-dev libncurses5-dev libreadline-dev libsqlite3-dev libssl-dev \
-  libstring-crc32-perl libtool-bin libusb-dev libzstd-dev make netcat patch perl pkg-config pv rsync ruby sqlite3 \
-  subversion sudo texinfo tofrodos unar unzip uuid-dev wget zlib1g-dev
+  lib32stdc++6 lib32z1-dev libacl1-dev libc6-dev-i386 libcap-dev libelf-dev libglib2.0-dev \
+  libgnutls28-dev libncurses5-dev libreadline-dev libsqlite3-dev libssl-dev libstring-crc32-perl \
+  libtool-bin libusb-dev libzstd-dev make netcat patch perl pkg-config pv rsync ruby sqlite3 subversion \
+  sudo texinfo tofrodos unar unzip uuid-dev wget zlib1g-dev
 # sqlite-32bit lässt sich mit apt nicht installieren, aber mit apt-get schon. Siehe auch:
 # https://developpaper.com/ubuntu-solves-the-problem-of-libsqlite3-0-dependency-recommended/
 sudo apt -y install libzstd-dev:i386 sqlite3:i386
