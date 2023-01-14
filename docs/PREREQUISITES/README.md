@@ -88,9 +88,9 @@ sudo yum -y install ncurses-devel.i686 glibc-devel.i686 libgcc.i686
  - Fedora ~20 32-Bit:
 ```
 sudo yum -y install \
-  ImageMagick subversion gcc gcc-c++ binutils autoconf automake libtool make bzip2 \
-  ncurses-devel zlib-devel flex bison patch texinfo gettext pkgconfig ecj perl \
-  perl-String-CRC32 wget glib2-devel git libacl-devel libattr-devel libcap-devel
+  ImageMagick subversion gcc gcc-c++ binutils autoconf automake libtool make bzip2 ncurses-devel \
+  zlib-devel flex bison patch texinfo gettext pkgconfig ecj perl perl-String-CRC32 wget glib2-devel \
+  git libacl-devel libattr-devel libcap-devel
 ```
 
 ### Debian
@@ -185,13 +185,12 @@ sudo apt-get -y install \
  - Ubuntu 14 64-Bit:
 ```
 sudo apt-get -y install \
-  pv cpio rsync kmod imagemagick inkscape graphicsmagick subversion git bc unar wget \
-  sudo gcc g++ binutils autoconf automake autopoint libtool make bzip2 libncurses5-dev \
-  libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config ecj \
-  realpath perl libstring-crc32-perl ruby ruby1.9 gawk libusb-dev unzip intltool \
-  libacl1-dev libcap-dev libc6-dev-i386 lib32ncurses5-dev gcc-multilib bsdmainutils \
-  lib32stdc++6 libglib2.0-dev ccache cmake lib32z1-dev libsqlite3-dev sqlite3 netcat \
-  curl openssl build-essential automake1.9
+  pv cpio rsync kmod imagemagick inkscape graphicsmagick subversion git bc unar wget sudo gcc \
+  g++ binutils autoconf automake autopoint libtool make bzip2 libncurses5-dev libreadline-dev \
+  zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config ecj realpath perl \
+  libstring-crc32-perl ruby ruby1.9 gawk libusb-dev unzip intltool libacl1-dev libcap-dev \
+  libc6-dev-i386 lib32ncurses5-dev gcc-multilib bsdmainutils lib32stdc++6 libglib2.0-dev ccache \
+  cmake lib32z1-dev libsqlite3-dev sqlite3 netcat curl openssl build-essential automake1.9
 ```
 Zusätzlich muss manuell installiert werden:
 ```
@@ -223,30 +222,28 @@ sudo apt-get -y install libtool-bin
  - Ubuntu 13/14 32-Bit:
 ```
 sudo apt-get -y install \
-  graphicsmagick subversion gcc g++ binutils autoconf automake automake1.9 libtool \
-  make bzip2 libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo \
-  tofrodos gettext pkg-config ecj fastjar realpath perl libstring-crc32-perl ruby \
-  ruby1.8 gawk python libusb-dev unzip intltool libacl1-dev libcap-dev
+  graphicsmagick subversion gcc g++ binutils autoconf automake automake1.9 libtool make bzip2 \
+  libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config \
+  ecj fastjar realpath perl libstring-crc32-perl ruby ruby1.8 gawk python libusb-dev unzip intltool \
+  libacl1-dev libcap-dev
 ```
 
  - Ubuntu 9/10/11/12 32-Bit:
 ```
 sudo apt-get -y install \
-  imagemagick subversion gcc g++ bzip2 binutils automake patch autoconf libtool \
-  pkg-config make libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo \
-  tofrodos gettext pkg-config ecj fastjar realpath perl libstring-crc32-perl ruby \
-  ruby1.8 gawk python libusb-dev unzip intltool libglib2.0-dev xz-utils git-core \
-  libacl1-dev libattr1-dev libcap-dev
+  imagemagick subversion gcc g++ bzip2 binutils automake patch autoconf libtool pkg-config make \
+  libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config \
+  ecj fastjar realpath perl libstring-crc32-perl ruby ruby1.8 gawk python libusb-dev unzip intltool \
+  libglib2.0-dev xz-utils git-core libacl1-dev libattr1-dev libcap-dev
 ```
 
  - Ubuntu 9.04 32-Bit (kein automake 1.8, "ecj" statt "ecj-bootstrap"):
 ```
 sudo apt-get -y install \
-  imagemagick subversion gcc g++ binutils autoconf automake automake1.9 libtool make \
-  bzip2 libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos \
-  gettext pkg-config jikes ecj fastjar realpath perl libstring-crc32-perl ruby \
-  ruby1.8 gawk python libusb-dev unzip intltool libglib2.0-dev xz-utils git-core \
-  libacl1-dev libattr1-dev libcap-dev
+  imagemagick subversion gcc g++ binutils autoconf automake automake1.9 libtool make bzip2 \
+  libncurses5-dev libreadline-dev zlib1g-dev flex bison patch texinfo tofrodos gettext pkg-config \
+  jikes ecj fastjar realpath perl libstring-crc32-perl ruby ruby1.8 gawk python libusb-dev unzip \
+  intltool libglib2.0-dev xz-utils git-core libacl1-dev libattr1-dev libcap-dev
 ```
 
 ### Kali
