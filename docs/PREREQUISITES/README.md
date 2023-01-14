@@ -190,3 +190,5 @@ sudo apt-get -y install imagemagick subversion gcc g++ binutils autoconf automak
 ### Kali
 Kali rolling wurde schon erfolgreich zum Bauen benutzt. Einfach die Pakete installieren, die für Ubuntu vorgeschlagen werden.
 Das meiste wird bei Kali sowieso schon dabei installiert sein.
+
+
