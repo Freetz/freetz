@@ -2,8 +2,7 @@
 SCRIPT="$(readlink -f $0)"
 PARENT="$(dirname ${SCRIPT%/*})"
 PACKAGES="$PARENT/docs/PREREQUISITES/packages"
-[ "$1" == '-y' ] && shift && doy="-y" || doy=""
-ARG="$1"
+
 
 check_requisite() {
 	case "$2" in
@@ -82,15 +81,6 @@ makefile_internal() {
 	exit $retval
 }
 
-show_usage() {
-	echo "Checks or installs prerequisites"
-	echo "Usage: $0 <-y> <ARG>"
-	echo "  -y: Install instantly, don't ask before"
-	echo "Available linux systems for <ARG>: "
-	for x in "$PACKAGES/"*; do echo "  - ${x##*/}"; done
-	echo "Without <ARG> it will be tried to detect the current Linux."
-	exit 1
-}
 
 detect_linux() {
 	NAME="$(sed -rn 's/^NAME=//p' /etc/os-release 2>/dev/null)"
@@ -101,19 +91,72 @@ detect_linux() {
 }
 
 install_requisite() {
-	[ ! -e "$PACKAGES/${1##*/}" ] && echo "File not found: ${1##*/}" && exit 1
-	vals="$(sed 's/[\t ]*#.*//g' "$PACKAGES/${1##*/}" | sort | tr '\n' ' ' | sed 's/^ *//;s/  */ /g;s/ *$//')"
-	echo "Installing these '${1##*/}' packages: $vals"
-	case "${1##*/}" in
-		Fedora*)                         sudo dnf --refresh  install $doy $vals ;;
-		Debian*)  sudo apt-get update && sudo apt            install $doy $vals ;;
-		Ubuntu*)  sudo apt-get update && sudo apt-get        install $doy $vals ;;
-		*)        echo 'No known installer' ;;
+	local OSV="$1" ARG="$2"DOY="$3"
+
+	[ -z "$OSV" ] && OSV="$(detect_linux)"
+	[ -z "$OSV" ] && echo 'Can not detect you Linux version, set it manually'&& list_linux  && exit 1
+
+	[ ! -e "$PACKAGES/${OSV##*/}" ] && echo "Unsupported, file four you Linux version not found: ${OSV##*/}" && list_linux && exit 1
+
+	vals="$(sed 's/[\t ]*#.*//g' "$PACKAGES/${OSV##*/}" | sort | tr '\n' ' ' | sed 's/^ *//;s/  */ /g;s/ *$//')"
+	echo -e "\nPackages for '${OSV##*/}':\n$vals\n"
+	[ "${ARG:0:1}" == "s" ] && exit 0
+	case "${OSV##*/}" in
+		Fedora*)                         sudo dnf --refresh  install $DOY $vals || exit 1 ;;
+		Debian*)  sudo apt-get update && sudo apt            install $DOY $vals || exit 1 ;;
+		Ubuntu*)  sudo apt-get update && sudo apt-get        install $DOY $vals || exit 1 ;;
+		*)        echo 'No known installer' && exit 1 ;;
 	esac
+	exit 0
 }
 
-[ "$ARG" == "makefile_internal" ] && makefile_internal
-[ -z "$ARG" ] && ARG="$(detect_linux)"
-[ -z "$ARG" -o "$ARG" == '-h' -o "$ARG" == '--help' ] && show_usage
-install_requisite "$ARG"
+
+list_linux() {
+	echo -e "\n\tAvailable names for 'linux+version' parameter:"
+	for x in "$PACKAGES/"*; do echo -e "\t  ${x##*/}"; done
+	echo
+}
+
+show_usage() {
+	cat << EOF
+
+	Prerequisites handling
+
+	Usage: $0 [ check | list | show [os] | install [-y] [os] ]
+
+	 - check
+	  Checks prerequisites and shows missing. Used by make, check return value.
+
+	 - list [linux+version]
+	  Lists supported linux distributions and versions.
+
+	 - show [linux+version]
+	  Shows packages to install with package-manager of 'linux+version'.
+
+	 - install [-y] [linux+version]
+	  Installs packages by package-manager for 'linux+version'.
+	  You will be asked for sudo password if you have no sufficent permissions.
+	  To install instantly and without question use the '-y' parameter.
+
+	Without 'linux+version' parameter, the current system will be detected.
+EOF
+	list_linux
+	exit 1
+}
+
+
+ARG="$1"
+shift
+[ "$1" == '-y' ] && shift && DOY="-y" || DOY=""
+OSV="$1"
+shift
+
+case "$ARG" in
+	c|check)		makefile_internal ;;
+	l|list)			list_linux ;;
+	i|install|s|show)	install_requisite "$OSV" "$ARG" "$DOY" ;;
+	*)			show_usage ;;
+esac
+
+exit 0
 
