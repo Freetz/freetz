@@ -47,40 +47,37 @@ sudo dnf -y update && sudo systemctl daemon-reload
 
  - Fedora 36/37 64-Bit:
 ```
-sudo dnf -y groupinstall 'Development Tools' 'Development Libraries'
 sudo dnf -y install \
   autoconf automake bc binutils bison bzip2 ccache cmake cpio curl ecj elfutils-libelf-devel \
   flex gcc gcc-c++ gettext git glib2-devel glibc-devel.i686 gnutls-devel ImageMagick inkscape \
   javapackages-tools kmod libacl-devel libattr-devel libcap-devel libgcc.i686 libglade2-devel \
-  libstdc++-devel.i686 libstdc++-devel.x86_64 libtool libuuid-devel libzstd-devel.x86_64 make ncurses-devel \
-  ncurses-devel.i686 ncurses-term netcat openssl openssl-devel patch perl perl-String-CRC32 pkgconfig pv \
-  qt5-qtbase-devel rpcgen rsync sharutils sqlite-devel sqlite.i686 subversion texinfo unar util-linux wget xz \
-  zlib-devel zlib-devel.i686
+  libstdc++-devel.i686 libstdc++-devel.x86_64 libtool libuuid-devel libxml2-devel libzstd-devel.x86_64 make \
+  ncurses-devel ncurses-devel.i686 ncurses-term netcat openssl openssl-devel patch perl \
+  perl-String-CRC32 pkgconfig pv qt5-qtbase-devel readline-devel rpcgen rsync sharutils sqlite-devel \
+  sqlite.i686 subversion texinfo unar util-linux wget xz zlib-devel zlib-devel.i686
 ```
 
  - Fedora 35 64-Bit:
 ```
-sudo dnf -y groupinstall 'Development Tools' 'Development Libraries'
 sudo dnf -y install \
   autoconf automake bc binutils bison bzip2 ccache cmake cpio curl ecj elfutils-libelf-devel \
   flex gcc gcc-c++ gettext git glib2-devel glibc-devel.i686 gnutls-devel ImageMagick inkscape \
   javapackages-tools kmod libacl-devel libattr-devel libcap-devel libgcc.i686 libglade2-devel \
-  libstdc++-devel.i686 libstdc++-devel.x86_64 libtool libuuid-devel libzstd-devel.x86_64 make ncurses-devel \
-  ncurses-devel.i686 ncurses-term netcat openssl openssl-devel patch perl perl-String-CRC32 pkgconfig pv \
-  qt5-qtbase-devel rpcgen rsync sharutils sqlite-devel sqlite.i686 subversion texinfo unar util-linux wget xz \
-  zlib-devel zlib-devel.i686
+  libstdc++-devel.i686 libstdc++-devel.x86_64 libtool libuuid-devel libxml2-devel libzstd-devel.x86_64 make \
+  ncurses-devel ncurses-devel.i686 ncurses-term netcat openssl openssl-devel patch perl \
+  perl-String-CRC32 pkgconfig pv qt5-qtbase-devel readline-devel rpcgen rsync sharutils sqlite-devel \
+  sqlite.i686 subversion texinfo unar util-linux wget xz zlib-devel zlib-devel.i686
 ```
 
  - Fedora 33/34 64-Bit:
 ```
-sudo dnf -y groupinstall 'Development Tools' 'Development Libraries'
 sudo dnf -y install \
   autoconf automake bc binutils bison bzip2 ccache cmake cpio ecj flex gcc gcc-c++ gettext git \
   glib2-devel glibc-devel.i686 gnutls-devel ImageMagick inkscape kmod libacl-devel libattr-devel \
-  libcap-devel libgcc.i686 libglade2-devel libstdc++-devel.i686 libtool libuuid-devel \
+  libcap-devel libgcc.i686 libglade2-devel libstdc++-devel.i686 libtool libuuid-devel libxml2-devel \
   libzstd-devel.i686 make ncurses-devel ncurses-devel.i686 ncurses-term openssl openssl-devel patch perl \
-  perl-String-CRC32 pkgconfig pv qt5-qtbase-devel rsync sqlite-devel sqlite.i686 subversion texinfo unar \
-  util-linux wget xz zlib-devel zlib-devel.i686
+  perl-String-CRC32 pkgconfig pv qt5-qtbase-devel readline-devel rsync sqlite-devel sqlite.i686 subversion \
+  texinfo unar util-linux wget xz zlib-devel zlib-devel.i686
 ```
 
  - Falls auf dem folgenden System ein 64-Bit Linux installiert ist wird zusätzlich benötigt:
@@ -239,8 +236,8 @@ sudo apt-get -y install \
 sudo apt-get -y install \
   autoconf automake binutils bison bzip2 ecj fastjar flex g++ gawk gcc gettext git-core \
   imagemagick intltool libacl1-dev libattr1-dev libcap-dev libglib2.0-dev libncurses5-dev \
-  libreadline-dev libstring-crc32-perl libtool libusb-dev make patch patch perl pkg-config pkg-config \
-  python realpath ruby ruby1.8 subversion texinfo tofrodos unzip xz-utils zlib1g-dev
+  libreadline-dev libstring-crc32-perl libtool libusb-dev make patch perl pkg-config python realpath ruby \
+  ruby1.8 subversion texinfo tofrodos unzip xz-utils zlib1g-dev
 ```
 
  - Ubuntu 9.04 32-Bit (kein automake 1.8, "ecj" statt "ecj-bootstrap"):
