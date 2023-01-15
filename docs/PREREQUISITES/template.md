@@ -45,12 +45,7 @@ aarch64
 sudo dnf -y update && sudo systemctl daemon-reload
 ```
 
- - Fedora 37 64-Bit:
-```
-sudo dnf -y install %%Fedora37%%
-```
-
- - Fedora 36 64-Bit:
+ - Fedora 36/37 64-Bit:
 ```
 sudo dnf -y install %%Fedora36%%
 ```
