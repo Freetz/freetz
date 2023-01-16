@@ -145,7 +145,7 @@ sudo apt-get -y install \
   java-wrappers kmod lib32ncurses5-dev lib32stdc++6 lib32z1-dev libacl1-dev libc6-dev-i386 libcap-dev \
   libelf-dev libglib2.0-dev libgnutls28-dev libncurses5-dev libreadline-dev libsqlite3-dev \
   libssl-dev libstring-crc32-perl libtool-bin libusb-dev libxml2-dev libzstd-dev make \
-  netcat-openbsd patch patchutils perl pkg-config pv rsync ruby sharutils sqlite3 subversion sudo texinfo \
+  netcat-openbsd patch patchutils perl pkg-config pv rsync sharutils sqlite3 subversion sudo texinfo \
   tofrodos unar unzip uuid-dev wget zlib1g-dev
 ```
 
@@ -157,7 +157,7 @@ sudo apt-get -y install \
   java-wrappers kmod lib32ncurses5-dev lib32stdc++6 lib32z1-dev libacl1-dev libc6-dev-i386 libcap-dev \
   libelf-dev libglib2.0-dev libgnutls28-dev libncurses5-dev libreadline-dev libsqlite3-dev \
   libssl-dev libstring-crc32-perl libtool-bin libusb-dev libxml2-dev libzstd-dev make netcat patch \
-  patchutils perl pkg-config pv rsync ruby sharutils sqlite3 subversion sudo texinfo tofrodos unar unzip \
+  patchutils perl pkg-config pv rsync sharutils sqlite3 subversion sudo texinfo tofrodos unar unzip \
   uuid-dev wget zlib1g-dev
 # sqlite-32bit lässt sich mit apt nicht installieren, aber mit apt-get schon. Siehe auch:
 # https://developpaper.com/ubuntu-solves-the-problem-of-libsqlite3-0-dependency-recommended/
@@ -172,7 +172,7 @@ sudo apt-get -y install \
   intltool kmod lib32ncurses5-dev lib32stdc++6 lib32z1-dev libacl1-dev libc6-dev-i386 libcap-dev \
   libglib2.0-dev libgnutls28-dev libncurses5-dev libreadline-dev libsqlite3-dev libssl-dev \
   libstring-crc32-perl libtool-bin libusb-dev libzstd-dev make netcat openssl patch patchutils perl pkg-config pv \
-  rsync ruby ruby1.9 sqlite3 subversion sudo texinfo tofrodos unar unzip uuid-dev wget zlib1g-dev
+  rsync sqlite3 subversion sudo texinfo tofrodos unar unzip uuid-dev wget zlib1g-dev
 ```
 
  - Ubuntu 15/16 64-Bit:
