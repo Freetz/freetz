@@ -97,8 +97,8 @@ sudo apt -y install \
   java-wrappers kmod lib32ncurses5-dev lib32stdc++6 lib32z1-dev libacl1-dev libc6-dev-i386 libcap-dev \
   libelf-dev libglib2.0-dev libgnutls28-dev libncurses5-dev libreadline-dev libsqlite3-dev \
   libssl-dev libstring-crc32-perl libtool-bin libusb-dev libxml2-dev libzstd-dev make netcat patch \
-  perl pkg-config pv rsync ruby sharutils sqlite3 subversion sudo texinfo tofrodos unar unzip \
-  uuid-dev wget zlib1g-dev
+  perl pkg-config pv rsync sharutils sqlite3 subversion sudo texinfo tofrodos unar unzip uuid-dev \
+  wget zlib1g-dev
 ```
 
 
@@ -152,8 +152,8 @@ sudo apt-get -y install \
   autoconf automake autopoint bc binutils bison bsdmainutils bzip2 cpio ecj flex g++ gawk gcc \
   gcc-multilib gettext git graphicsmagick imagemagick inkscape intltool kmod lib32ncurses5-dev \
   lib32stdc++6 libacl1-dev libc6-dev-i386 libcap-dev libglib2.0-dev libncurses5-dev libreadline-dev \
-  libstring-crc32-perl libtool-bin libusb-dev make patch perl pkg-config pv realpath rsync ruby ruby1.9 subversion \
-  sudo texinfo tofrodos unar unzip wget zlib1g-dev
+  libstring-crc32-perl libtool-bin libusb-dev make patch perl pkg-config pv realpath rsync subversion sudo texinfo \
+  tofrodos unar unzip wget zlib1g-dev
 ```
 
  - Ubuntu 14 64-Bit:
@@ -163,8 +163,8 @@ sudo apt-get -y install \
   bzip2 ccache cmake cpio curl ecj flex g++ gawk gcc gcc-multilib gettext git graphicsmagick \
   imagemagick inkscape intltool kmod lib32ncurses5-dev lib32stdc++6 lib32z1-dev libacl1-dev \
   libc6-dev-i386 libcap-dev libglib2.0-dev libncurses5-dev libreadline-dev libsqlite3-dev \
-  libstring-crc32-perl libtool libusb-dev make netcat openssl patch perl pkg-config pv realpath rsync ruby ruby1.9 \
-  sqlite3 subversion sudo texinfo tofrodos unar unzip wget zlib1g-dev
+  libstring-crc32-perl libtool libusb-dev make netcat openssl patch perl pkg-config pv realpath rsync sqlite3 \
+  subversion sudo texinfo tofrodos unar unzip wget zlib1g-dev
 ```
 Zusätzlich muss manuell installiert werden:
 ```
@@ -198,8 +198,8 @@ sudo apt-get -y install libtool-bin
 sudo apt-get -y install \
   autoconf automake automake1.9 binutils bison bzip2 ecj fastjar flex g++ gawk gcc gettext \
   graphicsmagick intltool libacl1-dev libcap-dev libncurses5-dev libreadline-dev libstring-crc32-perl \
-  libtool libusb-dev make patch perl pkg-config python realpath ruby ruby1.8 subversion texinfo \
-  tofrodos unzip zlib1g-dev
+  libtool libusb-dev make patch perl pkg-config python realpath subversion texinfo tofrodos unzip \
+  zlib1g-dev
 ```
 
  - Ubuntu 10/11/12 32-Bit:
@@ -207,8 +207,8 @@ sudo apt-get -y install \
 sudo apt-get -y install \
   autoconf automake binutils bison bzip2 ecj fastjar flex g++ gawk gcc gettext git-core \
   imagemagick intltool libacl1-dev libattr1-dev libcap-dev libglib2.0-dev libncurses5-dev \
-  libreadline-dev libstring-crc32-perl libtool libusb-dev make patch perl pkg-config python realpath ruby \
-  ruby1.8 subversion texinfo tofrodos unzip xz-utils zlib1g-dev
+  libreadline-dev libstring-crc32-perl libtool libusb-dev make patch perl pkg-config python realpath \
+  subversion texinfo tofrodos unzip xz-utils zlib1g-dev
 ```
 
  - Ubuntu 9.04 32-Bit (kein automake 1.8, "ecj" statt "ecj-bootstrap"):
@@ -217,7 +217,7 @@ sudo apt-get -y install \
   autoconf automake automake1.9 binutils bison bzip2 ecj fastjar flex g++ gawk gcc gettext \
   git-core imagemagick intltool jikes libacl1-dev libattr1-dev libcap-dev libglib2.0-dev \
   libncurses5-dev libreadline-dev libstring-crc32-perl libtool libusb-dev make patch perl pkg-config \
-  python realpath ruby ruby1.8 subversion texinfo tofrodos unzip xz-utils zlib1g-dev
+  python realpath subversion texinfo tofrodos unzip xz-utils zlib1g-dev
 ```
 
 ### Kali
