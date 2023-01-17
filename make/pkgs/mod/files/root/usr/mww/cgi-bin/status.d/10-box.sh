@@ -3,6 +3,7 @@ get_env() {
 }
 
 . /bin/env.mod.rcconf
+[ -r /etc/options.cfg ] && . /etc/options.cfg
 
 sec_begin "$CONFIG_PRODUKT_NAME"
 
@@ -26,7 +27,7 @@ for i in $(ls /usr/www/); do
 	esac
 done
 
-if [ $brands_cnt -gt 1 ]; then
+if [ $brands_cnt -gt 1 -a "$FREETZ_AVM_VERSION_07_0X_MIN" != "y" ]; then
 	echo '<form class="btn" action="/cgi-bin/exec.cgi/branding" method="post">'
 	echo "$(lang de:"Branding" en:"Branding"):"
 	echo '<select name="branding" size="1">'
