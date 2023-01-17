@@ -6,7 +6,7 @@ for x in ${supported_brandings}; do
 	[ "$(eval echo "\$FREETZ_ENFORCE_BRANDING_$x")" == "y" ] && firmware_version="$x"
 done
 
-echo1 "enforce branding '${firmware_version}'"
+echo1 "enforcing branding '${firmware_version}'"
 [ "${firmware_version}" == "error" ] && error 1 "Selected branding is not supported by this firmware"
 
 for oem in ${supported_brandings}; do
