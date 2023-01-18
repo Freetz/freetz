@@ -20,7 +20,6 @@ check "$DNSMASQ_DHCPHOSTFILE" yes:dhcphostfile
 sec_begin "$(lang de:"Starttyp" en:"Start type")"
 cgi_print_radiogroup_service_starttype "enabled" "$DNSMASQ_ENABLED" "" "" 0
 
-if [ "$FREETZ_AVM_HAS_DNSCRASH" != "y" ]; then
 cat << EOF
 <p>
 <input type="hidden" name="wrapper" value="no">
@@ -34,7 +33,6 @@ cat << EOF
 <input id="multid1" type="checkbox" name="multid_restart" value="yes"$multid_restart_chk><label for="multid1"> $(lang de:"multid restarten" en:"restart multid")</label><br>
 </p>
 EOF
-fi
 fi
 sec_end
 
