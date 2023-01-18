@@ -1,7 +1,8 @@
-$(call TOOLS_INIT, 1.9.7)
+$(call TOOLS_INIT, 1.9.8)
 $(PKG)_SOURCE:=sfk-$($(PKG)_VERSION).tar.gz
-$(PKG)_HASH:=d48c446ea849f0cfa1435dd2eb0d5678f7eb781ebfe2cbd155fe46bb2f8ca879
+$(PKG)_HASH:=051e6b81d9da348f19de906b6696882978d8b2c360b01d5447c5d4664aefe40c
 $(PKG)_SITE:=@SF/swissfileknife
+# ### VERSION:=1.9.8.2
 
 $(PKG)_CONFIGURE_OPTIONS += --prefix=$(FREETZ_BASE_DIR)/$(TOOLS_DIR)
 

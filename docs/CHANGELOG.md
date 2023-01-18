@@ -59,6 +59,7 @@ Latest changes
    * pseudo 1.9.0 oe-core c9670c2
    * python 3.11.1
    * sed 4.9
+   * sfk 1.9.8.2
    * u-boot 2023.01
    * xz 5.4.1
 
