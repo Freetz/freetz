@@ -1,4 +1,4 @@
-$(call PKG_INIT_BIN, 0.2)
+$(call PKG_INIT_BIN, 1.0)
 $(PKG)_STARTLEVEL=14
 
 $(PKG)_EXCLUDED += $(if $(FREETZ_REMOVE_WEBSRV),,etc/default.websrv)
