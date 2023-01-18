@@ -1,13 +1,9 @@
 [ "$FREETZ_ENFORCE_BRANDING_none" != "y" ] || return 0
 supported_brandings="$(supported_brandings)"
-
-firmware_version="error"
-for x in ${supported_brandings}; do
-	[ "$(eval echo "\$FREETZ_ENFORCE_BRANDING_$x")" == "y" ] && firmware_version="$x"
-done
+firmware_version="$(firmware_version $supported_brandings)"
 
 echo1 "enforcing branding '${firmware_version}'"
-[ "${firmware_version}" == "error" ] && error 1 "Selected branding is not supported by this firmware"
+[ -z "${firmware_version}" ] && error 1 "Selected branding is not supported by this firmware"
 
 for oem in ${supported_brandings}; do
 	[ "${firmware_version}" != "$oem" ] && continue

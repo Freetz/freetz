@@ -749,3 +749,14 @@ function supported_brandings() {
 	brandings=$(find "${etc_default_PRODUKT_path}" -maxdepth 1 -type d | sed -n -e "s|${etc_default_PRODUKT_path}[/]*||p" | sed -e "/^$/d" | sort -u)
 	echo $brandings
 }
+function firmware_version() {
+	local varname oem supported_brandings="$@"
+	for oem in ${supported_brandings}; do
+		varname="FREETZ_ENFORCE_BRANDING_$oem"
+		[ "${!varname}" != "y" ] && continue
+		echo "$oem"
+		return 0
+	done
+	return 1
+}
+
