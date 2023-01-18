@@ -82,6 +82,7 @@ Latest changes
    * Git 2.39.0
    * HAProxy 2.6.7
    * IGMPproxy 0.4
+   * ImageMagick 7.1.0-57
    * jamvm 2.0.0
    * Knock 0.8
    * libpcap 1.1.1/1.10.2

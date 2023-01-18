@@ -1,9 +1,14 @@
-$(call PKG_INIT_BIN, 7.0.10-10)
-$(PKG)_MAJOR_VERSION:=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION),1)
+$(call PKG_INIT_BIN, 7.1.0-57)
+$(PKG)_LIB_VERSION:=10.0.0
 $(PKG)_ABI_SUFFIX:=Q16
+$(PKG)_MAJOR_VERSION:=$(call GET_MAJOR_VERSION,$($(PKG)_VERSION),1)
 $(PKG)_SOURCE:=ImageMagick-$($(PKG)_VERSION).tar.xz
-$(PKG)_HASH:=df1a37b73aa49423abb422c2150a0e1436920ba50dfc4377c6a3793f9826e5f1
-$(PKG)_SITE:=@SF/$(pkg),http://www.imagemagick.org/download
+$(PKG)_HASH:=9c3bc3de37376b90a643b9437435cb477db68596b26a778a584020915196870b
+$(PKG)_SITE:=https://download.imagemagick.org/archive,http://www.imagemagick.org/download,https://www.imagemagick.org/archive,@SF/$(pkg)
+### WEBSITE:=https://www.imagemagick.org/
+### MANPAGE:=https://www.imagemagick.org/Usage/
+### CHANGES:=https://github.com/ImageMagick/ImageMagick/releases
+### CVSREPO:=https://github.com/ImageMagick/ImageMagick
 
 $(PKG)_BINARY := magick
 $(PKG)_BINARY_BUILD_DIR := $($(PKG)_BINARY:%=$($(PKG)_DIR)/utilities/$(if $(FREETZ_PACKAGE_IMAGEMAGICK_STATIC),,.libs/)%)
@@ -12,11 +17,11 @@ $(PKG)_BINARY_TARGET_DIR := $($(PKG)_BINARY:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 $(PKG)_SYMLINKS := animate compare composite conjure convert display identify import magick-script mogrify montage stream
 $(PKG)_SYMLINKS_TARGET_DIR := $($(PKG)_SYMLINKS:%=$($(PKG)_DEST_DIR)/usr/bin/%)
 
-$(PKG)_LIB_CORE := libMagickCore-$($(PKG)_MAJOR_VERSION)-$($(PKG)_ABI_SUFFIX).so.7.0.0
+$(PKG)_LIB_CORE := libMagickCore-$($(PKG)_MAJOR_VERSION)-$($(PKG)_ABI_SUFFIX).so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_CORE_BUILD_DIR := $($(PKG)_LIB_CORE:%=$($(PKG)_DIR)/MagickCore/.libs/%)
 $(PKG)_LIB_CORE_TARGET_DIR := $($(PKG)_LIB_CORE:%=$($(PKG)_DEST_LIBDIR)/%)
 
-$(PKG)_LIB_WAND := libMagickWand-$($(PKG)_MAJOR_VERSION)-$($(PKG)_ABI_SUFFIX).so.7.0.0
+$(PKG)_LIB_WAND := libMagickWand-$($(PKG)_MAJOR_VERSION)-$($(PKG)_ABI_SUFFIX).so.$($(PKG)_LIB_VERSION)
 $(PKG)_LIB_WAND_BUILD_DIR := $($(PKG)_LIB_WAND:%=$($(PKG)_DIR)/MagickWand/.libs/%)
 $(PKG)_LIB_WAND_TARGET_DIR := $($(PKG)_LIB_WAND:%=$($(PKG)_DEST_LIBDIR)/%)
 
@@ -93,6 +98,7 @@ $(PKG)_EXTRA_CFLAGS  := -ffunction-sections -fdata-sections
 $(PKG)_EXTRA_LDFLAGS := -Wl,--gc-sections -all-static
 endif
 
+
 $(PKG_SOURCE_DOWNLOAD)
 $(PKG_UNPACKED)
 $(PKG_CONFIGURED_CONFIGURE)
@@ -125,6 +131,7 @@ $(pkg)-precompiled: \
 	$($(PKG)_SYMLINKS_TARGET_DIR) \
 	$(if $(FREETZ_PACKAGE_IMAGEMAGICK_STATIC),,$($(PKG)_LIB_CORE_TARGET_DIR) $($(PKG)_LIB_WAND_TARGET_DIR)) \
 	$(if $(FREETZ_PACKAGE_IMAGEMAGICK_xml),$($(PKG)_XML_CONFIGS_TARGET_DIR))
+
 
 $(pkg)-clean:
 	-$(SUBMAKE) -C $(IMAGEMAGICK_DIR) clean

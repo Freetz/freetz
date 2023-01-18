@@ -1,5 +1,5 @@
 menuconfig FREETZ_PACKAGE_IMAGEMAGICK
-	bool "ImageMagick 7.0.10-10 (binary only)"
+	bool "ImageMagick 7.1.0-57 (binary only)"
 	select FREETZ_LIB_libpthread  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	select FREETZ_LIB_libm        if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
 	default n
@@ -16,42 +16,42 @@ menuconfig FREETZ_PACKAGE_IMAGEMAGICK
 
 if FREETZ_PACKAGE_IMAGEMAGICK
 
-config FREETZ_PACKAGE_IMAGEMAGICK_ghostscript_fonts
-	bool "Ghostscript fonts"
-	default n
-	select FREETZ_PACKAGE_GHOSTSCRIPT_FONTS
+	config FREETZ_PACKAGE_IMAGEMAGICK_ghostscript_fonts
+		bool "Ghostscript fonts"
+		default n
+		select FREETZ_PACKAGE_GHOSTSCRIPT_FONTS
 
-config FREETZ_PACKAGE_IMAGEMAGICK_freetype
-	bool "Support freetype"
-	default y
-	select FREETZ_LIB_libfreetype
+	config FREETZ_PACKAGE_IMAGEMAGICK_freetype
+		bool "Support freetype"
+		default y
+		select FREETZ_LIB_libfreetype
 
-config FREETZ_PACKAGE_IMAGEMAGICK_jpeg
-	bool "Support jpeg"
-	default y
-	select FREETZ_LIB_libjpeg
+	config FREETZ_PACKAGE_IMAGEMAGICK_jpeg
+		bool "Support jpeg"
+		default y
+		select FREETZ_LIB_libjpeg
 
-config FREETZ_PACKAGE_IMAGEMAGICK_libz
-	bool "Support libz"
-	default y
-	select FREETZ_LIB_libz
+	config FREETZ_PACKAGE_IMAGEMAGICK_libz
+		bool "Support libz"
+		default y
+		select FREETZ_LIB_libz
 
-config FREETZ_PACKAGE_IMAGEMAGICK_png
-	bool "Support png"
-	default y
-	select FREETZ_LIB_libpng12
+	config FREETZ_PACKAGE_IMAGEMAGICK_png
+		bool "Support png"
+		default y
+		select FREETZ_LIB_libpng12
 
-config FREETZ_PACKAGE_IMAGEMAGICK_xml
-	bool "Support xml"
-	default y
-	select FREETZ_LIB_libxml2
+	config FREETZ_PACKAGE_IMAGEMAGICK_xml
+		bool "Support xml"
+		default y
+		select FREETZ_LIB_libxml2
 
 
-config FREETZ_PACKAGE_IMAGEMAGICK_STATIC
-	bool "Link statically"
-	default n
-	help
-		Causes all dependent libraries to be linked in statically.
+	config FREETZ_PACKAGE_IMAGEMAGICK_STATIC
+		bool "Link statically"
+		default n
+		help
+			Causes all dependent libraries to be linked in statically.
 
 endif # FREETZ_PACKAGE_IMAGEMAGICK
 
