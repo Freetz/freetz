@@ -96,6 +96,7 @@ Latest changes
    * OpenVPN 2.4.12/2.5.8
    * PCSC-lite 1.9.9
    * RPCBind 1.2.6
+   * Swiss File Knife 1.9.8.2
    * strace 4.9/5.0/6.1
    * SQLite 3.40.1
    * tcpdump 4.1.1/4.99.2
