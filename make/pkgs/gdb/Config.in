@@ -1,44 +1,44 @@
 config FREETZ_PACKAGE_GDB
-	bool "gdb GNU debugger"
+	bool "gdb GNU debugger 6.8/7.9.1 (binary only)"
 
 if FREETZ_PACKAGE_GDB
 
-config FREETZ_PACKAGE_GDB_GDB
-	bool "Build gdb for target"
-	select FREETZ_LIB_libdl  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
-	select FREETZ_LIB_libm   if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
-	select FREETZ_LIB_libncurses
-	select FREETZ_LIB_libreadline
-	default n
-	help
-		Build the full gdb debugger to run on the target.
+	choice
+		prompt "version"
+		default FREETZ_GDB_VERSION_7_9
+		help
+			Select the version of gdb you wish to use.
 
-config FREETZ_PACKAGE_GDB_GDBSERVER
-	bool "Build gdb server for target"
-	select FREETZ_LIB_libthread_db
-	default n
-	help
-		Build the gdbserver stub to run on the target.
-		Full gdb is needed to debug a program.
+		config FREETZ_GDB_VERSION_6_8
+			bool "gdb 6.8"
 
-config FREETZ_PACKAGE_GDB_HOST
-	bool "Build gdb for host"
-	default n
-	help
-		Build gdb to run on the host to debug programs run on the target.
+		config FREETZ_GDB_VERSION_7_9
+			bool "gdb 7.9.1"
+	endchoice
 
-choice
-	prompt "version"
-	default FREETZ_GDB_VERSION_7_9
-	help
-		Select the version of gdb you wish to use.
+	config FREETZ_PACKAGE_GDB_GDB
+		bool "Build gdb for target"
+		select FREETZ_LIB_libdl  if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+		select FREETZ_LIB_libm   if FREETZ_TARGET_UCLIBC_HAS_multiple_libs
+		select FREETZ_LIB_libncurses
+		select FREETZ_LIB_libreadline
+		default n
+		help
+			Build the full gdb debugger to run on the target.
 
-	config FREETZ_GDB_VERSION_6_8
-		bool "gdb 6.8"
+	config FREETZ_PACKAGE_GDB_GDBSERVER
+		bool "Build gdb server for target"
+		select FREETZ_LIB_libthread_db
+		default n
+		help
+			Build the gdbserver stub to run on the target.
+			Full gdb is needed to debug a program.
 
-	config FREETZ_GDB_VERSION_7_9
-		bool "gdb 7.9.1"
-endchoice
+	config FREETZ_PACKAGE_GDB_HOST
+		bool "Build gdb for host"
+		default n
+		help
+			Build gdb to run on the host to debug programs run on the target.
 
 endif # FREETZ_PACKAGE_GDB
 
