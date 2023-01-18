@@ -1,4 +1,4 @@
-# Syslogd CGI 0.2.3
+# Syslogd CGI
  - Package: [master/make/pkgs/syslogd-cgi/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/syslogd-cgi/)
 
 The syslog package enables to log messages local to memory, to a local

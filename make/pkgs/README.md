@@ -370,7 +370,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
   * **<u>Inadyn-OpenDNS 1.99</u><a id='inadyn-opendns'></a>**<br>
     INADYN - Simple Dynamic DNS client. INADYN is a free DynDNS client. It gives the possibility to have your own fixed hostname registered on the internet, although your IP might be changing. It checks periodically whether the IP address stored by the DNS server is the real current IP address of the machine that is running INADYN. This is the version published by OpenDNS to support SSL.
 
-  * **[Inetd 0.2](../../docs/make/inetd.md)<a id='inetd'></a>**<br>
+  * **[Inetd 1.0](../../docs/make/inetd.md)<a id='inetd'></a>**<br>
     'Virtual' inetd package. Provides configuration framework for inetd. Requires a compatible inetd binary. (at the moment, only busybox inetd is supported)
      - [Benutzerdefiniert](../../docs/make/inetd.md#benutzerdefiniert)
      - [Konfiguration](../../docs/make/inetd.md#konfiguration)
@@ -644,7 +644,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
   * **[PCSC-lite 1.9.9 (binary only)](../../docs/make/pcsc-lite.md)<a id='pcsc-lite'></a>**<br>
     The purpose of PCSC Lite is to provide a Windows(R) SCard interface in a very small form factor for communicating to smart cards and readers.
 
-  * **<u>phonebook-tools: Phone book tools 0.0</u><a id='phonebook-tools'></a>**<br>
+  * **<u>phonebook-tools: Phone book tools 1.0</u><a id='phonebook-tools'></a>**<br>
     A set of tools for reading and converting Fritz!Box phone book to such (easy parseable) formats like: - .csv (comma-separated values), or - .tsv (tab-separated values).
 
   * **[PHP 5.6.40 (binary only)](../../docs/make/php.md)<a id='php'></a>**<br>
@@ -1221,7 +1221,7 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
   * **[Downloader CGI](../../docs/make/downloader.md)<a id='downloader'></a>**<br>
     Download files from HTTP or FTP server during the boot process. This is particularly useful for binary packages which do not fit into the firmware image, but should be used on the box anyway. As long as they fit into the RAM disk this solution helps to automate the downloads and keeps them out of debug.cfg. by hermann72pb (ip-phone-forum.de) Support thread: http://www.ip-phone-forum.de/showthread.php?t=134934
 
-  * **[NFSD CGI 0.1](../../docs/make/nfsd-cgi.md)<a id='nfsd'></a>**<br>
+  * **[NFSD CGI](../../docs/make/nfsd-cgi.md)<a id='nfsd'></a>**<br>
     Configuration frontend to NFS-server If this does not work, enable replace-kernel!
      - [/etc/exports (exports in GUI)](../../docs/make/nfsd-cgi.md#etcexports-exports-in-gui)
      - [/etc/hosts.allow](../../docs/make/nfsd-cgi.md#etchostsallow)
@@ -1258,10 +1258,10 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
      - [Dateiübersicht (unvollständig)](../../docs/make/rrdstats.md#dateiübersicht-unvollständig)
      - [BUGS](../../docs/make/rrdstats.md#bugs)
 
-  * **[spindown-cgi 0.2](../../docs/make/spindown-cgi.md)<a id='spindown'></a>**<br>
+  * **[spindown-cgi](../../docs/make/spindown-cgi.md)<a id='spindown'></a>**<br>
     Choose this package if you want to spin down your attached USB disk after a configurable idle time period. However, it is not guaranteed to work with all disks.
 
-  * **[Syslogd CGI 0.2.3](../../docs/make/syslogd-cgi.md)<a id='syslogd'></a>**<br>
+  * **[Syslogd CGI](../../docs/make/syslogd-cgi.md)<a id='syslogd'></a>**<br>
     Configuration frontend to syslogd
      - [Setup in Freetz web-interface](../../docs/make/syslogd-cgi.md#setup-in-freetz-web-interface)
      - [Usage of syslog](../../docs/make/syslogd-cgi.md#usage-of-syslog)
@@ -1272,5 +1272,5 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
   * **<u>vnstat-cgi: vnstat Webinterface</u><a id='vnstat'></a>**<br>
     Lets you view graphically the output of vnstat.
 
-  * **<u>wol-cgi: Wake-on-LAN (WoL) CGI 0.6</u><a id='wol'></a>**<br>
+  * **<u>wol-cgi: Wake-on-LAN (WoL) CGI</u><a id='wol'></a>**<br>
     Web configuration interface for Etherwake wake-on-LAN. Accessible via the URL http://fritz.box:84, it enables you to interactively wake up sleeping or switched off computers in the LAN reachable from you router box. Which machines can be woken up can be configured using the regular Freetz web interface.
