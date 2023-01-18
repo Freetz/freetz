@@ -1,4 +1,4 @@
-# Nano Shell
+# Nano Shell 0.1 (binary only)
  - Package: [master/make/pkgs/nano-shell/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/nano-shell/)
 
 Die **Nano-Shell** führt beliebige Shell-Komandos via URL aus, d.h. an

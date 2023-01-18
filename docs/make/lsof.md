@@ -1,4 +1,4 @@
-# lsof 4.89
+# lsof 4.89 (binary only)
  - Homepage: [https://people.freebsd.org/~abe/](https://people.freebsd.org/~abe/)
  - Package: [master/make/pkgs/lsof/](https://github.com/Freetz-NG/freetz-ng/tree/master/make/pkgs/lsof/)
 

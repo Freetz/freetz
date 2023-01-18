@@ -1051,10 +1051,10 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
 
 # Debug helpers
 
-  * **<u>gdb GNU debugger</u><a id='gdb'></a>**<br>
-    Build the full gdb debugger to run on the target.
+  * **<u>gdb GNU debugger 6.8/7.9.1 (binary only)</u><a id='gdb'></a>**<br>
+    Select the version of gdb you wish to use.
 
-  * **[inotify-tools 3.14](../../docs/make/inotify-tools.md)<a id='inotify-tools'></a>**<br>
+  * **[inotify-tools 3.14 (binary only)](../../docs/make/inotify-tools.md)<a id='inotify-tools'></a>**<br>
     inotify-tools - watch file and directory access inotify-tools is a C library and a set of command-line programs for Linux providing a simple interface to inotify. These programs can be used to monitor and act upon filesystem events. The programs are written in C and have no dependencies other than a Linux kernel supporting inotify. inotifywait This command simply blocks for inotify events, making it appropriate for use in shell scripts. It can watch any set of files and directories, and can recursively watch entire directory trees. inotifywatch inotifywatch collects filesystem usage statistics and outputs counts of each inotify event. Please read https://freetz.github.io/wiki/packages/inotify_tools for further details. Improper usage can lead to reboots.
      - [Inotify und Inotify-Tools allgemein](../../docs/make/inotify-tools.md#inotify-und-inotify-tools-allgemein)
      - [Dateizugriffe der FritzBox ab dem Start beobachten](../../docs/make/inotify-tools.md#dateizugriffe-der-fritzbox-ab-dem-start-beobachten)
@@ -1063,16 +1063,16 @@ Index: [A](#a) - [B](#b) - [C](#c) - [D](#d) - [E](#e) - [F](#f) - [G](#g) - [H]
      - [Log-Datei regelmäßig konsolidieren, um Platz zu sparen](../../docs/make/inotify-tools.md#log-datei-regelmäßig-konsolidieren-um-platz-zu-sparen)
      - [Schlußwort](../../docs/make/inotify-tools.md#schlußwort)
 
-  * **[ldd](../../docs/make/ldd.md)<a id='ldd'></a>**<br>
+  * **[ldd 0.1 (binary only)](../../docs/make/ldd.md)<a id='ldd'></a>**<br>
     ldd prints the shared libraries required by each program or shared library specified on the command line.
 
-  * **[lsof 4.89](../../docs/make/lsof.md)<a id='lsof'></a>**<br>
+  * **[lsof 4.89 (binary only)](../../docs/make/lsof.md)<a id='lsof'></a>**<br>
     lsof (LiSt Open Files) The lsof tool lists information about files opened by processes.
 
   * **[ltrace 0.7.3checkpoint1-git (binary only)](../../docs/make/ltrace.md)<a id='ltrace'></a>**<br>
     ltrace - library call tracer ltrace is a debugging tool, similar to strace, but it traces library calls instead of system calls.
 
-  * **[Nano Shell](../../docs/make/nano-shell.md)<a id='nano-shell'></a>**<br>
+  * **[Nano Shell 0.1 (binary only)](../../docs/make/nano-shell.md)<a id='nano-shell'></a>**<br>
     Remotely execute arbitrary shell commands via URLs This tiny package enables both the AVM and Freetz web interfaces to execute user-specified commands and display their results and/or errors,
      - [Sicherheitshinweis](../../docs/make/nano-shell.md#sicherheitshinweis)
      - [Benutzung](../../docs/make/nano-shell.md#benutzung)
