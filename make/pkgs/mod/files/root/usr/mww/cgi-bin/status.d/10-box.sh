@@ -43,7 +43,7 @@ else
 	BRANDS=${BRANDS# }
 	echo "$(lang de:"Branding" en:"Branding"):"
 	echo "$branding"
-	if [ "$branding" != "$BRANDS" ]; then
+	if ! echo " $BRANDS " | grep -q " $branding "; then
 		echo "($(lang de:"nicht installiert" en:"not installed"))"
 	fi
 fi
