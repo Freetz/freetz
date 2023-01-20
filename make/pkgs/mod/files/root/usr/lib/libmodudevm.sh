@@ -23,8 +23,21 @@ do_mount_locked() {
 
 	local _FS="$(sed -nr "s,^${_BD} [^ ]* ([^ ]*).*,\1,p" /proc/mounts)"
 	if [ "$_RV" != "0" ]; then
-		eventadd 142 "Partition $_BD" "$_FS"
-		udev_log $_RV "$_BD - unsupported filesystem or partition table${_FS:+: $_FS}"
+		# Special case SWAP partition
+		if [ "$(modconf value MOD_SWAP mod)" == "yes" ]; then
+			local _SWAP_DEV="$(modconf value MOD_SWAP_FILE mod | grep '/dev')"
+			if [ "$_SWAP_DEV" == "$_BD" ]; then
+				[ -e /etc/init.d/rc.swap ] && /etc/init.d/rc.swap autostart "$_BD"
+				_RV=$?
+			fi
+		fi
+		if $_RV; then
+			eventadd 142 "Partition $_BD" "$_FS"
+			udev_log $_RV "$_BD - unsupported filesystem or partition table${_FS:+: $_FS}"
+		else
+			eventadd 140 "SWAP Partition $_BD"
+			udev_log $_RV "$_BD - mounted as SWAP partition"
+		fi
 	else
 		local _MP="$(sed -rn "s,^$_BD ([^ ]*).*,\1,p" /proc/mounts)"
 
