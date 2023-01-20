@@ -102,7 +102,7 @@ Latest changes
    * SQLite 3.40.1
    * tcpdump 4.1.1/4.99.2
    * Tor 0.4.7.12
-   * Unbound 1.17.0
+   * Unbound 1.17.1
    * XZ Utils 5.4.1
 
  - Libraries:
