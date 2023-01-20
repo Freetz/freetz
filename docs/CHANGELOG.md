@@ -80,7 +80,7 @@ Latest changes
    * dehydrated 0.7.1 (letsencrypt)
    * Dnsmasq 2.80/2.88
    * Dropbear 2022.83
-   * Git 2.39.0
+   * Git 2.39.1
    * HAProxy 2.6.7
    * IGMPproxy 0.4
    * ImageMagick 7.1.0-57
