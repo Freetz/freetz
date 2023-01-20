@@ -41,6 +41,8 @@ case "$3" in
 		do_log /proc/avm/wdt "AVM-Watchdog"
 		do_log /proc/kdsld/dsliface/internet/ipmasq/pcp44 "PCP-Sessions"
 
+		for x in /sys/fs/pstore/*; do do_log $x; done
+
 		do_log /proc/avm/log_sd/crash
 		do_log /proc/avm/log_sd/crash2
 		do_log /proc/avm/log_sd/panic
