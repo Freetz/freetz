@@ -1,4 +1,4 @@
-# Unbound 1.17.0
+# Unbound 1.17.1
  - Homepage: [https://www.unbound.net](https://www.unbound.net)
  - Manpage: [https://www.unbound.net/documentation/unbound.html](https://www.unbound.net/documentation/unbound.html)
  - Changelog: [https://www.nlnetlabs.nl/projects/unbound/download/](https://www.nlnetlabs.nl/projects/unbound/download/)
