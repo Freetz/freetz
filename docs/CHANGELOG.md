@@ -86,7 +86,7 @@ Latest changes
    * ImageMagick 7.1.0-57
    * jamvm 2.0.0
    * Knock 0.8
-   * libpcap 1.1.1/1.10.2
+   * libpcap 1.1.1/1.10.3
    * Lighttpd 1.4.68
    * Lua 5.1.5/5.4.4
    * Nano 7.1
